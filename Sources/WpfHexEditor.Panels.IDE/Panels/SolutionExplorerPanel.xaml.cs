@@ -103,6 +103,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ProjectItemEventArgs>?               ItemDeleteFromDiskRequested;
     public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
     public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
+    public event EventHandler<ManageNuGetRequestedEventArgs>?      ManageNuGetPackagesRequested;
 
     // -- Tree events -----------------------------------------------------------
 
@@ -402,6 +403,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         CleanProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
         SetStartupSeparator     .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
         SetStartupProjectMenuItem.Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+
+        NuGetSeparator       .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        ManageNuGetMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
 
         // Properties
         PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
@@ -876,6 +880,12 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
                 PropertiesRequested?.Invoke(this, new NodePropertiesEventArgs { Project = fn.Project, Item = fn.Source });
                 break;
         }
+    }
+
+    private void OnManageNuGetPackages(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pv)
+            ManageNuGetPackagesRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = pv.Source });
     }
 
     // -- Go To Definition (context menu for source nodes) ----------------------

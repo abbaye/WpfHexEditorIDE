@@ -38,6 +38,7 @@ internal sealed class TextViewport : FrameworkElement
     private const double DefaultFontSize = 13.0;
     private const double LineNumberPadding = 4.0;
     private const double LeftMargin = 6.0;
+    private const double SelectionCornerRadius = 3.0;
 
     // -----------------------------------------------------------------------
     // Fields
@@ -331,36 +332,47 @@ internal sealed class TextViewport : FrameworkElement
             double y  = (startLine - firstVisLine) * _lineHeight;
             double x1 = codeX + startCol * _charWidth;
             double x2 = codeX + endCol   * _charWidth;
-            if (x2 > x1) dc.DrawRectangle(selBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+            if (x2 > x1) dc.DrawRoundedRectangle(selBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
             return;
         }
 
-        // First (partial) line
+        // Multi-line: collect overlapping segments then union them so the brush is applied once,
+        // preventing double-alpha darkening at junctions with semi-transparent selection brushes.
+        var segments = new List<Geometry>();
+
+        // First (partial) line — extend bottom by CornerRadius so the rounded tail merges with next segment
         if (startLine >= firstVisLine && startLine <= lastVisLine)
         {
             double y     = (startLine - firstVisLine) * _lineHeight;
             double x1    = codeX + startCol * _charWidth;
             double lineW = (_vm.GetLine(startLine).Length - startCol) * _charWidth;
             double width = Math.Max(lineW, _charWidth);
-            dc.DrawRectangle(selBrush, null, new Rect(x1, y, width, _lineHeight));
+            segments.Add(new RectangleGeometry(new Rect(x1, y, width, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
         }
 
-        // Middle (full) lines
+        // Middle (full) lines — extend top and bottom by CornerRadius to merge with neighbours
         for (int li = startLine + 1; li < endLine; li++)
         {
             if (li < firstVisLine || li > lastVisLine) continue;
-            double y     = (li - firstVisLine) * _lineHeight;
+            double y     = (li - firstVisLine) * _lineHeight - SelectionCornerRadius;
             double width = Math.Max(_vm.GetLine(li).Length * _charWidth, _charWidth);
-            dc.DrawRectangle(selBrush, null, new Rect(codeX, y, width, _lineHeight));
+            segments.Add(new RectangleGeometry(new Rect(codeX, y, width, _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
         }
 
-        // Last (partial) line
+        // Last (partial) line — extend top by CornerRadius so the rounded head merges with previous segment
         if (endLine >= firstVisLine && endLine <= lastVisLine)
         {
-            double y     = (endLine - firstVisLine) * _lineHeight;
+            double y     = (endLine - firstVisLine) * _lineHeight - SelectionCornerRadius;
             double width = Math.Max(endCol * _charWidth, _charWidth);
-            dc.DrawRectangle(selBrush, null, new Rect(codeX, y, width, _lineHeight));
+            segments.Add(new RectangleGeometry(new Rect(codeX, y, width, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
         }
+
+        if (segments.Count == 0) return;
+        Geometry combined = segments[0];
+        for (int i = 1; i < segments.Count; i++)
+            combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
+        combined.Freeze();
+        dc.DrawGeometry(selBrush, null, combined);
     }
 
     // -----------------------------------------------------------------------

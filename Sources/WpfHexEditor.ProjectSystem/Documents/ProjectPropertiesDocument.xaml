@@ -275,10 +275,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#1A86D9" />
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.82" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#0062AE" />
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.65" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.4" />
@@ -512,7 +512,7 @@
 
         <!-- ── Validation error style ─────────────────────────────────────────── -->
         <Style x:Key="PP_ValidationErrorStyle" TargetType="TextBlock">
-            <Setter Property="Foreground"   Value="#F48771" />
+            <Setter Property="Foreground"   Value="{DynamicResource PFP_ValidationErrorBorderBrush}" />
             <Setter Property="FontSize"     Value="11" />
             <Setter Property="Margin"       Value="0,2,0,0" />
             <Setter Property="TextWrapping" Value="Wrap" />

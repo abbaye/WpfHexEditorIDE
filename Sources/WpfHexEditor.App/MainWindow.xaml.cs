@@ -45,6 +45,7 @@ using WpfHexEditor.Editor.TileEditor;
 using WpfHexEditor.Editor.AudioViewer;
 using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
+using WpfHexEditor.Editor.XamlDesigner;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.IDE.Services;
@@ -121,6 +122,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Project properties map: doc-projprops-{id} → IProject (for deferred content creation)
     private readonly Dictionary<string, IProject> _projectPropertiesMap = new();
+
+    // NuGet manager map: doc-nuget-{name} → IProject (for deferred content creation)
+    private readonly Dictionary<string, IProject> _nugetManagerMap = new();
 
     // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
     // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
@@ -455,6 +459,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new AudioViewerFactory());
         _editorRegistry.Register(new ScriptEditorFactory());
         _editorRegistry.Register(new ChangesetEditorFactory());
+        _editorRegistry.Register(new XamlDesignerFactory());
 
         // Register VS-style project templates
         ProjectTemplateRegistry.RegisterDefaults();
@@ -1129,6 +1134,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")       => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
+            _ when item.ContentId.StartsWith("doc-nuget-")     => CreateNuGetManagerContent(item),
             _ when item.ContentId.StartsWith("doc-proj-")      => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
@@ -1170,6 +1176,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.PhysicalFileIncludeRequested     += OnSEPhysicalFileInclude;
         panel.ImportExternalFileRequested      += OnSEImportExternalFile;
         panel.PropertiesRequested              += OnSEPropertiesRequested;
+        panel.ManageNuGetPackagesRequested     += OnSEManageNuGetPackages;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         panel.SolutionFolderCreateRequested    += OnSESolutionFolderCreateRequested;
@@ -4574,7 +4581,85 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             DockHost.RebuildVisualTree();
         };
 
+        // Open NuGet Manager when the user clicks "+ NuGet…" inside Project Properties.
+        vm.ManageNuGetRequested += (_, e) => OpenNuGetManagerDocument(e.Project);
+
         return new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument
+        {
+            DataContext = vm
+        };
+    }
+
+    // ── NuGet Manager ────────────────────────────────────────────────────────
+
+    private void OnSEManageNuGetPackages(object? sender, ManageNuGetRequestedEventArgs e)
+        => OpenNuGetManagerDocument(e.Project);
+
+    /// <summary>
+    /// Opens (or activates) the VS-Like NuGet Package Manager document tab for the given project.
+    /// Uses contentId "doc-nuget-{Name}" for deduplication.
+    /// </summary>
+    private void OpenNuGetManagerDocument(IProject project)
+    {
+        var contentId = $"doc-nuget-{project.Name}";
+
+        // Dedup: activate existing tab if already open.
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        _nugetManagerMap[contentId] = project;
+
+        var item = new DockItem
+        {
+            Title     = $"NuGet — {project.Name}",
+            ContentId = contentId,
+            Metadata  = { ["ProjectName"] = project.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-nuget-*" items.
+    /// Creates the <see cref="NuGetManagerDocument"/> UserControl backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateNuGetManagerContent(DockItem item)
+    {
+        if (!_nugetManagerMap.TryGetValue(item.ContentId, out var project))
+        {
+            var name = item.ContentId["doc-nuget-".Length..];
+            project = _solutionManager.CurrentSolution?.Projects
+                          .FirstOrDefault(p => p.Name == name);
+
+            if (project is null)
+                return new System.Windows.Controls.TextBlock { Text = "Project not found." };
+
+            _nugetManagerMap[item.ContentId] = project;
+        }
+
+        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerViewModel(
+            project,
+            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+
+        // Reload project after any .csproj write-back to keep the Solution Explorer in sync.
+        vm.ProjectModified += (_, _) =>
+        {
+            var sol = _solutionManager.CurrentSolution;
+            if (sol is not null)
+                _solutionExplorerPanel?.SetSolution(sol);
+        };
+
+        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerDocument
         {
             DataContext = vm
         };

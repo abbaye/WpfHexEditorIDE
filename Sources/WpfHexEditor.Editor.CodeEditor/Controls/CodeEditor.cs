@@ -202,6 +202,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private const double LineNumberMargin = 5;
         private const double TextAreaLeftOffset = 70; // LineNumberWidth + margin
         private const double ScrollBarThickness = 12.0;
+        private const double SelectionCornerRadius = 3.0;
 
         #endregion
 
@@ -2730,41 +2731,52 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     double x1 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (start.Column * _charWidth);
                     double x2 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (end.Column * _charWidth);
 
-                    dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+                    dc.DrawRoundedRectangle(selectionBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
                 }
             }
             else // Multi-line selection (Phase 3)
             {
                 double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-                // Render first line (from start.Column to end of line)
+                // Collect overlapping segments then union them so the brush is applied once,
+                // preventing double-alpha darkening at junctions with semi-transparent selection brushes.
+                var segments = new List<Geometry>();
+
+                // First line — extend bottom by CornerRadius so the rounded tail merges with next segment
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    double y = TopMargin + (start.Line - _firstVisibleLine) * _lineHeight;
+                    double y  = TopMargin + (start.Line - _firstVisibleLine) * _lineHeight;
                     double x1 = leftEdge + (start.Column * _charWidth);
                     double x2 = leftEdge + (_document.Lines[start.Line].Length * _charWidth);
-
-                    dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight));
+                    segments.Add(new RectangleGeometry(new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
                 }
 
-                // Render middle lines (entire line width) — clamp to the visible viewport so
-                // the loop is O(visible_lines) rather than O(selected_lines).
+                // Middle lines — extend top and bottom by CornerRadius to merge with neighbours.
+                // Clamp to visible viewport so the loop is O(visible_lines) rather than O(selected_lines).
                 int middleFirst = Math.Max(start.Line + 1, _firstVisibleLine);
                 int middleLast  = Math.Min(end.Line   - 1, _lastVisibleLine);
                 for (int line = middleFirst; line <= middleLast; line++)
                 {
-                    double y     = TopMargin + (line - _firstVisibleLine) * _lineHeight;
+                    double y     = TopMargin + (line - _firstVisibleLine) * _lineHeight - SelectionCornerRadius;
                     double width = _document.Lines[line].Length * _charWidth;
-                    dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight));
+                    segments.Add(new RectangleGeometry(new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
                 }
 
-                // Render last line (from start of line to end.Column)
+                // Last line — extend top by CornerRadius so the rounded head merges with previous segment
                 if (end.Line >= _firstVisibleLine && end.Line <= _lastVisibleLine)
                 {
-                    double y = TopMargin + (end.Line - _firstVisibleLine) * _lineHeight;
+                    double y  = TopMargin + (end.Line - _firstVisibleLine) * _lineHeight - SelectionCornerRadius;
                     double x2 = leftEdge + (end.Column * _charWidth);
+                    segments.Add(new RectangleGeometry(new Rect(leftEdge, y, x2 - leftEdge, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
+                }
 
-                    dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, x2 - leftEdge, _lineHeight));
+                if (segments.Count > 0)
+                {
+                    Geometry combined = segments[0];
+                    for (int i = 1; i < segments.Count; i++)
+                        combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
+                    combined.Freeze();
+                    dc.DrawGeometry(selectionBrush, null, combined);
                 }
             }
         }
@@ -2802,7 +2814,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (highlightBrush.IsFrozen == false)
                     highlightBrush.Freeze();
 
-                dc.DrawRectangle(highlightBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+                dc.DrawRoundedRectangle(highlightBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
             }
         }
 

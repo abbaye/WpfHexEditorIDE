@@ -24,8 +24,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core;
@@ -401,17 +399,8 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
 
     private Task AddNuGetAsync()
     {
-        // Show a minimal input dialog for package id + version
-        var dlg = new NuGetInputDialog { Owner = Application.Current?.MainWindow };
-        if (dlg.ShowDialog() == true && !string.IsNullOrWhiteSpace(dlg.PackageId))
-        {
-            References.Add(new ReferenceEntry(
-                string.IsNullOrWhiteSpace(dlg.PackageVersion)
-                    ? dlg.PackageId
-                    : $"{dlg.PackageId} ({dlg.PackageVersion})",
-                "NuGet"));
-            MarkDirty();
-        }
+        // Raise event — the host (MainWindow) opens the NuGet Manager document tab.
+        ManageNuGetRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = _project });
         return Task.CompletedTask;
     }
 
@@ -475,6 +464,11 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
+    /// <summary>
+    /// Raised when the user clicks "+ NuGet…" so the host can open the NuGet Manager document tab.
+    /// </summary>
+    public event EventHandler<ManageNuGetRequestedEventArgs>? ManageNuGetRequested;
+
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -503,48 +497,4 @@ internal sealed class PropertiesRelayCommand(Func<Task> executeAsync, Func<bool>
     public void RaiseCanExecuteChanged()      => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }
 
-// ---------------------------------------------------------------------------
-// NuGetInputDialog — minimal dialog for Add NuGet reference
-// ---------------------------------------------------------------------------
-
-/// <summary>
-/// Tiny modal dialog that asks for a NuGet package Id and optional version.
-/// </summary>
-internal sealed class NuGetInputDialog : System.Windows.Window
-{
-    public string PackageId      => _tbId.Text.Trim();
-    public string PackageVersion => _tbVer.Text.Trim();
-
-    private readonly System.Windows.Controls.TextBox _tbId  = new() { Margin = new Thickness(0, 2, 0, 8) };
-    private readonly System.Windows.Controls.TextBox _tbVer = new() { Margin = new Thickness(0, 2, 0, 8) };
-
-    public NuGetInputDialog()
-    {
-        Title  = "Ajouter un package NuGet";
-        Width  = 360;
-        Height = 200;
-        ResizeMode = ResizeMode.NoResize;
-        WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        ShowInTaskbar = false;
-
-        var stack = new System.Windows.Controls.StackPanel { Margin = new Thickness(16) };
-
-        stack.Children.Add(new System.Windows.Controls.TextBlock { Text = "ID du package :" });
-        stack.Children.Add(_tbId);
-        stack.Children.Add(new System.Windows.Controls.TextBlock { Text = "Version (optionnel) :" });
-        stack.Children.Add(_tbVer);
-
-        var btnOk = new System.Windows.Controls.Button
-        {
-            Content    = "Ajouter",
-            Margin     = new Thickness(0, 8, 0, 0),
-            Padding    = new Thickness(14, 4, 14, 4),
-            HorizontalAlignment = HorizontalAlignment.Right
-        };
-        btnOk.Click += (_, _) => { DialogResult = true; };
-        stack.Children.Add(btnOk);
-
-        Content = stack;
-    }
-}
 

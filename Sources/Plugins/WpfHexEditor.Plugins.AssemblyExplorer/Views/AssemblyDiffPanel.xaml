@@ -31,9 +31,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
-            <RowDefinition Height="*"/>      <!-- Results DataGrid -->
-            <RowDefinition Height="Auto"/>   <!-- Status bar -->
+            <RowDefinition Height="Auto"/>        <!-- Toolbar -->
+            <RowDefinition Height="2*"
+                           MinHeight="60"/>       <!-- Results DataGrid -->
+            <RowDefinition Height="4"/>           <!-- GridSplitter -->
+            <RowDefinition Height="*"
+                           MinHeight="60"/>       <!-- Diff Detail pane -->
+            <RowDefinition Height="Auto"/>        <!-- Status bar -->
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ────────────────────────────────────────────────────── -->
@@ -148,6 +152,7 @@
         <DataGrid Grid.Row="1"
                   x:Name="DiffGrid"
                   ItemsSource="{Binding FilteredEntries}"
+                  SelectedItem="{Binding SelectedDiffEntry, Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   CanUserAddRows="False"
@@ -159,7 +164,6 @@
                   Foreground="{DynamicResource PFP_TextBrush}"
                   BorderThickness="0"
                   RowBackground="{DynamicResource PFP_PanelBackgroundBrush}"
-                  
                   MouseDoubleClick="OnDiffRowDoubleClick">
 
             <!-- Row background driven by DiffKind -->
@@ -179,8 +183,153 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- ── Splitter ───────────────────────────────────────────────────── -->
+        <GridSplitter Grid.Row="2"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="{DynamicResource DockBorderBrush}"
+                      ResizeDirection="Rows"
+                      ShowsPreview="True"/>
+
+        <!-- ── Diff Detail pane ───────────────────────────────────────────── -->
+        <Grid Grid.Row="3"
+              DataContext="{Binding DiffDetail}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>   <!-- Detail toolbar -->
+                <RowDefinition Height="*"/>      <!-- Code columns -->
+            </Grid.RowDefinitions>
+
+            <!-- Detail header bar -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="0,1,0,1"
+                    Height="22"
+                    Padding="6,0">
+                <DockPanel LastChildFill="True">
+                    <!-- Loading spinner -->
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                               Foreground="{DynamicResource PFP_AccentBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,4,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Entry label -->
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="{Binding EntryLabel}"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="10"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
+
+            <!-- Three-column code view: Baseline | Diff | Target -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>    <!-- Baseline code -->
+                    <ColumnDefinition Width="4"/>    <!-- Vertical splitter -->
+                    <ColumnDefinition Width="*"/>    <!-- Unified diff -->
+                    <ColumnDefinition Width="4"/>    <!-- Vertical splitter -->
+                    <ColumnDefinition Width="*"/>    <!-- Target code -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Baseline code -->
+                <DockPanel Grid.Column="0">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Baseline"
+                               FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Padding="4,2"
+                               Background="{DynamicResource PFP_SectionBackgroundBrush}"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding BaselineCode, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New"
+                                 FontSize="10"
+                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                 Foreground="{DynamicResource PFP_TextBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="NoWrap"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </DockPanel>
+
+                <GridSplitter Grid.Column="1"
+                              Width="4"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="{DynamicResource DockBorderBrush}"
+                              ResizeDirection="Columns"
+                              ShowsPreview="True"/>
+
+                <!-- Unified diff -->
+                <DockPanel Grid.Column="2">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Unified Diff"
+                               FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Padding="4,2"
+                               Background="{DynamicResource PFP_SectionBackgroundBrush}"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding UnifiedDiff, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New"
+                                 FontSize="10"
+                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                 Foreground="{DynamicResource PFP_TextBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="NoWrap"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </DockPanel>
+
+                <GridSplitter Grid.Column="3"
+                              Width="4"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="{DynamicResource DockBorderBrush}"
+                              ResizeDirection="Columns"
+                              ShowsPreview="True"/>
+
+                <!-- Target code -->
+                <DockPanel Grid.Column="4">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Target"
+                               FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Padding="4,2"
+                               Background="{DynamicResource PFP_SectionBackgroundBrush}"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding TargetCode, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New"
+                                 FontSize="10"
+                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                 Foreground="{DynamicResource PFP_TextBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="NoWrap"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </DockPanel>
+            </Grid>
+        </Grid>
+
         <!-- ── Status bar ─────────────────────────────────────────────────── -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="4"
                 Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,1,0,0"

@@ -113,6 +113,7 @@ namespace WpfHexEditor.HexEditor.Controls
         private const double AsciiCharWidth = 10;
         private const double LeftMargin = 8;
         private const double TopMargin = 2;
+        private const double SelectionCornerRadius = 3.0;
 
         // Dynamic OffsetWidth property - calculates based on OffSetStringVisual format
         private double OffsetWidth => CalculateOffsetWidth();
@@ -2136,23 +2137,117 @@ namespace WpfHexEditor.HexEditor.Controls
 
                     // Mouse hover preview is drawn in separate _hoverOverlayVisual (avoids full re-render)
 
-                    // Selection highlight (on top of other highlights)
-                    if (IsPositionSelected(bytePos))
-                    {
-                        var hexBrush = (_activePanel == ActivePanelType.Hex)
-                            ? (SelectionActiveBrush ?? _selectedBrush)
-                            : (SelectionInactiveBrush ?? _selectedBrush);
-                        var asciiBrush = (_activePanel == ActivePanelType.Ascii)
-                            ? (SelectionActiveBrush ?? _selectedBrush)
-                            : (SelectionInactiveBrush ?? _selectedBrush);
-
-                        if (byteData.HexRect.HasValue)
-                            dc.DrawRectangle(hexBrush, null, byteData.HexRect.Value);
-                        if (ShowAscii && byteData.AsciiRect.HasValue)
-                            dc.DrawRectangle(asciiBrush, null, byteData.AsciiRect.Value);
-                    }
                 }
             }
+
+            // Selection is drawn as merged per-line rounded rects (after the per-byte loop)
+            // to avoid visible gaps between adjacent selected byte cells.
+            DrawSelectionHighlight(dc);
+        }
+
+        /// <summary>
+        /// Draws the selection highlight as one merged rounded rectangle per visible line
+        /// (hex column and ASCII column separately), avoiding gaps between adjacent byte cells.
+        /// Uses the same overlap technique as the text editors to hide inter-segment rounded edges.
+        /// </summary>
+        private void DrawSelectionHighlight(DrawingContext dc)
+        {
+            if (_selectionStart < 0 || _selectionStop < 0) return;
+            if (_linesCached == null || _linesCached.Count == 0) return;
+
+            long selStart = Math.Min(_selectionStart, _selectionStop);
+            long selStop  = Math.Max(_selectionStart, _selectionStop);
+
+            var hexLineRects   = new List<Rect>();
+            var asciiLineRects = new List<Rect>();
+
+            foreach (var line in _linesCached)
+            {
+                if (line.Bytes == null || line.Bytes.Count == 0) continue;
+
+                double hexMinX = double.MaxValue, hexMaxX = double.MinValue;
+                double asciiMinX = double.MaxValue, asciiMaxX = double.MinValue;
+                double lineY = 0, lineH = _lineHeight;
+
+                foreach (var b in line.Bytes)
+                {
+                    if (b.VirtualPos < selStart || b.VirtualPos > selStop) continue;
+
+                    if (b.HexRect.HasValue)
+                    {
+                        var hr = b.HexRect.Value;
+                        hexMinX = Math.Min(hexMinX, hr.X);
+                        hexMaxX = Math.Max(hexMaxX, hr.Right);
+                        lineY = hr.Y;
+                        lineH = hr.Height;
+                    }
+
+                    if (ShowAscii && b.AsciiRect.HasValue)
+                    {
+                        var ar = b.AsciiRect.Value;
+                        asciiMinX = Math.Min(asciiMinX, ar.X);
+                        asciiMaxX = Math.Max(asciiMaxX, ar.Right);
+                    }
+                }
+
+                if (hexMinX < hexMaxX)
+                    hexLineRects.Add(new Rect(hexMinX, lineY, hexMaxX - hexMinX, lineH));
+                if (asciiMinX < asciiMaxX)
+                    asciiLineRects.Add(new Rect(asciiMinX, lineY, asciiMaxX - asciiMinX, lineH));
+            }
+
+            var hexBrush = _activePanel == ActivePanelType.Hex
+                ? (SelectionActiveBrush ?? _selectedBrush)
+                : (SelectionInactiveBrush ?? _selectedBrush);
+
+            var asciiBrush = _activePanel == ActivePanelType.Ascii
+                ? (SelectionActiveBrush ?? _selectedBrush)
+                : (SelectionInactiveBrush ?? _selectedBrush);
+
+            DrawMergedSelectionRects(dc, hexLineRects,   hexBrush);
+            DrawMergedSelectionRects(dc, asciiLineRects, asciiBrush);
+        }
+
+        /// <summary>
+        /// Draws a list of per-line selection rects as a single unified geometry.
+        /// Overlapping rounded segments are unioned via Geometry.Combine so the brush is
+        /// applied exactly once — preventing double-alpha darkening at junctions when
+        /// using semi-transparent selection brushes.
+        /// </summary>
+        private static void DrawMergedSelectionRects(DrawingContext dc, List<Rect> rects, Brush brush)
+        {
+            if (rects.Count == 0) return;
+
+            const double r = SelectionCornerRadius;
+
+            if (rects.Count == 1)
+            {
+                dc.DrawRoundedRectangle(brush, null, rects[0], r, r);
+                return;
+            }
+
+            // Build per-segment geometries with overlap so adjacent rounded ends merge cleanly.
+            // Geometry.Combine(Union) paints the result as a single shape → no double-alpha.
+            Geometry combined = null;
+            for (int i = 0; i < rects.Count; i++)
+            {
+                var rect   = rects[i];
+                bool first = i == 0;
+                bool last  = i == rects.Count - 1;
+
+                double yTop    = first ? rect.Y      : rect.Y - r;
+                double yBottom = last  ? rect.Bottom : rect.Bottom + r;
+
+                Geometry seg = new RectangleGeometry(
+                    new Rect(rect.X, yTop, rect.Width, yBottom - yTop), r, r);
+
+                combined = combined == null
+                    ? seg
+                    : Geometry.Combine(combined, seg, GeometryCombineMode.Union, null);
+            }
+
+            combined?.Freeze();
+            dc.DrawGeometry(brush, null, combined);
         }
 
         private void DrawOffset(DrawingContext dc, HexLine line, double y)

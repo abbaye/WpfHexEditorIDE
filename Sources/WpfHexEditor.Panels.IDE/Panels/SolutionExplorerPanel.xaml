@@ -974,6 +974,17 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                    <!-- Manage NuGet Packages (VS projects only) -->
+                    <Separator x:Name="NuGetSeparator" Visibility="Collapsed"/>
+                    <MenuItem x:Name="ManageNuGetMenuItem"
+                              Header="Manage NuGet Packages…"
+                              Visibility="Collapsed"
+                              Click="OnManageNuGetPackages">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE7B8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                     <!-- Properties -->
                     <Separator x:Name="PropertiesSeparator"/>
                     <MenuItem x:Name="PropertiesMenuItem" Header="Properties" Click="OnProperties">

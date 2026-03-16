@@ -81,7 +81,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
-    public async Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
+    public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
         _context = context;
 
@@ -172,18 +172,21 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         _panel.ViewModel.AssemblyCleared       += OnAssemblyCleared;
         _panel.ViewModel.WorkspaceStatsChanged += OnWorkspaceStatsChanged;
 
-        // Restore the previous session FIRST and fully await all loads.
-        // HexEditor events are subscribed AFTER to guarantee that the IDE's
-        // own document-tab restoration cannot inject unintended assemblies
-        // into the workspace before the user's saved state is established.
-        await RestoreLastSessionAsync();
-
-        // Subscribe to HexEditor events for auto-analysis (post-restore).
-        context.HexEditor.FileOpened          += OnFileOpened;
-        context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
-
-        // Subscribe to cross-plugin "open assembly" requests.
+        // Subscribe to cross-plugin "open assembly" requests (safe immediately).
         context.EventBus.Subscribe<OpenAssemblyInExplorerEvent>(OnOpenAssemblyRequested);
+
+        // Restore the previous session as a background task so that
+        // InitializeAsync returns before the watchdog timeout fires.
+        // HexEditor auto-analysis events are wired AFTER restoration completes
+        // to guarantee the IDE's document-tab restoration cannot inject
+        // unintended assemblies into the workspace during the restore window.
+        _ = RestoreLastSessionAsync().ContinueWith(_ =>
+        {
+            context.HexEditor.FileOpened          += OnFileOpened;
+            context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
+        }, TaskScheduler.Default);
+
+        return Task.CompletedTask;
     }
 
     public Task ShutdownAsync(CancellationToken ct = default)

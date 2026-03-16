@@ -6,13 +6,15 @@
 // Updated: 2026-03-16 — Phase 8: async background decompilation + LRU cache.
 //     ShowNode replaced by ShowNodeAsync (Task.Run + DecompileCache).
 //     IsLoading / LoadingMessage drive a progress overlay in the View.
+//     Phase 4: CfgViewModel added; LoadForMethodAsync fires for method nodes.
 // Description:
 //     ViewModel for the detail pane (bottom split of the Assembly Explorer panel).
-//     4-tab layout —
+//     5-tab layout —
 //       Code  — C# with real method bodies via IDecompilerBackend (ILSpy)
 //       IL    — raw IL disassembly (methods only)
 //       Info  — metadata token, PE offset, visibility/modifier flags, custom attrs
 //       Hex   — 64-byte hex dump at the PE offset (read on demand from file)
+//       CFG   — Control Flow Graph rendered by CfgCanvas (method nodes only)
 //
 // Architecture Notes:
 //     Pattern: MVVM — populated by AssemblyExplorerViewModel.OnNodeSelected.
@@ -45,7 +47,41 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
     {
         _backend = backend;
         _cache   = cache;
+
+        // Wire CFG block clicks → switch to IL tab
+        CfgViewModel.BlockOffsetSelected += _ => ActiveTabIndex = 1; // IL tab
     }
+
+    // ── CFG tab (Tab 4) ───────────────────────────────────────────────────────
+
+    /// <summary>View-model for the CFG tab.</summary>
+    public CfgViewModel  CfgViewModel  { get; } = new();
+
+    // ── XRefs tab (Tab 5) ─────────────────────────────────────────────────────
+
+    /// <summary>View-model for the XRefs tab.</summary>
+    public XRefViewModel XRefViewModel { get; } = new();
+
+    // ── Source tab (Tab 6) ────────────────────────────────────────────────────
+
+    /// <summary>View-model for the Source (PDB/SourceLink) tab.</summary>
+    public SourceViewModel SourceViewModel { get; } = new();
+
+    /// <summary>
+    /// Callback wired by the hosting panel to navigate the tree when an XRef entry is clicked.
+    /// </summary>
+    public Action<int>? OnXRefNavigate
+    {
+        get => _onXRefNavigate;
+        set
+        {
+            _onXRefNavigate = value;
+            XRefViewModel.NavigateRequested -= OnXRefNavigateHandler;
+            if (value is not null) XRefViewModel.NavigateRequested += OnXRefNavigateHandler;
+        }
+    }
+    private Action<int>? _onXRefNavigate;
+    private void OnXRefNavigateHandler(int token) => _onXRefNavigate?.Invoke(token);
 
     // ── Shared header ─────────────────────────────────────────────────────────
 
@@ -248,6 +284,33 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         }
 
         IsLoading = false;
+
+        // ── CFG tab — async, independent of decompile cache ────────────────────
+        if (node is MethodNodeViewModel cfgMethodNode)
+            _ = CfgViewModel.LoadForMethodAsync(cfgMethodNode.Model, filePath, ct);
+        else
+            CfgViewModel.Clear();
+
+        // ── XRefs tab — fire-and-forget scan ──────────────────────────────────
+        if (node is MethodNodeViewModel xrefMethodNode && node.OwnerFilePath is { } xrefFilePath)
+        {
+            _ = XRefViewModel.LoadAsync(xrefMethodNode.Model, xrefFilePath, ct);
+        }
+        else if (node is FieldNodeViewModel xrefFieldNode && node.OwnerFilePath is { } fieldFilePath)
+        {
+            _ = XRefViewModel.LoadAsync(xrefFieldNode.Model, fieldFilePath, ct);
+        }
+        else
+        {
+            XRefViewModel.Clear();
+        }
+
+        // ── Source tab — fire-and-forget PDB load (method nodes only) ──────────
+        if (node is MethodNodeViewModel srcMethodNode && !string.IsNullOrEmpty(filePath))
+            _ = SourceViewModel.LoadAsync(srcMethodNode.Model, filePath, ct);
+        else
+            SourceViewModel.Clear();
+
         // Do NOT override ActiveTabIndex here — respect the tab the user last picked.
         // Tab is only reset to 0 (Code) by Clear() when the pane is emptied.
     }
@@ -266,6 +329,9 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         IsLoading          = false;
         LoadingMessage     = string.Empty;
         InfoItems.Clear();
+        CfgViewModel.Clear();
+        XRefViewModel.Clear();
+        SourceViewModel.Clear();
         ActiveTabIndex = 0;
     }
 

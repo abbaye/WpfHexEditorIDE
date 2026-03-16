@@ -3,9 +3,12 @@
 // File: Views/AssemblyDetailPane.xaml.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
+// Updated: 2026-03-16 — Phase 4: wire CfgCanvas.BlockClicked → IL tab scroll.
 // Description:
 //     Code-behind for the detail pane. Minimal — all state is in ViewModel.
 //     OnExtractButtonClick forwards the extract request to the hosting panel.
+//     CfgCanvas.BlockClicked: switches to the IL tab so the user can see the
+//     matching IL_XXXX offset (CfgViewModel.RaiseBlockOffsetSelected handled by VM).
 // ==========================================================
 
 using System.Windows;
@@ -29,6 +32,7 @@ public partial class AssemblyDetailPane : UserControl
     public AssemblyDetailPane()
     {
         InitializeComponent();
+        CfgCanvasControl.BlockClicked += OnCfgBlockClicked;
     }
 
     // The Extract button in the header bar raises this event so the panel can
@@ -37,5 +41,15 @@ public partial class AssemblyDetailPane : UserControl
     {
         if (DataContext is AssemblyDetailViewModel vm && vm.IsExtractAvailable)
             ExtractRequested?.Invoke(this, vm.CurrentNode!);
+    }
+
+    /// <summary>
+    /// When a CFG block is clicked: notify the VM (which switches to IL tab)
+    /// and forward the offset so callers can scroll the IL TextBox if needed.
+    /// </summary>
+    private void OnCfgBlockClicked(int offset)
+    {
+        if (DataContext is AssemblyDetailViewModel vm)
+            vm.CfgViewModel.RaiseBlockOffsetSelected(offset);
     }
 }

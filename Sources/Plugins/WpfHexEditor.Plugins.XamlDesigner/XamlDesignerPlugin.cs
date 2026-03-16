@@ -164,6 +164,8 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         {
             // No XAML designer active — clear the side panels.
             _outlinePanel?.ViewModel?.RebuildTree(null);
+            if (_propertiesPanel?.ViewModel is not null)
+                _propertiesPanel.ViewModel.SelectedObject = null;
             _propertiesPanel?.SetElementName(null);
             UpdateStatusBar(null);
             return;
@@ -171,7 +173,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
         // Wire the new host: outline + property inspector + status bar.
         host.SelectedElementChanged += OnSelectedElementChanged;
-        _outlinePanel?.ViewModel?.RebuildTree(host.Document?.ParsedRoot);
+        host.Document.XamlChanged   += OnXamlChanged;
+
+        _outlinePanel?.ViewModel?.RebuildTree(host.Document.ParsedRoot);
         UpdateSidePanels(host);
     }
 
@@ -179,7 +183,14 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         if (_wiredHost is null) return;
         _wiredHost.SelectedElementChanged -= OnSelectedElementChanged;
+        _wiredHost.Document.XamlChanged   -= OnXamlChanged;
         _wiredHost = null;
+    }
+
+    private void OnXamlChanged(object? sender, EventArgs e)
+    {
+        if (_wiredHost is null) return;
+        _outlinePanel?.ViewModel?.RebuildTree(_wiredHost.Document.ParsedRoot);
     }
 
     private void OnSelectedElementChanged(object? sender, EventArgs e)
@@ -193,7 +204,8 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         var selectedUi = host.Canvas?.SelectedElement;
         var dep = selectedUi as System.Windows.DependencyObject;
 
-        _propertiesPanel?.ViewModel?.SetSelectedObject(dep);
+        if (_propertiesPanel?.ViewModel is not null)
+            _propertiesPanel.ViewModel.SelectedObject = dep;
 
         var elementName = dep?.GetType().Name ?? string.Empty;
         _propertiesPanel?.SetElementName(elementName);

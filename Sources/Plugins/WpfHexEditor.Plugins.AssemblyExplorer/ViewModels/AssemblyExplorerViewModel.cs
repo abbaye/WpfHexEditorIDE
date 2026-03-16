@@ -34,6 +34,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfHexEditor.Editor.TextEditor.Controls;
+using WpfHexEditor.Editor.TextEditor.Models;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
@@ -694,6 +695,18 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         NavigateHexEditorToNode(node, force: true);
     }
 
+    /// <summary>
+    /// Opens a local source file in the IDE text editor and navigates to the specified line.
+    /// Used by the Source tab "Go to Source" command.
+    /// </summary>
+    public void OpenSourceFileInTextEditor(string filePath, int line)
+    {
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
+        try   { _documentHost?.ActivateAndNavigateTo(filePath, line, column: 1); }
+        catch (Exception ex)
+        { _output.Warning($"[Assembly Explorer] Failed to open source '{Path.GetFileName(filePath)}': {ex.Message}"); }
+    }
+
     /// <summary>Opens the assembly file in the hex editor at offset 0 — no member navigation.</summary>
     public void OpenAssemblyFileInHexEditor(string filePath)
     {
@@ -821,7 +834,11 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             return;
         }
 
-        var content = BuildDecompiledCodeEditor(text, isCSharp);
+        var assemblyModel = string.IsNullOrEmpty(filePath)
+            ? null
+            : _workspace.TryGetValue(filePath, out var entry) ? entry.Model : null;
+
+        var content = BuildDecompiledCodeEditor(text, isCSharp, assemblyModel);
 
         _uiRegistry.RegisterDocumentTab(uiId, content, _pluginId, new DocumentDescriptor
         {
@@ -834,18 +851,88 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Builds a syntax-highlighted TextEditor for the decompiled code document tab.
-    /// Uses C# language definition when <paramref name="isCSharp"/> is true;
-    /// falls back to plain-text monospace for IL and other non-C# content.
+    /// When <paramref name="isCSharp"/> is true and <paramref name="assembly"/> is provided,
+    /// installs goto-definition links for PascalCase type names found in the decompiled text.
     /// </summary>
-    private static UIElement BuildDecompiledCodeEditor(string text, bool isCSharp)
+    private UIElement BuildDecompiledCodeEditor(string text, bool isCSharp, AssemblyModel? assembly = null)
     {
         var editor = new TextEditor
         {
             IsReadOnly      = true,
             BorderThickness = new Thickness(0)
         };
-        editor.SetContentDirect(text, readOnly: true, languageName: isCSharp ? "C#" : null);
+
+        if (isCSharp && assembly is not null)
+        {
+            var links = BuildTextLinks(text, assembly);
+            editor.SetContentWithLinks(text, links, readOnly: true, languageName: "C#");
+        }
+        else
+        {
+            editor.SetContentDirect(text, readOnly: true, languageName: isCSharp ? "C#" : null);
+        }
+
         return editor;
+    }
+
+    /// <summary>
+    /// Builds <see cref="TextLink"/> objects for every PascalCase identifier in
+    /// <paramref name="decompiledText"/> that matches a type name in
+    /// <paramref name="assembly"/>.  Ctrl+Clicking a link navigates to that type.
+    /// </summary>
+    private IReadOnlyList<TextLink> BuildTextLinks(string decompiledText, AssemblyModel assembly)
+    {
+        var spans = DecompiledTextLinker.ExtractTypeNames(decompiledText);
+        if (spans.Count == 0) return [];
+
+        // Build a fast lookup: type simple-name → type full name.
+        var typeNameLookup = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var type in assembly.Types)
+        {
+            var simpleName = type.FullName.Contains('.')
+                ? type.FullName[(type.FullName.LastIndexOf('.') + 1)..]
+                : type.FullName;
+
+            // Remove generic arity suffix `1, `2 etc.
+            var backtick = simpleName.IndexOf('`');
+            if (backtick >= 0) simpleName = simpleName[..backtick];
+
+            typeNameLookup.TryAdd(simpleName, type.FullName);
+        }
+
+        var links = new List<TextLink>(spans.Count);
+        foreach (var span in spans)
+        {
+            if (!typeNameLookup.TryGetValue(span.Text, out var fullName)) continue;
+
+            var capturedFullName = fullName;
+            links.Add(new TextLink(
+                StartOffset: span.Start,
+                EndOffset:   span.Start + span.Length,
+                DisplayText: span.Text,
+                OnClick:     () => NavigateToTypeName(capturedFullName)));
+        }
+
+        return links;
+    }
+
+    /// <summary>Navigates the explorer tree to the type with the given full name.</summary>
+    private void NavigateToTypeName(string fullName)
+    {
+        foreach (var root in RootNodes)
+        {
+            foreach (var nsNode in root.Children)
+            {
+                foreach (var typeNode in nsNode.Children)
+                {
+                    if (typeNode is TypeNodeViewModel tn && tn.Model.FullName == fullName)
+                    {
+                        SelectedNode = tn;
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

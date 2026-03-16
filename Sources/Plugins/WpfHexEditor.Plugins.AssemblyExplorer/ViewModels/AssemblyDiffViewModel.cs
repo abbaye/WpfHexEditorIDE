@@ -69,7 +69,8 @@ public sealed class DiffEntryViewModel : INotifyPropertyChanged
 
 /// <summary>
 /// ViewModel for the diff panel. Exposes two assembly selectors (baseline / target)
-/// and computes a live diff on demand.
+/// and computes a live diff on demand.  Also owns the <see cref="DiffDetailViewModel"/>
+/// that is populated when the user selects a row in the results DataGrid.
 /// </summary>
 public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
 {
@@ -77,8 +78,9 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
     private AssemblyModel?                     _baselineModel;
     private AssemblyModel?                     _targetModel;
     private bool                               _isComparing;
-    private string                             _statusText   = string.Empty;
-    private string                             _filterKind   = "All";
+    private string                             _statusText         = string.Empty;
+    private string                             _filterKind         = "All";
+    private DiffEntryViewModel?                _selectedDiffEntry;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -117,6 +119,9 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
     }
 
     // ── Bindable properties ───────────────────────────────────────────────────
+
+    /// <summary>Detail pane ViewModel — populated when a diff row is selected.</summary>
+    public DiffDetailViewModel DiffDetail { get; } = new();
 
     /// <summary>Assembly names available in the workspace for selector ComboBoxes.</summary>
     public ObservableCollection<string> AssemblyNames { get; } = [];
@@ -169,6 +174,23 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
     }
 
     public IReadOnlyList<string> FilterOptions { get; } = ["All", "Added", "Removed", "Changed"];
+
+    /// <summary>
+    /// The row currently selected in the DataGrid.  Setting this triggers an async
+    /// load of decompiled code + unified diff in <see cref="DiffDetail"/>.
+    /// </summary>
+    public DiffEntryViewModel? SelectedDiffEntry
+    {
+        get => _selectedDiffEntry;
+        set
+        {
+            if (!SetField(ref _selectedDiffEntry, value)) return;
+            if (value is null)
+                DiffDetail.Clear();
+            else
+                _ = DiffDetail.LoadAsync(value, _baselineModel, _targetModel);
+        }
+    }
 
     // ── Commands ──────────────────────────────────────────────────────────────
 
@@ -228,6 +250,7 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
     {
         AllEntries.Clear();
         FilteredEntries.Clear();
+        DiffDetail.Clear();
         StatusText = string.Empty;
     }
 

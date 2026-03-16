@@ -26,12 +26,15 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Documents;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.ProjectSystem.Languages;
+// Resolve ambiguity: System.Windows.Controls.Primitives.StatusBarItem vs Editor.Core.StatusBarItem
+using CoreStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Controls;
 
@@ -79,8 +82,8 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     // ── Status bar ─────────────────────────────────────────────────────────────
 
-    private readonly StatusBarItem _sbElement      = new() { Label = "XAML", Value = "" };
-    private readonly StatusBarItem _sbCoordinates  = new() { Label = "Pos",  Value = "" };
+    private readonly CoreStatusBarItem _sbElement      = new() { Label = "XAML", Value = "" };
+    private readonly CoreStatusBarItem _sbCoordinates  = new() { Label = "Pos",  Value = "" };
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -173,24 +176,17 @@ public sealed class XamlDesignerSplitHost : Grid,
     /// <summary>Exposes the design canvas for plugin wiring (selection events, etc.).</summary>
     public DesignCanvas Canvas => _designCanvas;
 
+    /// <summary>Exposes the XAML document model for plugin wiring (outline tree, etc.).</summary>
+    public XamlDocument Document => _document;
+
     // ── IOpenableDocument ─────────────────────────────────────────────────────
 
     async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
     {
         _filePath = filePath;
 
-        // Inject XAML language highlighter.
-        if (_codeHost.PrimaryEditor.ExternalHighlighter is null)
-        {
-            var language = LanguageRegistry.Instance.GetLanguageForFile(filePath);
-            if (language is not null)
-            {
-                var highlighter = CodeEditorFactory.BuildHighlighter(language);
-                _codeHost.PrimaryEditor.ExternalHighlighter   = highlighter;
-                _codeHost.SecondaryEditor.ExternalHighlighter = highlighter;
-            }
-        }
-
+        // Delegate to the code host — it resolves the XAML language highlighter
+        // internally via LanguageRegistry.Instance.GetLanguageForFile (CodeEditorSplitHost.OpenAsync).
         await ((IOpenableDocument)_codeHost).OpenAsync(filePath, ct);
 
         // Trigger initial render after the file is loaded.
@@ -250,7 +246,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     public EditorConfigDto GetEditorConfig()
     {
-        var dto = (_codeHost is IEditorPersistable p)
+        var dto = ((object)_codeHost is IEditorPersistable p)
             ? p.GetEditorConfig()
             : new EditorConfigDto();
 
@@ -267,7 +263,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     public void ApplyEditorConfig(EditorConfigDto config)
     {
-        if (_codeHost is IEditorPersistable p)
+        if (((object)_codeHost) is IEditorPersistable p)
             p.ApplyEditorConfig(config);
 
         if (config.Extra is not null)
@@ -284,29 +280,29 @@ public sealed class XamlDesignerSplitHost : Grid,
     }
 
     public byte[]? GetUnsavedModifications()
-        => (_codeHost as IEditorPersistable)?.GetUnsavedModifications();
+        => (((object)_codeHost) as IEditorPersistable)?.GetUnsavedModifications();
 
     public void ApplyUnsavedModifications(byte[] data)
-        => (_codeHost as IEditorPersistable)?.ApplyUnsavedModifications(data);
+        => (((object)_codeHost) as IEditorPersistable)?.ApplyUnsavedModifications(data);
 
     public ChangesetSnapshot GetChangesetSnapshot()
-        => (_codeHost as IEditorPersistable)?.GetChangesetSnapshot() ?? ChangesetSnapshot.Empty;
+        => (((object)_codeHost) as IEditorPersistable)?.GetChangesetSnapshot() ?? ChangesetSnapshot.Empty;
 
     public void ApplyChangeset(ChangesetDto changeset)
-        => (_codeHost as IEditorPersistable)?.ApplyChangeset(changeset);
+        => (((object)_codeHost) as IEditorPersistable)?.ApplyChangeset(changeset);
 
     public void MarkChangesetSaved()
-        => (_codeHost as IEditorPersistable)?.MarkChangesetSaved();
+        => (((object)_codeHost) as IEditorPersistable)?.MarkChangesetSaved();
 
     public IReadOnlyList<BookmarkDto>? GetBookmarks()
-        => (_codeHost as IEditorPersistable)?.GetBookmarks();
+        => (((object)_codeHost) as IEditorPersistable)?.GetBookmarks();
 
     public void ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks)
-        => (_codeHost as IEditorPersistable)?.ApplyBookmarks(bookmarks);
+        => (((object)_codeHost) as IEditorPersistable)?.ApplyBookmarks(bookmarks);
 
     // ── IStatusBarContributor ─────────────────────────────────────────────────
 
-    public ObservableCollection<StatusBarItem> StatusBarItems { get; } = new();
+    public ObservableCollection<CoreStatusBarItem> StatusBarItems { get; } = new();
 
     public void RefreshStatusBarItems()
     {
@@ -340,7 +336,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     private void TriggerPreview()
     {
-        var text = _codeHost.PrimaryEditor.Document?.GetText() ?? string.Empty;
+        var text = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
         _document.SetXaml(text);
         _designCanvas.XamlSource = text;
     }
@@ -439,7 +435,7 @@ public sealed class XamlDesignerSplitHost : Grid,
                 Background          = Brushes.Transparent,
                 BorderThickness     = new Thickness(0)
             };
-            btn.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
+            btn.SetResourceReference(TextElement.ForegroundProperty, "DockMenuForegroundBrush");
             return btn;
         }
 
@@ -450,9 +446,13 @@ public sealed class XamlDesignerSplitHost : Grid,
         btnAuto.IsChecked = true;
 
         // Wire toggle clicks.
-        btnCode.Click   += (_, _) => { if (btnCode.IsChecked == true)   ApplyViewMode(ViewMode.CodeOnly); };
-        btnSplit.Click  += (_, _) => { if (btnSplit.IsChecked == true)  ApplyViewMode(ViewMode.Split); };
-        btnDesign.Click += (_, _) => { if (btnDesign.IsChecked == true) ApplyViewMode(ViewMode.DesignOnly); };
+        // Local copies are required — C# does not allow lambdas to capture out/ref parameters.
+        var localCode   = btnCode;
+        var localSplit  = btnSplit;
+        var localDesign = btnDesign;
+        localCode.Click   += (_, _) => { if (localCode.IsChecked == true)   ApplyViewMode(ViewMode.CodeOnly); };
+        localSplit.Click  += (_, _) => { if (localSplit.IsChecked == true)  ApplyViewMode(ViewMode.Split); };
+        localDesign.Click += (_, _) => { if (localDesign.IsChecked == true) ApplyViewMode(ViewMode.DesignOnly); };
         btnAuto.Checked   += (_, _) => _autoPreviewEnabled = true;
         btnAuto.Unchecked += (_, _) => { _autoPreviewEnabled = false; _previewTimer.Stop(); };
 
@@ -464,7 +464,7 @@ public sealed class XamlDesignerSplitHost : Grid,
             VerticalAlignment = VerticalAlignment.Center,
             TextTrimming      = TextTrimming.CharacterEllipsis
         };
-        errorText.SetResourceReference(ForegroundProperty, "XD_ErrorBannerForeground");
+        errorText.SetResourceReference(TextElement.ForegroundProperty, "XD_ErrorBannerForeground");
 
         errorBanner = new Border
         {
@@ -473,8 +473,8 @@ public sealed class XamlDesignerSplitHost : Grid,
             Padding         = new Thickness(4, 2, 4, 2),
             Child           = errorText
         };
-        errorBanner.SetResourceReference(BackgroundProperty,   "XD_ErrorBannerBackground");
-        errorBanner.SetResourceReference(BorderBrushProperty,  "XD_ErrorBannerBorder");
+        errorBanner.SetResourceReference(BackgroundProperty,          "XD_ErrorBannerBackground");
+        errorBanner.SetResourceReference(Border.BorderBrushProperty,  "XD_ErrorBannerBorder");
 
         // Assemble toolbar DockPanel.
         var dp = new DockPanel { LastChildFill = true };
@@ -499,7 +499,7 @@ public sealed class XamlDesignerSplitHost : Grid,
             BorderThickness = new Thickness(0, 0, 0, 1),
             Child           = dp
         };
-        container.SetResourceReference(BorderBrushProperty, "XD_PanelToolbarBorderBrush");
+        container.SetResourceReference(Border.BorderBrushProperty, "XD_PanelToolbarBorderBrush");
 
         return container;
     }

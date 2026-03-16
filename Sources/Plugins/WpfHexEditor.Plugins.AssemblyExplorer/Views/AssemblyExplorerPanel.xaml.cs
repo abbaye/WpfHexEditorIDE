@@ -79,6 +79,10 @@ public partial class AssemblyExplorerPanel : UserControl
 
         // Wire detail pane Extract button
         DetailPane.ExtractRequested += (_, node) => _ = ExecuteExtractToProjectAsync(node);
+
+        // Wire Source tab "Go to Source" — opens the local .cs file in the IDE TextEditor.
+        ViewModel.DetailViewModel.SourceViewModel.OpenFileRequested +=
+            (filePath, line) => ViewModel.OpenSourceFileInTextEditor(filePath, line);
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
