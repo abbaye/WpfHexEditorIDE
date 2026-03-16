@@ -1,0 +1,22 @@
+{
+  "id": "sdk-plugin",
+  "name": "SDK Plugin",
+  "description": "A starter template for developing WpfHexEditor plugins using the official SDK.",
+  "category": "Plugin Development",
+  "defaultLanguage": "C#",
+  "includedPlugins": [],
+  "files": [
+    {
+      "path": "README.md",
+      "content": "# {{ProjectName}}\n\nWpfHexEditor SDK Plugin — created on {{Date}}.\n\n## Getting Started\n\n1. Open `{{ProjectName}}.cs` and implement your plugin logic.\n2. Update `plugin.manifest.json` with your plugin metadata.\n3. Build the project and copy the output to `%AppData%\\WpfHexEditor\\Plugins\\`.\n"
+    },
+    {
+      "path": "{{ProjectName}}.cs",
+      "content": "// Plugin: {{ProjectName}}\n// Language: {{Language}}\n// Created: {{Date}}\n\nusing WpfHexEditor.SDK;\nusing WpfHexEditor.SDK.Contracts;\n\nnamespace {{RootNamespace}};\n\npublic sealed class {{ProjectName}}Plugin : IPlugin\n{\n    public string Id          => \"{{RootNamespace}}.{{ProjectName}}\";\n    public string DisplayName => \"{{ProjectName}}\";\n    public string Version     => \"1.0.0\";\n    public string Author      => \"\";\n\n    public void Initialize(IIDEHostContext context)\n    {\n        // TODO: Register your features here.\n    }\n\n    public void Shutdown()\n    {\n        // TODO: Clean up resources.\n    }\n}\n"
+    },
+    {
+      "path": "plugin.manifest.json",
+      "content": "{\n  \"id\": \"{{RootNamespace}}.{{ProjectName}}\",\n  \"name\": \"{{ProjectName}}\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"author\": \"\",\n  \"minHostVersion\": \"1.0.0\",\n  \"entryPoint\": \"{{ProjectName}}.dll\",\n  \"capabilities\": []\n}\n"
+    }
+  ]
+}

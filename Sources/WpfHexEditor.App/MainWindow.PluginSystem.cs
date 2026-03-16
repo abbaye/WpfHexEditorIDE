@@ -162,6 +162,12 @@ public partial class MainWindow
             // 3b. Resolve circular dependency: capability registry now backed by the host's entries.
             capabilityAdapter.SetInner(_pluginHost.CapabilityRegistry);
 
+            // 3b-2. Initialize build system (needs _ideEventBus + _outputService + _solutionManager).
+            InitializeBuildSystem();
+
+            // 3b-3. Register Plugin Development options page.
+            WpfHexEditor.PluginDev.Options.PluginDevRegistrar.Register();
+
             // 3c. Wire IDE-level events to IDEEventBus publishers.
             if (_hexEditorService is not null)
                 _hexEditorService.SelectionChanged += OnHexEditorSelectionChanged;

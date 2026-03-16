@@ -1,0 +1,14 @@
+{
+  "id": "blank",
+  "name": "Blank Project",
+  "description": "An empty WpfHexEditor project with no content files.",
+  "category": "General",
+  "defaultLanguage": "C#",
+  "includedPlugins": [],
+  "files": [
+    {
+      "path": "README.md",
+      "content": "# {{ProjectName}}\n\nCreated on {{Date}}.\n"
+    }
+  ]
+}

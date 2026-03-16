@@ -285,6 +285,20 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         WriteChangesetToDiskMenuItem .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
         DiscardChangesetMenuItem     .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
 
+        // Build (VS .csproj/.vbproj projects only — check ProjectType)
+        bool isVsProject = isProject &&
+            (node as ProjectNodeVm)?.Source.ProjectType is string pt &&
+            (pt.Contains("csproj", StringComparison.OrdinalIgnoreCase) ||
+             pt.Contains("vbproj", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(pt, "VS", StringComparison.OrdinalIgnoreCase));
+
+        BuildSeparator          .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        BuildProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        RebuildProjectMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        CleanProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        SetStartupSeparator     .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        SetStartupProjectMenuItem.Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+
         // Properties
         PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
         PropertiesMenuItem .Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
@@ -748,6 +762,44 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnCloseSolution(object sender, RoutedEventArgs e)
         => CloseSolutionRequested?.Invoke(this, EventArgs.Empty);
+
+    // -- VS Build context menu --------------------------------------------------
+
+    private void OnBuildProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            BuildProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    private void OnRebuildProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            RebuildProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    private void OnCleanProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            CleanProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    private void OnSetStartupProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            SetStartupProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    /// <summary>Raised when the user chooses Build for a VS project.</summary>
+    public event EventHandler<string>? BuildProjectRequested;
+
+    /// <summary>Raised when the user chooses Rebuild for a VS project.</summary>
+    public event EventHandler<string>? RebuildProjectRequested;
+
+    /// <summary>Raised when the user chooses Clean for a VS project.</summary>
+    public event EventHandler<string>? CleanProjectRequested;
+
+    /// <summary>Raised when the user chooses Set as Startup Project.</summary>
+    public event EventHandler<string>? SetStartupProjectRequested;
 
     /// <summary>
     /// Raised when the user requests a change to the project default TBL.

@@ -746,6 +746,30 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                    <!-- Build (VS projects only) -->
+                    <Separator x:Name="BuildSeparator"/>
+                    <MenuItem x:Name="BuildProjectMenuItem" Header="Build" Click="OnBuildProject">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8B1;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="RebuildProjectMenuItem" Header="Rebuild" Click="OnRebuildProject">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE72C;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="CleanProjectMenuItem" Header="Clean" Click="OnCleanProject">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE74D;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator x:Name="SetStartupSeparator"/>
+                    <MenuItem x:Name="SetStartupProjectMenuItem" Header="Set as Startup Project" Click="OnSetStartupProject">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE768;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                     <!-- Properties -->
                     <Separator x:Name="PropertiesSeparator"/>
                     <MenuItem x:Name="PropertiesMenuItem" Header="Properties" Click="OnProperties">
