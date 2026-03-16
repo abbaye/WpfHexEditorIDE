@@ -2747,16 +2747,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight));
                 }
 
-                // Render middle lines (entire line width)
-                for (int line = start.Line + 1; line < end.Line; line++)
+                // Render middle lines (entire line width) — clamp to the visible viewport so
+                // the loop is O(visible_lines) rather than O(selected_lines).
+                int middleFirst = Math.Max(start.Line + 1, _firstVisibleLine);
+                int middleLast  = Math.Min(end.Line   - 1, _lastVisibleLine);
+                for (int line = middleFirst; line <= middleLast; line++)
                 {
-                    if (line >= _firstVisibleLine && line <= _lastVisibleLine)
-                    {
-                        double y = TopMargin + (line - _firstVisibleLine) * _lineHeight;
-                        double width = _document.Lines[line].Length * _charWidth;
-
-                        dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight));
-                    }
+                    double y     = TopMargin + (line - _firstVisibleLine) * _lineHeight;
+                    double width = _document.Lines[line].Length * _charWidth;
+                    dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight));
                 }
 
                 // Render last line (from start of line to end.Column)
@@ -3373,7 +3372,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     break;
 
                 case Key.Back:
-                    DeleteCharBefore();
+                    if (!_selection.IsEmpty)
+                        DeleteSelection();
+                    else
+                        DeleteCharBefore();
                     e.Handled = true;
                     break;
 
@@ -4252,6 +4254,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _selection.Start = new TextPosition(0, 0);
             _selection.End = new TextPosition(_document.Lines.Count - 1, _document.Lines[_document.Lines.Count - 1].Length);
+            InvalidateVisual();
         }
 
         #endregion

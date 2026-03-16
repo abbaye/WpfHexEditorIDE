@@ -50,10 +50,19 @@ public interface IProjectTemplate
 public interface ISelfContainedProjectTemplate : IProjectTemplate
 {
     /// <summary>
-    /// Scaffolds all files to disk and returns the absolute path to the generated .sln file.
+    /// Scaffolds a brand-new .sln + .csproj under <paramref name="parentDirectory"/>
+    /// and returns the absolute path to the generated .sln file.
     /// </summary>
     Task<string> CreateAsync(string parentDirectory, string projectName,
                               CancellationToken ct = default);
+
+    /// <summary>
+    /// Scaffolds only the .csproj + source files under <paramref name="parentDirectory"/>
+    /// and appends the project entry into an existing <paramref name="existingSlnPath"/>.
+    /// Returns the path to the (modified) .sln file.
+    /// </summary>
+    Task<string> AddToSolutionAsync(string existingSlnPath, string parentDirectory,
+                                     string projectName, CancellationToken ct = default);
 }
 
 /// <summary>

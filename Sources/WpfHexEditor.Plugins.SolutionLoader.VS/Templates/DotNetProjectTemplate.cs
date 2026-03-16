@@ -55,6 +55,67 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
         return slnPath;
     }
 
+    /// <inheritdoc/>
+    public async Task<string> AddToSolutionAsync(string existingSlnPath, string parentDirectory,
+                                                   string projectName, CancellationToken ct = default)
+    {
+        var projectGuid = Guid.NewGuid().ToString("B").ToUpperInvariant();
+        var projectDir  = Path.Combine(parentDirectory, projectName);
+
+        Directory.CreateDirectory(projectDir);
+
+        await WriteCsprojAsync(projectDir, projectName, ct);
+        await WriteSourceFilesAsync(projectDir, projectName, ct);
+
+        // Compute .csproj path relative to the .sln file (VS requirement).
+        var slnDir      = Path.GetDirectoryName(existingSlnPath) ?? "";
+        var csprojAbs   = Path.Combine(projectDir, $"{projectName}.csproj");
+        var csprojRel   = Path.GetRelativePath(slnDir, csprojAbs).Replace('/', '\\');
+
+        await PatchSlnAsync(existingSlnPath, projectName, projectGuid, csprojRel, ct);
+
+        return existingSlnPath;
+    }
+
+    // Appends a project entry to an existing .sln file and registers build configurations.
+    private static async Task PatchSlnAsync(string slnPath, string projectName,
+                                             string projectGuid, string csprojRelPath,
+                                             CancellationToken ct)
+    {
+        var content = await File.ReadAllTextAsync(slnPath, ct);
+
+        // Insert Project(...)...EndProject block just before "Global".
+        var projectBlock =
+            $"Project(\"{CSharpProjectTypeGuid}\") = \"{projectName}\", \"{csprojRelPath}\", \"{projectGuid}\"\r\n" +
+            $"EndProject\r\n";
+
+        content = content.Replace("\r\nGlobal\r\n", $"\r\n{projectBlock}Global\r\n");
+        if (!content.Contains(projectBlock))
+        {
+            // Fallback: sln uses LF line endings
+            content = content.Replace("\nGlobal\n", $"\n{projectBlock}Global\n");
+        }
+
+        // Insert build configuration entries before the closing EndGlobalSection of ProjectConfigurationPlatforms.
+        var configEntries =
+            $"\t\t{projectGuid}.Debug|Any CPU.ActiveCfg = Debug|Any CPU\r\n" +
+            $"\t\t{projectGuid}.Debug|Any CPU.Build.0 = Debug|Any CPU\r\n" +
+            $"\t\t{projectGuid}.Release|Any CPU.ActiveCfg = Release|Any CPU\r\n" +
+            $"\t\t{projectGuid}.Release|Any CPU.Build.0 = Release|Any CPU\r\n";
+
+        const string configSectionMarker = "GlobalSection(ProjectConfigurationPlatforms)";
+        var markerIdx = content.IndexOf(configSectionMarker, StringComparison.Ordinal);
+        if (markerIdx >= 0)
+        {
+            // Find the EndGlobalSection that closes this section.
+            var endIdx = content.IndexOf("EndGlobalSection", markerIdx, StringComparison.Ordinal);
+            if (endIdx >= 0)
+                content = content.Insert(endIdx, configEntries);
+        }
+
+        await File.WriteAllTextAsync(slnPath, content, System.Text.Encoding.UTF8, ct);
+    }
+
     /// <summary>Writes the .csproj file into <paramref name="projectDir"/>.</summary>
     protected abstract Task WriteCsprojAsync(string projectDir, string projectName,
                                               CancellationToken ct);

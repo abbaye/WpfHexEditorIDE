@@ -3693,13 +3693,29 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         try
         {
-            var slnPath = await template.CreateAsync(parentDir, name);
-            OutputLogger.Info($".NET solution scaffolded: {slnPath}");
+            var currentSlnPath = _solutionManager.CurrentSolution?.FilePath;
+            var isVsSolution   = currentSlnPath?.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) == true;
+
+            string slnPath;
+            if (isVsSolution)
+            {
+                // Add the new project into the already-open VS solution.
+                var slnDir = Path.GetDirectoryName(currentSlnPath!) ?? parentDir;
+                slnPath = await template.AddToSolutionAsync(currentSlnPath!, slnDir, name);
+                OutputLogger.Info($".NET project added to solution: {currentSlnPath}");
+            }
+            else
+            {
+                // No VS solution open — create a brand-new .sln alongside the project.
+                slnPath = await template.CreateAsync(parentDir, name);
+                OutputLogger.Info($".NET solution scaffolded: {slnPath}");
+            }
+
             await OpenSolutionAsync(slnPath);
         }
         catch (Exception ex)
         {
-            OutputLogger.Error($"Failed to scaffold .NET solution: {ex.Message}");
+            OutputLogger.Error($"Failed to scaffold .NET project: {ex.Message}");
             MessageBox.Show($"Failed to create project:\n{ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
