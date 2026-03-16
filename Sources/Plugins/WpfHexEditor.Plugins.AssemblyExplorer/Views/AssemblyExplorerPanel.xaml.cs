@@ -234,7 +234,12 @@ public partial class AssemblyExplorerPanel : UserControl
     }
 
     private void OnDecompile(object? sender, AssemblyNodeViewModel node)
-        => ViewModel.DetailViewModel.ShowNode(node, node.OwnerFilePath ?? string.Empty);
+    {
+        // Ensure SelectedNode is current so OpenInEditorCommand reads the right node,
+        // even when the right-click did not trigger a selection-change event.
+        ViewModel.SelectedNode = node;
+        ViewModel.OpenInEditorCommand.Execute(null);
+    }
 
     private void OnCopyName(object? sender, AssemblyNodeViewModel node)
         => SafeCopy(node.DisplayName);
