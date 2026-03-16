@@ -145,9 +145,15 @@ public partial class MainWindow
 
     private void OnOpenConfigManager(object sender, RoutedEventArgs e)
     {
-        // Phase 3K — ConfigurationManagerDialog (to be implemented)
-        // For now, open the general Options dialog.
-        OnSettings(sender, e);
+        if (_configManager is null) return;
+        var dlg = new ConfigurationManagerDialog(_configManager, _solutionManager)
+        {
+            Owner = this,
+        };
+        dlg.ShowDialog();
+        // Refresh toolbar ComboBoxes after dialog closes.
+        OnPropertyChanged(nameof(ActiveBuildConfiguration));
+        OnPropertyChanged(nameof(ActiveBuildPlatform));
     }
 
     // -----------------------------------------------------------------------
