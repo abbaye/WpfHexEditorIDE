@@ -333,4 +333,7 @@
     <SolidColorBrush x:Key="PM_BadgeTrustedBrush"                Color="#16A34A"/>
     <SolidColorBrush x:Key="DangerBrush"                         Color="#DC2626"/>
     <SolidColorBrush x:Key="DangerHoverBrush"                    Color="#B91C1C"/>
+    <SolidColorBrush x:Key="WarningBannerBrush"                  Color="#3DF59E0B"/>
+    <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#F59E0B"/>
+    <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#FCD34D"/>
 </ResourceDictionary>

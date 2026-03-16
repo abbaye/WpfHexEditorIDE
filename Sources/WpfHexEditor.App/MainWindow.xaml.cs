@@ -342,6 +342,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // -- Long-running operation state (per active document) ---------------
     private bool _isDocumentBusy;
     private bool _isClosingForced;
+    private bool _isShutdownComplete;
     /// <summary>
     /// True while the currently active document is performing a long-running operation.
     /// Switches instantly when the active tab changes.
@@ -463,11 +464,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnWindowClosing(object? sender, CancelEventArgs e)
     {
+        // Shutdown completed — allow the final close through.
+        if (_isShutdownComplete) return;
+
         if (_isClosingForced)
         {
+            // Triggered by ConfirmAndCloseAsync: cancel close, run async shutdown, then re-close.
+            e.Cancel = true;
             _fileMonitorService?.Dispose();
-            _ = ShutdownPluginSystemAsync();
             AutoSaveLayout();
+            _ = ShutdownThenCloseAsync();
             return;
         }
 
@@ -476,12 +482,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (allDirty.Count == 0)
         {
+            // No unsaved work — cancel close, run async shutdown, then re-close.
+            e.Cancel = true;
+            _fileMonitorService?.Dispose();
             AutoSaveLayout();
+            _ = ShutdownThenCloseAsync();
             return;
         }
 
         e.Cancel = true;
         _ = ConfirmAndCloseAsync(allDirty, dirtyDocs);
+    }
+
+    /// <summary>
+    /// Awaits plugin system shutdown (including sandbox process termination),
+    /// then re-triggers the window close on the UI thread.
+    /// </summary>
+    private async Task ShutdownThenCloseAsync()
+    {
+        await ShutdownPluginSystemAsync().ConfigureAwait(false);
+        _isShutdownComplete = true;
+        await Dispatcher.InvokeAsync(Close);
     }
 
     private async Task ConfirmAndCloseAsync(

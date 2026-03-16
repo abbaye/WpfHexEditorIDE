@@ -27,6 +27,8 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     private readonly Action<string> _onUninstall;
     private readonly PermissionService? _permissionService;
     private readonly Func<string, PluginIsolationMode, Task>? _onIsolationModeChanged;
+    private readonly Action<string>? _onMigrateToSandbox;
+    private readonly Action<string>? _onDismissMigrationSuggestion;
 
     // Delegate to get memory thresholds from settings (injected to avoid circular dependency)
     private readonly Func<(int warning, int high, int critical, bool enabled,
@@ -34,6 +36,10 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
     private PluginIsolationMode _selectedIsolationMode;
     private bool _isReloading;
+
+    // Migration suggestion state
+    private bool   _migrationSuggested;
+    private string _migrationSuggestionReason = string.Empty;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -47,7 +53,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         Func<(int warning, int high, int critical, bool enabled,
               string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null,
         PluginIsolationMode? initialIsolationMode = null,
-        Func<string, PluginIsolationMode, Task>? onIsolationModeChanged = null)
+        Func<string, PluginIsolationMode, Task>? onIsolationModeChanged = null,
+        Action<string>? onMigrateToSandbox = null,
+        Action<string>? onDismissMigrationSuggestion = null)
     {
         _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         _onEnable = onEnable;
@@ -57,12 +65,19 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         _permissionService = permissionService;
         _getMemoryThresholds = getMemoryThresholds;
         _onIsolationModeChanged = onIsolationModeChanged;
+        _onMigrateToSandbox = onMigrateToSandbox;
+        _onDismissMigrationSuggestion = onDismissMigrationSuggestion;
         _selectedIsolationMode = initialIsolationMode ?? entry.Manifest.IsolationMode;
 
         EnableCommand = new RelayCommand(_ => _onEnable(Id), _ => State == PluginState.Disabled);
         DisableCommand = new RelayCommand(_ => _onDisable(Id), _ => State == PluginState.Loaded);
         ReloadCommand = new RelayCommand(_ => _onReload(Id), _ => State is PluginState.Loaded or PluginState.Faulted or PluginState.Disabled);
         UninstallCommand = new RelayCommand(_ => _onUninstall(Id));
+        MigrateToSandboxCommand = new RelayCommand(
+            _ => _onMigrateToSandbox?.Invoke(Id),
+            _ => CanMigrateToSandbox);
+        DismissMigrationSuggestionCommand = new RelayCommand(
+            _ => { _onDismissMigrationSuggestion?.Invoke(Id); ClearMigrationSuggestion(); });
 
         Permissions = BuildPermissions();
 
@@ -226,6 +241,54 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public ICommand DisableCommand { get; }
     public ICommand ReloadCommand { get; }
     public ICommand UninstallCommand { get; }
+    public ICommand MigrateToSandboxCommand { get; }
+    public ICommand DismissMigrationSuggestionCommand { get; }
+
+    // -- Migration suggestion -----------------------------------------------------
+
+    /// <summary>
+    /// True when the migration monitor has suggested moving this plugin to Sandbox.
+    /// Drives the warning banner visibility in the Plugin Manager detail pane.
+    /// </summary>
+    public bool MigrationSuggested
+    {
+        get => _migrationSuggested;
+        private set { _migrationSuggested = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanMigrateToSandbox)); }
+    }
+
+    /// <summary>Human-readable reason for the migration suggestion.</summary>
+    public string MigrationSuggestionReason
+    {
+        get => _migrationSuggestionReason;
+        private set { _migrationSuggestionReason = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>
+    /// True when this plugin can be manually migrated to Sandbox via the "Move to Sandbox" button.
+    /// Requires: plugin is InProcess, Loaded, and not currently reloading.
+    /// </summary>
+    public bool CanMigrateToSandbox
+        => _entry.ResolvedIsolationMode == PluginIsolationMode.InProcess
+        && _entry.State == PluginState.Loaded
+        && !_isReloading;
+
+    /// <summary>
+    /// Called by <see cref="PluginManagerViewModel"/> when <c>WpfPluginHost.MigrationSuggested</c>
+    /// fires for this plugin.
+    /// </summary>
+    public void SetMigrationSuggestion(string reason)
+    {
+        MigrationSuggestionReason = reason;
+        MigrationSuggested = true;
+        ((RelayCommand)MigrateToSandboxCommand).RaiseCanExecuteChanged();
+    }
+
+    /// <summary>Clears the migration suggestion banner (user dismissed or migration applied).</summary>
+    public void ClearMigrationSuggestion()
+    {
+        MigrationSuggested = false;
+        MigrationSuggestionReason = string.Empty;
+    }
 
     // -- Permissions -----------------------------------------------------------
 
@@ -354,6 +417,8 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         ((RelayCommand)EnableCommand).RaiseCanExecuteChanged();
         ((RelayCommand)DisableCommand).RaiseCanExecuteChanged();
         ((RelayCommand)ReloadCommand).RaiseCanExecuteChanged();
+        ((RelayCommand)MigrateToSandboxCommand).RaiseCanExecuteChanged();
+        OnPropertyChanged(nameof(CanMigrateToSandbox));
     }
 
     private static void PushHistory(ObservableCollection<double> col, double value)

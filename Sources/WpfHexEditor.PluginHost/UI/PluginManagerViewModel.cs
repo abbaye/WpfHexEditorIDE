@@ -76,9 +76,10 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _filterDebounce.Tick += OnFilterDebounced;
 
         // Keep list in sync with plugin lifecycle events
-        _host.PluginLoaded   += OnHostPluginChanged;
-        _host.PluginUnloaded += OnHostPluginChanged;
+        _host.PluginLoaded       += OnHostPluginChanged;
+        _host.PluginUnloaded     += OnHostPluginChanged;
         _host.SlowPluginDetected += OnHostSlowPlugin;
+        _host.MigrationSuggested += OnHostMigrationSuggested;
 
         RefreshCommand             = new RelayCommand(_ => RebuildOnUiThread());
         InstallFromFileCommand     = new RelayCommand(_ => ExecuteInstallFromFile());
@@ -183,6 +184,16 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     public void ReloadPlugin(string id)    => RunLifecycleAndRebuild(() => _host.ReloadPluginAsync(id));
     public void UninstallPlugin(string id) => RunLifecycleAndRebuild(() => _host.UninstallPluginAsync(id));
 
+    public void MigratePluginToSandbox(string id)
+    {
+        // Clear the suggestion banner immediately so the user sees feedback.
+        var vm = _allItems.FirstOrDefault(i => i.Id == id);
+        vm?.ClearMigrationSuggestion();
+
+        RunLifecycleAndRebuild(() =>
+            _host.SetIsolationOverrideAsync(id, SDK.Models.PluginIsolationMode.Sandbox));
+    }
+
     // --- Host event handlers ---
 
     private void OnHostPluginChanged(object? sender, EventArgs e)
@@ -195,6 +206,13 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
             var vm = _allItems.FirstOrDefault(i => i.Id == e.PluginId);
             if (vm is not null) vm.IsSlow = true;
         });
+    }
+
+    private void OnHostMigrationSuggested(object? sender, PluginMigrationSuggestedEventArgs e)
+    {
+        // Already on Dispatcher thread (raised via RaiseOnDispatcher in WpfPluginHost).
+        var vm = _allItems.FirstOrDefault(i => i.Id == e.PluginId);
+        vm?.SetMigrationSuggestion(e.Message);
     }
 
     // --- Internal ---
@@ -215,7 +233,13 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                 permissionService: _host.Permissions,
                 getMemoryThresholds: _getMemoryThresholds,
                 initialIsolationMode: _host.GetDeclaredIsolationMode(entry.Manifest),
-                onIsolationModeChanged: (id, mode) => _host.SetIsolationOverrideAsync(id, mode)));
+                onIsolationModeChanged: (id, mode) => _host.SetIsolationOverrideAsync(id, mode),
+                onMigrateToSandbox: MigratePluginToSandbox,
+                onDismissMigrationSuggestion: id =>
+                {
+                    var vm = _allItems.FirstOrDefault(i => i.Id == id);
+                    vm?.ClearMigrationSuggestion();
+                }));
         }
 
         ApplyFilterAndSort();
@@ -399,6 +423,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _host.PluginLoaded       -= OnHostPluginChanged;
         _host.PluginUnloaded     -= OnHostPluginChanged;
         _host.SlowPluginDetected -= OnHostSlowPlugin;
+        _host.MigrationSuggested -= OnHostMigrationSuggested;
     }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)

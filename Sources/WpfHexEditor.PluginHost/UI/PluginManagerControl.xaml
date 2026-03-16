@@ -486,6 +486,14 @@
                                         Style="{DynamicResource PM_DangerButtonStyle}"
                                         FontFamily="Segoe MDL2 Assets" FontSize="12"
                                         Padding="6,3" ToolTip="Uninstall plugin"/>
+                                <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
+                                <Button Content="&#xE72A; Sandbox"
+                                        Command="{Binding MigrateToSandboxCommand}"
+                                        Visibility="{Binding CanMigrateToSandbox, Converter={StaticResource BoolToVis}}"
+                                        Style="{DynamicResource PM_ActionButtonStyle}"
+                                        Margin="4,0,0,0" Padding="8,3" FontSize="11"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        ToolTip="Reload this plugin in an isolated out-of-process Sandbox"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -512,6 +520,39 @@
                                            Foreground="{DynamicResource PM_BadgeFaultedBrush}"
                                            TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </StackPanel>
+                        </Border>
+
+                        <!-- Migration suggestion banner — shown when monitor flags this plugin -->
+                        <Border Background="{DynamicResource WarningBannerBrush}"
+                                BorderBrush="{DynamicResource WarningBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4" Padding="8,6" Margin="0,0,0,8"
+                                Visibility="{Binding MigrationSuggested, Converter={StaticResource BoolToVis}}">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                                        Content="&#xE711;"
+                                        FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                        Command="{Binding DismissMigrationSuggestionCommand}"
+                                        Background="Transparent" BorderThickness="0"
+                                        Foreground="{DynamicResource WarningForegroundBrush}"
+                                        Padding="4,2" Margin="4,0,0,0"
+                                        ToolTip="Dismiss suggestion"/>
+                                <Button DockPanel.Dock="Right"
+                                        Content="Move to Sandbox"
+                                        Command="{Binding MigrateToSandboxCommand}"
+                                        Style="{DynamicResource PM_ActionButtonStyle}"
+                                        Padding="8,2" FontSize="11"
+                                        Margin="4,0,0,0"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource WarningForegroundBrush}"
+                                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                    <TextBlock Text="{Binding MigrationSuggestionReason}"
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource WarningForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DockPanel>
                         </Border>
 
                         <!-- Description -->

@@ -33,6 +33,7 @@ using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
+using WpfHexEditor.PluginHost.UI.Options;
 using WpfHexEditor.Options;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -141,6 +142,13 @@ public partial class MainWindow
             _pluginHost.SlowPluginDetected  += OnSlowPluginDetected;
             _pluginHost.PluginLoaded        += OnPluginLoadedOrUnloaded;
             _pluginHost.PluginUnloaded      += OnPluginLoadedOrUnloaded;
+
+            // 4b. Register Plugin System → Migration options page (requires _pluginHost instance).
+            var capturedHost = _pluginHost;
+            OptionsPageRegistry.RegisterDynamic(
+                "Plugin System",
+                "Migration",
+                () => new PluginMigrationOptionsPage(capturedHost));
 
             // 5. Discover + load all plugins.
             // Suspend visual tree rebuilds so that N plugins each registering a panel

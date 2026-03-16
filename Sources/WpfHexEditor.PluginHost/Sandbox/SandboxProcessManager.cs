@@ -276,8 +276,10 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
     // ── Shutdown ──────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Gracefully terminates the sandbox: sends ShutdownRequest, waits up to
-    /// 5 seconds, then force-kills.
+    /// Gracefully terminates the sandbox: sends ShutdownRequest (1.5 s grace),
+    /// then force-kills regardless of response.
+    /// The short IPC timeout ensures ForceKill runs well within the 3 s watchdog
+    /// window used by <c>WpfPluginHost.UnloadPluginAsync</c>.
     /// </summary>
     public async Task StopAsync(CancellationToken ct = default)
     {
@@ -287,9 +289,11 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
             {
                 var req = BuildRequest(SandboxMessageKind.ShutdownRequest,
                     new ShutdownRequestPayload { Reason = "HostShutdown" });
-                await SendRequestAsync(req, timeoutMs: 5_000, ct: ct).ConfigureAwait(false);
+                // 1.5 s: enough time for a healthy sandbox to ack; short enough that
+                // ForceKill always fires before the 3 s watchdog timeout in the host.
+                await SendRequestAsync(req, timeoutMs: 1_500, ct: ct).ConfigureAwait(false);
             }
-            catch { /* best-effort */ }
+            catch { /* best-effort — ForceKill below is the real termination */ }
         }
 
         await ForceKillAsync().ConfigureAwait(false);
@@ -343,6 +347,10 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
 
         var process = Process.Start(psi)
             ?? throw new InvalidOperationException($"Failed to start sandbox process: {SandboxExePath}");
+
+        // Assign to the host-lifetime job object so the sandbox is killed automatically
+        // when the host process exits for any reason (crash, debugger stop, kill).
+        SandboxJobObject.Assign(process);
 
         process.Exited += (_, _) =>
             _log($"[SandboxProcMgr:{_pluginId}] Process exited (code={SafeExitCode(process)}).");

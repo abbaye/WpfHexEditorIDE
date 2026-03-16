@@ -328,4 +328,8 @@
     <SolidColorBrush x:Key="PM_BadgeTrustedBrush"                Color="#22C55E"/>
     <SolidColorBrush x:Key="DangerBrush"                         Color="#EF4444"/>
     <SolidColorBrush x:Key="DangerHoverBrush"                    Color="#DC2626"/>
+    <!-- Migration warning banner -->
+    <SolidColorBrush x:Key="WarningBannerBrush"                  Color="#3DF59E0B"/>
+    <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#F59E0B"/>
+    <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#FCD34D"/>
 </ResourceDictionary>
