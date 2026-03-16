@@ -16,6 +16,7 @@
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Models;
 
 namespace WpfHexEditor.Plugins.SolutionLoader.WH;
 

@@ -16,6 +16,7 @@
 
 using WpfHexEditor.BuildSystem;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Models;
 
 namespace WpfHexEditor.Plugins.Build.MSBuild;
 
