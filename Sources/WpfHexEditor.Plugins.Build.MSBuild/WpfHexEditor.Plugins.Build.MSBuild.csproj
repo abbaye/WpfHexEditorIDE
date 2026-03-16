@@ -21,6 +21,27 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Description>WpfHexEditor plugin — MSBuild adapter for compiling .csproj / .vbproj projects.</Description>
     <Version>1.0.0</Version>
+
+    <!-- Plugin metadata -->
+    <PluginId>WpfHexEditor.Plugins.Build.MSBuild</PluginId>
+    <PluginName>MSBuild Adapter</PluginName>
+    <PluginVersion>1.0.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.Build.MSBuild.MSBuildPlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>MSBuild adapter that compiles Visual Studio project files (.csproj/.vbproj/.fsproj) via Microsoft.Build.Locator.</PluginDescription>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
+    <PluginLoadPriority>85</PluginLoadPriority>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
+
+    <!-- Permissions -->
+    <PluginPermAccessHexEditor>false</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem>true</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>false</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>true</PluginPermWriteOutput>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,9 +52,21 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
-    <PackageReference Include="Microsoft.Build"         Version="17.12.6" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="17.12.6" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.12.6" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build"                Version="18.4.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Framework"      Version="18.4.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="18.4.0" ExcludeAssets="runtime" />
   </ItemGroup>
+
+  <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>
