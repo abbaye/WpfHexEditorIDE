@@ -1683,6 +1683,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             else
             {
                 // Record slow-click candidate only when the node is already selected
+                // (i.e. it was selected in a prior interaction, not by this very click).
                 if (node.IsSelected) _slowClickCandidate = node;
                 _vm.SelectNode(node);
             }
@@ -1699,9 +1700,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         var tvi = FindAncestor<TreeViewItem>(e.OriginalSource as DependencyObject);
         if (tvi?.DataContext != candidate) return;
 
-        // Start the rename timer — fires after 600 ms if no other click/drag occurs
+        // Start the rename timer — fires after 1200 ms if no other click/drag occurs.
+        // 1200 ms matches VS behaviour and prevents accidental rename during navigation.
         _slowClickTimer = new System.Windows.Threading.DispatcherTimer
-            { Interval = TimeSpan.FromMilliseconds(600) };
+            { Interval = TimeSpan.FromMilliseconds(1200) };
         _slowClickTimer.Tick += (_, _) =>
         {
             _slowClickTimer?.Stop();

@@ -263,5 +263,29 @@
             </TabItem>
 
         </TabControl>
+
+        <!-- Phase 8: Loading overlay — appears on top of the TabControl while
+             background decompilation is in progress. Semi-transparent so the user
+             can still see the previous content beneath. -->
+        <Border Grid.Row="1"
+                Panel.ZIndex="10"
+                Opacity="0.92"
+                Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True"
+                             Width="200" Height="3"
+                             Foreground="{DynamicResource PFP_AccentBrush}"
+                             Background="Transparent"
+                             BorderThickness="0"/>
+                <TextBlock Text="{Binding LoadingMessage}"
+                           Margin="0,7,0,0"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="11"
+                           FontFamily="Segoe UI"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </UserControl>

@@ -3,6 +3,8 @@
 // File: Services/CSharpSkeletonEmitter.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
+// Updated: 2026-03-16 — Phase 2: const/readonly fields, ConstantValue literals,
+//     override keyword, generic type parameters, XML doc /// <summary> emission.
 // License: GNU Affero General Public License v3.0 (AGPL-3.0)
 // Description:
 //     BCL-only C# structure skeleton emitter. Produces human-readable
@@ -14,6 +16,7 @@
 //     Pattern: Service (stateless).
 //     Emits C# keyword declarations with { /* IL body */ } stubs for methods.
 //     Enum members and const fields use their literal value where available.
+//     XmlDocComment on models is emitted as a single /// <summary> line.
 // ==========================================================
 
 using System.Text;
@@ -75,6 +78,10 @@ public sealed class CSharpSkeletonEmitter
     {
         var sb = new StringBuilder();
 
+        // XML doc comment
+        if (!string.IsNullOrEmpty(model.XmlDocComment))
+            sb.AppendLine($"/// <summary>{model.XmlDocComment}</summary>");
+
         // Custom attributes
         foreach (var attr in model.CustomAttributes)
             sb.AppendLine($"[{attr}]");
@@ -84,8 +91,9 @@ public sealed class CSharpSkeletonEmitter
         var modifiers  = BuildTypeModifiers(model);
         var keyword    = TypeKindToKeyword(model.Kind);
         var bases      = BuildBaseList(model);
+        var typeName   = BuildTypeNameWithGenerics(model.Name, model.GenericParameters);
 
-        sb.Append($"{visibility}{modifiers} {keyword} {model.Name}");
+        sb.Append($"{visibility}{modifiers} {keyword} {typeName}");
         if (!string.IsNullOrEmpty(bases)) sb.Append($" : {bases}");
         sb.AppendLine();
         sb.AppendLine("{");
@@ -95,7 +103,11 @@ public sealed class CSharpSkeletonEmitter
         {
             sb.AppendLine("    // ── Fields ──");
             foreach (var f in model.Fields)
+            {
+                if (!string.IsNullOrEmpty(f.XmlDocComment))
+                    sb.AppendLine($"    /// <summary>{f.XmlDocComment}</summary>");
                 sb.AppendLine($"    {FormatField(f)}");
+            }
             sb.AppendLine();
         }
 
@@ -104,7 +116,11 @@ public sealed class CSharpSkeletonEmitter
         {
             sb.AppendLine("    // ── Properties ──");
             foreach (var p in model.Properties)
+            {
+                if (!string.IsNullOrEmpty(p.XmlDocComment))
+                    sb.AppendLine($"    /// <summary>{p.XmlDocComment}</summary>");
                 sb.AppendLine($"    {FormatProperty(p)}");
+            }
             sb.AppendLine();
         }
 
@@ -113,7 +129,11 @@ public sealed class CSharpSkeletonEmitter
         {
             sb.AppendLine("    // ── Events ──");
             foreach (var e in model.Events)
+            {
+                if (!string.IsNullOrEmpty(e.XmlDocComment))
+                    sb.AppendLine($"    /// <summary>{e.XmlDocComment}</summary>");
                 sb.AppendLine($"    {FormatEvent(e)}");
+            }
             sb.AppendLine();
         }
 
@@ -122,7 +142,11 @@ public sealed class CSharpSkeletonEmitter
         {
             sb.AppendLine("    // ── Methods ──");
             foreach (var m in model.Methods)
+            {
+                if (!string.IsNullOrEmpty(m.XmlDocComment))
+                    sb.AppendLine($"    /// <summary>{m.XmlDocComment}</summary>");
                 sb.AppendLine($"    {FormatMethod(m, model.Kind == TypeKind.Interface)}");
+            }
             sb.AppendLine();
         }
 
@@ -136,6 +160,8 @@ public sealed class CSharpSkeletonEmitter
     public string EmitMethod(MemberModel model)
     {
         var sb = new StringBuilder();
+        if (!string.IsNullOrEmpty(model.XmlDocComment))
+            sb.AppendLine($"/// <summary>{model.XmlDocComment}</summary>");
         foreach (var attr in model.CustomAttributes)
             sb.AppendLine($"[{attr}]");
         sb.AppendLine(FormatMethod(model, false));
@@ -183,13 +209,16 @@ public sealed class CSharpSkeletonEmitter
 
     private static string FormatField(MemberModel f)
     {
-        var vis   = f.IsPublic ? "public" : "private";
-        var stat  = f.IsStatic ? " static" : string.Empty;
-        var type  = f.Signature ?? "object";
-        var attrs = f.CustomAttributes.Count > 0
-                    ? string.Join(" ", f.CustomAttributes.Select(a => $"[{a}]")) + " "
-                    : string.Empty;
-        return $"{attrs}{vis}{stat} {type} {f.Name};";
+        var vis        = f.IsPublic ? "public" : "private";
+        var stat       = f.IsStatic ? " static" : string.Empty;
+        var constMod   = f.ConstantValue is not null ? " const" : string.Empty;
+        var readonlyMod = f.IsReadOnly && f.ConstantValue is null ? " readonly" : string.Empty;
+        var type       = f.Signature ?? "object";
+        var attrs      = f.CustomAttributes.Count > 0
+                         ? string.Join(" ", f.CustomAttributes.Select(a => $"[{a}]")) + " "
+                         : string.Empty;
+        var init       = f.ConstantValue is not null ? $" = {f.ConstantValue}" : string.Empty;
+        return $"{attrs}{vis}{stat}{constMod}{readonlyMod} {type} {f.Name}{init};";
     }
 
     private static string FormatProperty(MemberModel p)
@@ -202,26 +231,42 @@ public sealed class CSharpSkeletonEmitter
 
     private static string FormatEvent(MemberModel e)
     {
-        var vis  = e.IsPublic ? "public" : "private";
-        var stat = e.IsStatic ? " static" : string.Empty;
-        return $"{vis}{stat} event EventHandler {e.Name};";
+        var vis      = e.IsPublic ? "public" : "private";
+        var stat     = e.IsStatic ? " static" : string.Empty;
+        // Use the decoded signature type when available; fall back to EventHandler.
+        var handlerType = e.Signature ?? "EventHandler";
+        return $"{vis}{stat} event {handlerType} {e.Name};";
     }
 
     private static string FormatMethod(MemberModel m, bool isInterface)
     {
-        var vis   = m.IsPublic ? "public" : "private";
-        var stat  = m.IsStatic ? " static" : string.Empty;
-        var abstr = m.IsAbstract && !isInterface ? " abstract" : string.Empty;
-        var virt  = m.IsVirtual && !m.IsAbstract && !isInterface ? " virtual" : string.Empty;
-        var sig   = m.Signature ?? $"void {m.Name}()";
+        var vis      = m.IsPublic ? "public" : "private";
+        var stat     = m.IsStatic ? " static" : string.Empty;
+        var abstr    = m.IsAbstract && !isInterface ? " abstract" : string.Empty;
+        var virt     = m.IsVirtual && !m.IsAbstract && !isInterface ? " virtual" : string.Empty;
+        var overr    = m.IsOverride && !isInterface ? " override" : string.Empty;
+        var sig      = m.Signature ?? $"void {m.Name}()";
 
         if (isInterface || m.IsAbstract)
             return $"{sig};";
 
-        // Constructors and methods get stub body
-        return $"{vis}{stat}{abstr}{virt} {sig}{Environment.NewLine}    {{" +
+        return $"{vis}{stat}{abstr}{virt}{overr} {sig}{Environment.NewLine}    {{" +
                $"{Environment.NewLine}        // IL available in the IL tab" +
                $"{Environment.NewLine}    }}";
+    }
+
+    /// <summary>
+    /// Builds a display name with generic parameters appended, e.g. "List`1" → "List&lt;T&gt;".
+    /// When no generic parameters are present the raw name is returned as-is.
+    /// </summary>
+    private static string BuildTypeNameWithGenerics(string rawName, IReadOnlyList<string> genParams)
+    {
+        if (genParams.Count == 0) return rawName;
+
+        // Strip the backtick-arity suffix (e.g. "List`1" → "List") then append <T, ...>
+        var backtick = rawName.IndexOf('`');
+        var baseName = backtick >= 0 ? rawName[..backtick] : rawName;
+        return $"{baseName}<{string.Join(", ", genParams)}>";
     }
 
     private static string SimplifyTypeName(string fullName)

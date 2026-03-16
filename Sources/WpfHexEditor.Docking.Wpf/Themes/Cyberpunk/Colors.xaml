@@ -357,4 +357,21 @@
     <SolidColorBrush x:Key="WarningBannerBrush"                  Color="#3DFFB300"/>
     <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#FFB300"/>
     <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#FFE57F"/>
+
+    <!-- XAML Designer (XD_*) — Cyberpunk theme -->
+    <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#0D0D1A"/>
+    <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#FF2D78"/>
+    <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#1A1A2E"/>
+    <SolidColorBrush x:Key="XD_SelectionBorderBrush"             Color="#FF2D78"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleFillBrush"         Color="#0D0D1A"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleStrokeBrush"       Color="#FF2D78"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBackground"            Color="#2A0A1A"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerForeground"            Color="#FF2D78"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBorder"                Color="#FF0055"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBrush"                Color="#0D0D1A"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBorderBrush"          Color="#FF2D78"/>
+    <SolidColorBrush x:Key="XD_PropertyNameForeground"           Color="#00FFCC"/>
+    <SolidColorBrush x:Key="XD_PropertyValueForeground"          Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="XD_PropertyGroupHeaderBackground"    Color="#14142A"/>
+    <SolidColorBrush x:Key="XD_ToolbarViewToggleActiveBrush"     Color="#FF2D78"/>
 </ResourceDictionary>

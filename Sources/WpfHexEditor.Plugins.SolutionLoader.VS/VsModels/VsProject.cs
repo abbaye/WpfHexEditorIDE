@@ -34,8 +34,10 @@ internal sealed class VsProject : IProject, IProjectWithReferences
     public string  AssemblyName    { get; init; } = string.Empty;
     public string  RootNamespace   { get; init; } = string.Empty;
     public string  ProjectGuid     { get; init; } = string.Empty;
-    public IReadOnlyList<string> ProjectReferences { get; init; } = [];
-    public IReadOnlyList<string> PackageReferences { get; init; } = [];
+    public IReadOnlyList<string>               ProjectReferences  { get; init; } = [];
+    public IReadOnlyList<PackageReferenceInfo>  PackageReferences  { get; init; } = [];
+    public IReadOnlyList<AssemblyReferenceInfo> AssemblyReferences { get; init; } = [];
+    public IReadOnlyList<AnalyzerReferenceInfo> AnalyzerReferences { get; init; } = [];
 
     public IProjectItem? FindItem(string id)
         => Items.FirstOrDefault(i => i.Id == id);

@@ -59,6 +59,10 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     private readonly IOutputService          _output;
     private readonly IUIRegistry             _uiRegistry;
     private readonly string                  _pluginId;
+    private readonly DecompileCache          _decompileCache = new();
+
+    // Cancels the previous ShowNodeAsync whenever a new node is selected.
+    private CancellationTokenSource? _nodeSelectionCts;
 
     // ── Multi-assembly workspace ───────────────────────────────────────────────
     // Keyed by file path, case-insensitive.
@@ -85,7 +89,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         _uiRegistry        = uiRegistry;
         _pluginId          = pluginId;
 
-        DetailViewModel = new AssemblyDetailViewModel(decompiler);
+        DetailViewModel = new AssemblyDetailViewModel(_decompilerBackend, _decompileCache);
 
         LoadCurrentFileCommand = new RelayCommand(
             _ => _ = LoadCurrentFileAsync(),
@@ -291,6 +295,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             existing.Cts.Cancel();
             RootNodes.Remove(existing.Root);
             _workspace.Remove(filePath);
+            _decompileCache.Invalidate(filePath);
         }
 
         // Enforce the max-assembly limit by evicting the oldest unpinned entry.
@@ -382,11 +387,14 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     /// <summary>Closes all loaded assemblies and resets all state.</summary>
     public void Clear()
     {
-        // Cancel all in-flight loads.
+        // Cancel all in-flight loads and any in-progress decompile.
         foreach (var entry in _workspace.Values)
             entry.Cts.Cancel();
+        _nodeSelectionCts?.Cancel();
+        _nodeSelectionCts = null;
 
         _workspace.Clear();
+        _decompileCache.Clear();
         RootNodes.Clear();
         DetailViewModel.Clear();
         StatusText    = "No assembly loaded";
@@ -399,18 +407,51 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Called when the user selects a tree node.
-    /// Updates the detail pane and optionally syncs the HexEditor.
+    /// Fast side-effects (hex-editor sync, event publishing) happen synchronously;
+    /// the expensive decompilation is dispatched asynchronously via ShowNodeAsync.
     /// </summary>
     public void OnNodeSelected(AssemblyNodeViewModel node)
     {
-        var filePath = node.OwnerFilePath ?? string.Empty;
-        DetailViewModel.ShowNode(node, filePath);
+        // Fast synchronous side-effects (instant — no decompilation).
         NavigateHexEditorToNode(node);
         PublishMemberSelected(node);
 
-        // Phase 6: cross-assembly reference navigation
+        // Phase 6: cross-assembly reference navigation.
         if (node is ReferenceNodeViewModel refNode)
             TryNavigateToReference(refNode);
+
+        // Phase 8: cancel any in-flight decompile and start a new async one.
+        StartDecompileAsync(node);
+    }
+
+    /// <summary>
+    /// Cancels the previous ShowNodeAsync and starts a new one for <paramref name="node"/>.
+    /// Fire-and-forget: exceptions are caught in <see cref="SafeShowNodeAsync"/>.
+    /// </summary>
+    private void StartDecompileAsync(AssemblyNodeViewModel node)
+    {
+        _nodeSelectionCts?.Cancel();
+        _nodeSelectionCts = new CancellationTokenSource();
+        var ct       = _nodeSelectionCts.Token;
+        var filePath = node.OwnerFilePath ?? string.Empty;
+        _ = SafeShowNodeAsync(node, filePath, ct);
+    }
+
+    private async Task SafeShowNodeAsync(AssemblyNodeViewModel node, string filePath, CancellationToken ct)
+    {
+        try
+        {
+            await DetailViewModel.ShowNodeAsync(node, filePath, ct);
+        }
+        catch (OperationCanceledException)
+        {
+            // Normal — a newer selection cancelled this one.
+        }
+        catch (Exception ex)
+        {
+            // Don't crash the IDE for a decompile failure; detail pane already shows error text.
+            _output.Warning($"[Assembly Explorer] Decompile error for '{node.DisplayName}': {ex.Message}");
+        }
     }
 
     // ── Tree construction ─────────────────────────────────────────────────────
@@ -649,8 +690,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     /// <summary>Explicit "Open in HexEditor" from context menu — bypasses SyncWithHexEditor toggle.</summary>
     public void NavigateToNodeExplicit(AssemblyNodeViewModel node)
     {
-        var filePath = node.OwnerFilePath ?? string.Empty;
-        DetailViewModel.ShowNode(node, filePath);
+        StartDecompileAsync(node);
         NavigateHexEditorToNode(node, force: true);
     }
 
@@ -840,6 +880,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         entry.Cts.Cancel();
         RootNodes.Remove(entry.Root);
         _workspace.Remove(filePath);
+        _decompileCache.Invalidate(filePath);
 
         // Clear detail pane if the selected node belonged to this entry.
         if (_selectedNode?.OwnerFilePath is not null

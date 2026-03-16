@@ -3,6 +3,8 @@
 // File: Services/AssemblyAnalysisEngine.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
+// Updated: 2026-03-16 — Phase 2: IsReadOnly, IsOverride, ConstantValue,
+//     GenericParameters, XmlDocComment populated from metadata + companion XML.
 // License: GNU Affero General Public License v3.0 (AGPL-3.0)
 // Description:
 //     Concrete implementation of IAssemblyAnalysisEngine using only BCL types:
@@ -20,6 +22,8 @@
 //       - PeOffsetResolver now resolves real file offsets
 //       - BaseTypeName + InterfaceNames + CustomAttributes populated
 //       - TargetFramework detected from TargetFrameworkAttribute
+//       - IsReadOnly/IsOverride/ConstantValue/GenericParameters (Phase 2)
+//       - XmlDocComment from companion .xml (Phase 2, optional)
 // ==========================================================
 
 using System.IO;
@@ -114,7 +118,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         var pkt     = BuildPublicKeyToken(mdReader.GetBlobBytes(asmDef.PublicKey));
 
         var targetFramework = DetectTargetFramework(mdReader);
-        var types           = ReadTypes(peReader, mdReader, ct);
+        var xmlDoc          = XmlDocReader.TryLoad(filePath);
+        var types           = ReadTypes(peReader, mdReader, xmlDoc, ct);
         var references      = ReadReferences(mdReader, ct);
         var resources       = ReadResources(mdReader, ct);
         var modules         = ReadModules(mdReader, ct);
@@ -197,7 +202,7 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     // ── Type enumeration ─────────────────────────────────────────────────────
 
     private List<TypeModel> ReadTypes(
-        PEReader peReader, MetadataReader mdReader, CancellationToken ct)
+        PEReader peReader, MetadataReader mdReader, XmlDocReader? xmlDoc, CancellationToken ct)
     {
         var types = new List<TypeModel>();
 
@@ -212,34 +217,39 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
             // Skip the synthetic <Module> type.
             if (string.IsNullOrEmpty(typeName) || typeName == "<Module>") continue;
 
-            var kind     = ResolveTypeKind(typeDef.Attributes);
-            var isPublic = (typeDef.Attributes & TypeAttributes.Public) != 0
-                        || (typeDef.Attributes & TypeAttributes.NestedPublic) != 0;
+            var kind       = ResolveTypeKind(typeDef.Attributes);
+            var isPublic   = (typeDef.Attributes & TypeAttributes.Public) != 0
+                          || (typeDef.Attributes & TypeAttributes.NestedPublic) != 0;
             var isAbstract = (typeDef.Attributes & TypeAttributes.Abstract) != 0;
             var isSealed   = (typeDef.Attributes & TypeAttributes.Sealed) != 0;
-            var token    = MetadataTokens.GetToken(handle);
-            var offset   = _offsetResolver.Resolve(handle, peReader, mdReader);
-            var baseName = ResolveBaseTypeName(typeDef.BaseType, mdReader);
-            var ifaces   = ReadInterfaceNames(typeDef, mdReader);
-            var attrs    = ReadCustomAttributeNames(typeDef.GetCustomAttributes(), mdReader);
+            var token      = MetadataTokens.GetToken(handle);
+            var offset     = _offsetResolver.Resolve(handle, peReader, mdReader);
+            var baseName   = ResolveBaseTypeName(typeDef.BaseType, mdReader);
+            var ifaces     = ReadInterfaceNames(typeDef, mdReader);
+            var attrs      = ReadCustomAttributeNames(typeDef.GetCustomAttributes(), mdReader);
+            var genParams  = ReadGenericParamNames(typeDef.GetGenericParameters(), mdReader);
+            var fullName   = string.IsNullOrEmpty(ns) ? typeName : $"{ns}.{typeName}";
+            var xmlComment = xmlDoc?.GetSummary(XmlDocReader.TypeDocId(ns, typeName));
 
             types.Add(new TypeModel
             {
-                Namespace        = ns,
-                Name             = typeName,
-                Kind             = kind,
-                IsPublic         = isPublic,
-                IsAbstract       = isAbstract,
-                IsSealed         = isSealed,
-                PeOffset         = offset,
-                MetadataToken    = token,
-                BaseTypeName     = baseName,
-                InterfaceNames   = ifaces,
-                CustomAttributes = attrs,
-                Methods          = ReadMethods(typeDef, peReader, mdReader, ct),
-                Fields           = ReadFields(typeDef, peReader, mdReader, ct),
-                Properties       = ReadProperties(typeDef, mdReader, ct),
-                Events           = ReadEvents(typeDef, mdReader, ct)
+                Namespace         = ns,
+                Name              = typeName,
+                Kind              = kind,
+                IsPublic          = isPublic,
+                IsAbstract        = isAbstract,
+                IsSealed          = isSealed,
+                PeOffset          = offset,
+                MetadataToken     = token,
+                BaseTypeName      = baseName,
+                InterfaceNames    = ifaces,
+                CustomAttributes  = attrs,
+                GenericParameters = genParams,
+                XmlDocComment     = xmlComment,
+                Methods           = ReadMethods(typeDef, peReader, mdReader, xmlDoc, fullName, ct),
+                Fields            = ReadFields(typeDef, peReader, mdReader, xmlDoc, fullName, ct),
+                Properties        = ReadProperties(typeDef, mdReader, xmlDoc, fullName, ct),
+                Events            = ReadEvents(typeDef, mdReader, xmlDoc, fullName, ct)
             });
         }
 
@@ -249,7 +259,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     // ── Member enumeration ────────────────────────────────────────────────────
 
     private List<MemberModel> ReadMethods(
-        TypeDefinition typeDef, PEReader peReader, MetadataReader mdReader, CancellationToken ct)
+        TypeDefinition typeDef, PEReader peReader, MetadataReader mdReader,
+        XmlDocReader? xmlDoc, string typeFullName, CancellationToken ct)
     {
         var methods = new List<MemberModel>();
 
@@ -263,24 +274,30 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
             var stat      = (mDef.Attributes & MethodAttributes.Static) != 0;
             var abstr     = (mDef.Attributes & MethodAttributes.Abstract) != 0;
             var virt      = (mDef.Attributes & MethodAttributes.Virtual) != 0;
+            var newSlot   = (mDef.Attributes & MethodAttributes.NewSlot) != 0;
             var offset    = _offsetResolver.Resolve(handle, peReader, mdReader);
             var byteLen   = ResolveMethodByteLength(mDef, peReader);
             var sig       = TryDecodeMethodSignature(mDef, mdReader);
             var attrs     = ReadCustomAttributeNames(mDef.GetCustomAttributes(), mdReader);
+            var genParams = ReadGenericParamNames(mDef.GetGenericParameters(), mdReader);
+            var xmlDoc_   = xmlDoc?.GetSummary(XmlDocReader.MethodDocId(typeFullName, mName));
 
             methods.Add(new MemberModel
             {
-                Name             = mName,
-                Kind             = MemberKind.Method,
-                IsPublic         = pub,
-                IsStatic         = stat,
-                IsAbstract       = abstr,
-                IsVirtual        = virt && !abstr,
-                MetadataToken    = MetadataTokens.GetToken(handle),
-                PeOffset         = offset,
-                ByteLength       = byteLen,
-                Signature        = sig,
-                CustomAttributes = attrs
+                Name              = mName,
+                Kind              = MemberKind.Method,
+                IsPublic          = pub,
+                IsStatic          = stat,
+                IsAbstract        = abstr,
+                IsVirtual         = virt && newSlot && !abstr,  // new virtual slot only
+                IsOverride        = virt && !newSlot && !abstr, // overrides inherited slot
+                MetadataToken     = MetadataTokens.GetToken(handle),
+                PeOffset          = offset,
+                ByteLength        = byteLen,
+                Signature         = sig,
+                CustomAttributes  = attrs,
+                GenericParameters = genParams,
+                XmlDocComment     = xmlDoc_
             });
         }
 
@@ -288,7 +305,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     }
 
     private List<MemberModel> ReadFields(
-        TypeDefinition typeDef, PEReader peReader, MetadataReader mdReader, CancellationToken ct)
+        TypeDefinition typeDef, PEReader peReader, MetadataReader mdReader,
+        XmlDocReader? xmlDoc, string typeFullName, CancellationToken ct)
     {
         var fields = new List<MemberModel>();
 
@@ -296,12 +314,15 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         {
             ct.ThrowIfCancellationRequested();
 
-            var fDef   = mdReader.GetFieldDefinition(handle);
-            var fName  = mdReader.GetString(fDef.Name);
-            var pub    = (fDef.Attributes & FieldAttributes.Public) != 0;
-            var stat   = (fDef.Attributes & FieldAttributes.Static) != 0;
-            var typeSig = TryDecodeFieldSignature(fDef, mdReader);
-            var attrs  = ReadCustomAttributeNames(fDef.GetCustomAttributes(), mdReader);
+            var fDef          = mdReader.GetFieldDefinition(handle);
+            var fName         = mdReader.GetString(fDef.Name);
+            var pub           = (fDef.Attributes & FieldAttributes.Public) != 0;
+            var stat          = (fDef.Attributes & FieldAttributes.Static) != 0;
+            var isReadOnly    = (fDef.Attributes & FieldAttributes.InitOnly) != 0;
+            var typeSig       = TryDecodeFieldSignature(fDef, mdReader);
+            var attrs         = ReadCustomAttributeNames(fDef.GetCustomAttributes(), mdReader);
+            var constantValue = TryGetConstantValue(fDef, mdReader);
+            var xmlDoc_       = xmlDoc?.GetSummary(XmlDocReader.FieldDocId(typeFullName, fName));
 
             fields.Add(new MemberModel
             {
@@ -309,10 +330,13 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
                 Kind             = MemberKind.Field,
                 IsPublic         = pub,
                 IsStatic         = stat,
+                IsReadOnly       = isReadOnly,
+                ConstantValue    = constantValue,
                 MetadataToken    = MetadataTokens.GetToken(handle),
-                PeOffset         = 0L, // Field rows don't have IL bodies; offset resolver returns MD row offset
+                PeOffset         = 0L, // Field rows don't have IL bodies
                 Signature        = typeSig,
-                CustomAttributes = attrs
+                CustomAttributes = attrs,
+                XmlDocComment    = xmlDoc_
             });
         }
 
@@ -320,7 +344,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     }
 
     private List<MemberModel> ReadProperties(
-        TypeDefinition typeDef, MetadataReader mdReader, CancellationToken ct)
+        TypeDefinition typeDef, MetadataReader mdReader,
+        XmlDocReader? xmlDoc, string typeFullName, CancellationToken ct)
     {
         var props = new List<MemberModel>();
 
@@ -331,13 +356,15 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
             var pDef    = mdReader.GetPropertyDefinition(handle);
             var pName   = mdReader.GetString(pDef.Name);
             var typeSig = TryDecodePropertySignature(pDef, mdReader);
+            var xmlDoc_ = xmlDoc?.GetSummary(XmlDocReader.PropertyDocId(typeFullName, pName));
 
             props.Add(new MemberModel
             {
                 Name          = pName,
                 Kind          = MemberKind.Property,
                 MetadataToken = MetadataTokens.GetToken(handle),
-                Signature     = typeSig
+                Signature     = typeSig,
+                XmlDocComment = xmlDoc_
             });
         }
 
@@ -345,7 +372,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     }
 
     private static List<MemberModel> ReadEvents(
-        TypeDefinition typeDef, MetadataReader mdReader, CancellationToken ct)
+        TypeDefinition typeDef, MetadataReader mdReader,
+        XmlDocReader? xmlDoc, string typeFullName, CancellationToken ct)
     {
         var events = new List<MemberModel>();
 
@@ -353,14 +381,16 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         {
             ct.ThrowIfCancellationRequested();
 
-            var eDef  = mdReader.GetEventDefinition(handle);
-            var eName = mdReader.GetString(eDef.Name);
+            var eDef    = mdReader.GetEventDefinition(handle);
+            var eName   = mdReader.GetString(eDef.Name);
+            var xmlDoc_ = xmlDoc?.GetSummary(XmlDocReader.EventDocId(typeFullName, eName));
 
             events.Add(new MemberModel
             {
                 Name          = eName,
                 Kind          = MemberKind.Event,
-                MetadataToken = MetadataTokens.GetToken(handle)
+                MetadataToken = MetadataTokens.GetToken(handle),
+                XmlDocComment = xmlDoc_
             });
         }
 
@@ -637,6 +667,68 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
             return TypeKind.Struct;
 
         return TypeKind.Class;
+    }
+
+    // ── Generic parameter names ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Reads the simple names of all generic parameters declared on a type or method
+    /// (e.g. ["T", "TKey", "TValue"]).  Returns an empty list for non-generic rows.
+    /// </summary>
+    private static IReadOnlyList<string> ReadGenericParamNames(
+        GenericParameterHandleCollection handles, MetadataReader mdReader)
+    {
+        if (handles.Count == 0) return [];
+        var names = new List<string>(handles.Count);
+        try
+        {
+            foreach (var h in handles)
+                names.Add(mdReader.GetString(mdReader.GetGenericParameter(h).Name));
+        }
+        catch { /* Non-fatal — return partial list */ }
+        return names;
+    }
+
+    // ── Constant value formatter ──────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the C# literal representation of a <c>const</c> field's default value,
+    /// e.g. <c>"42"</c>, <c>"\"hello\""</c>, <c>"true"</c>, <c>"null"</c>.
+    /// Returns <c>null</c> for non-const fields or on any metadata read error.
+    /// </summary>
+    private static string? TryGetConstantValue(FieldDefinition fDef, MetadataReader mdReader)
+    {
+        if ((fDef.Attributes & FieldAttributes.Literal) == 0) return null;
+        try
+        {
+            var constantHandle = fDef.GetDefaultValue();
+            if (constantHandle.IsNil) return null;
+
+            var constant = mdReader.GetConstant(constantHandle);
+            var blob     = mdReader.GetBlobReader(constant.Value);
+
+            return constant.TypeCode switch
+            {
+                ConstantTypeCode.Boolean     => blob.ReadBoolean() ? "true" : "false",
+                ConstantTypeCode.Byte        => blob.ReadByte().ToString(),
+                ConstantTypeCode.SByte       => blob.ReadSByte().ToString(),
+                ConstantTypeCode.Int16       => blob.ReadInt16().ToString(),
+                ConstantTypeCode.UInt16      => blob.ReadUInt16().ToString(),
+                ConstantTypeCode.Int32       => blob.ReadInt32().ToString(),
+                ConstantTypeCode.UInt32      => blob.ReadUInt32().ToString() + "U",
+                ConstantTypeCode.Int64       => blob.ReadInt64().ToString() + "L",
+                ConstantTypeCode.UInt64      => blob.ReadUInt64().ToString() + "UL",
+                ConstantTypeCode.Single      => blob.ReadSingle().ToString("R") + "f",
+                ConstantTypeCode.Double      => blob.ReadDouble().ToString("R") + "d",
+                ConstantTypeCode.Char        => $"'\\u{blob.ReadUInt16():X4}'",
+                ConstantTypeCode.String      => blob.RemainingBytes == 0
+                                                    ? "\"\""
+                                                    : $"\"{blob.ReadUTF16(blob.RemainingBytes)}\"",
+                ConstantTypeCode.NullReference => "null",
+                _                            => null
+            };
+        }
+        catch { return null; }
     }
 
     // ── Public key token ─────────────────────────────────────────────────────

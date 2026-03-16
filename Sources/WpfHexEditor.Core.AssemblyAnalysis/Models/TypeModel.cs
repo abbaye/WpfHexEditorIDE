@@ -3,6 +3,7 @@
 // File: Models/TypeModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
+// Updated: 2026-03-16 — Phase 2: added GenericParameters, XmlDocComment.
 // License: GNU Affero General Public License v3.0 (AGPL-3.0)
 // Description:
 //     Immutable model representing a single .NET type definition.
@@ -80,6 +81,18 @@ public sealed class TypeModel
     /// Attribute suffix is stripped for brevity (e.g. "ObsoleteAttribute" → "Obsolete").
     /// </summary>
     public IReadOnlyList<string> CustomAttributes { get; init; } = [];
+
+    /// <summary>
+    /// Generic type parameter names declared on this type,
+    /// e.g. ["T", "TKey", "TValue"]. Empty for non-generic types.
+    /// </summary>
+    public IReadOnlyList<string> GenericParameters { get; init; } = [];
+
+    /// <summary>
+    /// Summary sentence from the companion XML documentation file (e.g. MyLib.xml).
+    /// Null when no .xml file exists or the type has no doc entry.
+    /// </summary>
+    public string? XmlDocComment { get; init; }
 
     public IReadOnlyList<MemberModel> Methods    { get; init; } = [];
     public IReadOnlyList<MemberModel> Fields     { get; init; } = [];

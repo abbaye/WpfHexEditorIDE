@@ -122,6 +122,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Project properties map: doc-projprops-{id} → IProject (for deferred content creation)
     private readonly Dictionary<string, IProject> _projectPropertiesMap = new();
 
+    // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
+    // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
+    private readonly HashSet<string> _pendingProjectPropertiesContentIds = new();
+
     // Display cache: ContentId → visual UIElement shown in the docking layout
     // When an InfoBar is present this is a Grid wrapper; otherwise == _contentCache entry.
     private readonly Dictionary<string, UIElement> _displayContent = new();
@@ -570,6 +574,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnSolutionChanged(object? sender, SolutionChangedEventArgs e)
     {
         HasSolution = _solutionManager.CurrentSolution != null;
+
+        // Refresh any "doc-projprops-*" tabs that showed "Projet introuvable." at layout-restore
+        // time because the solution was not yet loaded when the content factory ran.
+        if (_pendingProjectPropertiesContentIds.Count > 0 && _solutionManager.CurrentSolution != null)
+        {
+            foreach (var contentId in _pendingProjectPropertiesContentIds)
+            {
+                _displayContent.Remove(contentId);
+                _contentCache.Remove(contentId);
+            }
+            _pendingProjectPropertiesContentIds.Clear();
+            DockHost.RebuildVisualTree();
+        }
+
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
         RebuildTblItemList();
         RefreshAllChangesetNodes();
@@ -4526,7 +4544,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                           .FirstOrDefault(p => p.Name == name);
 
             if (project is null)
+            {
+                // Solution not yet loaded at layout-restore time. Track this tab so
+                // OnSolutionChanged() can evict the placeholder and rebuild the content.
+                _pendingProjectPropertiesContentIds.Add(item.ContentId);
                 return new System.Windows.Controls.TextBlock { Text = "Projet introuvable." };
+            }
 
             // Re-register so dirty-state title updates work for the rest of this session.
             _projectPropertiesMap[item.ContentId] = project;

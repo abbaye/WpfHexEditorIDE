@@ -427,6 +427,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         var node = new ProjectNodeVm(project);
 
+        // References section — only for projects that expose typed references (e.g. VS projects).
+        if (project is IProjectWithReferences refs)
+        {
+            var refsNode = BuildReferencesNode(refs);
+            if (refsNode is not null)
+                node.Children.Add(refsNode);
+        }
+
         // Items not in any virtual folder
         var inFolder = new HashSet<string>();
         CollectFolderItemIds(project.RootFolders, inFolder);
@@ -456,6 +464,44 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
 
         return node;
+    }
+
+    private static ReferencesContainerNodeVm? BuildReferencesNode(IProjectWithReferences refs)
+    {
+        if (refs.ProjectReferences.Count  == 0 &&
+            refs.PackageReferences.Count  == 0 &&
+            refs.AssemblyReferences.Count == 0 &&
+            refs.AnalyzerReferences.Count == 0)
+            return null;
+
+        var container = new ReferencesContainerNodeVm { IsExpanded = false };
+
+        // 1. Analyzers sub-folder (top, like VS).
+        if (refs.AnalyzerReferences.Count > 0)
+        {
+            var analyzers = new AnalyzersContainerNodeVm { IsExpanded = false };
+            foreach (var a in refs.AnalyzerReferences.OrderBy(r => System.IO.Path.GetFileName(r.HintPath), StringComparer.OrdinalIgnoreCase))
+                analyzers.Children.Add(new AnalyzerNodeVm(a));
+            container.Children.Add(analyzers);
+        }
+
+        // 2. Project-to-project references — sorted alphabetically.
+        foreach (var path in refs.ProjectReferences
+            .OrderBy(p => System.IO.Path.GetFileNameWithoutExtension(p), StringComparer.OrdinalIgnoreCase))
+            container.Children.Add(new ProjectReferenceNodeVm(path));
+
+        // 3. NuGet / package references — sorted alphabetically by Id.
+        foreach (var pkg in refs.PackageReferences
+            .OrderBy(p => p.Id, StringComparer.OrdinalIgnoreCase))
+            container.Children.Add(new PackageReferenceNodeVm(pkg));
+
+        // 4. Assembly references — BCL/framework first, then external DLLs, all alphabetical.
+        foreach (var asm in refs.AssemblyReferences
+            .OrderByDescending(r => r.IsFrameworkRef)
+            .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase))
+            container.Children.Add(new AssemblyReferenceNodeVm(asm));
+
+        return container;
     }
 
     private static FolderNodeVm BuildFolderNode(IVirtualFolder folder, IProject project, string parentRelPath = "")

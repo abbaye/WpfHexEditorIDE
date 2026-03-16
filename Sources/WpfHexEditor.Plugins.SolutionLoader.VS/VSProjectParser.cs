@@ -12,8 +12,10 @@
 // Architecture Notes:
 //     - Strategy: SDK-style detection via <Project Sdk="..."> attribute
 //     - Legacy: enumerates explicit <Compile>, <Content>, <None> includes
+//       using an allowlist to skip non-file elements (BootstrapperPackage, etc.)
 //     - SDK-style: enumerates physical files on disk matching glob patterns,
 //       then applies <Remove> and <Update> directives
+//     - Both styles: parse <Reference>, <PackageReference Version>, <Analyzer>
 // ==========================================================
 
 using System.Xml.Linq;
@@ -28,6 +30,18 @@ namespace WpfHexEditor.Plugins.SolutionLoader.VS;
 internal static class VSProjectParser
 {
     private static readonly XNamespace MsBuildNs = "http://schemas.microsoft.com/developer/msbuild/2003";
+
+    /// <summary>
+    /// Item element names that represent actual files in a legacy project.
+    /// Any element NOT in this list is ignored (e.g. BootstrapperPackage, COM, FrameworkAssembly).
+    /// </summary>
+    private static readonly HashSet<string> FileItemTypes = new(StringComparer.Ordinal)
+    {
+        "Compile", "Content", "None", "EmbeddedResource", "Resource",
+        "Page", "ApplicationDefinition", "SplashScreen", "EntityDeploy",
+        "XamlAppDef", "TypeScriptCompile", "ClCompile", "ClInclude",
+        "PRIResource", "Natvis",
+    };
 
     // -----------------------------------------------------------------------
     // Public API
@@ -79,25 +93,26 @@ internal static class VSProjectParser
             .Select(v => System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, v)))
             .ToList();
 
-        var packageReferences = root.Descendants("PackageReference")
-            .Select(e => e.Attribute("Include")?.Value ?? string.Empty)
-            .Where(v => v.Length > 0)
-            .ToList();
+        var packageReferences  = ParsePackageReferences(root, XNamespace.None, dir);
+        var assemblyReferences = ParseAssemblyReferences(root, XNamespace.None, dir);
+        var analyzerReferences = ParseAnalyzerReferences(root, XNamespace.None, dir);
 
         return new VsProject
         {
-            Name             = assemblyName,
-            ProjectFilePath  = filePath,
-            Items            = items,
-            RootFolders      = folders,
-            TargetFramework  = targetFramework,
-            Language         = language,
-            OutputType       = outputType,
-            AssemblyName     = assemblyName,
-            RootNamespace    = rootNs,
-            ProjectGuid      = projectGuid,
-            ProjectReferences = projectReferences,
-            PackageReferences = packageReferences,
+            Name               = assemblyName,
+            ProjectFilePath    = filePath,
+            Items              = items,
+            RootFolders        = folders,
+            TargetFramework    = targetFramework,
+            Language           = language,
+            OutputType         = outputType,
+            AssemblyName       = assemblyName,
+            RootNamespace      = rootNs,
+            ProjectGuid        = projectGuid,
+            ProjectReferences  = projectReferences,
+            PackageReferences  = packageReferences,
+            AssemblyReferences = assemblyReferences,
+            AnalyzerReferences = analyzerReferences,
         };
     }
 
@@ -181,11 +196,12 @@ internal static class VSProjectParser
                 var include = element.Attribute("Include")?.Value;
                 if (string.IsNullOrEmpty(include)) continue;
 
-                // Skip project references and package references in this pass.
+                // Only process known file-bearing element types.
+                // Skips BootstrapperPackage, FrameworkAssembly, COM, Reference, PackageReference, etc.
                 var localName = element.Name.LocalName;
-                if (localName is "ProjectReference" or "Reference" or "PackageReference") continue;
+                if (!FileItemTypes.Contains(localName)) continue;
 
-                var absPath     = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, include));
+                var absPath      = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, include));
                 var relativePath = include.Replace('/', System.IO.Path.DirectorySeparatorChar);
                 var dirPart      = System.IO.Path.GetDirectoryName(relativePath);
                 string? folderId = null;
@@ -210,29 +226,140 @@ internal static class VSProjectParser
             .Select(v => System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, v)))
             .ToList();
 
-        var packageReferences = root.Descendants(ns + "PackageReference")
-            .Select(e => e.Attribute("Include")?.Value ?? string.Empty)
-            .Where(v => v.Length > 0)
-            .ToList();
+        var packageReferences  = ParsePackageReferences(root, ns, dir);
+        var assemblyReferences = ParseAssemblyReferences(root, ns, dir);
+        var analyzerReferences = ParseAnalyzerReferences(root, ns, dir);
 
         var rootFolders = BuildFolderTree(folders);
         AttachItemsToFolders(items, folders);
 
         return new VsProject
         {
-            Name              = assemblyName,
-            ProjectFilePath   = filePath,
-            Items             = items,
-            RootFolders       = rootFolders,
-            TargetFramework   = targetFramework,
-            Language          = language,
-            OutputType        = outputType,
-            AssemblyName      = assemblyName,
-            RootNamespace     = rootNs,
-            ProjectGuid       = projectGuid,
-            ProjectReferences = projectReferences,
-            PackageReferences = packageReferences,
+            Name               = assemblyName,
+            ProjectFilePath    = filePath,
+            Items              = items,
+            RootFolders        = rootFolders,
+            TargetFramework    = targetFramework,
+            Language           = language,
+            OutputType         = outputType,
+            AssemblyName       = assemblyName,
+            RootNamespace      = rootNs,
+            ProjectGuid        = projectGuid,
+            ProjectReferences  = projectReferences,
+            PackageReferences  = packageReferences,
+            AssemblyReferences = assemblyReferences,
+            AnalyzerReferences = analyzerReferences,
         };
+    }
+
+    // -----------------------------------------------------------------------
+    // Reference parsers
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Parses all <c>&lt;PackageReference&gt;</c> elements, capturing Id and Version.
+    /// Version is read from the <c>Version</c> attribute first, then from a child
+    /// <c>&lt;Version&gt;</c> element (used in some Directory.Build.props patterns).
+    /// </summary>
+    private static IReadOnlyList<PackageReferenceInfo> ParsePackageReferences(
+        XElement root, XNamespace ns, string _)
+    {
+        return root.Descendants(ns + "PackageReference")
+            .Select(e =>
+            {
+                var id = e.Attribute("Include")?.Value ?? string.Empty;
+                if (id.Length == 0) return null;
+                var version = e.Attribute("Version")?.Value
+                           ?? e.Element(ns + "Version")?.Value;
+                return new PackageReferenceInfo(id, string.IsNullOrEmpty(version) ? null : version);
+            })
+            .Where(r => r != null)
+            .Select(r => r!)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Parses all <c>&lt;Reference Include="..."&gt;</c> elements.
+    /// Strips the full assembly identity (version/culture/token) from the Include value,
+    /// extracts an optional <c>&lt;HintPath&gt;</c> child (resolved to absolute path),
+    /// and sets <see cref="AssemblyReferenceInfo.IsFrameworkRef"/> when no HintPath is present.
+    /// </summary>
+    private static IReadOnlyList<AssemblyReferenceInfo> ParseAssemblyReferences(
+        XElement root, XNamespace ns, string projectDir)
+    {
+        var result = new List<AssemblyReferenceInfo>();
+
+        foreach (var el in root.Descendants(ns + "Reference"))
+        {
+            var include = el.Attribute("Include")?.Value;
+            if (string.IsNullOrEmpty(include)) continue;
+
+            // Strip version/culture/publicKeyToken qualifiers (everything after the first comma).
+            var commaIdx = include.IndexOf(',');
+            var name     = commaIdx >= 0
+                ? include[..commaIdx].Trim()
+                : include.Trim();
+
+            if (name.Length == 0) continue;
+
+            // Extract version from the Include identity string if present.
+            string? version = null;
+            if (commaIdx >= 0)
+            {
+                var rest = include[(commaIdx + 1)..];
+                var parts = rest.Split(',');
+                foreach (var part in parts)
+                {
+                    var kv = part.Trim().Split('=');
+                    if (kv.Length == 2 &&
+                        kv[0].Trim().Equals("Version", StringComparison.OrdinalIgnoreCase))
+                    {
+                        version = kv[1].Trim();
+                        break;
+                    }
+                }
+            }
+
+            // HintPath child element — resolve to absolute path.
+            var hintPathRaw = el.Element(ns + "HintPath")?.Value
+                           ?? el.Element("HintPath")?.Value;
+            string? hintPath = null;
+            if (!string.IsNullOrEmpty(hintPathRaw))
+            {
+                hintPath = System.IO.Path.IsPathRooted(hintPathRaw)
+                    ? hintPathRaw
+                    : System.IO.Path.GetFullPath(
+                        System.IO.Path.Combine(projectDir, hintPathRaw));
+            }
+
+            result.Add(new AssemblyReferenceInfo(
+                Name:          name,
+                HintPath:      hintPath,
+                Version:       version,
+                IsFrameworkRef: hintPath == null));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses all <c>&lt;Analyzer Include="..."&gt;</c> elements, resolving each to
+    /// an absolute path.
+    /// </summary>
+    private static IReadOnlyList<AnalyzerReferenceInfo> ParseAnalyzerReferences(
+        XElement root, XNamespace ns, string projectDir)
+    {
+        return root.Descendants(ns + "Analyzer")
+            .Select(e => e.Attribute("Include")?.Value)
+            .Where(v => !string.IsNullOrEmpty(v))
+            .Select(v =>
+            {
+                var abs = System.IO.Path.IsPathRooted(v!)
+                    ? v!
+                    : System.IO.Path.GetFullPath(System.IO.Path.Combine(projectDir, v!));
+                return new AnalyzerReferenceInfo(abs);
+            })
+            .ToList();
     }
 
     // -----------------------------------------------------------------------

@@ -3,18 +3,21 @@
 // File: ViewModels/AssemblyDetailViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
+// Updated: 2026-03-16 — Phase 8: async background decompilation + LRU cache.
+//     ShowNode replaced by ShowNodeAsync (Task.Run + DecompileCache).
+//     IsLoading / LoadingMessage drive a progress overlay in the View.
 // Description:
 //     ViewModel for the detail pane (bottom split of the Assembly Explorer panel).
-//     Phase 4: upgraded to a 4-tab layout —
-//       Code  — C# structural skeleton from CSharpSkeletonEmitter
-//       IL    — raw IL disassembly from IlTextEmitter (methods only)
+//     4-tab layout —
+//       Code  — C# with real method bodies via IDecompilerBackend (ILSpy)
+//       IL    — raw IL disassembly (methods only)
 //       Info  — metadata token, PE offset, visibility/modifier flags, custom attrs
 //       Hex   — 64-byte hex dump at the PE offset (read on demand from file)
 //
 // Architecture Notes:
 //     Pattern: MVVM — populated by AssemblyExplorerViewModel.OnNodeSelected.
-//     ShowNode(node, filePath) is the single entry point; filePath is needed
-//     to open the PEReader on demand for IL and to read raw hex bytes.
+//     ShowNodeAsync is the single entry point; all decompile calls run on
+//     a background thread via Task.Run and are short-circuited by an LRU cache.
 //     All string formatting stays in the VM — the View is binding-only.
 // ==========================================================
 
@@ -35,10 +38,14 @@ public sealed record InfoRow(string Key, string Value);
 /// </summary>
 public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
 {
-    private readonly DecompilerService _decompiler;
+    private readonly IDecompilerBackend _backend;
+    private readonly DecompileCache     _cache;
 
-    public AssemblyDetailViewModel(DecompilerService decompiler)
-        => _decompiler = decompiler;
+    public AssemblyDetailViewModel(IDecompilerBackend backend, DecompileCache cache)
+    {
+        _backend = backend;
+        _cache   = cache;
+    }
 
     // ── Shared header ─────────────────────────────────────────────────────────
 
@@ -120,6 +127,24 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         set => SetField(ref _activeTabIndex, value);
     }
 
+    // ── Loading state (Phase 8) ───────────────────────────────────────────────
+
+    private bool _isLoading;
+    // Intentionally hides AssemblyNodeViewModel.IsLoading — this property drives
+    // the detail-pane loading overlay, not the tree-node visibility state.
+    public new bool IsLoading
+    {
+        get => _isLoading;
+        private set => SetField(ref _isLoading, value);
+    }
+
+    private string _loadingMessage = string.Empty;
+    public string LoadingMessage
+    {
+        get => _loadingMessage;
+        private set => SetField(ref _loadingMessage, value);
+    }
+
     // ── Currently displayed node (for Extract button) ─────────────────────────
 
     /// <summary>
@@ -136,12 +161,16 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Updates all detail pane tabs to reflect the selected <paramref name="node"/>.
-    /// <paramref name="filePath"/> is required to read IL and raw hex bytes from disk.
-    /// Called on the UI thread from AssemblyExplorerViewModel.OnNodeSelected.
+    /// Asynchronously updates all detail pane tabs to reflect the selected <paramref name="node"/>.
+    /// Fast synchronous work (Info, Hex) runs immediately on the UI thread.
+    /// Expensive decompilation (Code, IL) runs on a background thread via Task.Run,
+    /// short-circuited by the LRU <see cref="DecompileCache"/> on repeated selections.
+    /// <paramref name="ct"/> is checked before each UI property update so a new
+    /// selection can abort an in-flight decompile without leaving stale content.
     /// </summary>
-    public void ShowNode(AssemblyNodeViewModel node, string filePath)
+    public async Task ShowNodeAsync(AssemblyNodeViewModel node, string filePath, CancellationToken ct)
     {
+        // ── Synchronous, instant metadata ────────────────────────────────────
         CurrentNode   = node;
         Title         = node.DisplayName;
         PeOffsetValue = node.PeOffset;
@@ -149,35 +178,76 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
             ? $"Token: 0x{node.MetadataToken:X8}"
             : string.Empty;
 
-        // Code tab — C# skeleton / assembly info
-        DetailText = node switch
-        {
-            AssemblyRootNodeViewModel root => _decompiler.DecompileAssembly(root.Model),
-            TypeNodeViewModel         type => _decompiler.DecompileType(type.Model),
-            MethodNodeViewModel       meth => _decompiler.DecompileMethod(meth.Model),
-            FieldNodeViewModel        fld  => _decompiler.DecompileMethod(fld.Model),
-            PropertyNodeViewModel     prop => _decompiler.DecompileMethod(prop.Model),
-            _                              => _decompiler.GetStubText(node.DisplayName)
-        };
-
-        // IL tab — method nodes only; empty string for all others
-        IlText = node is MethodNodeViewModel m
-            ? _decompiler.GetIlText(m.Model, filePath)
-            : string.Empty;
-
-        // Info tab — structured metadata key/value grid
         BuildInfoItems(node);
 
-        // Hex tab — 64 bytes at PE offset, formatted as classic hex dump
-        HexDumpText = node.PeOffset > 0
-            ? FormatHexDump(ReadPeBytes(filePath, node.PeOffset), node.PeOffset)
-            : "// No PE offset available for this node.";
-
-        // Extract button visible for Assembly/Type/Method nodes that produce real C# output.
         IsExtractAvailable = node is AssemblyRootNodeViewModel
                                   or TypeNodeViewModel
                                   or MethodNodeViewModel;
 
+        HexDumpText = node.PeOffset > 0
+            ? FormatHexDump(ReadPeBytes(filePath, node.PeOffset), node.PeOffset)
+            : "// No PE offset available for this node.";
+
+        // ── Show loading overlay; clear stale text immediately ────────────────
+        IsLoading     = true;
+        LoadingMessage = $"Decompiling {node.DisplayName}…";
+        DetailText    = string.Empty;
+        IlText        = string.Empty;
+
+        var token = node.MetadataToken;
+
+        // ── Code tab ─────────────────────────────────────────────────────────
+        if (!_cache.TryGet(filePath, token, "code", out var code))
+        {
+            try
+            {
+                code = await Task.Run(() => node switch
+                {
+                    AssemblyRootNodeViewModel root => _backend.DecompileAssembly(root.Model, filePath),
+                    TypeNodeViewModel         type => _backend.DecompileType(type.Model, filePath),
+                    MethodNodeViewModel       meth => _backend.DecompileMethod(meth.Model, filePath),
+                    FieldNodeViewModel        fld  => _backend.DecompileMethod(fld.Model, filePath),
+                    PropertyNodeViewModel     prop => _backend.DecompileMethod(prop.Model, filePath),
+                    _                              => $"// {node.DisplayName}"
+                }, ct);
+            }
+            catch (OperationCanceledException) { IsLoading = false; return; }
+            catch (Exception ex) { code = $"// Decompilation failed:\n// {ex.Message}"; }
+
+            if (ct.IsCancellationRequested) { IsLoading = false; return; }
+
+            // Only cache named tokens; assembly roots (token=0) are omitted to avoid stale info.
+            if (token != 0) _cache.Set(filePath, token, "code", code);
+        }
+
+        DetailText = code;
+
+        // ── IL tab (method nodes only) ────────────────────────────────────────
+        if (node is MethodNodeViewModel methodNode)
+        {
+            if (!_cache.TryGet(filePath, token, "il", out var il))
+            {
+                LoadingMessage = $"Disassembling IL for {node.DisplayName}…";
+                try
+                {
+                    il = await Task.Run(() => _backend.GetIlText(methodNode.Model, filePath), ct);
+                }
+                catch (OperationCanceledException) { IsLoading = false; return; }
+                catch (Exception ex) { il = $"// IL disassembly failed:\n// {ex.Message}"; }
+
+                if (ct.IsCancellationRequested) { IsLoading = false; return; }
+
+                if (token != 0) _cache.Set(filePath, token, "il", il);
+            }
+
+            IlText = il;
+        }
+        else
+        {
+            IlText = string.Empty;
+        }
+
+        IsLoading = false;
         // Do NOT override ActiveTabIndex here — respect the tab the user last picked.
         // Tab is only reset to 0 (Code) by Clear() when the pane is emptied.
     }
@@ -193,6 +263,8 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         PeOffsetValue      = 0L;
         HexDumpText        = "// No PE offset available for this node.";
         IsExtractAvailable = false;
+        IsLoading          = false;
+        LoadingMessage     = string.Empty;
         InfoItems.Clear();
         ActiveTabIndex = 0;
     }

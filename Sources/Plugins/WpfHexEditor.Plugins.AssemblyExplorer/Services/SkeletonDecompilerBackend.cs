@@ -32,6 +32,7 @@ public sealed class SkeletonDecompilerBackend : IDecompilerBackend
 
     public string Name        => "Skeleton (BCL-only)";
     public bool   IsAvailable => true;
+    public DecompilerOptions Options { get; set; } = DecompilerOptions.Default;
 
     public string DecompileAssembly(AssemblyModel model, string filePath)
         => _service.DecompileAssembly(model);

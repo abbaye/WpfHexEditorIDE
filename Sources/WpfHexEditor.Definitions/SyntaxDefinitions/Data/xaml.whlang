@@ -1,0 +1,79 @@
+{
+  "name": "XAML",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Enhanced syntax highlighting for XAML markup with WPF-specific patterns: markup extensions, x: prefix, attached properties, and WPF element keywords.",
+  "category": "Data",
+  "extensions": [ ".xaml" ],
+  "lineComment": "",
+  "blockCommentStart": "<!--",
+  "blockCommentEnd": "-->",
+  "references": {
+    "specifications": [
+      "XAML 2009 Specification",
+      "WPF XAML Namespaces — https://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Comment",
+      "pattern": "<!--[\\s\\S]*?-->",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "ProcInstr",
+      "pattern": "<\\?[^?]*\\?>",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "XmlNsDecl",
+      "pattern": "\\bxmlns(?::[A-Za-z0-9_]+)?",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "XPrefix",
+      "pattern": "\\bx:[A-Za-z][A-Za-z0-9_]*",
+      "colorKey": "TE_Register"
+    },
+    {
+      "type": "MarkupExtension",
+      "pattern": "\\{[^}]+\\}",
+      "colorKey": "TE_Label"
+    },
+    {
+      "type": "WpfKeyword",
+      "pattern": "(?<=</?)(Window|UserControl|Page|Application|ResourceDictionary|DataTemplate|ControlTemplate|HierarchicalDataTemplate|Style|Setter|Trigger|DataTrigger|MultiTrigger|MultiDataTrigger|EventTrigger|Storyboard|BeginStoryboard|DoubleAnimation|ColorAnimation|VisualStateManager|VisualStateGroup|VisualState|Grid|StackPanel|DockPanel|WrapPanel|Canvas|UniformGrid|VirtualizingStackPanel|Border|ScrollViewer|ViewBox|GroupBox|Expander|TabControl|TabItem|HeaderedContentControl|ContentControl|ItemsControl|ListBox|ListBoxItem|ComboBox|ComboBoxItem|ListView|GridView|GridViewColumn|TreeView|TreeViewItem|DataGrid|DataGridTextColumn|DataGridCheckBoxColumn|DataGridTemplateColumn|Button|RepeatButton|ToggleButton|CheckBox|RadioButton|Label|TextBlock|TextBox|PasswordBox|RichTextBox|Slider|ProgressBar|ScrollBar|Separator|Image|Ellipse|Rectangle|Line|Polyline|Polygon|Path|Shape|ToolBar|ToolBarTray|StatusBar|StatusBarItem|Menu|MenuItem|ContextMenu|Popup|ToolTip|Frame|WebBrowser|FlowDocumentScrollViewer|FlowDocumentReader|DocumentViewer|MediaElement|InkCanvas|Thumb|ResizeGrip|AdornerDecorator|BulletDecorator|Decorator)(?=[\\s/>])",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "AttachedProp",
+      "pattern": "\\b[A-Z][A-Za-z0-9_]+\\.[A-Z][A-Za-z0-9_]+(?=\\s*=)",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Tag",
+      "pattern": "</?[A-Za-z][A-Za-z0-9_:.\\-]*",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "AttrName",
+      "pattern": "\\b[A-Za-z][A-Za-z0-9_:.\\-]*(?=\\s*=)",
+      "colorKey": "TE_Operator"
+    },
+    {
+      "type": "AttrValue",
+      "pattern": "(\"[^\"]*\"|'[^']*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Entity",
+      "pattern": "&(?:[A-Za-z][A-Za-z0-9]*|#(?:[0-9]+|x[0-9A-Fa-f]+));",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "TagBracket",
+      "pattern": "[<>]",
+      "colorKey": "TE_Operator"
+    }
+  ]
+}

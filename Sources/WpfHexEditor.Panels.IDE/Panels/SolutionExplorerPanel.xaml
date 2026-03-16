@@ -234,7 +234,7 @@
             <Grid>
                 <!-- Normal display (IsEditing = false) -->
                 <StackPanel x:Name="ProjectDisplayPanel" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource NodeIcon}" Text="{Binding Icon}" Foreground="#4EC9B0"/>
+                    <TextBlock Style="{StaticResource NodeIcon}" Text="{Binding Icon}" Foreground="{Binding LanguageColor}"/>
                     <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}" FontWeight="SemiBold"/>
                 </StackPanel>
                 <!-- Inline rename TextBox (IsEditing = true) -->
@@ -265,7 +265,7 @@
                 <StackPanel x:Name="FolderDisplayPanel" Orientation="Horizontal"
                             ToolTip="Solution folder (logical)">
                     <TextBlock x:Name="FolderIcon" Style="{StaticResource NodeIcon}"
-                               Text="&#xE8D5;" Foreground="#6CA8C4"/>
+                               Text="&#xE8D5;" Foreground="#C4A34A"/>
                     <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
                 </StackPanel>
                 <!-- Inline rename TextBox (IsEditing = true) -->
@@ -416,6 +416,56 @@
                     <Setter TargetName="PhysFilePanel" Property="Opacity" Value="0.45"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- ── References container (VS-like References group under project) ── -->
+        <DataTemplate DataType="{x:Type vm:ReferencesContainerNodeVm}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE71D;" Foreground="#9AABB5"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ── Project reference node (p2p reference inside References) ── -->
+        <DataTemplate DataType="{x:Type vm:ProjectReferenceNodeVm}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xEA3C;" Foreground="#6CA8C4"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ── Package reference node (NuGet / package inside References) ── -->
+        <DataTemplate DataType="{x:Type vm:PackageReferenceNodeVm}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Info.Version, StringFormat='Version: {0}', FallbackValue='No version specified'}">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE7B8;" Foreground="#C8A018"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ── Assembly reference node (<Reference> — BCL or external DLL) ── -->
+        <DataTemplate DataType="{x:Type vm:AssemblyReferenceNodeVm}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Tooltip}">
+                <TextBlock Style="{StaticResource NodeIcon}"
+                           Text="{Binding Icon}"
+                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ── Analyzers container (sub-folder under References) ─────── -->
+        <DataTemplate DataType="{x:Type vm:AnalyzersContainerNodeVm}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE9D9;" Foreground="#B5CEA8"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ── Analyzer node (single Roslyn analyzer DLL) ───────────── -->
+        <DataTemplate DataType="{x:Type vm:AnalyzerNodeVm}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Tooltip}">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE9D9;" Foreground="#B5CEA8"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
         </DataTemplate>
 
         <!-- ── Changeset companion file (.whchg) ──────────────────────── -->

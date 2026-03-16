@@ -12,6 +12,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Options;
 
@@ -57,8 +58,14 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         FontSizeSlider.Value = opts.DecompilerFontSize;
         FontSizeLabel.Text   = $"{opts.DecompilerFontSize}pt";
 
-        SelectComboByTag(BackendCombo,  opts.DecompilerBackend);
-        SelectComboByTag(LanguageCombo, opts.DecompileLanguage);
+        SelectComboByTag(BackendCombo,      opts.DecompilerBackend);
+        SelectComboByTag(LanguageCombo,     opts.DecompileLanguage);
+        SelectComboByTag(QualityCombo,      opts.DecompilationQuality.ToString());
+        SelectComboByTag(CSharpVersionCombo, opts.CSharpLanguageVersion.ToString());
+
+        ChkShowXmlDocs.IsChecked  = opts.ShowXmlDocs;
+        ChkShowHidden.IsChecked   = opts.ShowHiddenMembers;
+        ChkEnablePdb.IsChecked    = opts.EnablePdbIntegration;
 
         ChkAutoAnalyze.IsChecked    = opts.AutoAnalyzeOnFileOpen;
         ChkAutoSync.IsChecked       = opts.AutoSyncWithHexEditor;
@@ -81,9 +88,17 @@ public partial class AssemblyExplorerOptionsPage : UserControl
     {
         var opts = AssemblyExplorerOptions.Instance;
 
-        opts.DecompilerFontSize              = (int)FontSizeSlider.Value;
-        opts.DecompilerBackend               = GetComboTag(BackendCombo)  ?? "None";
-        opts.DecompileLanguage               = GetComboTag(LanguageCombo) ?? "CSharp";
+        opts.DecompilerFontSize    = (int)FontSizeSlider.Value;
+        opts.DecompilerBackend     = GetComboTag(BackendCombo)      ?? "ILSpy";
+        opts.DecompileLanguage     = GetComboTag(LanguageCombo)     ?? "CSharp";
+        opts.ShowXmlDocs           = ChkShowXmlDocs.IsChecked == true;
+        opts.ShowHiddenMembers     = ChkShowHidden.IsChecked   == true;
+        opts.EnablePdbIntegration  = ChkEnablePdb.IsChecked    == true;
+
+        if (Enum.TryParse<DecompilationQuality>(GetComboTag(QualityCombo), out var q))
+            opts.DecompilationQuality = q;
+        if (int.TryParse(GetComboTag(CSharpVersionCombo), out var v))
+            opts.CSharpLanguageVersion = v;
         opts.AutoAnalyzeOnFileOpen           = ChkAutoAnalyze.IsChecked   == true;
         opts.AutoSyncWithHexEditor           = ChkAutoSync.IsChecked      == true;
         opts.ShowResources                   = ChkShowResources.IsChecked  == true;

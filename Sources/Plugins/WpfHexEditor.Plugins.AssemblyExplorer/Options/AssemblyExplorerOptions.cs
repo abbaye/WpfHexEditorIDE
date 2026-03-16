@@ -16,6 +16,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Options;
 
@@ -64,6 +65,32 @@ public sealed class AssemblyExplorerOptions
 
     /// <summary>Automatically analyze the file when it is opened in the HexEditor.</summary>
     public bool AutoAnalyzeOnFileOpen { get; set; } = true;
+
+    // ── Phase 7 additions — decompilation quality settings ────────────────────
+
+    /// <summary>Decompilation quality level. Skeleton = BCL stubs; Full = ILSpy with docs.</summary>
+    public DecompilationQuality DecompilationQuality { get; set; } = DecompilationQuality.Full;
+
+    /// <summary>
+    /// Target C# language version for ICSharpCode.Decompiler.
+    /// Encoded as major*100+minor (e.g. 1200 = C# 12.0, 600 = C# 6.0).
+    /// </summary>
+    public int CSharpLanguageVersion { get; set; } = 1200;
+
+    /// <summary>Show XML documentation comments in decompiled C# output.</summary>
+    public bool ShowXmlDocs { get; set; } = true;
+
+    /// <summary>Show hidden (compiler-generated) members in decompiled output.</summary>
+    public bool ShowHiddenMembers { get; set; } = false;
+
+    /// <summary>Enable reading companion .pdb files for source mapping and local variable names.</summary>
+    public bool EnablePdbIntegration { get; set; } = true;
+
+    /// <summary>Maximum number of decompiled text entries in the LRU cache (Phase 8).</summary>
+    public int DecompileCacheSizeMax { get; set; } = 50;
+
+    /// <summary>Maximum number of cross-reference result sets in the XRef LRU cache (Phase 5).</summary>
+    public int XRefCacheSizeMax { get; set; } = 20;
 
     // ── v2.0 additions ────────────────────────────────────────────────────────
 

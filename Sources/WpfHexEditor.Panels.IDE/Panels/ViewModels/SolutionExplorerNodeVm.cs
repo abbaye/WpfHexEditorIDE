@@ -139,6 +139,19 @@ public sealed class ProjectNodeVm : SolutionExplorerNodeVm
 
     public IProject Source => _project;
 
+    /// <summary>
+    /// VS-like language color for the project icon.
+    /// Resolved from <see cref="IProjectWithReferences.Language"/> when available.
+    /// </summary>
+    public string LanguageColor =>
+        (_project is IProjectWithReferences r ? r.Language : null) switch
+        {
+            "C#"  => "#4FC1FF",   // VS blue for C#
+            "VB"  => "#C8A018",   // VS amber for VB
+            "F#"  => "#C586C0",   // VS purple for F#
+            _     => "#4EC9B0",   // teal default
+        };
+
     // -- Inline rename -------------------------------------------------------
 
     private bool   _isEditing;
@@ -615,6 +628,133 @@ public sealed class SourceMemberNodeVm : SolutionExplorerNodeVm
 
     /// <summary>1-based line number of the member declaration.</summary>
     public int LineNumber => Model.LineNumber;
+}
+
+// -- References container node -------------------------------------------------
+
+/// <summary>
+/// "References" group node displayed directly under a <see cref="ProjectNodeVm"/>.
+/// Children are <see cref="ProjectReferenceNodeVm"/> and <see cref="PackageReferenceNodeVm"/>.
+/// </summary>
+public sealed class ReferencesContainerNodeVm : SolutionExplorerNodeVm
+{
+    public override string DisplayName => "References";
+    /// <summary>Segoe MDL2 "Link" glyph — matches VS References folder.</summary>
+    public override string Icon        => "\uE71D";
+}
+
+// -- Project reference node ----------------------------------------------------
+
+/// <summary>
+/// A project-to-project reference under the <see cref="ReferencesContainerNodeVm"/>.
+/// Displays the referenced project name; stores the absolute <c>.csproj</c> path.
+/// </summary>
+public sealed class ProjectReferenceNodeVm : SolutionExplorerNodeVm
+{
+    public ProjectReferenceNodeVm(string referencePath)
+    {
+        ReferencePath = referencePath;
+    }
+
+    public string ReferencePath { get; }
+
+    public override string DisplayName =>
+        System.IO.Path.GetFileNameWithoutExtension(ReferencePath);
+
+    /// <summary>Segoe MDL2 "ProjectCollection" glyph.</summary>
+    public override string Icon => "\uEA3C";
+}
+
+// -- Package reference node ----------------------------------------------------
+
+/// <summary>
+/// A NuGet / package reference under the <see cref="ReferencesContainerNodeVm"/>.
+/// Displays the package identifier and optional version.
+/// </summary>
+public sealed class PackageReferenceNodeVm : SolutionExplorerNodeVm
+{
+    public PackageReferenceNodeVm(PackageReferenceInfo info)
+    {
+        Info = info;
+    }
+
+    public PackageReferenceInfo Info { get; }
+
+    public override string DisplayName =>
+        string.IsNullOrEmpty(Info.Version)
+            ? Info.Id
+            : $"{Info.Id} ({Info.Version})";
+
+    /// <summary>Segoe MDL2 "Shop" / package box glyph.</summary>
+    public override string Icon => "\uE7B8";
+}
+
+// -- Assembly reference node ---------------------------------------------------
+
+/// <summary>
+/// A <c>&lt;Reference&gt;</c> assembly under the <see cref="ReferencesContainerNodeVm"/>.
+/// BCL / framework assemblies use a different icon from external DLL references.
+/// </summary>
+public sealed class AssemblyReferenceNodeVm : SolutionExplorerNodeVm
+{
+    public AssemblyReferenceNodeVm(AssemblyReferenceInfo info)
+    {
+        Info = info;
+    }
+
+    public AssemblyReferenceInfo Info { get; }
+
+    public override string DisplayName => Info.Name;
+
+    /// <summary>
+    /// Segoe MDL2 "Library" glyph for BCL/framework assemblies;
+    /// "Code" glyph for external DLLs that have a HintPath.
+    /// </summary>
+    public override string Icon =>
+        Info.IsFrameworkRef ? "\uE8F1" : "\uE7EE";
+
+    /// <summary>Tooltip text shown in the UI (HintPath or "Framework Assembly").</summary>
+    public string Tooltip =>
+        Info.HintPath ?? "Framework Assembly";
+}
+
+// -- Analyzers container node --------------------------------------------------
+
+/// <summary>
+/// "Analyzers" sub-folder node under <see cref="ReferencesContainerNodeVm"/>,
+/// mirroring the Visual Studio Analyzers group.
+/// Children are <see cref="AnalyzerNodeVm"/> entries.
+/// </summary>
+public sealed class AnalyzersContainerNodeVm : SolutionExplorerNodeVm
+{
+    public override string DisplayName => "Analyzers";
+
+    /// <summary>Segoe MDL2 "Diagnostic" / medical glyph.</summary>
+    public override string Icon => "\uE9D9";
+}
+
+// -- Analyzer node -------------------------------------------------------------
+
+/// <summary>
+/// A single Roslyn analyzer DLL under the <see cref="AnalyzersContainerNodeVm"/>.
+/// </summary>
+public sealed class AnalyzerNodeVm : SolutionExplorerNodeVm
+{
+    public AnalyzerNodeVm(AnalyzerReferenceInfo info)
+    {
+        Info = info;
+    }
+
+    public AnalyzerReferenceInfo Info { get; }
+
+    public override string DisplayName =>
+        System.IO.Path.GetFileNameWithoutExtension(Info.HintPath);
+
+    /// <summary>Segoe MDL2 "Diagnostic" glyph — matches parent container.</summary>
+    public override string Icon => "\uE9D9";
+
+    /// <summary>Full path to the analyzer DLL.</summary>
+    public string Tooltip => Info.HintPath;
 }
 
 // -- Changeset node (.whchg companion file) ------------------------------------

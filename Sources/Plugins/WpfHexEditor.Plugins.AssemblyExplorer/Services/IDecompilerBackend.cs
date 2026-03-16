@@ -33,6 +33,13 @@ public interface IDecompilerBackend
     /// </summary>
     bool IsAvailable { get; }
 
+    /// <summary>
+    /// Active decompiler options. Set after construction to propagate changes from
+    /// the Options page without rebuilding the backend instance.
+    /// Implementations must not cache options across calls — read fresh per call.
+    /// </summary>
+    DecompilerOptions Options { get; set; }
+
     /// <summary>Returns C# text representing the assembly-level overview.</summary>
     string DecompileAssembly(AssemblyModel model, string filePath);
 

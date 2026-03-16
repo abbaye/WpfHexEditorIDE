@@ -214,8 +214,10 @@ public sealed class VsSolutionLoader : ISolutionLoader
                     AssemblyName     = parsed.AssemblyName,
                     RootNamespace    = parsed.RootNamespace,
                     ProjectGuid      = entry.Guid,
-                    ProjectReferences = parsed.ProjectReferences,
-                    PackageReferences = parsed.PackageReferences,
+                    ProjectReferences  = parsed.ProjectReferences,
+                    PackageReferences  = parsed.PackageReferences,
+                    AssemblyReferences = parsed.AssemblyReferences,
+                    AnalyzerReferences = parsed.AnalyzerReferences,
                 };
             }
             catch

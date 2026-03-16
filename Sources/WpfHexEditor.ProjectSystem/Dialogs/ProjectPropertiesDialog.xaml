@@ -57,6 +57,23 @@
                 <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
                 <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
             </Style>
+            <!-- ListViewItem: override system selection highlight with theme tokens -->
+            <Style TargetType="ListViewItem">
+                <Setter Property="Background"             Value="Transparent" />
+                <Setter Property="Foreground"             Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderThickness"        Value="0" />
+                <Setter Property="Padding"                Value="6,3" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource SE_SelectedBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style TargetType="GridViewColumnHeader">
                 <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}" />
                 <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />

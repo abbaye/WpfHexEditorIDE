@@ -357,4 +357,21 @@
     <SolidColorBrush x:Key="WarningBannerBrush"                  Color="#3DD97706"/>
     <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#D97706"/>
     <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#92400E"/>
+
+    <!-- XAML Designer (XD_*) — Office theme -->
+    <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#E8E8E8"/>
+    <SolidColorBrush x:Key="XD_SelectionBorderBrush"             Color="#217346"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleFillBrush"         Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleStrokeBrush"       Color="#217346"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBackground"            Color="#FFF0F0"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerForeground"            Color="#C0392B"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBorder"                Color="#E74C3C"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBrush"                Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBorderBrush"          Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="XD_PropertyNameForeground"           Color="#217346"/>
+    <SolidColorBrush x:Key="XD_PropertyValueForeground"          Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="XD_PropertyGroupHeaderBackground"    Color="#E8EDE8"/>
+    <SolidColorBrush x:Key="XD_ToolbarViewToggleActiveBrush"     Color="#217346"/>
 </ResourceDictionary>

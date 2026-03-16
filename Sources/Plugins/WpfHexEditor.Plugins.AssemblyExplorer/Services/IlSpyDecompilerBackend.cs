@@ -42,6 +42,7 @@ public sealed class IlSpyDecompilerBackend : IDecompilerBackend
 
     public string Name        => "ILSpy (ICSharpCode.Decompiler)";
     public bool   IsAvailable => true;
+    public DecompilerOptions Options { get; set; } = DecompilerOptions.Default;
 
     // ── IDecompilerBackend ────────────────────────────────────────────────────
 
@@ -97,16 +98,16 @@ public sealed class IlSpyDecompilerBackend : IDecompilerBackend
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
-    private static CSharpDecompiler CreateDecompiler(string filePath)
-        => new(filePath, BuildSettings());
+    private CSharpDecompiler CreateDecompiler(string filePath)
+        => new(filePath, BuildSettings(Options));
 
-    private static DecompilerSettings BuildSettings() => new()
+    private static DecompilerSettings BuildSettings(DecompilerOptions opts) => new()
     {
-        ThrowOnAssemblyResolveErrors             = false,
-        RemoveDeadCode                           = false,
-        LoadInMemory                             = true,
-        ShowXmlDocumentation                     = true,
+        ThrowOnAssemblyResolveErrors            = false,
+        RemoveDeadCode                          = false,
+        LoadInMemory                            = true,
+        ShowXmlDocumentation                    = opts.ShowXmlDocs,
         // Keep output readable: avoid aggressive optimisations that obscure intent.
-        AggressiveScalarReplacementOfAggregates  = false,
+        AggressiveScalarReplacementOfAggregates = false,
     };
 }
