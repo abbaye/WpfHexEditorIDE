@@ -15,6 +15,7 @@
 //     Does NOT depend on TemplateManager — TemplateManager references this class.
 // ==========================================================
 
+using System.IO;
 using System.Text;
 
 namespace WpfHexEditor.PluginDev;
