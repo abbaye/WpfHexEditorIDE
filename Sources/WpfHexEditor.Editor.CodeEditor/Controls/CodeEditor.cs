@@ -60,6 +60,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Drives hover underline; changing it triggers InvalidateVisual().
         private UrlHitZone? _hoveredUrlZone;
 
+        // Explicit tooltip object opened/closed in OnMouseMove.
+        // Using ToolTip directly (instead of the ToolTip property) ensures the tooltip
+        // appears even when the mouse is already inside the CodeEditor control.
+        private ToolTip? _urlTooltip;
+
         // Compiled URL regex — re-used across all render passes (thread-safe read-only after init).
         private static readonly Regex s_urlRegex = new(
             @"https?://[^\s""'<>\[\]{}|\\^`]+",
@@ -2846,7 +2851,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             && token.StartColumn              >= _hoveredUrlZone.Value.StartCol
                             && token.StartColumn              <  _hoveredUrlZone.Value.EndCol)
                         {
-                            double underlineY = y + _lineHeight - 2;
+                            // Place the underline 2px below the text baseline (tight, VS-style).
+                            double underlineY = baselineY + 2;
                             dc.DrawLine(urlPen,
                                 new Point(tokenX, underlineY),
                                 new Point(tokenX + token.Length * _charWidth, underlineY));
@@ -3484,10 +3490,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_hoveredUrlZone.HasValue)
             {
                 _hoveredUrlZone = null;
-                Cursor  = Cursors.IBeam;
-                ToolTip = null;
+                Cursor = Cursors.IBeam;
+                HideUrlTooltip();
                 InvalidateVisual();
             }
+        }
+
+        private void ShowUrlTooltip()
+        {
+            _urlTooltip ??= new ToolTip { Content = "Ctrl+Click to open" };
+            _urlTooltip.PlacementTarget = this;
+            _urlTooltip.Placement       = System.Windows.Controls.Primitives.PlacementMode.Mouse;
+            _urlTooltip.IsOpen          = true;
+        }
+
+        private void HideUrlTooltip()
+        {
+            if (_urlTooltip is not null)
+                _urlTooltip.IsOpen = false;
         }
 
         private void MoveCursorToLineStart(bool extendSelection)
@@ -3871,13 +3891,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 if (urlZone.HasValue)
                 {
-                    Cursor  = Cursors.Hand;
-                    ToolTip = "Ctrl+Click to open";
+                    Cursor = Cursors.Hand;
+                    ShowUrlTooltip();
                 }
                 else
                 {
-                    Cursor  = Cursors.IBeam;
-                    ToolTip = null;
+                    Cursor = Cursors.IBeam;
+                    HideUrlTooltip();
                 }
             }
 
