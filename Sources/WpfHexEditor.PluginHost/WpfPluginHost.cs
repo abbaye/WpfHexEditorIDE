@@ -98,6 +98,17 @@ public sealed class WpfPluginHost : IAsyncDisposable
     /// <summary>Raised when SlowPluginDetector identifies a non-responsive plugin.</summary>
     public event EventHandler<SlowPluginDetectedEventArgs>? SlowPluginDetected;
 
+    /// <summary>
+    /// Raised on the Dispatcher thread when the migration monitor detects that an InProcess
+    /// plugin has exceeded a configured threshold.
+    /// Only raised in <see cref="PluginMigrationMode.SuggestOnly"/> mode —
+    /// in <see cref="PluginMigrationMode.AutoMigrate"/> mode the host migrates automatically.
+    /// </summary>
+    public event EventHandler<PluginMigrationSuggestedEventArgs>? MigrationSuggested;
+
+    /// <summary>The active migration policy. Live-updated via <see cref="UpdateMigrationPolicy"/>.</summary>
+    public PluginMigrationPolicy MigrationPolicy { get; private set; }
+
     public WpfPluginHost(
         IIDEHostContext hostContext,
         UIRegistry uiRegistry,
@@ -142,6 +153,18 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _samplingTimer.Start();
 
         LoadIsolationOverrides();
+
+        // Dynamic migration monitor — loaded policy persisted per-user.
+        MigrationPolicy = PluginMigrationPolicy.Load();
+        _migrationMonitor = new PluginMigrationMonitor(
+            getLoadedEntries: GetLoadedEntries,
+            policy:           MigrationPolicy,
+            onMigrationTriggered: OnMigrationTriggered,
+            dispatcher:       dispatcher);
+        _migrationMonitor.Start();
+
+        // Forward crash events to migration monitor so it can track crash counts.
+        PluginCrashed += (_, e) => _migrationMonitor.RecordCrash(e.PluginId);
     }
 
     // --- Discovery --------------------------------------------------------------
@@ -452,8 +475,15 @@ public sealed class WpfPluginHost : IAsyncDisposable
         catch { /* best-effort shutdown */ }
         finally
         {
-            _uiRegistry.UnregisterAllForPlugin(pluginId);
+            // UI unregistration (menus, panels, toolbar items) must run on the UI thread.
+            // UnregisterAllForPlugin calls MenuAdapter.RemoveMenuItem which touches ItemsControl.Items.
+            if (_dispatcher.CheckAccess())
+                _uiRegistry.UnregisterAllForPlugin(pluginId);
+            else
+                await _dispatcher.InvokeAsync(() => _uiRegistry.UnregisterAllForPlugin(pluginId));
+
             OptionsRegistry.UnregisterPluginPage(pluginId);
+            _migrationMonitor.ResetCrashCount(pluginId);
             entry.Unload();
             entry.SetState(PluginState.Unloaded);
             RaiseOnDispatcher(() => PluginUnloaded?.Invoke(this, new PluginEventArgs(pluginId, entry.Manifest.Name)));
@@ -520,6 +550,65 @@ public sealed class WpfPluginHost : IAsyncDisposable
                     _isolationOverrides[k] = parsed;
         }
         catch { /* best-effort: corrupt/missing file is not fatal */ }
+    }
+
+    // --- Dynamic migration -------------------------------------------------------
+
+    /// <summary>
+    /// Replaces the active migration policy and persists it.
+    /// The monitor picks up the change on its next tick.
+    /// </summary>
+    public void UpdateMigrationPolicy(PluginMigrationPolicy policy)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+        MigrationPolicy = policy;
+        _migrationMonitor.UpdatePolicy(policy);
+        policy.Save();
+    }
+
+    /// <summary>
+    /// Invoked by <see cref="PluginMigrationMonitor"/> on the Dispatcher thread when a
+    /// threshold is exceeded.
+    /// </summary>
+    private void OnMigrationTriggered(string pluginId, MigrationTriggerReason reason)
+    {
+        PluginEntry? entry;
+        lock (_lock) _entries.TryGetValue(pluginId, out entry);
+        if (entry is null) return;
+
+        if (MigrationPolicy.Mode == PluginMigrationMode.AutoMigrate)
+        {
+            _log($"[PluginSystem] Auto-migrating '{pluginId}' to Sandbox (reason: {reason}).");
+            _ = SetIsolationOverrideAsync(pluginId, PluginIsolationMode.Sandbox);
+        }
+        else
+        {
+            // SuggestOnly — raise the event for the UI to handle.
+            RaiseOnDispatcher(() => MigrationSuggested?.Invoke(this,
+                BuildMigrationSuggestedArgs(entry, reason)));
+        }
+    }
+
+    private PluginMigrationSuggestedEventArgs BuildMigrationSuggestedArgs(
+        PluginEntry entry, MigrationTriggerReason reason)
+    {
+        var snap  = entry.Diagnostics.GetLatest();
+        var memMb = snap is not null ? snap.MemoryBytes / (1024 * 1024) : 0;
+        var cpu   = snap?.CpuPercent ?? 0.0;
+
+        var message = reason switch
+        {
+            MigrationTriggerReason.Crashes =>
+                $"Plugin '{entry.Manifest.Name}' has crashed {_migrationMonitor.GetCrashCount(entry.Manifest.Id)} time(s). Consider moving it to Sandbox.",
+            MigrationTriggerReason.Memory =>
+                $"Plugin '{entry.Manifest.Name}' is using {memMb} MB — consider moving it to Sandbox.",
+            MigrationTriggerReason.Cpu =>
+                $"Plugin '{entry.Manifest.Name}' has sustained high CPU ({cpu:F1}%) — consider moving it to Sandbox.",
+            _ => $"Plugin '{entry.Manifest.Name}' may benefit from Sandbox isolation."
+        };
+
+        return new PluginMigrationSuggestedEventArgs(
+            entry.Manifest.Id, entry.Manifest.Name, reason, memMb, cpu, message);
     }
 
     private void SaveIsolationOverrides()
@@ -797,6 +886,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
     {
         // Dispose MetricsEngine first
         _metricsEngine?.Dispose();
+        _migrationMonitor.Dispose();
 
         _samplingTimer.Stop();
         _samplingTimer.Tick -= OnSamplingTick;
@@ -821,4 +911,31 @@ public sealed class PluginEventArgs : EventArgs
     public string PluginId { get; }
     public string PluginName { get; }
     public PluginEventArgs(string id, string name) { PluginId = id; PluginName = name; }
+}
+
+/// <summary>
+/// Event args raised when the migration monitor suggests moving an InProcess plugin to Sandbox.
+/// </summary>
+public sealed class PluginMigrationSuggestedEventArgs : EventArgs
+{
+    public string                PluginId      { get; }
+    public string                PluginName    { get; }
+    public MigrationTriggerReason Reason       { get; }
+    public long                  CurrentMemoryMb { get; }
+    public double                CurrentCpu    { get; }
+    public string                Message       { get; }
+
+    public PluginMigrationSuggestedEventArgs(
+        string pluginId, string pluginName,
+        MigrationTriggerReason reason,
+        long currentMemoryMb, double currentCpu,
+        string message)
+    {
+        PluginId       = pluginId;
+        PluginName     = pluginName;
+        Reason         = reason;
+        CurrentMemoryMb = currentMemoryMb;
+        CurrentCpu     = currentCpu;
+        Message        = message;
+    }
 }
