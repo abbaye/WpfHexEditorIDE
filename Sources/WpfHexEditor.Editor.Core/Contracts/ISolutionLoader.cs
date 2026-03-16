@@ -22,6 +22,13 @@ public interface ISolutionLoader
     string LoaderName { get; }
 
     /// <summary>
+    /// File extensions this loader handles, without the leading dot
+    /// (e.g. <c>["sln", "csproj", "vbproj"]</c>).
+    /// Used to build the Open-Solution-or-Project file-dialog filter dynamically.
+    /// </summary>
+    IReadOnlyList<string> SupportedExtensions { get; }
+
+    /// <summary>
     /// Returns <c>true</c> if this loader can load the file at <paramref name="filePath"/>.
     /// Called before <see cref="LoadAsync"/> — should be fast (check extension only).
     /// </summary>

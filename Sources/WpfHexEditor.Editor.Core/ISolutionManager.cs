@@ -30,6 +30,8 @@ public interface ISolutionManager
     // -- Solution lifecycle -----------------------------------------------
     Task<ISolution> CreateSolutionAsync(string directory, string name, CancellationToken ct = default);
     Task<ISolution> OpenSolutionAsync(string filePath, CancellationToken ct = default);
+    /// <summary>Applies an externally loaded solution (e.g. from a plugin loader) as the active solution.</summary>
+    Task LoadExternalSolutionAsync(ISolution solution, string filePath, CancellationToken ct = default);
     Task SaveSolutionAsync(ISolution solution, CancellationToken ct = default);
     Task CloseSolutionAsync(CancellationToken ct = default);
 

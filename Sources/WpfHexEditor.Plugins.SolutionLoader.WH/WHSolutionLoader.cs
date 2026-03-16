@@ -34,11 +34,14 @@ public sealed class WHSolutionLoader : ISolutionLoader
     public string LoaderName => "WpfHexEditor Native";
 
     /// <inheritdoc />
+    public IReadOnlyList<string> SupportedExtensions { get; } = ["whsln", "whproj"];
+
+    /// <inheritdoc />
     public bool CanLoad(string filePath)
-        => string.Equals(
-            System.IO.Path.GetExtension(filePath),
-            ".whsln",
-            StringComparison.OrdinalIgnoreCase);
+    {
+        var ext = System.IO.Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
+        return SupportedExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+    }
 
     /// <inheritdoc />
     public Task<ISolution> LoadAsync(string filePath, CancellationToken ct = default)

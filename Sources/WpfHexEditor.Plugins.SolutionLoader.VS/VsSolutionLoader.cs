@@ -62,11 +62,14 @@ public sealed class VsSolutionLoader : ISolutionLoader
     public string LoaderName => "Visual Studio";
 
     /// <inheritdoc />
+    public IReadOnlyList<string> SupportedExtensions { get; } = ["sln", "csproj", "vbproj", "fsproj"];
+
+    /// <inheritdoc />
     public bool CanLoad(string filePath)
-        => string.Equals(
-            System.IO.Path.GetExtension(filePath),
-            ".sln",
-            StringComparison.OrdinalIgnoreCase);
+    {
+        var ext = System.IO.Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
+        return SupportedExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+    }
 
     /// <inheritdoc />
     public async Task<ISolution> LoadAsync(string filePath, CancellationToken ct = default)

@@ -3771,16 +3771,49 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var dlg = new OpenFileDialog
         {
-            Filter      = "Solution/Project Files (*.whsln;*.whproj)|*.whsln;*.whproj|" +
-                          "Solution Files (*.whsln)|*.whsln|" +
-                          "Project Files (*.whproj)|*.whproj",
-            DefaultExt  = ".whsln",
-            Title       = "Open Solution or Project"
+            Filter     = BuildSolutionFileFilter(),
+            DefaultExt = ".whsln",
+            Title      = "Open Solution or Project"
         };
 
         if (dlg.ShowDialog() != true) return;
 
         _ = OpenSolutionAsync(dlg.FileName);
+    }
+
+    /// <summary>
+    /// Builds the OpenFileDialog filter dynamically from registered <see cref="ISolutionLoader"/> plugins.
+    /// Falls back to native WH format if no loaders are registered.
+    /// </summary>
+    private string BuildSolutionFileFilter()
+    {
+        var loaders = _ideHostContext?.ExtensionRegistry.GetExtensions<ISolutionLoader>()
+                      ?? [];
+
+        if (loaders.Count == 0)
+            return "Solution/Project Files (*.whsln;*.whproj)|*.whsln;*.whproj|" +
+                   "Solution Files (*.whsln)|*.whsln|" +
+                   "Project Files (*.whproj)|*.whproj";
+
+        // Build "All supported" catch-all entry from all loader extensions.
+        var allExts  = loaders.SelectMany(l => l.SupportedExtensions)
+                              .Distinct(StringComparer.OrdinalIgnoreCase)
+                              .OrderBy(e => e)
+                              .ToList();
+        var allGlobs = string.Join(";", allExts.Select(e => $"*.{e}"));
+        var filter   = $"All Solution/Project Files ({allGlobs})|{allGlobs}";
+
+        // One entry per loader.
+        foreach (var loader in loaders)
+        {
+            var exts  = loader.SupportedExtensions;
+            var globs = string.Join(";", exts.Select(e => $"*.{e}"));
+            var names = string.Join("; ", exts.Select(e => $"*.{e}"));
+            filter += $"|{loader.LoaderName} Files ({names})|{globs}";
+        }
+
+        filter += "|All Files (*.*)|*.*";
+        return filter;
     }
 
     private async Task OpenSolutionAsync(string filePath)
@@ -3794,7 +3827,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         try
         {
-            await _solutionManager.OpenSolutionAsync(filePath);
+            // Route to the appropriate loader plugin if one is registered for this file type.
+            var loaders = _ideHostContext?.ExtensionRegistry.GetExtensions<ISolutionLoader>() ?? [];
+            var loader  = loaders.FirstOrDefault(l => l.CanLoad(filePath));
+
+            if (loader != null && filePath.EndsWith(".whsln", StringComparison.OrdinalIgnoreCase) is false
+                               && filePath.EndsWith(".whproj", StringComparison.OrdinalIgnoreCase) is false)
+            {
+                // External format (e.g. .sln, .csproj) — use plugin loader, then inject into SolutionManager.
+                var solution = await loader.LoadAsync(filePath);
+                await _solutionManager.LoadExternalSolutionAsync(solution, filePath);
+            }
+            else
+            {
+                await _solutionManager.OpenSolutionAsync(filePath);
+            }
+
             OutputLogger.Info($"Solution opened: {filePath}");
             EnsureSolutionExplorerVisible();
 
