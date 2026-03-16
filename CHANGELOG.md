@@ -6,6 +6,87 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.5.0] — 2026-03-16 — Code Editor, Source Outline, Build Output, Assembly Explorer & VS Solution Loader
+
+### ✨ Added — Solution Explorer: Source Outline Navigation
+
+- **`SourceOutlineEngine`** (`WpfHexEditor.Core.SourceAnalysis`) — BCL-only regex-based parser that extracts types and members with 1-based line numbers from `.cs` and `.xaml` files; results are cached per file path
+- **`ISourceOutlineService`** — contract for source outline providers; injected into `SolutionExplorerViewModel`
+- **`SourceTypeModel` / `SourceMemberModel` / `SourceOutlineModel`** — immutable models for parsed types and members
+- **`SolutionExplorerNodeVm`** — lazy expansion via `TreeViewItem.ExpandedEvent`; `LoadingNode` placeholder shown while parsing; outline nodes expose `LineNumber` for direct navigation
+- **`SolutionExplorerViewModel`** — `OutlineService` wired; async expand handler calls `SourceOutlineEngine` on background thread
+- **`SolutionExplorerPanel.xaml.cs`** — `TreeViewItem.Expanded` handler triggers on-demand source parse; prevents double-expansion
+- Source outline is activated automatically for `.cs` and `.xaml` nodes in the Solution Explorer tree
+
+### ✨ Added — Assembly Explorer Improvements (v0.2.1)
+
+- **Collapse All** — toolbar button + context menu item collapses the entire assembly tree to root nodes
+- **Close All Assemblies** — toolbar button (`ToolbarRightPanel`, always visible) + context menu item (red `#EF4444`) clears all loaded assemblies in one action; `CloseAllCommand` wired in `AssemblyExplorerViewModel`
+- **Decompile to C# → Code Editor tab** — `OnDecompile` now sets `ViewModel.SelectedNode` before executing `OpenInEditorCommand`; ensures right-click context menu decompilation always opens the correct node in a Code Editor tab
+- **C# Syntax Highlighting in decompiled output** — decompiled C# skeleton rendered with full token-level syntax coloring in the Code Editor tab (keywords, types, strings, comments, numbers, operators)
+- **Extract to Project workflow** — `AssemblyCodeExtractService` extracts decompiled C# from any type/method/assembly node and places it in a chosen project; `ProjectPickerDialog` lets the user select the target project; wired via `ExtractToProjectAsync` in `AssemblyExplorerPanel`
+
+### ✨ Added — Build Output Routing (#103 partial)
+
+- **`OutputServiceImpl.Write("Build", …)`** — fixed: now routes to `OutputLogger.BuildInfo/BuildWarn/BuildError/BuildSuccess` (was silently routing to the General channel)
+- **`OutputLogger.FocusChannel(string source)`** — new static method; switches the Output panel to the specified tab on the UI thread via `Dispatcher.InvokeAsync`
+- **`OutputPanel.SetActiveSource(string source)`** — new `internal` method; iterates `SourceComboBox.Items` to match and programmatically select the correct channel
+- **Auto-focus Build tab** — `MainWindow.Build.cs` calls `OutputLogger.FocusChannel(SourceBuild)` in all build runners (`RunBuildSolutionAsync`, `RunRebuildSolutionAsync`, `RunCleanSolutionAsync`, `RunBuildProjectByIdAsync`, `RunRebuildProjectByIdAsync`) before awaiting the build
+- **Empty-solution guard** — if no solution or projects are loaded, `RunBuildSolutionAsync` logs a gold warning "No solution or projects loaded — nothing to build." and returns immediately instead of silently succeeding
+
+### ✨ Added — VS Solution Loader: Project Templates
+
+- **`DotNetProjectTemplate`** — abstract base with `Name`, `Description`, `DefaultProjectName`, `SupportedLanguages`, `GenerateFiles()`
+- **`ConsoleAppTemplate`** — .NET 8 console application scaffold
+- **`ClassLibraryTemplate`** — .NET 8 class library scaffold
+- **`WpfAppTemplate`** — WPF application scaffold (net8.0-windows)
+- **`AspNetApiTemplate`** — ASP.NET Core Web API scaffold
+- Templates are discovered via `VsSolutionLoaderPlugin` and used by "New Project" dialogs
+
+### ✨ Added — Code Editor Enhancements (#84 partial)
+
+- **Full `.whlang` syntax coloring** — all 26 embedded language definitions now produce token-level colored output (keyword, type, string, comment, number, operator, url, preprocessor, attribute, identifier)
+- **Live brush resolution** — `ResolveBrushForKind()` uses `TryFindResource` directly on the editor control instead of the WPF DP system; eliminates "brush not found" fallback to transparent on theme switches
+- **Foreground base pass** — entire document gets the theme foreground color before token colorization to prevent uncolored regions from rendering transparent
+- **Hover-only URL underline** — hyperlinks in code are underlined only on `MouseEnter`; tooltip shows the full URL; click opens in browser
+- **URL baseline fix** — underline drawn closer to text baseline for visual consistency with VS Code
+- **`CodeEditorSplitHost`** improvements — split host properly propagates theme changes to both panes
+- **`CodeDocument` model cleanup** — simplified document state; reduced unnecessary allocations
+- **`CodeEditorFactory`** registration aligned with updated factory contracts
+
+### ✨ Added — LSP Infrastructure
+
+- **`RefactoringEngine`** (`WpfHexEditor.LSP`) — central registry for `IRefactoring` implementations; `Register(IRefactoring)` + `GetAvailable(RefactoringContext)` for contextual filtering; resolves `CS0246` compile error in `CommandIntegration`
+
+### ✨ Added — Docking Engine: Tab Overflow
+
+- **`TabOverflowButton`** — improved overflow button for docked tab groups; correct positioning, theme-aware context menu
+- **`TabOverflowPanel`** — manages collapsed tab groups; updated hit-testing and layout logic
+- **`DockControl` / `DockTabControl`** — wired tab overflow to new panel; `DockTabEventWirer` updated to relay overflow events
+
+### 🔧 Fixed
+
+- **Assembly Explorer: Decompile context menu** — right-click "Decompile to C#" had no effect; `SelectedNode` was not set before `OpenInEditorCommand` executed (`eb536cc6`)
+- **Assembly Explorer: AssemblyDiffPanel crash** — `XamlParseException: 'ContextMenu' cannot have a logical or visual parent` at `InitializeComponent()`; root cause: Button with TextBlock child + `<Button.ContextMenu>` property element causes parent conflict in WPF XAML; fixed by converting Button content to `Content="&#xE712;"` attribute form
+- **Code Editor: syntax highlight transparent on load** — `ResolveBrushForKind` referenced DP-system brushes that weren't in scope at paint time; now uses `TryFindResource` on the control element (`ff19b091`)
+- **Build system: output not visible** — all build output was routed to the General channel with `[Build]` prefix; now correctly routes to the dedicated Build channel (`d335b505`)
+- **Build toolbar/menu: disabled after solution open** — build commands stayed grayed out after opening a `.sln`; fixed by refreshing command states on `SolutionLoadedEvent` (`d8fe1882`)
+- **File access: FileShare.None causing lock conflicts** — analysis services opened files exclusively; replaced with `FileShare.ReadWrite` throughout + external change detection (`b3090989`)
+- **Changeset tracking: performance regression** — `.whchg` tracking was O(n²) on large files; optimized and disabled by default (`f140c544`)
+- **Startup: System.Text.Json 10 transitive dependency** — MSBuild packages pulled in JSON 10 which conflicted with WPF serialization; pinned to 8.x in affected projects (`1027f192`)
+- **Grammar Explorer: embedded grammar discovery** — deferred panel docking and reliable discovery of grammars bundled as embedded resources (`a7196376`)
+- **SolutionLoader: VS/WH/MSBuild build order** — plugins not included in App build order; added project references (`7a7b318d`)
+- **PluginDev: duplicate DevPluginHandle + missing using** — removed duplicate type, added `System.IO` import (`eb656c35`)
+- **Compilation errors: PluginProjectTemplate, CodeEditorOptionsPage, Initializers** — various CS errors fixed (`131cd20b`)
+
+### ⚡ Changed
+
+- **SolutionLoader: dynamic file-dialog filter** — `ISolutionLoader` plugins now declare their supported file extensions; the Open Solution dialog filter is built dynamically from all registered loaders (`ba9279b2`)
+- **External solution routing via `ISolutionLoader`** — `.sln` files are routed to the correct loader plugin instead of being hard-coded in `MainWindow`
+- **IProjectTemplate**: extended contract with `DefaultProjectName`, `SupportedLanguages`, `GenerateFiles()`
+
+---
+
 ## What's Next
 
 > Planned features — subject to change. Feature numbers map to DevPlans.
