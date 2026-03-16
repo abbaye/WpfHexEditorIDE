@@ -129,6 +129,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.Docking
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.Terminal", "Samples\WpfHexEditor.Sample.Terminal\WpfHexEditor.Sample.Terminal.csproj", "{BB000002-BB00-BB00-BB00-BB0000000002}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.LSP", "WpfHexEditor.LSP\WpfHexEditor.LSP.csproj", "{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -751,6 +753,18 @@ Global
 		{BB000002-BB00-BB00-BB00-BB0000000002}.Release|x64.Build.0 = Release|Any CPU
 		{BB000002-BB00-BB00-BB00-BB0000000002}.Release|x86.ActiveCfg = Release|Any CPU
 		{BB000002-BB00-BB00-BB00-BB0000000002}.Release|x86.Build.0 = Release|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Debug|x64.Build.0 = Debug|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Debug|x86.Build.0 = Debug|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x64.ActiveCfg = Release|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x64.Build.0 = Release|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x86.ActiveCfg = Release|Any CPU
+		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
