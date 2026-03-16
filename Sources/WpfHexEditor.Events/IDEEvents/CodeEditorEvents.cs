@@ -97,6 +97,25 @@ public sealed record CodeEditorDiagnosticsUpdatedEvent : IDEEventBase
     public int WarningCount { get; init; }
 }
 
+// ── Commands ───────────────────────────────────────────────────────────────
+
+/// <summary>
+/// Published when an editor command is executed via <c>EditorCommandAdapter</c>
+/// (e.g. undo, redo, find, save, collapseAll).
+/// </summary>
+public sealed record CodeEditorCommandExecutedEvent : IDEEventBase
+{
+    /// <summary>Absolute path of the file in focus when the command ran.</summary>
+    public string FilePath { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Well-known command name (matches <c>RoutedCommand.Name</c> for standard
+    /// WPF commands, or the action key string for custom commands).
+    /// Examples: "Undo", "Redo", "Save", "Find", "collapseAll".
+    /// </summary>
+    public string CommandName { get; init; } = string.Empty;
+}
+
 // ── Folding ────────────────────────────────────────────────────────────────
 
 /// <summary>
