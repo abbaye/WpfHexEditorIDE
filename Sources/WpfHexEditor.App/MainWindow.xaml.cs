@@ -3162,7 +3162,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var focusedHex = unwrapped as HexEditorControl;
         if (focusedHex != null)
             focusedHex.RefreshDocumentStatus();
-        // else RefreshText.Text = ""; // Removed - now handled via StatusBarContributor
+
+        // Sync toolbar contributions for the newly focused editor — mirrors the assignments
+        // in OnActiveDocumentChanged. Without this, ActiveHexEditor and ActiveToolbarContributor
+        // are stale when keyboard focus moves between split panes without a tab click
+        // (e.g., hex pane → TBL pane keeps the TBL character-table pod visible).
+        ActiveHexEditor          = focusedHex;
+        ActiveToolbarContributor = unwrapped as IEditorToolbarContributor;
+        SyncTblDropdownToActiveEditor();
     }
 
     // --- IDocumentEditor event handlers --------------------------------
