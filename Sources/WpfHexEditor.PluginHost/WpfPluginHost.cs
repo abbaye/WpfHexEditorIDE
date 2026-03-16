@@ -161,8 +161,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
         };
         _samplingTimer.Tick += OnSamplingTick;
 
-        // REMOVED: PerformInitialSample() - MetricsEngine handles initialization
-        // The old approach caused race conditions and inaccurate startup metrics
+        // PerformInitialSample() removed — MetricsEngine handles startup initialization
+        // and avoids the race condition with PluginMonitoringViewModel more reliably.
 
         _samplingTimer.Start();
 
