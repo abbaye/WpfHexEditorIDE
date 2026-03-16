@@ -37,6 +37,7 @@ using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.PluginHost.UI.Options;
 using WpfHexEditor.Options;
+using WpfHexEditor.BuildSystem;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.Terminal;
@@ -216,6 +217,12 @@ public partial class MainWindow
                 // ResumeRebuild must run on the UI thread; dispatch back after ConfigureAwait(false).
                 await Dispatcher.InvokeAsync(dockingAdapter.ResumeRebuild);
             }
+
+            // Bridge IBuildAdapter extensions registered by plugins into the build system.
+            // Must run after LoadAllAsync so that MSBuildPlugin has registered its adapter.
+            if (_buildSystem is not null)
+                foreach (var adapter in hostContext.ExtensionRegistry.GetExtensions<IBuildAdapter>())
+                    _buildSystem.RegisterAdapter(adapter);
 
             // Register a dynamic Options page for every in-process plugin that supports IPluginWithOptions.
             foreach (var entry in _pluginHost.OptionsRegistry.GetAll())

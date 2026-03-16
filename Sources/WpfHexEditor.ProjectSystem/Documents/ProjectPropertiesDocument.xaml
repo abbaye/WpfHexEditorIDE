@@ -616,7 +616,7 @@
 
                             <!-- Nom du projet -->
                             <TextBlock Text="Nom du projet" Style="{StaticResource PP_FieldLabelStyle}" />
-                            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=LostFocus}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="{Binding ProjectNameError}"
                                        Style="{StaticResource PP_ValidationErrorStyle}"
@@ -627,7 +627,7 @@
 
                             <!-- Nom d'assembly -->
                             <TextBlock Text="Nom d'assembly" Style="{StaticResource PP_FieldLabelStyle}" />
-                            <TextBox Text="{Binding AssemblyName, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding AssemblyName, UpdateSourceTrigger=LostFocus}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="{Binding AssemblyNameError}"
                                        Style="{StaticResource PP_ValidationErrorStyle}"
@@ -638,7 +638,7 @@
 
                             <!-- Espace de noms par défaut -->
                             <TextBlock Text="Espace de noms par défaut" Style="{StaticResource PP_FieldLabelStyle}" />
-                            <TextBox Text="{Binding DefaultNamespace, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding DefaultNamespace, UpdateSourceTrigger=LostFocus}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="Espace de noms racine utilisé pour les nouveaux fichiers."
                                        Style="{StaticResource PP_FieldDescStyle}" />

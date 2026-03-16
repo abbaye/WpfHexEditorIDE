@@ -394,6 +394,14 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
 
     // ------------------------------------------------------------------------
 
+    /// <summary>
+    /// True for .cs and .xaml files that support on-demand member expansion.
+    /// When true a <see cref="LoadingNodeVm"/> sentinel child is injected at build time
+    /// so the TreeView shows an expand arrow; the sentinel is replaced once the async
+    /// outline parse completes.
+    /// </summary>
+    public bool SupportsExpansion { get; set; }
+
     public IProjectItem Source => _item;
     public IProject?   Project { get; init; }
 }
@@ -474,6 +482,139 @@ public sealed class PhysicalFileNodeVm : SolutionExplorerNodeVm
     public bool          IsInProject  => LinkedItem is not null;
     public override string DisplayName => System.IO.Path.GetFileName(PhysicalPath);
     public override string Icon        => "\uE8A5";
+}
+
+// -- Dependent file node (convention-nested companion) ------------------------
+
+/// <summary>
+/// Represents a file that is nested under a parent <see cref="FileNodeVm"/>
+/// by naming convention (e.g. <c>Foo.xaml.cs</c> under <c>Foo.xaml</c>,
+/// <c>Foo.Designer.cs</c> under <c>Foo.cs</c>).
+/// Visual rendering is dimmed (82% opacity) and italic to signal dependency.
+/// All file-level operations (Open, Rename, Delete) are supported.
+/// </summary>
+public sealed class DependentFileNodeVm : SolutionExplorerNodeVm
+{
+    private readonly IProjectItem _item;
+    private bool   _isEditing;
+    private string _editingName = string.Empty;
+
+    public DependentFileNodeVm(IProjectItem item, IProject? project)
+    {
+        _item   = item;
+        Project = project;
+    }
+
+    public override string DisplayName => _item.Name;
+
+    /// <summary>Segoe MDL2 U+E71B (Link) — signals the dependency relationship.</summary>
+    public override string Icon => "\uE71B";
+
+    public IProjectItem Source  => _item;
+    public IProject?    Project { get; init; }
+
+    // -- Inline rename -------------------------------------------------------
+
+    public override bool IsEditing => _isEditing;
+
+    private void SetIsEditing(bool v) { _isEditing = v; OnPropertyChanged(nameof(IsEditing)); }
+
+    public string EditingName
+    {
+        get => _editingName;
+        set { _editingName = value; OnPropertyChanged(); }
+    }
+
+    public void   BeginEdit()  { EditingName = _item.Name; SetIsEditing(true); }
+    public string CommitEdit() { var n = _editingName.Trim(); SetIsEditing(false); return n; }
+    public void   CancelEdit() => SetIsEditing(false);
+}
+
+// -- Loading sentinel node (async source outline in progress) -----------------
+
+/// <summary>
+/// Placeholder node shown as the sole child of an expandable <see cref="FileNodeVm"/>
+/// while the source outline is being loaded asynchronously.
+/// Replaced by <see cref="SourceTypeNodeVm"/> instances when the parse completes.
+/// </summary>
+public sealed class LoadingNodeVm : SolutionExplorerNodeVm
+{
+    public override string DisplayName => "Loading\u2026";
+    /// <summary>Segoe MDL2 U+E9F5 (ProgressRingDots).</summary>
+    public override string Icon => "\uE9F5";
+}
+
+// -- Source type node (class/struct/interface/enum/record) --------------------
+
+/// <summary>
+/// Represents a type declaration found by the regex source scanner inside a .cs file.
+/// Children are <see cref="SourceMemberNodeVm"/> instances.
+/// Double-click navigates to <see cref="LineNumber"/> in the code editor.
+/// </summary>
+public sealed class SourceTypeNodeVm : SolutionExplorerNodeVm
+{
+    public SourceTypeNodeVm(
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceTypeModel model,
+        string fileAbsolutePath)
+    {
+        Model            = model;
+        FileAbsolutePath = fileAbsolutePath;
+    }
+
+    public WpfHexEditor.Core.SourceAnalysis.Models.SourceTypeModel Model { get; }
+    public string FileAbsolutePath { get; }
+
+    public override string DisplayName => Model.Name;
+
+    /// <summary>
+    /// Segoe MDL2 U+E8F1 (Code) — same glyph for all type kinds;
+    /// colour differentiation is applied in XAML via DataTrigger on Model.Kind.
+    /// </summary>
+    public override string Icon => "\uE8F1";
+
+    /// <summary>1-based line number of the type declaration.</summary>
+    public int LineNumber => Model.LineNumber;
+}
+
+// -- Source member node (method/property/field/event/constructor) -------------
+
+/// <summary>
+/// Represents a member declaration inside a <see cref="SourceTypeNodeVm"/>.
+/// Leaf node — no children.
+/// Double-click navigates to <see cref="LineNumber"/> in the code editor.
+/// </summary>
+public sealed class SourceMemberNodeVm : SolutionExplorerNodeVm
+{
+    public SourceMemberNodeVm(
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberModel model,
+        string fileAbsolutePath)
+    {
+        Model            = model;
+        FileAbsolutePath = fileAbsolutePath;
+    }
+
+    public WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberModel Model { get; }
+    public string FileAbsolutePath { get; }
+
+    public override string DisplayName
+        => Model.Kind == WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Constructor
+            ? $"{Model.Name}()"
+            : string.IsNullOrEmpty(Model.ReturnType)
+                ? Model.Name
+                : $"{Model.Name} : {Model.ReturnType}";
+
+    public override string Icon => Model.Kind switch
+    {
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Constructor => "\uE8C7",
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Method      => "\uE8C7",
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Property    => "\uE7C1",
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Field       => "\uE8D2",
+        WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Event       => "\uE7A8",
+        _                                                                     => "\uE8A5",
+    };
+
+    /// <summary>1-based line number of the member declaration.</summary>
+    public int LineNumber => Model.LineNumber;
 }
 
 // -- Changeset node (.whchg companion file) ------------------------------------

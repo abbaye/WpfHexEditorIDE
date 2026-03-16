@@ -1159,6 +1159,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.SolutionFolderDeleteRequested    += OnSESolutionFolderDeleteRequested;
         panel.ProjectMoveRequested             += OnSEProjectMoveRequested;
         panel.ClipboardPasteRequested          += OnSEClipboardPaste;
+        panel.SourceLineNavigationRequested    += OnSESourceLineNavigationRequested;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
@@ -3047,6 +3048,64 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Discard changeset failed for '{e.Item.Name}': {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Opens a source file in the text editor and scrolls to the requested 1-based line number.
+    /// Triggered when the user double-clicks a type or member node in the Solution Explorer.
+    /// </summary>
+    private void OnSESourceLineNavigationRequested(object? sender, SourceLineNavigationEventArgs e)
+    {
+        if (string.IsNullOrEmpty(e.AbsolutePath) || !File.Exists(e.AbsolutePath)) return;
+
+        // Look for an already-open TextEditor tab for this file (match by file name via Title).
+        var fileName   = Path.GetFileName(e.AbsolutePath);
+        var existingKv = _contentCache.FirstOrDefault(kv =>
+            kv.Value is WpfHexEditor.Editor.TextEditor.Controls.TextEditor tc &&
+            string.Equals(tc.Title.TrimEnd('*', ' '), fileName,
+                System.StringComparison.OrdinalIgnoreCase));
+
+        WpfHexEditor.Editor.TextEditor.Controls.TextEditor? textEditor;
+
+        if (existingKv.Key != null)
+        {
+            // Activate the existing tab.
+            textEditor = existingKv.Value as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
+            var existingItem = _layout.FindItemByContentId(existingKv.Key);
+            if (existingItem?.Owner != null) existingItem.Owner.ActiveItem = existingItem;
+        }
+        else
+        {
+            // Open the file in a new TextEditor tab.
+            _documentCounter++;
+            var contentId  = $"doc-text-src-{_documentCounter}";
+            var factory    = new WpfHexEditor.Editor.TextEditor.TextEditorFactory();
+            textEditor     = factory.Create() as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
+            if (textEditor == null) return;
+
+            textEditor.OutputMessage += OnEditorOutputMessage;
+            _ = textEditor.OpenAsync(e.AbsolutePath);
+
+            StoreContent(contentId, textEditor);
+            var dockItem = new DockItem
+            {
+                ContentId = contentId,
+                Title     = Path.GetFileName(e.AbsolutePath),
+                Metadata  = { ["FilePath"] = e.AbsolutePath }
+            };
+            _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
+            RegisterDocumentFromItem(dockItem, textEditor);
+            ActiveDocumentEditor = textEditor;
+        }
+
+        // Scroll to line after layout is updated.
+        if (e.LineNumber > 0 && textEditor != null)
+        {
+            var targetLine = e.LineNumber;
+            var captured   = textEditor;
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                () => captured.GoToLine(targetLine, 1));
         }
     }
 

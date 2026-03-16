@@ -16,6 +16,7 @@
 //     NullToCollapsedConverter hides validation errors when null.
 // ==========================================================
 
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +34,10 @@ public partial class ProjectPropertiesDocument : UserControl
     // Maps sectionId → the StackPanel that displays that section.
     private readonly Dictionary<string, StackPanel> _sections = new();
 
+    // Stored so we can unsubscribe before re-binding to a new VM (prevents handler accumulation).
+    private PropertyChangedEventHandler? _vmPropertyChangedHandler;
+    private ProjectPropertiesViewModel?  _boundVm;
+
     public ProjectPropertiesDocument()
     {
         InitializeComponent();
@@ -46,17 +51,20 @@ public partial class ProjectPropertiesDocument : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        // Register all section panels (must match sectionIds in BuildNavItems)
-        _sections["app-general"]    = SectionAppGeneral;
-        _sections["build"]          = SectionBuild;
+        // Register all section panels (must match sectionIds in BuildNavItems).
+        // This is the only place _sections is populated — BindViewModel needs Loaded to have
+        // fired before ShowSection() works, so we call BindViewModel here if the DataContext
+        // was already set before Loaded (which is the normal WPF lifecycle order).
+        _sections["app-general"]      = SectionAppGeneral;
+        _sections["build"]            = SectionBuild;
         _sections["app-dependencies"] = SectionDependencies;
-        _sections["global-usings"]  = SectionGlobalUsings;
-        _sections["items"]          = SectionItems;
-        _sections["references"]     = SectionReferences;
-        _sections["app-win32"]      = SectionWin32Resources;
-        _sections["package"]        = SectionPackage;
-        _sections["debug"]          = SectionDebug;
-        _sections["code-analysis"]  = SectionCodeAnalysis;
+        _sections["global-usings"]    = SectionGlobalUsings;
+        _sections["items"]            = SectionItems;
+        _sections["references"]       = SectionReferences;
+        _sections["app-win32"]        = SectionWin32Resources;
+        _sections["package"]          = SectionPackage;
+        _sections["debug"]            = SectionDebug;
+        _sections["code-analysis"]    = SectionCodeAnalysis;
 
         if (DataContext is ProjectPropertiesViewModel vm)
             BindViewModel(vm);
@@ -64,21 +72,35 @@ public partial class ProjectPropertiesDocument : UserControl
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.NewValue is ProjectPropertiesViewModel vm)
+        // Only call BindViewModel after Loaded so _sections is populated.
+        // Before Loaded, OnLoaded will call BindViewModel itself.
+        if (e.NewValue is ProjectPropertiesViewModel vm && _sections.Count > 0)
             BindViewModel(vm);
     }
 
     private void BindViewModel(ProjectPropertiesViewModel vm)
     {
+        // Guard: avoid re-binding the same VM instance (prevents duplicate subscription
+        // when both DataContextChanged and Loaded fire for the same VM).
+        if (ReferenceEquals(vm, _boundVm)) return;
+
+        // Unsubscribe the previous handler to prevent accumulation across context switches.
+        if (_boundVm is not null && _vmPropertyChangedHandler is not null)
+            _boundVm.PropertyChanged -= _vmPropertyChangedHandler;
+
+        _boundVm = vm;
+
         // Title bar text
         TitleText.Text = $"{vm.ProjectName} — Propriétés";
-        vm.PropertyChanged += (_, args) =>
+
+        _vmPropertyChangedHandler = (_, args) =>
         {
             if (args.PropertyName is nameof(vm.ProjectName))
                 TitleText.Text = $"{vm.ProjectName} — Propriétés";
             else if (args.PropertyName is nameof(vm.SaveCompleted) && vm.SaveCompleted)
                 ShowSaveToast();
         };
+        vm.PropertyChanged += _vmPropertyChangedHandler;
 
         // Populate read-only ListViews
         ItemsListView.ItemsSource        = vm.Items;

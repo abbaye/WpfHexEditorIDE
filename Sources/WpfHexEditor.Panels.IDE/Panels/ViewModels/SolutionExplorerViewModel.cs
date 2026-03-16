@@ -435,11 +435,24 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         foreach (var folder in project.RootFolders)
             node.Children.Add(BuildFolderNode(folder, project));
 
-        // Loose items
-        foreach (var item in project.Items)
+        // Loose items — apply nesting within the loose-items scope
+        var looseItems = project.Items
+            .Where(i => !inFolder.Contains(i.Id))
+            .ToList();
+
+        var nesting = FileNestingDetector.Compute(looseItems);
+
+        foreach (var item in looseItems)
         {
-            if (!inFolder.Contains(item.Id))
-                node.Children.Add(MakeFileNode(item, project));
+            if (nesting.DependentNames.Contains(item.Name)) continue;
+
+            var fileNode = MakeFileNode(item, project);
+
+            if (nesting.ParentToChildren.TryGetValue(item.Name, out var deps))
+                foreach (var dep in deps)
+                    fileNode.Children.Insert(0, new DependentFileNodeVm(dep, project));
+
+            node.Children.Add(fileNode);
         }
 
         return node;
@@ -453,21 +466,145 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         foreach (var childFolder in folder.Children)
             node.Children.Add(BuildFolderNode(childFolder, project, relPath));
 
+        // Collect items for this folder scope
+        var scopeItems = new List<IProjectItem>();
         foreach (var id in folder.ItemIds)
         {
             var item = project.FindItem(id);
-            if (item is not null)
-                node.Children.Add(MakeFileNode(item, project));
+            if (item is not null) scopeItems.Add(item);
+        }
+
+        // Apply nesting: dependent files become children of their parent item
+        var nesting = FileNestingDetector.Compute(scopeItems);
+
+        foreach (var item in scopeItems)
+        {
+            if (nesting.DependentNames.Contains(item.Name)) continue;
+
+            var fileNode = MakeFileNode(item, project);
+
+            if (nesting.ParentToChildren.TryGetValue(item.Name, out var deps))
+                foreach (var dep in deps)
+                    fileNode.Children.Insert(0, new DependentFileNodeVm(dep, project));
+
+            node.Children.Add(fileNode);
         }
 
         return node;
     }
 
     private static FileNodeVm MakeFileNode(IProjectItem item, IProject project)
-        => new(item, isDefaultTbl: item.Id == project.DefaultTblItemId)
+    {
+        var ext       = Path.GetExtension(item.Name);
+        var canExpand = string.Equals(ext, ".cs",   StringComparison.OrdinalIgnoreCase)
+                     || string.Equals(ext, ".xaml", StringComparison.OrdinalIgnoreCase);
+
+        var node = new FileNodeVm(item, isDefaultTbl: item.Id == project.DefaultTblItemId)
         {
-            Project = project,
+            Project          = project,
+            SupportsExpansion = canExpand,
         };
+
+        // Inject a LoadingNodeVm sentinel so WPF shows the expand arrow.
+        // The code-behind will replace it with real member nodes on first expand.
+        if (canExpand)
+            node.Children.Add(new LoadingNodeVm());
+
+        return node;
+    }
+
+    // -------------------------------------------------------------------------
+    // FileNestingDetector — pure utility, no state
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Classifies a flat list of <see cref="IProjectItem"/>s within one scope
+    /// (folder or loose-items list) into parent items and their dependent children
+    /// by applying VS-like naming conventions.
+    /// O(n) per scope — uses a name→item dictionary for O(1) parent lookups.
+    /// </summary>
+    private static class FileNestingDetector
+    {
+        internal sealed class NestingResult
+        {
+            /// <summary>Names of items that should be nested under a parent (excluded from main list).</summary>
+            public HashSet<string> DependentNames { get; }
+                = new(StringComparer.OrdinalIgnoreCase);
+
+            /// <summary>Maps parent item name → ordered list of dependent items.</summary>
+            public Dictionary<string, List<IProjectItem>> ParentToChildren { get; }
+                = new(StringComparer.OrdinalIgnoreCase);
+        }
+
+        internal static NestingResult Compute(IReadOnlyList<IProjectItem> items)
+        {
+            var result  = new NestingResult();
+            var nameMap = new Dictionary<string, IProjectItem>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var item in items)
+                nameMap[item.Name] = item;
+
+            foreach (var item in items)
+            {
+                var parentName = TryFindParent(item.Name, nameMap);
+                if (parentName is null) continue;
+
+                result.DependentNames.Add(item.Name);
+
+                if (!result.ParentToChildren.TryGetValue(parentName, out var list))
+                {
+                    list = [];
+                    result.ParentToChildren[parentName] = list;
+                }
+                list.Add(item);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns the name of the parent item for <paramref name="name"/>,
+        /// or <see langword="null"/> if no nesting applies.
+        /// </summary>
+        private static string? TryFindParent(
+            string name,
+            Dictionary<string, IProjectItem> nameMap)
+        {
+            // Rule 1 — multi-extension: strip last extension and check
+            // e.g. "Foo.xaml.cs" → try "Foo.xaml"; "Foo.xaml.vb" → try "Foo.xaml"
+            var inner = StripLastExtension(name);
+            if (!string.Equals(inner, name, StringComparison.OrdinalIgnoreCase)
+                && nameMap.ContainsKey(inner))
+                return inner;
+
+            // Rule 2 — .Designer.cs / .designer.cs → check several candidate parents
+            if (name.EndsWith(".Designer.cs", StringComparison.OrdinalIgnoreCase))
+            {
+                var baseName = name[..^".Designer.cs".Length];
+                foreach (var ext in (ReadOnlySpan<string>)[".cs", ".resx", ".settings", ".xsd", ".wsdl"])
+                {
+                    var candidate = baseName + ext;
+                    if (nameMap.ContainsKey(candidate)) return candidate;
+                }
+            }
+
+            // Rule 3 — .settings.cs → .settings
+            if (name.EndsWith(".settings.cs", StringComparison.OrdinalIgnoreCase))
+            {
+                var candidate = name[..^".cs".Length]; // "Foo.settings"
+                if (nameMap.ContainsKey(candidate)) return candidate;
+            }
+
+            return null;
+        }
+
+        /// <summary>Strips the last extension: "Foo.xaml.cs" → "Foo.xaml".</summary>
+        private static string StripLastExtension(string name)
+        {
+            var dot = name.LastIndexOf('.');
+            return dot > 0 ? name[..dot] : name;
+        }
+    }
 
     private static void CollectFolderItemIds(IReadOnlyList<IVirtualFolder> folders, HashSet<string> set)
     {

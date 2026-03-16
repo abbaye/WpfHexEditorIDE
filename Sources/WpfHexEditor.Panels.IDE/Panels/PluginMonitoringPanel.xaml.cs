@@ -130,23 +130,48 @@ public partial class PluginMonitoringPanel : UserControl
         MemChartCanvas.SizeChanged += (_, _) => RedrawCharts();
         DragLeave += (_, _) => DropHintOverlay.Visibility = Visibility.Collapsed;
         Unloaded  += OnUnloaded;
-
-        Loaded += (_, _) =>
-        {
-            // Collapse order: TbgPlugin(0) TbgLog(1) TbgCharts(2) TbgLayout(3) TbgInterval(4) TbgMonitor(5)
-            _overflowManager = new ToolbarOverflowManager(
-                toolbarContainer:      ToolbarBorder,
-                alwaysVisiblePanel:    ToolbarRightPanel,
-                overflowButton:        ToolbarOverflowButton,
-                overflowMenu:          OverflowContextMenu,
-                groupsInCollapseOrder: [TbgPlugin, TbgLog, TbgCharts, TbgLayout, TbgInterval, TbgMonitor],
-                leftFixedElements:     [ToolbarLeftPanel]);
-
-            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
-        };
+        Loaded    += OnLoaded;
     }
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Fires on every Loaded event — including reloads after the panel was temporarily
+    /// removed from the visual tree by the docking framework (e.g. hidden tab, re-dock).
+    /// Re-subscribes VM event handlers that were removed in OnUnloaded, restoring
+    /// chart redraws, layout-change notifications, and code-behind interactions.
+    /// </summary>
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        // If _vm is non-null the panel was previously unloaded without a DataContext change
+        // (OnUnloaded unsubscribed handlers but kept the reference alive so layout changes
+        // remain functional after reload).
+        if (_vm is not null)
+        {
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    += OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged += OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      += OnEventLogChanged;
+            _vm.PropertyChanged            += OnVmPropertyChanged;
+            _vm.RequestUninstall           += OnRequestUninstall;
+            _vm.RequestOpenInPluginManager += OnRequestOpenInPluginManager;
+            ApplySparklineVisibility();
+            SyncLayoutCombo(_vm.ChartsPosition);
+            RebuildContentGrid(_vm.ChartsPosition);
+            ApplyEventLogVisibility();
+            RedrawCharts();
+        }
+
+        // Collapse order: TbgPlugin(0) TbgLog(1) TbgCharts(2) TbgLayout(3) TbgInterval(4) TbgMonitor(5)
+        _overflowManager = new ToolbarOverflowManager(
+            toolbarContainer:      ToolbarBorder,
+            alwaysVisiblePanel:    ToolbarRightPanel,
+            overflowButton:        ToolbarOverflowButton,
+            overflowMenu:          OverflowContextMenu,
+            groupsInCollapseOrder: [TbgPlugin, TbgLog, TbgCharts, TbgLayout, TbgInterval, TbgMonitor],
+            leftFixedElements:     [ToolbarLeftPanel]);
+
+        Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+    }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
@@ -158,10 +183,15 @@ public partial class PluginMonitoringPanel : UserControl
             _vm.PropertyChanged              -= OnVmPropertyChanged;
             _vm.RequestUninstall             -= OnRequestUninstall;
             _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
-            _vm.Dispose();
-            _vm = null;
+            // Intentionally NOT disposing or nulling _vm here.
+            // The docking framework fires Unloaded when a panel is hidden (e.g. behind another
+            // tab) and Loaded when it becomes visible again. Disposing the VM on every hide
+            // would stop its timer and null _vm, causing layout changes and chart updates to
+            // stop working after the first hide/show cycle.
+            // VM disposal is handled in OnDataContextChanged when the DataContext is replaced.
         }
-        Unloaded -= OnUnloaded;
+        // Do NOT unsubscribe this handler — it must fire on every Unloaded event
+        // so that OnLoaded can safely re-subscribe without double-subscribing.
     }
 
     // ── DataContext wiring ───────────────────────────────────────────────────
@@ -176,6 +206,7 @@ public partial class PluginMonitoringPanel : UserControl
             _vm.PropertyChanged              -= OnVmPropertyChanged;
             _vm.RequestUninstall             -= OnRequestUninstall;
             _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
+            _vm.Dispose(); // Dispose the old VM now that DataContext is truly changing.
         }
 
         _vm = e.NewValue as PluginMonitoringViewModel;

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WpfHexEditor.Core.SourceAnalysis</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core.SourceAnalysis</AssemblyName>
+    <!-- Pure BCL library — no WPF, no Windows dependency.
+         Mirrors WpfHexEditor.Core.AssemblyAnalysis pattern.
+         Used by WpfHexEditor.Panels.IDE for Solution Explorer source member extraction. -->
+  </PropertyGroup>
+
+</Project>
