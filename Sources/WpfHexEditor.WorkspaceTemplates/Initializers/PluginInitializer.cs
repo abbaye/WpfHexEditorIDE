@@ -13,6 +13,7 @@
 //     Writes a plugins.json sidecar; IDE reads it in PluginHost startup.
 // ==========================================================
 
+using System.IO;
 using System.Text.Json;
 
 namespace WpfHexEditor.WorkspaceTemplates.Initializers;

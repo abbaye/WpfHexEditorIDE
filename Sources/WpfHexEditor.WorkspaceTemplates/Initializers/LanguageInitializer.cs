@@ -13,6 +13,8 @@
 //     Executed by ProjectScaffolder after the base directory structure is created.
 // ==========================================================
 
+using System.IO;
+
 namespace WpfHexEditor.WorkspaceTemplates.Initializers;
 
 /// <summary>

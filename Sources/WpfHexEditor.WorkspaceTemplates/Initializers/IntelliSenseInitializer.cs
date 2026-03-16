@@ -14,6 +14,7 @@
 //     Config file is lightweight JSON — IDE reads it via AppSettings on load.
 // ==========================================================
 
+using System.IO;
 using System.Text.Json;
 
 namespace WpfHexEditor.WorkspaceTemplates.Initializers;

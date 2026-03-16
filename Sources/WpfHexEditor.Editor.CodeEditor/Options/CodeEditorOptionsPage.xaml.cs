@@ -16,7 +16,6 @@
 // ==========================================================
 
 using System.Windows.Controls;
-using WpfHexEditor.Options;
 
 namespace WpfHexEditor.Editor.CodeEditor.Options;
 
@@ -25,7 +24,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Options;
 /// Register via:
 /// <c>registry.Register("Code Editor", "General", typeof(CodeEditorOptionsPage));</c>
 /// </summary>
-public partial class CodeEditorOptionsPage : UserControl, IOptionsPage
+public partial class CodeEditorOptionsPage : UserControl
 {
     private readonly CodeEditorOptions _options;
 
@@ -38,19 +37,12 @@ public partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         DataContext = _options;
     }
 
-    // -----------------------------------------------------------------------
-    // IOptionsPage
-    // -----------------------------------------------------------------------
-
+    /// <summary>Options title shown in IDE options tree.</summary>
     public string PageTitle => "Code Editor";
 
-    /// <inheritdoc />
-    public void Apply()
-    {
-        // Options are two-way bound — nothing extra needed.
-        // Consumers (CodeEditor) observe CodeEditorOptions.PropertyChanged.
-    }
+    /// <summary>No-op — options are two-way bound; CodeEditor observes PropertyChanged.</summary>
+    public void Apply() { }
 
-    /// <inheritdoc />
-    public void Reset() { /* future: restore defaults */ }
+    /// <summary>Restore defaults.</summary>
+    public void Reset() { }
 }

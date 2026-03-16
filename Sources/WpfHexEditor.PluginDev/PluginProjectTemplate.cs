@@ -111,39 +111,39 @@ public sealed class PluginProjectTemplate
 
     private static string BuildEntryPoint(
         string ns, string className, string pluginId,
-        string name, string author, string date) => $"""
+        string name, string author, string date) => $$"""
 // ==========================================================
-// Plugin: {name}
-// Author: {author}
-// Created: {date}
+// Plugin: {{name}}
+// Author: {{author}}
+// Created: {{date}}
 // Description: TODO — describe your plugin here.
 // ==========================================================
 
 using WpfHexEditor.SDK.Contracts;
 
-namespace {ns};
+namespace {{ns}};
 
-public sealed class {className} : IWpfHexEditorPlugin
-{{
-    public string  Id      => "{pluginId}";
-    public string  Name    => "{name}";
+public sealed class {{className}} : IWpfHexEditorPlugin
+{
+    public string  Id      => "{{pluginId}}";
+    public string  Name    => "{{name}}";
     public Version Version => new(0, 1, 0);
 
     public PluginCapabilities Capabilities => new()
-    {{
+    {
         AccessFileSystem = true,
         WriteOutput      = true,
-    }};
+    };
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
-    {{
+    {
         // TODO: Register panels, menus, subscribe to events.
-        context.Output.WriteLine(Id, $"{{Name}} initialized.");
+        context.Output.WriteLine(Id, Name + " initialized.");
         return Task.CompletedTask;
-    }}
+    }
 
     public Task ShutdownAsync(CancellationToken ct = default) => Task.CompletedTask;
-}}
+}
 """;
 
     private static string BuildManifest(string pluginId, string name, string author) => $$"""

@@ -14,6 +14,7 @@
 //     IDE merges workspace options with global settings on load.
 // ==========================================================
 
+using System.IO;
 using System.Text.Json;
 
 namespace WpfHexEditor.WorkspaceTemplates.Initializers;
