@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.3.1">
+    <grammar name="ELF Executable" start="id:1" author="WpfHexEditor Team" fileextension="elf,so,axf,o,out">
+        <description>Executable and Linkable Format (ELF) — UNIX/Linux binaries, shared libraries, and object files.</description>
+        <structure name="Defaults" id="2" endian="little" signed="no"/>
+        <structure name="ELF Ident" id="10" extends="id:2">
+            <binary name="Magic" mustmatch="yes" id="11" fillcolor="FF6B6B" length="4">
+                <fixedvalues><fixedvalue name="ELF Magic" value="7F454C46"/></fixedvalues>
+            </binary>
+            <number name="Class" id="12" type="integer" length="1" fillcolor="4ECDC4">
+                <fixedvalues>
+                    <fixedvalue name="32-bit" value="1"/>
+                    <fixedvalue name="64-bit" value="2"/>
+                </fixedvalues>
+            </number>
+            <number name="Data Encoding" id="13" type="integer" length="1" fillcolor="4ECDC4">
+                <fixedvalues>
+                    <fixedvalue name="Little-endian" value="1"/>
+                    <fixedvalue name="Big-endian" value="2"/>
+                </fixedvalues>
+            </number>
+            <number name="ELF Version" id="14" type="integer" length="1"/>
+            <number name="OS/ABI" id="15" type="integer" length="1" fillcolor="C8E6C9">
+                <fixedvalues>
+                    <fixedvalue name="UNIX System V" value="0"/>
+                    <fixedvalue name="HP-UX" value="1"/>
+                    <fixedvalue name="Linux" value="3"/>
+                    <fixedvalue name="FreeBSD" value="9"/>
+                    <fixedvalue name="ARM" value="97"/>
+                </fixedvalues>
+            </number>
+            <binary name="Padding" id="16" length="8"/>
+        </structure>
+        <structure name="ELF Header 32" id="20" extends="id:2">
+            <structref name="ELF Ident" id="21" structure="id:10"/>
+            <number name="Type" id="22" type="integer" length="2" fillcolor="FFE66D">
+                <fixedvalues>
+                    <fixedvalue name="None" value="0"/>
+                    <fixedvalue name="Relocatable" value="1"/>
+                    <fixedvalue name="Executable" value="2"/>
+                    <fixedvalue name="Shared object" value="3"/>
+                    <fixedvalue name="Core" value="4"/>
+                </fixedvalues>
+            </number>
+            <number name="Machine" id="23" type="integer" length="2" fillcolor="FFE66D">
+                <fixedvalues>
+                    <fixedvalue name="None" value="0"/>
+                    <fixedvalue name="x86" value="3"/>
+                    <fixedvalue name="SPARC" value="8"/>
+                    <fixedvalue name="PowerPC" value="20"/>
+                    <fixedvalue name="ARM" value="40"/>
+                    <fixedvalue name="x86-64" value="62"/>
+                    <fixedvalue name="AArch64" value="183"/>
+                    <fixedvalue name="RISC-V" value="243"/>
+                </fixedvalues>
+            </number>
+            <number name="Version" id="24" type="integer" length="4"/>
+            <number name="Entry Point" id="25" type="integer" length="4" display="hex" fillcolor="C44569"/>
+            <number name="PHdr Offset" id="26" type="integer" length="4" display="hex" fillcolor="B0C4DE"/>
+            <number name="SHdr Offset" id="27" type="integer" length="4" display="hex" fillcolor="B0C4DE"/>
+            <number name="Flags" id="28" type="integer" length="4" display="hex"/>
+            <number name="ELF Header Size" id="29" type="integer" length="2"/>
+            <number name="PHdr Entry Size" id="30" type="integer" length="2"/>
+            <number name="PHdr Count" id="31" type="integer" length="2"/>
+            <number name="SHdr Entry Size" id="32" type="integer" length="2"/>
+            <number name="SHdr Count" id="33" type="integer" length="2"/>
+            <number name="SHdr Strtab Index" id="34" type="integer" length="2"/>
+        </structure>
+        <structure name="ELF File" id="1" extends="id:2">
+            <structref name="ELF Header 32" id="50" structure="id:20"/>
+        </structure>
+    </grammar>
+</ufwb>

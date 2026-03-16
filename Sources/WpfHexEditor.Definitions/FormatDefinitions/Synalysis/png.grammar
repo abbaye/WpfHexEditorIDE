@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.3.1">
+    <grammar name="PNG Images" start="id:45" author="Andreas Pehnack" fileextension="png" uti="public.png">
+        <description>Grammar for the popular PNG image file format</description>
+        <structure name="Defaults" id="46" encoding="ISO_8859-1:1987" endian="big" signed="no">
+            <description>Defines the default values.</description>
+        </structure>
+        <structure name="Header" id="48" extends="id:46" encoding="ISO_8859-1:1987" endian="big" signed="no">
+            <binary name="Eye catcher" mustmatch="yes" id="49" fillcolor="DE83F7" length="8">
+                <fixedvalues>
+                    <fixedvalue name="Eye catcher" value="89504E470D0A1A0A"/>
+                </fixedvalues>
+            </binary>
+        </structure>
+        <structure name="Chunk" id="51" extends="id:46" encoding="ISO_8859-1:1987" endian="big" signed="no">
+            <number name="Length" id="52" fillcolor="54FA8A" type="integer" length="4"/>
+            <number name="Type" mustmatch="yes" id="53" fillcolor="68D6FB" type="integer" length="4" display="hex"/>
+            <structure name="Data" id="54" length="prev.Length" fillcolor="FEFB8C"/>
+            <binary name="CRC" id="56" fillcolor="FFD385" length="4"/>
+        </structure>
+        <structure name="IHDR" id="58" extends="id:51">
+            <number name="Length" id="59" type="integer"/>
+            <number name="Type" id="60" type="integer">
+                <fixedvalues><fixedvalue name="IHDR" value="0x49484452"/></fixedvalues>
+            </number>
+            <structure name="Data" id="61">
+                <number name="Width" id="62" type="integer" length="4" fillcolor="A8D8EA"/>
+                <number name="Height" id="63" type="integer" length="4" fillcolor="A8D8EA"/>
+                <number name="Bit depth" id="64" type="integer" length="1" fillcolor="F8C8DC">
+                    <fixedvalues>
+                        <fixedvalue value="1"/><fixedvalue value="2"/>
+                        <fixedvalue value="4"/><fixedvalue value="8"/><fixedvalue value="16"/>
+                    </fixedvalues>
+                </number>
+                <number name="Color type" id="65" type="integer" length="1" fillcolor="F8C8DC">
+                    <fixedvalues>
+                        <fixedvalue name="Grayscale" value="0"/>
+                        <fixedvalue name="RGB" value="2"/>
+                        <fixedvalue name="Palette" value="3"/>
+                        <fixedvalue name="Grayscale+Alpha" value="4"/>
+                        <fixedvalue name="RGBA" value="6"/>
+                    </fixedvalues>
+                </number>
+                <number name="Compression method" id="66" type="integer" length="1">
+                    <fixedvalues><fixedvalue name="deflate/inflate" value="0"/></fixedvalues>
+                </number>
+                <number name="Filter method" id="67" type="integer" length="1">
+                    <fixedvalues><fixedvalue name="Adaptive" value="0"/></fixedvalues>
+                </number>
+                <number name="Interlace method" id="68" type="integer" length="1">
+                    <fixedvalues>
+                        <fixedvalue name="No interlace" value="0"/>
+                        <fixedvalue name="Adam7 interlace" value="1"/>
+                    </fixedvalues>
+                </number>
+            </structure>
+            <binary name="CRC" id="70"/>
+        </structure>
+        <structure name="tIME" id="72" extends="id:51">
+            <number name="Length" id="73" type="integer"/>
+            <number name="Type" id="74" type="integer">
+                <fixedvalues><fixedvalue value="0x74494D45"/></fixedvalues>
+            </number>
+            <structure name="Data" id="75">
+                <number name="Year" id="76" type="integer" length="2" fillcolor="C8E6C9"/>
+                <number name="Month" id="77" type="integer" length="1" fillcolor="C8E6C9"/>
+                <number name="Day" id="78" type="integer" length="1" fillcolor="C8E6C9"/>
+                <number name="Hour" id="79" type="integer" length="1" fillcolor="C8E6C9"/>
+                <number name="Minute" id="80" type="integer" length="1" fillcolor="C8E6C9"/>
+                <number name="Second" id="81" type="integer" length="1" fillcolor="C8E6C9"/>
+            </structure>
+            <binary name="CRC" id="83"/>
+        </structure>
+        <structure name="tEXt" id="85" extends="id:51" floating="yes">
+            <number name="Length" id="86" type="integer"/>
+            <number name="Type" id="87" type="integer">
+                <fixedvalues><fixedvalue value="0x74455874"/></fixedvalues>
+            </number>
+            <structure name="Data" id="88">
+                <string name="Key" id="89" type="zero-terminated"/>
+                <string name="Text" id="90" type="zero-terminated"/>
+            </structure>
+            <binary name="CRC" id="92"/>
+        </structure>
+        <structure name="IDAT" id="220" extends="id:51">
+            <number name="Length" id="221" type="integer"/>
+            <number name="Type" id="222" type="integer">
+                <fixedvalues><fixedvalue value="0x49444154"/></fixedvalues>
+            </number>
+            <structure name="Data" id="223">
+                <binary name="Image Data" id="224" length="remaining" fillcolor="B0C4DE"/>
+            </structure>
+            <binary name="CRC" id="226"/>
+        </structure>
+        <structure name="IEND" id="236" extends="id:51">
+            <number name="Length" id="237" type="integer"/>
+            <number name="Type" id="238" type="integer">
+                <fixedvalues><fixedvalue value="0x49454E44"/></fixedvalues>
+            </number>
+            <binary name="CRC" id="241" fillcolor="FFB347"/>
+        </structure>
+        <structure name="PNG File" id="45" extends="id:46" encoding="ISO_8859-1:1987" endian="big" signed="no">
+            <structref name="Header" id="243" structure="id:48"/>
+            <structref name="IHDR" id="244" structure="id:58"/>
+            <structure name="Chunks" id="245" repeatmax="unlimited" order="variable">
+                <structref name="tIME" id="246" repeatmin="0" structure="id:72"/>
+                <structref name="IDAT" id="253" repeatmin="0" repeatmax="unlimited" structure="id:220"/>
+                <structref name="tEXt" id="256" repeatmin="0" repeatmax="unlimited" structure="id:85"/>
+                <structref name="IEND" id="262" repeatmin="0" structure="id:236"/>
+                <structref name="Chunk" id="263" structure="id:51"/>
+            </structure>
+        </structure>
+    </grammar>
+</ufwb>

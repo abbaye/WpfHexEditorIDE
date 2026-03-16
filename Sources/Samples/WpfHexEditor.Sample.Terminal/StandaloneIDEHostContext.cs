@@ -139,6 +139,8 @@ file sealed class NullHexEditorService : IHexEditorService
     public void SetSelection(long start, long end)           { }
     public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)  { }
     public void DisconnectParsedFieldsPanel()                       { }
+    public void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block) { }
+    public void ClearCustomBackgroundBlockByTag(string tag)         { }
 
 #pragma warning disable 67
     public event EventHandler? ViewportScrolled;

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.3.1">
+    <grammar name="JPEG Image" start="id:1" author="WpfHexEditor Team" fileextension="jpg,jpeg,jfif">
+        <description>JPEG / JFIF image format. Marker-based structure starting with SOI (FFD8) and ending with EOI (FFD9).</description>
+        <structure name="Defaults" id="2" endian="big" signed="no"/>
+        <structure name="SOI Marker" id="10" extends="id:2">
+            <binary name="SOI" mustmatch="yes" id="11" fillcolor="FF6B6B" length="2">
+                <fixedvalues><fixedvalue name="Start Of Image" value="FFD8"/></fixedvalues>
+            </binary>
+        </structure>
+        <structure name="Segment" id="20" extends="id:2">
+            <number name="Marker" id="21" type="integer" length="2" display="hex" fillcolor="4ECDC4" mustmatch="yes">
+                <fixedvalues>
+                    <fixedvalue name="SOF0 Baseline DCT" value="0xFFC0"/>
+                    <fixedvalue name="SOF1 Extended DCT" value="0xFFC1"/>
+                    <fixedvalue name="SOF2 Progressive DCT" value="0xFFC2"/>
+                    <fixedvalue name="DHT Huffman Table" value="0xFFC4"/>
+                    <fixedvalue name="DQT Quant Table" value="0xFFDB"/>
+                    <fixedvalue name="DRI Restart Interval" value="0xFFDD"/>
+                    <fixedvalue name="SOS Start of Scan" value="0xFFDA"/>
+                    <fixedvalue name="APP0 JFIF" value="0xFFE0"/>
+                    <fixedvalue name="APP1 Exif" value="0xFFE1"/>
+                    <fixedvalue name="COM Comment" value="0xFFFE"/>
+                </fixedvalues>
+            </number>
+            <number name="Length" id="22" type="integer" length="2" fillcolor="FFE66D"/>
+            <binary name="Data" id="23" length="prev.Length" fillcolor="B0C4DE"/>
+        </structure>
+        <structure name="EOI Marker" id="30" extends="id:2">
+            <binary name="EOI" mustmatch="yes" id="31" fillcolor="FFB347" length="2">
+                <fixedvalues><fixedvalue name="End Of Image" value="FFD9"/></fixedvalues>
+            </binary>
+        </structure>
+        <structure name="JPEG File" id="1" extends="id:2">
+            <structref name="SOI Marker" id="40" structure="id:10"/>
+            <structure name="Segments" id="41" repeatmax="unlimited">
+                <structref name="Segment" id="42" structure="id:20"/>
+            </structure>
+            <structref name="EOI Marker" id="43" repeatmin="0" structure="id:30"/>
+        </structure>
+    </grammar>
+</ufwb>

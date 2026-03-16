@@ -113,6 +113,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.Archiv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.ParsedFields", "Plugins\WpfHexEditor.Plugins.ParsedFields\WpfHexEditor.Plugins.ParsedFields.csproj", "{F7A8B9C0-D1E2-F3A4-B5C6-D7E8F9A0B1C2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SynalysisGrammar", "Plugins\WpfHexEditor.Plugins.SynalysisGrammar\WpfHexEditor.Plugins.SynalysisGrammar.csproj", "{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.AssemblyExplorer", "Plugins\WpfHexEditor.Plugins.AssemblyExplorer\WpfHexEditor.Plugins.AssemblyExplorer.csproj", "{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugin Tools", "Plugin Tools", "{7041CC6B-23DF-4363-B599-13F2567FA326}"
@@ -695,6 +697,18 @@ Global
 		{F7A8B9C0-D1E2-F3A4-B5C6-D7E8F9A0B1C2}.Release|x64.Build.0 = Release|Any CPU
 		{F7A8B9C0-D1E2-F3A4-B5C6-D7E8F9A0B1C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{F7A8B9C0-D1E2-F3A4-B5C6-D7E8F9A0B1C2}.Release|x86.Build.0 = Release|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Debug|x64.Build.0 = Debug|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Debug|x86.Build.0 = Debug|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x64.ActiveCfg = Release|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x64.Build.0 = Release|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x86.ActiveCfg = Release|Any CPU
+		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x86.Build.0 = Release|Any CPU
 		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.ActiveCfg = Debug|Any CPU

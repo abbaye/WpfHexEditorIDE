@@ -15,6 +15,7 @@
   <!-- Embedded definition resources -->
   <ItemGroup>
     <EmbeddedResource Include="FormatDefinitions\**\*.whfmt" />
+    <EmbeddedResource Include="FormatDefinitions\**\*.grammar" />
     <EmbeddedResource Include="SyntaxDefinitions\**\*.whlang" />
   </ItemGroup>
 

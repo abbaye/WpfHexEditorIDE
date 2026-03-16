@@ -571,6 +571,8 @@ internal sealed class IpcHexEditorService : IHexEditorService
     // ── Panel connection ──────────────────────────────────────────────────────
     public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)  => ConnectedPanel = panel;
     public void DisconnectParsedFieldsPanel()                        => ConnectedPanel = null;
+    public void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block) { }
+    public void ClearCustomBackgroundBlockByTag(string tag)          { }
 
     // ── Methods (read/write deferred to future phase) ─────────────────────────
     public byte[] ReadBytes(long offset, int length)         => [];

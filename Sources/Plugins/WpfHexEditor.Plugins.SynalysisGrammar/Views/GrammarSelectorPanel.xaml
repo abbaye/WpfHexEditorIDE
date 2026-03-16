@@ -1,0 +1,191 @@
+<UserControl x:Class="WpfHexEditor.Plugins.SynalysisGrammar.Views.GrammarSelectorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="340">
+
+    <!--
+        Theme: All colours via DynamicResource tokens from the global IDE theme.
+        Panel follows VS-Like layout: Toolbar / List / Detail strip (rules 7c, 7d).
+    -->
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
+            <RowDefinition Height="Auto"/>   <!-- Search box -->
+            <RowDefinition Height="*"/>      <!-- Grammar list -->
+            <RowDefinition Height="Auto"/>   <!-- Detail / info strip -->
+            <RowDefinition Height="Auto"/>   <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ──────────────────────────────────────────────── -->
+        <ToolBar Grid.Row="0"
+                 Background="{DynamicResource DockToolBarBackgroundBrush}"
+                 BorderThickness="0">
+
+            <!-- Load from disk -->
+            <Button Command="{Binding LoadFromDiskCommand}"
+                    ToolTip="Load grammar from disk (.grammar)"
+                    Style="{DynamicResource DockToolBarButtonStyle}">
+                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                           Foreground="{DynamicResource DockForegroundBrush}"/>
+            </Button>
+
+            <Separator Style="{DynamicResource DockToolBarSeparatorStyle}"/>
+
+            <!-- Apply grammar -->
+            <Button Command="{Binding ApplyGrammarCommand}"
+                    ToolTip="Apply selected grammar to active file"
+                    Style="{DynamicResource DockToolBarButtonStyle}">
+                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                           Foreground="{DynamicResource DockAccentBrush}"/>
+            </Button>
+
+            <Separator Style="{DynamicResource DockToolBarSeparatorStyle}"/>
+
+            <!-- Auto-apply toggle -->
+            <ToggleButton IsChecked="{Binding IsAutoApply}"
+                          ToolTip="Automatically apply grammar on file open"
+                          Style="{DynamicResource DockToolBarToggleButtonStyle}">
+                <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                           Foreground="{DynamicResource DockForegroundBrush}"/>
+            </ToggleButton>
+        </ToolBar>
+
+        <!-- ── Search ───────────────────────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="4,3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="&#xE721;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="4,0,6,0"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+
+                <TextBox Grid.Column="1"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         VerticalAlignment="Center"
+                         x:Name="TbSearch">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Tag" Value="Search grammars…"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+        </Border>
+
+        <!-- ── Grammar list ─────────────────────────────────────────── -->
+        <ListBox Grid.Row="2"
+                 x:Name="LbGrammars"
+                 ItemsSource="{Binding FilteredGrammars}"
+                 SelectedItem="{Binding SelectedGrammar}"
+                 Background="{DynamicResource DockBackgroundBrush}"
+                 BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background"   Value="Transparent"/>
+                    <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+                    <Setter Property="Padding"      Value="6,5"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DockItemHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DockAccentBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource DockAccentForegroundBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Source icon -->
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding SourceIcon}"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"
+                                   Opacity="0.7"
+                                   ToolTip="{Binding SourceLabel}"/>
+
+                        <!-- Name + extensions -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}"
+                                       FontWeight="SemiBold"
+                                       FontSize="12"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding ExtensionsDisplay}"
+                                       FontSize="10"
+                                       Opacity="0.6"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- ── Detail strip ─────────────────────────────────────────── -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="8,6"
+                MinHeight="60">
+            <StackPanel>
+                <TextBlock Text="{Binding SelectedInfo}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           FontSize="10"
+                           Opacity="0.7"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="{Binding SelectedDescription}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           FontSize="11"
+                           TextWrapping="Wrap"
+                           MaxHeight="60"
+                           TextTrimming="CharacterEllipsis"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Status bar ───────────────────────────────────────────── -->
+        <Border Grid.Row="4"
+                Background="{DynamicResource DockStatusBarBackgroundBrush}"
+                Padding="8,3">
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="{DynamicResource DockStatusBarForegroundBrush}"
+                       FontSize="11"/>
+        </Border>
+    </Grid>
+</UserControl>

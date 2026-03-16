@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WpfHexEditor.Plugins.SynalysisGrammar</RootNamespace>
+    <AssemblyName>WpfHexEditor.Plugins.SynalysisGrammar</AssemblyName>
+    <!-- Plugin metadata — required by WpfHexEditor.SDK.targets to generate manifest.json -->
+    <PluginId>WpfHexEditor.Plugins.SynalysisGrammar</PluginId>
+    <PluginName>Grammar Explorer</PluginName>
+    <PluginVersion>0.1.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.SynalysisGrammar.SynalysisGrammarPlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>Parses binary files using Synalysis / Hexinator UFWB grammar files (.grammar), overlays coloured structure fields on the hex view, and populates the Parsed Fields panel. Resolves #177.</PluginDescription>
+    <PluginIsolationMode>Auto</PluginIsolationMode>
+    <PluginLoadPriority>45</PluginLoadPriority>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
+    <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem>true</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>true</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>true</PluginPermWriteOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
+  <!-- Copy compiled plugin to App Plugins directory after build -->
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

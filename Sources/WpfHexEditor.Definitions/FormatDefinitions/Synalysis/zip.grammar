@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.3.1">
+    <grammar name="ZIP Archive" start="id:1" author="WpfHexEditor Team" fileextension="zip,jar,apk,docx,xlsx,pptx,odt,ods">
+        <description>ZIP archive format (PKZIP / ISO 21320-1). Covers Local File Headers and End-of-Central-Directory record.</description>
+        <structure name="Defaults" id="2" endian="little" signed="no"/>
+        <structure name="Local File Header" id="10" extends="id:2">
+            <binary name="Signature" mustmatch="yes" id="11" fillcolor="FF6B6B" length="4">
+                <fixedvalues><fixedvalue name="PK Local" value="504B0304"/></fixedvalues>
+            </binary>
+            <number name="Version Needed" id="12" type="integer" length="2" fillcolor="4ECDC4"/>
+            <number name="General Purpose Flags" id="13" type="integer" length="2" fillcolor="95E1D3" display="hex"/>
+            <number name="Compression Method" id="14" type="integer" length="2" fillcolor="FFE66D">
+                <fixedvalues>
+                    <fixedvalue name="Store (no compression)" value="0"/>
+                    <fixedvalue name="Deflate" value="8"/>
+                    <fixedvalue name="Deflate64" value="9"/>
+                    <fixedvalue name="BZIP2" value="12"/>
+                    <fixedvalue name="LZMA" value="14"/>
+                </fixedvalues>
+            </number>
+            <number name="Last Mod Time" id="15" type="integer" length="2" fillcolor="C7CEEA"/>
+            <number name="Last Mod Date" id="16" type="integer" length="2" fillcolor="B8B8FF"/>
+            <binary name="CRC-32" id="17" fillcolor="FF6B9D" length="4"/>
+            <number name="Compressed Size" id="18" type="integer" length="4" fillcolor="C44569"/>
+            <number name="Uncompressed Size" id="19" type="integer" length="4" fillcolor="FFA07A"/>
+            <number name="Filename Length" id="20" type="integer" length="2" fillcolor="98D8C8"/>
+            <number name="Extra Field Length" id="21" type="integer" length="2" fillcolor="A8E6CF"/>
+            <string name="Filename" id="22" type="fixed-length" length="prev.Filename Length"/>
+            <binary name="Extra Field" id="23" length="prev.Extra Field Length"/>
+        </structure>
+        <structure name="Central Directory Entry" id="30" extends="id:2">
+            <binary name="Signature" mustmatch="yes" id="31" fillcolor="845EC2" length="4">
+                <fixedvalues><fixedvalue name="PK Central" value="504B0102"/></fixedvalues>
+            </binary>
+            <number name="Version Made By" id="32" type="integer" length="2" fillcolor="D65DB1"/>
+            <number name="Version Needed" id="33" type="integer" length="2" fillcolor="FF6F91"/>
+            <number name="General Purpose Flags" id="34" type="integer" length="2" display="hex"/>
+            <number name="Compression Method" id="35" type="integer" length="2"/>
+            <number name="Last Mod Time" id="36" type="integer" length="2"/>
+            <number name="Last Mod Date" id="37" type="integer" length="2"/>
+            <binary name="CRC-32" id="38" length="4"/>
+            <number name="Compressed Size" id="39" type="integer" length="4"/>
+            <number name="Uncompressed Size" id="40" type="integer" length="4"/>
+            <number name="Filename Length" id="41" type="integer" length="2"/>
+            <number name="Extra Field Length" id="42" type="integer" length="2"/>
+            <number name="File Comment Length" id="43" type="integer" length="2"/>
+            <number name="Disk Number Start" id="44" type="integer" length="2"/>
+            <number name="Internal Attributes" id="45" type="integer" length="2" display="hex"/>
+            <number name="External Attributes" id="46" type="integer" length="4" display="hex"/>
+            <number name="Local Header Offset" id="47" type="integer" length="4" display="hex"/>
+            <string name="Filename" id="48" type="fixed-length" length="prev.Filename Length"/>
+            <binary name="Extra Field" id="49" length="prev.Extra Field Length"/>
+            <string name="File Comment" id="50" type="fixed-length" length="prev.File Comment Length"/>
+        </structure>
+        <structure name="End of Central Directory" id="60" extends="id:2">
+            <binary name="Signature" mustmatch="yes" id="61" fillcolor="00B4D8" length="4">
+                <fixedvalues><fixedvalue name="PK EOCD" value="504B0506"/></fixedvalues>
+            </binary>
+            <number name="Disk Number" id="62" type="integer" length="2" fillcolor="0077B6"/>
+            <number name="CD Start Disk" id="63" type="integer" length="2" fillcolor="0077B6"/>
+            <number name="Entries on Disk" id="64" type="integer" length="2" fillcolor="48CAE4"/>
+            <number name="Total Entries" id="65" type="integer" length="2" fillcolor="48CAE4"/>
+            <number name="CD Size" id="66" type="integer" length="4" fillcolor="90E0EF"/>
+            <number name="CD Offset" id="67" type="integer" length="4" display="hex" fillcolor="90E0EF"/>
+            <number name="Comment Length" id="68" type="integer" length="2"/>
+            <string name="Comment" id="69" type="fixed-length" length="prev.Comment Length"/>
+        </structure>
+        <structure name="ZIP File" id="1" extends="id:2">
+            <structure name="Local Files" id="70" repeatmax="unlimited">
+                <structref name="Local File Header" id="71" structure="id:10"/>
+            </structure>
+            <structure name="Central Directory" id="80" repeatmax="unlimited">
+                <structref name="Central Directory Entry" id="81" structure="id:30"/>
+            </structure>
+            <structref name="End of Central Directory" id="90" structure="id:60"/>
+        </structure>
+    </grammar>
+</ufwb>

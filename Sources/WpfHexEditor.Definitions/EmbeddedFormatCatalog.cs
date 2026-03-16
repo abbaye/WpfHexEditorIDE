@@ -56,12 +56,16 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         var list = new List<EmbeddedFormatEntry>();
         foreach (var key in DefinitionsAssembly.GetManifestResourceNames())
         {
-            if (!key.Contains("FormatDefinitions") || !key.EndsWith(".whfmt"))
-                continue;
+            if (!key.Contains("FormatDefinitions")) continue;
+            var isWhfmt   = key.EndsWith(".whfmt");
+            var isGrammar = key.EndsWith(".grammar");
+            if (!isWhfmt && !isGrammar) continue;
 
             try
             {
-                var entry = LoadHeader(key);
+                EmbeddedFormatEntry? entry = isGrammar
+                    ? LoadGrammarHeader(key)
+                    : LoadHeader(key);
                 if (entry is not null) list.Add(entry);
             }
             catch
@@ -169,8 +173,53 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     private static string ExtractNameFromKey(string key)
     {
-        // Last segment before ".whfmt"
+        // Last segment before ".whfmt" or ".grammar"
         var parts = key.Split('.');
         return parts.Length >= 2 ? parts[parts.Length - 2] : key;
+    }
+
+    /// <summary>
+    /// Loads a lightweight header entry from an embedded UFWB <c>.grammar</c> XML resource.
+    /// Extracts name, author, fileextension, and category from the XML attributes without
+    /// deserialising the full element tree.
+    /// </summary>
+    private static EmbeddedFormatEntry? LoadGrammarHeader(string resourceKey)
+    {
+        using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
+        if (stream is null) return null;
+
+        // Lightweight XML parsing — only reads the <grammar> element attributes.
+        using var reader = System.Xml.XmlReader.Create(stream, new System.Xml.XmlReaderSettings { IgnoreWhitespace = true });
+        while (reader.Read())
+        {
+            if (reader.NodeType != System.Xml.XmlNodeType.Element) continue;
+            if (reader.LocalName != "grammar") continue;
+
+            var name        = reader.GetAttribute("name")          ?? ExtractNameFromKey(resourceKey);
+            var author      = reader.GetAttribute("author")        ?? "";
+            var fileExt     = reader.GetAttribute("fileextension") ?? "";
+            var description = "";
+
+            // Try to read <description> child text.
+            if (reader.Read() && reader.NodeType == System.Xml.XmlNodeType.Element
+                && reader.LocalName == "description" && reader.Read())
+                description = reader.Value.Trim();
+
+            var extensions = fileExt
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(e => e.StartsWith('.') ? e.ToLowerInvariant() : "." + e.ToLowerInvariant())
+                .ToList();
+
+            var category = ExtractCategoryFromKey(resourceKey);
+
+            return new EmbeddedFormatEntry(
+                resourceKey, name, category, description,
+                extensions, QualityScore: 70,
+                Version: "", Author: author,
+                Platform: "", PreferredEditor: "hex-editor",
+                IsTextFormat: false);
+        }
+
+        return null;
     }
 }
