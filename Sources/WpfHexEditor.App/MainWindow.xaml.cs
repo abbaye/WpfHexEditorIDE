@@ -336,7 +336,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public bool HasSolution
     {
         get => _hasSolution;
-        private set { _hasSolution = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsProjectMenuEnabled)); }
+        private set { _hasSolution = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsProjectMenuEnabled)); OnPropertyChanged(nameof(IsBuildMenuEnabled)); }
     }
 
     // -- Long-running operation state (per active document) ---------------
