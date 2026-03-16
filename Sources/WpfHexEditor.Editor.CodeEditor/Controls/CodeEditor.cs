@@ -56,6 +56,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // URL hit-zones: rebuilt on every render pass; used for cursor + Ctrl+Click.
         private readonly List<UrlHitZone> _urlHitZones = new();
 
+        // The URL zone currently under the mouse pointer (null = none).
+        // Drives hover underline; changing it triggers InvalidateVisual().
+        private UrlHitZone? _hoveredUrlZone;
+
         // Compiled URL regex — re-used across all render passes (thread-safe read-only after init).
         private static readonly Regex s_urlRegex = new(
             @"https?://[^\s""'<>\[\]{}|\\^`]+",
@@ -2834,10 +2838,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             dc.DrawText(ft, new Point(tokenX, y));
                         }
 
-                        // Draw underline for URL tokens only when Ctrl is held (Ctrl+Click to open).
-                        // Hiding the underline at rest avoids visual noise in XML/XAML xmlns lines.
+                        // Draw underline only on the URL currently hovered by the mouse.
+                        // This avoids permanent underlines on xmlns/href URIs in XML/XAML files.
                         if (ReferenceEquals(token.Foreground, SyntaxUrlColor)
-                            && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                            && _hoveredUrlZone.HasValue
+                            && _hoveredUrlZone.Value.Line     == i
+                            && token.StartColumn              >= _hoveredUrlZone.Value.StartCol
+                            && token.StartColumn              <  _hoveredUrlZone.Value.EndCol)
                         {
                             double underlineY = y + _lineHeight - 2;
                             dc.DrawLine(urlPen,
@@ -3237,10 +3244,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnKeyDown(e);
 
-            // Ctrl press: show URL underlines immediately (no mouse move required).
-            if (e.Key is Key.LeftCtrl or Key.RightCtrl)
-                InvalidateVisual();
-
             // Reset caret blink on keypress
             ResetCaretBlink();
 
@@ -3472,10 +3475,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
+        }
 
-            // Ctrl released: hide URL underlines and restore IBeam cursor.
-            if (e.Key is Key.LeftCtrl or Key.RightCtrl)
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            if (_hoveredUrlZone.HasValue)
             {
+                _hoveredUrlZone = null;
                 Cursor  = Cursors.IBeam;
                 ToolTip = null;
                 InvalidateVisual();
@@ -3848,13 +3856,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnMouseMove(e);
 
-            // URL hover: show Hand cursor only when Ctrl is held AND the pointer is over a URL.
-            // Without Ctrl the cursor stays IBeam so xmlns/href URIs don't feel clickable at rest.
+            // URL hover: show Hand cursor + underline when the pointer is over a URL zone.
             if (!_isSelecting)
             {
-                var isCtrl   = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
                 var hoverPos = PixelToTextPosition(e.GetPosition(this));
-                var urlZone  = isCtrl ? FindUrlZone(hoverPos.Line, hoverPos.Column) : null;
+                var urlZone  = FindUrlZone(hoverPos.Line, hoverPos.Column);
+
+                // Only repaint when the hovered zone actually changes (avoids per-mousemove redraws).
+                if (urlZone != _hoveredUrlZone)
+                {
+                    _hoveredUrlZone = urlZone;
+                    InvalidateVisual();
+                }
+
                 if (urlZone.HasValue)
                 {
                     Cursor  = Cursors.Hand;
