@@ -49,6 +49,7 @@ public partial class MainWindow
     private WpfPluginHost? _pluginHost;
     private IDEHostContext? _ideHostContext;
     private IDEEventBus? _ideEventBus;
+    private DocumentHostService? _documentHostService;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -127,7 +128,15 @@ public partial class MainWindow
             var capabilityAdapter = new PluginCapabilityRegistryAdapter();
             var extensionRegistry = new ExtensionRegistry();
 
+            // DocumentHostService bridges the high-level document API to MainWindow's
+            // docking infrastructure via the openFileHandler callback.
+            _documentHostService = new DocumentHostService(
+                _documentManager,
+                (path, editorId) => Dispatcher.InvokeAsync(() =>
+                    OpenStandaloneFileWithEditor(path, editorId)).Task);
+
             var hostContext = new IDEHostContext(
+                documentHost:        _documentHostService,
                 solutionExplorer:    solutionService,
                 hexEditor:           _hexEditorService,
                 codeEditor:          codeEditorService,

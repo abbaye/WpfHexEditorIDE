@@ -27,6 +27,9 @@ namespace WpfHexEditor.PluginHost;
 public sealed class IDEHostContext : IIDEHostContext
 {
     /// <inheritdoc />
+    public IDocumentHostService DocumentHost { get; }
+
+    /// <inheritdoc />
     public ISolutionExplorerService SolutionExplorer { get; }
 
     /// <inheritdoc />
@@ -72,6 +75,7 @@ public sealed class IDEHostContext : IIDEHostContext
     public IExtensionRegistry ExtensionRegistry { get; }
 
     public IDEHostContext(
+        IDocumentHostService documentHost,
         ISolutionExplorerService solutionExplorer,
         IHexEditorService hexEditor,
         ICodeEditorService codeEditor,
@@ -88,6 +92,7 @@ public sealed class IDEHostContext : IIDEHostContext
         IPluginCapabilityRegistry capabilityRegistry,
         IExtensionRegistry extensionRegistry)
     {
+        DocumentHost        = documentHost        ?? throw new ArgumentNullException(nameof(documentHost));
         SolutionExplorer    = solutionExplorer    ?? throw new ArgumentNullException(nameof(solutionExplorer));
         HexEditor           = hexEditor           ?? throw new ArgumentNullException(nameof(hexEditor));
         CodeEditor          = codeEditor          ?? throw new ArgumentNullException(nameof(codeEditor));

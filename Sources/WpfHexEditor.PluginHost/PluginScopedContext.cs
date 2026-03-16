@@ -80,6 +80,9 @@ internal sealed class PluginScopedContext : IIDEHostContext
     /// <inheritdoc />
     public IExtensionRegistry ExtensionRegistry => _inner.ExtensionRegistry;
 
+    /// <inheritdoc />
+    public IDocumentHostService DocumentHost => _inner.DocumentHost;
+
     public PluginScopedContext(IIDEHostContext inner, TimedHexEditorService timedHexEditor)
     {
         _inner    = inner          ?? throw new ArgumentNullException(nameof(inner));

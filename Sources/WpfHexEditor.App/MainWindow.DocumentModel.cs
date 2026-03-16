@@ -39,6 +39,13 @@ public partial class MainWindow
     public IDocumentManager DocumentManager => _documentManager;
 
     /// <summary>
+    /// Exposes the document host service (open by path, navigate to line/column).
+    /// Available after InitializePluginSystemAsync completes.
+    /// </summary>
+    public WpfHexEditor.SDK.Contracts.Services.IDocumentHostService? DocumentHost
+        => _documentHostService;
+
+    /// <summary>
     /// Initialises DocumentManager event subscriptions.
     /// Must be called once during MainWindow startup (OnLoaded).
     /// </summary>

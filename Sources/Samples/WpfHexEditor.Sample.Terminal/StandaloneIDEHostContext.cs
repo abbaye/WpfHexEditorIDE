@@ -19,6 +19,7 @@
 
 using System.Windows;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -40,6 +41,7 @@ namespace WpfHexEditor.Sample.Terminal;
 /// </summary>
 internal sealed class StandaloneIDEHostContext : IIDEHostContext
 {
+    public IDocumentHostService     DocumentHost     { get; } = new NullDocumentHostService();
     public ISolutionExplorerService SolutionExplorer { get; } = new NullSolutionExplorerService();
     public IHexEditorService        HexEditor        { get; } = new NullHexEditorService();
     public ICodeEditorService       CodeEditor       { get; } = new NullCodeEditorService();
@@ -60,6 +62,37 @@ internal sealed class StandaloneIDEHostContext : IIDEHostContext
 // ---------------------------------------------------------------------------
 // Service stubs
 // ---------------------------------------------------------------------------
+
+file sealed class NullDocumentHostService : IDocumentHostService
+{
+    public IDocumentManager Documents { get; } = new NullDocumentManager();
+
+    public void OpenDocument(string filePath, string? preferredEditorId = null) { }
+    public void ActivateAndNavigateTo(string filePath, int line, int column)    { }
+    public void SaveAll()                                                        { }
+
+    private sealed class NullDocumentManager : IDocumentManager
+    {
+        public IReadOnlyList<DocumentModel> OpenDocuments => [];
+        public DocumentModel?               ActiveDocument => null;
+
+        public DocumentModel Register(string contentId, string? filePath, string? editorId, string? projectItemId)
+            => new(contentId, filePath, projectItemId, editorId);
+        public void AttachEditor(string contentId, WpfHexEditor.Editor.Core.IDocumentEditor editor) { }
+        public void Unregister(string contentId) { }
+        public void SetActive(string contentId)  { }
+
+        public IReadOnlyList<DocumentModel> GetDirty() => [];
+
+#pragma warning disable 67
+        public event EventHandler<DocumentModel>?  DocumentRegistered;
+        public event EventHandler<DocumentModel>?  DocumentUnregistered;
+        public event EventHandler<DocumentModel?>? ActiveDocumentChanged;
+        public event EventHandler<DocumentModel>?  DocumentDirtyChanged;
+        public event EventHandler<DocumentModel>?  DocumentTitleChanged;
+#pragma warning restore 67
+    }
+}
 
 file sealed class NullSolutionExplorerService : ISolutionExplorerService
 {

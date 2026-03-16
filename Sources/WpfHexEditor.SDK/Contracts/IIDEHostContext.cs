@@ -15,6 +15,15 @@ namespace WpfHexEditor.SDK.Contracts;
 /// </summary>
 public interface IIDEHostContext
 {
+    // -- Document Management --------------------------------------------------
+
+    /// <summary>
+    /// High-level document host service for opening, activating and navigating to
+    /// document tabs. Use this to open files from plugins or IDE panels (ErrorList, etc.)
+    /// without holding a direct reference to MainWindow.
+    /// </summary>
+    IDocumentHostService DocumentHost { get; }
+
     // -- IDE Services ---------------------------------------------------------
 
     /// <summary>Access to the Solution Explorer for file/project navigation.</summary>
