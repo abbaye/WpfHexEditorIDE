@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.PatternAnalysis</PluginId>
     <PluginName>Pattern Analysis</PluginName>
-    <PluginVersion>0.4.1</PluginVersion>
+    <PluginVersion>0.4.2</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.PatternAnalysis.PatternAnalysisPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>
@@ -18,8 +18,8 @@
     <PluginDescription>Detects repeating byte patterns, magic numbers, and common data signatures within binary files.</PluginDescription>
     <PluginIsolationMode>Sandbox</PluginIsolationMode>
     <PluginLoadPriority>70</PluginLoadPriority>
-    <PluginSdkVersion>1.0.0</PluginSdkVersion>
-    <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
     <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
     <PluginPermAccessNetwork>false</PluginPermAccessNetwork>

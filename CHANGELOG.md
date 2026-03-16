@@ -16,10 +16,6 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - **#42 Plugin Security & Sandboxing** — permission declarations at install time, integrity verification, AppDomain isolation
 - **#43 Auto-Update** — `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins
 
-### Integrated Terminal — Remaining (#92)
-- Multi-tab terminal with separate shell sessions (PowerShell, Bash, CMD)
-- Script file execution (`.hxscript`) with macro recording and history replay
-
 ### Image Viewer — Remaining
 - Batch export, format conversion (PNG/JPEG/BMP/TIFF)
 - Histogram panel, color picker, EXIF metadata viewer
@@ -71,7 +67,39 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
-## [Unreleased] — 2026-03 — Plugin System, Terminal & IDE Enhancements
+## [0.3.0] — 2026-03-15 — Plugin System Phase 5-12, Sandbox & IDE Enhancements
+
+### ✨ Added — Plugin Sandbox (Phases 9–12)
+
+- **HWND Embedding** — out-of-process plugin UI surfaces embedded directly into the IDE docking system via Win32 HWND parenting; plugins run fully isolated but appear native
+- **IPC Menu/Toolbar Bridge** — sandbox plugins register menus, toolbar items, and options pages in the host IDE via named-pipe IPC; `SandboxPluginProxy` dispatches menu clicks back to plugin process
+- **IPC HexEditor Event Bridge** (Phase 12) — `SelectionChanged`, `FileOpened`, `FormatDetected`, and `ViewportScrolled` events forwarded from host to sandbox plugins; `ParsedFields` panel refresh now works from sandbox context
+- **`SandboxJobObject`** — Windows Job Object wrapper constraining sandbox process CPU and memory usage; enforces per-plugin resource budgets with configurable limits
+- **Auto Isolation Mode / Decision Engine** — `PluginMigrationPolicy` evaluates plugin trust level, crash history, and resource usage to automatically select `InProcess` vs `Sandbox` isolation; no manual configuration required
+- **`PluginMigrationMonitor`** — tracks plugin migrations between isolation modes; exposes upgrade/downgrade history, trigger reasons, and stability metrics; observable from Plugin Manager
+
+### ✨ Added — Plugin Options UI
+
+- `UI/Options/` — dedicated options sub-panel within Plugin Manager for per-plugin sandbox configuration, migration policy overrides, and resource budget thresholds
+- `AssemblyExplorerOptionsPage.xaml` — updated options page with sandbox-compatible bindings
+- `DataInspectorOptionsPage.xaml` — updated options page with sandbox-compatible bindings
+
+### ✨ Added — Plugin Manager Improvements
+
+- `PluginListItemViewModel` — extended with `IsolationMode`, `MigrationStatus`, `SandboxHealth`, `LastMigrationReason`; badge indicators for auto-isolation decisions
+- `PluginManagerControl.xaml` — isolation mode column, migration history button, sandbox health indicator in list; options sub-panel per plugin
+- `PluginManagerViewModel` — wires migration monitor; exposes `MigrationHistoryCommand`; auto-refreshes on isolation mode change
+
+### ✨ Added — Themes
+
+- All 8 theme `Colors.xaml` files updated — new brush tokens for sandbox health badges, isolation mode indicators, and plugin options UI
+
+### 🧪 Added — Tests
+
+- `PluginMigrationMonitor_Tests` — unit tests covering migration trigger logic, history accumulation, and observer notification
+- `PluginMigrationPolicy_Tests` — unit tests covering decision engine: trust thresholds, crash-rate fallback, manual override precedence
+
+---
 
 ### ✨ Added — Plugin System (5 new projects)
 
@@ -299,7 +327,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
-## [Unreleased] — 2026-03 — IDE & Project System
+## [0.3.0 cont.] — 2026-03 — IDE & Project System
 
 ### ✨ Added — Project System
 - **Solution & Project management** (`.whsln` / `.whproj` formats) with `SolutionManager` singleton

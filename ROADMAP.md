@@ -11,7 +11,7 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 | Feature # | Title | Description | Progress |
 |-----------|-------|-------------|----------|
-| #92 | **Integrated Terminal** | Multi-tab terminal with PowerShell/Bash/CMD/HxTerminal sessions, macro recording, command history replay. Core layer done; full IDE integration pending. | ~70% |
+| #81 | **Plugin Sandbox** | Out-of-process isolation via HWND embedding + full IPC bridge (menus, toolbar, events). HWND parenting, Job Object resource control, IPC HexEditor event bridge done. Auto-isolation engine done. Remaining: gRPC migration, hot-reload from sandbox. | ~55% |
 | #104–105 | **Assembly Explorer** | .NET PE tree (namespaces, types, methods, fields, events, resources). Phase 1 (PEReader pipeline, stub tree, IDE menu/statusbar) done. ECMA-335 full metadata resolution pending. | ~15% |
 | #107 | **Document Model** | Unified in-memory document representation shared across all editors (hex, code, text, diff). Foundation for multi-editor collaboration, undo/redo unification and LSP integration. | ~10% |
 
@@ -70,7 +70,7 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #81 | **Plugin Sandbox (Extreme Isolation)** | Out-of-process plugin execution via gRPC/Named Pipes for security and fault isolation. |
+| #81 | **Plugin Sandbox (gRPC Migration + Hot-Reload)** | HWND embedding + IPC bridge done (v0.3.0). Remaining: gRPC transport migration, collectible `AssemblyLoadContext` hot-reload from sandbox, plugin restart-less upgrade flow. |
 | #97 | **Large File Optimization** | `VirtualizationEngine`, `LazyParser`, multi-core IntelliSense adapter; virtualized display for >1 GB files, incremental parsing. |
 
 ---
@@ -196,9 +196,14 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature | Version / Release |
 |---------|-------------------|
-| Multi-tab terminal sessions + macro recording (#92 Phase 1) | Unreleased — 2026-03 |
-| Assembly Explorer stub — PEReader pipeline, IDE menu, statusbar (#104 Phase 1) | Unreleased — 2026-03 |
-| Plugin system (SDK, PluginHost, 7 first-party plugins) | Unreleased — 2026-03 |
+| **Plugin Sandbox — HWND embedding + IPC menu/toolbar/event bridges** (#81 Phase 9-12) | [0.3.0] — 2026-03-15 |
+| **Auto-isolation decision engine + PluginMigrationPolicy** (#81) | [0.3.0] — 2026-03-15 |
+| **SandboxJobObject** — per-plugin CPU/RAM resource limits (#81) | [0.3.0] — 2026-03-15 |
+| **PluginMigrationMonitor** — isolation mode history & stability metrics | [0.3.0] — 2026-03-15 |
+| Plugin Manager Options UI — per-plugin sandbox configuration | [0.3.0] — 2026-03-15 |
+| Multi-tab terminal sessions + macro recording (#92) | [0.3.0] — 2026-03-15 |
+| Assembly Explorer stub — PEReader pipeline, IDE menu, statusbar (#104 Phase 1) | [0.3.0] — 2026-03-15 |
+| Plugin system (SDK, PluginHost, 9 first-party plugins, monitoring) | [0.3.0] — 2026-03-15 |
 | VS-style docking engine (100% in-house) | [2.7.0] — 2026-02 |
 | Project system (`.whsln` / `.whproj`) | [2.7.0] — 2026-02 |
 | Insert Mode fix, save reliability, unlimited undo/redo | [2.5.0] — 2026-02 |

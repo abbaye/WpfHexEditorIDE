@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Description>Public SDK for WpfHexEditor plugin development — interfaces, contracts, models, and MSBuild targets.</Description>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->

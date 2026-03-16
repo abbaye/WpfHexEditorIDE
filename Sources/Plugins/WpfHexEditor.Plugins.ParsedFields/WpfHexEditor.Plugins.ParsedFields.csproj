@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.ParsedFields</PluginId>
     <PluginName>Parsed Fields</PluginName>
-    <PluginVersion>0.6.0</PluginVersion>
+    <PluginVersion>0.6.1</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.ParsedFields.ParsedFieldsPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>
@@ -18,8 +18,8 @@
     <PluginDescription>Displays parsed fields from the active binary format, custom templates, and format candidates.</PluginDescription>
     <PluginIsolationMode>Sandbox</PluginIsolationMode>
     <PluginLoadPriority>50</PluginLoadPriority>
-    <PluginSdkVersion>1.0.0</PluginSdkVersion>
-    <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
     <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
     <PluginPermAccessNetwork>false</PluginPermAccessNetwork>

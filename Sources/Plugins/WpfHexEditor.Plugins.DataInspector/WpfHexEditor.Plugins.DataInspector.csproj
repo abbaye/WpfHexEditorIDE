@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.DataInspector</PluginId>
     <PluginName>Data Inspector</PluginName>
-    <PluginVersion>0.7.0</PluginVersion>
+    <PluginVersion>0.8.0</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.DataInspector.DataInspectorPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>
@@ -18,8 +18,8 @@
     <PluginDescription>Inspects binary data at the current cursor position, showing decoded values for all common data types.</PluginDescription>
     <PluginIsolationMode>Sandbox</PluginIsolationMode>
     <PluginLoadPriority>100</PluginLoadPriority>
-    <PluginSdkVersion>1.0.0</PluginSdkVersion>
-    <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
     <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
     <PluginPermAccessNetwork>false</PluginPermAccessNetwork>

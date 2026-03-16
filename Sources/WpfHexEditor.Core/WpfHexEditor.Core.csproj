@@ -17,9 +17,9 @@
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
     <Product>WpfHexEditor.Core</Product>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
-    <AssemblyVersion>2.8.0.0</AssemblyVersion>
-    <FileVersion>2.8.0</FileVersion>
-    <Version>2.8.0</Version>
+    <AssemblyVersion>2.9.0.0</AssemblyVersion>
+    <FileVersion>2.9.0</FileVersion>
+    <Version>2.9.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageTags>hexeditor;hex;binary;core;services;byte-provider;format-detection;search;undo-redo</PackageTags>
     <LangVersion>preview</LangVersion>

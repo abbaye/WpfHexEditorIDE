@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.FileStatistics</PluginId>
     <PluginName>File Statistics</PluginName>
-    <PluginVersion>0.5.1</PluginVersion>
+    <PluginVersion>0.5.2</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.FileStatistics.FileStatisticsPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>
@@ -18,8 +18,8 @@
     <PluginDescription>Displays byte frequency histograms, entropy charts, and distribution statistics for the active file.</PluginDescription>
     <PluginIsolationMode>Sandbox</PluginIsolationMode>
     <PluginLoadPriority>80</PluginLoadPriority>
-    <PluginSdkVersion>1.0.0</PluginSdkVersion>
-    <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
     <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
     <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
