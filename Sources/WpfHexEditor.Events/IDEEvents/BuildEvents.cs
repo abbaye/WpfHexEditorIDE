@@ -29,6 +29,23 @@ public sealed record BuildFailedEvent : IDEEventBase
 {
     public string ProjectPath { get; init; } = string.Empty;
     public string ErrorMessage { get; init; } = string.Empty;
-    public int ErrorCount { get; init; }
+    public int ErrorCount   { get; init; }
+    public int Warnings     { get; init; }
     public TimeSpan Duration { get; init; }
+}
+
+/// <summary>Published when the user cancels an active build.</summary>
+public sealed record BuildCancelledEvent : IDEEventBase;
+
+/// <summary>Published for each line of build output (log streaming).</summary>
+public sealed record BuildOutputLineEvent : IDEEventBase
+{
+    public string Line { get; init; } = string.Empty;
+}
+
+/// <summary>Published as a build progresses (percentage and status text).</summary>
+public sealed record BuildProgressUpdatedEvent : IDEEventBase
+{
+    public int    ProgressPercent { get; init; }
+    public string StatusText      { get; init; } = string.Empty;
 }
