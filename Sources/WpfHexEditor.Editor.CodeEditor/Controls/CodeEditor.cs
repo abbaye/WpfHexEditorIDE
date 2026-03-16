@@ -1409,6 +1409,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 else
                     ClearValue(dp);  // revert to DynamicResource (CE_*) binding
             }
+
+            // Re-establish DynamicResource bindings for all syntax color DPs.
+            // ClearValue() above removes any SetResourceReference binding that
+            // ApplyThemeResourceBindings() previously set. Calling it again is
+            // idempotent and ensures CE_* theme resources are live for all
+            // non-overridden token kinds (overridden ones keep their SetValue).
+            ApplyThemeResourceBindings();
         }
 
         /// <summary>
@@ -1430,16 +1437,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         };
 
         /// <summary>
-        /// Resolves the live brush for a <see cref="SyntaxTokenKind"/> by reading the
-        /// corresponding CodeEditor color DP (which is bound via DynamicResource to CE_*).
-        /// Returns <see langword="null"/> for <see cref="SyntaxTokenKind.Default"/>, letting
-        /// callers fall back to any baked-in brush stored on the token itself.
+        /// Maps each <see cref="SyntaxTokenKind"/> directly to the CE_* theme resource key
+        /// used in <see cref="ResolveBrushForKind"/>.
+        /// Using TryFindResource bypasses the DP local-value layer (SetValue/ClearValue),
+        /// so ApplyOptions() overrides or ClearValue calls never corrupt syntax colors.
+        /// </summary>
+        private static readonly Dictionary<SyntaxTokenKind, string> s_kindToResourceKey =
+            new()
+            {
+                { SyntaxTokenKind.Keyword,    "CE_Keyword"    },
+                { SyntaxTokenKind.String,     "CE_String"     },
+                { SyntaxTokenKind.Number,     "CE_Number"     },
+                { SyntaxTokenKind.Comment,    "CE_Comment"    },
+                { SyntaxTokenKind.Type,       "CE_Type"       },
+                { SyntaxTokenKind.Identifier, "CE_Identifier" },
+                { SyntaxTokenKind.Operator,   "CE_Operator"   },
+                { SyntaxTokenKind.Bracket,    "CE_Bracket"    },
+                { SyntaxTokenKind.Attribute,  "CE_Attribute"  },
+            };
+
+        /// <summary>
+        /// Resolves the live theme brush for a <see cref="SyntaxTokenKind"/> by calling
+        /// <see cref="FrameworkElement.TryFindResource"/> with the matching CE_* key.
+        /// This walks the logical tree (CodeEditor → Window → Application), guaranteeing
+        /// the current theme color is returned regardless of any DP local-value interference
+        /// (e.g. from <see cref="ApplyOptions"/> calling ClearValue or SetValue).
+        /// Returns <see langword="null"/> for <see cref="SyntaxTokenKind.Default"/>,
+        /// letting callers fall back to any baked-in brush stored on the token itself.
         /// </summary>
         private Brush? ResolveBrushForKind(SyntaxTokenKind kind)
-        {
-            var dp = SyntaxTokenKindToColorProperty(kind);
-            return dp is not null ? (Brush?)GetValue(dp) : null;
-        }
+            => s_kindToResourceKey.TryGetValue(kind, out var key)
+                ? TryFindResource(key) as Brush
+                : null;
 
         private void UpdateTypefacesFromDPs()
         {
