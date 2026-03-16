@@ -81,6 +81,31 @@ public sealed class SymbolTableManager
             return [.. _tables.Values.SelectMany(t => t.All).Select(s => s.Name).Distinct().OrderBy(n => n)];
     }
 
+
+    /// <summary>
+    /// Finds the first symbol named <paramref name="name"/> in <paramref name="filePath"/>,
+    /// falling back to workspace-wide search. Returns null when not found.
+    /// </summary>
+    public Symbol? FindSymbol(string filePath, string name)
+    {
+        lock (_lock)
+        {
+            if (_tables.TryGetValue(filePath, out var table))
+            {
+                var local = table.FindByName(name).FirstOrDefault();
+                if (local is not null) return local;
+            }
+            return _tables.Values.SelectMany(t => t.FindByName(name)).FirstOrDefault();
+        }
+    }
+
+    /// <summary>Returns all symbols across all documents whose Name matches name.</summary>
+    public IReadOnlyList<Symbol> FindAllReferences(string name)
+    {
+        lock (_lock)
+            return [.. _tables.Values.SelectMany(t => t.FindByName(name))];
+    }
+
     /// <summary>Raised after a symbol table is rebuilt for a document.</summary>
     public event EventHandler<string>? SymbolTableUpdated;
 
