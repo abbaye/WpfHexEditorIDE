@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official File Statistics panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.FileStatistics.FileStatisticsPlugin",
-  "isolationMode": "InProcess",
+  "isolationMode": "Sandbox",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.FileStatistics.dll"

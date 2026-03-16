@@ -23,6 +23,7 @@
 //     - Metrics are pushed every MetricsIntervalMs via SandboxMetricsRelay.
 // ==========================================================
 
+using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
@@ -49,6 +50,8 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
 
     private IWpfHexEditorPlugin? _plugin;
     private AssemblyLoadContext? _alc;
+    private IpcUIRegistry? _uiRegistry;
+    private readonly ThemeBootstrapper _themeBootstrapper = new();
 
     // ─────────────────────────────────────────────────────────────────────────
     public SandboxedPluginRunner(
@@ -73,9 +76,12 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
     {
         return envelope.Kind switch
         {
-            SandboxMessageKind.InitializeRequest => await HandleInitializeAsync(envelope),
-            SandboxMessageKind.ShutdownRequest   => await HandleShutdownAsync(envelope),
-            SandboxMessageKind.InvokeRequest     => await HandleInvokeAsync(envelope),
+            SandboxMessageKind.InitializeRequest     => await HandleInitializeAsync(envelope),
+            SandboxMessageKind.ShutdownRequest       => await HandleShutdownAsync(envelope),
+            SandboxMessageKind.InvokeRequest         => await HandleInvokeAsync(envelope),
+            SandboxMessageKind.ResizePanelRequest       => await HandleResizePanelAsync(envelope),
+            SandboxMessageKind.ThemeChangedNotification  => await HandleThemeChangedAsync(envelope),
+            SandboxMessageKind.ExecuteCommandRequest     => await HandleExecuteCommandAsync(envelope),
             _ => await HandleUnknownAsync(envelope),
         };
     }
@@ -90,8 +96,30 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
 
         try
         {
-            // Load plugin assembly in a collectible ALC
+            // 1. Apply host theme Source URIs first (Style / ControlTemplate resources).
+            //    These must exist in Application.Resources BEFORE InitializeComponent()
+            //    is called so {StaticResource PanelToolbarStyle} resolves at parse time.
+            if (payload.ThemeDictionaryUris.Count > 0)
+                _themeBootstrapper.ApplyUris(payload.ThemeDictionaryUris);
+
+            // 2. Apply serialised primitive resources (SolidColorBrush, Color…).
+            //    Added AFTER the URI dicts so inline values override embedded ones.
+            if (!string.IsNullOrEmpty(payload.ThemeResourcesXaml))
+                _themeBootstrapper.Apply(payload.ThemeResourcesXaml);
+
+            // 3. Load plugin assembly in a collectible ALC.
+            //    The Resolving event probes the plugin's own directory so private
+            //    dependencies (e.g. WpfHexEditor.Core.AssemblyAnalysis.dll) are found
+            //    even if they are not present in the sandbox base directory.
+            var pluginDir = Path.GetDirectoryName(payload.AssemblyPath) ?? string.Empty;
             _alc = new AssemblyLoadContext($"SandboxedPlugin_{payload.PluginId}", isCollectible: true);
+            _alc.Resolving += (ctx, name) =>
+            {
+                if (string.IsNullOrEmpty(pluginDir) || string.IsNullOrEmpty(name.Name))
+                    return null;
+                var probe = Path.Combine(pluginDir, name.Name + ".dll");
+                return File.Exists(probe) ? ctx.LoadFromAssemblyPath(probe) : null;
+            };
             var assembly = _alc.LoadFromAssemblyPath(payload.AssemblyPath);
             var type = assembly.GetType(payload.EntryType)
                 ?? throw new TypeLoadException($"Type '{payload.EntryType}' not found.");
@@ -99,8 +127,12 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
             _plugin = (IWpfHexEditorPlugin)(Activator.CreateInstance(type)
                 ?? throw new InvalidOperationException("Cannot create plugin instance."));
 
+            // Create IPC-backed UIRegistry so plugin panels are forwarded to the host
+            _uiRegistry = new IpcUIRegistry(_channel, _ct);
+
             // Create stub host context that marshals IDE calls back over IPC
-            var stubContext = new SandboxedHostContext(_channel, payload.GrantedPermissions, _log);
+            var stubContext = new SandboxedHostContext(_channel, payload.GrantedPermissions,
+                _uiRegistry, _log);
 
             await _plugin.InitializeAsync(stubContext, _ct).ConfigureAwait(false);
 
@@ -148,6 +180,39 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
         // Full implementation would route to actual service implementations
         // or return serialized results from stub service adapters.
         return await SendSuccess(envelope, resultJson: "null");
+    }
+
+    private Task<bool> HandleResizePanelAsync(SandboxEnvelope envelope)
+    {
+        var payload = Deserialize<ResizePanelRequestPayload>(envelope.Payload);
+        if (payload is not null)
+            _uiRegistry?.HandleResize(payload.ContentId, payload.Width, payload.Height);
+        return Task.FromResult(true); // fire-and-forget, no response needed
+    }
+
+    private Task<bool> HandleThemeChangedAsync(SandboxEnvelope envelope)
+    {
+        var payload = Deserialize<ThemeChangedNotificationPayload>(envelope.Payload);
+        if (payload is not null && !string.IsNullOrEmpty(payload.ThemeResourcesXaml))
+            _themeBootstrapper.Apply(payload.ThemeResourcesXaml);
+        return Task.FromResult(true); // fire-and-forget, no response needed
+    }
+
+    private Task<bool> HandleExecuteCommandAsync(SandboxEnvelope envelope)
+    {
+        // ExecuteCommandRequest is fire-and-forget: no response envelope expected.
+        // Must be dispatched on the STA Dispatcher thread since the plugin may
+        // update WPF controls in response (e.g. show a panel).
+        var payload = Deserialize<ExecuteCommandRequestPayload>(envelope.Payload);
+        if (payload is not null)
+        {
+            var dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+            if (dispatcher.CheckAccess())
+                _uiRegistry?.ExecuteCommand(payload.CommandId);
+            else
+                dispatcher.InvokeAsync(() => _uiRegistry?.ExecuteCommand(payload.CommandId));
+        }
+        return Task.FromResult(true);
     }
 
     private async Task<bool> HandleUnknownAsync(SandboxEnvelope envelope)
@@ -230,6 +295,8 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _metrics.Stop();
+        _uiRegistry?.DisposeAll();
+        _themeBootstrapper.Remove();
         if (_plugin is IDisposable d) d.Dispose();
         if (_plugin is IAsyncDisposable ad) await ad.DisposeAsync().ConfigureAwait(false);
         try { _alc?.Unload(); } catch { }
@@ -260,16 +327,21 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     public IErrorPanelService ErrorPanel => NullErrorPanelService.Instance;
     public IFocusContextService FocusContext => NullFocusContextService.Instance;
     public IPluginEventBus EventBus => NullEventBus.Instance;
-    public IUIRegistry UIRegistry => NullUIRegistry.Instance;
+    public IUIRegistry UIRegistry { get; }
     public IThemeService Theme => NullThemeService.Instance;
     public IPermissionService Permissions => NullPermissionService.Instance;
     public ITerminalService Terminal => NullTerminalService.Instance;
     public ISolutionExplorerService SolutionExplorer => NullSolutionExplorerService.Instance;
 
-    public SandboxedHostContext(IpcChannel channel, List<string> grantedPermissions, Action<string> log)
+    public SandboxedHostContext(
+        IpcChannel channel,
+        List<string> grantedPermissions,
+        IpcUIRegistry uiRegistry,
+        Action<string> log)
     {
         _channel = channel;
         _granted = new HashSet<string>(grantedPermissions, StringComparer.OrdinalIgnoreCase);
+        UIRegistry = uiRegistry;
         _log = log;
     }
 
@@ -372,28 +444,6 @@ file sealed class NullEventBus : IPluginEventBus
     public IDisposable Subscribe<TEvent>(Func<TEvent, Task> handler) where TEvent : class => Disposable.Empty;
 }
 
-file sealed class NullUIRegistry : IUIRegistry
-{
-    public static readonly NullUIRegistry Instance = new();
-    public string GenerateUIId(string pluginId, string elementType, string elementName) => string.Empty;
-    public bool Exists(string uiId) => false;
-    public void RegisterPanel(string uiId, System.Windows.UIElement panel, string pluginId, PanelDescriptor descriptor) { }
-    public void UnregisterPanel(string uiId) { }
-    public void RegisterMenuItem(string uiId, string pluginId, MenuItemDescriptor descriptor) { }
-    public void UnregisterMenuItem(string uiId) { }
-    public void RegisterToolbarItem(string uiId, string pluginId, ToolbarItemDescriptor descriptor) { }
-    public void UnregisterToolbarItem(string uiId) { }
-    public void RegisterDocumentTab(string uiId, System.Windows.UIElement content, string pluginId, DocumentDescriptor descriptor) { }
-    public void UnregisterDocumentTab(string uiId) { }
-    public void RegisterStatusBarItem(string uiId, string pluginId, StatusBarItemDescriptor descriptor) { }
-    public void UnregisterStatusBarItem(string uiId) { }
-    public void ShowPanel(string uiId) { }
-    public void HidePanel(string uiId) { }
-    public void TogglePanel(string uiId) { }
-    public void FocusPanel(string uiId) { }
-    public bool IsPanelVisible(string uiId) => false;
-    public void UnregisterAllForPlugin(string pluginId) { }
-}
 
 file sealed class NullThemeService : IThemeService
 {

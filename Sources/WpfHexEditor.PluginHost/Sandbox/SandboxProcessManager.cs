@@ -62,6 +62,22 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
     public event EventHandler<CrashNotificationPayload>? CrashReceived;
     public event EventHandler? PluginReady;
 
+    // Phase 9 — panel HWND bridge events
+    public event EventHandler<RegisterPanelNotificationPayload>? PanelRegistered;
+    public event EventHandler<RegisterDocumentTabNotificationPayload>? DocumentTabRegistered;
+    public event EventHandler<UnregisterPanelNotificationPayload>? PanelUnregistered;
+
+    // Phase 10 — menu / toolbar / status-bar bridge events
+    public event EventHandler<RegisterMenuItemNotificationPayload>? MenuItemRegistered;
+    public event EventHandler<UnregisterMenuItemNotificationPayload>? MenuItemUnregistered;
+    public event EventHandler<RegisterToolbarItemNotificationPayload>? ToolbarItemRegistered;
+    public event EventHandler<UnregisterToolbarItemNotificationPayload>? ToolbarItemUnregistered;
+    public event EventHandler<RegisterStatusBarItemNotificationPayload>? StatusBarItemRegistered;
+    public event EventHandler<UnregisterStatusBarItemNotificationPayload>? StatusBarItemUnregistered;
+
+    // Phase 10 — panel visibility forwarding (Sandbox → IDE)
+    public event EventHandler<PanelActionNotificationPayload>? PanelActionReceived;
+
     // ──────────────────────────────────────────────────────────────────────────
     public SandboxProcessManager(string pluginId, Action<string>? logger = null)
     {
@@ -182,6 +198,58 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
 
             case SandboxMessageKind.ReadyNotification:
                 PluginReady?.Invoke(this, EventArgs.Empty);
+                return;
+
+            // Phase 9 — UI bridge notifications
+            case SandboxMessageKind.RegisterPanelNotification:
+                var panel = Deserialize<RegisterPanelNotificationPayload>(envelope.Payload);
+                if (panel is not null) PanelRegistered?.Invoke(this, panel);
+                return;
+
+            case SandboxMessageKind.RegisterDocumentTabNotification:
+                var tab = Deserialize<RegisterDocumentTabNotificationPayload>(envelope.Payload);
+                if (tab is not null) DocumentTabRegistered?.Invoke(this, tab);
+                return;
+
+            case SandboxMessageKind.UnregisterPanelNotification:
+                var unregister = Deserialize<UnregisterPanelNotificationPayload>(envelope.Payload);
+                if (unregister is not null) PanelUnregistered?.Invoke(this, unregister);
+                return;
+
+            // Phase 10 — menu / toolbar / status-bar notifications
+            case SandboxMessageKind.RegisterMenuItemNotification:
+                var menuItem = Deserialize<RegisterMenuItemNotificationPayload>(envelope.Payload);
+                if (menuItem is not null) MenuItemRegistered?.Invoke(this, menuItem);
+                return;
+
+            case SandboxMessageKind.UnregisterMenuItemNotification:
+                var unregMenuItem = Deserialize<UnregisterMenuItemNotificationPayload>(envelope.Payload);
+                if (unregMenuItem is not null) MenuItemUnregistered?.Invoke(this, unregMenuItem);
+                return;
+
+            case SandboxMessageKind.RegisterToolbarItemNotification:
+                var toolbarItem = Deserialize<RegisterToolbarItemNotificationPayload>(envelope.Payload);
+                if (toolbarItem is not null) ToolbarItemRegistered?.Invoke(this, toolbarItem);
+                return;
+
+            case SandboxMessageKind.UnregisterToolbarItemNotification:
+                var unregToolbar = Deserialize<UnregisterToolbarItemNotificationPayload>(envelope.Payload);
+                if (unregToolbar is not null) ToolbarItemUnregistered?.Invoke(this, unregToolbar);
+                return;
+
+            case SandboxMessageKind.RegisterStatusBarItemNotification:
+                var statusItem = Deserialize<RegisterStatusBarItemNotificationPayload>(envelope.Payload);
+                if (statusItem is not null) StatusBarItemRegistered?.Invoke(this, statusItem);
+                return;
+
+            case SandboxMessageKind.UnregisterStatusBarItemNotification:
+                var unregStatus = Deserialize<UnregisterStatusBarItemNotificationPayload>(envelope.Payload);
+                if (unregStatus is not null) StatusBarItemUnregistered?.Invoke(this, unregStatus);
+                return;
+
+            case SandboxMessageKind.PanelActionNotification:
+                var panelAction = Deserialize<PanelActionNotificationPayload>(envelope.Payload);
+                if (panelAction is not null) PanelActionReceived?.Invoke(this, panelAction);
                 return;
         }
 

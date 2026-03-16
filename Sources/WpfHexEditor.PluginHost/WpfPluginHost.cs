@@ -622,6 +622,29 @@ public sealed class WpfPluginHost : IAsyncDisposable
         lock (_lock) return _entries.TryGetValue(pluginId, out var entry) ? entry : null;
     }
 
+    // --- Theme forwarding (Phase 9) -----------------------------------------------
+
+    /// <summary>
+    /// Notifies all running sandbox plugins of a theme change.
+    /// Call this from the IDE theme switch handler so sandbox-hosted panels
+    /// can re-apply the new brush/color tokens.
+    /// </summary>
+    public Task NotifyThemeChangedAsync(string themeXaml, CancellationToken ct = default)
+    {
+        List<SandboxPluginProxy> proxies;
+        lock (_lock)
+        {
+            proxies = _entries.Values
+                .Where(e => e.State == PluginState.Loaded && e.Instance is SandboxPluginProxy)
+                .Select(e => (SandboxPluginProxy)e.Instance!)
+                .ToList();
+        }
+
+        if (proxies.Count == 0) return Task.CompletedTask;
+
+        return Task.WhenAll(proxies.Select(p => p.ForwardThemeChangeAsync(themeXaml, ct)));
+    }
+
     // --- Private helpers ---------------------------------------------------------
 
     private async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)

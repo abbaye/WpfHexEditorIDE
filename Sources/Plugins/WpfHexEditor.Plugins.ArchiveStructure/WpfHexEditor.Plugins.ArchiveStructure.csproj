@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Browses and navigates the internal directory tree of ZIP, RAR, and other archive formats.</PluginDescription>
-    <PluginIsolationMode>InProcess</PluginIsolationMode>
+    <PluginIsolationMode>Sandbox</PluginIsolationMode>
     <PluginLoadPriority>30</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

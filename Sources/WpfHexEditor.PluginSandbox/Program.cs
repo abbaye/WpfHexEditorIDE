@@ -20,6 +20,7 @@
 // ==========================================================
 
 using System.IO.Pipes;
+using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.PluginSandbox;
 using WpfHexEditor.SDK.Sandbox;
@@ -41,6 +42,14 @@ internal static class Program
 
         var dispatcher = Dispatcher.CurrentDispatcher;
         int exitCode = 0;
+
+        // Create a WPF Application on the STA thread so that:
+        //   1. Application.Current is non-null → ThemeBootstrapper.Apply() can merge
+        //      the host's theme ResourceDictionary into Application.Current.Resources.
+        //   2. {StaticResource} lookups in plugin XAML succeed (resources are resolved
+        //      through Application.Resources.MergedDictionaries, not just local dicts).
+        // We do NOT call app.Run() — Dispatcher.Run() below drives the same STA pump.
+        _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
 
         dispatcher.InvokeAsync(async () =>
         {

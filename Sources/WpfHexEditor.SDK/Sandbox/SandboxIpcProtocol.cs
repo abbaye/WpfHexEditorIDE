@@ -47,6 +47,27 @@ public enum SandboxMessageKind
     MetricsPush,
     CrashNotification,
     ReadyNotification,
+
+    // Sandbox → IDE (UI registration — Phase 9)
+    RegisterPanelNotification,
+    RegisterDocumentTabNotification,
+    UnregisterPanelNotification,
+
+    // Sandbox → IDE (menu / toolbar / status-bar registration — Phase 10)
+    RegisterMenuItemNotification,
+    UnregisterMenuItemNotification,
+    RegisterToolbarItemNotification,
+    UnregisterToolbarItemNotification,
+    RegisterStatusBarItemNotification,
+    UnregisterStatusBarItemNotification,
+
+    // Sandbox → IDE (panel visibility forwarding — Phase 10)
+    PanelActionNotification,
+
+    // IDE → Sandbox (UI lifecycle — Phase 9 / 10)
+    ResizePanelRequest,
+    ThemeChangedNotification,
+    ExecuteCommandRequest,
 }
 
 // ──────────────────────────────────────────────────────────
@@ -103,6 +124,28 @@ public sealed class InitializeRequestPayload
     /// </summary>
     [JsonPropertyName("grantedPermissions")]
     public List<string> GrantedPermissions { get; set; } = [];
+
+    /// <summary>
+    /// Serialised XAML of the host's active theme ResourceDictionaries.
+    /// The sandbox merges this into Application.Resources so plugin WPF
+    /// controls inherit the same theme tokens as the IDE.
+    /// Empty string means no theme forwarding (fallback to default styles).
+    /// </summary>
+    [JsonPropertyName("themeResourcesXaml")]
+    public string ThemeResourcesXaml { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Source URIs (pack://application:,,,/…) of all ResourceDictionaries in the
+    /// host's theme hierarchy. The sandbox loads these BEFORE applying ThemeResourcesXaml
+    /// so that Style resources (PanelToolbarStyle, PanelTreeViewItemStyle, etc.) are
+    /// present in Application.Resources when plugin XAML calls InitializeComponent().
+    /// <para>
+    /// ThemeResourcesXaml only serialises primitive values (SolidColorBrush, Color, etc.).
+    /// The source URIs carry the full Style / ControlTemplate definitions.
+    /// </para>
+    /// </summary>
+    [JsonPropertyName("themeDictionaryUris")]
+    public List<string> ThemeDictionaryUris { get; set; } = [];
 }
 
 /// <summary>Requests graceful plugin shutdown before the sandbox process exits.</summary>
@@ -215,4 +258,240 @@ public sealed class CrashNotificationPayload
 
     [JsonPropertyName("phase")]
     public string Phase { get; set; } = "Runtime";
+}
+
+// ──────────────────────────────────────────────────────────
+// Phase 9 — UI bridge payloads  (Sandbox → IDE, no response)
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Sent by the sandbox when a plugin calls IUIRegistry.RegisterPanel().
+/// Carries the Win32 HWND (as long) of the HwndSource child window that hosts
+/// the plugin's UserControl.  The IDE wraps it in an HwndHost and docks it.
+/// </summary>
+public sealed class RegisterPanelNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>Win32 HWND of the sandbox-side HwndSource (WS_CHILD).</summary>
+    [JsonPropertyName("hwnd")]
+    public long Hwnd { get; set; }
+
+    /// <summary>Requested dock position hint (e.g. "Left", "Right", "Bottom").</summary>
+    [JsonPropertyName("panelType")]
+    public string PanelType { get; set; } = string.Empty;
+
+    [JsonPropertyName("width")]
+    public double Width { get; set; } = 300;
+
+    [JsonPropertyName("height")]
+    public double Height { get; set; } = 300;
+}
+
+/// <summary>
+/// Sent by the sandbox when a plugin calls IUIRegistry.RegisterDocumentTab().
+/// </summary>
+public sealed class RegisterDocumentTabNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>Win32 HWND of the sandbox-side HwndSource (WS_CHILD).</summary>
+    [JsonPropertyName("hwnd")]
+    public long Hwnd { get; set; }
+
+    [JsonPropertyName("width")]
+    public double Width { get; set; } = 600;
+
+    [JsonPropertyName("height")]
+    public double Height { get; set; } = 400;
+}
+
+/// <summary>
+/// Sent by the sandbox when a plugin panel/tab is closed from within the sandbox.
+/// The IDE should remove the corresponding HwndHost from the docking layout.
+/// </summary>
+public sealed class UnregisterPanelNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+}
+
+// ──────────────────────────────────────────────────────────
+// Phase 9 — UI lifecycle payloads  (IDE → Sandbox)
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Sent by the IDE when the HwndHost is resized so the sandbox can
+/// call SetWindowPos on its HwndSource to match.
+/// </summary>
+public sealed class ResizePanelRequestPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    [JsonPropertyName("width")]
+    public double Width { get; set; }
+
+    [JsonPropertyName("height")]
+    public double Height { get; set; }
+}
+
+/// <summary>
+/// Sent by the IDE when the user switches themes.
+/// The sandbox re-applies the new ResourceDictionaries via ThemeBootstrapper.
+/// </summary>
+public sealed class ThemeChangedNotificationPayload
+{
+    [JsonPropertyName("themeResourcesXaml")]
+    public string ThemeResourcesXaml { get; set; } = string.Empty;
+}
+
+// ──────────────────────────────────────────────────────────
+// Phase 10 — Menu / Toolbar / StatusBar bridge payloads
+// (Sandbox → IDE, no response)
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Sent when a plugin calls IUIRegistry.RegisterMenuItem().
+/// The host creates a real menu item backed by an IpcRelayCommand that
+/// sends ExecuteCommandRequest back to the sandbox.
+/// </summary>
+public sealed class RegisterMenuItemNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    [JsonPropertyName("header")]
+    public string Header { get; set; } = string.Empty;
+
+    [JsonPropertyName("parentPath")]
+    public string ParentPath { get; set; } = "Tools";
+
+    [JsonPropertyName("group")]
+    public string? Group { get; set; }
+
+    [JsonPropertyName("iconGlyph")]
+    public string? IconGlyph { get; set; }
+
+    [JsonPropertyName("gestureText")]
+    public string? GestureText { get; set; }
+
+    [JsonPropertyName("toolTip")]
+    public string? ToolTip { get; set; }
+
+    [JsonPropertyName("insertPosition")]
+    public int InsertPosition { get; set; } = -1;
+
+    /// <summary>
+    /// Opaque command identifier that the host passes back in ExecuteCommandRequest.
+    /// Null when the plugin registered no command.
+    /// </summary>
+    [JsonPropertyName("commandId")]
+    public string? CommandId { get; set; }
+}
+
+/// <summary>Sent when a plugin calls IUIRegistry.UnregisterMenuItem().</summary>
+public sealed class UnregisterMenuItemNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Sent when a plugin calls IUIRegistry.RegisterToolbarItem().
+/// The host creates a toolbar button backed by an IpcRelayCommand.
+/// </summary>
+public sealed class RegisterToolbarItemNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    [JsonPropertyName("iconGlyph")]
+    public string? IconGlyph { get; set; }
+
+    [JsonPropertyName("toolTip")]
+    public string? ToolTip { get; set; }
+
+    [JsonPropertyName("isSeparator")]
+    public bool IsSeparator { get; set; }
+
+    /// <summary>Toolbar group index (matches ToolbarItemDescriptor.Group int field).</summary>
+    [JsonPropertyName("group")]
+    public int Group { get; set; }
+
+    [JsonPropertyName("commandId")]
+    public string? CommandId { get; set; }
+}
+
+/// <summary>Sent when a plugin calls IUIRegistry.UnregisterToolbarItem().</summary>
+public sealed class UnregisterToolbarItemNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Sent when a plugin calls IUIRegistry.RegisterStatusBarItem().
+/// </summary>
+public sealed class RegisterStatusBarItemNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    [JsonPropertyName("text")]
+    public string Text { get; set; } = string.Empty;
+
+    /// <summary>Serialized StatusBarAlignment value: "Left", "Center", or "Right".</summary>
+    [JsonPropertyName("alignment")]
+    public string Alignment { get; set; } = "Right";
+
+    [JsonPropertyName("toolTip")]
+    public string? ToolTip { get; set; }
+
+    [JsonPropertyName("order")]
+    public int Order { get; set; }
+}
+
+/// <summary>Sent when a plugin calls IUIRegistry.UnregisterStatusBarItem().</summary>
+public sealed class UnregisterStatusBarItemNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Sent when a sandbox plugin calls ShowPanel / HidePanel / TogglePanel / FocusPanel.
+/// Routes through the host so the docking system handles visibility correctly.
+/// </summary>
+public sealed class PanelActionNotificationPayload
+{
+    [JsonPropertyName("contentId")]
+    public string ContentId { get; set; } = string.Empty;
+
+    /// <summary>"Show", "Hide", "Toggle", or "Focus".</summary>
+    [JsonPropertyName("action")]
+    public string Action { get; set; } = string.Empty;
+}
+
+// ──────────────────────────────────────────────────────────
+// Phase 10 — Command execution  (IDE → Sandbox, fire-and-forget)
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Sent by the IDE when the user activates a menu item or toolbar button
+/// that was registered by the sandbox plugin. The sandbox looks up the
+/// stored ICommand by CommandId and executes it.
+/// </summary>
+public sealed class ExecuteCommandRequestPayload
+{
+    [JsonPropertyName("commandId")]
+    public string CommandId { get; set; } = string.Empty;
 }

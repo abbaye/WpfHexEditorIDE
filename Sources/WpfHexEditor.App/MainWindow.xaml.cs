@@ -4651,6 +4651,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             });
         SyncAllHexEditorThemes();
         OutputLogger.Info($"Theme changed to {themeName}.");
+
+        // Phase 9 — forward new theme resources to sandbox plugins so their
+        // WPF controls apply the same brush/color tokens as the IDE.
+        _themeService?.NotifyThemeChanged(themeName);
+        if (_pluginHost is not null)
+        {
+            var themeXaml = WpfHexEditor.PluginHost.Sandbox.ThemeResourceSerializer.Serialize(
+                Application.Current.Resources);
+            _ = _pluginHost.NotifyThemeChangedAsync(themeXaml);
+        }
     }
 
     // -----------------------------------------------------------------------

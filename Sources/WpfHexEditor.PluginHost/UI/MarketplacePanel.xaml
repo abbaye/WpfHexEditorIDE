@@ -26,6 +26,10 @@
              d:DesignWidth="900" d:DesignHeight="600"
              Background="{DynamicResource DockPanelBackgroundBrush}">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <!-- ═══════════════════════════════════════════════════════════════════════
          Root layout: Toolbar / Content
          ═══════════════════════════════════════════════════════════════════════ -->
@@ -113,7 +117,7 @@
                      DockPanel.Dock="Bottom"
                      Height="3"
                      Minimum="0" Maximum="100"
-                     Value="{Binding DownloadPercent}"
+                     Value="{Binding DownloadPercent, Mode=OneWay}"
                      Foreground="{DynamicResource DockAccentBrush}"
                      Background="Transparent"
                      BorderThickness="0"

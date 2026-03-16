@@ -20,6 +20,7 @@
 
 using System.IO;
 using System.Text.Json;
+using System.Windows.Threading;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Sandbox;
 using WpfHexEditor.SDK.Contracts;
@@ -41,6 +42,9 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
 
     // Injected after construction so the proxy can push real metrics into the engine.
     private PluginMetricsEngine? _metricsEngine;
+
+    // Phase 9 — UI bridge proxy (created in InitializeAsync once registry + dispatcher are available)
+    private SandboxUIRegistryProxy? _uiProxy;
 
     // ── State ─────────────────────────────────────────────────────────────────
     private volatile bool _isReady;
@@ -74,6 +78,13 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
     /// <summary>Wires a <see cref="PluginMetricsEngine"/> so sandbox metrics are forwarded.</summary>
     public void SetMetricsEngine(PluginMetricsEngine engine) => _metricsEngine = engine;
 
+    /// <summary>
+    /// Notifies the sandbox of a theme change so it can re-apply theme resources.
+    /// Call this from the IDE's theme-change handler.
+    /// </summary>
+    public Task ForwardThemeChangeAsync(string themeXaml, CancellationToken ct = default)
+        => _uiProxy?.ForwardThemeChangeAsync(themeXaml, ct) ?? Task.CompletedTask;
+
     // ── IWpfHexEditorPlugin.InitializeAsync ───────────────────────────────────
 
     public async Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
@@ -90,7 +101,16 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         // 1. Spawn sandbox process and wait for pipe connection
         await _procManager.StartAsync(ct).ConfigureAwait(false);
 
-        // 2. Send InitializeRequest with granted permissions
+        // 2. Create the UI bridge proxy so panel registrations are handled
+        //    before the plugin's InitializeAsync fires
+        var dispatcher = Dispatcher.CurrentDispatcher;
+        _uiProxy = new SandboxUIRegistryProxy(
+            context.UIRegistry, _procManager, _manifest.Id, dispatcher, _log);
+
+        // 3. Send InitializeRequest with granted permissions + serialized theme
+        var themeResources = context.Theme.GetThemeResources();
+        var themeXaml    = ThemeResourceSerializer.Serialize(themeResources);
+        var themeUris    = ThemeResourceSerializer.CollectSourceUris(themeResources);
         var initPayload = new InitializeRequestPayload
         {
             PluginId = _manifest.Id,
@@ -98,6 +118,8 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
             AssemblyPath = assemblyPath,
             EntryType = _manifest.EntryPoint,
             GrantedPermissions = BuildGrantedPermissions(),
+            ThemeResourcesXaml = themeXaml,
+            ThemeDictionaryUris = new List<string>(themeUris),
         };
 
         var request = SandboxProcessManager.BuildRequest(
@@ -110,7 +132,7 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
             throw new InvalidOperationException(
                 $"Sandbox plugin '{_manifest.Id}' failed to initialize: {result?.ErrorMessage ?? "no response"}");
 
-        // 3. Wait for ReadyNotification (sandbox pushes this after successful init)
+        // 4. Wait for ReadyNotification (sandbox pushes this after successful init)
         await _readyTcs.Task.WaitAsync(TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
         _log($"[SandboxProxy:{_manifest.Id}] Ready.");
     }
@@ -185,6 +207,10 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         _procManager.PluginReady -= OnPluginReady;
         _procManager.MetricsPushed -= OnMetricsPushed;
         _procManager.CrashReceived -= OnCrashReceived;
+
+        _uiProxy?.Dispose();
+        _uiProxy = null;
+
         await _procManager.DisposeAsync().ConfigureAwait(false);
     }
 }
