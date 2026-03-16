@@ -362,6 +362,22 @@ namespace WpfHexEditor.Core.Bytes
         }
 
         /// <summary>
+        /// Reload the file from disk by invalidating the cache and resetting the stream position.
+        /// The underlying FileStream remains open — no re-open needed.
+        /// Call this after an external process has modified the file on disk.
+        /// </summary>
+        public void Reload()
+        {
+            if (!IsOpen) return;
+
+            lock (_cacheLock)
+            {
+                InvalidateCache();
+                _stream.Position = 0;
+            }
+        }
+
+        /// <summary>
         /// Close the file/stream.
         /// </summary>
         public void Close()

@@ -404,6 +404,27 @@ namespace WpfHexEditor.HexEditor.ViewModels
         }
 
         /// <summary>
+        /// Reload the file content from disk, discarding all pending in-memory edits.
+        /// The underlying FileStream is kept open — only the cache is invalidated.
+        /// Call this after an external process has modified the file on disk.
+        /// </summary>
+        public void ReloadFromDisk()
+        {
+            if (_provider == null || !_provider.IsOpen) return;
+
+            _provider.Reload();
+
+            ClearLineCache();
+            RefreshVisibleLines();
+
+            OnPropertyChanged(nameof(VirtualLength));
+            OnPropertyChanged(nameof(TotalLines));
+            OnPropertyChanged(nameof(FileLength));
+            OnPropertyChanged(nameof(CanUndo));
+            OnPropertyChanged(nameof(CanRedo));
+        }
+
+        /// <summary>
         /// Clear all undo/redo history (V1 compatible)
         /// </summary>
         public void ClearUndoRedo()

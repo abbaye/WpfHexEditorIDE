@@ -1375,6 +1375,45 @@
                 </Grid>
             </Border>
 
+            <!-- File-Change InfoBar — shown when the active file is modified by an external process -->
+            <Border x:Name="FileChangeInfoBar" Grid.Row="0" Visibility="Collapsed"
+                    Background="{DynamicResource PM_BadgeSlowBrush}" Padding="8,5"
+                    Margin="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Segoe MDL2 "Page" glyph -->
+                    <TextBlock Grid.Column="0" Text="&#xE7C3;"
+                               FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="White" VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBlock x:Name="FileChangeInfoBarMessage" Grid.Column="1"
+                               Text="" Foreground="White" FontSize="12"
+                               VerticalAlignment="Center" TextWrapping="NoWrap"/>
+                    <Button x:Name="FileChangeInfoBarReload" Grid.Column="2"
+                            Content="Reload" Margin="8,0,4,0"
+                            Click="OnFileChangeInfoBarReload"
+                            Style="{StaticResource InfoBarButtonStyle}"/>
+                    <Button x:Name="FileChangeInfoBarKeep" Grid.Column="3"
+                            Content="Keep my edits" Margin="4,0"
+                            Click="OnFileChangeInfoBarKeep"
+                            Style="{StaticResource InfoBarButtonStyle}"
+                            Visibility="Collapsed"/>
+                    <Button Grid.Column="4" Content="&#xE711;"
+                            FontFamily="Segoe MDL2 Assets" FontSize="10"
+                            Margin="8,0,0,0"
+                            Click="OnFileChangeInfoBarClose"
+                            Style="{StaticResource InfoBarButtonStyle}"
+                            BorderBrush="Transparent"
+                            ToolTip="Dismiss"/>
+                </Grid>
+            </Border>
+
             <dock:DockControl Grid.Row="1" x:Name="DockHost" Margin="2" />
         </Grid>
 

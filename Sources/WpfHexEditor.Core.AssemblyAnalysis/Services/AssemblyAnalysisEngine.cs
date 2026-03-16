@@ -48,7 +48,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         if (!File.Exists(filePath)) return false;
 
         // Check MZ magic bytes — valid for both managed and native PE.
-        using var fs = File.OpenRead(filePath);
+        // Use FileShare.ReadWrite so the check succeeds even when HexEditor holds the file open.
+        using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         Span<byte> header = stackalloc byte[2];
         return fs.Read(header) == 2 && header[0] == 0x4D && header[1] == 0x5A; // 'MZ'
     }
@@ -63,7 +64,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     {
         ct.ThrowIfCancellationRequested();
 
-        using var stream   = File.OpenRead(filePath);
+        // FileShare.ReadWrite allows concurrent access when HexEditor holds the file open.
+        using var stream   = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var peReader = new PEReader(stream);
 
         var sections = ReadSections(peReader);

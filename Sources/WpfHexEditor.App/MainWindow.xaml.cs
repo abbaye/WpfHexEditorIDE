@@ -236,7 +236,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public HexEditorControl? ActiveHexEditor
     {
         get => _activeHexEditor;
-        private set { _activeHexEditor = value; OnPropertyChanged(); }
+        private set
+        {
+            // Unsubscribe from the previous editor's file-change event.
+            if (_activeHexEditor != null)
+                _activeHexEditor.FileExternallyChanged -= OnActiveFileExternallyChanged;
+
+            _activeHexEditor = value;
+
+            // Subscribe to the new editor and hide any stale file-change bar.
+            if (_activeHexEditor != null)
+                _activeHexEditor.FileExternallyChanged += OnActiveFileExternallyChanged;
+
+            HideFileChangeInfoBar();
+            OnPropertyChanged();
+        }
     }
 
     // -- TBL toolbar dropdown ---------------------------------------------
@@ -4413,6 +4427,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var vm = new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesViewModel(
             project, _solutionManager);
+
+        // Update the tab title with a '*' prefix whenever unsaved changes exist.
+        var baseTitle = $"{project.Name} — Propriétés";
+        vm.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName != nameof(vm.IsDirty)) return;
+
+            var dockItem = _layout.GetAllGroups()
+                .SelectMany(g => g.Items)
+                .Concat(_layout.FloatingItems)
+                .FirstOrDefault(di => di.ContentId == item.ContentId);
+
+            if (dockItem is null) return;
+            dockItem.Title = vm.IsDirty ? $"*{baseTitle}" : baseTitle;
+            DockHost.RebuildVisualTree();
+        };
+
         return new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument
         {
             DataContext = vm

@@ -76,8 +76,9 @@ public sealed class DecompilerService
 
         try
         {
+            // FileShare.ReadWrite allows concurrent access when HexEditor holds the file open.
             using var stream = new FileStream(
-                filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var pe = new PEReader(stream);
 
             var mdReader  = pe.GetMetadataReader();

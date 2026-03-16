@@ -247,8 +247,9 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         if (offset <= 0 || string.IsNullOrEmpty(filePath)) return null;
         try
         {
+            // FileShare.ReadWrite allows concurrent access when HexEditor holds the file open.
             using var fs = new FileStream(
-                filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             if (offset >= fs.Length) return null;
             var count = (int)Math.Min(64, fs.Length - offset);
             fs.Seek(offset, SeekOrigin.Begin);

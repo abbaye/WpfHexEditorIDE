@@ -1107,6 +1107,19 @@ namespace WpfHexEditor.Core.Bytes
         }
 
         /// <summary>
+        /// Reload the underlying file from disk, discarding all pending in-memory edits.
+        /// The FileStream is kept open — only the cache is invalidated and the stream
+        /// position is reset. Call this after an external process has modified the file.
+        /// </summary>
+        public void Reload()
+        {
+            if (!IsOpen) return;
+
+            _fileProvider.Reload();
+            ClearAllEdits();
+        }
+
+        /// <summary>
         /// Clear only modifications (keep insertions and deletions).
         /// </summary>
         public void ClearModifications()
