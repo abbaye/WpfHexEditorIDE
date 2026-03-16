@@ -19,6 +19,7 @@
 
 using System.Windows;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -51,6 +52,9 @@ internal sealed class StandaloneIDEHostContext : IIDEHostContext
     public IThemeService            Theme            { get; } = new NullThemeService();
     public IPermissionService       Permissions      { get; } = new NullPermissionService();
     public ITerminalService         Terminal         { get; } = new NullTerminalService();
+    public IIDEEventBus             IDEEvents        { get; } = new NullIDEEventBus();
+    public IPluginCapabilityRegistry CapabilityRegistry { get; } = new NullCapabilityRegistry();
+    public IExtensionRegistry       ExtensionRegistry  { get; } = new NullExtensionRegistryStub();
 }
 
 // ---------------------------------------------------------------------------
@@ -241,4 +245,40 @@ file sealed class NullTerminalService : ITerminalService
     public void Clear()                         { }
     public void OpenSession(string shellType)   { }
     public void CloseActiveSession()            { }
+}
+
+file sealed class NullIDEEventBus : IIDEEventBus
+{
+    private sealed class EmptyDisposable : IDisposable { public void Dispose() { } }
+    private sealed class EmptyRegistry : IEventRegistry
+    {
+        public IReadOnlyList<EventRegistryEntry> GetAllEntries() => [];
+        public int GetSubscriberCount(Type eventType) => 0;
+        public void Register(Type eventType, string displayName, string producerLabel) { }
+        public void UpdateSubscriberCount(Type eventType, int delta) { }
+    }
+    public IEventRegistry EventRegistry { get; } = new EmptyRegistry();
+    public void Publish<TEvent>(TEvent evt) where TEvent : class { }
+    public Task PublishAsync<TEvent>(TEvent evt, CancellationToken ct = default) where TEvent : class => Task.CompletedTask;
+    public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : class => new EmptyDisposable();
+    public IDisposable Subscribe<TEvent>(Func<TEvent, Task> handler) where TEvent : class => new EmptyDisposable();
+    public IDisposable Subscribe<TEvent>(Action<IDEEventContext, TEvent> handler) where TEvent : class => new EmptyDisposable();
+    public IDisposable Subscribe<TEvent>(Func<IDEEventContext, TEvent, Task> handler) where TEvent : class => new EmptyDisposable();
+}
+
+file sealed class NullCapabilityRegistry : IPluginCapabilityRegistry
+{
+    public IReadOnlyList<string> FindPluginsWithFeature(string feature) => [];
+    public bool PluginHasFeature(string pluginId, string feature) => false;
+    public IReadOnlyList<string> GetFeaturesForPlugin(string pluginId) => [];
+    public IReadOnlyList<string> GetAllRegisteredFeatures() => [];
+}
+
+file sealed class NullExtensionRegistryStub : IExtensionRegistry
+{
+    public IReadOnlyList<T> GetExtensions<T>() where T : class => [];
+    public void Register<T>(string pluginId, T implementation) where T : class { }
+    public void Register(string pluginId, Type contractType, object implementation) { }
+    public void UnregisterAll(string pluginId) { }
+    public IReadOnlyList<ExtensionRegistryEntry> GetAllEntries() => [];
 }

@@ -1,9 +1,21 @@
-//////////////////////////////////////////////
-// GNU Affero General Public License v3.0 - 2026
-// Author : Derek Tremblay (derektremblay666@gmail.com)
+// ==========================================================
+// Project: WpfHexEditor.PluginHost
+// File: IDEHostContext.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
-//////////////////////////////////////////////
+// Created: 2026-03-15
+// Description:
+//     Base implementation of IIDEHostContext assembled by the App layer.
+//     Extended with IDEEvents (IDE-wide EventBus), CapabilityRegistry,
+//     and ExtensionRegistry for Feature 3, 4, and 5.
+//
+// Architecture Notes:
+//     All three new services are injected via constructor; they are never null.
+//     PluginCapabilityRegistryAdapter resolves the circular-dependency
+//     between WpfPluginHost and IDEHostContext (SetInner called post-construction).
+// ==========================================================
 
+using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -50,6 +62,15 @@ public sealed class IDEHostContext : IIDEHostContext
     /// <inheritdoc />
     public ITerminalService Terminal { get; }
 
+    /// <inheritdoc />
+    public IIDEEventBus IDEEvents { get; }
+
+    /// <inheritdoc />
+    public IPluginCapabilityRegistry CapabilityRegistry { get; }
+
+    /// <inheritdoc />
+    public IExtensionRegistry ExtensionRegistry { get; }
+
     public IDEHostContext(
         ISolutionExplorerService solutionExplorer,
         IHexEditorService hexEditor,
@@ -62,19 +83,25 @@ public sealed class IDEHostContext : IIDEHostContext
         IUIRegistry uiRegistry,
         IThemeService theme,
         IPermissionService permissions,
-        ITerminalService terminal)
+        ITerminalService terminal,
+        IIDEEventBus ideEvents,
+        IPluginCapabilityRegistry capabilityRegistry,
+        IExtensionRegistry extensionRegistry)
     {
-        SolutionExplorer = solutionExplorer ?? throw new ArgumentNullException(nameof(solutionExplorer));
-        HexEditor = hexEditor ?? throw new ArgumentNullException(nameof(hexEditor));
-        CodeEditor = codeEditor ?? throw new ArgumentNullException(nameof(codeEditor));
-        Output = output ?? throw new ArgumentNullException(nameof(output));
-        ParsedField = parsedField ?? throw new ArgumentNullException(nameof(parsedField));
-        ErrorPanel = errorPanel ?? throw new ArgumentNullException(nameof(errorPanel));
-        FocusContext = focusContext ?? throw new ArgumentNullException(nameof(focusContext));
-        EventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
-        UIRegistry = uiRegistry ?? throw new ArgumentNullException(nameof(uiRegistry));
-        Theme = theme ?? throw new ArgumentNullException(nameof(theme));
-        Permissions = permissions ?? throw new ArgumentNullException(nameof(permissions));
-        Terminal = terminal ?? throw new ArgumentNullException(nameof(terminal));
+        SolutionExplorer    = solutionExplorer    ?? throw new ArgumentNullException(nameof(solutionExplorer));
+        HexEditor           = hexEditor           ?? throw new ArgumentNullException(nameof(hexEditor));
+        CodeEditor          = codeEditor          ?? throw new ArgumentNullException(nameof(codeEditor));
+        Output              = output              ?? throw new ArgumentNullException(nameof(output));
+        ParsedField         = parsedField         ?? throw new ArgumentNullException(nameof(parsedField));
+        ErrorPanel          = errorPanel          ?? throw new ArgumentNullException(nameof(errorPanel));
+        FocusContext        = focusContext        ?? throw new ArgumentNullException(nameof(focusContext));
+        EventBus            = eventBus            ?? throw new ArgumentNullException(nameof(eventBus));
+        UIRegistry          = uiRegistry          ?? throw new ArgumentNullException(nameof(uiRegistry));
+        Theme               = theme               ?? throw new ArgumentNullException(nameof(theme));
+        Permissions         = permissions         ?? throw new ArgumentNullException(nameof(permissions));
+        Terminal            = terminal            ?? throw new ArgumentNullException(nameof(terminal));
+        IDEEvents           = ideEvents           ?? throw new ArgumentNullException(nameof(ideEvents));
+        CapabilityRegistry  = capabilityRegistry  ?? throw new ArgumentNullException(nameof(capabilityRegistry));
+        ExtensionRegistry   = extensionRegistry   ?? throw new ArgumentNullException(nameof(extensionRegistry));
     }
 }

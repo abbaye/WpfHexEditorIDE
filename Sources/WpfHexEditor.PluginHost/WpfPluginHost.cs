@@ -12,10 +12,12 @@ using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
+using WpfHexEditor.Events.IDEEvents;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Sandbox;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.ExtensionPoints;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.SDK.Sandbox;
 
@@ -41,6 +43,16 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
+
+    // -- Feature 5 & 6 --
+    private readonly PluginDependencyGraph _dependencyGraph = new();
+    private PluginActivationService? _activationService;
+
+    /// <summary>
+    /// Live capability registry backed by <see cref="_entries"/>.
+    /// Exposed so the App layer can call <see cref="PluginCapabilityRegistryAdapter.SetInner"/>.
+    /// </summary>
+    public IPluginCapabilityRegistry CapabilityRegistry { get; }
 
     // --- Isolation mode overrides (user preference, persisted) ------------------
     private readonly Dictionary<string, PluginIsolationMode> _isolationOverrides =
@@ -123,6 +135,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _log = logger ?? (_ => { });
         _logError = errorLogger ?? _log;
         _dispatcher = dispatcher;
+
+        CapabilityRegistry = new PluginCapabilityRegistry(_entries);
 
         // PHASE 1-4: Initialize new MetricsEngine
         _metricsEngine = new PluginMetricsEngine(GetLoadedEntries, dispatcher, _log);
@@ -271,8 +285,22 @@ public sealed class WpfPluginHost : IAsyncDisposable
                 if (!File.Exists(assemblyPath))
                     throw new FileNotFoundException($"Plugin assembly not found: {assemblyPath}");
 
-                // Create collectible ALC off the UI thread — no WPF objects created yet
+                // Create collectible ALC off the UI thread — no WPF objects created yet.
+                // Wire conflict detection before any assemblies are loaded.
                 loadContext = new PluginLoadContext(assemblyPath);
+                loadContext.DependencyConflictDetected += conflict =>
+                {
+                    lock (_lock)
+                    {
+                        if (_entries.TryGetValue(manifest.Id, out var e))
+                        {
+                            e.AssemblyConflicts.Add(conflict);
+                            _log($"[ALC] '{manifest.Id}' conflict: {conflict.AssemblyName} " +
+                                 $"host={conflict.HostVersion} requested={conflict.RequestedVersion}");
+                        }
+                    }
+                };
+
                 var assembly = await Task.Run(() =>
                     loadContext.LoadFromAssemblyPath(assemblyPath), ct).ConfigureAwait(false);
 
@@ -340,11 +368,31 @@ public sealed class WpfPluginHost : IAsyncDisposable
             entry.SetInitDuration(elapsed);
             entry.SetState(PluginState.Loaded);
 
+            // Populate ALC diagnostics (InProcess only).
+            if (loadContext is not null)
+            {
+                entry.Diagnostics.AlcAssemblyCount = loadContext.LoadedAssemblies.Count;
+                entry.Diagnostics.AlcConflictCount = entry.AssemblyConflicts.Count;
+            }
+
+            // Register extension-point contributions declared in the manifest.
+            RegisterExtensionContributions(entry);
+
             // Auto-register options page (InProcess plugins only — sandbox UI is remote)
             if (instance is IPluginWithOptions optionsPlugin)
                 OptionsRegistry.RegisterPluginPage(manifest.Id, manifest.Name, optionsPlugin);
 
             entry.SetLoadedAt(DateTime.UtcNow);
+
+            // Publish PluginLoadedEvent to IDE EventBus.
+            _hostContext.IDEEvents.Publish(new PluginLoadedEvent
+            {
+                Source = "WpfPluginHost",
+                PluginId = manifest.Id,
+                PluginName = manifest.Name,
+                IsolationMode = effectiveMode.ToString(),
+            });
+
             RaiseOnDispatcher(() => PluginLoaded?.Invoke(this, new PluginEventArgs(manifest.Id, manifest.Name)));
             return entry;
         }
@@ -365,15 +413,75 @@ public sealed class WpfPluginHost : IAsyncDisposable
     }
 
     /// <summary>
-    /// Discovers and loads all plugins. Faulted plugins are silently recorded.
+    /// Discovers and loads all plugins.
+    /// Builds the dependency graph, validates constraints, registers startup plugins,
+    /// registers dormant plugins (awaiting activation triggers), and inits the activation service.
+    /// Faulted plugins are silently recorded.
     /// </summary>
     public async Task LoadAllAsync(IEnumerable<string>? extraDirectories = null, CancellationToken ct = default)
     {
         var manifests = await DiscoverPluginsAsync(extraDirectories, ct).ConfigureAwait(false);
-        var sorted    = TopologicalSort(manifests);
+
+        // Build the dependency graph and validate constraints.
+        _dependencyGraph.Build(manifests);
+
+        // Pre-register all entries so Validate() can look them up.
+        lock (_lock)
+        {
+            foreach (var m in manifests)
+            {
+                if (!_entries.ContainsKey(m.Id))
+                    _entries[m.Id] = new PluginEntry(m);
+            }
+        }
+
+        var validationErrors = _dependencyGraph.Validate(_entries);
+        foreach (var err in validationErrors)
+        {
+            _logError($"[DependencyGraph] {err.DependentPluginId} → {err.Kind}: {err.RequiredPluginId}");
+            lock (_lock)
+            {
+                if (_entries.TryGetValue(err.DependentPluginId, out var e))
+                {
+                    e.UnresolvedDependencies.Add(err);
+                    if (err.Kind != DependencyErrorKind.VersionMismatch || e.State == PluginState.Unloaded)
+                        e.SetState(PluginState.Incompatible);
+                }
+            }
+        }
+
+        var sorted = _dependencyGraph.GetLoadOrder(_entries);
+
         foreach (var manifest in sorted)
         {
             ct.ThrowIfCancellationRequested();
+
+            // Skip incompatible plugins.
+            lock (_lock)
+            {
+                if (_entries.TryGetValue(manifest.Id, out var existing)
+                    && existing.State == PluginState.Incompatible)
+                {
+                    _log($"[PluginSystem] Skipping '{manifest.Name}' — incompatible dependencies.");
+                    continue;
+                }
+            }
+
+            // Determine if plugin should load eagerly (startup) or be dormant.
+            var activation = manifest.Activation;
+            bool isDormant = activation is not null && !activation.IsStartupLoad;
+
+            if (isDormant)
+            {
+                lock (_lock)
+                {
+                    if (_entries.TryGetValue(manifest.Id, out var entry))
+                        entry.SetState(PluginState.Dormant);
+                }
+                _log($"[PluginSystem] '{manifest.Name}' registered as Dormant (lazy).");
+                continue;
+            }
+
             _log($"[PluginSystem] Loading '{manifest.Name}' ({manifest.Id})...");
             try
             {
@@ -387,9 +495,64 @@ public sealed class WpfPluginHost : IAsyncDisposable
             }
         }
 
+        // Initialize activation service (after all dormant plugins are registered).
+        _activationService = new PluginActivationService(
+            _hostContext.IDEEvents, _entries, id => ActivateDormantPluginAsync(id));
+
         // PHASE 1: Initialize MetricsEngine after all plugins loaded
-        // This ensures accurate baseline and prevents race conditions
         await _metricsEngine.InitializeAsync(delayMs: 150).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Activates a dormant plugin by ID — called by <see cref="PluginActivationService"/>
+    /// or by the "Load Now" command in the Plugin Manager UI.
+    /// </summary>
+    public async Task ActivateDormantPluginAsync(string pluginId, CancellationToken ct = default)
+    {
+        PluginEntry? entry;
+        lock (_lock) _entries.TryGetValue(pluginId, out entry);
+        if (entry is null || entry.State != PluginState.Dormant) return;
+
+        // Ensure all dependencies are activated first (if they are dormant too).
+        var deps = _dependencyGraph.GetDirectDependencies(pluginId);
+        foreach (var dep in deps)
+        {
+            PluginEntry? depEntry;
+            lock (_lock) _entries.TryGetValue(dep.PluginId, out depEntry);
+            if (depEntry?.State == PluginState.Dormant)
+                await ActivateDormantPluginAsync(dep.PluginId, ct).ConfigureAwait(false);
+        }
+
+        _log($"[PluginSystem] Activating dormant plugin '{entry.Manifest.Name}'...");
+        await LoadPluginAsync(entry.Manifest, ct).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Cascading unload: unloads all dependents first, then the target plugin.
+    /// </summary>
+    public async Task CascadingUnloadAsync(string pluginId, CancellationToken ct = default)
+    {
+        var order = _dependencyGraph.GetCascadedUnloadOrder(pluginId);
+        foreach (var id in order)
+        {
+            ct.ThrowIfCancellationRequested();
+            _log($"[PluginSystem] Cascade unload '{id}'...");
+            await UnloadPluginAsync(id, ct).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Cascading reload: reloads the target plugin first, then its dependents in order.
+    /// </summary>
+    public async Task CascadingReloadAsync(string pluginId, CancellationToken ct = default)
+    {
+        var order = _dependencyGraph.GetCascadedReloadOrder(pluginId);
+        foreach (var id in order)
+        {
+            ct.ThrowIfCancellationRequested();
+            _log($"[PluginSystem] Cascade reload '{id}'...");
+            await ReloadPluginAsync(id, ct).ConfigureAwait(false);
+        }
     }
 
     /// <summary>
@@ -484,8 +647,21 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
             OptionsRegistry.UnregisterPluginPage(pluginId);
             _migrationMonitor.ResetCrashCount(pluginId);
+
+            // Unregister all extension-point contributions from this plugin.
+            _hostContext.ExtensionRegistry.UnregisterAll(pluginId);
+
             entry.Unload();
             entry.SetState(PluginState.Unloaded);
+
+            // Publish PluginUnloadedEvent to IDE EventBus.
+            _hostContext.IDEEvents.Publish(new PluginUnloadedEvent
+            {
+                Source = "WpfPluginHost",
+                PluginId = pluginId,
+                PluginName = entry.Manifest.Name,
+            });
+
             RaiseOnDispatcher(() => PluginUnloaded?.Invoke(this, new PluginEventArgs(pluginId, entry.Manifest.Name)));
         }
     }
@@ -783,6 +959,65 @@ public sealed class WpfPluginHost : IAsyncDisposable
         return Task.WhenAll(proxies.Select(p => p.ForwardThemeChangeAsync(themeXaml, ct)));
     }
 
+    // --- Extension Point Registration -------------------------------------------
+
+    /// <summary>
+    /// After InitializeAsync completes, iterates the manifest "extensions" dict and registers
+    /// each declared implementation against its contract type in the IDE ExtensionRegistry.
+    /// </summary>
+    private void RegisterExtensionContributions(PluginEntry entry)
+    {
+        if (entry.Manifest.Extensions.Count == 0) return;
+
+        // Collect all assemblies from the plugin's ALC (or AppDomain for sandbox proxies).
+        var assemblies = entry.LoadContext?.LoadedAssemblies.ToList()
+            ?? AppDomain.CurrentDomain.GetAssemblies().ToList();
+
+        foreach (var (pointName, className) in entry.Manifest.Extensions)
+        {
+            var contractType = ExtensionPointCatalog.TryResolve(pointName);
+            if (contractType is null)
+            {
+                _log($"[Extensions] Unknown extension point '{pointName}' in '{entry.Manifest.Id}' — skipping.");
+                continue;
+            }
+
+            object? impl = null;
+            foreach (var asm in assemblies)
+            {
+                var type = asm.GetType(className);
+                if (type is null) continue;
+                try { impl = Activator.CreateInstance(type); }
+                catch (Exception ex)
+                {
+                    _logError($"[Extensions] Could not create '{className}': {ex.Message}");
+                    break;
+                }
+                break;
+            }
+
+            if (impl is null)
+            {
+                _logError($"[Extensions] Type '{className}' not found for point '{pointName}' in '{entry.Manifest.Id}'.");
+                continue;
+            }
+
+            // Inject IDE context if the implementation requests it.
+            if (impl is IExtensionWithContext ctxImpl)
+            {
+                try { ctxImpl.Initialize(new PluginScopedContext(
+                    _hostContext, new TimedHexEditorService(_hostContext.HexEditor, entry.Diagnostics, _metricsEngine))); }
+                catch (Exception ex)
+                {
+                    _logError($"[Extensions] Initialize() failed for '{className}': {ex.Message}");
+                }
+            }
+
+            _hostContext.ExtensionRegistry.Register(entry.Manifest.Id, contractType, impl);
+            _log($"[Extensions] Registered '{pointName}' → '{className}' for plugin '{entry.Manifest.Id}'.");
+        }
+    }
+
     // --- Private helpers ---------------------------------------------------------
 
     private async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)
@@ -884,6 +1119,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        _activationService?.Dispose();
+
         // Dispose MetricsEngine first
         _metricsEngine?.Dispose();
         _migrationMonitor.Dispose();

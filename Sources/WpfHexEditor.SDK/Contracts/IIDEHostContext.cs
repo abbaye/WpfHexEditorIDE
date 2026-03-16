@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.SDK.Contracts;
@@ -40,10 +41,17 @@ public interface IIDEHostContext
     IFocusContextService FocusContext { get; }
 
     /// <summary>
-    /// Central event bus for decoupled plugin-to-plugin communication.
-    /// Publish and subscribe to typed events without direct plugin references.
+    /// Plugin-to-plugin event bus for decoupled inter-plugin communication.
+    /// For IDE-wide events (FileOpened, SelectionChanged, etc.) use <see cref="IDEEvents"/>.
     /// </summary>
     IPluginEventBus EventBus { get; }
+
+    /// <summary>
+    /// IDE-level event bus for subscribing to and publishing typed IDE events
+    /// (FileOpenedEvent, EditorSelectionChangedEvent, PluginLoadedEvent, etc.).
+    /// Backed by WpfHexEditor.Events.IDEEventBus; bridged to sandbox plugins via IPC.
+    /// </summary>
+    IIDEEventBus IDEEvents { get; }
 
     // -- UI Integration -------------------------------------------------------
 
@@ -72,4 +80,20 @@ public interface IIDEHostContext
     /// Use this to emit Standard, Info, Warning, or Error lines from plugin commands or background tasks.
     /// </summary>
     ITerminalService Terminal { get; }
+
+    // -- Plugin Discovery & Extension Points ----------------------------------
+
+    /// <summary>
+    /// Registry for querying semantic feature declarations across all known plugins.
+    /// Use <see cref="SDK.Models.PluginFeature"/> constants or custom strings.
+    /// Example: <c>CapabilityRegistry.FindPluginsWithFeature(PluginFeature.BinaryAnalyzer)</c>
+    /// </summary>
+    IPluginCapabilityRegistry CapabilityRegistry { get; }
+
+    /// <summary>
+    /// Registry for plugin extension point contributions.
+    /// IDE modules call <c>GetExtensions&lt;T&gt;()</c> to obtain all contributor implementations
+    /// for a given extension point without knowing which plugins provided them.
+    /// </summary>
+    IExtensionRegistry ExtensionRegistry { get; }
 }

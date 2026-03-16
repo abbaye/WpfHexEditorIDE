@@ -29,6 +29,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     private readonly Func<string, PluginIsolationMode, Task>? _onIsolationModeChanged;
     private readonly Action<string>? _onMigrateToSandbox;
     private readonly Action<string>? _onDismissMigrationSuggestion;
+    private readonly Action<string>? _onLoadNow;
+    private readonly Action<string>? _onCascadeUnload;
+    private readonly Action<string>? _onCascadeReload;
 
     // Delegate to get memory thresholds from settings (injected to avoid circular dependency)
     private readonly Func<(int warning, int high, int critical, bool enabled,
@@ -55,7 +58,10 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         PluginIsolationMode? initialIsolationMode = null,
         Func<string, PluginIsolationMode, Task>? onIsolationModeChanged = null,
         Action<string>? onMigrateToSandbox = null,
-        Action<string>? onDismissMigrationSuggestion = null)
+        Action<string>? onDismissMigrationSuggestion = null,
+        Action<string>? onLoadNow = null,
+        Action<string>? onCascadeUnload = null,
+        Action<string>? onCascadeReload = null)
     {
         _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         _onEnable = onEnable;
@@ -67,6 +73,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         _onIsolationModeChanged = onIsolationModeChanged;
         _onMigrateToSandbox = onMigrateToSandbox;
         _onDismissMigrationSuggestion = onDismissMigrationSuggestion;
+        _onLoadNow = onLoadNow;
+        _onCascadeUnload = onCascadeUnload;
+        _onCascadeReload = onCascadeReload;
         _selectedIsolationMode = initialIsolationMode ?? entry.Manifest.IsolationMode;
 
         EnableCommand = new RelayCommand(_ => _onEnable(Id), _ => State == PluginState.Disabled);
@@ -78,6 +87,16 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
             _ => CanMigrateToSandbox);
         DismissMigrationSuggestionCommand = new RelayCommand(
             _ => { _onDismissMigrationSuggestion?.Invoke(Id); ClearMigrationSuggestion(); });
+
+        LoadNowCommand = new RelayCommand(
+            _ => _onLoadNow?.Invoke(Id),
+            _ => IsDormant && _onLoadNow is not null);
+        CascadeUnloadCommand = new RelayCommand(
+            _ => _onCascadeUnload?.Invoke(Id),
+            _ => State == PluginState.Loaded && _onCascadeUnload is not null);
+        CascadeReloadCommand = new RelayCommand(
+            _ => _onCascadeReload?.Invoke(Id),
+            _ => State == PluginState.Loaded && _onCascadeReload is not null);
 
         Permissions = BuildPermissions();
 
@@ -152,6 +171,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         PluginState.Faulted => "Error",
         PluginState.Incompatible => "Incompatible",
         PluginState.Unloaded => "Unloaded",
+        PluginState.Dormant => "Dormant",
         _ => "Unknown"
     };
 
@@ -162,8 +182,59 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         PluginState.Disabled => "#6B7280", // gray
         PluginState.Faulted => "#EF4444",  // red
         PluginState.Incompatible => "#F97316", // orange
+        PluginState.Dormant => "#A855F7",  // purple
         _ => "#9CA3AF"
     };
+
+    // -- Lazy Loading (Dormant) ---------------------------------------------------
+
+    public bool IsDormant => _entry.State == PluginState.Dormant;
+
+    public string ActivationTriggerLabel
+    {
+        get
+        {
+            var activation = _entry.Manifest.Activation;
+            if (activation is null) return string.Empty;
+            var parts = new List<string>();
+            if (activation.FileExtensions.Count > 0)
+                parts.Add("Files: " + string.Join(", ", activation.FileExtensions));
+            if (activation.Commands.Count > 0)
+                parts.Add("Cmds: " + string.Join(", ", activation.Commands));
+            return string.Join(" | ", parts);
+        }
+    }
+
+    // -- ALC Diagnostics (InProcess only) ----------------------------------------
+
+    public bool IsInProcess => _entry.ResolvedIsolationMode == PluginIsolationMode.InProcess;
+    public int AlcAssemblyCount => _entry.Diagnostics.AlcAssemblyCount;
+    public int AlcConflictCount => _entry.Diagnostics.AlcConflictCount;
+    public bool HasAlcConflicts => _entry.Diagnostics.AlcConflictCount > 0;
+
+    public IReadOnlyList<string> AssemblyConflictLabels
+        => _entry.AssemblyConflicts
+            .Select(c => $"{c.AssemblyName}: host={c.HostVersion} requested={c.RequestedVersion}")
+            .ToList();
+
+    // -- Capability Features ------------------------------------------------------
+
+    public IReadOnlyList<string> Features => _entry.Manifest.Features;
+    public bool HasFeatures => _entry.Manifest.Features.Count > 0;
+
+    // -- Extension Points ---------------------------------------------------------
+
+    public IReadOnlyList<string> ExtensionLabels
+        => _entry.Manifest.Extensions.Select(kv => $"{kv.Key} → {kv.Value}").ToList();
+    public bool HasExtensions => _entry.Manifest.Extensions.Count > 0;
+
+    // -- Dependency Graph ---------------------------------------------------------
+
+    public IReadOnlyList<string> UnresolvedDepLabels
+        => _entry.UnresolvedDependencies
+            .Select(e => $"{e.RequiredPluginId} ({e.Kind})")
+            .ToList();
+    public bool HasUnresolvedDeps => _entry.UnresolvedDependencies.Count > 0;
 
     public string? FaultMessage => _entry.FaultException?.Message;
 
@@ -243,6 +314,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public ICommand UninstallCommand { get; }
     public ICommand MigrateToSandboxCommand { get; }
     public ICommand DismissMigrationSuggestionCommand { get; }
+    public ICommand LoadNowCommand { get; }
+    public ICommand CascadeUnloadCommand { get; }
+    public ICommand CascadeReloadCommand { get; }
 
     // -- Migration suggestion -----------------------------------------------------
 
@@ -414,10 +488,22 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(Uptime));
         OnPropertyChanged(nameof(UptimeLabel));
 
+        OnPropertyChanged(nameof(IsDormant));
+        OnPropertyChanged(nameof(IsInProcess));
+        OnPropertyChanged(nameof(AlcAssemblyCount));
+        OnPropertyChanged(nameof(AlcConflictCount));
+        OnPropertyChanged(nameof(HasAlcConflicts));
+        OnPropertyChanged(nameof(AssemblyConflictLabels));
+        OnPropertyChanged(nameof(HasUnresolvedDeps));
+        OnPropertyChanged(nameof(UnresolvedDepLabels));
+
         ((RelayCommand)EnableCommand).RaiseCanExecuteChanged();
         ((RelayCommand)DisableCommand).RaiseCanExecuteChanged();
         ((RelayCommand)ReloadCommand).RaiseCanExecuteChanged();
         ((RelayCommand)MigrateToSandboxCommand).RaiseCanExecuteChanged();
+        ((RelayCommand)LoadNowCommand).RaiseCanExecuteChanged();
+        ((RelayCommand)CascadeUnloadCommand).RaiseCanExecuteChanged();
+        ((RelayCommand)CascadeReloadCommand).RaiseCanExecuteChanged();
         OnPropertyChanged(nameof(CanMigrateToSandbox));
     }
 

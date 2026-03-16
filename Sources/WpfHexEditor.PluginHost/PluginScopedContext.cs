@@ -17,6 +17,7 @@
 //
 // ==========================================================
 
+using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -69,6 +70,15 @@ internal sealed class PluginScopedContext : IIDEHostContext
 
     /// <inheritdoc />
     public ITerminalService Terminal => _inner.Terminal;
+
+    /// <inheritdoc />
+    public IIDEEventBus IDEEvents => _inner.IDEEvents;
+
+    /// <inheritdoc />
+    public IPluginCapabilityRegistry CapabilityRegistry => _inner.CapabilityRegistry;
+
+    /// <inheritdoc />
+    public IExtensionRegistry ExtensionRegistry => _inner.ExtensionRegistry;
 
     public PluginScopedContext(IIDEHostContext inner, TimedHexEditorService timedHexEditor)
     {

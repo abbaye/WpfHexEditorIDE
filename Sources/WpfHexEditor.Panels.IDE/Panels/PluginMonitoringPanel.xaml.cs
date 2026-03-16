@@ -469,9 +469,16 @@ public partial class PluginMonitoringPanel : UserControl
 
     private void OnEventLogChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        // Auto-scroll to the latest log entry.
+        // Defer ScrollIntoView until after WPF's ItemContainerGenerator has finished
+        // generating the container for the new item. Calling it synchronously inside
+        // CollectionChanged causes "ItemsControl is inconsistent with its item source".
         if (_vm?.EventLog.Count > 0)
-            EventLogListBox.ScrollIntoView(_vm.EventLog[^1]);
+        {
+            var lastItem = _vm.EventLog[^1];
+            Dispatcher.InvokeAsync(
+                () => EventLogListBox.ScrollIntoView(lastItem),
+                System.Windows.Threading.DispatcherPriority.Background);
+        }
 
         // Show/hide the log section based on current ShowEventLog flag and whether there are entries.
         ApplyEventLogVisibility();

@@ -76,6 +76,12 @@ public enum SandboxMessageKind
     HexEditorStateNotification,
     ParsedFieldsSnapshotNotification,
     TemplateApplyBroadcastNotification,
+
+    // IDE → Sandbox (IDE EventBus bridge — Feature 4)
+    IDEEventNotification,
+
+    // Sandbox → IDE (plugin publishes an IDE event — Feature 4)
+    IDEEventPublishRequest,
 }
 
 // ──────────────────────────────────────────────────────────
@@ -623,6 +629,41 @@ public sealed class SandboxTemplateBlockDto
 
     [JsonPropertyName("displayValue")]
     public string? DisplayValue { get; set; }
+}
+
+// ──────────────────────────────────────────────────────────
+// Feature 4 — IDE EventBus IPC bridge payloads
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Pushed from the IDE to a sandbox plugin when an IDE-level event fires
+/// that the sandbox is subscribed to (e.g. FileOpenedEvent, EditorSelectionChangedEvent).
+/// The sandbox deserialises the JSON body and re-publishes the event on its local IIDEEventBus.
+/// </summary>
+public sealed class IDEEventNotificationPayload
+{
+    /// <summary>Simple class name of the event type, e.g. "FileOpenedEvent".</summary>
+    [JsonPropertyName("eventTypeName")]
+    public string EventTypeName { get; set; } = string.Empty;
+
+    /// <summary>JSON-serialised IDEEventBase-derived record payload.</summary>
+    [JsonPropertyName("eventJson")]
+    public string EventJson { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Sent from a sandbox plugin to the IDE when the plugin publishes an IDE-level event
+/// that should be broadcast to all subscribers on the host IIDEEventBus.
+/// </summary>
+public sealed class IDEEventPublishRequestPayload
+{
+    /// <summary>Simple class name of the event type, e.g. "FileAnalysisCompletedEvent".</summary>
+    [JsonPropertyName("eventTypeName")]
+    public string EventTypeName { get; set; } = string.Empty;
+
+    /// <summary>JSON-serialised IDEEventBase-derived record payload.</summary>
+    [JsonPropertyName("eventJson")]
+    public string EventJson { get; set; } = string.Empty;
 }
 
 /// <summary>

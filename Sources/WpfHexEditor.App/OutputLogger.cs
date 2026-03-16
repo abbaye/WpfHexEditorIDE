@@ -6,12 +6,14 @@
 
 using System.Windows.Media;
 using WpfHexEditor.App.Controls;
+using WpfHexEditor.Options;
 
 namespace WpfHexEditor.App;
 
 /// <summary>
 /// VS-style output logger that writes timestamped, color-coded messages to the <see cref="OutputPanel"/>.
 /// Register the panel once, then call static methods from anywhere.
+/// Log-level colours are user-configurable via Options → Environment → Output.
 /// </summary>
 internal static class OutputLogger
 {
@@ -19,24 +21,66 @@ internal static class OutputLogger
 
     // --- Log-level brush palette ---------------------------------------
     // INFO  : null  = inherits theme foreground (white/light in dark themes)
-    private static readonly Brush WarnBrush    = Freeze(Color.FromRgb(220, 180,  50)); // gold
-    private static readonly Brush ErrorBrush   = Freeze(Color.FromRgb(240,  80,  60)); // red-orange
-    private static readonly Brush DebugBrush   = Freeze(Color.FromRgb(130, 130, 130)); // gray
-    private static readonly Brush SuccessBrush = Freeze(Color.FromRgb( 78, 201, 176)); // teal-green
+    // Remaining brushes are rebuilt from AppSettings on Register() and on ColorsChanged.
+    private static Brush _warnBrush    = FreezeRgb(220, 180,  50);
+    private static Brush _errorBrush   = FreezeRgb(240,  80,  60);
+    private static Brush _debugBrush   = FreezeRgb(130, 130, 130);
+    private static Brush _successBrush = FreezeRgb( 78, 201, 176);
 
-    private static SolidColorBrush Freeze(Color c)
+    private static SolidColorBrush FreezeRgb(byte r, byte g, byte b)
     {
-        var b = new SolidColorBrush(c);
-        b.Freeze();
-        return b;
+        var brush = new SolidColorBrush(Color.FromRgb(r, g, b));
+        brush.Freeze();
+        return brush;
+    }
+
+    private static SolidColorBrush FreezeHex(string hex)
+    {
+        try
+        {
+            hex = hex.TrimStart('#');
+            if (hex.Length == 6)
+                hex = "FF" + hex;
+
+            var color = Color.FromArgb(
+                Convert.ToByte(hex[..2], 16),
+                Convert.ToByte(hex[2..4], 16),
+                Convert.ToByte(hex[4..6], 16),
+                Convert.ToByte(hex[6..8], 16));
+
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
+        catch
+        {
+            // Fallback to a neutral gray if the hex string is malformed.
+            return FreezeRgb(128, 128, 128);
+        }
+    }
+
+    /// <summary>
+    /// Rebuilds the four log-level brushes from the current <see cref="AppSettingsService"/> values.
+    /// Called at registration time and whenever the user saves new colours in Options.
+    /// </summary>
+    private static void RebuildBrushes()
+    {
+        var opts = AppSettingsService.Instance.Current.OutputLogger;
+        _warnBrush    = FreezeHex(opts.WarnColor);
+        _errorBrush   = FreezeHex(opts.ErrorColor);
+        _debugBrush   = FreezeHex(opts.DebugColor);
+        _successBrush = FreezeHex(opts.SuccessColor);
     }
 
     /// <summary>
     /// Binds the logger to an <see cref="OutputPanel"/> instance.
+    /// Also loads user-configured colours and subscribes to future colour changes.
     /// </summary>
     public static void Register(OutputPanel panel)
     {
         _panel = panel;
+        RebuildBrushes();
+        OutputLoggerSettings.ColorsChanged += RebuildBrushes;
     }
 
     // --- Source channel constants --------------------------------------
@@ -48,23 +92,23 @@ internal static class OutputLogger
 
     // --- Public API — General channel ----------------------------------
 
-    public static void Info(string message)  => Log("INFO ", message, null,       SourceGeneral);
-    public static void Warn(string message)  => Log("WARN ", message, WarnBrush,  SourceGeneral);
-    public static void Error(string message) => Log("ERROR", message, ErrorBrush, SourceGeneral);
-    public static void Debug(string message) => Log("DEBUG", message, DebugBrush, SourceDebug);
+    public static void Info(string message)  => Log("INFO ", message, null,          SourceGeneral);
+    public static void Warn(string message)  => Log("WARN ", message, _warnBrush,   SourceGeneral);
+    public static void Error(string message) => Log("ERROR", message, _errorBrush,  SourceGeneral);
+    public static void Debug(string message) => Log("DEBUG", message, _debugBrush,  SourceDebug);
 
     // --- Public API — Plugin System channel ----------------------------
 
-    public static void PluginInfo(string message)  => Log("INFO ", message, null,       SourcePluginSystem);
-    public static void PluginWarn(string message)  => Log("WARN ", message, WarnBrush,  SourcePluginSystem);
-    public static void PluginError(string message) => Log("ERROR", message, ErrorBrush, SourcePluginSystem);
+    public static void PluginInfo(string message)  => Log("INFO ", message, null,          SourcePluginSystem);
+    public static void PluginWarn(string message)  => Log("WARN ", message, _warnBrush,   SourcePluginSystem);
+    public static void PluginError(string message) => Log("ERROR", message, _errorBrush,  SourcePluginSystem);
 
     // --- Public API — Build channel ------------------------------------
 
-    public static void BuildInfo(string message)    => Log("INFO ", message, null,          SourceBuild);
-    public static void BuildWarn(string message)    => Log("WARN ", message, WarnBrush,     SourceBuild);
-    public static void BuildError(string message)   => Log("ERROR", message, ErrorBrush,    SourceBuild);
-    public static void BuildSuccess(string message) => Log("OK   ", message, SuccessBrush,  SourceBuild);
+    public static void BuildInfo(string message)    => Log("INFO ", message, null,           SourceBuild);
+    public static void BuildWarn(string message)    => Log("WARN ", message, _warnBrush,    SourceBuild);
+    public static void BuildError(string message)   => Log("ERROR", message, _errorBrush,   SourceBuild);
+    public static void BuildSuccess(string message) => Log("OK   ", message, _successBrush, SourceBuild);
 
     /// <summary>
     /// Writes a separator line to visually group sections in the Build channel

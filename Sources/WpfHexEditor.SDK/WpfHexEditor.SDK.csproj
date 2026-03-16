@@ -14,6 +14,10 @@
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->
   <ItemGroup>
+    <!-- WpfHexEditor.Events: PrivateAssets=none ensures plugins get IIDEEventBus and event types transitively. -->
+    <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj">
+      <PrivateAssets>none</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>

@@ -14,6 +14,12 @@ public enum PluginState
     /// <summary>Plugin has not been loaded yet.</summary>
     Unloaded,
 
+    /// <summary>
+    /// Plugin has been discovered and validated but is not yet loaded.
+    /// Awaiting an activation trigger (file extension match, command, or manual load).
+    /// </summary>
+    Dormant,
+
     /// <summary>Plugin is currently being loaded (manifest validated, assembly loading).</summary>
     Loading,
 

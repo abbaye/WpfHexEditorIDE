@@ -19,5 +19,11 @@
     "accessFileSystem": false,
     "registerMenus": true,
     "writeOutput": true
-  }
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "features": [ "HexViewOverlay" ],
+  "extensions": {},
+  "dependencies": []
 }

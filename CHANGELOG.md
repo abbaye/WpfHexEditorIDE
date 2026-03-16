@@ -15,6 +15,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - **#41 Plugin Marketplace** — `MarketplaceManager`, browse/install/update from online registry, signed packages
 - **#42 Plugin Security & Sandboxing** — permission declarations at install time, integrity verification, AppDomain isolation
 - **#43 Auto-Update** — `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins
+- **gRPC transport migration** — replace named-pipe IPC with gRPC for sandbox plugins
 
 ### Image Viewer — Remaining
 - Batch export, format conversion (PNG/JPEG/BMP/TIFF)
@@ -64,6 +65,98 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - **#104 Assembly Explorer Panel — Full Tree** — namespaces, types (class/struct/interface/enum/delegate), methods, fields, properties, events, resources, assembly references; filter/search; node icons per visibility and kind
 - **#105 ECMA-335 Metadata Resolution** — full `PeOffsetResolver` implementation (§II.24 table offsets); metadata token → PE file offset; offset-to-source synchronization with HexEditor (click node → jump to raw bytes)
 - **#106 Decompilation Backend via ILSpy** — C# skeleton view + full IL disassembly view per method; "Go to Metadata Token" navigation; decompiled source displayed in Code Editor tab; integration via `WpfHexEditor.Decompiler.Core` (no direct ILSpy ProjectReference — adapter pattern)
+
+---
+
+## [0.4.0] — 2026-03-16 — Plugin Architecture v2: EventBus, Lazy Loading, Capability Registry, Extension Points & Dependency Graph
+
+### ✨ Added — WpfHexEditor.Events (new project)
+
+- **`WpfHexEditor.Events`** — new `net8.0` leaf project (no WPF dependency); referenced by SDK, PluginHost, and App
+- **`IDEEventBase`** — abstract record base for all IDE events: `EventId`, `Source`, `Timestamp`, `CorrelationId`
+- **`IDEEventContext`** — per-publish context: `PublisherPluginId`, `IsFromSandbox`, `CancellationToken`
+- **`IIDEEventBus`** — typed pub/sub interface with sync and async publish; context-aware subscribe overloads; `IEventRegistry EventRegistry` diagnostics accessor
+- **`IDEEventBus`** — implementation: `ReaderWriterLockSlim`, weak-reference handler entries, lazy purge on publish, rolling event log (last 100 entries), `GetLog()` / `ClearLog()` for diagnostics
+- **`IEventRegistry` / `EventRegistry`** — subscriber count tracking per event type; `GetAllEntries()` for options page
+
+**10 built-in IDE event types** (`WpfHexEditor.Events.IDEEvents`):
+- `FileOpenedEvent` — `FilePath`, `FileExtension`, `FileSize`
+- `FileClosedEvent` — `FilePath`
+- `WorkspaceChangedEvent` — `WorkspacePath`, `PreviousWorkspacePath`
+- `PluginLoadedEvent` — `PluginId`, `PluginName`, `IsolationMode`
+- `PluginUnloadedEvent` — `PluginId`
+- `EditorSelectionChangedEvent` — `Offset`, `Length`, `SelectedBytes`
+- `DocumentSavedEvent` — `FilePath`
+- `TerminalCommandExecutedEvent` — `Command`, `ShellType`
+- `BuildStartedEvent`, `BuildSucceededEvent`, `BuildFailedEvent`
+
+### ✨ Added — Feature 1: Lazy Loading (#77)
+
+- **`PluginActivationConfig`** (SDK) — manifest sub-model: `FileExtensions`, `Commands`, `OnStartup`; plugins with `onStartup: false` remain dormant until activated
+- **`PluginState.Dormant`** (SDK) — new state between `Unloaded` and `Loading`; dormant plugins are discovered but not loaded
+- **`PluginManifest.Activation`** (SDK) — optional `PluginActivationConfig?` property; backward compatible (null = eager load)
+- **`PluginActivationService`** (PluginHost) — watches `FileOpenedEvent` on `IDEEventBus`; triggers `LoadPluginAsync` for dormant plugins matching file extension or command triggers; prevents double-activation via `HashSet<string>`
+- **`WpfPluginHost`** — `LoadAllAsync` partitions plugins into startup vs dormant; `RegisterDormantPlugin()`; wires `_activationService`
+- **Plugin Manager UI** — `IsDormant`, `ActivationTriggerLabel`, `LoadNowCommand` on `PluginListItemViewModel`; dormant badge (purple) + lazy info card with "Load Now" button in `PluginManagerControl.xaml`
+
+### ✨ Added — Feature 2: ALC Isolation Diagnostics
+
+- **`PluginAssemblyConflictInfo`** (SDK) — `record(AssemblyName, HostVersion, RequestedVersion, DetectedAt)`
+- **`PluginLoadContext`** (PluginHost) — `LoadedAssemblies` list, `DependencyConflictDetected` event, `CreateWeakReference()`; host version always wins on conflict
+- **`PluginEntry`** — `LoadContextWeakRef` (`WeakReference<PluginLoadContext>`), `AssemblyConflicts` list, `LoadedAssemblyCount`
+- **Plugin Manager UI** — ALC metrics card (InProcess only): assembly count + conflict count; expandable conflicts list; `ZeroToGreenNonZeroToOrange` converter
+
+### ✨ Added — Feature 3: Capability Registry
+
+- **`PluginFeature`** (SDK) — `static class` with `const string` well-known feature names: `HexViewOverlay`, `BinaryAnalyzer`, `PEParser`, `DisassemblyProvider`, `DecompilerProvider`, `FormatDetector`, `StructureTemplate`, `ScriptEngine`, `TerminalExtension`
+- **`IPluginCapabilityRegistry`** (SDK) — `FindPluginsWithFeature()`, `PluginHasFeature()`, `GetFeaturesForPlugin()`, `GetAllRegisteredFeatures()`
+- **`PluginCapabilityRegistry`** (PluginHost) — live queries over `WpfPluginHost._entries`; no caching
+- **`PluginCapabilityRegistryAdapter`** (PluginHost) — lazy wrapper resolving circular dependency; `.SetInner()` called after host construction
+- **`PluginManifest.Features`** (SDK) — `List<string>` feature declarations; e.g. `"features": ["HexViewOverlay", "BinaryAnalyzer"]`
+- **`IIDEHostContext.CapabilityRegistry`** (SDK) — exposes capability registry to all plugins
+- **Plugin Manager UI** — feature chip strip (`WrapPanel` of pill `Border` elements) in plugin detail pane
+
+### ✨ Added — Feature 4: IDE EventBus Integration
+
+- **`IIDEHostContext.IDEEvents`** (SDK) — exposes `IIDEEventBus` to plugins; sandbox plugins receive events via IPC bridge
+- **`SandboxPluginProxy`** — `WireIDEEventBridgeToSandbox()`: subscribes to `FileOpenedEvent` + `EditorSelectionChangedEvent` on `IDEEventBus` and forwards to sandbox process via named-pipe `IDEEventNotification` messages
+- **`SandboxedPluginRunner`** — `HandleIDEEventNotification()`: deserializes event payload, resolves concrete type from `WpfHexEditor.Events` assembly, publishes to `SandboxLocalEventBus` via reflection
+- **`IDEEventBusOptionsPage.xaml`** (PluginHost) — new Options page under `Plugin System > Event Bus`: rolling event log (last 100), subscriber count table per event type, "Clear log" button; full theme compliance
+- **`WpfPluginHost`** — publishes `PluginLoadedEvent` / `PluginUnloadedEvent` on every load/unload
+- **`MainWindow.PluginSystem.cs`** (App) — constructs `IDEEventBus`, registers 10 well-known events in registry, wires `FileOpened` → `FileOpenedEvent`, `SelectionChanged` → `EditorSelectionChangedEvent`
+
+### ✨ Added — Feature 5: Extension Points
+
+- **Extension point contracts** (SDK, `WpfHexEditor.SDK.ExtensionPoints`):
+  - `IFileAnalyzerExtension` — `Task<FileAnalysisResult> AnalyzeAsync(string filePath, CancellationToken ct)` + `FileAnalysisResult` record
+  - `IHexViewOverlayExtension` — `IEnumerable<HexOverlayRegion> GetOverlays(byte[] data, long offset, long length)` + `HexOverlayRegion` record
+  - `IBinaryParserExtension` — `ParsedStructure? TryParse(Stream data, string fileExtension)` + `ParsedStructure` record
+  - `IDecompilerExtension` — `Task<string> DecompileAsync(byte[] data, CancellationToken ct)`
+  - `IExtensionWithContext` — optional init interface; `Initialize(IIDEHostContext context)` called by host after instantiation
+- **`ExtensionPointCatalog`** (SDK) — static `IReadOnlyDictionary<string, Type>` mapping well-known point names to contract types
+- **`IExtensionRegistry`** (SDK) — `GetExtensions<T>()`, `Register<T>()`, `UnregisterAll(pluginId)`, `GetAllEntries()`
+- **`ExtensionRegistry`** (PluginHost) — thread-safe impl (`ReaderWriterLockSlim`); snapshot on `GetExtensions<T>()` prevents mutation during iteration
+- **`PluginManifest.Extensions`** (SDK) — `Dictionary<string, string>` mapping extension point name → fully-qualified class name in plugin assembly
+- **`WpfPluginHost`** — `RegisterExtensionContributions()` after `InitializeAsync`; `ExtensionRegistry.UnregisterAll()` during `UnloadPluginAsync`
+- **`IIDEHostContext.ExtensionRegistry`** (SDK) — exposes extension registry to all plugins
+- **Plugin Manager UI** — extensions chip strip in plugin detail pane; `Extensions` / `HasExtensions` on `PluginListItemViewModel`
+- **`MainWindow.PluginSystem.cs`** — wires file-open handler to call `GetExtensions<IFileAnalyzerExtension>()` and routes results to Output Panel
+
+### ✨ Added — Feature 6: Plugin Dependency Graph
+
+- **`PluginDependencySpec`** (SDK) — parsed versioned constraint: `PluginId` + `PluginVersionConstraint`; `Parse("BinaryAnalysisCore >=1.0")` — backward compatible with plain IDs
+- **`PluginVersionConstraint`** (SDK) — single-class parser; operators `>=`, `>`, `<=`, `<`, `=`, `^`; `bool Satisfies(Version candidate)`; no NuGet dependency
+- **`PluginDependencyGraph`** (PluginHost) — adjacency-list graph with forward + reverse edges; `Build()`, `GetLoadOrder()`, `GetDependents()`, `GetCascadedUnloadOrder()`, `GetCascadedReloadOrder()`, `Validate()`; `DependencyValidationError` record with `DependencyErrorKind` (Missing | VersionMismatch | Circular)
+- **`WpfPluginHost`** — replaces inline `TopologicalSort()` with `_dependencyGraph.GetLoadOrder()`; `CascadingUnloadAsync()` and `CascadingReloadAsync()`; plugins with unmet dependencies marked `Incompatible` and skipped at startup
+- **`PluginManifest.Dependencies`** — existing `List<string>` now supports versioned syntax: `"BinaryAnalysisCore >=1.0"`; plain IDs still work (any version)
+- **Plugin Manager UI** — `DependsOn` chip list (green=satisfied, red=missing), `DependedOnBy` list, `HasUnresolvedDeps`; Cascade Unload / Cascade Reload buttons; dependency section in right pane
+
+### 🔧 Changed
+
+- All 10 plugin `.csproj` files — `<PluginIsolationMode>` changed from `Sandbox` → `Auto`; `Auto` is now the correct default (host decides InProcess vs Sandbox based on trust level and capability declarations)
+- `StandaloneIDEHostContext` (Sample.Terminal) — implements 3 new `IIDEHostContext` members (`IDEEvents`, `CapabilityRegistry`, `ExtensionRegistry`) with null-object stubs
+- `ExtensionRegistry` — promoted from `internal` to `public` (required by `App` project)
+- `IDEEventBusOptionsPage` — uses concrete `IDEEventBus` type (diagnostics methods not on interface)
 
 ---
 

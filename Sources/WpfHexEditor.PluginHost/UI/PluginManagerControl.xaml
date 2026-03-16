@@ -472,29 +472,15 @@
                                 <TextBlock Text="{Binding StateLabel}" FontSize="10"
                                            FontWeight="SemiBold" Foreground="White"/>
                             </Border>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="Enable"   Command="{Binding EnableCommand}"
-                                        Style="{DynamicResource PM_ActionButtonStyle}"
-                                        Margin="0,0,4,0" Padding="8,3" FontSize="11"/>
-                                <Button Content="Disable"  Command="{Binding DisableCommand}"
-                                        Style="{DynamicResource PM_ActionButtonStyle}"
-                                        Margin="0,0,4,0" Padding="8,3" FontSize="11"/>
-                                <Button Content="Reload"   Command="{Binding ReloadCommand}"
-                                        Style="{DynamicResource PM_ActionButtonStyle}"
-                                        Margin="0,0,4,0" Padding="8,3" FontSize="11"/>
-                                <Button Content="&#xE74D;" Command="{Binding UninstallCommand}"
-                                        Style="{DynamicResource PM_DangerButtonStyle}"
-                                        FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                        Padding="6,3" ToolTip="Uninstall plugin"/>
-                                <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
-                                <Button Content="&#xE72A; Sandbox"
-                                        Command="{Binding MigrateToSandboxCommand}"
-                                        Visibility="{Binding CanMigrateToSandbox, Converter={StaticResource BoolToVis}}"
-                                        Style="{DynamicResource PM_ActionButtonStyle}"
-                                        Margin="4,0,0,0" Padding="8,3" FontSize="11"
-                                        FontFamily="Segoe MDL2 Assets"
-                                        ToolTip="Reload this plugin in an isolated out-of-process Sandbox"/>
-                            </StackPanel>
+                            <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
+                            <Button Content="&#xE72A; Sandbox"
+                                    Command="{Binding MigrateToSandboxCommand}"
+                                    Visibility="{Binding CanMigrateToSandbox, Converter={StaticResource BoolToVis}}"
+                                    Style="{DynamicResource PM_ActionButtonStyle}"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,0,0" Padding="8,3" FontSize="11"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    ToolTip="Reload this plugin in an isolated out-of-process Sandbox"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -700,6 +686,152 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <!-- ── Section: Dormant Info (Lazy Loaded) ──────────── -->
+                        <StackPanel Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}">
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="Lazy Loading"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="#A855F7" Margin="0,0,0,6"/>
+                            <Border Padding="10,8" Margin="0,0,0,8"
+                                    Background="{DynamicResource Panel_ToolbarBrush}"
+                                    BorderBrush="#A855F7" BorderThickness="1" CornerRadius="4">
+                                <StackPanel>
+                                    <TextBlock Text="This plugin is dormant — it activates when a trigger is matched."
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                               Margin="0,0,0,6"/>
+                                    <TextBlock Text="{Binding ActivationTriggerLabel}"
+                                               FontSize="11" FontStyle="Italic"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               Margin="0,0,0,8"/>
+                                    <Button Content="Load Now"
+                                            Command="{Binding LoadNowCommand}"
+                                            HorizontalAlignment="Left"
+                                            Style="{DynamicResource PM_PrimaryButtonStyle}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- ── Section: ALC Diagnostics (InProcess only) ─────── -->
+                        <StackPanel Visibility="{Binding IsInProcess, Converter={StaticResource BoolToVis}}">
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="ALC Diagnostics"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Margin="0,0,0,6"/>
+                            <Border Padding="10,8" Margin="0,0,0,4"
+                                    Background="{DynamicResource Panel_ToolbarBrush}"
+                                    BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                                    BorderThickness="1" CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding AlcAssemblyCount}"
+                                                   FontSize="18" FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                        <TextBlock Text="Assemblies" FontSize="10"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding AlcConflictCount}"
+                                                   FontSize="18" FontWeight="Bold"
+                                                   HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#22C55E"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasAlcConflicts}" Value="True">
+                                                            <Setter Property="Foreground" Value="#F59E0B"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="Conflicts" FontSize="10"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding AssemblyConflictLabels}"
+                                          Visibility="{Binding HasAlcConflicts, Converter={StaticResource BoolToVis}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="10"
+                                                   Foreground="#F59E0B"
+                                                   TextWrapping="Wrap" Margin="0,1"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- ── Section: Capability Features ─────────────────── -->
+                        <StackPanel Visibility="{Binding HasFeatures, Converter={StaticResource BoolToVis}}">
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="Capabilities"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Margin="0,0,0,6"/>
+                            <ItemsControl ItemsSource="{Binding Features}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="6,3" Margin="0,0,4,4"
+                                                Background="{DynamicResource DockAccentBrush}"
+                                                CornerRadius="10">
+                                            <TextBlock Text="{Binding}" FontSize="10"
+                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- ── Section: Extension Points ─────────────────────── -->
+                        <StackPanel Visibility="{Binding HasExtensions, Converter={StaticResource BoolToVis}}">
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="Extension Points"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Margin="0,0,0,6"/>
+                            <ItemsControl ItemsSource="{Binding ExtensionLabels}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="11"
+                                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                   Margin="0,2"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- ── Section: Dependency Warnings ─────────────────── -->
+                        <StackPanel Visibility="{Binding HasUnresolvedDeps, Converter={StaticResource BoolToVis}}">
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="Dependency Errors"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="#EF4444" Margin="0,0,0,6"/>
+                            <ItemsControl ItemsSource="{Binding UnresolvedDepLabels}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="11"
+                                                   Foreground="#EF4444"
+                                                   TextWrapping="Wrap" Margin="0,2"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
 
                         <!-- ── Section: Settings (conditional) ──────────────── -->
                         <StackPanel Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}">

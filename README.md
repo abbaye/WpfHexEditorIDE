@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.3.0-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.4.0-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -70,7 +70,7 @@
 - **Output panel** + **Error/Diagnostics panel** + **Quick Search** (inline + advanced)
 - **VS2026-style Options** — document tab, auto-save, live theme preview
 - **Integrated Terminal** (`Ctrl+`` `) — 31 built-in commands, panel/plugin/file management
-- **Plugin System** — `WpfHexEditor.SDK` open API, `.whxplugin` packages, Plugin Manager
+- **Plugin System** — `WpfHexEditor.SDK` open API, `.whxplugin` packages, Plugin Manager, **IDE EventBus**, **Capability Registry**, **Extension Points**, **Dependency Graph**
 
 </td>
 <td width="50%">
@@ -136,7 +136,8 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 | **[Editor.Core](Sources/WpfHexEditor.Editor.Core/README.md)** | net8.0-windows | `IDocumentEditor` plugin contract, editor registry, changeset system, shared interfaces |
 | **[BinaryAnalysis](Sources/WpfHexEditor.BinaryAnalysis/README.md)** | net8.0 | 400+ format detection engine, binary templates, DataInspector service |
 | **[Definitions](Sources/WpfHexEditor.Definitions/README.md)** | net8.0-windows | Embedded format catalog (400+ file signatures) and syntax definitions shared across editors and plugins |
-| **[SDK](Sources/WpfHexEditor.SDK/README.md)** | net8.0-windows | Public plugin API — `IWpfHexEditorPlugin`, `IIDEHostContext`, `IUIRegistry`, 11+ service contracts incl. `ITerminalService`, `PluginCapabilities.Terminal` |
+| **[Events](Sources/WpfHexEditor.Events/README.md)** | net8.0 | IDE-wide typed event bus — `IIDEEventBus`, 10 built-in event types, weak-reference subscribers, rolling event log, IPC bridge for sandbox plugins |
+| **[SDK](Sources/WpfHexEditor.SDK/README.md)** | net8.0-windows | Public plugin API — `IWpfHexEditorPlugin`, `IIDEHostContext`, `IUIRegistry`, 15+ service contracts incl. `IIDEEventBus`, `IPluginCapabilityRegistry`, `IExtensionRegistry`, `ITerminalService` |
 | **[PluginHost](Sources/WpfHexEditor.PluginHost/README.md)** | net8.0-windows | Runtime plugin infrastructure — discovery, load, watchdog, `PluginManagerControl`, `PermissionService` |
 | **[PluginSandbox](Sources/WpfHexEditor.PluginSandbox/README.md)** | net8.0-windows | Out-of-process plugin execution host — HWND embedding, IPC menu/toolbar/event bridges, Job Object resource isolation, auto-isolation decision engine (#81) |
 | **[Docking.Core](Sources/WpfHexEditor.Docking.Core/README.md)** | net8.0-windows | Abstract platform-agnostic docking contracts — `DockEngine`, layout model, `DockItemState` |
@@ -362,6 +363,11 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 
 | Feature | Status | Feature # |
 |---------|--------|-----------|
+| **IDE EventBus** — typed pub/sub, 10 built-in events, IPC bridge, options page | ✅ Done v0.4.0 | #80 |
+| **Plugin Lazy Loading** — file-extension & command triggers, `Dormant` state, manifest `activation` field | ✅ Done v0.4.0 | #77 |
+| **Capability Registry** — semantic feature declarations, `FindPluginsWithFeature()` | ✅ Done v0.4.0 | — |
+| **Extension Points** — `IFileAnalyzerExtension`, `IHexViewOverlayExtension`, typed contributor contracts | ✅ Done v0.4.0 | — |
+| **Plugin Dependency Graph** — versioned constraints, topological load order, cascading unload/reload | ✅ Done v0.4.0 | — |
 | **Document Model** — unified in-memory document representation | 🔧 In Progress ~10% | #107 |
 | **Assembly Explorer — full tree + ECMA-335 metadata** | 🔧 In Progress ~15% | #104–105 |
 | **Integrated Terminal** — full multi-shell + macro | 🔧 In Progress ~70% | #92 |

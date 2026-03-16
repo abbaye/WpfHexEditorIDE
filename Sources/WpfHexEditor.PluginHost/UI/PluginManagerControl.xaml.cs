@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.PluginHost.UI;
@@ -56,20 +59,44 @@ public sealed class CountToVisibilityConverter : IValueConverter
 /// <summary>
 /// Plugin Manager document tab — lists all plugins with live metrics and lifecycle actions.
 /// Supports deferred DataContext wiring (layout restoration before plugin system is ready).
+/// Implements <see cref="IEditorToolbarContributor"/> so the IDE's contextual toolbar pod
+/// shows per-plugin actions (Enable / Disable / Reload / Uninstall / Cascade) only when
+/// this tab is active — identical VS-like behaviour to TblEditor and ChangesetEditor.
 /// </summary>
-public sealed partial class PluginManagerControl : UserControl
+public sealed partial class PluginManagerControl : UserControl, IEditorToolbarContributor
 {
-    /// <summary>
-    /// Parameterless constructor — used when the layout is restored before the plugin system
-    /// is initialised. The DataContext (PluginManagerViewModel) must be set afterwards.
-    /// </summary>
     private ToolbarOverflowManager _overflowManager = null!;
+
+    // -- IEditorToolbarContributor -----------------------------------------------
+
+    private readonly ObservableCollection<EditorToolbarItem> _toolbarItems = [];
+    public ObservableCollection<EditorToolbarItem> ToolbarItems => _toolbarItems;
+
+    private EditorToolbarItem _tbEnable        = null!;
+    private EditorToolbarItem _tbDisable       = null!;
+    private EditorToolbarItem _tbReload        = null!;
+    private EditorToolbarItem _tbUninstall     = null!;
+    private EditorToolbarItem _tbCascadeUnload = null!;
+    private EditorToolbarItem _tbCascadeReload = null!;
+
+    // Minimal ICommand used exclusively for contextual toolbar items.
+    private sealed class ToolbarCmd : ICommand
+    {
+        private readonly Action _execute;
+        public event EventHandler? CanExecuteChanged;
+        public ToolbarCmd(Action execute) => _execute = execute;
+        public bool CanExecute(object? p) => true;
+        public void Execute(object? p) => _execute();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
 
     public PluginManagerControl()
     {
         InitializeComponent();
         SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
         Unloaded += OnUnloaded;
+        DataContextChanged += OnDataContextChanged;
 
         Loaded += (_, _) =>
         {
@@ -94,8 +121,107 @@ public sealed partial class PluginManagerControl : UserControl
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        if (DataContext is PluginManagerViewModel vm)
+            vm.PropertyChanged -= OnViewModelPropertyChanged;
         if (DataContext is IDisposable d) d.Dispose();
         Unloaded -= OnUnloaded;
+    }
+
+    // -- IEditorToolbarContributor helpers ---------------------------------------
+
+    private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (e.OldValue is PluginManagerViewModel oldVm)
+            oldVm.PropertyChanged -= OnViewModelPropertyChanged;
+        if (e.NewValue is PluginManagerViewModel newVm)
+        {
+            newVm.PropertyChanged += OnViewModelPropertyChanged;
+            BuildToolbarItems();
+        }
+    }
+
+    private void BuildToolbarItems()
+    {
+        _tbEnable = new EditorToolbarItem
+        {
+            Icon    = "\uE768",
+            Tooltip = "Enable plugin",
+            IsEnabled = false,
+            Command = new ToolbarCmd(() => GetSelectedItemVm()?.EnableCommand.Execute(null))
+        };
+        _tbDisable = new EditorToolbarItem
+        {
+            Icon    = "\uE769",
+            Tooltip = "Disable plugin",
+            IsEnabled = false,
+            Command = new ToolbarCmd(() => GetSelectedItemVm()?.DisableCommand.Execute(null))
+        };
+        _tbReload = new EditorToolbarItem
+        {
+            Icon    = "\uE72C",
+            Tooltip = "Reload plugin",
+            IsEnabled = false,
+            Command = new ToolbarCmd(() => GetSelectedItemVm()?.ReloadCommand.Execute(null))
+        };
+        _tbUninstall = new EditorToolbarItem
+        {
+            Icon    = "\uE74D",
+            Tooltip = "Uninstall plugin",
+            IsEnabled = false,
+            Command = new ToolbarCmd(ExecuteToolbarUninstall)
+        };
+        _tbCascadeUnload = new EditorToolbarItem
+        {
+            Icon    = "\uE8BB",
+            Label   = "Cascade Unload",
+            Tooltip = "Unload this plugin and all dependents",
+            IsEnabled = false,
+            Command = new ToolbarCmd(() => GetSelectedItemVm()?.CascadeUnloadCommand.Execute(null))
+        };
+        _tbCascadeReload = new EditorToolbarItem
+        {
+            Icon    = "\uE72C",
+            Label   = "Cascade Reload",
+            Tooltip = "Reload this plugin and all dependents",
+            IsEnabled = false,
+            Command = new ToolbarCmd(() => GetSelectedItemVm()?.CascadeReloadCommand.Execute(null))
+        };
+
+        _toolbarItems.Clear();
+        _toolbarItems.Add(_tbEnable);
+        _toolbarItems.Add(_tbDisable);
+        _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+        _toolbarItems.Add(_tbReload);
+        _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+        _toolbarItems.Add(_tbUninstall);
+        _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+        _toolbarItems.Add(_tbCascadeUnload);
+        _toolbarItems.Add(_tbCascadeReload);
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(PluginManagerViewModel.SelectedPlugin)) return;
+        var hasSelection = GetSelectedItemVm() is not null;
+        _tbEnable.IsEnabled        = hasSelection;
+        _tbDisable.IsEnabled       = hasSelection;
+        _tbReload.IsEnabled        = hasSelection;
+        _tbUninstall.IsEnabled     = hasSelection;
+        _tbCascadeUnload.IsEnabled = hasSelection;
+        _tbCascadeReload.IsEnabled = hasSelection;
+    }
+
+    private void ExecuteToolbarUninstall()
+    {
+        var vm = GetSelectedItemVm();
+        if (vm is null) return;
+        var result = System.Windows.MessageBox.Show(
+            $"Uninstall '{vm.Name}'?\nThis action cannot be undone.",
+            "Uninstall Plugin",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning);
+        if (result == System.Windows.MessageBoxResult.Yes)
+            vm.UninstallCommand.Execute(null);
     }
 
     // --- Context menu handlers (bound via XAML ContextMenu on ListBox items) ---

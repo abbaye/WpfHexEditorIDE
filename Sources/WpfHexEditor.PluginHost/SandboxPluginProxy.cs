@@ -22,6 +22,8 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
+using WpfHexEditor.Events;
+using WpfHexEditor.Events.IDEEvents;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Sandbox;
 using WpfHexEditor.SDK.Contracts;
@@ -53,6 +55,9 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
     private IHexEditorService?    _ideHexEditor;
     private IParsedFieldService?  _ideParsedField;
     private IDisposable?          _ideTemplateApplySub;
+
+    // Feature 4 — IDE EventBus bridge subscriptions (typed events forwarded to sandbox).
+    private readonly List<IDisposable> _ideEventBusSubs = [];
 
     // ── State ─────────────────────────────────────────────────────────────────
     private volatile bool _isReady;
@@ -175,6 +180,9 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         _ideHexEditor.ActiveEditorChanged += OnIdeActiveEditorChanged;
         _ideParsedField.ParsedFieldsChanged += OnIdeParsedFieldsChanged;
         _ideTemplateApplySub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnIdeTemplateApplyRequested);
+
+        // Feature 4 — Subscribe to IDE EventBus events and bridge them to the sandbox via IPC.
+        WireIDEEventBridgeToSandbox(context.IDEEvents);
 
         // Push initial state immediately if a file is already open.
         if (_ideHexEditor.IsActive)
@@ -324,6 +332,50 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         return _procManager.SendAsync(envelope);
     }
 
+    // ── Feature 4 — IDE EventBus bridge ──────────────────────────────────────
+
+    /// <summary>
+    /// Subscribes to key IDE EventBus events and forwards them to the sandbox
+    /// process via <see cref="SandboxMessageKind.IDEEventNotification"/> IPC messages.
+    /// Add new subscriptions here to extend the bridge to additional event types.
+    /// </summary>
+    private void WireIDEEventBridgeToSandbox(IIDEEventBus ideEvents)
+    {
+        _ideEventBusSubs.Add(ideEvents.Subscribe<FileOpenedEvent>(
+            evt => _ = ForwardIDEEventAsync(evt, nameof(FileOpenedEvent))));
+
+        _ideEventBusSubs.Add(ideEvents.Subscribe<FileClosedEvent>(
+            evt => _ = ForwardIDEEventAsync(evt, nameof(FileClosedEvent))));
+
+        _ideEventBusSubs.Add(ideEvents.Subscribe<EditorSelectionChangedEvent>(
+            evt => _ = ForwardIDEEventAsync(evt, nameof(EditorSelectionChangedEvent))));
+
+        _ideEventBusSubs.Add(ideEvents.Subscribe<DocumentSavedEvent>(
+            evt => _ = ForwardIDEEventAsync(evt, nameof(DocumentSavedEvent))));
+    }
+
+    private Task ForwardIDEEventAsync(object evt, string typeName)
+    {
+        if (!_isReady) return Task.CompletedTask;
+        try
+        {
+            var json = JsonSerializer.Serialize(evt, evt.GetType());
+            var payload = new IDEEventNotificationPayload
+            {
+                EventTypeName = typeName,
+                EventJson = json,
+            };
+            var envelope = SandboxProcessManager.BuildRequest(
+                SandboxMessageKind.IDEEventNotification, payload);
+            return _procManager.SendAsync(envelope);
+        }
+        catch (Exception ex)
+        {
+            _log($"[SandboxProxy:{_manifest.Id}] IDEEvent forward error ({typeName}): {ex.Message}");
+            return Task.CompletedTask;
+        }
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private List<string> BuildGrantedPermissions()
@@ -365,6 +417,11 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         if (_ideParsedField is not null)
             _ideParsedField.ParsedFieldsChanged -= OnIdeParsedFieldsChanged;
         _ideTemplateApplySub?.Dispose();
+
+        // Feature 4 — dispose IDE EventBus bridge subscriptions.
+        foreach (var sub in _ideEventBusSubs)
+            sub.Dispose();
+        _ideEventBusSubs.Clear();
 
         _uiProxy?.Dispose();
         _uiProxy = null;

@@ -20,5 +20,14 @@
     "registerMenus": true,
     "writeOutput": true,
     "accessSettings": true
-  }
+  },
+  "activation": {
+    "fileExtensions": [ ".exe", ".dll", ".sys", ".ocx", ".netmodule" ],
+    "onStartup": true
+  },
+  "features": [ "BinaryAnalyzer", "PEParser" ],
+  "extensions": {
+    "FileAnalyzer": "WpfHexEditor.Plugins.AssemblyExplorer.PEFileAnalyzer"
+  },
+  "dependencies": []
 }

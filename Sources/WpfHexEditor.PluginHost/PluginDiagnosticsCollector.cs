@@ -61,6 +61,20 @@ public sealed class PluginDiagnosticsCollector : IPluginDiagnostics
         internal set => _samplingPriority = Math.Max(0, value);
     }
 
+    // -- ALC Diagnostics -------------------------------------------------------
+
+    /// <summary>
+    /// Number of assemblies loaded into this plugin's ALC at last measurement.
+    /// Only meaningful for InProcess plugins; always 0 for Sandbox.
+    /// </summary>
+    public int AlcAssemblyCount { get; set; }
+
+    /// <summary>
+    /// Number of dependency version conflicts detected during this plugin's load.
+    /// 0 = clean; any positive value warrants investigation.
+    /// </summary>
+    public int AlcConflictCount { get; set; }
+
     public PluginDiagnosticsCollector(int capacity = 100)
     {
         _capacity = capacity;

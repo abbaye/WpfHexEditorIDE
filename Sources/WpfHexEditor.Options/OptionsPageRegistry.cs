@@ -23,6 +23,7 @@ public static class OptionsPageRegistry
         // Environment
         new("Environment",        "General",          () => new EnvironmentGeneralPage(),     "🌍"),
         new("Environment",        "Save",             () => new EnvironmentSavePage(),        "🌍"),
+        new("Environment",        "Output",           () => new OutputOptionsPage(),          "🌍"),
 
         // Hex Editor
         new("Hex Editor",         "Display",          () => new HexEditorDisplayPage(),       "🔧"),

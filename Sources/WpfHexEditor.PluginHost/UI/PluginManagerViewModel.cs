@@ -179,10 +179,13 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     // --- Plugin lifecycle callbacks (called from PluginListItemViewModel commands) ---
 
-    public void EnablePlugin(string id)    => RunLifecycleAndRebuild(() => _host.EnablePluginAsync(id));
-    public void DisablePlugin(string id)   => RunLifecycleAndRebuild(() => _host.DisablePluginAsync(id));
-    public void ReloadPlugin(string id)    => RunLifecycleAndRebuild(() => _host.ReloadPluginAsync(id));
-    public void UninstallPlugin(string id) => RunLifecycleAndRebuild(() => _host.UninstallPluginAsync(id));
+    public void EnablePlugin(string id)     => RunLifecycleAndRebuild(() => _host.EnablePluginAsync(id));
+    public void DisablePlugin(string id)    => RunLifecycleAndRebuild(() => _host.DisablePluginAsync(id));
+    public void ReloadPlugin(string id)     => RunLifecycleAndRebuild(() => _host.ReloadPluginAsync(id));
+    public void UninstallPlugin(string id)  => RunLifecycleAndRebuild(() => _host.UninstallPluginAsync(id));
+    public void LoadPluginNow(string id)    => RunLifecycleAndRebuild(() => _host.ActivateDormantPluginAsync(id));
+    public void CascadeUnload(string id)    => RunLifecycleAndRebuild(() => _host.CascadingUnloadAsync(id));
+    public void CascadeReload(string id)    => RunLifecycleAndRebuild(() => _host.CascadingReloadAsync(id));
 
     public void MigratePluginToSandbox(string id)
     {
@@ -239,7 +242,10 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                 {
                     var vm = _allItems.FirstOrDefault(i => i.Id == id);
                     vm?.ClearMigrationSuggestion();
-                }));
+                },
+                onLoadNow: LoadPluginNow,
+                onCascadeUnload: CascadeUnload,
+                onCascadeReload: CascadeReload));
         }
 
         ApplyFilterAndSort();

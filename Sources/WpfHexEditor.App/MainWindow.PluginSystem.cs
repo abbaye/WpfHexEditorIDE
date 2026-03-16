@@ -28,6 +28,8 @@ using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Events;
+using WpfHexEditor.Events.IDEEvents;
 using WpfHexEditor.PluginHost;
 using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.PluginHost.Monitoring;
@@ -46,6 +48,7 @@ public partial class MainWindow
     // --- Plugin system singletons ---------------------------------------
     private WpfPluginHost? _pluginHost;
     private IDEHostContext? _ideHostContext;
+    private IDEEventBus? _ideEventBus;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -117,25 +120,42 @@ public partial class MainWindow
             var codeEditorService = new NullCodeEditorService();
             var parsedFieldService = new NullParsedFieldService();
 
+            // 2b. Construct IDE EventBus + Extension/Capability services
+            _ideEventBus = new IDEEventBus();
+            RegisterWellKnownEvents(_ideEventBus);
+
+            var capabilityAdapter = new PluginCapabilityRegistryAdapter();
+            var extensionRegistry = new ExtensionRegistry();
+
             var hostContext = new IDEHostContext(
-                solutionExplorer: solutionService,
-                hexEditor: _hexEditorService,
-                codeEditor: codeEditorService,
-                output: _outputService,
-                parsedField: parsedFieldService,
-                errorPanel: _errorPanelService,
-                focusContext: _focusContextService,
-                eventBus: eventBus,
-                uiRegistry: uiRegistry,
-                theme: _themeService,
-                permissions: permissionService,
-                terminal: _terminalService);
+                solutionExplorer:    solutionService,
+                hexEditor:           _hexEditorService,
+                codeEditor:          codeEditorService,
+                output:              _outputService,
+                parsedField:         parsedFieldService,
+                errorPanel:          _errorPanelService,
+                focusContext:        _focusContextService,
+                eventBus:            eventBus,
+                uiRegistry:          uiRegistry,
+                theme:               _themeService,
+                permissions:         permissionService,
+                terminal:            _terminalService,
+                ideEvents:           _ideEventBus,
+                capabilityRegistry:  capabilityAdapter,
+                extensionRegistry:   extensionRegistry);
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher,
                 logger:      msg => OutputLogger.PluginInfo(msg),
                 errorLogger: msg => OutputLogger.PluginError(msg));
+
+            // 3b. Resolve circular dependency: capability registry now backed by the host's entries.
+            capabilityAdapter.SetInner(_pluginHost.CapabilityRegistry);
+
+            // 3c. Wire IDE-level events to IDEEventBus publishers.
+            if (_hexEditorService is not null)
+                _hexEditorService.SelectionChanged += OnHexEditorSelectionChanged;
 
             // 4. Subscribe to host events
             _pluginHost.PluginCrashed       += OnPluginCrashed;
@@ -149,6 +169,13 @@ public partial class MainWindow
                 "Plugin System",
                 "Migration",
                 () => new PluginMigrationOptionsPage(capturedHost));
+
+            // 4c. Register Plugin System → Event Bus options page.
+            var capturedBus = _ideEventBus;
+            OptionsPageRegistry.RegisterDynamic(
+                "Plugin System",
+                "Event Bus",
+                () => new IDEEventBusOptionsPage(capturedBus));
 
             // 5. Discover + load all plugins.
             // Suspend visual tree rebuilds so that N plugins each registering a panel
@@ -795,8 +822,62 @@ public partial class MainWindow
         _pluginHost.PluginUnloaded     -= OnPluginLoadedOrUnloaded;
         _statusBarBlinkTimer?.Stop();
         _statusBarBlinkTimer = null;
+        if (_hexEditorService is not null)
+            _hexEditorService.SelectionChanged -= OnHexEditorSelectionChanged;
         await _pluginHost.DisposeAsync().ConfigureAwait(false);
         _pluginHost = null;
+        _ideEventBus?.Dispose();
+        _ideEventBus = null;
+    }
+
+    // --- IDE EventBus publishers -----------------------------------------
+
+    /// <summary>
+    /// Called by OpenFileDirectly (MainWindow.xaml.cs) after a file tab is created.
+    /// Publishes <see cref="FileOpenedEvent"/> on the IDE EventBus.
+    /// </summary>
+    internal void NotifyFileOpened(string filePath)
+    {
+        if (_ideEventBus is null) return;
+        var info = new FileInfo(filePath);
+        _ideEventBus.Publish(new FileOpenedEvent
+        {
+            Source        = "MainWindow",
+            FilePath      = filePath,
+            FileExtension = Path.GetExtension(filePath),
+            FileSize      = info.Exists ? info.Length : 0L
+        });
+    }
+
+    private void OnHexEditorSelectionChanged(object? sender, EventArgs e)
+    {
+        if (_ideEventBus is null || _hexEditorService is null) return;
+        var start  = _hexEditorService.SelectionStart;
+        var stop   = _hexEditorService.SelectionStop;
+        var length = Math.Max(0L, stop - start + 1);
+        _ideEventBus.Publish(new EditorSelectionChangedEvent
+        {
+            Source        = "HexEditorService",
+            Offset        = start,
+            Length        = length,
+            SelectedBytes = []   // lazy: avoid reading large selections on every keystroke
+        });
+    }
+
+    /// <summary>Registers the 10 well-known IDE event types in the EventBus registry.</summary>
+    private static void RegisterWellKnownEvents(IDEEventBus bus)
+    {
+        var reg = bus.EventRegistry;
+        reg.Register(typeof(FileOpenedEvent),               "File Opened",                "MainWindow");
+        reg.Register(typeof(FileClosedEvent),               "File Closed",                "MainWindow");
+        reg.Register(typeof(WorkspaceChangedEvent),         "Workspace Changed",          "MainWindow");
+        reg.Register(typeof(DocumentSavedEvent),            "Document Saved",             "MainWindow");
+        reg.Register(typeof(EditorSelectionChangedEvent),   "Editor Selection Changed",   "HexEditorService");
+        reg.Register(typeof(PluginLoadedEvent),             "Plugin Loaded",              "WpfPluginHost");
+        reg.Register(typeof(PluginUnloadedEvent),           "Plugin Unloaded",            "WpfPluginHost");
+        reg.Register(typeof(TerminalCommandExecutedEvent),  "Terminal Command Executed",  "TerminalPanel");
+        reg.Register(typeof(BuildStartedEvent),             "Build Started",              "BuildService");
+        reg.Register(typeof(BuildSucceededEvent),           "Build Succeeded",            "BuildService");
     }
 
     // --- Minimal helpers ------------------------------------------------

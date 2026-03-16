@@ -2429,6 +2429,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         DockHost.RebuildVisualTree();
         UpdateStatusBar();
         _solutionManager.PushRecentFile(filePath);
+        NotifyFileOpened(filePath);
     }
 
     /// <summary>
@@ -3043,8 +3044,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Panel tabs: exit without altering status bar or toolbar contributions.
         // The status bar and toolbar always reflect the last active document editor,
         // even when a panel tab is focused (same behaviour as Visual Studio).
+        // Exception: non-editor documents (e.g. Plugin Manager) do NOT persist their
+        // toolbar when a panel gains focus — clear it so the pod disappears.
         if (item.ContentId.StartsWith("panel-"))
+        {
+            if (ActiveDocumentEditor is null)
+                ActiveToolbarContributor = null;
             return;
+        }
 
         // Content not yet materialized (lazy tab never selected): clear and exit.
         if (!_contentCache.TryGetValue(item.ContentId, out var content))

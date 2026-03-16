@@ -126,6 +126,38 @@ public sealed class PluginManifest
     [JsonPropertyName("uiElements")]
     public List<string> UiElements { get; set; } = [];
 
+    // -- Lazy Activation (Feature 1) ------------------------------------------
+
+    /// <summary>
+    /// Optional lazy-activation triggers. When absent (null), the plugin loads at startup.
+    /// When present, the plugin is registered as <c>Dormant</c> and loads only when a trigger fires.
+    /// Example: open a .exe file → AssemblyExplorer activates.
+    /// </summary>
+    [JsonPropertyName("activation")]
+    public PluginActivationConfig? Activation { get; set; }
+
+    // -- Semantic Feature Declarations (Feature 3) ----------------------------
+
+    /// <summary>
+    /// Semantic feature identifiers declared by this plugin.
+    /// Use <see cref="PluginFeature"/> constants or custom strings.
+    /// Queryable via <c>IPluginCapabilityRegistry.FindPluginsWithFeature()</c>.
+    /// Example: ["HexViewOverlay", "BinaryAnalyzer", "PEParser"]
+    /// </summary>
+    [JsonPropertyName("features")]
+    public List<string> Features { get; set; } = [];
+
+    // -- Extension Point Contributions (Feature 5) ----------------------------
+
+    /// <summary>
+    /// Maps extension point names to fully-qualified implementing class names.
+    /// WpfPluginHost instantiates these classes and registers them in IExtensionRegistry
+    /// after the plugin's InitializeAsync completes.
+    /// Example: { "FileAnalyzer": "MyPlugin.PEFileAnalyzer", "HexViewOverlay": "MyPlugin.PEHeaderOverlay" }
+    /// </summary>
+    [JsonPropertyName("extensions")]
+    public Dictionary<string, string> Extensions { get; set; } = [];
+
     // -- Runtime (not serialized) ---------------------------------------------
 
     /// <summary>Resolved directory path set by PluginHost during discovery. Not serialized.</summary>

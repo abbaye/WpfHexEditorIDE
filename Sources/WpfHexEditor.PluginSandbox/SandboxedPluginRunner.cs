@@ -30,6 +30,7 @@ using System.Text.Json;
 using System.Windows.Interop;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -94,6 +95,9 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
             SandboxMessageKind.HexEditorStateNotification        => HandleHexEditorStateNotification(envelope),
             SandboxMessageKind.ParsedFieldsSnapshotNotification  => HandleParsedFieldsSnapshotNotification(envelope),
             SandboxMessageKind.TemplateApplyBroadcastNotification => HandleTemplateApplyBroadcast(envelope),
+
+            // IDE EventBus bridge — host forwards typed IDE events
+            SandboxMessageKind.IDEEventNotification => HandleIDEEventNotification(envelope),
 
             _ => await HandleUnknownAsync(envelope),
         };
@@ -326,6 +330,46 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
         return true;
     }
 
+    // ── IDE EventBus bridge ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Deserializes an <see cref="IDEEventNotificationPayload"/> forwarded from the host
+    /// and publishes the concrete event on the sandbox-local <see cref="SandboxLocalEventBus"/>
+    /// so that sandbox plugins receive IDE events identically to in-process plugins.
+    /// Must be called on the WPF STA thread (guaranteed by Program.cs InvokeAsync).
+    /// </summary>
+    private bool HandleIDEEventNotification(SandboxEnvelope envelope)
+    {
+        var payload = Deserialize<IDEEventNotificationPayload>(envelope.Payload);
+        if (payload is null || _stubContext is null) return true;
+
+        // Resolve the concrete event type from the Events assembly.
+        var eventType = Type.GetType(
+            $"WpfHexEditor.Events.IDEEvents.{payload.EventTypeName}, WpfHexEditor.Events");
+        if (eventType is null)
+        {
+            _log($"[Runner] Unknown IDE event type: {payload.EventTypeName}");
+            return true;
+        }
+
+        object? evtObj;
+        try { evtObj = JsonSerializer.Deserialize(payload.EventJson, eventType); }
+        catch (Exception ex)
+        {
+            _log($"[Runner] IDE event deserialize failed ({payload.EventTypeName}): {ex.Message}");
+            return true;
+        }
+        if (evtObj is null) return true;
+
+        // Invoke SandboxLocalEventBus.Publish<TEvent>(evt) via reflection.
+        var publishMethod = typeof(SandboxLocalEventBus)
+            .GetMethod(nameof(SandboxLocalEventBus.Publish))!
+            .MakeGenericMethod(eventType);
+        try { publishMethod.Invoke(_stubContext.SandboxBus, [evtObj]); }
+        catch (Exception ex) { _log($"[Runner] IDE event publish failed: {ex.Message}"); }
+        return true;
+    }
+
     private async Task<bool> HandleUnknownAsync(SandboxEnvelope envelope)
     {
         _log($"[Runner] Unknown message kind: {envelope.Kind}");
@@ -448,6 +492,17 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     public IPermissionService   Permissions     => NullPermissionService.Instance;
     public ITerminalService     Terminal        => NullTerminalService.Instance;
     public ISolutionExplorerService SolutionExplorer => NullSolutionExplorerService.Instance;
+
+    // IDE EventBus — sandbox plugins subscribe to IDE events forwarded via IPC bridge.
+    // A lightweight in-process bus is created per sandbox; the host delivers events via the
+    // IDEEventNotification IPC message which calls SandboxBus.Publish() on the receive path.
+    internal readonly SandboxLocalEventBus SandboxBus = new();
+    public IIDEEventBus IDEEvents => SandboxBus;
+
+    // Capability and extension registries are not available inside the sandbox process.
+    // Stub implementations return empty results — sandbox plugins cannot query cross-plugin state.
+    public IPluginCapabilityRegistry CapabilityRegistry => NullPluginCapabilityRegistry.Instance;
+    public IExtensionRegistry ExtensionRegistry => NullExtensionRegistry.Instance;
 
     public SandboxedHostContext(
         IpcChannel channel,
@@ -701,6 +756,88 @@ file sealed class NullSolutionExplorerService : ISolutionExplorerService
     public Task ReloadSolutionAsync(CancellationToken ct = default) => Task.CompletedTask;
     public IReadOnlyList<string> GetFilesInDirectory(string path) => [];
     public event EventHandler? SolutionChanged { add { } remove { } }
+}
+
+// Capability and extension registries are not available in the sandbox process.
+// Sandbox plugins cannot query cross-plugin state — these stubs return empty results.
+
+file sealed class NullPluginCapabilityRegistry : IPluginCapabilityRegistry
+{
+    public static readonly NullPluginCapabilityRegistry Instance = new();
+    public IReadOnlyList<string> FindPluginsWithFeature(string feature) => [];
+    public bool PluginHasFeature(string pluginId, string feature) => false;
+    public IReadOnlyList<string> GetFeaturesForPlugin(string pluginId) => [];
+    public IReadOnlyList<string> GetAllRegisteredFeatures() => [];
+}
+
+file sealed class NullExtensionRegistry : IExtensionRegistry
+{
+    public static readonly NullExtensionRegistry Instance = new();
+    public IReadOnlyList<T> GetExtensions<T>() where T : class => [];
+    public void Register<T>(string pluginId, T implementation) where T : class { }
+    public void Register(string pluginId, Type contractType, object implementation) { }
+    public void UnregisterAll(string pluginId) { }
+    public IReadOnlyList<ExtensionRegistryEntry> GetAllEntries() => [];
+}
+
+// Lightweight in-process EventBus for sandbox plugins.
+// Plugins subscribe here; the host delivers events via IDEEventNotification IPC messages
+// which call Publish<T>() on this instance from the sandbox's receive loop.
+// No EventRegistry diagnostics needed inside the sandbox process.
+
+internal sealed class SandboxLocalEventBus : IIDEEventBus
+{
+    private readonly Dictionary<Type, List<Action<object>>> _handlers = [];
+    private readonly object _lock = new();
+
+    public IEventRegistry EventRegistry { get; } = new SandboxNullEventRegistry();
+
+    public void Publish<TEvent>(TEvent evt) where TEvent : class
+    {
+        List<Action<object>> snapshot;
+        lock (_lock)
+        {
+            if (!_handlers.TryGetValue(typeof(TEvent), out var list)) return;
+            snapshot = [.. list];
+        }
+        foreach (var h in snapshot) h(evt);
+    }
+
+    public Task PublishAsync<TEvent>(TEvent evt, CancellationToken ct = default) where TEvent : class
+    {
+        Publish(evt);
+        return Task.CompletedTask;
+    }
+
+    public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : class
+    {
+        Action<object> wrapper = obj => handler((TEvent)obj);
+        Add(typeof(TEvent), wrapper);
+        return new Token(() => Remove(typeof(TEvent), wrapper));
+    }
+
+    public IDisposable Subscribe<TEvent>(Func<TEvent, Task> handler) where TEvent : class
+        => Subscribe<TEvent>(evt => { _ = handler(evt); });
+
+    public IDisposable Subscribe<TEvent>(Action<IDEEventContext, TEvent> handler) where TEvent : class
+        => Subscribe<TEvent>(evt => handler(IDEEventContext.HostContext, evt));
+
+    public IDisposable Subscribe<TEvent>(Func<IDEEventContext, TEvent, Task> handler) where TEvent : class
+        => Subscribe<TEvent>(evt => { _ = handler(IDEEventContext.HostContext, evt); });
+
+    private void Add(Type t, Action<object> h) { lock (_lock) { if (!_handlers.TryGetValue(t, out var l)) _handlers[t] = l = []; l.Add(h); } }
+    private void Remove(Type t, Action<object> h) { lock (_lock) { if (_handlers.TryGetValue(t, out var l)) l.Remove(h); } }
+
+    private sealed class Token(Action remove) : IDisposable { public void Dispose() => remove(); }
+
+    // No-op registry — sandbox doesn't expose diagnostics to the IDE EventBus options page.
+    private sealed class SandboxNullEventRegistry : IEventRegistry
+    {
+        public IReadOnlyList<EventRegistryEntry> GetAllEntries() => [];
+        public int GetSubscriberCount(Type eventType) => 0;
+        public void Register(Type eventType, string displayName, string producerLabel) { }
+        public void UpdateSubscriberCount(Type eventType, int delta) { }
+    }
 }
 
 file static class Disposable
