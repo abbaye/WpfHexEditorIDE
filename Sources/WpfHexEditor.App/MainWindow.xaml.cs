@@ -4084,17 +4084,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     private void OnSettings(object sender, RoutedEventArgs e)
+        => OpenSettingsAt(null, null);
+
+    /// <summary>
+    /// Opens the Options tab and optionally navigates to a specific page.
+    /// </summary>
+    private void OpenSettingsAt(string? category, string? pageName)
     {
         var existing = _layout.FindItemByContentId(OptionsContentId);
         if (existing is not null)
         {
             if (existing.Owner is { } owner) owner.ActiveItem = existing;
             DockHost.RebuildVisualTree();
-            return;
         }
-        var item = new DockItem { Title = "Options", ContentId = OptionsContentId };
-        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-        DockHost.RebuildVisualTree();
+        else
+        {
+            var item = new DockItem { Title = "Options", ContentId = OptionsContentId };
+            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+            DockHost.RebuildVisualTree();
+        }
+
+        if (category is not null && pageName is not null &&
+            _contentCache.TryGetValue(OptionsContentId, out var content) &&
+            content is OptionsEditorControl ctrl)
+        {
+            ctrl.NavigateTo(category, pageName);
+        }
     }
 
     private void OnOptionsSettingsChanged()

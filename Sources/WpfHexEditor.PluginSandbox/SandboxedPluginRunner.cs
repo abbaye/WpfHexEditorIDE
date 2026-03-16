@@ -27,6 +27,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
+using System.Windows.Interop;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -52,6 +53,9 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
     private AssemblyLoadContext? _alc;
     private IpcUIRegistry? _uiRegistry;
     private readonly ThemeBootstrapper _themeBootstrapper = new();
+
+    // Phase 11 — Options page HwndSource (kept alive for the lifetime of the sandbox)
+    private HwndSource? _optionsPageSource;
 
     // ─────────────────────────────────────────────────────────────────────────
     public SandboxedPluginRunner(
@@ -135,6 +139,44 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
                 _uiRegistry, _log);
 
             await _plugin.InitializeAsync(stubContext, _ct).ConfigureAwait(false);
+
+            // Phase 11 — If the plugin has an options page, create its HwndSource eagerly
+            // and notify the host with the HWND so it can embed the page in the Options dialog.
+            // Sent BEFORE ReadyNotification so the host has the data when it unblocks.
+            if (_plugin is IPluginWithOptions opts)
+            {
+                try
+                {
+                    opts.LoadOptions();
+                    var optionsContent = opts.CreateOptionsPage();
+                    if (optionsContent is not null)
+                    {
+                        _optionsPageSource = new HwndSource(
+                            new HwndSourceParameters($"OptionsPage_{payload.PluginId}")
+                            {
+                                WindowStyle = unchecked((int)0x80000000), // WS_POPUP
+                                Width  = 640,
+                                Height = 400,
+                            })
+                        { RootVisual = optionsContent };
+
+                        await _channel.SendAsync(new SandboxEnvelope
+                        {
+                            Kind = SandboxMessageKind.RegisterOptionsPageNotification,
+                            Payload = Serialize(new RegisterOptionsPageNotificationPayload
+                            {
+                                PluginId   = payload.PluginId,
+                                PluginName = payload.PluginName,
+                                Hwnd       = _optionsPageSource.Handle.ToInt64(),
+                            }),
+                        }, _ct).ConfigureAwait(false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log($"[Runner:{payload.PluginId}] Options page creation failed: {ex.Message}");
+                }
+            }
 
             // Start emitting metrics now that plugin is alive
             _metrics.SetPluginId(payload.PluginId);
@@ -297,6 +339,7 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
         _metrics.Stop();
         _uiRegistry?.DisposeAll();
         _themeBootstrapper.Remove();
+        _optionsPageSource?.Dispose();
         if (_plugin is IDisposable d) d.Dispose();
         if (_plugin is IAsyncDisposable ad) await ad.DisposeAsync().ConfigureAwait(false);
         try { _alc?.Unload(); } catch { }

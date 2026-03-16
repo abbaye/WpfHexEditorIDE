@@ -207,6 +207,46 @@ public sealed partial class OptionsEditorControl : UserControl
         }
     }
 
+    /// <summary>
+    /// Navigates directly to the specified category/page combination.
+    /// If the panel is not yet loaded, the selection is deferred to the Loaded event.
+    /// </summary>
+    public void NavigateTo(string category, string pageName)
+    {
+        if (!_initialized)
+        {
+            // Defer until the control is fully loaded and the tree is built.
+            void OnFirstLoad(object s, RoutedEventArgs ev)
+            {
+                Loaded -= OnFirstLoad;
+                SelectPage(category, pageName);
+            }
+            Loaded += OnFirstLoad;
+            return;
+        }
+
+        SelectPage(category, pageName);
+    }
+
+    private void SelectPage(string category, string pageName)
+    {
+        foreach (TreeViewItem catItem in PageTree.Items)
+        {
+            foreach (TreeViewItem pageItem in catItem.Items)
+            {
+                if (pageItem.Tag is OptionsPageDescriptor desc &&
+                    desc.Category == category &&
+                    desc.PageName  == pageName)
+                {
+                    catItem.IsExpanded = true;
+                    pageItem.IsSelected = true;
+                    pageItem.BringIntoView();
+                    return;
+                }
+            }
+        }
+    }
+
     private void PopulateFilterCombo()
     {
         FilterCombo.Items.Clear();

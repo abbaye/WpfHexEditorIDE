@@ -162,7 +162,7 @@ public partial class MainWindow
                 await Dispatcher.InvokeAsync(dockingAdapter.ResumeRebuild);
             }
 
-            // Register a dynamic Options page for every plugin that supports IPluginWithOptions.
+            // Register a dynamic Options page for every in-process plugin that supports IPluginWithOptions.
             foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
             {
                 var captured = entry;
@@ -176,6 +176,29 @@ public partial class MainWindow
                         if (page is System.Windows.Controls.UserControl uc) return uc;
                         // Wrap arbitrary FrameworkElement in a UserControl for the Options panel.
                         var wrapper = new System.Windows.Controls.UserControl { Content = page };
+                        return wrapper;
+                    });
+            }
+
+            // Phase 11: Register options pages for sandbox plugins that implement IPluginWithOptions.
+            // Each sandbox plugin eagerly creates its options page HwndSource during init and sends
+            // the HWND here. We wrap it in HwndPanelHost inside a UserControl for the Options dialog.
+            foreach (var (pluginId, pluginName, hwnd) in _pluginHost.GetSandboxOptionsPages())
+            {
+                var capturedId   = pluginId;
+                var capturedHwnd = new IntPtr(hwnd);
+                OptionsPageRegistry.RegisterDynamic(
+                    "Plugins",
+                    pluginName,
+                    () =>
+                    {
+                        var host    = new WpfHexEditor.PluginHost.Sandbox.HwndPanelHost(capturedHwnd, capturedId);
+                        var wrapper = new System.Windows.Controls.UserControl
+                        {
+                            Content = host,
+                            MinWidth  = 400,
+                            MinHeight = 300,
+                        };
                         return wrapper;
                     });
             }
@@ -490,10 +513,7 @@ public partial class MainWindow
     }
 
     internal void OnOpenPluginSettings(object sender, RoutedEventArgs e)
-    {
-        // Open Options dialog at the Plugins page
-        OnSettings(sender, e);
-    }
+        => OpenSettingsAt("Plugin System", "General");
 
     // --- Plugin Manager document tab ------------------------------------
 

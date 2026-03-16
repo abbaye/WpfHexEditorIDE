@@ -273,8 +273,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
             var sw = Stopwatch.StartNew();
 
             // Phase 6b: For InProcess plugins, InitializeAsync MUST run on the STA Dispatcher
-            // because plugins create WPF controls. For Sandbox plugins it runs on the thread pool
-            // (only IPC messages go over the pipe — no WPF created in-process).
+            // because plugins create WPF controls in-process.
+            // Sandbox plugins also start on the thread pool — their SandboxPluginProxy explicitly
+            // captures Application.Current.Dispatcher (not Dispatcher.CurrentDispatcher) so the
+            // SandboxUIRegistryProxy always marshals panel/menu registration to the UI thread.
             Task initTask;
             if (effectiveMode == PluginIsolationMode.Sandbox)
             {
@@ -620,6 +622,32 @@ public sealed class WpfPluginHost : IAsyncDisposable
     public PluginEntry? GetPlugin(string pluginId)
     {
         lock (_lock) return _entries.TryGetValue(pluginId, out var entry) ? entry : null;
+    }
+
+    // --- Sandbox Options Pages (Phase 11) ----------------------------------------
+
+    /// <summary>
+    /// Returns options page registrations declared by sandbox plugins.
+    /// Each entry carries the plugin ID, display name, and the Win32 HWND of the
+    /// options page HwndSource created inside the sandbox process.
+    /// The caller should wrap the HWND in an HwndPanelHost and register it with
+    /// OptionsPageRegistry. Call this after <see cref="LoadAllAsync"/> completes.
+    /// </summary>
+    public IReadOnlyList<(string PluginId, string PluginName, long Hwnd)> GetSandboxOptionsPages()
+    {
+        lock (_lock)
+        {
+            var result = new List<(string PluginId, string PluginName, long Hwnd)>();
+            foreach (var entry in _entries.Values)
+            {
+                if (entry.State != PluginState.Loaded) continue;
+                if (entry.Instance is not SandboxPluginProxy proxy) continue;
+                var info = proxy.GetOptionsPageInfo();
+                if (info.HasValue)
+                    result.Add((info.Value.PluginId, info.Value.PluginName, info.Value.Hwnd));
+            }
+            return result;
+        }
     }
 
     // --- Theme forwarding (Phase 9) -----------------------------------------------

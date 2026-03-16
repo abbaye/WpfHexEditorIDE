@@ -64,6 +64,9 @@ public enum SandboxMessageKind
     // Sandbox → IDE (panel visibility forwarding — Phase 10)
     PanelActionNotification,
 
+    // Sandbox → IDE (options page — Phase 11)
+    RegisterOptionsPageNotification,
+
     // IDE → Sandbox (UI lifecycle — Phase 9 / 10)
     ResizePanelRequest,
     ThemeChangedNotification,
@@ -479,6 +482,34 @@ public sealed class PanelActionNotificationPayload
     /// <summary>"Show", "Hide", "Toggle", or "Focus".</summary>
     [JsonPropertyName("action")]
     public string Action { get; set; } = string.Empty;
+}
+
+// ──────────────────────────────────────────────────────────
+// Phase 10 — Command execution  (IDE → Sandbox, fire-and-forget)
+// ──────────────────────────────────────────────────────────
+
+// ──────────────────────────────────────────────────────────
+// Phase 11 — Options page bridge  (Sandbox → IDE, no response)
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Sent after plugin initialisation when the plugin implements
+/// <c>IPluginWithOptions</c>. Carries the Win32 HWND of the sandbox-side
+/// HwndSource that hosts the options page UIElement.
+/// The IDE registers a factory in OptionsPageRegistry that wraps the HWND
+/// in an HwndPanelHost each time the Options dialog is opened.
+/// </summary>
+public sealed class RegisterOptionsPageNotificationPayload
+{
+    [JsonPropertyName("pluginId")]
+    public string PluginId { get; set; } = string.Empty;
+
+    [JsonPropertyName("pluginName")]
+    public string PluginName { get; set; } = string.Empty;
+
+    /// <summary>Win32 HWND (as long) of the sandbox options-page HwndSource.</summary>
+    [JsonPropertyName("hwnd")]
+    public long Hwnd { get; set; }
 }
 
 // ──────────────────────────────────────────────────────────

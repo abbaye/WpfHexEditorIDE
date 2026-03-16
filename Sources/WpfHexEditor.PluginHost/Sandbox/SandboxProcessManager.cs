@@ -78,6 +78,9 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
     // Phase 10 — panel visibility forwarding (Sandbox → IDE)
     public event EventHandler<PanelActionNotificationPayload>? PanelActionReceived;
 
+    // Phase 11 — options page (Sandbox → IDE)
+    public event EventHandler<RegisterOptionsPageNotificationPayload>? OptionsPageDeclared;
+
     // ──────────────────────────────────────────────────────────────────────────
     public SandboxProcessManager(string pluginId, Action<string>? logger = null)
     {
@@ -250,6 +253,11 @@ internal sealed class SandboxProcessManager : IAsyncDisposable
             case SandboxMessageKind.PanelActionNotification:
                 var panelAction = Deserialize<PanelActionNotificationPayload>(envelope.Payload);
                 if (panelAction is not null) PanelActionReceived?.Invoke(this, panelAction);
+                return;
+
+            case SandboxMessageKind.RegisterOptionsPageNotification:
+                var optionsPage = Deserialize<RegisterOptionsPageNotificationPayload>(envelope.Payload);
+                if (optionsPage is not null) OptionsPageDeclared?.Invoke(this, optionsPage);
                 return;
         }
 

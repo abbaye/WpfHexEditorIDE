@@ -20,6 +20,7 @@
 
 using System.IO;
 using System.Text.Json;
+using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Sandbox;
@@ -85,6 +86,18 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
     public Task ForwardThemeChangeAsync(string themeXaml, CancellationToken ct = default)
         => _uiProxy?.ForwardThemeChangeAsync(themeXaml, ct) ?? Task.CompletedTask;
 
+    /// <summary>
+    /// Returns the options page registration declared by the sandbox plugin, or null if the
+    /// plugin does not implement IPluginWithOptions.
+    /// Only valid after <see cref="InitializeAsync"/> has completed.
+    /// </summary>
+    public (string PluginId, string PluginName, long Hwnd)? GetOptionsPageInfo()
+    {
+        var info = _uiProxy?.OptionsPageInfo;
+        if (info is null) return null;
+        return (info.PluginId, info.PluginName, info.Hwnd);
+    }
+
     // ── IWpfHexEditorPlugin.InitializeAsync ───────────────────────────────────
 
     public async Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
@@ -102,8 +115,16 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         await _procManager.StartAsync(ct).ConfigureAwait(false);
 
         // 2. Create the UI bridge proxy so panel registrations are handled
-        //    before the plugin's InitializeAsync fires
-        var dispatcher = Dispatcher.CurrentDispatcher;
+        //    before the plugin's InitializeAsync fires.
+        //    IMPORTANT: Always use the WPF UI dispatcher (Application.Current.Dispatcher),
+        //    NOT Dispatcher.CurrentDispatcher — this method is called from the thread pool
+        //    (LoadPluginAsync does not marshal sandbox init to the Dispatcher), so
+        //    Dispatcher.CurrentDispatcher would create a new, never-pumped Dispatcher
+        //    for the thread-pool thread, causing all InvokeAsync UI callbacks (menu/panel
+        //    registration) to post work that is never executed.
+        var dispatcher = Application.Current?.Dispatcher
+            ?? throw new InvalidOperationException(
+                "WPF Application has not been initialized. Cannot create sandbox UI proxy.");
         _uiProxy = new SandboxUIRegistryProxy(
             context.UIRegistry, _procManager, _manifest.Id, dispatcher, _log);
 

@@ -54,6 +54,9 @@ internal sealed class SandboxUIRegistryProxy : IDisposable
     private readonly Dictionary<string, HwndPanelHost> _hosts =
         new(StringComparer.OrdinalIgnoreCase);
 
+    // Phase 11 — options page (set once during init, before ReadyNotification)
+    private RegisterOptionsPageNotificationPayload? _optionsPageInfo;
+
     private bool _disposed;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -85,7 +88,18 @@ internal sealed class SandboxUIRegistryProxy : IDisposable
 
         // Phase 10 — panel visibility forwarding
         _procManager.PanelActionReceived += OnPanelActionReceived;
+
+        // Phase 11 — options page declaration
+        _procManager.OptionsPageDeclared += OnOptionsPageDeclared;
     }
+
+    /// <summary>
+    /// Returns the options page declaration received from the sandbox, or null if the
+    /// plugin does not implement IPluginWithOptions or the notification has not arrived yet.
+    /// Safe to call after <see cref="SandboxPluginProxy.InitializeAsync"/> completes because
+    /// the notification is sent before ReadyNotification (which unblocks InitializeAsync).
+    /// </summary>
+    internal RegisterOptionsPageNotificationPayload? OptionsPageInfo => _optionsPageInfo;
 
     // ── IPC event handlers — Phase 9 ─────────────────────────────────────────
 
@@ -132,6 +146,10 @@ internal sealed class SandboxUIRegistryProxy : IDisposable
 
     private void OnPanelActionReceived(object? sender, PanelActionNotificationPayload e)
         => _dispatcher.InvokeAsync(() => DispatchPanelAction(e));
+
+    // Phase 11 — options page declaration (store without Dispatcher; no WPF object created)
+    private void OnOptionsPageDeclared(object? sender, RegisterOptionsPageNotificationPayload e)
+        => _optionsPageInfo = e;
 
     // ── Attach / Detach — Panels ──────────────────────────────────────────────
 
@@ -334,6 +352,9 @@ internal sealed class SandboxUIRegistryProxy : IDisposable
 
         // Phase 10 — panel action
         _procManager.PanelActionReceived -= OnPanelActionReceived;
+
+        // Phase 11 — options page
+        _procManager.OptionsPageDeclared -= OnOptionsPageDeclared;
 
         _dispatcher.InvokeAsync(() =>
         {
