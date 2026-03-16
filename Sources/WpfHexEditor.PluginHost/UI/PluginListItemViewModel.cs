@@ -132,6 +132,17 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Semantic foreground color for the resolved isolation mode label.
+    /// InProcess → green (fast, in-host); Sandbox → amber (isolated, external process).
+    /// </summary>
+    public string ResolvedIsolationModeColor => _entry.ResolvedIsolationMode switch
+    {
+        PluginIsolationMode.InProcess => "#22C55E",  // green — same as Loaded state badge
+        PluginIsolationMode.Sandbox   => "#F59E0B",  // amber — same as SLOW badge / Loading state
+        _                             => "#9CA3AF"   // gray fallback (Auto not yet resolved)
+    };
+
     public string SelectedIsolationMode
     {
         get => _selectedIsolationMode.ToString();
@@ -490,6 +501,8 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
         OnPropertyChanged(nameof(IsDormant));
         OnPropertyChanged(nameof(IsInProcess));
+        OnPropertyChanged(nameof(ResolvedIsolationModeLabel));
+        OnPropertyChanged(nameof(ResolvedIsolationModeColor));
         OnPropertyChanged(nameof(AlcAssemblyCount));
         OnPropertyChanged(nameof(AlcConflictCount));
         OnPropertyChanged(nameof(HasAlcConflicts));

@@ -8,15 +8,25 @@
     <PluginName>         - Display name
     <PluginVersion>      - SemVer (e.g. "1.0.0")
     <PluginEntryPoint>   - Fully qualified class implementing IWpfHexEditorPlugin
-    <PluginIsolationMode>- InProcess | Sandbox (default: Sandbox)
+    <PluginIsolationMode>- Auto | InProcess | Sandbox (default: Sandbox)
     <PluginSdkVersion>   - SDK version required (default: "1.0.0")
     <PluginMinIDEVersion>- Minimum IDE version (default: "0.1.0")
 
   Optional properties:
-    <PluginAuthor>       - Author name
-    <PluginPublisher>    - Publisher name
-    <PluginDescription>  - Plugin description
-    <PluginLoadPriority> - Integer load priority (default: 100)
+    <PluginAuthor>              - Author name
+    <PluginPublisher>           - Publisher name
+    <PluginDescription>         - Plugin description
+    <PluginLoadPriority>        - Integer load priority (default: 100)
+    <PluginTrustedPublisher>    - true/false — drives Auto isolation decision (default: false)
+    <PluginPermAccessHexEditor> - true/false (default: false)
+    <PluginPermAccessFileSystem>- true/false (default: false)
+    <PluginPermAccessNetwork>   - true/false (default: false)
+    <PluginPermAccessCodeEditor>- true/false (default: false)
+    <PluginPermRegisterMenus>   - true/false — if true + TrustedPublisher → Auto resolves InProcess
+    <PluginPermWriteOutput>     - true/false (default: false)
+    <PluginPermWriteErrorPanel> - true/false (default: false)
+    <PluginPermAccessSettings>  - true/false (default: false)
+    <PluginPermIsTerminalOnly>  - true/false (default: false)
 
   Output: $(OutputPath)manifest.json  (Build Manifest — no hash/signature)
   This file is suitable for:
@@ -29,13 +39,24 @@
 
   <PropertyGroup>
     <!-- Defaults for optional properties -->
-    <PluginIsolationMode Condition="'$(PluginIsolationMode)' == ''">Sandbox</PluginIsolationMode>
-    <PluginSdkVersion Condition="'$(PluginSdkVersion)' == ''">1.0.0</PluginSdkVersion>
-    <PluginMinIDEVersion Condition="'$(PluginMinIDEVersion)' == ''">0.1.0</PluginMinIDEVersion>
-    <PluginLoadPriority Condition="'$(PluginLoadPriority)' == ''">100</PluginLoadPriority>
-    <PluginAuthor Condition="'$(PluginAuthor)' == ''">Unknown</PluginAuthor>
-    <PluginPublisher Condition="'$(PluginPublisher)' == ''">Unknown</PluginPublisher>
-    <PluginDescription Condition="'$(PluginDescription)' == ''"></PluginDescription>
+    <PluginIsolationMode        Condition="'$(PluginIsolationMode)'        == ''">Sandbox</PluginIsolationMode>
+    <PluginSdkVersion           Condition="'$(PluginSdkVersion)'           == ''">1.0.0</PluginSdkVersion>
+    <PluginMinIDEVersion        Condition="'$(PluginMinIDEVersion)'        == ''">0.1.0</PluginMinIDEVersion>
+    <PluginLoadPriority         Condition="'$(PluginLoadPriority)'         == ''">100</PluginLoadPriority>
+    <PluginAuthor               Condition="'$(PluginAuthor)'               == ''">Unknown</PluginAuthor>
+    <PluginPublisher            Condition="'$(PluginPublisher)'            == ''">Unknown</PluginPublisher>
+    <PluginDescription          Condition="'$(PluginDescription)'          == ''"></PluginDescription>
+    <!-- Trust and permission defaults (false = safest default for unlisted properties) -->
+    <PluginTrustedPublisher     Condition="'$(PluginTrustedPublisher)'     == ''">false</PluginTrustedPublisher>
+    <PluginPermAccessHexEditor  Condition="'$(PluginPermAccessHexEditor)'  == ''">false</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem Condition="'$(PluginPermAccessFileSystem)' == ''">false</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork    Condition="'$(PluginPermAccessNetwork)'    == ''">false</PluginPermAccessNetwork>
+    <PluginPermAccessCodeEditor Condition="'$(PluginPermAccessCodeEditor)' == ''">false</PluginPermAccessCodeEditor>
+    <PluginPermRegisterMenus    Condition="'$(PluginPermRegisterMenus)'    == ''">false</PluginPermRegisterMenus>
+    <PluginPermWriteOutput      Condition="'$(PluginPermWriteOutput)'      == ''">false</PluginPermWriteOutput>
+    <PluginPermWriteErrorPanel  Condition="'$(PluginPermWriteErrorPanel)'  == ''">false</PluginPermWriteErrorPanel>
+    <PluginPermAccessSettings   Condition="'$(PluginPermAccessSettings)'   == ''">false</PluginPermAccessSettings>
+    <PluginPermIsTerminalOnly   Condition="'$(PluginPermIsTerminalOnly)'   == ''">false</PluginPermIsTerminalOnly>
   </PropertyGroup>
 
   <!--
@@ -54,7 +75,7 @@
   "name": "$(PluginName)",
   "author": "$(PluginAuthor)",
   "publisher": "$(PluginPublisher)",
-  "trustedPublisher": false,
+  "trustedPublisher": $(PluginTrustedPublisher),
   "description": "$(PluginDescription)",
   "version": "$(PluginVersion)",
   "sdkVersion": "$(PluginSdkVersion)",
@@ -62,7 +83,17 @@
   "entryPoint": "$(PluginEntryPoint)",
   "isolationMode": "$(PluginIsolationMode)",
   "loadPriority": $(PluginLoadPriority),
-  "permissions": {},
+  "permissions": {
+    "accessHexEditor": $(PluginPermAccessHexEditor),
+    "accessFileSystem": $(PluginPermAccessFileSystem),
+    "accessNetwork": $(PluginPermAccessNetwork),
+    "accessCodeEditor": $(PluginPermAccessCodeEditor),
+    "registerMenus": $(PluginPermRegisterMenus),
+    "writeOutput": $(PluginPermWriteOutput),
+    "writeErrorPanel": $(PluginPermWriteErrorPanel),
+    "accessSettings": $(PluginPermAccessSettings),
+    "isTerminalOnly": $(PluginPermIsTerminalOnly)
+  },
   "dependencies": [],
   "uiElements": []
 }

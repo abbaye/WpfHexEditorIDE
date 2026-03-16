@@ -447,7 +447,7 @@
                                            ToolTip="Reloading plugin with new isolation mode…"/>
                                 <TextBlock Text="{Binding ResolvedIsolationModeLabel}"
                                            FontSize="10" Margin="4,0,0,0"
-                                           Foreground="{DynamicResource DockAccentBrush}"
+                                           Foreground="{Binding ResolvedIsolationModeColor}"
                                            Opacity="0.85"
                                            VerticalAlignment="Center"
                                            ToolTip="Effective mode chosen by Auto decision engine">
