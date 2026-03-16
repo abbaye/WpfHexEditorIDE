@@ -685,7 +685,7 @@
         <TreeView x:Name="SolutionTree" Grid.Row="2"
                   ItemsSource="{Binding Roots}"
                   SelectedItemChanged="OnSelectedItemChanged"
-                  MouseDoubleClick="OnItemDoubleClick"
+                  PreviewMouseDoubleClick="OnItemDoubleClick"
                   PreviewKeyDown="OnTreePreviewKeyDown"
                   ContextMenuOpening="OnContextMenuOpening"
                   AllowDrop="True"

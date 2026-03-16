@@ -422,6 +422,10 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         {
             AddNamespaceGroups(root, model);
 
+            // Show type forwarders when the assembly has no types of its own (facade assemblies).
+            if (model.TypeForwarders.Count > 0)
+                AddTypeForwardersGroup(root, model);
+
             if (_showReferences && model.References.Count > 0)
                 AddReferencesGroup(root, model);
 
@@ -508,6 +512,14 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         }
 
         return typeNode;
+    }
+
+    private static void AddTypeForwardersGroup(AssemblyRootNodeViewModel root, AssemblyModel model)
+    {
+        var fwdNode = new NamespaceNodeViewModel($"Type Forwarders ({model.TypeForwarders.Count})");
+        foreach (var fwd in model.TypeForwarders.OrderBy(f => f.FullName, StringComparer.OrdinalIgnoreCase))
+            fwdNode.Children.Add(new MetadataTableNodeViewModel(fwd.FullName, 0));
+        root.Children.Add(fwdNode);
     }
 
     private static void AddReferencesGroup(AssemblyRootNodeViewModel root, AssemblyModel model)

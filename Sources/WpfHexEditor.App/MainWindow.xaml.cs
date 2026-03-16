@@ -3667,22 +3667,42 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnNewProject(object sender, RoutedEventArgs e)
     {
-        if (_solutionManager.CurrentSolution is null)
-        {
-            // VS-like behaviour: no solution open → show the project dialog and auto-create
-            // a solution with the same name in the same directory.
-            var dlg = new NewProjectDialog(null) { Owner = this };
-            if (dlg.ShowDialog() != true) return;
+        var suggestedDir = _solutionManager.CurrentSolution is not null
+            ? Path.GetDirectoryName(_solutionManager.CurrentSolution.FilePath) ?? ""
+            : null;
 
-            _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
+        var dlg = new NewProjectDialog(suggestedDir) { Owner = this };
+        if (dlg.ShowDialog() != true) return;
+
+        // Self-contained templates (VS .sln/.csproj) bypass the .whproj creation flow.
+        if (dlg.SelectedTemplate is ISelfContainedProjectTemplate selfContained)
+        {
+            _ = CreateVsSolutionFromTemplateAsync(selfContained, dlg.ProjectDirectory, dlg.ProjectName);
             return;
         }
 
-        var suggestedDir = Path.GetDirectoryName(_solutionManager.CurrentSolution.FilePath) ?? "";
-        var dlg2 = new NewProjectDialog(suggestedDir) { Owner = this };
-        if (dlg2.ShowDialog() != true) return;
+        // WH-native flow (unchanged).
+        if (_solutionManager.CurrentSolution is null)
+            _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
+        else
+            _ = CreateProjectAsync(_solutionManager.CurrentSolution, dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
+    }
 
-        _ = CreateProjectAsync(_solutionManager.CurrentSolution, dlg2.ProjectDirectory, dlg2.ProjectName, dlg2.SelectedTemplate);
+    private async Task CreateVsSolutionFromTemplateAsync(
+        ISelfContainedProjectTemplate template, string parentDir, string name)
+    {
+        try
+        {
+            var slnPath = await template.CreateAsync(parentDir, name);
+            OutputLogger.Info($".NET solution scaffolded: {slnPath}");
+            await OpenSolutionAsync(slnPath);
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to scaffold .NET solution: {ex.Message}");
+            MessageBox.Show($"Failed to create project:\n{ex.Message}", "Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async Task CreateSolutionAndProjectAsync(string directory, string name, IProjectTemplate? template = null)
@@ -4482,7 +4502,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private UIElement CreateProjectPropertiesContent(DockItem item)
     {
         if (!_projectPropertiesMap.TryGetValue(item.ContentId, out var project))
-            return new System.Windows.Controls.TextBlock { Text = "Projet introuvable." };
+        {
+            // Layout-restore path: the map is empty on startup because it is only populated by
+            // OpenProjectPropertiesDocument(). Try to resolve by name from the loaded solution.
+            var name = item.ContentId["doc-projprops-".Length..];
+            project = _solutionManager.CurrentSolution?.Projects
+                          .FirstOrDefault(p => p.Name == name);
+
+            if (project is null)
+                return new System.Windows.Controls.TextBlock { Text = "Projet introuvable." };
+
+            // Re-register so dirty-state title updates work for the rest of this session.
+            _projectPropertiesMap[item.ContentId] = project;
+        }
 
         var vm = new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesViewModel(
             project, _solutionManager);

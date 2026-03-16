@@ -45,6 +45,14 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
     /// </summary>
     public virtual bool IsEditing => false;
 
+    /// <summary>
+    /// True for nodes that support on-demand child expansion (outline load).
+    /// When true a <see cref="LoadingNodeVm"/> sentinel is injected at build time
+    /// so the TreeView shows an expand arrow; the sentinel is replaced once the async
+    /// outline parse completes.
+    /// </summary>
+    public bool SupportsExpansion { get; set; }
+
     public ObservableCollection<SolutionExplorerNodeVm> Children { get; } = [];
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -393,14 +401,6 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     }
 
     // ------------------------------------------------------------------------
-
-    /// <summary>
-    /// True for .cs and .xaml files that support on-demand member expansion.
-    /// When true a <see cref="LoadingNodeVm"/> sentinel child is injected at build time
-    /// so the TreeView shows an expand arrow; the sentinel is replaced once the async
-    /// outline parse completes.
-    /// </summary>
-    public bool SupportsExpansion { get; set; }
 
     public IProjectItem Source => _item;
     public IProject?   Project { get; init; }

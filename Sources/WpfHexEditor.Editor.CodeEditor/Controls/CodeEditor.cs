@@ -4614,14 +4614,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void Save()
         {
+            // Delegate to SaveAsync so file I/O runs off the UI thread.
+            // Fire-and-forget: the async path handles status/dirty updates.
             if (!string.IsNullOrEmpty(_currentFilePath))
-            {
-                File.WriteAllText(_currentFilePath, GetText(), System.Text.Encoding.UTF8);
-                _isDirty = false;
-                ModifiedChanged?.Invoke(this, EventArgs.Empty);
-                TitleChanged?.Invoke(this, BuildTitle());
-                StatusMessage?.Invoke(this, "Saved");
-            }
+                _ = SaveAsync();
         }
 
         public async System.Threading.Tasks.Task SaveAsync(System.Threading.CancellationToken ct = default)
@@ -4632,8 +4628,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public async System.Threading.Tasks.Task SaveAsAsync(string filePath, System.Threading.CancellationToken ct = default)
         {
+            // Snapshot text on the UI thread before switching threads.
             var text = GetText();
-            await System.Threading.Tasks.Task.Run(() => File.WriteAllText(filePath, text, System.Text.Encoding.UTF8), ct);
+            try
+            {
+                await Task.Run(() => File.WriteAllText(filePath, text, System.Text.Encoding.UTF8), ct);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage?.Invoke(this, $"Save failed: {ex.Message}");
+                return;
+            }
+
             _currentFilePath = filePath;
             _isDirty = false;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
@@ -4659,11 +4665,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             RefreshJsonStatusBarItems();
         }
 
-        System.Threading.Tasks.Task IOpenableDocument.OpenAsync(string filePath, System.Threading.CancellationToken ct)
+        async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            LoadFromFile(filePath);
-            return System.Threading.Tasks.Task.CompletedTask;
+
+            if (!File.Exists(filePath))
+            {
+                StatusMessage?.Invoke(this, $"File not found: {Path.GetFileName(filePath)}");
+                return;
+            }
+
+            // Read file on a background thread to keep the UI responsive.
+            string text;
+            try
+            {
+                text = await Task.Run(() => File.ReadAllText(filePath, System.Text.Encoding.UTF8), ct);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage?.Invoke(this, $"Open failed: {ex.Message}");
+                return;
+            }
+
+            // UI-thread work: load text into the document model.
+            LoadText(text);
+            _currentFilePath = filePath;
+            TitleChanged?.Invoke(this, BuildTitle());
+            StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
+            RefreshJsonStatusBarItems();
         }
 
         // -- Public methods (IDocumentEditor) -----------------------------

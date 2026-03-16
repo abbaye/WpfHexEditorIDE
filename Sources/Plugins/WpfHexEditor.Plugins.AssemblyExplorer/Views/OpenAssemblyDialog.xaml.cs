@@ -23,6 +23,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 
@@ -183,6 +184,7 @@ public partial class OpenAssemblyDialog : ThemedDialog
                          .OrderByDescending(Path.GetFileName, StringComparer.OrdinalIgnoreCase))
             {
                 var assemblies = Directory.GetFiles(versionDir, "*.dll")
+                    .Where(AssemblyAnalysisEngine.CheckManagedMetadata) // exclude native DLLs (clrgc, coreclr, clrjit…)
                     .Select(f => new AssemblyFileNode { FileName = Path.GetFileName(f), FullPath = f })
                     .OrderBy(a => a.FileName)
                     .ToList();

@@ -15,6 +15,8 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Plugins.SolutionLoader.VS.Templates;
+using WpfHexEditor.ProjectSystem.Templates;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
 
@@ -42,6 +44,13 @@ public sealed class VsSolutionLoaderPlugin : IWpfHexEditorPlugin
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
         context.ExtensionRegistry.Register<ISolutionLoader>(Id, new VsSolutionLoader());
+
+        // Register .NET/C# project templates — only available when this plugin is loaded.
+        ProjectTemplateRegistry.Register(new ConsoleAppTemplate());
+        ProjectTemplateRegistry.Register(new ClassLibraryTemplate());
+        ProjectTemplateRegistry.Register(new WpfAppTemplate());
+        ProjectTemplateRegistry.Register(new AspNetApiTemplate());
+
         return Task.CompletedTask;
     }
 

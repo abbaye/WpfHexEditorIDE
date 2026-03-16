@@ -75,6 +75,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     private AssemblySearchPanel?   _searchPanel;
     private AssemblyDiffPanel?     _diffPanel;
     private IIDEHostContext?       _context;
+    private IAssemblyAnalysisEngine? _analysisEngine;
     private StatusBarItemDescriptor? _sbWorkspace;
     private AssemblyExplorerOptionsPage? _optionsPage;
 
@@ -85,7 +86,8 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         _context = context;
 
         // Build internal services
-        var analysisEngine = new AssemblyAnalysisEngine();
+        _analysisEngine    = new AssemblyAnalysisEngine();
+        var analysisEngine = _analysisEngine;
         var decompiler     = new DecompilerService(analysisEngine);
 
         // Select decompiler backend based on options.
@@ -200,11 +202,12 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             _panel.ViewModel.WorkspaceStatsChanged -= OnWorkspaceStatsChanged;
         }
 
-        _panel       = null;
-        _searchPanel = null;
-        _diffPanel   = null;
-        _context     = null;
-        _optionsPage  = null;
+        _panel          = null;
+        _searchPanel    = null;
+        _diffPanel      = null;
+        _context        = null;
+        _analysisEngine = null;
+        _optionsPage    = null;
 
         return Task.CompletedTask;
     }
@@ -265,7 +268,10 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     {
         if (!AssemblyExplorerOptions.Instance.AutoAnalyzeOnFileOpen) return;
         var path = _context?.HexEditor.CurrentFilePath;
-        if (!string.IsNullOrEmpty(path) && !(_panel?.ViewModel.IsAssemblyLoaded(path) ?? false))
+        // Skip native PE files (clrgc, coreclr, clrjit…) — they produce empty stubs.
+        if (!string.IsNullOrEmpty(path)
+            && !(_panel?.ViewModel.IsAssemblyLoaded(path) ?? false)
+            && (_analysisEngine?.HasManagedMetadata(path) ?? false))
             _ = _panel?.ViewModel.LoadAssemblyAsync(path);
     }
 
@@ -273,8 +279,9 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     {
         var path = _context?.HexEditor.CurrentFilePath;
         if (string.IsNullOrEmpty(path) || _panel is null) return;
-        // Only load if not already in workspace — prevents duplicate loads on tab switch.
-        if (!_panel.ViewModel.IsAssemblyLoaded(path))
+        // Only load managed assemblies — native PE files produce empty stubs.
+        if (!_panel.ViewModel.IsAssemblyLoaded(path)
+            && (_analysisEngine?.HasManagedMetadata(path) ?? false))
             _ = _panel.ViewModel.LoadAssemblyAsync(path);
     }
 

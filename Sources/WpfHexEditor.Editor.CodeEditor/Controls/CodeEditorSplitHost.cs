@@ -28,6 +28,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -186,13 +187,23 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     #region IOpenableDocument — delegates to primary editor
 
-    Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
+    async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
     {
-        // Load the file into the primary editor; the secondary editor shares the same
-        // CodeDocument, so both views reflect the loaded content immediately.
-        ct.ThrowIfCancellationRequested();
-        _primaryEditor.LoadFromFile(filePath);
-        return Task.CompletedTask;
+        // Lazy highlighter resolution before loading so the first render is already coloured.
+        if (_primaryEditor.ExternalHighlighter is null)
+        {
+            var language = LanguageRegistry.Instance.GetLanguageForFile(filePath);
+            if (language is not null)
+            {
+                var highlighter = CodeEditorFactory.BuildHighlighter(language);
+                _primaryEditor.ExternalHighlighter   = highlighter;
+                _secondaryEditor.ExternalHighlighter = highlighter;
+            }
+        }
+
+        // Delegate to the primary editor's async open (file I/O runs off the UI thread).
+        // Both editors share the same CodeDocument, so the secondary view updates automatically.
+        await ((IOpenableDocument)_primaryEditor).OpenAsync(filePath, ct);
     }
 
     #endregion

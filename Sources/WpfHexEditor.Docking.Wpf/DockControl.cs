@@ -43,6 +43,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private DockKeyboardNavigation? _keyboardNav;
     private readonly List<DockTabEventWirer> _tabWirers = [];
     private readonly Dictionary<string, object> _contentCache = new();
+
+    // Batch-close support: suppresses intermediate rebuilds during multi-item close operations.
+    private bool _suppressRebuild;
+    private bool _rebuildPending;
     internal readonly List<DockItem> ActivationHistory = [];
 
     private readonly Grid _rootGrid;
@@ -699,10 +703,30 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         => _contentCache.Remove(contentId);
 
     /// <summary>
+    /// Enters batch-close mode: subsequent <see cref="RebuildVisualTree"/> calls are deferred
+    /// until <see cref="EndBatchClose"/> is called, preventing mid-iteration wirer disposal.
+    /// </summary>
+    internal void BeginBatchClose() => _suppressRebuild = true;
+
+    /// <summary>
+    /// Exits batch-close mode and triggers a single deferred <see cref="RebuildVisualTree"/>
+    /// if any rebuild was requested while suppressed.
+    /// </summary>
+    internal void EndBatchClose()
+    {
+        _suppressRebuild = false;
+        if (!_rebuildPending) return;
+        _rebuildPending = false;
+        RebuildVisualTree();
+    }
+
+    /// <summary>
     /// Rebuilds the entire visual tree from the current Layout.
     /// </summary>
     public void RebuildVisualTree()
     {
+        if (_suppressRebuild) { _rebuildPending = true; return; }
+
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
         _activePanel = null;

@@ -82,7 +82,7 @@ public sealed class CodeEditorFactory : IEditorFactory
 
     // -- Language → highlighter -----------------------------------------------
 
-    private static ISyntaxHighlighter BuildHighlighter(LanguageDefinition language)
+    internal static ISyntaxHighlighter BuildHighlighter(LanguageDefinition language)
     {
         var rules = language.SyntaxRules.Select(rule => new RegexHighlightRule(
             rule.Pattern,

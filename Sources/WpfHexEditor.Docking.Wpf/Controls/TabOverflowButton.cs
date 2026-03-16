@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using WpfHexEditor.Docking.Core.Nodes;
 
 namespace WpfHexEditor.Docking.Wpf.Controls;
 
@@ -140,21 +141,71 @@ public class TabOverflowButton : Button
             ? tabControl.Items.Cast<object>()
             : OverflowPanel.OverflowItems.Cast<object>();
 
+        var dockTabControl = tabControl as DockTabControl;
+
         foreach (var item in source)
         {
             if (item is not TabItem tabItem) continue;
 
             var isActive = ShowAllDocuments && tabControl.SelectedItem == tabItem;
+            var capturedTab = tabItem;
+
+            // --- Close (×) button — hidden until row hover ---
+            // Note: DockTitleButtonStyle hover triggers are blocked in ContextMenu popup HwndSource,
+            // so we drive background/border explicitly via MouseEnter/MouseLeave.
+            var closeButton = new Button
+            {
+                Content           = "\u00D7",
+                FontSize          = 12,
+                Width             = 18,
+                Height            = 18,
+                Padding           = new Thickness(0),
+                VerticalAlignment = VerticalAlignment.Center,
+                Visibility        = Visibility.Hidden,
+                Cursor            = System.Windows.Input.Cursors.Arrow,
+                ToolTip           = "Close",
+                BorderThickness   = new Thickness(1),
+                Background        = Brushes.Transparent
+            };
+            closeButton.SetResourceReference(ForegroundProperty,   "DockMenuForegroundBrush");
+            closeButton.SetResourceReference(BorderBrushProperty,  "DockBorderBrush");
+
+            // Explicit hover: show filled square (accent bg + border) since style triggers don't fire in popups.
+            closeButton.MouseEnter += (_, _) => closeButton.SetResourceReference(BackgroundProperty, "DockAccentBrush");
+            closeButton.MouseLeave += (_, _) => closeButton.Background = Brushes.Transparent;
+
+            closeButton.Click += (s, e) =>
+            {
+                e.Handled   = true;   // prevent MenuItem activation
+                menu.IsOpen = false;
+                if (dockTabControl is not null && capturedTab.Tag is DockItem dockItem)
+                    dockTabControl.RequestCloseTab(dockItem);
+            };
+
+            // --- Header panel ---
+            var title = new TextBlock
+            {
+                Text              = tabItem.Header is DockTabHeader dth ? ExtractTitle(dth) : tabItem.Header?.ToString() ?? "Tab",
+                VerticalAlignment = VerticalAlignment.Center,
+                TextTrimming      = TextTrimming.CharacterEllipsis,
+                Margin            = new Thickness(0, 0, 6, 0)
+            };
+
+            DockPanel.SetDock(closeButton, Dock.Right);
+            var headerPanel = new DockPanel { LastChildFill = true, MinWidth = 200 };
+            headerPanel.Children.Add(closeButton);
+            headerPanel.Children.Add(title);
+
             var menuItem = new MenuItem
             {
-                Header = tabItem.Header is DockTabHeader dth
-                    ? ExtractTitle(dth)
-                    : tabItem.Header?.ToString() ?? "Tab",
+                Header      = headerPanel,
                 IsCheckable = ShowAllDocuments,
                 IsChecked   = isActive
             };
 
-            var capturedTab = tabItem;
+            menuItem.MouseEnter += (_, _) => closeButton.Visibility = Visibility.Visible;
+            menuItem.MouseLeave += (_, _) => closeButton.Visibility = Visibility.Hidden;
+
             menuItem.Click += (_, _) =>
             {
                 tabControl.SelectedItem = capturedTab;

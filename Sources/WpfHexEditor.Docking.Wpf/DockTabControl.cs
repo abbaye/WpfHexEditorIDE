@@ -50,6 +50,15 @@ public class DockTabControl : TabControl
 
     public event Action<DockItem>? TabDragStarted;
     public event Action<DockItem>? TabCloseRequested;
+
+    /// <summary>
+    /// Raised by Close All / Close All But This / Close All But Pinned so that the host can
+    /// process all items in a single batch without triggering a visual-tree rebuild between items.
+    /// </summary>
+    public event Action<IReadOnlyList<DockItem>>? TabBatchCloseRequested;
+
+    /// <summary>Programmatically requests closure of the given DockItem tab (used by overflow dropdown close button).</summary>
+    public void RequestCloseTab(DockItem item) => TabCloseRequested?.Invoke(item);
     public event Action<DockItem>? TabFloatRequested;
     public event Action<DockItem>? TabAutoHideRequested;
     public event Action<DockItem>? TabHideRequested;
@@ -370,25 +379,22 @@ public class DockTabControl : TabControl
     private void CloseAllItems()
     {
         if (Node is null) return;
-        foreach (var item in Node.Items.ToList())
-            if (item.CanClose && !item.IsPinned)
-                TabCloseRequested?.Invoke(item);
+        var items = Node.Items.Where(i => i.CanClose && !i.IsPinned).ToList();
+        if (items.Count > 0) TabBatchCloseRequested?.Invoke(items);
     }
 
     private void CloseAllButItem(DockItem keep)
     {
         if (Node is null) return;
-        foreach (var item in Node.Items.ToList())
-            if (item != keep && item.CanClose)
-                TabCloseRequested?.Invoke(item);
+        var items = Node.Items.Where(i => i != keep && i.CanClose).ToList();
+        if (items.Count > 0) TabBatchCloseRequested?.Invoke(items);
     }
 
     private void CloseAllButPinnedItems()
     {
         if (Node is null) return;
-        foreach (var item in Node.Items.ToList())
-            if (!item.IsPinned && item.CanClose)
-                TabCloseRequested?.Invoke(item);
+        var items = Node.Items.Where(i => !i.IsPinned && i.CanClose).ToList();
+        if (items.Count > 0) TabBatchCloseRequested?.Invoke(items);
     }
 }
 

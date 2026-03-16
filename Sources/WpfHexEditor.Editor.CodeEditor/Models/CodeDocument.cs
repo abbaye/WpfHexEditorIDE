@@ -266,11 +266,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             var leftPart = currentLine.Text.Substring(0, column);
             var rightPart = currentLine.Text.Substring(column);
 
-            // Auto-indent: calculate indentation from previous line
-            int indentLevel = CalculateIndentation(leftPart);
-            string indent = new string(' ', indentLevel * IndentSize);
+            // Auto-indent: inherit the leading whitespace of the current line so the caret
+            // lands at the same column level regardless of brace count or language.
+            string indent = GetLeadingWhitespace(currentLine.Text);
 
-            // Check if we're inside braces/brackets - add extra indent
+            // If the cursor is directly after an opening brace/bracket, add one extra indent level.
             bool insideBraces = leftPart.TrimEnd().EndsWith("{") || leftPart.TrimEnd().EndsWith("[");
             if (insideBraces)
                 indent += new string(' ', IndentSize);
@@ -480,42 +480,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// Calculate indentation level from line content
         /// Counts opening braces/brackets vs closing ones
         /// </summary>
-        private int CalculateIndentation(string text)
+        /// <summary>
+        /// Returns the leading whitespace (spaces and tabs) of the given line text.
+        /// Used by <see cref="InsertNewLine"/> to preserve the current line's indent on Enter.
+        /// </summary>
+        private static string GetLeadingWhitespace(string text)
         {
-            int level = 0;
-            bool inString = false;
-            bool escaped = false;
-
-            foreach (char ch in text)
-            {
-                if (escaped)
-                {
-                    escaped = false;
-                    continue;
-                }
-
-                if (ch == '\\')
-                {
-                    escaped = true;
-                    continue;
-                }
-
-                if (ch == '"')
-                {
-                    inString = !inString;
-                    continue;
-                }
-
-                if (!inString)
-                {
-                    if (ch == '{' || ch == '[')
-                        level++;
-                    else if (ch == '}' || ch == ']')
-                        level--;
-                }
-            }
-
-            return Math.Max(0, level);
+            int i = 0;
+            while (i < text.Length && (text[i] == ' ' || text[i] == '\t'))
+                i++;
+            return text[..i];
         }
 
         /// <summary>

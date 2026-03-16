@@ -55,6 +55,27 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
     }
 
     /// <inheritdoc/>
+    public bool HasManagedMetadata(string filePath) => CheckManagedMetadata(filePath);
+
+    /// <summary>
+    /// Static helper — usable without an engine instance (e.g. in dialog filtering logic).
+    /// Opens the PE file and checks whether a .NET CLR header is present.
+    /// Uses <c>FileShare.ReadWrite</c> so it works while the HexEditor holds the file open.
+    /// Returns false on any I/O or format error.
+    /// </summary>
+    public static bool CheckManagedMetadata(string filePath)
+    {
+        if (!File.Exists(filePath)) return false;
+        try
+        {
+            using var fs       = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var peReader = new PEReader(fs);
+            return peReader.HasMetadata;
+        }
+        catch { return false; }
+    }
+
+    /// <inheritdoc/>
     public Task<AssemblyModel> AnalyzeAsync(string filePath, CancellationToken ct = default)
         => Task.Run(() => Analyze(filePath, ct), ct);
 
@@ -97,6 +118,7 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         var references      = ReadReferences(mdReader, ct);
         var resources       = ReadResources(mdReader, ct);
         var modules         = ReadModules(mdReader, ct);
+        var forwarders      = ReadExportedTypes(mdReader, ct);
 
         return new AssemblyModel
         {
@@ -111,7 +133,8 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
             References      = references,
             Resources       = resources,
             Modules         = modules,
-            Sections        = sections
+            Sections        = sections,
+            TypeForwarders  = forwarders
         };
     }
 
@@ -398,6 +421,35 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         }
 
         return modules;
+    }
+
+    // ── Type forwarders (ExportedType table) ─────────────────────────────────
+
+    /// <summary>
+    /// Reads the ExportedType metadata table and returns only type-forwarder entries.
+    /// Facade assemblies like Microsoft.Win32.Primitives or Microsoft.VisualBasic
+    /// use this table to redirect callers to the real implementation assembly.
+    /// </summary>
+    private static List<TypeForwarderEntry> ReadExportedTypes(
+        MetadataReader mdReader, CancellationToken ct)
+    {
+        var forwarders = new List<TypeForwarderEntry>();
+
+        foreach (var handle in mdReader.ExportedTypes)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            var et = mdReader.GetExportedType(handle);
+            if (!et.IsForwarder) continue; // skip re-exported nested types etc.
+
+            var ns   = mdReader.GetString(et.Namespace);
+            var name = mdReader.GetString(et.Name);
+            if (string.IsNullOrEmpty(name)) continue;
+
+            forwarders.Add(new TypeForwarderEntry(ns, name));
+        }
+
+        return forwarders;
     }
 
     // ── PE Sections ───────────────────────────────────────────────────────────

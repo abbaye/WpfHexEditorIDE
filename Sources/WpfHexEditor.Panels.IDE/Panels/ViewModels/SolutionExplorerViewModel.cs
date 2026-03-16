@@ -450,7 +450,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
             if (nesting.ParentToChildren.TryGetValue(item.Name, out var deps))
                 foreach (var dep in deps)
-                    fileNode.Children.Insert(0, new DependentFileNodeVm(dep, project));
+                    fileNode.Children.Insert(0, MakeDependentFileNode(dep, project));
 
             node.Children.Add(fileNode);
         }
@@ -485,7 +485,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
             if (nesting.ParentToChildren.TryGetValue(item.Name, out var deps))
                 foreach (var dep in deps)
-                    fileNode.Children.Insert(0, new DependentFileNodeVm(dep, project));
+                    fileNode.Children.Insert(0, MakeDependentFileNode(dep, project));
 
             node.Children.Add(fileNode);
         }
@@ -501,14 +501,35 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         var node = new FileNodeVm(item, isDefaultTbl: item.Id == project.DefaultTblItemId)
         {
-            Project          = project,
+            Project           = project,
             SupportsExpansion = canExpand,
         };
 
         // Inject a LoadingNodeVm sentinel so WPF shows the expand arrow.
-        // The code-behind will replace it with real member nodes on first expand.
+        // Start collapsed so the outline is loaded lazily on first user expand,
+        // not eagerly when the solution is opened.
         if (canExpand)
+        {
+            node.IsExpanded = false;
             node.Children.Add(new LoadingNodeVm());
+        }
+
+        return node;
+    }
+
+    private static DependentFileNodeVm MakeDependentFileNode(IProjectItem item, IProject project)
+    {
+        var ext          = Path.GetExtension(item.Name);
+        var canExpand    = string.Equals(ext, ".cs", StringComparison.OrdinalIgnoreCase);
+        var node         = new DependentFileNodeVm(item, project) { SupportsExpansion = canExpand };
+
+        // Inject a LoadingNodeVm sentinel so the dep file also shows an expand arrow.
+        // Start collapsed — outline loads lazily on first expand.
+        if (canExpand)
+        {
+            node.IsExpanded = false;
+            node.Children.Add(new LoadingNodeVm());
+        }
 
         return node;
     }

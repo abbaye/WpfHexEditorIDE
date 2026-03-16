@@ -129,23 +129,43 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         _slowClickTimer     = null;
         _slowClickCandidate = null;
 
-        if (SolutionTree.SelectedItem is FileNodeVm fn && fn.Project is not null)
+        // Resolve the node from the actual clicked element via visual-tree walk.
+        // SolutionTree.SelectedItem is unreliable here because PreviewMouseDoubleClick
+        // fires in the tunnel phase, before the TreeViewItem selection is committed.
+        // Using OriginalSource guarantees we dispatch on what the user actually clicked.
+        var tvi    = e.OriginalSource is DependencyObject src ? FindAncestor<TreeViewItem>(src) : null;
+        var nodeVm = tvi?.DataContext as SolutionExplorerNodeVm
+                  ?? SolutionTree.SelectedItem as SolutionExplorerNodeVm;
+
+        if (nodeVm is FileNodeVm fn && fn.Project is not null)
         {
+            // Mark handled so TreeViewItem does not toggle expand/collapse on file nodes.
+            e.Handled = true;
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
             return;
         }
 
-        if (SolutionTree.SelectedItem is DependentFileNodeVm dep && dep.Project is not null)
+        if (nodeVm is DependentFileNodeVm dep && dep.Project is not null)
         {
+            e.Handled = true;
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = dep.Source, Project = dep.Project });
             return;
         }
 
-        // Source outline navigation — open file and jump to line number
-        if (SolutionTree.SelectedItem is SourceTypeNodeVm typeVm)
+        // Source outline navigation — open file and jump to line number.
+        // Mark handled to prevent expand/collapse on these leaf nodes.
+        if (nodeVm is SourceTypeNodeVm typeVm)
+        {
+            e.Handled = true;
             NavigateToSourceLine(typeVm.FileAbsolutePath, typeVm.LineNumber);
-        else if (SolutionTree.SelectedItem is SourceMemberNodeVm memberVm)
+        }
+        else if (nodeVm is SourceMemberNodeVm memberVm)
+        {
+            e.Handled = true;
             NavigateToSourceLine(memberVm.FileAbsolutePath, memberVm.LineNumber);
+        }
+        // Folder/project/solution nodes: e.Handled stays false → TreeViewItem
+        // processes the event normally and toggles its expand/collapse state.
     }
 
     // ── Source outline navigation ─────────────────────────────────────────────
@@ -346,17 +366,18 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
         // Clipboard: Copy / Cut only when file items are selected; Paste when clipboard is ready
         bool hasSelectedFiles = GetSelectedFileItems().Count > 0;
-        bool canClipPaste     = _clipboard.CanPaste() && (isFile || isFolder || isProject);
+        bool canClipPaste     = _clipboard.CanPaste() && (isFile || isDep || isFolder || isProject);
+        bool hasClipOp        = (isFile || isDep) && hasSelectedFiles;
         // Separator visible only when at least one clipboard action (Copy, Cut, or Paste) is visible
-        bool anyClipboard = (isFile && hasSelectedFiles) || canClipPaste;
-        CopyMenuItem      .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
-        CutMenuItem       .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
-        PasteMenuItem     .Visibility = canClipPaste                 ? Visibility.Visible : Visibility.Collapsed;
+        bool anyClipboard = hasClipOp || canClipPaste;
+        CopyMenuItem      .Visibility = hasClipOp    ? Visibility.Visible : Visibility.Collapsed;
+        CutMenuItem       .Visibility = hasClipOp    ? Visibility.Visible : Visibility.Collapsed;
+        PasteMenuItem     .Visibility = canClipPaste ? Visibility.Visible : Visibility.Collapsed;
 
         // Rename / Remove / Delete / Exclude
         RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isFolder || isProject || isDep) ? Visibility.Visible : Visibility.Collapsed;
-        RemoveMenuItem            .Visibility = (isFile || isFolder || isSolutionFolder)                             ? Visibility.Visible : Visibility.Collapsed;
-        DeleteMenuItem            .Visibility = isFile                                                                ? Visibility.Visible : Visibility.Collapsed;
+        RemoveMenuItem            .Visibility = (isFile || isDep || isFolder || isSolutionFolder)                    ? Visibility.Visible : Visibility.Collapsed;
+        DeleteMenuItem            .Visibility = (isFile || isDep)                                                    ? Visibility.Visible : Visibility.Collapsed;
         ExcludeFromProjectMenuItem.Visibility = isPhysIn                                                              ? Visibility.Visible : Visibility.Collapsed;
 
         // Import external file (file node whose path is outside the project directory)
@@ -877,18 +898,35 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// </summary>
     private void OnTreeItemExpanded(object sender, RoutedEventArgs e)
     {
-        if (e.OriginalSource is not TreeViewItem { DataContext: FileNodeVm fn }) return;
-        if (!fn.SupportsExpansion) return;
-        if (fn.Children.Count != 1 || fn.Children[0] is not LoadingNodeVm) return;
+        if (e.OriginalSource is not TreeViewItem { DataContext: var nodeVm }) return;
 
-        var path = fn.Source.AbsolutePath;
+        string? path;
+        SolutionExplorerNodeVm target;
+
+        if (nodeVm is FileNodeVm fn && fn.SupportsExpansion)
+        {
+            // Only trigger when the sole remaining children are DependentFileNodeVm + the LoadingNodeVm sentinel.
+            if (!fn.Children.OfType<LoadingNodeVm>().Any()) return;
+            if (fn.Children.Any(c => c is not LoadingNodeVm && c is not DependentFileNodeVm)) return;
+            path   = fn.Source.AbsolutePath;
+            target = fn;
+        }
+        else if (nodeVm is DependentFileNodeVm dep && dep.SupportsExpansion)
+        {
+            if (!dep.Children.OfType<LoadingNodeVm>().Any()) return;
+            if (dep.Children.Any(c => c is not LoadingNodeVm)) return;
+            path   = dep.Source.AbsolutePath;
+            target = dep;
+        }
+        else return;
+
         if (string.IsNullOrEmpty(path)) return;
 
         // Fire-and-forget; exceptions are caught inside.
-        _ = LoadSourceOutlineAsync(fn, path);
+        _ = LoadSourceOutlineAsync(target, path);
     }
 
-    private async Task LoadSourceOutlineAsync(FileNodeVm fn, string absolutePath)
+    private async Task LoadSourceOutlineAsync(SolutionExplorerNodeVm node, string absolutePath)
     {
         SourceOutlineModel? outline = null;
         try
@@ -900,15 +938,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             // Swallow parse errors — replace sentinel with nothing (no expand arrow needed).
         }
 
-        await Dispatcher.InvokeAsync(() => ApplyOutlineToNode(fn, outline));
+        await Dispatcher.InvokeAsync(() => ApplyOutlineToNode(node, outline));
     }
 
-    private void ApplyOutlineToNode(FileNodeVm fn, SourceOutlineModel? outline)
+    private void ApplyOutlineToNode(SolutionExplorerNodeVm fn, SourceOutlineModel? outline)
     {
-        // Guard: only replace the loading sentinel — abort if state has changed.
-        if (fn.Children.Count != 1 || fn.Children[0] is not LoadingNodeVm) return;
+        // Guard: only replace the loading sentinel — abort if it has already been replaced.
+        var sentinel = fn.Children.OfType<LoadingNodeVm>().FirstOrDefault();
+        if (sentinel is null) return;
 
-        fn.Children.Clear();
+        fn.Children.Remove(sentinel);
 
         if (outline is null)
         {
@@ -948,7 +987,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
                 fn.Children.Add(classNode);
             }
 
-            if (fn.Children.Count == 0) fn.SupportsExpansion = false;
+            if (!fn.Children.OfType<SourceTypeNodeVm>().Any()) fn.SupportsExpansion = false;
             return;
         }
 
@@ -975,9 +1014,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         if (fileNode is null || !fileNode.SupportsExpansion) return;
 
         // Only refresh if it was already parsed (sentinel gone).
-        if (fileNode.Children.Count == 1 && fileNode.Children[0] is LoadingNodeVm) return;
+        if (fileNode.Children.OfType<LoadingNodeVm>().Any()) return;
 
-        fileNode.Children.Clear();
+        // Remove outline nodes only — preserve any DependentFileNodeVm children.
+        foreach (var outline in fileNode.Children.OfType<SourceTypeNodeVm>().ToList())
+            fileNode.Children.Remove(outline);
         fileNode.Children.Add(new LoadingNodeVm());
 
         // If the node is currently expanded, reload immediately.
@@ -1254,8 +1295,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private List<IProjectItem> GetSelectedFileItems()
         => _vm.SelectedNodes
-              .OfType<FileNodeVm>()
-              .Select(fn => fn.Source)
+              .Select(n => n switch
+              {
+                  FileNodeVm      fn  => fn.Source,
+                  DependentFileNodeVm dep => dep.Source,
+                  _                   => null,
+              })
+              .OfType<IProjectItem>()
               .ToList();
 
     private void StartInlineEdit(FileNodeVm fn)
