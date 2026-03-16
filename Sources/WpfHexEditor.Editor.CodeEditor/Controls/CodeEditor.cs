@@ -1429,6 +1429,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _                          => null
         };
 
+        /// <summary>
+        /// Resolves the live brush for a <see cref="SyntaxTokenKind"/> by reading the
+        /// corresponding CodeEditor color DP (which is bound via DynamicResource to CE_*).
+        /// Returns <see langword="null"/> for <see cref="SyntaxTokenKind.Default"/>, letting
+        /// callers fall back to any baked-in brush stored on the token itself.
+        /// </summary>
+        private Brush? ResolveBrushForKind(SyntaxTokenKind kind)
+        {
+            var dp = SyntaxTokenKindToColorProperty(kind);
+            return dp is not null ? (Brush?)GetValue(dp) : null;
+        }
+
         private void UpdateTypefacesFromDPs()
         {
             _typeface           = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
@@ -2800,9 +2812,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     // Use external (language-pluggable) highlighter when available,
                     // otherwise fall back to the built-in JSON highlighter.
                     IEnumerable<Helpers.SyntaxHighlightToken> renderTokens;
+                    bool hasExternalHighlighter = ExternalHighlighter is not null;
+
                     if (ExternalHighlighter is { } ext)
                     {
-                        renderTokens = ext.Highlight(line.Text, i);
+                        // Resolve brushes at render time from live CodeEditor DPs (CE_* keys).
+                        // This ensures correct colors even when the theme changes after file open,
+                        // and avoids the timing issue of baking brushes at file-open time.
+                        renderTokens = ext.Highlight(line.Text, i)
+                            .Select(t => t with
+                            {
+                                Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
+                            });
                     }
                     else
                     {
@@ -2821,6 +2842,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     double baselineY = _glyphRenderer != null
                         ? y + _glyphRenderer.Baseline
                         : y + _charHeight * 0.8;
+
+                    // Base pass (external highlighter only): draw the entire line in EditorForeground
+                    // so unmatched spans (identifiers, punctuation not covered by any regex rule)
+                    // remain visible in the default text color instead of being invisible.
+                    if (hasExternalHighlighter)
+                    {
+                        var baseToken = new Helpers.SyntaxHighlightToken(
+                            0, line.Text.Length, line.Text, EditorForeground);
+                        if (_glyphRenderer != null)
+                            _glyphRenderer.RenderToken(dc, baseToken, x, y, baselineY);
+                        else
+                        {
+                            var ft = new FormattedText(
+                                line.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                                _typeface, _fontSize, EditorForeground,
+                                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                            dc.DrawText(ft, new Point(x, y));
+                        }
+                    }
 
                     foreach (var token in renderTokens)
                     {

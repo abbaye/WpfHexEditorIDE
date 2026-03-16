@@ -88,7 +88,8 @@ public sealed class CodeEditorFactory : IEditorFactory
             rule.Pattern,
             TokenKindToBrush(rule.Kind),
             isBold:   rule.Kind is SyntaxTokenKind.Keyword or SyntaxTokenKind.Type,
-            isItalic: rule.Kind is SyntaxTokenKind.Comment));
+            isItalic: rule.Kind is SyntaxTokenKind.Comment,
+            kind:     rule.Kind));
 
         return new SyntaxRuleHighlighter(rules);
     }
