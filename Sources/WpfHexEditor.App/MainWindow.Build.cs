@@ -163,6 +163,13 @@ public partial class MainWindow
     private async Task RunBuildSolutionAsync()
     {
         if (_buildSystem is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
+        if (_solutionManager.CurrentSolution is null
+            || _solutionManager.CurrentSolution.Projects.Count == 0)
+        {
+            OutputLogger.BuildWarn("No solution or projects loaded — nothing to build.");
+            return;
+        }
         RefreshBuildProperties();
         var result = await _buildSystem.BuildSolutionAsync();
         _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
@@ -174,6 +181,7 @@ public partial class MainWindow
         if (_buildSystem is null || _solutionManager.CurrentSolution is null) return;
         var startup = _solutionManager.CurrentSolution.StartupProject;
         if (startup is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         RefreshBuildProperties();
         var result = await _buildSystem.BuildProjectAsync(startup.Id);
         _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
@@ -183,6 +191,13 @@ public partial class MainWindow
     private async Task RunRebuildSolutionAsync()
     {
         if (_buildSystem is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
+        if (_solutionManager.CurrentSolution is null
+            || _solutionManager.CurrentSolution.Projects.Count == 0)
+        {
+            OutputLogger.BuildWarn("No solution or projects loaded — nothing to rebuild.");
+            return;
+        }
         RefreshBuildProperties();
         var result = await _buildSystem.RebuildSolutionAsync();
         _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
@@ -194,6 +209,7 @@ public partial class MainWindow
         if (_buildSystem is null || _solutionManager.CurrentSolution is null) return;
         var startup = _solutionManager.CurrentSolution.StartupProject;
         if (startup is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         RefreshBuildProperties();
         var result = await _buildSystem.RebuildProjectAsync(startup.Id);
         _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
@@ -203,6 +219,7 @@ public partial class MainWindow
     private async Task RunCleanSolutionAsync()
     {
         if (_buildSystem is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         await _buildSystem.CleanSolutionAsync();
         RefreshBuildProperties();
     }
@@ -212,6 +229,7 @@ public partial class MainWindow
         if (_buildSystem is null || _solutionManager.CurrentSolution is null) return;
         var startup = _solutionManager.CurrentSolution.StartupProject;
         if (startup is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         await _buildSystem.CleanProjectAsync(startup.Id);
         RefreshBuildProperties();
     }
@@ -221,6 +239,7 @@ public partial class MainWindow
     private async Task RunBuildProjectByIdAsync(string projectId)
     {
         if (_buildSystem is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         RefreshBuildProperties();
         var result = await _buildSystem.BuildProjectAsync(projectId);
         _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
@@ -230,6 +249,7 @@ public partial class MainWindow
     private async Task RunRebuildProjectByIdAsync(string projectId)
     {
         if (_buildSystem is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         RefreshBuildProperties();
         var result = await _buildSystem.RebuildProjectAsync(projectId);
         _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
@@ -239,6 +259,7 @@ public partial class MainWindow
     private async Task RunCleanProjectByIdAsync(string projectId)
     {
         if (_buildSystem is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
         await _buildSystem.CleanProjectAsync(projectId);
         RefreshBuildProperties();
     }

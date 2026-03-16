@@ -23,7 +23,30 @@ public sealed class OutputServiceImpl : IOutputService
     public void Debug(string message)   => OutputLogger.Debug(message);
 
     public void Write(string category, string message)
-        => OutputLogger.Info($"[{category}] {message}");
+    {
+        switch (category)
+        {
+            case OutputLogger.SourceBuild:
+                // Route to the dedicated Build channel with severity heuristics.
+                // MSBuild error/warning lines are identified by common prefixes.
+                if (message.Contains(" error ", StringComparison.OrdinalIgnoreCase)
+                    || message.StartsWith("Error", StringComparison.OrdinalIgnoreCase))
+                    OutputLogger.BuildError(message);
+                else if (message.Contains(" warning ", StringComparison.OrdinalIgnoreCase)
+                         || message.StartsWith("Warning", StringComparison.OrdinalIgnoreCase))
+                    OutputLogger.BuildWarn(message);
+                else if (message.StartsWith("===") && message.Contains("succeeded",
+                             StringComparison.OrdinalIgnoreCase))
+                    OutputLogger.BuildSuccess(message);
+                else
+                    OutputLogger.BuildInfo(message);
+                break;
+
+            default:
+                OutputLogger.Info($"[{category}] {message}");
+                break;
+        }
+    }
 
     public void Clear() => OutputLogger.Clear();
 
