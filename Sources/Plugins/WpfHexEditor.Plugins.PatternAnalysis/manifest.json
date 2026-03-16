@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official Pattern Analysis panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.PatternAnalysis.PatternAnalysisPlugin",
-  "isolationMode": "Sandbox",
+  "isolationMode": "Auto",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.PatternAnalysis.dll"

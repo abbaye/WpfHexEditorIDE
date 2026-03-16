@@ -214,7 +214,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                 onUninstall: UninstallPlugin,
                 permissionService: _host.Permissions,
                 getMemoryThresholds: _getMemoryThresholds,
-                initialIsolationMode: _host.GetEffectiveIsolationMode(entry.Manifest),
+                initialIsolationMode: _host.GetDeclaredIsolationMode(entry.Manifest),
                 onIsolationModeChanged: (id, mode) => _host.SetIsolationOverrideAsync(id, mode)));
         }
 

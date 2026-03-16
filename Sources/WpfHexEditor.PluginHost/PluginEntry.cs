@@ -38,6 +38,14 @@ public sealed class PluginEntry
         set => _state = value;
     }
 
+    /// <summary>
+    /// The concrete isolation mode this plugin was actually loaded with.
+    /// For Auto-mode plugins this reflects the resolved InProcess or Sandbox decision.
+    /// For explicitly declared plugins this mirrors <see cref="PluginManifest.IsolationMode"/>.
+    /// Populated by <c>WpfPluginHost</c> before the load branch executes.
+    /// </summary>
+    public SDK.Models.PluginIsolationMode ResolvedIsolationMode { get; private set; }
+
     /// <summary>Exception captured during a Faulted transition (null otherwise).</summary>
     public Exception? FaultException { get; set; }
 
@@ -78,6 +86,8 @@ public sealed class PluginEntry
 
     internal void SetState(PluginState state) => _state = state;
 
+    internal void SetResolvedIsolationMode(SDK.Models.PluginIsolationMode mode) => ResolvedIsolationMode = mode;
+
     internal void SetInstance(IWpfHexEditorPlugin instance, PluginLoadContext? context)
     {
         Instance = instance;
@@ -96,10 +106,19 @@ public sealed class PluginEntry
 
     /// <summary>
     /// Releases the plugin instance and unloads the AssemblyLoadContext (if collectible).
+    /// Supports both <see cref="IDisposable"/> (in-process) and
+    /// <see cref="IAsyncDisposable"/> (sandbox proxy) plugin instances.
+    /// Synchronous disposal of <see cref="IAsyncDisposable"/> is safe here:
+    /// the sandbox process has already been killed by ShutdownAsync/ForceKillAsync
+    /// before Unload is called, so this only cleans up managed resources.
     /// </summary>
     internal void Unload()
     {
-        (Instance as IDisposable)?.Dispose();
+        if (Instance is IDisposable disposable)
+            disposable.Dispose();
+        else if (Instance is IAsyncDisposable asyncDisposable)
+            asyncDisposable.DisposeAsync().AsTask().GetAwaiter().GetResult();
+
         Instance = null;
         try { LoadContext?.Unload(); }
         catch { /* ALC may have been collected already */ }

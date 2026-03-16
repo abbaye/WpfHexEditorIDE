@@ -25,6 +25,8 @@ using System.Windows.Threading;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Sandbox;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.SDK.Sandbox;
 
@@ -46,6 +48,11 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
 
     // Phase 9 — UI bridge proxy (created in InitializeAsync once registry + dispatcher are available)
     private SandboxUIRegistryProxy? _uiProxy;
+
+    // Phase 12 — IDE event forwarding (subscribed after sandbox init, unsubscribed on dispose)
+    private IHexEditorService?    _ideHexEditor;
+    private IParsedFieldService?  _ideParsedField;
+    private IDisposable?          _ideTemplateApplySub;
 
     // ── State ─────────────────────────────────────────────────────────────────
     private volatile bool _isReady;
@@ -156,6 +163,29 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         // 4. Wait for ReadyNotification (sandbox pushes this after successful init)
         await _readyTcs.Task.WaitAsync(TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
         _log($"[SandboxProxy:{_manifest.Id}] Ready.");
+
+        // 5. Phase 12 — subscribe to IDE HexEditor events and forward them to the sandbox.
+        //    Subscriptions are established AFTER ReadyNotification so the plugin's
+        //    InitializeAsync has already run and its event handlers are wired up.
+        _ideHexEditor   = context.HexEditor;
+        _ideParsedField = context.ParsedField;
+
+        _ideHexEditor.SelectionChanged    += OnIdeSelectionChanged;
+        _ideHexEditor.FileOpened          += OnIdeFileOpened;
+        _ideHexEditor.ActiveEditorChanged += OnIdeActiveEditorChanged;
+        _ideParsedField.ParsedFieldsChanged += OnIdeParsedFieldsChanged;
+        _ideTemplateApplySub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnIdeTemplateApplyRequested);
+
+        // Push initial state immediately if a file is already open.
+        if (_ideHexEditor.IsActive)
+        {
+            _ = Task.Run(async () =>
+            {
+                await PushHexEditorStateAsync("ActiveEditorChanged").ConfigureAwait(false);
+                if (_ideParsedField.HasParsedFields)
+                    await PushParsedFieldsSnapshotAsync().ConfigureAwait(false);
+            });
+        }
     }
 
     // ── IWpfHexEditorPlugin.ShutdownAsync ────────────────────────────────────
@@ -198,6 +228,102 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         CrashReceived?.Invoke(this, e);
     }
 
+    // ── Phase 12 — IDE event handlers (forward IDE events to sandbox) ─────────
+
+    private void OnIdeSelectionChanged(object? sender, EventArgs e)
+        => _ = PushHexEditorStateAsync("SelectionChanged");
+
+    private void OnIdeFileOpened(object? sender, EventArgs e)
+        => _ = Task.Run(async () =>
+        {
+            await PushHexEditorStateAsync("FileOpened").ConfigureAwait(false);
+            await PushParsedFieldsSnapshotAsync().ConfigureAwait(false);
+        });
+
+    private void OnIdeActiveEditorChanged(object? sender, EventArgs e)
+        => _ = Task.Run(async () =>
+        {
+            await PushHexEditorStateAsync("ActiveEditorChanged").ConfigureAwait(false);
+            if (_ideHexEditor?.IsActive == true && _ideParsedField?.HasParsedFields == true)
+                await PushParsedFieldsSnapshotAsync().ConfigureAwait(false);
+        });
+
+    private void OnIdeParsedFieldsChanged(object? sender, EventArgs e)
+        => _ = PushParsedFieldsSnapshotAsync();
+
+    private void OnIdeTemplateApplyRequested(TemplateApplyRequestedEvent evt)
+        => _ = PushTemplateApplyBroadcastAsync(evt);
+
+    // ── Phase 12 — IPC push helpers ───────────────────────────────────────────
+
+    private Task PushHexEditorStateAsync(string eventKind)
+    {
+        var svc = _ideHexEditor;
+        if (svc is null) return Task.CompletedTask;
+
+        var payload = new HexEditorStateNotificationPayload
+        {
+            EventKind       = eventKind,
+            IsActive        = svc.IsActive,
+            CurrentFilePath = svc.CurrentFilePath,
+            FileSize        = svc.FileSize,
+            SelectionStart  = svc.SelectionStart,
+            SelectionStop   = svc.SelectionStop,
+            CurrentOffset   = svc.CurrentOffset,
+        };
+
+        var envelope = SandboxProcessManager.BuildRequest(
+            SandboxMessageKind.HexEditorStateNotification, payload);
+        return _procManager.SendAsync(envelope);
+    }
+
+    private Task PushParsedFieldsSnapshotAsync()
+    {
+        var svc = _ideParsedField;
+        if (svc is null) return Task.CompletedTask;
+
+        var fields = svc.GetParsedFields()
+            .Select(f => new SandboxParsedFieldEntryDto
+            {
+                Name         = f.Name,
+                DataType     = f.DataType,
+                Offset       = f.Offset,
+                Length       = f.Length,
+                ValueDisplay = f.ValueDisplay,
+            })
+            .ToList();
+
+        var payload = new ParsedFieldsSnapshotNotificationPayload
+        {
+            FileSize = _ideHexEditor?.FileSize ?? 0,
+            Fields   = fields,
+        };
+
+        var envelope = SandboxProcessManager.BuildRequest(
+            SandboxMessageKind.ParsedFieldsSnapshotNotification, payload);
+        return _procManager.SendAsync(envelope);
+    }
+
+    private Task PushTemplateApplyBroadcastAsync(TemplateApplyRequestedEvent evt)
+    {
+        var payload = new TemplateApplyBroadcastNotificationPayload
+        {
+            TemplateName = evt.TemplateName,
+            Blocks       = evt.Blocks.Select(b => new SandboxTemplateBlockDto
+            {
+                Name         = b.Name,
+                Offset       = b.Offset,
+                Length       = b.Length,
+                TypeHint     = b.TypeHint,
+                DisplayValue = b.DisplayValue,
+            }).ToList(),
+        };
+
+        var envelope = SandboxProcessManager.BuildRequest(
+            SandboxMessageKind.TemplateApplyBroadcastNotification, payload);
+        return _procManager.SendAsync(envelope);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private List<string> BuildGrantedPermissions()
@@ -228,6 +354,17 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
         _procManager.PluginReady -= OnPluginReady;
         _procManager.MetricsPushed -= OnMetricsPushed;
         _procManager.CrashReceived -= OnCrashReceived;
+
+        // Phase 12 — unsubscribe IDE event forwarding
+        if (_ideHexEditor is not null)
+        {
+            _ideHexEditor.SelectionChanged    -= OnIdeSelectionChanged;
+            _ideHexEditor.FileOpened          -= OnIdeFileOpened;
+            _ideHexEditor.ActiveEditorChanged -= OnIdeActiveEditorChanged;
+        }
+        if (_ideParsedField is not null)
+            _ideParsedField.ParsedFieldsChanged -= OnIdeParsedFieldsChanged;
+        _ideTemplateApplySub?.Dispose();
 
         _uiProxy?.Dispose();
         _uiProxy = null;

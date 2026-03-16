@@ -80,7 +80,23 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public bool IsTrustedPublisher => _entry.Manifest.TrustedPublisher;
     public string Description => _entry.Manifest.Description;
     // IsolationMode — bindable ComboBox selection; changing triggers a hot-swap reload.
-    public static IReadOnlyList<string> IsolationModes { get; } = ["InProcess", "Sandbox"];
+    public static IReadOnlyList<string> IsolationModes { get; } = ["Auto", "InProcess", "Sandbox"];
+
+    /// <summary>
+    /// For Auto-mode plugins: shows "(→ InProcess)" or "(→ Sandbox)" inline next to the ComboBox.
+    /// Visible only when Auto is selected; empty string otherwise.
+    /// </summary>
+    public string ResolvedIsolationModeLabel
+    {
+        get
+        {
+            var declared = _entry.Manifest.IsolationMode;
+            var resolved = _entry.ResolvedIsolationMode;
+            return declared == PluginIsolationMode.Auto
+                ? $"(→ {resolved})"
+                : string.Empty;
+        }
+    }
 
     public string SelectedIsolationMode
     {

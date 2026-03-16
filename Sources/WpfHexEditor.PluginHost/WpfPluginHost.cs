@@ -52,6 +52,9 @@ public sealed class WpfPluginHost : IAsyncDisposable
     // PHASE 1-4: New MetricsEngine for advanced monitoring
     private readonly PluginMetricsEngine _metricsEngine;
 
+    // --- Dynamic migration monitor -----------------------------------------------
+    private readonly PluginMigrationMonitor _migrationMonitor;
+
     // Legacy timer (deprecated - kept for backward compatibility)
     [Obsolete("Use MetricsEngine instead")]
     private readonly DispatcherTimer _samplingTimer;
@@ -185,8 +188,11 @@ public sealed class WpfPluginHost : IAsyncDisposable
     {
         ArgumentNullException.ThrowIfNull(manifest);
 
-        // Use user override if present, else fall back to manifest declaration.
+        // Use user override if present, else resolve (Auto → InProcess/Sandbox via decision engine).
         var effectiveMode = GetEffectiveIsolationMode(manifest);
+
+        if (manifest.IsolationMode == PluginIsolationMode.Auto)
+            _log($"[PluginSystem] Auto-resolved '{manifest.Id}' → {effectiveMode}");
 
         PluginEntry entry;
         lock (_lock)
@@ -196,6 +202,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
             entry = new PluginEntry(manifest);
             entry.SetState(PluginState.Loading);
+            entry.SetResolvedIsolationMode(effectiveMode);
             _entries[manifest.Id] = entry;
         }
 
@@ -456,11 +463,25 @@ public sealed class WpfPluginHost : IAsyncDisposable
     // --- Isolation Mode Override -------------------------------------------------
 
     /// <summary>
+    /// Returns the user override if set, otherwise the raw manifest declaration
+    /// (preserving <see cref="PluginIsolationMode.Auto"/> without resolving it).
+    /// Use this to seed the Plugin Manager ComboBox so that Auto plugins show "Auto".
+    /// </summary>
+    public PluginIsolationMode GetDeclaredIsolationMode(PluginManifest manifest)
+        => _isolationOverrides.TryGetValue(manifest.Id, out var mode) ? mode : manifest.IsolationMode;
+
+    /// <summary>
     /// Returns the effective isolation mode for a plugin:
-    /// user override if set, otherwise the manifest declaration.
+    /// user override if set, otherwise the manifest declaration with Auto resolved
+    /// to a concrete InProcess or Sandbox decision via <see cref="PluginIsolationDecisionEngine"/>.
     /// </summary>
     public PluginIsolationMode GetEffectiveIsolationMode(PluginManifest manifest)
-        => _isolationOverrides.TryGetValue(manifest.Id, out var mode) ? mode : manifest.IsolationMode;
+    {
+        if (_isolationOverrides.TryGetValue(manifest.Id, out var overrideMode))
+            return overrideMode;
+
+        return Services.PluginIsolationDecisionEngine.Resolve(manifest);
+    }
 
     /// <summary>
     /// Changes the isolation mode for a plugin at runtime and hot-reloads it immediately.

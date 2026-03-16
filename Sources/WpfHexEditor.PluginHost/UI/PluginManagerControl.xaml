@@ -445,6 +445,23 @@
                                            Visibility="{Binding IsReloading, Converter={StaticResource BoolToVis}}"
                                            VerticalAlignment="Center"
                                            ToolTip="Reloading plugin with new isolation mode…"/>
+                                <TextBlock Text="{Binding ResolvedIsolationModeLabel}"
+                                           FontSize="10" Margin="4,0,0,0"
+                                           Foreground="{DynamicResource DockAccentBrush}"
+                                           Opacity="0.85"
+                                           VerticalAlignment="Center"
+                                           ToolTip="Effective mode chosen by Auto decision engine">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedIsolationMode}" Value="Auto">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </StackPanel>
                         </StackPanel>
 

@@ -29,10 +29,12 @@ using System.Runtime.Loader;
 using System.Text.Json;
 using System.Windows.Interop;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
+using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.SDK.Sandbox;
 
@@ -52,6 +54,7 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
     private IWpfHexEditorPlugin? _plugin;
     private AssemblyLoadContext? _alc;
     private IpcUIRegistry? _uiRegistry;
+    private SandboxedHostContext? _stubContext;
     private readonly ThemeBootstrapper _themeBootstrapper = new();
 
     // Phase 11 — Options page HwndSource (kept alive for the lifetime of the sandbox)
@@ -80,12 +83,18 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
     {
         return envelope.Kind switch
         {
-            SandboxMessageKind.InitializeRequest     => await HandleInitializeAsync(envelope),
-            SandboxMessageKind.ShutdownRequest       => await HandleShutdownAsync(envelope),
-            SandboxMessageKind.InvokeRequest         => await HandleInvokeAsync(envelope),
-            SandboxMessageKind.ResizePanelRequest       => await HandleResizePanelAsync(envelope),
-            SandboxMessageKind.ThemeChangedNotification  => await HandleThemeChangedAsync(envelope),
-            SandboxMessageKind.ExecuteCommandRequest     => await HandleExecuteCommandAsync(envelope),
+            SandboxMessageKind.InitializeRequest          => await HandleInitializeAsync(envelope),
+            SandboxMessageKind.ShutdownRequest            => await HandleShutdownAsync(envelope),
+            SandboxMessageKind.InvokeRequest              => await HandleInvokeAsync(envelope),
+            SandboxMessageKind.ResizePanelRequest         => await HandleResizePanelAsync(envelope),
+            SandboxMessageKind.ThemeChangedNotification   => await HandleThemeChangedAsync(envelope),
+            SandboxMessageKind.ExecuteCommandRequest      => await HandleExecuteCommandAsync(envelope),
+
+            // Phase 12 — HexEditor event bridge
+            SandboxMessageKind.HexEditorStateNotification        => HandleHexEditorStateNotification(envelope),
+            SandboxMessageKind.ParsedFieldsSnapshotNotification  => HandleParsedFieldsSnapshotNotification(envelope),
+            SandboxMessageKind.TemplateApplyBroadcastNotification => HandleTemplateApplyBroadcast(envelope),
+
             _ => await HandleUnknownAsync(envelope),
         };
     }
@@ -137,6 +146,7 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
             // Create stub host context that marshals IDE calls back over IPC
             var stubContext = new SandboxedHostContext(_channel, payload.GrantedPermissions,
                 _uiRegistry, _log);
+            _stubContext = stubContext; // kept for Phase 12 event delivery
 
             await _plugin.InitializeAsync(stubContext, _ct).ConfigureAwait(false);
 
@@ -257,6 +267,65 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
         return Task.FromResult(true);
     }
 
+    // ── Phase 12 — HexEditor event bridge ─────────────────────────────────────
+    // All three handlers run on the WPF STA thread (see Program.cs InvokeAsync),
+    // so panel and event-bus operations are UI-thread safe without extra dispatch.
+
+    private bool HandleHexEditorStateNotification(SandboxEnvelope envelope)
+    {
+        var payload = Deserialize<HexEditorStateNotificationPayload>(envelope.Payload);
+        if (payload is not null)
+            _stubContext?.HexEditorIpc.ApplyState(payload);
+        return true;
+    }
+
+    private bool HandleParsedFieldsSnapshotNotification(SandboxEnvelope envelope)
+    {
+        var payload = Deserialize<ParsedFieldsSnapshotNotificationPayload>(envelope.Payload);
+        if (payload is null) return true;
+
+        var panel = _stubContext?.HexEditorIpc.ConnectedPanel;
+        if (panel is null) return true;
+
+        panel.Clear();
+        panel.TotalFileSize = payload.FileSize;
+        foreach (var f in payload.Fields)
+        {
+            panel.ParsedFields.Add(new ParsedFieldViewModel
+            {
+                Name           = f.Name,
+                Offset         = f.Offset,
+                Length         = f.Length,
+                ValueType      = f.DataType,
+                FormattedValue = f.ValueDisplay,
+            });
+        }
+        panel.RefreshView();
+        return true;
+    }
+
+    private bool HandleTemplateApplyBroadcast(SandboxEnvelope envelope)
+    {
+        var payload = Deserialize<TemplateApplyBroadcastNotificationPayload>(envelope.Payload);
+        if (payload is null) return true;
+
+        var evt = new TemplateApplyRequestedEvent
+        {
+            TemplateName = payload.TemplateName,
+            Blocks       = payload.Blocks.Select(b => new ParsedBlockInfo
+            {
+                Name         = b.Name,
+                Offset       = b.Offset,
+                Length       = b.Length,
+                TypeHint     = b.TypeHint,
+                DisplayValue = b.DisplayValue,
+            }).ToList(),
+        };
+
+        _stubContext?.EventBusIpc.RaiseTemplateApply(evt);
+        return true;
+    }
+
     private async Task<bool> HandleUnknownAsync(SandboxEnvelope envelope)
     {
         _log($"[Runner] Unknown message kind: {envelope.Kind}");
@@ -362,18 +431,22 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     private readonly HashSet<string> _granted;
     private readonly Action<string> _log;
 
-    // Stub no-op services for sandbox context
-    public IHexEditorService HexEditor => NullHexEditorService.Instance;
-    public ICodeEditorService CodeEditor => NullCodeEditorService.Instance;
-    public IOutputService Output => NullOutputService.Instance;
-    public IParsedFieldService ParsedField => NullParsedFieldService.Instance;
-    public IErrorPanelService ErrorPanel => NullErrorPanelService.Instance;
-    public IFocusContextService FocusContext => NullFocusContextService.Instance;
-    public IPluginEventBus EventBus => NullEventBus.Instance;
-    public IUIRegistry UIRegistry { get; }
-    public IThemeService Theme => NullThemeService.Instance;
-    public IPermissionService Permissions => NullPermissionService.Instance;
-    public ITerminalService Terminal => NullTerminalService.Instance;
+    // Phase 12 — IPC-backed services (instance, not singleton, so state is per-plugin)
+    internal readonly IpcHexEditorService HexEditorIpc = new();
+    internal readonly IpcEventBus         EventBusIpc  = new();
+
+    // IIDEHostContext services
+    public IHexEditorService    HexEditor       => HexEditorIpc;
+    public IPluginEventBus      EventBus        => EventBusIpc;
+    public ICodeEditorService   CodeEditor      => NullCodeEditorService.Instance;
+    public IOutputService       Output          => NullOutputService.Instance;
+    public IParsedFieldService  ParsedField     => NullParsedFieldService.Instance;
+    public IErrorPanelService   ErrorPanel      => NullErrorPanelService.Instance;
+    public IFocusContextService FocusContext    => NullFocusContextService.Instance;
+    public IUIRegistry          UIRegistry      { get; }
+    public IThemeService        Theme           => NullThemeService.Instance;
+    public IPermissionService   Permissions     => NullPermissionService.Instance;
+    public ITerminalService     Terminal        => NullTerminalService.Instance;
     public ISolutionExplorerService SolutionExplorer => NullSolutionExplorerService.Instance;
 
     public SandboxedHostContext(
@@ -396,37 +469,133 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     }
 }
 
-// Null-object service stubs — used inside the sandbox where IDE services are not directly available.
-// All service calls over IPC marshalling will be implemented in a future phase.
-// These stubs satisfy the interface contracts required by IIDEHostContext.
+// ─────────────────────────────────────────────────────────────────────────────
+// Phase 12 — IPC-backed IHexEditorService
+// Maintains cached IDE state and raises events when the IDE pushes
+// HexEditorStateNotification messages over the pipe.
+// ─────────────────────────────────────────────────────────────────────────────
 
-file sealed class NullHexEditorService : IHexEditorService
+internal sealed class IpcHexEditorService : IHexEditorService
 {
-    public static readonly NullHexEditorService Instance = new();
-    public bool IsActive => false;
-    public string? CurrentFilePath => null;
-    public long FileSize => 0;
-    public long CurrentOffset => 0;
-    public long SelectionStart => 0;
-    public long SelectionStop => 0;
-    public long SelectionLength => 0;
-    public long FirstVisibleByteOffset => 0;
-    public long LastVisibleByteOffset => 0;
+    // Cached state (updated by ApplyState)
+    private bool    _isActive;
+    private string? _currentFilePath;
+    private long    _fileSize;
+    private long    _selectionStart;
+    private long    _selectionStop;
+    private long    _currentOffset;
+
+    /// <summary>Panel connected by the plugin via ConnectParsedFieldsPanel.</summary>
+    internal IParsedFieldsPanel? ConnectedPanel { get; private set; }
+
+    // ── IHexEditorService properties ──────────────────────────────────────────
+    public bool    IsActive               => _isActive;
+    public string? CurrentFilePath        => _currentFilePath;
+    public long    FileSize               => _fileSize;
+    public long    CurrentOffset          => _currentOffset;
+    public long    SelectionStart         => _selectionStart;
+    public long    SelectionStop          => _selectionStop;
+    public long    SelectionLength        => Math.Max(0L, _selectionStop - _selectionStart + 1);
+    public long    FirstVisibleByteOffset => 0;  // not forwarded in Phase 12
+    public long    LastVisibleByteOffset  => 0;  // not forwarded in Phase 12
+
+    // ── Events ────────────────────────────────────────────────────────────────
+    public event EventHandler? SelectionChanged;
+    public event EventHandler? FileOpened;
+    public event EventHandler? ActiveEditorChanged;
+    // ViewportScrolled and FormatDetected are not forwarded in Phase 12
+#pragma warning disable 67
     public event EventHandler? ViewportScrolled { add { } remove { } }
-    public event EventHandler? SelectionChanged { add { } remove { } }
-    public event EventHandler? FileOpened { add { } remove { } }
     public event EventHandler<FormatDetectedArgs>? FormatDetected { add { } remove { } }
-    public event EventHandler? ActiveEditorChanged { add { } remove { } }
-    public byte[] ReadBytes(long offset, int length) => [];
-    public byte[] GetSelectedBytes() => [];
-    public IReadOnlyList<long> SearchHex(string hexPattern) => [];
-    public IReadOnlyList<long> SearchText(string text) => [];
-    public void WriteBytes(long offset, byte[] data) { }
-    public void SetSelection(long start, long end) { }
-    public void NavigateTo(long offset) { }
-    public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel) { }
-    public void DisconnectParsedFieldsPanel() { }
+#pragma warning restore 67
+
+    // ── Panel connection ──────────────────────────────────────────────────────
+    public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)  => ConnectedPanel = panel;
+    public void DisconnectParsedFieldsPanel()                        => ConnectedPanel = null;
+
+    // ── Methods (read/write deferred to future phase) ─────────────────────────
+    public byte[] ReadBytes(long offset, int length)         => [];
+    public byte[] GetSelectedBytes()                         => [];
+    public IReadOnlyList<long> SearchHex(string hexPattern)  => [];
+    public IReadOnlyList<long> SearchText(string text)       => [];
+    public void WriteBytes(long offset, byte[] data)         { }
+    public void SetSelection(long start, long end)           { }
+    public void NavigateTo(long offset)                      { }
+
+    // ── Called by SandboxedPluginRunner on HexEditorStateNotification ─────────
+    /// <summary>
+    /// Updates the cached state snapshot and raises the appropriate event so
+    /// sandbox plugins respond exactly as they would for in-process IDE events.
+    /// Must be called on the WPF STA thread (guaranteed by Program.cs InvokeAsync).
+    /// </summary>
+    internal void ApplyState(HexEditorStateNotificationPayload p)
+    {
+        _isActive        = p.IsActive;
+        _currentFilePath = p.CurrentFilePath;
+        _fileSize        = p.FileSize;
+        _selectionStart  = p.SelectionStart;
+        _selectionStop   = p.SelectionStop;
+        _currentOffset   = p.CurrentOffset;
+
+        switch (p.EventKind)
+        {
+            case "SelectionChanged":    SelectionChanged?.Invoke(this, EventArgs.Empty);    break;
+            case "FileOpened":          FileOpened?.Invoke(this, EventArgs.Empty);          break;
+            case "ActiveEditorChanged": ActiveEditorChanged?.Invoke(this, EventArgs.Empty); break;
+        }
+    }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Phase 12 — IPC-backed IPluginEventBus
+// Subscriptions are stored locally. The IDE pushes TemplateApplyBroadcastNotification
+// and the runner calls RaiseTemplateApply to dispatch to all subscribers.
+// ─────────────────────────────────────────────────────────────────────────────
+
+internal sealed class IpcEventBus : IPluginEventBus
+{
+    private readonly List<(Type EventType, object Handler)> _handlers = [];
+
+    public void Publish<TEvent>(TEvent evt)                                          where TEvent : class { /* sandbox→IDE publish deferred to future phase */ }
+    public Task PublishAsync<TEvent>(TEvent evt, CancellationToken ct = default)     where TEvent : class => Task.CompletedTask;
+
+    public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : class
+    {
+        var entry = (typeof(TEvent), (object)handler);
+        _handlers.Add(entry);
+        return new ActionDisposable(() => _handlers.Remove(entry));
+    }
+
+    public IDisposable Subscribe<TEvent>(Func<TEvent, Task> handler) where TEvent : class
+        => Disposable.Empty; // async subscriptions deferred to future phase
+
+    /// <summary>
+    /// Called by SandboxedPluginRunner on TemplateApplyBroadcastNotification.
+    /// Dispatches the event to all local Action-based subscribers.
+    /// Must be called on the WPF STA thread.
+    /// </summary>
+    internal void RaiseTemplateApply(TemplateApplyRequestedEvent evt)
+    {
+        foreach (var (type, handler) in _handlers.ToList())
+        {
+            if (type == typeof(TemplateApplyRequestedEvent))
+                ((Action<TemplateApplyRequestedEvent>)handler)(evt);
+        }
+    }
+
+    private sealed class ActionDisposable : IDisposable
+    {
+        private readonly Action _action;
+        internal ActionDisposable(Action action) => _action = action;
+        public void Dispose() => _action();
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Null-object service stubs — used inside the sandbox where IDE services are
+// not directly available. IHexEditorService and IPluginEventBus replaced by
+// IPC-backed implementations above (Phase 12).
+// ─────────────────────────────────────────────────────────────────────────────
 
 file sealed class NullCodeEditorService : ICodeEditorService
 {
@@ -478,14 +647,7 @@ file sealed class NullFocusContextService : IFocusContextService
     public event EventHandler<FocusChangedEventArgs>? FocusChanged { add { } remove { } }
 }
 
-file sealed class NullEventBus : IPluginEventBus
-{
-    public static readonly NullEventBus Instance = new();
-    public void Publish<TEvent>(TEvent evt) where TEvent : class { }
-    public Task PublishAsync<TEvent>(TEvent evt, CancellationToken ct = default) where TEvent : class => Task.CompletedTask;
-    public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : class => Disposable.Empty;
-    public IDisposable Subscribe<TEvent>(Func<TEvent, Task> handler) where TEvent : class => Disposable.Empty;
-}
+// NullEventBus removed — replaced by IpcEventBus (Phase 12)
 
 
 file sealed class NullThemeService : IThemeService

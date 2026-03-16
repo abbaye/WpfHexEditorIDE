@@ -20,6 +20,7 @@
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
   </ItemGroup>
 
 </Project>

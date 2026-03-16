@@ -15,8 +15,20 @@ namespace WpfHexEditor.SDK.Models;
 public enum PluginIsolationMode
 {
     /// <summary>
+    /// The host automatically decides InProcess or Sandbox based on the plugin's
+    /// capability declarations and trust level. This is the recommended default.
+    /// Decision rules (first match wins):
+    ///   1. Untrusted publisher        → Sandbox
+    ///   2. RegisterMenus == true      → InProcess (WPF UI / STA required)
+    ///   3. AccessNetwork == true      → Sandbox   (extra isolation)
+    ///   4. IsTerminalOnly == true     → InProcess (no WPF UI)
+    ///   Default                       → InProcess
+    /// </summary>
+    Auto,
+
+    /// <summary>
     /// Plugin runs in the IDE process using an isolated <see cref="System.Runtime.Loader.AssemblyLoadContext"/>.
-    /// Best performance, standard isolation — recommended default.
+    /// Best performance, standard isolation.
     /// </summary>
     InProcess,
 

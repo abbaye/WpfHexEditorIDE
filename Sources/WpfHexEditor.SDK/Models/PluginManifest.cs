@@ -73,7 +73,7 @@ public sealed class PluginManifest
 
     /// <summary>Isolation mode for this plugin.</summary>
     [JsonPropertyName("isolationMode")]
-    public PluginIsolationMode IsolationMode { get; set; } = PluginIsolationMode.Sandbox;
+    public PluginIsolationMode IsolationMode { get; set; } = PluginIsolationMode.Auto;
 
     // -- Assembly -------------------------------------------------------------
 

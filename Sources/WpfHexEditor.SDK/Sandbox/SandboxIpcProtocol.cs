@@ -71,6 +71,11 @@ public enum SandboxMessageKind
     ResizePanelRequest,
     ThemeChangedNotification,
     ExecuteCommandRequest,
+
+    // IDE → Sandbox (HexEditor event bridge — Phase 12)
+    HexEditorStateNotification,
+    ParsedFieldsSnapshotNotification,
+    TemplateApplyBroadcastNotification,
 }
 
 // ──────────────────────────────────────────────────────────
@@ -525,4 +530,111 @@ public sealed class ExecuteCommandRequestPayload
 {
     [JsonPropertyName("commandId")]
     public string CommandId { get; set; } = string.Empty;
+}
+
+// ──────────────────────────────────────────────────────────
+// Phase 12 — HexEditor event bridge  (IDE → Sandbox, fire-and-forget)
+// ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// Pushed from the IDE to the sandbox whenever a significant HexEditor event fires
+/// (SelectionChanged, FileOpened, ActiveEditorChanged).
+/// Carries a full state snapshot so the sandbox's IpcHexEditorService can stay
+/// in sync without round-trip requests.
+/// </summary>
+public sealed class HexEditorStateNotificationPayload
+{
+    /// <summary>Which event caused this notification: "SelectionChanged", "FileOpened", "ActiveEditorChanged", or "StateSync".</summary>
+    [JsonPropertyName("eventKind")]
+    public string EventKind { get; set; } = "StateSync";
+
+    [JsonPropertyName("isActive")]
+    public bool IsActive { get; set; }
+
+    [JsonPropertyName("currentFilePath")]
+    public string? CurrentFilePath { get; set; }
+
+    [JsonPropertyName("fileSize")]
+    public long FileSize { get; set; }
+
+    [JsonPropertyName("selectionStart")]
+    public long SelectionStart { get; set; }
+
+    [JsonPropertyName("selectionStop")]
+    public long SelectionStop { get; set; }
+
+    [JsonPropertyName("currentOffset")]
+    public long CurrentOffset { get; set; }
+}
+
+/// <summary>
+/// Serialisable DTO for a single parsed field entry sent over the IPC bridge.
+/// Mirrors <c>ParsedFieldEntry</c> from the SDK but is independent of it so the
+/// protocol stays self-contained.
+/// </summary>
+public sealed class SandboxParsedFieldEntryDto
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
+
+    [JsonPropertyName("dataType")]
+    public string DataType { get; set; } = string.Empty;
+
+    [JsonPropertyName("offset")]
+    public long Offset { get; set; }
+
+    [JsonPropertyName("length")]
+    public int Length { get; set; }
+
+    [JsonPropertyName("valueDisplay")]
+    public string ValueDisplay { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Pushed from the IDE when the parsed-field set changes (new file opened,
+/// format re-applied, or ParsedFieldsChanged event fires).
+/// The sandbox applies this snapshot to any currently connected IParsedFieldsPanel.
+/// </summary>
+public sealed class ParsedFieldsSnapshotNotificationPayload
+{
+    [JsonPropertyName("fileSize")]
+    public long FileSize { get; set; }
+
+    [JsonPropertyName("fields")]
+    public List<SandboxParsedFieldEntryDto> Fields { get; set; } = [];
+}
+
+/// <summary>
+/// Serialisable DTO for one block in a <see cref="TemplateApplyBroadcastNotificationPayload"/>.
+/// </summary>
+public sealed class SandboxTemplateBlockDto
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
+
+    [JsonPropertyName("offset")]
+    public long Offset { get; set; }
+
+    [JsonPropertyName("length")]
+    public int Length { get; set; }
+
+    [JsonPropertyName("typeHint")]
+    public string? TypeHint { get; set; }
+
+    [JsonPropertyName("displayValue")]
+    public string? DisplayValue { get; set; }
+}
+
+/// <summary>
+/// Pushed from the IDE to all sandbox plugins when a TemplateApplyRequestedEvent fires
+/// on the IDE's IPluginEventBus (raised by the CustomParser plugin).
+/// The sandbox's IpcEventBus re-raises the reconstituted event to local subscribers.
+/// </summary>
+public sealed class TemplateApplyBroadcastNotificationPayload
+{
+    [JsonPropertyName("templateName")]
+    public string TemplateName { get; set; } = string.Empty;
+
+    [JsonPropertyName("blocks")]
+    public List<SandboxTemplateBlockDto> Blocks { get; set; } = [];
 }
