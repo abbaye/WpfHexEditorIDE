@@ -122,6 +122,25 @@ public sealed class DockingAdapter : IDockingAdapter
         if (item is not null) _engine.Close(item);
     }
 
+    // Scans the layout tree for an existing non-document tool-panel group whose items are
+    // anchored on the given side. Used as a fallback when _sideAnchorIds has no entry for
+    // the requested direction — typically after a layout restore where _sideAnchorIds was
+    // not seeded because restored panels never pass through DockNewPanel.
+    private DockGroupNode? FindExistingToolPanelGroup(DockDirection direction)
+    {
+        var targetSide = direction switch
+        {
+            DockDirection.Left   => DockSide.Left,
+            DockDirection.Right  => DockSide.Right,
+            DockDirection.Top    => DockSide.Top,
+            _                    => DockSide.Bottom
+        };
+
+        return _layout.GetAllGroups()
+            .Where(g => g is not DocumentHostNode && g.Items.Count > 0)
+            .FirstOrDefault(g => g.Items.Any(i => i.LastDockSide == targetSide));
+    }
+
     // Performs the actual docking of a new panel at its default side.
     // Used both for first-run auto-dock and for on-demand deferred dock.
     private void DockNewPanel(string uiId, UIElement content, PanelDescriptor descriptor)
@@ -144,13 +163,26 @@ public sealed class DockingAdapter : IDockingAdapter
         _storeContent(uiId, content);
 
         // Group panels on the same side into a single tab strip.
-        // First visible (non-autohide) panel on a side creates the split; subsequent ones tab into it.
+        // Priority:
+        //   1. Registered anchor (explicit seeding or prior DockNewPanel on same side).
+        //   2. Fallback scan: find any existing tool-panel group on the same side in the layout.
+        //      This covers the case where a layout was restored and _sideAnchorIds was not seeded
+        //      for that side — deferred panels added later (e.g. via View menu) tab alongside
+        //      the already-restored panels rather than creating a new split beside the document host.
+        //   3. New split beside the document host (first panel on that side).
         // Auto-hide panels are always docked first then immediately collapsed — they never serve as anchors.
-        if (!descriptor.DefaultAutoHide
-            && _sideAnchorIds.TryGetValue(direction, out var anchorId)
-            && _layout.FindItemByContentId(anchorId)?.Owner is { } group)
+        DockGroupNode? anchorGroup = null;
+        if (!descriptor.DefaultAutoHide)
         {
-            _engine.Dock(item, group, DockDirection.Center);
+            if (_sideAnchorIds.TryGetValue(direction, out var anchorId))
+                anchorGroup = _layout.FindItemByContentId(anchorId)?.Owner;
+
+            anchorGroup ??= FindExistingToolPanelGroup(direction);
+        }
+
+        if (anchorGroup is not null)
+        {
+            _engine.Dock(item, anchorGroup, DockDirection.Center);
         }
         else
         {
