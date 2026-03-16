@@ -252,7 +252,7 @@ public sealed class VsSolutionLoader : ISolutionLoader
             if (nestedMap.TryGetValue(project.ProjectGuid, out var parentFolderGuid)
              && folders.TryGetValue(parentFolderGuid, out var parentFolder))
             {
-                parentFolder.AddProjectId(project.Id);
+                parentFolder.AddProjectId(project.Name);
             }
         }
 

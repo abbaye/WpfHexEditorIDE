@@ -16,7 +16,7 @@ namespace WpfHexEditor.Plugins.SolutionLoader.VS.VsModels;
 /// <summary>
 /// Represents a Visual Studio project loaded into the WpfHexEditor project model.
 /// </summary>
-internal sealed class VsProject : IProject
+internal sealed class VsProject : IProject, IProjectWithReferences
 {
     public string                      Id              { get; init; } = Guid.NewGuid().ToString();
     public string                      Name            { get; init; } = string.Empty;

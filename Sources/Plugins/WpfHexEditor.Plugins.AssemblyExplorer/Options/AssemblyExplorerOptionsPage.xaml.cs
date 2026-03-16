@@ -9,6 +9,7 @@
 //     via IPluginWithOptions.LoadOptions / SaveOptions.
 // ==========================================================
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -67,6 +68,7 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         ChkShowNonPublic.IsChecked  = opts.ShowNonPublicMembers;
         ChkShowInherited.IsChecked  = opts.ShowInheritedMembers;
         ChkPinAssemblies.IsChecked  = opts.PinAssembliesAcrossFileChange;
+        TxtMaxAssemblies.Text       = opts.MaxLoadedAssemblies.ToString();
 
         // Populate recent files list
         RecentFilesList.Items.Clear();
@@ -90,6 +92,8 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         opts.ShowNonPublicMembers            = ChkShowNonPublic.IsChecked  == true;
         opts.ShowInheritedMembers            = ChkShowInherited.IsChecked  == true;
         opts.PinAssembliesAcrossFileChange   = ChkPinAssemblies.IsChecked  == true;
+        if (int.TryParse(TxtMaxAssemblies.Text, out var maxVal))
+            opts.MaxLoadedAssemblies = Math.Clamp(maxVal, 1, 500);
         // RecentFiles list is managed by AddRecentFile() — not saved from here.
 
         opts.Save();

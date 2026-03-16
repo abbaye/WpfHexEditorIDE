@@ -252,6 +252,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     public event EventHandler<AssemblyLoadedEvent>? AssemblyLoaded;
     public event EventHandler?                      AssemblyCleared;
+    public event EventHandler?                      AssemblyUnloaded;
     public event EventHandler<AssemblyMemberSelectedEvent>? MemberSelected;
 
     // ── Public workspace API ──────────────────────────────────────────────────
@@ -857,6 +858,8 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         // Fire AssemblyCleared only when workspace becomes fully empty.
         if (_workspace.Count == 0)
             AssemblyCleared?.Invoke(this, EventArgs.Empty);
+        else
+            AssemblyUnloaded?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateStatusText()

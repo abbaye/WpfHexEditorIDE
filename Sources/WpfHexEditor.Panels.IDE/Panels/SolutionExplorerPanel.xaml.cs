@@ -969,7 +969,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
                         LineNumber = 1,
                         IsPublic  = true,
                     },
-                    outline.FilePath);
+                    outline.FilePath)
+                {
+                    // Start collapsed — user must explicitly expand to see members.
+                    IsExpanded = false,
+                };
 
                 foreach (var el in outline.XamlElements)
                 {
@@ -994,7 +998,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         // C# — add SourceTypeNodeVm + nested SourceMemberNodeVm.
         foreach (var type in outline.Types)
         {
-            var typeNode = new SourceTypeNodeVm(type, outline.FilePath);
+            // Start collapsed — user must explicitly expand to see members.
+            var typeNode = new SourceTypeNodeVm(type, outline.FilePath) { IsExpanded = false };
             foreach (var member in type.Members)
                 typeNode.Children.Add(new SourceMemberNodeVm(member, outline.FilePath));
             fn.Children.Add(typeNode);
@@ -2038,12 +2043,23 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     {
         foreach (var node in nodes)
         {
-            if (node is FileNodeVm fn &&
-                string.Equals(fn.Source.AbsolutePath, path, StringComparison.OrdinalIgnoreCase))
+            // Match both FileNodeVm and DependentFileNodeVm by absolute path so that
+            // opening a code-behind file (e.g. App.xaml.cs) highlights its nested node
+            // and expands the parent XAML node to make it visible.
+            string? nodePath = node switch
             {
-                fn.IsSelected = true;
+                FileNodeVm      fn  => fn.Source.AbsolutePath,
+                DependentFileNodeVm dep => dep.Source.AbsolutePath,
+                _                   => null,
+            };
+
+            if (nodePath is not null &&
+                string.Equals(nodePath, path, StringComparison.OrdinalIgnoreCase))
+            {
+                node.IsSelected = true;
                 return true;
             }
+
             if (SelectNodeByPath(path, node.Children))
             {
                 node.IsExpanded = true; // ensure parent is expanded so the node is visible

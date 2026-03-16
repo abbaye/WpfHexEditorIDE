@@ -508,6 +508,8 @@
                         <Canvas x:Name="MemChartCanvas" Margin="4,18,4,4" ClipToBounds="True">
                             <Polyline x:Name="MemPolyline" Stroke="#60A5FA" StrokeThickness="1.5" StrokeLineJoin="Round"/>
                         </Canvas>
+                        <!-- GC cleanup event markers — amber dashed vertical lines, non-interactive -->
+                        <Canvas x:Name="GcMarkerCanvas" Margin="4,18,4,4" ClipToBounds="True" IsHitTestVisible="False"/>
                     </Grid>
                 </Grid>
             </Grid>

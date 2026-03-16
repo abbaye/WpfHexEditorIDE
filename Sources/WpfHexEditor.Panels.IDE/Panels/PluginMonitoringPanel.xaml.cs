@@ -148,9 +148,10 @@ public partial class PluginMonitoringPanel : UserControl
         // remain functional after reload).
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    += OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged += OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        += OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     += OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   += OnGcCleanupEventsChanged;
             _vm.PropertyChanged            += OnVmPropertyChanged;
             _vm.RequestUninstall           += OnRequestUninstall;
             _vm.RequestOpenInPluginManager += OnRequestOpenInPluginManager;
@@ -177,9 +178,10 @@ public partial class PluginMonitoringPanel : UserControl
     {
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        -= OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     -= OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   -= OnGcCleanupEventsChanged;
             _vm.PropertyChanged              -= OnVmPropertyChanged;
             _vm.RequestUninstall             -= OnRequestUninstall;
             _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
@@ -200,9 +202,10 @@ public partial class PluginMonitoringPanel : UserControl
     {
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        -= OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     -= OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   -= OnGcCleanupEventsChanged;
             _vm.PropertyChanged              -= OnVmPropertyChanged;
             _vm.RequestUninstall             -= OnRequestUninstall;
             _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
@@ -213,9 +216,10 @@ public partial class PluginMonitoringPanel : UserControl
 
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    += OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged += OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        += OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     += OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   += OnGcCleanupEventsChanged;
             _vm.PropertyChanged              += OnVmPropertyChanged;
             _vm.RequestUninstall             += OnRequestUninstall;
             _vm.RequestOpenInPluginManager   += OnRequestOpenInPluginManager;
@@ -630,7 +634,10 @@ public partial class PluginMonitoringPanel : UserControl
         => RedrawChart(CpuChartCanvas, CpuPolyline, _vm?.CpuHistory, maxValue: 100.0);
 
     private void OnMemHistoryChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        => RedrawChart(MemChartCanvas, MemPolyline, _vm?.MemoryHistory, maxValue: null);
+    {
+        RedrawChart(MemChartCanvas, MemPolyline, _vm?.MemoryHistory, maxValue: null);
+        RedrawGcMarkers(); // keep marker X positions in sync as the chart scrolls
+    }
 
     private void OnIntervalSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -646,6 +653,58 @@ public partial class PluginMonitoringPanel : UserControl
     {
         RedrawChart(CpuChartCanvas, CpuPolyline, _vm?.CpuHistory, maxValue: 100.0);
         RedrawChart(MemChartCanvas, MemPolyline, _vm?.MemoryHistory, maxValue: null);
+        RedrawGcMarkers();
+    }
+
+    private void OnGcCleanupEventsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        => RedrawGcMarkers();
+
+    /// <summary>
+    /// Draws a dashed amber vertical line on GcMarkerCanvas for each recorded GC cleanup event
+    /// that falls within the current visible time window of the memory chart.
+    /// </summary>
+    private void RedrawGcMarkers()
+    {
+        GcMarkerCanvas.Children.Clear();
+
+        var events  = _vm?.GcCleanupEvents;
+        var history = _vm?.MemoryHistory;
+        if (events is null || history is null || history.Count < 2) return;
+
+        var w = GcMarkerCanvas.ActualWidth;
+        var h = GcMarkerCanvas.ActualHeight;
+        if (w <= 0 || h <= 0) return;
+
+        var minTime = history[0].Time;
+        var maxTime = history[history.Count - 1].Time;
+        var rangeMs = (maxTime - minTime).TotalMilliseconds;
+        if (rangeMs <= 0) return;
+
+        var amber = new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B));
+        amber.Freeze();
+
+        foreach (var gcTime in events)
+        {
+            if (gcTime < minTime) continue; // before the visible window
+
+            // gcTime is captured a few ms after the last chart point, so it can be
+            // slightly greater than maxTime. Clamp to the right edge in that case.
+            var px = gcTime >= maxTime
+                ? w
+                : w * (gcTime - minTime).TotalMilliseconds / rangeMs;
+
+            GcMarkerCanvas.Children.Add(new System.Windows.Shapes.Line
+            {
+                X1              = px,
+                Y1              = 0,
+                X2              = px,
+                Y2              = h,
+                Stroke          = amber,
+                StrokeThickness = 1,
+                StrokeDashArray = new DoubleCollection { 3, 2 },
+                Opacity         = 0.75
+            });
+        }
     }
 
     /// <summary>

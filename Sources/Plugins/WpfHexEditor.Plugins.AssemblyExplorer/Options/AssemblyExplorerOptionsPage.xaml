@@ -137,7 +137,36 @@
         <CheckBox x:Name="ChkPinAssemblies"
                   Content="Pin loaded assemblies across active editor changes"
                   Foreground="{DynamicResource PFP_TextBrush}"
-                  Margin="0,0,0,4"/>
+                  Margin="0,0,0,8"/>
+
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Max loaded assemblies:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource PFP_TextBrush}"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="TxtMaxAssemblies"
+                         Width="60"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                         Foreground="{DynamicResource PFP_TextBrush}"
+                         BorderBrush="{DynamicResource PFP_BorderBrush}"
+                         CaretBrush="{DynamicResource PFP_TextBrush}"
+                         Padding="4,2"
+                         FontSize="12"
+                         MaxLength="4"
+                         TextAlignment="Right"/>
+                <TextBlock Text="(1 – 500)"
+                           Margin="8,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="11"/>
+            </StackPanel>
+        </Grid>
 
         <!-- Separator -->
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,8,0,8"/>

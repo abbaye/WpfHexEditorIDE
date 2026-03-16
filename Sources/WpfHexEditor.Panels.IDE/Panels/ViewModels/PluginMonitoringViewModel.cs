@@ -912,6 +912,9 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     public ObservableCollection<ChartPoint> CpuHistory    { get; } = new();
     public ObservableCollection<ChartPoint> MemoryHistory { get; } = new();
 
+    /// <summary>Timestamps of GC cleanup events triggered by memory alerts.</summary>
+    public ObservableCollection<DateTime> GcCleanupEvents { get; } = new();
+
     // -- Summary metrics ---------------------------------------------------------
 
     public double CurrentCpu
@@ -1336,6 +1339,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         CpuHistory.Clear();
         MemoryHistory.Clear();
+        GcCleanupEvents.Clear();
         foreach (var mini in _miniCharts.Values) mini.Reset();
         AlertCount = 0;
         _alertEngine.ResetCooldowns();
@@ -1385,6 +1389,22 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         AlertCount++;
         AddEvent(new PluginEventEntry(Now(), "\uE7BA", "#F97316", e.PluginName, e.Message));
         _outputService?.Warning($"[{e.PluginName}] Alert: {e.Message}");
+
+        // Trigger a GC cleanup when a memory threshold is breached.
+        // Runs on a background thread — naturally rate-limited by the 60 s alert cooldown.
+        if (e.Kind == PluginAlertKind.Memory)
+        {
+            _outputService?.Info("[Plugin Monitor] Memory pressure detected — triggering GC cleanup.");
+            var gcTime = DateTime.UtcNow;
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                // Record the event on the UI thread so the chart can draw the tick.
+                Application.Current?.Dispatcher.InvokeAsync(() => GcCleanupEvents.Add(gcTime));
+            });
+        }
     }
 
     // -- Export commands ---------------------------------------------------------

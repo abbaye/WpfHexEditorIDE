@@ -30,6 +30,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- ICSharpCode.Decompiler: hard dependency for full C# decompilation (real method bodies).
+         The SkeletonDecompilerBackend remains as an always-available BCL-only fallback.
+         CopyLocalLockFileAssemblies ensures the DLL is emitted to the bin output directory
+         (required for the plugin-dir copy step — the plugin loads in an isolated ALC). -->
+    <PackageReference Include="ICSharpCode.Decompiler" Version="9.*" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Force NuGet lock-file assemblies (e.g. ICSharpCode.Decompiler netstandard2.0)
+         to be copied into the output directory so CopyToPluginsDir can find them. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
     <!-- Compile-only reference for ThemedDialog; the DLL is already in the host
@@ -49,7 +63,7 @@
       <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll"
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll;$(OutputPath)ICSharpCode.Decompiler.dll"
           DestinationFolder="$(PluginDestDir)"
           SkipUnchangedFiles="true" />
   </Target>

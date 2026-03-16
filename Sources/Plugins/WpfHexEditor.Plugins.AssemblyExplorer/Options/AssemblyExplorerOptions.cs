@@ -42,9 +42,10 @@ public sealed class AssemblyExplorerOptions
 
     /// <summary>
     /// Decompiler backend identifier.
-    /// "None" = stub (Phase 1).  Future: "ILSpy", "dnSpy".
+    /// "ILSpy" (default) = ICSharpCode.Decompiler — full C# with method bodies.
+    /// "Skeleton" = BCL-only stub emitter (fast, zero NuGet, no method bodies).
     /// </summary>
-    public string DecompilerBackend { get; set; } = "None";
+    public string DecompilerBackend { get; set; } = "ILSpy";
 
     /// <summary>Automatically synchronize HexEditor cursor when selecting a node.</summary>
     public bool AutoSyncWithHexEditor { get; set; } = true;
@@ -67,10 +68,10 @@ public sealed class AssemblyExplorerOptions
     // ── v2.0 additions ────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Maximum number of assemblies loaded simultaneously in the workspace (1–50).
+    /// Maximum number of assemblies loaded simultaneously in the workspace (1–500).
     /// When the limit is reached, the oldest unpinned entry is evicted automatically.
     /// </summary>
-    public int MaxLoadedAssemblies { get; set; } = 10;
+    public int MaxLoadedAssemblies { get; set; } = 50;
 
     /// <summary>
     /// File paths of all assemblies in the workspace at the end of the last session.

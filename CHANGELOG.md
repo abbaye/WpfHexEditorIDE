@@ -6,6 +6,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.5.1] — 2026-03-16 — Source Outline Patch
+
+### 🔧 Fixed
+
+- **Solution Explorer: source type nodes auto-expanded on first lazy load** — `SourceTypeNodeVm` inherited `IsExpanded = true` from the base class default, causing class/struct/interface nodes to appear fully expanded (all members visible) the moment a `.cs` or `.xaml` file node was expanded for the first time. Type nodes are now explicitly initialized with `IsExpanded = false` in `ApplyOutlineToNode`; the user must intentionally expand a type node to reveal its members.
+
+---
+
 ## [0.5.0] — 2026-03-16 — Code Editor, Source Outline, Build Output, Assembly Explorer & VS Solution Loader
 
 ### ✨ Added — Solution Explorer: Source Outline Navigation
@@ -91,10 +99,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 > Planned features — subject to change. Feature numbers map to DevPlans.
 
+### Solution Explorer — Source Outline
+- **Expand-state persistence** — remember which type nodes were expanded per file across sessions (user preference, opt-in)
+- **Collapse All Outline** — toolbar button to collapse all type nodes inside an expanded file node back to the class-level view
+- **Go to Definition from outline click** — single-click on a member node opens the file and positions the caret at the member declaration; currently only navigates to line 1 for type nodes
+- **Outline refresh on save** — automatically re-parse and update the outline when a `.cs` / `.xaml` file is saved from within the IDE (currently only refreshes on external file change)
+- **Synalysis UFWB Grammar Support (#177)** — new plugin `WpfHexEditor.Plugins.SynalysisGrammar`; parses `.grammar` files and applies structured overlays to binary content in the Hex Editor; 10 embedded grammars (PNG, ZIP, PE, ELF, BMP, WAV, MP4, SQLite, EXT4, GZIP)
+
 ### Plugin System — Remaining
-- Hot-load / Hot-unload at runtime without IDE restart (AssemblyLoadContext collectible — UI not yet exposed)
-- **#41 Plugin Marketplace** — `MarketplaceManager`, browse/install/update from online registry, signed packages
-- **#42 Plugin Security & Sandboxing** — permission declarations at install time, integrity verification, AppDomain isolation
+- **Hot-load / Hot-unload UI** — expose collectible `AssemblyLoadContext` hot-reload in the Plugin Manager UI (ALC mechanism complete; toolbar button + status indicator pending)
+- **#41 Plugin Marketplace** — online registry browse/install/update, signed packages (marketplace panel UI done; registry backend and package signing pending)
 - **#43 Auto-Update** — `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins
 - **gRPC transport migration** — replace named-pipe IPC with gRPC for sandbox plugins
 
@@ -110,7 +124,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - **#40 Centralized Logging & Diagnostics** — `LogService` (Info/Warning/Error/Debug), `DiagnosticService` (perf metrics), `LogSink` abstraction, Output + Error Panel integration
 
 ### Code Intelligence / Editor
-- **#85 LSP Engine** — incremental symbol parsing, folding, go-to-definition, find-references
+- **#85 LSP Engine** — incremental symbol parsing, folding, go-to-definition, find-references (`RefactoringEngine` registry in place; full LSP pipeline pending)
 - **#86 IntelliSense** — autocomplete, quick-info, signature help, multi-caret, virtual scroll for >1 GB files
 - **#88 Dynamic Snippets** — `SnippetsManager`, `SnippetEditorDialog`; user/plugin/language-scoped; dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); priority: user > imported > built-in
 - **#89 AI-Assisted Code Suggestions** — `AICompletionEngine`, `AIRefactoringAssistant`; contextual completions, auto-refactoring, plugin-extensible AI rules
@@ -134,18 +148,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - **#99 Advanced UI/UX** — `NotificationManager`, `WorkspaceLayoutAdapter`; contextual inline notifications, layout persistence per workspace, full docking for all panels
 - **#100 Internationalization / Localization** — `LocalizationManager`, `TranslationLoader`; EN/FR initial, plugin-provided translations, dynamic switching per workspace
 
-### MSBuild & Visual Studio Solution Support
-- **#101 `.sln` Parser** — open and parse existing Visual Studio 2019/2022 solution files; project graph resolution, nested solution folders, shared projects
-- **#102 C# / VB.NET Project Support** — full `.csproj` / `.vbproj` parsing; properties, item groups, package references, project-to-project references; read/write support
-- **#103 MSBuild API Integration** — build, rebuild, clean targets from within the IDE via embedded MSBuild API; build output routed to Output Panel; errors and warnings surfaced in Error Panel with file/line navigation
-
-### Plugin Developer Experience
-- **#138 In-IDE Plugin Development** — full authoring workflow inside the IDE: `PluginProjectTemplate` scaffolding (`.whproj` + manifest + starter class), MSBuild build integration (#103) with Output/Error Panel routing, collectible `AssemblyLoadContext` hot-reload without IDE restart, lightweight `PluginDevSandbox` for crash isolation, full SDK IntelliSense with XML docs and snippets (`plugin-panel`, `plugin-toolbar`, `plugin-statusbar`, `plugin-options`), dedicated "Plugin Dev Log" dockable panel (console redirect, exceptions, perf metrics), and `.whxplugin` packaging for direct distribution or Marketplace (#41) submission — no external toolchain required
-
-### Assembly Explorer & .NET Decompilation
-- **#104 Assembly Explorer Panel — Full Tree** — namespaces, types (class/struct/interface/enum/delegate), methods, fields, properties, events, resources, assembly references; filter/search; node icons per visibility and kind
-- **#105 ECMA-335 Metadata Resolution** — full `PeOffsetResolver` implementation (§II.24 table offsets); metadata token → PE file offset; offset-to-source synchronization with HexEditor (click node → jump to raw bytes)
-- **#106 Decompilation Backend via ILSpy** — C# skeleton view + full IL disassembly view per method; "Go to Metadata Token" navigation; decompiled source displayed in Code Editor tab; integration via `WpfHexEditor.Decompiler.Core` (no direct ILSpy ProjectReference — adapter pattern)
+### MSBuild Remaining
+- **#103 MSBuild API Integration** — incremental build targets, full embedded MSBuild API, errors and warnings surfaced in Error Panel with file/line navigation (build output routing done in v0.5.0; targets API and Error Panel integration pending)
 
 ---
 

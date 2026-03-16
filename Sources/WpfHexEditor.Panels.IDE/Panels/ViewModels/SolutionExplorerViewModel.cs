@@ -692,18 +692,27 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// </summary>
     public void SetFileModifiedExternally(string fullPath, bool modified)
     {
-        var node = FindFileNode(Roots, fullPath);
-        if (node is not null)
-            node.IsModifiedExternally = modified;
+        // Only FileNodeVm carries the IsModifiedExternally flag.
+        if (FindFileNode(Roots, fullPath) is FileNodeVm fn)
+            fn.IsModifiedExternally = modified;
     }
 
-    private static FileNodeVm? FindFileNode(IEnumerable<SolutionExplorerNodeVm> nodes, string fullPath)
+    private static SolutionExplorerNodeVm? FindFileNode(IEnumerable<SolutionExplorerNodeVm> nodes, string fullPath)
     {
         foreach (var node in nodes)
         {
-            if (node is FileNodeVm fn &&
-                string.Equals(fn.Source.AbsolutePath, fullPath, StringComparison.OrdinalIgnoreCase))
-                return fn;
+            // Match FileNodeVm or DependentFileNodeVm — allows SyncWithFile to highlight
+            // code-behind files (e.g. App.xaml.cs) that are nested under their parent XAML node.
+            string? nodePath = node switch
+            {
+                FileNodeVm      fn  => fn.Source.AbsolutePath,
+                DependentFileNodeVm dep => dep.Source.AbsolutePath,
+                _                   => null,
+            };
+
+            if (nodePath is not null &&
+                string.Equals(nodePath, fullPath, StringComparison.OrdinalIgnoreCase))
+                return node;
 
             var hit = FindFileNode(node.Children, fullPath);
             if (hit is not null) return hit;
@@ -714,10 +723,11 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     // -- Active document tracking (D5) ----------------------------------------
 
     /// <summary>
-    /// Finds the <see cref="FileNodeVm"/> matching <paramref name="filePath"/>, expands
-    /// all ancestors so it is visible, and sets <see cref="SolutionExplorerNodeVm.IsSelected"/>.
+    /// Finds the <see cref="FileNodeVm"/> or <see cref="DependentFileNodeVm"/> matching
+    /// <paramref name="filePath"/>, expands all ancestors so it is visible, and sets
+    /// <see cref="SolutionExplorerNodeVm.IsSelected"/>.
     /// </summary>
-    public FileNodeVm? SyncWithFile(string? filePath)
+    public SolutionExplorerNodeVm? SyncWithFile(string? filePath)
     {
         if (string.IsNullOrEmpty(filePath)) return null;
 
@@ -726,7 +736,8 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         node.IsSelected = true;
 
-        // Expand ancestors so the node is visible.
+        // Expand ancestors so the node is visible (but NOT the node itself —
+        // file-level expansion is always user-initiated).
         ExpandAncestors(Roots, node);
 
         return node;
@@ -803,16 +814,46 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     private void ApplySearch()
     {
-        // Simple visibility filter: collapse/expand based on text match
-        // (full visibility filter would require a converter; this just expands matched paths)
+        // Visibility filter: expand nodes that match the query; collapse non-matching ones.
+        // When the search is cleared, restore structural nodes (solution/project/folder) to
+        // their natural expanded state while collapsing file-level nodes back to collapsed.
+        // We must NOT call SetExpanded(Roots, true) here — that would eagerly set IsExpanded=true
+        // on every FileNodeVm and DependentFileNodeVm, triggering OnTreeItemExpanded and loading
+        // all source outlines at once.
         if (string.IsNullOrWhiteSpace(_searchText))
         {
-            SetExpanded(Roots, true);
+            ResetToStructuralExpansion(Roots);
             return;
         }
 
         foreach (var root in Roots)
             ExpandIfMatch(root, _searchText.ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Restores the tree to its "natural" post-search state: structural nodes (solution,
+    /// project, folder) are expanded so items are visible; file-level nodes are collapsed
+    /// so outline members are only loaded on explicit user expansion.
+    /// </summary>
+    private static void ResetToStructuralExpansion(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var n in nodes)
+        {
+            // File and dependent-file nodes must stay collapsed — expanding them triggers
+            // lazy outline loading which must remain user-initiated.
+            if (n is FileNodeVm or DependentFileNodeVm)
+            {
+                n.IsExpanded = false;
+            }
+            else
+            {
+                // Structural nodes (solution, project, folder) are expanded so their
+                // contents remain browsable after the search is cleared.
+                n.IsExpanded = true;
+            }
+
+            ResetToStructuralExpansion(n.Children);
+        }
     }
 
     private static bool ExpandIfMatch(SolutionExplorerNodeVm node, string query)
@@ -825,15 +866,6 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         node.IsExpanded = selfMatch || childMatch;
         return selfMatch || childMatch;
-    }
-
-    private static void SetExpanded(IEnumerable<SolutionExplorerNodeVm> nodes, bool expanded)
-    {
-        foreach (var n in nodes)
-        {
-            n.IsExpanded = expanded;
-            SetExpanded(n.Children, expanded);
-        }
     }
 
     // -- INPC -----------------------------------------------------------------

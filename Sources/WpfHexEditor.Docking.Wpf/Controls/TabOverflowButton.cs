@@ -150,31 +150,47 @@ public class TabOverflowButton : Button
             var isActive = ShowAllDocuments && tabControl.SelectedItem == tabItem;
             var capturedTab = tabItem;
 
-            // --- Close (×) button — hidden until row hover ---
-            // Note: DockTitleButtonStyle hover triggers are blocked in ContextMenu popup HwndSource,
-            // so we drive background/border explicitly via MouseEnter/MouseLeave.
-            var closeButton = new Button
+            // --- Close (×) box — hidden until row hover ---
+            // Use Border+TextBlock instead of Button: the default WPF Button ControlTemplate applies
+            // its own IsMouseOver trigger directly on the inner Border (TargetName), overriding
+            // TemplateBinding and breaking theme-keyed brushes inside popup HwndSources.
+            var closeGlyph = new TextBlock
             {
-                Content           = "\u00D7",
-                FontSize          = 12,
+                Text                = "\u00D7",
+                FontSize            = 12,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center
+            };
+            closeGlyph.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
+
+            var closeBox = new Border
+            {
                 Width             = 18,
                 Height            = 18,
-                Padding           = new Thickness(0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Visibility        = Visibility.Hidden,
-                Cursor            = System.Windows.Input.Cursors.Arrow,
-                ToolTip           = "Close",
+                CornerRadius      = new CornerRadius(2),
+                Background        = Brushes.Transparent,
                 BorderThickness   = new Thickness(1),
-                Background        = Brushes.Transparent
+                BorderBrush       = Brushes.Transparent,
+                VerticalAlignment = VerticalAlignment.Center,
+                Cursor            = System.Windows.Input.Cursors.Hand,
+                Visibility        = Visibility.Hidden,
+                ToolTip           = "Close",
+                Child             = closeGlyph
             };
-            closeButton.SetResourceReference(ForegroundProperty,   "DockMenuForegroundBrush");
-            closeButton.SetResourceReference(BorderBrushProperty,  "DockBorderBrush");
 
-            // Explicit hover: show filled square (accent bg + border) since style triggers don't fire in popups.
-            closeButton.MouseEnter += (_, _) => closeButton.SetResourceReference(BackgroundProperty, "DockAccentBrush");
-            closeButton.MouseLeave += (_, _) => closeButton.Background = Brushes.Transparent;
+            // Theme-keyed hover: border + accent background (popup-safe, no style triggers needed).
+            closeBox.MouseEnter += (_, _) =>
+            {
+                closeBox.SetResourceReference(Border.BackgroundProperty,   "DockAccentBrush");
+                closeBox.SetResourceReference(Border.BorderBrushProperty,  "DockBorderBrush");
+            };
+            closeBox.MouseLeave += (_, _) =>
+            {
+                closeBox.Background   = Brushes.Transparent;
+                closeBox.BorderBrush  = Brushes.Transparent;
+            };
 
-            closeButton.Click += (s, e) =>
+            closeBox.MouseLeftButtonDown += (s, e) =>
             {
                 e.Handled   = true;   // prevent MenuItem activation
                 menu.IsOpen = false;
@@ -191,9 +207,9 @@ public class TabOverflowButton : Button
                 Margin            = new Thickness(0, 0, 6, 0)
             };
 
-            DockPanel.SetDock(closeButton, Dock.Right);
+            DockPanel.SetDock(closeBox, Dock.Right);
             var headerPanel = new DockPanel { LastChildFill = true, MinWidth = 200 };
-            headerPanel.Children.Add(closeButton);
+            headerPanel.Children.Add(closeBox);
             headerPanel.Children.Add(title);
 
             var menuItem = new MenuItem
@@ -203,8 +219,8 @@ public class TabOverflowButton : Button
                 IsChecked   = isActive
             };
 
-            menuItem.MouseEnter += (_, _) => closeButton.Visibility = Visibility.Visible;
-            menuItem.MouseLeave += (_, _) => closeButton.Visibility = Visibility.Hidden;
+            menuItem.MouseEnter += (_, _) => closeBox.Visibility = Visibility.Visible;
+            menuItem.MouseLeave += (_, _) => closeBox.Visibility = Visibility.Hidden;
 
             menuItem.Click += (_, _) =>
             {

@@ -65,6 +65,7 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 | #94 | **Advanced Refactoring** | Rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions. |
 | #96 | **Code Analysis & Metrics** | Cyclomatic complexity, code duplication detection, dependency graphs; dedicated panel with filter/sort. |
 | #106 | **.NET Decompilation via ILSpy** | C# skeleton view + full IL disassembly per method; "Go to Metadata Token" navigation; decompiled source in Code Editor tab. |
+| #155 | **Visual XAML Editor** | Full split-pane XAML designer: live WPF rendering canvas (design surface) synchronized with a code-behind XML editor; element selection with handles for move/resize; property inspector panel (all DPs, attached properties, bindings); resource picker for brushes, styles, templates; XAML outline tree-view; data-binding wizard; undo/redo for both canvas and text; trigger & animation timeline editor; multi-resolution preview (DPI/scale); "Go to Definition" for resource keys and type names; export as standalone `.xaml` control or paste into project. Integrated into the docking system as a first-class editor tab type with full theme compliance. |
 
 ---
 

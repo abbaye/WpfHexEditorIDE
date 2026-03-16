@@ -81,7 +81,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
-    public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
+    public async Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
         _context = context;
 
@@ -166,22 +166,24 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         // Register menu items.
         RegisterMenuItems(context);
 
-        // Subscribe to HexEditor events for auto-analysis.
+        // Wire ViewModel events.
+        _panel.ViewModel.AssemblyLoaded        += OnAssemblyLoaded;
+        _panel.ViewModel.AssemblyUnloaded      += OnAssemblyUnloaded;
+        _panel.ViewModel.AssemblyCleared       += OnAssemblyCleared;
+        _panel.ViewModel.WorkspaceStatsChanged += OnWorkspaceStatsChanged;
+
+        // Restore the previous session FIRST and fully await all loads.
+        // HexEditor events are subscribed AFTER to guarantee that the IDE's
+        // own document-tab restoration cannot inject unintended assemblies
+        // into the workspace before the user's saved state is established.
+        await RestoreLastSessionAsync();
+
+        // Subscribe to HexEditor events for auto-analysis (post-restore).
         context.HexEditor.FileOpened          += OnFileOpened;
         context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
 
         // Subscribe to cross-plugin "open assembly" requests.
         context.EventBus.Subscribe<OpenAssemblyInExplorerEvent>(OnOpenAssemblyRequested);
-
-        // Wire ViewModel events.
-        _panel.ViewModel.AssemblyLoaded      += OnAssemblyLoaded;
-        _panel.ViewModel.AssemblyCleared     += OnAssemblyCleared;
-        _panel.ViewModel.WorkspaceStatsChanged += OnWorkspaceStatsChanged;
-
-        // Restore the workspace from the previous session.
-        RestoreLastSession();
-
-        return Task.CompletedTask;
     }
 
     public Task ShutdownAsync(CancellationToken ct = default)
@@ -197,8 +199,9 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
         if (_panel?.ViewModel is not null)
         {
-            _panel.ViewModel.AssemblyLoaded       -= OnAssemblyLoaded;
-            _panel.ViewModel.AssemblyCleared      -= OnAssemblyCleared;
+            _panel.ViewModel.AssemblyLoaded        -= OnAssemblyLoaded;
+            _panel.ViewModel.AssemblyUnloaded      -= OnAssemblyUnloaded;
+            _panel.ViewModel.AssemblyCleared       -= OnAssemblyCleared;
             _panel.ViewModel.WorkspaceStatsChanged -= OnWorkspaceStatsChanged;
         }
 
@@ -219,29 +222,32 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         var skeleton = new SkeletonDecompilerBackend(decompiler);
         var opts     = AssemblyExplorerOptions.Instance;
 
-        if (opts.DecompilerBackend == "ILSpy")
-        {
-            var ilspy = new IlSpyDecompilerBackend(skeleton);
-            if (ilspy.IsAvailable) return ilspy;
-        }
+        // ILSpy is now a hard dependency — always available unless user explicitly opts out.
+        if (opts.DecompilerBackend != "Skeleton")
+            return new IlSpyDecompilerBackend(skeleton);
 
         return skeleton;
     }
 
     // ── Session persistence ──────────────────────────────────────────────────
 
-    private void RestoreLastSession()
+    private async Task RestoreLastSessionAsync()
     {
         var opts  = AssemblyExplorerOptions.Instance;
         var paths = opts.LastSessionAssemblyPaths
             .Concat(opts.LastSessionAssemblyPath is not null ? [opts.LastSessionAssemblyPath] : [])
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Where(File.Exists)
-            .Take(opts.MaxLoadedAssemblies)
+            // No .Take() — workspace eviction enforces MaxLoadedAssemblies naturally.
             .ToList();
 
-        foreach (var path in paths)
-            _ = _panel?.ViewModel.LoadAssemblyAsync(path);
+        if (paths.Count == 0 || _panel is null) return;
+
+        // Await ALL restore loads before returning.
+        // This ensures HexEditor auto-analysis subscriptions (wired after this method)
+        // cannot fire during restoration and pollute the workspace with unintended assemblies.
+        var tasks = paths.Select(p => _panel.ViewModel.LoadAssemblyAsync(p)).ToArray();
+        await Task.WhenAll(tasks);
     }
 
     private static void PersistCurrentSession(IReadOnlyList<string> filePaths)
@@ -297,7 +303,14 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
     private void OnAssemblyLoaded(object? sender, Events.AssemblyLoadedEvent evt)
     {
-        // Persist the updated workspace on every load.
+        if (_panel is not null)
+            PersistCurrentSession(_panel.ViewModel.GetWorkspaceFilePaths());
+    }
+
+    private void OnAssemblyUnloaded(object? sender, EventArgs e)
+    {
+        // Persist immediately when a single assembly is closed so the next
+        // session does not resurrect assemblies the user intentionally removed.
         if (_panel is not null)
             PersistCurrentSession(_panel.ViewModel.GetWorkspaceFilePaths());
     }
