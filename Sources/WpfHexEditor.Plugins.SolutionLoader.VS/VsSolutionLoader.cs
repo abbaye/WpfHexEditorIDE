@@ -197,10 +197,22 @@ public sealed class VsSolutionLoader : ISolutionLoader
                 var parsed = VSProjectParser.Parse(entry.Path);
 
                 // Override name/guid from the .sln entry (canonical source).
-                return parsed with
+                return new VsProject
                 {
-                    Name        = entry.Name,
-                    ProjectGuid = entry.Guid,
+                    Id               = parsed.Id,
+                    Name             = entry.Name,
+                    ProjectFilePath  = parsed.ProjectFilePath,
+                    Items            = parsed.Items,
+                    RootFolders      = parsed.RootFolders,
+                    ProjectType      = parsed.ProjectType,
+                    TargetFramework  = parsed.TargetFramework,
+                    Language         = parsed.Language,
+                    OutputType       = parsed.OutputType,
+                    AssemblyName     = parsed.AssemblyName,
+                    RootNamespace    = parsed.RootNamespace,
+                    ProjectGuid      = entry.Guid,
+                    ProjectReferences = parsed.ProjectReferences,
+                    PackageReferences = parsed.PackageReferences,
                 };
             }
             catch

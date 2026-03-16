@@ -579,6 +579,15 @@ public sealed class SolutionManager : ISolutionManager
         CancellationToken ct = default)
         => ChangesetService.Instance.DeleteChangesetAsync(item, ct);
 
+    // -- Startup project --------------------------------------------------
+
+    public void SetStartupProject(string projectId)
+    {
+        if (_current is null) return;
+        var project = _current.Projects.FirstOrDefault(p => p.Id == projectId);
+        _current.SetStartupProject(project);
+    }
+
     // -- TBL helpers ------------------------------------------------------
 
     public void SetDefaultTbl(IProject project, IProjectItem? tblItem)

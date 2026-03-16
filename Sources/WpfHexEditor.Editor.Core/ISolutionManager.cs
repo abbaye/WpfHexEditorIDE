@@ -165,6 +165,13 @@ public interface ISolutionManager
     Task DiscardChangesetAsync(IProject project, IProjectItem item,
                                CancellationToken ct = default);
 
+    // -- Startup project --------------------------------------------------
+    /// <summary>
+    /// Marks <paramref name="projectId"/> as the startup project of the current solution.
+    /// No-op when no solution is loaded or no project with that ID exists.
+    /// </summary>
+    void SetStartupProject(string projectId);
+
     // -- TBL helpers ------------------------------------------------------
     /// <summary>Designates <paramref name="tblItem"/> as the default TBL for <paramref name="project"/>.
     /// Pass <see langword="null"/> to clear the designation.</summary>

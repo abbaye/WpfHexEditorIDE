@@ -120,6 +120,15 @@ public partial class MainWindow
             new RelayCommand(_ => _ = RunBuildSolutionAsync()),
             Key.B, ModifierKeys.Control | ModifierKeys.Shift);
         InputBindings.Add(buildGesture);
+
+        // Wire SolutionExplorer VS build context-menu events.
+        if (_solutionExplorerPanel is not null)
+        {
+            _solutionExplorerPanel.BuildProjectRequested       += (_, id) => _ = RunBuildProjectByIdAsync(id);
+            _solutionExplorerPanel.RebuildProjectRequested     += (_, id) => _ = RunRebuildProjectByIdAsync(id);
+            _solutionExplorerPanel.CleanProjectRequested       += (_, id) => _ = RunCleanProjectByIdAsync(id);
+            _solutionExplorerPanel.SetStartupProjectRequested  += (_, id) => SetStartupProject(id);
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -200,6 +209,36 @@ public partial class MainWindow
         await _buildSystem.CleanProjectAsync(startup.Id);
         RefreshBuildProperties();
     }
+
+    // -- Project-specific runners (from SolutionExplorer context menu) -----
+
+    private async Task RunBuildProjectByIdAsync(string projectId)
+    {
+        if (_buildSystem is null) return;
+        RefreshBuildProperties();
+        var result = await _buildSystem.BuildProjectAsync(projectId);
+        _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
+        RefreshBuildProperties();
+    }
+
+    private async Task RunRebuildProjectByIdAsync(string projectId)
+    {
+        if (_buildSystem is null) return;
+        RefreshBuildProperties();
+        var result = await _buildSystem.RebuildProjectAsync(projectId);
+        _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
+        RefreshBuildProperties();
+    }
+
+    private async Task RunCleanProjectByIdAsync(string projectId)
+    {
+        if (_buildSystem is null) return;
+        await _buildSystem.CleanProjectAsync(projectId);
+        RefreshBuildProperties();
+    }
+
+    private void SetStartupProject(string projectId)
+        => _solutionManager.SetStartupProject(projectId);
 
     // -----------------------------------------------------------------------
     // StatusBar update (dispatched to WPF thread)

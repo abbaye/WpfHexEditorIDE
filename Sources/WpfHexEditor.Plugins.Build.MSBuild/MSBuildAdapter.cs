@@ -46,7 +46,7 @@ public sealed class MSBuildAdapter : IBuildAdapter
     }
 
     /// <inheritdoc />
-    public async Task<BuildResult> BuildAsync(
+    public async Task<Editor.Core.BuildResult> BuildAsync(
         string              projectFilePath,
         IBuildConfiguration configuration,
         IProgress<string>?  outputProgress,
@@ -73,7 +73,7 @@ public sealed class MSBuildAdapter : IBuildAdapter
     // MSBuild invocation
     // -----------------------------------------------------------------------
 
-    private static BuildResult InvokeMSBuild(
+    private static Editor.Core.BuildResult InvokeMSBuild(
         string              projectFilePath,
         IBuildConfiguration configuration,
         IProgress<string>?  outputProgress,
@@ -107,7 +107,7 @@ public sealed class MSBuildAdapter : IBuildAdapter
         sw.Stop();
 
         var success = result.OverallResult == BuildResultCode.Success;
-        return new BuildResult(success, logger.Errors, logger.Warnings, sw.Elapsed);
+        return new Editor.Core.BuildResult(success, logger.Errors, logger.Warnings, sw.Elapsed);
     }
 
     // -----------------------------------------------------------------------

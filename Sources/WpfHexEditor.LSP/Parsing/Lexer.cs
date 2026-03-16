@@ -49,7 +49,7 @@ public sealed class Lexer
 
     // Multi-line block-comment state (carried between TokenizeLine calls).
     /// <summary><c>true</c> when the lexer is inside an open block comment.</summary>
-    public bool IsInsideBlockComment { get; private set; }
+    public bool IsInsideBlockComment { get; internal set; }
 
     public Lexer(LanguageDefinition language)
     {

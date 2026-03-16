@@ -16,13 +16,14 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Serialization;
+using WpfHexEditor.ProjectSystem.Services;
 
 namespace WpfHexEditor.Plugins.SolutionLoader.WH;
 
 /// <summary>
-/// Loads a native WpfHexEditor <c>.whsln</c> file using
-/// <see cref="SolutionSerializer"/> and returns an <see cref="ISolution"/>.
+/// Loads a native WpfHexEditor <c>.whsln</c> file.
+/// Delegates to <see cref="SolutionManager"/> so that format migration,
+/// MRU tracking, and model ownership are handled consistently.
 /// </summary>
 public sealed class WHSolutionLoader : ISolutionLoader
 {
@@ -40,10 +41,6 @@ public sealed class WHSolutionLoader : ISolutionLoader
             StringComparison.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public async Task<ISolution> LoadAsync(string filePath, CancellationToken ct = default)
-    {
-        var (solution, _) = await SolutionSerializer.ReadAsync(filePath, ct)
-                                                    .ConfigureAwait(false);
-        return solution;
-    }
+    public Task<ISolution> LoadAsync(string filePath, CancellationToken ct = default)
+        => SolutionManager.Instance.OpenSolutionAsync(filePath, ct);
 }

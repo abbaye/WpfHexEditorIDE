@@ -19,7 +19,7 @@ internal sealed class VsProjectItem : IProjectItem
     public string          Name            { get; init; } = string.Empty;
     public string          AbsolutePath    { get; init; } = string.Empty;
     public string          RelativePath    { get; init; } = string.Empty;
-    public ProjectItemType ItemType        { get; init; } = ProjectItemType.GenericFile;
+    public ProjectItemType ItemType        { get; init; } = ProjectItemType.Binary;
     public string?         VirtualFolderId { get; init; }
 
     public bool                        IsModified   => false;
