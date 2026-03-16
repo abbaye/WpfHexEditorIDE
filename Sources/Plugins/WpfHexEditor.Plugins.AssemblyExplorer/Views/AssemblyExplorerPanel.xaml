@@ -40,10 +40,17 @@
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False">
 
-                <!-- Always-visible right panel (placeholder, never collapses) -->
+                <!-- Always-visible right panel — Close All button always reachable -->
                 <StackPanel x:Name="ToolbarRightPanel"
                             DockPanel.Dock="Right"
-                            Orientation="Horizontal"/>
+                            Orientation="Horizontal">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE74D;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="22" Height="22"
+                            Command="{Binding CloseAllCommand}"
+                            ToolTip="Close all assemblies"/>
+                </StackPanel>
 
                 <!-- Overflow button — shown when groups collapse -->
                 <Button x:Name="ToolbarOverflowButton"

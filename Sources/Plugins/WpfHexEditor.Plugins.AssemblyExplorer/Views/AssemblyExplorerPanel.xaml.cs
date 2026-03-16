@@ -74,6 +74,8 @@ public partial class AssemblyExplorerPanel : UserControl
         MainTreeView.PinAssemblyRequested          += OnPinAssembly;
         MainTreeView.CompareWithRequested          += OnCompareWith;
         MainTreeView.ExtractToProjectRequested     += OnExtractToProject;
+        MainTreeView.CollapseAllRequested          += (_, _) => ViewModel.CollapseAllCommand.Execute(null);
+        MainTreeView.CloseAllAssembliesRequested   += (_, _) => ViewModel.CloseAllCommand.Execute(null);
 
         // Wire detail pane Extract button
         DetailPane.ExtractRequested += (_, node) => _ = ExecuteExtractToProjectAsync(node);

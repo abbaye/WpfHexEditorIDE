@@ -337,6 +337,27 @@
 
             <Separator/>
 
+            <MenuItem x:Name="MenuCollapseAll" Header="Collapse All"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Collapse all nodes in the tree"
+                      Click="OnCollapseAll">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8AA;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem x:Name="MenuCloseAllAssemblies" Header="Close All Assemblies"
+                      Foreground="#EF4444"
+                      ToolTip="Unload all assemblies from the workspace"
+                      Click="OnCloseAllAssemblies">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                               Foreground="#EF4444"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator/>
+
             <MenuItem x:Name="MenuCloseAssembly" Header="Close Assembly"
                       Foreground="#EF4444"
                       Click="OnCloseAssembly">

@@ -33,6 +33,8 @@ public partial class AssemblyTreeView : UserControl
     public event EventHandler<AssemblyNodeViewModel>?  CopyFullNameRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CopyOffsetRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CloseAssemblyRequested;
+    public event EventHandler?                         CollapseAllRequested;
+    public event EventHandler?                         CloseAllAssembliesRequested;
     public event EventHandler<AssemblyNodeViewModel>?  PinAssemblyRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CompareWithRequested;
     public event EventHandler<AssemblyNodeViewModel>?  ExtractToProjectRequested;
@@ -173,4 +175,10 @@ public partial class AssemblyTreeView : UserControl
         if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
             ExtractToProjectRequested?.Invoke(this, node);
     }
+
+    private void OnCollapseAll(object sender, RoutedEventArgs e)
+        => CollapseAllRequested?.Invoke(this, EventArgs.Empty);
+
+    private void OnCloseAllAssemblies(object sender, RoutedEventArgs e)
+        => CloseAllAssembliesRequested?.Invoke(this, EventArgs.Empty);
 }
