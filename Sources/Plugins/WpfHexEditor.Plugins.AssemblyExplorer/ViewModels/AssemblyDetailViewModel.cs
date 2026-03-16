@@ -69,6 +69,17 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
 
     public bool HasOffset => _peOffset > 0;
 
+    /// <summary>
+    /// True when the currently displayed node supports decompilation to C#
+    /// and the Extract button should be visible.
+    /// </summary>
+    private bool _isExtractAvailable;
+    public bool IsExtractAvailable
+    {
+        get => _isExtractAvailable;
+        private set => SetField(ref _isExtractAvailable, value);
+    }
+
     // ── Tab 0 — Code ──────────────────────────────────────────────────────────
 
     private string _detailText = "Select a node to view details.";
@@ -109,6 +120,14 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         set => SetField(ref _activeTabIndex, value);
     }
 
+    // ── Currently displayed node (for Extract button) ─────────────────────────
+
+    /// <summary>
+    /// The node currently shown in the detail pane.
+    /// Null after <see cref="Clear"/> is called.
+    /// </summary>
+    public AssemblyNodeViewModel? CurrentNode { get; private set; }
+
     // ── AssemblyNodeViewModel overrides (detail pane is not a tree node) ──────
 
     public override string DisplayName => _title;
@@ -123,6 +142,7 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
     /// </summary>
     public void ShowNode(AssemblyNodeViewModel node, string filePath)
     {
+        CurrentNode   = node;
         Title         = node.DisplayName;
         PeOffsetValue = node.PeOffset;
         MetadataInfo  = node.MetadataToken != 0
@@ -153,6 +173,11 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
             ? FormatHexDump(ReadPeBytes(filePath, node.PeOffset), node.PeOffset)
             : "// No PE offset available for this node.";
 
+        // Extract button visible for Assembly/Type/Method nodes that produce real C# output.
+        IsExtractAvailable = node is AssemblyRootNodeViewModel
+                                  or TypeNodeViewModel
+                                  or MethodNodeViewModel;
+
         // Do NOT override ActiveTabIndex here — respect the tab the user last picked.
         // Tab is only reset to 0 (Code) by Clear() when the pane is emptied.
     }
@@ -160,12 +185,14 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
     /// <summary>Resets the detail pane to its initial empty state.</summary>
     public void Clear()
     {
-        Title          = string.Empty;
-        DetailText     = "Select a node to view details.";
-        IlText         = string.Empty;
-        MetadataInfo   = string.Empty;
-        PeOffsetValue  = 0L;
-        HexDumpText    = "// No PE offset available for this node.";
+        CurrentNode        = null;
+        Title              = string.Empty;
+        DetailText         = "Select a node to view details.";
+        IlText             = string.Empty;
+        MetadataInfo       = string.Empty;
+        PeOffsetValue      = 0L;
+        HexDumpText        = "// No PE offset available for this node.";
+        IsExtractAvailable = false;
         InfoItems.Clear();
         ActiveTabIndex = 0;
     }

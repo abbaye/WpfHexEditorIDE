@@ -35,6 +35,7 @@ public partial class AssemblyTreeView : UserControl
     public event EventHandler<AssemblyNodeViewModel>?  CloseAssemblyRequested;
     public event EventHandler<AssemblyNodeViewModel>?  PinAssemblyRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CompareWithRequested;
+    public event EventHandler<AssemblyNodeViewModel>?  ExtractToProjectRequested;
 
     // ── ItemsSource passthrough ───────────────────────────────────────────────
 
@@ -82,6 +83,9 @@ public partial class AssemblyTreeView : UserControl
 
         if (FindMenuItemByName(menu, "MenuDecompile") is MenuItem menuDecompile)
             menuDecompile.IsEnabled = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
+
+        if (FindMenuItemByName(menu, "MenuExtractToProject") is MenuItem menuExtract)
+            menuExtract.IsEnabled = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
 
         // "Pin Assembly" — root nodes only; update header to reflect current pin state.
         if (FindMenuItemByName(menu, "MenuPin") is MenuItem menuPin)
@@ -162,5 +166,11 @@ public partial class AssemblyTreeView : UserControl
     {
         if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
             CompareWithRequested?.Invoke(this, node);
+    }
+
+    private void OnExtractToProject(object sender, RoutedEventArgs e)
+    {
+        if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
+            ExtractToProjectRequested?.Invoke(this, node);
     }
 }

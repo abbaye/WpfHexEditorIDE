@@ -36,6 +36,9 @@
          App output directory and is resolved via the host AssemblyLoadContext fallback
          at runtime — no copy to Plugins dir required. -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <!-- TextEditor: provides syntax-highlighted decompiled code tabs. DLL resolved via
+         host AssemblyLoadContext fallback at runtime — no copy to Plugins dir required. -->
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />

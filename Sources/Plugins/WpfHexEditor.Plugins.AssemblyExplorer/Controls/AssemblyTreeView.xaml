@@ -280,6 +280,15 @@
                 </MenuItem.Icon>
             </MenuItem>
 
+            <MenuItem x:Name="MenuExtractToProject" Header="Extract to Project…"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Decompile and add .cs file to the loaded project"
+                      Click="OnExtractToProject">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
             <MenuItem IsEnabled="False" Header="Show in Metadata Tables"
                       ToolTip="Coming in a future release"
                       Foreground="{DynamicResource DockMenuForegroundBrush}">

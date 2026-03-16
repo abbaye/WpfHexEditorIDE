@@ -9,7 +9,17 @@
     host area (not a modal dialog). Left nav + right section content.
 
     Theme  : DockMenuBackgroundBrush / DockMenuForegroundBrush / DockBorderBrush
+             DockWindowBackgroundBrush / DockTabActiveBrush / DockTabHoverBrush
     Pattern: MVVM — DataContext = ProjectPropertiesViewModel
+
+    Phases implemented:
+      Phase 1 — Full ControlTemplate for ComboBox, TextBox focus, CheckBox, Buttons
+      Phase 2 — Nav accent bar (3 px left) + search filter
+      Phase 3 — Per-field description labels + validation error indicator
+      Phase 4 — Ctrl+S binding + save toast overlay
+      Phase 5 — Sections: Utilisations globales, Ressources Win32, Débogage (DataGrid)
+      Phase 6 — References: Add NuGet / Add Project / Remove toolbar
+      Phase 7 — Nav header uppercase label style (PP_NavHeaderStyle)
 -->
 
 <UserControl x:Class="WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument"
@@ -19,8 +29,379 @@
              Background="{DynamicResource DockMenuBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}">
 
+    <UserControl.InputBindings>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
+    </UserControl.InputBindings>
+
     <UserControl.Resources>
-        <!-- ── Shared styles ──────────────────────────────────────────────── -->
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_ComboBoxStyle — Full ControlTemplate to theme the dropdown Popup.
+             Simple <Style> setters do NOT reach the Popup ToggleButton in WPF.
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background"        Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush"       Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="BorderThickness"   Value="1" />
+            <Setter Property="Padding"           Value="6,4" />
+            <Setter Property="MinWidth"          Value="220" />
+            <Setter Property="Margin"            Value="0,2,0,0" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <!-- ToggleButton fills the entire ComboBox area -->
+                            <ToggleButton x:Name="ToggleButton"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
+                                                      RelativeSource={RelativeSource TemplatedParent}}"
+                                          Focusable="False"
+                                          ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="Bg"
+                                                Background="{DynamicResource DockWindowBackgroundBrush}"
+                                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                                BorderThickness="1"
+                                                SnapsToDevicePixels="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="20" />
+                                                </Grid.ColumnDefinitions>
+                                                <!-- chevron arrow -->
+                                                <Path x:Name="Arrow"
+                                                      Grid.Column="1"
+                                                      Fill="{DynamicResource DockMenuForegroundBrush}"
+                                                      Data="M 2 4 L 7 9 L 12 4"
+                                                      Stroke="{DynamicResource DockMenuForegroundBrush}"
+                                                      StrokeThickness="1.5"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      SnapsToDevicePixels="True" />
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bg" Property="Background"
+                                                        Value="{DynamicResource DockTabHoverBrush}" />
+                                                <Setter TargetName="Bg" Property="BorderBrush"
+                                                        Value="{DynamicResource DockTabActiveBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Bg" Property="BorderBrush"
+                                                        Value="{DynamicResource DockTabActiveBrush}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <!-- Selected item display (non-editable) -->
+                            <ContentPresenter x:Name="ContentSite"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              Margin="8,0,24,0"
+                                              VerticalAlignment="Center"
+                                              IsHitTestVisible="False" />
+
+                            <!-- Editable text input (IsEditable=True) -->
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Visibility="Hidden"
+                                     Background="Transparent"
+                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                     BorderThickness="0"
+                                     Margin="6,0,24,0"
+                                     VerticalAlignment="Center"
+                                     CaretBrush="{DynamicResource DockMenuForegroundBrush}" />
+
+                            <!-- Dropdown popup — themed background and border -->
+                            <Popup x:Name="Popup"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade"
+                                   Placement="Bottom">
+                                <Border Background="{DynamicResource DockMenuBackgroundBrush}"
+                                        BorderBrush="{DynamicResource DockBorderBrush}"
+                                        BorderThickness="1"
+                                        SnapsToDevicePixels="True">
+                                    <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Background="{DynamicResource DockMenuBackgroundBrush}">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter TargetName="ContentSite"        Property="Visibility" Value="Hidden" />
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBoxItem — themed hover and selection inside the dropdown -->
+        <Style x:Key="PP_ComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="Background"   Value="Transparent" />
+            <Setter Property="Padding"      Value="10,5" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_TextBoxStyle — Accent border on focus, dimmed when read-only.
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background"      Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding"         Value="6,4" />
+            <Setter Property="Margin"          Value="0,2,0,0" />
+            <Setter Property="CaretBrush"      Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="SelectionBrush"  Value="{DynamicResource DockTabActiveBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource DockTabActiveBrush}" />
+                </Trigger>
+                <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource DockMenuBackgroundBrush}" />
+                    <Setter Property="Opacity"    Value="0.65" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Implicit TextBox style (applies to all TextBoxes unless overridden) -->
+        <Style TargetType="TextBox" BasedOn="{StaticResource PP_TextBoxStyle}" />
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_CheckBoxStyle — Custom template with accent checkmark.
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_CheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="Margin"     Value="0,6,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border x:Name="Box"
+                                    Width="15" Height="15"
+                                    BorderThickness="1"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    Background="{DynamicResource DockWindowBackgroundBrush}"
+                                    Margin="0,0,7,0"
+                                    SnapsToDevicePixels="True">
+                                <Path x:Name="Check"
+                                      Data="M 1.5 6.5 L 5.5 10.5 L 12.5 3.5"
+                                      Stroke="{DynamicResource DockTabActiveBrush}"
+                                      StrokeThickness="1.8"
+                                      Visibility="Collapsed"
+                                      SnapsToDevicePixels="True" />
+                            </Border>
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Check" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="Box"   Property="BorderBrush"
+                                        Value="{DynamicResource DockTabActiveBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Box" Property="BorderBrush"
+                                        Value="{DynamicResource DockMenuForegroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Implicit CheckBox style -->
+        <Style TargetType="CheckBox" BasedOn="{StaticResource PP_CheckBoxStyle}" />
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_PrimaryButtonStyle — Accent-filled button (Save).
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background"      Value="{DynamicResource DockTabActiveBrush}" />
+            <Setter Property="Foreground"      Value="White" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource DockTabActiveBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding"         Value="16,5" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1A86D9" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#0062AE" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_SecondaryButtonStyle — Flat ghost button (Add/Remove/Browse).
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding"         Value="10,4" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockMenuForegroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_NavItemStyle — ListBoxItem with left 3-px accent bar (VS pattern).
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_NavItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Background"  Value="Transparent" />
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="Padding"     Value="0" />
+            <Setter Property="Margin"      Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Grid>
+                            <!-- 3-px left accent bar — visible only when selected (VS pattern) -->
+                            <Rectangle x:Name="AccentBar"
+                                       Width="3"
+                                       HorizontalAlignment="Left"
+                                       Fill="{DynamicResource DockTabActiveBrush}"
+                                       Visibility="Collapsed" />
+                            <!-- Item background (offset by accent bar width) -->
+                            <Border x:Name="Bg"
+                                    Background="{TemplateBinding Background}"
+                                    Margin="3,0,0,0">
+                                <ContentPresenter Margin="9,6,12,6" VerticalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="AccentBar" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="Bg"        Property="Background"
+                                        Value="{DynamicResource SE_HoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             PP_NavHeaderStyle — Uppercase label for non-selectable group headers.
+             ══════════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PP_NavHeaderStyle" TargetType="ListBoxItem">
+            <Setter Property="IsEnabled"   Value="False" />
+            <Setter Property="Focusable"   Value="False" />
+            <Setter Property="Background"  Value="Transparent" />
+            <Setter Property="Padding"     Value="0" />
+            <Setter Property="Margin"      Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <TextBlock Text="{Binding Label}"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   FontWeight="SemiBold"
+                                   FontSize="10"
+                                   Opacity="0.55"
+                                   Margin="12,10,12,3"
+                                   VerticalAlignment="Center">
+                            <TextBlock.LayoutTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Shared common styles ──────────────────────────────────────────── -->
         <Style TargetType="TextBlock">
             <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -30,77 +411,115 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Padding"           Value="0,0,8,0" />
         </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}" />
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
-            <Setter Property="Padding"      Value="4,2" />
-            <Setter Property="Margin"       Value="0,2,0,6" />
-        </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}" />
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
-            <Setter Property="Margin"       Value="0,2,0,6" />
-            <Setter Property="MinWidth"     Value="220" />
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="Margin"       Value="0,2,0,6" />
-        </Style>
         <Style TargetType="ListView">
-            <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}" />
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Background"  Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
         </Style>
         <Style TargetType="GridViewColumnHeader">
-            <Setter Property="Background"   Value="{DynamicResource DockMenuBackgroundBrush}" />
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Background"  Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Padding"     Value="8,4" />
         </Style>
         <Style TargetType="Separator">
-            <Setter Property="Background"   Value="{DynamicResource DockBorderBrush}" />
-            <Setter Property="Margin"       Value="0,8,0,8" />
+            <Setter Property="Background" Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Margin"     Value="0,8,0,12" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="Background"               Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="RowBackground"            Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="GridLinesVisibility"      Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="VerticalGridLinesBrush"   Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="AutoGenerateColumns"      Value="False" />
+            <Setter Property="CanUserAddRows"           Value="False" />
+            <Setter Property="SelectionUnit"            Value="FullRow" />
+            <Setter Property="HeadersVisibility"        Value="Column" />
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background"  Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Padding"     Value="8,4" />
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}" />
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource SE_SelectedBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding"         Value="6,3" />
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
         </Style>
 
-        <!-- ── Nav ListBox styles ─────────────────────────────────────────── -->
-        <Style x:Key="NavItemContainerStyle" TargetType="ListBoxItem">
-            <Setter Property="Padding"            Value="0" />
-            <Setter Property="Margin"             Value="0" />
-            <Setter Property="BorderThickness"    Value="0" />
-            <Setter Property="Background"         Value="Transparent" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource DockAccentBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource DockSideTabHoverBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <!-- ── Section title shared style ────────────────────────────────────── -->
+        <Style x:Key="PP_SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize"         Value="18" />
+            <Setter Property="FontWeight"       Value="Bold" />
+            <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="Margin"           Value="0,0,0,16" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+
+        <!-- ── Field description hint style ─────────────────────────────────── -->
+        <Style x:Key="PP_FieldDescStyle" TargetType="TextBlock">
+            <Setter Property="FontSize"     Value="11" />
+            <Setter Property="Opacity"      Value="0.55" />
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin"       Value="0,3,0,10" />
+            <Setter Property="MaxWidth"     Value="460" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment"   Value="Top" />
+        </Style>
+
+        <!-- ── Field label style ─────────────────────────────────────────────── -->
+        <Style x:Key="PP_FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight"   Value="SemiBold" />
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="Margin"       Value="0,8,0,3" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <!-- ── Validation error style ─────────────────────────────────────────── -->
+        <Style x:Key="PP_ValidationErrorStyle" TargetType="TextBlock">
+            <Setter Property="Foreground"   Value="#F48771" />
+            <Setter Property="FontSize"     Value="11" />
+            <Setter Property="Margin"       Value="0,2,0,0" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="MaxWidth"     Value="460" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+
+        <!-- ── Nav style selector helper (code-behind uses PP_NavItemStyle / PP_NavHeaderStyle) -->
+        <local:NavItemStyleSelector x:Key="NavStyleSelector"
+                                    HeaderStyle="{StaticResource PP_NavHeaderStyle}"
+                                    LeafStyle="{StaticResource PP_NavItemStyle}" />
+
     </UserControl.Resources>
 
-    <!-- Root: 3 rows — title bar / main content -->
+    <!-- ════════════════════════════════════════════════════════════════════════
+         Root grid: title bar row + main content row
+         ════════════════════════════════════════════════════════════════════════ -->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />   <!-- title + save button -->
-            <RowDefinition Height="*" />      <!-- nav + content -->
+            <RowDefinition Height="Auto" />   <!-- title bar / save button -->
+            <RowDefinition Height="*" />      <!-- nav + section content  -->
         </Grid.RowDefinitions>
 
-        <!-- ── Title / Save bar ──────────────────────────────────────────── -->
+        <!-- ── Title / Save bar ──────────────────────────────────────────────── -->
         <Border Grid.Row="0"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,0,0,1"
@@ -110,24 +529,19 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
                 <TextBlock Grid.Column="0"
                            x:Name="TitleText"
                            FontSize="15" FontWeight="SemiBold"
                            VerticalAlignment="Center" />
-
                 <Button Grid.Column="1"
                         x:Name="BtnSave"
                         Content="Enregistrer"
                         Command="{Binding SaveCommand}"
-                        Padding="16,5"
-                        Background="{DynamicResource DockAccentBrush}"
-                        Foreground="{DynamicResource DockMenuForegroundBrush}"
-                        BorderBrush="{DynamicResource DockBorderBrush}" />
+                        Style="{StaticResource PP_PrimaryButtonStyle}" />
             </Grid>
         </Border>
 
-        <!-- ── Main content: nav (left) + sections (right) ───────────────── -->
+        <!-- ── Main content: nav (left) + sections (right) ───────────────────── -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
@@ -135,279 +549,466 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Left nav -->
+            <!-- ── Left nav panel ─────────────────────────────────────────────── -->
             <Border Grid.Column="0"
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="0,0,1,0"
                     Background="{DynamicResource DockMenuBackgroundBrush}">
-                <ListBox x:Name="NavListBox"
-                         ItemsSource="{Binding NavigationItems}"
-                         SelectedItem="{Binding SelectedSection, Mode=TwoWay}"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         Padding="0,8,0,8"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ItemContainerStyle="{StaticResource NavItemContainerStyle}"
-                         SelectionChanged="OnNavSelectionChanged">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:NavItem}">
-                            <TextBlock x:Name="NavLabel"
-                                       Text="{Binding Label}"
-                                       Padding="12,4"
-                                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
-                            <DataTemplate.Triggers>
-                                <!-- Group headers: bolder, no indent -->
-                                <DataTrigger Binding="{Binding IsHeader}" Value="True">
-                                    <Setter TargetName="NavLabel" Property="FontWeight" Value="SemiBold" />
-                                    <Setter TargetName="NavLabel" Property="Padding"    Value="12,8,12,4" />
-                                    <Setter TargetName="NavLabel" Property="Foreground"
-                                            Value="{DynamicResource DockMenuForegroundBrush}" />
-                                </DataTrigger>
-                                <!-- Leaf items: indented -->
-                                <DataTrigger Binding="{Binding IsHeader}" Value="False">
-                                    <Setter TargetName="NavLabel" Property="Padding" Value="24,4,12,4" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <DockPanel>
+                    <!-- Search filter -->
+                    <TextBox x:Name="NavSearchBox"
+                             DockPanel.Dock="Top"
+                             Style="{StaticResource PP_TextBoxStyle}"
+                             Text="{Binding NavFilter, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="8,8,8,4"
+                             Padding="6,3"
+                             FontSize="11"
+                             ToolTip="Filtrer les sections" />
+
+                    <ListBox x:Name="NavListBox"
+                             ItemsSource="{Binding FilteredNavItems}"
+                             SelectedItem="{Binding SelectedSection, Mode=TwoWay}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="0,4,0,8"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ItemContainerStyleSelector="{StaticResource NavStyleSelector}"
+                             SelectionChanged="OnNavSelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:NavItem}">
+                                <TextBlock x:Name="NavLabel"
+                                           Text="{Binding Label}"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                                <DataTemplate.Triggers>
+                                    <!-- Leaf items get a 2-level indent -->
+                                    <DataTrigger Binding="{Binding IsHeader}" Value="False">
+                                        <Setter TargetName="NavLabel" Property="Margin" Value="12,0,0,0" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
             </Border>
 
-            <!-- Resize grip (cosmetic) -->
+            <!-- Resize splitter (cosmetic) -->
             <GridSplitter Grid.Column="1" Width="1"
                           Background="{DynamicResource DockBorderBrush}"
                           ResizeDirection="Columns"
                           ResizeBehavior="PreviousAndNext"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch" />
 
-            <!-- Right: section content swapped by code-behind -->
-            <ScrollViewer Grid.Column="2"
-                          VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled"
-                          Padding="24,20,24,20">
-                <StackPanel>
+            <!-- ── Right: section content (swapped by code-behind ShowSection) ── -->
+            <Grid Grid.Column="2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Padding="28,20,28,20">
+                    <StackPanel>
 
-                    <!-- ====================================================
-                         Section: app-general  (Application > Général)
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionAppGeneral">
-                        <TextBlock Text="Application" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
+                        <!-- ================================================
+                             Section: app-general  (Application > Général)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionAppGeneral">
+                            <TextBlock Text="Application" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="Général" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,8" />
+                            <Separator />
 
-                        <TextBlock Text="Général" FontSize="13" FontWeight="SemiBold"
-                                   Margin="0,0,0,10" />
-                        <Separator />
+                            <!-- Nom du projet -->
+                            <TextBlock Text="Nom du projet" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="400" HorizontalAlignment="Left" />
+                            <TextBlock Text="{Binding ProjectNameError}"
+                                       Style="{StaticResource PP_ValidationErrorStyle}"
+                                       Visibility="{Binding ProjectNameError,
+                                           Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
+                            <TextBlock Text="Nom logique utilisé dans le Solution Explorer."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
 
-                        <Label Content="Nom du projet" />
-                        <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}" />
+                            <!-- Nom d'assembly -->
+                            <TextBlock Text="Nom d'assembly" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox Text="{Binding AssemblyName, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="400" HorizontalAlignment="Left" />
+                            <TextBlock Text="{Binding AssemblyNameError}"
+                                       Style="{StaticResource PP_ValidationErrorStyle}"
+                                       Visibility="{Binding AssemblyNameError,
+                                           Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
+                            <TextBlock Text="Nom du fichier de sortie compilé (sans extension)."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
 
-                        <Label Content="Nom d'assembly" />
-                        <TextBox Text="{Binding AssemblyName, UpdateSourceTrigger=PropertyChanged}" />
+                            <!-- Espace de noms par défaut -->
+                            <TextBlock Text="Espace de noms par défaut" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox Text="{Binding DefaultNamespace, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="400" HorizontalAlignment="Left" />
+                            <TextBlock Text="Espace de noms racine utilisé pour les nouveaux fichiers."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
 
-                        <Label Content="Espace de noms par défaut" />
-                        <TextBox Text="{Binding DefaultNamespace, UpdateSourceTrigger=PropertyChanged}" />
+                            <!-- Framework cible -->
+                            <TextBlock Text="Framework cible" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <ComboBox x:Name="CbTargetFramework"
+                                      Text="{Binding TargetFramework, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource PP_ComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
+                                      IsEditable="True"
+                                      MaxWidth="300" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="net8.0" />
+                                <ComboBoxItem Content="net8.0-windows" />
+                                <ComboBoxItem Content="net9.0" />
+                                <ComboBoxItem Content="net9.0-windows" />
+                                <ComboBoxItem Content=".NET 8.0" />
+                                <ComboBoxItem Content=".NET 9.0" />
+                            </ComboBox>
+                            <TextBlock Text="Version du runtime .NET ciblée par ce projet."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
 
-                        <Label Content="Framework cible" />
-                        <ComboBox x:Name="CbTargetFramework"
-                                  Text="{Binding TargetFramework, UpdateSourceTrigger=PropertyChanged}"
-                                  IsEditable="True">
-                            <ComboBoxItem Content=".NET 8.0" />
-                            <ComboBoxItem Content=".NET 8.0 (Windows)" />
-                            <ComboBoxItem Content=".NET 9.0" />
-                            <ComboBoxItem Content=".NET 9.0 (Windows)" />
-                            <ComboBoxItem Content="net8.0" />
-                            <ComboBoxItem Content="net8.0-windows" />
-                            <ComboBoxItem Content="net9.0" />
-                            <ComboBoxItem Content="net9.0-windows" />
-                        </ComboBox>
+                            <!-- Type de sortie -->
+                            <TextBlock Text="Type de sortie" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <ComboBox x:Name="CbOutputType"
+                                      Text="{Binding OutputType, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource PP_ComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
+                                      IsEditable="True"
+                                      MaxWidth="300" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Library" />
+                                <ComboBoxItem Content="Exe" />
+                                <ComboBoxItem Content="WinExe" />
+                                <ComboBoxItem Content="Bibliothèque de classes" />
+                                <ComboBoxItem Content="Application console" />
+                                <ComboBoxItem Content="Application Windows" />
+                            </ComboBox>
+                            <TextBlock Text="Détermine si le projet produit un .exe, .dll ou WinExe."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
 
-                        <Label Content="Type de sortie" />
-                        <ComboBox x:Name="CbOutputType"
-                                  Text="{Binding OutputType, UpdateSourceTrigger=PropertyChanged}"
-                                  IsEditable="True">
-                            <ComboBoxItem Content="Bibliothèque de classes" />
-                            <ComboBoxItem Content="Application console" />
-                            <ComboBoxItem Content="Application Windows" />
-                            <ComboBoxItem Content="Library" />
-                            <ComboBoxItem Content="Exe" />
-                            <ComboBoxItem Content="WinExe" />
-                        </ComboBox>
+                            <!-- Read-only info -->
+                            <Separator />
+                            <TextBlock Text="Fichier projet" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox Text="{Binding ProjectFilePath, Mode=OneWay}"
+                                     IsReadOnly="True" MaxWidth="460" HorizontalAlignment="Left" />
+                            <TextBlock Text="Répertoire" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox Text="{Binding ProjectDirectory, Mode=OneWay}"
+                                     IsReadOnly="True" MaxWidth="460" HorizontalAlignment="Left" />
+                            <TextBlock Text="Type de projet" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox Text="{Binding ProjectType, Mode=OneWay}"
+                                     IsReadOnly="True" MaxWidth="300" HorizontalAlignment="Left" />
+                        </StackPanel>
 
-                        <Label Content="Fichier projet" Margin="0,8,0,0" />
-                        <TextBlock x:Name="TbFilePath"
-                                   Text="{Binding ProjectFilePath}"
-                                   TextTrimming="CharacterEllipsis"
-                                   Margin="0,0,0,4" />
+                        <!-- ================================================
+                             Section: build
+                             ================================================ -->
+                        <StackPanel x:Name="SectionBuild" Visibility="Collapsed">
+                            <TextBlock Text="Build" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
 
-                        <Label Content="Répertoire" />
-                        <TextBlock Text="{Binding ProjectDirectory}"
-                                   TextTrimming="CharacterEllipsis"
-                                   Margin="0,0,0,4" />
+                            <!-- Configuration -->
+                            <TextBlock Text="Configuration" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <ComboBox x:Name="CbConfig"
+                                      Text="{Binding Configuration, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource PP_ComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
+                                      IsEditable="True"
+                                      MaxWidth="200" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Debug" />
+                                <ComboBoxItem Content="Release" />
+                            </ComboBox>
+                            <TextBlock Text="Profil de build actif (Debug = symboles, Release = optimisé)."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
 
-                        <Label Content="Type de projet" />
-                        <TextBlock Text="{Binding ProjectType}" Margin="0,0,0,4" />
+                            <!-- Plateforme -->
+                            <TextBlock Text="Plateforme" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <ComboBox x:Name="CbPlatform"
+                                      Text="{Binding Platform, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource PP_ComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
+                                      IsEditable="True"
+                                      MaxWidth="200" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Any CPU" />
+                                <ComboBoxItem Content="x64" />
+                                <ComboBoxItem Content="x86" />
+                                <ComboBoxItem Content="ARM64" />
+                            </ComboBox>
+                            <TextBlock Text="Architecture cible du binaire compilé."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+
+                            <!-- Chemin de sortie -->
+                            <TextBlock Text="Chemin de sortie" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <Grid Margin="0,2,0,0" MaxWidth="460" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding OutputPath, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="0" />
+                                <Button Grid.Column="1"
+                                        Content="…"
+                                        Style="{StaticResource PP_SecondaryButtonStyle}"
+                                        Padding="8,4" Margin="6,0,0,0"
+                                        Click="OnBrowseOutputPath" />
+                            </Grid>
+                            <TextBlock Text="Répertoire de sortie relatif à la racine du projet."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+
+                            <!-- Options -->
+                            <CheckBox Content="Optimiser le code"
+                                      IsChecked="{Binding OptimizeCode}" />
+                            <TextBlock Text="Active les optimisations du compilateur (désactivé en Debug par convention)."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+                            <CheckBox Content="Traiter les avertissements comme des erreurs"
+                                      IsChecked="{Binding TreatWarningsAsErrors}" />
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: app-dependencies
+                             ================================================ -->
+                        <StackPanel x:Name="SectionDependencies" Visibility="Collapsed">
+                            <TextBlock Text="Dépendances" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <TextBlock Text="Références de projet et packages NuGet déclarés dans ce projet."
+                                       Style="{StaticResource PP_FieldDescStyle}"
+                                       Margin="0,0,0,12" />
+                            <ListView x:Name="DepsListView" MaxHeight="400">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Nom"  Width="260"
+                                                        DisplayMemberBinding="{Binding Name}" />
+                                        <GridViewColumn Header="Type" Width="120"
+                                                        DisplayMemberBinding="{Binding RefType}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: global-usings  (VS only)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionGlobalUsings" Visibility="Collapsed">
+                            <TextBlock Text="Utilisations globales" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <TextBlock Text="Directives using implicites déclarées dans le projet (ImplicitUsings)."
+                                       Style="{StaticResource PP_FieldDescStyle}"
+                                       Margin="0,0,0,12" />
+                            <ListView x:Name="GlobalUsingsListView" MaxHeight="350">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Namespace" Width="400"
+                                                        DisplayMemberBinding="{Binding}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: items
+                             ================================================ -->
+                        <StackPanel x:Name="SectionItems" Visibility="Collapsed">
+                            <TextBlock Text="Éléments" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <TextBlock x:Name="ItemCountLabel" Margin="0,0,0,10" />
+                            <ListView x:Name="ItemsListView" MaxHeight="500">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Nom"    Width="200"
+                                                        DisplayMemberBinding="{Binding Name}" />
+                                        <GridViewColumn Header="Type"   Width="100"
+                                                        DisplayMemberBinding="{Binding ItemType}" />
+                                        <GridViewColumn Header="Chemin" Width="300"
+                                                        DisplayMemberBinding="{Binding RelativePath}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: references  (with Add / Remove toolbar)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionReferences" Visibility="Collapsed">
+                            <TextBlock Text="Références" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <!-- Action toolbar -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Button Content="+ NuGet…"
+                                        Style="{StaticResource PP_SecondaryButtonStyle}"
+                                        Command="{Binding AddNuGetCommand}"
+                                        Margin="0,0,6,0" />
+                                <Button Content="+ Projet…"
+                                        Style="{StaticResource PP_SecondaryButtonStyle}"
+                                        Command="{Binding AddProjectRefCommand}"
+                                        Margin="0,0,6,0" />
+                                <Button Content="Supprimer"
+                                        Style="{StaticResource PP_SecondaryButtonStyle}"
+                                        Command="{Binding RemoveReferenceCommand}" />
+                            </StackPanel>
+                            <ListView x:Name="RefsListView"
+                                      SelectedItem="{Binding SelectedReference}"
+                                      MaxHeight="450">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Nom"  Width="280"
+                                                        DisplayMemberBinding="{Binding Name}" />
+                                        <GridViewColumn Header="Type" Width="120"
+                                                        DisplayMemberBinding="{Binding RefType}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: app-win32  (Ressources Win32 — VS only)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionWin32Resources" Visibility="Collapsed">
+                            <TextBlock Text="Ressources Win32" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+
+                            <!-- App icon -->
+                            <TextBlock Text="Icône de l'application" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <Grid Margin="0,2,0,0" MaxWidth="460" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding AppIconPath, UpdateSourceTrigger=PropertyChanged}"
+                                         IsReadOnly="True" Margin="0" />
+                                <Button Grid.Column="1"
+                                        Content="Parcourir…"
+                                        Style="{StaticResource PP_SecondaryButtonStyle}"
+                                        Padding="8,4" Margin="6,0,0,0"
+                                        Click="OnBrowseAppIcon" />
+                            </Grid>
+                            <TextBlock Text="Fichier .ico intégré dans l'assembly en tant que ressource Win32."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+
+                            <!-- App manifest -->
+                            <TextBlock Text="Manifeste de l'application" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <ComboBox SelectedItem="{Binding AppManifest}"
+                                      Style="{StaticResource PP_ComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
+                                      MaxWidth="320" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Paramètres par défaut" />
+                                <ComboBoxItem Content="Créer un nouveau manifeste" />
+                                <ComboBoxItem Content="Aucun manifeste" />
+                            </ComboBox>
+                            <TextBlock Text="Fichier app.manifest qui contrôle le niveau d'exécution UAC et DPI."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: package  (VS only)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionPackage" Visibility="Collapsed">
+                            <TextBlock Text="Package" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <TextBlock Text="Métadonnées NuGet générées lors de la publication du package."
+                                       Style="{StaticResource PP_FieldDescStyle}"
+                                       Margin="0,0,0,12" />
+                            <TextBlock Text="ID du package"      Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox x:Name="TbPackageId"
+                                     Text="{Binding PackageId, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="400" HorizontalAlignment="Left" />
+                            <TextBlock Text="Identifiant unique du package sur NuGet.org."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+                            <TextBlock Text="Version"            Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox x:Name="TbPackageVersion"
+                                     Text="{Binding PackageVersion, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="200" HorizontalAlignment="Left" />
+                            <TextBlock Text="Auteurs"            Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox x:Name="TbPackageAuthors"
+                                     Text="{Binding PackageAuthors, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="400" HorizontalAlignment="Left" />
+                            <TextBlock Text="Description"        Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox x:Name="TbPackageDescription"
+                                     Text="{Binding PackageDescription, UpdateSourceTrigger=PropertyChanged}"
+                                     AcceptsReturn="True" Height="70"
+                                     MaxWidth="460" HorizontalAlignment="Left"
+                                     TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto" />
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: debug  (VS only)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionDebug" Visibility="Collapsed">
+                            <TextBlock Text="Débogage" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <TextBlock Text="Configuration du profil de lancement."
+                                       Style="{StaticResource PP_FieldDescStyle}"
+                                       Margin="0,0,0,12" />
+
+                            <!-- Launch profile selector -->
+                            <TextBlock Text="Profil de lancement" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding LaunchProfiles}"
+                                      SelectedItem="{Binding ActiveLaunchProfile}"
+                                      Style="{StaticResource PP_ComboBoxStyle}"
+                                      ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
+                                      MaxWidth="300" HorizontalAlignment="Left" />
+                            <TextBlock Text="Profil défini dans launchSettings.json."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+
+                            <!-- Command line args + working dir -->
+                            <TextBlock Text="Arguments de ligne de commande" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox x:Name="TbLaunchArgs"
+                                     Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="460" HorizontalAlignment="Left" />
+                            <TextBlock Text="Répertoire de travail" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBox x:Name="TbWorkDir"
+                                     Text="{Binding WorkingDirectory, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxWidth="460" HorizontalAlignment="Left" />
+
+                            <!-- Environment variables DataGrid -->
+                            <TextBlock Text="Variables d'environnement"
+                                       FontWeight="SemiBold"
+                                       Margin="0,16,0,6" />
+                            <DataGrid x:Name="EnvVarsGrid"
+                                      ItemsSource="{Binding EnvironmentVariables}"
+                                      MaxHeight="220"
+                                      MaxWidth="560"
+                                      HorizontalAlignment="Left">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Nom"    Binding="{Binding Name}"  Width="*" />
+                                    <DataGridTextColumn Header="Valeur" Binding="{Binding Value}" Width="*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+
+                        <!-- ================================================
+                             Section: code-analysis  (VS only)
+                             ================================================ -->
+                        <StackPanel x:Name="SectionCodeAnalysis" Visibility="Collapsed">
+                            <TextBlock Text="Analyse du code" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <Separator />
+                            <TextBlock Text="Paramètres d'analyse statique du code."
+                                       Style="{StaticResource PP_FieldDescStyle}"
+                                       Margin="0,0,0,12" />
+                            <CheckBox x:Name="CbAnalysisAll"
+                                      Content="Activer l'analyse du code sur le build"
+                                      IsChecked="{Binding EnableCodeAnalysis}" />
+                            <TextBlock Text="Active les analyseurs Roslyn à chaque build."
+                                       Style="{StaticResource PP_FieldDescStyle}" />
+                            <CheckBox x:Name="CbAnalysisRelease"
+                                      Content="Activer uniquement sur la configuration Release"
+                                      IsChecked="{Binding CodeAnalysisReleaseOnly}"
+                                      Margin="0,4,0,0" />
+                        </StackPanel>
+
                     </StackPanel>
+                </ScrollViewer>
 
-                    <!-- ====================================================
-                         Section: build
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionBuild" Visibility="Collapsed">
-                        <TextBlock Text="Build" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-
-                        <Label Content="Configuration" />
-                        <ComboBox x:Name="CbConfig"
-                                  Text="{Binding Configuration, UpdateSourceTrigger=PropertyChanged}"
-                                  IsEditable="True">
-                            <ComboBoxItem Content="Debug" />
-                            <ComboBoxItem Content="Release" />
-                        </ComboBox>
-
-                        <Label Content="Plateforme" />
-                        <ComboBox x:Name="CbPlatform"
-                                  Text="{Binding Platform, UpdateSourceTrigger=PropertyChanged}"
-                                  IsEditable="True">
-                            <ComboBoxItem Content="Any CPU" />
-                            <ComboBoxItem Content="x64" />
-                            <ComboBoxItem Content="x86" />
-                        </ComboBox>
-
-                        <Label Content="Chemin de sortie" />
-                        <Grid Margin="0,2,0,6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding OutputPath, UpdateSourceTrigger=PropertyChanged}"
-                                     Margin="0" />
-                            <Button Grid.Column="1" Content="…"
-                                    Padding="8,2" Margin="4,0,0,0"
-                                    Click="OnBrowseOutputPath"
-                                    Background="{DynamicResource DockMenuBackgroundBrush}"
-                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                    BorderBrush="{DynamicResource DockBorderBrush}" />
-                        </Grid>
-
-                        <CheckBox Content="Optimiser le code"
-                                  IsChecked="{Binding OptimizeCode}" />
-                    </StackPanel>
-
-                    <!-- ====================================================
-                         Section: app-dependencies  (Application > Dépendances)
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionDependencies" Visibility="Collapsed">
-                        <TextBlock Text="Dépendances" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-                        <TextBlock Text="Références de projet et packages NuGet déclarés dans ce projet."
-                                   TextWrapping="Wrap" Margin="0,0,0,12" Opacity="0.7" />
-                        <ListView x:Name="DepsListView" MaxHeight="400">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Nom"  Width="260"
-                                                    DisplayMemberBinding="{Binding Name}" />
-                                    <GridViewColumn Header="Type" Width="120"
-                                                    DisplayMemberBinding="{Binding RefType}" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </StackPanel>
-
-                    <!-- ====================================================
-                         Section: items
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionItems" Visibility="Collapsed">
-                        <TextBlock Text="Éléments" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-                        <TextBlock x:Name="ItemCountLabel" Margin="0,0,0,8" />
-                        <ListView x:Name="ItemsListView" MaxHeight="500">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Nom"   Width="200"
-                                                    DisplayMemberBinding="{Binding Name}" />
-                                    <GridViewColumn Header="Type"  Width="100"
-                                                    DisplayMemberBinding="{Binding ItemType}" />
-                                    <GridViewColumn Header="Chemin" Width="300"
-                                                    DisplayMemberBinding="{Binding RelativePath}" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </StackPanel>
-
-                    <!-- ====================================================
-                         Section: references
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionReferences" Visibility="Collapsed">
-                        <TextBlock Text="Références" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-                        <ListView x:Name="RefsListView" MaxHeight="500">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Nom"  Width="280"
-                                                    DisplayMemberBinding="{Binding Name}" />
-                                    <GridViewColumn Header="Type" Width="120"
-                                                    DisplayMemberBinding="{Binding RefType}" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </StackPanel>
-
-                    <!-- ====================================================
-                         Section: package  (VS only)
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionPackage" Visibility="Collapsed">
-                        <TextBlock Text="Package" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-                        <TextBlock Text="Métadonnées NuGet générées lors de la publication du package."
-                                   TextWrapping="Wrap" Margin="0,0,0,12" Opacity="0.7" />
-                        <Label Content="ID du package" />
-                        <TextBox x:Name="TbPackageId" />
-                        <Label Content="Version du package" />
-                        <TextBox x:Name="TbPackageVersion" />
-                        <Label Content="Auteurs" />
-                        <TextBox x:Name="TbPackageAuthors" />
-                        <Label Content="Description" />
-                        <TextBox x:Name="TbPackageDescription" AcceptsReturn="True" Height="60" />
-                    </StackPanel>
-
-                    <!-- ====================================================
-                         Section: debug  (VS only)
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionDebug" Visibility="Collapsed">
-                        <TextBlock Text="Débogage" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-                        <TextBlock Text="Configuration du profil de lancement pour le débogueur."
-                                   TextWrapping="Wrap" Margin="0,0,0,12" Opacity="0.7" />
-                        <Label Content="Arguments de ligne de commande" />
-                        <TextBox x:Name="TbLaunchArgs" />
-                        <Label Content="Répertoire de travail" />
-                        <TextBox x:Name="TbWorkDir" />
-                    </StackPanel>
-
-                    <!-- ====================================================
-                         Section: code-analysis  (VS only)
-                         ==================================================== -->
-                    <StackPanel x:Name="SectionCodeAnalysis" Visibility="Collapsed">
-                        <TextBlock Text="Analyse du code" FontSize="18" FontWeight="Bold"
-                                   Margin="0,0,0,16" />
-                        <Separator />
-                        <TextBlock Text="Paramètres d'analyse statique du code."
-                                   TextWrapping="Wrap" Margin="0,0,0,12" Opacity="0.7" />
-                        <CheckBox x:Name="CbAnalysisAll"
-                                  Content="Activer l'analyse du code sur le build" />
-                        <CheckBox x:Name="CbAnalysisRelease"
-                                  Content="Activer uniquement sur la configuration Release"
-                                  Margin="0,4,0,0" />
-                    </StackPanel>
-
-                </StackPanel>
-            </ScrollViewer>
+                <!-- ── Save toast overlay (2 s, anchored bottom-right) ──────── -->
+                <Border x:Name="SaveToast"
+                        Background="{DynamicResource DockTabActiveBrush}"
+                        Padding="12,5"
+                        CornerRadius="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,16,16"
+                        Visibility="Collapsed"
+                        Panel.ZIndex="99">
+                    <TextBlock Text="✓ Modifications enregistrées"
+                               Foreground="White"
+                               FontSize="12"
+                               VerticalAlignment="Center" />
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 

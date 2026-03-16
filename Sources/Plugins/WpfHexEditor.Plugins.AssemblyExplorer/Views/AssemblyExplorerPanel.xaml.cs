@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
@@ -72,6 +73,10 @@ public partial class AssemblyExplorerPanel : UserControl
         MainTreeView.HighlightInHexEditorRequested += OnHighlightInHexEditor;
         MainTreeView.PinAssemblyRequested          += OnPinAssembly;
         MainTreeView.CompareWithRequested          += OnCompareWith;
+        MainTreeView.ExtractToProjectRequested     += OnExtractToProject;
+
+        // Wire detail pane Extract button
+        DetailPane.ExtractRequested += (_, node) => _ = ExecuteExtractToProjectAsync(node);
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -259,6 +264,74 @@ public partial class AssemblyExplorerPanel : UserControl
         if (_diffPanel is null) return;
         _diffPanel.PreSelectBaseline(node.DisplayName.Split(' ')[0]); // strip version suffix
         _diffPanelShowAction?.Invoke();
+    }
+
+    // ── Extract to project ────────────────────────────────────────────────────
+
+    private ISolutionManager?            _solutionManager;
+    private AssemblyCodeExtractService?  _extractService;
+
+    /// <summary>
+    /// Wires the solution manager for "Extract to Project" operations.
+    /// Called by the plugin entry point after initialization.
+    /// </summary>
+    public void SetSolutionManager(ISolutionManager? solutionManager)
+    {
+        _solutionManager = solutionManager;
+        _extractService  = new AssemblyCodeExtractService();
+    }
+
+    private void OnExtractToProject(object? sender, AssemblyNodeViewModel node)
+        => _ = ExecuteExtractToProjectAsync(node);
+
+    private async Task ExecuteExtractToProjectAsync(AssemblyNodeViewModel node)
+    {
+        var svc      = _extractService ?? new AssemblyCodeExtractService();
+        var fileName = AssemblyCodeExtractService.SuggestFileName(node.DisplayName);
+        var (_, sourceText) = ViewModel.GetDecompiledText(node);
+
+        // No WH solution active — fall back to Save-to-Disk dialog.
+        if (_solutionManager is null || _solutionManager.CurrentSolution is null
+            || _solutionManager.CurrentSolution.Projects.Count == 0)
+        {
+            var saved = svc.ExtractToDiskViaSaveDialog(fileName, sourceText);
+            if (saved is not null)
+                ViewModel.ReportInfo($"Saved to disk: {Path.GetFileName(saved)}");
+            return;
+        }
+
+        var projects = _solutionManager.CurrentSolution.Projects.ToList();
+
+        IProject? targetProject;
+        if (projects.Count == 1)
+        {
+            targetProject = projects[0];
+        }
+        else
+        {
+            var picker = new ProjectPickerDialog(projects) { Owner = Window.GetWindow(this) };
+            if (picker.ShowDialog() != true) return;
+            targetProject = picker.SelectedProject;
+        }
+
+        if (targetProject is null) return;
+
+        try
+        {
+            var path = await svc.ExtractToWhProjectAsync(
+                targetProject, fileName, sourceText, _solutionManager);
+
+            if (path is not null)
+                ViewModel.ReportInfo($"Added '{fileName}' to '{targetProject.Name}'");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Could not add file to project:\n{ex.Message}",
+                "Extract to Project",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 
     // ── Diff panel reference (set by plugin entry point) ─────────────────────

@@ -117,30 +117,51 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header bar: node title + metadata token + PE offset -->
+        <!-- Header bar: node title + metadata token + PE offset + Extract button -->
         <Border Grid.Row="0"
                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
                 BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="6,3">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Foreground="{DynamicResource PFP_TextBrush}"
-                           FontSize="11"
-                           FontWeight="SemiBold"
-                           VerticalAlignment="Center"
-                           Text="{Binding Title}"/>
-                <TextBlock Foreground="{DynamicResource PFP_SubTextBrush}"
-                           FontSize="10"
-                           VerticalAlignment="Center"
-                           Margin="8,0,0,0"
-                           Text="{Binding MetadataInfo}"/>
-                <TextBlock Foreground="{DynamicResource PFP_AccentBrush}"
-                           FontSize="10"
-                           VerticalAlignment="Center"
-                           Margin="8,0,0,0"
-                           Visibility="{Binding HasOffset, Converter={StaticResource BoolToVisibilityConverter}}"
-                           Text="{Binding PeOffsetValue, StringFormat='PE: 0x{0:X}'}"/>
-            </StackPanel>
+            <DockPanel LastChildFill="True">
+                <!-- Extract to Project button — right-docked, visible for decompilable nodes -->
+                <Button x:Name="ExtractButton"
+                        DockPanel.Dock="Right"
+                        Margin="4,0,0,0"
+                        Padding="6,1"
+                        Background="Transparent"
+                        BorderBrush="{DynamicResource PFP_BorderBrush}"
+                        Foreground="{DynamicResource PFP_TextBrush}"
+                        ToolTip="Extract decompiled code to the loaded project"
+                        Visibility="{Binding IsExtractAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Click="OnExtractButtonClick">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="10" Margin="0,0,3,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Extract" FontSize="10" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <!-- Title info (fills remaining space) -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Foreground="{DynamicResource PFP_TextBrush}"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Text="{Binding Title}"/>
+                    <TextBlock Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="10"
+                               VerticalAlignment="Center"
+                               Margin="8,0,0,0"
+                               Text="{Binding MetadataInfo}"/>
+                    <TextBlock Foreground="{DynamicResource PFP_AccentBrush}"
+                               FontSize="10"
+                               VerticalAlignment="Center"
+                               Margin="8,0,0,0"
+                               Visibility="{Binding HasOffset, Converter={StaticResource BoolToVisibilityConverter}}"
+                               Text="{Binding PeOffsetValue, StringFormat='PE: 0x{0:X}'}"/>
+                </StackPanel>
+            </DockPanel>
         </Border>
 
         <!-- 4-tab detail body -->

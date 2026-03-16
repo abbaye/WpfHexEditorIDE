@@ -43,6 +43,7 @@ internal sealed class StandaloneIDEHostContext : IIDEHostContext
 {
     public IDocumentHostService     DocumentHost     { get; } = new NullDocumentHostService();
     public ISolutionExplorerService SolutionExplorer { get; } = new NullSolutionExplorerService();
+    public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => null;
     public IHexEditorService        HexEditor        { get; } = new NullHexEditorService();
     public ICodeEditorService       CodeEditor       { get; } = new NullCodeEditorService();
     public IOutputService           Output           { get; } = new NullOutputService();

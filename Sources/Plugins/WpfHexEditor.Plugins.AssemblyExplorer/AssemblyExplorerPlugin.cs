@@ -51,7 +51,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
     public string  Id      => "WpfHexEditor.Plugins.AssemblyExplorer";
     public string  Name    => "Assembly Explorer";
-    public Version Version => new(0, 2, 0);
+    public Version Version => new(0, 2, 1);
 
     public PluginCapabilities Capabilities => new()
     {
@@ -147,6 +147,9 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
         // Wire diff panel into the main panel so "Compare with…" can show it.
         _panel.SetDiffPanel(_diffPanel, () => context.UIRegistry.ShowPanel(DiffPanelUiId));
+
+        // Wire solution manager for "Extract to Project" workflow.
+        _panel.SetSolutionManager(context.SolutionManager);
 
         // Register status bar item.
         _sbWorkspace = new StatusBarItemDescriptor

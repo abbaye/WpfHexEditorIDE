@@ -6,16 +6,20 @@
 // Created: 2026-03-16
 // Description:
 //     Code-behind for the VS-Like Project Properties document tab.
-//     Handles left-nav section switching and populates read-only
-//     fields from the ViewModel.
+//     Handles left-nav section switching, browse dialogs, save toast,
+//     and provides StyleSelector + Converter used in the XAML.
 //
 // Architecture Notes:
-//     Pattern: MVVM with code-behind for section visibility toggling
-//     and Win32 browse dialog integration.
+//     Pattern: MVVM with code-behind for section visibility toggling,
+//     Win32 browse dialog integration, and toast notification.
+//     NavItemStyleSelector selects PP_NavHeaderStyle vs PP_NavItemStyle.
+//     NullToCollapsedConverter hides validation errors when null.
 // ==========================================================
 
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Microsoft.Win32;
 
 namespace WpfHexEditor.ProjectSystem.Documents;
@@ -26,7 +30,7 @@ namespace WpfHexEditor.ProjectSystem.Documents;
 /// </summary>
 public partial class ProjectPropertiesDocument : UserControl
 {
-    // All section panels in display order (must match SectionId mapping)
+    // Maps sectionId → the StackPanel that displays that section.
     private readonly Dictionary<string, StackPanel> _sections = new();
 
     public ProjectPropertiesDocument()
@@ -42,17 +46,18 @@ public partial class ProjectPropertiesDocument : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        // Map section IDs to their panel UIElements
+        // Register all section panels (must match sectionIds in BuildNavItems)
         _sections["app-general"]    = SectionAppGeneral;
         _sections["build"]          = SectionBuild;
         _sections["app-dependencies"] = SectionDependencies;
+        _sections["global-usings"]  = SectionGlobalUsings;
         _sections["items"]          = SectionItems;
         _sections["references"]     = SectionReferences;
+        _sections["app-win32"]      = SectionWin32Resources;
         _sections["package"]        = SectionPackage;
         _sections["debug"]          = SectionDebug;
         _sections["code-analysis"]  = SectionCodeAnalysis;
 
-        // Bind data that requires code-behind
         if (DataContext is ProjectPropertiesViewModel vm)
             BindViewModel(vm);
     }
@@ -65,31 +70,32 @@ public partial class ProjectPropertiesDocument : UserControl
 
     private void BindViewModel(ProjectPropertiesViewModel vm)
     {
-        // Title
+        // Title bar text
         TitleText.Text = $"{vm.ProjectName} — Propriétés";
         vm.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName is nameof(vm.ProjectName))
                 TitleText.Text = $"{vm.ProjectName} — Propriétés";
+            else if (args.PropertyName is nameof(vm.SaveCompleted) && vm.SaveCompleted)
+                ShowSaveToast();
         };
 
-        // Populate read-only lists
-        ItemsListView.ItemsSource = vm.Items;
-        ItemCountLabel.Text       = vm.ItemCountText;
-        RefsListView.ItemsSource  = vm.References;
-        DepsListView.ItemsSource  = vm.References;
+        // Populate read-only ListViews
+        ItemsListView.ItemsSource        = vm.Items;
+        ItemCountLabel.Text              = vm.ItemCountText;
+        DepsListView.ItemsSource         = vm.References;
+        RefsListView.ItemsSource         = vm.References;
+        GlobalUsingsListView.ItemsSource = vm.GlobalUsings;
 
-        // Disable nav headers (non-selectable group labels)
+        // Disable nav group headers (not selectable)
         NavListBox.Loaded += (_, _) =>
         {
             foreach (NavItem item in vm.NavigationItems.Where(n => n.IsHeader))
             {
-                var container = NavListBox.ItemContainerGenerator
-                    .ContainerFromItem(item) as ListBoxItem;
-                if (container != null)
+                if (NavListBox.ItemContainerGenerator.ContainerFromItem(item) is ListBoxItem c)
                 {
-                    container.IsEnabled  = false;
-                    container.Focusable  = false;
+                    c.IsEnabled = false;
+                    c.Focusable = false;
                 }
             }
         };
@@ -107,12 +113,11 @@ public partial class ProjectPropertiesDocument : UserControl
         if (NavListBox.SelectedItem is NavItem { IsHeader: false } item)
             ShowSection(item.SectionId);
         else if (NavListBox.SelectedItem is NavItem { IsHeader: true })
-            NavListBox.SelectedItem = null; // Prevent header selection
+            NavListBox.SelectedItem = null;
     }
 
     private void ShowSection(string sectionId)
     {
-        // Hide all, then show the requested one
         foreach (var panel in _sections.Values)
             panel.Visibility = Visibility.Collapsed;
 
@@ -121,17 +126,77 @@ public partial class ProjectPropertiesDocument : UserControl
     }
 
     // -----------------------------------------------------------------------
-    // Output path browse
+    // Browse dialogs
     // -----------------------------------------------------------------------
 
     private void OnBrowseOutputPath(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFolderDialog
-        {
-            Title = "Sélectionner le répertoire de sortie"
-        };
-
+        var dlg = new OpenFolderDialog { Title = "Sélectionner le répertoire de sortie" };
         if (dlg.ShowDialog() == true && DataContext is ProjectPropertiesViewModel vm)
             vm.OutputPath = dlg.FolderName;
     }
+
+    private void OnBrowseAppIcon(object sender, RoutedEventArgs e)
+    {
+        var dlg = new OpenFileDialog
+        {
+            Title  = "Sélectionner une icône",
+            Filter = "Icônes (*.ico)|*.ico|Tous les fichiers (*.*)|*.*"
+        };
+        if (dlg.ShowDialog() == true && DataContext is ProjectPropertiesViewModel vm)
+            vm.AppIconPath = dlg.FileName;
+    }
+
+    // -----------------------------------------------------------------------
+    // Save toast (2 s auto-dismiss)
+    // -----------------------------------------------------------------------
+
+    private async void ShowSaveToast()
+    {
+        SaveToast.Visibility = Visibility.Visible;
+        await Task.Delay(2000);
+        SaveToast.Visibility = Visibility.Collapsed;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// NavItemStyleSelector — selects PP_NavHeaderStyle vs PP_NavItemStyle
+// ---------------------------------------------------------------------------
+
+/// <summary>
+/// Selects the appropriate <see cref="Style"/> for nav ListBox items
+/// based on whether a <see cref="NavItem"/> is a group header or a leaf.
+/// </summary>
+public sealed class NavItemStyleSelector : StyleSelector
+{
+    /// <summary>Style applied to group-header items (non-selectable labels).</summary>
+    public Style? HeaderStyle { get; set; }
+
+    /// <summary>Style applied to selectable leaf items.</summary>
+    public Style? LeafStyle { get; set; }
+
+    public override Style? SelectStyle(object item, DependencyObject container)
+        => item is NavItem { IsHeader: true } ? HeaderStyle : LeafStyle;
+}
+
+// ---------------------------------------------------------------------------
+// NullToCollapsedConverter — collapses element when binding value is null/empty
+// ---------------------------------------------------------------------------
+
+/// <summary>
+/// Returns <see cref="Visibility.Collapsed"/> when the value is <c>null</c> or empty string;
+/// <see cref="Visibility.Visible"/> otherwise.
+/// Used for inline validation error TextBlocks.
+/// </summary>
+public sealed class NullToCollapsedConverter : IValueConverter
+{
+    public static readonly NullToCollapsedConverter Instance = new();
+
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is null || (value is string s && string.IsNullOrEmpty(s))
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
 }

@@ -15,6 +15,7 @@
 //     between WpfPluginHost and IDEHostContext (SetInner called post-construction).
 // ==========================================================
 
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -74,6 +75,9 @@ public sealed class IDEHostContext : IIDEHostContext
     /// <inheritdoc />
     public IExtensionRegistry ExtensionRegistry { get; }
 
+    /// <inheritdoc />
+    public ISolutionManager? SolutionManager { get; }
+
     public IDEHostContext(
         IDocumentHostService documentHost,
         ISolutionExplorerService solutionExplorer,
@@ -90,7 +94,8 @@ public sealed class IDEHostContext : IIDEHostContext
         ITerminalService terminal,
         IIDEEventBus ideEvents,
         IPluginCapabilityRegistry capabilityRegistry,
-        IExtensionRegistry extensionRegistry)
+        IExtensionRegistry extensionRegistry,
+        ISolutionManager? solutionManager = null)
     {
         DocumentHost        = documentHost        ?? throw new ArgumentNullException(nameof(documentHost));
         SolutionExplorer    = solutionExplorer    ?? throw new ArgumentNullException(nameof(solutionExplorer));
@@ -108,5 +113,6 @@ public sealed class IDEHostContext : IIDEHostContext
         IDEEvents           = ideEvents           ?? throw new ArgumentNullException(nameof(ideEvents));
         CapabilityRegistry  = capabilityRegistry  ?? throw new ArgumentNullException(nameof(capabilityRegistry));
         ExtensionRegistry   = extensionRegistry   ?? throw new ArgumentNullException(nameof(extensionRegistry));
+        SolutionManager     = solutionManager;
     }
 }

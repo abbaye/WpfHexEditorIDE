@@ -60,8 +60,17 @@
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="{DynamicResource PFP_TextBrush}"
-                        Visibility="Collapsed">
-                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                        Visibility="Collapsed"
+                        Content="&#xE712;"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="10">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu"
+                                     Background="{DynamicResource DockMenuBackgroundBrush}"
+                                     BorderBrush="{DynamicResource DockBorderBrush}"
+                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                     Opened="OnOverflowMenuOpened"/>
+                    </Button.ContextMenu>
                 </Button>
 
                 <!-- Assembly selectors group -->
@@ -133,8 +142,7 @@
             </DockPanel>
         </Border>
 
-        <!-- Overflow context menu -->
-        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened"/>
+        <!-- OverflowContextMenu is declared inside Button.ContextMenu on ToolbarOverflowButton above -->
 
         <!-- ── Results DataGrid ───────────────────────────────────────────── -->
         <DataGrid Grid.Row="1"
@@ -151,7 +159,7 @@
                   Foreground="{DynamicResource PFP_TextBrush}"
                   BorderThickness="0"
                   RowBackground="{DynamicResource PFP_PanelBackgroundBrush}"
-                  ColumnHeaderStyle="{DynamicResource PFP_DataGridColumnHeaderStyle}"
+                  
                   MouseDoubleClick="OnDiffRowDoubleClick">
 
             <!-- Row background driven by DiffKind -->

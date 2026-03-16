@@ -155,7 +155,8 @@ public partial class MainWindow
                 terminal:            _terminalService,
                 ideEvents:           _ideEventBus,
                 capabilityRegistry:  capabilityAdapter,
-                extensionRegistry:   extensionRegistry);
+                extensionRegistry:   extensionRegistry,
+                solutionManager:     _solutionManager);
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;

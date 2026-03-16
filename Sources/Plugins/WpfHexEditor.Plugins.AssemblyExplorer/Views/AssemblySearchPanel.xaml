@@ -54,6 +54,9 @@
                         Foreground="{DynamicResource PFP_TextBrush}"
                         Visibility="Collapsed">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened"/>
+                    </Button.ContextMenu>
                 </Button>
 
                 <!-- Search box group -->
@@ -140,8 +143,6 @@
             </DockPanel>
         </Border>
 
-        <!-- Overflow context menu (ToolbarOverflowManager) -->
-        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened"/>
 
         <!-- ── Results DataGrid ───────────────────────────────────────────── -->
         <DataGrid Grid.Row="1"

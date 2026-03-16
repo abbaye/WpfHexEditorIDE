@@ -33,6 +33,7 @@ using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAss
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.Editor.TextEditor.Controls;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
@@ -110,7 +111,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             p => { if (p is AssemblyRootNodeViewModel root) TogglePin(root); },
             p => p is AssemblyRootNodeViewModel);
 
-        // Opens decompiled text in a read-only styled TextBox document tab.
+        // Opens decompiled text in a syntax-highlighted TextEditor document tab.
         OpenInEditorCommand = new RelayCommand(
             _ => OpenSelectedNodeInEditor(),
             _ => SelectedNode is not null);
@@ -746,6 +747,9 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         if (_selectedNode is null) return;
 
         var filePath = _selectedNode.OwnerFilePath ?? string.Empty;
+        var isCSharp = _selectedNode is AssemblyRootNodeViewModel
+                                     or TypeNodeViewModel
+                                     or MethodNodeViewModel;
         var text = _selectedNode switch
         {
             AssemblyRootNodeViewModel root => _decompilerBackend.DecompileAssembly(root.Model, filePath),
@@ -764,7 +768,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             return;
         }
 
-        var content = BuildDecompiledContent(text);
+        var content = BuildDecompiledCodeEditor(text, isCSharp);
 
         _uiRegistry.RegisterDocumentTab(uiId, content, _pluginId, new DocumentDescriptor
         {
@@ -775,26 +779,20 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         });
     }
 
-    private static UIElement BuildDecompiledContent(string text)
+    /// <summary>
+    /// Builds a syntax-highlighted TextEditor for the decompiled code document tab.
+    /// Uses C# language definition when <paramref name="isCSharp"/> is true;
+    /// falls back to plain-text monospace for IL and other non-C# content.
+    /// </summary>
+    private static UIElement BuildDecompiledCodeEditor(string text, bool isCSharp)
     {
-        var textBox = new TextBox
+        var editor = new TextEditor
         {
-            Text              = text,
-            IsReadOnly        = true,
-            FontFamily        = new FontFamily("Consolas"),
-            FontSize          = 12,
-            BorderThickness   = new Thickness(0),
-            TextWrapping      = TextWrapping.NoWrap,
-            CaretBrush        = Brushes.Transparent,
-            Padding           = new Thickness(8, 4, 8, 4),
-            VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+            IsReadOnly      = true,
+            BorderThickness = new Thickness(0)
         };
-
-        textBox.SetResourceReference(TextBox.ForegroundProperty, "PFP_SubTextBrush");
-        textBox.SetResourceReference(TextBox.BackgroundProperty, "PFP_SectionBackgroundBrush");
-
-        return textBox;
+        editor.SetContentDirect(text, readOnly: true, languageName: isCSharp ? "C#" : null);
+        return editor;
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -877,6 +875,35 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         TotalLoadedAssemblies = _workspace.Count;
         TotalLoadedTypes      = _workspace.Values.Sum(e => e.Model.Types.Count);
         WorkspaceStatsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    // ── Extract to project ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Writes an informational message to the IDE output and updates the status bar text.
+    /// Used by the panel layer after extract/save operations.
+    /// </summary>
+    public void ReportInfo(string message)
+    {
+        StatusText = message;
+        _output.Info($"[Assembly Explorer] {message}");
+    }
+
+    /// <summary>
+    /// Returns the decompiled C# text for the given node.
+    /// Returns (<see langword="true"/>, text) for decompilable nodes;
+    /// (<see langword="false"/>, stub) for group/namespace nodes with no C# output.
+    /// </summary>
+    public (bool isCSharp, string text) GetDecompiledText(AssemblyNodeViewModel node)
+    {
+        var filePath = node.OwnerFilePath ?? string.Empty;
+        return node switch
+        {
+            AssemblyRootNodeViewModel root => (true,  _decompilerBackend.DecompileAssembly(root.Model, filePath)),
+            TypeNodeViewModel         type => (true,  _decompilerBackend.DecompileType(type.Model, filePath)),
+            MethodNodeViewModel       meth => (true,  _decompilerBackend.DecompileMethod(meth.Model, filePath)),
+            _                              => (false, _decompiler.GetStubText(node.DisplayName))
+        };
     }
 
     // ── Search / Diff support ─────────────────────────────────────────────────

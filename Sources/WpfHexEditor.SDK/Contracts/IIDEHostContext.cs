@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -28,6 +29,13 @@ public interface IIDEHostContext
 
     /// <summary>Access to the Solution Explorer for file/project navigation.</summary>
     ISolutionExplorerService SolutionExplorer { get; }
+
+    /// <summary>
+    /// Access to the WH native project/solution manager.
+    /// Null when the host does not expose this service (e.g. sandboxed plugins).
+    /// Use to add generated files to an open WH project via <see cref="ISolutionManager.CreateItemAsync"/>.
+    /// </summary>
+    ISolutionManager? SolutionManager { get; }
 
     /// <summary>Access to the active HexEditor content and selection state.</summary>
     IHexEditorService HexEditor { get; }
