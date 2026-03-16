@@ -77,7 +77,10 @@ namespace WpfHexEditor.Core.Services
         }
 
         /// <summary>
-        /// Updates all resources from the resource manager for the current culture
+        /// Updates all resources from the resource manager for the current culture.
+        /// Uses the invariant culture as the master key list, then resolves each key
+        /// with proper per-key fallback (e.g., fr-CA → fr → invariant).
+        /// This ensures all keys are present even when a translation file is incomplete.
         /// </summary>
         private void UpdateResources()
         {
@@ -86,26 +89,42 @@ namespace WpfHexEditor.Core.Services
 
             try
             {
-                // Get the resource set for the current culture
-                var resourceSet = _resourceManager.GetResourceSet(CurrentCulture, createIfNotExists: true, tryParents: true);
+                var culture = CurrentCulture;
 
-                if (resourceSet == null)
+                // Get the invariant ResourceSet as the master list of all available keys.
+                // This guarantees every key (all 510 in Resources.resx) is enumerated,
+                // even for cultures with partial translations (e.g., fr-CA has 342/510).
+                var invariantSet = _resourceManager.GetResourceSet(
+                    CultureInfo.InvariantCulture,
+                    createIfNotExists: true,
+                    tryParents: false);
+
+                if (invariantSet == null)
                 {
+                    System.Diagnostics.Debug.WriteLine("[LocalizedResourceDictionary] WARNING: No invariant resource set found");
                     return;
                 }
 
-                // Add all resources to the dictionary
-                foreach (DictionaryEntry entry in resourceSet)
+                int count = 0;
+                foreach (DictionaryEntry entry in invariantSet)
                 {
-                    if (entry.Key is string key && entry.Value is string value)
+                    if (entry.Key is string key)
                     {
-                        this[key] = value;
+                        // GetString() walks the fallback chain per-key: fr-CA → fr → invariant
+                        var value = _resourceManager.GetString(key, culture);
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            this[key] = value;
+                            count++;
+                        }
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine($"[LocalizedResourceDictionary] Loaded {count} resources for culture '{culture.Name}'");
             }
             catch (Exception ex)
             {
-                // Silently ignore resource loading errors
+                System.Diagnostics.Debug.WriteLine($"[LocalizedResourceDictionary] ERROR updating resources: {ex.Message}");
             }
         }
 
