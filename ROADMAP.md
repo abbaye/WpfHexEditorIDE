@@ -12,8 +12,11 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 | Feature # | Title | Description | Progress |
 |-----------|-------|-------------|----------|
 | #81 | **Plugin Sandbox** | Out-of-process isolation via HWND embedding + full IPC bridge (menus, toolbar, events). HWND parenting, Job Object resource control, IPC HexEditor event bridge done. Auto-isolation engine done. IDE EventBus IPC bridge done. Remaining: gRPC migration, hot-reload from sandbox. | ~65% |
-| #104–105 | **Assembly Explorer** | .NET PE tree (namespaces, types, methods, fields, events, resources). Phase 1 (PEReader pipeline, stub tree, IDE menu/statusbar) done. ECMA-335 full metadata resolution pending. | ~15% |
+| #84 | **Code Editor — VS-Like Advanced** | Full-featured code editor: VS-like navigation bar (types/members combos, Segoe MDL2 icons, `CaretMoved` event, auto-scroll), syntax highlighting with 26 `.whlang` definitions, URL hover/click, find/replace, split view, `IEditorPersistable`. Hosts decompiled C# from Assembly Explorer. Remaining: folding, gutter indicators, multi-caret, diagnostics integration. | ~80% |
+| #101–103 | **MSBuild & VS Solution Support** | Open `.sln` files via `VsSolutionLoaderPlugin`; build/rebuild/clean via MSBuild API; output routed to Build channel with severity coloring; auto-focus on build start; empty-solution guard. Project templates scaffolded. Remaining: error list navigation, incremental build. | ~60% |
+| #104–106 | **Assembly Explorer + Decompilation** | .NET PE tree done. C# decompilation done. ILSpy backend added (`IlSpyDecompilerBackend`). VB.NET language done. CFG Canvas, Assembly Diff, Assembly Search, XRef View, Decompile Cache done (v0.5.2). Remaining: full ECMA-335 token→offset resolution, ILSpy full decompilation, hex sync. | ~55% |
 | #107 | **Document Model** | Unified in-memory document representation shared across all editors (hex, code, text, diff). Foundation for multi-editor collaboration, undo/redo unification and LSP integration. | ~10% |
+| #85–86 | **LSP Engine / IntelliSense** | `WpfHexEditor.LSP` project created with navigation, formatting, refactoring, symbols infrastructure. `RefactoringEngine`, `RenameRefactoring`, `ExtractMethodRefactoring`, `CodeFormatter`, `SymbolTableManager`, `NavigationProvider` stubs. `CommandIntegration` mediator wired to IDE EventBus. Remaining: real parsing backend, completion provider, hover info. | ~20% |
 
 ---
 
@@ -33,9 +36,9 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 | #83 | **Options Document / IDE Settings** | Unified options panel for editor behavior, themes, plugins, and workspace config with live preview. |
 | #87 | **Workspace Templates** | Pre-configured project templates for common file structures and development workflows. |
 | #100 | **IDE Localization Engine** | Full i18n support for IDE UI (currently English only). HexEditor control already supports 19 languages. EN/FR initial; plugin-provided translations; dynamic switching. |
-| #101 | **`.sln` Parser** | Open and parse existing Visual Studio 2019/2022 `.sln` files; project graph resolution, nested solution folders, shared projects. |
-| #102 | **C# / VB.NET Project Support** | Full `.csproj` / `.vbproj` parsing — properties, item groups, package references, project-to-project references; read/write support. |
-| #103 | **MSBuild API Integration** | Build, rebuild, clean via embedded MSBuild API from within the IDE; output to Output Panel; errors/warnings to Error Panel with file/line navigation. |
+| #101 | **`.sln` Parser** | *(In Progress — see above)* Open and parse existing Visual Studio 2019/2022 `.sln` files via `VsSolutionLoaderPlugin`. Remaining: nested solution folders, shared projects, full project graph. |
+| #102 | **C# / VB.NET Project Support** | *(In Progress)* `.csproj` parsing via MSBuild Locator. Remaining: VB.NET, write support, item group editing. |
+| #103 | **MSBuild API Integration** | *(In Progress — see above)* Build/rebuild/clean done. Remaining: error list navigation with file/line jump, incremental builds, parallel project builds. |
 
 ---
 
@@ -54,14 +57,15 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #84 | **Code Editor — VS-Like Advanced** | Full-featured code editor with syntax folding, multi-language support, gutter indicators, split view, and diagnostics integration. |
-| #85 | **LSP Engine** | Incremental symbol parsing, folding, go-to-definition, find-references via Language Server Protocol. |
+| #84 | **Code Editor — VS-Like Advanced** | *(In Progress ~70% — see above)* Remaining: syntax folding, gutter indicators, multi-caret, diagnostics integration. |
+| #85 | **LSP Engine** | *(In Progress ~20% — see above)* Infrastructure done. Remaining: real parsing backend, go-to-definition, find-references. |
 | #86 | **IntelliSense v4 (LSP)** | Advanced autocomplete, signature help, quick-info, multi-caret editing, virtual scroll for >1 GB files. |
 | #88 | **Dynamic Snippets** | `SnippetsManager` with context-aware snippets, dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); user/plugin/language-scoped. |
 | #89 | **AI-Assisted Code Suggestions** | `AICompletionEngine` and `AIRefactoringAssistant`; contextual completions, auto-refactoring, plugin-extensible AI rules. |
 | #94 | **Advanced Refactoring** | Rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions. |
 | #96 | **Code Analysis & Metrics** | Cyclomatic complexity, code duplication detection, dependency graphs; dedicated panel with filter/sort. |
 | #106 | **.NET Decompilation via ILSpy** | C# skeleton view + full IL disassembly per method; "Go to Metadata Token" navigation; decompiled source in Code Editor tab. |
+| #155 | **Visual XAML Editor** | Full split-pane XAML designer: live WPF rendering canvas (design surface) synchronized with a code-behind XML editor; element selection with handles for move/resize; property inspector panel (all DPs, attached properties, bindings); resource picker for brushes, styles, templates; XAML outline tree-view; data-binding wizard; undo/redo for both canvas and text; trigger & animation timeline editor; multi-resolution preview (DPI/scale); "Go to Definition" for resource keys and type names; export as standalone `.xaml` control or paste into project. Integrated into the docking system as a first-class editor tab type with full theme compliance. |
 
 ---
 
@@ -195,6 +199,19 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature | Version / Release |
 |---------|-------------------|
+| **Code Editor Navigation Bar** — VS-like types/members combos, Segoe MDL2 icons, `CaretMoved` event, auto-scroll to declaration | [0.5.2] — 2026-03-16 |
+| **Assembly Explorer Expansion** — ILSpy backend, VB.NET, CFG Canvas, Assembly Diff, Assembly Search, XRef View, Decompile Cache, options page | [0.5.2] — 2026-03-16 |
+| **NuGet support** — `NuGetV3Client`, `CsprojPackageWriter`, `NuGetPackageViewModel` in ProjectSystem | [0.5.2] — 2026-03-16 |
+| **Workspace Templates** — `TemplateManager`, `ProjectScaffolder`, 3 built-in JSON templates, `NewProjectDialog` | [0.5.2] — 2026-03-16 |
+| **Build system refactoring** — `MSBuildAdapter` error surfacing, async fix, Locator DLL copy; `MSBuildLogger`/`NuGetRestoreStep` removed | [0.5.2] — 2026-03-16 |
+| **Themes: `CE_SelectionInactive`** brush token — Code Editor inactive selection, all 8 themes | [0.5.2] — 2026-03-16 |
+| **Source Outline Navigation** — lazy type/member tree in Solution Explorer for `.cs`/`.xaml` files; `SourceOutlineEngine` BCL-only parser; `LoadingNode` placeholder + async expand | [0.5.0] — 2026-03-16 |
+| **Assembly Explorer v0.2.1** — Decompile to C# → Code Editor tab with syntax highlighting; Extract to Project (`AssemblyCodeExtractService` + `ProjectPickerDialog`); Collapse All; Close All Assemblies | [0.5.0] — 2026-03-16 |
+| **Code Editor — full syntax highlighting** — all 26 `.whlang` definitions; live `TryFindResource` brush resolution; foreground base pass; hover-only URL underline with tooltip; split host + document model cleanup | [0.5.0] — 2026-03-16 |
+| **Build Output Channel** — `OutputServiceImpl.Write("Build",…)` now routes to Build channel; auto-focus via `OutputLogger.FocusChannel`; severity coloring (info/warn/error/success); empty-solution guard | [0.5.0] — 2026-03-16 |
+| **VS Solution Loader** — `VsSolutionLoaderPlugin` with dynamic file-dialog filter + external solution routing; 4 project templates (Console, ClassLib, WPF, AspNet API) | [0.5.0] — 2026-03-16 |
+| **LSP Infrastructure** — `WpfHexEditor.LSP`: `RefactoringEngine`, `RenameRefactoring`, `ExtractMethodRefactoring`, `CodeFormatter`, `SymbolTableManager`, `CommandIntegration` mediator (#85–86 foundation) | [0.5.0] — 2026-03-16 |
+| **Docking: Tab Overflow Panel** — `TabOverflowButton` + `TabOverflowPanel` improvements; correct positioning and theme-aware context menu | [0.5.0] — 2026-03-16 |
 | **IDE EventBus** — `WpfHexEditor.Events`, `IIDEEventBus`, 10 typed events, IPC bridge for sandbox plugins, options page (#80) | [0.4.0] — 2026-03-16 |
 | **Plugin Lazy Loading** — `PluginActivationConfig`, `PluginActivationService`, `Dormant` state, file-extension/command triggers (#77 partial) | [0.4.0] — 2026-03-16 |
 | **Capability Registry** — `IPluginCapabilityRegistry`, `PluginFeature` constants, manifest `features` field | [0.4.0] — 2026-03-16 |
@@ -204,8 +221,6 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 | **Plugin Sandbox — HWND embedding + IPC menu/toolbar/event bridges** (#81 Phase 9-12) | [0.3.0] — 2026-03-15 |
 | **Auto-isolation decision engine + PluginMigrationPolicy** (#81) | [0.3.0] — 2026-03-15 |
 | **SandboxJobObject** — per-plugin CPU/RAM resource limits (#81) | [0.3.0] — 2026-03-15 |
-| **PluginMigrationMonitor** — isolation mode history & stability metrics | [0.3.0] — 2026-03-15 |
-| Plugin Manager Options UI — per-plugin sandbox configuration | [0.3.0] — 2026-03-15 |
 | Multi-tab terminal sessions + macro recording (#92) | [0.3.0] — 2026-03-15 |
 | Assembly Explorer stub — PEReader pipeline, IDE menu, statusbar (#104 Phase 1) | [0.3.0] — 2026-03-15 |
 | Plugin system (SDK, PluginHost, 9 first-party plugins, monitoring) | [0.3.0] — 2026-03-15 |

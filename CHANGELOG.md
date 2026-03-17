@@ -6,65 +6,174 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.5.2] — 2026-03-16 — Code Editor Navigation Bar, Assembly Explorer Expansion & Build Refactoring
+
+### ✨ Added — Code Editor: VS-Like Navigation Bar
+
+- **Navigation bar** — VS-style dual-combo toolbar at the top of the Code Editor: left combo lists all types (class/interface/struct/enum/delegate), right combo lists all members (methods, properties, fields, events, constructors, indexers)
+- **CaretMoved event** — `ICodeEditor.CaretMoved` raised on every line/column change; nav-bar combos auto-select the matching type and member as the caret moves
+- **Auto-scroll** — clicking a combo item scrolls the editor to the corresponding declaration line
+- **Segoe MDL2 Assets icons** — each member kind uses a Segoe MDL2 glyph matching the IDE Solution Explorer palette (method `\uE8A0`, property `\uE74C`, field `\uE894`, event `\uE7C3`, constructor/indexer `\uE8D5`)
+- **`_camelCase` name support** — member name parser strips leading underscores before matching, so `_field` is correctly classified as a private field node in the nav-bar
+
+### ✨ Added — Themes: Code Editor Selection Token
+
+- **`CE_SelectionInactive`** brush token added to all 8 built-in themes — used by the Code Editor to distinguish inactive (unfocused window) text selections from active ones
+
+### ✨ Added — Options: MouseWheelSpeed
+
+- **`MouseWheelSpeed` DP / enum selector** — new Hex Editor Display option (`System`, `Slow`, `Normal`, `Fast`, `VeryFast`); defaults to `System` (matches OS wheel delta); controls smooth-scroll velocity in the Code Editor and HexEditor
+
+### ✨ Added — Assembly Explorer: Major Expansion
+
+- **ILSpy decompiler backend** — `IlSpyDecompilerBackend` wraps the ILSpy engine; `DecompilerService` selects between `SkeletonDecompilerBackend` (BCL-only) and ILSpy backend via `DecompilerOptions.UseIlSpy`
+- **VB.NET decompilation language** — `VbNetDecompilationLanguage` added to the decompiler language registry; surface in the detail pane language selector
+- **Decompile cache** — `DecompileCache` prevents redundant decompilation of unchanged assemblies; keyed by `(filePath, tokenHandle, language)`
+- **Assembly Diff panel** — `AssemblyDiffPanel` + `AssemblyDiffViewModel`: compare two loaded assemblies side-by-side; highlights added/removed/changed members with color coding
+- **Assembly Search panel** — `AssemblySearchPanel` + `AssemblySearchViewModel`: full-text search across all loaded assembly members with type/kind filter and instant results list
+- **Source View panel** — `SourceViewModel` + read-only source tab in `AssemblyDetailPane`
+- **CFG Canvas** — `CfgCanvas` custom control + `CfgViewModel`: control-flow graph rendering for a selected method (nodes = basic blocks, edges = jumps/branches); opens in a dedicated tab
+- **XRef View** — `XRefViewModel`: shows all cross-references to a selected member (callers/implementors); listed in the detail pane XRef tab
+- **Assembly Workspace entry** — `AssemblyWorkspaceEntry` serialization; loaded assemblies are persisted in the workspace and restored on next session open
+- **Options page** — `AssemblyExplorerOptions` + `AssemblyExplorerOptionsPage.xaml`: decompiler backend selector (Skeleton/ILSpy), VB.NET toggle, cache size, pinning behavior
+- **Decompiler contracts** — `IDecompilerBackend` + `DecompilerOptions` extracted to allow swappable backends without changing the plugin API
+
+### ✨ Added — NuGet Support in Project System
+
+- **NuGet V3 client** — `NuGetV3Client` + `INuGetClient`: queries `nuget.org/v3` for package search, version listing, and dependency resolution
+- **NuGet DTOs** — `NuGetDtos` models for API responses
+- **`CsprojPackageWriter`** — writes `<PackageReference>` entries to `.csproj` files programmatically
+- **`NuGetPackageViewModel`** — display model for the NuGet package browser panel
+
+### ✨ Added — Workspace Templates
+
+- **`WpfHexEditor.WorkspaceTemplates`** project — `TemplateManager`, `ProjectScaffolder`, `IProjectTemplate`; 3 built-in JSON templates (`blank`, `sdk-plugin`, `text-analysis`)
+- **Initializers** — `IntelliSenseInitializer`, `LanguageInitializer`, `OptionsInitializer`, `PluginInitializer`; each wires one aspect of a new workspace on scaffold
+- **`NewProjectDialog`** — XAML dialog + `NewProjectDialogViewModel` for creating projects from templates
+
+### 🔧 Fixed / Refactored — Build System
+
+- **`MSBuildAdapter`** — surface engine errors from the MSBuild evaluation step; async fire-and-forget replaced with proper `await`; copy MSBuild Locator DLL to plugin output directory during build
+- **`BuildSystem`** / **`IBuildAdapter`** refactored — clean separation between adapter contract and engine; `MSBuildLogger.cs` and `NuGetRestoreStep.cs` removed (responsibilities folded into adapter and core engine)
+- **`BuildOutputAdapter`** / **`OutputServiceImpl`** — build output now correctly classified (info/warn/error/success) before routing to the Build channel
+
+### 🔧 Fixed — Code Editor Scrolling & UX
+
+- **Smooth scrolling** — disabled by default; opt-in via options; prevents unintended inertia during precision editing
+- **Mouse-click offset** — corrected hit-test calculation when pixel-based smooth scroll is active (caret no longer lands one line off)
+- **Gutter update guard** — gutter repaint skipped when editor content hasn't changed, reducing flicker during rapid scrolling
+- **Scrollbar cursor** — `Arrow` cursor explicitly set on scrollbar tracks to override the inherited `IBeam` from the editor host
+- **Split toggle** — split-view toggle button moved clear of the vertical scrollbar track
+
+---
+
+## [0.5.1] — 2026-03-16 — Source Outline Patch
+
+### 🔧 Fixed
+
+- **Solution Explorer: source type nodes auto-expanded on first lazy load** — `SourceTypeNodeVm` inherited `IsExpanded = true` from the base class default, causing class/struct/interface nodes to appear fully expanded (all members visible) the moment a `.cs` or `.xaml` file node was expanded for the first time. Type nodes are now explicitly initialized with `IsExpanded = false` in `ApplyOutlineToNode`; the user must intentionally expand a type node to reveal its members.
+
+---
+
+## [0.5.0] — 2026-03-16 — Code Editor, Source Outline, Build Output, Assembly Explorer & VS Solution Loader
+
+### ✨ Added — Solution Explorer: Source Outline Navigation
+
+- **`SourceOutlineEngine`** (`WpfHexEditor.Core.SourceAnalysis`) — BCL-only regex-based parser that extracts types and members with 1-based line numbers from `.cs` and `.xaml` files; results are cached per file path
+- **`ISourceOutlineService`** — contract for source outline providers; injected into `SolutionExplorerViewModel`
+- **`SourceTypeModel` / `SourceMemberModel` / `SourceOutlineModel`** — immutable models for parsed types and members
+- **`SolutionExplorerNodeVm`** — lazy expansion via `TreeViewItem.ExpandedEvent`; `LoadingNode` placeholder shown while parsing; outline nodes expose `LineNumber` for direct navigation
+- **`SolutionExplorerViewModel`** — `OutlineService` wired; async expand handler calls `SourceOutlineEngine` on background thread
+- **`SolutionExplorerPanel.xaml.cs`** — `TreeViewItem.Expanded` handler triggers on-demand source parse; prevents double-expansion
+- Source outline is activated automatically for `.cs` and `.xaml` nodes in the Solution Explorer tree
+
+### ✨ Added — Assembly Explorer Improvements (v0.2.1)
+
+- **Collapse All** — toolbar button + context menu item collapses the entire assembly tree to root nodes
+- **Close All Assemblies** — toolbar button (`ToolbarRightPanel`, always visible) + context menu item (red `#EF4444`) clears all loaded assemblies in one action; `CloseAllCommand` wired in `AssemblyExplorerViewModel`
+- **Decompile to C# → Code Editor tab** — `OnDecompile` now sets `ViewModel.SelectedNode` before executing `OpenInEditorCommand`; ensures right-click context menu decompilation always opens the correct node in a Code Editor tab
+- **C# Syntax Highlighting in decompiled output** — decompiled C# skeleton rendered with full token-level syntax coloring in the Code Editor tab (keywords, types, strings, comments, numbers, operators)
+- **Extract to Project workflow** — `AssemblyCodeExtractService` extracts decompiled C# from any type/method/assembly node and places it in a chosen project; `ProjectPickerDialog` lets the user select the target project; wired via `ExtractToProjectAsync` in `AssemblyExplorerPanel`
+
+### ✨ Added — Build Output Routing (#103 partial)
+
+- **`OutputServiceImpl.Write("Build", …)`** — fixed: now routes to `OutputLogger.BuildInfo/BuildWarn/BuildError/BuildSuccess` (was silently routing to the General channel)
+- **`OutputLogger.FocusChannel(string source)`** — new static method; switches the Output panel to the specified tab on the UI thread via `Dispatcher.InvokeAsync`
+- **`OutputPanel.SetActiveSource(string source)`** — new `internal` method; iterates `SourceComboBox.Items` to match and programmatically select the correct channel
+- **Auto-focus Build tab** — `MainWindow.Build.cs` calls `OutputLogger.FocusChannel(SourceBuild)` in all build runners (`RunBuildSolutionAsync`, `RunRebuildSolutionAsync`, `RunCleanSolutionAsync`, `RunBuildProjectByIdAsync`, `RunRebuildProjectByIdAsync`) before awaiting the build
+- **Empty-solution guard** — if no solution or projects are loaded, `RunBuildSolutionAsync` logs a gold warning "No solution or projects loaded — nothing to build." and returns immediately instead of silently succeeding
+
+### ✨ Added — VS Solution Loader: Project Templates
+
+- **`DotNetProjectTemplate`** — abstract base with `Name`, `Description`, `DefaultProjectName`, `SupportedLanguages`, `GenerateFiles()`
+- **`ConsoleAppTemplate`** — .NET 8 console application scaffold
+- **`ClassLibraryTemplate`** — .NET 8 class library scaffold
+- **`WpfAppTemplate`** — WPF application scaffold (net8.0-windows)
+- **`AspNetApiTemplate`** — ASP.NET Core Web API scaffold
+- Templates are discovered via `VsSolutionLoaderPlugin` and used by "New Project" dialogs
+
+### ✨ Added — Code Editor Enhancements (#84 partial)
+
+- **Full `.whlang` syntax coloring** — all 26 embedded language definitions now produce token-level colored output (keyword, type, string, comment, number, operator, url, preprocessor, attribute, identifier)
+- **Live brush resolution** — `ResolveBrushForKind()` uses `TryFindResource` directly on the editor control instead of the WPF DP system; eliminates "brush not found" fallback to transparent on theme switches
+- **Foreground base pass** — entire document gets the theme foreground color before token colorization to prevent uncolored regions from rendering transparent
+- **Hover-only URL underline** — hyperlinks in code are underlined only on `MouseEnter`; tooltip shows the full URL; click opens in browser
+- **URL baseline fix** — underline drawn closer to text baseline for visual consistency with VS Code
+- **`CodeEditorSplitHost`** improvements — split host properly propagates theme changes to both panes
+- **`CodeDocument` model cleanup** — simplified document state; reduced unnecessary allocations
+- **`CodeEditorFactory`** registration aligned with updated factory contracts
+
+### ✨ Added — LSP Infrastructure
+
+- **`RefactoringEngine`** (`WpfHexEditor.LSP`) — central registry for `IRefactoring` implementations; `Register(IRefactoring)` + `GetAvailable(RefactoringContext)` for contextual filtering; resolves `CS0246` compile error in `CommandIntegration`
+
+### ✨ Added — Docking Engine: Tab Overflow
+
+- **`TabOverflowButton`** — improved overflow button for docked tab groups; correct positioning, theme-aware context menu
+- **`TabOverflowPanel`** — manages collapsed tab groups; updated hit-testing and layout logic
+- **`DockControl` / `DockTabControl`** — wired tab overflow to new panel; `DockTabEventWirer` updated to relay overflow events
+
+### 🔧 Fixed
+
+- **Assembly Explorer: Decompile context menu** — right-click "Decompile to C#" had no effect; `SelectedNode` was not set before `OpenInEditorCommand` executed (`eb536cc6`)
+- **Assembly Explorer: AssemblyDiffPanel crash** — `XamlParseException: 'ContextMenu' cannot have a logical or visual parent` at `InitializeComponent()`; root cause: Button with TextBlock child + `<Button.ContextMenu>` property element causes parent conflict in WPF XAML; fixed by converting Button content to `Content="&#xE712;"` attribute form
+- **Code Editor: syntax highlight transparent on load** — `ResolveBrushForKind` referenced DP-system brushes that weren't in scope at paint time; now uses `TryFindResource` on the control element (`ff19b091`)
+- **Build system: output not visible** — all build output was routed to the General channel with `[Build]` prefix; now correctly routes to the dedicated Build channel (`d335b505`)
+- **Build toolbar/menu: disabled after solution open** — build commands stayed grayed out after opening a `.sln`; fixed by refreshing command states on `SolutionLoadedEvent` (`d8fe1882`)
+- **File access: FileShare.None causing lock conflicts** — analysis services opened files exclusively; replaced with `FileShare.ReadWrite` throughout + external change detection (`b3090989`)
+- **Changeset tracking: performance regression** — `.whchg` tracking was O(n²) on large files; optimized and disabled by default (`f140c544`)
+- **Startup: System.Text.Json 10 transitive dependency** — MSBuild packages pulled in JSON 10 which conflicted with WPF serialization; pinned to 8.x in affected projects (`1027f192`)
+- **Grammar Explorer: embedded grammar discovery** — deferred panel docking and reliable discovery of grammars bundled as embedded resources (`a7196376`)
+- **SolutionLoader: VS/WH/MSBuild build order** — plugins not included in App build order; added project references (`7a7b318d`)
+- **PluginDev: duplicate DevPluginHandle + missing using** — removed duplicate type, added `System.IO` import (`eb656c35`)
+- **Compilation errors: PluginProjectTemplate, CodeEditorOptionsPage, Initializers** — various CS errors fixed (`131cd20b`)
+
+### ⚡ Changed
+
+- **SolutionLoader: dynamic file-dialog filter** — `ISolutionLoader` plugins now declare their supported file extensions; the Open Solution dialog filter is built dynamically from all registered loaders (`ba9279b2`)
+- **External solution routing via `ISolutionLoader`** — `.sln` files are routed to the correct loader plugin instead of being hard-coded in `MainWindow`
+- **IProjectTemplate**: extended contract with `DefaultProjectName`, `SupportedLanguages`, `GenerateFiles()`
+
+---
+
 ## What's Next
 
-> Planned features — subject to change. Feature numbers map to DevPlans.
+> Full roadmap → **[ROADMAP.md](ROADMAP.md)**
 
-### Plugin System — Remaining
-- Hot-load / Hot-unload at runtime without IDE restart (AssemblyLoadContext collectible — UI not yet exposed)
-- **#41 Plugin Marketplace** — `MarketplaceManager`, browse/install/update from online registry, signed packages
-- **#42 Plugin Security & Sandboxing** — permission declarations at install time, integrity verification, AppDomain isolation
-- **#43 Auto-Update** — `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins
-- **gRPC transport migration** — replace named-pipe IPC with gRPC for sandbox plugins
-
-### Image Viewer — Remaining
-- Batch export, format conversion (PNG/JPEG/BMP/TIFF)
-- Histogram panel, color picker, EXIF metadata viewer
-
-### IDE Core Infrastructure
-- **#36 Service Container / Dependency Injection** — `ServiceContainer` singleton; `FileService`, `EditorService`, `PanelService`, `PluginService`, `EventBus`, `TerminalService` — Singleton/Scoped/Transient lifecycle
-- **#37 Global CommandBus** — all IDE actions (menus, toolbar, terminal, plugins) routed through `CommandBus`; every command has an Id, Handler, CanExecute context, and Category
-- **#38 Keyboard Shortcuts & Bindings** — `KeyBindingService`, configurable gestures per command, conflict detection, plugin-extensible, export/import
-- **#39 User Preferences Persistence** — `ConfigurationManager`, per-section schemas, plugin config API, export/import, cross-session persistence
-- **#40 Centralized Logging & Diagnostics** — `LogService` (Info/Warning/Error/Debug), `DiagnosticService` (perf metrics), `LogSink` abstraction, Output + Error Panel integration
-
-### Code Intelligence / Editor
-- **#85 LSP Engine** — incremental symbol parsing, folding, go-to-definition, find-references
-- **#86 IntelliSense** — autocomplete, quick-info, signature help, multi-caret, virtual scroll for >1 GB files
-- **#88 Dynamic Snippets** — `SnippetsManager`, `SnippetEditorDialog`; user/plugin/language-scoped; dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); priority: user > imported > built-in
-- **#89 AI-Assisted Code Suggestions** — `AICompletionEngine`, `AIRefactoringAssistant`; contextual completions, auto-refactoring, plugin-extensible AI rules
-
-### Debugging & Testing
-- **#44 / #90 Integrated Debugger** — `DebuggerService` (StartDebug, StepInto/Over/Out, Evaluate), `BreakpointsManager`, `WatchPanel`, `CallStackPanel`; supports scripts, plugins and workspace multi-projects via EventBus
-- **#95 Unit Testing Panel** — `TestManager`, `TestRunner`, `TestResultPanel`; auto-detect NUnit/JUnit/PyTest; run by file/project/workspace; scaffolding from workspace templates
-
-### Source Control
-- **#91 Git Integration** — `GitManager`, `GitPanel` (commit/push/pull/branch); inline gutter diff; `GitEventAdapter` for file-change notifications; plugin hooks for pre-commit linters
-
-### Code Analysis & Refactoring
-- **#94 Advanced Refactoring** — `RefactoringManager`, `ASTAnalyzer`; rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions
-- **#96 Code Analysis & Metrics** — `CodeAnalysisManager`, `DependencyGraphEngine`, `MetricsCalculator`; cyclomatic complexity, code duplication, dependency graphs; dedicated panel with filter/sort
-
-### Performance
-- **#97 Large File Optimization** — `VirtualizationEngine`, `LazyParser`, `MultiThreadedIntelliSenseAdapter`; virtualized display for >1 GB files, incremental parsing, multi-core IntelliSense, workspace memory management
-
-### Collaboration & UX
-- **#98 Multi-User Collaboration** — `CollaborationManager`, `DocumentSyncEngine`; multi-cursor real-time editing, contextual chat/comments per line, EventBus integration
-- **#99 Advanced UI/UX** — `NotificationManager`, `WorkspaceLayoutAdapter`; contextual inline notifications, layout persistence per workspace, full docking for all panels
-- **#100 Internationalization / Localization** — `LocalizationManager`, `TranslationLoader`; EN/FR initial, plugin-provided translations, dynamic switching per workspace
-
-### MSBuild & Visual Studio Solution Support
-- **#101 `.sln` Parser** — open and parse existing Visual Studio 2019/2022 solution files; project graph resolution, nested solution folders, shared projects
-- **#102 C# / VB.NET Project Support** — full `.csproj` / `.vbproj` parsing; properties, item groups, package references, project-to-project references; read/write support
-- **#103 MSBuild API Integration** — build, rebuild, clean targets from within the IDE via embedded MSBuild API; build output routed to Output Panel; errors and warnings surfaced in Error Panel with file/line navigation
-
-### Plugin Developer Experience
-- **#138 In-IDE Plugin Development** — full authoring workflow inside the IDE: `PluginProjectTemplate` scaffolding (`.whproj` + manifest + starter class), MSBuild build integration (#103) with Output/Error Panel routing, collectible `AssemblyLoadContext` hot-reload without IDE restart, lightweight `PluginDevSandbox` for crash isolation, full SDK IntelliSense with XML docs and snippets (`plugin-panel`, `plugin-toolbar`, `plugin-statusbar`, `plugin-options`), dedicated "Plugin Dev Log" dockable panel (console redirect, exceptions, perf metrics), and `.whxplugin` packaging for direct distribution or Marketplace (#41) submission — no external toolchain required
-
-### Assembly Explorer & .NET Decompilation
-- **#104 Assembly Explorer Panel — Full Tree** — namespaces, types (class/struct/interface/enum/delegate), methods, fields, properties, events, resources, assembly references; filter/search; node icons per visibility and kind
-- **#105 ECMA-335 Metadata Resolution** — full `PeOffsetResolver` implementation (§II.24 table offsets); metadata token → PE file offset; offset-to-source synchronization with HexEditor (click node → jump to raw bytes)
-- **#106 Decompilation Backend via ILSpy** — C# skeleton view + full IL disassembly view per method; "Go to Metadata Token" navigation; decompiled source displayed in Code Editor tab; integration via `WpfHexEditor.Decompiler.Core` (no direct ILSpy ProjectReference — adapter pattern)
+| Priority | Feature | Issue |
+|----------|---------|-------|
+| 🔥 High | **LSP Engine** — go-to-definition, find-references, incremental symbol parsing | #85 |
+| 🔥 High | **IntelliSense** — autocomplete, signature help, quick-info | #86 |
+| 🔥 High | **Assembly Explorer** — ILSpy full decompilation, hex sync, metadata token navigation | #106 |
+| 🔥 High | **MSBuild** — error list navigation with file/line jump, incremental builds | #103 |
+| 🔥 High | **Synalysis Grammar Support** — `.grammar` file parser + 10 embedded grammars | #177 |
+| ⚡ Next | **Git Integration** — commit/push/pull/branch, inline gutter diff | #91 |
+| ⚡ Next | **Plugin Marketplace** — online registry, signed packages, auto-update | #41–43 |
+| ⚡ Next | **Integrated Debugger** — breakpoints, watch, call stack | #44 |
+| ⚡ Next | **Service Container / DI** — unified IDE service registry | #36 |
+| 📋 Planned | **Command Palette** (Ctrl+Shift+P) — fuzzy search across all IDE commands | #133 |
+| 📋 Planned | **IDE Localization Engine** — full i18n, EN/FR initial | #100 |
+| 📋 Planned | **Installable Package** — MSI / MSIX / WinGet | #109 |
 
 ---
 
