@@ -1,0 +1,25 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Editor.XamlDesigner
+     File: Themes/Generic.xaml
+     Author: Derek Tremblay
+     Created: 2026-03-16
+     Description:
+         Fallback / default resource dictionary for the XamlDesigner editor.
+         All XD_* brushes resolve via DynamicResource from the active IDE theme.
+         This file is intentionally minimal — no hardcoded colors here.
+         Actual XD_* token values live in each theme's Colors.xaml.
+
+     Architecture Notes:
+         WPF Generic.xaml is automatically merged into the application's resources
+         when the editor assembly is loaded.
+         All controls inside this project must use DynamicResource for
+         any XD_* or Dock* brush reference.
+     ========================================================== -->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- No hardcoded values in this file.
+         XD_* brush tokens are provided by each theme's Colors.xaml. -->
+
+</ResourceDictionary>

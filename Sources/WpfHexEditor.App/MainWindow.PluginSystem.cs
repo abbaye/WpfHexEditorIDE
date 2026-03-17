@@ -37,6 +37,7 @@ using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.PluginHost.UI.Options;
 using WpfHexEditor.Options;
+using WpfHexEditor.BuildSystem;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.Terminal;
@@ -49,6 +50,7 @@ public partial class MainWindow
     private WpfPluginHost? _pluginHost;
     private IDEHostContext? _ideHostContext;
     private IDEEventBus? _ideEventBus;
+    private DocumentHostService? _documentHostService;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -72,6 +74,10 @@ public partial class MainWindow
     private TerminalPanel? _pendingTerminalPanel;
     private WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel? _pendingPluginMonitorPanel;
     private WpfHexEditor.PluginHost.UI.PluginManagerControl? _pendingPluginManagerControl;
+
+    // VS solution path deferred from TryRestoreSession() because plugin loaders are not yet
+    // registered at startup. Opened at the end of InitializePluginSystemAsync once loaders are live.
+    private string? _pendingRestoreSolutionPath;
 
     // Dev tools (instantiated on first use)
     private PluginDevLoader? _pluginDevLoader;
@@ -127,7 +133,15 @@ public partial class MainWindow
             var capabilityAdapter = new PluginCapabilityRegistryAdapter();
             var extensionRegistry = new ExtensionRegistry();
 
+            // DocumentHostService bridges the high-level document API to MainWindow's
+            // docking infrastructure via the openFileHandler callback.
+            _documentHostService = new DocumentHostService(
+                _documentManager,
+                (path, editorId) => Dispatcher.InvokeAsync(() =>
+                    OpenStandaloneFileWithEditor(path, editorId)).Task);
+
             var hostContext = new IDEHostContext(
+                documentHost:        _documentHostService,
                 solutionExplorer:    solutionService,
                 hexEditor:           _hexEditorService,
                 codeEditor:          codeEditorService,
@@ -142,7 +156,8 @@ public partial class MainWindow
                 terminal:            _terminalService,
                 ideEvents:           _ideEventBus,
                 capabilityRegistry:  capabilityAdapter,
-                extensionRegistry:   extensionRegistry);
+                extensionRegistry:   extensionRegistry,
+                solutionManager:     _solutionManager);
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;
@@ -152,6 +167,12 @@ public partial class MainWindow
 
             // 3b. Resolve circular dependency: capability registry now backed by the host's entries.
             capabilityAdapter.SetInner(_pluginHost.CapabilityRegistry);
+
+            // 3b-2. Initialize build system (needs _ideEventBus + _outputService + _solutionManager).
+            InitializeBuildSystem();
+
+            // 3b-3. Register Plugin Development options page.
+            WpfHexEditor.PluginDev.Options.PluginDevRegistrar.Register();
 
             // 3c. Wire IDE-level events to IDEEventBus publishers.
             if (_hexEditorService is not null)
@@ -196,6 +217,12 @@ public partial class MainWindow
                 // ResumeRebuild must run on the UI thread; dispatch back after ConfigureAwait(false).
                 await Dispatcher.InvokeAsync(dockingAdapter.ResumeRebuild);
             }
+
+            // Bridge IBuildAdapter extensions registered by plugins into the build system.
+            // Must run after LoadAllAsync so that MSBuildPlugin has registered its adapter.
+            if (_buildSystem is not null)
+                foreach (var adapter in hostContext.ExtensionRegistry.GetExtensions<IBuildAdapter>())
+                    _buildSystem.RegisterAdapter(adapter);
 
             // Register a dynamic Options page for every in-process plugin that supports IPluginWithOptions.
             foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
@@ -289,6 +316,15 @@ public partial class MainWindow
                 _statusBarBlinkTimer.Tick += OnStatusBarBlinkTick;
 
                 UpdatePluginStatusBar();
+
+                // Restore a VS solution that was deferred in TryRestoreSession() because the
+                // plugin loaders (ISolutionLoader extensions) were not yet registered at that point.
+                if (!string.IsNullOrEmpty(_pendingRestoreSolutionPath))
+                {
+                    var deferredPath = _pendingRestoreSolutionPath;
+                    _pendingRestoreSolutionPath = null;
+                    _ = OpenSolutionAsync(deferredPath);
+                }
             });
         }
         catch (Exception ex)

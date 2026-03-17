@@ -1,0 +1,238 @@
+<!--
+    Project: WpfHexEditor.Plugins.AssemblyExplorer
+    File: Views/AssemblySearchPanel.xaml
+    Author: Derek Tremblay
+    Created: 2026-03-16
+    Description:
+        Dockable search panel for cross-assembly member/type search (Phase 3).
+        Toolbar: SearchBox, TypeKind ComboBox, visibility toggle, include-members toggle, Search + Clear.
+        Results: DataGrid with columns Assembly, Namespace, Type, Member, Kind, Token, Offset.
+        Double-click row navigates tree + hex editor.
+        Theme: DynamicResource PFP_* and Dock* brush tokens.
+
+    Architecture Notes:
+        Pattern: MVVM — DataContext = AssemblySearchViewModel.
+        Panel is bottom-docked, default auto-hide, PreferredHeight=200.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Views.AssemblySearchPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource PFP_PanelBackgroundBrush}"
+             Foreground="{DynamicResource PFP_TextBrush}"
+             Loaded="OnLoaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
+            <RowDefinition Height="*"/>      <!-- Results DataGrid -->
+            <RowDefinition Height="Auto"/>   <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ────────────────────────────────────────────────────── -->
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Height="30">
+
+            <DockPanel LastChildFill="False" Margin="4,0">
+
+                <!-- Always-visible right panel (placeholder for OverflowManager) -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            DockPanel.Dock="Right"
+                            Orientation="Horizontal"/>
+
+                <!-- Overflow button -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Width="16"
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{DynamicResource PFP_TextBrush}"
+                        Visibility="Collapsed">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened"/>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Search box group -->
+                <StackPanel x:Name="TbgSearch"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Left"
+                            Margin="0,2">
+
+                    <TextBox x:Name="SearchBox"
+                             Width="200"
+                             Margin="2,1"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                             Foreground="{DynamicResource PFP_TextBrush}"
+                             BorderBrush="{DynamicResource DockBorderBrush}"
+                             ToolTip="Search types and members across all loaded assemblies"
+                             KeyDown="OnSearchBoxKeyDown">
+                        <TextBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="2"/>
+                            </Style>
+                        </TextBox.Resources>
+                    </TextBox>
+
+                    <!-- Kind filter -->
+                    <ComboBox Width="90"
+                              Margin="2,1"
+                              ItemsSource="{Binding KindOptions}"
+                              SelectedItem="{Binding SelectedKind}"
+                              Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                              Foreground="{DynamicResource PFP_TextBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              ToolTip="Filter by type kind"/>
+
+                    <!-- Public only toggle -->
+                    <ToggleButton Margin="2,1"
+                                  Padding="4,1"
+                                  IsChecked="{Binding PublicOnly}"
+                                  Background="Transparent"
+                                  Foreground="{DynamicResource PFP_TextBrush}"
+                                  BorderBrush="{DynamicResource DockBorderBrush}"
+                                  ToolTip="Show public members only">
+                        <TextBlock Text="Public" FontSize="10"/>
+                    </ToggleButton>
+
+                    <!-- Include members toggle -->
+                    <ToggleButton Margin="2,1"
+                                  Padding="4,1"
+                                  IsChecked="{Binding IncludeMembers}"
+                                  Background="Transparent"
+                                  Foreground="{DynamicResource PFP_TextBrush}"
+                                  BorderBrush="{DynamicResource DockBorderBrush}"
+                                  ToolTip="Include methods, fields, properties, events in results">
+                        <TextBlock Text="Members" FontSize="10"/>
+                    </ToggleButton>
+
+                    <!-- Search button -->
+                    <Button Margin="4,1,2,1"
+                            Padding="6,1"
+                            Command="{Binding SearchCommand}"
+                            Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                            Foreground="{DynamicResource PFP_TextBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            ToolTip="Run search (Enter)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0,0,3,0"/>
+                            <TextBlock Text="Search" FontSize="10"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Clear button -->
+                    <Button Margin="2,1"
+                            Padding="6,1"
+                            Command="{Binding ClearCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource PFP_TextBrush}"
+                            BorderBrush="Transparent"
+                            ToolTip="Clear results">
+                        <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                    </Button>
+                </StackPanel>
+
+            </DockPanel>
+        </Border>
+
+
+        <!-- ── Results DataGrid ───────────────────────────────────────────── -->
+        <DataGrid Grid.Row="1"
+                  x:Name="ResultsGrid"
+                  ItemsSource="{Binding Results}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  SelectionMode="Single"
+                  Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  BorderThickness="0"
+                  RowBackground="{DynamicResource PFP_PanelBackgroundBrush}"
+                  AlternatingRowBackground="{DynamicResource PFP_SectionBackgroundBrush}"
+                  
+                  MouseDoubleClick="OnResultDoubleClick">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Assembly" Binding="{Binding AssemblyName}" Width="120"/>
+                <DataGridTextColumn Header="Namespace" Binding="{Binding Namespace}"   Width="160"/>
+                <DataGridTextColumn Header="Type"      Binding="{Binding TypeName}"    Width="140"/>
+                <DataGridTextColumn Header="Member"    Binding="{Binding MemberName}"  Width="160"/>
+                <DataGridTextColumn Header="Kind"      Binding="{Binding Kind}"        Width="70"/>
+                <DataGridTextColumn Header="Token"     Binding="{Binding Token}"       Width="90"/>
+                <DataGridTextColumn Header="Offset"    Binding="{Binding Offset}"      Width="90"/>
+            </DataGrid.Columns>
+
+            <!-- Empty state overlay -->
+            <DataGrid.Style>
+                <Style TargetType="DataGrid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Results.Count}" Value="0">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <VisualBrush Stretch="None">
+                                        <VisualBrush.Visual>
+                                            <TextBlock Text="No results — type a search term above."
+                                                       Foreground="{DynamicResource PFP_SubTextBrush}"
+                                                       FontSize="11"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Opacity="0.6"/>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Style>
+        </DataGrid>
+
+        <!-- ── Status bar ─────────────────────────────────────────────────── -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Height="22"
+                Padding="6,0">
+
+            <DockPanel LastChildFill="False">
+                <!-- Busy indicator -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                           Foreground="{DynamicResource PFP_AccentBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,4,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSearching}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Status text -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="{Binding StatusText}"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="10"
+                           VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+    </Grid>
+</UserControl>

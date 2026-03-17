@@ -130,4 +130,20 @@ public interface IHexEditorService
 
     /// <summary>Disconnects the currently connected <see cref="IParsedFieldsPanel"/>.</summary>
     void DisconnectParsedFieldsPanel();
+
+    // -- Custom Background Blocks -----------------------------------------
+
+    /// <summary>
+    /// Adds a <see cref="WpfHexEditor.Core.CustomBackgroundBlock"/> to the active HexEditor overlay.
+    /// No-op when no file is open.
+    /// </summary>
+    void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block);
+
+    /// <summary>
+    /// Removes all custom background blocks whose <c>Description</c> starts with
+    /// <paramref name="tag"/>. Used by plugins to clean up their own blocks without
+    /// disturbing blocks added by other features.
+    /// No-op when no file is open.
+    /// </summary>
+    void ClearCustomBackgroundBlockByTag(string tag);
 }

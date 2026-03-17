@@ -117,6 +117,16 @@ internal static class OutputLogger
     public static void BuildSection(string title)
         => Append($"---- {title} ------------------------------------", null, SourceBuild);
 
+    /// <summary>
+    /// Switches the Output panel to the specified source channel on the UI thread.
+    /// No-op if the panel is not registered.
+    /// </summary>
+    public static void FocusChannel(string source)
+    {
+        if (_panel is null) return;
+        _panel.OutputBox.Dispatcher.InvokeAsync(() => _panel.SetActiveSource(source));
+    }
+
     // -----------
 
     /// <summary>

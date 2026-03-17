@@ -23,19 +23,21 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         try
         {
             // Enum-backed combos
-            DataVisualCombo.ItemsSource    = Enum.GetValues<DataVisualType>();
-            OffsetVisualCombo.ItemsSource  = Enum.GetValues<DataVisualType>();
-            ByteGroupingCombo.ItemsSource  = Enum.GetValues<ByteSpacerGroup>();
-            SpacerPositionCombo.ItemsSource = Enum.GetValues<ByteSpacerPosition>();
+            DataVisualCombo.ItemsSource      = Enum.GetValues<DataVisualType>();
+            OffsetVisualCombo.ItemsSource    = Enum.GetValues<DataVisualType>();
+            ByteGroupingCombo.ItemsSource    = Enum.GetValues<ByteSpacerGroup>();
+            SpacerPositionCombo.ItemsSource  = Enum.GetValues<ByteSpacerPosition>();
+            MouseWheelSpeedCombo.ItemsSource = Enum.GetValues<MouseWheelSpeed>();
 
             // Select current values
             SelectByPerLine(s.HexEditorDefaults.BytePerLine);
-            CheckShowOffset.IsChecked     = s.HexEditorDefaults.ShowOffset;
-            CheckShowAscii.IsChecked      = s.HexEditorDefaults.ShowAscii;
-            DataVisualCombo.SelectedItem  = s.HexEditorDefaults.DataStringVisual;
-            OffsetVisualCombo.SelectedItem = s.HexEditorDefaults.OffSetStringVisual;
-            ByteGroupingCombo.SelectedItem = s.HexEditorDefaults.ByteGrouping;
-            SpacerPositionCombo.SelectedItem = s.HexEditorDefaults.ByteSpacerPositioning;
+            CheckShowOffset.IsChecked          = s.HexEditorDefaults.ShowOffset;
+            CheckShowAscii.IsChecked           = s.HexEditorDefaults.ShowAscii;
+            MouseWheelSpeedCombo.SelectedItem  = s.HexEditorDefaults.MouseWheelSpeed;
+            DataVisualCombo.SelectedItem       = s.HexEditorDefaults.DataStringVisual;
+            OffsetVisualCombo.SelectedItem     = s.HexEditorDefaults.OffSetStringVisual;
+            ByteGroupingCombo.SelectedItem     = s.HexEditorDefaults.ByteGrouping;
+            SpacerPositionCombo.SelectedItem   = s.HexEditorDefaults.ByteSpacerPositioning;
 
             // Scroll markers
             CheckShowBookmarkMarkers.IsChecked     = s.HexEditorDefaults.ShowBookmarkMarkers;
@@ -64,6 +66,8 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             s.HexEditorDefaults.ByteGrouping = bsg;
         if (SpacerPositionCombo.SelectedItem is ByteSpacerPosition bsp)
             s.HexEditorDefaults.ByteSpacerPositioning = bsp;
+        if (MouseWheelSpeedCombo.SelectedItem is MouseWheelSpeed mws)
+            s.HexEditorDefaults.MouseWheelSpeed = mws;
 
         s.HexEditorDefaults.ShowBookmarkMarkers     = CheckShowBookmarkMarkers.IsChecked == true;
         s.HexEditorDefaults.ShowModifiedMarkers     = CheckShowModifiedMarkers.IsChecked == true;

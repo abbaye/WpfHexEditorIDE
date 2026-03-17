@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.Services;
 
@@ -29,6 +30,13 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     private Encoding _encoding = Encoding.UTF8;
     private SyntaxDefinition? _syntaxDefinition;
     private RegexSyntaxHighlighter? _highlighter;
+
+    // Incremental max-width tracking (P1-TE-01) — O(1) on growth, O(n) only on shrink
+    private int _cachedMaxLineLength;
+
+    // Background highlight pipeline (P1-TE-06)
+    private CancellationTokenSource? _highlightCts;
+    private readonly SynchronizationContext? _syncContext = SynchronizationContext.Current;
 
     // Undo/redo
     private readonly UndoRedoStack _undoRedo = new();
@@ -112,42 +120,128 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     public bool CanUndo => _undoRedo.CanUndo;
     public bool CanRedo => _undoRedo.CanRedo;
 
+    /// <summary>Maximum line length in characters (O(1) lookup, updated incrementally).</summary>
+    public int MaxLineLength => _cachedMaxLineLength;
+
+    /// <summary>
+    /// Fired on the UI thread when background highlights become available for a line range.
+    /// Viewport should clear its FormattedText cache for (firstLine, lastLine) and re-render.
+    /// </summary>
+    public event Action<int, int>? HighlightsComputed;
+
     // -----------------------------------------------------------------------
     // Highlight cache
     // -----------------------------------------------------------------------
 
-    // Per-line cache: null means "needs recompute".
-    private IReadOnlyList<ColoredSpan>?[] _highlightCache = [];
+    // Per-line highlight cache: null means "needs recompute".
+    // List<T> uses doubling strategy → O(n) total copy work vs O(n²) for chunk-64 Array.Resize.
+    // List element assignment is atomic for reference types → safe for concurrent background writes.
+    private readonly List<IReadOnlyList<ColoredSpan>?> _highlightCache = new(256);
 
+    /// <summary>
+    /// Returns cached highlight spans for <paramref name="lineIndex"/>.
+    /// Returns empty immediately if not yet computed — caller should invoke
+    /// <see cref="ScheduleHighlightAsync"/> to populate in the background.
+    /// </summary>
     public IReadOnlyList<ColoredSpan> GetHighlightedSpans(int lineIndex)
     {
         if (_highlighter is null || lineIndex < 0 || lineIndex >= _lines.Count)
             return [];
 
-        if (lineIndex >= _highlightCache.Length)
-            GrowHighlightCache();
+        GrowHighlightCacheIfNeeded(lineIndex);
 
-        if (_highlightCache[lineIndex] is null)
-            _highlightCache[lineIndex] = _highlighter.Highlight(_lines[lineIndex]);
-
-        return _highlightCache[lineIndex]!;
+        // Return cached result (may be null → render plain, background will fill later).
+        return _highlightCache[lineIndex] ?? [];
     }
 
-    private void GrowHighlightCache()
+    private void GrowHighlightCacheIfNeeded(int requiredIndex)
     {
-        Array.Resize(ref _highlightCache, _lines.Count + 64);
+        // Extend the list with nulls until it covers requiredIndex.
+        while (_highlightCache.Count <= requiredIndex)
+            _highlightCache.Add(null);
     }
 
     public void InvalidateHighlightCache(int fromLine = 0)
     {
-        for (int i = fromLine; i < _highlightCache.Length; i++)
+        int limit = Math.Min(fromLine < 0 ? 0 : fromLine, _highlightCache.Count);
+        for (int i = limit; i < _highlightCache.Count; i++)
             _highlightCache[i] = null;
     }
 
     public void InvalidateHighlightLine(int lineIndex)
     {
-        if (lineIndex >= 0 && lineIndex < _highlightCache.Length)
+        if (lineIndex >= 0 && lineIndex < _highlightCache.Count)
             _highlightCache[lineIndex] = null;
+    }
+
+    /// <summary>
+    /// Schedules syntax highlighting for the visible range (and a ±20-line buffer) on a
+    /// background thread. Visible lines are highlighted first. Cancels any in-flight task.
+    /// When complete, raises <see cref="HighlightsComputed"/> on the UI thread.
+    /// </summary>
+    public void ScheduleHighlightAsync(int firstVisible, int lastVisible)
+    {
+        if (_highlighter is null || _lines.Count == 0) return;
+
+        _highlightCts?.Cancel();
+        _highlightCts = new CancellationTokenSource();
+        var token = _highlightCts.Token;
+
+        // Extend buffer — pre-warm nearby lines for smooth scrolling
+        int bufStart = Math.Max(0, firstVisible - 20);
+        int bufEnd   = Math.Min(_lines.Count - 1, lastVisible + 20);
+        if (bufEnd < bufStart) return;
+
+        // Grow cache on UI thread before handing anything to background thread
+        GrowHighlightCacheIfNeeded(bufEnd);
+
+        // Capture snapshot of line texts + which lines actually need highlighting
+        // (safe: we're on the UI thread here)
+        int count     = bufEnd - bufStart + 1;
+        var indices   = new int[count];
+        var texts     = new string[count];
+        var needed    = new bool[count];
+        for (int i = 0; i < count; i++)
+        {
+            int li     = bufStart + i;
+            indices[i] = li;
+            needed[i]  = _highlightCache[li] is null;
+            texts[i]   = needed[i] ? _lines[li] : string.Empty;
+        }
+
+        var cache      = _highlightCache;
+        var highlighter = _highlighter;
+        var syncCtx    = _syncContext;
+
+        Task.Run(() =>
+        {
+            // Pass 1 — visible range first (lowest latency)
+            for (int i = 0; i < count && !token.IsCancellationRequested; i++)
+            {
+                int li = indices[i];
+                if (!needed[i] || li < firstVisible || li > lastVisible) continue;
+                var result = highlighter.Highlight(texts[i]);
+                if (li < cache.Count && !token.IsCancellationRequested)
+                    cache[li] = result;
+            }
+
+            // Pass 2 — buffer lines (smoother pre-fetch for upcoming scroll)
+            for (int i = 0; i < count && !token.IsCancellationRequested; i++)
+            {
+                int li = indices[i];
+                if (!needed[i] || (li >= firstVisible && li <= lastVisible)) continue;
+                var result = highlighter.Highlight(texts[i]);
+                if (li < cache.Count && !token.IsCancellationRequested)
+                    cache[li] = result;
+            }
+
+            if (!token.IsCancellationRequested && syncCtx is not null)
+            {
+                int completedFirst = firstVisible;
+                int completedLast  = Math.Min(lastVisible, bufEnd);
+                syncCtx.Post(_ => HighlightsComputed?.Invoke(completedFirst, completedLast), null);
+            }
+        }, token);
     }
 
     // -----------------------------------------------------------------------
@@ -167,6 +261,8 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _caretLine = 0;
         _caretColumn = 0;
         _selAnchorLine = -1;
+        // Single O(n) scan at load time — acceptable cost
+        RebuildMaxLineLength();
         InvalidateHighlightCache();
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -174,8 +270,21 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Returns the full text of the document (lines joined with LF).
+    /// Uses a pre-allocated StringBuilder to avoid repeated buffer doublings.
     /// </summary>
-    public string GetText() => string.Join('\n', _lines);
+    public string GetText()
+    {
+        if (_lines.Count == 0) return string.Empty;
+        int capacity = _lines.Count - 1; // newlines
+        foreach (var l in _lines) capacity += l.Length;
+        var sb = new StringBuilder(capacity);
+        for (int i = 0; i < _lines.Count; i++)
+        {
+            if (i > 0) sb.Append('\n');
+            sb.Append(_lines[i]);
+        }
+        return sb.ToString();
+    }
 
     /// <summary>
     /// Returns the text of a single line (bounds-checked).
@@ -203,9 +312,8 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _undoRedo.Push(edit);
             _caretLine++;
             _caretColumn = 0;
-            // A line was inserted: all cache entries from splitLine onward are
-            // shifted by +1 in _lines but not in the cache array → must invalidate
-            // everything from the split point to keep spans aligned with content.
+            // Newline splits line — both halves are shorter; max may have decreased
+            OnLineLengthMayHaveShrunk();
             InvalidateHighlightCache(splitLine);
         }
         else
@@ -215,6 +323,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _lines[_caretLine] = newLine;
             _undoRedo.Push(edit);
             _caretColumn = col + 1;
+            OnLineLengthGrew(_caretLine);
             InvalidateHighlightLine(_caretLine);
         }
         IsDirty = true;
@@ -237,10 +346,11 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _lines[_caretLine] = newLine;
             _undoRedo.Push(edit);
             _caretColumn = col;
+            OnLineLengthMayHaveShrunk();
         }
         else if (_caretLine > 0)
         {
-            // Merge with previous line
+            // Merge with previous line — merged line can be longer than either half
             var prevLine  = _lines[_caretLine - 1];
             var curLine   = _lines[_caretLine];
             var merged    = prevLine + curLine;
@@ -251,8 +361,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _undoRedo.Push(edit);
             _caretLine--;
             _caretColumn = prevLine.Length;
-            // A line was removed: cache entries after the merge point are now
-            // shifted by -1 in _lines → invalidate everything from merge point.
+            OnLineLengthGrew(mergeLine); // merged line may be longer than previous max
             InvalidateHighlightCache(mergeLine);
             IsDirty = true;
             OnPropertyChanged(nameof(Lines));
@@ -279,6 +388,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             var edit    = new TextEdit(TextEditType.Delete, _caretLine, col, line[col].ToString(), line, newLine);
             _lines[_caretLine] = newLine;
             _undoRedo.Push(edit);
+            OnLineLengthMayHaveShrunk();
         }
         else if (_caretLine < _lines.Count - 1)
         {
@@ -288,7 +398,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _lines[_caretLine] = merged;
             _lines.RemoveAt(_caretLine + 1);
             _undoRedo.Push(edit);
-            // A line was removed: cache entries after _caretLine are shifted by -1.
+            OnLineLengthGrew(_caretLine); // merged line may be longer than previous max
             InvalidateHighlightCache(_caretLine);
             IsDirty = true;
             OnPropertyChanged(nameof(Lines));
@@ -310,12 +420,11 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         if (!_undoRedo.CanUndo) return;
         var edit = _undoRedo.Undo();
         ApplyEditInverse(edit);
-        // Line-count-changing ops shift the cache: invalidate from the affected line.
-        // Single-line ops only need the one modified line invalidated.
         if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
             InvalidateHighlightCache(edit.Line);
         else
             InvalidateHighlightLine(_caretLine);
+        OnLineLengthMayHaveShrunk(); // conservative: undo can shrink lines
         IsDirty = _undoRedo.CanUndo;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -332,6 +441,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             InvalidateHighlightCache(edit.Line);
         else
             InvalidateHighlightLine(_caretLine);
+        OnLineLengthMayHaveShrunk(); // conservative: redo can both grow and shrink
         IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -522,6 +632,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _caretColumn = startCol;
         ClearSelection();
         InvalidateHighlightCache(startLine);
+        OnLineLengthMayHaveShrunk(); // deletion always removes content
         IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -571,9 +682,26 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     {
         encoding ??= Encoding.UTF8;
         var text = await File.ReadAllTextAsync(filePath, encoding, ct);
+
+        // SplitLines is pure computation (no WPF access) — safe on background thread.
+        // This prevents the UI thread from being blocked on large file parsing.
+        var splitLines = await Task.Run(() => SplitLines(text).ToList(), ct);
+
+        // UI-thread section: minimal work — only a List<string> swap
         FilePath = filePath;
         Encoding = encoding;
-        SetText(text, clearUndoHistory: true);
+        _lines.Clear();
+        _lines.AddRange(splitLines);
+        if (_lines.Count == 0) _lines.Add(string.Empty);
+        _undoRedo.Clear();
+        IsDirty = false;
+        _caretLine = 0;
+        _caretColumn = 0;
+        _selAnchorLine = -1;
+        RebuildMaxLineLength(); // single O(n) scan at load time
+        InvalidateHighlightCache();
+        OnPropertyChanged(nameof(Lines));
+        OnPropertyChanged(nameof(LineCount));
 
         // Auto-detect syntax.
         var ext = Path.GetExtension(filePath);
@@ -590,6 +718,30 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
+
+    // -- Max-width incremental tracking (P1-TE-01) -------------------------
+
+    /// <summary>O(1) — called when a line grows (insert, merge).</summary>
+    private void OnLineLengthGrew(int lineIndex)
+    {
+        if (lineIndex >= 0 && lineIndex < _lines.Count)
+        {
+            int len = _lines[lineIndex].Length;
+            if (len > _cachedMaxLineLength) _cachedMaxLineLength = len;
+        }
+    }
+
+    /// <summary>O(n) — called only when a line may have shrunk (delete, split, paste-delete).</summary>
+    private void OnLineLengthMayHaveShrunk()
+    {
+        _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;
+    }
+
+    /// <summary>Full O(n) rebuild — used at initial load only.</summary>
+    private void RebuildMaxLineLength()
+    {
+        _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;
+    }
 
     private static IEnumerable<string> SplitLines(string text)
     {

@@ -9,8 +9,11 @@
 //     via IPluginWithOptions.LoadOptions / SaveOptions.
 // ==========================================================
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
+using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Options;
 
@@ -56,8 +59,31 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         FontSizeSlider.Value = opts.DecompilerFontSize;
         FontSizeLabel.Text   = $"{opts.DecompilerFontSize}pt";
 
-        SelectComboByTag(BackendCombo,  opts.DecompilerBackend);
+        SelectComboByTag(BackendCombo,      opts.DecompilerBackend);
+        SelectComboByTag(QualityCombo,      opts.DecompilationQuality.ToString());
+
+        // Populate language combo dynamically from the registry (Strategy pattern).
+        // Falls back gracefully when the registry is empty (e.g., options page opened before plugin init).
+        LanguageCombo.Items.Clear();
+        var registeredLanguages = DecompilationLanguageRegistry.All;
+        if (registeredLanguages.Count > 0)
+        {
+            foreach (var lang in registeredLanguages)
+                LanguageCombo.Items.Add(new ComboBoxItem { Content = lang.DisplayName, Tag = lang.Id });
+        }
+        else
+        {
+            // Fallback: at minimum always show C# so the combo is never empty.
+            LanguageCombo.Items.Add(new ComboBoxItem { Content = "C#", Tag = "CSharp" });
+        }
         SelectComboByTag(LanguageCombo, opts.DecompileLanguage);
+        if (LanguageCombo.SelectedItem is null && LanguageCombo.Items.Count > 0)
+            LanguageCombo.SelectedIndex = 0;
+        SelectComboByTag(CSharpVersionCombo, opts.CSharpLanguageVersion.ToString());
+
+        ChkShowXmlDocs.IsChecked  = opts.ShowXmlDocs;
+        ChkShowHidden.IsChecked   = opts.ShowHiddenMembers;
+        ChkEnablePdb.IsChecked    = opts.EnablePdbIntegration;
 
         ChkAutoAnalyze.IsChecked    = opts.AutoAnalyzeOnFileOpen;
         ChkAutoSync.IsChecked       = opts.AutoSyncWithHexEditor;
@@ -67,6 +93,7 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         ChkShowNonPublic.IsChecked  = opts.ShowNonPublicMembers;
         ChkShowInherited.IsChecked  = opts.ShowInheritedMembers;
         ChkPinAssemblies.IsChecked  = opts.PinAssembliesAcrossFileChange;
+        TxtMaxAssemblies.Text       = opts.MaxLoadedAssemblies.ToString();
 
         // Populate recent files list
         RecentFilesList.Items.Clear();
@@ -79,9 +106,17 @@ public partial class AssemblyExplorerOptionsPage : UserControl
     {
         var opts = AssemblyExplorerOptions.Instance;
 
-        opts.DecompilerFontSize              = (int)FontSizeSlider.Value;
-        opts.DecompilerBackend               = GetComboTag(BackendCombo)  ?? "None";
-        opts.DecompileLanguage               = GetComboTag(LanguageCombo) ?? "CSharp";
+        opts.DecompilerFontSize    = (int)FontSizeSlider.Value;
+        opts.DecompilerBackend     = GetComboTag(BackendCombo)      ?? "ILSpy";
+        opts.DecompileLanguage     = GetComboTag(LanguageCombo)     ?? "CSharp";
+        opts.ShowXmlDocs           = ChkShowXmlDocs.IsChecked == true;
+        opts.ShowHiddenMembers     = ChkShowHidden.IsChecked   == true;
+        opts.EnablePdbIntegration  = ChkEnablePdb.IsChecked    == true;
+
+        if (Enum.TryParse<DecompilationQuality>(GetComboTag(QualityCombo), out var q))
+            opts.DecompilationQuality = q;
+        if (int.TryParse(GetComboTag(CSharpVersionCombo), out var v))
+            opts.CSharpLanguageVersion = v;
         opts.AutoAnalyzeOnFileOpen           = ChkAutoAnalyze.IsChecked   == true;
         opts.AutoSyncWithHexEditor           = ChkAutoSync.IsChecked      == true;
         opts.ShowResources                   = ChkShowResources.IsChecked  == true;
@@ -90,6 +125,8 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         opts.ShowNonPublicMembers            = ChkShowNonPublic.IsChecked  == true;
         opts.ShowInheritedMembers            = ChkShowInherited.IsChecked  == true;
         opts.PinAssembliesAcrossFileChange   = ChkPinAssemblies.IsChecked  == true;
+        if (int.TryParse(TxtMaxAssemblies.Text, out var maxVal))
+            opts.MaxLoadedAssemblies = Math.Clamp(maxVal, 1, 500);
         // RecentFiles list is managed by AddRecentFile() — not saved from here.
 
         opts.Save();

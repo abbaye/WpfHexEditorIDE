@@ -43,6 +43,29 @@ public interface IProjectTemplate
 }
 
 /// <summary>
+/// A project template that is fully self-contained: it creates its own .sln + .csproj
+/// structure on disk and returns the path to the generated solution file.
+/// MainWindow bypasses the .whproj creation flow and opens the result via OpenSolutionAsync.
+/// </summary>
+public interface ISelfContainedProjectTemplate : IProjectTemplate
+{
+    /// <summary>
+    /// Scaffolds a brand-new .sln + .csproj under <paramref name="parentDirectory"/>
+    /// and returns the absolute path to the generated .sln file.
+    /// </summary>
+    Task<string> CreateAsync(string parentDirectory, string projectName,
+                              CancellationToken ct = default);
+
+    /// <summary>
+    /// Scaffolds only the .csproj + source files under <paramref name="parentDirectory"/>
+    /// and appends the project entry into an existing <paramref name="existingSlnPath"/>.
+    /// Returns the path to the (modified) .sln file.
+    /// </summary>
+    Task<string> AddToSolutionAsync(string existingSlnPath, string parentDirectory,
+                                     string projectName, CancellationToken ct = default);
+}
+
+/// <summary>
 /// Description of the files and folders to create when scaffolding a project.
 /// </summary>
 public sealed class ProjectScaffold

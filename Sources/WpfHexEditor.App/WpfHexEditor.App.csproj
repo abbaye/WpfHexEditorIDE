@@ -10,9 +10,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
-    <Version>0.4.0</Version>
-    <AssemblyVersion>0.4.0.0</AssemblyVersion>
-    <FileVersion>0.4.0.0</FileVersion>
+    <Version>0.5.0</Version>
+    <AssemblyVersion>0.5.0.0</AssemblyVersion>
+    <FileVersion>0.5.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,12 +41,15 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Options\WpfHexEditor.Options.csproj" />
     <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.BuildSystem\WpfHexEditor.BuildSystem.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
   </ItemGroup>
 
   <!-- Sandbox host process: build-only reference so the exe is always up to date,
@@ -95,6 +98,14 @@
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.CustomParserTemplate\WpfHexEditor.Plugins.CustomParserTemplate.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ParsedFields\WpfHexEditor.Plugins.ParsedFields.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SynalysisGrammar\WpfHexEditor.Plugins.SynalysisGrammar.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.VS\WpfHexEditor.Plugins.SolutionLoader.VS.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.WH\WpfHexEditor.Plugins.SolutionLoader.WH.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\WpfHexEditor.Plugins.Build.MSBuild\WpfHexEditor.Plugins.Build.MSBuild.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
 

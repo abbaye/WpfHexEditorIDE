@@ -48,6 +48,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// </summary>
         public ValidationLayer Layer { get; set; }
 
+        /// <summary>
+        /// Identifies the subsystem that produced this error (e.g. "lsp", "schema").
+        /// Used to selectively replace error sets on incremental updates.
+        /// </summary>
+        public string? Source { get; set; }
+
         public ValidationError()
         {
             Severity = ValidationSeverity.Error;
@@ -87,6 +93,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         JsonSyntax,     // Layer 1: JSON syntax errors
         Schema,         // Layer 2: Missing required properties
         FormatRules,    // Layer 3: Format-specific rule violations
-        Semantic        // Layer 4: Semantic errors (invalid references, etc.)
+        Semantic,       // Layer 4: Semantic errors (invalid references, etc.)
+        Lsp             // Layer 5: Diagnostics from an external Language Server (LSP)
     }
 }

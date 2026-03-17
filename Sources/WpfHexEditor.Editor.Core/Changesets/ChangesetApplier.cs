@@ -2,6 +2,7 @@
 // Contributors: Claude Sonnet 4.6
 
 using System.IO;
+using System.Linq;
 
 namespace WpfHexEditor.Editor.Core;
 
@@ -46,20 +47,18 @@ public static class ChangesetApplier
             insertedAt[offset] = ChangesetSerializer.ParseHexBytes(ins.Bytes);
         }
 
-        // Deleted positions (flattened from ranges)
-        var deleted = new HashSet<long>(
-            dto.Edits.Deleted.Sum(d => (int)Math.Min(d.Count, int.MaxValue)));
-        foreach (var del in dto.Edits.Deleted)
-        {
-            long start = ChangesetSerializer.ParseOffset(del.Start);
-            for (long i = 0; i < del.Count; i++)
-                deleted.Add(start + i);
-        }
+        // Deleted ranges — kept as sorted (start, count) pairs; O(d) memory.
+        // Using binary search (IsInDeletedRange) instead of a HashSet expansion
+        // avoids O(total_deleted_bytes) memory for large contiguous deletions.
+        var deletedRanges = dto.Edits.Deleted
+            .Select(d => (Start: ChangesetSerializer.ParseOffset(d.Start), d.Count))
+            .OrderBy(r => r.Start)
+            .ToArray();
 
         // -- Estimate output size and write ---------------------------------
+        long totalDeletedBytes = dto.Edits.Deleted.Sum(d => d.Count);
         int insertedTotal = insertedAt.Values.Sum(b => b.Length);
-        int estimatedSize = source.Length + insertedTotal - deleted.Count;
-        if (estimatedSize < 0) estimatedSize = 0;
+        int estimatedSize = (int)Math.Max(0, source.Length + insertedTotal - totalDeletedBytes);
 
         using var ms = new MemoryStream(estimatedSize);
 
@@ -70,7 +69,7 @@ public static class ChangesetApplier
                 ms.Write(insBytes, 0, insBytes.Length);
 
             // 2. Skip deleted
-            if (deleted.Contains(p)) continue;
+            if (IsInDeletedRange(p, deletedRanges)) continue;
 
             // 3. Modified or original
             ms.WriteByte(modifiedFlat.TryGetValue(p, out byte newVal) ? newVal : source[p]);
@@ -81,5 +80,26 @@ public static class ChangesetApplier
             ms.Write(endBytes, 0, endBytes.Length);
 
         return ms.ToArray();
+    }
+
+    /// <summary>
+    /// Binary search over sorted deleted ranges to determine whether
+    /// <paramref name="pos"/> falls inside any range.
+    /// O(log d) per call, O(d) total memory — d = number of ranges.
+    /// </summary>
+    private static bool IsInDeletedRange(long pos, (long Start, long Count)[] ranges)
+    {
+        int lo = 0, hi = ranges.Length - 1;
+        while (lo <= hi)
+        {
+            int mid = (lo + hi) >> 1;
+            if (pos < ranges[mid].Start)
+                hi = mid - 1;
+            else if (pos >= ranges[mid].Start + ranges[mid].Count)
+                lo = mid + 1;
+            else
+                return true;
+        }
+        return false;
     }
 }

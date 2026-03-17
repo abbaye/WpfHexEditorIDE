@@ -35,8 +35,20 @@ public partial class MainWindow
 
     private readonly DocumentManager _documentManager = new();
 
+    // Content IDs of project editors that are currently dirty and in Tracked save mode.
+    // Maintained by OnDocumentManagerDirtyChanged; consumed by OnAutoSerializeTick
+    // so the timer iterates only O(dirty) entries instead of O(all solution items).
+    private readonly HashSet<string> _dirtyTrackedContentIds = [];
+
     /// <summary>Exposes the document manager for external consumers (e.g. ViewModels).</summary>
     public IDocumentManager DocumentManager => _documentManager;
+
+    /// <summary>
+    /// Exposes the document host service (open by path, navigate to line/column).
+    /// Available after InitializePluginSystemAsync completes.
+    /// </summary>
+    public WpfHexEditor.SDK.Contracts.Services.IDocumentHostService? DocumentHost
+        => _documentHostService;
 
     /// <summary>
     /// Initialises DocumentManager event subscriptions.
@@ -104,9 +116,65 @@ public partial class MainWindow
     }
 
     /// <summary>
-    /// Invalidates WPF command bindings whenever any editor's dirty state changes.
-    /// This replaces OnEditorModifiedChanged which was bound only to the active editor.
+    /// Invalidates WPF command bindings whenever any editor's dirty state changes,
+    /// and maintains <see cref="_dirtyTrackedContentIds"/> for the auto-serialize timer.
+    /// Only project document tabs (content IDs starting with "doc-proj-") are tracked.
     /// </summary>
     private void OnDocumentManagerDirtyChanged(object? sender, DocumentModel model)
-        => CommandManager.InvalidateRequerySuggested();
+    {
+        // Keep dirty-set in sync so the timer iterates O(dirty) instead of O(all items).
+        if (model.ContentId.StartsWith("doc-proj-", StringComparison.Ordinal))
+        {
+            if (model.IsDirty)
+                _dirtyTrackedContentIds.Add(model.ContentId);
+            else
+                _dirtyTrackedContentIds.Remove(model.ContentId);
+        }
+
+        CommandManager.InvalidateRequerySuggested();
+    }
+
+    /// <summary>
+    /// Resolves an <see cref="IProjectItem"/> from a "doc-proj-{id}" content ID.
+    /// Returns false when no matching item exists in the current solution.
+    /// </summary>
+    private bool TryGetProjectItemFromContentId(string contentId, out IProjectItem? item)
+    {
+        item = null;
+        if (_solutionManager.CurrentSolution is null) return false;
+        foreach (var project in _solutionManager.CurrentSolution.Projects)
+        foreach (var pi in project.Items)
+        {
+            if ($"doc-proj-{pi.Id}" == contentId) { item = pi; return true; }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true when the editor control participates in .whchg changeset tracking.
+    /// HexEditor always participates; CodeEditor and TextEditor require their respective
+    /// <c>ChangesetEnabled</c> option to be true.
+    /// </summary>
+    private static bool IsChangesetEnabledForEditor(
+        System.Windows.UIElement ctrl,
+        WpfHexEditor.Options.AppSettings settings)
+        => ctrl switch
+        {
+            WpfHexEditor.HexEditor.HexEditor                        => true,
+            WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor      => settings.CodeEditorDefaults.ChangesetEnabled,
+            WpfHexEditor.Editor.TextEditor.Controls.TextEditor      => settings.TextEditorDefaults.ChangesetEnabled,
+            _                                                        => false,
+        };
+
+    /// <summary>
+    /// True when <paramref name="item"/> is a project document AND its editor type
+    /// has changeset tracking enabled. Only items matching both conditions are silently
+    /// auto-serialized to a .whchg file; others fall through to the normal Save dialog.
+    /// </summary>
+    private bool IsTrackedItemWithChangeset(WpfHexEditor.Docking.Core.Nodes.DockItem item)
+    {
+        if (!IsTrackedProjectItem(item)) return false;
+        if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return false;
+        return IsChangesetEnabledForEditor(ctrl, WpfHexEditor.Options.AppSettingsService.Instance.Current);
+    }
 }

@@ -36,6 +36,7 @@ public sealed class DecompilerService
 {
     private readonly IAssemblyAnalysisEngine _engine;
     private readonly CSharpSkeletonEmitter   _csharp = new();
+    private readonly VbNetSkeletonEmitter    _vbnet  = new();
     private readonly IlTextEmitter           _il     = new();
 
     public DecompilerService(IAssemblyAnalysisEngine engine)
@@ -59,6 +60,20 @@ public sealed class DecompilerService
     public string GetStubText(string nodeDisplayName)
         => $"// {nodeDisplayName}\n\n// No decompilation available for this node type.";
 
+    // ── VB.NET skeleton tab (BCL-only) ────────────────────────────────────────
+
+    /// <summary>Returns the VB.NET skeleton for an assembly (AssemblyInfo.vb style).</summary>
+    public string DecompileAssemblyVB(AssemblyModel assembly)
+        => _vbnet.EmitAssemblyInfo(assembly);
+
+    /// <summary>Returns the VB.NET structural skeleton for a type.</summary>
+    public string DecompileTypeVB(TypeModel type)
+        => _vbnet.EmitType(type);
+
+    /// <summary>Returns the VB.NET signature stub for a single member.</summary>
+    public string DecompileMethodVB(MemberModel member)
+        => _vbnet.EmitMethod(member);
+
     // ── IL tab ────────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -76,8 +91,9 @@ public sealed class DecompilerService
 
         try
         {
+            // FileShare.ReadWrite allows concurrent access when HexEditor holds the file open.
             using var stream = new FileStream(
-                filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var pe = new PEReader(stream);
 
             var mdReader  = pe.GetMetadataReader();

@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
+// IEnumerable<T> in BuildLineGlyphRuns comes from System.Collections.Generic — already included.
 
 namespace WpfHexEditor.Editor.CodeEditor.Rendering;
 
@@ -237,4 +238,111 @@ public sealed class GlyphRunRenderer
     }
 
     #endregion
+
+    #region P1-CE-05: GlyphRun segment cache builder
+
+    /// <summary>
+    /// Builds a list of <see cref="GlyphRunEntry"/> records from the given token sequence.
+    /// Each entry's <c>GlyphRun.BaselineOrigin</c> is positioned at
+    /// <c>(token.StartColumn * CharWidth, Baseline)</c> — caller must apply
+    /// <c>dc.PushTransform(new TranslateTransform(textAreaX, lineTopY))</c> before drawing.
+    /// Tokens backed by the fallback font path (null GlyphTypeface) are skipped; the
+    /// caller must handle those via the normal <see cref="RenderToken"/> path.
+    /// </summary>
+    /// <param name="tokens">Token sequence for a single line.</param>
+    /// <param name="urlBrush">
+    /// The brush used to identify URL tokens; used to set <see cref="GlyphRunEntry.IsUrlToken"/>.
+    /// </param>
+    public List<GlyphRunEntry> BuildLineGlyphRuns(
+        IEnumerable<SyntaxHighlightToken> tokens,
+        Brush                             urlBrush)
+    {
+        var result = new List<GlyphRunEntry>();
+
+        foreach (var token in tokens)
+        {
+            if (string.IsNullOrEmpty(token.Text))
+                continue;
+
+            var gt = token.IsBold ? _boldGt : _regularGt;
+            if (gt is null)
+                continue; // fallback-font token — not cacheable as GlyphRun
+
+            var run = BuildGlyphRunAtOffset(
+                token.Text,
+                token.StartColumn * CharWidth,
+                Baseline,
+                gt);
+
+            result.Add(new GlyphRunEntry(
+                run,
+                token.Foreground,
+                ReferenceEquals(token.Foreground, urlBrush),
+                token.StartColumn,
+                token.Length));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Builds a <see cref="GlyphRun"/> for <paramref name="text"/> placed at the given
+    /// <paramref name="x"/> / <paramref name="baselineY"/> coordinates.
+    /// </summary>
+    private GlyphRun BuildGlyphRunAtOffset(string text, double x, double baselineY, GlyphTypeface gt)
+    {
+        var glyphIndices  = new ushort[text.Length];
+        var advanceWidths = new double[text.Length];
+        var charMap       = gt.CharacterToGlyphMap;
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (!charMap.TryGetValue(text[i], out ushort gi))
+                charMap.TryGetValue('\uFFFD', out gi);
+
+            glyphIndices[i]  = gi;
+            advanceWidths[i] = gt.AdvanceWidths[gi] * _fontSize;
+        }
+
+        return new GlyphRun(
+            gt,
+            bidiLevel:        0,
+            isSideways:       false,
+            renderingEmSize:  _fontSize,
+            pixelsPerDip:     (float)_pixelsPerDip,
+            glyphIndices:     glyphIndices,
+            baselineOrigin:   new Point(x, baselineY),
+            advanceWidths:    advanceWidths,
+            glyphOffsets:     null,
+            characters:       null,
+            deviceFontName:   null,
+            clusterMap:       null,
+            caretStops:       null,
+            language:         null);
+    }
+
+    #endregion
 }
+
+// ──────────────────────────────────────────────────────────────────────────────
+// P1-CE-05: Per-line GlyphRun cache entry
+// ──────────────────────────────────────────────────────────────────────────────
+
+/// <summary>
+/// A pre-built GlyphRun entry stored in <see cref="Models.CodeLine.GlyphRunCache"/>.
+/// The <see cref="Run"/>'s <c>BaselineOrigin</c> is relative to the text area origin:
+/// <c>X = StartColumn * charWidth</c>, <c>Y = Baseline</c>.
+/// At render time, one <c>DrawingContext.PushTransform(x, lineTopY)</c> translates
+/// the entire cache to screen coordinates — zero per-token allocations.
+/// </summary>
+/// <param name="Run">Pre-built WPF GlyphRun — zero allocation to draw.</param>
+/// <param name="Foreground">Brush for this token segment.</param>
+/// <param name="IsUrlToken">True when this token should receive a hover underline.</param>
+/// <param name="StartColumn">0-based column for underline X calculation.</param>
+/// <param name="TokenLength">Character count for underline width calculation.</param>
+public readonly record struct GlyphRunEntry(
+    GlyphRun Run,
+    Brush    Foreground,
+    bool     IsUrlToken,
+    int      StartColumn,
+    int      TokenLength);

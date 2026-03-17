@@ -155,6 +155,22 @@ public partial class OutputPanel : UserControl
     }
 
     /// <summary>
+    /// Programmatically switches the active source channel and updates the ComboBox.
+    /// Called by <see cref="OutputLogger.FocusChannel"/>.
+    /// </summary>
+    internal void SetActiveSource(string source)
+    {
+        foreach (ComboBoxItem item in SourceComboBox.Items)
+        {
+            if (item.Content?.ToString() == source)
+            {
+                SourceComboBox.SelectedItem = item;
+                break;
+            }
+        }
+    }
+
+    /// <summary>
     /// Scrolls to the end if auto-scroll is enabled. Called by <see cref="OutputLogger"/>.
     /// </summary>
     internal void ScrollToEndIfEnabled()

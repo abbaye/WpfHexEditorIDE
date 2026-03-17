@@ -1,0 +1,114 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Created: 2026-03-16
+
+    Phase 3K — Configuration Manager dialog.
+    Allows the user to switch the active build configuration and platform,
+    and to see per-project build flags for the active solution.
+
+    Theme: DockMenuBackgroundBrush / DockMenuForegroundBrush / DockBorderBrush
+-->
+
+<Window x:Class="WpfHexEditor.App.Build.ConfigurationManagerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuration Manager"
+        Width="640" Height="400"
+        MinWidth="520" MinHeight="300"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource DockWindowBackgroundBrush}"
+        Foreground="{DynamicResource DockMenuForegroundBrush}">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Background"  Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Margin"      Value="0,0,16,0" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="Background"                Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="Foreground"                Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush"               Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="GridLinesVisibility"        Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush"   Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="RowBackground"             Value="{DynamicResource DockMenuBackgroundBrush}" />
+            <Setter Property="AlternatingRowBackground"  Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="AutoGenerateColumns"       Value="False" />
+            <Setter Property="CanUserAddRows"            Value="False" />
+            <Setter Property="CanUserDeleteRows"         Value="False" />
+            <Setter Property="SelectionMode"             Value="Single" />
+            <Setter Property="HeadersVisibility"         Value="Column" />
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background"  Value="{DynamicResource DockWindowBackgroundBrush}" />
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
+            <Setter Property="Padding"     Value="6,4" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Active configuration selectors -->
+        <TextBlock Grid.Row="0"
+                   Text="Active solution configuration:"
+                   FontSize="13" FontWeight="SemiBold"
+                   Margin="0,0,0,8" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
+            <Label Content="Configuration:" />
+            <ComboBox x:Name="CbActiveConfig" Width="130"
+                      SelectionChanged="OnActiveConfigChanged" />
+
+            <Label Content="Platform:" />
+            <ComboBox x:Name="CbActivePlatform" Width="110"
+                      SelectionChanged="OnActivePlatformChanged" />
+        </StackPanel>
+
+        <!-- Per-project grid -->
+        <DataGrid Grid.Row="2" x:Name="ProjectGrid" Margin="0,0,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Project"
+                                    Binding="{Binding ProjectName}"
+                                    Width="*"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Header="Configuration"
+                                    Binding="{Binding Configuration}"
+                                    Width="130" />
+                <DataGridTextColumn Header="Platform"
+                                    Binding="{Binding Platform}"
+                                    Width="100" />
+                <DataGridCheckBoxColumn Header="Build"
+                                        Binding="{Binding Build}"
+                                        Width="60" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,12,0,0">
+            <Button Content="Apply" Click="OnApply" Margin="0,0,8,0" />
+            <Button Content="Close" IsCancel="True" IsDefault="True" />
+        </StackPanel>
+    </Grid>
+</Window>

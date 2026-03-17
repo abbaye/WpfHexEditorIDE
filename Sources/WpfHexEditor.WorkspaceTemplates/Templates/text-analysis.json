@@ -1,0 +1,22 @@
+{
+  "id": "text-analysis",
+  "name": "Text Analysis",
+  "description": "A project template for analyzing text-based binary formats with custom language definitions.",
+  "category": "Analysis",
+  "defaultLanguage": "C#",
+  "includedPlugins": [],
+  "files": [
+    {
+      "path": "README.md",
+      "content": "# {{ProjectName}}\n\nText analysis project created on {{Date}}.\n\n## Structure\n\n- `formats/` — Custom .whlang language definitions\n- `samples/` — Sample binary/text files for analysis\n"
+    },
+    {
+      "path": "formats/{{ProjectName}}.whlang",
+      "content": "{\n  \"id\": \"{{ProjectName}}.format\",\n  \"name\": \"{{ProjectName}} Format\",\n  \"fileExtensions\": [\".bin\"],\n  \"keywords\": [],\n  \"operators\": [],\n  \"commentStyles\": []\n}\n"
+    },
+    {
+      "path": "samples/.gitkeep",
+      "content": ""
+    }
+  ]
+}

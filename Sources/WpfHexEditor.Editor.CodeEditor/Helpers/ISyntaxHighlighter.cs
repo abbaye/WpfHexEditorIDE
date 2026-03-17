@@ -15,6 +15,7 @@
 // ==========================================================
 
 using System.Windows.Media;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 
@@ -49,9 +50,10 @@ public interface ISyntaxHighlighter
 /// <param name="IsBold">Whether to render the token in bold.</param>
 /// <param name="IsItalic">Whether to render the token in italic.</param>
 public readonly record struct SyntaxHighlightToken(
-    int    StartColumn,
-    int    Length,
-    string Text,
-    Brush  Foreground,
-    bool   IsBold   = false,
-    bool   IsItalic = false);
+    int             StartColumn,
+    int             Length,
+    string          Text,
+    Brush           Foreground,
+    bool            IsBold   = false,
+    bool            IsItalic = false,
+    SyntaxTokenKind Kind     = SyntaxTokenKind.Default);

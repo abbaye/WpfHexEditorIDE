@@ -116,6 +116,20 @@
                      LostFocus="OnTextLostFocus"/>
         </Grid>
 
+        <!-- Mouse wheel speed (lines per notch — same model as HexEditor) -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Mouse wheel speed:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="MouseWheelCombo"
+                      Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
 

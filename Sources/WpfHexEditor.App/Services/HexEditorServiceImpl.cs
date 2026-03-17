@@ -97,6 +97,12 @@ public sealed class HexEditorServiceImpl : IHexEditorService
     public void DisconnectParsedFieldsPanel()
         => _activeEditor?.DisconnectParsedFieldsPanel();
 
+    public void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block)
+        => _activeEditor?.AddCustomBackgroundBlock(block);
+
+    public void ClearCustomBackgroundBlockByTag(string tag)
+        => _activeEditor?.ClearCustomBackgroundBlockByTag(tag);
+
     public void WriteBytes(long offset, byte[] data)
     {
         if (_activeEditor is null || data.Length == 0) return;

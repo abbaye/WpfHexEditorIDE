@@ -2,6 +2,10 @@
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
+
+    Phase 3I — VS-Like tabbed Project Properties dialog.
+    Tabs: Application | Build | Items | References
+    Theme: DockMenuBackgroundBrush / DockMenuForegroundBrush / DockBorderBrush
 -->
 
 <ec:ThemedDialog x:Class="WpfHexEditor.ProjectSystem.Dialogs.ProjectPropertiesDialog"
@@ -9,8 +13,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         Title="Project Properties"
-        Width="480" Height="320"
-        MinWidth="380" MinHeight="260"
+        Width="640" Height="480"
+        MinWidth="500" MinHeight="380"
         ResizeMode="CanResize"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
@@ -19,79 +23,229 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!-- TextBlock uses DockTabTextBrush in this dialog -->
+
+            <Style TargetType="Label">
+                <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Padding"           Value="0,0,8,0" />
+            </Style>
             <Style TargetType="TextBlock">
-                <Setter Property="Foreground"        Value="{DynamicResource DockTabTextBrush}" />
+                <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
-            <Style x:Key="SectionHeader" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Margin"     Value="0,0,0,6" />
+            <Style TargetType="TextBox">
+                <Setter Property="Background"   Value="{DynamicResource DockMenuBackgroundBrush}" />
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+                <Setter Property="Padding"      Value="4,2" />
+                <Setter Property="Margin"       Value="0,2,0,4" />
+            </Style>
+            <Style TargetType="TabControl">
+                <Setter Property="Background"   Value="{DynamicResource DockMenuBackgroundBrush}" />
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+                <Setter Property="Margin"       Value="0,8,0,0" />
+            </Style>
+            <Style TargetType="TabItem">
+                <Setter Property="Background"   Value="{DynamicResource DockMenuBackgroundBrush}" />
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+                <Setter Property="Padding"      Value="12,4" />
+            </Style>
+            <Style TargetType="ListView">
+                <Setter Property="Background"   Value="{DynamicResource DockMenuBackgroundBrush}" />
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+            </Style>
+            <!-- ListViewItem: override system selection highlight with theme tokens -->
+            <Style TargetType="ListViewItem">
+                <Setter Property="Background"             Value="Transparent" />
+                <Setter Property="Foreground"             Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderThickness"        Value="0" />
+                <Setter Property="Padding"                Value="6,3" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource SE_SelectedBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="GridViewColumnHeader">
+                <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}" />
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
             </Style>
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="20">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Title -->
-        <TextBlock Grid.Row="0" x:Name="ProjectTitleText"
+        <!-- Title row -->
+        <TextBlock Grid.Row="0"
+                   x:Name="ProjectTitleText"
                    FontSize="16" FontWeight="Bold"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16" />
+                   Margin="0,0,0,4" />
 
-        <!-- Properties grid -->
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="140" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <!-- Tabbed content -->
+        <TabControl Grid.Row="1">
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
-            <TextBlock x:Name="NameText" Grid.Row="0" Grid.Column="1" />
+            <!-- ── Tab 1 : Application ──────────────────────────────────── -->
+            <TabItem Header="Application">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              Background="{DynamicResource DockMenuBackgroundBrush}">
+                    <Grid Margin="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Project file:" />
-            <TextBlock x:Name="FilePathText" Grid.Row="1" Grid.Column="1"
-                       TextTrimming="CharacterEllipsis"
-                       ToolTipService.ShowDuration="10000">
-                <TextBlock.ToolTip>
-                    <ToolTip>
-                        <TextBlock x:Name="FilePathTooltip" />
-                    </ToolTip>
-                </TextBlock.ToolTip>
-            </TextBlock>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
+                        <TextBox x:Name="TbName" Grid.Row="0" Grid.Column="1" />
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Directory:" />
-            <TextBlock x:Name="DirectoryText" Grid.Row="2" Grid.Column="1"
-                       TextTrimming="CharacterEllipsis" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Project file:" />
+                        <TextBlock x:Name="FilePathText" Grid.Row="1" Grid.Column="1"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTipService.ShowDuration="10000">
+                            <TextBlock.ToolTip>
+                                <ToolTip>
+                                    <TextBlock x:Name="FilePathTooltip" />
+                                </ToolTip>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Files:" />
-            <TextBlock x:Name="ItemCountText" Grid.Row="3" Grid.Column="1" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="Directory:" />
+                        <TextBlock x:Name="DirectoryText" Grid.Row="2" Grid.Column="1"
+                                   TextTrimming="CharacterEllipsis" />
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Default TBL:" />
-            <TextBlock x:Name="DefaultTblText" Grid.Row="4" Grid.Column="1" />
+                        <Label Grid.Row="3" Grid.Column="0" Content="Project type:" />
+                        <TextBlock x:Name="ProjectTypeText" Grid.Row="3" Grid.Column="1" />
 
-            <Label Grid.Row="5" Grid.Column="0" Content="Modified:" />
-            <TextBlock x:Name="IsModifiedText" Grid.Row="5" Grid.Column="1" />
-        </Grid>
+                        <Label Grid.Row="4" Grid.Column="0" Content="Target framework:" />
+                        <TextBlock x:Name="TargetFrameworkText" Grid.Row="4" Grid.Column="1" />
 
-        <!-- Close button -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Close" IsCancel="True" IsDefault="True" />
+                        <Label Grid.Row="5" Grid.Column="0" Content="Assembly name:" />
+                        <TextBlock x:Name="AssemblyNameText" Grid.Row="5" Grid.Column="1" />
+
+                        <Label Grid.Row="6" Grid.Column="0" Content="Output type:" />
+                        <TextBlock x:Name="OutputTypeText" Grid.Row="6" Grid.Column="1" />
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ── Tab 2 : Build ─────────────────────────────────────────── -->
+            <TabItem Header="Build">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              Background="{DynamicResource DockMenuBackgroundBrush}">
+                    <Grid Margin="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Configuration:" />
+                        <TextBlock x:Name="BuildConfigText" Grid.Row="0" Grid.Column="1" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Platform:" />
+                        <TextBlock x:Name="BuildPlatformText" Grid.Row="1" Grid.Column="1" />
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Output path:" />
+                        <TextBlock x:Name="OutputPathText" Grid.Row="2" Grid.Column="1"
+                                   TextTrimming="CharacterEllipsis" />
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Optimise:" />
+                        <TextBlock x:Name="OptimiseText" Grid.Row="3" Grid.Column="1" />
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ── Tab 3 : Items ─────────────────────────────────────────── -->
+            <TabItem Header="Items">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               x:Name="ItemCountText"
+                               Margin="4,0,0,6" />
+
+                    <ListView x:Name="ItemsListView" Grid.Row="1">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name"   Width="200"
+                                                DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="Type"   Width="100"
+                                                DisplayMemberBinding="{Binding ItemType}" />
+                                <GridViewColumn Header="Path"   Width="300"
+                                                DisplayMemberBinding="{Binding RelativePath}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+            <!-- ── Tab 4 : References ────────────────────────────────────── -->
+            <TabItem Header="References" x:Name="ReferencesTab">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Project and package references:"
+                               Margin="4,0,0,6" />
+
+                    <ListView x:Name="ReferencesListView" Grid.Row="1">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name"   Width="280"
+                                                DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="Type"   Width="120"
+                                                DisplayMemberBinding="{Binding RefType}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- Bottom button row -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,12,0,0">
+            <Button x:Name="BtnSave" Content="Save"
+                    IsDefault="True" Margin="0,0,8,0"
+                    Click="OnSave" />
+            <Button Content="Close" IsCancel="True" />
         </StackPanel>
     </Grid>
 </ec:ThemedDialog>

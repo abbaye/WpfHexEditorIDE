@@ -30,7 +30,7 @@ public sealed class SolutionManager : ISolutionManager
 
     // -- State ------------------------------------------------------------
     private readonly MruService _mru = new();
-    private Solution? _current;
+    private ISolution? _current;
 
     public ISolution? CurrentSolution => _current;
     public IReadOnlyList<string> RecentSolutions => _mru.RecentSolutions;
@@ -89,6 +89,21 @@ public sealed class SolutionManager : ISolutionManager
         }
 
         return solution;
+    }
+
+    /// <summary>
+    /// Applies an externally loaded <see cref="ISolution"/> (e.g. from a VS loader plugin)
+    /// as the active solution. The solution is treated as read-only — no WH serialisation occurs.
+    /// </summary>
+    public async Task LoadExternalSolutionAsync(ISolution solution, string filePath, CancellationToken ct = default)
+    {
+        if (_current != null)
+            await CloseSolutionAsync(ct);
+
+        _current = solution;
+        _mru.PushSolution(filePath);
+        _mru.Save();
+        RaiseSolutionChanged(SolutionChangeKind.Opened);
     }
 
     public async Task SaveSolutionAsync(ISolution solution, CancellationToken ct = default)
@@ -578,6 +593,15 @@ public sealed class SolutionManager : ISolutionManager
     public Task DiscardChangesetAsync(IProject project, IProjectItem item,
         CancellationToken ct = default)
         => ChangesetService.Instance.DeleteChangesetAsync(item, ct);
+
+    // -- Startup project --------------------------------------------------
+
+    public void SetStartupProject(string projectId)
+    {
+        if (_current is not Solution sol) return;
+        var project = sol.Projects.FirstOrDefault(p => p.Id == projectId);
+        sol.SetStartupProject(project);
+    }
 
     // -- TBL helpers ------------------------------------------------------
 

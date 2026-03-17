@@ -30,6 +30,8 @@ public interface ISolutionManager
     // -- Solution lifecycle -----------------------------------------------
     Task<ISolution> CreateSolutionAsync(string directory, string name, CancellationToken ct = default);
     Task<ISolution> OpenSolutionAsync(string filePath, CancellationToken ct = default);
+    /// <summary>Applies an externally loaded solution (e.g. from a plugin loader) as the active solution.</summary>
+    Task LoadExternalSolutionAsync(ISolution solution, string filePath, CancellationToken ct = default);
     Task SaveSolutionAsync(ISolution solution, CancellationToken ct = default);
     Task CloseSolutionAsync(CancellationToken ct = default);
 
@@ -164,6 +166,13 @@ public interface ISolutionManager
     /// </summary>
     Task DiscardChangesetAsync(IProject project, IProjectItem item,
                                CancellationToken ct = default);
+
+    // -- Startup project --------------------------------------------------
+    /// <summary>
+    /// Marks <paramref name="projectId"/> as the startup project of the current solution.
+    /// No-op when no solution is loaded or no project with that ID exists.
+    /// </summary>
+    void SetStartupProject(string projectId);
 
     // -- TBL helpers ------------------------------------------------------
     /// <summary>Designates <paramref name="tblItem"/> as the default TBL for <paramref name="project"/>.

@@ -44,9 +44,22 @@
         <CheckBox x:Name="CheckShowAscii"
                   Content="Show ASCII column"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  Margin="0,0,0,16"
+                  Margin="0,0,0,10"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
+
+        <!-- Mouse wheel speed -->
+        <Grid Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Mouse wheel speed:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="MouseWheelSpeedCombo" Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
 
         <Separator Margin="0,0,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>

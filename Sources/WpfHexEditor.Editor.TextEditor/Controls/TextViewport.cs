@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
 
@@ -38,6 +39,7 @@ internal sealed class TextViewport : FrameworkElement
     private const double DefaultFontSize = 13.0;
     private const double LineNumberPadding = 4.0;
     private const double LeftMargin = 6.0;
+    private const double SelectionCornerRadius = 3.0;
 
     // -----------------------------------------------------------------------
     // Fields
@@ -55,11 +57,17 @@ internal sealed class TextViewport : FrameworkElement
     private Typeface? _typeface;
     private double _emSize;
     private double _cachedFontSize = -1;
+    private double _cachedZoom     = -1; // P2-01: tracks last zoom applied to font metrics
     private Typeface? _cachedTypeface;
     private DpiScale _dpi;
 
     // Mouse drag selection
     private bool _isDragging;
+
+    // 60 Hz throttle for drag selection redraws (P1-TE-02)
+    private long _lastDragRenderTick;
+    private static readonly long DragThrottleTicks
+        = (long)(System.Diagnostics.Stopwatch.Frequency / 60.0); // ~16.7 ms
 
     // Set to true while OnMouseMove updates the caret directly so that
     // OnVmPropertyChanged does not queue a redundant background render.
@@ -141,10 +149,14 @@ internal sealed class TextViewport : FrameworkElement
     public void Attach(TextEditorViewModel vm)
     {
         if (_vm is not null)
-            _vm.PropertyChanged -= OnVmPropertyChanged;
+        {
+            _vm.PropertyChanged    -= OnVmPropertyChanged;
+            _vm.HighlightsComputed -= OnHighlightsComputed;
+        }
 
         _vm = vm;
-        vm.PropertyChanged += OnVmPropertyChanged;
+        vm.PropertyChanged    += OnVmPropertyChanged;
+        vm.HighlightsComputed += OnHighlightsComputed;
         _lineRenderCache.Clear();
         InvalidateMeasure();
         InvalidateVisual(); // triggers OnRender → full render
@@ -154,7 +166,8 @@ internal sealed class TextViewport : FrameworkElement
     {
         if (_vm is not null)
         {
-            _vm.PropertyChanged -= OnVmPropertyChanged;
+            _vm.PropertyChanged    -= OnVmPropertyChanged;
+            _vm.HighlightsComputed -= OnHighlightsComputed;
             _vm = null;
         }
         _lineRenderCache.Clear();
@@ -190,8 +203,8 @@ internal sealed class TextViewport : FrameworkElement
     /// <summary>Total document height in device-independent units.</summary>
     public double TotalHeight => (_vm?.LineCount ?? 0) * LineHeight;
 
-    /// <summary>Estimated max line width (for horizontal scrollbar).</summary>
-    public double EstimatedMaxWidth => (_vm?.Lines.Max(l => l.Length) ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
+    /// <summary>Estimated max line width (for horizontal scrollbar). O(1) — reads ViewModel incremental cache.</summary>
+    public double EstimatedMaxWidth => (_vm?.MaxLineLength ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
 
     public double LineHeight            => _lineHeight > 0 ? _lineHeight : 18;
     public double CharWidth             => _charWidth  > 0 ? _charWidth  : 7.2;
@@ -331,36 +344,47 @@ internal sealed class TextViewport : FrameworkElement
             double y  = (startLine - firstVisLine) * _lineHeight;
             double x1 = codeX + startCol * _charWidth;
             double x2 = codeX + endCol   * _charWidth;
-            if (x2 > x1) dc.DrawRectangle(selBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+            if (x2 > x1) dc.DrawRoundedRectangle(selBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
             return;
         }
 
-        // First (partial) line
+        // Multi-line: collect overlapping segments then union them so the brush is applied once,
+        // preventing double-alpha darkening at junctions with semi-transparent selection brushes.
+        var segments = new List<Geometry>();
+
+        // First (partial) line — extend bottom by CornerRadius so the rounded tail merges with next segment
         if (startLine >= firstVisLine && startLine <= lastVisLine)
         {
             double y     = (startLine - firstVisLine) * _lineHeight;
             double x1    = codeX + startCol * _charWidth;
             double lineW = (_vm.GetLine(startLine).Length - startCol) * _charWidth;
             double width = Math.Max(lineW, _charWidth);
-            dc.DrawRectangle(selBrush, null, new Rect(x1, y, width, _lineHeight));
+            segments.Add(new RectangleGeometry(new Rect(x1, y, width, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
         }
 
-        // Middle (full) lines
+        // Middle (full) lines — extend top and bottom by CornerRadius to merge with neighbours
         for (int li = startLine + 1; li < endLine; li++)
         {
             if (li < firstVisLine || li > lastVisLine) continue;
-            double y     = (li - firstVisLine) * _lineHeight;
+            double y     = (li - firstVisLine) * _lineHeight - SelectionCornerRadius;
             double width = Math.Max(_vm.GetLine(li).Length * _charWidth, _charWidth);
-            dc.DrawRectangle(selBrush, null, new Rect(codeX, y, width, _lineHeight));
+            segments.Add(new RectangleGeometry(new Rect(codeX, y, width, _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
         }
 
-        // Last (partial) line
+        // Last (partial) line — extend top by CornerRadius so the rounded head merges with previous segment
         if (endLine >= firstVisLine && endLine <= lastVisLine)
         {
-            double y     = (endLine - firstVisLine) * _lineHeight;
+            double y     = (endLine - firstVisLine) * _lineHeight - SelectionCornerRadius;
             double width = Math.Max(endCol * _charWidth, _charWidth);
-            dc.DrawRectangle(selBrush, null, new Rect(codeX, y, width, _lineHeight));
+            segments.Add(new RectangleGeometry(new Rect(codeX, y, width, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
         }
+
+        if (segments.Count == 0) return;
+        Geometry combined = segments[0];
+        for (int i = 1; i < segments.Count; i++)
+            combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
+        combined.Freeze();
+        dc.DrawGeometry(selBrush, null, combined);
     }
 
     // -----------------------------------------------------------------------
@@ -557,6 +581,20 @@ internal sealed class TextViewport : FrameworkElement
         UpdateBackground();
         UpdateTextContent();
         DrawCursor();
+        // Schedule background highlighting for visible + buffer range (P1-TE-06)
+        _vm?.ScheduleHighlightAsync(_firstVisibleLine, _firstVisibleLine + _visibleLineCount);
+    }
+
+    /// <summary>
+    /// Called on the UI thread when the background highlight pipeline completes a range.
+    /// Invalidates the FormattedText cache for those lines so the next render picks up
+    /// the new highlight spans, then queues a full render at Background priority.
+    /// </summary>
+    private void OnHighlightsComputed(int firstLine, int lastLine)
+    {
+        for (int i = firstLine; i <= lastLine; i++)
+            _lineRenderCache.Remove(i);
+        QueueFullRender();
     }
 
     private void DoBackgroundRender()
@@ -596,6 +634,20 @@ internal sealed class TextViewport : FrameworkElement
 
         switch (e.Key)
         {
+            // -- Zoom shortcuts (P2-01) -----------------------------------
+            case Key.OemPlus  when ctrl:
+            case Key.Add      when ctrl:
+                ZoomLevel = Math.Round(ZoomLevel + 0.1, 1);
+                e.Handled = true; break;
+            case Key.OemMinus when ctrl:
+            case Key.Subtract when ctrl:
+                ZoomLevel = Math.Round(ZoomLevel - 0.1, 1);
+                e.Handled = true; break;
+            case Key.D0 when ctrl:
+            case Key.NumPad0 when ctrl:
+                ZoomLevel = 1.0;
+                e.Handled = true; break;
+
             // -- Clipboard / Edit shortcuts ------------------------------
             case Key.A when ctrl:
                 ViewportSelectAll();
@@ -797,6 +849,11 @@ internal sealed class TextViewport : FrameworkElement
 
         if (!_isDragging || _vm is null || e.LeftButton != MouseButtonState.Pressed) return;
 
+        // 60 Hz gate: skip if last drag-render was < 16.7 ms ago (P1-TE-02)
+        long now = System.Diagnostics.Stopwatch.GetTimestamp();
+        if (now - _lastDragRenderTick < DragThrottleTicks) return;
+        _lastDragRenderTick = now;
+
         // Set anchor on first movement after button-down
         if (!_vm.HasSelection)
         {
@@ -847,7 +904,21 @@ internal sealed class TextViewport : FrameworkElement
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
-        int delta = e.Delta / 40;
+
+        // Ctrl+Wheel → zoom (P2-01)
+        if (Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            double step = e.Delta > 0 ? 0.1 : -0.1;
+            ZoomLevel = Math.Round(ZoomLevel + step, 1);
+            e.Handled = true;
+            return;
+        }
+
+        // Use MouseWheelSpeed (lines per notch) — same model as HexEditor.
+        int speed = MouseWheelSpeed == MouseWheelSpeed.System
+            ? SystemParameters.WheelScrollLines
+            : (int)MouseWheelSpeed;
+        int delta = Math.Sign(e.Delta) * speed;
         FirstVisibleLine = Math.Max(0, _firstVisibleLine - delta);
         e.Handled = true;
     }
@@ -860,18 +931,24 @@ internal sealed class TextViewport : FrameworkElement
     {
         var font = TryFindResource("TE_FontFamily") as FontFamily
                    ?? new FontFamily("Cascadia Code, Consolas, Courier New");
-        var size = TryFindResource("TE_FontSize") is double fs ? fs : DefaultFontSize;
+        var baseSize = TryFindResource("TE_FontSize") is double fs ? fs : DefaultFontSize;
+        var zoom     = ZoomLevel; // P2-01
 
-        if (_typeface is not null && _emSize == size &&
-            _cachedFontSize == size && Equals(_cachedTypeface, _typeface))
+        // Apply zoom to the effective em-size.
+        var size = baseSize * zoom;
+
+        if (_typeface is not null && _emSize == size
+            && _cachedFontSize == baseSize && _cachedZoom == zoom
+            && Equals(_cachedTypeface, _typeface))
             return;
 
         _typeface       = new Typeface(font, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
         _emSize         = size;
-        _cachedFontSize = size;
+        _cachedFontSize = baseSize;
+        _cachedZoom     = zoom;     // P2-01
         _cachedTypeface = _typeface;
         _brushCache.Clear();
-        _lineRenderCache.Clear(); // font changed — all cached FormattedText is stale
+        _lineRenderCache.Clear(); // font/zoom changed — all cached FormattedText is stale
 
         EnsureDpi();
 
@@ -1011,6 +1088,79 @@ internal sealed class TextViewport : FrameworkElement
     // -----------------------------------------------------------------------
     // Theme change detection
     // -----------------------------------------------------------------------
+
+    // ── Zoom ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Scales the displayed text (0.5 = 50 %, 1.0 = 100 %, 4.0 = 400 %).
+    /// <c>Ctrl+Wheel</c>, <c>Ctrl+=</c>, <c>Ctrl+-</c>, and <c>Ctrl+0</c> adjust this value.
+    /// Mirrors <c>CodeEditor.ZoomLevel</c> for API consistency.
+    /// </summary>
+    public static readonly DependencyProperty ZoomLevelProperty =
+        DependencyProperty.Register(
+            nameof(ZoomLevel),
+            typeof(double),
+            typeof(TextViewport),
+            new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.AffectsMeasure,
+                (d, _) =>
+                {
+                    var vp = (TextViewport)d;
+                    vp._lineRenderCache.Clear(); // zoom changes emSize → cached FormattedText is stale
+                    vp.QueueFullRender();
+                    vp.ZoomLevelChanged?.Invoke(vp, vp.ZoomLevel);
+                }));
+
+    /// <summary>Gets or sets the zoom level (0.5–4.0).</summary>
+    public double ZoomLevel
+    {
+        get => (double)GetValue(ZoomLevelProperty);
+        set => SetValue(ZoomLevelProperty, Math.Max(0.5, Math.Min(4.0, value)));
+    }
+
+    /// <summary>Raised when <see cref="ZoomLevel"/> changes (for status-bar display).</summary>
+    public event EventHandler<double>? ZoomLevelChanged;
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── MouseWheel scroll speed ──────────────────────────────────────────────
+
+    /// <summary>
+    /// Lines scrolled per mouse-wheel notch — same enum and behaviour as HexEditor.
+    /// <c>System</c> uses <see cref="System.Windows.SystemParameters.WheelScrollLines"/>.
+    /// </summary>
+    public static readonly DependencyProperty MouseWheelSpeedProperty =
+        DependencyProperty.Register(
+            nameof(MouseWheelSpeed),
+            typeof(MouseWheelSpeed),
+            typeof(TextViewport),
+            new FrameworkPropertyMetadata(MouseWheelSpeed.System));
+
+    /// <summary>Gets or sets the lines-per-notch scroll speed.</summary>
+    public MouseWheelSpeed MouseWheelSpeed
+    {
+        get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+        set => SetValue(MouseWheelSpeedProperty, value);
+    }
+
+    /// <summary>
+    /// Kept for API compatibility — no longer used for vertical scroll.
+    /// Use <see cref="MouseWheelSpeed"/> instead.
+    /// </summary>
+    public static readonly DependencyProperty ScrollSpeedMultiplierProperty =
+        DependencyProperty.Register(
+            nameof(ScrollSpeedMultiplier),
+            typeof(double),
+            typeof(TextViewport),
+            new FrameworkPropertyMetadata(1.0));
+
+    /// <inheritdoc cref="ScrollSpeedMultiplierProperty"/>
+    public double ScrollSpeedMultiplier
+    {
+        get => (double)GetValue(ScrollSpeedMultiplierProperty);
+        set => SetValue(ScrollSpeedMultiplierProperty, Math.Max(0.5, Math.Min(3.0, value)));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     // Sentinel DependencyProperty bound to TE_Background via SetResourceReference.
     // When the application theme swaps MergedDictionaries, WPF re-resolves every

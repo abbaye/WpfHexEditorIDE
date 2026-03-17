@@ -87,6 +87,22 @@ public abstract class AssemblyNodeViewModel : INotifyPropertyChanged
     /// <summary>ECMA-335 metadata token, or 0 for virtual/grouping nodes.</summary>
     public int MetadataToken { get; protected init; }
 
+    /// <summary>
+    /// Byte length of the member body (IL header + code bytes) for method nodes.
+    /// 0 for types, grouping nodes, and abstract/extern methods with no body.
+    /// Populated after tree construction via <see cref="AssemblyExplorerViewModel"/>.
+    /// Used to highlight the exact byte range in the hex editor.
+    /// </summary>
+    public int ByteLength { get; internal set; }
+
+    /// <summary>
+    /// Absolute file path of the assembly this node belongs to.
+    /// Set by AssemblyExplorerViewModel after tree construction via PropagateOwnerFilePath.
+    /// Allows the detail pane and hex editor integration to resolve the correct file
+    /// when multiple assemblies are loaded simultaneously.
+    /// </summary>
+    public string? OwnerFilePath { get; internal set; }
+
     // ── Tree state ────────────────────────────────────────────────────────────
 
     private bool _isExpanded;

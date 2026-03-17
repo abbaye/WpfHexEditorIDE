@@ -9,9 +9,12 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
+using WpfHexEditor.Editor.TextEditor.Models;
 using WpfHexEditor.Editor.TextEditor.Services;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
 
@@ -30,7 +33,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     // -----------------------------------------------------------------------
 
     private readonly TextEditorViewModel _vm = new();
-    private CancellationTokenSource? _cts = null; // reserved for future async operations
+    private CancellationTokenSource? _cts         = null; // reserved for future async operations
+    private TextLinkAdorner?         _linkAdorner = null;
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -135,6 +139,44 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     {
         get => _vm.IsReadOnly;
         set => _vm.IsReadOnly = value;
+    }
+
+    /// <summary>
+    /// Lines scrolled per mouse-wheel notch.
+    /// Forwarded to <see cref="TextViewport.MouseWheelSpeed"/>.
+    /// </summary>
+    public MouseWheelSpeed MouseWheelSpeed
+    {
+        get => Viewport.MouseWheelSpeed;
+        set => Viewport.MouseWheelSpeed = value;
+    }
+
+    /// <summary>
+    /// Kept for API compatibility — use <see cref="MouseWheelSpeed"/> instead.
+    /// Forwarded to <see cref="TextViewport.ScrollSpeedMultiplier"/>.
+    /// </summary>
+    public double ScrollSpeedMultiplier
+    {
+        get => Viewport.ScrollSpeedMultiplier;
+        set => Viewport.ScrollSpeedMultiplier = value;
+    }
+
+    /// <summary>
+    /// Text zoom level (0.5–4.0, 1.0 = 100 %).
+    /// Forwarded to <see cref="TextViewport.ZoomLevel"/>.
+    /// Ctrl+Wheel, Ctrl+=, Ctrl+-, Ctrl+0 adjust this value interactively.
+    /// </summary>
+    public double ZoomLevel
+    {
+        get => Viewport.ZoomLevel;
+        set => Viewport.ZoomLevel = value;
+    }
+
+    /// <summary>Raised when <see cref="ZoomLevel"/> changes.</summary>
+    public event EventHandler<double>? ZoomLevelChanged
+    {
+        add    => Viewport.ZoomLevelChanged += value;
+        remove => Viewport.ZoomLevelChanged -= value;
     }
 
     // -----------------------------------------------------------------------
@@ -392,6 +434,48 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                 LanguageText.Text    = def.Name;
             }
         }
+    }
+
+    /// <summary>
+    /// Sets content and installs a <see cref="TextLinkAdorner"/> for Ctrl+Click goto-definition
+    /// navigation.  Each link renders as an underline; Ctrl+Clicking invokes <see cref="TextLink.OnClick"/>.
+    /// Call <see cref="ClearLinks"/> to remove the adorner.
+    /// </summary>
+    public void SetContentWithLinks(
+        string                    text,
+        IReadOnlyList<TextLink>   links,
+        bool                      readOnly     = true,
+        string?                   languageName = null)
+    {
+        SetContentDirect(text, readOnly, languageName);
+        InstallAdorner(links);
+    }
+
+    /// <summary>Removes the current text-link adorner (if any).</summary>
+    public void ClearLinks()
+    {
+        if (_linkAdorner is null) return;
+
+        var layer = AdornerLayer.GetAdornerLayer(Viewport);
+        layer?.Remove(_linkAdorner);
+        _linkAdorner = null;
+    }
+
+    // ── Adorner management ────────────────────────────────────────────────────
+
+    private void InstallAdorner(IReadOnlyList<TextLink> links)
+    {
+        // Remove stale adorner if present.
+        ClearLinks();
+
+        if (links.Count == 0) return;
+
+        var layer = AdornerLayer.GetAdornerLayer(Viewport);
+        if (layer is null) return;
+
+        _linkAdorner = new TextLinkAdorner(Viewport, _vm);
+        _linkAdorner.SetLinks(links);
+        layer.Add(_linkAdorner);
     }
 
     /// <summary>

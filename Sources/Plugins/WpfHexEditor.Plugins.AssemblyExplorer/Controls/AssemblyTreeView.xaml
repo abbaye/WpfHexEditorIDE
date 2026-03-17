@@ -146,6 +146,43 @@
             </Setter>
         </Style>
 
+        <!-- Root node DataTemplate — shows pin badge when IsPinned=true -->
+        <HierarchicalDataTemplate DataType="{x:Type vm:AssemblyRootNodeViewModel}"
+                                  ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal" Margin="0,1">
+                <!-- Assembly icon (teal) -->
+                <TextBlock Text="{Binding Converter={StaticResource NodeIconConverter}}"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="0,0,2,0"
+                           Foreground="{Binding IconBrush}"/>
+                <!-- Pin badge: visible only when IsPinned=true -->
+                <TextBlock Text="&#xE840;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="8"
+                           VerticalAlignment="Center"
+                           Margin="0,0,3,0"
+                           Foreground="{DynamicResource PFP_AccentBrush}"
+                           ToolTip="Pinned — this assembly will not be evicted automatically">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPinned}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding DisplayName}"
+                           VerticalAlignment="Center"
+                           FontSize="12"
+                           FontWeight="SemiBold"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
         <!-- Default node DataTemplate -->
         <HierarchicalDataTemplate DataType="{x:Type vm:AssemblyNodeViewModel}"
                                   ItemsSource="{Binding Children}">
@@ -183,11 +220,21 @@
         <ContextMenu x:Key="AsmNodeContextMenu"
                      Opened="OnContextMenuOpened">
 
-            <MenuItem x:Name="MenuOpenInHex" Header="Open in HexEditor"
+            <MenuItem x:Name="MenuHighlightInHex" Header="Highlight in Hex Editor"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      Click="OnOpenInHexEditor">
+                      ToolTip="Open assembly file in hex editor and navigate to this member's byte range"
+                      Click="OnHighlightInHexEditor">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem x:Name="MenuOpenInHex" Header="Open Assembly File in Hex Editor"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Open the raw assembly bytes in the hex editor (no navigation)"
+                      Click="OnOpenInHexEditor">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE838;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -233,6 +280,15 @@
                 </MenuItem.Icon>
             </MenuItem>
 
+            <MenuItem x:Name="MenuExtractToProject" Header="Extract to Project…"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Decompile and add .cs file to the loaded project"
+                      Click="OnExtractToProject">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
             <MenuItem IsEnabled="False" Header="Show in Metadata Tables"
                       ToolTip="Coming in a future release"
                       Foreground="{DynamicResource DockMenuForegroundBrush}">
@@ -256,6 +312,47 @@
                       Foreground="{DynamicResource DockMenuForegroundBrush}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator/>
+
+            <MenuItem x:Name="MenuPin" Header="Pin Assembly"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Pin this assembly so it is not evicted when the active file changes"
+                      Click="OnPinAssembly">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE840;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem x:Name="MenuCompareWith" Header="Compare with…"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Open the Diff panel with this assembly pre-selected as baseline"
+                      Click="OnCompareWith">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8AD;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator/>
+
+            <MenuItem x:Name="MenuCollapseAll" Header="Collapse All"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Collapse all nodes in the tree"
+                      Click="OnCollapseAll">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8AA;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem x:Name="MenuCloseAllAssemblies" Header="Close All Assemblies"
+                      Foreground="#EF4444"
+                      ToolTip="Unload all assemblies from the workspace"
+                      Click="OnCloseAllAssemblies">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                               Foreground="#EF4444"/>
                 </MenuItem.Icon>
             </MenuItem>
 

@@ -261,6 +261,8 @@
     <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#EEEEF2"/>
     <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#CCCEDB"/>
+    <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
+    <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#DADADF"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#D6D6DE"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#C8C8D4"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#1E1E1E"/>
@@ -284,6 +286,28 @@
     <SolidColorBrush x:Key="TE_Operator"               Color="#1E1E1E"/>
     <SolidColorBrush x:Key="TE_Type"                   Color="#267F99"/>
     <SolidColorBrush x:Key="TE_Directive"              Color="#800080"/>
+
+    <!-- CE_* — Code Editor syntax token colors (VS Light palette) -->
+    <SolidColorBrush x:Key="CE_Keyword"       Color="#0000FF"/>
+    <SolidColorBrush x:Key="CE_Comment"       Color="#008000"/>
+    <SolidColorBrush x:Key="CE_String"        Color="#A31515"/>
+    <SolidColorBrush x:Key="CE_Number"        Color="#098658"/>
+    <SolidColorBrush x:Key="CE_Type"          Color="#267F99"/>
+    <SolidColorBrush x:Key="CE_Identifier"    Color="#795E26"/>
+    <SolidColorBrush x:Key="CE_Operator"      Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="CE_Bracket"       Color="#0000FF"/>
+    <SolidColorBrush x:Key="CE_Brace"         Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="CE_Attribute"     Color="#001080"/>
+    <SolidColorBrush x:Key="CE_Error"         Color="#FF0000"/>
+    <SolidColorBrush x:Key="CE_Background"    Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="CE_Foreground"    Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="CE_LineNumBg"     Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="CE_NavBarBg"     Color="#EEEEF2"/>
+    <SolidColorBrush x:Key="CE_NavBarBorder" Color="#CCCEDB"/>
+    <SolidColorBrush x:Key="CE_LineNumFg"     Color="#999999"/>
+    <SolidColorBrush x:Key="CE_CurrentLine"   Color="#F8F8F8"/>
+    <SolidColorBrush x:Key="CE_Selection"         Color="#ADD6FF"/>
+    <SolidColorBrush x:Key="CE_SelectionInactive" Color="#D0D0D0"/>
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#007ACC</Color>
@@ -332,4 +356,21 @@
     <SolidColorBrush x:Key="WarningBannerBrush"                  Color="#3DD97706"/>
     <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#D97706"/>
     <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#92400E"/>
+
+    <!-- XAML Designer (XD_*) — Light theme -->
+    <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#C0C0C0"/>
+    <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#DDDDDD"/>
+    <SolidColorBrush x:Key="XD_SelectionBorderBrush"             Color="#0066BB"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleFillBrush"         Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleStrokeBrush"       Color="#0066BB"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBackground"            Color="#FFF0F0"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerForeground"            Color="#C0392B"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBorder"                Color="#E74C3C"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBrush"                Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBorderBrush"          Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="XD_PropertyNameForeground"           Color="#0078D4"/>
+    <SolidColorBrush x:Key="XD_PropertyValueForeground"          Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="XD_PropertyGroupHeaderBackground"    Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="XD_ToolbarViewToggleActiveBrush"     Color="#007ACC"/>
 </ResourceDictionary>

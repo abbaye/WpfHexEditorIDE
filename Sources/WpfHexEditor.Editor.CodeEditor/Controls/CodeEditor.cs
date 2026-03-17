@@ -10,9 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,8 +25,11 @@ using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Rendering;
 using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
+using WpfHexEditor.Core;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.CodeEditor.Options;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -42,12 +47,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int _cursorLine = 0;        // Current cursor line (0-based)
         private int _cursorColumn = 0;      // Current cursor column (0-based)
         private TextSelection _selection;   // Current text selection
+        private int _lastNotifiedCursorLine = -1; // Tracks last CaretMoved notification line
 
         #endregion
 
         #region Fields - Syntax Highlighting (Phase 2)
 
         private CodeSyntaxHighlighter _highlighter;
+
+        // URL hit-zones: rebuilt on every render pass; used for cursor + Ctrl+Click.
+        private readonly List<UrlHitZone> _urlHitZones = new();
+
+        // The URL zone currently under the mouse pointer (null = none).
+        // Drives hover underline; changing it triggers InvalidateVisual().
+        private UrlHitZone? _hoveredUrlZone;
+
+        // Explicit tooltip object opened/closed in OnMouseMove.
+        // Using ToolTip directly (instead of the ToolTip property) ensures the tooltip
+        // appears even when the mouse is already inside the CodeEditor control.
+        private ToolTip? _urlTooltip;
+
+        // Compiled URL regex — re-used across all render passes (thread-safe read-only after init).
+        private static readonly Regex s_urlRegex = new(
+            @"https?://[^\s""'<>\[\]{}|\\^`]+",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Optional external syntax highlighter (e.g. RegexBasedSyntaxHighlighter for .whlang languages).
@@ -91,6 +114,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Prevents dispatcher queue flooding at high mouse-event rates (200–1000 Hz).
         private bool _selectionRenderPending;
 
+        // Auto-scroll during drag: fires at 50 ms intervals when the mouse is outside
+        // the visible viewport while a selection drag is in progress.
+        private System.Windows.Threading.DispatcherTimer _autoScrollTimer;
+        private Point _lastMousePosition;
+
         #endregion
 
         #region Fields - IntelliSense (Phase 4)
@@ -100,11 +128,45 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #endregion
 
+        #region Fields - LSP Client (Phase 4 — LSP Integration)
+
+        // Optional LSP client injected by the IDE host (via SetLspClient).
+        // Null when no language server is configured for the current language.
+        private WpfHexEditor.Editor.Core.LSP.ILspClient? _lspClient;
+
+        // Monotonically increasing document version sent with every didChange notification.
+        private int _lspDocVersion;
+
+        // Debounce timer for textDocument/didChange — 300 ms after last keystroke.
+        private System.Windows.Threading.DispatcherTimer? _lspChangeTimer;
+
+        #endregion
+
         #region Fields - Validation (Phase 5)
 
         private List<Models.ValidationError> _validationErrors = new List<Models.ValidationError>();
+        // O(1) lookup for RenderValidationGlyph — rebuilt whenever _validationErrors changes (OPT-PERF-01).
+        private Dictionary<int, List<Models.ValidationError>> _validationByLine = new();
         private FormatSchemaValidator _validator;
         private System.Windows.Threading.DispatcherTimer _validationTimer;
+
+        // Cached frozen pens for squiggly-line rendering — avoids per-error Pen allocations (OPT-PERF-02).
+        private static readonly Pen s_squigglyError   = MakeSquigglyPen(Colors.Red);
+        private static readonly Pen s_squigglyWarning = MakeSquigglyPen(Color.FromRgb(255, 165, 0));
+        private static readonly Pen s_squigglyInfo    = MakeSquigglyPen(Colors.Blue);
+
+        private static readonly Pen s_lineNumberSeparatorPen = MakeFrozenPen(Color.FromRgb(200, 200, 200), 1.0);
+        private static readonly Pen s_glyphInnerPen          = MakeFrozenPen(Colors.White, 1.5);
+
+        private static Pen MakeSquigglyPen(Color color) => MakeFrozenPen(color, 1.5);
+
+        private static Pen MakeFrozenPen(Color color, double thickness)
+        {
+            var pen = new Pen(new SolidColorBrush(color), thickness);
+            pen.Brush.Freeze();
+            pen.Freeze();
+            return pen;
+        }
 
         #endregion
 
@@ -131,7 +193,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private System.Windows.Threading.DispatcherTimer _smoothScrollTimer;
         private double _targetScrollOffset = 0;
         private double _currentScrollOffset = 0;
-        private const double SmoothScrollSpeed = 0.2; // Interpolation factor (0-1)
+        private const double SmoothScrollSpeed = 0.35; // Interpolation factor (0-1) — higher = snappier
 
         #endregion
 
@@ -161,6 +223,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private FoldingEngine?  _foldingEngine;
         private GutterControl?  _gutterControl;
 
+        // 500ms folding debounce timer (P1-CE-01) — prevents O(n) scan on every keystroke
+        private System.Windows.Threading.DispatcherTimer? _foldingDebounceTimer;
+
+        // Incremental max-width tracking (P1-CE-02) — O(1) on growth, O(n) only on shrink
+        private int _cachedMaxLineLength;
+
+        // Per-line-number FormattedText cache (P1-CE-03) — eliminates 2,400 allocs/s at 60Hz
+        private readonly Dictionary<int, FormattedText> _lineNumberCache = new();
+        private Typeface? _cachedLineNumberTypeface;
+        private double _cachedLineNumberFontSize = -1;
+
+        // Background highlight pipeline (P1-CE-06)
+        private readonly Services.HighlightPipelineService _highlightPipeline = new();
+        // Last visible range that was submitted to the pipeline — avoids re-scheduling when unchanged.
+        private int _lastHighlightFirst = -1;
+        private int _lastHighlightLast  = -1;
+
         private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
         private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
 
@@ -181,6 +260,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private const double LineNumberMargin = 5;
         private const double TextAreaLeftOffset = 70; // LineNumberWidth + margin
         private const double ScrollBarThickness = 12.0;
+        private const double SelectionCornerRadius = 3.0;
 
         #endregion
 
@@ -295,6 +375,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 else
                 {
                     _validationErrors.Clear();
+                    _validationByLine.Clear();
                     DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -411,7 +492,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public static readonly DependencyProperty LineHeightMultiplierProperty =
             DependencyProperty.Register(nameof(LineHeightMultiplier), typeof(double), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(1.3, FrameworkPropertyMetadataOptions.AffectsRender,
+                new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.AffectsRender,
                     OnFontChanged));
 
         [Category("Appearance.Fonts")]
@@ -563,15 +644,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         public static readonly DependencyProperty InactiveSelectionBackgroundProperty =
-            DependencyProperty.Register(nameof(InactiveSelectionBackground), typeof(Color), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(Color.FromArgb(50, 128, 128, 128), FrameworkPropertyMetadataOptions.AffectsRender));
+            DependencyProperty.Register(nameof(InactiveSelectionBackground), typeof(Brush), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(new SolidColorBrush(Color.FromRgb(62, 62, 66)),
+                    FrameworkPropertyMetadataOptions.AffectsRender));
 
         [Category("Appearance.Colors")]
         [DisplayName("Inactive Selection Background")]
-        [Description("Selection background color when editor loses focus")]
-        public Color InactiveSelectionBackground
+        [Description("Selection background color when editor loses focus (VS-like grayed selection)")]
+        public Brush InactiveSelectionBackground
         {
-            get => (Color)GetValue(InactiveSelectionBackgroundProperty);
+            get => (Brush)GetValue(InactiveSelectionBackgroundProperty);
             set => SetValue(InactiveSelectionBackgroundProperty, value);
         }
 
@@ -775,7 +857,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public static readonly DependencyProperty SmoothScrollingProperty =
             DependencyProperty.Register(nameof(SmoothScrolling), typeof(bool), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(true));
+                new FrameworkPropertyMetadata(false)); // Off by default — instant scroll matches HexEditor/MouseWheelSpeed DP.
 
         [Category("Behavior.Scrolling")]
         [DisplayName("Smooth Scrolling")]
@@ -798,6 +880,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             get => (double)GetValue(ScrollSpeedMultiplierProperty);
             set => SetValue(ScrollSpeedMultiplierProperty, Math.Max(0.5, Math.Min(3.0, value)));
+        }
+
+        public static readonly DependencyProperty MouseWheelSpeedProperty =
+            DependencyProperty.Register(nameof(MouseWheelSpeed), typeof(MouseWheelSpeed), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(MouseWheelSpeed.System));
+
+        [Category("Behavior.Scrolling")]
+        [DisplayName("Mouse Wheel Speed")]
+        [Description("Lines scrolled per wheel notch. System = Windows setting (typically 3). VerySlow=1, Slow=3, Normal=5, Fast=7, VeryFast=9.")]
+        public MouseWheelSpeed MouseWheelSpeed
+        {
+            get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+            set => SetValue(MouseWheelSpeedProperty, value);
         }
 
         public static readonly DependencyProperty HorizontalScrollSensitivityProperty =
@@ -1256,6 +1351,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _validationTimer.Interval = TimeSpan.FromMilliseconds(ValidationDelay);
             _validationTimer.Tick += ValidationTimer_Tick;
 
+            // Folding debounce (P1-CE-01) — 500 ms after last keystroke
+            _foldingDebounceTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _foldingDebounceTimer.Tick += (_, _) =>
+            {
+                _foldingDebounceTimer!.Stop();
+                if (IsFoldingEnabled && _foldingEngine != null)
+                    _foldingEngine.Analyze(_document.Lines);
+            };
+
+            // Background highlight pipeline (P1-CE-06) — invalidate & re-render on completion.
+            // Suppressed while smooth-scroll is animating to avoid a double-render per frame:
+            // timer-tick → InvalidateVisual → OnRender would already redraw; we only need
+            // the highlights render once the viewport has settled.
+            _highlightPipeline.HighlightsComputed += (_, _) =>
+            {
+                if (!_smoothScrollTimer.IsEnabled)
+                    InvalidateVisual();
+            };
+
             // Make focusable for keyboard input
             Focusable = true;
             FocusVisualStyle = null; // No focus rectangle
@@ -1280,6 +1397,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _smoothScrollTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
             _smoothScrollTimer.Tick += SmoothScrollTimer_Tick;
 
+            // Auto-scroll timer: scrolls the viewport while the mouse is held outside
+            // bounds during a drag-selection (50 ms → ~20 scroll steps/s).
+            _autoScrollTimer = new System.Windows.Threading.DispatcherTimer();
+            _autoScrollTimer.Interval = TimeSpan.FromMilliseconds(50);
+            _autoScrollTimer.Tick += AutoScrollTimer_Tick;
+
             // Initialize ScrollBar visual children (vertical + horizontal)
             _scrollBarChildren = new VisualCollection(this);
             _vScrollBar = new System.Windows.Controls.Primitives.ScrollBar
@@ -1289,7 +1412,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 LargeChange  = 100,
                 Minimum      = 0,
                 Maximum      = 0,
-                Value        = 0
+                Value        = 0,
+                Cursor       = Cursors.Arrow  // override parent IBeam
             };
             _hScrollBar = new System.Windows.Controls.Primitives.ScrollBar
             {
@@ -1298,7 +1422,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 LargeChange  = 100,
                 Minimum      = 0,
                 Maximum      = 0,
-                Value        = 0
+                Value        = 0,
+                Cursor       = Cursors.Arrow  // override parent IBeam
             };
             _vScrollBar.ValueChanged += VScrollBar_ValueChanged;
             _hScrollBar.ValueChanged += HScrollBar_ValueChanged;
@@ -1316,40 +1441,139 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Binds all color DPs to the active theme's TE_* resource keys.
+        /// Binds all color DPs to the active theme's CE_* / TE_* resource keys via DynamicResource.
         /// Called on Loaded so the element is connected to the application resource tree.
         /// Safe to call multiple times — subsequent calls just re-register the same keys.
+        /// CE_* keys provide Code Editor–specific palette (VS Dark/Light per theme).
+        /// TE_* keys are shared with TextEditor for tokens that have no CE_* equivalent.
         /// </summary>
         private void ApplyThemeResourceBindings()
         {
-            // Viewport
-            SetResourceReference(EditorBackgroundProperty,      "TE_Background");
-            SetResourceReference(EditorForegroundProperty,      "TE_Foreground");
-            SetResourceReference(LineNumberBackgroundProperty,  "TE_LineNumberBackground");
-            SetResourceReference(LineNumberForegroundProperty,  "TE_LineNumberForeground");
-            SetResourceReference(CurrentLineBackgroundProperty, "TE_CurrentLineBrush");
-            SetResourceReference(SelectionBackgroundProperty,   "TE_SelectionBackground");
-            SetResourceReference(CaretColorProperty,            "TE_CaretColor");
+            // Viewport — use CE_* dedicated keys so the code editor tracks its own palette
+            SetResourceReference(EditorBackgroundProperty,      "CE_Background");
+            SetResourceReference(EditorForegroundProperty,      "CE_Foreground");
+            SetResourceReference(LineNumberBackgroundProperty,  "CE_LineNumBg");
+            SetResourceReference(LineNumberForegroundProperty,  "CE_LineNumFg");
+            SetResourceReference(CurrentLineBackgroundProperty, "CE_CurrentLine");
+            SetResourceReference(SelectionBackgroundProperty,          "CE_Selection");
+            SetResourceReference(InactiveSelectionBackgroundProperty,  "CE_SelectionInactive");
+            SetResourceReference(CaretColorProperty,                   "TE_CaretColor");
 
-            // Syntax highlighting
-            SetResourceReference(SyntaxKeyColorProperty,              "TE_Keyword");
-            SetResourceReference(SyntaxKeywordColorProperty,          "TE_Keyword");
-            SetResourceReference(SyntaxBooleanColorProperty,          "TE_Keyword");
-            SetResourceReference(SyntaxStringValueColorProperty,      "TE_String");
-            SetResourceReference(SyntaxNumberColorProperty,           "TE_Number");
-            SetResourceReference(SyntaxCommentColorProperty,          "TE_Comment");
-            SetResourceReference(SyntaxValueTypeColorProperty,        "TE_Type");
+            // Syntax highlighting — CE_* for semantically named token colors
+            SetResourceReference(SyntaxKeyColorProperty,              "CE_Identifier");
+            SetResourceReference(SyntaxKeywordColorProperty,          "CE_Keyword");
+            SetResourceReference(SyntaxBooleanColorProperty,          "CE_Keyword");
+            SetResourceReference(SyntaxStringValueColorProperty,      "CE_String");
+            SetResourceReference(SyntaxNumberColorProperty,           "CE_Number");
+            SetResourceReference(SyntaxCommentColorProperty,          "CE_Comment");
+            SetResourceReference(SyntaxValueTypeColorProperty,        "CE_Type");
             SetResourceReference(SyntaxCalcExpressionColorProperty,   "TE_Directive");
-            SetResourceReference(SyntaxVariableReferenceColorProperty,"TE_Register");
-            SetResourceReference(SyntaxEscapeSequenceColorProperty,   "TE_Label");
-            SetResourceReference(SyntaxUrlColorProperty,              "TE_Register");
-            SetResourceReference(SyntaxBraceColorProperty,            "TE_Foreground");
-            SetResourceReference(SyntaxBracketColorProperty,          "TE_Foreground");
-            SetResourceReference(SyntaxCommaColorProperty,            "TE_Foreground");
-            SetResourceReference(SyntaxColonColorProperty,            "TE_Foreground");
-            SetResourceReference(SyntaxNullColorProperty,             "TE_Operator");
-            SetResourceReference(SyntaxDeprecatedColorProperty,       "TE_Operator");
+            SetResourceReference(SyntaxVariableReferenceColorProperty,"CE_Identifier");
+            SetResourceReference(SyntaxEscapeSequenceColorProperty,   "CE_String");
+            SetResourceReference(SyntaxUrlColorProperty,              "CE_Attribute");
+            SetResourceReference(SyntaxBraceColorProperty,            "CE_Brace");
+            SetResourceReference(SyntaxBracketColorProperty,          "CE_Bracket");
+            SetResourceReference(SyntaxCommaColorProperty,            "CE_Operator");
+            SetResourceReference(SyntaxColonColorProperty,            "CE_Operator");
+            SetResourceReference(SyntaxNullColorProperty,             "CE_Keyword");
+            SetResourceReference(SyntaxDeprecatedColorProperty,       "CE_Operator");
+            SetResourceReference(SyntaxErrorColorProperty,            "CE_Error");
         }
+
+        /// <summary>
+        /// Applies settings from <paramref name="options"/> to this editor instance.
+        /// Font, display, and feature settings are applied immediately.
+        /// Per-token color overrides in <see cref="CodeEditorOptions.SyntaxColorOverrides"/>
+        /// take precedence over the active theme's CE_* resources for as long as the
+        /// override is set; clearing an override reverts to the theme resource.
+        /// </summary>
+        public void ApplyOptions(CodeEditorOptions options)
+        {
+            if (options is null) return;
+
+            // Font / display
+            if (!string.IsNullOrEmpty(options.FontFamily))
+                EditorFontFamily = new FontFamily(options.FontFamily);
+
+            if (options.FontSize is > 6 and < 72)
+                EditorFontSize = options.FontSize;
+
+            ShowLineNumbers = options.ShowLineNumbers;
+
+            // Syntax color overrides — set local value to override the DynamicResource binding.
+            // A null override clears the local value so DynamicResource (CE_*) takes effect again.
+            foreach (var kind in Enum.GetValues<SyntaxTokenKind>())
+            {
+                var dp    = SyntaxTokenKindToColorProperty(kind);
+                var color = options.GetOverride(kind);
+
+                if (dp is null) continue;
+
+                if (color.HasValue)
+                    SetValue(dp, new SolidColorBrush(color.Value));
+                else
+                    ClearValue(dp);  // revert to DynamicResource (CE_*) binding
+            }
+
+            // Re-establish DynamicResource bindings for all syntax color DPs.
+            // ClearValue() above removes any SetResourceReference binding that
+            // ApplyThemeResourceBindings() previously set. Calling it again is
+            // idempotent and ensures CE_* theme resources are live for all
+            // non-overridden token kinds (overridden ones keep their SetValue).
+            ApplyThemeResourceBindings();
+        }
+
+        /// <summary>
+        /// Maps a <see cref="SyntaxTokenKind"/> to the corresponding color <see cref="DependencyProperty"/>.
+        /// Returns null for token kinds that have no direct color DP.
+        /// </summary>
+        private static DependencyProperty? SyntaxTokenKindToColorProperty(SyntaxTokenKind kind) => kind switch
+        {
+            SyntaxTokenKind.Keyword    => SyntaxKeywordColorProperty,
+            SyntaxTokenKind.String     => SyntaxStringValueColorProperty,
+            SyntaxTokenKind.Number     => SyntaxNumberColorProperty,
+            SyntaxTokenKind.Comment    => SyntaxCommentColorProperty,
+            SyntaxTokenKind.Type       => SyntaxValueTypeColorProperty,
+            SyntaxTokenKind.Identifier => SyntaxKeyColorProperty,
+            SyntaxTokenKind.Operator   => SyntaxColonColorProperty,   // maps to operator-class DP
+            SyntaxTokenKind.Bracket    => SyntaxBracketColorProperty,
+            SyntaxTokenKind.Attribute  => SyntaxUrlColorProperty,      // attribute/annotation DP
+            _                          => null
+        };
+
+        /// <summary>
+        /// Maps each <see cref="SyntaxTokenKind"/> directly to the CE_* theme resource key
+        /// used in <see cref="ResolveBrushForKind"/>.
+        /// Using TryFindResource bypasses the DP local-value layer (SetValue/ClearValue),
+        /// so ApplyOptions() overrides or ClearValue calls never corrupt syntax colors.
+        /// </summary>
+        private static readonly Dictionary<SyntaxTokenKind, string> s_kindToResourceKey =
+            new()
+            {
+                { SyntaxTokenKind.Keyword,    "CE_Keyword"    },
+                { SyntaxTokenKind.String,     "CE_String"     },
+                { SyntaxTokenKind.Number,     "CE_Number"     },
+                { SyntaxTokenKind.Comment,    "CE_Comment"    },
+                { SyntaxTokenKind.Type,       "CE_Type"       },
+                { SyntaxTokenKind.Identifier, "CE_Identifier" },
+                { SyntaxTokenKind.Operator,   "CE_Operator"   },
+                { SyntaxTokenKind.Bracket,    "CE_Bracket"    },
+                { SyntaxTokenKind.Attribute,  "CE_Attribute"  },
+            };
+
+        /// <summary>
+        /// Resolves the live theme brush for a <see cref="SyntaxTokenKind"/> by calling
+        /// <see cref="FrameworkElement.TryFindResource"/> with the matching CE_* key.
+        /// This walks the logical tree (CodeEditor → Window → Application), guaranteeing
+        /// the current theme color is returned regardless of any DP local-value interference
+        /// (e.g. from <see cref="ApplyOptions"/> calling ClearValue or SetValue).
+        /// Returns <see langword="null"/> for <see cref="SyntaxTokenKind.Default"/>,
+        /// letting callers fall back to any baked-in brush stored on the token itself.
+        /// </summary>
+        private Brush? ResolveBrushForKind(SyntaxTokenKind kind)
+            => s_kindToResourceKey.TryGetValue(kind, out var key)
+                ? TryFindResource(key) as Brush
+                : null;
 
         private void UpdateTypefacesFromDPs()
         {
@@ -1461,10 +1685,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (Math.Abs(diff) < 0.5)
             {
-                // Close enough - snap to target and stop
-                _currentScrollOffset = _targetScrollOffset;
+                // Close enough - snap to target and stop.
+                _currentScrollOffset  = _targetScrollOffset;
                 _verticalScrollOffset = _targetScrollOffset;
                 _smoothScrollTimer.Stop();
+
+                // Reset tracking so the next OnRender schedules a highlight pass for
+                // the newly settled visible range (highlighting was suppressed during scroll).
+                _lastHighlightFirst = -1;
+                _lastHighlightLast  = -1;
             }
             else
             {
@@ -1482,6 +1711,61 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             SyncVScrollBar();
             InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Auto-scroll timer tick handler.
+        /// Fires at 50 ms intervals while the mouse is held outside the viewport
+        /// during a drag-selection. Scrolls the viewport and extends the selection
+        /// to the clamped text position matching the mouse location.
+        /// </summary>
+        private void AutoScrollTimer_Tick(object sender, EventArgs e)
+        {
+            if (!_isSelecting)
+            {
+                _autoScrollTimer.Stop();
+                return;
+            }
+
+            double mouseY = _lastMousePosition.Y;
+
+            // Scroll speed uses the same MouseWheelSpeed DP as the wheel handler so
+            // the auto-scroll rate is consistent with the user's wheel preference.
+            int    speedLines = MouseWheelSpeed == MouseWheelSpeed.System
+                ? SystemParameters.WheelScrollLines
+                : (int)MouseWheelSpeed;
+            double maxDelta   = speedLines * _lineHeight;
+
+            // Guarantee at least 1 line per tick then accelerate up to maxDelta over 80 px
+            // of overshoot. The previous proportional formula (overshoot/height * max) produced
+            // near-zero deltas when the mouse was just barely outside the viewport.
+            double delta = 0;
+            if (mouseY < 0)
+            {
+                double lines = Math.Clamp(1.0 + (-mouseY) / 80.0, 1.0, speedLines);
+                delta = -lines * _lineHeight;
+            }
+            else if (mouseY > ActualHeight)
+            {
+                double lines = Math.Clamp(1.0 + (mouseY - ActualHeight) / 80.0, 1.0, speedLines);
+                delta = lines * _lineHeight;
+            }
+
+            if (delta != 0)
+                ScrollVertical(delta);
+
+            // Extend selection to the clamped text position under the mouse.
+            double clampedY = Math.Max(0, Math.Min(ActualHeight - 1, mouseY));
+            var    textPos  = PixelToTextPosition(new Point(_lastMousePosition.X, clampedY));
+
+            if (textPos != _selection.End)
+            {
+                _selection.End = textPos;
+                _cursorLine    = textPos.Line;
+                _cursorColumn  = textPos.Column;
+                InvalidateVisual();
+                NotifyCaretMovedIfChanged();
+            }
         }
 
         #endregion
@@ -1503,7 +1787,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _charWidth  = _glyphRenderer.CharWidth;
             _charHeight = _glyphRenderer.CharHeight;
-            _lineHeight = (_charHeight + 4) * LineHeightMultiplier;
+            _lineHeight = (_charHeight + 2) * LineHeightMultiplier;
+
+            // Font changed — line-number cache and GlyphRun cache are stale (P1-CE-03/05)
+            _lineNumberCache.Clear();
+            if (_document != null)
+                foreach (var line in _document.Lines)
+                { line.GlyphRunCache = null; line.IsGlyphCacheDirty = true; }
+        }
+
+        /// <summary>
+        /// O(n) full rebuild of <see cref="_cachedMaxLineLength"/>. Called only at load time
+        /// or document swap — not on every keystroke (P1-CE-02).
+        /// </summary>
+        private void RebuildMaxLineLength()
+        {
+            _cachedMaxLineLength = _document?.Lines.Count > 0
+                ? _document.Lines.Max(l => l.Text.Length)
+                : 0;
         }
 
 
@@ -2100,7 +2401,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_virtualizationEngine == null || !EnableVirtualScrolling)
                 return;
 
-            double newOffset = _virtualizationEngine.ScrollByPixels(delta * ScrollSpeedMultiplier);
+            // delta is already speed * _lineHeight from the caller (MouseWheelSpeed controls line count).
+            // No additional multiplier — ScrollSpeedMultiplier is kept for API compatibility only.
+            double newOffset = _virtualizationEngine.ScrollByPixels(delta);
 
             if (SmoothScrolling)
             {
@@ -2147,6 +2450,35 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             EnsureCursorColumnVisible();
+
+            NotifyCaretMovedIfChanged();
+        }
+
+        /// <summary>
+        /// Fires <see cref="CaretMoved"/> when the caret has moved to a different line.
+        /// Call after every operation that may change <c>_cursorLine</c>.
+        /// </summary>
+        private void NotifyCaretMovedIfChanged()
+        {
+            if (_cursorLine != _lastNotifiedCursorLine)
+            {
+                _lastNotifiedCursorLine = _cursorLine;
+                CaretMoved?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Scrolls to <paramref name="line"/> and places the caret at column 0.
+        /// Used by the navigation bar ComboBox selection.
+        /// </summary>
+        public void NavigateToLine(int line)
+        {
+            if (_document == null || line < 0 || line >= _document.Lines.Count) return;
+            _cursorLine   = line;
+            _cursorColumn = 0;
+            _selection.Clear();
+            EnsureCursorVisible();
+            InvalidateVisual();
         }
 
         #endregion
@@ -2226,6 +2558,35 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Phase 11.4: Periodically cleanup token cache
             if (_frameCount++ % 60 == 0)
                 _document.CleanupTokenCache(MaxCachedLines);
+
+            // Schedule background highlighting only when the visible range changed or dirty lines exist.
+            // Never re-schedule from a render triggered by the pipeline itself (breaks render loop).
+            bool rangeChanged = _firstVisibleLine != _lastHighlightFirst || _lastVisibleLine != _lastHighlightLast;
+            bool hasDirty     = false;
+            if (!rangeChanged)
+            {
+                int lo = Math.Max(0, _firstVisibleLine);
+                int hi = Math.Min(_document.Lines.Count - 1, _lastVisibleLine);
+                for (int i = lo; i <= hi; i++)
+                {
+                    if (_document.Lines[i].IsCacheDirty) { hasDirty = true; break; }
+                }
+            }
+            // Skip highlight scheduling while the smooth-scroll animation is running.
+            // The visible range changes every ~16 ms during scroll; scheduling on every frame
+            // triggers background work + HighlightsComputed → extra InvalidateVisual per frame.
+            // A final pass is triggered by SmoothScrollTimer_Tick when the animation settles.
+            if ((rangeChanged || hasDirty) && !_smoothScrollTimer.IsEnabled)
+            {
+                _lastHighlightFirst = _firstVisibleLine;
+                _lastHighlightLast  = _lastVisibleLine;
+                _highlightPipeline.ScheduleAsync(
+                    _document.Lines,
+                    _firstVisibleLine,
+                    _lastVisibleLine,
+                    _highlighter,
+                    ExternalHighlighter);
+            }
         }
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
@@ -2235,16 +2596,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         protected override Size MeasureOverride(Size availableSize)
         {
-            // Update cached max content width (used by H scrollbar)
-            if (_document != null && _document.Lines.Count > 0)
-            {
-                double max = 0;
-                foreach (var line in _document.Lines)
-                    max = Math.Max(max, line.Text.Length * _charWidth);
-                _maxContentWidth = max + 20; // +20 right padding
-            }
-            else
-                _maxContentWidth = 0;
+            // Update cached max content width using incremental tracker (P1-CE-02 — O(1))
+            _maxContentWidth = _document != null && _document.Lines.Count > 0
+                ? _cachedMaxLineLength * _charWidth + 20
+                : 0;
 
             // Measure scrollbar children
             _vScrollBar?.Measure(new Size(ScrollBarThickness, double.IsInfinity(availableSize.Height) ? double.PositiveInfinity : Math.Max(0, availableSize.Height)));
@@ -2457,6 +2812,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderLineNumbers(DrawingContext dc)
         {
+            // Flush line-number FormattedText cache when font parameters change (P1-CE-03)
+            if (_cachedLineNumberFontSize != LineNumberFontSize ||
+                !Equals(_cachedLineNumberTypeface, _lineNumberTypeface))
+            {
+                _lineNumberCache.Clear();
+                _cachedLineNumberFontSize = LineNumberFontSize;
+                _cachedLineNumberTypeface = _lineNumberTypeface;
+            }
+
+            double dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
             {
                 // Phase 11: Calculate Y position with virtual scrolling support
@@ -2464,29 +2830,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     ? TopMargin + _virtualizationEngine.GetLineYPosition(i)
                     : TopMargin + ((i - _firstVisibleLine) * _lineHeight);
 
-                var lineNumber = (i + 1).ToString(); // Display as 1-based
-                var formattedText = new FormattedText(
-                    lineNumber,
-                    CultureInfo.CurrentCulture,
-                    FlowDirection.LeftToRight,
-                    _lineNumberTypeface, // Use separate line number typeface
-                    LineNumberFontSize,
-                    LineNumberForeground,
-                    VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                // Cache FormattedText per line number — eliminates 2,400 allocations/s (P1-CE-03)
+                if (!_lineNumberCache.TryGetValue(i + 1, out var formattedText))
+                {
+                    formattedText = new FormattedText(
+                        (i + 1).ToString(),
+                        CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        _lineNumberTypeface,
+                        LineNumberFontSize,
+                        LineNumberForeground,
+                        dpi);
+                    _lineNumberCache[i + 1] = formattedText;
+                }
 
-                // Right-align line numbers
-                double x = LineNumberWidth - formattedText.Width - LineNumberMargin;
+                // Right-align line numbers.
+                // Align the FormattedText baseline to the GlyphRun baseline so the line
+                // number sits on the same optical baseline as the code text on the same row.
+                // Fallback: vertical center when GlyphRunRenderer is not yet initialised.
+                double x     = LineNumberWidth - formattedText.Width - LineNumberMargin;
+                double lineY = _glyphRenderer != null
+                    ? y + _glyphRenderer.Baseline - formattedText.Baseline
+                    : y + (_lineHeight - formattedText.Height) / 2;
 
-                dc.DrawText(formattedText, new Point(x, y));
+                dc.DrawText(formattedText, new Point(x, lineY));
 
                 // Render validation glyphs (error/warning icons) in left margin
                 RenderValidationGlyph(dc, i, y);
             }
 
-            // Draw separator line between line numbers and text
-            var pen = new Pen(new SolidColorBrush(Color.FromRgb(200, 200, 200)), 1);
-            pen.Freeze();
-            dc.DrawLine(pen, new Point(LineNumberWidth, 0), new Point(LineNumberWidth, ActualHeight));
+            // Draw separator line between line numbers and text (cached frozen pen — OPT-PERF-02)
+            dc.DrawLine(s_lineNumberSeparatorPen, new Point(LineNumberWidth, 0), new Point(LineNumberWidth, ActualHeight));
         }
 
         /// <summary>
@@ -2494,58 +2868,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderValidationGlyph(DrawingContext dc, int line, double y)
         {
-            if (!EnableValidation || _validationErrors == null || _validationErrors.Count == 0)
-                return;
+            // OPT-PERF-01: O(1) dictionary lookup instead of O(n) LINQ scan per visible line.
+            if (!EnableValidation || _validationByLine.Count == 0) return;
+            if (!_validationByLine.TryGetValue(line, out var lineErrors)) return;
 
-            // Find errors for this line
-            var lineErrors = _validationErrors.Where(e => e.Line == line).ToList();
-            if (lineErrors.Count == 0)
-                return;
+            // Worst severity drives the glyph color (Error > Warning > Info).
+            ValidationSeverity worstSeverity = lineErrors[0].Severity;
+            for (int i = 1; i < lineErrors.Count; i++)
+                if (lineErrors[i].Severity > worstSeverity) worstSeverity = lineErrors[i].Severity;
 
-            // Determine severity - show worst one (Error > Warning > Info)
-            ValidationSeverity worstSeverity = lineErrors.Max(e => e.Severity);
+            if (worstSeverity == ValidationSeverity.Info) return; // No glyph for Info
 
-            // Determine glyph color based on severity
-            Brush glyphBrush;
-            if (worstSeverity == ValidationSeverity.Error)
-                glyphBrush = new SolidColorBrush(ValidationErrorGlyphColor);
-            else if (worstSeverity == ValidationSeverity.Warning)
-                glyphBrush = new SolidColorBrush(ValidationWarningGlyphColor);
-            else
-                return; // No glyph for Info severity
+            Brush glyphBrush = worstSeverity == ValidationSeverity.Error
+                ? s_squigglyError.Brush
+                : s_squigglyWarning.Brush;
 
-            glyphBrush.Freeze();
-
-            // Draw circle glyph in left margin area (before line numbers)
             double glyphSize = Math.Min(_lineHeight * 0.6, 12);
-            double glyphX = 5; // Left margin
-            double glyphY = y + (_lineHeight - glyphSize) / 2;
+            double glyphX    = 5;
+            double glyphY    = y + (_lineHeight - glyphSize) / 2;
 
-            // Draw filled circle
             dc.DrawEllipse(glyphBrush, null, new Point(glyphX + glyphSize / 2, glyphY + glyphSize / 2), glyphSize / 2, glyphSize / 2);
-
-            // Draw exclamation mark or X symbol inside
-            var pen = new Pen(Brushes.White, 1.5);
-            pen.Freeze();
 
             if (worstSeverity == ValidationSeverity.Error)
             {
-                // Draw X for errors
                 double offset = glyphSize * 0.25;
-                dc.DrawLine(pen,
-                    new Point(glyphX + offset, glyphY + offset),
-                    new Point(glyphX + glyphSize - offset, glyphY + glyphSize - offset));
-                dc.DrawLine(pen,
-                    new Point(glyphX + glyphSize - offset, glyphY + offset),
-                    new Point(glyphX + offset, glyphY + glyphSize - offset));
+                dc.DrawLine(s_glyphInnerPen, new Point(glyphX + offset, glyphY + offset),             new Point(glyphX + glyphSize - offset, glyphY + glyphSize - offset));
+                dc.DrawLine(s_glyphInnerPen, new Point(glyphX + glyphSize - offset, glyphY + offset), new Point(glyphX + offset, glyphY + glyphSize - offset));
             }
             else
             {
-                // Draw ! for warnings
                 double centerX = glyphX + glyphSize / 2;
-                dc.DrawLine(pen,
-                    new Point(centerX, glyphY + glyphSize * 0.2),
-                    new Point(centerX, glyphY + glyphSize * 0.6));
+                dc.DrawLine(s_glyphInnerPen, new Point(centerX, glyphY + glyphSize * 0.2), new Point(centerX, glyphY + glyphSize * 0.6));
                 dc.DrawEllipse(Brushes.White, null, new Point(centerX, glyphY + glyphSize * 0.8), 1, 1);
             }
         }
@@ -2592,8 +2945,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_selection.IsEmpty)
                 return;
 
-            // Use InactiveSelectionBackground when not focused
-            Brush selectionBrush = IsFocused ? SelectionBackground : new SolidColorBrush(InactiveSelectionBackground);
+            // Use InactiveSelectionBackground when the editor (or any child) has no keyboard focus.
+            // IsKeyboardFocusWithin is used rather than IsFocused so that interacting with
+            // the scrollbars (child visuals) does not incorrectly dim the selection.
+            Brush selectionBrush = IsKeyboardFocusWithin ? SelectionBackground : InactiveSelectionBackground;
 
             var start = _selection.NormalizedStart;
             var end = _selection.NormalizedEnd;
@@ -2611,42 +2966,58 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     double x1 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (start.Column * _charWidth);
                     double x2 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (end.Column * _charWidth);
 
-                    dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+                    dc.DrawRoundedRectangle(selectionBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
                 }
             }
             else // Multi-line selection (Phase 3)
             {
                 double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-                // Render first line (from start.Column to end of line)
+                // Collect overlapping segments then union them so the brush is applied once,
+                // preventing double-alpha darkening at junctions with semi-transparent selection brushes.
+                var segments = new List<Geometry>();
+
+                // First line — extend bottom by CornerRadius so the rounded tail merges with next segment
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    double y = TopMargin + (start.Line - _firstVisibleLine) * _lineHeight;
+                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(start.Line)
+                        : (start.Line - _firstVisibleLine) * _lineHeight);
                     double x1 = leftEdge + (start.Column * _charWidth);
                     double x2 = leftEdge + (_document.Lines[start.Line].Length * _charWidth);
-
-                    dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight));
+                    segments.Add(new RectangleGeometry(new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
                 }
 
-                // Render middle lines (entire line width)
-                for (int line = start.Line + 1; line < end.Line; line++)
+                // Middle lines — extend top and bottom by CornerRadius to merge with neighbours.
+                // Clamp to visible viewport so the loop is O(visible_lines) rather than O(selected_lines).
+                int middleFirst = Math.Max(start.Line + 1, _firstVisibleLine);
+                int middleLast  = Math.Min(end.Line   - 1, _lastVisibleLine);
+                for (int line = middleFirst; line <= middleLast; line++)
                 {
-                    if (line >= _firstVisibleLine && line <= _lastVisibleLine)
-                    {
-                        double y = TopMargin + (line - _firstVisibleLine) * _lineHeight;
-                        double width = _document.Lines[line].Length * _charWidth;
-
-                        dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight));
-                    }
+                    double y     = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(line)
+                        : (line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
+                    double width = _document.Lines[line].Length * _charWidth;
+                    segments.Add(new RectangleGeometry(new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
                 }
 
-                // Render last line (from start of line to end.Column)
+                // Last line — extend top by CornerRadius so the rounded head merges with previous segment
                 if (end.Line >= _firstVisibleLine && end.Line <= _lastVisibleLine)
                 {
-                    double y = TopMargin + (end.Line - _firstVisibleLine) * _lineHeight;
+                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(end.Line)
+                        : (end.Line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
                     double x2 = leftEdge + (end.Column * _charWidth);
+                    segments.Add(new RectangleGeometry(new Rect(leftEdge, y, x2 - leftEdge, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
+                }
 
-                    dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, x2 - leftEdge, _lineHeight));
+                if (segments.Count > 0)
+                {
+                    Geometry combined = segments[0];
+                    for (int i = 1; i < segments.Count; i++)
+                        combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
+                    combined.Freeze();
+                    dc.DrawGeometry(selectionBrush, null, combined);
                 }
             }
         }
@@ -2684,7 +3055,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (highlightBrush.IsFrozen == false)
                     highlightBrush.Freeze();
 
-                dc.DrawRectangle(highlightBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+                dc.DrawRoundedRectangle(highlightBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
             }
         }
 
@@ -2696,6 +3067,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
             var context = new JsonParserContext();
+
+            // Rebuild URL hit-zones each render pass (document may have changed).
+            _urlHitZones.Clear();
+
+            // Lazy-init the underline pen from the current SyntaxUrlColor DP.
+            // Re-created each render so theme changes are reflected immediately.
+            var urlPen = new Pen(SyntaxUrlColor, 1.0);
+            urlPen.Freeze();
 
             // Reset external highlighter state before a full render pass.
             ExternalHighlighter?.Reset();
@@ -2711,25 +3090,101 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 if (!string.IsNullOrEmpty(line.Text))
                 {
+                    // ── P1-CE-05: GlyphRun cache fast path ───────────────────────────
+                    // When the line text has not changed since the last render and a
+                    // GlyphRun cache exists, skip token generation entirely and draw
+                    // the pre-built runs via a single PushTransform.  URL hit-zones are
+                    // restored from the per-line cache so click detection stays intact.
+                    if (_glyphRenderer != null
+                        && !line.IsGlyphCacheDirty
+                        && line.GlyphRunCache is { Count: > 0 } cachedRuns)
+                    {
+                        // Restore URL hit-zones (built when the cache was first populated).
+                        if (line.CachedUrlZones is { } zones)
+                            foreach (var z in zones)
+                                _urlHitZones.Add(new UrlHitZone(i, z.StartCol, z.EndCol, z.Url));
+
+                        // Translate once per line → draw all cached GlyphRuns.
+                        dc.PushTransform(new System.Windows.Media.TranslateTransform(x, y));
+                        foreach (var entry in cachedRuns)
+                            dc.DrawGlyphRun(entry.Foreground, entry.Run);
+                        dc.Pop();
+
+                        // URL hover underline (changes per mouse-move without dirtying the cache).
+                        if (_hoveredUrlZone.HasValue && _hoveredUrlZone.Value.Line == i)
+                        {
+                            foreach (var entry in cachedRuns)
+                            {
+                                if (entry.IsUrlToken
+                                    && entry.StartColumn >= _hoveredUrlZone.Value.StartCol
+                                    && entry.StartColumn <  _hoveredUrlZone.Value.EndCol)
+                                {
+                                    double underlineY = y + _glyphRenderer.Baseline + 2;
+                                    double tokenX     = x + entry.Run.BaselineOrigin.X;
+                                    dc.DrawLine(urlPen,
+                                        new Point(tokenX, underlineY),
+                                        new Point(tokenX + entry.TokenLength * _charWidth, underlineY));
+                                }
+                            }
+                        }
+
+                        continue; // skip slow path
+                    }
+                    // ── end fast path ─────────────────────────────────────────────────
+
                     // Use external (language-pluggable) highlighter when available,
                     // otherwise fall back to the built-in JSON highlighter.
-                    IEnumerable<Helpers.SyntaxHighlightToken> renderTokens;
+                    bool hasExternalHighlighter = ExternalHighlighter is not null;
+                    IEnumerable<Helpers.SyntaxHighlightToken> rawTokens;
+
                     if (ExternalHighlighter is { } ext)
                     {
-                        renderTokens = ext.Highlight(line.Text, i);
+                        // Resolve brushes at render time from live CodeEditor DPs (CE_* keys).
+                        // This ensures correct colors even when the theme changes after file open,
+                        // and avoids the timing issue of baking brushes at file-open time.
+                        rawTokens = ext.Highlight(line.Text, i)
+                            .Select(t => t with
+                            {
+                                Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
+                            });
                     }
                     else
                     {
                         var jsonTokens = _highlighter.HighlightLine(line, context);
-                        renderTokens = jsonTokens.Select(t => new Helpers.SyntaxHighlightToken(
+                        rawTokens = jsonTokens.Select(t => new Helpers.SyntaxHighlightToken(
                             t.StartColumn, t.Length, t.Text ?? string.Empty,
                             t.Foreground ?? EditorForeground, t.IsBold, t.IsItalic));
                     }
+
+                    // URL post-pass: overlay URL tokens on top of the highlighter output.
+                    // URLs are detected regardless of which highlighter is active and always
+                    // rendered with SyntaxUrlColor + underline so they are visually distinct.
+                    // Materialise to list so we can both render and cache in one pass.
+                    var renderTokens = OverlayUrlTokens(line.Text, i, rawTokens).ToList();
 
                     // Pre-compute baseline Y once per line (GlyphRun requires it).
                     double baselineY = _glyphRenderer != null
                         ? y + _glyphRenderer.Baseline
                         : y + _charHeight * 0.8;
+
+                    // Base pass (external highlighter only): draw the entire line in EditorForeground
+                    // so unmatched spans (identifiers, punctuation not covered by any regex rule)
+                    // remain visible in the default text color instead of being invisible.
+                    if (hasExternalHighlighter)
+                    {
+                        var baseToken = new Helpers.SyntaxHighlightToken(
+                            0, line.Text.Length, line.Text, EditorForeground);
+                        if (_glyphRenderer != null)
+                            _glyphRenderer.RenderToken(dc, baseToken, x, y, baselineY);
+                        else
+                        {
+                            var ft = new FormattedText(
+                                line.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                                _typeface, _fontSize, EditorForeground,
+                                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                            dc.DrawText(ft, new Point(x, y));
+                        }
+                    }
 
                     foreach (var token in renderTokens)
                     {
@@ -2751,9 +3206,82 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                                 ft.SetFontStyle(FontStyles.Italic);
                             dc.DrawText(ft, new Point(tokenX, y));
                         }
+
+                        // Draw underline only on the URL currently hovered by the mouse.
+                        // This avoids permanent underlines on xmlns/href URIs in XML/XAML files.
+                        if (ReferenceEquals(token.Foreground, SyntaxUrlColor)
+                            && _hoveredUrlZone.HasValue
+                            && _hoveredUrlZone.Value.Line     == i
+                            && token.StartColumn              >= _hoveredUrlZone.Value.StartCol
+                            && token.StartColumn              <  _hoveredUrlZone.Value.EndCol)
+                        {
+                            // Place the underline 2px below the text baseline (tight, VS-style).
+                            double underlineY = baselineY + 2;
+                            dc.DrawLine(urlPen,
+                                new Point(tokenX, underlineY),
+                                new Point(tokenX + token.Length * _charWidth, underlineY));
+                        }
                     }
+
+                    // ── P1-CE-05: Build GlyphRun cache after first render ─────────────
+                    // Cache for the base-pass token too when using external highlighter.
+                    if (_glyphRenderer != null)
+                    {
+                        var allCacheTokens = hasExternalHighlighter
+                            ? Enumerable.Concat(
+                                new[] { new Helpers.SyntaxHighlightToken(
+                                    0, line.Text.Length, line.Text, EditorForeground) },
+                                renderTokens)
+                            : (IEnumerable<Helpers.SyntaxHighlightToken>)renderTokens;
+
+                        line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor);
+                        line.IsGlyphCacheDirty = false;
+
+                        // Cache URL zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
+                        line.CachedUrlZones = _urlHitZones
+                            .Where(z => z.Line == i)
+                            .Select(z => (z.StartCol, z.EndCol, z.Url))
+                            .ToList();
+                    }
+                    // ── end cache build ───────────────────────────────────────────────
                 }
             }
+        }
+
+        /// <summary>
+        /// Scans <paramref name="lineText"/> for HTTP/HTTPS URLs using <see cref="s_urlRegex"/>.
+        /// For each match, replaces any existing tokens at the URL's columns with a new token
+        /// colored with <see cref="SyntaxUrlColor"/>, and registers a <see cref="UrlHitZone"/>
+        /// for cursor and Ctrl+Click handling.
+        /// </summary>
+        private IEnumerable<SyntaxHighlightToken> OverlayUrlTokens(
+            string lineText, int lineIndex, IEnumerable<SyntaxHighlightToken> source)
+        {
+            // Fast-path: cheap string contains check avoids regex allocation on lines without URLs (OPT-PERF-04).
+            if (!lineText.Contains("http", StringComparison.OrdinalIgnoreCase)) return source;
+            var matches = s_urlRegex.Matches(lineText);
+            if (matches.Count == 0) return source;
+
+            // Materialise the source so we can splice URL tokens in.
+            var result = source.ToList();
+            var urlBrush = SyntaxUrlColor;
+
+            foreach (Match m in matches)
+            {
+                // Register hit-zone for mouse interaction.
+                _urlHitZones.Add(new UrlHitZone(lineIndex, m.Index, m.Index + m.Length, m.Value));
+
+                // Remove any tokens that overlap the URL range (they'll be replaced).
+                result.RemoveAll(t => t.StartColumn < m.Index + m.Length
+                                   && t.StartColumn + t.Length > m.Index);
+
+                // Add the URL token with SyntaxUrlColor (used as a sentinel in RenderTextContent).
+                result.Add(new SyntaxHighlightToken(m.Index, m.Length, m.Value, urlBrush));
+            }
+
+            // Re-sort by start column so tokens render left-to-right.
+            result.Sort(static (a, b) => a.StartColumn.CompareTo(b.StartColumn));
+            return result;
         }
 
         /// <summary>
@@ -2811,59 +3339,39 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (error.Line < _firstVisibleLine || error.Line > _lastVisibleLine)
                     continue;
 
-                double y = TopMargin + (error.Line - _firstVisibleLine) * _lineHeight + _lineHeight - 3;
+                double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                    ? _virtualizationEngine.GetLineYPosition(error.Line)
+                    : (error.Line - _firstVisibleLine) * _lineHeight) + _lineHeight - 3;
                 double x1 = leftEdge + (error.Column * _charWidth);
                 double x2 = x1 + (error.Length * _charWidth);
 
-                // Choose color based on severity
-                Brush errorBrush;
-                switch (error.Severity)
+                // OPT-PERF-02: use pre-cached frozen pens — no allocation per error.
+                Pen squigglyPen = error.Severity switch
                 {
-                    case ValidationSeverity.Error:
-                        errorBrush = Brushes.Red;
-                        break;
-                    case ValidationSeverity.Warning:
-                        errorBrush = new SolidColorBrush(Color.FromRgb(255, 165, 0)); // Orange
-                        break;
-                    case ValidationSeverity.Info:
-                        errorBrush = Brushes.Blue;
-                        break;
-                    default:
-                        errorBrush = Brushes.Red;
-                        break;
-                }
+                    ValidationSeverity.Warning => s_squigglyWarning,
+                    ValidationSeverity.Info    => s_squigglyInfo,
+                    _                          => s_squigglyError,
+                };
 
-                // Draw squiggly line
-                DrawSquigglyLine(dc, x1, x2, y, errorBrush);
+                DrawSquigglyLine(dc, x1, x2, y, squigglyPen);
             }
         }
 
         /// <summary>
-        /// Draw a squiggly (wavy) underline
+        /// Draws a squiggly (wavy) underline using direct dc.DrawLine calls with a pre-cached pen.
+        /// Avoids StreamGeometry + Pen allocations per error per frame (OPT-PERF-02).
         /// </summary>
-        private void DrawSquigglyLine(DrawingContext dc, double x1, double x2, double y, Brush brush)
+        private static void DrawSquigglyLine(DrawingContext dc, double x1, double x2, double y, Pen pen)
         {
-            var pen = new Pen(brush, 1.5);
-            pen.Freeze();
-
-            var geometry = new StreamGeometry();
-            using (var ctx = geometry.Open())
+            double x  = x1;
+            bool   up = true;
+            while (x + 2 <= x2)
             {
-                ctx.BeginFigure(new Point(x1, y), false, false);
-
-                double x = x1;
-                bool up = true;
-
-                while (x < x2)
-                {
-                    x += 2;
-                    ctx.LineTo(new Point(x, y + (up ? -2 : 2)), true, false);
-                    up = !up;
-                }
+                double xNext = x + 2;
+                dc.DrawLine(pen, new Point(x, y), new Point(xNext, y + (up ? -2 : 2)));
+                x  = xNext;
+                up = !up;
             }
-
-            geometry.Freeze();
-            dc.DrawGeometry(null, pen, geometry);
         }
 
         /// <summary>
@@ -2936,7 +3444,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (line < _firstVisibleLine || line > _lastVisibleLine)
                 return;
 
-            double y = TopMargin + (line - _firstVisibleLine) * _lineHeight;
+            double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                ? _virtualizationEngine.GetLineYPosition(line)
+                : (line - _firstVisibleLine) * _lineHeight);
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (column * _charWidth);
 
             // Draw background highlight
@@ -3164,7 +3674,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     break;
 
                 case Key.Back:
-                    DeleteCharBefore();
+                    if (!_selection.IsEmpty)
+                        DeleteSelection();
+                    else
+                        DeleteCharBefore();
                     e.Handled = true;
                     break;
 
@@ -3239,6 +3752,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         e.Handled = true;
                     }
                     break;
+
+                // ── Folding keyboard shortcuts (P2-02) ─────────────────────
+                // Ctrl+M → toggle fold at caret line
+                case Key.M:
+                    if (ctrlPressed && IsFoldingEnabled && _foldingEngine != null)
+                    {
+                        _foldingEngine.ToggleRegion(_cursorLine);
+                        InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    break;
+                // Ctrl+Shift+[ → collapse all folds
+                case Key.OemOpenBrackets:
+                    if (ctrlPressed && shiftPressed && IsFoldingEnabled && _foldingEngine != null)
+                    {
+                        _foldingEngine.CollapseAll();
+                        InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    break;
+                // Ctrl+Shift+] → expand all folds
+                case Key.OemCloseBrackets:
+                    if (ctrlPressed && shiftPressed && IsFoldingEnabled && _foldingEngine != null)
+                    {
+                        _foldingEngine.ExpandAll();
+                        InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    break;
+                // ───────────────────────────────────────────────────────────
             }
 
             InvalidateVisual();
@@ -3336,6 +3879,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Phase 11.3: Ensure cursor stays visible when using virtual scrolling
             EnsureCursorVisible();
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            if (_hoveredUrlZone.HasValue)
+            {
+                _hoveredUrlZone = null;
+                Cursor = Cursors.IBeam;
+                HideUrlTooltip();
+                InvalidateVisual();
+            }
+        }
+
+        private void ShowUrlTooltip()
+        {
+            _urlTooltip ??= new ToolTip { Content = "Ctrl+Click to open" };
+            _urlTooltip.PlacementTarget = this;
+            _urlTooltip.Placement       = System.Windows.Controls.Primitives.PlacementMode.Mouse;
+            _urlTooltip.IsOpen          = true;
+        }
+
+        private void HideUrlTooltip()
+        {
+            if (_urlTooltip is not null)
+                _urlTooltip.IsOpen = false;
         }
 
         private void MoveCursorToLineStart(bool extendSelection)
@@ -3607,20 +4182,39 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
-                // Horizontal scroll (Shift + wheel)
-                double pixelDelta = -e.Delta / 120.0 * _charWidth * 3 * HorizontalScrollSensitivity;
-                double maxH = _hScrollBar?.Maximum ?? 0;
-                _horizontalScrollOffset = Math.Max(0, Math.Min(maxH, _horizontalScrollOffset + pixelDelta));
+                // Horizontal scroll: one notch = resolved speed chars (matches HexEditor model).
+                int hSpeed    = MouseWheelSpeed == MouseWheelSpeed.System
+                    ? SystemParameters.WheelScrollLines
+                    : (int)MouseWheelSpeed;
+                double hDelta = -Math.Sign(e.Delta) * hSpeed * _charWidth * HorizontalScrollSensitivity;
+                double maxH   = _hScrollBar?.Maximum ?? 0;
+                _horizontalScrollOffset = Math.Max(0, Math.Min(maxH, _horizontalScrollOffset + hDelta));
                 SyncHScrollBar();
                 InvalidateVisual();
                 e.Handled = true;
             }
             else if (EnableVirtualScrolling && _virtualizationEngine != null)
             {
-                // Vertical scroll
-                double lineScrollAmount = 3; // Scroll 3 lines per wheel notch
-                double pixelDelta = -e.Delta / 120.0 * lineScrollAmount * _lineHeight;
+                // Vertical scroll: same model as HexEditor.
+                // MouseWheelSpeed.System → WheelScrollLines, else cast enum value directly.
+                int    speed      = MouseWheelSpeed == MouseWheelSpeed.System
+                    ? SystemParameters.WheelScrollLines
+                    : (int)MouseWheelSpeed;
+                double pixelDelta = -Math.Sign(e.Delta) * speed * _lineHeight;
                 ScrollVertical(pixelDelta);
+
+                // If a drag-selection is in progress, keep the selection end anchored to
+                // the text position under the mouse after the viewport has moved.
+                if (_isSelecting)
+                {
+                    var mousePos = e.GetPosition(this);
+                    _lastMousePosition = mousePos;
+                    var textPos = PixelToTextPosition(mousePos);
+                    _selection.End = textPos;
+                    _cursorLine    = textPos.Line;
+                    _cursorColumn  = textPos.Column;
+                }
+
                 e.Handled = true;
             }
         }
@@ -3652,6 +4246,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _selection.Start = textPos;
                     _selection.End = textPos;
                     InvalidateVisual();
+                    NotifyCaretMovedIfChanged();
+                    return;
+                }
+            }
+
+            // Ctrl+Left-click on a URL → open in browser.
+            if (e.LeftButton == MouseButtonState.Pressed
+                && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                var urlZone = FindUrlZone(textPos.Line, textPos.Column);
+                if (urlZone.HasValue)
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo(urlZone.Value.Url) { UseShellExecute = true });
+                    }
+                    catch { /* Ignore failures to launch browser (e.g. malformed URL) */ }
+                    e.Handled = true;
                     return;
                 }
             }
@@ -3681,15 +4293,51 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             InvalidateVisual();
+            NotifyCaretMovedIfChanged();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
+            // URL hover: show Hand cursor + underline when the pointer is over a URL zone.
+            if (!_isSelecting)
+            {
+                var hoverPos = PixelToTextPosition(e.GetPosition(this));
+                var urlZone  = FindUrlZone(hoverPos.Line, hoverPos.Column);
+
+                // Only repaint when the hovered zone actually changes (avoids per-mousemove redraws).
+                if (urlZone != _hoveredUrlZone)
+                {
+                    _hoveredUrlZone = urlZone;
+                    InvalidateVisual();
+                }
+
+                if (urlZone.HasValue)
+                {
+                    Cursor = Cursors.Hand;
+                    ShowUrlTooltip();
+                }
+                else
+                {
+                    Cursor = Cursors.IBeam;
+                    HideUrlTooltip();
+                }
+            }
+
             if (_isSelecting && e.LeftButton == MouseButtonState.Pressed)
             {
-                var pos     = e.GetPosition(this);
+                var pos = e.GetPosition(this);
+                _lastMousePosition = pos;
+
+                // Start or stop the auto-scroll timer based on whether the mouse
+                // is outside the visible viewport bounds.
+                bool outsideBounds = pos.Y < 0 || pos.Y > ActualHeight;
+                if (outsideBounds && !_autoScrollTimer.IsEnabled)
+                    _autoScrollTimer.Start();
+                else if (!outsideBounds && _autoScrollTimer.IsEnabled)
+                    _autoScrollTimer.Stop();
+
                 var textPos = PixelToTextPosition(pos);
 
                 // Guard: skip re-render if the selection endpoint hasn't moved to a new cell.
@@ -3721,6 +4369,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_isSelecting)
             {
                 _isSelecting = false;
+                _autoScrollTimer.Stop();
                 ReleaseMouseCapture();
             }
         }
@@ -3765,14 +4414,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Returns the <see cref="UrlHitZone"/> that contains <paramref name="column"/> on
+        /// <paramref name="line"/>, or <see langword="null"/> if no URL occupies that position.
+        /// Hit-zones are rebuilt on every render pass by <see cref="OverlayUrlTokens"/>.
+        /// </summary>
+        private UrlHitZone? FindUrlZone(int line, int column)
+        {
+            foreach (var zone in _urlHitZones)
+            {
+                if (zone.Line == line && column >= zone.StartCol && column < zone.EndCol)
+                    return zone;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Convert pixel position to text position (line, column)
         /// </summary>
         private TextPosition PixelToTextPosition(Point pixel)
         {
             double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-            // Calculate line
-            int line = _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
+            // Calculate line — use VirtualizationEngine for sub-line scroll accuracy.
+            // Plain formula (_firstVisibleLine + offset/lineHeight) breaks with pixel-based
+            // smooth scrolling because the fractional scroll remainder shifts rendered text
+            // without updating _firstVisibleLine.
+            int line = EnableVirtualScrolling && _virtualizationEngine != null
+                ? _virtualizationEngine.GetLineAtYPosition(pixel.Y - TopMargin)
+                : _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
             line = Math.Max(0, Math.Min(_document.Lines.Count - 1, line));
 
             // Calculate column (account for horizontal scroll offset)
@@ -3954,6 +4623,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _selection.Start = new TextPosition(0, 0);
             _selection.End = new TextPosition(_document.Lines.Count - 1, _document.Lines[_document.Lines.Count - 1].Length);
+            InvalidateVisual();
         }
 
         #endregion
@@ -4073,9 +4743,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _validationTimer.Start();
             }
 
-            // Refresh folding regions when document content changes.
+            // Refresh folding regions — debounced 500ms to avoid O(n) scan on every keystroke (P1-CE-01).
             if (IsFoldingEnabled && _foldingEngine != null)
-                _foldingEngine.Analyze(_document.Lines);
+            {
+                _foldingDebounceTimer?.Stop();
+                _foldingDebounceTimer?.Start();
+            }
+
+            // Debounce LSP didChange — 300 ms (Phase 4: LSP Integration).
+            if (_lspClient is not null && _currentFilePath is not null)
+            {
+                _lspChangeTimer?.Stop();
+                _lspChangeTimer?.Start();
+            }
+
+            // Incremental max-width update (P1-CE-02) — O(1) on growth, O(n) only on shrink
+            int changedLine = e.Position.Line;
+            if (changedLine >= 0 && changedLine < _document.Lines.Count)
+            {
+                int newLen = _document.Lines[changedLine].Text.Length;
+                if (newLen > _cachedMaxLineLength)
+                    _cachedMaxLineLength = newLen;
+                else if (newLen < _cachedMaxLineLength)
+                    _cachedMaxLineLength = _document.Lines.Count > 0
+                        ? _document.Lines.Max(l => l.Text.Length) : 0;
+            }
+
+            // Invalidate line-number cache for the changed line (P1-CE-03)
+            _lineNumberCache.Remove(changedLine);
+
+            // Reset highlight tracking so the next render re-schedules the pipeline (content changed).
+            _lastHighlightFirst = -1;
+            _lastHighlightLast  = -1;
 
             // InvalidateMeasure triggers full layout pass → UpdateScrollBars (ranges may have changed)
             InvalidateMeasure();
@@ -4139,16 +4838,57 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             try
             {
-                var jsonText = _document.SaveToString();
-                _validationErrors = _validator.Validate(jsonText);
+                string textToValidate;
+                var dirty = _document.DirtyLines;
+
+                // Incremental path (P1-CE-07): validate only the dirty region + context when
+                // fewer than 10% of lines changed.  Full pass otherwise (initial load, paste, etc.).
+                if (dirty.Count > 0 && dirty.Count < _document.TotalLines / 10)
+                {
+                    int minDirty = dirty.Min();
+                    int maxDirty = dirty.Max();
+                    // Include 5-line context above and below for accurate state-dependent validators
+                    int rangeStart = Math.Max(0, minDirty - 5);
+                    int rangeEnd   = Math.Min(_document.Lines.Count - 1, maxDirty + 5);
+                    textToValidate = string.Join(Environment.NewLine,
+                        _document.Lines.Skip(rangeStart).Take(rangeEnd - rangeStart + 1).Select(l => l.Text));
+                }
+                else
+                {
+                    textToValidate = _document.SaveToString();
+                }
+
+                _document.ClearDirtyLines();
+                _validationErrors = _validator.Validate(textToValidate);
+                RebuildValidationIndex();
                 InvalidateVisual();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception)
             {
                 // Silently ignore validation errors
+                _document.ClearDirtyLines();
                 _validationErrors.Clear();
+                _validationByLine.Clear();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Rebuilds the line→errors dictionary used by RenderValidationGlyph for O(1) lookup.
+        /// Must be called whenever _validationErrors is replaced or bulk-modified (OPT-PERF-01).
+        /// </summary>
+        private void RebuildValidationIndex()
+        {
+            _validationByLine.Clear();
+            foreach (var error in _validationErrors)
+            {
+                if (!_validationByLine.TryGetValue(error.Line, out var list))
+                {
+                    list = new List<Models.ValidationError>(2);
+                    _validationByLine[error.Line] = list;
+                }
+                list.Add(error);
             }
         }
 
@@ -4204,10 +4944,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _horizontalScrollOffset = 0;
 
             UpdateVirtualization();
+            RebuildMaxLineLength(); // O(n) scan at doc swap — acceptable
 
             if (IsFoldingEnabled && _foldingEngine != null)
                 _foldingEngine.Analyze(_document.Lines);
 
+            _lineNumberCache.Clear();
             InvalidateMeasure();
         }
 
@@ -4228,11 +4970,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Without this call, the engine keeps the initial count (27 lines from the default
             // template) and clamps LastVisibleLine prematurely for any larger file.
             UpdateVirtualization();
+            RebuildMaxLineLength(); // single O(n) scan at load time
 
             // Initial folding analysis on freshly loaded content.
             if (IsFoldingEnabled && _foldingEngine != null)
                 _foldingEngine.Analyze(_document.Lines);
 
+            _lineNumberCache.Clear();
             InvalidateMeasure();
         }
 
@@ -4316,14 +5060,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void Save()
         {
+            // Delegate to SaveAsync so file I/O runs off the UI thread.
+            // Fire-and-forget: the async path handles status/dirty updates.
             if (!string.IsNullOrEmpty(_currentFilePath))
-            {
-                File.WriteAllText(_currentFilePath, GetText(), System.Text.Encoding.UTF8);
-                _isDirty = false;
-                ModifiedChanged?.Invoke(this, EventArgs.Empty);
-                TitleChanged?.Invoke(this, BuildTitle());
-                StatusMessage?.Invoke(this, "Saved");
-            }
+                _ = SaveAsync();
         }
 
         public async System.Threading.Tasks.Task SaveAsync(System.Threading.CancellationToken ct = default)
@@ -4334,8 +5074,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public async System.Threading.Tasks.Task SaveAsAsync(string filePath, System.Threading.CancellationToken ct = default)
         {
+            // Snapshot text on the UI thread before switching threads.
             var text = GetText();
-            await System.Threading.Tasks.Task.Run(() => File.WriteAllText(filePath, text, System.Text.Encoding.UTF8), ct);
+            try
+            {
+                await Task.Run(() => File.WriteAllText(filePath, text, System.Text.Encoding.UTF8), ct);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage?.Invoke(this, $"Save failed: {ex.Message}");
+                return;
+            }
+
             _currentFilePath = filePath;
             _isDirty = false;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
@@ -4361,11 +5111,175 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             RefreshJsonStatusBarItems();
         }
 
-        System.Threading.Tasks.Task IOpenableDocument.OpenAsync(string filePath, System.Threading.CancellationToken ct)
+        async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            LoadFromFile(filePath);
-            return System.Threading.Tasks.Task.CompletedTask;
+
+            if (!File.Exists(filePath))
+            {
+                StatusMessage?.Invoke(this, $"File not found: {Path.GetFileName(filePath)}");
+                return;
+            }
+
+            // Read + split on a background thread to keep the UI responsive (P1-TE-05 / OPT-PERF-05).
+            // content.Split + new CodeLine[] are pure computation with no WPF dependency.
+            string text;
+            CodeLine[] lines;
+            try
+            {
+                (text, lines) = await Task.Run(() =>
+                {
+                    var raw   = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+                    var parts = raw.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    var arr   = new CodeLine[parts.Length == 0 ? 1 : parts.Length];
+                    for (int i = 0; i < parts.Length; i++)
+                        arr[i] = new CodeLine(parts[i], i);
+                    if (arr.Length == 0)
+                        arr[0] = new CodeLine(string.Empty, 0);
+                    return (raw, arr);
+                }, ct);
+            }
+            catch (OperationCanceledException) { return; }
+            catch (Exception ex)
+            {
+                StatusMessage?.Invoke(this, $"Open failed: {ex.Message}");
+                return;
+            }
+
+            // UI-thread work: swap the pre-built line array into the document, then run the same
+            // post-load steps as LoadText() so VirtualizationEngine.TotalLines is updated.
+            _document.LoadLines(lines, text);
+            _cursorLine             = 0;
+            _cursorColumn           = 0;
+            _selection.Clear();
+            _verticalScrollOffset   = 0;
+            _currentScrollOffset    = 0;
+            _targetScrollOffset     = 0;
+            _horizontalScrollOffset = 0;
+            UpdateVirtualization();
+            RebuildMaxLineLength();
+            if (IsFoldingEnabled && _foldingEngine != null)
+                _foldingEngine.Analyze(_document.Lines);
+            _lineNumberCache.Clear();
+            InvalidateMeasure();
+            _currentFilePath = filePath;
+
+            // Apply .editorconfig settings (P2-03): indent style, size, EOL, etc.
+            ApplyEditorConfig(Services.EditorConfigService.Resolve(filePath));
+
+            // Notify the LSP server about the newly opened document (Phase 4).
+            if (_lspClient?.IsInitialized == true)
+            {
+                _lspClient.OpenDocument(filePath, DetectLanguageId(filePath), text);
+                _lspDocVersion = 1;
+            }
+
+            TitleChanged?.Invoke(this, BuildTitle());
+            StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
+            RefreshJsonStatusBarItems();
+        }
+
+        /// <summary>
+        /// Applies <see cref="Services.EditorConfigSettings"/> properties to the matching
+        /// editor DependencyProperties.  Null settings properties are left unchanged.
+        /// </summary>
+        private void ApplyEditorConfig(Services.EditorConfigSettings cfg)
+        {
+            if (cfg.IndentSize is int indent) IndentSize = indent;
+        }
+
+        // -- LSP Client Wiring (Phase 4) ──────────────────────────────────
+
+        /// <summary>
+        /// Injects or replaces the active LSP client.
+        /// Call with <c>null</c> to detach (e.g., when closing a document).
+        /// The method subscribes to <see cref="ILspClient.DiagnosticsReceived"/> and
+        /// sends textDocument/didOpen when the editor already has a file loaded.
+        /// </summary>
+        public void SetLspClient(WpfHexEditor.Editor.Core.LSP.ILspClient? client)
+        {
+            if (_lspClient is not null)
+            {
+                _lspClient.DiagnosticsReceived -= OnLspDiagnosticsReceived;
+                if (_currentFilePath is not null)
+                    _lspClient.CloseDocument(_currentFilePath);
+            }
+
+            _lspClient = client;
+            _lspDocVersion = 0;
+
+            if (_lspClient is null) return;
+
+            _lspClient.DiagnosticsReceived += OnLspDiagnosticsReceived;
+
+            // If a file is already open, send didOpen immediately.
+            if (_currentFilePath is not null && _document is not null)
+            {
+                var langId = DetectLanguageId(_currentFilePath);
+                _lspClient.OpenDocument(_currentFilePath, langId, _document.SaveToString());
+            }
+
+            // Create the change-debounce timer (300 ms) on first attach.
+            if (_lspChangeTimer is null)
+            {
+                _lspChangeTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(300),
+                };
+                _lspChangeTimer.Tick += (_, _) =>
+                {
+                    _lspChangeTimer.Stop();
+                    if (_lspClient is null || _currentFilePath is null) return;
+                    _lspClient.DidChange(_currentFilePath, ++_lspDocVersion, _document.SaveToString());
+                };
+            }
+        }
+
+        /// <summary>Maps a file extension to an LSP language identifier.</summary>
+        private static string DetectLanguageId(string filePath) =>
+            Path.GetExtension(filePath).ToLowerInvariant() switch
+            {
+                ".json" or ".jsonc" => "json",
+                ".xml"              => "xml",
+                ".xaml"             => "xaml",
+                ".cs"               => "csharp",
+                ".ts"               => "typescript",
+                ".js"               => "javascript",
+                ".py"               => "python",
+                ".lua"              => "lua",
+                _                   => "plaintext",
+            };
+
+        /// <summary>
+        /// Feeds LSP push diagnostics into the editor's validation error list.
+        /// Always called on the UI thread (guaranteed by LspClientImpl).
+        /// </summary>
+        private void OnLspDiagnosticsReceived(
+            object? sender,
+            WpfHexEditor.Editor.Core.LSP.LspDiagnosticsReceivedEventArgs e)
+        {
+            if (_currentFilePath is null) return;
+            if (!new Uri(_currentFilePath).AbsoluteUri.Equals(e.DocumentUri, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            // Remove any previous LSP-sourced errors and replace with the new set.
+            _validationErrors.RemoveAll(v => v.Layer == Models.ValidationLayer.Lsp);
+            foreach (var d in e.Diagnostics)
+            {
+                _validationErrors.Add(new Models.ValidationError
+                {
+                    Line     = d.StartLine,
+                    Column   = d.StartColumn,
+                    Message  = d.Message,
+                    Severity = d.Severity == "error"   ? Models.ValidationSeverity.Error
+                             : d.Severity == "warning" ? Models.ValidationSeverity.Warning
+                                                       : Models.ValidationSeverity.Info,
+                    Layer    = Models.ValidationLayer.Lsp,
+                });
+            }
+            RebuildValidationIndex();
+            DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+            InvalidateVisual();
         }
 
         // -- Public methods (IDocumentEditor) -----------------------------
@@ -4378,6 +5292,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void Close()
         {
+            // Notify the LSP server before clearing the path (Phase 4).
+            if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+                _lspClient.CloseDocument(_currentFilePath);
+
             _document = new Models.CodeDocument();
             _currentFilePath = null;
             _isDirty = false;
@@ -4393,6 +5311,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         // -- Events --------------------------------------------------------
+
+        /// <summary>Current caret line (0-based). Updated after every cursor movement.</summary>
+        public int CursorLine => _cursorLine;
+
+        /// <summary>Fired when the caret moves to a different line (debounced to line-level changes).</summary>
+        public event EventHandler? CaretMoved;
 
         public event EventHandler? ModifiedChanged;
         public event EventHandler? CanUndoChanged;
@@ -4535,6 +5459,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Column:      ve.Column + 1
             )).ToList();
         }
+
+        // -- URL hit-zone (per-render, rebuilt in RenderTextContent) ---------------
+
+        /// <summary>
+        /// Represents a single URL token position for hit-testing (cursor + Ctrl+Click).
+        /// The list of active zones is rebuilt in <see cref="RenderTextContent"/> on each render.
+        /// </summary>
+        private readonly record struct UrlHitZone(int Line, int StartCol, int EndCol, string Url);
     }
 
     // -- File-scoped RelayCommand ----------------------------------------------

@@ -17,6 +17,7 @@
 
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 
@@ -70,7 +71,8 @@ public sealed class SyntaxRuleHighlighter : ISyntaxHighlighter
                     match.Value,
                     rule.Foreground,
                     rule.IsBold,
-                    rule.IsItalic));
+                    rule.IsItalic,
+                    rule.Kind));
             }
         }
 
@@ -86,20 +88,23 @@ public sealed class SyntaxRuleHighlighter : ISyntaxHighlighter
 public sealed class RegexHighlightRule
 {
     public RegexHighlightRule(
-        string  pattern,
-        Brush   foreground,
-        bool    isBold   = false,
-        bool    isItalic = false,
-        RegexOptions options = RegexOptions.None)
+        string          pattern,
+        Brush           foreground,
+        bool            isBold   = false,
+        bool            isItalic = false,
+        RegexOptions    options  = RegexOptions.None,
+        SyntaxTokenKind kind     = SyntaxTokenKind.Default)
     {
         Regex      = new Regex(pattern, options | RegexOptions.Compiled);
         Foreground = foreground;
         IsBold     = isBold;
         IsItalic   = isItalic;
+        Kind       = kind;
     }
 
-    public Regex Regex      { get; }
-    public Brush Foreground { get; }
-    public bool  IsBold     { get; }
-    public bool  IsItalic   { get; }
+    public Regex           Regex      { get; }
+    public Brush           Foreground { get; }
+    public bool            IsBold     { get; }
+    public bool            IsItalic   { get; }
+    public SyntaxTokenKind Kind       { get; }
 }

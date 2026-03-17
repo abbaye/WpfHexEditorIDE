@@ -94,6 +94,28 @@ public sealed class BoolToGrantColorConverter : IValueConverter
         => DependencyProperty.UnsetValue;
 }
 
+/// <summary>
+/// Multi-value converter: [CollectionViewGroup, PluginMonitoringViewModel] → PluginGroupSummaryViewModel.
+/// Used in the DataGrid GroupStyle to bind the group header to the correct aggregate summary VM.
+/// Values[0] = CollectionViewGroup (DataContext of the GroupItem)
+/// Values[1] = PluginMonitoringViewModel (DataContext of the DataGrid, via RelativeSource)
+/// </summary>
+public sealed class GroupSummaryConverter : IMultiValueConverter
+{
+    public static readonly GroupSummaryConverter Instance = new();
+
+    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2) return null;
+        var groupName = (values[0] as System.Windows.Data.CollectionViewGroup)?.Name as string;
+        var vm = values[1] as PluginMonitoringViewModel;
+        return vm?.GetGroupSummary(groupName);
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
 public partial class PluginMonitoringPanel : UserControl
 {
     private PluginMonitoringViewModel? _vm;
@@ -108,38 +130,70 @@ public partial class PluginMonitoringPanel : UserControl
         MemChartCanvas.SizeChanged += (_, _) => RedrawCharts();
         DragLeave += (_, _) => DropHintOverlay.Visibility = Visibility.Collapsed;
         Unloaded  += OnUnloaded;
-
-        Loaded += (_, _) =>
-        {
-            // Collapse order: TbgPlugin(0) TbgLog(1) TbgCharts(2) TbgLayout(3) TbgInterval(4) TbgMonitor(5)
-            _overflowManager = new ToolbarOverflowManager(
-                toolbarContainer:      ToolbarBorder,
-                alwaysVisiblePanel:    ToolbarRightPanel,
-                overflowButton:        ToolbarOverflowButton,
-                overflowMenu:          OverflowContextMenu,
-                groupsInCollapseOrder: [TbgPlugin, TbgLog, TbgCharts, TbgLayout, TbgInterval, TbgMonitor],
-                leftFixedElements:     [ToolbarLeftPanel]);
-
-            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
-        };
+        Loaded    += OnLoaded;
     }
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Fires on every Loaded event — including reloads after the panel was temporarily
+    /// removed from the visual tree by the docking framework (e.g. hidden tab, re-dock).
+    /// Re-subscribes VM event handlers that were removed in OnUnloaded, restoring
+    /// chart redraws, layout-change notifications, and code-behind interactions.
+    /// </summary>
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        // If _vm is non-null the panel was previously unloaded without a DataContext change
+        // (OnUnloaded unsubscribed handlers but kept the reference alive so layout changes
+        // remain functional after reload).
+        if (_vm is not null)
+        {
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        += OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     += OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   += OnGcCleanupEventsChanged;
+            _vm.PropertyChanged            += OnVmPropertyChanged;
+            _vm.RequestUninstall           += OnRequestUninstall;
+            _vm.RequestOpenInPluginManager += OnRequestOpenInPluginManager;
+            ApplySparklineVisibility();
+            SyncLayoutCombo(_vm.ChartsPosition);
+            RebuildContentGrid(_vm.ChartsPosition);
+            ApplyEventLogVisibility();
+            RedrawCharts();
+        }
+
+        // Collapse order: TbgPlugin(0) TbgLog(1) TbgCharts(2) TbgLayout(3) TbgInterval(4) TbgMonitor(5)
+        _overflowManager = new ToolbarOverflowManager(
+            toolbarContainer:      ToolbarBorder,
+            alwaysVisiblePanel:    ToolbarRightPanel,
+            overflowButton:        ToolbarOverflowButton,
+            overflowMenu:          OverflowContextMenu,
+            groupsInCollapseOrder: [TbgPlugin, TbgLog, TbgCharts, TbgLayout, TbgInterval, TbgMonitor],
+            leftFixedElements:     [ToolbarLeftPanel]);
+
+        Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+    }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        -= OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     -= OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   -= OnGcCleanupEventsChanged;
             _vm.PropertyChanged              -= OnVmPropertyChanged;
             _vm.RequestUninstall             -= OnRequestUninstall;
             _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
-            _vm.Dispose();
-            _vm = null;
+            // Intentionally NOT disposing or nulling _vm here.
+            // The docking framework fires Unloaded when a panel is hidden (e.g. behind another
+            // tab) and Loaded when it becomes visible again. Disposing the VM on every hide
+            // would stop its timer and null _vm, causing layout changes and chart updates to
+            // stop working after the first hide/show cycle.
+            // VM disposal is handled in OnDataContextChanged when the DataContext is replaced.
         }
-        Unloaded -= OnUnloaded;
+        // Do NOT unsubscribe this handler — it must fire on every Unloaded event
+        // so that OnLoaded can safely re-subscribe without double-subscribing.
     }
 
     // ── DataContext wiring ───────────────────────────────────────────────────
@@ -148,21 +202,24 @@ public partial class PluginMonitoringPanel : UserControl
     {
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        -= OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     -= OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          -= OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   -= OnGcCleanupEventsChanged;
             _vm.PropertyChanged              -= OnVmPropertyChanged;
             _vm.RequestUninstall             -= OnRequestUninstall;
             _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
+            _vm.Dispose(); // Dispose the old VM now that DataContext is truly changing.
         }
 
         _vm = e.NewValue as PluginMonitoringViewModel;
 
         if (_vm is not null)
         {
-            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    += OnCpuHistoryChanged;
-            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged += OnMemHistoryChanged;
-            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged        += OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged     += OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged          += OnEventLogChanged;
+            ((INotifyCollectionChanged)_vm.GcCleanupEvents).CollectionChanged   += OnGcCleanupEventsChanged;
             _vm.PropertyChanged              += OnVmPropertyChanged;
             _vm.RequestUninstall             += OnRequestUninstall;
             _vm.RequestOpenInPluginManager   += OnRequestOpenInPluginManager;
@@ -577,7 +634,10 @@ public partial class PluginMonitoringPanel : UserControl
         => RedrawChart(CpuChartCanvas, CpuPolyline, _vm?.CpuHistory, maxValue: 100.0);
 
     private void OnMemHistoryChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        => RedrawChart(MemChartCanvas, MemPolyline, _vm?.MemoryHistory, maxValue: null);
+    {
+        RedrawChart(MemChartCanvas, MemPolyline, _vm?.MemoryHistory, maxValue: null);
+        RedrawGcMarkers(); // keep marker X positions in sync as the chart scrolls
+    }
 
     private void OnIntervalSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -593,6 +653,58 @@ public partial class PluginMonitoringPanel : UserControl
     {
         RedrawChart(CpuChartCanvas, CpuPolyline, _vm?.CpuHistory, maxValue: 100.0);
         RedrawChart(MemChartCanvas, MemPolyline, _vm?.MemoryHistory, maxValue: null);
+        RedrawGcMarkers();
+    }
+
+    private void OnGcCleanupEventsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        => RedrawGcMarkers();
+
+    /// <summary>
+    /// Draws a dashed amber vertical line on GcMarkerCanvas for each recorded GC cleanup event
+    /// that falls within the current visible time window of the memory chart.
+    /// </summary>
+    private void RedrawGcMarkers()
+    {
+        GcMarkerCanvas.Children.Clear();
+
+        var events  = _vm?.GcCleanupEvents;
+        var history = _vm?.MemoryHistory;
+        if (events is null || history is null || history.Count < 2) return;
+
+        var w = GcMarkerCanvas.ActualWidth;
+        var h = GcMarkerCanvas.ActualHeight;
+        if (w <= 0 || h <= 0) return;
+
+        var minTime = history[0].Time;
+        var maxTime = history[history.Count - 1].Time;
+        var rangeMs = (maxTime - minTime).TotalMilliseconds;
+        if (rangeMs <= 0) return;
+
+        var amber = new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B));
+        amber.Freeze();
+
+        foreach (var gcTime in events)
+        {
+            if (gcTime < minTime) continue; // before the visible window
+
+            // gcTime is captured a few ms after the last chart point, so it can be
+            // slightly greater than maxTime. Clamp to the right edge in that case.
+            var px = gcTime >= maxTime
+                ? w
+                : w * (gcTime - minTime).TotalMilliseconds / rangeMs;
+
+            GcMarkerCanvas.Children.Add(new System.Windows.Shapes.Line
+            {
+                X1              = px,
+                Y1              = 0,
+                X2              = px,
+                Y2              = h,
+                Stroke          = amber,
+                StrokeThickness = 1,
+                StrokeDashArray = new DoubleCollection { 3, 2 },
+                Opacity         = 0.75
+            });
+        }
     }
 
     /// <summary>

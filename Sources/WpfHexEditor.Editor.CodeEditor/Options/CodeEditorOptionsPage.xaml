@@ -1,0 +1,208 @@
+<UserControl x:Class="WpfHexEditor.Editor.CodeEditor.Options.CodeEditorOptionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfHexEditor.Editor.CodeEditor.Options"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="500"
+             Background="{DynamicResource DockMenuBackgroundBrush}"
+             Foreground="{DynamicResource DockMenuForegroundBrush}">
+
+    <!-- Code Editor Options Page — IDE global theme compliant -->
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  Background="{DynamicResource DockMenuBackgroundBrush}">
+        <StackPanel Margin="12,10,12,16" >
+
+            <!-- ── Font ─────────────────────────────────────────────── -->
+            <TextBlock Text="Font"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,6"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Font family:"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                <TextBox   Grid.Column="1"
+                           Text="{Binding FontFamily, UpdateSourceTrigger=PropertyChanged}"
+                           Background="{DynamicResource DockMenuBackgroundBrush}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           BorderBrush="{DynamicResource DockBorderBrush}" />
+
+                <TextBlock Grid.Column="3" Text="Size:"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                <TextBox   Grid.Column="4"
+                           Text="{Binding FontSize, UpdateSourceTrigger=PropertyChanged}"
+                           Background="{DynamicResource DockMenuBackgroundBrush}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           BorderBrush="{DynamicResource DockBorderBrush}" />
+            </Grid>
+
+            <Separator Margin="0,4,0,10" Background="{DynamicResource DockBorderBrush}" />
+
+            <!-- ── Indentation ──────────────────────────────────────── -->
+            <TextBlock Text="Indentation"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,6"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Tab size:"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                <TextBox   Grid.Column="1"
+                           Text="{Binding TabSize, UpdateSourceTrigger=PropertyChanged}"
+                           Background="{DynamicResource DockMenuBackgroundBrush}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           BorderBrush="{DynamicResource DockBorderBrush}" />
+            </Grid>
+
+            <CheckBox Content="Convert tabs to spaces"
+                      IsChecked="{Binding ConvertTabsToSpaces}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
+
+            <!-- ── Display ──────────────────────────────────────────── -->
+            <TextBlock Text="Display"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,6"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Show line numbers"
+                      IsChecked="{Binding ShowLineNumbers}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Show whitespace characters"
+                      IsChecked="{Binding ShowWhitespace}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Enable code folding"
+                      IsChecked="{Binding EnableFolding}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
+
+            <!-- ── Features ─────────────────────────────────────────── -->
+            <TextBlock Text="Features"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,6"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Enable IntelliSense"
+                      IsChecked="{Binding EnableIntelliSense}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Enable snippets"
+                      IsChecked="{Binding EnableSnippets}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Enable multi-caret editing (Alt+Click)"
+                      IsChecked="{Binding EnableMultiCaret}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
+
+            <!-- ── Syntax Colors ─────────────────────────────────────── -->
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="Syntax Colors"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                <Button   Grid.Column="1"
+                          x:Name="BtnResetColors"
+                          Content="Reset to theme"
+                          Padding="8,2"
+                          Background="{DynamicResource DockMenuBackgroundBrush}"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}"
+                          BorderBrush="{DynamicResource DockBorderBrush}"
+                          Click="OnResetColorsClick" />
+            </Grid>
+
+            <!-- Token color rows — populated from code-behind via SyntaxColorRows ItemsSource -->
+            <ItemsControl x:Name="SyntaxColorRowsList"
+                          Background="Transparent">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Each item: SyntaxColorRow (label, swatch, pick button, popup) -->
+                        <Grid Margin="0,3,0,3" Height="26">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130" />
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="52" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Token kind label -->
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding Label}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+                            <!-- Color swatch (filled with current color) -->
+                            <Border Grid.Column="1"
+                                    Width="20" Height="16"
+                                    CornerRadius="2"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="1"
+                                    VerticalAlignment="Center"
+                                    Background="{Binding SwatchBrush}" />
+
+                            <!-- Hex value text -->
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding HexText}"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0"
+                                       FontFamily="Consolas"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+                            <!-- Pick button — opens the ColorPicker popup -->
+                            <Button Grid.Column="3"
+                                    Content="Pick"
+                                    Padding="4,2"
+                                    VerticalAlignment="Center"
+                                    Background="{DynamicResource DockMenuBackgroundBrush}"
+                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    Tag="{Binding}"
+                                    Click="OnPickColorClick" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

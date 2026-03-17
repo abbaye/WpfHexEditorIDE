@@ -227,6 +227,12 @@ public interface ISolutionExplorerPanel
     bool ShowAllFiles { get; set; }
 
     /// <summary>
+    /// Fired when the user chooses "Manage NuGet Packages…" from the project context menu.
+    /// Only raised for VS-style projects that implement <see cref="IProjectWithReferences"/>.
+    /// </summary>
+    event EventHandler<ManageNuGetRequestedEventArgs>? ManageNuGetPackagesRequested;
+
+    /// <summary>
     /// Fired when the user chooses "Properties" from the context menu.
     /// <see cref="NodePropertiesEventArgs.Item"/> is <see langword="null"/> when the target is the
     /// project node itself; otherwise it is the selected file node.

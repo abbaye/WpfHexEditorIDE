@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.3.1">
+    <grammar name="FLAC Audio" start="id:1" author="WpfHexEditor Team" fileextension="flac">
+        <description>Free Lossless Audio Codec (FLAC). fLaC marker followed by metadata blocks and audio frames.</description>
+        <structure name="Defaults" id="2" endian="big" signed="no"/>
+        <structure name="FLAC Header" id="10" extends="id:2">
+            <binary name="fLaC Marker" mustmatch="yes" id="11" fillcolor="FF6B6B" length="4">
+                <fixedvalues><fixedvalue name="fLaC" value="664C6143"/></fixedvalues>
+            </binary>
+        </structure>
+        <structure name="Metadata Block Header" id="20" extends="id:2">
+            <number name="Block Type + Last Flag" id="21" type="integer" length="1" display="hex" fillcolor="4ECDC4"/>
+            <number name="Block Length Byte 0" id="22" type="integer" length="1" fillcolor="FFE66D"/>
+            <number name="Block Length Byte 1" id="23" type="integer" length="1" fillcolor="FFE66D"/>
+            <number name="Block Length Byte 2" id="24" type="integer" length="1" fillcolor="FFE66D"/>
+        </structure>
+        <structure name="STREAMINFO" id="30" extends="id:2">
+            <number name="Min Block Size" id="31" type="integer" length="2" fillcolor="C8E6C9"/>
+            <number name="Max Block Size" id="32" type="integer" length="2" fillcolor="C8E6C9"/>
+            <number name="Min Frame Size" id="33" type="integer" length="3" fillcolor="A8D8EA"/>
+            <number name="Max Frame Size" id="34" type="integer" length="3" fillcolor="A8D8EA"/>
+            <binary name="Sample Rate + Channels + BPS + Total Samples" id="35" length="8" fillcolor="B0C4DE"/>
+            <binary name="MD5 Signature" id="36" length="16" fillcolor="FFB347"/>
+        </structure>
+        <structure name="FLAC File" id="1" extends="id:2">
+            <structref name="FLAC Header" id="40" structure="id:10"/>
+            <structref name="Metadata Block Header" id="41" structure="id:20"/>
+            <structref name="STREAMINFO" id="42" structure="id:30"/>
+        </structure>
+    </grammar>
+</ufwb>

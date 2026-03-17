@@ -52,6 +52,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     private ParsedFieldsPanel? _panel;
     private IIDEHostContext?   _context;
     private IDisposable?       _templateSub;
+    private IDisposable?       _grammarSub;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -99,12 +100,16 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Route TemplateApplyRequestedEvent to this panel (was handled by MainWindow).
         _templateSub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateApplyRequested);
 
+        // Route GrammarAppliedEvent from SynalysisGrammarPlugin (issue #177).
+        _grammarSub = context.EventBus.Subscribe<GrammarAppliedEvent>(OnGrammarApplied);
+
         return Task.CompletedTask;
     }
 
     public Task ShutdownAsync(CancellationToken ct = default)
     {
         _templateSub?.Dispose();
+        _grammarSub?.Dispose();
 
         if (_context != null)
         {
@@ -162,6 +167,50 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
                     FormattedValue = block.DisplayValue ?? string.Empty
                 });
             }
+
+            _panel.RefreshView();
+        });
+    }
+
+    /// <summary>
+    /// Receives UFWB grammar parse results from SynalysisGrammarPlugin (issue #177)
+    /// and populates this panel with the structured fields.
+    /// Pattern identical to OnTemplateApplyRequested.
+    /// </summary>
+    private void OnGrammarApplied(GrammarAppliedEvent evt)
+    {
+        if (_panel is null || _context?.HexEditor.IsActive != true) return;
+
+        _panel.Dispatcher.InvokeAsync(() =>
+        {
+            _panel.Clear();
+            _panel.TotalFileSize = _context.HexEditor.FileSize;
+
+            foreach (var field in evt.Fields)
+            {
+                _panel.ParsedFields.Add(new ParsedFieldViewModel
+                {
+                    Name           = field.Name,
+                    Offset         = field.Offset,
+                    Length         = field.Length,
+                    FormattedValue = field.ValueDisplay,
+                    ValueType      = field.Kind.ToString(),
+                    Description    = field.Description,
+                    Color          = string.IsNullOrEmpty(field.Color) ? null
+                                     : (field.Color.StartsWith('#') ? field.Color : "#" + field.Color),
+                    IndentLevel    = field.IndentLevel,
+                    GroupName      = field.GroupName,
+                    IsValid        = field.IsValid,
+                });
+            }
+
+            // Show grammar name as the format info header.
+            _panel.FormatInfo = new WpfHexEditor.Core.Interfaces.FormatInfo
+            {
+                IsDetected  = true,
+                Name        = evt.GrammarName,
+                Description = $"Parsed via UFWB grammar — {evt.Fields.Count} fields",
+            };
 
             _panel.RefreshView();
         });

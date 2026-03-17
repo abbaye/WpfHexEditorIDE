@@ -427,6 +427,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         var node = new ProjectNodeVm(project);
 
+        // References section — only for projects that expose typed references (e.g. VS projects).
+        if (project is IProjectWithReferences refs)
+        {
+            var refsNode = BuildReferencesNode(refs);
+            if (refsNode is not null)
+                node.Children.Add(refsNode);
+        }
+
         // Items not in any virtual folder
         var inFolder = new HashSet<string>();
         CollectFolderItemIds(project.RootFolders, inFolder);
@@ -435,14 +443,65 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         foreach (var folder in project.RootFolders)
             node.Children.Add(BuildFolderNode(folder, project));
 
-        // Loose items
-        foreach (var item in project.Items)
+        // Loose items — apply nesting within the loose-items scope
+        var looseItems = project.Items
+            .Where(i => !inFolder.Contains(i.Id))
+            .ToList();
+
+        var nesting = FileNestingDetector.Compute(looseItems);
+
+        foreach (var item in looseItems)
         {
-            if (!inFolder.Contains(item.Id))
-                node.Children.Add(MakeFileNode(item, project));
+            if (nesting.DependentNames.Contains(item.Name)) continue;
+
+            var fileNode = MakeFileNode(item, project);
+
+            if (nesting.ParentToChildren.TryGetValue(item.Name, out var deps))
+                foreach (var dep in deps)
+                    fileNode.Children.Insert(0, MakeDependentFileNode(dep, project));
+
+            node.Children.Add(fileNode);
         }
 
         return node;
+    }
+
+    private static ReferencesContainerNodeVm? BuildReferencesNode(IProjectWithReferences refs)
+    {
+        if (refs.ProjectReferences.Count  == 0 &&
+            refs.PackageReferences.Count  == 0 &&
+            refs.AssemblyReferences.Count == 0 &&
+            refs.AnalyzerReferences.Count == 0)
+            return null;
+
+        var container = new ReferencesContainerNodeVm { IsExpanded = false };
+
+        // 1. Analyzers sub-folder (top, like VS).
+        if (refs.AnalyzerReferences.Count > 0)
+        {
+            var analyzers = new AnalyzersContainerNodeVm { IsExpanded = false };
+            foreach (var a in refs.AnalyzerReferences.OrderBy(r => System.IO.Path.GetFileName(r.HintPath), StringComparer.OrdinalIgnoreCase))
+                analyzers.Children.Add(new AnalyzerNodeVm(a));
+            container.Children.Add(analyzers);
+        }
+
+        // 2. Project-to-project references — sorted alphabetically.
+        foreach (var path in refs.ProjectReferences
+            .OrderBy(p => System.IO.Path.GetFileNameWithoutExtension(p), StringComparer.OrdinalIgnoreCase))
+            container.Children.Add(new ProjectReferenceNodeVm(path));
+
+        // 3. NuGet / package references — sorted alphabetically by Id.
+        foreach (var pkg in refs.PackageReferences
+            .OrderBy(p => p.Id, StringComparer.OrdinalIgnoreCase))
+            container.Children.Add(new PackageReferenceNodeVm(pkg));
+
+        // 4. Assembly references — BCL/framework first, then external DLLs, all alphabetical.
+        foreach (var asm in refs.AssemblyReferences
+            .OrderByDescending(r => r.IsFrameworkRef)
+            .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase))
+            container.Children.Add(new AssemblyReferenceNodeVm(asm));
+
+        return container;
     }
 
     private static FolderNodeVm BuildFolderNode(IVirtualFolder folder, IProject project, string parentRelPath = "")
@@ -453,21 +512,166 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         foreach (var childFolder in folder.Children)
             node.Children.Add(BuildFolderNode(childFolder, project, relPath));
 
+        // Collect items for this folder scope
+        var scopeItems = new List<IProjectItem>();
         foreach (var id in folder.ItemIds)
         {
             var item = project.FindItem(id);
-            if (item is not null)
-                node.Children.Add(MakeFileNode(item, project));
+            if (item is not null) scopeItems.Add(item);
+        }
+
+        // Apply nesting: dependent files become children of their parent item
+        var nesting = FileNestingDetector.Compute(scopeItems);
+
+        foreach (var item in scopeItems)
+        {
+            if (nesting.DependentNames.Contains(item.Name)) continue;
+
+            var fileNode = MakeFileNode(item, project);
+
+            if (nesting.ParentToChildren.TryGetValue(item.Name, out var deps))
+                foreach (var dep in deps)
+                    fileNode.Children.Insert(0, MakeDependentFileNode(dep, project));
+
+            node.Children.Add(fileNode);
         }
 
         return node;
     }
 
     private static FileNodeVm MakeFileNode(IProjectItem item, IProject project)
-        => new(item, isDefaultTbl: item.Id == project.DefaultTblItemId)
+    {
+        var ext       = Path.GetExtension(item.Name);
+        var canExpand = string.Equals(ext, ".cs",   StringComparison.OrdinalIgnoreCase)
+                     || string.Equals(ext, ".xaml", StringComparison.OrdinalIgnoreCase);
+
+        var node = new FileNodeVm(item, isDefaultTbl: item.Id == project.DefaultTblItemId)
         {
-            Project = project,
+            Project           = project,
+            SupportsExpansion = canExpand,
         };
+
+        // Inject a LoadingNodeVm sentinel so WPF shows the expand arrow.
+        // Start collapsed so the outline is loaded lazily on first user expand,
+        // not eagerly when the solution is opened.
+        if (canExpand)
+        {
+            node.IsExpanded = false;
+            node.Children.Add(new LoadingNodeVm());
+        }
+
+        return node;
+    }
+
+    private static DependentFileNodeVm MakeDependentFileNode(IProjectItem item, IProject project)
+    {
+        var ext          = Path.GetExtension(item.Name);
+        var canExpand    = string.Equals(ext, ".cs", StringComparison.OrdinalIgnoreCase);
+        var node         = new DependentFileNodeVm(item, project) { SupportsExpansion = canExpand };
+
+        // Inject a LoadingNodeVm sentinel so the dep file also shows an expand arrow.
+        // Start collapsed — outline loads lazily on first expand.
+        if (canExpand)
+        {
+            node.IsExpanded = false;
+            node.Children.Add(new LoadingNodeVm());
+        }
+
+        return node;
+    }
+
+    // -------------------------------------------------------------------------
+    // FileNestingDetector — pure utility, no state
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Classifies a flat list of <see cref="IProjectItem"/>s within one scope
+    /// (folder or loose-items list) into parent items and their dependent children
+    /// by applying VS-like naming conventions.
+    /// O(n) per scope — uses a name→item dictionary for O(1) parent lookups.
+    /// </summary>
+    private static class FileNestingDetector
+    {
+        internal sealed class NestingResult
+        {
+            /// <summary>Names of items that should be nested under a parent (excluded from main list).</summary>
+            public HashSet<string> DependentNames { get; }
+                = new(StringComparer.OrdinalIgnoreCase);
+
+            /// <summary>Maps parent item name → ordered list of dependent items.</summary>
+            public Dictionary<string, List<IProjectItem>> ParentToChildren { get; }
+                = new(StringComparer.OrdinalIgnoreCase);
+        }
+
+        internal static NestingResult Compute(IReadOnlyList<IProjectItem> items)
+        {
+            var result  = new NestingResult();
+            var nameMap = new Dictionary<string, IProjectItem>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var item in items)
+                nameMap[item.Name] = item;
+
+            foreach (var item in items)
+            {
+                var parentName = TryFindParent(item.Name, nameMap);
+                if (parentName is null) continue;
+
+                result.DependentNames.Add(item.Name);
+
+                if (!result.ParentToChildren.TryGetValue(parentName, out var list))
+                {
+                    list = [];
+                    result.ParentToChildren[parentName] = list;
+                }
+                list.Add(item);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns the name of the parent item for <paramref name="name"/>,
+        /// or <see langword="null"/> if no nesting applies.
+        /// </summary>
+        private static string? TryFindParent(
+            string name,
+            Dictionary<string, IProjectItem> nameMap)
+        {
+            // Rule 1 — multi-extension: strip last extension and check
+            // e.g. "Foo.xaml.cs" → try "Foo.xaml"; "Foo.xaml.vb" → try "Foo.xaml"
+            var inner = StripLastExtension(name);
+            if (!string.Equals(inner, name, StringComparison.OrdinalIgnoreCase)
+                && nameMap.ContainsKey(inner))
+                return inner;
+
+            // Rule 2 — .Designer.cs / .designer.cs → check several candidate parents
+            if (name.EndsWith(".Designer.cs", StringComparison.OrdinalIgnoreCase))
+            {
+                var baseName = name[..^".Designer.cs".Length];
+                foreach (var ext in (ReadOnlySpan<string>)[".cs", ".resx", ".settings", ".xsd", ".wsdl"])
+                {
+                    var candidate = baseName + ext;
+                    if (nameMap.ContainsKey(candidate)) return candidate;
+                }
+            }
+
+            // Rule 3 — .settings.cs → .settings
+            if (name.EndsWith(".settings.cs", StringComparison.OrdinalIgnoreCase))
+            {
+                var candidate = name[..^".cs".Length]; // "Foo.settings"
+                if (nameMap.ContainsKey(candidate)) return candidate;
+            }
+
+            return null;
+        }
+
+        /// <summary>Strips the last extension: "Foo.xaml.cs" → "Foo.xaml".</summary>
+        private static string StripLastExtension(string name)
+        {
+            var dot = name.LastIndexOf('.');
+            return dot > 0 ? name[..dot] : name;
+        }
+    }
 
     private static void CollectFolderItemIds(IReadOnlyList<IVirtualFolder> folders, HashSet<string> set)
     {
@@ -534,18 +738,27 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// </summary>
     public void SetFileModifiedExternally(string fullPath, bool modified)
     {
-        var node = FindFileNode(Roots, fullPath);
-        if (node is not null)
-            node.IsModifiedExternally = modified;
+        // Only FileNodeVm carries the IsModifiedExternally flag.
+        if (FindFileNode(Roots, fullPath) is FileNodeVm fn)
+            fn.IsModifiedExternally = modified;
     }
 
-    private static FileNodeVm? FindFileNode(IEnumerable<SolutionExplorerNodeVm> nodes, string fullPath)
+    private static SolutionExplorerNodeVm? FindFileNode(IEnumerable<SolutionExplorerNodeVm> nodes, string fullPath)
     {
         foreach (var node in nodes)
         {
-            if (node is FileNodeVm fn &&
-                string.Equals(fn.Source.AbsolutePath, fullPath, StringComparison.OrdinalIgnoreCase))
-                return fn;
+            // Match FileNodeVm or DependentFileNodeVm — allows SyncWithFile to highlight
+            // code-behind files (e.g. App.xaml.cs) that are nested under their parent XAML node.
+            string? nodePath = node switch
+            {
+                FileNodeVm      fn  => fn.Source.AbsolutePath,
+                DependentFileNodeVm dep => dep.Source.AbsolutePath,
+                _                   => null,
+            };
+
+            if (nodePath is not null &&
+                string.Equals(nodePath, fullPath, StringComparison.OrdinalIgnoreCase))
+                return node;
 
             var hit = FindFileNode(node.Children, fullPath);
             if (hit is not null) return hit;
@@ -556,10 +769,11 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     // -- Active document tracking (D5) ----------------------------------------
 
     /// <summary>
-    /// Finds the <see cref="FileNodeVm"/> matching <paramref name="filePath"/>, expands
-    /// all ancestors so it is visible, and sets <see cref="SolutionExplorerNodeVm.IsSelected"/>.
+    /// Finds the <see cref="FileNodeVm"/> or <see cref="DependentFileNodeVm"/> matching
+    /// <paramref name="filePath"/>, expands all ancestors so it is visible, and sets
+    /// <see cref="SolutionExplorerNodeVm.IsSelected"/>.
     /// </summary>
-    public FileNodeVm? SyncWithFile(string? filePath)
+    public SolutionExplorerNodeVm? SyncWithFile(string? filePath)
     {
         if (string.IsNullOrEmpty(filePath)) return null;
 
@@ -568,7 +782,8 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         node.IsSelected = true;
 
-        // Expand ancestors so the node is visible.
+        // Expand ancestors so the node is visible (but NOT the node itself —
+        // file-level expansion is always user-initiated).
         ExpandAncestors(Roots, node);
 
         return node;
@@ -645,16 +860,46 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     private void ApplySearch()
     {
-        // Simple visibility filter: collapse/expand based on text match
-        // (full visibility filter would require a converter; this just expands matched paths)
+        // Visibility filter: expand nodes that match the query; collapse non-matching ones.
+        // When the search is cleared, restore structural nodes (solution/project/folder) to
+        // their natural expanded state while collapsing file-level nodes back to collapsed.
+        // We must NOT call SetExpanded(Roots, true) here — that would eagerly set IsExpanded=true
+        // on every FileNodeVm and DependentFileNodeVm, triggering OnTreeItemExpanded and loading
+        // all source outlines at once.
         if (string.IsNullOrWhiteSpace(_searchText))
         {
-            SetExpanded(Roots, true);
+            ResetToStructuralExpansion(Roots);
             return;
         }
 
         foreach (var root in Roots)
             ExpandIfMatch(root, _searchText.ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Restores the tree to its "natural" post-search state: structural nodes (solution,
+    /// project, folder) are expanded so items are visible; file-level nodes are collapsed
+    /// so outline members are only loaded on explicit user expansion.
+    /// </summary>
+    private static void ResetToStructuralExpansion(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var n in nodes)
+        {
+            // File and dependent-file nodes must stay collapsed — expanding them triggers
+            // lazy outline loading which must remain user-initiated.
+            if (n is FileNodeVm or DependentFileNodeVm)
+            {
+                n.IsExpanded = false;
+            }
+            else
+            {
+                // Structural nodes (solution, project, folder) are expanded so their
+                // contents remain browsable after the search is cleared.
+                n.IsExpanded = true;
+            }
+
+            ResetToStructuralExpansion(n.Children);
+        }
     }
 
     private static bool ExpandIfMatch(SolutionExplorerNodeVm node, string query)
@@ -667,15 +912,6 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         node.IsExpanded = selfMatch || childMatch;
         return selfMatch || childMatch;
-    }
-
-    private static void SetExpanded(IEnumerable<SolutionExplorerNodeVm> nodes, bool expanded)
-    {
-        foreach (var n in nodes)
-        {
-            n.IsExpanded = expanded;
-            SetExpanded(n.Children, expanded);
-        }
     }
 
     // -- INPC -----------------------------------------------------------------

@@ -492,6 +492,8 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     public IPermissionService   Permissions     => NullPermissionService.Instance;
     public ITerminalService     Terminal        => NullTerminalService.Instance;
     public ISolutionExplorerService SolutionExplorer => NullSolutionExplorerService.Instance;
+    public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => null; // Not available inside sandbox process
+    public WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? LspServers => null;  // Not available inside sandbox process
 
     // IDE EventBus — sandbox plugins subscribe to IDE events forwarded via IPC bridge.
     // A lightweight in-process bus is created per sandbox; the host delivers events via the
@@ -503,6 +505,10 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     // Stub implementations return empty results — sandbox plugins cannot query cross-plugin state.
     public IPluginCapabilityRegistry CapabilityRegistry => NullPluginCapabilityRegistry.Instance;
     public IExtensionRegistry ExtensionRegistry => NullExtensionRegistry.Instance;
+
+    // Document host is not available inside the sandbox process.
+    // Sandbox plugins interact with documents via IPC events, not directly.
+    public IDocumentHostService DocumentHost => NullDocumentHostService.Instance;
 
     public SandboxedHostContext(
         IpcChannel channel,
@@ -567,6 +573,8 @@ internal sealed class IpcHexEditorService : IHexEditorService
     // ── Panel connection ──────────────────────────────────────────────────────
     public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)  => ConnectedPanel = panel;
     public void DisconnectParsedFieldsPanel()                        => ConnectedPanel = null;
+    public void AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block) { }
+    public void ClearCustomBackgroundBlockByTag(string tag)          { }
 
     // ── Methods (read/write deferred to future phase) ─────────────────────────
     public byte[] ReadBytes(long offset, int length)         => [];
@@ -778,6 +786,41 @@ file sealed class NullExtensionRegistry : IExtensionRegistry
     public void Register(string pluginId, Type contractType, object implementation) { }
     public void UnregisterAll(string pluginId) { }
     public IReadOnlyList<ExtensionRegistryEntry> GetAllEntries() => [];
+}
+
+// Document host is not available inside the sandbox process. Sandbox plugins
+// interact with documents via IPC events forwarded by the IDE host.
+file sealed class NullDocumentHostService : WpfHexEditor.SDK.Contracts.Services.IDocumentHostService
+{
+    public static readonly NullDocumentHostService Instance = new();
+
+    public WpfHexEditor.Editor.Core.Documents.IDocumentManager Documents { get; } = NullDocumentManagerInstance.Instance;
+
+    public void OpenDocument(string filePath, string? preferredEditorId = null) { }
+    public void ActivateAndNavigateTo(string filePath, int line, int column)    { }
+    public void SaveAll()                                                        { }
+
+    private sealed class NullDocumentManagerInstance : WpfHexEditor.Editor.Core.Documents.IDocumentManager
+    {
+        public static readonly NullDocumentManagerInstance Instance = new();
+        public IReadOnlyList<WpfHexEditor.Editor.Core.Documents.DocumentModel> OpenDocuments => [];
+        public WpfHexEditor.Editor.Core.Documents.DocumentModel? ActiveDocument => null;
+
+        public WpfHexEditor.Editor.Core.Documents.DocumentModel Register(string contentId, string? filePath, string? editorId, string? projectItemId)
+            => new(contentId, filePath, projectItemId, editorId);
+        public void AttachEditor(string contentId, WpfHexEditor.Editor.Core.IDocumentEditor editor) { }
+        public void Unregister(string contentId) { }
+        public void SetActive(string contentId)  { }
+        public IReadOnlyList<WpfHexEditor.Editor.Core.Documents.DocumentModel> GetDirty() => [];
+
+#pragma warning disable 67
+        public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  DocumentRegistered;
+        public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  DocumentUnregistered;
+        public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel?>? ActiveDocumentChanged;
+        public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  DocumentDirtyChanged;
+        public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  DocumentTitleChanged;
+#pragma warning restore 67
+    }
 }
 
 // Lightweight in-process EventBus for sandbox plugins.

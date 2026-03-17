@@ -176,10 +176,10 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
 
     /// <summary>Weighted CPU estimate for this plugin (process CPU × exec-time weight).</summary>
     public double WeightedCpu    { get => _weightedCpu;    set { _weightedCpu    = value; OnPropertyChanged(); } }
-    public long   MemoryMb       { get => _memoryMb;       set { _memoryMb       = value; OnPropertyChanged(); } }
+    public long   MemoryMb       { get => _memoryMb;       set { _memoryMb       = value; OnPropertyChanged(); OnPropertyChanged(nameof(MemoryDisplayMb)); } }
 
     /// <summary>Weighted memory estimate for this plugin (process GC heap × exec-time weight).</summary>
-    public long   WeightedMemMb  { get => _weightedMemMb;  set { _weightedMemMb  = value; OnPropertyChanged(); } }
+    public long   WeightedMemMb  { get => _weightedMemMb;  set { _weightedMemMb  = value; OnPropertyChanged(); OnPropertyChanged(nameof(MemoryDisplayMb)); } }
     public double AvgExecMs    { get => _avgExecMs;    set { _avgExecMs    = value; OnPropertyChanged(); } }
     public double InitTimeMs   { get => _initTimeMs;   set { _initTimeMs   = value; OnPropertyChanged(); } }
     public string UptimeLabel  { get => _uptimeLabel;  set { _uptimeLabel  = value; OnPropertyChanged(); } }
@@ -270,6 +270,138 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
         get => _memoryAlertMessage;
         set { _memoryAlertMessage = value; OnPropertyChanged(); }
     }
+
+    // -- Isolation category -----------------------------------------------
+
+    private string _isolationCategory  = string.Empty;
+    private bool   _isMetricsEstimated;
+    private int    _alcAssemblyCount;
+    private int    _alcConflictCount;
+
+    /// <summary>Isolation group label: "In Process" or "Sandbox". Drives DataGrid grouping.</summary>
+    public string IsolationCategory
+    {
+        get => _isolationCategory;
+        set { _isolationCategory = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>
+    /// True when metrics are weighted estimates from the shared IDE process pool (InProcess plugins).
+    /// False when metrics are real per-process values from the sandbox (Sandbox plugins).
+    /// </summary>
+    public bool IsMetricsEstimated
+    {
+        get => _isMetricsEstimated;
+        set
+        {
+            _isMetricsEstimated = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(MetricsPrefix));
+            OnPropertyChanged(nameof(CpuTooltip));
+            OnPropertyChanged(nameof(MemTooltip));
+            OnPropertyChanged(nameof(MemoryDisplayMb));
+        }
+    }
+
+    /// <summary>Number of assemblies loaded into this plugin's ALC (InProcess only; 0 for Sandbox).</summary>
+    public int AlcAssemblyCount
+    {
+        get => _alcAssemblyCount;
+        set { _alcAssemblyCount = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Number of dependency version conflicts detected during load (InProcess only).</summary>
+    public int AlcConflictCount
+    {
+        get => _alcConflictCount;
+        set { _alcConflictCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(HasAlcConflict)); }
+    }
+
+    /// <summary>True when the plugin has at least one ALC dependency version conflict.</summary>
+    public bool HasAlcConflict => _alcConflictCount > 0;
+
+    /// <summary>Prefix for metric values: "~" for estimates (InProcess), empty for real (Sandbox).</summary>
+    public string MetricsPrefix => _isMetricsEstimated ? "~" : string.Empty;
+
+    /// <summary>Tooltip for the CPU% column cell explaining metric quality.</summary>
+    public string CpuTooltip => _isMetricsEstimated
+        ? "Estimated — weighted share of shared IDE process CPU pool"
+        : "Real — measured from isolated sandbox process";
+
+    /// <summary>Tooltip for the Mem column cell explaining metric quality.</summary>
+    public string MemTooltip => _isMetricsEstimated
+        ? "Estimated — weighted share of shared IDE process GC heap"
+        : "Real — OS private memory of isolated sandbox process";
+
+    /// <summary>
+    /// Memory value to display: weighted GC estimate for InProcess, actual diagnostics memory for Sandbox.
+    /// </summary>
+    public long MemoryDisplayMb => _isMetricsEstimated ? WeightedMemMb : MemoryMb;
+
+    private void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
+// ==========================================================================
+// PluginGroupSummaryViewModel
+// ==========================================================================
+
+/// <summary>
+/// Aggregate metrics for one isolation group (InProcess or Sandbox).
+/// Displayed in the collapsible group header row of the Plugin Monitor DataGrid.
+/// Pattern: INPC, init-only identity fields, mutable aggregate fields updated on each refresh tick.
+/// </summary>
+public sealed class PluginGroupSummaryViewModel : INotifyPropertyChanged
+{
+    private double _aggregateCpu;
+    private long   _aggregateMem;
+    private int    _count;
+    private int    _loadedCount;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>Group label matching <see cref="PluginMonitorRow.IsolationCategory"/>.</summary>
+    public string Category      { get; init; } = string.Empty;
+
+    /// <summary>Segoe MDL2 glyph for the group icon.</summary>
+    public string CategoryIcon  { get; init; } = string.Empty;
+
+    /// <summary>Accent color hex string for the icon and count chip.</summary>
+    public string CategoryColor { get; init; } = string.Empty;
+
+    /// <summary>Short description of metric quality shown in the header ("Shared pool — estimates" etc.).</summary>
+    public string MetricsNote   { get; init; } = string.Empty;
+
+    /// <summary>Sum of all plugins' CPU in this group (WeightedCpu for InProcess, CpuPercent for Sandbox).</summary>
+    public double AggregateCpu
+    {
+        get => _aggregateCpu;
+        set { _aggregateCpu = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Sum of all plugins' displayed memory in MB for this group.</summary>
+    public long AggregateMem
+    {
+        get => _aggregateMem;
+        set { _aggregateMem = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Total number of plugins in this group.</summary>
+    public int Count
+    {
+        get => _count;
+        set { _count = value; OnPropertyChanged(); OnPropertyChanged(nameof(CountChip)); }
+    }
+
+    /// <summary>Number of loaded/running plugins in this group.</summary>
+    public int LoadedCount
+    {
+        get => _loadedCount;
+        set { _loadedCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(CountChip)); }
+    }
+
+    /// <summary>Display chip text, e.g. "12/14".</summary>
+    public string CountChip => $"{LoadedCount}/{Count}";
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -566,6 +698,14 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         _filteredRows = CollectionViewSource.GetDefaultView(Rows);
         _filteredRows.Filter = FilterPlugin;
 
+        // Enable grouping by isolation category (In Process / Sandbox)
+        if (_filteredRows.GroupDescriptions is not null)
+        {
+            _filteredRows.GroupDescriptions.Clear();
+            _filteredRows.GroupDescriptions.Add(
+                new PropertyGroupDescription(nameof(PluginMonitorRow.IsolationCategory)));
+        }
+
         Refresh();
         SynthesizeInitialLoadEvents();
     }
@@ -772,6 +912,9 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     public ObservableCollection<ChartPoint> CpuHistory    { get; } = new();
     public ObservableCollection<ChartPoint> MemoryHistory { get; } = new();
 
+    /// <summary>Timestamps of GC cleanup events triggered by memory alerts.</summary>
+    public ObservableCollection<DateTime> GcCleanupEvents { get; } = new();
+
     // -- Summary metrics ---------------------------------------------------------
 
     public double CurrentCpu
@@ -819,6 +962,34 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     public ObservableCollection<PluginMonitorRow> Rows { get; } = new();
     public ICollectionView FilteredRows => _filteredRows;
+
+    // -- Isolation group summaries (displayed in DataGrid group headers) ----------
+
+    /// <summary>Aggregate metrics for all InProcess plugins.</summary>
+    public PluginGroupSummaryViewModel InProcessSummary { get; } = new()
+    {
+        Category      = "In Process",
+        CategoryIcon  = "\uE756", // Segoe MDL2: "ProcessFlow" / general process icon
+        CategoryColor = "#4FC1FF",
+        MetricsNote   = "Shared pool — estimates"
+    };
+
+    /// <summary>Aggregate metrics for all Sandbox plugins.</summary>
+    public PluginGroupSummaryViewModel SandboxSummary { get; } = new()
+    {
+        Category      = "Sandbox",
+        CategoryIcon  = "\uE72E", // Segoe MDL2: "Lock"
+        CategoryColor = "#CE9178",
+        MetricsNote   = "Isolated — real metrics"
+    };
+
+    /// <summary>Returns the group summary ViewModel for the given isolation category name.</summary>
+    public PluginGroupSummaryViewModel? GetGroupSummary(string? category) => category switch
+    {
+        "In Process" => InProcessSummary,
+        "Sandbox"    => SandboxSummary,
+        _            => null
+    };
 
     public string SearchText
     {
@@ -1041,6 +1212,13 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             row.FaultMessage   = entry.FaultException?.Message ?? string.Empty;
             row.Version        = entry.Manifest.Version ?? string.Empty;
 
+            // -- Isolation category & metrics quality ---------------------------------
+            var isInProc = entry.ResolvedIsolationMode == PluginIsolationMode.InProcess;
+            row.IsolationCategory  = isInProc ? "In Process" : "Sandbox";
+            row.IsMetricsEstimated = isInProc;
+            row.AlcAssemblyCount   = entry.Diagnostics.AlcAssemblyCount;
+            row.AlcConflictCount   = entry.Diagnostics.AlcConflictCount;
+
             // Evaluate memory alert for this plugin
             if (_memoryAlertService != null)
             {
@@ -1066,6 +1244,48 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             OnPropertyChanged(nameof(HasFaultedPlugin));
             UpdateSelectedPluginDetail();
         }
+
+        // Refresh group header aggregate metrics (InProcess / Sandbox summaries).
+        RefreshGroupSummaries();
+    }
+
+    /// <summary>
+    /// Recomputes aggregate CPU and memory for each isolation group and updates
+    /// <see cref="InProcessSummary"/> and <see cref="SandboxSummary"/>.
+    /// Called at the end of every <see cref="Refresh"/> tick.
+    /// </summary>
+    private void RefreshGroupSummaries()
+    {
+        double inProcCpu = 0; long inProcMem = 0; int inProcCount = 0; int inProcLoaded = 0;
+        double sandboxCpu = 0; long sandboxMem = 0; int sandboxCount = 0; int sandboxLoaded = 0;
+
+        foreach (var row in Rows)
+        {
+            if (row.IsolationCategory == "In Process")
+            {
+                inProcCpu    += row.WeightedCpu;
+                inProcMem    += row.MemoryDisplayMb;
+                inProcCount++;
+                if (row.State is "Running" or "Loading") inProcLoaded++;
+            }
+            else if (row.IsolationCategory == "Sandbox")
+            {
+                sandboxCpu   += row.WeightedCpu;
+                sandboxMem   += row.MemoryDisplayMb;
+                sandboxCount++;
+                if (row.State is "Running" or "Loading") sandboxLoaded++;
+            }
+        }
+
+        InProcessSummary.AggregateCpu  = Math.Round(inProcCpu, 1);
+        InProcessSummary.AggregateMem  = inProcMem;
+        InProcessSummary.Count         = inProcCount;
+        InProcessSummary.LoadedCount   = inProcLoaded;
+
+        SandboxSummary.AggregateCpu    = Math.Round(sandboxCpu, 1);
+        SandboxSummary.AggregateMem    = sandboxMem;
+        SandboxSummary.Count           = sandboxCount;
+        SandboxSummary.LoadedCount     = sandboxLoaded;
     }
 
     private PluginMiniChartViewModel GetOrCreateMiniChart(string pluginId, string pluginName)
@@ -1119,6 +1339,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         CpuHistory.Clear();
         MemoryHistory.Clear();
+        GcCleanupEvents.Clear();
         foreach (var mini in _miniCharts.Values) mini.Reset();
         AlertCount = 0;
         _alertEngine.ResetCooldowns();
@@ -1168,6 +1389,22 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         AlertCount++;
         AddEvent(new PluginEventEntry(Now(), "\uE7BA", "#F97316", e.PluginName, e.Message));
         _outputService?.Warning($"[{e.PluginName}] Alert: {e.Message}");
+
+        // Trigger a GC cleanup when a memory threshold is breached.
+        // Runs on a background thread — naturally rate-limited by the 60 s alert cooldown.
+        if (e.Kind == PluginAlertKind.Memory)
+        {
+            _outputService?.Info("[Plugin Monitor] Memory pressure detected — triggering GC cleanup.");
+            var gcTime = DateTime.UtcNow;
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                // Record the event on the UI thread so the chart can draw the tick.
+                Application.Current?.Dispatcher.InvokeAsync(() => GcCleanupEvents.Add(gcTime));
+            });
+        }
     }
 
     // -- Export commands ---------------------------------------------------------

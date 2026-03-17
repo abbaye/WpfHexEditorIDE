@@ -45,6 +45,7 @@ using WpfHexEditor.Editor.TileEditor;
 using WpfHexEditor.Editor.AudioViewer;
 using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
+using WpfHexEditor.Editor.XamlDesigner;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.IDE.Services;
@@ -54,6 +55,7 @@ using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Serialization;
 using WpfHexEditor.ProjectSystem.Services;
 using WpfHexEditor.ProjectSystem.Templates;
+using WpfHexEditor.ProjectSystem.Languages;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Options;
@@ -117,6 +119,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Content cache: ContentId → actual editor UIElement (unwrapped; used for editor logic)
     private readonly Dictionary<string, UIElement> _contentCache = new();
+
+    // Project properties map: doc-projprops-{id} → IProject (for deferred content creation)
+    private readonly Dictionary<string, IProject> _projectPropertiesMap = new();
+
+    // NuGet manager map: doc-nuget-{name} → IProject (for deferred content creation)
+    private readonly Dictionary<string, IProject> _nugetManagerMap = new();
+
+    // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
+    // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
+    private readonly HashSet<string> _pendingProjectPropertiesContentIds = new();
 
     // Display cache: ContentId → visual UIElement shown in the docking layout
     // When an InfoBar is present this is a Grid wrapper; otherwise == _contentCache entry.
@@ -232,7 +244,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public HexEditorControl? ActiveHexEditor
     {
         get => _activeHexEditor;
-        private set { _activeHexEditor = value; OnPropertyChanged(); }
+        private set
+        {
+            // Unsubscribe from the previous editor's file-change event.
+            if (_activeHexEditor != null)
+                _activeHexEditor.FileExternallyChanged -= OnActiveFileExternallyChanged;
+
+            _activeHexEditor = value;
+
+            // Subscribe to the new editor and hide any stale file-change bar.
+            if (_activeHexEditor != null)
+                _activeHexEditor.FileExternallyChanged += OnActiveFileExternallyChanged;
+
+            HideFileChangeInfoBar();
+            OnPropertyChanged();
+        }
     }
 
     // -- TBL toolbar dropdown ---------------------------------------------
@@ -336,7 +362,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public bool HasSolution
     {
         get => _hasSolution;
-        private set { _hasSolution = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsProjectMenuEnabled)); }
+        private set { _hasSolution = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsProjectMenuEnabled)); OnPropertyChanged(nameof(IsBuildMenuEnabled)); OnPropertyChanged(nameof(CanRunStartupProject)); }
     }
 
     // -- Long-running operation state (per active document) ---------------
@@ -378,6 +404,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         StateChanged += OnStateChanged;
     }
 
+    /// <summary>
+    /// Registers all embedded .whlang syntax definitions into <see cref="LanguageRegistry"/>
+    /// so that <see cref="CodeEditorFactory"/> can resolve the correct
+    /// <see cref="ISyntaxHighlighter"/> for every file type it opens.
+    /// Must be called before any editor factory is used.
+    /// </summary>
+    private static void LoadEmbeddedLanguageDefinitions()
+    {
+        var catalog  = EmbeddedSyntaxCatalog.Instance;
+        var registry = LanguageRegistry.Instance;
+
+        foreach (var entry in catalog.GetAll())
+        {
+            try
+            {
+                var json = catalog.GetContent(entry.ResourceKey);
+                var def  = LanguageDefinitionSerializer.Parse(json);
+                registry.RegisterBuiltin(def);
+            }
+            catch
+            {
+                // Skip malformed or incomplete .whlang entries to avoid blocking startup.
+            }
+        }
+    }
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         // Wire DocumentManager events (title changes, dirty state → all open editors)
@@ -388,6 +440,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _solutionManager.ProjectChanged       += OnProjectChanged;
         _solutionManager.ItemAdded            += OnProjectItemAdded;
         _solutionManager.FormatUpgradeRequired += OnFormatUpgradeRequired;
+
+        // Populate LanguageRegistry with all embedded .whlang syntax definitions.
+        // This must run before any editor factory is used so that CodeEditorFactory
+        // can resolve ExternalHighlighter via LanguageRegistry.GetLanguageForFile().
+        LoadEmbeddedLanguageDefinitions();
 
         // Register editor factories (doc-proj-* dispatcher)
         _editorRegistry.Register(new TblEditorFactory());
@@ -402,6 +459,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new AudioViewerFactory());
         _editorRegistry.Register(new ScriptEditorFactory());
         _editorRegistry.Register(new ChangesetEditorFactory());
+        _editorRegistry.Register(new XamlDesignerFactory());
 
         // Register VS-style project templates
         ProjectTemplateRegistry.RegisterDefaults();
@@ -447,13 +505,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (settings.DefaultFileSaveMode != FileSaveMode.Tracked) return;
         if (_solutionManager.CurrentSolution is null) return;
 
-        foreach (var project in _solutionManager.CurrentSolution.Projects)
-        foreach (var item    in project.Items)
+        // _dirtyTrackedContentIds is maintained by OnDocumentManagerDirtyChanged,
+        // so this loop is O(dirty editors) instead of O(all solution items).
+        foreach (var contentId in _dirtyTrackedContentIds)
         {
-            var contentId = $"doc-proj-{item.Id}";
             if (!_contentCache.TryGetValue(contentId, out var ctrl)) continue;
             if (ctrl is not IEditorPersistable persistable) continue;
-            if (ctrl is not IDocumentEditor editor || !editor.IsDirty) continue;
+            if (!TryGetProjectItemFromContentId(contentId, out var item) || item is null) continue;
 
             var snapshot = persistable.GetChangesetSnapshot();
             if (!snapshot.HasEdits) continue;
@@ -521,6 +579,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnSolutionChanged(object? sender, SolutionChangedEventArgs e)
     {
         HasSolution = _solutionManager.CurrentSolution != null;
+
+        // Refresh any "doc-projprops-*" tabs that showed "Projet introuvable." at layout-restore
+        // time because the solution was not yet loaded when the content factory ran.
+        if (_pendingProjectPropertiesContentIds.Count > 0 && _solutionManager.CurrentSolution != null)
+        {
+            foreach (var contentId in _pendingProjectPropertiesContentIds)
+            {
+                _displayContent.Remove(contentId);
+                _contentCache.Remove(contentId);
+            }
+            _pendingProjectPropertiesContentIds.Clear();
+            DockHost.RebuildVisualTree();
+        }
+
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
         RebuildTblItemList();
         RefreshAllChangesetNodes();
@@ -874,7 +946,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (prop.ValueKind != System.Text.Json.JsonValueKind.String) return;
             var path = prop.GetString();
             if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
-            _ = OpenSolutionAsync(path);
+            // WH-native formats can be opened immediately (no plugin loader required).
+            // VS formats (.sln/.csproj/etc.) require ISolutionLoader extensions registered by
+            // InitializePluginSystemAsync — store the path and open it there instead.
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            if (ext is ".whsln" or ".whproj")
+                _ = OpenSolutionAsync(path);
+            else
+                _pendingRestoreSolutionPath = path;
         }
         catch (Exception ex)
         {
@@ -888,7 +967,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrEmpty(path)) return;
 
         var ext = Path.GetExtension(path).ToLowerInvariant();
-        if (ext is ".whsln" or ".whproj")
+        if (ext is ".whsln" or ".whproj" or ".sln" or ".csproj" or ".vbproj" or ".fsproj")
         {
             if (File.Exists(path)) _ = OpenSolutionAsync(path);
             else OutputLogger.Error($"Startup solution not found: {path}");
@@ -1052,9 +1131,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             TerminalPanelContentId         => CreateTerminalPanelContent(),
             PluginMonitorContentId         => CreatePluginMonitorPanelContent(),
             PluginManagerContentId         => CreatePluginManagerContent(),
-            _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
-            _ when item.ContentId.StartsWith("doc-hex-")  => WrapHexDocItemWithInfoBar(item),
-            _ when item.ContentId.StartsWith("doc-proj-") => CreateProjectItemContent(item),
+            _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
+            _ when item.ContentId.StartsWith("doc-hex-")       => WrapHexDocItemWithInfoBar(item),
+            _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
+            _ when item.ContentId.StartsWith("doc-nuget-")     => CreateNuGetManagerContent(item),
+            _ when item.ContentId.StartsWith("doc-proj-")      => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
 
@@ -1095,6 +1176,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.PhysicalFileIncludeRequested     += OnSEPhysicalFileInclude;
         panel.ImportExternalFileRequested      += OnSEImportExternalFile;
         panel.PropertiesRequested              += OnSEPropertiesRequested;
+        panel.ManageNuGetPackagesRequested     += OnSEManageNuGetPackages;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         panel.SolutionFolderCreateRequested    += OnSESolutionFolderCreateRequested;
@@ -1102,6 +1184,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.SolutionFolderDeleteRequested    += OnSESolutionFolderDeleteRequested;
         panel.ProjectMoveRequested             += OnSEProjectMoveRequested;
         panel.ClipboardPasteRequested          += OnSEClipboardPaste;
+        panel.SourceLineNavigationRequested    += OnSESourceLineNavigationRequested;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
@@ -1551,6 +1634,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             if (editor is IOpenableDocument openable)
                 _ = openable.OpenAsync(filePath);
+
+            // Apply user settings (scroll speed, etc.) from Options to newly created editors.
+            ApplyEditorSettings(editor);
 
             // Restore per-file position (scroll, selection, caret) from previous session.
             if (editor is IEditorPersistable persistable &&
@@ -2937,9 +3023,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.Item is null && e.Project is not null)
         {
-            // Project node → Project Properties dialog
-            var dlg = new ProjectPropertiesDialog(e.Project) { Owner = this };
-            dlg.ShowDialog();
+            // Project node → VS-Like Project Properties document tab
+            OpenProjectPropertiesDocument(e.Project);
         }
         else if (e.Item is not null)
         {
@@ -2991,6 +3076,64 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Discard changeset failed for '{e.Item.Name}': {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Opens a source file in the text editor and scrolls to the requested 1-based line number.
+    /// Triggered when the user double-clicks a type or member node in the Solution Explorer.
+    /// </summary>
+    private void OnSESourceLineNavigationRequested(object? sender, SourceLineNavigationEventArgs e)
+    {
+        if (string.IsNullOrEmpty(e.AbsolutePath) || !File.Exists(e.AbsolutePath)) return;
+
+        // Look for an already-open TextEditor tab for this file (match by file name via Title).
+        var fileName   = Path.GetFileName(e.AbsolutePath);
+        var existingKv = _contentCache.FirstOrDefault(kv =>
+            kv.Value is WpfHexEditor.Editor.TextEditor.Controls.TextEditor tc &&
+            string.Equals(tc.Title.TrimEnd('*', ' '), fileName,
+                System.StringComparison.OrdinalIgnoreCase));
+
+        WpfHexEditor.Editor.TextEditor.Controls.TextEditor? textEditor;
+
+        if (existingKv.Key != null)
+        {
+            // Activate the existing tab.
+            textEditor = existingKv.Value as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
+            var existingItem = _layout.FindItemByContentId(existingKv.Key);
+            if (existingItem?.Owner != null) existingItem.Owner.ActiveItem = existingItem;
+        }
+        else
+        {
+            // Open the file in a new TextEditor tab.
+            _documentCounter++;
+            var contentId  = $"doc-text-src-{_documentCounter}";
+            var factory    = new WpfHexEditor.Editor.TextEditor.TextEditorFactory();
+            textEditor     = factory.Create() as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
+            if (textEditor == null) return;
+
+            textEditor.OutputMessage += OnEditorOutputMessage;
+            _ = textEditor.OpenAsync(e.AbsolutePath);
+
+            StoreContent(contentId, textEditor);
+            var dockItem = new DockItem
+            {
+                ContentId = contentId,
+                Title     = Path.GetFileName(e.AbsolutePath),
+                Metadata  = { ["FilePath"] = e.AbsolutePath }
+            };
+            _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
+            RegisterDocumentFromItem(dockItem, textEditor);
+            ActiveDocumentEditor = textEditor;
+        }
+
+        // Scroll to line after layout is updated.
+        if (e.LineNumber > 0 && textEditor != null)
+        {
+            var targetLine = e.LineNumber;
+            var captured   = textEditor;
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                () => captured.GoToLine(targetLine, 1));
         }
     }
 
@@ -3435,14 +3578,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _contentCache.TryGetValue(item.ContentId, out var dirtyCtrl) &&
             dirtyCtrl is IDocumentEditor dirtyEditor && dirtyEditor.IsDirty)
         {
-            if (IsTrackedProjectItem(item))
+            if (IsTrackedItemWithChangeset(item))
             {
                 // Auto-serialize to .whchg — no dialog
                 _ = AutoSerializeTrackedItemAsync(item);
             }
             else
             {
-                // Direct mode — standard save dialog
+                // Direct mode or changeset disabled — standard save dialog
                 var cleanTitle = item.Title.TrimEnd('*', ' ');
                 var dlg = new Dialogs.SaveChangesDialog
                 {
@@ -3552,22 +3695,58 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnNewProject(object sender, RoutedEventArgs e)
     {
-        if (_solutionManager.CurrentSolution is null)
-        {
-            // VS-like behaviour: no solution open → show the project dialog and auto-create
-            // a solution with the same name in the same directory.
-            var dlg = new NewProjectDialog(null) { Owner = this };
-            if (dlg.ShowDialog() != true) return;
+        var suggestedDir = _solutionManager.CurrentSolution is not null
+            ? Path.GetDirectoryName(_solutionManager.CurrentSolution.FilePath) ?? ""
+            : null;
 
-            _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
+        var dlg = new NewProjectDialog(suggestedDir) { Owner = this };
+        if (dlg.ShowDialog() != true) return;
+
+        // Self-contained templates (VS .sln/.csproj) bypass the .whproj creation flow.
+        if (dlg.SelectedTemplate is ISelfContainedProjectTemplate selfContained)
+        {
+            _ = CreateVsSolutionFromTemplateAsync(selfContained, dlg.ProjectDirectory, dlg.ProjectName);
             return;
         }
 
-        var suggestedDir = Path.GetDirectoryName(_solutionManager.CurrentSolution.FilePath) ?? "";
-        var dlg2 = new NewProjectDialog(suggestedDir) { Owner = this };
-        if (dlg2.ShowDialog() != true) return;
+        // WH-native flow (unchanged).
+        if (_solutionManager.CurrentSolution is null)
+            _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
+        else
+            _ = CreateProjectAsync(_solutionManager.CurrentSolution, dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
+    }
 
-        _ = CreateProjectAsync(_solutionManager.CurrentSolution, dlg2.ProjectDirectory, dlg2.ProjectName, dlg2.SelectedTemplate);
+    private async Task CreateVsSolutionFromTemplateAsync(
+        ISelfContainedProjectTemplate template, string parentDir, string name)
+    {
+        try
+        {
+            var currentSlnPath = _solutionManager.CurrentSolution?.FilePath;
+            var isVsSolution   = currentSlnPath?.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) == true;
+
+            string slnPath;
+            if (isVsSolution)
+            {
+                // Add the new project into the already-open VS solution.
+                var slnDir = Path.GetDirectoryName(currentSlnPath!) ?? parentDir;
+                slnPath = await template.AddToSolutionAsync(currentSlnPath!, slnDir, name);
+                OutputLogger.Info($".NET project added to solution: {currentSlnPath}");
+            }
+            else
+            {
+                // No VS solution open — create a brand-new .sln alongside the project.
+                slnPath = await template.CreateAsync(parentDir, name);
+                OutputLogger.Info($".NET solution scaffolded: {slnPath}");
+            }
+
+            await OpenSolutionAsync(slnPath);
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to scaffold .NET project: {ex.Message}");
+            MessageBox.Show($"Failed to create project:\n{ex.Message}", "Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async Task CreateSolutionAndProjectAsync(string directory, string name, IProjectTemplate? template = null)
@@ -3729,8 +3908,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                         && c is IDocumentEditor { IsDirty: true })
             .ToList();
 
-        // Auto-serialize Tracked project items silently
-        var tracked = dirty.Where(IsTrackedProjectItem).ToList();
+        // Auto-serialize Tracked project items silently (only when changeset is enabled for the editor)
+        var tracked = dirty.Where(IsTrackedItemWithChangeset).ToList();
         foreach (var t in tracked)
         {
             _ = AutoSerializeTrackedItemAsync(t);
@@ -3771,16 +3950,49 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var dlg = new OpenFileDialog
         {
-            Filter      = "Solution/Project Files (*.whsln;*.whproj)|*.whsln;*.whproj|" +
-                          "Solution Files (*.whsln)|*.whsln|" +
-                          "Project Files (*.whproj)|*.whproj",
-            DefaultExt  = ".whsln",
-            Title       = "Open Solution or Project"
+            Filter     = BuildSolutionFileFilter(),
+            DefaultExt = ".whsln",
+            Title      = "Open Solution or Project"
         };
 
         if (dlg.ShowDialog() != true) return;
 
         _ = OpenSolutionAsync(dlg.FileName);
+    }
+
+    /// <summary>
+    /// Builds the OpenFileDialog filter dynamically from registered <see cref="ISolutionLoader"/> plugins.
+    /// Falls back to native WH format if no loaders are registered.
+    /// </summary>
+    private string BuildSolutionFileFilter()
+    {
+        var loaders = _ideHostContext?.ExtensionRegistry.GetExtensions<ISolutionLoader>()
+                      ?? [];
+
+        if (loaders.Count == 0)
+            return "Solution/Project Files (*.whsln;*.whproj)|*.whsln;*.whproj|" +
+                   "Solution Files (*.whsln)|*.whsln|" +
+                   "Project Files (*.whproj)|*.whproj";
+
+        // Build "All supported" catch-all entry from all loader extensions.
+        var allExts  = loaders.SelectMany(l => l.SupportedExtensions)
+                              .Distinct(StringComparer.OrdinalIgnoreCase)
+                              .OrderBy(e => e)
+                              .ToList();
+        var allGlobs = string.Join(";", allExts.Select(e => $"*.{e}"));
+        var filter   = $"All Solution/Project Files ({allGlobs})|{allGlobs}";
+
+        // One entry per loader.
+        foreach (var loader in loaders)
+        {
+            var exts  = loader.SupportedExtensions;
+            var globs = string.Join(";", exts.Select(e => $"*.{e}"));
+            var names = string.Join("; ", exts.Select(e => $"*.{e}"));
+            filter += $"|{loader.LoaderName} Files ({names})|{globs}";
+        }
+
+        filter += "|All Files (*.*)|*.*";
+        return filter;
     }
 
     private async Task OpenSolutionAsync(string filePath)
@@ -3794,7 +4006,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         try
         {
-            await _solutionManager.OpenSolutionAsync(filePath);
+            // Route to the appropriate loader plugin if one is registered for this file type.
+            var loaders = _ideHostContext?.ExtensionRegistry.GetExtensions<ISolutionLoader>() ?? [];
+            var loader  = loaders.FirstOrDefault(l => l.CanLoad(filePath));
+
+            if (loader != null && filePath.EndsWith(".whsln", StringComparison.OrdinalIgnoreCase) is false
+                               && filePath.EndsWith(".whproj", StringComparison.OrdinalIgnoreCase) is false)
+            {
+                // External format (e.g. .sln, .csproj) — use plugin loader, then inject into SolutionManager.
+                var solution = await loader.LoadAsync(filePath);
+                await _solutionManager.LoadExternalSolutionAsync(solution, filePath);
+            }
+            else
+            {
+                await _solutionManager.OpenSolutionAsync(filePath);
+            }
+
             OutputLogger.Info($"Solution opened: {filePath}");
             EnsureSolutionExplorerVisible();
 
@@ -3934,7 +4161,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         List<DockItem> dirtyDocs)
     {
         // Auto-serialize Tracked project items silently — no dialog needed
-        var trackedItems = dirtyDocs.Where(IsTrackedProjectItem).ToList();
+        // (only when changeset is enabled for the editor type)
+        var trackedItems = dirtyDocs.Where(IsTrackedItemWithChangeset).ToList();
         foreach (var t in trackedItems)
         {
             await AutoSerializeTrackedItemAsync(t);
@@ -4005,11 +4233,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var settings = AppSettingsService.Instance.Current;
 
-        // Try to resolve the active project item for Tracked mode
+        // Try to resolve the active project item for Tracked mode.
+        // ChangesetEnabled must also be true for the editor type — if not, fall through
+        // to the direct-save branch so Ctrl+S behaves normally.
         if (settings.DefaultFileSaveMode == FileSaveMode.Tracked &&
             TryGetActiveProjectItem(out var saveProject, out var saveItem, out var saveContentId) &&
             _contentCache.TryGetValue(saveContentId, out var saveCtrl) &&
-            saveCtrl is IEditorPersistable savePersistable)
+            saveCtrl is IEditorPersistable savePersistable &&
+            IsChangesetEnabledForEditor(saveCtrl, settings))
         {
             var snapshot = savePersistable.GetChangesetSnapshot();
             if (!snapshot.HasEdits)
@@ -4150,6 +4381,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnOptionsSettingsChanged()
     {
         ApplyThemeFromSettings();
+
+        // Re-apply per-editor-type settings (scroll speed, zoom, …) to all open editors
+        // so that option changes take effect immediately without requiring a file re-open.
+        foreach (var uiElement in _contentCache.Values)
+        {
+            if (uiElement is IDocumentEditor docEditor)
+                ApplyEditorSettings(docEditor);
+        }
+
         _autoSerializeTimer?.Stop();
         _autoSerializeTimer = null;
         InitAutoSerializeTimer();
@@ -4183,6 +4423,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
         _lastAppliedTheme = stem;
         ApplyTheme($"{stem}.xaml", stem);
+    }
+
+    /// <summary>
+    /// Applies per-editor-type user settings (scroll speed, etc.) to a newly created editor.
+    /// Called once per editor instance from <see cref="CreateSmartFileEditorContent"/>.
+    /// </summary>
+    private static void ApplyEditorSettings(IDocumentEditor editor)
+    {
+        var settings = AppSettingsService.Instance.Current;
+
+        switch (editor)
+        {
+            case WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor ce:
+                ce.MouseWheelSpeed = settings.CodeEditorDefaults.MouseWheelSpeed;
+                ce.ZoomLevel       = settings.CodeEditorDefaults.DefaultZoom;
+                break;
+            case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
+                te.MouseWheelSpeed = settings.TextEditorDefaults.MouseWheelSpeed;
+                te.ZoomLevel       = settings.TextEditorDefaults.DefaultZoom;
+                break;
+        }
     }
 
     private void ApplyHexEditorDefaults(HexEditorControl hex)
@@ -4270,9 +4531,171 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var project = _solutionManager.CurrentSolution?.Projects.FirstOrDefault();
         if (project is null) return;
+        OpenProjectPropertiesDocument(project);
+    }
 
-        var dlg = new ProjectPropertiesDialog(project) { Owner = this };
-        dlg.ShowDialog();
+    /// <summary>
+    /// Opens (or activates) the VS-Like Project Properties document tab for the given project.
+    /// Uses contentId "doc-projprops-{Name}" for deduplication.
+    /// </summary>
+    private void OpenProjectPropertiesDocument(IProject project)
+    {
+        var contentId = $"doc-projprops-{project.Name}";
+
+        // Dedup: activate existing tab if already open
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        // Register project reference so the content factory can retrieve it
+        _projectPropertiesMap[contentId] = project;
+
+        var item = new DockItem
+        {
+            Title     = $"{project.Name} — Propriétés",
+            ContentId = contentId,
+            Metadata  = { ["ProjectName"] = project.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-projprops-*" items.
+    /// Creates the <see cref="ProjectPropertiesDocument"/> UserControl backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateProjectPropertiesContent(DockItem item)
+    {
+        if (!_projectPropertiesMap.TryGetValue(item.ContentId, out var project))
+        {
+            // Layout-restore path: the map is empty on startup because it is only populated by
+            // OpenProjectPropertiesDocument(). Try to resolve by name from the loaded solution.
+            var name = item.ContentId["doc-projprops-".Length..];
+            project = _solutionManager.CurrentSolution?.Projects
+                          .FirstOrDefault(p => p.Name == name);
+
+            if (project is null)
+            {
+                // Solution not yet loaded at layout-restore time. Track this tab so
+                // OnSolutionChanged() can evict the placeholder and rebuild the content.
+                _pendingProjectPropertiesContentIds.Add(item.ContentId);
+                return new System.Windows.Controls.TextBlock { Text = "Projet introuvable." };
+            }
+
+            // Re-register so dirty-state title updates work for the rest of this session.
+            _projectPropertiesMap[item.ContentId] = project;
+        }
+
+        var vm = new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesViewModel(
+            project, _solutionManager);
+
+        // Update the tab title with a '*' prefix whenever unsaved changes exist.
+        var baseTitle = $"{project.Name} — Propriétés";
+        vm.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName != nameof(vm.IsDirty)) return;
+
+            var dockItem = _layout.GetAllGroups()
+                .SelectMany(g => g.Items)
+                .Concat(_layout.FloatingItems)
+                .FirstOrDefault(di => di.ContentId == item.ContentId);
+
+            if (dockItem is null) return;
+            dockItem.Title = vm.IsDirty ? $"*{baseTitle}" : baseTitle;
+            DockHost.RebuildVisualTree();
+        };
+
+        // Open NuGet Manager when the user clicks "+ NuGet…" inside Project Properties.
+        vm.ManageNuGetRequested += (_, e) => OpenNuGetManagerDocument(e.Project);
+
+        return new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument
+        {
+            DataContext = vm
+        };
+    }
+
+    // ── NuGet Manager ────────────────────────────────────────────────────────
+
+    private void OnSEManageNuGetPackages(object? sender, ManageNuGetRequestedEventArgs e)
+        => OpenNuGetManagerDocument(e.Project);
+
+    /// <summary>
+    /// Opens (or activates) the VS-Like NuGet Package Manager document tab for the given project.
+    /// Uses contentId "doc-nuget-{Name}" for deduplication.
+    /// </summary>
+    private void OpenNuGetManagerDocument(IProject project)
+    {
+        var contentId = $"doc-nuget-{project.Name}";
+
+        // Dedup: activate existing tab if already open.
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        _nugetManagerMap[contentId] = project;
+
+        var item = new DockItem
+        {
+            Title     = $"NuGet — {project.Name}",
+            ContentId = contentId,
+            Metadata  = { ["ProjectName"] = project.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-nuget-*" items.
+    /// Creates the <see cref="NuGetManagerDocument"/> UserControl backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateNuGetManagerContent(DockItem item)
+    {
+        if (!_nugetManagerMap.TryGetValue(item.ContentId, out var project))
+        {
+            var name = item.ContentId["doc-nuget-".Length..];
+            project = _solutionManager.CurrentSolution?.Projects
+                          .FirstOrDefault(p => p.Name == name);
+
+            if (project is null)
+                return new System.Windows.Controls.TextBlock { Text = "Project not found." };
+
+            _nugetManagerMap[item.ContentId] = project;
+        }
+
+        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerViewModel(
+            project,
+            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+
+        // Reload project after any .csproj write-back to keep the Solution Explorer in sync.
+        vm.ProjectModified += (_, _) =>
+        {
+            var sol = _solutionManager.CurrentSolution;
+            if (sol is not null)
+                _solutionExplorerPanel?.SetSolution(sol);
+        };
+
+        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerDocument
+        {
+            DataContext = vm
+        };
     }
 
     // --- MRU menus (Recent Solutions / Recent Files) -------------------

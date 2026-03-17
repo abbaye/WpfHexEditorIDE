@@ -27,6 +27,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         private string _filePath;
         private int _indentSize = 2; // Default 2 spaces for JSON
 
+        // Batch update support (P1-CE-04) — suppresses per-item CollectionChanged during bulk load
+        private bool _suppressCollectionNotifications;
+
+        // Dirty-line tracking (P1-CE-07) — enables incremental validation
+        private readonly HashSet<int> _dirtyLines = new();
+
+        // TotalCharacters incremental cache — avoids O(n) LINQ Sum on every property notification (OPT-PERF-03).
+        private int  _totalChars      = 0;
+        private bool _totalCharsDirty = true;
+
+        /// <summary>
+        /// Lines that have changed since the last validation pass.
+        /// Cleared by <see cref="ClearDirtyLines"/>; populated by all text-change operations.
+        /// </summary>
+        public IReadOnlySet<int> DirtyLines => _dirtyLines;
+
         #region Properties
 
         /// <summary>
@@ -45,6 +61,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
                 if (_lines != null)
                     _lines.CollectionChanged += Lines_CollectionChanged;
 
+                _totalCharsDirty = true;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalLines));
                 OnPropertyChanged(nameof(TotalCharacters));
@@ -57,9 +74,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         public int TotalLines => _lines?.Count ?? 0;
 
         /// <summary>
-        /// Total number of characters in document
+        /// Total number of characters in document.
+        /// Computed lazily via a for-loop (no LINQ allocator) and cached until the next mutation (OPT-PERF-03).
         /// </summary>
-        public int TotalCharacters => _lines?.Sum(l => l.Length + Environment.NewLine.Length) ?? 0;
+        public int TotalCharacters
+        {
+            get
+            {
+                if (!_totalCharsDirty) return _totalChars;
+                int total = 0;
+                int nl    = Environment.NewLine.Length;
+                if (_lines != null)
+                    foreach (var line in _lines) total += line.Length + nl;
+                _totalChars      = total;
+                _totalCharsDirty = false;
+                return _totalChars;
+            }
+        }
 
         /// <summary>
         /// Has document been modified since last save?
@@ -266,11 +297,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             var leftPart = currentLine.Text.Substring(0, column);
             var rightPart = currentLine.Text.Substring(column);
 
-            // Auto-indent: calculate indentation from previous line
-            int indentLevel = CalculateIndentation(leftPart);
-            string indent = new string(' ', indentLevel * IndentSize);
+            // Auto-indent: inherit the leading whitespace of the current line so the caret
+            // lands at the same column level regardless of brace count or language.
+            string indent = GetLeadingWhitespace(currentLine.Text);
 
-            // Check if we're inside braces/brackets - add extra indent
+            // If the cursor is directly after an opening brace/bracket, add one extra indent level.
             bool insideBraces = leftPart.TrimEnd().EndsWith("{") || leftPart.TrimEnd().EndsWith("[");
             if (insideBraces)
                 indent += new string(' ', IndentSize);
@@ -444,22 +475,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// </summary>
         public void LoadFromString(string content)
         {
-            if (content == null)
-                content = string.Empty;
+            if (content == null) content = string.Empty;
+            var parts = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var arr   = new CodeLine[parts.Length == 0 ? 1 : parts.Length];
+            for (int i = 0; i < parts.Length; i++) arr[i] = new CodeLine(parts[i], i);
+            if (arr.Length == 0) arr[0] = new CodeLine(string.Empty, 0);
+            LoadLines(arr, content);
+        }
 
-            var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-
-            Lines.Clear();
-
-            for (int i = 0; i < lines.Length; i++)
+        /// <summary>
+        /// Swaps a pre-built <see cref="CodeLine"/> array (produced on a background thread) into
+        /// the document.  Only the ObservableCollection mutation runs on the UI thread (OPT-PERF-05).
+        /// </summary>
+        public void LoadLines(CodeLine[] preBuilt, string originalText)
+        {
+            // Suppress per-item CollectionChanged events during bulk load (P1-CE-04)
+            _suppressCollectionNotifications = true;
+            try
             {
-                Lines.Add(new CodeLine(lines[i], i));
+                Lines.Clear();
+                foreach (var line in preBuilt)
+                    Lines.Add(line);
+            }
+            finally
+            {
+                _suppressCollectionNotifications = false;
             }
 
-            // Ensure at least one line
-            if (Lines.Count == 0)
-                Lines.Add(new CodeLine(string.Empty, 0));
+            _totalCharsDirty = true;
+            OnPropertyChanged(nameof(TotalLines));
+            OnPropertyChanged(nameof(TotalCharacters));
 
+            _dirtyLines.Clear(); // fresh load — no dirty lines
             IsModified = false;
             InvalidateAllCache();
         }
@@ -480,42 +527,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// Calculate indentation level from line content
         /// Counts opening braces/brackets vs closing ones
         /// </summary>
-        private int CalculateIndentation(string text)
+        /// <summary>
+        /// Returns the leading whitespace (spaces and tabs) of the given line text.
+        /// Used by <see cref="InsertNewLine"/> to preserve the current line's indent on Enter.
+        /// </summary>
+        private static string GetLeadingWhitespace(string text)
         {
-            int level = 0;
-            bool inString = false;
-            bool escaped = false;
-
-            foreach (char ch in text)
-            {
-                if (escaped)
-                {
-                    escaped = false;
-                    continue;
-                }
-
-                if (ch == '\\')
-                {
-                    escaped = true;
-                    continue;
-                }
-
-                if (ch == '"')
-                {
-                    inString = !inString;
-                    continue;
-                }
-
-                if (!inString)
-                {
-                    if (ch == '{' || ch == '[')
-                        level++;
-                    else if (ch == '}' || ch == ']')
-                        level--;
-                }
-            }
-
-            return Math.Max(0, level);
+            int i = 0;
+            while (i < text.Length && (text[i] == ' ' || text[i] == '\t'))
+                i++;
+            return text[..i];
         }
 
         /// <summary>
@@ -560,9 +581,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         private void Lines_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // Suppressed during bulk load (P1-CE-04) — single notification fired at end of batch
+            if (_suppressCollectionNotifications) return;
+            _totalCharsDirty = true;
             OnPropertyChanged(nameof(TotalLines));
             OnPropertyChanged(nameof(TotalCharacters));
         }
+
+        /// <summary>Clears the dirty-line set after validation has consumed it (P1-CE-07).</summary>
+        public void ClearDirtyLines() => _dirtyLines.Clear();
 
         #endregion
 
@@ -570,6 +597,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         protected virtual void OnTextChanged(TextChangedEventArgs e)
         {
+            // Track changed line for incremental validation (P1-CE-07)
+            _dirtyLines.Add(e.Position.Line);
+            _totalCharsDirty = true; // character count changed — invalidate cache (OPT-PERF-03)
             TextChanged?.Invoke(this, e);
         }
 
@@ -610,8 +640,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
             foreach (var line in linesToEvict)
             {
-                line.TokensCache = null;
-                line.IsCacheDirty = true;
+                line.TokensCache       = null;
+                line.IsCacheDirty      = true;
+                line.GlyphRunCache     = null;   // P1-CE-05: evict GlyphRun cache together
+                line.IsGlyphCacheDirty = true;
+                line.CachedUrlZones    = null;
             }
         }
 

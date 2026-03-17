@@ -37,6 +37,7 @@ internal sealed class DockTabEventWirer : IDisposable
     private readonly Action<DockItem> _dockAsDocumentHandler;
     private readonly Action<DockItem> _pinToggleHandler;
     private readonly Action<DockItem, int> _reorderHandler;
+    private readonly Action<IReadOnlyList<DockItem>> _batchCloseHandler;
 
     public DockTabEventWirer(DockTabControl tabControl, DockControl host)
     {
@@ -109,7 +110,17 @@ internal sealed class DockTabEventWirer : IDisposable
             host.RebuildVisualTree();
         };
 
+        // Batch-close: suppress intermediate rebuilds so wirer disposal mid-loop is avoided.
+        _batchCloseHandler = items =>
+        {
+            host.BeginBatchClose();
+            foreach (var item in items)
+                host.RaiseTabCloseRequested(item);
+            host.EndBatchClose();
+        };
+
         _tabControl.TabCloseRequested            += _closeHandler;
+        _tabControl.TabBatchCloseRequested       += _batchCloseHandler;
         _tabControl.TabDragStarted               += _dragHandler;
         _tabControl.TabFloatRequested            += _floatHandler;
         _tabControl.TabAutoHideRequested         += _autoHideHandler;
@@ -122,6 +133,7 @@ internal sealed class DockTabEventWirer : IDisposable
     public void Dispose()
     {
         _tabControl.TabCloseRequested            -= _closeHandler;
+        _tabControl.TabBatchCloseRequested       -= _batchCloseHandler;
         _tabControl.TabDragStarted               -= _dragHandler;
         _tabControl.TabFloatRequested            -= _floatHandler;
         _tabControl.TabAutoHideRequested         -= _autoHideHandler;

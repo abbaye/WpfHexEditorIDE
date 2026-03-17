@@ -8,16 +8,20 @@
 //     Partial class containing file open/save/close operations for the HexEditor.
 //     Manages file path handling, read-only detection, dirty state tracking,
 //     and integration with the ScrollMarkerPanel for file visualization.
+//     Includes external file-change detection via FileSystemWatcher with 500 ms debounce.
 //
 // Architecture Notes:
 //     File I/O delegates to HexViewport and the underlying stream/data model.
 //     Fires FileSaved/FileOpened/FileClosed events for external integration.
-//
+//     FileSystemWatcher lifetime is tied to the open file: created in OpenFile(),
+//     disposed in Close(). External changes are marshalled to the UI thread via Dispatcher.
 // ==========================================================
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using WpfHexEditor.HexEditor.Controls;
@@ -32,6 +36,121 @@ namespace WpfHexEditor.HexEditor
     /// </summary>
     public partial class HexEditor
     {
+        #region External File-Change Detection
+
+        // FileSystemWatcher watching the currently open file for external modifications.
+        private FileSystemWatcher? _fileWatcher;
+
+        // Debounce timer: coalesces rapid FS events into a single notification (500 ms).
+        private Timer? _fileWatcherDebounce;
+        private const int FileWatcherDebounceMs = 500;
+
+        /// <summary>
+        /// Raised on the UI thread when the file currently open in the editor has been
+        /// modified by an external process. Use <see cref="ExternalFileChangedEventArgs.HasUnsavedChanges"/>
+        /// to decide whether to auto-reload or prompt the user.
+        /// </summary>
+        public event EventHandler<ExternalFileChangedEventArgs>? FileExternallyChanged;
+
+        /// <summary>
+        /// Reload the file content from disk, discarding all pending in-memory edits.
+        /// The underlying FileStream is kept open — only the cache is invalidated.
+        /// </summary>
+        public void ReloadFromDisk()
+        {
+            if (_viewModel == null) return;
+
+            _viewModel.ReloadFromDisk();
+
+            // Refresh scroll markers to reflect new file length
+            if (_scrollMarkers != null)
+            {
+                _scrollMarkers.FileLength = _viewModel.VirtualLength;
+                Dispatcher.BeginInvoke(new Action(UpdateScrollMarkers),
+                    System.Windows.Threading.DispatcherPriority.Background);
+            }
+
+            IsModified = false;
+            StatusText.Text = $"Reloaded: {System.IO.Path.GetFileName(FileName)}";
+            UpdateFileSizeDisplay();
+            RaiseHexStatusChanged();
+        }
+
+        private void StartFileWatcher(string filePath)
+        {
+            StopFileWatcher();
+
+            var directory = System.IO.Path.GetDirectoryName(filePath);
+            var fileName  = System.IO.Path.GetFileName(filePath);
+            if (string.IsNullOrEmpty(directory) || string.IsNullOrEmpty(fileName)) return;
+
+            _fileWatcher = new FileSystemWatcher(directory, fileName)
+            {
+                NotifyFilter          = NotifyFilters.LastWrite | NotifyFilters.Size,
+                EnableRaisingEvents   = true,
+                IncludeSubdirectories = false,
+            };
+
+            _fileWatcher.Changed += OnFileWatcherEvent;
+            _fileWatcher.Error   += OnFileWatcherError;
+        }
+
+        private void StopFileWatcher()
+        {
+            if (_fileWatcher != null)
+            {
+                _fileWatcher.EnableRaisingEvents = false;
+                _fileWatcher.Changed -= OnFileWatcherEvent;
+                _fileWatcher.Error   -= OnFileWatcherError;
+                _fileWatcher.Dispose();
+                _fileWatcher = null;
+            }
+
+            _fileWatcherDebounce?.Dispose();
+            _fileWatcherDebounce = null;
+        }
+
+        private void OnFileWatcherEvent(object sender, FileSystemEventArgs e)
+        {
+            // Debounce: reset timer on each FS event; callback fires 500 ms after last event.
+            _fileWatcherDebounce?.Dispose();
+            _fileWatcherDebounce = new Timer(_ => OnFileChangedDebounced(), null,
+                FileWatcherDebounceMs, Timeout.Infinite);
+        }
+
+        private void OnFileWatcherError(object sender, ErrorEventArgs e)
+        {
+            // Watcher can fail on network paths or after too many pending events.
+            // Restart it silently so detection continues.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (!string.IsNullOrEmpty(FileName))
+                    StartFileWatcher(FileName);
+            }), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private void OnFileChangedDebounced()
+        {
+            // Marshal to UI thread — all WPF access must be on the dispatcher thread.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_viewModel == null || string.IsNullOrEmpty(FileName)) return;
+
+                bool hasUnsavedChanges = _viewModel.Provider?.HasChanges ?? false;
+                var args = new ExternalFileChangedEventArgs(FileName, hasUnsavedChanges);
+
+                // Primary path: IDE (or any host) handles the event and decides what to show.
+                FileExternallyChanged?.Invoke(this, args);
+
+                // Standalone fallback: if no subscriber is listening and there are no unsaved
+                // changes, auto-reload silently so the control remains useful without a host IDE.
+                if (FileExternallyChanged is null && !hasUnsavedChanges)
+                    ReloadFromDisk();
+            }));
+        }
+
+        #endregion
+
         #region Public Methods - File Operations
 
         /// <summary>
@@ -111,6 +230,9 @@ namespace WpfHexEditor.HexEditor
 
             // Raise FileOpened event
             OnFileOpened(EventArgs.Empty);
+
+            // Start watching the file for external modifications.
+            StartFileWatcher(filePath);
 
             // Update status bar
             StatusText.Text = $"Loaded: {System.IO.Path.GetFileName(filePath)}";
@@ -256,6 +378,9 @@ namespace WpfHexEditor.HexEditor
 
             try
             {
+                // 0.5. Stop external file watcher before releasing the file stream.
+                StopFileWatcher();
+
                 // 1. CRITICAL: Cancel any ongoing async operations before closing (prevents crashes on shutdown)
                 if (_longRunningService != null)
                 {

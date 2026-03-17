@@ -1,0 +1,368 @@
+<!--
+    Project: WpfHexEditor.Plugins.AssemblyExplorer
+    File: Views/AssemblyDiffPanel.xaml
+    Author: Derek Tremblay
+    Created: 2026-03-16
+    Description:
+        Dockable panel for assembly diff / version compare (Phase 5).
+        Toolbar: baseline selector, target selector, kind filter, Compare and Clear buttons.
+        Results: DataGrid with DiffKind-colored rows (green=Added, red=Removed, yellow=Changed).
+        Status bar: summary counts.
+        Theme: DynamicResource PFP_* and Dock* brush tokens.
+
+    Architecture Notes:
+        Pattern: MVVM — DataContext = AssemblyDiffViewModel.
+        Panel is bottom-docked, default auto-hide, PreferredHeight=250.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Views.AssemblyDiffPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Views"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.ViewModels"
+             xmlns:svc="clr-namespace:WpfHexEditor.Core.AssemblyAnalysis.Services;assembly=WpfHexEditor.Core.AssemblyAnalysis"
+             Background="{DynamicResource PFP_PanelBackgroundBrush}"
+             Foreground="{DynamicResource PFP_TextBrush}"
+             Loaded="OnLoaded">
+
+    <UserControl.Resources>
+        <!-- DiffKind → row background converter -->
+        <local:DiffKindToBrushConverter x:Key="DiffKindToBrush"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>        <!-- Toolbar -->
+            <RowDefinition Height="2*"
+                           MinHeight="60"/>       <!-- Results DataGrid -->
+            <RowDefinition Height="4"/>           <!-- GridSplitter -->
+            <RowDefinition Height="*"
+                           MinHeight="60"/>       <!-- Diff Detail pane -->
+            <RowDefinition Height="Auto"/>        <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ────────────────────────────────────────────────────── -->
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Height="30">
+
+            <DockPanel LastChildFill="False" Margin="4,0">
+
+                <!-- Always-visible right panel -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            DockPanel.Dock="Right"
+                            Orientation="Horizontal"/>
+
+                <!-- Overflow button -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Width="16"
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{DynamicResource PFP_TextBrush}"
+                        Visibility="Collapsed"
+                        Content="&#xE712;"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="10">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu"
+                                     Background="{DynamicResource DockMenuBackgroundBrush}"
+                                     BorderBrush="{DynamicResource DockBorderBrush}"
+                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                     Opened="OnOverflowMenuOpened"/>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Assembly selectors group -->
+                <StackPanel x:Name="TbgSelectors"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Left"
+                            Margin="0,2">
+
+                    <!-- Baseline (left) -->
+                    <TextBlock Text="Baseline:" Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="10" VerticalAlignment="Center" Margin="2,0,3,0"/>
+                    <ComboBox Width="120" Margin="0,1,4,1"
+                              ItemsSource="{Binding AssemblyNames}"
+                              SelectedItem="{Binding SelectedBaselineName}"
+                              Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                              Foreground="{DynamicResource PFP_TextBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              ToolTip="Select the baseline (left) assembly"/>
+
+                    <!-- Arrow -->
+                    <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               VerticalAlignment="Center" Margin="2,0"/>
+
+                    <!-- Target (right) -->
+                    <TextBlock Text="Target:" Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="10" VerticalAlignment="Center" Margin="3,0,3,0"/>
+                    <ComboBox Width="120" Margin="0,1,8,1"
+                              ItemsSource="{Binding AssemblyNames}"
+                              SelectedItem="{Binding SelectedTargetName}"
+                              Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                              Foreground="{DynamicResource PFP_TextBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              ToolTip="Select the target (right) assembly"/>
+
+                    <!-- Kind filter -->
+                    <ComboBox Width="80" Margin="0,1,8,1"
+                              ItemsSource="{Binding FilterOptions}"
+                              SelectedItem="{Binding FilterKind}"
+                              Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                              Foreground="{DynamicResource PFP_TextBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              ToolTip="Filter results by change kind"/>
+
+                    <!-- Compare button -->
+                    <Button Margin="0,1,4,1" Padding="8,1"
+                            Command="{Binding CompareCommand}"
+                            Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                            Foreground="{DynamicResource PFP_TextBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            ToolTip="Run diff comparison">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8AD;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0,0,3,0"/>
+                            <TextBlock Text="Compare" FontSize="10"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Clear button -->
+                    <Button Margin="0,1" Padding="6,1"
+                            Command="{Binding ClearCommand}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource PFP_TextBrush}"
+                            BorderBrush="Transparent"
+                            ToolTip="Clear results">
+                        <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                    </Button>
+                </StackPanel>
+
+            </DockPanel>
+        </Border>
+
+        <!-- OverflowContextMenu is declared inside Button.ContextMenu on ToolbarOverflowButton above -->
+
+        <!-- ── Results DataGrid ───────────────────────────────────────────── -->
+        <DataGrid Grid.Row="1"
+                  x:Name="DiffGrid"
+                  ItemsSource="{Binding FilteredEntries}"
+                  SelectedItem="{Binding SelectedDiffEntry, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  SelectionMode="Single"
+                  Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  BorderThickness="0"
+                  RowBackground="{DynamicResource PFP_PanelBackgroundBrush}"
+                  MouseDoubleClick="OnDiffRowDoubleClick">
+
+            <!-- Row background driven by DiffKind -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background"
+                            Value="{Binding DiffKind, Converter={StaticResource DiffKindToBrush}}"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource PFP_TextBrush}"/>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Change"  Binding="{Binding Kind}"        Width="70"/>
+                <DataGridTextColumn Header="Type"    Binding="{Binding TypeName}"    Width="200"/>
+                <DataGridTextColumn Header="Member"  Binding="{Binding MemberName}"  Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- ── Splitter ───────────────────────────────────────────────────── -->
+        <GridSplitter Grid.Row="2"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="{DynamicResource DockBorderBrush}"
+                      ResizeDirection="Rows"
+                      ShowsPreview="True"/>
+
+        <!-- ── Diff Detail pane ───────────────────────────────────────────── -->
+        <Grid Grid.Row="3"
+              DataContext="{Binding DiffDetail}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>   <!-- Detail toolbar -->
+                <RowDefinition Height="*"/>      <!-- Code columns -->
+            </Grid.RowDefinitions>
+
+            <!-- Detail header bar -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="0,1,0,1"
+                    Height="22"
+                    Padding="6,0">
+                <DockPanel LastChildFill="True">
+                    <!-- Loading spinner -->
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                               Foreground="{DynamicResource PFP_AccentBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,4,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Entry label -->
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="{Binding EntryLabel}"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="10"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
+
+            <!-- Three-column code view: Baseline | Diff | Target -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>    <!-- Baseline code -->
+                    <ColumnDefinition Width="4"/>    <!-- Vertical splitter -->
+                    <ColumnDefinition Width="*"/>    <!-- Unified diff -->
+                    <ColumnDefinition Width="4"/>    <!-- Vertical splitter -->
+                    <ColumnDefinition Width="*"/>    <!-- Target code -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Baseline code -->
+                <DockPanel Grid.Column="0">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Baseline"
+                               FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Padding="4,2"
+                               Background="{DynamicResource PFP_SectionBackgroundBrush}"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding BaselineCode, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New"
+                                 FontSize="10"
+                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                 Foreground="{DynamicResource PFP_TextBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="NoWrap"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </DockPanel>
+
+                <GridSplitter Grid.Column="1"
+                              Width="4"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="{DynamicResource DockBorderBrush}"
+                              ResizeDirection="Columns"
+                              ShowsPreview="True"/>
+
+                <!-- Unified diff -->
+                <DockPanel Grid.Column="2">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Unified Diff"
+                               FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Padding="4,2"
+                               Background="{DynamicResource PFP_SectionBackgroundBrush}"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding UnifiedDiff, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New"
+                                 FontSize="10"
+                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                 Foreground="{DynamicResource PFP_TextBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="NoWrap"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </DockPanel>
+
+                <GridSplitter Grid.Column="3"
+                              Width="4"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="{DynamicResource DockBorderBrush}"
+                              ResizeDirection="Columns"
+                              ShowsPreview="True"/>
+
+                <!-- Target code -->
+                <DockPanel Grid.Column="4">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Target"
+                               FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Padding="4,2"
+                               Background="{DynamicResource PFP_SectionBackgroundBrush}"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding TargetCode, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New"
+                                 FontSize="10"
+                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                 Foreground="{DynamicResource PFP_TextBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="NoWrap"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </DockPanel>
+            </Grid>
+        </Grid>
+
+        <!-- ── Status bar ─────────────────────────────────────────────────── -->
+        <Border Grid.Row="4"
+                Background="{DynamicResource PFP_ToolbarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Height="22"
+                Padding="6,0">
+
+            <DockPanel LastChildFill="False">
+                <!-- Busy indicator -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                           Foreground="{DynamicResource PFP_AccentBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,4,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsComparing}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Status text -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="{Binding StatusText}"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="10"
+                           VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+    </Grid>
+</UserControl>

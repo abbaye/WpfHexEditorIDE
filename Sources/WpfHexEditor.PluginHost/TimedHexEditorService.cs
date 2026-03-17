@@ -95,6 +95,8 @@ internal sealed class TimedHexEditorService : IHexEditorService
     public void                NavigateTo(long offset)                 => _inner.NavigateTo(offset);
     public void                ConnectParsedFieldsPanel(IParsedFieldsPanel panel) => _inner.ConnectParsedFieldsPanel(panel);
     public void                DisconnectParsedFieldsPanel()           => _inner.DisconnectParsedFieldsPanel();
+    public void                AddCustomBackgroundBlock(WpfHexEditor.Core.CustomBackgroundBlock block) => _inner.AddCustomBackgroundBlock(block);
+    public void                ClearCustomBackgroundBlockByTag(string tag) => _inner.ClearCustomBackgroundBlockByTag(tag);
 
     // ── Events (timed interception) ───────────────────────────────────────────
 

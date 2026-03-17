@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfHexEditor.Core.SourceAnalysis.Models;
+using WpfHexEditor.Core.SourceAnalysis.Services;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Panels.IDE.Services;
 using WpfHexEditor.Panels.IDE.ViewModels;
@@ -23,9 +25,10 @@ namespace WpfHexEditor.Panels.IDE;
 /// </summary>
 public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 {
-    private readonly SolutionExplorerViewModel  _vm        = new();
-    private readonly SolutionClipboardManager    _clipboard = new();
-    private readonly SolutionFileWatcher         _watcher   = new();
+    private readonly SolutionExplorerViewModel  _vm             = new();
+    private readonly SolutionClipboardManager   _clipboard      = new();
+    private readonly SolutionFileWatcher        _watcher        = new();
+    private readonly ISourceOutlineService      _sourceOutline  = new SourceOutlineEngine();
     private SolutionExplorerNodeVm? _contextMenuTarget;
     private IReadOnlyList<IEditorFactory> _editorFactories = [];
 
@@ -55,7 +58,21 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             var modified = args.ChangeType is not System.IO.WatcherChangeTypes.Deleted;
             Dispatcher.BeginInvoke(() =>
                 _vm.SetFileModifiedExternally(args.FullPath, modified));
+
+            // Invalidate the source outline cache for .cs / .xaml files
+            var ext = Path.GetExtension(args.FullPath);
+            if (string.Equals(ext, ".cs",   StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(ext, ".xaml", StringComparison.OrdinalIgnoreCase))
+            {
+                _sourceOutline.Invalidate(args.FullPath);
+                Dispatcher.BeginInvoke(() => RefreshExpandedOutlineNode(args.FullPath));
+            }
         };
+
+        // Source member expansion — lazy on-demand via TreeViewItem.ExpandedEvent
+        SolutionTree.AddHandler(
+            TreeViewItem.ExpandedEvent,
+            new RoutedEventHandler(OnTreeItemExpanded));
     }
 
     // -- ISolutionExplorerPanel ------------------------------------------------
@@ -86,6 +103,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ProjectItemEventArgs>?               ItemDeleteFromDiskRequested;
     public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
     public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
+    public event EventHandler<ManageNuGetRequestedEventArgs>?      ManageNuGetPackagesRequested;
 
     // -- Tree events -----------------------------------------------------------
 
@@ -112,9 +130,60 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         _slowClickTimer     = null;
         _slowClickCandidate = null;
 
-        if (SolutionTree.SelectedItem is FileNodeVm fn && fn.Project is not null)
+        // Resolve the node from the actual clicked element via visual-tree walk.
+        // SolutionTree.SelectedItem is unreliable here because PreviewMouseDoubleClick
+        // fires in the tunnel phase, before the TreeViewItem selection is committed.
+        // Using OriginalSource guarantees we dispatch on what the user actually clicked.
+        var tvi    = e.OriginalSource is DependencyObject src ? FindAncestor<TreeViewItem>(src) : null;
+        var nodeVm = tvi?.DataContext as SolutionExplorerNodeVm
+                  ?? SolutionTree.SelectedItem as SolutionExplorerNodeVm;
+
+        if (nodeVm is FileNodeVm fn && fn.Project is not null)
+        {
+            // Mark handled so TreeViewItem does not toggle expand/collapse on file nodes.
+            e.Handled = true;
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
+            return;
+        }
+
+        if (nodeVm is DependentFileNodeVm dep && dep.Project is not null)
+        {
+            e.Handled = true;
+            ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = dep.Source, Project = dep.Project });
+            return;
+        }
+
+        // Source outline navigation — open file and jump to line number.
+        // Mark handled to prevent expand/collapse on these leaf nodes.
+        if (nodeVm is SourceTypeNodeVm typeVm)
+        {
+            e.Handled = true;
+            NavigateToSourceLine(typeVm.FileAbsolutePath, typeVm.LineNumber);
+        }
+        else if (nodeVm is SourceMemberNodeVm memberVm)
+        {
+            e.Handled = true;
+            NavigateToSourceLine(memberVm.FileAbsolutePath, memberVm.LineNumber);
+        }
+        // Folder/project/solution nodes: e.Handled stays false → TreeViewItem
+        // processes the event normally and toggles its expand/collapse state.
     }
+
+    // ── Source outline navigation ─────────────────────────────────────────────
+
+    private void NavigateToSourceLine(string absolutePath, int lineNumber)
+        => SourceLineNavigationRequested?.Invoke(this, new SourceLineNavigationEventArgs
+        {
+            AbsolutePath = absolutePath,
+            LineNumber   = lineNumber,
+        });
+
+    /// <summary>
+    /// Raised when the user double-clicks a <see cref="SourceTypeNodeVm"/> or
+    /// <see cref="SourceMemberNodeVm"/>. The host should open the file and scroll
+    /// to the specified 1-based line number.
+    /// </summary>
+    public event EventHandler<SourceLineNavigationEventArgs>? SourceLineNavigationRequested;
 
     // -- Toolbar ---------------------------------------------------------------
 
@@ -179,16 +248,51 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
         var  file             = node as FileNodeVm;
         var  physFile         = node as PhysicalFileNodeVm;
+        var  depFile          = node as DependentFileNodeVm;
         bool isSolution       = node is SolutionNodeVm;
         bool isSolutionFolder = node is SolutionFolderNodeVm;
         bool isProject        = node is ProjectNodeVm;
         bool isFolder         = node is FolderNodeVm;
         bool isFile           = file is not null;
+        bool isDep            = depFile is not null;
         bool isPhysFolder     = node is PhysicalFolderNodeVm;
         bool isPhysFile       = physFile is not null;
         bool isPhysIn         = isPhysFile &&  physFile!.IsInProject;
         bool isPhysNotIn      = isPhysFile && !physFile!.IsInProject;
         bool isChangeset      = node is ChangesetNodeVm;
+        bool isSourceNode     = node is SourceTypeNodeVm or SourceMemberNodeVm;
+
+        // For source/loading nodes — show only Go To Definition + Copy Path
+        if (isSourceNode || node is LoadingNodeVm)
+        {
+            GoToDefinitionMenuItem.Visibility = isSourceNode ? Visibility.Visible : Visibility.Collapsed;
+            GoToDefinitionSeparator.Visibility = isSourceNode ? Visibility.Visible : Visibility.Collapsed;
+            // Hide all project-mutating items
+            OpenMenuItem.Visibility = OpenWithMenuItem.Visibility = OpenSeparator.Visibility = Visibility.Collapsed;
+            AddSubmenuMenuItem.Visibility = AddSeparator.Visibility = Visibility.Collapsed;
+            IncludeInProjectMenuItem.Visibility = IncludeSeparator.Visibility = Visibility.Collapsed;
+            TblSeparator.Visibility = SetDefaultTblMenuItem.Visibility = ClearDefaultTblMenuItem.Visibility
+                = ConvertToTblxMenuItem.Visibility = ApplyTblToActiveMenuItem.Visibility = ApplyTblToAllMenuItem.Visibility = Visibility.Collapsed;
+            CopyMenuItem.Visibility = CutMenuItem.Visibility = PasteMenuItem.Visibility = Visibility.Collapsed;
+            RenameMenuItem.Visibility = RemoveMenuItem.Visibility = DeleteMenuItem.Visibility
+                = ExcludeFromProjectMenuItem.Visibility = Visibility.Collapsed;
+            ImportExternalSeparator.Visibility = ImportExternalFileMenuItem.Visibility = Visibility.Collapsed;
+            ChangesetSeparator.Visibility = WriteChangesetToDiskMenuItem.Visibility
+                = DiscardChangesetMenuItem.Visibility = Visibility.Collapsed;
+            BuildSeparator.Visibility = BuildProjectMenuItem.Visibility = RebuildProjectMenuItem.Visibility
+                = CleanProjectMenuItem.Visibility = SetStartupSeparator.Visibility = SetStartupProjectMenuItem.Visibility = Visibility.Collapsed;
+            PropertiesSeparator.Visibility = PropertiesMenuItem.Visibility = Visibility.Collapsed;
+            SolutionBottomSeparator.Visibility = SaveAllMenuItem.Visibility = Visibility.Collapsed;
+            CloseSolutionSeparator.Visibility = CloseSolutionMenuItem.Visibility = Visibility.Collapsed;
+            NavigationSeparator.Visibility = Visibility.Collapsed;
+            OpenInExplorerMenuItem.Visibility = Visibility.Collapsed;
+            CopyPathMenuItem.Visibility = isSourceNode ? Visibility.Visible : Visibility.Collapsed;
+            return isSourceNode;
+        }
+
+        // Hide Go To Definition for non-source nodes
+        GoToDefinitionMenuItem.Visibility = Visibility.Collapsed;
+        GoToDefinitionSeparator.Visibility = Visibility.Collapsed;
 
         bool isTbl = file?.Source.ItemType == ProjectItemType.Tbl;
         bool isDefault = file?.IsDefaultTbl == true;
@@ -197,7 +301,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             Path.GetExtension(file?.Source.Name ?? string.Empty), ".tbl", StringComparison.OrdinalIgnoreCase);
 
         bool isExternal  = file?.IsExternal == true;
-        bool canOpen     = isFile || isPhysIn;
+        bool canOpen     = isFile || isPhysIn || isDep;
 
         // Granular add capabilities — controls Add > submenu parent and each sub-item independently
         bool canAddItems          = isProject || isFolder;                               // Add New/Existing Item
@@ -206,9 +310,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         bool canAddSolutionFolder = isSolution || isSolutionFolder;                      // New Solution Folder (solution level only)
         bool canAdd               = canAddItems || canImport || canAddSolutionFolder || canAddFolders;
 
-        bool hasExplorer = isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysFolder || isPhysFile;
-        bool hasCopyPath = isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysFolder || isPhysFile;
-        bool hasAfterNav = isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn;
+        bool hasExplorer = isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysFolder || isPhysFile || isDep;
+        bool hasCopyPath = isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysFolder || isPhysFile || isDep;
+        bool hasAfterNav = isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn || isDep;
         bool hasProp     = isFile || isProject;
 
         // Open / Open With (file and physical-file-in-project)
@@ -263,17 +367,18 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
         // Clipboard: Copy / Cut only when file items are selected; Paste when clipboard is ready
         bool hasSelectedFiles = GetSelectedFileItems().Count > 0;
-        bool canClipPaste     = _clipboard.CanPaste() && (isFile || isFolder || isProject);
+        bool canClipPaste     = _clipboard.CanPaste() && (isFile || isDep || isFolder || isProject);
+        bool hasClipOp        = (isFile || isDep) && hasSelectedFiles;
         // Separator visible only when at least one clipboard action (Copy, Cut, or Paste) is visible
-        bool anyClipboard = (isFile && hasSelectedFiles) || canClipPaste;
-        CopyMenuItem      .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
-        CutMenuItem       .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
-        PasteMenuItem     .Visibility = canClipPaste                 ? Visibility.Visible : Visibility.Collapsed;
+        bool anyClipboard = hasClipOp || canClipPaste;
+        CopyMenuItem      .Visibility = hasClipOp    ? Visibility.Visible : Visibility.Collapsed;
+        CutMenuItem       .Visibility = hasClipOp    ? Visibility.Visible : Visibility.Collapsed;
+        PasteMenuItem     .Visibility = canClipPaste ? Visibility.Visible : Visibility.Collapsed;
 
         // Rename / Remove / Delete / Exclude
-        RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isFolder || isProject) ? Visibility.Visible : Visibility.Collapsed;
-        RemoveMenuItem            .Visibility = (isFile || isFolder || isSolutionFolder)                             ? Visibility.Visible : Visibility.Collapsed;
-        DeleteMenuItem            .Visibility = isFile                                                                ? Visibility.Visible : Visibility.Collapsed;
+        RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isFolder || isProject || isDep) ? Visibility.Visible : Visibility.Collapsed;
+        RemoveMenuItem            .Visibility = (isFile || isDep || isFolder || isSolutionFolder)                    ? Visibility.Visible : Visibility.Collapsed;
+        DeleteMenuItem            .Visibility = (isFile || isDep)                                                    ? Visibility.Visible : Visibility.Collapsed;
         ExcludeFromProjectMenuItem.Visibility = isPhysIn                                                              ? Visibility.Visible : Visibility.Collapsed;
 
         // Import external file (file node whose path is outside the project directory)
@@ -284,6 +389,23 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         ChangesetSeparator           .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
         WriteChangesetToDiskMenuItem .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
         DiscardChangesetMenuItem     .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
+
+        // Build (VS .csproj/.vbproj projects only — check ProjectType)
+        bool isVsProject = isProject &&
+            (node as ProjectNodeVm)?.Source.ProjectType is string pt &&
+            (pt.Contains("csproj", StringComparison.OrdinalIgnoreCase) ||
+             pt.Contains("vbproj", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(pt, "VS", StringComparison.OrdinalIgnoreCase));
+
+        BuildSeparator          .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        BuildProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        RebuildProjectMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        CleanProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        SetStartupSeparator     .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        SetStartupProjectMenuItem.Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+
+        NuGetSeparator       .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        ManageNuGetMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
 
         // Properties
         PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
@@ -296,7 +418,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         CloseSolutionMenuItem  .Visibility = isSolution ? Visibility.Visible : Visibility.Collapsed;
 
         return canOpen || canAdd || isPhysNotIn || isTbl || hasExplorer
-            || isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn || isChangeset || isExternal;
+            || isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn || isChangeset || isExternal || isDep;
     }
 
     private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -397,8 +519,17 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             case FileNodeVm fn when fn.Project is not null:
                 ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
                 break;
+            case DependentFileNodeVm dep when dep.Project is not null:
+                ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = dep.Source, Project = dep.Project });
+                break;
             case PhysicalFileNodeVm pf when pf.IsInProject && pf.LinkedItem is not null && pf.Project is not null:
                 ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = pf.LinkedItem, Project = pf.Project });
+                break;
+            case SourceTypeNodeVm sv:
+                NavigateToSourceLine(sv.FileAbsolutePath, sv.LineNumber);
+                break;
+            case SourceMemberNodeVm mv:
+                NavigateToSourceLine(mv.FileAbsolutePath, mv.LineNumber);
                 break;
         }
     }
@@ -595,10 +726,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private (IProject? project, string? folderId) GetContextProjectAndFolder()
         => _contextMenuTarget switch
         {
-            ProjectNodeVm pv => (pv.Source, null),
-            FolderNodeVm  fv => (fv.Project, fv.Folder.Id),
-            FileNodeVm    fn => (fn.Project, null),
-            _                => (null, null),
+            ProjectNodeVm      pv  => (pv.Source, null),
+            FolderNodeVm       fv  => (fv.Project, fv.Folder.Id),
+            FileNodeVm         fn  => (fn.Project, null),
+            DependentFileNodeVm dep => (dep.Project, null),
+            _                      => (null, null),
         };
 
     /// <summary>
@@ -663,6 +795,55 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         else if (_contextMenuTarget is FileNodeVm            fn)  StartInlineEdit(fn);
         else if (_contextMenuTarget is FolderNodeVm          fv)  StartInlineFolderEdit(fv);
         else if (_contextMenuTarget is ProjectNodeVm         pv)  StartInlineProjectEdit(pv);
+        else if (_contextMenuTarget is DependentFileNodeVm   dep) StartInlineDependentEdit(dep);
+    }
+
+    private void StartInlineDependentEdit(DependentFileNodeVm dep)
+    {
+        dep.BeginEdit();
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, () =>
+        {
+            if (FindTreeViewItem(SolutionTree, dep) is TreeViewItem tvi)
+            {
+                if (FindChild<TextBox>(tvi, "DepInlineEditBox") is TextBox tb)
+                {
+                    tb.Focus();
+                    tb.SelectAll();
+                }
+            }
+        });
+    }
+
+    private void OnDepInlineEditKeyDown(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox tb) return;
+        var dep = tb.DataContext as DependentFileNodeVm;
+        if (e.Key == Key.Return)      { CommitInlineDependentEdit(dep); e.Handled = true; }
+        else if (e.Key == Key.Escape) { dep?.CancelEdit(); SolutionTree.Focus(); e.Handled = true; }
+    }
+
+    private void OnDepInlineEditLostFocus(object sender, RoutedEventArgs e)
+    {
+        if (sender is TextBox tb) CommitInlineDependentEdit(tb.DataContext as DependentFileNodeVm);
+    }
+
+    private void CommitInlineDependentEdit(DependentFileNodeVm? dep)
+    {
+        if (dep is null || !dep.IsEditing) return;
+        var oldName = dep.Source.Name;
+        var newName = dep.CommitEdit();
+        if (!string.IsNullOrWhiteSpace(newName)
+            && !string.Equals(newName, oldName, StringComparison.OrdinalIgnoreCase)
+            && dep.Project is not null)
+        {
+            ItemRenameRequested?.Invoke(this, new ProjectItemEventArgs
+            {
+                Item    = dep.Source,
+                Project = dep.Project,
+                NewName = newName,
+            });
+        }
+        SolutionTree.Focus();
     }
 
     private void OnRemove(object sender, RoutedEventArgs e)
@@ -701,6 +882,179 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         }
     }
 
+    private void OnManageNuGetPackages(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pv)
+            ManageNuGetPackagesRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = pv.Source });
+    }
+
+    // -- Go To Definition (context menu for source nodes) ----------------------
+
+    private void OnGoToDefinition(object sender, RoutedEventArgs e)
+    {
+        switch (_contextMenuTarget)
+        {
+            case SourceTypeNodeVm tv:   NavigateToSourceLine(tv.FileAbsolutePath,   tv.LineNumber);   break;
+            case SourceMemberNodeVm mv: NavigateToSourceLine(mv.FileAbsolutePath, mv.LineNumber); break;
+        }
+    }
+
+    // -- Lazy source outline expansion -----------------------------------------
+
+    /// <summary>
+    /// Fires when a TreeViewItem is expanded. If the expanded item is a <see cref="FileNodeVm"/>
+    /// with <c>SupportsExpansion=true</c> and still holds only the <see cref="LoadingNodeVm"/>
+    /// sentinel, kicks off the async outline load.
+    /// </summary>
+    private void OnTreeItemExpanded(object sender, RoutedEventArgs e)
+    {
+        if (e.OriginalSource is not TreeViewItem { DataContext: var nodeVm }) return;
+
+        string? path;
+        SolutionExplorerNodeVm target;
+
+        if (nodeVm is FileNodeVm fn && fn.SupportsExpansion)
+        {
+            // Only trigger when the sole remaining children are DependentFileNodeVm + the LoadingNodeVm sentinel.
+            if (!fn.Children.OfType<LoadingNodeVm>().Any()) return;
+            if (fn.Children.Any(c => c is not LoadingNodeVm && c is not DependentFileNodeVm)) return;
+            path   = fn.Source.AbsolutePath;
+            target = fn;
+        }
+        else if (nodeVm is DependentFileNodeVm dep && dep.SupportsExpansion)
+        {
+            if (!dep.Children.OfType<LoadingNodeVm>().Any()) return;
+            if (dep.Children.Any(c => c is not LoadingNodeVm)) return;
+            path   = dep.Source.AbsolutePath;
+            target = dep;
+        }
+        else return;
+
+        if (string.IsNullOrEmpty(path)) return;
+
+        // Fire-and-forget; exceptions are caught inside.
+        _ = LoadSourceOutlineAsync(target, path);
+    }
+
+    private async Task LoadSourceOutlineAsync(SolutionExplorerNodeVm node, string absolutePath)
+    {
+        SourceOutlineModel? outline = null;
+        try
+        {
+            outline = await _sourceOutline.GetOutlineAsync(absolutePath).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Swallow parse errors — replace sentinel with nothing (no expand arrow needed).
+        }
+
+        await Dispatcher.InvokeAsync(() => ApplyOutlineToNode(node, outline));
+    }
+
+    private void ApplyOutlineToNode(SolutionExplorerNodeVm fn, SourceOutlineModel? outline)
+    {
+        // Guard: only replace the loading sentinel — abort if it has already been replaced.
+        var sentinel = fn.Children.OfType<LoadingNodeVm>().FirstOrDefault();
+        if (sentinel is null) return;
+
+        fn.Children.Remove(sentinel);
+
+        if (outline is null)
+        {
+            // No types found — remove expand capability so the arrow disappears.
+            fn.SupportsExpansion = false;
+            return;
+        }
+
+        if (outline.Kind == SourceFileKind.Xaml)
+        {
+            // XAML: one type node for x:Class + one child per x:Name element.
+            if (outline.XamlClass is not null)
+            {
+                var classNode = new SourceTypeNodeVm(
+                    new WpfHexEditor.Core.SourceAnalysis.Models.SourceTypeModel
+                    {
+                        Name      = outline.XamlClass,
+                        Kind      = WpfHexEditor.Core.SourceAnalysis.Models.SourceTypeKind.Class,
+                        LineNumber = 1,
+                        IsPublic  = true,
+                    },
+                    outline.FilePath)
+                {
+                    // Start collapsed — user must explicitly expand to see members.
+                    IsExpanded = false,
+                };
+
+                foreach (var el in outline.XamlElements)
+                {
+                    classNode.Children.Add(new SourceMemberNodeVm(
+                        new WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberModel
+                        {
+                            Name       = $"{el.TypeHint}: {el.Name}",
+                            Kind       = WpfHexEditor.Core.SourceAnalysis.Models.SourceMemberKind.Field,
+                            LineNumber = el.LineNumber,
+                            IsPublic   = false,
+                        },
+                        outline.FilePath));
+                }
+
+                fn.Children.Add(classNode);
+            }
+
+            if (!fn.Children.OfType<SourceTypeNodeVm>().Any()) fn.SupportsExpansion = false;
+            return;
+        }
+
+        // C# — add SourceTypeNodeVm + nested SourceMemberNodeVm.
+        foreach (var type in outline.Types)
+        {
+            // Start collapsed — user must explicitly expand to see members.
+            var typeNode = new SourceTypeNodeVm(type, outline.FilePath) { IsExpanded = false };
+            foreach (var member in type.Members)
+                typeNode.Children.Add(new SourceMemberNodeVm(member, outline.FilePath));
+            fn.Children.Add(typeNode);
+        }
+
+        if (fn.Children.Count == 0) fn.SupportsExpansion = false;
+    }
+
+    /// <summary>
+    /// Re-injects the <see cref="LoadingNodeVm"/> sentinel for a previously-expanded
+    /// file node whose source has changed on disk, triggering a fresh outline load
+    /// on next expansion.
+    /// </summary>
+    private void RefreshExpandedOutlineNode(string filePath)
+    {
+        var fileNode = FindFileNodeVmByPath(_vm.Roots, filePath);
+        if (fileNode is null || !fileNode.SupportsExpansion) return;
+
+        // Only refresh if it was already parsed (sentinel gone).
+        if (fileNode.Children.OfType<LoadingNodeVm>().Any()) return;
+
+        // Remove outline nodes only — preserve any DependentFileNodeVm children.
+        foreach (var outline in fileNode.Children.OfType<SourceTypeNodeVm>().ToList())
+            fileNode.Children.Remove(outline);
+        fileNode.Children.Add(new LoadingNodeVm());
+
+        // If the node is currently expanded, reload immediately.
+        if (fileNode.IsExpanded)
+            _ = LoadSourceOutlineAsync(fileNode, filePath);
+    }
+
+    private static FileNodeVm? FindFileNodeVmByPath(
+        IEnumerable<SolutionExplorerNodeVm> nodes, string path)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is FileNodeVm fn &&
+                string.Equals(fn.Source.AbsolutePath, path, StringComparison.OrdinalIgnoreCase))
+                return fn;
+            var found = FindFileNodeVmByPath(node.Children, path);
+            if (found is not null) return found;
+        }
+        return null;
+    }
+
     // -- Path helpers ----------------------------------------------------------
 
     /// <summary>Returns the directory to reveal when the user chooses "Open in File Explorer".</summary>
@@ -710,8 +1064,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         ProjectNodeVm        pv  => Path.GetDirectoryName(pv.Source.ProjectFilePath),
         FolderNodeVm         fv  => GetFolderPhysicalPath(fv),
         FileNodeVm           fn  => Path.GetDirectoryName(fn.Source.AbsolutePath),
+        DependentFileNodeVm  dep => Path.GetDirectoryName(dep.Source.AbsolutePath),
         PhysicalFolderNodeVm pfv => pfv.PhysicalPath,
         PhysicalFileNodeVm   pf  => Path.GetDirectoryName(pf.PhysicalPath),
+        SourceTypeNodeVm     tv  => Path.GetDirectoryName(tv.FileAbsolutePath),
+        SourceMemberNodeVm   mv  => Path.GetDirectoryName(mv.FileAbsolutePath),
         _                        => null,
     };
 
@@ -721,8 +1078,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         ProjectNodeVm        pv  => pv.Source.ProjectFilePath,
         FolderNodeVm         fv  => GetFolderPhysicalPath(fv),
         FileNodeVm           fn  => fn.Source.AbsolutePath,
+        DependentFileNodeVm  dep => dep.Source.AbsolutePath,
         PhysicalFolderNodeVm pfv => pfv.PhysicalPath,
         PhysicalFileNodeVm   pf  => pf.PhysicalPath,
+        SourceTypeNodeVm     tv  => tv.FileAbsolutePath,
+        SourceMemberNodeVm   mv  => mv.FileAbsolutePath,
         _                        => null,
     };
 
@@ -748,6 +1108,44 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnCloseSolution(object sender, RoutedEventArgs e)
         => CloseSolutionRequested?.Invoke(this, EventArgs.Empty);
+
+    // -- VS Build context menu --------------------------------------------------
+
+    private void OnBuildProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            BuildProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    private void OnRebuildProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            RebuildProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    private void OnCleanProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            CleanProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    private void OnSetStartupProject(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ProjectNodeVm pn)
+            SetStartupProjectRequested?.Invoke(this, pn.Source.Id);
+    }
+
+    /// <summary>Raised when the user chooses Build for a VS project.</summary>
+    public event EventHandler<string>? BuildProjectRequested;
+
+    /// <summary>Raised when the user chooses Rebuild for a VS project.</summary>
+    public event EventHandler<string>? RebuildProjectRequested;
+
+    /// <summary>Raised when the user chooses Clean for a VS project.</summary>
+    public event EventHandler<string>? CleanProjectRequested;
+
+    /// <summary>Raised when the user chooses Set as Startup Project.</summary>
+    public event EventHandler<string>? SetStartupProjectRequested;
 
     /// <summary>
     /// Raised when the user requests a change to the project default TBL.
@@ -912,8 +1310,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private List<IProjectItem> GetSelectedFileItems()
         => _vm.SelectedNodes
-              .OfType<FileNodeVm>()
-              .Select(fn => fn.Source)
+              .Select(n => n switch
+              {
+                  FileNodeVm      fn  => fn.Source,
+                  DependentFileNodeVm dep => dep.Source,
+                  _                   => null,
+              })
+              .OfType<IProjectItem>()
               .ToList();
 
     private void StartInlineEdit(FileNodeVm fn)
@@ -1290,6 +1693,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             else
             {
                 // Record slow-click candidate only when the node is already selected
+                // (i.e. it was selected in a prior interaction, not by this very click).
                 if (node.IsSelected) _slowClickCandidate = node;
                 _vm.SelectNode(node);
             }
@@ -1306,9 +1710,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         var tvi = FindAncestor<TreeViewItem>(e.OriginalSource as DependencyObject);
         if (tvi?.DataContext != candidate) return;
 
-        // Start the rename timer — fires after 600 ms if no other click/drag occurs
+        // Start the rename timer — fires after 1200 ms if no other click/drag occurs.
+        // 1200 ms matches VS behaviour and prevents accidental rename during navigation.
         _slowClickTimer = new System.Windows.Threading.DispatcherTimer
-            { Interval = TimeSpan.FromMilliseconds(600) };
+            { Interval = TimeSpan.FromMilliseconds(1200) };
         _slowClickTimer.Tick += (_, _) =>
         {
             _slowClickTimer?.Stop();
@@ -1650,12 +2055,23 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     {
         foreach (var node in nodes)
         {
-            if (node is FileNodeVm fn &&
-                string.Equals(fn.Source.AbsolutePath, path, StringComparison.OrdinalIgnoreCase))
+            // Match both FileNodeVm and DependentFileNodeVm by absolute path so that
+            // opening a code-behind file (e.g. App.xaml.cs) highlights its nested node
+            // and expands the parent XAML node to make it visible.
+            string? nodePath = node switch
             {
-                fn.IsSelected = true;
+                FileNodeVm      fn  => fn.Source.AbsolutePath,
+                DependentFileNodeVm dep => dep.Source.AbsolutePath,
+                _                   => null,
+            };
+
+            if (nodePath is not null &&
+                string.Equals(nodePath, path, StringComparison.OrdinalIgnoreCase))
+            {
+                node.IsSelected = true;
                 return true;
             }
+
             if (SelectNodeByPath(path, node.Children))
             {
                 node.IsExpanded = true; // ensure parent is expanded so the node is visible
@@ -1709,6 +2125,19 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         }
         return null;
     }
+}
+
+/// <summary>
+/// Event args raised when the user double-clicks a <see cref="SourceTypeNodeVm"/> or
+/// <see cref="SourceMemberNodeVm"/>. The host should open the file and scroll to the line.
+/// </summary>
+public sealed class SourceLineNavigationEventArgs : EventArgs
+{
+    /// <summary>Absolute path to the source file.</summary>
+    public string AbsolutePath { get; init; } = string.Empty;
+
+    /// <summary>1-based line number to navigate to.</summary>
+    public int LineNumber { get; init; }
 }
 
 /// <summary>

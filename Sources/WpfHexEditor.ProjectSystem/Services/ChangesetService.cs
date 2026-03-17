@@ -2,6 +2,7 @@
 // Contributors: Claude Sonnet 4.6
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,13 @@ public sealed class ChangesetService
 
     public static readonly ChangesetService Instance = new();
     private ChangesetService() { }
+
+    // -- In-flight write guard --------------------------------------------
+
+    // Keys are absolute .whchg paths. TryAdd succeeds only once per path;
+    // a second concurrent write for the same file is silently skipped because
+    // the in-flight write already holds an equivalent or newer snapshot.
+    private readonly ConcurrentDictionary<string, byte> _inFlightWrites = new();
 
     // -- Path helpers ------------------------------------------------------
 
@@ -53,24 +61,36 @@ public sealed class ChangesetService
         string srcPath  = item.AbsolutePath;
         string destPath = GetChangesetPath(item);
 
-        // Compute CRC32 of source file for the sourceHash field
-        string? sourceHash = null;
-        if (File.Exists(srcPath))
+        // Guard: skip if a write is already in-flight for this file.
+        // The running write holds an equivalent snapshot from the same save action.
+        if (!_inFlightWrites.TryAdd(destPath, 0))
+            return;
+
+        try
         {
-            try { sourceHash = "crc32:" + ComputeCrc32Hex(srcPath); }
-            catch { /* best-effort */ }
+            // Compute CRC32 of source file for the sourceHash field
+            string? sourceHash = null;
+            if (File.Exists(srcPath))
+            {
+                try { sourceHash = "crc32:" + ComputeCrc32Hex(srcPath); }
+                catch { /* best-effort */ }
+            }
+
+            var dto = ChangesetSerializer.ToDto(
+                snapshot,
+                sourceFile: Path.GetFileName(srcPath),
+                sourceHash: sourceHash,
+                created:    createdAt == default ? DateTimeOffset.UtcNow : createdAt);
+
+            await using var fs = new FileStream(
+                destPath, FileMode.Create, FileAccess.Write, FileShare.None,
+                bufferSize: 4096, useAsync: true);
+            await ChangesetSerializer.WriteAsync(dto, fs, ct).ConfigureAwait(false);
         }
-
-        var dto = ChangesetSerializer.ToDto(
-            snapshot,
-            sourceFile: Path.GetFileName(srcPath),
-            sourceHash: sourceHash,
-            created:    createdAt == default ? DateTimeOffset.UtcNow : createdAt);
-
-        await using var fs = new FileStream(
-            destPath, FileMode.Create, FileAccess.Write, FileShare.None,
-            bufferSize: 4096, useAsync: true);
-        await ChangesetSerializer.WriteAsync(dto, fs, ct).ConfigureAwait(false);
+        finally
+        {
+            _inFlightWrites.TryRemove(destPath, out _);
+        }
     }
 
     /// <summary>Reads the .whchg companion file synchronously.
@@ -141,15 +161,23 @@ public sealed class ChangesetService
 
     private static string ComputeCrc32Hex(string filePath)
     {
-        // Simple CRC32 implementation (polynomial 0xEDB88320)
+        // CRC32 (polynomial 0xEDB88320) with a 64 KB read buffer.
+        // Replacing the original ReadByte() loop eliminates one syscall per byte
+        // — critical for large binaries (e.g. 100 MB ROM = ~100M calls reduced to ~1600).
+        const int BufferSize = 65536;
         uint crc = 0xFFFFFFFF;
-        using var fs = File.OpenRead(filePath);
-        int b;
-        while ((b = fs.ReadByte()) != -1)
+        var buffer = new byte[BufferSize];
+        using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read,
+                                      FileShare.Read, BufferSize, useAsync: false);
+        int read;
+        while ((read = fs.Read(buffer, 0, BufferSize)) > 0)
         {
-            crc ^= (byte)b;
-            for (int i = 0; i < 8; i++)
-                crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320 : crc >> 1;
+            for (int j = 0; j < read; j++)
+            {
+                crc ^= buffer[j];
+                for (int k = 0; k < 8; k++)
+                    crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320u : crc >> 1;
+            }
         }
         return (~crc).ToString("X8");
     }

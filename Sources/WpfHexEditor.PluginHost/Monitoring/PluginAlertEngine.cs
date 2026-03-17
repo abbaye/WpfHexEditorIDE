@@ -13,6 +13,12 @@
 //     Observer pattern — called by PluginMonitoringViewModel.Refresh()
 //     on every sampling tick. Stateless between ticks except cooldown map.
 //     All thresholds are hot-configurable via public properties.
+//
+//     Memory alert strategy:
+//       InProcess — memory is shared (GC.GetTotalMemory). A single aggregate alert
+//                   is fired (cooldown key "__inprocess_memory__") instead of one
+//                   per plugin, to avoid duplicate log spam.
+//       Sandbox   — each sandbox process has its own memory; individual alerts apply.
 // ==========================================================
 
 namespace WpfHexEditor.PluginHost.Monitoring;
@@ -48,6 +54,9 @@ public sealed class PluginAlertEngine
     private readonly Dictionary<string, DateTime> _lastAlertTime =
         new(StringComparer.OrdinalIgnoreCase);
 
+    // Sentinel key used for the single aggregate InProcess memory alert.
+    private const string InProcessMemoryKey = "__inprocess_memory__";
+
     // -- Configurable thresholds (hot-configurable, no restart required) ---------
 
     /// <summary>CPU% threshold. Raises a Cpu alert when any plugin exceeds this.</summary>
@@ -76,20 +85,24 @@ public sealed class PluginAlertEngine
     /// </summary>
     public void Evaluate(IEnumerable<PluginEntry> plugins)
     {
-        var now = DateTime.UtcNow;
+        var now     = DateTime.UtcNow;
+        var loaded  = plugins
+            .Where(e => e.State == SDK.Models.PluginState.Loaded)
+            .ToList();
 
-        foreach (var entry in plugins)
+        // ── InProcess memory: single aggregate alert (shared GC heap) ────────────
+        EvaluateInProcessMemory(loaded, now);
+
+        // ── Per-plugin evaluation (CPU, ExecTime; memory only for Sandbox) ───────
+        foreach (var entry in loaded)
         {
-            if (entry.State != SDK.Models.PluginState.Loaded) continue;
-
             var snap = entry.Diagnostics.GetLatest();
             if (snap is null) continue;
 
-            // Suppress alerts during the startup grace period to avoid false positives
-            // caused by the process-wide CPU spike that occurs during batch plugin init.
+            // Suppress alerts during the startup grace period.
             if (entry.Diagnostics.Uptime < StartupGracePeriod) continue;
 
-            // Enforce cooldown — one alert per plugin per window.
+            // Enforce per-plugin cooldown.
             if (_lastAlertTime.TryGetValue(entry.Manifest.Id, out var lastAlert)
                 && now - lastAlert < AlertCooldown) continue;
 
@@ -99,6 +112,43 @@ public sealed class PluginAlertEngine
             _lastAlertTime[entry.Manifest.Id] = now;
             AlertTriggered?.Invoke(this, alert);
         }
+    }
+
+    /// <summary>
+    /// For InProcess plugins the memory snapshot reflects the whole process GC heap,
+    /// so all plugins would fire the same alert simultaneously.
+    /// This method fires a single aggregate alert instead, gated by a shared cooldown.
+    /// </summary>
+    private void EvaluateInProcessMemory(List<PluginEntry> loaded, DateTime now)
+    {
+        // Find any InProcess plugin that is past the grace period to sample from.
+        var representative = loaded.FirstOrDefault(e =>
+            e.ResolvedIsolationMode == SDK.Models.PluginIsolationMode.InProcess
+            && e.Diagnostics.Uptime >= StartupGracePeriod);
+
+        if (representative is null) return;
+
+        var snap = representative.Diagnostics.GetLatest();
+        if (snap is null) return;
+
+        var memMb = snap.MemoryBytes / (1024 * 1024);
+        if (memMb <= MemoryAlertThresholdMb) return;
+
+        // Shared cooldown — fires at most once per cooldown window across all InProcess plugins.
+        if (_lastAlertTime.TryGetValue(InProcessMemoryKey, out var lastGlobal)
+            && now - lastGlobal < AlertCooldown) return;
+
+        _lastAlertTime[InProcessMemoryKey] = now;
+
+        AlertTriggered?.Invoke(this, new PluginAlertEventArgs
+        {
+            PluginId       = InProcessMemoryKey,
+            PluginName     = "InProcess Plugins",
+            Kind           = PluginAlertKind.Memory,
+            CurrentValue   = memMb,
+            ThresholdValue = MemoryAlertThresholdMb,
+            Message        = $"Memory {memMb} MB exceeds threshold {MemoryAlertThresholdMb} MB"
+        });
     }
 
     /// <summary>Clears the per-plugin cooldown map (e.g., when the user resets the monitor).</summary>
@@ -124,18 +174,23 @@ public sealed class PluginAlertEngine
             };
         }
 
-        var memMb = snap.MemoryBytes / (1024 * 1024);
-        if (memMb > MemoryAlertThresholdMb)
+        // InProcess memory is shared (GC heap). The aggregate alert is fired by
+        // EvaluateInProcessMemory() — skip per-plugin memory check to avoid spam.
+        if (entry.ResolvedIsolationMode != SDK.Models.PluginIsolationMode.InProcess)
         {
-            return new PluginAlertEventArgs
+            var memMb = snap.MemoryBytes / (1024 * 1024);
+            if (memMb > MemoryAlertThresholdMb)
             {
-                PluginId       = entry.Manifest.Id,
-                PluginName     = entry.Manifest.Name,
-                Kind           = PluginAlertKind.Memory,
-                CurrentValue   = memMb,
-                ThresholdValue = MemoryAlertThresholdMb,
-                Message        = $"Memory {memMb} MB exceeds threshold {MemoryAlertThresholdMb} MB"
-            };
+                return new PluginAlertEventArgs
+                {
+                    PluginId       = entry.Manifest.Id,
+                    PluginName     = entry.Manifest.Name,
+                    Kind           = PluginAlertKind.Memory,
+                    CurrentValue   = memMb,
+                    ThresholdValue = MemoryAlertThresholdMb,
+                    Message        = $"Memory {memMb} MB exceeds threshold {MemoryAlertThresholdMb} MB"
+                };
+            }
         }
 
         var avg = entry.Diagnostics.AverageExecutionTime;

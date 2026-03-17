@@ -63,6 +63,12 @@ public sealed class AssemblyModel
 
     /// <summary>PE section headers; populated for both managed and native PE.</summary>
     public IReadOnlyList<PeSectionEntry> Sections { get; init; } = [];
+
+    /// <summary>
+    /// Type forwarders declared in the ExportedType table (facade / forwarding assemblies).
+    /// Empty for assemblies that define their own types and for native PE stubs.
+    /// </summary>
+    public IReadOnlyList<TypeForwarderEntry> TypeForwarders { get; init; } = [];
 }
 
 /// <summary>A single AssemblyRef row from the metadata table.</summary>
@@ -89,3 +95,16 @@ public sealed record PeSectionEntry(
     int    VirtualSize,
     long   RawOffset,
     int    RawSize);
+
+/// <summary>
+/// A type forwarder entry from the ExportedType metadata table.
+/// Present in facade / redirection assemblies (e.g. Microsoft.Win32.Primitives,
+/// Microsoft.VisualBasic) that forward their public API to another assembly.
+/// </summary>
+public sealed record TypeForwarderEntry(
+    string Namespace,
+    string Name)
+{
+    /// <summary>Fully qualified type name (Namespace.Name, or just Name when namespace is empty).</summary>
+    public string FullName => string.IsNullOrEmpty(Namespace) ? Name : $"{Namespace}.{Name}";
+}

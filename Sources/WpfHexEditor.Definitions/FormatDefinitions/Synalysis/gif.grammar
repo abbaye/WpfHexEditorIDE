@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.3.1">
+    <grammar name="GIF Image" start="id:1" author="WpfHexEditor Team" fileextension="gif">
+        <description>Graphics Interchange Format (GIF87a / GIF89a). Block-based structure with header, logical screen descriptor, and image data.</description>
+        <structure name="Defaults" id="2" endian="little" signed="no"/>
+        <structure name="Header" id="10" extends="id:2">
+            <binary name="Signature" mustmatch="yes" id="11" fillcolor="FF6B6B" length="3">
+                <fixedvalues><fixedvalue name="GIF" value="474946"/></fixedvalues>
+            </binary>
+            <string name="Version" id="12" type="fixed-length" length="3"/>
+        </structure>
+        <structure name="Logical Screen Descriptor" id="20" extends="id:2">
+            <number name="Width" id="21" type="integer" length="2" fillcolor="4ECDC4"/>
+            <number name="Height" id="22" type="integer" length="2" fillcolor="4ECDC4"/>
+            <number name="Packed Field" id="23" type="integer" length="1" fillcolor="FFE66D" display="hex"/>
+            <number name="Background Color Index" id="24" type="integer" length="1"/>
+            <number name="Pixel Aspect Ratio" id="25" type="integer" length="1"/>
+        </structure>
+        <structure name="Image Descriptor" id="30" extends="id:2">
+            <binary name="Separator" mustmatch="yes" id="31" fillcolor="C44569" length="1">
+                <fixedvalues><fixedvalue name="Image Separator" value="2C"/></fixedvalues>
+            </binary>
+            <number name="Left" id="32" type="integer" length="2" fillcolor="B0C4DE"/>
+            <number name="Top" id="33" type="integer" length="2" fillcolor="B0C4DE"/>
+            <number name="Width" id="34" type="integer" length="2" fillcolor="A8D8EA"/>
+            <number name="Height" id="35" type="integer" length="2" fillcolor="A8D8EA"/>
+            <number name="Packed Field" id="36" type="integer" length="1" display="hex"/>
+        </structure>
+        <structure name="Trailer" id="40" extends="id:2">
+            <binary name="GIF Trailer" mustmatch="yes" id="41" fillcolor="FFB347" length="1">
+                <fixedvalues><fixedvalue name="Trailer" value="3B"/></fixedvalues>
+            </binary>
+        </structure>
+        <structure name="GIF File" id="1" extends="id:2">
+            <structref name="Header" id="50" structure="id:10"/>
+            <structref name="Logical Screen Descriptor" id="51" structure="id:20"/>
+            <structref name="Image Descriptor" id="52" repeatmin="0" structure="id:30"/>
+            <structref name="Trailer" id="53" repeatmin="0" structure="id:40"/>
+        </structure>
+    </grammar>
+</ufwb>

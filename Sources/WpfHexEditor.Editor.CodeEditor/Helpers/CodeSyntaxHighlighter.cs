@@ -119,20 +119,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         /// </summary>
         public List<SyntaxToken> HighlightLine(CodeLine line, JsonParserContext context)
         {
-            // Phase 11.4: Return cached tokens if available and update LRU timestamp
-            if (!line.IsCacheDirty && line.TokensCache != null)
-            {
-                line.LastAccessTime = System.DateTime.UtcNow;
-                return line.TokensCache;
-            }
-
             var tokens = new List<SyntaxToken>();
             var text = line.Text;
 
             if (string.IsNullOrEmpty(text))
             {
-                line.TokensCache = tokens;
-                line.IsCacheDirty = false;
                 line.LastAccessTime = System.DateTime.UtcNow;
                 return tokens;
             }
@@ -415,9 +406,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 i++;
             }
 
-            // Cache tokens
-            line.TokensCache = tokens;
-            line.IsCacheDirty = false;
+            // TokensCache is now List<SyntaxHighlightToken> (managed by HighlightPipelineService).
+            // Legacy SyntaxToken results are converted to SyntaxHighlightToken in CodeEditor's render path.
+            line.LastAccessTime = System.DateTime.UtcNow;
 
             return tokens;
         }

@@ -26,8 +26,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
+using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -40,11 +43,13 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 {
     #region Child controls
 
-    private readonly CodeEditor    _primaryEditor;
-    private readonly CodeEditor    _secondaryEditor;
-    private readonly GridSplitter  _splitter;
-    private readonly ToggleButton  _splitToggle;
+    private readonly CodeEditor              _primaryEditor;
+    private readonly CodeEditor              _secondaryEditor;
+    private readonly GridSplitter            _splitter;
+    private readonly ToggleButton            _splitToggle;
+    private readonly CodeEditorNavigationBar _navBar;
 
+    private readonly RowDefinition _navBarRow;
     private readonly RowDefinition _primaryRow;
     private readonly RowDefinition _splitterRow;
     private readonly RowDefinition _secondaryRow;
@@ -59,53 +64,64 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
     public CodeEditorSplitHost()
     {
         // -- Row layout ------------------------------------------------------
+        // Row 0 = navigation bar (fixed 22 px)
+        // Row 1 = primary editor  (star)
+        // Row 2 = GridSplitter    (auto, hidden when not split)
+        // Row 3 = secondary editor (0 → star when split)
+        _navBarRow    = new RowDefinition { Height = new GridLength(22) };
         _primaryRow   = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
         _splitterRow  = new RowDefinition { Height = GridLength.Auto };
-        _secondaryRow = new RowDefinition { Height = new GridLength(0) };  // collapsed initially
+        _secondaryRow = new RowDefinition { Height = new GridLength(0) };
 
+        RowDefinitions.Add(_navBarRow);
         RowDefinitions.Add(_primaryRow);
         RowDefinitions.Add(_splitterRow);
         RowDefinitions.Add(_secondaryRow);
 
         // -- Primary editor --------------------------------------------------
         _primaryEditor = new CodeEditor();
-        SetRow(_primaryEditor, 0);
+        SetRow(_primaryEditor, 1);
         Children.Add(_primaryEditor);
 
         // -- Splitter (hidden while not split) -------------------------------
         _splitter = new GridSplitter
         {
-            Height            = 4,
+            Height              = 4,
             HorizontalAlignment = HorizontalAlignment.Stretch,
-            Visibility        = Visibility.Collapsed,
-            Background        = SystemColors.ControlDarkBrush
+            Visibility          = Visibility.Collapsed,
+            Background          = SystemColors.ControlDarkBrush,
         };
-        SetRow(_splitter, 1);
+        SetRow(_splitter, 2);
         Children.Add(_splitter);
 
         // -- Secondary editor (shares the same document) ---------------------
         _secondaryEditor = new CodeEditor();
-        SetRow(_secondaryEditor, 2);
+        SetRow(_secondaryEditor, 3);
         Children.Add(_secondaryEditor);
 
-        // -- Split toggle button (top-right overlay on primary editor) --------
+        // -- Split toggle (flat VS2022-style) --------------------------------
         _splitToggle = new ToggleButton
         {
-            Content           = "\uE70D",   // Segoe MDL2 "Split" icon
-            FontFamily        = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
-            FontSize          = 11,
-            Width             = 18,
-            Height            = 18,
-            Padding           = new Thickness(0),
-            VerticalAlignment   = VerticalAlignment.Top,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            ToolTip           = "Split Editor"
+            Content             = "\uE8A5",  // Segoe MDL2 "SplitView" glyph
+            FontFamily          = new FontFamily("Segoe MDL2 Assets"),
+            FontSize            = 10,
+            Width               = 16,
+            Height              = 16,
+            Padding             = new Thickness(0),
+            ToolTip             = "Split Editor",
+            Style               = BuildFlatToggleButtonStyle(),
         };
-        Panel.SetZIndex(_splitToggle, 99);
-        SetRow(_splitToggle, 0);
         _splitToggle.Checked   += OnSplitToggleChecked;
         _splitToggle.Unchecked += OnSplitToggleUnchecked;
-        Children.Add(_splitToggle);
+        // Note: _splitToggle is NOT added to this Grid directly; it is handed
+        // to the navigation bar which places it in its rightmost column.
+
+        // -- Navigation bar (Row 0) ------------------------------------------
+        _navBar = new CodeEditorNavigationBar();
+        _navBar.AddSplitToggle(_splitToggle);
+        _navBar.Attach(_primaryEditor);
+        SetRow(_navBar, 0);
+        Children.Add(_navBar);
 
         // -- Initialise active editor and wire focus tracking -----------------
         _activeEditor = _primaryEditor;
@@ -149,6 +165,68 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     #endregion
 
+    #region Split button style
+
+    /// <summary>
+    /// Builds a flat, borderless VS2022-like ToggleButton style.
+    /// Uses dynamic resource references so the button respects the active theme.
+    /// States: Normal=transparent | Hover=CE_Selection@30% | Checked=CE_Selection@60%
+    /// </summary>
+    private static Style BuildFlatToggleButtonStyle()
+    {
+        // Reusable transparent + 1px transparent border template
+        var template = new ControlTemplate(typeof(ToggleButton));
+
+        var border = new FrameworkElementFactory(typeof(Border));
+        border.SetValue(Border.CornerRadiusProperty, new CornerRadius(2));
+        border.SetValue(Border.BorderThicknessProperty, new Thickness(1));
+        border.SetValue(Border.BackgroundProperty, Brushes.Transparent);
+        border.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
+
+        var content = new FrameworkElementFactory(typeof(ContentPresenter));
+        content.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        content.SetValue(ContentPresenter.VerticalAlignmentProperty,   VerticalAlignment.Center);
+        border.AppendChild(content);
+
+        template.VisualTree = border;
+
+        // Hover trigger — light theme-aware fill
+        var hoverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
+        hoverTrigger.Setters.Add(new Setter(
+            Border.BackgroundProperty,
+            new SolidColorBrush(Color.FromArgb(50, 100, 100, 100)),
+            "border"));
+        hoverTrigger.Setters.Add(new Setter(
+            Border.BorderBrushProperty,
+            new SolidColorBrush(Color.FromArgb(80, 150, 150, 150)),
+            "border"));
+        template.Triggers.Add(hoverTrigger);
+
+        // Checked trigger — more prominent fill
+        var checkedTrigger = new Trigger { Property = ToggleButton.IsCheckedProperty, Value = true };
+        checkedTrigger.Setters.Add(new Setter(
+            Border.BackgroundProperty,
+            new SolidColorBrush(Color.FromArgb(90, 100, 140, 200)),
+            "border"));
+        checkedTrigger.Setters.Add(new Setter(
+            Border.BorderBrushProperty,
+            new SolidColorBrush(Color.FromArgb(120, 100, 150, 220)),
+            "border"));
+        template.Triggers.Add(checkedTrigger);
+
+        // Name the border so ControlTemplate Trigger Setters can target it by name.
+        border.Name = "border";
+
+        var style = new Style(typeof(ToggleButton));
+        style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        style.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush(Color.FromRgb(180, 180, 180))));
+        style.Setters.Add(new Setter(Control.CursorProperty, Cursors.Hand));
+        style.Seal();
+        return style;
+    }
+
+    #endregion
+
     #region Split toggle handlers
 
     private void OnSplitToggleChecked(object sender, RoutedEventArgs e)
@@ -186,13 +264,23 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     #region IOpenableDocument — delegates to primary editor
 
-    Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
+    async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
     {
-        // Load the file into the primary editor; the secondary editor shares the same
-        // CodeDocument, so both views reflect the loaded content immediately.
-        ct.ThrowIfCancellationRequested();
-        _primaryEditor.LoadFromFile(filePath);
-        return Task.CompletedTask;
+        // Lazy highlighter resolution before loading so the first render is already coloured.
+        if (_primaryEditor.ExternalHighlighter is null)
+        {
+            var language = LanguageRegistry.Instance.GetLanguageForFile(filePath);
+            if (language is not null)
+            {
+                var highlighter = CodeEditorFactory.BuildHighlighter(language);
+                _primaryEditor.ExternalHighlighter   = highlighter;
+                _secondaryEditor.ExternalHighlighter = highlighter;
+            }
+        }
+
+        // Delegate to the primary editor's async open (file I/O runs off the UI thread).
+        // Both editors share the same CodeDocument, so the secondary view updates automatically.
+        await ((IOpenableDocument)_primaryEditor).OpenAsync(filePath, ct);
     }
 
     #endregion

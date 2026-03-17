@@ -33,6 +33,14 @@ public interface IAssemblyAnalysisEngine
     bool CanAnalyze(string filePath);
 
     /// <summary>
+    /// Returns true when the PE file at <paramref name="filePath"/> contains a .NET CLR
+    /// metadata header (i.e. it is a managed assembly, not a native PE).
+    /// Uses <c>FileShare.ReadWrite</c> so the check succeeds even when the HexEditor holds
+    /// the file open. Returns false on any I/O or format error.
+    /// </summary>
+    bool HasManagedMetadata(string filePath);
+
+    /// <summary>
     /// Analyses the PE file at <paramref name="filePath"/> on a background thread
     /// and returns the populated <see cref="AssemblyModel"/>.
     /// Throws <see cref="OperationCanceledException"/> when <paramref name="ct"/> is cancelled.

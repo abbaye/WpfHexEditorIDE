@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using WpfHexEditor.Docking.Core.Nodes;
 
 namespace WpfHexEditor.Docking.Wpf.Controls;
 
@@ -140,21 +141,87 @@ public class TabOverflowButton : Button
             ? tabControl.Items.Cast<object>()
             : OverflowPanel.OverflowItems.Cast<object>();
 
+        var dockTabControl = tabControl as DockTabControl;
+
         foreach (var item in source)
         {
             if (item is not TabItem tabItem) continue;
 
             var isActive = ShowAllDocuments && tabControl.SelectedItem == tabItem;
+            var capturedTab = tabItem;
+
+            // --- Close (×) box — hidden until row hover ---
+            // Use Border+TextBlock instead of Button: the default WPF Button ControlTemplate applies
+            // its own IsMouseOver trigger directly on the inner Border (TargetName), overriding
+            // TemplateBinding and breaking theme-keyed brushes inside popup HwndSources.
+            var closeGlyph = new TextBlock
+            {
+                Text                = "\u00D7",
+                FontSize            = 12,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center
+            };
+            closeGlyph.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
+
+            var closeBox = new Border
+            {
+                Width             = 18,
+                Height            = 18,
+                CornerRadius      = new CornerRadius(2),
+                Background        = Brushes.Transparent,
+                BorderThickness   = new Thickness(1),
+                BorderBrush       = Brushes.Transparent,
+                VerticalAlignment = VerticalAlignment.Center,
+                Cursor            = System.Windows.Input.Cursors.Hand,
+                Visibility        = Visibility.Hidden,
+                ToolTip           = "Close",
+                Child             = closeGlyph
+            };
+
+            // Theme-keyed hover: border + accent background (popup-safe, no style triggers needed).
+            closeBox.MouseEnter += (_, _) =>
+            {
+                closeBox.SetResourceReference(Border.BackgroundProperty,   "DockAccentBrush");
+                closeBox.SetResourceReference(Border.BorderBrushProperty,  "DockBorderBrush");
+            };
+            closeBox.MouseLeave += (_, _) =>
+            {
+                closeBox.Background   = Brushes.Transparent;
+                closeBox.BorderBrush  = Brushes.Transparent;
+            };
+
+            closeBox.MouseLeftButtonDown += (s, e) =>
+            {
+                e.Handled   = true;   // prevent MenuItem activation
+                menu.IsOpen = false;
+                if (dockTabControl is not null && capturedTab.Tag is DockItem dockItem)
+                    dockTabControl.RequestCloseTab(dockItem);
+            };
+
+            // --- Header panel ---
+            var title = new TextBlock
+            {
+                Text              = tabItem.Header is DockTabHeader dth ? ExtractTitle(dth) : tabItem.Header?.ToString() ?? "Tab",
+                VerticalAlignment = VerticalAlignment.Center,
+                TextTrimming      = TextTrimming.CharacterEllipsis,
+                Margin            = new Thickness(0, 0, 6, 0)
+            };
+
+            DockPanel.SetDock(closeBox, Dock.Right);
+            var headerPanel = new DockPanel { LastChildFill = true, MinWidth = 200 };
+            headerPanel.Children.Add(closeBox);
+            headerPanel.Children.Add(title);
+
             var menuItem = new MenuItem
             {
-                Header = tabItem.Header is DockTabHeader dth
-                    ? ExtractTitle(dth)
-                    : tabItem.Header?.ToString() ?? "Tab",
+                Header      = headerPanel,
                 IsCheckable = ShowAllDocuments,
                 IsChecked   = isActive
             };
 
-            var capturedTab = tabItem;
+            menuItem.MouseEnter += (_, _) => closeBox.Visibility = Visibility.Visible;
+            menuItem.MouseLeave += (_, _) => closeBox.Visibility = Visibility.Hidden;
+
             menuItem.Click += (_, _) =>
             {
                 tabControl.SelectedItem = capturedTab;

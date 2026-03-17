@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Options;
@@ -94,6 +95,50 @@ public sealed class AppSettings
     /// Serialised as "outputLogger": { … } in settings.json.
     /// </summary>
     public OutputLoggerSettings OutputLogger { get; set; } = new();
+
+    // -- Build & Run ------------------------------------------------------------------
+
+    /// <summary>Build system general options (output verbosity, parallel builds, etc.).</summary>
+    public BuildRunSettings BuildRun { get; set; } = new();
+
+    // -- Plugin Development -----------------------------------------------------------
+
+    /// <summary>In-IDE plugin development options.</summary>
+    public PluginDevSettings PluginDev { get; set; } = new();
+}
+
+/// <summary>Build &amp; Run general options.</summary>
+public sealed class BuildRunSettings
+{
+    /// <summary>Save all dirty documents before starting a build.</summary>
+    public bool SaveBeforeBuilding { get; set; } = true;
+
+    /// <summary>MSBuild output verbosity: Quiet / Minimal / Normal / Detailed / Diagnostic.</summary>
+    public string OutputVerbosity { get; set; } = "Minimal";
+
+    /// <summary>Run MSBuild in-process (faster) vs out-of-process (isolated).</summary>
+    public bool RunInProcess { get; set; } = true;
+
+    /// <summary>Max number of projects to build in parallel (MSBuild /m:N).</summary>
+    public int MaxParallelProjects { get; set; } = 4;
+
+    /// <summary>Show Output panel automatically when a build starts.</summary>
+    public bool ShowOutputOnBuildStart { get; set; }
+
+    /// <summary>Show Output panel when a build produces errors.</summary>
+    public bool ShowOutputOnBuildError { get; set; } = true;
+
+    /// <summary>Treat nullable warnings as errors (C# 8+ projects).</summary>
+    public bool TreatNullableWarningsAsErrors { get; set; }
+
+    /// <summary>Enable implicit usings by default (C# 10+ projects).</summary>
+    public bool EnableImplicitUsings { get; set; } = true;
+
+    /// <summary>Generate XML documentation file during builds.</summary>
+    public bool GenerateDocumentation { get; set; }
+
+    /// <summary>Default warning level (0–9). MSBuild /warn:N.</summary>
+    public int DefaultWarningLevel { get; set; } = 4;
 }
 
 // ----------------------------------------------------------------------------
@@ -175,13 +220,19 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
 
+    /// <summary>
+    /// Lines scrolled per mouse-wheel notch.
+    /// Maps to <c>CodeEditor.MouseWheelSpeed</c> — same enum and behaviour as HexEditor.
+    /// </summary>
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
     /// When true, CodeEditor tracks edits in a .whchg companion file
     /// (requires save mode Tracked to be effective).
     /// </summary>
-    public bool ChangesetEnabled { get; set; } = true;
+    public bool ChangesetEnabled { get; set; } = false;
 
     // -- Syntax colours --------------------------------------------------
     // Stored as HTML hex strings (e.g. "#FF8C00").  Empty string = use theme default.
@@ -237,6 +288,12 @@ public sealed class TextEditorDefaultSettings
 
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
+
+    /// <summary>
+    /// Lines scrolled per mouse-wheel notch.
+    /// Maps to <c>TextViewport.MouseWheelSpeed</c> — same enum and behaviour as HexEditor.
+    /// </summary>
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
 
     // -- Changeset (.whchg) -----------------------------------------------
 
@@ -408,4 +465,27 @@ public sealed class OutputLoggerSettings
     /// Called by <c>OutputOptionsPage.Flush()</c> after writing new values.
     /// </summary>
     public static void NotifyChanged() => ColorsChanged?.Invoke();
+}
+
+
+/// <summary>In-IDE Plugin Development options.</summary>
+public sealed class PluginDevSettings
+{
+    /// <summary>Rebuild plugin automatically when a source file is saved.</summary>
+    public bool AutoRebuildOnSave { get; set; } = false;
+
+    /// <summary>Copy build output to the plugin directory after a successful build.</summary>
+    public bool CopyOutputOnBuild { get; set; } = true;
+
+    /// <summary>Minimum log level to display in the Plugin Dev Log panel.</summary>
+    public string LogLevel { get; set; } = "Info";
+
+    /// <summary>Sandbox mode: "Light" (in-process catch) or "Full" (out-of-process Named Pipe).</summary>
+    public string SandboxMode { get; set; } = "Light";
+
+    /// <summary>Timeout in milliseconds for plugin lifecycle calls (Initialize / Shutdown).</summary>
+    public int LifecycleTimeoutMs { get; set; } = 5000;
+
+    /// <summary>Show "Plugin Dev Mode" indicator in the main window status bar.</summary>
+    public bool ShowStatusBarIndicator { get; set; } = true;
 }
