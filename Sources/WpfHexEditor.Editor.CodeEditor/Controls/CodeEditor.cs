@@ -1411,7 +1411,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 LargeChange  = 100,
                 Minimum      = 0,
                 Maximum      = 0,
-                Value        = 0
+                Value        = 0,
+                Cursor       = Cursors.Arrow  // override parent IBeam
             };
             _hScrollBar = new System.Windows.Controls.Primitives.ScrollBar
             {
@@ -1420,7 +1421,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 LargeChange  = 100,
                 Minimum      = 0,
                 Maximum      = 0,
-                Value        = 0
+                Value        = 0,
+                Cursor       = Cursors.Arrow  // override parent IBeam
             };
             _vScrollBar.ValueChanged += VScrollBar_ValueChanged;
             _hScrollBar.ValueChanged += HScrollBar_ValueChanged;
