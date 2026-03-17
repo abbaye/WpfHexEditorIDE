@@ -2639,6 +2639,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void EnsureCursorVisible()
         {
+            // Schedule word highlight before any early return so it fires regardless of
+            // whether virtual scrolling is active.
+            ScheduleWordHighlightUpdate();
+
             if (_virtualizationEngine == null || !EnableVirtualScrolling)
                 return;
 
@@ -2655,7 +2659,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             EnsureCursorColumnVisible();
 
             NotifyCaretMovedIfChanged();
-            ScheduleWordHighlightUpdate();
         }
 
         /// <summary>
