@@ -309,7 +309,8 @@
     <SolidColorBrush x:Key="CE_LineNumBg"     Color="#0F1124"/>
     <SolidColorBrush x:Key="CE_LineNumFg"     Color="#556699"/>
     <SolidColorBrush x:Key="CE_CurrentLine"   Color="#141830"/>
-    <SolidColorBrush x:Key="CE_Selection"     Color="#3D0052"/>
+    <SolidColorBrush x:Key="CE_Selection"         Color="#3D0052"/>
+    <SolidColorBrush x:Key="CE_SelectionInactive" Color="#2A1F3D"/>
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#FF006E</Color>
