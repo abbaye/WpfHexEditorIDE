@@ -1764,6 +1764,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _cursorLine    = textPos.Line;
                 _cursorColumn  = textPos.Column;
                 InvalidateVisual();
+                NotifyCaretMovedIfChanged();
             }
         }
 
@@ -2450,7 +2451,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             EnsureCursorColumnVisible();
 
-            // Notify subscribers (e.g. navigation bar) that the caret line may have changed.
+            NotifyCaretMovedIfChanged();
+        }
+
+        /// <summary>
+        /// Fires <see cref="CaretMoved"/> when the caret has moved to a different line.
+        /// Call after every operation that may change <c>_cursorLine</c>.
+        /// </summary>
+        private void NotifyCaretMovedIfChanged()
+        {
             if (_cursorLine != _lastNotifiedCursorLine)
             {
                 _lastNotifiedCursorLine = _cursorLine;
@@ -4237,6 +4246,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _selection.Start = textPos;
                     _selection.End = textPos;
                     InvalidateVisual();
+                    NotifyCaretMovedIfChanged();
                     return;
                 }
             }
@@ -4283,6 +4293,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             InvalidateVisual();
+            NotifyCaretMovedIfChanged();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

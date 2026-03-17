@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using CE = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
@@ -137,13 +138,16 @@ public sealed class CodeEditorNavigationBar : Grid
         _parseCts?.Cancel();
         _parseCts = new CancellationTokenSource();
         var ct    = _parseCts.Token;
-        var lines = _editor?.Document?.Lines as IReadOnlyList<CodeLine>;
+        var lines = _editor?.Document?.Lines;
         if (lines == null) return;
+
+        // Snapshot on the UI thread before handing off — ObservableCollection is not thread-safe.
+        var linesCopy = lines.ToArray();
 
         Task.Delay(500, ct).ContinueWith(_ =>
         {
             if (ct.IsCancellationRequested) return;
-            var snapshot = CodeStructureParser.Parse(lines);
+            var snapshot = CodeStructureParser.Parse(linesCopy);
             Dispatcher.InvokeAsync(() =>
             {
                 if (ct.IsCancellationRequested) return;
@@ -236,10 +240,45 @@ public sealed class CodeEditorNavigationBar : Grid
             FontSize            = 11,
             BorderThickness     = new Thickness(0),
             IsEditable          = false,
+            ItemTemplate        = BuildItemTemplate(),
         };
         cb.SetResourceReference(Control.BackgroundProperty,  "CE_NavBarBg");
         cb.SetResourceReference(Control.ForegroundProperty,  "CE_Foreground");
         cb.SetResourceReference(Control.BorderBrushProperty, "CE_NavBarBorder");
         return cb;
+    }
+
+    /// <summary>
+    /// Builds a DataTemplate that renders a NavigationBarItem as:
+    ///   [IconGlyph TextBlock]  [Name TextBlock]
+    /// Icon colour comes from NavigationBarItem.IconBrush (VS2022 palette).
+    /// </summary>
+    private static DataTemplate BuildItemTemplate()
+    {
+        // Root: horizontal StackPanel
+        var panel = new FrameworkElementFactory(typeof(StackPanel));
+        panel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+        panel.SetValue(StackPanel.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+        // Icon glyph — width 18, centred, bound to IconGlyph + IconBrush
+        var icon = new FrameworkElementFactory(typeof(TextBlock));
+        icon.SetValue(TextBlock.WidthProperty,               18.0);
+        icon.SetValue(TextBlock.TextAlignmentProperty,       TextAlignment.Center);
+        icon.SetValue(TextBlock.FontWeightProperty,          FontWeights.Bold);
+        icon.SetValue(TextBlock.FontSizeProperty,            10.0);
+        icon.SetValue(TextBlock.VerticalAlignmentProperty,   VerticalAlignment.Center);
+        icon.SetBinding(TextBlock.TextProperty,              new Binding(nameof(NavigationBarItem.IconGlyph)));
+        icon.SetBinding(TextBlock.ForegroundProperty,        new Binding(nameof(NavigationBarItem.IconBrush)));
+
+        // Member name — small left margin, inherits combo foreground
+        var name = new FrameworkElementFactory(typeof(TextBlock));
+        name.SetValue(TextBlock.MarginProperty,              new Thickness(2, 0, 0, 0));
+        name.SetValue(TextBlock.VerticalAlignmentProperty,   VerticalAlignment.Center);
+        name.SetBinding(TextBlock.TextProperty,              new Binding(nameof(NavigationBarItem.Name)));
+
+        panel.AppendChild(icon);
+        panel.AppendChild(name);
+
+        return new DataTemplate { VisualTree = panel };
     }
 }
