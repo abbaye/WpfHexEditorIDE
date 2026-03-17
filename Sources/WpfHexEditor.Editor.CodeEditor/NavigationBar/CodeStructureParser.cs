@@ -66,6 +66,12 @@ public static class CodeStructureParser
         @"[\w<>\[\],\?\s]+\s+([\w_]+)\s*(?:;|=[^>=])",
         RegexOptions.Compiled);
 
+    // Enum value: bare PascalCase identifier optionally followed by = literal and/or comma.
+    // Only tested when currentTypeKind == TypeKind.Enum to avoid false positives elsewhere.
+    private static readonly Regex s_enumValue = new(
+        @"^\s*([A-Z]\w*)\s*(?:=\s*[^\s,]+)?\s*,?\s*$",
+        RegexOptions.Compiled);
+
     // Lines to ignore (avoid false positives)
     private static readonly Regex s_skipLine = new(
         @"^\s*(?://|/\*|\*|#|using\s|var\s|return\s|if\s*\(|else|for\s*\(|foreach|while|switch|catch|finally|throw|new\s)",
@@ -83,8 +89,9 @@ public static class CodeStructureParser
         var types      = new List<NavigationBarItem>();
         var members    = new List<NavigationBarItem>();
 
-        string currentNamespace = "(global)";
-        string currentType      = string.Empty;
+        string   currentNamespace = "(global)";
+        string   currentType      = string.Empty;
+        TypeKind currentTypeKind  = TypeKind.Unknown;
 
         for (int i = 0; i < lines.Count; i++)
         {
@@ -125,12 +132,28 @@ public static class CodeStructureParser
                 string keyword = m.Groups[1].Value;
                 string name    = m.Groups[2].Value;
                 var    kind    = ParseTypeKind(keyword);
-                currentType = name;
+                currentType     = name;
+                currentTypeKind = kind;
                 types.Add(new NavigationBarItem(
                     NavigationItemKind.Type, name,
                     QualifiedName(currentNamespace, name),
                     i, kind));
                 continue;
+            }
+
+            // ── Enum value (only when current type is an enum) ────────────
+            if (currentTypeKind == TypeKind.Enum)
+            {
+                m = s_enumValue.Match(text);
+                if (m.Success)
+                {
+                    string name = m.Groups[1].Value;
+                    members.Add(new NavigationBarItem(
+                        NavigationItemKind.Member, name,
+                        QualifiedName(currentType, name),
+                        i, MemberKind: MemberKind.Field));  // Field icon matches VS enum-value icon
+                    continue;
+                }
             }
 
             // ── Event (test before property/field — 'event' keyword is unambiguous) ──
