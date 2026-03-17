@@ -77,10 +77,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
                 txtArr[i]  = needArr[i] ? line.Text : string.Empty;
             }
 
+            // Fast-path: nothing dirty in the buffer — skip thread pool work entirely.
+            bool anyDirty = false;
+            for (int i = 0; i < count; i++) { if (needArr[i]) { anyDirty = true; break; } }
+            if (!anyDirty) return;
+
             var syncCtx = _syncContext;
 
             Task.Run(() =>
             {
+                int highlighted = 0;
+
                 // Pass 1: visible range first (lowest latency)
                 for (int i = 0; i < count && !token.IsCancellationRequested; i++)
                 {
@@ -92,11 +99,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
 
                     if (li < lines.Count && !token.IsCancellationRequested)
                     {
-                        // Assign a new list (TokensCache may be null when dirty — P1-CE-05 fix).
                         lines[li].TokensCache       = new System.Collections.Generic.List<WpfHexEditor.Editor.CodeEditor.Helpers.SyntaxHighlightToken>(tokens);
                         lines[li].IsCacheDirty      = false;
                         lines[li].IsGlyphCacheDirty = true; // force GlyphRun rebuild on next render
                         lines[li].GlyphRunCache     = null;
+                        highlighted++;
                     }
                 }
 
@@ -115,10 +122,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
                         lines[li].IsCacheDirty      = false;
                         lines[li].IsGlyphCacheDirty = true;
                         lines[li].GlyphRunCache     = null;
+                        highlighted++;
                     }
                 }
 
-                if (!token.IsCancellationRequested && syncCtx is not null)
+                // Only notify the UI when at least one visible line was actually re-highlighted,
+                // preventing a render-loop: OnRender → ScheduleAsync → HighlightsComputed → InvalidateVisual → OnRender.
+                if (highlighted > 0 && !token.IsCancellationRequested && syncCtx is not null)
                 {
                     int completedFirst = firstVisible;
                     int completedLast  = Math.Min(lastVisible, bufEnd);

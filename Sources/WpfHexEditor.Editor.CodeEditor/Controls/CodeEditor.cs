@@ -209,6 +209,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // Background highlight pipeline (P1-CE-06)
         private readonly Services.HighlightPipelineService _highlightPipeline = new();
+        // Last visible range that was submitted to the pipeline — avoids re-scheduling when unchanged.
+        private int _lastHighlightFirst = -1;
+        private int _lastHighlightLast  = -1;
 
         private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
         private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
@@ -2407,13 +2410,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_frameCount++ % 60 == 0)
                 _document.CleanupTokenCache(MaxCachedLines);
 
-            // Schedule background highlighting for visible + buffer range (P1-CE-06)
-            _highlightPipeline.ScheduleAsync(
-                _document.Lines,
-                _firstVisibleLine,
-                _lastVisibleLine,
-                _highlighter,
-                ExternalHighlighter);
+            // Schedule background highlighting only when the visible range changed or dirty lines exist.
+            // Never re-schedule from a render triggered by the pipeline itself (breaks render loop).
+            bool rangeChanged = _firstVisibleLine != _lastHighlightFirst || _lastVisibleLine != _lastHighlightLast;
+            bool hasDirty     = false;
+            if (!rangeChanged)
+            {
+                int lo = Math.Max(0, _firstVisibleLine);
+                int hi = Math.Min(_document.Lines.Count - 1, _lastVisibleLine);
+                for (int i = lo; i <= hi; i++)
+                {
+                    if (_document.Lines[i].IsCacheDirty) { hasDirty = true; break; }
+                }
+            }
+            if (rangeChanged || hasDirty)
+            {
+                _lastHighlightFirst = _firstVisibleLine;
+                _lastHighlightLast  = _lastVisibleLine;
+                _highlightPipeline.ScheduleAsync(
+                    _document.Lines,
+                    _firstVisibleLine,
+                    _lastVisibleLine,
+                    _highlighter,
+                    ExternalHighlighter);
+            }
         }
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
@@ -4586,6 +4606,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Invalidate line-number cache for the changed line (P1-CE-03)
             _lineNumberCache.Remove(changedLine);
+
+            // Reset highlight tracking so the next render re-schedules the pipeline (content changed).
+            _lastHighlightFirst = -1;
+            _lastHighlightLast  = -1;
 
             // InvalidateMeasure triggers full layout pass → UpdateScrollBars (ranges may have changed)
             InvalidateMeasure();
