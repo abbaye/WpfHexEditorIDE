@@ -38,6 +38,7 @@ internal sealed class GutterControl : FrameworkElement
     private int                        _firstVisibleLine;
     private int                        _lastVisibleLine;
     private double                     _topMargin;
+    private double                     _scrollFraction; // sub-pixel smooth-scroll offset from CodeEditor
 
     // Hit-test rectangles built during OnRender (line → rect).
     private readonly List<(Rect rect, int line)> _hitRects = new();
@@ -86,17 +87,22 @@ internal sealed class GutterControl : FrameworkElement
     /// Updates the layout parameters the gutter needs to align markers with
     /// the code editor lines.  Call before <see cref="UIElement.InvalidateVisual"/>.
     /// </summary>
-    public void Update(double lineHeight, int firstVisible, int lastVisible, double topMargin)
+    public void Update(double lineHeight, int firstVisible, int lastVisible,
+                       double topMargin, double scrollFraction)
     {
         // Only invalidate when something actually changed (called on every CodeEditor OnRender).
-        if (_lineHeight == lineHeight && _firstVisibleLine == firstVisible
-            && _lastVisibleLine == lastVisible && _topMargin == topMargin)
+        if (_lineHeight       == lineHeight     &&
+            _firstVisibleLine == firstVisible   &&
+            _lastVisibleLine  == lastVisible    &&
+            _topMargin        == topMargin      &&
+            _scrollFraction   == scrollFraction)
             return;
 
         _lineHeight       = lineHeight;
         _firstVisibleLine = firstVisible;
         _lastVisibleLine  = lastVisible;
         _topMargin        = topMargin;
+        _scrollFraction   = scrollFraction;
         InvalidateVisual();
     }
 
@@ -118,7 +124,11 @@ internal sealed class GutterControl : FrameworkElement
             if (startLine < _firstVisibleLine || startLine > _lastVisibleLine)
                 continue;
 
-            double y = _topMargin + ((startLine - _firstVisibleLine) * _lineHeight);
+            // Count non-hidden lines between _firstVisibleLine and startLine for fold-aware Y.
+            int visIdx = 0;
+            for (int i = _firstVisibleLine; i < startLine; i++)
+                if (_engine == null || !_engine.IsLineHidden(i)) visIdx++;
+            double y = _topMargin + _scrollFraction + visIdx * _lineHeight;
             double markerY = y + (_lineHeight - MarkerSize) / 2.0;
             double markerX = (ActualWidth - MarkerSize) / 2.0;
 

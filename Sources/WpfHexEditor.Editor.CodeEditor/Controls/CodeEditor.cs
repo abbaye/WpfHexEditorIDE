@@ -143,6 +143,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Debounce timer for textDocument/didChange — 300 ms after last keystroke.
         private System.Windows.Threading.DispatcherTimer? _lspChangeTimer;
 
+        // Inline "Find All References" popup (lazily created on first use).
+        private ReferencesPopup? _referencesPopup;
+
+        /// <summary>
+        /// Routed command for "Find All References" — default gesture Shift+F12,
+        /// matching the Visual Studio keyboard binding.
+        /// </summary>
+        public static readonly RoutedUICommand FindAllReferencesCommand = new(
+            "Find All References",
+            "FindAllReferences",
+            typeof(CodeEditor),
+            new InputGestureCollection { new KeyGesture(Key.F12, ModifierKeys.Shift) });
+
         #endregion
 
         #region Fields - Validation (Phase 5)
@@ -388,6 +401,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 SetValue(EnableIntelliSenseProperty, value);
                 _enableIntelliSense = value;
             }
+        }
+
+        public static readonly DependencyProperty EnableFindAllReferencesProperty =
+            DependencyProperty.Register(nameof(EnableFindAllReferences), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// When false, the Find All References command (Shift+F12) and its
+        /// context-menu item are disabled regardless of LSP availability.
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Enable Find All References")]
+        [Description("Enables the Find All References command (Shift+F12) via the language server.")]
+        public bool EnableFindAllReferences
+        {
+            get => (bool)GetValue(EnableFindAllReferencesProperty);
+            set => SetValue(EnableFindAllReferencesProperty, value);
         }
 
         public static readonly DependencyProperty EnableValidationProperty =
@@ -1536,8 +1566,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (options.FontSize is > 6 and < 72)
                 EditorFontSize = options.FontSize;
 
-            ShowLineNumbers  = options.ShowLineNumbers;
-            ShowScopeGuides  = options.ShowScopeGuides;
+            ShowLineNumbers          = options.ShowLineNumbers;
+            ShowScopeGuides          = options.ShowScopeGuides;
+            EnableFindAllReferences  = options.EnableFindAllReferences;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
             // A null override clears the local value so DynamicResource (CE_*) takes effect again.
@@ -1960,6 +1991,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Separator
             contextMenu.Items.Add(new Separator());
 
+            // Find All References (LSP)
+            var findRefsMenuItem = new MenuItem
+            {
+                Header           = "Find All _References",
+                InputGestureText = "Shift+F12",
+                Command          = FindAllReferencesCommand,
+                CommandTarget    = this
+            };
+            contextMenu.Items.Add(findRefsMenuItem);
+
+            // Dynamically enable/disable the item when the menu opens.
+            contextMenu.Opened += (_, _) =>
+                findRefsMenuItem.IsEnabled = EnableFindAllReferences
+                                             && _document is not null;
+
+            // Separator
+            contextMenu.Items.Add(new Separator());
+
             // Format JSON
             var formatJsonMenuItem = new MenuItem
             {
@@ -2086,6 +2135,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Replace
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Replace,
                 (sender, e) => ShowReplaceDialog()));
+
+            // Find All References (Shift+F12) — works with or without an LSP client.
+            CommandBindings.Add(new CommandBinding(
+                FindAllReferencesCommand,
+                async (_, _) => await FindAllReferencesAsync(),
+                (_, e) => e.CanExecute = EnableFindAllReferences
+                                         && _document is not null));
         }
 
         private void FormatJsonMenuItem_Click(object sender, RoutedEventArgs e)
@@ -2636,7 +2692,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 foreach (char c in text)
                 {
                     if      (c == ' ')  spaces++;
-                    else if (c == '\t') spaces += TabSize;
+                    else if (c == '\t') spaces += IndentSize;
                     else break;
                 }
                 return spaces > 0 ? textX + spaces * _charWidth : textX;
@@ -3095,7 +3151,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             // Sync gutter layout with the newly computed visible range.
-            _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin);
+            // Pass scroll fraction so gutter markers follow smooth-scroll sub-pixel offset.
+            double gutterScrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                : 0.0;
+            _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
+                                   TopMargin, gutterScrollFraction);
         }
 
         /// <summary>
@@ -5653,6 +5714,253 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateVisual();
         }
 
+        // -- Find All References (LSP) ------------------------------------
+
+        /// <summary>
+        /// Returns the identifier word (letters, digits, underscore) at the current caret
+        /// position, or <see cref="string.Empty"/> when the caret is not on a word character.
+        /// Reuses the same boundary logic as <see cref="SelectWordAtPosition"/>.
+        /// </summary>
+        private string GetWordAtCursor()
+        {
+            if (_document is null
+                || _cursorLine  < 0
+                || _cursorLine  >= _document.Lines.Count)
+                return string.Empty;
+
+            var lineText = _document.Lines[_cursorLine].Text;
+            if (string.IsNullOrEmpty(lineText) || _cursorColumn > lineText.Length)
+                return string.Empty;
+
+            // Snap column to valid range
+            int col   = Math.Min(_cursorColumn, lineText.Length - 1);
+            if (!IsWordChar(lineText[col]))
+                return string.Empty;
+
+            int start = col;
+            int end   = col;
+
+            while (start > 0 && IsWordChar(lineText[start - 1]))
+                start--;
+
+            while (end < lineText.Length && IsWordChar(lineText[end]))
+                end++;
+
+            return lineText[start..end];
+        }
+
+        /// <summary>
+        /// Invokes <c>textDocument/references</c> for the symbol at the caret, groups
+        /// the results by file, reads snippets, then shows <see cref="ReferencesPopup"/>.
+        /// </summary>
+        private async Task FindAllReferencesAsync()
+        {
+            if (_document is null) return;
+
+            var symbol = GetWordAtCursor();
+            if (string.IsNullOrEmpty(symbol))
+            {
+                StatusMessage?.Invoke(this, "Place the caret on a symbol to find references.");
+                return;
+            }
+
+            List<ReferenceGroup> groups;
+
+            // ── LSP path (preferred when a language server is running) ─────────
+            if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+            {
+                using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+                IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locations;
+                try
+                {
+                    locations = await _lspClient.ReferencesAsync(
+                        _currentFilePath, _cursorLine, _cursorColumn, cts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    StatusMessage?.Invoke(this, "Find References timed out — falling back to local scan.");
+                    locations = Array.Empty<WpfHexEditor.Editor.Core.LSP.LspLocation>();
+                }
+
+                if (locations.Count > 0)
+                {
+                    groups = BuildGroupsFromLspLocations(locations, symbol);
+                    ShowReferencesPopup(groups, symbol, locations.Count, source: "LSP");
+                    return;
+                }
+                // Fall through to local scan when LSP returns no results.
+            }
+
+            // ── Local scan fallback — searches the current document ───────────
+            groups = BuildGroupsFromLocalScan(symbol);
+            int total = groups.Sum(g => g.Items.Count);
+
+            if (total == 0)
+            {
+                StatusMessage?.Invoke(this, $"No occurrences of '{symbol}' found.");
+                return;
+            }
+
+            ShowReferencesPopup(groups, symbol, total, source: "local");
+        }
+
+        /// <summary>
+        /// Converts LSP location results into <see cref="ReferenceGroup"/> list,
+        /// reading snippets from the in-memory document or disk.
+        /// </summary>
+        private List<ReferenceGroup> BuildGroupsFromLspLocations(
+            IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locations,
+            string symbol)
+        {
+            var byFile = new Dictionary<string, List<WpfHexEditor.Editor.Core.LSP.LspLocation>>(
+                StringComparer.OrdinalIgnoreCase);
+
+            foreach (var loc in locations)
+            {
+                var path = UriToFilePath(loc.Uri);
+                if (!byFile.TryGetValue(path, out var list))
+                    byFile[path] = list = new List<WpfHexEditor.Editor.Core.LSP.LspLocation>();
+                list.Add(loc);
+            }
+
+            var groups = new List<ReferenceGroup>(byFile.Count);
+            foreach (var (filePath, locs) in byFile)
+            {
+                string[]? lines = null;
+                if (filePath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                    lines = _document.Lines.Select(l => l.Text).ToArray();
+                else if (File.Exists(filePath))
+                    lines = File.ReadAllLines(filePath);
+
+                var items = new List<ReferenceItem>(locs.Count);
+                foreach (var loc in locs)
+                {
+                    var raw = (lines != null && loc.StartLine < lines.Length)
+                        ? lines[loc.StartLine]
+                        : string.Empty;
+                    if (raw.Length > 200) raw = raw[..200];
+
+                    items.Add(new ReferenceItem
+                    {
+                        Line    = loc.StartLine,
+                        Column  = loc.StartColumn,
+                        Snippet = raw.TrimStart()
+                    });
+                }
+
+                groups.Add(new ReferenceGroup
+                {
+                    FilePath     = filePath,
+                    DisplayLabel = Path.GetFileName(filePath),
+                    Items        = items
+                });
+            }
+
+            return groups;
+        }
+
+        /// <summary>
+        /// Scans the current in-memory document for all whole-word occurrences of
+        /// <paramref name="symbol"/> and returns them as a single-file
+        /// <see cref="ReferenceGroup"/>. Used when no LSP client is available.
+        /// </summary>
+        private List<ReferenceGroup> BuildGroupsFromLocalScan(string symbol)
+        {
+            var items = new List<ReferenceItem>();
+
+            for (int lineIdx = 0; lineIdx < _document.Lines.Count; lineIdx++)
+            {
+                var lineText = _document.Lines[lineIdx].Text;
+                if (string.IsNullOrEmpty(lineText)) continue;
+
+                int col = 0;
+                while (true)
+                {
+                    int pos = lineText.IndexOf(symbol, col, StringComparison.Ordinal);
+                    if (pos < 0) break;
+
+                    // Whole-word boundary check — skip if adjacent chars are word chars.
+                    bool leftOk  = pos == 0                       || !IsWordChar(lineText[pos - 1]);
+                    bool rightOk = pos + symbol.Length >= lineText.Length
+                                   || !IsWordChar(lineText[pos + symbol.Length]);
+
+                    if (leftOk && rightOk)
+                    {
+                        var snippet = lineText.Length > 200 ? lineText[..200] : lineText;
+                        items.Add(new ReferenceItem
+                        {
+                            Line    = lineIdx,
+                            Column  = pos,
+                            Snippet = snippet.TrimStart()
+                        });
+                    }
+
+                    col = pos + symbol.Length;
+                }
+            }
+
+            if (items.Count == 0) return new List<ReferenceGroup>();
+
+            return new List<ReferenceGroup>
+            {
+                new ReferenceGroup
+                {
+                    FilePath     = _currentFilePath ?? string.Empty,
+                    DisplayLabel = _currentFilePath is not null
+                                   ? Path.GetFileName(_currentFilePath)
+                                   : "(unsaved document)",
+                    Items        = items
+                }
+            };
+        }
+
+        /// <summary>
+        /// Computes the anchor Point, shows the popup and updates the status bar.
+        /// </summary>
+        private void ShowReferencesPopup(
+            List<ReferenceGroup> groups, string symbol, int total, string source)
+        {
+            int visLineOffset = _cursorLine - _firstVisibleLine;
+            double lh = _lineHeight > 0 ? _lineHeight : 16.0;
+            double cw = _charWidth  > 0 ? _charWidth  : 8.0;
+            double x  = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + _cursorColumn * cw;
+            double y  = TopMargin + visLineOffset * lh + lh + 2;
+            var anchor = new Point(x, y);
+
+            _referencesPopup ??= new ReferencesPopup();
+            _referencesPopup.NavigationRequested -= OnReferencesNavigationRequested;
+            _referencesPopup.NavigationRequested += OnReferencesNavigationRequested;
+
+            _referencesPopup.Show(this, groups, symbol, anchor);
+            StatusMessage?.Invoke(this,
+                $"{total} occurrence{(total != 1 ? "s" : "")} of '{symbol}' ({source}).");
+        }
+
+        /// <summary>Converts a <c>file:///</c> URI to a local file-system path.</summary>
+        private static string UriToFilePath(string uri)
+        {
+            if (uri.StartsWith("file:///", StringComparison.OrdinalIgnoreCase))
+                return Uri.UnescapeDataString(uri[8..]).Replace('/', Path.DirectorySeparatorChar);
+            if (uri.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+                return Uri.UnescapeDataString(uri[7..]).Replace('/', Path.DirectorySeparatorChar);
+            return uri;
+        }
+
+        /// <summary>
+        /// Routes a reference-popup navigation event: same-file → local scroll;
+        /// different file → propagates to the IDE host.
+        /// </summary>
+        private void OnReferencesNavigationRequested(
+            object? sender, ReferencesNavigationEventArgs e)
+        {
+            _referencesPopup?.Close();
+
+            if (e.FilePath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                NavigateToLine(e.Line);
+            else
+                ReferenceNavigationRequested?.Invoke(this, e);
+        }
+
         // -- Public methods (IDocumentEditor) -----------------------------
 
         void IDocumentEditor.Copy() => CopyToClipboard();
@@ -5688,6 +5996,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         /// <summary>Fired when the caret moves to a different line (debounced to line-level changes).</summary>
         public event EventHandler? CaretMoved;
+
+        /// <summary>
+        /// Raised when the user navigates to a reference in a different file via the
+        /// Find All References popup. The host should open the target file and move
+        /// the caret to the specified position.
+        /// </summary>
+        public event EventHandler<ReferencesNavigationEventArgs>? ReferenceNavigationRequested;
 
         public event EventHandler? ModifiedChanged;
         public event EventHandler? CanUndoChanged;
