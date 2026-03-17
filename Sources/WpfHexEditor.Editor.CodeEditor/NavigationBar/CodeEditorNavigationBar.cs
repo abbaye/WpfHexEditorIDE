@@ -260,12 +260,13 @@ public sealed class CodeEditorNavigationBar : Grid
         panel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
         panel.SetValue(StackPanel.VerticalAlignmentProperty, VerticalAlignment.Center);
 
-        // Icon glyph — width 18, centred, bound to IconGlyph + IconBrush
+        // Icon — small ■ square (8 px, normal weight) matching VS Solution Explorer badge style.
+        // Width 16 keeps it tight; colour alone differentiates kind.
         var icon = new FrameworkElementFactory(typeof(TextBlock));
-        icon.SetValue(TextBlock.WidthProperty,               18.0);
+        icon.SetValue(TextBlock.WidthProperty,               16.0);
         icon.SetValue(TextBlock.TextAlignmentProperty,       TextAlignment.Center);
-        icon.SetValue(TextBlock.FontWeightProperty,          FontWeights.Bold);
-        icon.SetValue(TextBlock.FontSizeProperty,            10.0);
+        icon.SetValue(TextBlock.FontWeightProperty,          FontWeights.Normal);
+        icon.SetValue(TextBlock.FontSizeProperty,            8.0);
         icon.SetValue(TextBlock.VerticalAlignmentProperty,   VerticalAlignment.Center);
         icon.SetBinding(TextBlock.TextProperty,              new Binding(nameof(NavigationBarItem.IconGlyph)));
         icon.SetBinding(TextBlock.ForegroundProperty,        new Binding(nameof(NavigationBarItem.IconBrush)));

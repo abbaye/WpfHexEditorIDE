@@ -31,24 +31,10 @@ public sealed record NavigationBarItem(
     MemberKind         MemberKind = MemberKind.Unknown)
 {
     // ── Icon glyph ────────────────────────────────────────────────────────────
-    // Short labels that mirror VS2022 class-view icon semantics.
-    public string IconGlyph => (Kind, TypeKind, MemberKind) switch
-    {
-        (NavigationItemKind.Namespace, _, _)                        => "{}",
-        (NavigationItemKind.Type, TypeKind.Class, _)                => "C",
-        (NavigationItemKind.Type, TypeKind.Interface, _)            => "I",
-        (NavigationItemKind.Type, TypeKind.Struct, _)               => "S",
-        (NavigationItemKind.Type, TypeKind.Enum, _)                 => "E",
-        (NavigationItemKind.Type, TypeKind.Record, _)               => "R",
-        (NavigationItemKind.Type, TypeKind.Delegate, _)             => "D",
-        (NavigationItemKind.Member, _, MemberKind.Method)           => "M",
-        (NavigationItemKind.Member, _, MemberKind.Constructor)      => "⊕",
-        (NavigationItemKind.Member, _, MemberKind.Property)         => "P",
-        (NavigationItemKind.Member, _, MemberKind.Indexer)          => "[ ]",
-        (NavigationItemKind.Member, _, MemberKind.Field)            => "F",
-        (NavigationItemKind.Member, _, MemberKind.Event)            => "Ev",
-        _                                                           => "•",
-    };
+    // VS2022 style: small filled square (■ U+25A0) for types and members;
+    // colour alone differentiates the kind, exactly as in the Solution Explorer.
+    // Namespace uses "{}" to stay visually distinct in the leftmost combo.
+    public string IconGlyph => Kind == NavigationItemKind.Namespace ? "{}" : "\u25A0";
 
     // ── Icon colour — VS2022 member palette (same as AssemblyExplorer) ────────
     public Brush IconBrush => MakeBrush((Kind, TypeKind, MemberKind) switch
