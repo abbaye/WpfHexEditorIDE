@@ -112,6 +112,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Prevents dispatcher queue flooding at high mouse-event rates (200–1000 Hz).
         private bool _selectionRenderPending;
 
+        // Auto-scroll during drag: fires at 50 ms intervals when the mouse is outside
+        // the visible viewport while a selection drag is in progress.
+        private System.Windows.Threading.DispatcherTimer _autoScrollTimer;
+        private Point _lastMousePosition;
+
         #endregion
 
         #region Fields - IntelliSense (Phase 4)
@@ -138,8 +143,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Fields - Validation (Phase 5)
 
         private List<Models.ValidationError> _validationErrors = new List<Models.ValidationError>();
+        // O(1) lookup for RenderValidationGlyph — rebuilt whenever _validationErrors changes (OPT-PERF-01).
+        private Dictionary<int, List<Models.ValidationError>> _validationByLine = new();
         private FormatSchemaValidator _validator;
         private System.Windows.Threading.DispatcherTimer _validationTimer;
+
+        // Cached frozen pens for squiggly-line rendering — avoids per-error Pen allocations (OPT-PERF-02).
+        private static readonly Pen s_squigglyError   = MakeSquigglyPen(Colors.Red);
+        private static readonly Pen s_squigglyWarning = MakeSquigglyPen(Color.FromRgb(255, 165, 0));
+        private static readonly Pen s_squigglyInfo    = MakeSquigglyPen(Colors.Blue);
+
+        private static readonly Pen s_lineNumberSeparatorPen = MakeFrozenPen(Color.FromRgb(200, 200, 200), 1.0);
+        private static readonly Pen s_glyphInnerPen          = MakeFrozenPen(Colors.White, 1.5);
+
+        private static Pen MakeSquigglyPen(Color color) => MakeFrozenPen(color, 1.5);
+
+        private static Pen MakeFrozenPen(Color color, double thickness)
+        {
+            var pen = new Pen(new SolidColorBrush(color), thickness);
+            pen.Brush.Freeze();
+            pen.Freeze();
+            return pen;
+        }
 
         #endregion
 
@@ -348,6 +373,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 else
                 {
                     _validationErrors.Clear();
+                    _validationByLine.Clear();
                     DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -464,7 +490,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public static readonly DependencyProperty LineHeightMultiplierProperty =
             DependencyProperty.Register(nameof(LineHeightMultiplier), typeof(double), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(1.3, FrameworkPropertyMetadataOptions.AffectsRender,
+                new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.AffectsRender,
                     OnFontChanged));
 
         [Category("Appearance.Fonts")]
@@ -616,15 +642,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         public static readonly DependencyProperty InactiveSelectionBackgroundProperty =
-            DependencyProperty.Register(nameof(InactiveSelectionBackground), typeof(Color), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(Color.FromArgb(50, 128, 128, 128), FrameworkPropertyMetadataOptions.AffectsRender));
+            DependencyProperty.Register(nameof(InactiveSelectionBackground), typeof(Brush), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(new SolidColorBrush(Color.FromRgb(62, 62, 66)),
+                    FrameworkPropertyMetadataOptions.AffectsRender));
 
         [Category("Appearance.Colors")]
         [DisplayName("Inactive Selection Background")]
-        [Description("Selection background color when editor loses focus")]
-        public Color InactiveSelectionBackground
+        [Description("Selection background color when editor loses focus (VS-like grayed selection)")]
+        public Brush InactiveSelectionBackground
         {
-            get => (Color)GetValue(InactiveSelectionBackgroundProperty);
+            get => (Brush)GetValue(InactiveSelectionBackgroundProperty);
             set => SetValue(InactiveSelectionBackgroundProperty, value);
         }
 
@@ -1348,6 +1375,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _smoothScrollTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
             _smoothScrollTimer.Tick += SmoothScrollTimer_Tick;
 
+            // Auto-scroll timer: scrolls the viewport while the mouse is held outside
+            // bounds during a drag-selection (50 ms → ~20 scroll steps/s).
+            _autoScrollTimer = new System.Windows.Threading.DispatcherTimer();
+            _autoScrollTimer.Interval = TimeSpan.FromMilliseconds(50);
+            _autoScrollTimer.Tick += AutoScrollTimer_Tick;
+
             // Initialize ScrollBar visual children (vertical + horizontal)
             _scrollBarChildren = new VisualCollection(this);
             _vScrollBar = new System.Windows.Controls.Primitives.ScrollBar
@@ -1398,8 +1431,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             SetResourceReference(LineNumberBackgroundProperty,  "CE_LineNumBg");
             SetResourceReference(LineNumberForegroundProperty,  "CE_LineNumFg");
             SetResourceReference(CurrentLineBackgroundProperty, "CE_CurrentLine");
-            SetResourceReference(SelectionBackgroundProperty,   "CE_Selection");
-            SetResourceReference(CaretColorProperty,            "TE_CaretColor");
+            SetResourceReference(SelectionBackgroundProperty,          "CE_Selection");
+            SetResourceReference(InactiveSelectionBackgroundProperty,  "CE_SelectionInactive");
+            SetResourceReference(CaretColorProperty,                   "TE_CaretColor");
 
             // Syntax highlighting — CE_* for semantically named token colors
             SetResourceReference(SyntaxKeyColorProperty,              "CE_Identifier");
@@ -1650,6 +1684,45 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Auto-scroll timer tick handler.
+        /// Fires at 50 ms intervals while the mouse is held outside the viewport
+        /// during a drag-selection. Scrolls the viewport and extends the selection
+        /// to the clamped text position matching the mouse location.
+        /// </summary>
+        private void AutoScrollTimer_Tick(object sender, EventArgs e)
+        {
+            if (!_isSelecting)
+            {
+                _autoScrollTimer.Stop();
+                return;
+            }
+
+            double mouseY = _lastMousePosition.Y;
+
+            // Scroll speed scales with how far outside the edge the mouse is.
+            double delta = 0;
+            if (mouseY < 0)
+                delta = Math.Max(-6 * _lineHeight, mouseY / ActualHeight * 4 * _lineHeight);
+            else if (mouseY > ActualHeight)
+                delta = Math.Min(6 * _lineHeight, (mouseY - ActualHeight) / ActualHeight * 4 * _lineHeight);
+
+            if (delta != 0)
+                ScrollVertical(delta);
+
+            // Extend selection to the clamped text position under the mouse.
+            double clampedY = Math.Max(0, Math.Min(ActualHeight - 1, mouseY));
+            var    textPos  = PixelToTextPosition(new Point(_lastMousePosition.X, clampedY));
+
+            if (textPos != _selection.End)
+            {
+                _selection.End = textPos;
+                _cursorLine    = textPos.Line;
+                _cursorColumn  = textPos.Column;
+                InvalidateVisual();
+            }
+        }
+
         #endregion
 
         #region Character Dimension Calculation
@@ -1669,7 +1742,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _charWidth  = _glyphRenderer.CharWidth;
             _charHeight = _glyphRenderer.CharHeight;
-            _lineHeight = (_charHeight + 4) * LineHeightMultiplier;
+            _lineHeight = (_charHeight + 2) * LineHeightMultiplier;
 
             // Font changed — line-number cache and GlyphRun cache are stale (P1-CE-03/05)
             _lineNumberCache.Clear();
@@ -2691,19 +2764,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _lineNumberCache[i + 1] = formattedText;
                 }
 
-                // Right-align line numbers
-                double x = LineNumberWidth - formattedText.Width - LineNumberMargin;
+                // Right-align line numbers, vertically centered within the line slot
+                double x    = LineNumberWidth - formattedText.Width - LineNumberMargin;
+                double lineY = y + (_lineHeight - formattedText.Height) / 2;
 
-                dc.DrawText(formattedText, new Point(x, y));
+                dc.DrawText(formattedText, new Point(x, lineY));
 
                 // Render validation glyphs (error/warning icons) in left margin
                 RenderValidationGlyph(dc, i, y);
             }
 
-            // Draw separator line between line numbers and text
-            var pen = new Pen(new SolidColorBrush(Color.FromRgb(200, 200, 200)), 1);
-            pen.Freeze();
-            dc.DrawLine(pen, new Point(LineNumberWidth, 0), new Point(LineNumberWidth, ActualHeight));
+            // Draw separator line between line numbers and text (cached frozen pen — OPT-PERF-02)
+            dc.DrawLine(s_lineNumberSeparatorPen, new Point(LineNumberWidth, 0), new Point(LineNumberWidth, ActualHeight));
         }
 
         /// <summary>
@@ -2711,58 +2783,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderValidationGlyph(DrawingContext dc, int line, double y)
         {
-            if (!EnableValidation || _validationErrors == null || _validationErrors.Count == 0)
-                return;
+            // OPT-PERF-01: O(1) dictionary lookup instead of O(n) LINQ scan per visible line.
+            if (!EnableValidation || _validationByLine.Count == 0) return;
+            if (!_validationByLine.TryGetValue(line, out var lineErrors)) return;
 
-            // Find errors for this line
-            var lineErrors = _validationErrors.Where(e => e.Line == line).ToList();
-            if (lineErrors.Count == 0)
-                return;
+            // Worst severity drives the glyph color (Error > Warning > Info).
+            ValidationSeverity worstSeverity = lineErrors[0].Severity;
+            for (int i = 1; i < lineErrors.Count; i++)
+                if (lineErrors[i].Severity > worstSeverity) worstSeverity = lineErrors[i].Severity;
 
-            // Determine severity - show worst one (Error > Warning > Info)
-            ValidationSeverity worstSeverity = lineErrors.Max(e => e.Severity);
+            if (worstSeverity == ValidationSeverity.Info) return; // No glyph for Info
 
-            // Determine glyph color based on severity
-            Brush glyphBrush;
-            if (worstSeverity == ValidationSeverity.Error)
-                glyphBrush = new SolidColorBrush(ValidationErrorGlyphColor);
-            else if (worstSeverity == ValidationSeverity.Warning)
-                glyphBrush = new SolidColorBrush(ValidationWarningGlyphColor);
-            else
-                return; // No glyph for Info severity
+            Brush glyphBrush = worstSeverity == ValidationSeverity.Error
+                ? s_squigglyError.Brush
+                : s_squigglyWarning.Brush;
 
-            glyphBrush.Freeze();
-
-            // Draw circle glyph in left margin area (before line numbers)
             double glyphSize = Math.Min(_lineHeight * 0.6, 12);
-            double glyphX = 5; // Left margin
-            double glyphY = y + (_lineHeight - glyphSize) / 2;
+            double glyphX    = 5;
+            double glyphY    = y + (_lineHeight - glyphSize) / 2;
 
-            // Draw filled circle
             dc.DrawEllipse(glyphBrush, null, new Point(glyphX + glyphSize / 2, glyphY + glyphSize / 2), glyphSize / 2, glyphSize / 2);
-
-            // Draw exclamation mark or X symbol inside
-            var pen = new Pen(Brushes.White, 1.5);
-            pen.Freeze();
 
             if (worstSeverity == ValidationSeverity.Error)
             {
-                // Draw X for errors
                 double offset = glyphSize * 0.25;
-                dc.DrawLine(pen,
-                    new Point(glyphX + offset, glyphY + offset),
-                    new Point(glyphX + glyphSize - offset, glyphY + glyphSize - offset));
-                dc.DrawLine(pen,
-                    new Point(glyphX + glyphSize - offset, glyphY + offset),
-                    new Point(glyphX + offset, glyphY + glyphSize - offset));
+                dc.DrawLine(s_glyphInnerPen, new Point(glyphX + offset, glyphY + offset),             new Point(glyphX + glyphSize - offset, glyphY + glyphSize - offset));
+                dc.DrawLine(s_glyphInnerPen, new Point(glyphX + glyphSize - offset, glyphY + offset), new Point(glyphX + offset, glyphY + glyphSize - offset));
             }
             else
             {
-                // Draw ! for warnings
                 double centerX = glyphX + glyphSize / 2;
-                dc.DrawLine(pen,
-                    new Point(centerX, glyphY + glyphSize * 0.2),
-                    new Point(centerX, glyphY + glyphSize * 0.6));
+                dc.DrawLine(s_glyphInnerPen, new Point(centerX, glyphY + glyphSize * 0.2), new Point(centerX, glyphY + glyphSize * 0.6));
                 dc.DrawEllipse(Brushes.White, null, new Point(centerX, glyphY + glyphSize * 0.8), 1, 1);
             }
         }
@@ -2809,8 +2860,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_selection.IsEmpty)
                 return;
 
-            // Use InactiveSelectionBackground when not focused
-            Brush selectionBrush = IsFocused ? SelectionBackground : new SolidColorBrush(InactiveSelectionBackground);
+            // Use InactiveSelectionBackground when the editor (or any child) has no keyboard focus.
+            // IsKeyboardFocusWithin is used rather than IsFocused so that interacting with
+            // the scrollbars (child visuals) does not incorrectly dim the selection.
+            Brush selectionBrush = IsKeyboardFocusWithin ? SelectionBackground : InactiveSelectionBackground;
 
             var start = _selection.NormalizedStart;
             var end = _selection.NormalizedEnd;
@@ -3113,6 +3166,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private IEnumerable<SyntaxHighlightToken> OverlayUrlTokens(
             string lineText, int lineIndex, IEnumerable<SyntaxHighlightToken> source)
         {
+            // Fast-path: cheap string contains check avoids regex allocation on lines without URLs (OPT-PERF-04).
+            if (!lineText.Contains("http", StringComparison.OrdinalIgnoreCase)) return source;
             var matches = s_urlRegex.Matches(lineText);
             if (matches.Count == 0) return source;
 
@@ -3197,55 +3252,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double x1 = leftEdge + (error.Column * _charWidth);
                 double x2 = x1 + (error.Length * _charWidth);
 
-                // Choose color based on severity
-                Brush errorBrush;
-                switch (error.Severity)
+                // OPT-PERF-02: use pre-cached frozen pens — no allocation per error.
+                Pen squigglyPen = error.Severity switch
                 {
-                    case ValidationSeverity.Error:
-                        errorBrush = Brushes.Red;
-                        break;
-                    case ValidationSeverity.Warning:
-                        errorBrush = new SolidColorBrush(Color.FromRgb(255, 165, 0)); // Orange
-                        break;
-                    case ValidationSeverity.Info:
-                        errorBrush = Brushes.Blue;
-                        break;
-                    default:
-                        errorBrush = Brushes.Red;
-                        break;
-                }
+                    ValidationSeverity.Warning => s_squigglyWarning,
+                    ValidationSeverity.Info    => s_squigglyInfo,
+                    _                          => s_squigglyError,
+                };
 
-                // Draw squiggly line
-                DrawSquigglyLine(dc, x1, x2, y, errorBrush);
+                DrawSquigglyLine(dc, x1, x2, y, squigglyPen);
             }
         }
 
         /// <summary>
-        /// Draw a squiggly (wavy) underline
+        /// Draws a squiggly (wavy) underline using direct dc.DrawLine calls with a pre-cached pen.
+        /// Avoids StreamGeometry + Pen allocations per error per frame (OPT-PERF-02).
         /// </summary>
-        private void DrawSquigglyLine(DrawingContext dc, double x1, double x2, double y, Brush brush)
+        private static void DrawSquigglyLine(DrawingContext dc, double x1, double x2, double y, Pen pen)
         {
-            var pen = new Pen(brush, 1.5);
-            pen.Freeze();
-
-            var geometry = new StreamGeometry();
-            using (var ctx = geometry.Open())
+            double x  = x1;
+            bool   up = true;
+            while (x + 2 <= x2)
             {
-                ctx.BeginFigure(new Point(x1, y), false, false);
-
-                double x = x1;
-                bool up = true;
-
-                while (x < x2)
-                {
-                    x += 2;
-                    ctx.LineTo(new Point(x, y + (up ? -2 : 2)), true, false);
-                    up = !up;
-                }
+                double xNext = x + 2;
+                dc.DrawLine(pen, new Point(x, y), new Point(xNext, y + (up ? -2 : 2)));
+                x  = xNext;
+                up = !up;
             }
-
-            geometry.Freeze();
-            dc.DrawGeometry(null, pen, geometry);
         }
 
         /// <summary>
@@ -4068,6 +4101,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double lineScrollAmount = 3; // Scroll 3 lines per wheel notch
                 double pixelDelta = -e.Delta / 120.0 * lineScrollAmount * _lineHeight;
                 ScrollVertical(pixelDelta);
+
+                // If a drag-selection is in progress, keep the selection end anchored to
+                // the text position under the mouse after the viewport has moved.
+                if (_isSelecting)
+                {
+                    var mousePos = e.GetPosition(this);
+                    _lastMousePosition = mousePos;
+                    var textPos = PixelToTextPosition(mousePos);
+                    _selection.End = textPos;
+                    _cursorLine    = textPos.Line;
+                    _cursorColumn  = textPos.Column;
+                }
+
                 e.Handled = true;
             }
         }
@@ -4178,7 +4224,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (_isSelecting && e.LeftButton == MouseButtonState.Pressed)
             {
-                var pos     = e.GetPosition(this);
+                var pos = e.GetPosition(this);
+                _lastMousePosition = pos;
+
+                // Start or stop the auto-scroll timer based on whether the mouse
+                // is outside the visible viewport bounds.
+                bool outsideBounds = pos.Y < 0 || pos.Y > ActualHeight;
+                if (outsideBounds && !_autoScrollTimer.IsEnabled)
+                    _autoScrollTimer.Start();
+                else if (!outsideBounds && _autoScrollTimer.IsEnabled)
+                    _autoScrollTimer.Stop();
+
                 var textPos = PixelToTextPosition(pos);
 
                 // Guard: skip re-render if the selection endpoint hasn't moved to a new cell.
@@ -4210,6 +4266,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_isSelecting)
             {
                 _isSelecting = false;
+                _autoScrollTimer.Stop();
                 ReleaseMouseCapture();
             }
         }
@@ -4695,6 +4752,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 _document.ClearDirtyLines();
                 _validationErrors = _validator.Validate(textToValidate);
+                RebuildValidationIndex();
                 InvalidateVisual();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -4703,7 +4761,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Silently ignore validation errors
                 _document.ClearDirtyLines();
                 _validationErrors.Clear();
+                _validationByLine.Clear();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Rebuilds the line→errors dictionary used by RenderValidationGlyph for O(1) lookup.
+        /// Must be called whenever _validationErrors is replaced or bulk-modified (OPT-PERF-01).
+        /// </summary>
+        private void RebuildValidationIndex()
+        {
+            _validationByLine.Clear();
+            foreach (var error in _validationErrors)
+            {
+                if (!_validationByLine.TryGetValue(error.Line, out var list))
+                {
+                    list = new List<Models.ValidationError>(2);
+                    _validationByLine[error.Line] = list;
+                }
+                list.Add(error);
             }
         }
 
@@ -5065,6 +5142,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     Layer    = Models.ValidationLayer.Lsp,
                 });
             }
+            RebuildValidationIndex();
             DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             InvalidateVisual();
         }

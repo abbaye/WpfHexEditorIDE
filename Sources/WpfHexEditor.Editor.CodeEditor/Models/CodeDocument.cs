@@ -33,6 +33,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         // Dirty-line tracking (P1-CE-07) — enables incremental validation
         private readonly HashSet<int> _dirtyLines = new();
 
+        // TotalCharacters incremental cache — avoids O(n) LINQ Sum on every property notification (OPT-PERF-03).
+        private int  _totalChars      = 0;
+        private bool _totalCharsDirty = true;
+
         /// <summary>
         /// Lines that have changed since the last validation pass.
         /// Cleared by <see cref="ClearDirtyLines"/>; populated by all text-change operations.
@@ -57,6 +61,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
                 if (_lines != null)
                     _lines.CollectionChanged += Lines_CollectionChanged;
 
+                _totalCharsDirty = true;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalLines));
                 OnPropertyChanged(nameof(TotalCharacters));
@@ -69,9 +74,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         public int TotalLines => _lines?.Count ?? 0;
 
         /// <summary>
-        /// Total number of characters in document
+        /// Total number of characters in document.
+        /// Computed lazily via a for-loop (no LINQ allocator) and cached until the next mutation (OPT-PERF-03).
         /// </summary>
-        public int TotalCharacters => _lines?.Sum(l => l.Length + Environment.NewLine.Length) ?? 0;
+        public int TotalCharacters
+        {
+            get
+            {
+                if (!_totalCharsDirty) return _totalChars;
+                int total = 0;
+                int nl    = Environment.NewLine.Length;
+                if (_lines != null)
+                    foreach (var line in _lines) total += line.Length + nl;
+                _totalChars      = total;
+                _totalCharsDirty = false;
+                return _totalChars;
+            }
+        }
 
         /// <summary>
         /// Has document been modified since last save?
@@ -558,6 +577,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         {
             // Suppressed during bulk load (P1-CE-04) — single notification fired at end of batch
             if (_suppressCollectionNotifications) return;
+            _totalCharsDirty = true;
             OnPropertyChanged(nameof(TotalLines));
             OnPropertyChanged(nameof(TotalCharacters));
         }
@@ -573,6 +593,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         {
             // Track changed line for incremental validation (P1-CE-07)
             _dirtyLines.Add(e.Position.Line);
+            _totalCharsDirty = true; // character count changed — invalidate cache (OPT-PERF-03)
             TextChanged?.Invoke(this, e);
         }
 
