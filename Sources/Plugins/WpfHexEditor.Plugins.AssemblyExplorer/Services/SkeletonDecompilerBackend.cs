@@ -30,18 +30,21 @@ public sealed class SkeletonDecompilerBackend : IDecompilerBackend
     public SkeletonDecompilerBackend(DecompilerService service)
         => _service = service;
 
-    public string Name        => "Skeleton (BCL-only)";
-    public bool   IsAvailable => true;
+    public string Name             => "Skeleton (BCL-only)";
+    public bool   IsAvailable      => true;
+    public bool   OutputIsCSharpOnly => false; // Routes to VbNetSkeletonEmitter when TargetLanguageId="VBNet"
     public DecompilerOptions Options { get; set; } = DecompilerOptions.Default;
 
+    private bool IsVbNet => Options.TargetLanguageId == "VBNet";
+
     public string DecompileAssembly(AssemblyModel model, string filePath)
-        => _service.DecompileAssembly(model);
+        => IsVbNet ? _service.DecompileAssemblyVB(model) : _service.DecompileAssembly(model);
 
     public string DecompileType(TypeModel type, string filePath)
-        => _service.DecompileType(type);
+        => IsVbNet ? _service.DecompileTypeVB(type) : _service.DecompileType(type);
 
     public string DecompileMethod(MemberModel member, string filePath)
-        => _service.DecompileMethod(member);
+        => IsVbNet ? _service.DecompileMethodVB(member) : _service.DecompileMethod(member);
 
     public string GetIlText(MemberModel member, string filePath)
         => _service.GetIlText(member, filePath);

@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
 using WpfHexEditor.Editor.Core;
@@ -298,14 +299,17 @@ public partial class AssemblyExplorerPanel : UserControl
     private async Task ExecuteExtractToProjectAsync(AssemblyNodeViewModel node)
     {
         var svc      = _extractService ?? new AssemblyCodeExtractService();
-        var fileName = AssemblyCodeExtractService.SuggestFileName(node.DisplayName);
+        // Resolve the active output language so file extension and filter are correct (.cs vs .vb).
+        var langId   = ViewModel.Backend?.Options.TargetLanguageId ?? "CSharp";
+        var language = DecompilationLanguageRegistry.Get(langId) ?? CSharpDecompilationLanguage.Instance;
+        var fileName = AssemblyCodeExtractService.SuggestFileName(node.DisplayName, language);
         var (_, sourceText) = ViewModel.GetDecompiledText(node);
 
         // No WH solution active — fall back to Save-to-Disk dialog.
         if (_solutionManager is null || _solutionManager.CurrentSolution is null
             || _solutionManager.CurrentSolution.Projects.Count == 0)
         {
-            var saved = svc.ExtractToDiskViaSaveDialog(fileName, sourceText);
+            var saved = svc.ExtractToDiskViaSaveDialog(fileName, sourceText, language);
             if (saved is not null)
                 ViewModel.ReportInfo($"Saved to disk: {Path.GetFileName(saved)}");
             return;

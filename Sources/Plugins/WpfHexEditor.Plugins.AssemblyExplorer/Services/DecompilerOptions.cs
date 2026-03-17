@@ -37,16 +37,18 @@ public sealed record DecompilerOptions(
     DecompilationQuality Quality,
     int                  CSharpLanguageVersion,
     bool                 ShowXmlDocs,
-    bool                 ShowHiddenMembers)
+    bool                 ShowHiddenMembers,
+    string               TargetLanguageId)
 {
     /// <summary>Builds a <see cref="DecompilerOptions"/> from the persisted plugin options.</summary>
     public static DecompilerOptions FromPluginOptions(AssemblyExplorerOptions opts) => new(
-        Quality:              opts.DecompilationQuality,
+        Quality:               opts.DecompilationQuality,
         CSharpLanguageVersion: opts.CSharpLanguageVersion,
-        ShowXmlDocs:          opts.ShowXmlDocs,
-        ShowHiddenMembers:    opts.ShowHiddenMembers);
+        ShowXmlDocs:           opts.ShowXmlDocs,
+        ShowHiddenMembers:     opts.ShowHiddenMembers,
+        TargetLanguageId:      opts.DecompileLanguage);
 
     /// <summary>Default options used when the plugin singleton is not yet loaded.</summary>
     public static DecompilerOptions Default { get; } = new(
-        DecompilationQuality.Full, 1200, true, false);
+        DecompilationQuality.Full, 1200, true, false, "CSharp");
 }

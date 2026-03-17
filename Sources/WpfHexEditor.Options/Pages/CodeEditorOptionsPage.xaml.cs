@@ -55,6 +55,8 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             CheckLineNumbers.IsChecked   = ce.ShowLineNumbers;
             CheckHighlightLine.IsChecked = ce.HighlightCurrentLine;
             TxtZoom.Text      = ((int)(ce.DefaultZoom * 100)).ToString();
+            SliderScrollSpeed.Value    = Math.Max(0.5, Math.Min(3.0, ce.ScrollSpeedMultiplier));
+            TxtScrollSpeedLabel.Text   = $"{ce.ScrollSpeedMultiplier:F1}×";
             CheckChangeset.IsChecked = ce.ChangesetEnabled;
 
             LoadColorPicker(ChkBg,  CpBg,  ce.BackgroundColor, "TE_Background");
@@ -78,8 +80,9 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.ShowIntelliSense  = CheckIntelliSense.IsChecked == true;
         ce.ShowLineNumbers   = CheckLineNumbers.IsChecked  == true;
         ce.HighlightCurrentLine = CheckHighlightLine.IsChecked == true;
-        ce.DefaultZoom       = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
-        ce.ChangesetEnabled  = CheckChangeset.IsChecked == true;
+        ce.DefaultZoom             = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
+        ce.ScrollSpeedMultiplier   = Math.Round(SliderScrollSpeed.Value, 1);
+        ce.ChangesetEnabled        = CheckChangeset.IsChecked == true;
         ce.BackgroundColor   = FlushColorPicker(ChkBg,  CpBg);
         ce.ForegroundColor   = FlushColorPicker(ChkFg,  CpFg);
         ce.KeywordColor      = FlushColorPicker(ChkKw,  CpKw);
@@ -112,6 +115,13 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
 
     private void OnColorPickerChanged(object sender, Color e)
     {
+        if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnScrollSpeedChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (TxtScrollSpeedLabel != null)
+            TxtScrollSpeedLabel.Text = $"{e.NewValue:F1}×";
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 

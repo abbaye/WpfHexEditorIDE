@@ -136,18 +136,14 @@
             <TextBlock Grid.Column="0" Text="Decompile language:"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
+            <!-- Items populated dynamically in code-behind from DecompilationLanguageRegistry.All -->
             <ComboBox x:Name="LanguageCombo"
                       Grid.Column="1"
                       Width="160"
                       HorizontalAlignment="Left"
                       Background="{DynamicResource PFP_SectionBackgroundBrush}"
                       Foreground="{DynamicResource PFP_TextBrush}"
-                      BorderBrush="{DynamicResource PFP_BorderBrush}">
-                <ComboBoxItem Content="C#"              Tag="CSharp" IsSelected="True"/>
-                <ComboBoxItem Content="IL"              Tag="IL"/>
-                <ComboBoxItem Content="VB.NET (future)" Tag="VBNet"  IsEnabled="False"/>
-                <ComboBoxItem Content="F# (future)"     Tag="FSharp" IsEnabled="False"/>
-            </ComboBox>
+                      BorderBrush="{DynamicResource PFP_BorderBrush}"/>
         </Grid>
 
         <!-- Separator -->

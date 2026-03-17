@@ -16,6 +16,7 @@
 //     handle partial snippets gracefully.
 // ==========================================================
 
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -131,7 +132,7 @@ public sealed class DesignCanvas : Border
 
         try
         {
-            var prepared = EnsureWpfNamespaces(xaml);
+            var prepared = EnsureWpfNamespaces(SanitizeForPreview(xaml));
             var result   = XamlReader.Parse(prepared);
 
             if (result is UIElement uiResult)
@@ -205,6 +206,56 @@ public sealed class DesignCanvas : Border
     }
 
     // ── XAML preprocessing ────────────────────────────────────────────────────
+
+    // Window-specific attributes that are meaningless (or forbidden) inside a ContentPresenter.
+    private static readonly string[] WindowOnlyAttributes =
+    [
+        "Title", "Icon", "WindowStyle", "WindowStartupLocation", "WindowState",
+        "ResizeMode", "ShowInTaskbar", "Topmost", "AllowsTransparency",
+        "SizeToContent", "ShowActivated"
+    ];
+
+    /// <summary>
+    /// Strips code-behind directives (x:Class, x:Subclass) and replaces a Window
+    /// root element with a Border so the XAML can be hosted in a ContentPresenter
+    /// without requiring the code-behind type to be present in the AppDomain.
+    /// </summary>
+    private static string SanitizeForPreview(string xaml)
+    {
+        // Remove x:Class, x:Subclass, x:FieldModifier — all require code-behind resolution.
+        xaml = Regex.Replace(xaml, @"\s+x:(Class|Subclass|FieldModifier)=""[^""]*""", string.Empty);
+
+        // Replace a Window root with Border (Window cannot be hosted in a ContentPresenter).
+        xaml = ReplaceWindowRoot(xaml);
+
+        return xaml;
+    }
+
+    /// <summary>
+    /// Replaces &lt;Window …&gt;…&lt;/Window&gt; at the root with &lt;Border …&gt;…&lt;/Border&gt;,
+    /// removing Window-only attributes that would cause parse errors on Border.
+    /// </summary>
+    private static string ReplaceWindowRoot(string xaml)
+    {
+        // Match the opening Window tag (self-closing or not).
+        var openTag = Regex.Match(xaml, @"<Window(\s[^>]*)?>", RegexOptions.Singleline);
+        if (!openTag.Success) return xaml;
+
+        var attrs = openTag.Groups[1].Value;
+
+        // Remove Window-only attributes.
+        foreach (var attr in WindowOnlyAttributes)
+            attrs = Regex.Replace(attrs, $@"\s+{attr}=""[^""]*""", string.Empty);
+
+        // Rebuild the opening tag as Border.
+        var newOpen = $"<Border{attrs}>";
+        xaml = xaml[..openTag.Index] + newOpen + xaml[(openTag.Index + openTag.Length)..];
+
+        // Replace closing tag (simple string replace is safe — XML is well-formed).
+        xaml = xaml.Replace("</Window>", "</Border>");
+
+        return xaml;
+    }
 
     /// <summary>
     /// Pre-injects the standard WPF xmlns declarations if the XAML fragment

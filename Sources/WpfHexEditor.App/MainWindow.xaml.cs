@@ -1635,6 +1635,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (editor is IOpenableDocument openable)
                 _ = openable.OpenAsync(filePath);
 
+            // Apply user settings (scroll speed, etc.) from Options to newly created editors.
+            ApplyEditorSettings(editor);
+
             // Restore per-file position (scroll, selection, caret) from previous session.
             if (editor is IEditorPersistable persistable &&
                 item.Metadata.TryGetValue("EditorConfigJson", out var cfgJson))
@@ -4411,6 +4414,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
         _lastAppliedTheme = stem;
         ApplyTheme($"{stem}.xaml", stem);
+    }
+
+    /// <summary>
+    /// Applies per-editor-type user settings (scroll speed, etc.) to a newly created editor.
+    /// Called once per editor instance from <see cref="CreateSmartFileEditorContent"/>.
+    /// </summary>
+    private static void ApplyEditorSettings(IDocumentEditor editor)
+    {
+        var settings = AppSettingsService.Instance.Current;
+
+        switch (editor)
+        {
+            case WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor ce:
+                ce.ScrollSpeedMultiplier = settings.CodeEditorDefaults.ScrollSpeedMultiplier;
+                ce.ZoomLevel             = settings.CodeEditorDefaults.DefaultZoom;
+                break;
+            case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
+                te.ScrollSpeedMultiplier = settings.TextEditorDefaults.ScrollSpeedMultiplier;
+                te.ZoomLevel             = settings.TextEditorDefaults.DefaultZoom;
+                break;
+        }
     }
 
     private void ApplyHexEditorDefaults(HexEditorControl hex)

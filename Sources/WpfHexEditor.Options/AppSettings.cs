@@ -219,6 +219,12 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
 
+    /// <summary>
+    /// Mouse-wheel scroll speed multiplier (0.5 = slow, 1.0 = default, 3.0 = fast).
+    /// Maps to <c>CodeEditor.ScrollSpeedMultiplier</c>.
+    /// </summary>
+    public double ScrollSpeedMultiplier { get; set; } = 1.0;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
@@ -281,6 +287,12 @@ public sealed class TextEditorDefaultSettings
 
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
+
+    /// <summary>
+    /// Mouse-wheel scroll speed multiplier (0.5 = slow, 1.0 = default, 3.0 = fast).
+    /// Maps to <c>TextViewport.ScrollSpeedMultiplier</c>.
+    /// </summary>
+    public double ScrollSpeedMultiplier { get; set; } = 1.0;
 
     // -- Changeset (.whchg) -----------------------------------------------
 

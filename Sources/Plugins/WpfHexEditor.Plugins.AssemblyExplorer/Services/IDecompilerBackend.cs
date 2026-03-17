@@ -28,6 +28,14 @@ public interface IDecompilerBackend
     string Name { get; }
 
     /// <summary>
+    /// True when this backend always produces C# regardless of <see cref="DecompilerOptions.TargetLanguageId"/>.
+    /// When true, <c>AssemblyDetailViewModel</c> applies a post-decompile language transform via
+    /// <c>IDecompilationLanguage.TransformFromCSharpAsync</c> for non-CSharp target languages.
+    /// False when the backend handles language routing internally (e.g. <see cref="SkeletonDecompilerBackend"/>).
+    /// </summary>
+    bool OutputIsCSharpOnly { get; }
+
+    /// <summary>
     /// True when this backend is usable in the current environment
     /// (e.g. required NuGet package is present / loaded successfully).
     /// </summary>

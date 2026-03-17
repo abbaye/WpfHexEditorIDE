@@ -26,6 +26,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 
@@ -232,12 +233,20 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
 
         var token = node.MetadataToken;
 
+        // ── Resolve target language ───────────────────────────────────────────
+        var langId   = _backend.Options.TargetLanguageId ?? "CSharp";
+        var language = DecompilationLanguageRegistry.Get(langId)
+                    ?? CSharpDecompilationLanguage.Instance;
+        var codeKey  = $"code_{langId}";
+
         // ── Code tab ─────────────────────────────────────────────────────────
-        if (!_cache.TryGet(filePath, token, "code", out var code))
+        if (!_cache.TryGet(filePath, token, codeKey, out var code))
         {
+            // Step 1 — decompile via backend (C# for ILSpy, language-native for Skeleton)
+            string rawCode;
             try
             {
-                code = await Task.Run(() => node switch
+                rawCode = await Task.Run(() => node switch
                 {
                     AssemblyRootNodeViewModel root => _backend.DecompileAssembly(root.Model, filePath),
                     TypeNodeViewModel         type => _backend.DecompileType(type.Model, filePath),
@@ -248,12 +257,34 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
                 }, ct);
             }
             catch (OperationCanceledException) { IsLoading = false; return; }
-            catch (Exception ex) { code = $"// Decompilation failed:\n// {ex.Message}"; }
+            catch (Exception ex) { rawCode = $"// Decompilation failed:\n// {ex.Message}"; }
 
             if (ct.IsCancellationRequested) { IsLoading = false; return; }
 
+            // Step 2 — post-decompile language transform (only when backend output is C#-only)
+            if (_backend.OutputIsCSharpOnly && language.Id != "CSharp")
+            {
+                LoadingMessage = $"Converting to {language.DisplayName}…";
+                try
+                {
+                    var (transformed, _) = await language.TransformFromCSharpAsync(rawCode, ct);
+                    code = transformed;
+                }
+                catch (OperationCanceledException) { IsLoading = false; return; }
+                catch (Exception ex)
+                {
+                    code = $"// {language.DisplayName} transform failed: {ex.Message}\n\n{rawCode}";
+                }
+
+                if (ct.IsCancellationRequested) { IsLoading = false; return; }
+            }
+            else
+            {
+                code = rawCode;
+            }
+
             // Only cache named tokens; assembly roots (token=0) are omitted to avoid stale info.
-            if (token != 0) _cache.Set(filePath, token, "code", code);
+            if (token != 0) _cache.Set(filePath, token, codeKey, code);
         }
 
         DetailText = code;

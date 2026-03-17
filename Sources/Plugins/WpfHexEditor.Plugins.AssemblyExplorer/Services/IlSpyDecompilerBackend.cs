@@ -40,8 +40,9 @@ public sealed class IlSpyDecompilerBackend : IDecompilerBackend
     public IlSpyDecompilerBackend(SkeletonDecompilerBackend fallback)
         => _fallback = fallback;
 
-    public string Name        => "ILSpy (ICSharpCode.Decompiler)";
-    public bool   IsAvailable => true;
+    public string Name             => "ILSpy (ICSharpCode.Decompiler)";
+    public bool   IsAvailable      => true;
+    public bool   OutputIsCSharpOnly => true; // ILSpy always produces C# — VM applies post-transform for other languages
     public DecompilerOptions Options { get; set; } = DecompilerOptions.Default;
 
     // ── IDecompilerBackend ────────────────────────────────────────────────────

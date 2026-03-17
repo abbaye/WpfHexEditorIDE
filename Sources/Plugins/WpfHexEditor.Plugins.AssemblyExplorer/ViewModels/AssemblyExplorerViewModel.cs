@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
@@ -118,7 +119,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
         // Opens decompiled text in a syntax-highlighted TextEditor document tab.
         OpenInEditorCommand = new RelayCommand(
-            _ => OpenSelectedNodeInEditor(),
+            _ => _ = OpenSelectedNodeInEditorAsync(),
             _ => SelectedNode is not null);
 
         // Opens assembly file in hex editor, navigating to the member's PE offset.
@@ -158,6 +159,9 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     }
 
     public AssemblyDetailViewModel DetailViewModel { get; }
+
+    /// <summary>The active decompiler backend — exposed for language-aware Extract operations.</summary>
+    public IDecompilerBackend Backend => _decompilerBackend;
 
     // ── Loading state ─────────────────────────────────────────────────────────
 
@@ -808,53 +812,93 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     // ── Open in Code Editor ───────────────────────────────────────────────────
 
-    private void OpenSelectedNodeInEditor()
+    private async Task OpenSelectedNodeInEditorAsync()
     {
         if (_selectedNode is null) return;
 
-        var filePath = _selectedNode.OwnerFilePath ?? string.Empty;
-        var isCSharp = _selectedNode is AssemblyRootNodeViewModel
-                                     or TypeNodeViewModel
-                                     or MethodNodeViewModel;
-        var text = _selectedNode switch
-        {
-            AssemblyRootNodeViewModel root => _decompilerBackend.DecompileAssembly(root.Model, filePath),
-            TypeNodeViewModel         type => _decompilerBackend.DecompileType(type.Model, filePath),
-            MethodNodeViewModel       meth => _decompilerBackend.DecompileMethod(meth.Model, filePath),
-            _                              => _decompiler.GetStubText(_selectedNode.DisplayName)
-        };
+        var node     = _selectedNode;
+        var filePath = node.OwnerFilePath ?? string.Empty;
 
-        var token = _selectedNode.MetadataToken;
-        var uiId  = $"doc-plugin-{_pluginId}-decompiled-{(token != 0 ? token.ToString("X8") : _selectedNode.DisplayName.GetHashCode().ToString("X8"))}";
-        var title = $"{_selectedNode.DisplayName} (decompiled)";
+        // Resolve the active output language from the registry.
+        var langId   = _decompilerBackend.Options.TargetLanguageId ?? "CSharp";
+        var language = DecompilationLanguageRegistry.Get(langId)
+                    ?? CSharpDecompilationLanguage.Instance;
+
+        // Include language ID in the tab UI ID to avoid collisions between C# and VB.NET tabs.
+        var token = node.MetadataToken;
+        var hash  = token != 0 ? token.ToString("X8") : node.DisplayName.GetHashCode().ToString("X8");
+        var uiId  = $"doc-plugin-{_pluginId}-decompiled-{hash}-{langId}";
+        var title = $"{node.DisplayName} ({language.DisplayName})";
 
         if (_uiRegistry.Exists(uiId))
         {
-            _output.Info($"[Assembly Explorer] '{_selectedNode.DisplayName}' is already open in the editor.");
+            _output.Info($"[Assembly Explorer] '{node.DisplayName}' is already open in the editor.");
             return;
         }
 
-        var assemblyModel = string.IsNullOrEmpty(filePath)
+        // Decompile on a background thread.
+        string rawText;
+        try
+        {
+            rawText = await Task.Run(() => node switch
+            {
+                AssemblyRootNodeViewModel root => _decompilerBackend.DecompileAssembly(root.Model, filePath),
+                TypeNodeViewModel         type => _decompilerBackend.DecompileType(type.Model, filePath),
+                MethodNodeViewModel       meth => _decompilerBackend.DecompileMethod(meth.Model, filePath),
+                _                              => _decompiler.GetStubText(node.DisplayName)
+            });
+        }
+        catch (Exception ex)
+        {
+            rawText = $"// Decompilation failed: {ex.Message}";
+        }
+
+        // Apply language transform when backend output is C#-only and target is not C#.
+        string text;
+        if (_decompilerBackend.OutputIsCSharpOnly && language.Id != "CSharp")
+        {
+            try
+            {
+                var (transformed, _) = await language.TransformFromCSharpAsync(rawText, CancellationToken.None);
+                text = transformed;
+            }
+            catch (Exception ex)
+            {
+                text = $"// {language.DisplayName} transform failed: {ex.Message}\n\n{rawText}";
+            }
+        }
+        else
+        {
+            text = rawText;
+        }
+
+        // TextLinks (goto-def) are only meaningful for C# output.
+        var isCSharpOutput = language.Id == "CSharp";
+        var assemblyModel  = string.IsNullOrEmpty(filePath)
             ? null
             : _workspace.TryGetValue(filePath, out var entry) ? entry.Model : null;
 
-        var content = BuildDecompiledCodeEditor(text, isCSharp, assemblyModel);
+        var content = BuildDecompiledCodeEditor(text, isCSharpOutput, language.EditorLanguageName, assemblyModel);
 
         _uiRegistry.RegisterDocumentTab(uiId, content, _pluginId, new DocumentDescriptor
         {
             Title     = title,
             ContentId = uiId,
-            ToolTip   = $"Decompiled: {_selectedNode.DisplayName}",
+            ToolTip   = $"Decompiled: {node.DisplayName}",
             CanClose  = true
         });
     }
 
     /// <summary>
     /// Builds a syntax-highlighted TextEditor for the decompiled code document tab.
-    /// When <paramref name="isCSharp"/> is true and <paramref name="assembly"/> is provided,
+    /// When <paramref name="installLinks"/> is true and <paramref name="assembly"/> is provided,
     /// installs goto-definition links for PascalCase type names found in the decompiled text.
     /// </summary>
-    private UIElement BuildDecompiledCodeEditor(string text, bool isCSharp, AssemblyModel? assembly = null)
+    private UIElement BuildDecompiledCodeEditor(
+        string        text,
+        bool          installLinks,
+        string?       editorLanguageName,
+        AssemblyModel? assembly = null)
     {
         var editor = new TextEditor
         {
@@ -862,14 +906,14 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             BorderThickness = new Thickness(0)
         };
 
-        if (isCSharp && assembly is not null)
+        if (installLinks && assembly is not null)
         {
             var links = BuildTextLinks(text, assembly);
-            editor.SetContentWithLinks(text, links, readOnly: true, languageName: "C#");
+            editor.SetContentWithLinks(text, links, readOnly: true, languageName: editorLanguageName);
         }
         else
         {
-            editor.SetContentDirect(text, readOnly: true, languageName: isCSharp ? "C#" : null);
+            editor.SetContentDirect(text, readOnly: true, languageName: editorLanguageName);
         }
 
         return editor;

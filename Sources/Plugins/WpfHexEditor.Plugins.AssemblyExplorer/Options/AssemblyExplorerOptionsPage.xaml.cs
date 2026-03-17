@@ -12,6 +12,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Options;
@@ -59,8 +60,25 @@ public partial class AssemblyExplorerOptionsPage : UserControl
         FontSizeLabel.Text   = $"{opts.DecompilerFontSize}pt";
 
         SelectComboByTag(BackendCombo,      opts.DecompilerBackend);
-        SelectComboByTag(LanguageCombo,     opts.DecompileLanguage);
         SelectComboByTag(QualityCombo,      opts.DecompilationQuality.ToString());
+
+        // Populate language combo dynamically from the registry (Strategy pattern).
+        // Falls back gracefully when the registry is empty (e.g., options page opened before plugin init).
+        LanguageCombo.Items.Clear();
+        var registeredLanguages = DecompilationLanguageRegistry.All;
+        if (registeredLanguages.Count > 0)
+        {
+            foreach (var lang in registeredLanguages)
+                LanguageCombo.Items.Add(new ComboBoxItem { Content = lang.DisplayName, Tag = lang.Id });
+        }
+        else
+        {
+            // Fallback: at minimum always show C# so the combo is never empty.
+            LanguageCombo.Items.Add(new ComboBoxItem { Content = "C#", Tag = "CSharp" });
+        }
+        SelectComboByTag(LanguageCombo, opts.DecompileLanguage);
+        if (LanguageCombo.SelectedItem is null && LanguageCombo.Items.Count > 0)
+            LanguageCombo.SelectedIndex = 0;
         SelectComboByTag(CSharpVersionCombo, opts.CSharpLanguageVersion.ToString());
 
         ChkShowXmlDocs.IsChecked  = opts.ShowXmlDocs;

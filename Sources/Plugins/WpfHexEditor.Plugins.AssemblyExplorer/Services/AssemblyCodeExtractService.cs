@@ -17,6 +17,7 @@
 using System.IO;
 using System.Text;
 using Microsoft.Win32;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Services;
@@ -61,33 +62,53 @@ public sealed class AssemblyCodeExtractService
     }
 
     /// <summary>
-    /// Saves <paramref name="csharpText"/> to a user-chosen path via SaveFileDialog.
+    /// Saves <paramref name="sourceText"/> to a user-chosen path via SaveFileDialog.
     /// Must be called on the UI thread.
     /// </summary>
+    /// <param name="suggestedFileName">Proposed file name (without extension — extension comes from <paramref name="language"/>).</param>
+    /// <param name="sourceText">Decompiled source text to write.</param>
+    /// <param name="language">Target language — controls file filter and default extension.</param>
     /// <returns>The saved file path, or <see langword="null"/> if the user cancelled.</returns>
-    public string? ExtractToDiskViaSaveDialog(string suggestedFileName, string csharpText)
+    public string? ExtractToDiskViaSaveDialog(
+        string                 suggestedFileName,
+        string                 sourceText,
+        IDecompilationLanguage? language = null)
     {
+        language ??= CSharpDecompilationLanguage.Instance;
+
+        var ext         = language.FileExtension;           // e.g. ".cs" or ".vb"
+        var extNoDot    = ext.TrimStart('.');               // "cs" or "vb"
+        var displayName = language.DisplayName;             // "C#" or "VB.NET"
+        var filter      = $"{displayName} Source Files (*{ext})|*{ext}|All Files (*.*)|*.*";
+
+        // Ensure the suggested file name has the correct extension.
+        var baseName = Path.GetFileNameWithoutExtension(suggestedFileName);
+        var fileName = baseName + ext;
+
         var dlg = new SaveFileDialog
         {
-            Title            = "Extract Decompiled Code",
-            Filter           = "C# Source Files (*.cs)|*.cs|All Files (*.*)|*.*",
-            DefaultExt       = ".cs",
-            FileName         = suggestedFileName,
-            OverwritePrompt  = true
+            Title           = "Extract Decompiled Code",
+            Filter          = filter,
+            DefaultExt      = extNoDot,
+            FileName        = fileName,
+            OverwritePrompt = true
         };
 
         if (dlg.ShowDialog() != true) return null;
 
-        File.WriteAllBytes(dlg.FileName, Encoding.UTF8.GetBytes(csharpText));
+        File.WriteAllBytes(dlg.FileName, Encoding.UTF8.GetBytes(sourceText));
         return dlg.FileName;
     }
 
     /// <summary>
-    /// Derives a safe <c>.cs</c> file name from the node's display name.
+    /// Derives a safe source file name from the node's display name,
+    /// using the correct file extension for <paramref name="language"/>.
     /// Strips generic arity suffix (e.g. "`1") and removes illegal path characters.
     /// </summary>
-    public static string SuggestFileName(string displayName)
+    public static string SuggestFileName(string displayName, IDecompilationLanguage? language = null)
     {
+        language ??= CSharpDecompilationLanguage.Instance;
+
         // Strip generic arity like List`1 → List
         var backtick = displayName.IndexOf('`');
         if (backtick > 0) displayName = displayName[..backtick];
@@ -100,6 +121,6 @@ public sealed class AssemblyCodeExtractService
         foreach (var c in Path.GetInvalidFileNameChars())
             displayName = displayName.Replace(c, '_');
 
-        return displayName.Trim('_', ' ') + ".cs";
+        return displayName.Trim('_', ' ') + language.FileExtension;
     }
 }

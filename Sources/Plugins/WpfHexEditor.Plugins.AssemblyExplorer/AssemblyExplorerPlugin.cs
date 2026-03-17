@@ -27,8 +27,10 @@
 
 using System.IO;
 using System.Windows;
+using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
+using WpfHexEditor.Plugins.AssemblyExplorer.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.Views;
@@ -84,6 +86,11 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
         _context = context;
+
+        // Register decompilation languages (Strategy pattern — IDecompilationLanguage).
+        // Must happen before building the backend so the VM can resolve languages from the registry.
+        DecompilationLanguageRegistry.Register(CSharpDecompilationLanguage.Instance);
+        DecompilationLanguageRegistry.Register(new VbNetDecompilationLanguage());
 
         // Build internal services
         _analysisEngine    = new AssemblyAnalysisEngine();

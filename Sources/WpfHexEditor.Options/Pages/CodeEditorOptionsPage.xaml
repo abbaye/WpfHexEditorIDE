@@ -130,6 +130,28 @@
                      LostFocus="OnTextLostFocus"/>
         </Grid>
 
+        <!-- Scroll speed multiplier -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="45"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Mouse wheel speed:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <Slider x:Name="SliderScrollSpeed"
+                    Grid.Column="1" Margin="8,0,8,0"
+                    Minimum="0.5" Maximum="3.0" SmallChange="0.1" LargeChange="0.5"
+                    TickFrequency="0.5" TickPlacement="None"
+                    VerticalAlignment="Center"
+                    ValueChanged="OnScrollSpeedChanged"/>
+            <TextBlock x:Name="TxtScrollSpeedLabel" Grid.Column="2"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Text="1.0×"/>
+        </Grid>
+
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
 

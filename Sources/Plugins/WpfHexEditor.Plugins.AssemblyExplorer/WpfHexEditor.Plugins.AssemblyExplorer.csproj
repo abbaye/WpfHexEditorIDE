@@ -35,6 +35,12 @@
          CopyLocalLockFileAssemblies ensures the DLL is emitted to the bin output directory
          (required for the plugin-dir copy step — the plugin loads in an isolated ALC). -->
     <PackageReference Include="ICSharpCode.Decompiler" Version="9.*" />
+    <!-- ICSharpCode.CodeConverter: converts ILSpy C# output to VB.NET.
+         Same team as ILSpy; uses Roslyn internally (Microsoft.CodeAnalysis.*).
+         Roslyn assemblies resolve via the host ALC fallback (host app uses Roslyn for the
+         code editor). If the host does not expose Roslyn, the VbNetDecompilationLanguage
+         transform falls back gracefully to annotated C# without throwing. -->
+    <PackageReference Include="ICSharpCode.CodeConverter" Version="10.0.1.923" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -63,9 +69,7 @@
       <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll;$(OutputPath)ICSharpCode.Decompiler.dll"
-          DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll;$(OutputPath)ICSharpCode.Decompiler.dll;$(OutputPath)ICSharpCode.CodeConverter.dll" DestinationFolder="$(PluginDestDir)" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
