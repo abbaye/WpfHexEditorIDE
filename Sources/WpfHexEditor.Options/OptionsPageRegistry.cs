@@ -42,10 +42,6 @@ public static class OptionsPageRegistry
 
         // Plugin System
         new("Plugin System",      "General",          () => new PluginSystemOptionsPage(),    "⚙️"),
-
-        // Build & Run
-        new("Build & Run",        "General",          () => new BuildRunGeneralOptionsPage(), "🔨"),
-        new("Build & Run",        "Compiler",         () => new BuildCompilerOptionsPage(),   "🔨"),
     ];
 
     /// <summary>

@@ -14,12 +14,6 @@
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->
   <ItemGroup>
-    <!-- WpfHexEditor.Editor.Core: IDocumentManager, DocumentModel, IDocumentEditor, INavigableDocument
-         required by IDocumentHostService (SDK contract). PrivateAssets=none makes these types visible
-         to all SDK consumers (plugins, sample apps, App layer). -->
-    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
     <!-- WpfHexEditor.Events: PrivateAssets=none ensures plugins get IIDEEventBus and event types transitively. -->
     <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj">
       <PrivateAssets>none</PrivateAssets>
