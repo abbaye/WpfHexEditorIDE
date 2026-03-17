@@ -110,7 +110,7 @@ public sealed class FoldingEngine
     public bool IsLineHidden(int line)
     {
         foreach (var r in _regions)
-            if (r.IsCollapsed && line > r.StartLine && line <= r.EndLine)
+            if (r.IsCollapsed && line > r.StartLine && line < r.EndLine)
                 return true;
         return false;
     }
