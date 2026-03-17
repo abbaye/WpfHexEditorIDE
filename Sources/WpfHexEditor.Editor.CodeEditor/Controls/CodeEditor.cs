@@ -856,7 +856,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public static readonly DependencyProperty SmoothScrollingProperty =
             DependencyProperty.Register(nameof(SmoothScrolling), typeof(bool), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(true));
+                new FrameworkPropertyMetadata(false)); // Off by default — instant scroll matches HexEditor/MouseWheelSpeed DP.
 
         [Category("Behavior.Scrolling")]
         [DisplayName("Smooth Scrolling")]

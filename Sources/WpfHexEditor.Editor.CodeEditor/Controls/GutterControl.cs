@@ -88,6 +88,11 @@ internal sealed class GutterControl : FrameworkElement
     /// </summary>
     public void Update(double lineHeight, int firstVisible, int lastVisible, double topMargin)
     {
+        // Only invalidate when something actually changed (called on every CodeEditor OnRender).
+        if (_lineHeight == lineHeight && _firstVisibleLine == firstVisible
+            && _lastVisibleLine == lastVisible && _topMargin == topMargin)
+            return;
+
         _lineHeight       = lineHeight;
         _firstVisibleLine = firstVisible;
         _lastVisibleLine  = lastVisible;
