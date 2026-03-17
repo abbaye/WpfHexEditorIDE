@@ -240,6 +240,29 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         Rebuild();
     }
 
+    /// <summary>
+    /// Updates <see cref="ProjectNodeVm.IsStartup"/> on every project node in the
+    /// current tree without triggering a full rebuild.
+    /// Call after <see cref="ISolutionManager.SetStartupProject"/> to refresh the bold indicator.
+    /// </summary>
+    public void UpdateStartupProject(string? projectId)
+    {
+        foreach (var node in EnumerateAllNodes(Roots))
+            if (node is ProjectNodeVm pn)
+                pn.IsStartup = pn.Source.Id == projectId;
+    }
+
+    private static IEnumerable<SolutionExplorerNodeVm> EnumerateAllNodes(
+        IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            yield return node;
+            foreach (var child in EnumerateAllNodes(node.Children))
+                yield return child;
+        }
+    }
+
     public void Rebuild()
     {
         // Capture current IsExpanded state before clearing the tree
@@ -259,6 +282,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             solutionNode.Children.Add(BuildSolutionFolderNode(folder, _solution));
 
         // Unfoldered projects follow directly under the solution node.
+        var startupId = _solution.StartupProject?.Id;
         foreach (var project in _solution.Projects)
         {
             if (folderedNames.Contains(project.Name)) continue;
@@ -266,6 +290,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             var projNode = _showAllFiles
                 ? BuildProjectNodePhysical(project)
                 : BuildProjectNode(project);
+            projNode.IsStartup = project.Id == startupId;
             solutionNode.Children.Add(projNode);
         }
 
@@ -402,7 +427,8 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     private SolutionFolderNodeVm BuildSolutionFolderNode(ISolutionFolder folder, ISolution solution)
     {
-        var node = new SolutionFolderNodeVm(folder, solution) { IsExpanded = true };
+        var node      = new SolutionFolderNodeVm(folder, solution) { IsExpanded = true };
+        var startupId = solution.StartupProject?.Id;
 
         // Nested solution folders first (recursive).
         foreach (var child in folder.Children)
@@ -417,6 +443,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             var projNode = _showAllFiles
                 ? BuildProjectNodePhysical(project)
                 : BuildProjectNode(project);
+            projNode.IsStartup = project.Id == startupId;
             node.Children.Add(projNode);
         }
 

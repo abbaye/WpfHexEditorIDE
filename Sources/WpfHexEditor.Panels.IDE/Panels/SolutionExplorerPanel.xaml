@@ -235,7 +235,11 @@
                 <!-- Normal display (IsEditing = false) -->
                 <StackPanel x:Name="ProjectDisplayPanel" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource NodeIcon}" Text="{Binding Icon}" Foreground="{Binding LanguageColor}"/>
-                    <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                    <!-- x:Name required for DataTrigger Setter targeting -->
+                    <TextBlock x:Name="ProjectNameLabel"
+                               Style="{StaticResource NodeLabel}"
+                               Text="{Binding DisplayName}"
+                               FontWeight="SemiBold"/>
                 </StackPanel>
                 <!-- Inline rename TextBox (IsEditing = true) -->
                 <TextBox x:Name="ProjectInlineEditBox"
@@ -252,6 +256,10 @@
                          LostKeyboardFocus="OnProjectInlineEditLostFocus"/>
             </Grid>
             <DataTemplate.Triggers>
+                <!-- Startup project → bold (VS behaviour) -->
+                <DataTrigger Binding="{Binding IsStartup}" Value="True">
+                    <Setter TargetName="ProjectNameLabel" Property="FontWeight" Value="Bold"/>
+                </DataTrigger>
                 <DataTrigger Binding="{Binding IsEditing}" Value="True">
                     <Setter TargetName="ProjectDisplayPanel"  Property="Visibility" Value="Collapsed"/>
                     <Setter TargetName="ProjectInlineEditBox" Property="Visibility" Value="Visible"/>

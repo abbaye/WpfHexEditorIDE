@@ -1268,7 +1268,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.FilePath is null) return;
 
-        // Find an already-open tab for this file
+        // Source-code errors (Line set) — delegate to the text-editor handler which correctly
+        // creates a TextEditor tab, stores it in _contentCache, awaits load, and calls GoToLine.
+        if (e.Line.HasValue)
+        {
+            OnOpenInTextEditorRequested(sender, e);
+            return;
+        }
+
+        // Find an already-open tab for this file (HexEditor / TblEditor)
         var (contentId, content) = _contentCache.FirstOrDefault(kv =>
         {
             if (kv.Value is HexEditorControl hex)
@@ -1279,7 +1287,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return false;
         });
 
-        // Activate existing tab or open the file
+        // Activate existing tab or open the file with the default editor
         if (contentId != null)
         {
             var dockItem = _layout.FindItemByContentId(contentId);
@@ -1290,7 +1298,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             OpenFileDirectly(e.FilePath);
         }
 
-        // Navigate after layout completes
+        // Navigate after layout completes (HexEditor / TblEditor)
         Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
         {
             // Re-lookup in case the file was just opened (content was null before OpenFileDirectly)
@@ -1314,7 +1322,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         });
     }
 
-    private void OnOpenInTextEditorRequested(object? sender, DiagnosticEntry e)
+    private async void OnOpenInTextEditorRequested(object? sender, DiagnosticEntry e)
     {
         if (e.FilePath is null || !File.Exists(e.FilePath)) return;
 
@@ -1324,10 +1332,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             string.Equals(tc.Title.TrimEnd('*', ' '),
                 Path.GetFileName(e.FilePath), System.StringComparison.OrdinalIgnoreCase));
 
+        WpfHexEditor.Editor.TextEditor.Controls.TextEditor? targetEditor;
+
         if (existing.Key != null)
         {
             var existingDockItem = _layout.FindItemByContentId(existing.Key);
             if (existingDockItem?.Owner != null) existingDockItem.Owner.ActiveItem = existingDockItem;
+            targetEditor = existing.Value as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
         }
         else
         {
@@ -1339,7 +1350,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (editor == null) return;
 
             editor.OutputMessage += OnEditorOutputMessage;
-            _ = editor.OpenAsync(e.FilePath);
 
             StoreContent(newContentId, editor);
             var newDockItem = new DockItem
@@ -1352,24 +1362,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             RegisterDocumentFromItem(newDockItem, editor);
             ActiveDocumentEditor       = editor;
             ActiveStatusBarContributor = null;
+
+            // Await file load so GoToLine runs only after the document is ready.
+            try { await editor.OpenAsync(e.FilePath); }
+            catch { return; }
+
+            targetEditor = editor;
         }
 
-        // Navigate to the target line after the file is loaded
-        if (e.Line.HasValue)
+        // Navigate to the target line now that the file is fully loaded
+        if (e.Line.HasValue && targetEditor is not null)
         {
-            var targetLine = e.Line.Value;
-            var targetCol  = e.Column ?? 1;
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
-            {
-                if (_contentCache.Values
-                    .OfType<WpfHexEditor.Editor.TextEditor.Controls.TextEditor>()
-                    .FirstOrDefault(t => string.Equals(
-                        t.Title.TrimEnd('*', ' '), Path.GetFileName(e.FilePath),
-                        System.StringComparison.OrdinalIgnoreCase)) is { } tc)
-                {
-                    tc.GoToLine(targetLine, targetCol);
-                }
-            });
+            try { targetEditor.GoToLine(e.Line.Value, e.Column ?? 1); }
+            catch { /* non-fatal: editor may not support navigation at this point */ }
         }
     }
 

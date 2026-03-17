@@ -1131,8 +1131,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnSetStartupProject(object sender, RoutedEventArgs e)
     {
-        if (_contextMenuTarget is ProjectNodeVm pn)
-            SetStartupProjectRequested?.Invoke(this, pn.Source.Id);
+        if (_contextMenuTarget is not ProjectNodeVm pn) return;
+        // Update the bold indicator in the tree immediately (before notifying MainWindow).
+        _vm.UpdateStartupProject(pn.Source.Id);
+        SetStartupProjectRequested?.Invoke(this, pn.Source.Id);
     }
 
     /// <summary>Raised when the user chooses Build for a VS project.</summary>

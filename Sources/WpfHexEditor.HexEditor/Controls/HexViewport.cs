@@ -613,6 +613,33 @@ namespace WpfHexEditor.HexEditor.Controls
         }
 
         /// <summary>
+        /// Returns the fixed separator X position for a FULL line, regardless of how many
+        /// bytes are actually present on the current line. Using this instead of the
+        /// accumulated hexX prevents the separator and ASCII panel from shifting left on
+        /// the partial last line of a file (end-of-file rendering bug).
+        /// </summary>
+        private double CalculateFixedSeparatorX(int stride)
+        {
+            double hexX = ShowOffset ? OffsetWidth : 0;
+            int groupCount = _bytesPerLine / Math.Max(stride, 1);
+            double cellWidth = CalculateCellWidth(Math.Max(stride, 1));
+
+            for (int i = 0; i < groupCount; i++)
+            {
+                int bytePosition = i * stride;
+                if (_bytesPerLine >= (int)ByteGrouping &&
+                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                     ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
+                    bytePosition % (int)ByteGrouping == 0 && i > 0)
+                {
+                    hexX += (int)ByteSpacerWidthTickness;
+                }
+                hexX += cellWidth + HexByteSpacing;
+            }
+            return hexX + 4;
+        }
+
+        /// <summary>
         /// Get or create a cached FormattedText for hex byte rendering.
         /// Cache is invalidated when font, DPI, visual type, or brush references change.
         /// </summary>
@@ -1826,7 +1853,8 @@ namespace WpfHexEditor.HexEditor.Controls
             // Draw separator and ASCII (if visible)
             if (ShowAscii)
             {
-                double separatorX = hexX + 4;
+                // Use fixed full-line width so separator/ASCII stay aligned on the partial last line.
+                double separatorX = CalculateFixedSeparatorX(stride);
                 dc.DrawRectangle(_separatorBrush, null, new Rect(separatorX, y, 1, _lineHeight));
 
                 double asciiX = separatorX + SeparatorWidth;
@@ -1905,7 +1933,8 @@ namespace WpfHexEditor.HexEditor.Controls
                 // Populate AsciiRects (if visible)
                 if (ShowAscii)
                 {
-                    double separatorX = hexX + 4;
+                    // Use fixed full-line width so ASCII rects stay aligned on the partial last line.
+                    double separatorX = CalculateFixedSeparatorX(stride);
                     double asciiX = separatorX + SeparatorWidth;
 
                     for (int i = 0; i < line.Bytes.Count; i++)

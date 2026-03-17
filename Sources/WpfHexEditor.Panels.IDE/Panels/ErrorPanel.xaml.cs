@@ -337,7 +337,7 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         /// Formatted line:col string for binding (e.g. "12:5").
         /// </summary>
         public string LineColDisplay => (Entry.Line.HasValue && Entry.Column.HasValue)
-                                      ? $"{Entry.Line}:{Entry.Column}"
+                                      ? $"{Entry.Line} / {Entry.Column}"
                                       : Entry.Line.HasValue ? $"{Entry.Line}" : string.Empty;
 
         public DiagnosticEntryVm(DiagnosticEntry entry, IDiagnosticSource source)

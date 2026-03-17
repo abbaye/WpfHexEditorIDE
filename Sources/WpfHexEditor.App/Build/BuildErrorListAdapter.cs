@@ -12,12 +12,12 @@
 // Architecture Notes:
 //     Pattern: Adapter + Observer
 //     - Implements IDiagnosticSource → consumed by ErrorPanel.AddSource()
-//     - Listens for BuildSucceededEvent / BuildFailedEvent to refresh entries
+//     - ClearDiagnostics() / SetDiagnostics() are called explicitly by MainWindow.Build
+//       on the UI thread to eliminate async event-bus race conditions.
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
 
 namespace WpfHexEditor.App.Build;
 
@@ -26,21 +26,16 @@ namespace WpfHexEditor.App.Build;
 /// </summary>
 internal sealed class BuildErrorListAdapter : IDiagnosticSource, IDisposable
 {
-    private readonly IDisposable[]           _subscriptions;
-    private List<DiagnosticEntry>            _entries = [];
+    private List<DiagnosticEntry> _entries = [];
 
     // -----------------------------------------------------------------------
 
     public BuildErrorListAdapter(IIDEEventBus eventBus)
     {
-        if (eventBus is null) throw new ArgumentNullException(nameof(eventBus));
-
-        _subscriptions =
-        [
-            eventBus.Subscribe<BuildSucceededEvent>(OnBuildSucceeded),
-            eventBus.Subscribe<BuildFailedEvent>   (OnBuildFailed),
-            eventBus.Subscribe<BuildStartedEvent>  (OnBuildStarted),
-        ];
+        // Event bus parameter kept for API compatibility; no subscriptions needed.
+        // Clearing and populating diagnostics is driven explicitly by MainWindow.Build
+        // via ClearDiagnostics() / SetDiagnostics() to avoid async event-bus race conditions.
+        _ = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
     }
 
     // -----------------------------------------------------------------------
@@ -78,23 +73,17 @@ internal sealed class BuildErrorListAdapter : IDiagnosticSource, IDisposable
     }
 
     // -----------------------------------------------------------------------
-    // Handlers
+    // Public entry points — called explicitly by MainWindow.Build on the UI thread
     // -----------------------------------------------------------------------
 
-    private void OnBuildStarted(BuildStartedEvent _)
+    /// <summary>
+    /// Clears all diagnostics. Call this on the UI thread before starting a build
+    /// to ensure the error list is empty before new results arrive (race-free).
+    /// </summary>
+    public void ClearDiagnostics()
     {
         _entries = [];
         DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnBuildSucceeded(BuildSucceededEvent _)
-    {
-        // Entries will be set externally by MainWindow.Build after the awaited BuildAsync returns.
-    }
-
-    private void OnBuildFailed(BuildFailedEvent _)
-    {
-        // Entries will be set externally by MainWindow.Build after the awaited BuildAsync returns.
     }
 
     // -----------------------------------------------------------------------
@@ -103,9 +92,5 @@ internal sealed class BuildErrorListAdapter : IDiagnosticSource, IDisposable
 
     private static DiagnosticSeverity MapSeverity(DiagnosticSeverity s) => s;
 
-    public void Dispose()
-    {
-        foreach (var sub in _subscriptions)
-            sub.Dispose();
-    }
+    public void Dispose() { }
 }

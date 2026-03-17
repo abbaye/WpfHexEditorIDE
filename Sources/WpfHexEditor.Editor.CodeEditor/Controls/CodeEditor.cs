@@ -1434,6 +1434,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldingEngine = new FoldingEngine(new BraceFoldingStrategy());
             _gutterControl = new GutterControl();
             _gutterControl.SetEngine(_foldingEngine);
+            // Re-render text content when fold state changes (gutter re-renders internally via its own handler).
+            _foldingEngine.RegionsChanged += (_, _) => InvalidateVisual();
             _scrollBarChildren.Add(_gutterControl);
 
             // Apply theme resource bindings when connected to the visual tree
@@ -2486,6 +2488,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Rendering - OnRender Override
 
         /// <summary>
+        /// Returns the Y pixel position (relative to the control top) for the n-th visible
+        /// (non-hidden) line in the current viewport.  Preserves the sub-pixel smooth-scroll
+        /// fraction from the virtualization engine so lines align correctly during smooth scroll.
+        /// </summary>
+        /// <param name="visIdx">0-based index among non-hidden visible lines.</param>
+        private double GetFoldAwareLineY(int visIdx)
+        {
+            double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                : 0.0;
+            return TopMargin + scrollFraction + visIdx * _lineHeight;
+        }
+
+        /// <summary>
         /// Main rendering method - draws all visual elements
         /// Called by WPF when visual update is needed
         /// </summary>
@@ -2803,6 +2819,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     (int)(viewportH / _lineHeight));
             }
 
+            // Extend _lastVisibleLine by the count of hidden lines in the current range so the
+            // viewport stays filled after collapsing fold regions.
+            if (_foldingEngine != null && _foldingEngine.Regions.Count > 0)
+            {
+                int extra = 0;
+                for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
+                    if (_foldingEngine.IsLineHidden(i)) extra++;
+                _lastVisibleLine = Math.Min(_document.Lines.Count - 1, _lastVisibleLine + extra);
+            }
+
             // Sync gutter layout with the newly computed visible range.
             _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin);
         }
@@ -2823,12 +2849,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
+            int visIdx = 0;
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
             {
-                // Phase 11: Calculate Y position with virtual scrolling support
-                double y = EnableVirtualScrolling && _virtualizationEngine != null
-                    ? TopMargin + _virtualizationEngine.GetLineYPosition(i)
-                    : TopMargin + ((i - _firstVisibleLine) * _lineHeight);
+                // Skip lines hidden inside a collapsed fold region.
+                if (_foldingEngine != null && _foldingEngine.IsLineHidden(i)) continue;
+
+                double y = GetFoldAwareLineY(visIdx);
+                visIdx++;
 
                 // Cache FormattedText per line number — eliminates 2,400 allocations/s (P1-CE-03)
                 if (!_lineNumberCache.TryGetValue(i + 1, out var formattedText))
@@ -2911,10 +2939,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_cursorLine < _firstVisibleLine || _cursorLine > _lastVisibleLine)
                 return;
 
-            // Phase 11: Calculate Y position with virtual scrolling support
-            double y = EnableVirtualScrolling && _virtualizationEngine != null
-                ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
-                : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight;
+            // Do not highlight a line that is hidden inside a collapsed fold region.
+            if (_foldingEngine != null && _foldingEngine.IsLineHidden(_cursorLine))
+                return;
+
+            // Count non-hidden lines before _cursorLine to compute the correct visual Y.
+            int visIdx = 0;
+            for (int i = _firstVisibleLine; i < _cursorLine; i++)
+                if (_foldingEngine == null || !_foldingEngine.IsLineHidden(i)) visIdx++;
+
+            double y = GetFoldAwareLineY(visIdx);
 
             double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
@@ -3079,12 +3113,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Reset external highlighter state before a full render pass.
             ExternalHighlighter?.Reset();
 
+            int visIdx = 0;
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
             {
-                // Phase 11: Calculate Y position with virtual scrolling support
-                double y = EnableVirtualScrolling && _virtualizationEngine != null
-                    ? TopMargin + _virtualizationEngine.GetLineYPosition(i)
-                    : TopMargin + ((i - _firstVisibleLine) * _lineHeight);
+                // Skip lines hidden inside a collapsed fold region.
+                if (_foldingEngine != null && _foldingEngine.IsLineHidden(i)) continue;
+
+                double y = GetFoldAwareLineY(visIdx);
+                visIdx++;
 
                 var line = _document.Lines[i];
 

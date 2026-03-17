@@ -137,6 +137,18 @@ public sealed class ProjectNodeVm : SolutionExplorerNodeVm
         set { _isModified = value; OnPropertyChanged(); OnPropertyChanged(nameof(DisplayName)); }
     }
 
+    private bool _isStartup;
+
+    /// <summary>
+    /// True when this project is the solution's startup project.
+    /// Drives the bold font weight in the tree (VS behaviour).
+    /// </summary>
+    public bool IsStartup
+    {
+        get => _isStartup;
+        set { _isStartup = value; OnPropertyChanged(); }
+    }
+
     public IProject Source => _project;
 
     /// <summary>
