@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.4.0-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.5.2-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -44,7 +44,8 @@
 
 ### 🏗️ Project System
 - **Solution & Project** management (`.whsln` / `.whproj`)
-- **Visual Studio `.sln` / `.csproj` / `.vbproj`** support via MSBuild *(#101-103 — planned)*
+- **Visual Studio `.sln` / `.csproj` / `.vbproj`** — open and build VS solutions directly (#101–103 ✅ in progress)
+- **MSBuild integration** — build, rebuild, clean with output routed to the Build channel
 - **Virtual & physical folders** (like VS Solution Explorer)
 - **Format versioning** with auto-migration
 - **Per-file state** persistence (bookmarks, scroll, encoding)
@@ -79,7 +80,7 @@
 - **400+ file format** auto-detection with **format-aware editor routing**
 - **Parsed Fields Panel** with structure overlay
 - **Data Inspector** — 40+ type interpretations
-- **Assembly Explorer** — .NET PE inspection, types, methods, fields; ILSpy decompilation *(#104-106 — in progress)*
+- **Assembly Explorer** — .NET PE inspection, types, methods, fields; C# decompilation to Code Editor tab; Extract to Project; Collapse/Close All *(#104-106 — in progress)*
 - **HexEditor control** — 19 languages with instant switching *(IDE UI is English only — full localization engine coming soon)*
 
 </td>
@@ -96,7 +97,7 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 |--------|--------|----------|-------------|
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ✅ Active | ~75% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL, status bar contributor |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~55% | Multi-language code editor with syntax highlighting, find/replace, `IEditorPersistable`, split view |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~80% | Multi-language code editor — VS-like navigation bar (types/members combos, Segoe MDL2 icons, caret tracking), full `.whlang` syntax highlighting, URL hover/click, find/replace, `IEditorPersistable`, split view; hosts decompiled C# from Assembly Explorer |
 | **[Text Editor](Sources/WpfHexEditor.Editor.TextEditor/README.md)** | ✅ Active | ~50% | Text editing with 26 embedded language definitions, auto-detection by extension, encoding support |
 | **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ✅ Active | ~45% | `.hxscript` editor with syntax highlighting, run-in-terminal integration, `HxScriptEngine` backend |
 | **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | 🔧 Active | ~30% | Binary image viewer — zoom/pan, transform pipeline (rotate/flip/crop/resize), `FileShare.ReadWrite` for concurrent open |
@@ -159,10 +160,10 @@ Panels connect to the active document automatically via the docking system.
 | **[Parsed Fields Panel](Sources/Plugins/WpfHexEditor.Plugins.ParsedFields/README.md)** | ~75% | 400+ format detection — parsed field list with type overlay and inline editing |
 | **[Data Inspector](Sources/Plugins/WpfHexEditor.Plugins.DataInspector/README.md)** | ~65% | 40+ byte interpretations at caret position (int, float, GUID, date, color, …); plugin with settings page |
 | **[Structure Overlay](Sources/Plugins/WpfHexEditor.Plugins.StructureOverlay/README.md)** | ~55% | Visual field highlighting superimposed on the hex grid |
-| **[Solution Explorer](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~75% | Project tree with virtual & physical folders, Show All Files, D&D from Windows Explorer, expand-state persistence, delete from disk |
+| **[Solution Explorer](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~85% | Project tree with virtual & physical folders, Show All Files, D&D from Windows Explorer, expand-state persistence, delete from disk; **lazy source outline** — expand any `.cs`/`.xaml` file to browse types and members with line-number navigation |
 | **[Properties Panel](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~60% | Context-aware properties for the active document (F4) — auto-refresh on cursor idle (400 ms debounce), categorized groups, sort/copy/refresh toolbar |
 | **[Error Panel](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~70% | Diagnostics and validation errors from any `IDiagnosticSource` editor |
-| **[Output Panel](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~65% | Session log, file operation messages and build feedback |
+| **[Output Panel](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~75% | Session log, file operation messages; **Build channel** with severity coloring (info/warn/error/success) auto-focused when build starts; source selector, clear, word wrap, copy, auto-scroll |
 | **[Terminal Panel](Sources/WpfHexEditor.Terminal/README.md)** | ~70% | Integrated command terminal — 31+ commands, colored output, history, `TerminalMode` (Interactive/Script/ReadOnly), session export, plugin API via `ITerminalService` |
 | **[Plugin Manager](Sources/WpfHexEditor.PluginHost/README.md)** | ~65% | Browse, enable/disable, uninstall plugins; settings integration via `IPluginWithOptions`; themed toolbar with RelayCommand |
 | **[Plugin Monitoring](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~60% | Real-time CPU% + memory charts per plugin; pure WPF `Canvas` + `Polyline` (no charting lib); rolling history, `PerformanceCounter` + GC polling at 1 s interval |
@@ -170,7 +171,7 @@ Panels connect to the active document automatically via the docking system.
 | **Quick Search Bar** | ~55% | Inline Ctrl+F overlay (VSCode-style) — find next/prev, regex toggle, jump to Advanced |
 | **Advanced Search** | ~45% | Full-featured search dialog — 5 modes: Hex, Text, Regex, TBL, Wildcard |
 | **[File Diff](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | ~30% | Side-by-side binary comparison with diff navigation (F7/F8) |
-| **[Assembly Explorer](Sources/Plugins/WpfHexEditor.Plugins.AssemblyExplorer/README.md)** | ~15% | .NET PE tree — namespaces, types, methods, fields, events, resources; ECMA-335 metadata resolution (Phase 1 done, #104–105) |
+| **[Assembly Explorer](Sources/Plugins/WpfHexEditor.Plugins.AssemblyExplorer/README.md)** | ~35% | .NET PE tree — namespaces, types, methods, fields, events, resources; C# decompilation → Code Editor tab with syntax highlighting; Extract to Project; Collapse All / Close All (#104–106 in progress) |
 | **[Archive Structure](Sources/Plugins/WpfHexEditor.Plugins.ArchiveStructure/README.md)** | ~40% | ZIP/archive tree view — browse entries, extract, inspect compressed file layouts inside the hex view |
 | **[File Comparison](Sources/Plugins/WpfHexEditor.Plugins.FileComparison/README.md)** | ~45% | Binary file comparison panel — byte-level diff between two files with synchronized scrolling |
 | **[File Statistics](Sources/Plugins/WpfHexEditor.Plugins.FileStatistics/README.md)** | ~55% | Byte-frequency charts, entropy score, size breakdown, and format distribution for the active binary |
@@ -320,7 +321,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 - **8 built-in themes** — Dark, Light, Cyberpunk and more
 - **Plugin system** — open SDK + `.whxplugin` packages
 - **Integrated terminal** — 31 built-in commands + macro recording
-- **MSBuild / `.sln`** support *(coming — #101-103)*
+- **MSBuild / `.sln`** — open and build Visual Studio solutions (#101-103 ✅)
 
 </td>
 </tr>
@@ -368,11 +369,14 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 | **Capability Registry** — semantic feature declarations, `FindPluginsWithFeature()` | ✅ Done v0.4.0 | — |
 | **Extension Points** — `IFileAnalyzerExtension`, `IHexViewOverlayExtension`, typed contributor contracts | ✅ Done v0.4.0 | — |
 | **Plugin Dependency Graph** — versioned constraints, topological load order, cascading unload/reload | ✅ Done v0.4.0 | — |
+| **VS `.sln` / `.csproj` support + MSBuild build** — open VS solutions, build/rebuild/clean with Output Panel routing | ✅ Done v0.5.0 | #101–103 |
+| **Code Editor — syntax highlighting, URL hover, source outline, split view, navigation bar** | ✅ Done v0.5.2 | #84 |
+| **Build Output Channel** — auto-focus, severity coloring, empty-solution guard | ✅ Done v0.5.0 | — |
+| **Source Outline Navigation** — lazy type/member tree in Solution Explorer for `.cs`/`.xaml` | ✅ Done v0.5.0 | — |
+| **Assembly Explorer — ILSpy backend, VB.NET, CFG, Diff, Search, XRef** | 🔧 In Progress ~55% | #104–106 |
 | **Document Model** — unified in-memory document representation | 🔧 In Progress ~10% | #107 |
-| **Assembly Explorer — full tree + ECMA-335 metadata** | 🔧 In Progress ~15% | #104–105 |
 | **Integrated Terminal** — full multi-shell + macro | 🔧 In Progress ~70% | #92 |
-| **MSBuild & Visual Studio `.sln` / `.csproj` / `.vbproj` support** | 🔜 Planned | #101–103 |
-| **.NET Decompilation via ILSpy** | 🔜 Planned | #106 |
+| **.NET Decompilation via ILSpy** — full C# skeleton + IL view | 🔜 Planned | #106 |
 | **Code Intelligence (LSP / IntelliSense / Snippets)** | 🔜 Planned | #85–89 |
 | **Integrated Debugger** | 🔜 Planned | #44, #90 |
 | **Git Integration** | 🔜 Planned | #91 |
