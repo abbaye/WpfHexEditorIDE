@@ -141,7 +141,17 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     }
 
     /// <summary>
-    /// Multiplier applied to every mouse-wheel scroll delta (0.5–3.0).
+    /// Lines scrolled per mouse-wheel notch.
+    /// Forwarded to <see cref="TextViewport.MouseWheelSpeed"/>.
+    /// </summary>
+    public WpfHexEditor.Core.MouseWheelSpeed MouseWheelSpeed
+    {
+        get => Viewport.MouseWheelSpeed;
+        set => Viewport.MouseWheelSpeed = value;
+    }
+
+    /// <summary>
+    /// Kept for API compatibility — use <see cref="MouseWheelSpeed"/> instead.
     /// Forwarded to <see cref="TextViewport.ScrollSpeedMultiplier"/>.
     /// </summary>
     public double ScrollSpeedMultiplier

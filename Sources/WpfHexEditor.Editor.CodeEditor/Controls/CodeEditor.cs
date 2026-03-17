@@ -25,6 +25,7 @@ using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Rendering;
 using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
+using WpfHexEditor.Core;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.CodeEditor.Options;
@@ -191,7 +192,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private System.Windows.Threading.DispatcherTimer _smoothScrollTimer;
         private double _targetScrollOffset = 0;
         private double _currentScrollOffset = 0;
-        private const double SmoothScrollSpeed = 0.2; // Interpolation factor (0-1)
+        private const double SmoothScrollSpeed = 0.35; // Interpolation factor (0-1) — higher = snappier
 
         #endregion
 
@@ -880,6 +881,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(ScrollSpeedMultiplierProperty, Math.Max(0.5, Math.Min(3.0, value)));
         }
 
+        public static readonly DependencyProperty MouseWheelSpeedProperty =
+            DependencyProperty.Register(nameof(MouseWheelSpeed), typeof(MouseWheelSpeed), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(MouseWheelSpeed.System));
+
+        [Category("Behavior.Scrolling")]
+        [DisplayName("Mouse Wheel Speed")]
+        [Description("Lines scrolled per wheel notch. System = Windows setting (typically 3). VerySlow=1, Slow=3, Normal=5, Fast=7, VeryFast=9.")]
+        public MouseWheelSpeed MouseWheelSpeed
+        {
+            get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+            set => SetValue(MouseWheelSpeedProperty, value);
+        }
+
         public static readonly DependencyProperty HorizontalScrollSensitivityProperty =
             DependencyProperty.Register(nameof(HorizontalScrollSensitivity), typeof(double), typeof(CodeEditor),
                 new FrameworkPropertyMetadata(1.0));
@@ -1348,8 +1362,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _foldingEngine.Analyze(_document.Lines);
             };
 
-            // Background highlight pipeline (P1-CE-06) — invalidate & re-render on completion
-            _highlightPipeline.HighlightsComputed += (_, _) => InvalidateVisual();
+            // Background highlight pipeline (P1-CE-06) — invalidate & re-render on completion.
+            // Suppressed while smooth-scroll is animating to avoid a double-render per frame:
+            // timer-tick → InvalidateVisual → OnRender would already redraw; we only need
+            // the highlights render once the viewport has settled.
+            _highlightPipeline.HighlightsComputed += (_, _) =>
+            {
+                if (!_smoothScrollTimer.IsEnabled)
+                    InvalidateVisual();
+            };
 
             // Make focusable for keyboard input
             Focusable = true;
@@ -1661,10 +1682,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (Math.Abs(diff) < 0.5)
             {
-                // Close enough - snap to target and stop
-                _currentScrollOffset = _targetScrollOffset;
+                // Close enough - snap to target and stop.
+                _currentScrollOffset  = _targetScrollOffset;
                 _verticalScrollOffset = _targetScrollOffset;
                 _smoothScrollTimer.Stop();
+
+                // Reset tracking so the next OnRender schedules a highlight pass for
+                // the newly settled visible range (highlighting was suppressed during scroll).
+                _lastHighlightFirst = -1;
+                _lastHighlightLast  = -1;
             }
             else
             {
@@ -2356,7 +2382,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_virtualizationEngine == null || !EnableVirtualScrolling)
                 return;
 
-            double newOffset = _virtualizationEngine.ScrollByPixels(delta * ScrollSpeedMultiplier);
+            // delta is already speed * _lineHeight from the caller (MouseWheelSpeed controls line count).
+            // No additional multiplier — ScrollSpeedMultiplier is kept for API compatibility only.
+            double newOffset = _virtualizationEngine.ScrollByPixels(delta);
 
             if (SmoothScrolling)
             {
@@ -2496,7 +2524,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     if (_document.Lines[i].IsCacheDirty) { hasDirty = true; break; }
                 }
             }
-            if (rangeChanged || hasDirty)
+            // Skip highlight scheduling while the smooth-scroll animation is running.
+            // The visible range changes every ~16 ms during scroll; scheduling on every frame
+            // triggers background work + HighlightsComputed → extra InvalidateVisual per frame.
+            // A final pass is triggered by SmoothScrollTimer_Tick when the animation settles.
+            if ((rangeChanged || hasDirty) && !_smoothScrollTimer.IsEnabled)
             {
                 _lastHighlightFirst = _firstVisibleLine;
                 _lastHighlightLast  = _lastVisibleLine;
@@ -2764,9 +2796,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _lineNumberCache[i + 1] = formattedText;
                 }
 
-                // Right-align line numbers, vertically centered within the line slot
-                double x    = LineNumberWidth - formattedText.Width - LineNumberMargin;
-                double lineY = y + (_lineHeight - formattedText.Height) / 2;
+                // Right-align line numbers.
+                // Align the FormattedText baseline to the GlyphRun baseline so the line
+                // number sits on the same optical baseline as the code text on the same row.
+                // Fallback: vertical center when GlyphRunRenderer is not yet initialised.
+                double x     = LineNumberWidth - formattedText.Width - LineNumberMargin;
+                double lineY = _glyphRenderer != null
+                    ? y + _glyphRenderer.Baseline - formattedText.Baseline
+                    : y + (_lineHeight - formattedText.Height) / 2;
 
                 dc.DrawText(formattedText, new Point(x, lineY));
 
@@ -2895,7 +2932,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // First line — extend bottom by CornerRadius so the rounded tail merges with next segment
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    double y  = TopMargin + (start.Line - _firstVisibleLine) * _lineHeight;
+                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(start.Line)
+                        : (start.Line - _firstVisibleLine) * _lineHeight);
                     double x1 = leftEdge + (start.Column * _charWidth);
                     double x2 = leftEdge + (_document.Lines[start.Line].Length * _charWidth);
                     segments.Add(new RectangleGeometry(new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
@@ -2907,7 +2946,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 int middleLast  = Math.Min(end.Line   - 1, _lastVisibleLine);
                 for (int line = middleFirst; line <= middleLast; line++)
                 {
-                    double y     = TopMargin + (line - _firstVisibleLine) * _lineHeight - SelectionCornerRadius;
+                    double y     = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(line)
+                        : (line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
                     double width = _document.Lines[line].Length * _charWidth;
                     segments.Add(new RectangleGeometry(new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
                 }
@@ -2915,7 +2956,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Last line — extend top by CornerRadius so the rounded head merges with previous segment
                 if (end.Line >= _firstVisibleLine && end.Line <= _lastVisibleLine)
                 {
-                    double y  = TopMargin + (end.Line - _firstVisibleLine) * _lineHeight - SelectionCornerRadius;
+                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(end.Line)
+                        : (end.Line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
                     double x2 = leftEdge + (end.Column * _charWidth);
                     segments.Add(new RectangleGeometry(new Rect(leftEdge, y, x2 - leftEdge, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
                 }
@@ -3248,7 +3291,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (error.Line < _firstVisibleLine || error.Line > _lastVisibleLine)
                     continue;
 
-                double y = TopMargin + (error.Line - _firstVisibleLine) * _lineHeight + _lineHeight - 3;
+                double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                    ? _virtualizationEngine.GetLineYPosition(error.Line)
+                    : (error.Line - _firstVisibleLine) * _lineHeight) + _lineHeight - 3;
                 double x1 = leftEdge + (error.Column * _charWidth);
                 double x2 = x1 + (error.Length * _charWidth);
 
@@ -3351,7 +3396,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (line < _firstVisibleLine || line > _lastVisibleLine)
                 return;
 
-            double y = TopMargin + (line - _firstVisibleLine) * _lineHeight;
+            double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                ? _virtualizationEngine.GetLineYPosition(line)
+                : (line - _firstVisibleLine) * _lineHeight);
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (column * _charWidth);
 
             // Draw background highlight
@@ -4087,9 +4134,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
-                // Horizontal scroll: one notch = system WheelScrollLines chars (matches HexEditor model).
-                int hLines    = SystemParameters.WheelScrollLines;
-                double hDelta = -Math.Sign(e.Delta) * hLines * _charWidth * HorizontalScrollSensitivity;
+                // Horizontal scroll: one notch = resolved speed chars (matches HexEditor model).
+                int hSpeed    = MouseWheelSpeed == MouseWheelSpeed.System
+                    ? SystemParameters.WheelScrollLines
+                    : (int)MouseWheelSpeed;
+                double hDelta = -Math.Sign(e.Delta) * hSpeed * _charWidth * HorizontalScrollSensitivity;
                 double maxH   = _hScrollBar?.Maximum ?? 0;
                 _horizontalScrollOffset = Math.Max(0, Math.Min(maxH, _horizontalScrollOffset + hDelta));
                 SyncHScrollBar();
@@ -4098,9 +4147,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             else if (EnableVirtualScrolling && _virtualizationEngine != null)
             {
-                // Vertical scroll: one notch = SystemParameters.WheelScrollLines lines.
-                // Uses Math.Sign(e.Delta) like HexEditor — immune to precision-wheel sub-notch deltas.
-                int    speed      = SystemParameters.WheelScrollLines;
+                // Vertical scroll: same model as HexEditor.
+                // MouseWheelSpeed.System → WheelScrollLines, else cast enum value directly.
+                int    speed      = MouseWheelSpeed == MouseWheelSpeed.System
+                    ? SystemParameters.WheelScrollLines
+                    : (int)MouseWheelSpeed;
                 double pixelDelta = -Math.Sign(e.Delta) * speed * _lineHeight;
                 ScrollVertical(pixelDelta);
 
@@ -5040,8 +5091,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            // UI-thread work: swap the pre-built line array into the document (minimal UI work).
+            // UI-thread work: swap the pre-built line array into the document, then run the same
+            // post-load steps as LoadText() so VirtualizationEngine.TotalLines is updated.
             _document.LoadLines(lines, text);
+            _cursorLine             = 0;
+            _cursorColumn           = 0;
+            _selection.Clear();
+            _verticalScrollOffset   = 0;
+            _currentScrollOffset    = 0;
+            _targetScrollOffset     = 0;
+            _horizontalScrollOffset = 0;
+            UpdateVirtualization();
+            RebuildMaxLineLength();
+            if (IsFoldingEnabled && _foldingEngine != null)
+                _foldingEngine.Analyze(_document.Lines);
+            _lineNumberCache.Clear();
+            InvalidateMeasure();
             _currentFilePath = filePath;
 
             // Apply .editorconfig settings (P2-03): indent style, size, EOL, etc.

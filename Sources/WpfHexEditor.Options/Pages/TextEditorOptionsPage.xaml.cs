@@ -8,6 +8,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.Core;
 using ColorPickerControl = WpfHexEditor.ColorPicker.Controls.ColorPicker;
 
 namespace WpfHexEditor.Options.Pages;
@@ -20,6 +21,9 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
     public TextEditorOptionsPage()
     {
         InitializeComponent();
+
+        // Populate wheel-speed combo with the same enum values as HexEditor.
+        MouseWheelCombo.ItemsSource = Enum.GetValues<MouseWheelSpeed>();
 
         // Auto-check the override checkbox whenever the user picks a new color.
         WireAutoCheck(ChkBg,  CpBg);
@@ -52,6 +56,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
             CheckUseSpaces.IsChecked   = te.UseSpaces;
             CheckLineNumbers.IsChecked = te.ShowLineNumbers;
             TxtZoom.Text = ((int)(te.DefaultZoom * 100)).ToString();
+            MouseWheelCombo.SelectedItem = te.MouseWheelSpeed;
             CheckChangeset.IsChecked = te.ChangesetEnabled;
 
             LoadColorPicker(ChkBg,  CpBg,  te.BackgroundColor, "TE_Background");
@@ -72,7 +77,9 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         te.IndentSize      = ParseInt(TxtIndentSize.Text, 4);
         te.UseSpaces       = CheckUseSpaces.IsChecked   == true;
         te.ShowLineNumbers = CheckLineNumbers.IsChecked == true;
-        te.DefaultZoom     = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
+        te.DefaultZoom = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
+        if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)
+            te.MouseWheelSpeed = mws;
         te.ChangesetEnabled = CheckChangeset.IsChecked == true;
         te.BackgroundColor = FlushColorPicker(ChkBg,  CpBg);
         te.ForegroundColor = FlushColorPicker(ChkFg,  CpFg);

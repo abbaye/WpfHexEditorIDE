@@ -26,6 +26,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Languages;
@@ -90,17 +91,20 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         Children.Add(_secondaryEditor);
 
         // -- Split toggle button (top-right overlay on primary editor) --------
+        // Styled flat/borderless like VS2022 — transparent background, subtle
+        // hover highlight using theme brushes, no 3-D default WPF button look.
         _splitToggle = new ToggleButton
         {
-            Content           = "\uE70D",   // Segoe MDL2 "Split" icon
-            FontFamily        = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
-            FontSize          = 11,
-            Width             = 18,
-            Height            = 18,
-            Padding           = new Thickness(0),
+            Content             = "\uE8A5",  // Segoe MDL2 "SplitView" glyph
+            FontFamily          = new FontFamily("Segoe MDL2 Assets"),
+            FontSize            = 10,
+            Width               = 16,
+            Height              = 16,
+            Padding             = new Thickness(0),
             VerticalAlignment   = VerticalAlignment.Top,
             HorizontalAlignment = HorizontalAlignment.Right,
-            ToolTip           = "Split Editor"
+            ToolTip             = "Split Editor",
+            Style               = BuildFlatToggleButtonStyle(),
         };
         Panel.SetZIndex(_splitToggle, 99);
         SetRow(_splitToggle, 0);
@@ -147,6 +151,68 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
     /// Programmatically toggles the split view.
     /// </summary>
     public void ToggleSplit() => _splitToggle.IsChecked = !_splitToggle.IsChecked;
+
+    #endregion
+
+    #region Split button style
+
+    /// <summary>
+    /// Builds a flat, borderless VS2022-like ToggleButton style.
+    /// Uses dynamic resource references so the button respects the active theme.
+    /// States: Normal=transparent | Hover=CE_Selection@30% | Checked=CE_Selection@60%
+    /// </summary>
+    private static Style BuildFlatToggleButtonStyle()
+    {
+        // Reusable transparent + 1px transparent border template
+        var template = new ControlTemplate(typeof(ToggleButton));
+
+        var border = new FrameworkElementFactory(typeof(Border));
+        border.SetValue(Border.CornerRadiusProperty, new CornerRadius(2));
+        border.SetValue(Border.BorderThicknessProperty, new Thickness(1));
+        border.SetValue(Border.BackgroundProperty, Brushes.Transparent);
+        border.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
+
+        var content = new FrameworkElementFactory(typeof(ContentPresenter));
+        content.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        content.SetValue(ContentPresenter.VerticalAlignmentProperty,   VerticalAlignment.Center);
+        border.AppendChild(content);
+
+        template.VisualTree = border;
+
+        // Hover trigger — light theme-aware fill
+        var hoverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
+        hoverTrigger.Setters.Add(new Setter(
+            Border.BackgroundProperty,
+            new SolidColorBrush(Color.FromArgb(50, 100, 100, 100)),
+            "border"));
+        hoverTrigger.Setters.Add(new Setter(
+            Border.BorderBrushProperty,
+            new SolidColorBrush(Color.FromArgb(80, 150, 150, 150)),
+            "border"));
+        template.Triggers.Add(hoverTrigger);
+
+        // Checked trigger — more prominent fill
+        var checkedTrigger = new Trigger { Property = ToggleButton.IsCheckedProperty, Value = true };
+        checkedTrigger.Setters.Add(new Setter(
+            Border.BackgroundProperty,
+            new SolidColorBrush(Color.FromArgb(90, 100, 140, 200)),
+            "border"));
+        checkedTrigger.Setters.Add(new Setter(
+            Border.BorderBrushProperty,
+            new SolidColorBrush(Color.FromArgb(120, 100, 150, 220)),
+            "border"));
+        template.Triggers.Add(checkedTrigger);
+
+        // Name the border so ControlTemplate Trigger Setters can target it by name.
+        border.Name = "border";
+
+        var style = new Style(typeof(ToggleButton));
+        style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        style.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush(Color.FromRgb(180, 180, 180))));
+        style.Setters.Add(new Setter(Control.CursorProperty, Cursors.Hand));
+        style.Seal();
+        return style;
+    }
 
     #endregion
 

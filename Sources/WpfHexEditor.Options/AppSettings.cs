@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Options;
@@ -220,10 +221,10 @@ public sealed class CodeEditorDefaultSettings
     public double DefaultZoom { get; set; } = 1.0;
 
     /// <summary>
-    /// Mouse-wheel scroll speed multiplier (0.5 = slow, 1.0 = default, 3.0 = fast).
-    /// Maps to <c>CodeEditor.ScrollSpeedMultiplier</c>.
+    /// Lines scrolled per mouse-wheel notch.
+    /// Maps to <c>CodeEditor.MouseWheelSpeed</c> — same enum and behaviour as HexEditor.
     /// </summary>
-    public double ScrollSpeedMultiplier { get; set; } = 1.0;
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.Normal;
 
     // -- Changeset (.whchg) -----------------------------------------------
 
@@ -289,10 +290,10 @@ public sealed class TextEditorDefaultSettings
     public double DefaultZoom { get; set; } = 1.0;
 
     /// <summary>
-    /// Mouse-wheel scroll speed multiplier (0.5 = slow, 1.0 = default, 3.0 = fast).
-    /// Maps to <c>TextViewport.ScrollSpeedMultiplier</c>.
+    /// Lines scrolled per mouse-wheel notch.
+    /// Maps to <c>TextViewport.MouseWheelSpeed</c> — same enum and behaviour as HexEditor.
     /// </summary>
-    public double ScrollSpeedMultiplier { get; set; } = 1.0;
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.Normal;
 
     // -- Changeset (.whchg) -----------------------------------------------
 

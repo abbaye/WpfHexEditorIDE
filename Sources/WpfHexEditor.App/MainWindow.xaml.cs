@@ -4427,12 +4427,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         switch (editor)
         {
             case WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor ce:
-                ce.ScrollSpeedMultiplier = settings.CodeEditorDefaults.ScrollSpeedMultiplier;
-                ce.ZoomLevel             = settings.CodeEditorDefaults.DefaultZoom;
+                ce.MouseWheelSpeed = settings.CodeEditorDefaults.MouseWheelSpeed;
+                ce.ZoomLevel       = settings.CodeEditorDefaults.DefaultZoom;
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
-                te.ScrollSpeedMultiplier = settings.TextEditorDefaults.ScrollSpeedMultiplier;
-                te.ZoomLevel             = settings.TextEditorDefaults.DefaultZoom;
+                te.MouseWheelSpeed = settings.TextEditorDefaults.MouseWheelSpeed;
+                te.ZoomLevel       = settings.TextEditorDefaults.DefaultZoom;
                 break;
         }
     }

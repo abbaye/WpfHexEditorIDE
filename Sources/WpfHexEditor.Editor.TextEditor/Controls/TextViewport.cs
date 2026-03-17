@@ -913,8 +913,11 @@ internal sealed class TextViewport : FrameworkElement
             return;
         }
 
-        // Scale the raw delta by ScrollSpeedMultiplier (default 1.0 = standard WPF speed).
-        int delta = (int)Math.Round((e.Delta / 40.0) * ScrollSpeedMultiplier);
+        // Use MouseWheelSpeed (lines per notch) — same model as HexEditor.
+        int speed = MouseWheelSpeed == WpfHexEditor.Core.MouseWheelSpeed.System
+            ? System.Windows.SystemParameters.WheelScrollLines
+            : (int)MouseWheelSpeed;
+        int delta = Math.Sign(e.Delta) * speed;
         FirstVisibleLine = Math.Max(0, _firstVisibleLine - delta);
         e.Handled = true;
     }
@@ -1121,9 +1124,26 @@ internal sealed class TextViewport : FrameworkElement
     // ── MouseWheel scroll speed ──────────────────────────────────────────────
 
     /// <summary>
-    /// Multiplier applied to each mouse-wheel scroll delta.
-    /// 1.0 = default WPF speed; 0.5 = half speed; 2.0 = double speed.
-    /// Mirrors <c>CodeEditor.ScrollSpeedMultiplier</c> for API consistency.
+    /// Lines scrolled per mouse-wheel notch — same enum and behaviour as HexEditor.
+    /// <c>System</c> uses <see cref="System.Windows.SystemParameters.WheelScrollLines"/>.
+    /// </summary>
+    public static readonly DependencyProperty MouseWheelSpeedProperty =
+        DependencyProperty.Register(
+            nameof(MouseWheelSpeed),
+            typeof(WpfHexEditor.Core.MouseWheelSpeed),
+            typeof(TextViewport),
+            new FrameworkPropertyMetadata(WpfHexEditor.Core.MouseWheelSpeed.Normal));
+
+    /// <summary>Gets or sets the lines-per-notch scroll speed.</summary>
+    public WpfHexEditor.Core.MouseWheelSpeed MouseWheelSpeed
+    {
+        get => (WpfHexEditor.Core.MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+        set => SetValue(MouseWheelSpeedProperty, value);
+    }
+
+    /// <summary>
+    /// Kept for API compatibility — no longer used for vertical scroll.
+    /// Use <see cref="MouseWheelSpeed"/> instead.
     /// </summary>
     public static readonly DependencyProperty ScrollSpeedMultiplierProperty =
         DependencyProperty.Register(
@@ -1132,9 +1152,7 @@ internal sealed class TextViewport : FrameworkElement
             typeof(TextViewport),
             new FrameworkPropertyMetadata(1.0));
 
-    /// <summary>
-    /// Gets or sets the scroll-speed multiplier (0.5–3.0).
-    /// </summary>
+    /// <inheritdoc cref="ScrollSpeedMultiplierProperty"/>
     public double ScrollSpeedMultiplier
     {
         get => (double)GetValue(ScrollSpeedMultiplierProperty);
