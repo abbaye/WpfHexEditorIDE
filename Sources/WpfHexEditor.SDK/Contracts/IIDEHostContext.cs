@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -15,10 +17,26 @@ namespace WpfHexEditor.SDK.Contracts;
 /// </summary>
 public interface IIDEHostContext
 {
+    // -- Document Management --------------------------------------------------
+
+    /// <summary>
+    /// High-level document host service for opening, activating and navigating to
+    /// document tabs. Use this to open files from plugins or IDE panels (ErrorList, etc.)
+    /// without holding a direct reference to MainWindow.
+    /// </summary>
+    IDocumentHostService DocumentHost { get; }
+
     // -- IDE Services ---------------------------------------------------------
 
     /// <summary>Access to the Solution Explorer for file/project navigation.</summary>
     ISolutionExplorerService SolutionExplorer { get; }
+
+    /// <summary>
+    /// Access to the WH native project/solution manager.
+    /// Null when the host does not expose this service (e.g. sandboxed plugins).
+    /// Use to add generated files to an open WH project via <see cref="ISolutionManager.CreateItemAsync"/>.
+    /// </summary>
+    ISolutionManager? SolutionManager { get; }
 
     /// <summary>Access to the active HexEditor content and selection state.</summary>
     IHexEditorService HexEditor { get; }
@@ -96,4 +114,14 @@ public interface IIDEHostContext
     /// for a given extension point without knowing which plugins provided them.
     /// </summary>
     IExtensionRegistry ExtensionRegistry { get; }
+
+    // -- LSP (Language Server Protocol) ---------------------------------------
+
+    /// <summary>
+    /// Registry of configured LSP server executables keyed by language / extension.
+    /// Use <see cref="ILspServerRegistry.CreateClient"/> to obtain an
+    /// <see cref="ILspClient"/> for a specific file.
+    /// Null when the LSP.Client assembly is not loaded.
+    /// </summary>
+    ILspServerRegistry? LspServers { get; }
 }

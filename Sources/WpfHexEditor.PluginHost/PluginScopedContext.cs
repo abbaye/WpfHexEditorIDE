@@ -42,6 +42,12 @@ internal sealed class PluginScopedContext : IIDEHostContext
     public ISolutionExplorerService SolutionExplorer => _inner.SolutionExplorer;
 
     /// <inheritdoc />
+    public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => _inner.SolutionManager;
+
+    /// <inheritdoc />
+    public WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? LspServers => _inner.LspServers;
+
+    /// <inheritdoc />
     public ICodeEditorService CodeEditor => _inner.CodeEditor;
 
     /// <inheritdoc />
@@ -79,6 +85,9 @@ internal sealed class PluginScopedContext : IIDEHostContext
 
     /// <inheritdoc />
     public IExtensionRegistry ExtensionRegistry => _inner.ExtensionRegistry;
+
+    /// <inheritdoc />
+    public IDocumentHostService DocumentHost => _inner.DocumentHost;
 
     public PluginScopedContext(IIDEHostContext inner, TimedHexEditorService timedHexEditor)
     {
