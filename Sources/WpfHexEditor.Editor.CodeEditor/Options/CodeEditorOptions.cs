@@ -35,6 +35,7 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool    _showWhitespace      = false;
     private bool    _showLineNumbers     = true;
     private bool    _enableFolding       = true;
+    private bool    _showScopeGuides     = true;
     private bool    _enableMultiCaret    = true;
     private bool    _enableIntelliSense  = true;
     private bool    _enableSnippets      = true;
@@ -82,6 +83,12 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _enableFolding;
         set { _enableFolding = value; Notify(); }
+    }
+
+    public bool ShowScopeGuides
+    {
+        get => _showScopeGuides;
+        set { _showScopeGuides = value; Notify(); }
     }
 
     public bool EnableMultiCaret

@@ -167,6 +167,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static readonly Brush    s_foldLabelBgBrush   = MakeFrozenBrush(Color.FromArgb(25, 128, 128, 128));
         private static readonly Typeface s_foldLabelTypeface  = new("Consolas");
 
+        // Scope guide line pen — semi-transparent so it doesn't obscure text.
+        private static readonly Pen s_scopeGuidePen = MakeFrozenPen(Color.FromArgb(60, 128, 128, 128), 1.0);
+
         private static Pen MakeSquigglyPen(Color color) => MakeFrozenPen(color, 1.5);
 
         private static Pen MakeFrozenPen(Color color, double thickness)
@@ -333,6 +336,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if ((bool)e.NewValue && editor._document != null)
                 editor._foldingEngine?.Analyze(editor._document.Lines);
             editor.InvalidateMeasure();
+        }
+
+        public static readonly DependencyProperty ShowScopeGuidesProperty =
+            DependencyProperty.Register(nameof(ShowScopeGuides), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>
+        /// Show or hide the vertical scope guide lines that connect matching brace pairs.
+        /// Toggled via the Code Editor options panel.
+        /// </summary>
+        public bool ShowScopeGuides
+        {
+            get => (bool)GetValue(ShowScopeGuidesProperty);
+            set => SetValue(ShowScopeGuidesProperty, value);
         }
 
         /// <summary>
@@ -1519,7 +1536,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (options.FontSize is > 6 and < 72)
                 EditorFontSize = options.FontSize;
 
-            ShowLineNumbers = options.ShowLineNumbers;
+            ShowLineNumbers  = options.ShowLineNumbers;
+            ShowScopeGuides  = options.ShowScopeGuides;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
             // A null override clears the local value so DynamicResource (CE_*) takes effect again.
@@ -2567,6 +2585,80 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// fraction from the virtualization engine so lines align correctly during smooth scroll.
         /// </summary>
         /// <param name="visIdx">0-based index among non-hidden visible lines.</param>
+        #region Scope Guide Lines
+
+        /// <summary>
+        /// Draws vertical scope guide lines for each non-collapsed fold region.
+        /// Each line is placed at the indentation column of the body content,
+        /// running from the first body line to the closing brace line.
+        /// </summary>
+        private void RenderScopeGuides(DrawingContext dc)
+        {
+            if (!ShowScopeGuides || _foldingEngine == null || _document == null || _lineHeight <= 0)
+                return;
+
+            double textX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            foreach (var region in _foldingEngine.Regions)
+            {
+                if (region.IsCollapsed) continue; // body is hidden — no guide needed
+
+                int bodyFirst = region.StartLine + 1;
+                int bodyLast  = region.EndLine;
+
+                // Skip regions entirely outside the visible range.
+                if (bodyLast < _firstVisibleLine || bodyFirst > _lastVisibleLine) continue;
+
+                double guideX = ComputeScopeGuideX(textX, region);
+                if (guideX <= textX) continue; // block not indented — skip
+
+                int drawFirst = Math.Max(bodyFirst, _firstVisibleLine);
+                int drawLast  = Math.Min(bodyLast,  _lastVisibleLine);
+
+                double yTop    = ScopeLineIndexToY(drawFirst);
+                double yBottom = ScopeLineIndexToY(drawLast) + _lineHeight;
+
+                dc.DrawLine(s_scopeGuidePen, new Point(guideX, yTop), new Point(guideX, yBottom));
+            }
+        }
+
+        /// <summary>
+        /// Returns the X position for the scope guide of <paramref name="region"/> by
+        /// finding the leading whitespace of the first non-empty line inside the block.
+        /// </summary>
+        private double ComputeScopeGuideX(double textX, FoldingRegion region)
+        {
+            for (int i = region.StartLine + 1; i < region.EndLine && i < _document!.Lines.Count; i++)
+            {
+                var text = _document.Lines[i].Text;
+                if (string.IsNullOrWhiteSpace(text)) continue;
+                int spaces = 0;
+                foreach (char c in text)
+                {
+                    if      (c == ' ')  spaces++;
+                    else if (c == '\t') spaces += TabSize;
+                    else break;
+                }
+                return spaces > 0 ? textX + spaces * _charWidth : textX;
+            }
+            return textX;
+        }
+
+        /// <summary>
+        /// Converts a document line index to its Y pixel position in the viewport,
+        /// accounting for fold-collapsed lines (mirrors <see cref="GetFoldAwareLineY"/>
+        /// but takes an absolute line index instead of a visible-line counter).
+        /// </summary>
+        private double ScopeLineIndexToY(int lineIndex)
+        {
+            int visIdx = 0;
+            for (int i = _firstVisibleLine; i < lineIndex && i < _document!.Lines.Count; i++)
+                if (_foldingEngine == null || !_foldingEngine.IsLineHidden(i)) visIdx++;
+            return GetFoldAwareLineY(visIdx);
+        }
+
+        #endregion
+
         #region Outlining Commands (Ctrl+M chord)
 
         /// <summary>Toggle the fold region that starts on the cursor line (Ctrl+M, Ctrl+M).</summary>
@@ -2713,6 +2805,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // 5. Selection
             RenderSelection(dc);
+
+            // 6a. Scope guides (drawn behind text so they don't obscure characters)
+            RenderScopeGuides(dc);
 
             // 6. Text content
             RenderTextContent(dc);

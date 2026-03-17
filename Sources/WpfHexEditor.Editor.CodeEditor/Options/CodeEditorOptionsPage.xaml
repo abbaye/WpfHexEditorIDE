@@ -104,6 +104,11 @@
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
+            <CheckBox Content="Show scope guides"
+                      IsChecked="{Binding ShowScopeGuides}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Features ─────────────────────────────────────────── -->
