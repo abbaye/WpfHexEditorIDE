@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.Models;
@@ -144,7 +145,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     /// Lines scrolled per mouse-wheel notch.
     /// Forwarded to <see cref="TextViewport.MouseWheelSpeed"/>.
     /// </summary>
-    public WpfHexEditor.Core.MouseWheelSpeed MouseWheelSpeed
+    public MouseWheelSpeed MouseWheelSpeed
     {
         get => Viewport.MouseWheelSpeed;
         set => Viewport.MouseWheelSpeed = value;

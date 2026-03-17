@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
 
@@ -914,8 +915,8 @@ internal sealed class TextViewport : FrameworkElement
         }
 
         // Use MouseWheelSpeed (lines per notch) — same model as HexEditor.
-        int speed = MouseWheelSpeed == WpfHexEditor.Core.MouseWheelSpeed.System
-            ? System.Windows.SystemParameters.WheelScrollLines
+        int speed = MouseWheelSpeed == MouseWheelSpeed.System
+            ? SystemParameters.WheelScrollLines
             : (int)MouseWheelSpeed;
         int delta = Math.Sign(e.Delta) * speed;
         FirstVisibleLine = Math.Max(0, _firstVisibleLine - delta);
@@ -1130,14 +1131,14 @@ internal sealed class TextViewport : FrameworkElement
     public static readonly DependencyProperty MouseWheelSpeedProperty =
         DependencyProperty.Register(
             nameof(MouseWheelSpeed),
-            typeof(WpfHexEditor.Core.MouseWheelSpeed),
+            typeof(MouseWheelSpeed),
             typeof(TextViewport),
-            new FrameworkPropertyMetadata(WpfHexEditor.Core.MouseWheelSpeed.Normal));
+            new FrameworkPropertyMetadata(MouseWheelSpeed.Normal));
 
     /// <summary>Gets or sets the lines-per-notch scroll speed.</summary>
-    public WpfHexEditor.Core.MouseWheelSpeed MouseWheelSpeed
+    public MouseWheelSpeed MouseWheelSpeed
     {
-        get => (WpfHexEditor.Core.MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+        get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
         set => SetValue(MouseWheelSpeedProperty, value);
     }
 
