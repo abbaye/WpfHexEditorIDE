@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
@@ -23,10 +24,10 @@ namespace WpfHexEditor.Editor.TextEditor.Controls;
 /// <summary>
 /// Full-featured text editor with syntax highlighting.
 /// Implements <see cref="IDocumentEditor"/>, <see cref="IOpenableDocument"/>,
-/// and <see cref="IEditorPersistable"/> so the project system can save and
-/// restore per-file state (caret position, syntax language override).
+/// <see cref="IEditorPersistable"/>, and <see cref="INavigableDocument"/> so the project system
+/// can save/restore per-file state and the Error List can navigate to a specific line.
 /// </summary>
-public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable
+public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable, INavigableDocument
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -71,19 +72,33 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     // Context menu
     // -----------------------------------------------------------------------
 
+    private static TextBlock MakeMenuIcon(string glyph)
+    {
+        var tb = new TextBlock
+        {
+            Text                = glyph,
+            FontFamily          = new FontFamily("Segoe MDL2 Assets"),
+            FontSize            = 13,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center,
+        };
+        tb.SetResourceReference(TextElement.ForegroundProperty, "DockMenuForegroundBrush");
+        return tb;
+    }
+
     private void InitializeContextMenu()
     {
         var cm = new ContextMenu();
 
-        cm.Items.Add(new MenuItem { Header = "Cu_t",        InputGestureText = "Ctrl+X",  Command = ApplicationCommands.Cut,       CommandTarget = Viewport });
-        cm.Items.Add(new MenuItem { Header = "_Copy",       InputGestureText = "Ctrl+C",  Command = ApplicationCommands.Copy,      CommandTarget = Viewport });
-        cm.Items.Add(new MenuItem { Header = "_Paste",      InputGestureText = "Ctrl+V",  Command = ApplicationCommands.Paste,     CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "Cu_t",        InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut,       CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74E") });
+        cm.Items.Add(new MenuItem { Header = "_Copy",       InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8C8") });
+        cm.Items.Add(new MenuItem { Header = "_Paste",      InputGestureText = "Ctrl+V", Command = ApplicationCommands.Paste,     CommandTarget = Viewport, Icon = MakeMenuIcon("\uE9F5") });
         cm.Items.Add(new Separator());
-        cm.Items.Add(new MenuItem { Header = "_Undo",       InputGestureText = "Ctrl+Z",  Command = ApplicationCommands.Undo,      CommandTarget = Viewport });
-        cm.Items.Add(new MenuItem { Header = "_Redo",       InputGestureText = "Ctrl+Y",  Command = ApplicationCommands.Redo,      CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "_Undo",       InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") });
+        cm.Items.Add(new MenuItem { Header = "_Redo",       InputGestureText = "Ctrl+Y", Command = ApplicationCommands.Redo,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") });
         cm.Items.Add(new Separator());
-        cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A",  Command = ApplicationCommands.SelectAll, CommandTarget = Viewport });
-        cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",     Command = ApplicationCommands.Delete,    CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
+        cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
 
         Viewport.ContextMenu = cm;
 
@@ -487,6 +502,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         _vm.CaretLine   = Math.Max(0, line   - 1);
         _vm.CaretColumn = Math.Max(0, column - 1);
     }
+
+    /// <inheritdoc/>
+    void INavigableDocument.NavigateTo(int line, int column) => GoToLine(line, column);
 
     // -----------------------------------------------------------------------
     // IEditorPersistable

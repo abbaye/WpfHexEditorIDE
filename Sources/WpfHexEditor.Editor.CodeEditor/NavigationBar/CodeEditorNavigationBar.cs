@@ -125,10 +125,14 @@ public sealed class CodeEditorNavigationBar : Grid
     private void SubscribeToDocument(CodeDocument? doc)
     {
         if (doc == null) return;
-        doc.TextChanged += OnDocumentTextChanged;
+        doc.TextChanged     += OnDocumentTextChanged;
+        doc.ContentReplaced += OnDocumentContentReplaced;
     }
 
     private void OnDocumentTextChanged(object? sender, ModelTextChangedEventArgs e)
+        => ScheduleParse();
+
+    private void OnDocumentContentReplaced(object? sender, EventArgs e)
         => ScheduleParse();
 
     // ── Parse pipeline (debounced 500 ms, background thread) ──────────────────

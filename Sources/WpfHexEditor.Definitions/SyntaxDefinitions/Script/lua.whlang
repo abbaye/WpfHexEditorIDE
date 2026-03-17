@@ -18,6 +18,21 @@
   },
   "rules": [
     {
+      "type": "BlockComment",
+      "pattern": "--\\[=*\\[[\\s\\S]*?\\]=*\\]",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "String",
+      "pattern": "(\\[=*\\[[\\s\\S]*?\\]=*\\]|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "--.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Keyword",
       "pattern": "\\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\\b",
       "colorKey": "TE_Keyword"
@@ -32,20 +47,6 @@
       "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
       "colorKey": "TE_Number"
     },
-    {
-      "type": "String",
-      "pattern": "(\\[=*\\[[\\s\\S]*?\\]=*\\]|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
-      "colorKey": "TE_String"
-    },
-    {
-      "type": "BlockComment",
-      "pattern": "--\\[=*\\[[\\s\\S]*?\\]=*\\]",
-      "colorKey": "TE_Comment"
-    },
-    {
-      "type": "Comment",
-      "pattern": "--.*$",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
   ]
 }

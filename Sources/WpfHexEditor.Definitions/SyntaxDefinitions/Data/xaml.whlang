@@ -36,13 +36,18 @@
       "colorKey": "TE_Register"
     },
     {
-      "type": "MarkupExtension",
-      "pattern": "\\{[^}]+\\}",
-      "colorKey": "TE_Label"
+      "type": "MarkupExtensionKeyword",
+      "pattern": "\\{[A-Za-z][A-Za-z0-9.]*",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "MarkupExtensionClose",
+      "pattern": "\\}",
+      "colorKey": "TE_Operator"
     },
     {
       "type": "WpfKeyword",
-      "pattern": "(?<=</?)(Window|UserControl|Page|Application|ResourceDictionary|DataTemplate|ControlTemplate|HierarchicalDataTemplate|Style|Setter|Trigger|DataTrigger|MultiTrigger|MultiDataTrigger|EventTrigger|Storyboard|BeginStoryboard|DoubleAnimation|ColorAnimation|VisualStateManager|VisualStateGroup|VisualState|Grid|StackPanel|DockPanel|WrapPanel|Canvas|UniformGrid|VirtualizingStackPanel|Border|ScrollViewer|ViewBox|GroupBox|Expander|TabControl|TabItem|HeaderedContentControl|ContentControl|ItemsControl|ListBox|ListBoxItem|ComboBox|ComboBoxItem|ListView|GridView|GridViewColumn|TreeView|TreeViewItem|DataGrid|DataGridTextColumn|DataGridCheckBoxColumn|DataGridTemplateColumn|Button|RepeatButton|ToggleButton|CheckBox|RadioButton|Label|TextBlock|TextBox|PasswordBox|RichTextBox|Slider|ProgressBar|ScrollBar|Separator|Image|Ellipse|Rectangle|Line|Polyline|Polygon|Path|Shape|ToolBar|ToolBarTray|StatusBar|StatusBarItem|Menu|MenuItem|ContextMenu|Popup|ToolTip|Frame|WebBrowser|FlowDocumentScrollViewer|FlowDocumentReader|DocumentViewer|MediaElement|InkCanvas|Thumb|ResizeGrip|AdornerDecorator|BulletDecorator|Decorator)(?=[\\s/>])",
+      "pattern": "</?(?:Window|UserControl|Page|Application|ResourceDictionary|DataTemplate|ControlTemplate|HierarchicalDataTemplate|Style|Setter|Trigger|DataTrigger|MultiTrigger|MultiDataTrigger|EventTrigger|Storyboard|BeginStoryboard|DoubleAnimation|ColorAnimation|VisualStateManager|VisualStateGroup|VisualState|Grid|StackPanel|DockPanel|WrapPanel|Canvas|UniformGrid|VirtualizingStackPanel|Border|ScrollViewer|ViewBox|GroupBox|Expander|TabControl|TabItem|HeaderedContentControl|ContentControl|ItemsControl|ListBox|ListBoxItem|ComboBox|ComboBoxItem|ListView|GridView|GridViewColumn|TreeView|TreeViewItem|DataGrid|DataGridTextColumn|DataGridCheckBoxColumn|DataGridTemplateColumn|Button|RepeatButton|ToggleButton|CheckBox|RadioButton|Label|TextBlock|TextBox|PasswordBox|RichTextBox|Slider|ProgressBar|ScrollBar|Separator|Image|Ellipse|Rectangle|Line|Polyline|Polygon|Path|Shape|ToolBar|ToolBarTray|StatusBar|StatusBarItem|Menu|MenuItem|ContextMenu|Popup|ToolTip|Frame|WebBrowser|FlowDocumentScrollViewer|FlowDocumentReader|DocumentViewer|MediaElement|InkCanvas|Thumb|ResizeGrip|AdornerDecorator|BulletDecorator|Decorator)(?=[\\s/>])",
       "colorKey": "TE_Keyword"
     },
     {
@@ -58,7 +63,7 @@
     {
       "type": "AttrName",
       "pattern": "\\b[A-Za-z][A-Za-z0-9_:.\\-]*(?=\\s*=)",
-      "colorKey": "TE_Operator"
+      "colorKey": "TE_Register"
     },
     {
       "type": "AttrValue",

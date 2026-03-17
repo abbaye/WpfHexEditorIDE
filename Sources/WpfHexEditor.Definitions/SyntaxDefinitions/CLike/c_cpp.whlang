@@ -20,8 +20,23 @@
   },
   "rules": [
     {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "String",
+      "pattern": "(L?R?\"(?:[^\"\\\\]|\\\\.)*\"|L?'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "//.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Preprocessor",
-      "pattern": "^\\s*#\\s*(include|define|undef|ifdef|ifndef|if|elif|else|endif|pragma|error|warning|line|import|using)\\b.*$",
+      "pattern": "^\\s*#\\s*(include|define|undef|ifdef|ifndef|if|elif|else|endif|pragma|error|warning|line|import|using)\\b[^/\\n]*",
       "colorKey": "TE_Directive"
     },
     {
@@ -39,20 +54,6 @@
       "pattern": "\\b(0x[0-9A-Fa-f]+[uUlLfF]*|0b[01]+[uUlL]*|0[0-7]+[uUlL]*|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[uUlLfFdD]*)\\b",
       "colorKey": "TE_Number"
     },
-    {
-      "type": "String",
-      "pattern": "(L?R?\"(?:[^\"\\\\]|\\\\.)*\"|L?'(?:[^'\\\\]|\\\\.)*')",
-      "colorKey": "TE_String"
-    },
-    {
-      "type": "Comment",
-      "pattern": "//.*$",
-      "colorKey": "TE_Comment"
-    },
-    {
-      "type": "BlockComment",
-      "pattern": "/\\*[\\s\\S]*?\\*/",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
   ]
 }

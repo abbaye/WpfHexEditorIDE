@@ -18,6 +18,16 @@
   },
   "rules": [
     {
+      "type": "String",
+      "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`[^`]*`)",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "(#.*$|::.*$|REM\\s.*$)",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Keyword",
       "pattern": "\\b(if|then|else|elif|fi|for|in|do|done|while|until|case|esac|function|return|exit|break|continue|local|export|readonly|declare|typeset|unset|source|alias|eval|exec|trap|wait|set|shopt|echo|printf|read|shift|getopts|test|true|false|and|or|not|begin|process|end|param|switch|foreach|where|select|try|catch|finally|throw|class|enum|interface|using|namespace|module|function|filter|workflow|configuration|parallel|sequence|inlinescript|data|dynamicparam|hidden|static|abstract|override|new|base)\\b",
       "colorKey": "TE_Keyword"
@@ -38,19 +48,10 @@
       "colorKey": "TE_Number"
     },
     {
-      "type": "String",
-      "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`[^`]*`)",
-      "colorKey": "TE_String"
-    },
-    {
       "type": "BatchLabel",
       "pattern": "^:[A-Za-z][A-Za-z0-9_]*",
       "colorKey": "TE_Label"
     },
-    {
-      "type": "Comment",
-      "pattern": "(#.*$|::.*$|REM\\s.*$)",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "FuncDef", "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\(\\))", "colorKey": "TE_Label" }
   ]
 }

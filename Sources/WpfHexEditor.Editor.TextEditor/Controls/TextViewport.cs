@@ -665,14 +665,16 @@ internal sealed class TextViewport : FrameworkElement
             // -- Navigation (with optional Shift selection) --------------
             case Key.Left:
                 BeginSelectionIfShift(shift);
-                if (_vm.CaretColumn > 0) _vm.CaretColumn--;
+                if (ctrl) { MoveWordLeft(shift); }
+                else if (_vm.CaretColumn > 0) _vm.CaretColumn--;
                 else if (_vm.CaretLine > 0) { _vm.CaretLine--; _vm.CaretColumn = _vm.GetLine(_vm.CaretLine).Length; }
                 if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.Right:
                 BeginSelectionIfShift(shift);
                 var curLine = _vm.GetLine(_vm.CaretLine);
-                if (_vm.CaretColumn < curLine.Length) _vm.CaretColumn++;
+                if (ctrl) { MoveWordRight(shift); }
+                else if (_vm.CaretColumn < curLine.Length) _vm.CaretColumn++;
                 else if (_vm.CaretLine < _vm.LineCount - 1) { _vm.CaretLine++; _vm.CaretColumn = 0; }
                 if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
@@ -1047,6 +1049,8 @@ internal sealed class TextViewport : FrameworkElement
     // Word selection (double-click)
     // -----------------------------------------------------------------------
 
+    private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
+
     private void SelectWordAtCaret()
     {
         if (_vm is null) return;
@@ -1059,8 +1063,6 @@ internal sealed class TextViewport : FrameworkElement
             _vm.ClearSelection();
             return;
         }
-
-        bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
 
         int start = col;
         if (IsWordChar(line[col]))
@@ -1076,6 +1078,56 @@ internal sealed class TextViewport : FrameworkElement
         _vm.SelectionAnchorColumn = start;
         _vm.CaretColumn           = end;
         // CaretColumn/SelectionAnchor PropertyChanged → QueueBackgroundRender()
+    }
+
+    private void MoveWordLeft(bool shift)
+    {
+        if (_vm is null) return;
+        string line = _vm.GetLine(_vm.CaretLine);
+        int col = _vm.CaretColumn;
+
+        // Skip non-word chars to the left
+        while (col > 0 && !IsWordChar(line[col - 1])) col--;
+        // Skip word chars to the left
+        while (col > 0 && IsWordChar(line[col - 1])) col--;
+
+        if (col == _vm.CaretColumn && _vm.CaretLine > 0)
+        {
+            _vm.CaretLine--;
+            _vm.CaretColumn = _vm.GetLine(_vm.CaretLine).Length;
+        }
+        else
+        {
+            _vm.CaretColumn = col;
+        }
+
+        if (!shift) _vm.ClearSelection();
+        ScrollIntoView(_vm.CaretLine);
+    }
+
+    private void MoveWordRight(bool shift)
+    {
+        if (_vm is null) return;
+        string line = _vm.GetLine(_vm.CaretLine);
+        int col = _vm.CaretColumn;
+
+        // Skip word chars to the right
+        while (col < line.Length && IsWordChar(line[col]))  col++;
+        // Skip non-word chars to the right
+        while (col < line.Length && !IsWordChar(line[col])) col++;
+
+        if (col == _vm.CaretColumn && _vm.CaretLine < _vm.LineCount - 1)
+        {
+            _vm.CaretLine++;
+            _vm.CaretColumn = 0;
+        }
+        else
+        {
+            _vm.CaretColumn = col;
+        }
+
+        if (!shift) _vm.ClearSelection();
+        ScrollIntoView(_vm.CaretLine);
     }
 
     private static int GetFirstNonWhiteSpace(string line)

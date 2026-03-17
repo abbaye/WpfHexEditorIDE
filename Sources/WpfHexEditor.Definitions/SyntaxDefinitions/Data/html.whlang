@@ -1,0 +1,32 @@
+{
+  "name": "HTML",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for HTML markup with semantic tag and attribute colorization.",
+  "category": "Data",
+  "extensions": [ ".html", ".htm", ".xhtml" ],
+  "lineComment": "",
+  "blockCommentStart": "<!--",
+  "blockCommentEnd": "-->",
+  "references": {
+    "specifications": [
+      "HTML Living Standard",
+      "W3C HTML 5.3"
+    ],
+    "webLinks": [
+      "https://html.spec.whatwg.org/",
+      "https://developer.mozilla.org/docs/Web/HTML"
+    ]
+  },
+  "rules": [
+    { "type": "Comment",    "pattern": "<!--[\\s\\S]*?-->", "colorKey": "TE_Comment" },
+    { "type": "DocType",    "pattern": "<!DOCTYPE[^>]*>",   "colorKey": "TE_Directive" },
+    { "type": "CData",      "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>", "colorKey": "TE_String" },
+    { "type": "HtmlTag",    "pattern": "(?<=</?)(html|head|body|div|span|p|a|h1|h2|h3|h4|h5|h6|ul|ol|li|table|tr|td|th|thead|tbody|tfoot|form|input|button|select|option|textarea|label|img|video|audio|canvas|svg|script|style|link|meta|title|header|footer|nav|main|section|article|aside|figure|figcaption|details|summary|dialog|template|slot|iframe|br|hr|pre|code|em|strong|b|i|u|s|mark|small|sub|sup|blockquote|cite|abbr|address|time|data|progress|meter|output|fieldset|legend|datalist|noscript|ruby|dl|dt|dd|ins|del|wbr|picture|source|track|object|param|embed|map|area|base|col|colgroup|caption|bdi|bdo|dfn|kbd|samp|var|q)(?=[\\s/>])", "colorKey": "TE_Keyword" },
+    { "type": "Tag",        "pattern": "</?[A-Za-z][A-Za-z0-9_:.\\-]*", "colorKey": "TE_Type" },
+    { "type": "AttrName",   "pattern": "\\b[A-Za-z][A-Za-z0-9_:\\-]*(?=\\s*=)", "colorKey": "TE_Register" },
+    { "type": "AttrValue",  "pattern": "(\"[^\"]*\"|'[^']*')", "colorKey": "TE_String" },
+    { "type": "Entity",     "pattern": "&(?:[A-Za-z][A-Za-z0-9]*|#(?:[0-9]+|x[0-9A-Fa-f]+));", "colorKey": "TE_Number" },
+    { "type": "TagBracket", "pattern": "[<>]", "colorKey": "TE_Operator" }
+  ]
+}

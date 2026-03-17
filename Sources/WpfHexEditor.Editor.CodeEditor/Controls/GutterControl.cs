@@ -6,7 +6,9 @@
 // Created: 2026-03-05
 // Description:
 //     Thin strip rendered to the left of the CodeEditor that shows
-//     folding toggle buttons ([+] / [-]) for each FoldingRegion opener line.
+//     folding toggle buttons for each FoldingRegion opener line.
+//     Brace regions use a [+] / [−] box; directive (#region) regions
+//     use a VS Code-style filled triangle (▶ / ▼).
 //     Positioned and sized by the host CodeEditor after each layout pass.
 //
 // Architecture Notes:
@@ -25,7 +27,8 @@ using WpfHexEditor.Editor.CodeEditor.Folding;
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
 /// <summary>
-/// Renders fold toggle markers ([+] / [-]) in the code editor gutter.
+/// Renders fold toggle markers in the code editor gutter.
+/// Brace regions → [+] / [−] box.  Directive regions → ▶ / ▼ filled triangle.
 /// The host <see cref="CodeEditor"/> must supply updated layout parameters
 /// via <see cref="Update"/> before each render pass.
 /// </summary>
@@ -39,16 +42,21 @@ internal sealed class GutterControl : FrameworkElement
     private int                        _lastVisibleLine;
     private double                     _topMargin;
     private double                     _scrollFraction; // sub-pixel smooth-scroll offset from CodeEditor
+    private IReadOnlyDictionary<int, double> _lineYLookup = new Dictionary<int, double>(); // per-line Y from CodeEditor (includes CodeLens offsets)
 
     // Hit-test rectangles built during OnRender (line → rect).
     private readonly List<(Rect rect, int line)> _hitRects = new();
 
     // Visual constants.
-    private static readonly Brush   _buttonBrush      = Brushes.DimGray;
-    private static readonly Pen     _buttonPen         = MakeFrozenPen(Colors.DimGray, 1);
-    private static readonly Typeface _markerTypeface   = new("Consolas");
-    private const double             MarkerSize        = 11.0;
-    private const double             MarkerFontSize    = 9.0;
+    private static readonly Brush    _buttonBrush    = Brushes.DimGray;
+    private static readonly Pen      _buttonPen      = MakeFrozenPen(Colors.DimGray, 1);
+    private static readonly Typeface _markerTypeface = new("Consolas");
+    private const double             MarkerSize      = 11.0;
+    private const double             MarkerFontSize  = 9.0;
+
+    // Pre-built frozen triangle geometries for Directive regions (▶ and ▼).
+    private static readonly Geometry _triRight = MakeTriangle(pointRight: true);  // expanded state
+    private static readonly Geometry _triDown  = MakeTriangle(pointRight: false); // collapsed state
 
     #endregion
 
@@ -56,9 +64,9 @@ internal sealed class GutterControl : FrameworkElement
 
     public GutterControl()
     {
-        Width       = MarkerSize + 4;
-        Cursor      = Cursors.Hand;
-        MouseDown  += OnMouseDown;
+        Width      = MarkerSize + 4;
+        Cursor     = Cursors.Hand;
+        MouseDown += OnMouseDown;
     }
 
     #endregion
@@ -88,9 +96,13 @@ internal sealed class GutterControl : FrameworkElement
     /// the code editor lines.  Call before <see cref="UIElement.InvalidateVisual"/>.
     /// </summary>
     public void Update(double lineHeight, int firstVisible, int lastVisible,
-                       double topMargin, double scrollFraction)
+                       double topMargin, double scrollFraction,
+                       IReadOnlyDictionary<int, double> lineYLookup)
     {
         // Only invalidate when something actually changed (called on every CodeEditor OnRender).
+        // Note: lineYLookup is the same Dictionary instance cleared/repopulated in-place by
+        // CodeEditor, so we do not guard on reference equality — just assign unconditionally
+        // and rely on the other five scalar fields to suppress spurious redraws.
         if (_lineHeight       == lineHeight     &&
             _firstVisibleLine == firstVisible   &&
             _lastVisibleLine  == lastVisible    &&
@@ -103,6 +115,7 @@ internal sealed class GutterControl : FrameworkElement
         _lastVisibleLine  = lastVisible;
         _topMargin        = topMargin;
         _scrollFraction   = scrollFraction;
+        _lineYLookup      = lineYLookup;
         InvalidateVisual();
     }
 
@@ -124,41 +137,67 @@ internal sealed class GutterControl : FrameworkElement
             if (startLine < _firstVisibleLine || startLine > _lastVisibleLine)
                 continue;
 
-            // Count non-hidden lines between _firstVisibleLine and startLine for fold-aware Y.
-            int visIdx = 0;
-            for (int i = _firstVisibleLine; i < startLine; i++)
-                if (_engine == null || !_engine.IsLineHidden(i)) visIdx++;
-            double y = _topMargin + _scrollFraction + visIdx * _lineHeight;
+            // Use the exact per-line Y from CodeEditor when available (accounts for CodeLens
+            // hint rows that add LensLineHeight pixels above the code text).  Fall back to
+            // uniform layout when the lookup has no entry for this line.
+            double y;
+            if (!_lineYLookup.TryGetValue(startLine, out y))
+            {
+                int visIdx = 0;
+                for (int i = _firstVisibleLine; i < startLine; i++)
+                    if (_engine == null || !_engine.IsLineHidden(i)) visIdx++;
+                y = _topMargin + _scrollFraction + visIdx * _lineHeight;
+            }
+
             double markerY = y + (_lineHeight - MarkerSize) / 2.0;
             double markerX = (ActualWidth - MarkerSize) / 2.0;
 
-            // Hide marker when the opener line has scrolled above the visible area.
+            // Hide marker when the opener line has scrolled outside the visible area.
             if (markerY + MarkerSize <= _topMargin || markerY >= ActualHeight)
                 continue;
 
             var rect = new Rect(markerX, markerY, MarkerSize, MarkerSize);
 
-            // Draw marker box.
-            dc.DrawRectangle(Brushes.Transparent, _buttonPen, rect);
-
-            // Draw + or - symbol.
-            string symbol = region.IsCollapsed ? "+" : "\u2212"; // minus sign
-            var ft = new FormattedText(
-                symbol,
-                System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                _markerTypeface,
-                MarkerFontSize,
-                _buttonBrush,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
-
-            dc.DrawText(ft, new Point(
-                rect.X + (rect.Width  - ft.Width)  / 2,
-                rect.Y + (rect.Height - ft.Height) / 2));
+            if (region.Kind == FoldingRegionKind.Directive)
+                DrawDirectiveToggle(dc, rect, region.IsCollapsed);
+            else
+                DrawBraceToggle(dc, rect, region.IsCollapsed);
 
             // Register hit rect for click detection.
             _hitRects.Add((rect, startLine));
         }
+    }
+
+    // Renders the [+] / [−] box used for brace-delimited regions.
+    private void DrawBraceToggle(DrawingContext dc, Rect rect, bool isCollapsed)
+    {
+        dc.DrawRectangle(Brushes.Transparent, _buttonPen, rect);
+
+        string symbol = isCollapsed ? "+" : "\u2212"; // minus sign
+        var ft = new FormattedText(
+            symbol,
+            System.Globalization.CultureInfo.CurrentCulture,
+            FlowDirection.LeftToRight,
+            _markerTypeface,
+            MarkerFontSize,
+            _buttonBrush,
+            VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+        dc.DrawText(ft, new Point(
+            rect.X + (rect.Width  - ft.Width)  / 2,
+            rect.Y + (rect.Height - ft.Height) / 2));
+    }
+
+    // Renders a filled triangle (▶ expanded / ▼ collapsed) for #region directive regions.
+    private static void DrawDirectiveToggle(DrawingContext dc, Rect rect, bool isCollapsed)
+    {
+        // Select the pre-built geometry: ▶ when expanded (collapsible), ▼ when collapsed.
+        var tri = isCollapsed ? _triDown : _triRight;
+
+        // Translate the [0,0]-based geometry to the marker position using PushTransform.
+        dc.PushTransform(new TranslateTransform(rect.X, rect.Y));
+        dc.DrawGeometry(_buttonBrush, null, tri);
+        dc.Pop();
     }
 
     #endregion
@@ -198,6 +237,34 @@ internal sealed class GutterControl : FrameworkElement
         var pen = new Pen(new SolidColorBrush(color), thickness);
         pen.Freeze();
         return pen;
+    }
+
+    /// <summary>
+    /// Builds a frozen filled triangle fitting within a [0,0]→[MarkerSize,MarkerSize] box.
+    /// <paramref name="pointRight"/> = <c>true</c> → ▶ (region expanded, click to collapse).
+    /// <paramref name="pointRight"/> = <c>false</c> → ▼ (region collapsed, click to expand).
+    /// </summary>
+    private static Geometry MakeTriangle(bool pointRight)
+    {
+        const double m = MarkerSize;
+        var g = new StreamGeometry();
+        using (var ctx = g.Open())
+        {
+            if (pointRight) // ▶
+            {
+                ctx.BeginFigure(new Point(2,     1),     isFilled: true, isClosed: true);
+                ctx.LineTo(     new Point(m - 1, m / 2), isStroked: false, isSmoothJoin: false);
+                ctx.LineTo(     new Point(2,     m - 1), isStroked: false, isSmoothJoin: false);
+            }
+            else // ▼
+            {
+                ctx.BeginFigure(new Point(1,     2),     isFilled: true, isClosed: true);
+                ctx.LineTo(     new Point(m - 1, 2),     isStroked: false, isSmoothJoin: false);
+                ctx.LineTo(     new Point(m / 2, m - 1), isStroked: false, isSmoothJoin: false);
+            }
+        }
+        g.Freeze();
+        return g;
     }
 
     #endregion

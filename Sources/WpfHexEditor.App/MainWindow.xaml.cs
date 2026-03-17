@@ -60,6 +60,7 @@ using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Options;
 using WpfHexEditor.Editor.Core.Views;
+using WpfHexEditor.Editor.CodeEditor.Controls;
 using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
 using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
@@ -153,7 +154,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Error Panel (persistent singleton)
     private ErrorPanel? _errorPanel;
-    private const string ErrorPanelContentId    = "panel-errors";
+    private const string ErrorPanelContentId         = "panel-errors";
+    private const string FindReferencesPanelContentId = "panel-find-references";
+    private WpfHexEditor.Editor.CodeEditor.Controls.FindReferencesPanel? _findReferencesPanel;
     private const string OptionsContentId       = "panel-options";
     private const string FileComparisonPanelContentId    = "panel-file-comparison";
     private const string ArchivePanelContentId           = "panel-archive";
@@ -558,9 +561,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private async Task ShutdownThenCloseAsync()
     {
-        await ShutdownPluginSystemAsync().ConfigureAwait(false);
-        _isShutdownComplete = true;
-        await Dispatcher.InvokeAsync(Close);
+        try
+        {
+            // Give the plugin system at most 5 seconds to shut down cleanly.
+            // If it hangs (e.g. a sandboxed out-of-process plugin doesn't respond)
+            // or throws, we still close rather than leaving the IDE permanently frozen.
+            var shutdownTask = ShutdownPluginSystemAsync();
+            await Task.WhenAny(shutdownTask, Task.Delay(TimeSpan.FromSeconds(5)))
+                      .ConfigureAwait(false);
+        }
+        catch { /* swallow — window must always close */ }
+        finally
+        {
+            _isShutdownComplete = true;
+            await Dispatcher.InvokeAsync(Close);
+        }
     }
 
     private async Task ConfirmAndCloseAsync(
@@ -1123,7 +1138,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             SolutionExplorerContentId  => CreateSolutionExplorerContent(),
             "panel-output"             => CreateOutputContent(),
             "panel-properties"         => CreatePropertiesContent(),
-            ErrorPanelContentId        => CreateErrorPanelContent(),
+            ErrorPanelContentId          => CreateErrorPanelContent(),
+            FindReferencesPanelContentId => CreateFindReferencesPanelContent(),
             FileComparisonPanelContentId   => CreateFileComparisonContent(),
             ArchivePanelContentId          => CreateArchivePanelContent(),
             OptionsContentId               => CreateOptionsContent(),
@@ -1326,57 +1342,150 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.FilePath is null || !File.Exists(e.FilePath)) return;
 
-        // Look for an already-open TextEditor tab for this file
-        var existing = _contentCache.FirstOrDefault(kv =>
-            kv.Value is WpfHexEditor.Editor.TextEditor.Controls.TextEditor tc &&
-            string.Equals(tc.Title.TrimEnd('*', ' '),
-                Path.GetFileName(e.FilePath), System.StringComparison.OrdinalIgnoreCase));
+        // Look for any already-open tab for this file (any editor type, matched by FilePath metadata)
+        var existingDockItem = _layout.GetAllGroups()
+            .SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di =>
+                di.Metadata.TryGetValue("FilePath", out var fp) &&
+                string.Equals(fp, e.FilePath, StringComparison.OrdinalIgnoreCase));
 
-        WpfHexEditor.Editor.TextEditor.Controls.TextEditor? targetEditor;
+        INavigableDocument? targetNav;
 
-        if (existing.Key != null)
+        if (existingDockItem != null)
         {
-            var existingDockItem = _layout.FindItemByContentId(existing.Key);
-            if (existingDockItem?.Owner != null) existingDockItem.Owner.ActiveItem = existingDockItem;
-            targetEditor = existing.Value as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
+            if (existingDockItem.Owner != null) existingDockItem.Owner.ActiveItem = existingDockItem;
+            // Retrieve the cached editor and check for navigation support
+            var cachedEditor = _contentCache.Values.FirstOrDefault(v =>
+                v is IDocumentEditor de &&
+                string.Equals(de.Title.TrimEnd('*', ' '),
+                    Path.GetFileName(e.FilePath), StringComparison.OrdinalIgnoreCase));
+            targetNav = cachedEditor as INavigableDocument;
         }
         else
         {
-            // Create a new TextEditor tab, bypassing the registry (force TextEditorFactory)
+            // Resolve the correct factory via .whfmt registry (same path as CreateProjectItemContent)
+            var factory = _editorRegistry.FindFactory(e.FilePath, GetPreferredEditorId(e.FilePath))
+                       ?? new WpfHexEditor.Editor.TextEditor.TextEditorFactory();
+
+            if (factory.Create() is not IDocumentEditor editor) return;
+
             _documentCounter++;
-            var newContentId = $"doc-text-err-{_documentCounter}";
-            var textFactory  = new WpfHexEditor.Editor.TextEditor.TextEditorFactory();
-            var editor       = textFactory.Create() as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
-            if (editor == null) return;
+            var newContentId = $"doc-err-{_documentCounter}";
 
-            editor.OutputMessage += OnEditorOutputMessage;
-
-            StoreContent(newContentId, editor);
-            var newDockItem = new DockItem
+            if (editor is System.Windows.FrameworkElement fe2)
             {
-                ContentId = newContentId,
-                Title     = Path.GetFileName(e.FilePath),
-                Metadata  = { ["FilePath"] = e.FilePath }
-            };
-            _engine.Dock(newDockItem, _layout.MainDocumentHost, DockDirection.Center);
-            RegisterDocumentFromItem(newDockItem, editor);
-            ActiveDocumentEditor       = editor;
-            ActiveStatusBarContributor = null;
+                editor.OutputMessage += OnEditorOutputMessage;
 
-            // Await file load so GoToLine runs only after the document is ready.
-            try { await editor.OpenAsync(e.FilePath); }
-            catch { return; }
+                StoreContent(newContentId, fe2);
+                var newDockItem = new DockItem
+                {
+                    ContentId = newContentId,
+                    Title     = Path.GetFileName(e.FilePath),
+                    Metadata  =
+                    {
+                        ["FilePath"]       = e.FilePath,
+                        ["ActiveEditorId"] = factory.Descriptor.Id
+                    }
+                };
+                _engine.Dock(newDockItem, _layout.MainDocumentHost, DockDirection.Center);
+                RegisterDocumentFromItem(newDockItem, fe2);
+                ActiveDocumentEditor       = editor;
+                ActiveStatusBarContributor = editor as IStatusBarContributor;
+            }
 
-            targetEditor = editor;
+            // Await file load before navigating (INavigableDocument requires ready document)
+            if (editor is IOpenableDocument openable)
+            {
+                try { await openable.OpenAsync(e.FilePath); }
+                catch { return; }
+            }
+
+            targetNav = editor as INavigableDocument;
         }
 
-        // Navigate to the target line now that the file is fully loaded
-        if (e.Line.HasValue && targetEditor is not null)
+        // Navigate to the target line now that the correct editor is loaded
+        if (e.Line.HasValue && targetNav is not null)
         {
-            try { targetEditor.GoToLine(e.Line.Value, e.Column ?? 1); }
-            catch { /* non-fatal: editor may not support navigation at this point */ }
+            try { targetNav.NavigateTo(e.Line.Value, e.Column ?? 1); }
+            catch { /* non-fatal */ }
         }
     }
+
+    /// <summary>
+    /// Routes a "Find All References" cross-file navigation event from a
+    /// <see cref="CodeEditorControl"/> to the host document-open/navigate pipeline.
+    /// LSP coordinates are 0-based; <see cref="INavigableDocument.NavigateTo"/> expects 1-based.
+    /// </summary>
+    private void OnCodeEditorReferenceNavigation(
+        object? sender,
+        WpfHexEditor.Editor.CodeEditor.Controls.ReferencesNavigationEventArgs e)
+    {
+        // Reuse the error-panel open+navigate pipeline with a synthetic DiagnosticEntry.
+        var entry = new DiagnosticEntry(
+            DiagnosticSeverity.Message,
+            "REF",
+            "Reference navigation",
+            FilePath: e.FilePath,
+            Line:     e.Line   + 1,   // 0-based LSP → 1-based INavigableDocument
+            Column:   e.Column + 1);
+
+        OnOpenInTextEditorRequested(sender, entry);
+    }
+
+    private void OnFindAllReferencesDockRequested(
+        object? sender,
+        WpfHexEditor.Editor.CodeEditor.Controls.FindAllReferencesDockEventArgs e)
+    {
+        // Ensure the panel instance exists (lazily created).
+        EnsureFindReferencesPanelInstance();
+
+        _findReferencesPanel!.Refresh(e.Groups, e.SymbolName);
+
+        // Open or activate the docked tab.
+        ShowOrCreatePanel("Références", FindReferencesPanelContentId, DockDirection.Bottom);
+    }
+
+    private WpfHexEditor.Editor.CodeEditor.Controls.FindReferencesPanel
+        EnsureFindReferencesPanelInstance()
+    {
+        if (_findReferencesPanel is null)
+        {
+            _findReferencesPanel =
+                new WpfHexEditor.Editor.CodeEditor.Controls.FindReferencesPanel();
+
+            _findReferencesPanel.NavigationRequested += (_, navArgs) =>
+            {
+                var entry = new DiagnosticEntry(
+                    DiagnosticSeverity.Message, "REF", "Reference navigation",
+                    FilePath: navArgs.FilePath,
+                    Line:     navArgs.Line   + 1,
+                    Column:   navArgs.Column + 1);
+                OnOpenInTextEditorRequested(null, entry);
+            };
+
+            _findReferencesPanel.RefreshRequested += (_, _) =>
+            {
+                // Re-trigger find-all-references on the active code editor.
+                if (ActiveDocumentEditor is CodeEditorControl ce)
+                    WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor.FindAllReferencesCommand
+                        .Execute(null, ce);
+            };
+
+            _findReferencesPanel.CloseRequested += (_, _) =>
+            {
+                var item = _layout.FindItemByContentId(FindReferencesPanelContentId);
+                if (item is not null) _engine.Close(item);
+                _findReferencesPanel = null;
+            };
+        }
+
+        return _findReferencesPanel;
+    }
+
+    private UIElement CreateFindReferencesPanelContent()
+        => EnsureFindReferencesPanelInstance();
 
     private UIElement CreateHexEditorContent(
         string?   filePath,
@@ -1669,6 +1778,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // to the InfoBar Grid (Row 1) so the QuickSearchBar can be shown inline.
             if (editor is CodeEditorControl json && display is Grid infoBarGrid)
             {
+                // Wire cross-file "Find All References" navigation (Shift+F12).
+                json.ReferenceNavigationRequested    += OnCodeEditorReferenceNavigation;
+                json.FindAllReferencesDockRequested  += OnFindAllReferencesDockRequested;
                 // No Background + default IsHitTestVisible=True → empty areas let clicks
                 // through to the editor; the QuickSearchBar captures clicks in its own area.
                 var canvas = new Canvas();
@@ -1687,6 +1799,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 canvas.Children.Add(bar);
                 infoBarGrid.Children.Add(canvas);
                 _codeEditorBars[json] = bar;
+            }
+
+            // CodeEditorSplitHost wraps CodeEditor — wire CodeLens reference events
+            // that the inner CodeEditor raises but the split-host now forwards.
+            if (editor is CodeEditorSplitHost splitHost)
+            {
+                splitHost.ReferenceNavigationRequested   += OnCodeEditorReferenceNavigation;
+                splitHost.FindAllReferencesDockRequested += OnFindAllReferencesDockRequested;
             }
 
             return display;

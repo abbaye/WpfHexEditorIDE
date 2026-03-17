@@ -12,6 +12,8 @@
 //     Implements IOpenableDocument by delegating to _primaryEditor.LoadFromFile
 //     (both editors share the same CodeDocument, so the secondary view is
 //     automatically updated).
+//     Implements INavigableDocument.NavigateTo so the Error List can jump to
+//     a specific line in the active editor pane.
 //
 // Architecture Notes:
 //     Proxy / Delegate Pattern — IDocumentEditor forwarded to _activeEditor.
@@ -39,7 +41,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument, INavigableDocument
 {
     #region Child controls
 
@@ -140,6 +142,13 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         _primaryEditor.OperationStarted   += (s, e) => OperationStarted?.Invoke(this, e);
         _primaryEditor.OperationProgress  += (s, e) => OperationProgress?.Invoke(this, e);
         _primaryEditor.OperationCompleted += (s, e) => OperationCompleted?.Invoke(this, e);
+
+        // -- Forward CodeLens reference events from both editors ---------------
+        // Either editor can show the references popup (both share the same document).
+        _primaryEditor.ReferenceNavigationRequested   += (s, e) => ReferenceNavigationRequested?.Invoke(this, e);
+        _primaryEditor.FindAllReferencesDockRequested += (s, e) => FindAllReferencesDockRequested?.Invoke(this, e);
+        _secondaryEditor.ReferenceNavigationRequested   += (s, e) => ReferenceNavigationRequested?.Invoke(this, e);
+        _secondaryEditor.FindAllReferencesDockRequested += (s, e) => FindAllReferencesDockRequested?.Invoke(this, e);
 
         // Connect the secondary editor to the same document after primary is loaded.
         Loaded += OnHostLoaded;
@@ -262,6 +271,18 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     #endregion
 
+    #region INavigableDocument — delegates to active editor
+
+    /// <inheritdoc/>
+    void INavigableDocument.NavigateTo(int line, int column)
+    {
+        // CodeEditor.NavigateToLine is 0-based; INavigableDocument contract is 1-based.
+        // Navigates the active (last-focused) editor so the visible pane follows the caret.
+        _activeEditor.NavigateToLine(Math.Max(0, line - 1));
+    }
+
+    #endregion
+
     #region IOpenableDocument — delegates to primary editor
 
     async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
@@ -329,6 +350,18 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
     public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
     public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
+
+    /// <summary>
+    /// Raised when the user navigates to a reference in a different file via the
+    /// Find All References popup. Forwarded from whichever editor pane fires it.
+    /// </summary>
+    public event EventHandler<ReferencesNavigationEventArgs>? ReferenceNavigationRequested;
+
+    /// <summary>
+    /// Raised when the user pins the References popup into a docked panel.
+    /// Forwarded from whichever editor pane fires it.
+    /// </summary>
+    public event EventHandler<FindAllReferencesDockEventArgs>? FindAllReferencesDockRequested;
 
     #endregion
 }

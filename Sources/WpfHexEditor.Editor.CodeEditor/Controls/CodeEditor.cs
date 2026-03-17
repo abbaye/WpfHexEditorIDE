@@ -39,7 +39,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     /// Phase 2: Syntax highlighting with CodeSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class CodeEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor, ISearchTarget, IEditorPersistable
+    public class CodeEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, INavigableDocument, IStatusBarContributor, ISearchTarget, IEditorPersistable
     {
         #region Fields - Document Model
 
@@ -144,7 +144,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private System.Windows.Threading.DispatcherTimer? _lspChangeTimer;
 
         // Inline "Find All References" popup (lazily created on first use).
-        private ReferencesPopup? _referencesPopup;
+        private ReferencesPopup?           _referencesPopup;
+
+        // Last reference results — used when the user pins the popup to a docked panel.
+        private List<ReferenceGroup> _lastReferenceGroups = new();
+        private string               _lastReferenceSymbol = string.Empty;
 
         // ── CodeLens ──────────────────────────────────────────────────────────
         private readonly Services.CodeLensService                                    _codeLensService  = new();
@@ -1591,7 +1595,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _scrollBarChildren.Add(_hScrollBar);
 
             // Initialize folding subsystem (B3).
-            _foldingEngine = new FoldingEngine(new BraceFoldingStrategy());
+            // CompositeFoldingStrategy combines brace folding ({}) with #region/#endregion directive folding.
+            _foldingEngine = new FoldingEngine(
+                new CompositeFoldingStrategy(
+                    new BraceFoldingStrategy(),
+                    new RegionDirectiveFoldingStrategy()));
             _gutterControl = new GutterControl();
             _gutterControl.SetEngine(_foldingEngine);
             // Re-render text content when fold state changes (gutter re-renders internally via its own handler).
@@ -2256,8 +2264,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Delete
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete,
-                (sender, e) => DeleteSelection(),
-                (sender, e) => e.CanExecute = !_selection.IsEmpty));
+                (sender, e) => { if (!_selection.IsEmpty) DeleteSelection(); else DeleteCharAfter(); },
+                (sender, e) => e.CanExecute = !IsReadOnly));
 
             // Find
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Find,
@@ -2757,6 +2765,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document == null || line < 0 || line >= _document.Lines.Count) return;
             _cursorLine   = line;
             _cursorColumn = 0;
+            _selection.Clear();
+            EnsureCursorVisible();
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// <see cref="INavigableDocument"/> implementation.
+        /// Accepts 1-based line/column (IDE convention) and converts to 0-based internal coords.
+        /// Used by the host when navigating from the References popup or the Error List.
+        /// </summary>
+        void INavigableDocument.NavigateTo(int line, int column)
+        {
+            int zeroLine = Math.Max(0, line - 1);
+            int zeroCol  = Math.Max(0, column - 1);
+            if (_document == null || zeroLine >= _document.Lines.Count) return;
+
+            _cursorLine   = zeroLine;
+            _cursorColumn = Math.Min(zeroCol, _document.Lines[zeroLine].Length);
             _selection.Clear();
             EnsureCursorVisible();
             InvalidateVisual();
@@ -3440,7 +3466,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
                 : 0.0;
             _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
-                                   TopMargin, gutterScrollFraction);
+                                   TopMargin, gutterScrollFraction, _lineYLookup);
         }
 
         /// <summary>
@@ -4257,9 +4283,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (line < _firstVisibleLine || line > _lastVisibleLine)
                 return;
 
-            double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                ? _virtualizationEngine.GetLineYPosition(line)
-                : (line - _firstVisibleLine) * _lineHeight);
+            // Use _lineYLookup to account for CodeLens hint zone height offset (same pattern as RenderCursor/RenderSelection/RenderWordHighlights)
+            double y = _lineYLookup.TryGetValue(line, out double by) ? by
+                : (EnableVirtualScrolling && _virtualizationEngine != null
+                    ? TopMargin + _virtualizationEngine.GetLineYPosition(line)
+                    : TopMargin + (line - _firstVisibleLine) * _lineHeight);
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (column * _charWidth);
 
             // Draw background highlight
@@ -6579,9 +6607,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double y  = codeY + lh + 2;
             var anchor = new Point(x, y);
 
+            // Store latest results so pin handler can forward them to the dock host.
+            _lastReferenceGroups = groups;
+            _lastReferenceSymbol = symbol;
+
             _referencesPopup ??= new ReferencesPopup();
             _referencesPopup.NavigationRequested -= OnReferencesNavigationRequested;
             _referencesPopup.NavigationRequested += OnReferencesNavigationRequested;
+            _referencesPopup.RefreshRequested    -= OnPopupRefreshRequested;
+            _referencesPopup.RefreshRequested    += OnPopupRefreshRequested;
+            _referencesPopup.PinRequested        -= OnPopupPinRequested;
+            _referencesPopup.PinRequested        += OnPopupPinRequested;
 
             _referencesPopup.Show(this, groups, symbol, anchor);
             StatusMessage?.Invoke(this,
@@ -6611,6 +6647,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 NavigateToLine(e.Line);
             else
                 ReferenceNavigationRequested?.Invoke(this, e);
+        }
+
+        private async void OnPopupRefreshRequested(object? sender, EventArgs e)
+            => await FindAllReferencesAsync();
+
+        private void OnPopupPinRequested(object? sender, EventArgs e)
+        {
+            _referencesPopup?.Close();
+            FindAllReferencesDockRequested?.Invoke(this, new FindAllReferencesDockEventArgs
+            {
+                Groups     = _lastReferenceGroups,
+                SymbolName = _lastReferenceSymbol
+            });
         }
 
         // -- Public methods (IDocumentEditor) -----------------------------
@@ -6655,6 +6704,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// the caret to the specified position.
         /// </summary>
         public event EventHandler<ReferencesNavigationEventArgs>? ReferenceNavigationRequested;
+
+        /// <summary>
+        /// Raised when the user pins the References popup into a docked panel.
+        /// The host should open (or activate) a <see cref="FindReferencesPanel"/>
+        /// and call <c>Refresh</c> with the supplied groups.
+        /// </summary>
+        public event EventHandler<FindAllReferencesDockEventArgs>? FindAllReferencesDockRequested;
 
         public event EventHandler? ModifiedChanged;
         public event EventHandler? CanUndoChanged;

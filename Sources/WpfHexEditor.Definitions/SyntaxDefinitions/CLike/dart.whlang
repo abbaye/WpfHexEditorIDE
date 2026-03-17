@@ -19,6 +19,21 @@
   },
   "rules": [
     {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "String",
+      "pattern": "('''[\\s\\S]*?'''|\"\"\"[\\s\\S]*?\"\"\"|r'[^']*'|r\"[^\"]*\"|'(?:[^'\\\\]|\\\\.)*'|\"(?:[^\"\\\\]|\\\\.)*\")",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "//.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Keyword",
       "pattern": "\\b(abstract|as|assert|async|await|base|break|case|catch|class|const|continue|covariant|default|deferred|do|dynamic|else|enum|export|extends|extension|external|factory|false|final|finally|for|Function|get|hide|if|implements|import|in|interface|is|late|library|mixin|new|null|on|operator|part|required|rethrow|return|sealed|set|show|static|super|switch|sync|this|throw|true|try|typedef|var|void|when|while|with|yield)\\b",
       "colorKey": "TE_Keyword"
@@ -38,20 +53,6 @@
       "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
       "colorKey": "TE_Number"
     },
-    {
-      "type": "String",
-      "pattern": "('''[\\s\\S]*?'''|\"\"\"[\\s\\S]*?\"\"\"|r'[^']*'|r\"[^\"]*\"|'(?:[^'\\\\]|\\\\.)*'|\"(?:[^\"\\\\]|\\\\.)*\")",
-      "colorKey": "TE_String"
-    },
-    {
-      "type": "Comment",
-      "pattern": "//.*$",
-      "colorKey": "TE_Comment"
-    },
-    {
-      "type": "BlockComment",
-      "pattern": "/\\*[\\s\\S]*?\\*/",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
   ]
 }
