@@ -138,6 +138,12 @@
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       ToolTip="Requires an active Language Server (LSP) for the current file type" />
 
+            <CheckBox Content="Show Code Lens (inline reference counts)"
+                      IsChecked="{Binding ShowCodeLens}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Shows reference count above each declaration. Click the hint to open the References popup." />
+
             <CheckBox Content="Highlight word under caret"
                       IsChecked="{Binding EnableWordHighlight}"
                       Margin="0,2,0,2"

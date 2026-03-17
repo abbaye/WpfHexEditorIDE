@@ -146,6 +146,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Inline "Find All References" popup (lazily created on first use).
         private ReferencesPopup? _referencesPopup;
 
+        // ── CodeLens ──────────────────────────────────────────────────────────
+        private readonly Services.CodeLensService                                    _codeLensService  = new();
+        private          IReadOnlyDictionary<int, (int Count, string Symbol)>        _lensData         = new Dictionary<int, (int, string)>();
+        private readonly List<(Rect Zone, int LineIndex, string Symbol)>             _lensHitZones     = new();
+        private readonly List<(int LineIndex, double Y)>                             _visLinePositions = new();
+        private readonly Dictionary<int, double>                                     _lineYLookup      = new();
+        private          int                                                         _hoveredLensLine  = -1;
+
         /// <summary>
         /// Routed command for "Find All References" — default gesture Shift+F12,
         /// matching the Visual Studio keyboard binding.
@@ -202,6 +210,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var b = new SolidColorBrush(color);
             b.Freeze();
             return b;
+        }
+
+        /// <summary>Creates a theme-aware Segoe MDL2 Assets icon TextBlock for context menu items.</summary>
+        private static TextBlock MakeMenuIcon(string glyph)
+        {
+            var tb = new TextBlock
+            {
+                Text                = glyph,
+                FontFamily          = new FontFamily("Segoe MDL2 Assets"),
+                FontSize            = 13,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+            };
+            tb.SetResourceReference(System.Windows.Documents.TextElement.ForegroundProperty, "DockMenuForegroundBrush");
+            return tb;
         }
 
         #endregion
@@ -312,6 +335,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private const double TextAreaLeftOffset = 70; // LineNumberWidth + margin
         private const double ScrollBarThickness = 12.0;
         private const double SelectionCornerRadius = 3.0;
+
+        // Extra vertical space reserved at the top of each line slot for CodeLens hints.
+        private const double LensLineHeight = 16.0;
 
         #endregion
 
@@ -463,6 +489,29 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             get => (bool)GetValue(EnableFindAllReferencesProperty);
             set => SetValue(EnableFindAllReferencesProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowCodeLensProperty =
+            DependencyProperty.Register(nameof(ShowCodeLens), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true,
+                    FrameworkPropertyMetadataOptions.AffectsRender,
+                    OnShowCodeLensChanged));
+
+        [Category("Features")]
+        [DisplayName("Show Code Lens")]
+        [Description("Shows inline reference counts above each declaration.")]
+        public bool ShowCodeLens
+        {
+            get => (bool)GetValue(ShowCodeLensProperty);
+            set => SetValue(ShowCodeLensProperty, value);
+        }
+
+        private static void OnShowCodeLensChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce) return;
+            // Trigger layout/scrollbar recalculation — _lineHeight is no longer affected by CodeLens.
+            // Only visible-line Y positions change (per-declaration extra space), handled in OnRender.
+            ce.InvalidateMeasure();
         }
 
         public static readonly DependencyProperty EnableValidationProperty =
@@ -1557,8 +1606,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _wordHighlightTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
             _wordHighlightTimer.Tick += (_, _) => { _wordHighlightTimer.Stop(); UpdateWordHighlights(); };
 
+            // Attach CodeLens service to the initial document.
+            _codeLensService.LensDataRefreshed += OnLensDataRefreshed;
+            _codeLensService.Attach(_document);
+
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
+        }
+
+        private void OnLensDataRefreshed(object? sender, EventArgs e)
+        {
+            _lensData = _codeLensService.LensData;
+            InvalidateVisual();
         }
 
         /// <summary>
@@ -1622,6 +1681,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ShowLineNumbers          = options.ShowLineNumbers;
             ShowScopeGuides          = options.ShowScopeGuides;
             EnableFindAllReferences  = options.EnableFindAllReferences;
+            ShowCodeLens             = options.ShowCodeLens;
             EnableWordHighlight      = options.EnableWordHighlight;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
@@ -1946,30 +2006,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Cut
             var cutMenuItem = new MenuItem
             {
-                Header = "Cu_t",
+                Header           = "Cu_t",
                 InputGestureText = "Ctrl+X",
-                Command = ApplicationCommands.Cut,
-                CommandTarget = this
+                Command          = ApplicationCommands.Cut,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE74E")
             };
             contextMenu.Items.Add(cutMenuItem);
 
             // Copy
             var copyMenuItem = new MenuItem
             {
-                Header = "_Copy",
+                Header           = "_Copy",
                 InputGestureText = "Ctrl+C",
-                Command = ApplicationCommands.Copy,
-                CommandTarget = this
+                Command          = ApplicationCommands.Copy,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8C8")
             };
             contextMenu.Items.Add(copyMenuItem);
 
             // Paste
             var pasteMenuItem = new MenuItem
             {
-                Header = "_Paste",
+                Header           = "_Paste",
                 InputGestureText = "Ctrl+V",
-                Command = ApplicationCommands.Paste,
-                CommandTarget = this
+                Command          = ApplicationCommands.Paste,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE9F5")
             };
             contextMenu.Items.Add(pasteMenuItem);
 
@@ -1979,20 +2042,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Undo
             var undoMenuItem = new MenuItem
             {
-                Header = "_Undo",
+                Header           = "_Undo",
                 InputGestureText = "Ctrl+Z",
-                Command = ApplicationCommands.Undo,
-                CommandTarget = this
+                Command          = ApplicationCommands.Undo,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE7A7")
             };
             contextMenu.Items.Add(undoMenuItem);
 
             // Redo
             var redoMenuItem = new MenuItem
             {
-                Header = "_Redo",
+                Header           = "_Redo",
                 InputGestureText = "Ctrl+Y",
-                Command = ApplicationCommands.Redo,
-                CommandTarget = this
+                Command          = ApplicationCommands.Redo,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE7A6")
             };
             contextMenu.Items.Add(redoMenuItem);
 
@@ -2002,20 +2067,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Select All
             var selectAllMenuItem = new MenuItem
             {
-                Header = "Select _All",
+                Header           = "Select _All",
                 InputGestureText = "Ctrl+A",
-                Command = ApplicationCommands.SelectAll,
-                CommandTarget = this
+                Command          = ApplicationCommands.SelectAll,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8B3")
             };
             contextMenu.Items.Add(selectAllMenuItem);
 
             // Delete
             var deleteMenuItem = new MenuItem
             {
-                Header = "_Delete",
+                Header           = "_Delete",
                 InputGestureText = "Del",
-                Command = ApplicationCommands.Delete,
-                CommandTarget = this
+                Command          = ApplicationCommands.Delete,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE74D")
             };
             contextMenu.Items.Add(deleteMenuItem);
 
@@ -2025,20 +2092,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Find
             var findMenuItem = new MenuItem
             {
-                Header = "_Find...",
+                Header           = "_Find...",
                 InputGestureText = "Ctrl+F",
-                Command = ApplicationCommands.Find,
-                CommandTarget = this
+                Command          = ApplicationCommands.Find,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE721")
             };
             contextMenu.Items.Add(findMenuItem);
 
             // Replace
             var replaceMenuItem = new MenuItem
             {
-                Header = "_Replace...",
+                Header           = "_Replace...",
                 InputGestureText = "Ctrl+H",
-                Command = ApplicationCommands.Replace,
-                CommandTarget = this
+                Command          = ApplicationCommands.Replace,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8AB")
             };
             contextMenu.Items.Add(replaceMenuItem);
 
@@ -2051,7 +2120,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Header           = "Find All _References",
                 InputGestureText = "Shift+F12",
                 Command          = FindAllReferencesCommand,
-                CommandTarget    = this
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8FD")
             };
             contextMenu.Items.Add(findRefsMenuItem);
 
@@ -2066,8 +2136,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Format JSON
             var formatJsonMenuItem = new MenuItem
             {
-                Header = "F_ormat JSON",
-                InputGestureText = "Ctrl+Shift+F"
+                Header           = "F_ormat JSON",
+                InputGestureText = "Ctrl+Shift+F",
+                Icon             = MakeMenuIcon("\uE70F")
             };
             formatJsonMenuItem.Click += FormatJsonMenuItem_Click;
             contextMenu.Items.Add(formatJsonMenuItem);
@@ -2075,8 +2146,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Validate
             var validateMenuItem = new MenuItem
             {
-                Header = "_Validate JSON",
-                InputGestureText = "F5"
+                Header           = "_Validate JSON",
+                InputGestureText = "F5",
+                Icon             = MakeMenuIcon("\uE73E")
             };
             validateMenuItem.Click += ValidateMenuItem_Click;
             contextMenu.Items.Add(validateMenuItem);
@@ -2084,41 +2156,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Separator
             contextMenu.Items.Add(new Separator());
 
-            // ── Mode Plan (Outlining) submenu — mirrors Visual Studio outlining menu ──
-            var outlineMenu = new MenuItem { Header = "_Mode Plan" };
+            // ── Outlining submenu — mirrors Visual Studio outlining menu ──
+            var outlineMenu = new MenuItem { Header = "_Outlining" };
 
             var miToggleCurrent = new MenuItem
             {
-                Header           = "Activer/Désactiver le développement",
-                InputGestureText = "Ctrl+M, Ctrl+M"
+                Header           = "Toggle _Outlining",
+                InputGestureText = "Ctrl+M, Ctrl+M",
+                Icon             = MakeMenuIcon("\uE8A0")
             };
             miToggleCurrent.Click += (_, _) => OutlineToggleCurrent();
 
             var miToggleAll = new MenuItem
             {
-                Header           = "Activer/Désactiver _tout",
-                InputGestureText = "Ctrl+M, Ctrl+L"
+                Header           = "Toggle _All Outlining",
+                InputGestureText = "Ctrl+M, Ctrl+L",
+                Icon             = MakeMenuIcon("\uE8B7")
             };
             miToggleAll.Click += (_, _) => OutlineToggleAll();
 
             var miStop = new MenuItem
             {
-                Header           = "_Arrêter le mode Plan",
-                InputGestureText = "Ctrl+M, Ctrl+P"
+                Header           = "_Stop Outlining",
+                InputGestureText = "Ctrl+M, Ctrl+P",
+                Icon             = MakeMenuIcon("\uE711")
             };
             miStop.Click += (_, _) => OutlineStop();
 
             var miStopHiding = new MenuItem
             {
-                Header           = "Arrêter le _masquage actuel",
-                InputGestureText = "Ctrl+M, Ctrl+U"
+                Header           = "Stop _Hiding Current",
+                InputGestureText = "Ctrl+M, Ctrl+U",
+                Icon             = MakeMenuIcon("\uE7B3")
             };
             miStopHiding.Click += (_, _) => OutlineStopHidingCurrent();
 
             var miCollapseDefs = new MenuItem
             {
-                Header           = "_Réduire aux définitions",
-                InputGestureText = "Ctrl+M, Ctrl+O"
+                Header           = "_Collapse to Definitions",
+                InputGestureText = "Ctrl+M, Ctrl+O",
+                Icon             = MakeMenuIcon("\uE8C4")
             };
             miCollapseDefs.Click += (_, _) => OutlineCollapseToDefinitions();
 
@@ -2829,12 +2906,139 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #endregion
 
+        /// <summary>
+        /// Returns the Y coordinate where the code text for visible-index
+        /// <paramref name="visIdx"/> should be drawn.
+        /// For declaration lines with CodeLens active the Y is pushed down by
+        /// <see cref="LensLineHeight"/>; for all other lines it sits at the slot top.
+        /// Falls back to the uniform formula when the precomputed list is unavailable.
+        /// </summary>
         private double GetFoldAwareLineY(int visIdx)
         {
+            if (visIdx < _visLinePositions.Count)
+                return _visLinePositions[visIdx].Y;
+
+            // Fallback: uniform layout (no CodeLens offset).
             double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
                 ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
                 : 0.0;
             return TopMargin + scrollFraction + visIdx * _lineHeight;
+        }
+
+        /// <summary>
+        /// Returns the top Y of the lens hint zone for visible-index <paramref name="visIdx"/>
+        /// (the LensLineHeight zone immediately above the code text).
+        /// </summary>
+        private double GetLensZoneY(int visIdx) => GetFoldAwareLineY(visIdx) - LensLineHeight;
+
+        /// <summary>
+        /// Precomputes per-visible-line Y positions, adding <see cref="LensLineHeight"/>
+        /// only for lines that have a CodeLens entry.  Must be called in OnRender immediately
+        /// after <see cref="CalculateVisibleLines"/>.
+        /// </summary>
+        private void ComputeVisibleLinePositions()
+        {
+            _visLinePositions.Clear();
+            _lineYLookup.Clear();
+
+            double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                : 0.0;
+            double y = TopMargin + scrollFraction;
+
+            for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
+            {
+                if (_foldingEngine?.IsLineHidden(i) == true) continue;
+
+                if (ShowCodeLens && _lensData.ContainsKey(i))
+                {
+                    // Code text sits below the hint zone.
+                    double codeY = y + LensLineHeight;
+                    _visLinePositions.Add((i, codeY));
+                    _lineYLookup[i] = codeY;
+                    y += _lineHeight + LensLineHeight;
+                }
+                else
+                {
+                    _visLinePositions.Add((i, y));
+                    _lineYLookup[i] = y;
+                    y += _lineHeight;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws "N références" hints in the lens zone (top <see cref="LensLineHeight"/> px of
+        /// each line slot) for lines that have declaration items in <see cref="_lensData"/>.
+        /// Hit zones are stored in <see cref="_lensHitZones"/> for mouse interaction.
+        /// Called from OnRender after the text-area clip but before the H-scroll transform,
+        /// so hints are clipped to the text column yet not scrolled horizontally.
+        /// </summary>
+        private void RenderCodeLensHints(DrawingContext dc)
+        {
+            if (!ShowCodeLens || _lensData.Count == 0 || _document == null) return;
+
+            _lensHitZones.Clear();
+
+            var normalBrush = (Brush?)TryFindResource("CE_Comment") ?? Brushes.DimGray;
+            var hoverBrush  = (Brush?)TryFindResource("CE_Keyword") ?? Brushes.LightGray;
+            double fontSize  = LensLineHeight * 0.72;   // ~11.5 px for a 16-px slot
+            double baseX     = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
+            int visIdx = 0;
+            for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
+            {
+                if (_foldingEngine?.IsLineHidden(i) == true) { continue; }
+
+                if (_lensData.TryGetValue(i, out var entry) && entry.Count > 0)
+                {
+                    // Indent hint to match the leading whitespace of the declaration line.
+                    string lineText = _document.Lines[i].Text ?? string.Empty;
+                    int indent = 0;
+                    while (indent < lineText.Length && (lineText[indent] == ' ' || lineText[indent] == '\t'))
+                        indent++;
+                    double x = baseX + indent * _charWidth;
+
+                    string label  = entry.Count == 1 ? "1 référence" : $"{entry.Count} références";
+                    var    brush  = i == _hoveredLensLine ? hoverBrush : normalBrush;
+                    var ft = new System.Windows.Media.FormattedText(
+                        label,
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        _typeface,
+                        fontSize,
+                        brush,
+                        pixelsPerDip);
+
+                    double y = GetLensZoneY(visIdx) + 1.0;  // 1 px top padding
+                    dc.DrawText(ft, new Point(x, y));
+                    _lensHitZones.Add((new Rect(x, y, ft.Width + 4, LensLineHeight - 2), i, entry.Symbol));
+                }
+
+                visIdx++;
+            }
+        }
+
+        /// <summary>
+        /// Returns the 0-based column of the first whole-word occurrence of
+        /// <paramref name="symbol"/> in line <paramref name="lineIdx"/>.
+        /// Falls back to 0 if not found (cursor lands at line start).
+        /// </summary>
+        private int FindSymbolColumnInLine(int lineIdx, string symbol)
+        {
+            if (string.IsNullOrEmpty(symbol) || _document == null || lineIdx >= _document.Lines.Count)
+                return 0;
+
+            string text = _document.Lines[lineIdx].Text;
+            if (string.IsNullOrEmpty(text)) return 0;
+
+            int idx = text.IndexOf(symbol, StringComparison.Ordinal);
+            if (idx < 0) return 0;
+
+            bool leftOk  = idx == 0             || !IsWordChar(text[idx - 1]);
+            bool rightOk = idx + symbol.Length >= text.Length || !IsWordChar(text[idx + symbol.Length]);
+            return (leftOk && rightOk) ? idx : 0;
         }
 
         /// <summary>
@@ -2903,6 +3107,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Calculate visible line range
             CalculateVisibleLines();
+            // Pre-compute per-visible-line Y positions; only declaration lines get +LensLineHeight.
+            ComputeVisibleLinePositions();
 
             // -- Clip to content area (prevent drawing over scrollbars) --
             dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
@@ -2919,6 +3125,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // -- Text area clip + horizontal translate -------------------
             dc.PushClip(new RectangleGeometry(new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
+
+            // 3b. CodeLens hints — drawn inside the text-area clip but WITHOUT the
+            //     H-scroll transform so they stay anchored at the left edge.
+            RenderCodeLensHints(dc);
+
             dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
 
             // 4. Find result highlights
@@ -3079,7 +3290,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
                 // -- Vertical --------------------------------------------
-                double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight;
+                double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight
+                    + (ShowCodeLens ? _lensData.Count * LensLineHeight : 0);
                 double maxV   = Math.Max(0, totalH - contentH);
 
                 // Clamp internal offset (e.g. file got shorter after edit)
@@ -3390,10 +3602,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    // Phase 11: Calculate Y position with virtual scrolling support
-                    double y = EnableVirtualScrolling && _virtualizationEngine != null
-                        ? TopMargin + _virtualizationEngine.GetLineYPosition(start.Line)
-                        : TopMargin + (start.Line - _firstVisibleLine) * _lineHeight;
+                    double y = _lineYLookup.TryGetValue(start.Line, out double sy) ? sy
+                        : (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? TopMargin + _virtualizationEngine.GetLineYPosition(start.Line)
+                            : TopMargin + (start.Line - _firstVisibleLine) * _lineHeight);
 
                     double x1 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (start.Column * _charWidth);
                     double x2 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (end.Column * _charWidth);
@@ -3412,9 +3624,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // First line — extend bottom by CornerRadius so the rounded tail merges with next segment
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                        ? _virtualizationEngine.GetLineYPosition(start.Line)
-                        : (start.Line - _firstVisibleLine) * _lineHeight);
+                    double y  = _lineYLookup.TryGetValue(start.Line, out double fsy) ? fsy
+                        : TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? _virtualizationEngine.GetLineYPosition(start.Line)
+                            : (start.Line - _firstVisibleLine) * _lineHeight);
                     double x1 = leftEdge + (start.Column * _charWidth);
                     double x2 = leftEdge + (_document.Lines[start.Line].Length * _charWidth);
                     segments.Add(new RectangleGeometry(new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
@@ -3426,9 +3639,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 int middleLast  = Math.Min(end.Line   - 1, _lastVisibleLine);
                 for (int line = middleFirst; line <= middleLast; line++)
                 {
-                    double y     = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                        ? _virtualizationEngine.GetLineYPosition(line)
-                        : (line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
+                    double lineBaseY = _lineYLookup.TryGetValue(line, out double mly) ? mly
+                        : TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? _virtualizationEngine.GetLineYPosition(line)
+                            : (line - _firstVisibleLine) * _lineHeight);
+                    double y = lineBaseY - SelectionCornerRadius;
                     double width = _document.Lines[line].Length * _charWidth;
                     segments.Add(new RectangleGeometry(new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
                 }
@@ -3436,9 +3651,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Last line — extend top by CornerRadius so the rounded head merges with previous segment
                 if (end.Line >= _firstVisibleLine && end.Line <= _lastVisibleLine)
                 {
-                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                        ? _virtualizationEngine.GetLineYPosition(end.Line)
-                        : (end.Line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
+                    double y  = (_lineYLookup.TryGetValue(end.Line, out double ely) ? ely
+                        : TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? _virtualizationEngine.GetLineYPosition(end.Line)
+                            : (end.Line - _firstVisibleLine) * _lineHeight)) - SelectionCornerRadius;
                     double x2 = leftEdge + (end.Column * _charWidth);
                     segments.Add(new RectangleGeometry(new Rect(leftEdge, y, x2 - leftEdge, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
                 }
@@ -3889,10 +4105,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_cursorLine < _firstVisibleLine || _cursorLine > _lastVisibleLine)
                 return;
 
-            // Phase 11: Calculate Y position with virtual scrolling support
-            double y = EnableVirtualScrolling && _virtualizationEngine != null
-                ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
-                : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight;
+            // Use per-line Y lookup so the caret sits at the code-text Y on CodeLens lines.
+            double y = _lineYLookup.TryGetValue(_cursorLine, out double cy) ? cy
+                : (EnableVirtualScrolling && _virtualizationEngine != null
+                    ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
+                    : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight);
 
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (_cursorColumn * _charWidth);
 
@@ -4231,12 +4448,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             switch (e.Key)
             {
                 case Key.Left:
-                    MoveCursor(-1, 0, shiftPressed);
+                    if (ctrlPressed) MoveWordLeft(shiftPressed);
+                    else             MoveCursor(-1, 0, shiftPressed);
                     e.Handled = true;
                     break;
 
                 case Key.Right:
-                    MoveCursor(1, 0, shiftPressed);
+                    if (ctrlPressed) MoveWordRight(shiftPressed);
+                    else             MoveCursor(1, 0, shiftPressed);
                     e.Handled = true;
                     break;
 
@@ -4251,12 +4470,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     break;
 
                 case Key.Home:
-                    MoveCursorToLineStart(shiftPressed);
+                    if (ctrlPressed) MoveCursorToDocumentStart(shiftPressed);
+                    else             MoveCursorToLineStart(shiftPressed);
                     e.Handled = true;
                     break;
 
                 case Key.End:
-                    MoveCursorToLineEnd(shiftPressed);
+                    if (ctrlPressed) MoveCursorToDocumentEnd(shiftPressed);
+                    else             MoveCursorToLineEnd(shiftPressed);
                     e.Handled = true;
                     break;
 
@@ -4534,6 +4755,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 HideUrlTooltip();
                 InvalidateVisual();
             }
+
+            if (_hoveredLensLine >= 0)
+            {
+                _hoveredLensLine = -1;
+                ToolTip = null;
+                InvalidateVisual();
+            }
         }
 
         private void ShowUrlTooltip()
@@ -4582,6 +4810,118 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 _selection.Clear();
             }
+        }
+
+        private void MoveCursorToDocumentStart(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            _cursorLine   = 0;
+            _cursorColumn = 0;
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        private void MoveCursorToDocumentEnd(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            _cursorLine   = Math.Max(0, _document.Lines.Count - 1);
+            _cursorColumn = _document.Lines[_cursorLine].Length;
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        private void MoveWordLeft(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+
+            // Skip non-word chars to the left (punctuation, whitespace)
+            while (col > 0 && !IsWordChar(line[col - 1])) col--;
+            // Skip word chars to the left
+            while (col > 0 && IsWordChar(line[col - 1])) col--;
+
+            if (col == _cursorColumn && _cursorLine > 0)
+            {
+                // Step to end of previous line
+                _cursorLine--;
+                _cursorColumn = _document.Lines[_cursorLine].Text.Length;
+            }
+            else
+            {
+                _cursorColumn = col;
+            }
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        private void MoveWordRight(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+
+            // Skip word chars to the right
+            while (col < line.Length && IsWordChar(line[col])) col++;
+            // Skip non-word chars to the right (punctuation, whitespace)
+            while (col < line.Length && !IsWordChar(line[col])) col++;
+
+            if (col == _cursorColumn && _cursorLine < _document.Lines.Count - 1)
+            {
+                // Step to start of next line
+                _cursorLine++;
+                _cursorColumn = 0;
+            }
+            else
+            {
+                _cursorColumn = col;
+            }
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
         }
 
         #endregion
@@ -4860,6 +5200,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnMouseDown(e);
 
+            // Dismiss any open references popup on any click in the editor.
+            _referencesPopup?.Close();
+
             Focus(); // Ensure editor gets keyboard focus
 
             var pos = e.GetPosition(this);
@@ -4903,6 +5246,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
+            // Left-click on a CodeLens hint → navigate cursor onto the symbol and open references popup.
+            if (ShowCodeLens && e.LeftButton == MouseButtonState.Pressed && _lensHitZones.Count > 0)
+            {
+                var clickPos = e.GetPosition(this);
+                foreach (var (zone, lineIdx, symbol) in _lensHitZones)
+                {
+                    if (zone.Contains(clickPos))
+                    {
+                        _cursorLine   = lineIdx;
+                        _cursorColumn = FindSymbolColumnInLine(lineIdx, symbol);
+                        _ = FindAllReferencesAsync();
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            }
+
             // Ctrl+Left-click on a URL → open in browser.
             if (e.LeftButton == MouseButtonState.Pressed
                 && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -4918,6 +5278,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     e.Handled = true;
                     return;
                 }
+            }
+
+            // Block caret placement when clicking in the CodeLens hint zone
+            // (the LensLineHeight strip above the code text of a declaration line).
+            if (ShowCodeLens
+                && _lineYLookup.TryGetValue(textPos.Line, out double codeTextY)
+                && pos.Y < codeTextY)
+            {
+                e.Handled = true;
+                return;
             }
 
             // Left-click behavior (unchanged)
@@ -4965,7 +5335,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     InvalidateVisual();
                 }
 
-                if (urlZone.HasValue)
+                // CodeLens hint zones: Hand cursor, hover highlight, and tooltip.
+                var mousePixel = e.GetPosition(this);
+                int prevHover  = _hoveredLensLine;
+                _hoveredLensLine = -1;
+                string? lensTooltip = null;
+                foreach (var (zone, lineIdx, sym) in _lensHitZones)
+                {
+                    if (zone.Contains(mousePixel))
+                    {
+                        _hoveredLensLine = lineIdx;
+                        if (_lensData.TryGetValue(lineIdx, out var entry))
+                        {
+                            lensTooltip = entry.Count == 1
+                                ? $"1 référence à « {sym} »  (Alt+3)"
+                                : $"{entry.Count} références à « {sym} »  (Alt+3)";
+                        }
+                        break;
+                    }
+                }
+                if (_hoveredLensLine != prevHover)
+                    InvalidateVisual();
+
+                bool overLens = _hoveredLensLine >= 0;
+                ToolTip = overLens ? lensTooltip : null;
+
+                if (overLens)
+                {
+                    Cursor = Cursors.Hand;
+                    HideUrlTooltip();
+                }
+                else if (urlZone.HasValue)
                 {
                     Cursor = Cursors.Hand;
                     ShowUrlTooltip();
@@ -5586,6 +5986,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Subscribe to the new document.
             _document.TextChanged += Document_TextChanged;
 
+            // Re-attach CodeLens service to the new document.
+            _codeLensService.Attach(_document);
+
             // Reset view state.
             _cursorLine = 0;
             _cursorColumn = 0;
@@ -6144,7 +6547,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double lh = _lineHeight > 0 ? _lineHeight : 16.0;
             double cw = _charWidth  > 0 ? _charWidth  : 8.0;
             double x  = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + _cursorColumn * cw;
-            double y  = TopMargin + visLineOffset * lh + lh + 2;
+            // Anchor below the code-text Y of the cursor line (not the raw slot top).
+            double codeY = _lineYLookup.TryGetValue(_cursorLine, out double ly)
+                ? ly : TopMargin + visLineOffset * lh;
+            double y  = codeY + lh + 2;
             var anchor = new Point(x, y);
 
             _referencesPopup ??= new ReferencesPopup();

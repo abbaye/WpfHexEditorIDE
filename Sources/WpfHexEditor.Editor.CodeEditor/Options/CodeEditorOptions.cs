@@ -40,6 +40,7 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool    _enableIntelliSense       = true;
     private bool    _enableSnippets           = true;
     private bool    _enableFindAllReferences  = true;
+    private bool    _showCodeLens             = true;
     private string? _themeOverride       = null;
 
     // -----------------------------------------------------------------------
@@ -118,6 +119,16 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _enableFindAllReferences;
         set { _enableFindAllReferences = value; Notify(); }
+    }
+
+    /// <summary>
+    /// When true, shows "N références" hints above each declaration line
+    /// (CodeLens style). Clicking a hint opens the Find All References popup.
+    /// </summary>
+    public bool ShowCodeLens
+    {
+        get => _showCodeLens;
+        set { _showCodeLens = value; Notify(); }
     }
 
     private bool _enableWordHighlight = true;
