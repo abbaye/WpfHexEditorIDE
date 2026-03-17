@@ -132,6 +132,18 @@
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
+            <CheckBox Content="Enable Find All References (Shift+F12)"
+                      IsChecked="{Binding EnableFindAllReferences}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Requires an active Language Server (LSP) for the current file type" />
+
+            <CheckBox Content="Highlight word under caret"
+                      IsChecked="{Binding EnableWordHighlight}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Highlights all occurrences of the word under the cursor and shows tick marks on the scroll bar" />
+
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Syntax Colors ─────────────────────────────────────── -->

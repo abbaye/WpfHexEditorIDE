@@ -183,6 +183,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Scope guide line pen — semi-transparent so it doesn't obscure text.
         private static readonly Pen s_scopeGuidePen = MakeFrozenPen(Color.FromArgb(60, 128, 128, 128), 1.0);
 
+        // Word-under-caret highlight assets (VS Code "read highlight" style).
+        private static readonly Brush s_wordHighlightBg  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
+        private static readonly Pen   s_wordHighlightPen = MakeFrozenPen(Color.FromArgb(180, 86, 156, 214), 1.0);
+
         private static Pen MakeSquigglyPen(Color color) => MakeFrozenPen(color, 1.5);
 
         private static Pen MakeFrozenPen(Color color, double thickness)
@@ -234,6 +238,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private List<TextPosition> _findResults = new List<TextPosition>();
         private int _currentFindMatchIndex = -1;
         private int _findMatchLength = 0;
+
+        #endregion
+
+        #region Fields - Word Highlight
+
+        private readonly List<TextPosition> _wordHighlights    = new();
+        private string                      _wordHighlightWord = string.Empty;
+        private int                         _wordHighlightLen  = 0;
+        private System.Windows.Threading.DispatcherTimer? _wordHighlightTimer;
+        private CodeScrollMarkerPanel?      _codeScrollMarkerPanel;
 
         #endregion
 
@@ -363,6 +377,35 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             get => (bool)GetValue(ShowScopeGuidesProperty);
             set => SetValue(ShowScopeGuidesProperty, value);
+        }
+
+        public static readonly DependencyProperty EnableWordHighlightProperty =
+            DependencyProperty.Register(nameof(EnableWordHighlight), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnEnableWordHighlightChanged));
+
+        /// <summary>
+        /// When true, places a subtle highlight box on every occurrence of the word under the
+        /// caret and shows proportional tick marks on the vertical scrollbar.
+        /// </summary>
+        public bool EnableWordHighlight
+        {
+            get => (bool)GetValue(EnableWordHighlightProperty);
+            set => SetValue(EnableWordHighlightProperty, value);
+        }
+
+        private static void OnEnableWordHighlightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var ce = (CodeEditor)d;
+            if (!(bool)e.NewValue)
+            {
+                ce._wordHighlights.Clear();
+                ce._codeScrollMarkerPanel?.ClearWordMarkers();
+                ce.InvalidateVisual();
+            }
+            else
+            {
+                ce.ScheduleWordHighlightUpdate();
+            }
         }
 
         /// <summary>
@@ -1504,6 +1547,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldingEngine.RegionsChanged += (_, _) => InvalidateVisual();
             _scrollBarChildren.Add(_gutterControl);
 
+            // Initialize word-highlight scroll marker overlay.
+            _codeScrollMarkerPanel = new CodeScrollMarkerPanel();
+            _scrollBarChildren.Add(_codeScrollMarkerPanel); // renders on top of _vScrollBar
+
+            // Debounce timer: update word highlights 250 ms after the caret stops moving.
+            _wordHighlightTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+            _wordHighlightTimer.Tick += (_, _) => { _wordHighlightTimer.Stop(); UpdateWordHighlights(); };
+
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
         }
@@ -1569,6 +1620,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ShowLineNumbers          = options.ShowLineNumbers;
             ShowScopeGuides          = options.ShowScopeGuides;
             EnableFindAllReferences  = options.EnableFindAllReferences;
+            EnableWordHighlight      = options.EnableWordHighlight;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
             // A null override clears the local value so DynamicResource (CE_*) takes effect again.
@@ -1835,6 +1887,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _cursorColumn  = textPos.Column;
                 InvalidateVisual();
                 NotifyCaretMovedIfChanged();
+                ScheduleWordHighlightUpdate();
             }
         }
 
@@ -2602,6 +2655,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             EnsureCursorColumnVisible();
 
             NotifyCaretMovedIfChanged();
+            ScheduleWordHighlightUpdate();
         }
 
         /// <summary>
@@ -2859,6 +2913,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 4. Find result highlights
             RenderFindResults(dc);
 
+            // 4b. Word-under-caret highlights (rendered below selection so selection stays visible)
+            RenderWordHighlights(dc);
+
             // 5. Selection
             RenderSelection(dc);
 
@@ -2974,8 +3031,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _vScrollBar.Visibility = needsV ? Visibility.Visible : Visibility.Hidden;
             _hScrollBar.Visibility = needsH ? Visibility.Visible : Visibility.Hidden;
 
-            _vScrollBar.Arrange(needsV ? new Rect(contentW, 0, ScrollBarThickness, contentH) : new Rect(0, 0, 0, 0));
+            var vScrollRect = needsV ? new Rect(contentW, 0, ScrollBarThickness, contentH) : new Rect(0, 0, 0, 0);
+            _vScrollBar.Arrange(vScrollRect);
             _hScrollBar.Arrange(needsH ? new Rect(0, contentH, contentW, ScrollBarThickness) : new Rect(0, 0, 0, 0));
+
+            // Overlay scroll marker panel on top of the vertical scrollbar (click-through).
+            _codeScrollMarkerPanel?.Arrange(vScrollRect);
 
             // Arrange the folding gutter flush against the left edge (inside the line-number strip).
             if (_gutterControl != null)
@@ -3417,6 +3478,154 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 dc.DrawRoundedRectangle(highlightBrush, null, new Rect(x1, y, x2 - x1, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
             }
+        }
+
+        /// <summary>
+        /// Renders a subtle highlight box on every occurrence of the word currently under the caret.
+        /// Called from OnRender after RenderFindResults and before RenderSelection.
+        /// </summary>
+        private void RenderWordHighlights(DrawingContext dc)
+        {
+            if (_wordHighlights.Count == 0 || _wordHighlightLen == 0)
+                return;
+
+            double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            foreach (var pos in _wordHighlights)
+            {
+                if (pos.Line < _firstVisibleLine || pos.Line > _lastVisibleLine)
+                    continue;
+
+                double y = EnableVirtualScrolling && _virtualizationEngine != null
+                    ? TopMargin + _virtualizationEngine.GetLineYPosition(pos.Line)
+                    : TopMargin + (pos.Line - _firstVisibleLine) * _lineHeight;
+
+                double x1 = leftEdge + pos.Column * _charWidth;
+                double x2 = x1 + _wordHighlightLen * _charWidth;
+
+                dc.DrawRectangle(s_wordHighlightBg, s_wordHighlightPen,
+                    new Rect(x1, y, x2 - x1, _lineHeight));
+            }
+        }
+
+        /// <summary>
+        /// Extracts the identifier word at <paramref name="col"/> within <paramref name="text"/>.
+        /// Returns an empty string if the character at col is not a word character or the word is shorter than 2 chars.
+        /// </summary>
+        private (string Word, int StartCol) GetWordAt(string text, int col)
+        {
+            if (string.IsNullOrEmpty(text) || col < 0 || col >= text.Length)
+                return (string.Empty, col);
+
+            if (!IsWordChar(text[col]))
+                return (string.Empty, col);
+
+            int start = col;
+            while (start > 0 && IsWordChar(text[start - 1]))
+                start--;
+
+            int end = col;
+            while (end < text.Length - 1 && IsWordChar(text[end + 1]))
+                end++;
+
+            string word = text.Substring(start, end - start + 1);
+            return word.Length >= 2 ? (word, start) : (string.Empty, start);
+        }
+
+        /// <summary>
+        /// Rescans the document for all occurrences of the word under the caret and
+        /// updates both the viewport highlight list and the scroll marker panel.
+        /// Called by the debounce timer; runs on the UI thread.
+        /// </summary>
+        private void UpdateWordHighlights()
+        {
+            _wordHighlights.Clear();
+            _wordHighlightWord = string.Empty;
+            _wordHighlightLen  = 0;
+
+            string word = ResolveHighlightWord();
+
+            if (word.Length >= 2)
+            {
+                _wordHighlightWord = word;
+                _wordHighlightLen  = word.Length;
+
+                // Whole-word scan across all lines.
+                for (int li = 0; li < _document.Lines.Count; li++)
+                {
+                    string lineText = _document.Lines[li].Text ?? string.Empty;
+                    int idx = 0;
+                    while ((idx = lineText.IndexOf(word, idx, StringComparison.Ordinal)) >= 0)
+                    {
+                        bool leftOk  = idx == 0                          || !IsWordChar(lineText[idx - 1]);
+                        bool rightOk = idx + word.Length >= lineText.Length || !IsWordChar(lineText[idx + word.Length]);
+
+                        if (leftOk && rightOk)
+                            _wordHighlights.Add(new TextPosition(li, idx));
+
+                        idx += word.Length;
+                    }
+                }
+            }
+
+            InvalidateVisual();
+
+            // Update scroll bar tick marks.
+            if (_codeScrollMarkerPanel != null)
+            {
+                if (_wordHighlights.Count == 0)
+                    _codeScrollMarkerPanel.ClearWordMarkers();
+                else
+                {
+                    var distinctLines = _wordHighlights
+                        .Select(p => p.Line)
+                        .Distinct()
+                        .ToList();
+                    _codeScrollMarkerPanel.UpdateWordMarkers(distinctLines,
+                        Math.Max(1, _document?.TotalLines ?? 1));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the word to highlight: the selected text (single-line, ≥2 chars) if a
+        /// selection is active, otherwise the identifier word at the current caret position.
+        /// Returns <see cref="string.Empty"/> when no suitable word is found.
+        /// </summary>
+        private string ResolveHighlightWord()
+        {
+            if (!EnableWordHighlight || _document == null || _document.Lines.Count == 0)
+                return string.Empty;
+
+            // Single-line selection takes priority.
+            if (!_selection.IsEmpty && !_selection.IsMultiLine)
+            {
+                int li = _selection.NormalizedStart.Line;
+                int s  = _selection.NormalizedStart.Column;
+                int e  = _selection.NormalizedEnd.Column;
+                if (li < _document.Lines.Count && e > s)
+                {
+                    string lt = _document.Lines[li].Text ?? string.Empty;
+                    if (e <= lt.Length)
+                        return lt.Substring(s, e - s);
+                }
+            }
+
+            // Fall back to word at caret.
+            if (_cursorLine < _document.Lines.Count)
+                return GetWordAt(_document.Lines[_cursorLine].Text ?? string.Empty, _cursorColumn).Word;
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Arms (or re-arms) the 250 ms debounce timer that fires <see cref="UpdateWordHighlights"/>.
+        /// Safe to call on every keystroke / caret move.
+        /// </summary>
+        private void ScheduleWordHighlightUpdate()
+        {
+            _wordHighlightTimer?.Stop();
+            _wordHighlightTimer?.Start();
         }
 
         /// <summary>

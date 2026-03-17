@@ -37,8 +37,9 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool    _enableFolding       = true;
     private bool    _showScopeGuides     = true;
     private bool    _enableMultiCaret    = true;
-    private bool    _enableIntelliSense  = true;
-    private bool    _enableSnippets      = true;
+    private bool    _enableIntelliSense       = true;
+    private bool    _enableSnippets           = true;
+    private bool    _enableFindAllReferences  = true;
     private string? _themeOverride       = null;
 
     // -----------------------------------------------------------------------
@@ -107,6 +108,28 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _enableSnippets;
         set { _enableSnippets = value; Notify(); }
+    }
+
+    /// <summary>
+    /// When false, the "Find All References" command (Shift+F12) and its
+    /// context-menu item are disabled regardless of LSP availability.
+    /// </summary>
+    public bool EnableFindAllReferences
+    {
+        get => _enableFindAllReferences;
+        set { _enableFindAllReferences = value; Notify(); }
+    }
+
+    private bool _enableWordHighlight = true;
+
+    /// <summary>
+    /// When true, all occurrences of the word under the caret are highlighted
+    /// with a subtle box and scroll-bar tick marks (VS Code style).
+    /// </summary>
+    public bool EnableWordHighlight
+    {
+        get => _enableWordHighlight;
+        set { _enableWordHighlight = value; Notify(); }
     }
 
     /// <summary>
