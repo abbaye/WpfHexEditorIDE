@@ -36,6 +36,7 @@ public partial class MainWindow
     private BuildOutputAdapter?         _buildOutputAdapter;
     private BuildErrorListAdapter?      _buildErrorListAdapter;
     private BuildStatusBarAdapter?      _buildStatusBarAdapter;
+    private StartupProjectRunner?       _startupRunner;
 
     // -----------------------------------------------------------------------
     // Properties (bound in XAML)
@@ -43,6 +44,11 @@ public partial class MainWindow
 
     /// <summary>True when a solution is loaded and no build is running.</summary>
     public bool IsBuildMenuEnabled => _hasSolution && !(_buildSystem?.HasActiveBuild ?? false);
+
+    /// <summary>True when a startup project is set and the IDE is idle (no active build).</summary>
+    public bool CanRunStartupProject
+        => IsBuildMenuEnabled
+        && _solutionManager.CurrentSolution?.StartupProject is not null;
 
     /// <summary>True while a build is in progress — enables "Cancel Build".</summary>
     public bool HasActiveBuild => _buildSystem?.HasActiveBuild ?? false;
@@ -91,8 +97,9 @@ public partial class MainWindow
     {
         if (_ideEventBus is null) return;
 
-        _configManager = new ConfigurationManager();
-        _buildSystem   = new BuildSystem.BuildSystem(_solutionManager, _ideEventBus, _configManager);
+        _configManager   = new ConfigurationManager();
+        _buildSystem     = new BuildSystem.BuildSystem(_solutionManager, _ideEventBus, _configManager);
+        _startupRunner   = new StartupProjectRunner(_solutionManager, _buildSystem, _ideEventBus, _configManager);
 
         // Wire output adapter (routes build lines → OutputPanel).
         if (_outputService is not null)
@@ -115,11 +122,17 @@ public partial class MainWindow
             OnPropertyChanged(nameof(IsBuildMenuEnabled));
         };
 
-        // Register Ctrl+Shift+B keyboard shortcut.
+        // Register Ctrl+Shift+B → Build Solution.
         var buildGesture = new KeyBinding(
             new RelayCommand(async _ => await RunBuildSolutionAsync()),
             Key.B, ModifierKeys.Control | ModifierKeys.Shift);
         InputBindings.Add(buildGesture);
+
+        // Register Ctrl+F5 → Start Without Debugging.
+        var runGesture = new KeyBinding(
+            new RelayCommand(async _ => await RunStartupProjectAsync()),
+            Key.F5, ModifierKeys.Control);
+        InputBindings.Add(runGesture);
 
         // Wire SolutionExplorer VS build context-menu events.
         if (_solutionExplorerPanel is not null)
@@ -127,7 +140,11 @@ public partial class MainWindow
             _solutionExplorerPanel.BuildProjectRequested       += (_, id) => _ = RunBuildProjectByIdAsync(id);
             _solutionExplorerPanel.RebuildProjectRequested     += (_, id) => _ = RunRebuildProjectByIdAsync(id);
             _solutionExplorerPanel.CleanProjectRequested       += (_, id) => _ = RunCleanProjectByIdAsync(id);
-            _solutionExplorerPanel.SetStartupProjectRequested  += (_, id) => SetStartupProject(id);
+            _solutionExplorerPanel.SetStartupProjectRequested  += (_, id) =>
+            {
+                SetStartupProject(id);
+                OnPropertyChanged(nameof(CanRunStartupProject));
+            };
         }
     }
 
@@ -135,6 +152,7 @@ public partial class MainWindow
     // Click handlers (bound in MainWindow.xaml)
     // -----------------------------------------------------------------------
 
+    private async void OnRunStartupProject(object sender, RoutedEventArgs e) => await RunStartupProjectAsync();
     private async void OnBuildSolution  (object sender, RoutedEventArgs e) => await RunBuildSolutionAsync();
     private async void OnBuildProject   (object sender, RoutedEventArgs e) => await RunBuildProjectAsync();
     private async void OnRebuildSolution(object sender, RoutedEventArgs e) => await RunRebuildSolutionAsync();
@@ -159,6 +177,15 @@ public partial class MainWindow
     // -----------------------------------------------------------------------
     // Async build runners
     // -----------------------------------------------------------------------
+
+    private async Task RunStartupProjectAsync()
+    {
+        if (_startupRunner is null) return;
+        OutputLogger.FocusChannel(OutputLogger.SourceBuild);
+        RefreshBuildProperties();
+        await _startupRunner.RunAsync();
+        RefreshBuildProperties();
+    }
 
     private async Task RunBuildSolutionAsync()
     {
@@ -293,6 +320,7 @@ public partial class MainWindow
     {
         OnPropertyChanged(nameof(IsBuildMenuEnabled));
         OnPropertyChanged(nameof(HasActiveBuild));
+        OnPropertyChanged(nameof(CanRunStartupProject));
     }
 
     /// <summary>Minimal inline ICommand for the Ctrl+Shift+B binding.</summary>

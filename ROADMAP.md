@@ -12,9 +12,9 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 | Feature # | Title | Description | Progress |
 |-----------|-------|-------------|----------|
 | #81 | **Plugin Sandbox** | Out-of-process isolation via HWND embedding + full IPC bridge (menus, toolbar, events). HWND parenting, Job Object resource control, IPC HexEditor event bridge done. Auto-isolation engine done. IDE EventBus IPC bridge done. Remaining: gRPC migration, hot-reload from sandbox. | ~65% |
-| #84 | **Code Editor — VS-Like Advanced** | Full-featured code editor: syntax highlighting with 26 `.whlang` definitions, URL hover/click, foreground base pass, find/replace, split view, `IEditorPersistable`. Hosts decompiled C# from Assembly Explorer. Source outline integration pending. | ~70% |
+| #84 | **Code Editor — VS-Like Advanced** | Full-featured code editor: VS-like navigation bar (types/members combos, Segoe MDL2 icons, `CaretMoved` event, auto-scroll), syntax highlighting with 26 `.whlang` definitions, URL hover/click, find/replace, split view, `IEditorPersistable`. Hosts decompiled C# from Assembly Explorer. Remaining: folding, gutter indicators, multi-caret, diagnostics integration. | ~80% |
 | #101–103 | **MSBuild & VS Solution Support** | Open `.sln` files via `VsSolutionLoaderPlugin`; build/rebuild/clean via MSBuild API; output routed to Build channel with severity coloring; auto-focus on build start; empty-solution guard. Project templates scaffolded. Remaining: error list navigation, incremental build. | ~60% |
-| #104–106 | **Assembly Explorer + Decompilation** | .NET PE tree done. C# decompilation → Code Editor tab with syntax highlighting done (v0.2.1). Extract to Project done. Collapse All / Close All done. Remaining: full ECMA-335 token→offset resolution, ILSpy full decompilation, hex sync. | ~35% |
+| #104–106 | **Assembly Explorer + Decompilation** | .NET PE tree done. C# decompilation done. ILSpy backend added (`IlSpyDecompilerBackend`). VB.NET language done. CFG Canvas, Assembly Diff, Assembly Search, XRef View, Decompile Cache done (v0.5.2). Remaining: full ECMA-335 token→offset resolution, ILSpy full decompilation, hex sync. | ~55% |
 | #107 | **Document Model** | Unified in-memory document representation shared across all editors (hex, code, text, diff). Foundation for multi-editor collaboration, undo/redo unification and LSP integration. | ~10% |
 | #85–86 | **LSP Engine / IntelliSense** | `WpfHexEditor.LSP` project created with navigation, formatting, refactoring, symbols infrastructure. `RefactoringEngine`, `RenameRefactoring`, `ExtractMethodRefactoring`, `CodeFormatter`, `SymbolTableManager`, `NavigationProvider` stubs. `CommandIntegration` mediator wired to IDE EventBus. Remaining: real parsing backend, completion provider, hover info. | ~20% |
 
@@ -199,6 +199,12 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature | Version / Release |
 |---------|-------------------|
+| **Code Editor Navigation Bar** — VS-like types/members combos, Segoe MDL2 icons, `CaretMoved` event, auto-scroll to declaration | [0.5.2] — 2026-03-16 |
+| **Assembly Explorer Expansion** — ILSpy backend, VB.NET, CFG Canvas, Assembly Diff, Assembly Search, XRef View, Decompile Cache, options page | [0.5.2] — 2026-03-16 |
+| **NuGet support** — `NuGetV3Client`, `CsprojPackageWriter`, `NuGetPackageViewModel` in ProjectSystem | [0.5.2] — 2026-03-16 |
+| **Workspace Templates** — `TemplateManager`, `ProjectScaffolder`, 3 built-in JSON templates, `NewProjectDialog` | [0.5.2] — 2026-03-16 |
+| **Build system refactoring** — `MSBuildAdapter` error surfacing, async fix, Locator DLL copy; `MSBuildLogger`/`NuGetRestoreStep` removed | [0.5.2] — 2026-03-16 |
+| **Themes: `CE_SelectionInactive`** brush token — Code Editor inactive selection, all 8 themes | [0.5.2] — 2026-03-16 |
 | **Source Outline Navigation** — lazy type/member tree in Solution Explorer for `.cs`/`.xaml` files; `SourceOutlineEngine` BCL-only parser; `LoadingNode` placeholder + async expand | [0.5.0] — 2026-03-16 |
 | **Assembly Explorer v0.2.1** — Decompile to C# → Code Editor tab with syntax highlighting; Extract to Project (`AssemblyCodeExtractService` + `ProjectPickerDialog`); Collapse All; Close All Assemblies | [0.5.0] — 2026-03-16 |
 | **Code Editor — full syntax highlighting** — all 26 `.whlang` definitions; live `TryFindResource` brush resolution; foreground base pass; hover-only URL underline with tooltip; split host + document model cleanup | [0.5.0] — 2026-03-16 |

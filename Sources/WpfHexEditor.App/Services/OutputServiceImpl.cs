@@ -26,6 +26,19 @@ public sealed class OutputServiceImpl : IOutputService
     {
         switch (category)
         {
+            case OutputLogger.SourcePluginSystem:
+                // Route to the Plugin System channel with severity heuristics.
+                if (message.Contains(" error ", StringComparison.OrdinalIgnoreCase)
+                    || message.StartsWith("Error", StringComparison.OrdinalIgnoreCase))
+                    OutputLogger.PluginError(message);
+                else if (message.Contains("failed", StringComparison.OrdinalIgnoreCase)
+                         || message.Contains(" warning ", StringComparison.OrdinalIgnoreCase)
+                         || message.StartsWith("Warning", StringComparison.OrdinalIgnoreCase))
+                    OutputLogger.PluginWarn(message);
+                else
+                    OutputLogger.PluginInfo(message);
+                break;
+
             case OutputLogger.SourceBuild:
                 // Route to the dedicated Build channel with severity heuristics.
                 // MSBuild error/warning lines are identified by common prefixes.

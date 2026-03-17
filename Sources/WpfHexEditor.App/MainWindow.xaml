@@ -1271,6 +1271,20 @@
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <!-- Start (Run startup project without debugger — Ctrl+F5) -->
+                    <Button x:Name="BtnRunStartup"
+                            Click="OnRunStartupProject"
+                            ToolTip="Start Without Debugging (Ctrl+F5)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                            IsEnabled="{Binding CanRunStartupProject, ElementName=ThisWindow}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="#3CB371"
+                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
+                            <TextBlock Text="Start" VerticalAlignment="Center" FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
                     <!-- Build -->
                     <Button x:Name="BtnBuild"
                             Click="OnBuildSolution"

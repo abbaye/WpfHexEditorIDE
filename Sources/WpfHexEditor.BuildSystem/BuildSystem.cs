@@ -57,7 +57,12 @@ public sealed class BuildSystem : IBuildSystem
     public bool HasActiveBuild => _activeCts is not null;
 
     public async Task<BuildResult> BuildSolutionAsync(CancellationToken ct = default)
-        => await RunBuildAsync(GetAllProjectPaths(), rebuild: false, ct);
+    {
+        var slnPath = GetVsSolutionFilePath();
+        return slnPath is not null
+            ? await RunVsSolutionBuildAsync(slnPath, ct)
+            : await RunBuildAsync(GetAllProjectPaths(), rebuild: false, ct);
+    }
 
     public async Task<BuildResult> BuildProjectAsync(string projectId, CancellationToken ct = default)
         => await RunBuildAsync(GetProjectPath(projectId), rebuild: false, ct);
@@ -76,14 +81,34 @@ public sealed class BuildSystem : IBuildSystem
 
     public async Task CleanSolutionAsync(CancellationToken ct = default)
     {
-        foreach (var (path, config) in GetAllProjectPaths())
-            await CleanAsync(path, config, ct);
+        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean started ==========" });
+        var progress = new Progress<string>(line => _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
+
+        var slnPath = GetVsSolutionFilePath();
+        if (slnPath is not null)
+        {
+            var adapter = FindAdapter(slnPath);
+            if (adapter is not null)
+                await adapter.CleanAsync(slnPath, _configurationManager.ActiveConfiguration, progress, ct);
+        }
+        else
+        {
+            foreach (var (path, config) in GetAllProjectPaths())
+                await CleanAsync(path, config, progress, ct);
+        }
+
+        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean finished ==========" });
     }
 
     public async Task CleanProjectAsync(string projectId, CancellationToken ct = default)
     {
+        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean started ==========" });
+        var progress = new Progress<string>(line => _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
+
         foreach (var (path, config) in GetProjectPath(projectId))
-            await CleanAsync(path, config, ct);
+            await CleanAsync(path, config, progress, ct);
+
+        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean finished ==========" });
     }
 
     public void CancelBuild()
@@ -115,14 +140,19 @@ public sealed class BuildSystem : IBuildSystem
         var linkedCts  = CancellationTokenSource.CreateLinkedTokenSource(externalCt);
         _activeCts = linkedCts;
 
-        _eventBus.Publish(new BuildStartedEvent());
-        var sw     = System.Diagnostics.Stopwatch.StartNew();
-        var errors = new List<BuildDiagnostic>();
-        var warnings = new List<BuildDiagnostic>();
+        var startedAt  = DateTime.Now;
+        var targetList = targets.ToList(); // materialise once to get total count
+        var sw         = System.Diagnostics.Stopwatch.StartNew();
+        var errors     = new List<BuildDiagnostic>();
+        var warnings   = new List<BuildDiagnostic>();
+        var succeeded  = 0;
+        var failed     = 0;
+
+        _eventBus.Publish(new BuildStartedEvent { StartedAt = startedAt });
 
         try
         {
-            foreach (var (filePath, config) in targets)
+            foreach (var (filePath, config) in targetList)
             {
                 linkedCts.Token.ThrowIfCancellationRequested();
 
@@ -132,7 +162,8 @@ public sealed class BuildSystem : IBuildSystem
                     errors.Add(new BuildDiagnostic(filePath, null, null, "BUILD001",
                         $"No build adapter found for '{System.IO.Path.GetFileName(filePath)}'.",
                         DiagnosticSeverity.Error));
-                    continue;
+                    failed++;
+                    break; // no adapter — treat as hard failure
                 }
 
                 var progress = new Progress<string>(line =>
@@ -142,16 +173,38 @@ public sealed class BuildSystem : IBuildSystem
                 errors.AddRange(result.Errors);
                 warnings.AddRange(result.Warnings);
 
-                if (!result.IsSuccess) break; // stop on first project error
+                if (result.IsSuccess)
+                    succeeded++;
+                else
+                    failed++;
             }
 
             sw.Stop();
-            var final = new BuildResult(errors.Count == 0, errors, warnings, sw.Elapsed);
+            var skipped = targetList.Count - succeeded - failed;
+            var isSuccess = failed == 0 && errors.Count == 0;
+            var final = new BuildResult(isSuccess, errors, warnings, sw.Elapsed);
 
-            if (final.IsSuccess)
-                _eventBus.Publish(new BuildSucceededEvent { WarningCount = warnings.Count, Duration = sw.Elapsed });
+            if (isSuccess)
+                _eventBus.Publish(new BuildSucceededEvent
+                {
+                    WarningCount   = warnings.Count,
+                    Duration       = sw.Elapsed,
+                    StartedAt      = startedAt,
+                    SucceededCount = succeeded,
+                    FailedCount    = failed,
+                    SkippedCount   = skipped,
+                });
             else
-                _eventBus.Publish(new BuildFailedEvent { ErrorCount = errors.Count, Warnings = warnings.Count, Duration = sw.Elapsed });
+                _eventBus.Publish(new BuildFailedEvent
+                {
+                    ErrorCount     = errors.Count,
+                    Warnings       = warnings.Count,
+                    Duration       = sw.Elapsed,
+                    StartedAt      = startedAt,
+                    SucceededCount = succeeded,
+                    FailedCount    = failed,
+                    SkippedCount   = skipped,
+                });
 
             return final;
         }
@@ -172,7 +225,16 @@ public sealed class BuildSystem : IBuildSystem
                 Message: $"Build engine error: {ex.GetType().Name}: {ex.Message}",
                 Severity: DiagnosticSeverity.Error));
             _eventBus.Publish(new BuildOutputLineEvent { Line = $"  BUILD002: {ex}" });
-            _eventBus.Publish(new BuildFailedEvent { ErrorCount = 1, Warnings = 0, Duration = sw.Elapsed });
+            _eventBus.Publish(new BuildFailedEvent
+            {
+                ErrorCount     = 1,
+                Warnings       = 0,
+                Duration       = sw.Elapsed,
+                StartedAt      = startedAt,
+                SucceededCount = succeeded,
+                FailedCount    = failed + 1,
+                SkippedCount   = targetList.Count - succeeded - failed - 1,
+            });
             return new BuildResult(false, errors, warnings, sw.Elapsed);
         }
         finally
@@ -181,12 +243,134 @@ public sealed class BuildSystem : IBuildSystem
         }
     }
 
+    /// <summary>
+    /// Builds a VS <c>.sln</c> file as a single unit so MSBuild handles
+    /// dependency ordering and project-level skipping (same as VS).
+    /// Per-project counts are derived from the error diagnostics.
+    /// </summary>
+    private async Task<BuildResult> RunVsSolutionBuildAsync(string slnPath, CancellationToken ct)
+    {
+        var startedAt  = DateTime.Now;
+        var config     = _configurationManager.ActiveConfiguration;
+        var totalProjs = _solutionManager.CurrentSolution?.Projects.Count ?? 0;
+        var sw         = System.Diagnostics.Stopwatch.StartNew();
+        var linkedCts  = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        _activeCts = linkedCts;
+
+        _eventBus.Publish(new BuildStartedEvent { StartedAt = startedAt });
+
+        try
+        {
+            var adapter = FindAdapter(slnPath);
+            if (adapter is null)
+            {
+                sw.Stop();
+                var noAdapterErr = new BuildDiagnostic(slnPath, null, null, "BUILD001",
+                    $"No build adapter found for '{System.IO.Path.GetFileName(slnPath)}'.",
+                    DiagnosticSeverity.Error);
+                _eventBus.Publish(new BuildFailedEvent
+                {
+                    ErrorCount = 1, Duration = sw.Elapsed, StartedAt = startedAt,
+                    FailedCount = totalProjs, SkippedCount = 0,
+                });
+                return new BuildResult(false, [noAdapterErr], [], sw.Elapsed);
+            }
+
+            var progress = new Progress<string>(line =>
+                _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
+
+            var result = await adapter.BuildAsync(slnPath, config, progress, linkedCts.Token);
+            sw.Stop();
+
+            // Derive per-project counts from the parsed diagnostics.
+            // MSBuild embeds the project path in each diagnostic line — count distinct projects.
+            var failedProjs = result.Errors
+                .Where(e => e.ProjectName is not null)
+                .Select(e => e.ProjectName!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Count();
+
+            // If the build failed but no diagnostics matched the regex, assume 1 failed.
+            if (!result.IsSuccess && failedProjs == 0)
+                failedProjs = 1;
+
+            var succeededProjs = result.IsSuccess ? totalProjs : Math.Max(0, totalProjs - failedProjs);
+            var skippedProjs   = Math.Max(0, totalProjs - succeededProjs - failedProjs);
+
+            var final = new BuildResult(result.IsSuccess, result.Errors, result.Warnings, sw.Elapsed);
+
+            if (result.IsSuccess)
+                _eventBus.Publish(new BuildSucceededEvent
+                {
+                    WarningCount   = result.Warnings.Count,
+                    Duration       = sw.Elapsed,
+                    StartedAt      = startedAt,
+                    SucceededCount = succeededProjs,
+                    FailedCount    = 0,
+                    SkippedCount   = 0,
+                });
+            else
+                _eventBus.Publish(new BuildFailedEvent
+                {
+                    ErrorCount     = result.Errors.Count,
+                    Warnings       = result.Warnings.Count,
+                    Duration       = sw.Elapsed,
+                    StartedAt      = startedAt,
+                    SucceededCount = succeededProjs,
+                    FailedCount    = failedProjs,
+                    SkippedCount   = skippedProjs,
+                });
+
+            return final;
+        }
+        catch (OperationCanceledException)
+        {
+            sw.Stop();
+            _eventBus.Publish(new BuildCancelledEvent());
+            return new BuildResult(false, [], [], sw.Elapsed);
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            var err = new BuildDiagnostic(null, null, null, "BUILD002",
+                $"Build engine error: {ex.GetType().Name}: {ex.Message}",
+                DiagnosticSeverity.Error);
+            _eventBus.Publish(new BuildOutputLineEvent { Line = $"  BUILD002: {ex}" });
+            _eventBus.Publish(new BuildFailedEvent
+            {
+                ErrorCount = 1, Duration = sw.Elapsed, StartedAt = startedAt,
+                FailedCount = 1, SkippedCount = Math.Max(0, totalProjs - 1),
+            });
+            return new BuildResult(false, [err], [], sw.Elapsed);
+        }
+        finally
+        {
+            _activeCts = null;
+        }
+    }
+
+    /// <summary>
+    /// Returns the <c>.sln</c> file path if the current solution is a VS solution,
+    /// otherwise <see langword="null"/> (falls back to per-project builds).
+    /// </summary>
+    private string? GetVsSolutionFilePath()
+    {
+        var path = _solutionManager.CurrentSolution?.FilePath;
+        return path is not null
+            && Path.GetExtension(path).Equals(".sln", StringComparison.OrdinalIgnoreCase)
+            ? path
+            : null;
+    }
+
     private async Task CleanAsync(
-        string path, IBuildConfiguration config, CancellationToken ct)
+        string             path,
+        IBuildConfiguration config,
+        IProgress<string>? progress,
+        CancellationToken  ct)
     {
         var adapter = FindAdapter(path);
         if (adapter is null) return;
-        await adapter.CleanAsync(path, config, ct);
+        await adapter.CleanAsync(path, config, progress, ct);
     }
 
     private IBuildAdapter? FindAdapter(string filePath)

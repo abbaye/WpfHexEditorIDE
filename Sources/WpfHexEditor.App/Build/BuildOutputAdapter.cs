@@ -58,12 +58,20 @@ internal sealed class BuildOutputAdapter : IDisposable
         => _output.Write("Build", e.Line);
 
     private void OnBuildSucceeded(BuildSucceededEvent e)
-        => _output.Write("Build",
-            $"========== Build succeeded — {e.WarningCount} warning(s)  {e.Duration.TotalSeconds:F1}s ==========");
+    {
+        _output.Write("Build",
+            $"========== Build: {e.SucceededCount} succeeded, {e.FailedCount} failed, {e.SkippedCount} skipped ==========");
+        _output.Write("Build",
+            $"========== Build finished at {e.StartedAt:HH:mm} and took {e.Duration.TotalSeconds:F3} seconds ==========");
+    }
 
     private void OnBuildFailed(BuildFailedEvent e)
-        => _output.Write("Build",
-            $"========== Build FAILED — {e.ErrorCount} error(s), {e.Warnings} warning(s)  {e.Duration.TotalSeconds:F1}s ==========");
+    {
+        _output.Write("Build",
+            $"========== Build: {e.SucceededCount} succeeded, {e.FailedCount} failed, {e.SkippedCount} skipped ==========");
+        _output.Write("Build",
+            $"========== Build finished at {e.StartedAt:HH:mm} and took {e.Duration.TotalSeconds:F3} seconds ==========");
+    }
 
     private void OnBuildCancelled(BuildCancelledEvent e)
         => _output.Write("Build", "========== Build cancelled ==========");

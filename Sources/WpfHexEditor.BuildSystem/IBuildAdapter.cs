@@ -42,5 +42,6 @@ public interface IBuildAdapter
     Task CleanAsync(
         string              projectFilePath,
         IBuildConfiguration configuration,
+        IProgress<string>?  outputProgress,
         CancellationToken   ct = default);
 }

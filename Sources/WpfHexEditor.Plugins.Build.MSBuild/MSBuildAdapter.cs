@@ -5,32 +5,36 @@
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-16
 // Description:
-//     IBuildAdapter implementation that compiles .csproj / .vbproj
-//     projects using Microsoft.Build via MSBuildLocator.
-//     A NuGet restore step is executed before every build if the
-//     project assets file is missing (first build or after clean).
+//     IBuildAdapter implementation that compiles .csproj / .vbproj / .fsproj
+//     projects by spawning "dotnet build" as an external process.
+//     This avoids in-process MSBuild assembly loading issues entirely —
+//     the same approach used by VS Code and dotnet CLI tooling.
 //
 // Architecture Notes:
-//     Pattern: Adapter — bridges IBuildAdapter to Microsoft.Build API.
-//     MSBuild host must be registered ONCE per AppDomain (RegisterOnce).
-//     Build is executed out-of-process safe: Microsoft.Build.Locator
-//     discovers the MSBuild installation at runtime.
+//     Pattern: Adapter — bridges IBuildAdapter to the dotnet CLI.
+//     Diagnostics are parsed from the compiler's structured output
+//     (MSBuild format: "file(line,col): severity code: message [project]").
+//     Real-time output is forwarded line-by-line via IProgress<string>.
 // ==========================================================
 
-using Microsoft.Build.Execution;
-using Microsoft.Build.Locator;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using WpfHexEditor.BuildSystem;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Plugins.Build.MSBuild;
 
 /// <summary>
-/// <see cref="IBuildAdapter"/> that invokes MSBuild to compile VS project files.
+/// <see cref="IBuildAdapter"/> that invokes <c>dotnet build</c> / <c>dotnet clean</c>
+/// to compile Visual Studio project files.
 /// </summary>
 public sealed class MSBuildAdapter : IBuildAdapter
 {
-    private static readonly object _initLock   = new();
-    private static          bool   _registered;
+    // MSBuild structured diagnostic pattern:
+    // path(line,col): severity code: message [project]
+    private static readonly Regex _diagnosticPattern = new(
+        @"^(?<file>[^(]+)\((?<line>\d+),(?<col>\d+)\):\s*(?<sev>error|warning)\s+(?<code>\S+):\s*(?<msg>.+?)(?:\s+\[(?<proj>[^\]]+)\])?$",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     // -----------------------------------------------------------------------
     // IBuildAdapter
@@ -41,8 +45,8 @@ public sealed class MSBuildAdapter : IBuildAdapter
     /// <inheritdoc />
     public bool CanBuild(string projectFilePath)
     {
-        var ext = System.IO.Path.GetExtension(projectFilePath).ToLowerInvariant();
-        return ext is ".csproj" or ".vbproj" or ".fsproj";
+        var ext = Path.GetExtension(projectFilePath).ToLowerInvariant();
+        return ext is ".csproj" or ".vbproj" or ".fsproj" or ".sln";
     }
 
     /// <inheritdoc />
@@ -51,82 +55,152 @@ public sealed class MSBuildAdapter : IBuildAdapter
         IBuildConfiguration configuration,
         IProgress<string>?  outputProgress,
         CancellationToken   ct = default)
-    {
-        EnsureRegistered();
-
-        await NuGetRestoreStep.RestoreIfNeededAsync(projectFilePath, outputProgress, ct);
-
-        return await Task.Run(() => InvokeMSBuild(projectFilePath, configuration, outputProgress, "Build"), ct);
-    }
+        => await RunDotnetAsync(projectFilePath, configuration, outputProgress, clean: false, ct);
 
     /// <inheritdoc />
     public async Task CleanAsync(
         string              projectFilePath,
         IBuildConfiguration configuration,
+        IProgress<string>?  outputProgress,
         CancellationToken   ct = default)
+        => await RunDotnetAsync(projectFilePath, configuration, outputProgress, clean: true, ct);
+
+    // -----------------------------------------------------------------------
+    // dotnet CLI invocation
+    // -----------------------------------------------------------------------
+
+    private static async Task<Editor.Core.BuildResult> RunDotnetAsync(
+        string              projectFilePath,
+        IBuildConfiguration configuration,
+        IProgress<string>?  progress,
+        bool                clean,
+        CancellationToken   ct)
     {
-        EnsureRegistered();
-        await Task.Run(() => InvokeMSBuild(projectFilePath, configuration, null, "Clean"), ct);
+        var isSolution = Path.GetExtension(projectFilePath).Equals(".sln", StringComparison.OrdinalIgnoreCase);
+        var platform   = isSolution
+            ? NormalizePlatformForSolution(configuration.Platform)
+            : NormalizePlatform(configuration.Platform);
+
+        var errors   = new List<BuildDiagnostic>();
+        var warnings = new List<BuildDiagnostic>();
+        var sw       = Stopwatch.StartNew();
+
+        // Use ArgumentList (net5+) for correct quoting — avoids the trailing-backslash
+        // bug where a path ending in '\' (e.g. "bin\Debug\net8.0\") mis-escapes the
+        // closing quote when embedded in a manually-built Arguments string.
+        var psi = new ProcessStartInfo("dotnet")
+        {
+            WorkingDirectory       = Path.GetDirectoryName(projectFilePath)!,
+            RedirectStandardOutput = true,
+            RedirectStandardError  = true,
+            UseShellExecute        = false,
+            CreateNoWindow         = true,
+        };
+
+        psi.ArgumentList.Add(clean ? "clean" : "build");
+        psi.ArgumentList.Add(projectFilePath);
+        psi.ArgumentList.Add("-c");
+        psi.ArgumentList.Add(configuration.Name);
+
+        if (!clean)
+        {
+            psi.ArgumentList.Add($"-p:Platform={platform}");
+
+            if (!string.IsNullOrWhiteSpace(configuration.OutputPath))
+                psi.ArgumentList.Add($"-p:OutputPath={configuration.OutputPath}");
+
+            if (configuration.Optimize)
+                psi.ArgumentList.Add("-p:Optimize=true");
+
+            if (!string.IsNullOrWhiteSpace(configuration.DefineConstants))
+            {
+                // Semicolons in DefineConstants (e.g. "DEBUG;TRACE") are interpreted as
+                // argument separators by the dotnet CLI. Percent-encode them so MSBuild
+                // receives the full value as a single property.
+                var encoded = configuration.DefineConstants.Replace(";", "%3B");
+                psi.ArgumentList.Add($"-p:DefineConstants={encoded}");
+            }
+        }
+
+        using var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
+
+        process.OutputDataReceived += (_, e) =>
+        {
+            if (e.Data is null) return;
+            progress?.Report(e.Data);
+            ParseDiagnostic(e.Data, errors, warnings);
+        };
+
+        process.ErrorDataReceived += (_, e) =>
+        {
+            if (e.Data is null) return;
+            progress?.Report(e.Data);
+        };
+
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+
+        await process.WaitForExitAsync(ct).ConfigureAwait(false);
+
+        sw.Stop();
+        var success = process.ExitCode == 0;
+        return new Editor.Core.BuildResult(success, errors, warnings, sw.Elapsed);
     }
 
     // -----------------------------------------------------------------------
-    // MSBuild invocation
+    // Diagnostic parser
     // -----------------------------------------------------------------------
 
-    private static Editor.Core.BuildResult InvokeMSBuild(
-        string              projectFilePath,
-        IBuildConfiguration configuration,
-        IProgress<string>?  outputProgress,
-        string              target)
+    /// <summary>
+    /// Parses a single MSBuild output line and appends to
+    /// <paramref name="errors"/> or <paramref name="warnings"/> if it matches
+    /// the structured diagnostic format.
+    /// </summary>
+    private static void ParseDiagnostic(
+        string                  line,
+        List<BuildDiagnostic>   errors,
+        List<BuildDiagnostic>   warnings)
     {
-        var logger = new MSBuildLogger(outputProgress);
+        var m = _diagnosticPattern.Match(line.Trim());
+        if (!m.Success) return;
 
-        var globalProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["Configuration"]  = configuration.Name,
-            ["Platform"]       = NormalizePlatform(configuration.Platform),
-            ["OutputPath"]     = configuration.OutputPath,
-            ["Optimize"]       = configuration.Optimize ? "true" : "false",
-            ["DefineConstants"] = configuration.DefineConstants,
-        };
+        var severity = m.Groups["sev"].Value.Equals("error", StringComparison.OrdinalIgnoreCase)
+            ? DiagnosticSeverity.Error
+            : DiagnosticSeverity.Warning;
 
-        var buildParameters = new BuildParameters
-        {
-            Loggers = [logger],
-        };
+        _ = int.TryParse(m.Groups["line"].Value, out var lineNum);
+        _ = int.TryParse(m.Groups["col"].Value,  out var colNum);
 
-        var buildRequest = new BuildRequestData(
-            projectFilePath,
-            globalProperties,
-            toolsVersion: null,
-            targetsToBuild: [target],
-            hostServices: null);
+        var diag = new BuildDiagnostic(
+            FilePath:    m.Groups["file"].Value.Trim(),
+            Line:        lineNum > 0 ? lineNum : null,
+            Column:      colNum  > 0 ? colNum  : null,
+            Code:        m.Groups["code"].Value,
+            Message:     m.Groups["msg"].Value.Trim(),
+            Severity:    severity,
+            ProjectName: m.Groups["proj"].Success ? m.Groups["proj"].Value : null);
 
-        var sw     = System.Diagnostics.Stopwatch.StartNew();
-        var result = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
-        sw.Stop();
-
-        var success = result.OverallResult == BuildResultCode.Success;
-        return new Editor.Core.BuildResult(success, logger.Errors, logger.Warnings, sw.Elapsed);
+        if (severity == DiagnosticSeverity.Error)
+            errors.Add(diag);
+        else
+            warnings.Add(diag);
     }
 
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
 
-    private static void EnsureRegistered()
-    {
-        lock (_initLock)
-        {
-            if (_registered) return;
-            MSBuildLocator.RegisterDefaults();
-            _registered = true;
-        }
-    }
-
     /// <summary>
-    /// MSBuild expects "AnyCPU" but the UI may display "Any CPU" (with space).
+    /// For <c>.csproj</c>/<c>.vbproj</c>/<c>.fsproj</c>: MSBuild expects "AnyCPU" (no space).
     /// </summary>
     private static string NormalizePlatform(string platform)
         => platform.Replace(" ", string.Empty);
+
+    /// <summary>
+    /// For <c>.sln</c> files: MSBuild solution metaprojects require "Any CPU" (with space).
+    /// The reverse of <see cref="NormalizePlatform"/>.
+    /// </summary>
+    private static string NormalizePlatformForSolution(string platform)
+        => platform.Equals("AnyCPU", StringComparison.OrdinalIgnoreCase) ? "Any CPU" : platform;
 }

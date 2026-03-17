@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.5.0-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.5.2-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -97,7 +97,7 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 |--------|--------|----------|-------------|
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ✅ Active | ~75% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL, status bar contributor |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~70% | Multi-language code editor — full `.whlang` syntax highlighting, URL hover/click, foreground base pass, find/replace, `IEditorPersistable`, split view; hosts decompiled C# from Assembly Explorer |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~80% | Multi-language code editor — VS-like navigation bar (types/members combos, Segoe MDL2 icons, caret tracking), full `.whlang` syntax highlighting, URL hover/click, find/replace, `IEditorPersistable`, split view; hosts decompiled C# from Assembly Explorer |
 | **[Text Editor](Sources/WpfHexEditor.Editor.TextEditor/README.md)** | ✅ Active | ~50% | Text editing with 26 embedded language definitions, auto-detection by extension, encoding support |
 | **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ✅ Active | ~45% | `.hxscript` editor with syntax highlighting, run-in-terminal integration, `HxScriptEngine` backend |
 | **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | 🔧 Active | ~30% | Binary image viewer — zoom/pan, transform pipeline (rotate/flip/crop/resize), `FileShare.ReadWrite` for concurrent open |
@@ -370,10 +370,10 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 | **Extension Points** — `IFileAnalyzerExtension`, `IHexViewOverlayExtension`, typed contributor contracts | ✅ Done v0.4.0 | — |
 | **Plugin Dependency Graph** — versioned constraints, topological load order, cascading unload/reload | ✅ Done v0.4.0 | — |
 | **VS `.sln` / `.csproj` support + MSBuild build** — open VS solutions, build/rebuild/clean with Output Panel routing | ✅ Done v0.5.0 | #101–103 |
-| **Code Editor — syntax highlighting, URL hover, source outline, split view** | ✅ Done v0.5.0 | #84 |
+| **Code Editor — syntax highlighting, URL hover, source outline, split view, navigation bar** | ✅ Done v0.5.2 | #84 |
 | **Build Output Channel** — auto-focus, severity coloring, empty-solution guard | ✅ Done v0.5.0 | — |
 | **Source Outline Navigation** — lazy type/member tree in Solution Explorer for `.cs`/`.xaml` | ✅ Done v0.5.0 | — |
-| **Assembly Explorer — decompile to C#, Extract to Project, Collapse/Close All** | 🔧 In Progress ~35% | #104–106 |
+| **Assembly Explorer — ILSpy backend, VB.NET, CFG, Diff, Search, XRef** | 🔧 In Progress ~55% | #104–106 |
 | **Document Model** — unified in-memory document representation | 🔧 In Progress ~10% | #107 |
 | **Integrated Terminal** — full multi-shell + macro | 🔧 In Progress ~70% | #92 |
 | **.NET Decompilation via ILSpy** — full C# skeleton + IL view | 🔜 Planned | #106 |

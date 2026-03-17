@@ -6,6 +6,67 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.5.2] — 2026-03-16 — Code Editor Navigation Bar, Assembly Explorer Expansion & Build Refactoring
+
+### ✨ Added — Code Editor: VS-Like Navigation Bar
+
+- **Navigation bar** — VS-style dual-combo toolbar at the top of the Code Editor: left combo lists all types (class/interface/struct/enum/delegate), right combo lists all members (methods, properties, fields, events, constructors, indexers)
+- **CaretMoved event** — `ICodeEditor.CaretMoved` raised on every line/column change; nav-bar combos auto-select the matching type and member as the caret moves
+- **Auto-scroll** — clicking a combo item scrolls the editor to the corresponding declaration line
+- **Segoe MDL2 Assets icons** — each member kind uses a Segoe MDL2 glyph matching the IDE Solution Explorer palette (method `\uE8A0`, property `\uE74C`, field `\uE894`, event `\uE7C3`, constructor/indexer `\uE8D5`)
+- **`_camelCase` name support** — member name parser strips leading underscores before matching, so `_field` is correctly classified as a private field node in the nav-bar
+
+### ✨ Added — Themes: Code Editor Selection Token
+
+- **`CE_SelectionInactive`** brush token added to all 8 built-in themes — used by the Code Editor to distinguish inactive (unfocused window) text selections from active ones
+
+### ✨ Added — Options: MouseWheelSpeed
+
+- **`MouseWheelSpeed` DP / enum selector** — new Hex Editor Display option (`System`, `Slow`, `Normal`, `Fast`, `VeryFast`); defaults to `System` (matches OS wheel delta); controls smooth-scroll velocity in the Code Editor and HexEditor
+
+### ✨ Added — Assembly Explorer: Major Expansion
+
+- **ILSpy decompiler backend** — `IlSpyDecompilerBackend` wraps the ILSpy engine; `DecompilerService` selects between `SkeletonDecompilerBackend` (BCL-only) and ILSpy backend via `DecompilerOptions.UseIlSpy`
+- **VB.NET decompilation language** — `VbNetDecompilationLanguage` added to the decompiler language registry; surface in the detail pane language selector
+- **Decompile cache** — `DecompileCache` prevents redundant decompilation of unchanged assemblies; keyed by `(filePath, tokenHandle, language)`
+- **Assembly Diff panel** — `AssemblyDiffPanel` + `AssemblyDiffViewModel`: compare two loaded assemblies side-by-side; highlights added/removed/changed members with color coding
+- **Assembly Search panel** — `AssemblySearchPanel` + `AssemblySearchViewModel`: full-text search across all loaded assembly members with type/kind filter and instant results list
+- **Source View panel** — `SourceViewModel` + read-only source tab in `AssemblyDetailPane`
+- **CFG Canvas** — `CfgCanvas` custom control + `CfgViewModel`: control-flow graph rendering for a selected method (nodes = basic blocks, edges = jumps/branches); opens in a dedicated tab
+- **XRef View** — `XRefViewModel`: shows all cross-references to a selected member (callers/implementors); listed in the detail pane XRef tab
+- **Assembly Workspace entry** — `AssemblyWorkspaceEntry` serialization; loaded assemblies are persisted in the workspace and restored on next session open
+- **Options page** — `AssemblyExplorerOptions` + `AssemblyExplorerOptionsPage.xaml`: decompiler backend selector (Skeleton/ILSpy), VB.NET toggle, cache size, pinning behavior
+- **Decompiler contracts** — `IDecompilerBackend` + `DecompilerOptions` extracted to allow swappable backends without changing the plugin API
+
+### ✨ Added — NuGet Support in Project System
+
+- **NuGet V3 client** — `NuGetV3Client` + `INuGetClient`: queries `nuget.org/v3` for package search, version listing, and dependency resolution
+- **NuGet DTOs** — `NuGetDtos` models for API responses
+- **`CsprojPackageWriter`** — writes `<PackageReference>` entries to `.csproj` files programmatically
+- **`NuGetPackageViewModel`** — display model for the NuGet package browser panel
+
+### ✨ Added — Workspace Templates
+
+- **`WpfHexEditor.WorkspaceTemplates`** project — `TemplateManager`, `ProjectScaffolder`, `IProjectTemplate`; 3 built-in JSON templates (`blank`, `sdk-plugin`, `text-analysis`)
+- **Initializers** — `IntelliSenseInitializer`, `LanguageInitializer`, `OptionsInitializer`, `PluginInitializer`; each wires one aspect of a new workspace on scaffold
+- **`NewProjectDialog`** — XAML dialog + `NewProjectDialogViewModel` for creating projects from templates
+
+### 🔧 Fixed / Refactored — Build System
+
+- **`MSBuildAdapter`** — surface engine errors from the MSBuild evaluation step; async fire-and-forget replaced with proper `await`; copy MSBuild Locator DLL to plugin output directory during build
+- **`BuildSystem`** / **`IBuildAdapter`** refactored — clean separation between adapter contract and engine; `MSBuildLogger.cs` and `NuGetRestoreStep.cs` removed (responsibilities folded into adapter and core engine)
+- **`BuildOutputAdapter`** / **`OutputServiceImpl`** — build output now correctly classified (info/warn/error/success) before routing to the Build channel
+
+### 🔧 Fixed — Code Editor Scrolling & UX
+
+- **Smooth scrolling** — disabled by default; opt-in via options; prevents unintended inertia during precision editing
+- **Mouse-click offset** — corrected hit-test calculation when pixel-based smooth scroll is active (caret no longer lands one line off)
+- **Gutter update guard** — gutter repaint skipped when editor content hasn't changed, reducing flicker during rapid scrolling
+- **Scrollbar cursor** — `Arrow` cursor explicitly set on scrollbar tracks to override the inherited `IBeam` from the editor host
+- **Split toggle** — split-view toggle button moved clear of the vertical scrollbar track
+
+---
+
 ## [0.5.1] — 2026-03-16 — Source Outline Patch
 
 ### 🔧 Fixed
@@ -97,59 +158,22 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ## What's Next
 
-> Planned features — subject to change. Feature numbers map to DevPlans.
+> Full roadmap → **[ROADMAP.md](ROADMAP.md)**
 
-### Solution Explorer — Source Outline
-- **Expand-state persistence** — remember which type nodes were expanded per file across sessions (user preference, opt-in)
-- **Collapse All Outline** — toolbar button to collapse all type nodes inside an expanded file node back to the class-level view
-- **Go to Definition from outline click** — single-click on a member node opens the file and positions the caret at the member declaration; currently only navigates to line 1 for type nodes
-- **Outline refresh on save** — automatically re-parse and update the outline when a `.cs` / `.xaml` file is saved from within the IDE (currently only refreshes on external file change)
-- **Synalysis UFWB Grammar Support (#177)** — new plugin `WpfHexEditor.Plugins.SynalysisGrammar`; parses `.grammar` files and applies structured overlays to binary content in the Hex Editor; 10 embedded grammars (PNG, ZIP, PE, ELF, BMP, WAV, MP4, SQLite, EXT4, GZIP)
-
-### Plugin System — Remaining
-- **Hot-load / Hot-unload UI** — expose collectible `AssemblyLoadContext` hot-reload in the Plugin Manager UI (ALC mechanism complete; toolbar button + status indicator pending)
-- **#41 Plugin Marketplace** — online registry browse/install/update, signed packages (marketplace panel UI done; registry backend and package signing pending)
-- **#43 Auto-Update** — `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins
-- **gRPC transport migration** — replace named-pipe IPC with gRPC for sandbox plugins
-
-### Image Viewer — Remaining
-- Batch export, format conversion (PNG/JPEG/BMP/TIFF)
-- Histogram panel, color picker, EXIF metadata viewer
-
-### IDE Core Infrastructure
-- **#36 Service Container / Dependency Injection** — `ServiceContainer` singleton; `FileService`, `EditorService`, `PanelService`, `PluginService`, `EventBus`, `TerminalService` — Singleton/Scoped/Transient lifecycle
-- **#37 Global CommandBus** — all IDE actions (menus, toolbar, terminal, plugins) routed through `CommandBus`; every command has an Id, Handler, CanExecute context, and Category
-- **#38 Keyboard Shortcuts & Bindings** — `KeyBindingService`, configurable gestures per command, conflict detection, plugin-extensible, export/import
-- **#39 User Preferences Persistence** — `ConfigurationManager`, per-section schemas, plugin config API, export/import, cross-session persistence
-- **#40 Centralized Logging & Diagnostics** — `LogService` (Info/Warning/Error/Debug), `DiagnosticService` (perf metrics), `LogSink` abstraction, Output + Error Panel integration
-
-### Code Intelligence / Editor
-- **#85 LSP Engine** — incremental symbol parsing, folding, go-to-definition, find-references (`RefactoringEngine` registry in place; full LSP pipeline pending)
-- **#86 IntelliSense** — autocomplete, quick-info, signature help, multi-caret, virtual scroll for >1 GB files
-- **#88 Dynamic Snippets** — `SnippetsManager`, `SnippetEditorDialog`; user/plugin/language-scoped; dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); priority: user > imported > built-in
-- **#89 AI-Assisted Code Suggestions** — `AICompletionEngine`, `AIRefactoringAssistant`; contextual completions, auto-refactoring, plugin-extensible AI rules
-
-### Debugging & Testing
-- **#44 / #90 Integrated Debugger** — `DebuggerService` (StartDebug, StepInto/Over/Out, Evaluate), `BreakpointsManager`, `WatchPanel`, `CallStackPanel`; supports scripts, plugins and workspace multi-projects via EventBus
-- **#95 Unit Testing Panel** — `TestManager`, `TestRunner`, `TestResultPanel`; auto-detect NUnit/JUnit/PyTest; run by file/project/workspace; scaffolding from workspace templates
-
-### Source Control
-- **#91 Git Integration** — `GitManager`, `GitPanel` (commit/push/pull/branch); inline gutter diff; `GitEventAdapter` for file-change notifications; plugin hooks for pre-commit linters
-
-### Code Analysis & Refactoring
-- **#94 Advanced Refactoring** — `RefactoringManager`, `ASTAnalyzer`; rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions
-- **#96 Code Analysis & Metrics** — `CodeAnalysisManager`, `DependencyGraphEngine`, `MetricsCalculator`; cyclomatic complexity, code duplication, dependency graphs; dedicated panel with filter/sort
-
-### Performance
-- **#97 Large File Optimization** — `VirtualizationEngine`, `LazyParser`, `MultiThreadedIntelliSenseAdapter`; virtualized display for >1 GB files, incremental parsing, multi-core IntelliSense, workspace memory management
-
-### Collaboration & UX
-- **#98 Multi-User Collaboration** — `CollaborationManager`, `DocumentSyncEngine`; multi-cursor real-time editing, contextual chat/comments per line, EventBus integration
-- **#99 Advanced UI/UX** — `NotificationManager`, `WorkspaceLayoutAdapter`; contextual inline notifications, layout persistence per workspace, full docking for all panels
-- **#100 Internationalization / Localization** — `LocalizationManager`, `TranslationLoader`; EN/FR initial, plugin-provided translations, dynamic switching per workspace
-
-### MSBuild Remaining
-- **#103 MSBuild API Integration** — incremental build targets, full embedded MSBuild API, errors and warnings surfaced in Error Panel with file/line navigation (build output routing done in v0.5.0; targets API and Error Panel integration pending)
+| Priority | Feature | Issue |
+|----------|---------|-------|
+| 🔥 High | **LSP Engine** — go-to-definition, find-references, incremental symbol parsing | #85 |
+| 🔥 High | **IntelliSense** — autocomplete, signature help, quick-info | #86 |
+| 🔥 High | **Assembly Explorer** — ILSpy full decompilation, hex sync, metadata token navigation | #106 |
+| 🔥 High | **MSBuild** — error list navigation with file/line jump, incremental builds | #103 |
+| 🔥 High | **Synalysis Grammar Support** — `.grammar` file parser + 10 embedded grammars | #177 |
+| ⚡ Next | **Git Integration** — commit/push/pull/branch, inline gutter diff | #91 |
+| ⚡ Next | **Plugin Marketplace** — online registry, signed packages, auto-update | #41–43 |
+| ⚡ Next | **Integrated Debugger** — breakpoints, watch, call stack | #44 |
+| ⚡ Next | **Service Container / DI** — unified IDE service registry | #36 |
+| 📋 Planned | **Command Palette** (Ctrl+Shift+P) — fuzzy search across all IDE commands | #133 |
+| 📋 Planned | **IDE Localization Engine** — full i18n, EN/FR initial | #100 |
+| 📋 Planned | **Installable Package** — MSI / MSIX / WinGet | #109 |
 
 ---
 

@@ -348,7 +348,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
                 MethodCount = methodCount
             });
 
-            _output.Info(
+            _output.Write("Plugin System",
                 $"[Assembly Explorer] Loaded '{model.Name}'" +
                 $" ({typeCount} types, {methodCount} methods) in {sw.ElapsedMilliseconds}ms");
         }
@@ -359,7 +359,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             StatusText = $"Error: {ex.Message}";
-            _output.Error($"[Assembly Explorer] Failed to analyze '{filePath}': {ex.Message}");
+            _output.Write("Plugin System", $"[Assembly Explorer] Failed to analyze '{filePath}': {ex.Message}");
         }
         finally
         {
@@ -455,7 +455,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             // Don't crash the IDE for a decompile failure; detail pane already shows error text.
-            _output.Warning($"[Assembly Explorer] Decompile error for '{node.DisplayName}': {ex.Message}");
+            _output.Write("Plugin System", $"[Assembly Explorer] Decompile error for '{node.DisplayName}': {ex.Message}");
         }
     }
 
@@ -668,7 +668,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         if (!_hexEditor.IsActive)
         {
             if (force)
-                _output.Warning("[Assembly Explorer] Open the assembly in the HexEditor first.");
+                _output.Write("Plugin System", "[Assembly Explorer] Open the assembly in the HexEditor first.");
             return;
         }
 
@@ -679,7 +679,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             && !string.IsNullOrEmpty(assemblyFile)
             && !string.Equals(hexFile, assemblyFile, StringComparison.OrdinalIgnoreCase))
         {
-            _output.Warning(
+            _output.Write("Plugin System",
                 $"[Assembly Explorer] HexEditor has '{Path.GetFileName(hexFile)}' open, " +
                 $"but the explorer loaded '{Path.GetFileName(assemblyFile)}'. " +
                 $"Navigating anyway — offsets may not match.");
@@ -688,7 +688,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         try { _hexEditor.NavigateTo(node.PeOffset); }
         catch (Exception ex)
         {
-            _output.Warning($"[Assembly Explorer] HexEditor navigation failed: {ex.Message}");
+            _output.Write("Plugin System", $"[Assembly Explorer] HexEditor navigation failed: {ex.Message}");
         }
     }
 
@@ -708,7 +708,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
         try   { _documentHost?.ActivateAndNavigateTo(filePath, line, column: 1); }
         catch (Exception ex)
-        { _output.Warning($"[Assembly Explorer] Failed to open source '{Path.GetFileName(filePath)}': {ex.Message}"); }
+        { _output.Write("Plugin System", $"[Assembly Explorer] Failed to open source '{Path.GetFileName(filePath)}': {ex.Message}"); }
     }
 
     /// <summary>Opens the assembly file in the hex editor at offset 0 — no member navigation.</summary>
@@ -717,7 +717,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         if (string.IsNullOrEmpty(filePath)) return;
         try   { _documentHost?.OpenDocument(filePath, preferredEditorId: "hex-editor"); }
         catch (Exception ex)
-        { _output.Warning($"[Assembly Explorer] Failed to open '{Path.GetFileName(filePath)}': {ex.Message}"); }
+        { _output.Write("Plugin System", $"[Assembly Explorer] Failed to open '{Path.GetFileName(filePath)}': {ex.Message}"); }
     }
 
     // ── Phase 2: Deep Hex Editor Integration ──────────────────────────────────
@@ -761,14 +761,14 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
                 _hexEditor.AddCustomBackgroundBlock(block);
             }
 
-            _output.Info(
+            _output.Write("Plugin System",
                 $"[Assembly Explorer] Navigated hex editor to '{node.DisplayName}'" +
                 $" offset 0x{node.PeOffset:X}" +
                 (node.ByteLength > 0 ? $" ({node.ByteLength} bytes)" : string.Empty));
         }
         catch (Exception ex)
         {
-            _output.Warning($"[Assembly Explorer] Hex editor navigation failed: {ex.Message}");
+            _output.Write("Plugin System", $"[Assembly Explorer] Hex editor navigation failed: {ex.Message}");
         }
 
         await Task.CompletedTask;
@@ -832,7 +832,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
         if (_uiRegistry.Exists(uiId))
         {
-            _output.Info($"[Assembly Explorer] '{node.DisplayName}' is already open in the editor.");
+            _output.Write("Plugin System", $"[Assembly Explorer] '{node.DisplayName}' is already open in the editor.");
             return;
         }
 
@@ -1025,7 +1025,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         RaiseWorkspaceStatsChanged();
 
         if (!silent)
-            _output.Info($"[Assembly Explorer] Closed '{entry.Model.Name}'");
+            _output.Write("Plugin System", $"[Assembly Explorer] Closed '{entry.Model.Name}'");
 
         // Fire AssemblyCleared only when workspace becomes fully empty.
         if (_workspace.Count == 0)
@@ -1073,7 +1073,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     public void ReportInfo(string message)
     {
         StatusText = message;
-        _output.Info($"[Assembly Explorer] {message}");
+        _output.Write("Plugin System", $"[Assembly Explorer] {message}");
     }
 
     /// <summary>
