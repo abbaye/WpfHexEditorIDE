@@ -53,6 +53,19 @@ public static class CodeStructureParser
         @"^\s*(?:(?:public|private|protected|internal)\s+)*delegate\s+[\w<>\[\],\s\?]+\s+([\w]+)\s*\(",
         RegexOptions.Compiled);
 
+    // [modifiers] event EventType[<T>] EventName  (semicolon or { follows elsewhere)
+    private static readonly Regex s_event = new(
+        @"^\s*(?:(?:public|private|protected|internal|static|virtual|override|abstract|sealed|new)\s+)*" +
+        @"event\s+[\w<>\[\],\?\s]+\s+([\w]+)\s*[;{]?",
+        RegexOptions.Compiled);
+
+    // [modifiers] [readonly|const|volatile] Type fieldName ; or = (requires ≥1 access/storage modifier)
+    // Parenthesis absent ensures it is not a method.  No { or => ensures it is not a property.
+    private static readonly Regex s_field = new(
+        @"^\s*(?:(?:public|private|protected|internal|static|readonly|const|volatile|new)\s+)+" +
+        @"[\w<>\[\],\?\s]+\s+([\w_]+)\s*(?:;|=[^>=])",
+        RegexOptions.Compiled);
+
     // Lines to ignore (avoid false positives)
     private static readonly Regex s_skipLine = new(
         @"^\s*(?://|/\*|\*|#|using\s|var\s|return\s|if\s*\(|else|for\s*\(|foreach|while|switch|catch|finally|throw|new\s)",
@@ -120,6 +133,19 @@ public static class CodeStructureParser
                 continue;
             }
 
+            // ── Event (test before property/field — 'event' keyword is unambiguous) ──
+            m = s_event.Match(text);
+            if (m.Success)
+            {
+                string name = m.Groups[1].Value;
+                if (IsValidMemberName(name))
+                    members.Add(new NavigationBarItem(
+                        NavigationItemKind.Member, name,
+                        QualifiedName(currentType, name),
+                        i, MemberKind: MemberKind.Event));
+                continue;
+            }
+
             // ── Property (must test before method — no '(' on line) ───────
             m = s_property.Match(text);
             if (m.Success && !text.Contains('('))
@@ -147,6 +173,22 @@ public static class CodeStructureParser
                         NavigationItemKind.Member, name,
                         QualifiedName(currentType, name),
                         i, MemberKind: mk));
+                }
+                continue;
+            }
+
+            // ── Field (last — most permissive pattern, no '(' and no '{'/'=>') ──
+            if (!text.Contains('(') && !text.Contains('{') && !text.Contains("=>"))
+            {
+                m = s_field.Match(text);
+                if (m.Success)
+                {
+                    string name = m.Groups[1].Value;
+                    if (IsValidMemberName(name))
+                        members.Add(new NavigationBarItem(
+                            NavigationItemKind.Member, name,
+                            QualifiedName(currentType, name),
+                            i, MemberKind: MemberKind.Field));
                 }
             }
         }
@@ -188,5 +230,6 @@ public static class CodeStructureParser
     };
 
     private static bool IsValidMemberName(string name)
-        => name.Length > 1 && !s_reserved.Contains(name) && char.IsUpper(name[0]);
+        => name.Length > 1 && !s_reserved.Contains(name)
+           && (char.IsUpper(name[0]) || name[0] == '_');  // allow _camelCase private fields
 }
