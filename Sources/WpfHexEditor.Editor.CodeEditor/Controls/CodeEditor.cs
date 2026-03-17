@@ -243,9 +243,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #region Fields - Word Highlight
 
-        private readonly List<TextPosition> _wordHighlights    = new();
-        private string                      _wordHighlightWord = string.Empty;
-        private int                         _wordHighlightLen  = 0;
+        private readonly List<TextPosition> _wordHighlights           = new();
+        private string                      _wordHighlightWord        = string.Empty;
+        private int                         _wordHighlightLen         = 0;
+        private int                         _wordHighlightTrackedLine = -1; // last cursor line seen in OnRender
+        private int                         _wordHighlightTrackedCol  = -1; // last cursor column seen in OnRender
         private System.Windows.Threading.DispatcherTimer? _wordHighlightTimer;
         private CodeScrollMarkerPanel?      _codeScrollMarkerPanel;
 
@@ -1887,7 +1889,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _cursorColumn  = textPos.Column;
                 InvalidateVisual();
                 NotifyCaretMovedIfChanged();
-                ScheduleWordHighlightUpdate();
             }
         }
 
@@ -2639,10 +2640,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void EnsureCursorVisible()
         {
-            // Schedule word highlight before any early return so it fires regardless of
-            // whether virtual scrolling is active.
-            ScheduleWordHighlightUpdate();
-
             if (_virtualizationEngine == null || !EnableVirtualScrolling)
                 return;
 
@@ -2886,6 +2883,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (_document == null || _document.Lines.Count == 0)
                 return;
+
+            // Cursor-change detection: covers every code path that moves the caret
+            // (mouse click, keyboard, undo/redo, NavigateToLine, etc.) without requiring
+            // a ScheduleWordHighlightUpdate() call at each individual site.
+            if (_cursorLine != _wordHighlightTrackedLine || _cursorColumn != _wordHighlightTrackedCol)
+            {
+                _wordHighlightTrackedLine = _cursorLine;
+                _wordHighlightTrackedCol  = _cursorColumn;
+                ScheduleWordHighlightUpdate();
+            }
+
 
             bool hasVBar = _vScrollBar?.Visibility == Visibility.Visible;
             bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
