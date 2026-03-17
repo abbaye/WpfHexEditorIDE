@@ -45,7 +45,7 @@ public sealed class HexEditorDefaultSettings
     public bool AllowZoom { get; set; } = true;
 
     /// <summary>Mouse-wheel scroll speed.</summary>
-    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.Normal;
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
 
     /// <summary>Allow files to be opened by dragging them onto the editor.</summary>
     public bool AllowFileDrop { get; set; } = true;

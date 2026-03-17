@@ -224,7 +224,7 @@ public sealed class CodeEditorDefaultSettings
     /// Lines scrolled per mouse-wheel notch.
     /// Maps to <c>CodeEditor.MouseWheelSpeed</c> — same enum and behaviour as HexEditor.
     /// </summary>
-    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.Normal;
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
 
     // -- Changeset (.whchg) -----------------------------------------------
 
@@ -293,7 +293,7 @@ public sealed class TextEditorDefaultSettings
     /// Lines scrolled per mouse-wheel notch.
     /// Maps to <c>TextViewport.MouseWheelSpeed</c> — same enum and behaviour as HexEditor.
     /// </summary>
-    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.Normal;
+    public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
 
     // -- Changeset (.whchg) -----------------------------------------------
 

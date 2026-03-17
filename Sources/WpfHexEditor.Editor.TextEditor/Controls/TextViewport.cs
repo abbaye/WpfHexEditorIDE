@@ -1133,7 +1133,7 @@ internal sealed class TextViewport : FrameworkElement
             nameof(MouseWheelSpeed),
             typeof(MouseWheelSpeed),
             typeof(TextViewport),
-            new FrameworkPropertyMetadata(MouseWheelSpeed.Normal));
+            new FrameworkPropertyMetadata(MouseWheelSpeed.System));
 
     /// <summary>Gets or sets the lines-per-notch scroll speed.</summary>
     public MouseWheelSpeed MouseWheelSpeed
