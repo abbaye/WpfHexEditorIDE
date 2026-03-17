@@ -23,7 +23,6 @@ using System.Windows.Input;
 using WpfHexEditor.App.Build;
 using WpfHexEditor.BuildSystem;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.Panels.IDE.Panels;
 
 namespace WpfHexEditor.App;
 
@@ -161,19 +160,9 @@ public partial class MainWindow
             Key.F5, ModifierKeys.Control);
         InputBindings.Add(runGesture);
 
-        // Wire SolutionExplorer VS build context-menu events.
-        if (_solutionExplorerPanel is not null)
-        {
-            _solutionExplorerPanel.BuildProjectRequested       += (_, id) => _ = RunBuildProjectByIdAsync(id);
-            _solutionExplorerPanel.RebuildProjectRequested     += (_, id) => _ = RunRebuildProjectByIdAsync(id);
-            _solutionExplorerPanel.CleanProjectRequested       += (_, id) => _ = RunCleanProjectByIdAsync(id);
-            _solutionExplorerPanel.SetStartupProjectRequested  += (_, id) =>
-            {
-                SetStartupProject(id);
-                OnPropertyChanged(nameof(ActiveStartupProjectName));
-                OnPropertyChanged(nameof(CanRunStartupProject));
-            };
-        }
+        // Note: SolutionExplorer build events (Build/Rebuild/Clean/SetStartupProject)
+        // are wired in CreateSolutionExplorerPanel() (MainWindow.xaml.cs) because the
+        // panel is lazily created after InitializeBuildSystem() runs.
     }
 
     // -----------------------------------------------------------------------

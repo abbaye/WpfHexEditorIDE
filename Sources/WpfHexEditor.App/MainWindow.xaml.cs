@@ -1187,6 +1187,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.ClipboardPasteRequested          += OnSEClipboardPaste;
         panel.SourceLineNavigationRequested    += OnSESourceLineNavigationRequested;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
+        // Build context-menu events (guards handle the case where build system isn't ready yet)
+        panel.BuildProjectRequested       += (_, id) => { if (_buildSystem is not null) _ = RunBuildProjectByIdAsync(id); };
+        panel.RebuildProjectRequested     += (_, id) => { if (_buildSystem is not null) _ = RunRebuildProjectByIdAsync(id); };
+        panel.CleanProjectRequested       += (_, id) => { if (_buildSystem is not null) _ = RunCleanProjectByIdAsync(id); };
+        panel.SetStartupProjectRequested  += (_, id) =>
+        {
+            SetStartupProject(id);
+            OnPropertyChanged(nameof(ActiveStartupProjectName));
+            OnPropertyChanged(nameof(CanRunStartupProject));
+        };
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
         // Sync current solution if already loaded
