@@ -30,11 +30,24 @@ public sealed record NavigationBarItem(
     TypeKind           TypeKind   = TypeKind.Unknown,
     MemberKind         MemberKind = MemberKind.Unknown)
 {
-    // ── Icon glyph ────────────────────────────────────────────────────────────
-    // VS2022 style: small filled square (■ U+25A0) for types and members;
-    // colour alone differentiates the kind, exactly as in the Solution Explorer.
-    // Namespace uses "{}" to stay visually distinct in the leftmost combo.
-    public string IconGlyph => Kind == NavigationItemKind.Namespace ? "{}" : "\u25A0";
+    // ── Icon glyph — Segoe MDL2 Assets codepoints matching the IDE Solution Explorer ──
+    public string IconGlyph => (Kind, TypeKind, MemberKind) switch
+    {
+        (NavigationItemKind.Namespace, _, _)                    => "\uE8B7", // Folder
+        (NavigationItemKind.Type, TypeKind.Class, _)            => "\uE943", // Class
+        (NavigationItemKind.Type, TypeKind.Interface, _)        => "\uE8C1", // Interface
+        (NavigationItemKind.Type, TypeKind.Struct, _)           => "\uE8A0", // Struct
+        (NavigationItemKind.Type, TypeKind.Enum, _)             => "\uE945", // Enum
+        (NavigationItemKind.Type, TypeKind.Record, _)           => "\uE943", // Record (same as Class)
+        (NavigationItemKind.Type, TypeKind.Delegate, _)         => "\uE8F4", // Delegate (same as Method)
+        (NavigationItemKind.Member, _, MemberKind.Method)       => "\uE8F4", // Method
+        (NavigationItemKind.Member, _, MemberKind.Constructor)  => "\uE8F4", // Constructor (same as Method)
+        (NavigationItemKind.Member, _, MemberKind.Property)     => "\uE8EC", // Property
+        (NavigationItemKind.Member, _, MemberKind.Indexer)      => "\uE8EC", // Indexer (same as Property)
+        (NavigationItemKind.Member, _, MemberKind.Field)        => "\uE8D2", // Field
+        (NavigationItemKind.Member, _, MemberKind.Event)        => "\uE7FC", // Event
+        _                                                       => "\uE8A5", // Fallback
+    };
 
     // ── Icon colour — VS2022 member palette (same as AssemblyExplorer) ────────
     public Brush IconBrush => MakeBrush((Kind, TypeKind, MemberKind) switch
