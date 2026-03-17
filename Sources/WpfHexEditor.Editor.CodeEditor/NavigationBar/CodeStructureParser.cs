@@ -66,10 +66,11 @@ public static class CodeStructureParser
         @"[\w<>\[\],\?\s]+\s+([\w_]+)\s*(?:;|=[^>=])",
         RegexOptions.Compiled);
 
-    // Enum value: bare PascalCase identifier optionally followed by = literal and/or comma.
-    // Only tested when currentTypeKind == TypeKind.Enum to avoid false positives elsewhere.
+    // Enum value: PascalCase identifier, optional = expression (may include |, spaces, hex),
+    // optional trailing comma.  Safe to be permissive here because this branch is only
+    // entered when currentTypeKind == TypeKind.Enum.
     private static readonly Regex s_enumValue = new(
-        @"^\s*([A-Z]\w*)\s*(?:=\s*[^\s,]+)?\s*,?\s*$",
+        @"^\s*([A-Z]\w*)\s*(?:=\s*.+?)?\s*,?\s*$",
         RegexOptions.Compiled);
 
     // Lines to ignore (avoid false positives)
@@ -97,7 +98,15 @@ public static class CodeStructureParser
         {
             string text = lines[i].Text;
             if (string.IsNullOrWhiteSpace(text)) continue;
-            if (s_skipLine.IsMatch(text))         continue;
+
+            // Closing brace exits the current type scope (best-effort; handles enum body close).
+            if (text.TrimStart() == "}")
+            {
+                currentTypeKind = TypeKind.Unknown;
+                continue;
+            }
+
+            if (s_skipLine.IsMatch(text)) continue;
 
             // ── Namespace ─────────────────────────────────────────────────
             var m = s_namespace.Match(text);
