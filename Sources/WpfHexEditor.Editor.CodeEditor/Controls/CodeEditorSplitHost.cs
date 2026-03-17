@@ -28,6 +28,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
+using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Languages;
 
@@ -42,11 +43,13 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 {
     #region Child controls
 
-    private readonly CodeEditor    _primaryEditor;
-    private readonly CodeEditor    _secondaryEditor;
-    private readonly GridSplitter  _splitter;
-    private readonly ToggleButton  _splitToggle;
+    private readonly CodeEditor              _primaryEditor;
+    private readonly CodeEditor              _secondaryEditor;
+    private readonly GridSplitter            _splitter;
+    private readonly ToggleButton            _splitToggle;
+    private readonly CodeEditorNavigationBar _navBar;
 
+    private readonly RowDefinition _navBarRow;
     private readonly RowDefinition _primaryRow;
     private readonly RowDefinition _splitterRow;
     private readonly RowDefinition _secondaryRow;
@@ -61,38 +64,42 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
     public CodeEditorSplitHost()
     {
         // -- Row layout ------------------------------------------------------
+        // Row 0 = navigation bar (fixed 22 px)
+        // Row 1 = primary editor  (star)
+        // Row 2 = GridSplitter    (auto, hidden when not split)
+        // Row 3 = secondary editor (0 → star when split)
+        _navBarRow    = new RowDefinition { Height = new GridLength(22) };
         _primaryRow   = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
         _splitterRow  = new RowDefinition { Height = GridLength.Auto };
-        _secondaryRow = new RowDefinition { Height = new GridLength(0) };  // collapsed initially
+        _secondaryRow = new RowDefinition { Height = new GridLength(0) };
 
+        RowDefinitions.Add(_navBarRow);
         RowDefinitions.Add(_primaryRow);
         RowDefinitions.Add(_splitterRow);
         RowDefinitions.Add(_secondaryRow);
 
         // -- Primary editor --------------------------------------------------
         _primaryEditor = new CodeEditor();
-        SetRow(_primaryEditor, 0);
+        SetRow(_primaryEditor, 1);
         Children.Add(_primaryEditor);
 
         // -- Splitter (hidden while not split) -------------------------------
         _splitter = new GridSplitter
         {
-            Height            = 4,
+            Height              = 4,
             HorizontalAlignment = HorizontalAlignment.Stretch,
-            Visibility        = Visibility.Collapsed,
-            Background        = SystemColors.ControlDarkBrush
+            Visibility          = Visibility.Collapsed,
+            Background          = SystemColors.ControlDarkBrush,
         };
-        SetRow(_splitter, 1);
+        SetRow(_splitter, 2);
         Children.Add(_splitter);
 
         // -- Secondary editor (shares the same document) ---------------------
         _secondaryEditor = new CodeEditor();
-        SetRow(_secondaryEditor, 2);
+        SetRow(_secondaryEditor, 3);
         Children.Add(_secondaryEditor);
 
-        // -- Split toggle button (top-right overlay on primary editor) --------
-        // Styled flat/borderless like VS2022 — transparent background, subtle
-        // hover highlight using theme brushes, no 3-D default WPF button look.
+        // -- Split toggle (flat VS2022-style) --------------------------------
         _splitToggle = new ToggleButton
         {
             Content             = "\uE8A5",  // Segoe MDL2 "SplitView" glyph
@@ -101,20 +108,20 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
             Width               = 16,
             Height              = 16,
             Padding             = new Thickness(0),
-            VerticalAlignment   = VerticalAlignment.Top,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            // Right margin = CodeEditor.ScrollBarThickness (14 px) so the button sits
-            // immediately to the left of the vertical scrollbar track and does not
-            // compete with it for the same screen pixels, regardless of Z-order.
-            Margin              = new Thickness(0, 2, 14, 0),
             ToolTip             = "Split Editor",
             Style               = BuildFlatToggleButtonStyle(),
         };
-        Panel.SetZIndex(_splitToggle, 99);
-        SetRow(_splitToggle, 0);
         _splitToggle.Checked   += OnSplitToggleChecked;
         _splitToggle.Unchecked += OnSplitToggleUnchecked;
-        Children.Add(_splitToggle);
+        // Note: _splitToggle is NOT added to this Grid directly; it is handed
+        // to the navigation bar which places it in its rightmost column.
+
+        // -- Navigation bar (Row 0) ------------------------------------------
+        _navBar = new CodeEditorNavigationBar();
+        _navBar.AddSplitToggle(_splitToggle);
+        _navBar.Attach(_primaryEditor);
+        SetRow(_navBar, 0);
+        Children.Add(_navBar);
 
         // -- Initialise active editor and wire focus tracking -----------------
         _activeEditor = _primaryEditor;

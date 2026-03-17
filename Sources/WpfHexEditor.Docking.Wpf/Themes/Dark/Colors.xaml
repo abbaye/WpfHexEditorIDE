@@ -302,6 +302,8 @@
     <SolidColorBrush x:Key="CE_Background"    Color="#1E1E1E"/>
     <SolidColorBrush x:Key="CE_Foreground"    Color="#D4D4D4"/>
     <SolidColorBrush x:Key="CE_LineNumBg"     Color="#252526"/>
+    <SolidColorBrush x:Key="CE_NavBarBg"     Color="#252526"/>
+    <SolidColorBrush x:Key="CE_NavBarBorder" Color="#3A3A3C"/>
     <SolidColorBrush x:Key="CE_LineNumFg"     Color="#6E7681"/>
     <SolidColorBrush x:Key="CE_CurrentLine"   Color="#282828"/>
     <SolidColorBrush x:Key="CE_Selection"         Color="#264F78"/>

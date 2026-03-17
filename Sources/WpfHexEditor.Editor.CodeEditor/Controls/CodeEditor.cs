@@ -47,6 +47,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int _cursorLine = 0;        // Current cursor line (0-based)
         private int _cursorColumn = 0;      // Current cursor column (0-based)
         private TextSelection _selection;   // Current text selection
+        private int _lastNotifiedCursorLine = -1; // Tracks last CaretMoved notification line
 
         #endregion
 
@@ -1735,11 +1736,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 : (int)MouseWheelSpeed;
             double maxDelta   = speedLines * _lineHeight;
 
+            // Guarantee at least 1 line per tick then accelerate up to maxDelta over 80 px
+            // of overshoot. The previous proportional formula (overshoot/height * max) produced
+            // near-zero deltas when the mouse was just barely outside the viewport.
             double delta = 0;
             if (mouseY < 0)
-                delta = Math.Max(-maxDelta, mouseY / ActualHeight * maxDelta);
+            {
+                double lines = Math.Clamp(1.0 + (-mouseY) / 80.0, 1.0, speedLines);
+                delta = -lines * _lineHeight;
+            }
             else if (mouseY > ActualHeight)
-                delta = Math.Min(maxDelta, (mouseY - ActualHeight) / ActualHeight * maxDelta);
+            {
+                double lines = Math.Clamp(1.0 + (mouseY - ActualHeight) / 80.0, 1.0, speedLines);
+                delta = lines * _lineHeight;
+            }
 
             if (delta != 0)
                 ScrollVertical(delta);
@@ -2439,6 +2449,27 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             EnsureCursorColumnVisible();
+
+            // Notify subscribers (e.g. navigation bar) that the caret line may have changed.
+            if (_cursorLine != _lastNotifiedCursorLine)
+            {
+                _lastNotifiedCursorLine = _cursorLine;
+                CaretMoved?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Scrolls to <paramref name="line"/> and places the caret at column 0.
+        /// Used by the navigation bar ComboBox selection.
+        /// </summary>
+        public void NavigateToLine(int line)
+        {
+            if (_document == null || line < 0 || line >= _document.Lines.Count) return;
+            _cursorLine   = line;
+            _cursorColumn = 0;
+            _selection.Clear();
+            EnsureCursorVisible();
+            InvalidateVisual();
         }
 
         #endregion
@@ -5269,6 +5300,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         // -- Events --------------------------------------------------------
+
+        /// <summary>Current caret line (0-based). Updated after every cursor movement.</summary>
+        public int CursorLine => _cursorLine;
+
+        /// <summary>Fired when the caret moves to a different line (debounced to line-level changes).</summary>
+        public event EventHandler? CaretMoved;
 
         public event EventHandler? ModifiedChanged;
         public event EventHandler? CanUndoChanged;
