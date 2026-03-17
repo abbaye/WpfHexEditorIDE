@@ -1728,12 +1728,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double mouseY = _lastMousePosition.Y;
 
-            // Scroll speed scales with how far outside the edge the mouse is.
+            // Scroll speed uses the same MouseWheelSpeed DP as the wheel handler so
+            // the auto-scroll rate is consistent with the user's wheel preference.
+            int    speedLines = MouseWheelSpeed == MouseWheelSpeed.System
+                ? SystemParameters.WheelScrollLines
+                : (int)MouseWheelSpeed;
+            double maxDelta   = speedLines * _lineHeight;
+
             double delta = 0;
             if (mouseY < 0)
-                delta = Math.Max(-6 * _lineHeight, mouseY / ActualHeight * 4 * _lineHeight);
+                delta = Math.Max(-maxDelta, mouseY / ActualHeight * maxDelta);
             else if (mouseY > ActualHeight)
-                delta = Math.Min(6 * _lineHeight, (mouseY - ActualHeight) / ActualHeight * 4 * _lineHeight);
+                delta = Math.Min(maxDelta, (mouseY - ActualHeight) / ActualHeight * maxDelta);
 
             if (delta != 0)
                 ScrollVertical(delta);
