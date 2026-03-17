@@ -161,6 +161,20 @@ public sealed class BuildSystem : IBuildSystem
             _eventBus.Publish(new BuildCancelledEvent());
             return new BuildResult(false, errors, warnings, sw.Elapsed);
         }
+        catch (Exception ex)
+        {
+            // Surface unexpected adapter / infrastructure failures so they appear in the
+            // Output panel instead of being silently swallowed by the caller's fire-and-forget.
+            sw.Stop();
+            errors.Add(new BuildDiagnostic(
+                FilePath: null, Line: null, Column: null,
+                Code: "BUILD002",
+                Message: $"Build engine error: {ex.GetType().Name}: {ex.Message}",
+                Severity: DiagnosticSeverity.Error));
+            _eventBus.Publish(new BuildOutputLineEvent { Line = $"  BUILD002: {ex}" });
+            _eventBus.Publish(new BuildFailedEvent { ErrorCount = 1, Warnings = 0, Duration = sw.Elapsed });
+            return new BuildResult(false, errors, warnings, sw.Elapsed);
+        }
         finally
         {
             _activeCts = null;

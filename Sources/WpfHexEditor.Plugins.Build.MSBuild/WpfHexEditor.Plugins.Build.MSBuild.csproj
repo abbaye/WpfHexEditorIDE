@@ -51,8 +51,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- PrivateAssets=all prevents System.Text.Json 10 from leaking transitively to the App. -->
-    <PackageReference Include="Microsoft.Build.Locator" Version="1.11.2"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <!-- Microsoft.Build.Locator must be physically present in the plugin directory so the
+         CLR can resolve it when the plugin is loaded in an isolated AssemblyLoadContext.
+         No PrivateAssets here: the DLL must be copied to the output directory and then
+         to the plugins deployment folder by CopyToPluginsDir.
+         Microsoft.Build.* are compile-only references; MSBuildLocator loads them from the
+         installed SDK at runtime, so their runtime assets are excluded. -->
+    <PackageReference Include="Microsoft.Build.Locator"        Version="1.11.2" />
     <PackageReference Include="Microsoft.Build"                Version="18.4.0" ExcludeAssets="runtime"><PrivateAssets>all</PrivateAssets></PackageReference>
     <PackageReference Include="Microsoft.Build.Framework"      Version="18.4.0" ExcludeAssets="runtime"><PrivateAssets>all</PrivateAssets></PackageReference>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="18.4.0" ExcludeAssets="runtime"><PrivateAssets>all</PrivateAssets></PackageReference>
@@ -65,7 +70,11 @@
       <PluginDestDir>$(MSBuildThisFileDirectory)..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+    <!-- Copy the plugin DLL + manifest, plus Microsoft.Build.Locator.dll which the
+         MSBuildAdapter needs at runtime (loaded from the plugin's isolated directory). -->
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;
+                       $(OutputPath)manifest.json;
+                       $(OutputPath)Microsoft.Build.Locator.dll"
           DestinationFolder="$(PluginDestDir)"
           SkipUnchangedFiles="true" />
   </Target>

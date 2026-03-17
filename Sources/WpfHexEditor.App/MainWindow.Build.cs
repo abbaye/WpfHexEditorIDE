@@ -117,7 +117,7 @@ public partial class MainWindow
 
         // Register Ctrl+Shift+B keyboard shortcut.
         var buildGesture = new KeyBinding(
-            new RelayCommand(_ => _ = RunBuildSolutionAsync()),
+            new RelayCommand(async _ => await RunBuildSolutionAsync()),
             Key.B, ModifierKeys.Control | ModifierKeys.Shift);
         InputBindings.Add(buildGesture);
 
@@ -135,12 +135,12 @@ public partial class MainWindow
     // Click handlers (bound in MainWindow.xaml)
     // -----------------------------------------------------------------------
 
-    private void OnBuildSolution  (object sender, RoutedEventArgs e) => _ = RunBuildSolutionAsync();
-    private void OnBuildProject   (object sender, RoutedEventArgs e) => _ = RunBuildProjectAsync();
-    private void OnRebuildSolution(object sender, RoutedEventArgs e) => _ = RunRebuildSolutionAsync();
-    private void OnRebuildProject (object sender, RoutedEventArgs e) => _ = RunRebuildProjectAsync();
-    private void OnCleanSolution  (object sender, RoutedEventArgs e) => _ = RunCleanSolutionAsync();
-    private void OnCleanProject   (object sender, RoutedEventArgs e) => _ = RunCleanProjectAsync();
+    private async void OnBuildSolution  (object sender, RoutedEventArgs e) => await RunBuildSolutionAsync();
+    private async void OnBuildProject   (object sender, RoutedEventArgs e) => await RunBuildProjectAsync();
+    private async void OnRebuildSolution(object sender, RoutedEventArgs e) => await RunRebuildSolutionAsync();
+    private async void OnRebuildProject (object sender, RoutedEventArgs e) => await RunRebuildProjectAsync();
+    private async void OnCleanSolution  (object sender, RoutedEventArgs e) => await RunCleanSolutionAsync();
+    private async void OnCleanProject   (object sender, RoutedEventArgs e) => await RunCleanProjectAsync();
     private void OnCancelBuild    (object sender, RoutedEventArgs e) => _buildSystem?.CancelBuild();
 
     private void OnOpenConfigManager(object sender, RoutedEventArgs e)
