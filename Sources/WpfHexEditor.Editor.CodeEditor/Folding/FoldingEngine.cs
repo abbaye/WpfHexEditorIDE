@@ -114,4 +114,26 @@ public sealed class FoldingEngine
                 return true;
         return false;
     }
+
+    /// <summary>
+    /// Collapses all regions. Fires <see cref="RegionsChanged"/> once if any changed.
+    /// </summary>
+    public void CollapseAll()
+    {
+        bool any = false;
+        foreach (var r in _regions)
+            if (!r.IsCollapsed) { r.IsCollapsed = true; any = true; }
+        if (any) RegionsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Expands all regions. Fires <see cref="RegionsChanged"/> once if any changed.
+    /// </summary>
+    public void ExpandAll()
+    {
+        bool any = false;
+        foreach (var r in _regions)
+            if (r.IsCollapsed) { r.IsCollapsed = false; any = true; }
+        if (any) RegionsChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

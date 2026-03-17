@@ -35,7 +35,8 @@ public sealed class CommandIntegration : IDisposable
     private readonly RefactoringEngine    _refactoringEngine;
     private readonly CodeFormatter        _codeFormatter;
     private readonly SymbolTableManager   _symbolTableManager;
-    private bool _attached;
+    private bool        _attached;
+    private IDisposable? _subscription;
 
     public CommandIntegration(
         IIDEEventBus        eventBus,
@@ -59,7 +60,7 @@ public sealed class CommandIntegration : IDisposable
     public void Attach()
     {
         if (_attached) return;
-        _eventBus.Subscribe<LspCommandRequestedEvent>(OnCommandRequested);
+        _subscription = _eventBus.Subscribe<LspCommandRequestedEvent>(OnCommandRequested);
         _attached = true;
     }
 
@@ -67,7 +68,8 @@ public sealed class CommandIntegration : IDisposable
     public void Detach()
     {
         if (!_attached) return;
-        _eventBus.Unsubscribe<LspCommandRequestedEvent>(OnCommandRequested);
+        _subscription?.Dispose();
+        _subscription = null;
         _attached = false;
     }
 
@@ -128,15 +130,21 @@ public sealed class CommandIntegration : IDisposable
         if (e.ParseResult is null || string.IsNullOrWhiteSpace(e.SymbolName)
             || string.IsNullOrWhiteSpace(e.NewName)) return;
 
-        var ctx   = new RefactoringContext(e.FilePath, e.ParseResult, e.Line, e.Column, null);
-        var edits = new RenameRefactoring(_symbolTableManager, e.SymbolName, e.NewName).Apply(ctx);
-        _eventBus.Publish(new LspTextEditsResultEvent(e.FilePath, edits));
+        var ctx = new RefactoringContext
+        {
+            FilePath           = e.FilePath,
+            ParseResult        = e.ParseResult,
+            SymbolTableManager = _symbolTableManager,
+        };
+        var refactoring = new RenameRefactoring { NewName = e.NewName ?? string.Empty };
+        var edits = refactoring.Apply(ctx);
+        _eventBus.Publish(new LspRenameEditsResultEvent(e.FilePath, edits));
     }
 
     private void DispatchFormatDocument(LspCommandRequestedEvent e)
     {
         if (e.DocumentText is null) return;
-        var edits = _codeFormatter.FormatDocument(e.DocumentText, e.FormattingOptions ?? new FormattingOptions());
+        var edits = _codeFormatter.FormatDocument(e.FilePath, e.DocumentText, e.FormattingOptions ?? new FormattingOptions());
         _eventBus.Publish(new LspTextEditsResultEvent(e.FilePath, edits));
     }
 
@@ -144,7 +152,7 @@ public sealed class CommandIntegration : IDisposable
     {
         if (e.DocumentText is null) return;
         var edits = _codeFormatter.FormatRange(
-            e.DocumentText, e.StartLine, e.EndLine,
+            e.FilePath, e.DocumentText, e.StartLine, e.EndLine,
             e.FormattingOptions ?? new FormattingOptions());
         _eventBus.Publish(new LspTextEditsResultEvent(e.FilePath, edits));
     }
@@ -187,7 +195,12 @@ public sealed record LspNavigationResultEvent(string FilePath, int Line, int Col
 public sealed record LspFindReferencesResultEvent(
     IReadOnlyList<Navigation.NavigationLocation> Locations) : IDEEventBase;
 
-/// <summary>Published when a Rename or Format operation produces text edits.</summary>
+/// <summary>Published when a Format operation produces text edits (line/column ranges).</summary>
 public sealed record LspTextEditsResultEvent(
     string FilePath,
     IReadOnlyList<Formatting.TextEdit> Edits) : IDEEventBase;
+
+/// <summary>Published when a Rename operation produces offset-based text edits.</summary>
+public sealed record LspRenameEditsResultEvent(
+    string FilePath,
+    IReadOnlyList<Refactoring.TextEdit> Edits) : IDEEventBase;

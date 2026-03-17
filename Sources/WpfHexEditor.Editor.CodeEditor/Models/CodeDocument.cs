@@ -27,6 +27,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         private string _filePath;
         private int _indentSize = 2; // Default 2 spaces for JSON
 
+        // Batch update support (P1-CE-04) — suppresses per-item CollectionChanged during bulk load
+        private bool _suppressCollectionNotifications;
+
+        // Dirty-line tracking (P1-CE-07) — enables incremental validation
+        private readonly HashSet<int> _dirtyLines = new();
+
+        /// <summary>
+        /// Lines that have changed since the last validation pass.
+        /// Cleared by <see cref="ClearDirtyLines"/>; populated by all text-change operations.
+        /// </summary>
+        public IReadOnlySet<int> DirtyLines => _dirtyLines;
+
         #region Properties
 
         /// <summary>
@@ -449,17 +461,27 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
             var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
-            Lines.Clear();
-
-            for (int i = 0; i < lines.Length; i++)
+            // Suppress per-item CollectionChanged events during bulk load (P1-CE-04)
+            _suppressCollectionNotifications = true;
+            try
             {
-                Lines.Add(new CodeLine(lines[i], i));
+                Lines.Clear();
+                for (int i = 0; i < lines.Length; i++)
+                    Lines.Add(new CodeLine(lines[i], i));
+
+                if (Lines.Count == 0)
+                    Lines.Add(new CodeLine(string.Empty, 0));
+            }
+            finally
+            {
+                _suppressCollectionNotifications = false;
             }
 
-            // Ensure at least one line
-            if (Lines.Count == 0)
-                Lines.Add(new CodeLine(string.Empty, 0));
+            // Fire single batch notification instead of N individual notifications
+            OnPropertyChanged(nameof(TotalLines));
+            OnPropertyChanged(nameof(TotalCharacters));
 
+            _dirtyLines.Clear(); // fresh load — no dirty lines
             IsModified = false;
             InvalidateAllCache();
         }
@@ -534,9 +556,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         private void Lines_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // Suppressed during bulk load (P1-CE-04) — single notification fired at end of batch
+            if (_suppressCollectionNotifications) return;
             OnPropertyChanged(nameof(TotalLines));
             OnPropertyChanged(nameof(TotalCharacters));
         }
+
+        /// <summary>Clears the dirty-line set after validation has consumed it (P1-CE-07).</summary>
+        public void ClearDirtyLines() => _dirtyLines.Clear();
 
         #endregion
 
@@ -544,6 +571,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         protected virtual void OnTextChanged(TextChangedEventArgs e)
         {
+            // Track changed line for incremental validation (P1-CE-07)
+            _dirtyLines.Add(e.Position.Line);
             TextChanged?.Invoke(this, e);
         }
 
@@ -584,8 +613,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
             foreach (var line in linesToEvict)
             {
-                line.TokensCache = null;
-                line.IsCacheDirty = true;
+                line.TokensCache       = null;
+                line.IsCacheDirty      = true;
+                line.GlyphRunCache     = null;   // P1-CE-05: evict GlyphRun cache together
+                line.IsGlyphCacheDirty = true;
+                line.CachedUrlZones    = null;
             }
         }
 

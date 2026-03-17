@@ -56,11 +56,17 @@ internal sealed class TextViewport : FrameworkElement
     private Typeface? _typeface;
     private double _emSize;
     private double _cachedFontSize = -1;
+    private double _cachedZoom     = -1; // P2-01: tracks last zoom applied to font metrics
     private Typeface? _cachedTypeface;
     private DpiScale _dpi;
 
     // Mouse drag selection
     private bool _isDragging;
+
+    // 60 Hz throttle for drag selection redraws (P1-TE-02)
+    private long _lastDragRenderTick;
+    private static readonly long DragThrottleTicks
+        = (long)(System.Diagnostics.Stopwatch.Frequency / 60.0); // ~16.7 ms
 
     // Set to true while OnMouseMove updates the caret directly so that
     // OnVmPropertyChanged does not queue a redundant background render.
@@ -142,10 +148,14 @@ internal sealed class TextViewport : FrameworkElement
     public void Attach(TextEditorViewModel vm)
     {
         if (_vm is not null)
-            _vm.PropertyChanged -= OnVmPropertyChanged;
+        {
+            _vm.PropertyChanged    -= OnVmPropertyChanged;
+            _vm.HighlightsComputed -= OnHighlightsComputed;
+        }
 
         _vm = vm;
-        vm.PropertyChanged += OnVmPropertyChanged;
+        vm.PropertyChanged    += OnVmPropertyChanged;
+        vm.HighlightsComputed += OnHighlightsComputed;
         _lineRenderCache.Clear();
         InvalidateMeasure();
         InvalidateVisual(); // triggers OnRender → full render
@@ -155,7 +165,8 @@ internal sealed class TextViewport : FrameworkElement
     {
         if (_vm is not null)
         {
-            _vm.PropertyChanged -= OnVmPropertyChanged;
+            _vm.PropertyChanged    -= OnVmPropertyChanged;
+            _vm.HighlightsComputed -= OnHighlightsComputed;
             _vm = null;
         }
         _lineRenderCache.Clear();
@@ -191,8 +202,8 @@ internal sealed class TextViewport : FrameworkElement
     /// <summary>Total document height in device-independent units.</summary>
     public double TotalHeight => (_vm?.LineCount ?? 0) * LineHeight;
 
-    /// <summary>Estimated max line width (for horizontal scrollbar).</summary>
-    public double EstimatedMaxWidth => (_vm?.Lines.Max(l => l.Length) ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
+    /// <summary>Estimated max line width (for horizontal scrollbar). O(1) — reads ViewModel incremental cache.</summary>
+    public double EstimatedMaxWidth => (_vm?.MaxLineLength ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
 
     public double LineHeight            => _lineHeight > 0 ? _lineHeight : 18;
     public double CharWidth             => _charWidth  > 0 ? _charWidth  : 7.2;
@@ -569,6 +580,20 @@ internal sealed class TextViewport : FrameworkElement
         UpdateBackground();
         UpdateTextContent();
         DrawCursor();
+        // Schedule background highlighting for visible + buffer range (P1-TE-06)
+        _vm?.ScheduleHighlightAsync(_firstVisibleLine, _firstVisibleLine + _visibleLineCount);
+    }
+
+    /// <summary>
+    /// Called on the UI thread when the background highlight pipeline completes a range.
+    /// Invalidates the FormattedText cache for those lines so the next render picks up
+    /// the new highlight spans, then queues a full render at Background priority.
+    /// </summary>
+    private void OnHighlightsComputed(int firstLine, int lastLine)
+    {
+        for (int i = firstLine; i <= lastLine; i++)
+            _lineRenderCache.Remove(i);
+        QueueFullRender();
     }
 
     private void DoBackgroundRender()
@@ -608,6 +633,20 @@ internal sealed class TextViewport : FrameworkElement
 
         switch (e.Key)
         {
+            // -- Zoom shortcuts (P2-01) -----------------------------------
+            case Key.OemPlus  when ctrl:
+            case Key.Add      when ctrl:
+                ZoomLevel = Math.Round(ZoomLevel + 0.1, 1);
+                e.Handled = true; break;
+            case Key.OemMinus when ctrl:
+            case Key.Subtract when ctrl:
+                ZoomLevel = Math.Round(ZoomLevel - 0.1, 1);
+                e.Handled = true; break;
+            case Key.D0 when ctrl:
+            case Key.NumPad0 when ctrl:
+                ZoomLevel = 1.0;
+                e.Handled = true; break;
+
             // -- Clipboard / Edit shortcuts ------------------------------
             case Key.A when ctrl:
                 ViewportSelectAll();
@@ -809,6 +848,11 @@ internal sealed class TextViewport : FrameworkElement
 
         if (!_isDragging || _vm is null || e.LeftButton != MouseButtonState.Pressed) return;
 
+        // 60 Hz gate: skip if last drag-render was < 16.7 ms ago (P1-TE-02)
+        long now = System.Diagnostics.Stopwatch.GetTimestamp();
+        if (now - _lastDragRenderTick < DragThrottleTicks) return;
+        _lastDragRenderTick = now;
+
         // Set anchor on first movement after button-down
         if (!_vm.HasSelection)
         {
@@ -859,7 +903,18 @@ internal sealed class TextViewport : FrameworkElement
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
-        int delta = e.Delta / 40;
+
+        // Ctrl+Wheel → zoom (P2-01)
+        if (Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            double step = e.Delta > 0 ? 0.1 : -0.1;
+            ZoomLevel = Math.Round(ZoomLevel + step, 1);
+            e.Handled = true;
+            return;
+        }
+
+        // Scale the raw delta by ScrollSpeedMultiplier (default 1.0 = standard WPF speed).
+        int delta = (int)Math.Round((e.Delta / 40.0) * ScrollSpeedMultiplier);
         FirstVisibleLine = Math.Max(0, _firstVisibleLine - delta);
         e.Handled = true;
     }
@@ -872,18 +927,24 @@ internal sealed class TextViewport : FrameworkElement
     {
         var font = TryFindResource("TE_FontFamily") as FontFamily
                    ?? new FontFamily("Cascadia Code, Consolas, Courier New");
-        var size = TryFindResource("TE_FontSize") is double fs ? fs : DefaultFontSize;
+        var baseSize = TryFindResource("TE_FontSize") is double fs ? fs : DefaultFontSize;
+        var zoom     = ZoomLevel; // P2-01
 
-        if (_typeface is not null && _emSize == size &&
-            _cachedFontSize == size && Equals(_cachedTypeface, _typeface))
+        // Apply zoom to the effective em-size.
+        var size = baseSize * zoom;
+
+        if (_typeface is not null && _emSize == size
+            && _cachedFontSize == baseSize && _cachedZoom == zoom
+            && Equals(_cachedTypeface, _typeface))
             return;
 
         _typeface       = new Typeface(font, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
         _emSize         = size;
-        _cachedFontSize = size;
+        _cachedFontSize = baseSize;
+        _cachedZoom     = zoom;     // P2-01
         _cachedTypeface = _typeface;
         _brushCache.Clear();
-        _lineRenderCache.Clear(); // font changed — all cached FormattedText is stale
+        _lineRenderCache.Clear(); // font/zoom changed — all cached FormattedText is stale
 
         EnsureDpi();
 
@@ -1023,6 +1084,64 @@ internal sealed class TextViewport : FrameworkElement
     // -----------------------------------------------------------------------
     // Theme change detection
     // -----------------------------------------------------------------------
+
+    // ── Zoom ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Scales the displayed text (0.5 = 50 %, 1.0 = 100 %, 4.0 = 400 %).
+    /// <c>Ctrl+Wheel</c>, <c>Ctrl+=</c>, <c>Ctrl+-</c>, and <c>Ctrl+0</c> adjust this value.
+    /// Mirrors <c>CodeEditor.ZoomLevel</c> for API consistency.
+    /// </summary>
+    public static readonly DependencyProperty ZoomLevelProperty =
+        DependencyProperty.Register(
+            nameof(ZoomLevel),
+            typeof(double),
+            typeof(TextViewport),
+            new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.AffectsMeasure,
+                (d, _) =>
+                {
+                    var vp = (TextViewport)d;
+                    vp._lineRenderCache.Clear(); // zoom changes emSize → cached FormattedText is stale
+                    vp.QueueFullRender();
+                    vp.ZoomLevelChanged?.Invoke(vp, vp.ZoomLevel);
+                }));
+
+    /// <summary>Gets or sets the zoom level (0.5–4.0).</summary>
+    public double ZoomLevel
+    {
+        get => (double)GetValue(ZoomLevelProperty);
+        set => SetValue(ZoomLevelProperty, Math.Max(0.5, Math.Min(4.0, value)));
+    }
+
+    /// <summary>Raised when <see cref="ZoomLevel"/> changes (for status-bar display).</summary>
+    public event EventHandler<double>? ZoomLevelChanged;
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── MouseWheel scroll speed ──────────────────────────────────────────────
+
+    /// <summary>
+    /// Multiplier applied to each mouse-wheel scroll delta.
+    /// 1.0 = default WPF speed; 0.5 = half speed; 2.0 = double speed.
+    /// Mirrors <c>CodeEditor.ScrollSpeedMultiplier</c> for API consistency.
+    /// </summary>
+    public static readonly DependencyProperty ScrollSpeedMultiplierProperty =
+        DependencyProperty.Register(
+            nameof(ScrollSpeedMultiplier),
+            typeof(double),
+            typeof(TextViewport),
+            new FrameworkPropertyMetadata(1.0));
+
+    /// <summary>
+    /// Gets or sets the scroll-speed multiplier (0.5–3.0).
+    /// </summary>
+    public double ScrollSpeedMultiplier
+    {
+        get => (double)GetValue(ScrollSpeedMultiplierProperty);
+        set => SetValue(ScrollSpeedMultiplierProperty, Math.Max(0.5, Math.Min(3.0, value)));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     // Sentinel DependencyProperty bound to TE_Background via SetResourceReference.
     // When the application theme swaps MergedDictionaries, WPF re-resolves every

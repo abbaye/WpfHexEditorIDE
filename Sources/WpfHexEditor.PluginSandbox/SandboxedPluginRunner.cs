@@ -493,6 +493,7 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     public ITerminalService     Terminal        => NullTerminalService.Instance;
     public ISolutionExplorerService SolutionExplorer => NullSolutionExplorerService.Instance;
     public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => null; // Not available inside sandbox process
+    public WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? LspServers => null;  // Not available inside sandbox process
 
     // IDE EventBus — sandbox plugins subscribe to IDE events forwarded via IPC bridge.
     // A lightweight in-process bus is created per sandbox; the host delivers events via the

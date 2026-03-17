@@ -45,6 +45,9 @@ internal sealed class PluginScopedContext : IIDEHostContext
     public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => _inner.SolutionManager;
 
     /// <inheritdoc />
+    public WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? LspServers => _inner.LspServers;
+
+    /// <inheritdoc />
     public ICodeEditorService CodeEditor => _inner.CodeEditor;
 
     /// <inheritdoc />

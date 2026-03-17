@@ -78,6 +78,9 @@ public sealed class IDEHostContext : IIDEHostContext
     /// <inheritdoc />
     public ISolutionManager? SolutionManager { get; }
 
+    /// <inheritdoc />
+    public WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? LspServers { get; init; }
+
     public IDEHostContext(
         IDocumentHostService documentHost,
         ISolutionExplorerService solutionExplorer,

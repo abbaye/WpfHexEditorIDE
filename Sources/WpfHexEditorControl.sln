@@ -139,6 +139,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.Termina
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.LSP", "WpfHexEditor.LSP\WpfHexEditor.LSP.csproj", "{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.LSP.Client", "WpfHexEditor.LSP.Client\WpfHexEditor.LSP.Client.csproj", "{EE300001-EE00-EE00-EE00-EE0000000001}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.BuildSystem", "WpfHexEditor.BuildSystem\WpfHexEditor.BuildSystem.csproj", "{DA5101BD-8749-439F-AFDC-C76143E335B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.VS", "WpfHexEditor.Plugins.SolutionLoader.VS\WpfHexEditor.Plugins.SolutionLoader.VS.csproj", "{CC100001-CC00-CC00-CC00-CC0000000001}"
@@ -833,6 +835,18 @@ Global
 		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x64.Build.0 = Release|Any CPU
 		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x86.ActiveCfg = Release|Any CPU
 		{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}.Release|x86.Build.0 = Release|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Debug|x64.Build.0 = Debug|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Release|x64.ActiveCfg = Release|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Release|x64.Build.0 = Release|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE300001-EE00-EE00-EE00-EE0000000001}.Release|x86.Build.0 = Release|Any CPU
 		{DA5101BD-8749-439F-AFDC-C76143E335B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA5101BD-8749-439F-AFDC-C76143E335B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA5101BD-8749-439F-AFDC-C76143E335B9}.Debug|x64.ActiveCfg = Debug|Any CPU

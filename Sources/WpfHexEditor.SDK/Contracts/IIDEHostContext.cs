@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Events;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -113,4 +114,14 @@ public interface IIDEHostContext
     /// for a given extension point without knowing which plugins provided them.
     /// </summary>
     IExtensionRegistry ExtensionRegistry { get; }
+
+    // -- LSP (Language Server Protocol) ---------------------------------------
+
+    /// <summary>
+    /// Registry of configured LSP server executables keyed by language / extension.
+    /// Use <see cref="ILspServerRegistry.CreateClient"/> to obtain an
+    /// <see cref="ILspClient"/> for a specific file.
+    /// Null when the LSP.Client assembly is not loaded.
+    /// </summary>
+    ILspServerRegistry? LspServers { get; }
 }

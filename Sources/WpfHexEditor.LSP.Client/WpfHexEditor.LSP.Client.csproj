@@ -1,0 +1,36 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+
+    WpfHexEditor.LSP.Client
+    ========================
+    Standard JSON-RPC Language Server Protocol client for WpfHexEditor.
+    Implements ILspClient / ILspServerRegistry from WpfHexEditor.SDK.
+    No NuGet dependencies — uses System.Text.Json and System.IO.Pipes (both inbox in net8.0).
+
+    Bundled server support (optional, each requires the server on PATH or configured path):
+      - JSON  : vscode-languageserver / vscode-json-languageserver
+      - XML   : lemminx
+      - C#    : OmniSharp (Roslyn)
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>false</UseWPF>
+    <RootNamespace>WpfHexEditor.LSP.Client</RootNamespace>
+    <AssemblyName>WpfHexEditor.LSP.Client</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Standard JSON-RPC LSP client — ILspClient/ILspServerRegistry implementation, LspProcess, LspJsonRpcChannel, document sync, and per-language feature providers.</Description>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+  </ItemGroup>
+
+</Project>

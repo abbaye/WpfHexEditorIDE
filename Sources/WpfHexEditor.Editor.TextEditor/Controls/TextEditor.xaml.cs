@@ -140,6 +140,34 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         set => _vm.IsReadOnly = value;
     }
 
+    /// <summary>
+    /// Multiplier applied to every mouse-wheel scroll delta (0.5–3.0).
+    /// Forwarded to <see cref="TextViewport.ScrollSpeedMultiplier"/>.
+    /// </summary>
+    public double ScrollSpeedMultiplier
+    {
+        get => Viewport.ScrollSpeedMultiplier;
+        set => Viewport.ScrollSpeedMultiplier = value;
+    }
+
+    /// <summary>
+    /// Text zoom level (0.5–4.0, 1.0 = 100 %).
+    /// Forwarded to <see cref="TextViewport.ZoomLevel"/>.
+    /// Ctrl+Wheel, Ctrl+=, Ctrl+-, Ctrl+0 adjust this value interactively.
+    /// </summary>
+    public double ZoomLevel
+    {
+        get => Viewport.ZoomLevel;
+        set => Viewport.ZoomLevel = value;
+    }
+
+    /// <summary>Raised when <see cref="ZoomLevel"/> changes.</summary>
+    public event EventHandler<double>? ZoomLevelChanged
+    {
+        add    => Viewport.ZoomLevelChanged += value;
+        remove => Viewport.ZoomLevelChanged -= value;
+    }
+
     // -----------------------------------------------------------------------
     // IDocumentEditor — Commands
     // -----------------------------------------------------------------------

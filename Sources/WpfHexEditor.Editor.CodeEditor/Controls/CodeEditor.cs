@@ -121,6 +121,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #endregion
 
+        #region Fields - LSP Client (Phase 4 — LSP Integration)
+
+        // Optional LSP client injected by the IDE host (via SetLspClient).
+        // Null when no language server is configured for the current language.
+        private WpfHexEditor.Editor.Core.LSP.ILspClient? _lspClient;
+
+        // Monotonically increasing document version sent with every didChange notification.
+        private int _lspDocVersion;
+
+        // Debounce timer for textDocument/didChange — 300 ms after last keystroke.
+        private System.Windows.Threading.DispatcherTimer? _lspChangeTimer;
+
+        #endregion
+
         #region Fields - Validation (Phase 5)
 
         private List<Models.ValidationError> _validationErrors = new List<Models.ValidationError>();
@@ -181,6 +195,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Folding support (Phase B3).
         private FoldingEngine?  _foldingEngine;
         private GutterControl?  _gutterControl;
+
+        // 500ms folding debounce timer (P1-CE-01) — prevents O(n) scan on every keystroke
+        private System.Windows.Threading.DispatcherTimer? _foldingDebounceTimer;
+
+        // Incremental max-width tracking (P1-CE-02) — O(1) on growth, O(n) only on shrink
+        private int _cachedMaxLineLength;
+
+        // Per-line-number FormattedText cache (P1-CE-03) — eliminates 2,400 allocs/s at 60Hz
+        private readonly Dictionary<int, FormattedText> _lineNumberCache = new();
+        private Typeface? _cachedLineNumberTypeface;
+        private double _cachedLineNumberFontSize = -1;
+
+        // Background highlight pipeline (P1-CE-06)
+        private readonly Services.HighlightPipelineService _highlightPipeline = new();
 
         private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
         private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
@@ -1278,6 +1306,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _validationTimer.Interval = TimeSpan.FromMilliseconds(ValidationDelay);
             _validationTimer.Tick += ValidationTimer_Tick;
 
+            // Folding debounce (P1-CE-01) — 500 ms after last keystroke
+            _foldingDebounceTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _foldingDebounceTimer.Tick += (_, _) =>
+            {
+                _foldingDebounceTimer!.Stop();
+                if (IsFoldingEnabled && _foldingEngine != null)
+                    _foldingEngine.Analyze(_document.Lines);
+            };
+
+            // Background highlight pipeline (P1-CE-06) — invalidate & re-render on completion
+            _highlightPipeline.HighlightsComputed += (_, _) => InvalidateVisual();
+
             // Make focusable for keyboard input
             Focusable = true;
             FocusVisualStyle = null; // No focus rectangle
@@ -1624,6 +1667,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _charWidth  = _glyphRenderer.CharWidth;
             _charHeight = _glyphRenderer.CharHeight;
             _lineHeight = (_charHeight + 4) * LineHeightMultiplier;
+
+            // Font changed — line-number cache and GlyphRun cache are stale (P1-CE-03/05)
+            _lineNumberCache.Clear();
+            if (_document != null)
+                foreach (var line in _document.Lines)
+                { line.GlyphRunCache = null; line.IsGlyphCacheDirty = true; }
+        }
+
+        /// <summary>
+        /// O(n) full rebuild of <see cref="_cachedMaxLineLength"/>. Called only at load time
+        /// or document swap — not on every keystroke (P1-CE-02).
+        /// </summary>
+        private void RebuildMaxLineLength()
+        {
+            _cachedMaxLineLength = _document?.Lines.Count > 0
+                ? _document.Lines.Max(l => l.Text.Length)
+                : 0;
         }
 
 
@@ -2346,6 +2406,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Phase 11.4: Periodically cleanup token cache
             if (_frameCount++ % 60 == 0)
                 _document.CleanupTokenCache(MaxCachedLines);
+
+            // Schedule background highlighting for visible + buffer range (P1-CE-06)
+            _highlightPipeline.ScheduleAsync(
+                _document.Lines,
+                _firstVisibleLine,
+                _lastVisibleLine,
+                _highlighter,
+                ExternalHighlighter);
         }
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
@@ -2355,16 +2423,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         protected override Size MeasureOverride(Size availableSize)
         {
-            // Update cached max content width (used by H scrollbar)
-            if (_document != null && _document.Lines.Count > 0)
-            {
-                double max = 0;
-                foreach (var line in _document.Lines)
-                    max = Math.Max(max, line.Text.Length * _charWidth);
-                _maxContentWidth = max + 20; // +20 right padding
-            }
-            else
-                _maxContentWidth = 0;
+            // Update cached max content width using incremental tracker (P1-CE-02 — O(1))
+            _maxContentWidth = _document != null && _document.Lines.Count > 0
+                ? _cachedMaxLineLength * _charWidth + 20
+                : 0;
 
             // Measure scrollbar children
             _vScrollBar?.Measure(new Size(ScrollBarThickness, double.IsInfinity(availableSize.Height) ? double.PositiveInfinity : Math.Max(0, availableSize.Height)));
@@ -2577,6 +2639,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderLineNumbers(DrawingContext dc)
         {
+            // Flush line-number FormattedText cache when font parameters change (P1-CE-03)
+            if (_cachedLineNumberFontSize != LineNumberFontSize ||
+                !Equals(_cachedLineNumberTypeface, _lineNumberTypeface))
+            {
+                _lineNumberCache.Clear();
+                _cachedLineNumberFontSize = LineNumberFontSize;
+                _cachedLineNumberTypeface = _lineNumberTypeface;
+            }
+
+            double dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
             {
                 // Phase 11: Calculate Y position with virtual scrolling support
@@ -2584,15 +2657,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     ? TopMargin + _virtualizationEngine.GetLineYPosition(i)
                     : TopMargin + ((i - _firstVisibleLine) * _lineHeight);
 
-                var lineNumber = (i + 1).ToString(); // Display as 1-based
-                var formattedText = new FormattedText(
-                    lineNumber,
-                    CultureInfo.CurrentCulture,
-                    FlowDirection.LeftToRight,
-                    _lineNumberTypeface, // Use separate line number typeface
-                    LineNumberFontSize,
-                    LineNumberForeground,
-                    VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                // Cache FormattedText per line number — eliminates 2,400 allocations/s (P1-CE-03)
+                if (!_lineNumberCache.TryGetValue(i + 1, out var formattedText))
+                {
+                    formattedText = new FormattedText(
+                        (i + 1).ToString(),
+                        CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        _lineNumberTypeface,
+                        LineNumberFontSize,
+                        LineNumberForeground,
+                        dpi);
+                    _lineNumberCache[i + 1] = formattedText;
+                }
 
                 // Right-align line numbers
                 double x = LineNumberWidth - formattedText.Width - LineNumberMargin;
@@ -2849,17 +2926,59 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 if (!string.IsNullOrEmpty(line.Text))
                 {
+                    // ── P1-CE-05: GlyphRun cache fast path ───────────────────────────
+                    // When the line text has not changed since the last render and a
+                    // GlyphRun cache exists, skip token generation entirely and draw
+                    // the pre-built runs via a single PushTransform.  URL hit-zones are
+                    // restored from the per-line cache so click detection stays intact.
+                    if (_glyphRenderer != null
+                        && !line.IsGlyphCacheDirty
+                        && line.GlyphRunCache is { Count: > 0 } cachedRuns)
+                    {
+                        // Restore URL hit-zones (built when the cache was first populated).
+                        if (line.CachedUrlZones is { } zones)
+                            foreach (var z in zones)
+                                _urlHitZones.Add(new UrlHitZone(i, z.StartCol, z.EndCol, z.Url));
+
+                        // Translate once per line → draw all cached GlyphRuns.
+                        dc.PushTransform(new System.Windows.Media.TranslateTransform(x, y));
+                        foreach (var entry in cachedRuns)
+                            dc.DrawGlyphRun(entry.Foreground, entry.Run);
+                        dc.Pop();
+
+                        // URL hover underline (changes per mouse-move without dirtying the cache).
+                        if (_hoveredUrlZone.HasValue && _hoveredUrlZone.Value.Line == i)
+                        {
+                            foreach (var entry in cachedRuns)
+                            {
+                                if (entry.IsUrlToken
+                                    && entry.StartColumn >= _hoveredUrlZone.Value.StartCol
+                                    && entry.StartColumn <  _hoveredUrlZone.Value.EndCol)
+                                {
+                                    double underlineY = y + _glyphRenderer.Baseline + 2;
+                                    double tokenX     = x + entry.Run.BaselineOrigin.X;
+                                    dc.DrawLine(urlPen,
+                                        new Point(tokenX, underlineY),
+                                        new Point(tokenX + entry.TokenLength * _charWidth, underlineY));
+                                }
+                            }
+                        }
+
+                        continue; // skip slow path
+                    }
+                    // ── end fast path ─────────────────────────────────────────────────
+
                     // Use external (language-pluggable) highlighter when available,
                     // otherwise fall back to the built-in JSON highlighter.
-                    IEnumerable<Helpers.SyntaxHighlightToken> renderTokens;
                     bool hasExternalHighlighter = ExternalHighlighter is not null;
+                    IEnumerable<Helpers.SyntaxHighlightToken> rawTokens;
 
                     if (ExternalHighlighter is { } ext)
                     {
                         // Resolve brushes at render time from live CodeEditor DPs (CE_* keys).
                         // This ensures correct colors even when the theme changes after file open,
                         // and avoids the timing issue of baking brushes at file-open time.
-                        renderTokens = ext.Highlight(line.Text, i)
+                        rawTokens = ext.Highlight(line.Text, i)
                             .Select(t => t with
                             {
                                 Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
@@ -2868,7 +2987,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     else
                     {
                         var jsonTokens = _highlighter.HighlightLine(line, context);
-                        renderTokens = jsonTokens.Select(t => new Helpers.SyntaxHighlightToken(
+                        rawTokens = jsonTokens.Select(t => new Helpers.SyntaxHighlightToken(
                             t.StartColumn, t.Length, t.Text ?? string.Empty,
                             t.Foreground ?? EditorForeground, t.IsBold, t.IsItalic));
                     }
@@ -2876,7 +2995,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     // URL post-pass: overlay URL tokens on top of the highlighter output.
                     // URLs are detected regardless of which highlighter is active and always
                     // rendered with SyntaxUrlColor + underline so they are visually distinct.
-                    renderTokens = OverlayUrlTokens(line.Text, i, renderTokens);
+                    // Materialise to list so we can both render and cache in one pass.
+                    var renderTokens = OverlayUrlTokens(line.Text, i, rawTokens).ToList();
 
                     // Pre-compute baseline Y once per line (GlyphRun requires it).
                     double baselineY = _glyphRenderer != null
@@ -2938,6 +3058,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                                 new Point(tokenX + token.Length * _charWidth, underlineY));
                         }
                     }
+
+                    // ── P1-CE-05: Build GlyphRun cache after first render ─────────────
+                    // Cache for the base-pass token too when using external highlighter.
+                    if (_glyphRenderer != null)
+                    {
+                        var allCacheTokens = hasExternalHighlighter
+                            ? Enumerable.Concat(
+                                new[] { new Helpers.SyntaxHighlightToken(
+                                    0, line.Text.Length, line.Text, EditorForeground) },
+                                renderTokens)
+                            : (IEnumerable<Helpers.SyntaxHighlightToken>)renderTokens;
+
+                        line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor);
+                        line.IsGlyphCacheDirty = false;
+
+                        // Cache URL zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
+                        line.CachedUrlZones = _urlHitZones
+                            .Where(z => z.Line == i)
+                            .Select(z => (z.StartCol, z.EndCol, z.Url))
+                            .ToList();
+                    }
+                    // ── end cache build ───────────────────────────────────────────────
                 }
             }
         }
@@ -3462,6 +3604,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         e.Handled = true;
                     }
                     break;
+
+                // ── Folding keyboard shortcuts (P2-02) ─────────────────────
+                // Ctrl+M → toggle fold at caret line
+                case Key.M:
+                    if (ctrlPressed && IsFoldingEnabled && _foldingEngine != null)
+                    {
+                        _foldingEngine.ToggleRegion(_cursorLine);
+                        InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    break;
+                // Ctrl+Shift+[ → collapse all folds
+                case Key.OemOpenBrackets:
+                    if (ctrlPressed && shiftPressed && IsFoldingEnabled && _foldingEngine != null)
+                    {
+                        _foldingEngine.CollapseAll();
+                        InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    break;
+                // Ctrl+Shift+] → expand all folds
+                case Key.OemCloseBrackets:
+                    if (ctrlPressed && shiftPressed && IsFoldingEnabled && _foldingEngine != null)
+                    {
+                        _foldingEngine.ExpandAll();
+                        InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    break;
+                // ───────────────────────────────────────────────────────────
             }
 
             InvalidateVisual();
@@ -4386,9 +4558,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _validationTimer.Start();
             }
 
-            // Refresh folding regions when document content changes.
+            // Refresh folding regions — debounced 500ms to avoid O(n) scan on every keystroke (P1-CE-01).
             if (IsFoldingEnabled && _foldingEngine != null)
-                _foldingEngine.Analyze(_document.Lines);
+            {
+                _foldingDebounceTimer?.Stop();
+                _foldingDebounceTimer?.Start();
+            }
+
+            // Debounce LSP didChange — 300 ms (Phase 4: LSP Integration).
+            if (_lspClient is not null && _currentFilePath is not null)
+            {
+                _lspChangeTimer?.Stop();
+                _lspChangeTimer?.Start();
+            }
+
+            // Incremental max-width update (P1-CE-02) — O(1) on growth, O(n) only on shrink
+            int changedLine = e.Position.Line;
+            if (changedLine >= 0 && changedLine < _document.Lines.Count)
+            {
+                int newLen = _document.Lines[changedLine].Text.Length;
+                if (newLen > _cachedMaxLineLength)
+                    _cachedMaxLineLength = newLen;
+                else if (newLen < _cachedMaxLineLength)
+                    _cachedMaxLineLength = _document.Lines.Count > 0
+                        ? _document.Lines.Max(l => l.Text.Length) : 0;
+            }
+
+            // Invalidate line-number cache for the changed line (P1-CE-03)
+            _lineNumberCache.Remove(changedLine);
 
             // InvalidateMeasure triggers full layout pass → UpdateScrollBars (ranges may have changed)
             InvalidateMeasure();
@@ -4452,14 +4649,35 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             try
             {
-                var jsonText = _document.SaveToString();
-                _validationErrors = _validator.Validate(jsonText);
+                string textToValidate;
+                var dirty = _document.DirtyLines;
+
+                // Incremental path (P1-CE-07): validate only the dirty region + context when
+                // fewer than 10% of lines changed.  Full pass otherwise (initial load, paste, etc.).
+                if (dirty.Count > 0 && dirty.Count < _document.TotalLines / 10)
+                {
+                    int minDirty = dirty.Min();
+                    int maxDirty = dirty.Max();
+                    // Include 5-line context above and below for accurate state-dependent validators
+                    int rangeStart = Math.Max(0, minDirty - 5);
+                    int rangeEnd   = Math.Min(_document.Lines.Count - 1, maxDirty + 5);
+                    textToValidate = string.Join(Environment.NewLine,
+                        _document.Lines.Skip(rangeStart).Take(rangeEnd - rangeStart + 1).Select(l => l.Text));
+                }
+                else
+                {
+                    textToValidate = _document.SaveToString();
+                }
+
+                _document.ClearDirtyLines();
+                _validationErrors = _validator.Validate(textToValidate);
                 InvalidateVisual();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception)
             {
                 // Silently ignore validation errors
+                _document.ClearDirtyLines();
                 _validationErrors.Clear();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -4517,10 +4735,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _horizontalScrollOffset = 0;
 
             UpdateVirtualization();
+            RebuildMaxLineLength(); // O(n) scan at doc swap — acceptable
 
             if (IsFoldingEnabled && _foldingEngine != null)
                 _foldingEngine.Analyze(_document.Lines);
 
+            _lineNumberCache.Clear();
             InvalidateMeasure();
         }
 
@@ -4541,11 +4761,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Without this call, the engine keeps the initial count (27 lines from the default
             // template) and clamps LastVisibleLine prematurely for any larger file.
             UpdateVirtualization();
+            RebuildMaxLineLength(); // single O(n) scan at load time
 
             // Initial folding analysis on freshly loaded content.
             if (IsFoldingEnabled && _foldingEngine != null)
                 _foldingEngine.Analyze(_document.Lines);
 
+            _lineNumberCache.Clear();
             InvalidateMeasure();
         }
 
@@ -4705,9 +4927,122 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // UI-thread work: load text into the document model.
             LoadText(text);
             _currentFilePath = filePath;
+
+            // Apply .editorconfig settings (P2-03): indent style, size, EOL, etc.
+            ApplyEditorConfig(Services.EditorConfigService.Resolve(filePath));
+
+            // Notify the LSP server about the newly opened document (Phase 4).
+            if (_lspClient?.IsInitialized == true)
+            {
+                _lspClient.OpenDocument(filePath, DetectLanguageId(filePath), text);
+                _lspDocVersion = 1;
+            }
+
             TitleChanged?.Invoke(this, BuildTitle());
             StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
             RefreshJsonStatusBarItems();
+        }
+
+        /// <summary>
+        /// Applies <see cref="Services.EditorConfigSettings"/> properties to the matching
+        /// editor DependencyProperties.  Null settings properties are left unchanged.
+        /// </summary>
+        private void ApplyEditorConfig(Services.EditorConfigSettings cfg)
+        {
+            if (cfg.IndentSize is int indent) IndentSize = indent;
+        }
+
+        // -- LSP Client Wiring (Phase 4) ──────────────────────────────────
+
+        /// <summary>
+        /// Injects or replaces the active LSP client.
+        /// Call with <c>null</c> to detach (e.g., when closing a document).
+        /// The method subscribes to <see cref="ILspClient.DiagnosticsReceived"/> and
+        /// sends textDocument/didOpen when the editor already has a file loaded.
+        /// </summary>
+        public void SetLspClient(WpfHexEditor.Editor.Core.LSP.ILspClient? client)
+        {
+            if (_lspClient is not null)
+            {
+                _lspClient.DiagnosticsReceived -= OnLspDiagnosticsReceived;
+                if (_currentFilePath is not null)
+                    _lspClient.CloseDocument(_currentFilePath);
+            }
+
+            _lspClient = client;
+            _lspDocVersion = 0;
+
+            if (_lspClient is null) return;
+
+            _lspClient.DiagnosticsReceived += OnLspDiagnosticsReceived;
+
+            // If a file is already open, send didOpen immediately.
+            if (_currentFilePath is not null && _document is not null)
+            {
+                var langId = DetectLanguageId(_currentFilePath);
+                _lspClient.OpenDocument(_currentFilePath, langId, _document.SaveToString());
+            }
+
+            // Create the change-debounce timer (300 ms) on first attach.
+            if (_lspChangeTimer is null)
+            {
+                _lspChangeTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(300),
+                };
+                _lspChangeTimer.Tick += (_, _) =>
+                {
+                    _lspChangeTimer.Stop();
+                    if (_lspClient is null || _currentFilePath is null) return;
+                    _lspClient.DidChange(_currentFilePath, ++_lspDocVersion, _document.SaveToString());
+                };
+            }
+        }
+
+        /// <summary>Maps a file extension to an LSP language identifier.</summary>
+        private static string DetectLanguageId(string filePath) =>
+            Path.GetExtension(filePath).ToLowerInvariant() switch
+            {
+                ".json" or ".jsonc" => "json",
+                ".xml"              => "xml",
+                ".xaml"             => "xaml",
+                ".cs"               => "csharp",
+                ".ts"               => "typescript",
+                ".js"               => "javascript",
+                ".py"               => "python",
+                ".lua"              => "lua",
+                _                   => "plaintext",
+            };
+
+        /// <summary>
+        /// Feeds LSP push diagnostics into the editor's validation error list.
+        /// Always called on the UI thread (guaranteed by LspClientImpl).
+        /// </summary>
+        private void OnLspDiagnosticsReceived(
+            object? sender,
+            WpfHexEditor.Editor.Core.LSP.LspDiagnosticsReceivedEventArgs e)
+        {
+            if (_currentFilePath is null) return;
+            if (!new Uri(_currentFilePath).AbsoluteUri.Equals(e.DocumentUri, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            // Remove any previous LSP-sourced errors and replace with the new set.
+            _validationErrors.RemoveAll(v => v.Layer == Models.ValidationLayer.Lsp);
+            foreach (var d in e.Diagnostics)
+            {
+                _validationErrors.Add(new Models.ValidationError
+                {
+                    Line     = d.StartLine,
+                    Column   = d.StartColumn,
+                    Message  = d.Message,
+                    Severity = d.Severity == "error"   ? Models.ValidationSeverity.Error
+                             : d.Severity == "warning" ? Models.ValidationSeverity.Warning
+                                                       : Models.ValidationSeverity.Info,
+                    Layer    = Models.ValidationLayer.Lsp,
+                });
+            }
+            DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+            InvalidateVisual();
         }
 
         // -- Public methods (IDocumentEditor) -----------------------------
@@ -4720,6 +5055,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void Close()
         {
+            // Notify the LSP server before clearing the path (Phase 4).
+            if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+                _lspClient.CloseDocument(_currentFilePath);
+
             _document = new Models.CodeDocument();
             _currentFilePath = null;
             _isDirty = false;
