@@ -103,6 +103,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
             Padding             = new Thickness(0),
             VerticalAlignment   = VerticalAlignment.Top,
             HorizontalAlignment = HorizontalAlignment.Right,
+            // Right margin = CodeEditor.ScrollBarThickness (14 px) so the button sits
+            // immediately to the left of the vertical scrollbar track and does not
+            // compete with it for the same screen pixels, regardless of Z-order.
+            Margin              = new Thickness(0, 2, 14, 0),
             ToolTip             = "Split Editor",
             Style               = BuildFlatToggleButtonStyle(),
         };
