@@ -4087,19 +4087,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
-                // Horizontal scroll (Shift + wheel)
-                double pixelDelta = -e.Delta / 120.0 * _charWidth * 3 * HorizontalScrollSensitivity;
-                double maxH = _hScrollBar?.Maximum ?? 0;
-                _horizontalScrollOffset = Math.Max(0, Math.Min(maxH, _horizontalScrollOffset + pixelDelta));
+                // Horizontal scroll: one notch = system WheelScrollLines chars (matches HexEditor model).
+                int hLines    = SystemParameters.WheelScrollLines;
+                double hDelta = -Math.Sign(e.Delta) * hLines * _charWidth * HorizontalScrollSensitivity;
+                double maxH   = _hScrollBar?.Maximum ?? 0;
+                _horizontalScrollOffset = Math.Max(0, Math.Min(maxH, _horizontalScrollOffset + hDelta));
                 SyncHScrollBar();
                 InvalidateVisual();
                 e.Handled = true;
             }
             else if (EnableVirtualScrolling && _virtualizationEngine != null)
             {
-                // Vertical scroll
-                double lineScrollAmount = 3; // Scroll 3 lines per wheel notch
-                double pixelDelta = -e.Delta / 120.0 * lineScrollAmount * _lineHeight;
+                // Vertical scroll: one notch = SystemParameters.WheelScrollLines lines.
+                // Uses Math.Sign(e.Delta) like HexEditor — immune to precision-wheel sub-notch deltas.
+                int    speed      = SystemParameters.WheelScrollLines;
+                double pixelDelta = -Math.Sign(e.Delta) * speed * _lineHeight;
                 ScrollVertical(pixelDelta);
 
                 // If a drag-selection is in progress, keep the selection end anchored to
@@ -5013,20 +5015,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            // Read file on a background thread to keep the UI responsive.
+            // Read + split on a background thread to keep the UI responsive (P1-TE-05 / OPT-PERF-05).
+            // content.Split + new CodeLine[] are pure computation with no WPF dependency.
             string text;
+            CodeLine[] lines;
             try
             {
-                text = await Task.Run(() => File.ReadAllText(filePath, System.Text.Encoding.UTF8), ct);
+                (text, lines) = await Task.Run(() =>
+                {
+                    var raw   = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+                    var parts = raw.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    var arr   = new CodeLine[parts.Length == 0 ? 1 : parts.Length];
+                    for (int i = 0; i < parts.Length; i++)
+                        arr[i] = new CodeLine(parts[i], i);
+                    if (arr.Length == 0)
+                        arr[0] = new CodeLine(string.Empty, 0);
+                    return (raw, arr);
+                }, ct);
             }
+            catch (OperationCanceledException) { return; }
             catch (Exception ex)
             {
                 StatusMessage?.Invoke(this, $"Open failed: {ex.Message}");
                 return;
             }
 
-            // UI-thread work: load text into the document model.
-            LoadText(text);
+            // UI-thread work: swap the pre-built line array into the document (minimal UI work).
+            _document.LoadLines(lines, text);
             _currentFilePath = filePath;
 
             // Apply .editorconfig settings (P2-03): indent style, size, EOL, etc.

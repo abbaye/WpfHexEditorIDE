@@ -475,28 +475,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// </summary>
         public void LoadFromString(string content)
         {
-            if (content == null)
-                content = string.Empty;
+            if (content == null) content = string.Empty;
+            var parts = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var arr   = new CodeLine[parts.Length == 0 ? 1 : parts.Length];
+            for (int i = 0; i < parts.Length; i++) arr[i] = new CodeLine(parts[i], i);
+            if (arr.Length == 0) arr[0] = new CodeLine(string.Empty, 0);
+            LoadLines(arr, content);
+        }
 
-            var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-
+        /// <summary>
+        /// Swaps a pre-built <see cref="CodeLine"/> array (produced on a background thread) into
+        /// the document.  Only the ObservableCollection mutation runs on the UI thread (OPT-PERF-05).
+        /// </summary>
+        public void LoadLines(CodeLine[] preBuilt, string originalText)
+        {
             // Suppress per-item CollectionChanged events during bulk load (P1-CE-04)
             _suppressCollectionNotifications = true;
             try
             {
                 Lines.Clear();
-                for (int i = 0; i < lines.Length; i++)
-                    Lines.Add(new CodeLine(lines[i], i));
-
-                if (Lines.Count == 0)
-                    Lines.Add(new CodeLine(string.Empty, 0));
+                foreach (var line in preBuilt)
+                    Lines.Add(line);
             }
             finally
             {
                 _suppressCollectionNotifications = false;
             }
 
-            // Fire single batch notification instead of N individual notifications
+            _totalCharsDirty = true;
             OnPropertyChanged(nameof(TotalLines));
             OnPropertyChanged(nameof(TotalCharacters));
 
