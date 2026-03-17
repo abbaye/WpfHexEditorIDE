@@ -4381,6 +4381,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnOptionsSettingsChanged()
     {
         ApplyThemeFromSettings();
+
+        // Re-apply per-editor-type settings (scroll speed, zoom, …) to all open editors
+        // so that option changes take effect immediately without requiring a file re-open.
+        foreach (var uiElement in _contentCache.Values)
+        {
+            if (uiElement is IDocumentEditor docEditor)
+                ApplyEditorSettings(docEditor);
+        }
+
         _autoSerializeTimer?.Stop();
         _autoSerializeTimer = null;
         InitAutoSerializeTimer();
