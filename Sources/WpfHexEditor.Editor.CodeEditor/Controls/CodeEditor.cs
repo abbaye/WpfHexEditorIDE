@@ -4387,8 +4387,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-            // Calculate line
-            int line = _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
+            // Calculate line — use VirtualizationEngine for sub-line scroll accuracy.
+            // Plain formula (_firstVisibleLine + offset/lineHeight) breaks with pixel-based
+            // smooth scrolling because the fractional scroll remainder shifts rendered text
+            // without updating _firstVisibleLine.
+            int line = EnableVirtualScrolling && _virtualizationEngine != null
+                ? _virtualizationEngine.GetLineAtYPosition(pixel.Y - TopMargin)
+                : _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
             line = Math.Max(0, Math.Min(_document.Lines.Count - 1, line));
 
             // Calculate column (account for horizontal scroll offset)
