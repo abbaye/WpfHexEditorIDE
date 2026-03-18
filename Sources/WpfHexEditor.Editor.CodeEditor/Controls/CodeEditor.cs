@@ -94,8 +94,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private static void OnExternalHighlighterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CodeEditor editor && e.NewValue is ISyntaxHighlighter h)
+            if (d is not CodeEditor editor) return;
+            if (e.NewValue is ISyntaxHighlighter h)
                 h.Reset();
+            editor.RefreshJsonStatusBarItems();
         }
 
         #endregion
@@ -5372,10 +5374,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Dismiss any open references popup on any click in the editor,
             // but NOT when the click originated inside the popup itself.
-            // OnMouseDown is a class handler and fires regardless of e.Handled on
-            // child elements; the visual-tree walk prevents the unconditional close
-            // from racing with PinRequested / NavigationRequested handlers.
-            if (!IsEventFromInsidePopup(e.OriginalSource))
+            // Two complementary guards cover both WPF-routing and Win32 click-through paths:
+            //   1. IsEventFromInsidePopup — detects via PresentationSource (HWND-aware)
+            //   2. IsClickInsidePopupBounds — screen-coordinate fallback
+            if (!IsEventFromInsidePopup(e.OriginalSource) && !IsClickInsidePopupBounds(e.GetPosition(this)))
                 _referencesPopup?.Close();
 
             // Dismiss Quick Info popup and cancel pending hover on any click.
@@ -5433,9 +5435,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     if (zone.Contains(clickPos))
                     {
-                        _cursorLine   = lineIdx;
-                        _cursorColumn = FindSymbolColumnInLine(lineIdx, symbol);
-                        _ = FindAllReferencesAsync();
+                        // Do NOT move the caret — pass line/symbol directly so the
+                        // user's cursor position is preserved.
+                        _ = FindAllReferencesAsync(lineOverride: lineIdx, symbolOverride: symbol);
                         e.Handled = true;
                         return;
                     }
@@ -6615,11 +6617,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Invokes <c>textDocument/references</c> for the symbol at the caret, groups
         /// the results by file, reads snippets, then shows <see cref="ReferencesPopup"/>.
         /// </summary>
-        private async Task FindAllReferencesAsync()
+        private async Task FindAllReferencesAsync(int? lineOverride = null, string? symbolOverride = null)
         {
             if (_document is null) return;
 
-            var symbol = GetWordAtCursor();
+            // When called from a CodeLens click, line/symbol are supplied directly
+            // so the caret is never mutated. The Shift+F12 path supplies no overrides
+            // and reads _cursorLine / _cursorColumn as before.
+            int    line   = lineOverride ?? _cursorLine;
+            int    column = lineOverride.HasValue
+                                ? FindSymbolColumnInLine(line, symbolOverride ?? string.Empty)
+                                : _cursorColumn;
+            string symbol = symbolOverride ?? GetWordAtCursor();
+
             if (string.IsNullOrEmpty(symbol))
             {
                 StatusMessage?.Invoke(this, "Place the caret on a symbol to find references.");
@@ -6636,7 +6646,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 try
                 {
                     locations = await _lspClient.ReferencesAsync(
-                        _currentFilePath, _cursorLine, _cursorColumn, cts.Token);
+                        _currentFilePath, line, column, cts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -6647,7 +6657,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (locations.Count > 0)
                 {
                     groups = BuildGroupsFromLspLocations(locations, symbol);
-                    ShowReferencesPopup(groups, symbol, locations.Count, source: "LSP");
+                    ShowReferencesPopup(groups, symbol, locations.Count, source: "LSP", line: line, column: column);
                     return;
                 }
                 // Fall through to local scan when LSP returns no results.
@@ -6665,7 +6675,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            ShowReferencesPopup(groups, symbol, total, source: "workspace");
+            ShowReferencesPopup(groups, symbol, total, source: "workspace", line: line, column: column);
         }
 
         /// <summary>
@@ -6848,24 +6858,40 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Computes the anchor Point, shows the popup and updates the status bar.
         /// </summary>
         private void ShowReferencesPopup(
-            List<ReferenceGroup> groups, string symbol, int total, string source)
+            List<ReferenceGroup> groups, string symbol, int total, string source,
+            int line = -1, int column = -1)
         {
-            int visLineOffset = _cursorLine - _firstVisibleLine;
+            // Defaults: Shift+F12 path supplies no overrides, reads cursor fields.
+            if (line   < 0) line   = _cursorLine;
+            if (column < 0) column = _cursorColumn;
+
+            int visLineOffset = line - _firstVisibleLine;
             double lh = _lineHeight > 0 ? _lineHeight : 16.0;
             double cw = _charWidth  > 0 ? _charWidth  : 8.0;
-            double x  = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + _cursorColumn * cw;
-            double codeY = _lineYLookup.TryGetValue(_cursorLine, out double ly)
-                ? ly : TopMargin + visLineOffset * lh;
+            double x  = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + column * cw;
 
-            // Bottom anchor: popup bottom sits ~1 line-height above the CodeLens hint zone
-            // (hint zone = LensLineHeight px above codeY; add one more lh for visual gap).
-            double bottomAnchor = codeY - LensLineHeight - lh;
-            var anchor = new Point(x, bottomAnchor);
+            // Prefer the actual rendered hit-zone Top as anchor Y.
+            // _lineYLookup can accumulate rounding errors when many CodeLens lines appear
+            // above the declaration, causing the popup to float too high.
+            double anchorY = -1;
+            foreach (var (hz, hzLine, _) in _lensHitZones)
+            {
+                if (hzLine == line) { anchorY = hz.Top; break; }
+            }
+            if (anchorY < 0)
+            {
+                // Shift+F12 / hint not currently rendered — fall back to _lineYLookup.
+                double codeY = _lineYLookup.TryGetValue(line, out double ly)
+                    ? ly : TopMargin + visLineOffset * lh;
+                anchorY = codeY - LensLineHeight;
+            }
+
+            var anchor = new Point(x, anchorY);
 
             // Resolve kind icon from lens data (null-safe: Shift+F12 invocations have no lens entry).
             string iconGlyph = "\uE8A5";
             System.Windows.Media.Brush iconBrush = System.Windows.Media.Brushes.Gray;
-            if (_lensData.TryGetValue(_cursorLine, out var lensEntry))
+            if (_lensData.TryGetValue(line, out var lensEntry))
             {
                 iconGlyph = lensEntry.IconGlyph;
                 iconBrush = lensEntry.IconBrush;
@@ -6927,26 +6953,45 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Returns true when <paramref name="originalSource"/> is a visual descendant of
-        /// the references popup's child (i.e., the click originated inside the popup).
-        /// Used to prevent <see cref="OnMouseDown"/> from unconditionally closing the popup
-        /// when the click was routed here via the PlacementTarget logical chain.
+        /// Returns true when <paramref name="originalSource"/> lives in the same Win32 HWND
+        /// (PresentationSource) as the references popup — i.e., the click originated inside
+        /// the popup's own layered window, not in the CodeEditor window.
+        /// <para>
+        /// VisualTreeHelper.GetParent cannot cross HWND boundaries, so an HWND-aware check
+        /// via <see cref="PresentationSource.FromVisual"/> is required for AllowsTransparency
+        /// popups that live in their own HwndSource.
+        /// </para>
         /// </summary>
         private bool IsEventFromInsidePopup(object? originalSource)
         {
             if (_referencesPopup?.IsOpen != true || _referencesPopup.Child is null)
                 return false;
-            if (originalSource is not DependencyObject dep)
+            if (originalSource is not Visual visual)
                 return false;
 
-            var current = dep as DependencyObject;
-            while (current is not null)
+            // Compare HwndSource instances: equal ⟹ same HWND ⟹ click is from the popup.
+            var clickSource = PresentationSource.FromVisual(visual);
+            var popupSource = PresentationSource.FromVisual(_referencesPopup.Child);
+            return clickSource is not null && ReferenceEquals(clickSource, popupSource);
+        }
+
+        /// <summary>
+        /// Returns true when the click position (relative to this editor) maps to a screen
+        /// point that falls within the references popup's bounding rectangle.
+        /// Belt-and-suspenders fallback for the Win32 click-through scenario where
+        /// <see cref="IsEventFromInsidePopup"/> cannot detect the popup source.
+        /// </summary>
+        private bool IsClickInsidePopupBounds(Point posRelativeToThis)
+        {
+            if (_referencesPopup?.IsOpen != true || _referencesPopup.Child is not UIElement child)
+                return false;
+            try
             {
-                if (ReferenceEquals(current, _referencesPopup.Child))
-                    return true;
-                current = VisualTreeHelper.GetParent(current);
+                var screenPt     = PointToScreen(posRelativeToThis);
+                var popupTopLeft = child.PointToScreen(new Point(0, 0));
+                return new Rect(popupTopLeft, child.RenderSize).Contains(screenPt);
             }
-            return false;
+            catch { return false; }
         }
 
         // -- Public methods (IDocumentEditor) -----------------------------
@@ -7048,26 +7093,68 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // ═══════════════════════════════════════════════════════════════════
 
         private ObservableCollection<StatusBarItem>? _jsonStatusBarItems;
-        private StatusBarItem _sbJsonFile = null!;
+        private StatusBarItem _sbLanguage  = null!;
+        private StatusBarItem _sbPosition  = null!;
+        private StatusBarItem _sbZoom      = null!;
+        private StatusBarItem _sbSelection = null!;
+
+        /// <summary>Current caret column (0-based). Companion to <see cref="CursorLine"/>.</summary>
+        public int CursorColumn => _cursorColumn;
 
         public ObservableCollection<StatusBarItem> StatusBarItems
             => _jsonStatusBarItems ??= BuildJsonStatusBarItems();
 
         private ObservableCollection<StatusBarItem> BuildJsonStatusBarItems()
         {
-            _sbJsonFile = new StatusBarItem { Label = "File", Tooltip = "Current JSON file" };
+            _sbLanguage  = new StatusBarItem { Label = "Language", Tooltip = "Detected syntax language" };
+            _sbPosition  = new StatusBarItem { Label = "Position", Tooltip = "Caret line and column" };
+            _sbZoom      = new StatusBarItem { Label = "Zoom",     Tooltip = "Editor zoom level" };
+            _sbSelection = new StatusBarItem { Label = "Sel",      Tooltip = "Number of selected characters", IsVisible = false };
+
+            // Zoom preset choices — selecting one applies the zoom level immediately.
+            foreach (var (pct, factor) in new (string, double)[] { ("50%", 0.5), ("75%", 0.75), ("100%", 1.0), ("125%", 1.25), ("150%", 1.5), ("200%", 2.0) })
+            {
+                var capture = factor;
+                _sbZoom.Choices.Add(new StatusBarChoice
+                {
+                    DisplayName = pct,
+                    Command     = new JsonRelayCommand(_ => ZoomLevel = capture),
+                });
+            }
+
+            // Wire live-update events once (lazy-init guard ensures single subscription).
+            CaretMoved       += (_, _) => RefreshJsonStatusBarItems();
+            ZoomLevelChanged += (_, _) => RefreshJsonStatusBarItems();
+            SelectionChanged += (_, _) => RefreshJsonStatusBarItems();
+
             RefreshJsonStatusBarItems();
-            return new ObservableCollection<StatusBarItem> { _sbJsonFile };
+            return new ObservableCollection<StatusBarItem> { _sbLanguage, _sbPosition, _sbZoom, _sbSelection };
         }
 
         void IStatusBarContributor.RefreshStatusBarItems() => RefreshJsonStatusBarItems();
 
         internal void RefreshJsonStatusBarItems()
         {
-            if (_jsonStatusBarItems == null) return;
-            _sbJsonFile.Value = !string.IsNullOrEmpty(_currentFilePath)
-                ? Path.GetFileName(_currentFilePath)
-                : "(unsaved)";
+            if (_jsonStatusBarItems is null) return;
+
+            _sbLanguage.Value = ExternalHighlighter?.LanguageName ?? _highlighter.LanguageName ?? "JSON";
+            _sbPosition.Value = $"Ln {_cursorLine + 1}, Col {_cursorColumn + 1}";
+            _sbZoom.Value     = $"{(int)(ZoomLevel * 100)}%";
+
+            bool hasSelection = !_selection.IsEmpty;
+            _sbSelection.IsVisible = hasSelection;
+            if (hasSelection)
+            {
+                int charCount = _selection.IsMultiLine
+                    ? (_document?.GetText(_selection.NormalizedStart, _selection.NormalizedEnd).Length ?? 0)
+                    : Math.Abs(_selection.NormalizedEnd.Column - _selection.NormalizedStart.Column);
+                _sbSelection.Value = charCount.ToString();
+            }
+
+            // Keep zoom choice checkmarks in sync.
+            string zoomLabel = $"{(int)(ZoomLevel * 100)}%";
+            foreach (var choice in _sbZoom.Choices)
+                choice.IsActive = choice.DisplayName == zoomLabel;
         }
 
         // ═══════════════════════════════════════════════════════════════════

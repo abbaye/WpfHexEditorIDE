@@ -139,13 +139,19 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         _context.HexEditor.DisconnectParsedFieldsPanel();
         if (_context.HexEditor.IsActive)
             _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+        // Enriched data is re-populated by OnParsedFieldsPanelChanged inside the HexEditor DP callback
+        // (calls newPanel.SetEnrichedFormat(_detectedFormat) when reconnecting to an already-detected editor).
     }
 
     /// <summary>Clears the panel when a new file is opened (no parsed fields yet).</summary>
     private void OnFileOpened(object? sender, EventArgs e)
     {
         _panel?.Clear();
-        _panel?.SetEnrichedFormat(null);
+        // Do NOT call SetEnrichedFormat(null) here.
+        // AutoDetectAndApplyFormat is queued at Background priority before this deferred
+        // FileOpened event; clearing here causes the enriched section to appear then vanish.
+        // Safety: Clear() sets FormatInfo.IsDetected=false → parent Border collapses → any
+        // stale enriched data is hidden until format detection re-runs and sets IsDetected=true.
     }
 
     /// <summary>

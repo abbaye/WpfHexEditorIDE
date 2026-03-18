@@ -49,7 +49,9 @@ internal static class ReferencesTreeBuilder
         IReadOnlyList<ReferenceGroup>                         groups,
         string                                                symbolName,
         Action<ReferencesNavigationEventArgs>                 onNavigate,
-        out List<(StackPanel ItemsPanel, TextBlock Chevron)>  groupHandles)
+        out List<(StackPanel ItemsPanel, TextBlock Chevron)>  groupHandles,
+        string                                                iconGlyph  = "\uE8A5",
+        Brush?                                                iconBrush  = null)
     {
         groupHandles = new List<(StackPanel, TextBlock)>(groups.Count);
 
@@ -58,7 +60,7 @@ internal static class ReferencesTreeBuilder
 
         foreach (var group in groups)
         {
-            var (groupPanel, handle) = BuildGroupPanel(group, symbolName, onNavigate);
+            var (groupPanel, handle) = BuildGroupPanel(group, symbolName, onNavigate, iconGlyph, iconBrush);
             groupHandles.Add(handle);
             panel.Children.Add(groupPanel);
         }
@@ -74,7 +76,7 @@ internal static class ReferencesTreeBuilder
     {
         bool visible          = itemsPanel.Visibility == Visibility.Visible;
         itemsPanel.Visibility = visible ? Visibility.Collapsed : Visibility.Visible;
-        chevron.Text          = visible ? "▶" : "▼";
+        chevron.Text          = visible ? "\uE76B" : "\uE70D";   // ChevronRight : ChevronDown
     }
 
     // ── Group panel ───────────────────────────────────────────────────────────
@@ -83,7 +85,9 @@ internal static class ReferencesTreeBuilder
         BuildGroupPanel(
             ReferenceGroup                        group,
             string                                symbolName,
-            Action<ReferencesNavigationEventArgs> onNavigate)
+            Action<ReferencesNavigationEventArgs> onNavigate,
+            string                                iconGlyph,
+            Brush?                                iconBrush)
     {
         var container = new StackPanel();
 
@@ -106,12 +110,13 @@ internal static class ReferencesTreeBuilder
 
         var chevron = new TextBlock
         {
-            Text              = "▼",
-            FontSize          = 9,
+            Text              = "\uE70D",   // Segoe MDL2 ChevronDown — expanded state
+            FontFamily        = new FontFamily("Segoe MDL2 Assets"),
+            FontSize          = 11,
             VerticalAlignment = VerticalAlignment.Center,
             Margin            = new Thickness(0, 0, 6, 0)
         };
-        chevron.SetResourceReference(TextBlock.ForegroundProperty, "TE_Foreground");
+        chevron.SetResourceReference(TextBlock.ForegroundProperty, "PFP_SubTextBrush");
 
         var pathBlock = new TextBlock
         {
@@ -146,7 +151,7 @@ internal static class ReferencesTreeBuilder
         // ── Reference rows (collapsible) ──────────────────────────────────────
         var itemsPanel = new StackPanel();
         foreach (var item in group.Items)
-            itemsPanel.Children.Add(BuildReferenceRow(group.FilePath, item, symbolName, onNavigate));
+            itemsPanel.Children.Add(BuildReferenceRow(group.FilePath, item, symbolName, onNavigate, iconGlyph, iconBrush));
 
         groupHeader.MouseLeftButtonDown += (_, e) =>
         {
@@ -170,7 +175,9 @@ internal static class ReferencesTreeBuilder
         string                                filePath,
         ReferenceItem                         item,
         string                                symbolName,
-        Action<ReferencesNavigationEventArgs> onNavigate)
+        Action<ReferencesNavigationEventArgs> onNavigate,
+        string                                iconGlyph,
+        Brush?                                iconBrush)
     {
         var row = new Border
         {
@@ -187,11 +194,13 @@ internal static class ReferencesTreeBuilder
 
         var icon = new TextBlock
         {
-            Text              = "◆",
-            FontSize          = 9,
-            Margin            = new Thickness(0, 0, 6, 0),
+            Text              = iconGlyph,
+            FontFamily        = new FontFamily("Segoe MDL2 Assets"),
+            FontSize          = 12.0,
+            Width             = 18.0,
+            TextAlignment     = TextAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            Foreground        = s_glyphBrush
+            Foreground        = iconBrush ?? s_glyphBrush
         };
         DockPanel.SetDock(icon, Dock.Left);
 

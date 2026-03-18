@@ -26,6 +26,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 public interface ISyntaxHighlighter
 {
     /// <summary>
+    /// Human-readable language name shown in the IDE status bar (e.g. "JSON", "C#", "Python").
+    /// Returns <c>null</c> when the language name is not applicable or unknown.
+    /// </summary>
+    string? LanguageName { get; }
+
+    /// <summary>
     /// Tokenises a single line of text.
     /// </summary>
     /// <param name="lineText">Raw text of the line (no trailing newline).</param>

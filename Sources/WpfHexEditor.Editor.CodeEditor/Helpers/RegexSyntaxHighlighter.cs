@@ -30,16 +30,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 public sealed class SyntaxRuleHighlighter : ISyntaxHighlighter
 {
     private readonly IReadOnlyList<RegexHighlightRule> _rules;
+    private readonly string?                            _languageName;
 
-    /// <param name="rules">
-    /// Ordered rules applied to each line. First-match wins within each span.
-    /// </param>
-    public SyntaxRuleHighlighter(IEnumerable<RegexHighlightRule> rules)
+    /// <param name="rules">Ordered rules applied to each line. First-match wins within each span.</param>
+    /// <param name="languageName">Human-readable language name for the IDE status bar (e.g. "C#").</param>
+    public SyntaxRuleHighlighter(IEnumerable<RegexHighlightRule> rules, string? languageName = null)
     {
-        _rules = rules.ToArray();
+        _rules        = rules.ToArray();
+        _languageName = languageName;
     }
 
     // -- ISyntaxHighlighter ---------------------------------------------------
+
+    /// <inheritdoc />
+    public string? LanguageName => _languageName;
 
     public IReadOnlyList<SyntaxHighlightToken> Highlight(string lineText, int lineIndex)
     {

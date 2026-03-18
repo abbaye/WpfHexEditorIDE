@@ -74,6 +74,9 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
     }
 
     /// <inheritdoc />
+    public string? LanguageName => null;
+
+    /// <inheritdoc />
     public IReadOnlyList<SyntaxHighlightToken> Highlight(string lineText, int lineIndex)
     {
         if (string.IsNullOrEmpty(lineText))

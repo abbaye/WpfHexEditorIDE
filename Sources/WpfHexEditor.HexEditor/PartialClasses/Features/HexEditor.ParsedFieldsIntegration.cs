@@ -76,7 +76,13 @@ namespace WpfHexEditor.HexEditor
 
                 // Déclencher le parsing si un fichier est déjà ouvert
                 if (editor.Stream != null && editor._detectedFormat != null)
+                {
                     editor.ParseFieldsAsync();
+                    // Re-populate enriched format metadata — ParseFieldsAsync only sets FormatInfo,
+                    // not the EnrichedFormatViewModel. Without this, switching back to a tab with a
+                    // previously-detected format leaves the Enriched Format Metadata section empty.
+                    newPanel.SetEnrichedFormat(editor._detectedFormat);
+                }
             }
         }
 

@@ -73,9 +73,13 @@ namespace WpfHexEditor.HexEditor.ViewModels
             {
                 _currentFormat = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAvailable));
                 UpdateFromFormat();
             }
         }
+
+        /// <summary>True when a format has been detected and enriched data is available.</summary>
+        public bool IsAvailable => _currentFormat != null;
 
         /// <summary>
         /// Format name (e.g., "ZIP Archive", "PNG Image")

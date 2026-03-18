@@ -1698,6 +1698,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // Wire OutputMessage → Output panel
                 editor.OutputMessage += OnEditorOutputMessage;
 
+                // Wire CodeEditor reference events (CodeLens: navigate, dock panel, Ctrl+Click go-to-def).
+                // Mirrors the equivalent block in CreateSmartFileEditorContent for doc-file-* tabs.
+                // Without this, pin/navigate/go-to-def silently do nothing for project-opened files.
+                if (editor is CodeEditorControl plainCe)
+                {
+                    plainCe.ReferenceNavigationRequested    += OnCodeEditorReferenceNavigation;
+                    plainCe.FindAllReferencesDockRequested  += OnFindAllReferencesDockRequested;
+                    plainCe.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
+                }
+                if (editor is CodeEditorSplitHost splitHostProj)
+                {
+                    splitHostProj.ReferenceNavigationRequested    += OnCodeEditorReferenceNavigation;
+                    splitHostProj.FindAllReferencesDockRequested  += OnFindAllReferencesDockRequested;
+                    splitHostProj.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
+                }
+
                 // Register as diagnostic source (e.g. TblEditor with IDiagnosticSource)
                 if (editor is IDiagnosticSource diagSrc)
                     EnsureErrorPanelInstance().AddSource(diagSrc);
@@ -4714,6 +4730,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         hex.AllowExtend                          = d.AllowExtend;
         hex.FileDroppingConfirmation             = d.FileDroppingConfirmation;
         hex.PreloadByteInEditorMode              = d.PreloadByteInEditorMode;
+
+        // Tooltip
+        hex.ByteToolTipDisplayMode               = d.ByteToolTipDisplayMode;
     }
 
     // --- Menu: Project -------------------------------------------------
@@ -5233,6 +5252,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         var item = new DockItem { Title = title, ContentId = contentId };
+
+        // For bottom panels, prefer joining an existing bottom panel group (VS-style)
+        // rather than creating a new split every time.
+        if (direction == DockDirection.Bottom)
+        {
+            var bottomGroup = _layout.FindItemByContentId(ErrorPanelContentId)?.Owner
+                           ?? _layout.FindItemByContentId("panel-output")?.Owner
+                           ?? _layout.FindItemByContentId(TerminalPanelContentId)?.Owner;
+            if (bottomGroup is not null)
+            {
+                _engine.Dock(item, bottomGroup, DockDirection.Center);
+                DockHost.RebuildVisualTree();
+                UpdateStatusBar();
+                return;
+            }
+        }
+
         _engine.Dock(item, _layout.MainDocumentHost, direction);
         DockHost.RebuildVisualTree();
         UpdateStatusBar();

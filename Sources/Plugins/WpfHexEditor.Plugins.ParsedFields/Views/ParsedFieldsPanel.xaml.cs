@@ -221,9 +221,9 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         /// </summary>
         public void SetEnrichedFormat(FormatDefinition? format)
         {
+            // Visibility is binding-driven via EnrichedFormat.IsAvailable — no manual toggle needed.
             _enrichedVm.CurrentFormat = format;
-            if (EnrichedFormatSection != null)
-                EnrichedFormatSection.Visibility = format is not null ? Visibility.Visible : Visibility.Collapsed;
+            PopulateEnrichedLinks();
         }
 
         /// <summary>
@@ -231,9 +231,63 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         /// </summary>
         public void ClearEnrichedFormat()
         {
-            _enrichedVm.ClearData();
-            if (EnrichedFormatSection != null)
-                EnrichedFormatSection.Visibility = Visibility.Collapsed;
+            _enrichedVm.CurrentFormat = null;
+            EnrichedWebLinksPanel?.Children.Clear();
+        }
+
+        private void PopulateEnrichedLinks()
+        {
+            if (EnrichedWebLinksPanel is null) return;
+            EnrichedWebLinksPanel.Children.Clear();
+
+            var links = _enrichedVm.WebLinks;
+            if (links is null || links.Count == 0) return;
+
+            foreach (var url in links)
+            {
+                if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) continue;
+
+                var block = new System.Windows.Controls.TextBlock
+                    { Margin = new System.Windows.Thickness(0, 0, 0, 3), FontSize = 10 };
+
+                var hyperlink = new System.Windows.Documents.Hyperlink
+                {
+                    NavigateUri = uri,
+                    ToolTip     = url,
+                    Foreground  = new System.Windows.Media.SolidColorBrush(
+                                      System.Windows.Media.Color.FromRgb(0x21, 0x96, 0xF3)),
+                    Cursor = System.Windows.Input.Cursors.Hand
+                };
+                hyperlink.Inlines.Add("\U0001F517 " + GetLinkDisplayName(url));
+                hyperlink.RequestNavigate += OnEnrichedLinkNavigate;
+                block.Inlines.Add(hyperlink);
+                EnrichedWebLinksPanel.Children.Add(block);
+            }
+        }
+
+        private static string GetLinkDisplayName(string url)
+        {
+            try
+            {
+                var uri    = new Uri(url);
+                var domain = uri.Host.Replace("www.", "");
+                var seg    = uri.AbsolutePath.TrimEnd('/').Split('/').LastOrDefault() ?? string.Empty;
+                var name   = System.IO.Path.GetFileNameWithoutExtension(seg);
+                return string.IsNullOrEmpty(name) ? domain : $"{domain} — {name}";
+            }
+            catch { return url.Length > 50 ? url[..47] + "…" : url; }
+        }
+
+        private void OnEnrichedLinkNavigate(object sender,
+            System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    { FileName = e.Uri.AbsoluteUri, UseShellExecute = true });
+            }
+            catch { /* silently ignore */ }
+            e.Handled = true;
         }
 
         /// <summary>

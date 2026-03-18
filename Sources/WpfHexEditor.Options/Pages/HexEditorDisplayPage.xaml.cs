@@ -23,11 +23,12 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         try
         {
             // Enum-backed combos
-            DataVisualCombo.ItemsSource      = Enum.GetValues<DataVisualType>();
-            OffsetVisualCombo.ItemsSource    = Enum.GetValues<DataVisualType>();
-            ByteGroupingCombo.ItemsSource    = Enum.GetValues<ByteSpacerGroup>();
-            SpacerPositionCombo.ItemsSource  = Enum.GetValues<ByteSpacerPosition>();
-            MouseWheelSpeedCombo.ItemsSource = Enum.GetValues<MouseWheelSpeed>();
+            DataVisualCombo.ItemsSource         = Enum.GetValues<DataVisualType>();
+            OffsetVisualCombo.ItemsSource        = Enum.GetValues<DataVisualType>();
+            ByteGroupingCombo.ItemsSource        = Enum.GetValues<ByteSpacerGroup>();
+            SpacerPositionCombo.ItemsSource      = Enum.GetValues<ByteSpacerPosition>();
+            MouseWheelSpeedCombo.ItemsSource     = Enum.GetValues<MouseWheelSpeed>();
+            ByteToolTipModeCombo.ItemsSource     = Enum.GetValues<ByteToolTipDisplayMode>();
 
             // Select current values
             SelectByPerLine(s.HexEditorDefaults.BytePerLine);
@@ -38,6 +39,7 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             OffsetVisualCombo.SelectedItem     = s.HexEditorDefaults.OffSetStringVisual;
             ByteGroupingCombo.SelectedItem     = s.HexEditorDefaults.ByteGrouping;
             SpacerPositionCombo.SelectedItem   = s.HexEditorDefaults.ByteSpacerPositioning;
+            ByteToolTipModeCombo.SelectedItem  = s.HexEditorDefaults.ByteToolTipDisplayMode;
 
             // Scroll markers
             CheckShowBookmarkMarkers.IsChecked     = s.HexEditorDefaults.ShowBookmarkMarkers;
@@ -68,6 +70,8 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             s.HexEditorDefaults.ByteSpacerPositioning = bsp;
         if (MouseWheelSpeedCombo.SelectedItem is MouseWheelSpeed mws)
             s.HexEditorDefaults.MouseWheelSpeed = mws;
+        if (ByteToolTipModeCombo.SelectedItem is ByteToolTipDisplayMode ttm)
+            s.HexEditorDefaults.ByteToolTipDisplayMode = ttm;
 
         s.HexEditorDefaults.ShowBookmarkMarkers     = CheckShowBookmarkMarkers.IsChecked == true;
         s.HexEditorDefaults.ShowModifiedMarkers     = CheckShowModifiedMarkers.IsChecked == true;

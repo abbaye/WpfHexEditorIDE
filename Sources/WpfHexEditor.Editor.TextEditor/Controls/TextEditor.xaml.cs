@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -27,7 +28,7 @@ namespace WpfHexEditor.Editor.TextEditor.Controls;
 /// <see cref="IEditorPersistable"/>, and <see cref="INavigableDocument"/> so the project system
 /// can save/restore per-file state and the Error List can navigate to a specific line.
 /// </summary>
-public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable, INavigableDocument
+public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -621,6 +622,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                 case nameof(TextEditorViewModel.CaretStatus):
                     CaretText.Text = _vm.CaretStatus;
                     StatusMessage?.Invoke(this, _vm.CaretStatus);
+                    RefreshTextStatusBarItems();
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);
@@ -649,6 +651,61 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         LanguageText.Text  = _vm.SyntaxDefinition?.Name ?? "Plain Text";
         CaretText.Text     = _vm.CaretStatus;
         EncodingText.Text  = _vm.Encoding.WebName.ToUpperInvariant();
+    }
+
+    // -----------------------------------------------------------------------
+    // IStatusBarContributor — IDE AppStatusBar integration
+    // -----------------------------------------------------------------------
+
+    private ObservableCollection<StatusBarItem>? _teStatusBarItems;
+    private StatusBarItem _sbTeLanguage = null!;
+    private StatusBarItem _sbTePosition = null!;
+    private StatusBarItem _sbTeZoom     = null!;
+    private StatusBarItem _sbTeEncoding = null!;
+
+    public ObservableCollection<StatusBarItem> StatusBarItems
+        => _teStatusBarItems ??= BuildTextStatusBarItems();
+
+    private ObservableCollection<StatusBarItem> BuildTextStatusBarItems()
+    {
+        _sbTeLanguage = new StatusBarItem { Label = "Language", Tooltip = "Active syntax language" };
+        _sbTePosition = new StatusBarItem { Label = "Position", Tooltip = "Caret line and column" };
+        _sbTeZoom     = new StatusBarItem { Label = "Zoom",     Tooltip = "Editor zoom level" };
+        _sbTeEncoding = new StatusBarItem { Label = "Encoding", Tooltip = "File encoding" };
+
+        // Zoom preset choices.
+        foreach (var (pct, factor) in new (string, double)[] { ("50%", 0.5), ("75%", 0.75), ("100%", 1.0), ("125%", 1.25), ("150%", 1.5), ("200%", 2.0) })
+        {
+            var capture = factor;
+            _sbTeZoom.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = pct,
+                Command     = new RelayCommand(() => ZoomLevel = capture),
+            });
+        }
+
+        // Wire live-update events once.
+        ZoomLevelChanged += (_, _) => RefreshTextStatusBarItems();
+
+        RefreshTextStatusBarItems();
+        return new ObservableCollection<StatusBarItem> { _sbTeLanguage, _sbTePosition, _sbTeZoom, _sbTeEncoding };
+    }
+
+    void IStatusBarContributor.RefreshStatusBarItems() => RefreshTextStatusBarItems();
+
+    private void RefreshTextStatusBarItems()
+    {
+        if (_teStatusBarItems is null) return;
+
+        _sbTeLanguage.Value = _vm.SyntaxDefinition?.Name ?? "Plain Text";
+        _sbTePosition.Value = _vm.CaretStatus;
+        _sbTeZoom.Value     = $"{(int)(ZoomLevel * 100)}%";
+        _sbTeEncoding.Value = _vm.Encoding.WebName.ToUpperInvariant();
+
+        // Keep zoom choice checkmarks in sync.
+        string zoomLabel = _sbTeZoom.Value;
+        foreach (var choice in _sbTeZoom.Choices)
+            choice.IsActive = choice.DisplayName == zoomLabel;
     }
 }
 

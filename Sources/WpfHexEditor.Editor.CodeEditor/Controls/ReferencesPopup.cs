@@ -87,13 +87,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     {
         #region Fields
 
-        private ScrollViewer _scroll        = null!;
-        private TextBlock    _collapseLink  = null!;
-        private TextBlock    _headerIconTb  = null!;
-        private TextBlock    _headerNameTb  = null!;
+        private ScrollViewer _scroll         = null!;
+        private TextBlock    _collapseLink   = null!;
+        private TextBlock    _headerIconTb   = null!;
+        private TextBlock    _headerNameTb   = null!;
+        private Border       _hitTestShield  = null!;
+        private CodeEditor?  _owner;
         private Point        _anchor;
-        private string       _symbolName    = string.Empty;
-        private double       _lineHeight    = 16.0;
+        private string       _symbolName     = string.Empty;
+        private string       _iconGlyph      = "\uE8A5";
+        private Brush?       _iconBrush;
+        private double       _lineHeight     = 16.0;
         private bool         _allCollapsed;
 
         private List<(StackPanel ItemsPanel, TextBlock Chevron)> _groups = new();
@@ -145,6 +149,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             string                        iconGlyph,
             Brush?                        iconBrush)
         {
+            _owner      = owner;
             _anchor     = anchor;
             _lineHeight = lineHeight > 0 ? lineHeight : 16.0;
             _symbolName = symbolName ?? string.Empty;
@@ -155,16 +160,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _headerIconTb.Foreground = iconBrush ?? Brushes.Gray;
             _headerNameTb.Text       = _symbolName;
 
-            PlacementTarget              = owner;
-            Placement                    = PlacementMode.Custom;
-            CustomPopupPlacementCallback = CalculatePlacement;
-
             PopulateContent(groups);
-            IsOpen = true;
+
+            // Open hidden off-screen. WPF must do a full measure/arrange pass before
+            // we know the actual popup height — RepositionAndShow() runs after that.
+            _hitTestShield.Opacity = 0;
+            PlacementTarget  = owner;
+            Placement        = PlacementMode.Absolute;
+            HorizontalOffset = -32000;
+            VerticalOffset   = -32000;
+            IsOpen           = true;
+
+            Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Loaded,
+                new Action(RepositionAndShow));
         }
 
         internal new void Close()
         {
+            _hitTestShield.Opacity = 0;   // reset for next open
             IsOpen = false;
             _groups.Clear();
             if (_scroll.Content is StackPanel old)
@@ -335,7 +349,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // CodeEditor.OnMouseDown, which unconditionally closes the popup.
             outerBorder.MouseLeftButtonDown += (_, e) => e.Handled = true;
 
-            Child = outerBorder;
+            // hitTestShield: With AllowsTransparency=true, WS_EX_LAYERED per-pixel hit-testing
+            // routes any click on an alpha=0 pixel to the window BELOW (CodeEditor's HWND).
+            // DropShadowEffect + CornerRadius produce such transparent pixels at popup edges.
+            // Wrapping outerBorder in a near-opaque (alpha=1/255) background Border guarantees
+            // every pixel in the popup HWND has alpha ≥ 1, so Win32 always routes the click here.
+            // Field — also used for Opacity=0 hide/show during deferred repositioning.
+            _hitTestShield = new Border
+            {
+                Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0))
+            };
+            _hitTestShield.MouseLeftButtonDown += (_, e) => e.Handled = true;
+            _hitTestShield.Child = outerBorder;
+            Child = _hitTestShield;
         }
 
         #endregion
@@ -351,7 +377,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 groups,
                 _symbolName,
                 e => NavigationRequested?.Invoke(this, e),
-                out _groups);
+                out _groups,
+                _iconGlyph,
+                _iconBrush);
 
             _scroll.Content = panel;
         }
@@ -366,7 +394,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             foreach (var (panel, chevron) in _groups)
             {
                 panel.Visibility = _allCollapsed ? Visibility.Collapsed : Visibility.Visible;
-                chevron.Text     = _allCollapsed ? "▶" : "▼";
+                chevron.Text     = _allCollapsed ? "\uE76B" : "\uE70D";
             }
             _collapseLink.Text = _allCollapsed ? "Expand all" : "Collapse all";
         }
@@ -375,23 +403,45 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #region Popup Placement
 
-        private CustomPopupPlacement[] CalculatePlacement(
-            Size popupSize, Size targetSize, Point offset)
+        /// <summary>
+        /// Called via Dispatcher.BeginInvoke(Loaded) after WPF has fully measured the popup.
+        /// Uses actual <see cref="FrameworkElement.ActualHeight"/> to position the popup bottom
+        /// 2 text lines above the lens hint zone (anchor), or below the code line as fallback.
+        /// </summary>
+        private void RepositionAndShow()
         {
-            double x = Math.Min(_anchor.X, Math.Max(0, targetSize.Width - popupSize.Width - 8));
+            if (!IsOpen || _owner is null) return;
 
-            // _anchor.Y is the desired BOTTOM edge of the popup; derive the top-left Y.
-            double y = _anchor.Y - popupSize.Height;
+            double popupH = _hitTestShield.ActualHeight;
+            double popupW = _hitTestShield.ActualWidth;
+            if (popupH <= 0 || popupW <= 0) return;
 
-            // If the popup would clip above the editor top, fall back to opening below the hint.
-            if (y < 8)
-                y = _anchor.Y + _lineHeight * 3;
+            // PointToScreen returns physical (device) pixels.
+            // HorizontalOffset/VerticalOffset for PlacementMode.Absolute use logical (WPF) pixels.
+            // Divide by DPI scale to convert physical → logical.
+            Point anchorScreen = _owner.PointToScreen(_anchor);
+            var src = PresentationSource.FromVisual(_owner);
+            double dpiX = src?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+            double dpiY = src?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            double anchorLogX = anchorScreen.X / dpiX;
+            double anchorLogY = anchorScreen.Y / dpiY;
 
-            // Clamp so the popup never overflows below the editor bottom.
-            y = Math.Min(y, targetSize.Height - popupSize.Height - 8);
-            y = Math.Max(y, 0);
+            // WorkArea is already in logical pixels.
+            var workArea = SystemParameters.WorkArea;
 
-            return [new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.Vertical)];
+            // Y: position popup bottom 2 line-heights above the anchor (lens hint zone top).
+            double gap = _lineHeight * 2;
+            double sy  = anchorLogY - gap - popupH;
+
+            // Clamp within the screen — never push to "below" which causes the bottom-right jump.
+            sy = Math.Clamp(sy, workArea.Top + 4, workArea.Bottom - popupH - 4);
+
+            // X: clamp so the popup stays within the working area.
+            double sx = Math.Clamp(anchorLogX, workArea.Left, workArea.Right - popupW - 8);
+
+            HorizontalOffset       = sx;
+            VerticalOffset         = sy;
+            _hitTestShield.Opacity = 1;
         }
 
         #endregion

@@ -101,6 +101,13 @@ namespace WpfHexEditor.Core
         public string Description { get; set; }
 
         /// <summary>
+        /// When false, this block is excluded from byte tooltip display.
+        /// Set to false for auto-detected whole-file coverage blocks so they
+        /// do not trigger tooltips on every byte in OnCustomBackgroundBlocks mode.
+        /// </summary>
+        public bool ShowInTooltip { get; set; } = true;
+
+        /// <summary>
         /// Get or set the color used in the visual
         /// Setting this property invalidates the cached brush
         /// </summary>

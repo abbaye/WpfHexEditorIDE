@@ -208,7 +208,7 @@ public sealed class FindReferencesPanel : UserControl
         foreach (var (panel, chevron) in _groupHandles)
         {
             panel.Visibility = _allCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            chevron.Text     = _allCollapsed ? "▶" : "▼";
+            chevron.Text     = _allCollapsed ? "\uE76B" : "\uE70D";
         }
         _collapseLink.Text = _allCollapsed ? "Tout développer" : "Tout réduire";
     }

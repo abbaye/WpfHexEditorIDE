@@ -61,6 +61,19 @@
                       SelectionChanged="OnComboChanged"/>
         </Grid>
 
+        <!-- Byte tooltip mode -->
+        <Grid Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Byte tooltip:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="ByteToolTipModeCombo" Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
         <Separator Margin="0,0,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
