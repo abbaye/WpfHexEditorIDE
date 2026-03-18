@@ -103,9 +103,11 @@ internal sealed class StartupProjectsPage : UserControl
         _dgMultiple.ItemsSource = _profiles;
     }
 
+    // Only MSBuild Exe/WinExe projects are launchable — consistent with
+    // MainWindow.Build.cs and StartupProjectRunner.  Fixes #197 RC-4.
     private static bool IsLaunchable(IProject p)
     {
-        if (p is not IProjectWithReferences vp) return true;
+        if (p is not IProjectWithReferences vp) return false;
         return vp.OutputType.Equals("Exe",    StringComparison.OrdinalIgnoreCase)
             || vp.OutputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase);
     }

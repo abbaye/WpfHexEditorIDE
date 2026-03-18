@@ -41,6 +41,15 @@ internal sealed class SolutionUserDto
     /// </summary>
     [JsonPropertyName("dockLayout")]
     public string? DockLayout { get; set; }
+
+    /// <summary>
+    /// Relative path (from the solution file) of the project the user last
+    /// designated as the startup project. Used for VS <c>.sln</c> solutions
+    /// where the startup project cannot be stored in the shared solution file.
+    /// <see langword="null"/> when the user has not explicitly set one.
+    /// </summary>
+    [JsonPropertyName("startupProjectPath")]
+    public string? StartupProjectPath { get; set; }
 }
 
 /// <summary>

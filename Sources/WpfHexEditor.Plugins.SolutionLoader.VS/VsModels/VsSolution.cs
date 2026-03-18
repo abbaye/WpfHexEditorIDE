@@ -12,13 +12,13 @@ using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Plugins.SolutionLoader.VS.VsModels;
 
-internal sealed class VsSolution : ISolution
+internal sealed class VsSolution : ISolution, IMutableStartupProject
 {
     public string                        Name                 { get; init; } = string.Empty;
     public string                        FilePath             { get; init; } = string.Empty;
     public IReadOnlyList<IProject>       Projects             { get; init; } = [];
     public IReadOnlyList<ISolutionFolder> RootFolders         { get; init; } = [];
-    public IProject?                     StartupProject       { get; init; }
+    public IProject?                     StartupProject       { get; private set; }
     public bool                          IsModified           => false;
     public int                           SourceFormatVersion  => 0;
     public bool                          FormatUpgradeRequired => false;
@@ -27,4 +27,12 @@ internal sealed class VsSolution : ISolution
     // Not in ISolution interface — used by the build system.
     public string? DefaultConfigurationName { get; init; }
     public string? DefaultPlatform          { get; init; }
+
+    // IMutableStartupProject — allows SolutionManager to update the in-memory
+    // startup project without depending on this concrete type.
+    void IMutableStartupProject.ChangeStartupProject(IProject? project)
+        => StartupProject = project;
+
+    // Package-internal convenience used by VsSolutionLoader during initial load.
+    internal void InitStartupProject(IProject? project) => StartupProject = project;
 }

@@ -99,16 +99,9 @@ public partial class MainWindow
         {
             if (value is null || _solutionManager.CurrentSolution is null) return;
 
-            // Sentinel item at the bottom of the list — revert selection then open dialog.
-            // Schedule the dialog at Render priority so the revert render pass completes
-            // before ShowDialog() blocks the dispatcher.
-            if (value == StartupProjectSentinel)
-            {
-                OnPropertyChanged();   // revert ComboBox selection to current startup project
-                Dispatcher.InvokeAsync(() => OpenSolutionPropertyPages("startup"),
-                                       System.Windows.Threading.DispatcherPriority.Render);
-                return;
-            }
+            // Sentinel is intercepted in OnStartupProjectSelectionChanged before the
+            // binding can push the value here.  Guard just in case.
+            if (value == StartupProjectSentinel) return;
 
             var project = _solutionManager.CurrentSolution.Projects
                 .FirstOrDefault(p => p.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
@@ -210,6 +203,27 @@ public partial class MainWindow
     private async void OnCleanSolution  (object sender, RoutedEventArgs e) => await RunCleanSolutionAsync();
     private async void OnCleanProject   (object sender, RoutedEventArgs e) => await RunCleanProjectAsync();
     private void OnCancelBuild    (object sender, RoutedEventArgs e) => _buildSystem?.CancelBuild();
+
+    /// <summary>
+    /// SelectionChanged handler for CbStartupProject.
+    /// Intercepts the sentinel item BEFORE the TwoWay binding can push the value
+    /// to <see cref="ActiveStartupProjectName"/>, reverts the ComboBox display
+    /// synchronously, then defers the property-pages dialog.
+    /// </summary>
+    internal void OnStartupProjectSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count == 0) return;
+        if (e.AddedItems[0] is not string s || s != StartupProjectSentinel) return;
+
+        // Revert the ComboBox display immediately — setting SelectedItem directly
+        // is synchronous and guaranteed to update SelectionBoxItem before any render.
+        var cb = (System.Windows.Controls.ComboBox)sender;
+        cb.SelectedItem = ActiveStartupProjectName;
+
+        // Open dialog after Background priority so the reverted display is painted first.
+        Dispatcher.InvokeAsync(() => OpenSolutionPropertyPages("startup"),
+                               System.Windows.Threading.DispatcherPriority.Background);
+    }
 
     private void OnOpenConfigManager(object sender, RoutedEventArgs e)
     {
@@ -466,11 +480,13 @@ public partial class MainWindow
             RefreshStartupProjectList();
     }
 
-    // A project is launchable when it has no OutputType metadata (native .whproj)
-    // or when its OutputType is Exe / WinExe (VS project).
+    // A project is launchable only when it is an MSBuild project with an
+    // executable OutputType (Exe / WinExe).  WH-native .whproj projects do not
+    // produce a compiled executable and cannot be resolved via
+    // `dotnet msbuild -getProperty:TargetPath`.  Fixes #197 RC-4.
     private static bool IsLaunchableProject(IProject p)
     {
-        if (p is not WpfHexEditor.Editor.Core.IProjectWithReferences vp) return true;
+        if (p is not WpfHexEditor.Editor.Core.IProjectWithReferences vp) return false;
         return vp.OutputType.Equals("Exe",    StringComparison.OrdinalIgnoreCase)
             || vp.OutputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase);
     }

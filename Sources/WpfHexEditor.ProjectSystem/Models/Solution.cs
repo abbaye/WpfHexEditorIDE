@@ -11,7 +11,7 @@ using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.ProjectSystem.Models;
 
-internal sealed class Solution : ISolution, INotifyPropertyChanged
+internal sealed class Solution : ISolution, IMutableStartupProject, INotifyPropertyChanged
 {
     private bool     _isModified;
     private IProject? _startupProject;
@@ -55,6 +55,10 @@ internal sealed class Solution : ISolution, INotifyPropertyChanged
         _startupProject = project;
         OnPropertyChanged(nameof(StartupProject));
     }
+
+    // IMutableStartupProject — delegates to the existing internal setter.
+    void IMutableStartupProject.ChangeStartupProject(IProject? project)
+        => SetStartupProject(project);
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? p = null)

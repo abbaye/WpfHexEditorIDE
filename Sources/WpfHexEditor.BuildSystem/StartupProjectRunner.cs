@@ -76,6 +76,16 @@ public sealed class StartupProjectRunner
             return false;
         }
 
+        // Only MSBuild projects (.csproj/.vbproj/.fsproj) can be resolved via
+        // `dotnet msbuild -getProperty:TargetPath`.  WH-native .whproj projects
+        // have no compiled executable. Fixes #197 RC-3.
+        if (!IsMsBuildProject(startup.ProjectFilePath))
+        {
+            Log($"'{startup.Name}' is a WH-native project (.whproj) and cannot be launched as an executable.");
+            Log("To run a WH project, configure an external tool or script runner.");
+            return false;
+        }
+
         // Resolve the output executable path.
         var exePath = await ResolveTargetPathAsync(
             startup.ProjectFilePath,
@@ -169,6 +179,19 @@ public sealed class StartupProjectRunner
     }
 
     // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="path"/> points to an
+    /// MSBuild project file that supports <c>dotnet msbuild -getProperty:TargetPath</c>.
+    /// WH-native <c>.whproj</c> files return <see langword="false"/>.
+    /// </summary>
+    private static bool IsMsBuildProject(string path)
+    {
+        var ext = Path.GetExtension(path);
+        return ext.Equals(".csproj", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".vbproj", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".fsproj", StringComparison.OrdinalIgnoreCase);
+    }
 
     private void Log(string line)
         => _eventBus.Publish(new BuildOutputLineEvent { Line = line });

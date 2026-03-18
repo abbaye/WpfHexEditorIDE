@@ -58,40 +58,79 @@ public static class SolutionUserSerializer
     public static async Task<IReadOnlyList<string>?> ReadExpandedKeysAsync(
         string solutionFilePath, CancellationToken ct = default)
     {
-        var path = GetUserFilePath(solutionFilePath);
-        if (!File.Exists(path)) return null;
+        var dto = await ReadDtoAsync(GetUserFilePath(solutionFilePath), ct);
+        return dto.TreeState?.ExpandedKeys is { Count: > 0 } keys ? keys : null;
+    }
 
-        try
-        {
-            await using var stream = File.OpenRead(path);
-            var dto = await JsonSerializer.DeserializeAsync<SolutionUserDto>(stream, _options, ct);
-            return dto?.TreeState?.ExpandedKeys is { Count: > 0 } keys ? keys : null;
-        }
-        catch
-        {
-            // Corrupt or unreadable sidecar — treat as missing so the app still opens cleanly.
-            return null;
-        }
+    /// <summary>
+    /// Reads the user-persisted startup project path from the sidecar for
+    /// <paramref name="solutionFilePath"/>. Returns <see langword="null"/> when the
+    /// sidecar does not exist or no preference has been stored yet.
+    /// </summary>
+    public static async Task<string?> ReadStartupProjectPathAsync(
+        string solutionFilePath, CancellationToken ct = default)
+    {
+        var dto = await ReadDtoAsync(GetUserFilePath(solutionFilePath), ct);
+        return string.IsNullOrWhiteSpace(dto.StartupProjectPath) ? null : dto.StartupProjectPath;
     }
 
     // -- Write ------------------------------------------------------------
 
     /// <summary>
     /// Writes the Solution Explorer <paramref name="expandedKeys"/> to the sidecar file
-    /// alongside <paramref name="solutionFilePath"/>. Creates the directory if needed.
+    /// alongside <paramref name="solutionFilePath"/>. Preserves all other sidecar fields.
     /// </summary>
     public static async Task WriteTreeStateAsync(
         string solutionFilePath, IReadOnlyList<string> expandedKeys, CancellationToken ct = default)
     {
-        var path = GetUserFilePath(solutionFilePath);
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        var userFilePath = GetUserFilePath(solutionFilePath);
+        var dto          = await ReadDtoAsync(userFilePath, ct);
+        dto.TreeState    = new SolutionTreeStateDto { ExpandedKeys = [.. expandedKeys] };
+        await WriteDtoAsync(userFilePath, dto, ct);
+    }
 
-        var dto = new SolutionUserDto
+    /// <summary>
+    /// Persists the user's startup project choice to the sidecar file alongside
+    /// <paramref name="solutionFilePath"/>. Preserves all other sidecar fields.
+    /// Pass <see langword="null"/> to clear the stored preference.
+    /// </summary>
+    public static async Task WriteStartupProjectPathAsync(
+        string solutionFilePath, string? relativeProjectPath, CancellationToken ct = default)
+    {
+        var userFilePath         = GetUserFilePath(solutionFilePath);
+        var dto                  = await ReadDtoAsync(userFilePath, ct);
+        dto.StartupProjectPath   = relativeProjectPath;
+        await WriteDtoAsync(userFilePath, dto, ct);
+    }
+
+    // -- Private helpers --------------------------------------------------
+
+    /// <summary>
+    /// Reads the sidecar DTO, returning an empty DTO when the file is absent or corrupt.
+    /// </summary>
+    private static async Task<SolutionUserDto> ReadDtoAsync(
+        string userFilePath, CancellationToken ct)
+    {
+        if (!File.Exists(userFilePath)) return new SolutionUserDto();
+        try
         {
-            TreeState = new SolutionTreeStateDto { ExpandedKeys = [.. expandedKeys] }
-        };
+            await using var stream = File.OpenRead(userFilePath);
+            return await JsonSerializer.DeserializeAsync<SolutionUserDto>(stream, _options, ct)
+                   ?? new SolutionUserDto();
+        }
+        catch
+        {
+            // Corrupt or unreadable sidecar — treat as missing.
+            return new SolutionUserDto();
+        }
+    }
 
-        await using var stream = File.Create(path);
+    /// <summary>Writes the DTO to disk, creating the directory if needed.</summary>
+    private static async Task WriteDtoAsync(
+        string userFilePath, SolutionUserDto dto, CancellationToken ct)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(userFilePath)!);
+        await using var stream = File.Create(userFilePath);
         await JsonSerializer.SerializeAsync(stream, dto, _options, ct);
     }
 }

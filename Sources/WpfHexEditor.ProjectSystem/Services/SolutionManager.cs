@@ -598,9 +598,37 @@ public sealed class SolutionManager : ISolutionManager
 
     public void SetStartupProject(string projectId)
     {
-        if (_current is not Solution sol) return;
-        var project = sol.Projects.FirstOrDefault(p => p.Id == projectId);
-        sol.SetStartupProject(project);
+        if (_current is null) return;
+
+        var project = _current.Projects.FirstOrDefault(p => p.Id == projectId);
+
+        // Update in-memory model via the opt-in interface (supported by both
+        // Solution and VsSolution). Fixes #197 RC-6: VS solutions were silently
+        // skipped because the old code only handled the native Solution type.
+        if (_current is IMutableStartupProject mutable)
+            mutable.ChangeStartupProject(project);
+
+        if (_current is Solution sol)
+        {
+            // Native .whsln: startup project stored in the shared solution file.
+            sol.IsModified = true;
+            _ = SolutionSerializer.WriteAsync(sol);
+        }
+        else
+        {
+            // VS .sln: startup project stored in the per-user sidecar (.sln.user)
+            // so the shared .sln file remains unchanged and VCS-clean.
+            var relPath = project is not null
+                ? System.IO.Path.GetRelativePath(
+                      System.IO.Path.GetDirectoryName(_current.FilePath)!,
+                      project.ProjectFilePath)
+                : null;
+            _ = Serialization.SolutionUserSerializer.WriteStartupProjectPathAsync(
+                    _current.FilePath, relPath);
+        }
+
+        // Notify subscribers (toolbar CanRunStartupProject binding).
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
     }
 
     // -- TBL helpers ------------------------------------------------------
