@@ -145,6 +145,62 @@
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────
+         XD_ToolbarToggleButtonStyle
+         26×22 toggle button for the XAML Designer toolbar (view-mode toggles).
+         Checked state uses XD_ToolbarViewToggleActiveBrush (VS blue) to distinguish
+         the active view mode. Hover and foreground reuse Panel_* tokens.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="XD_ToolbarToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Width"               Value="26"/>
+        <Setter Property="Height"              Value="22"/>
+        <Setter Property="Padding"             Value="0"/>
+        <Setter Property="Margin"              Value="1,0,0,0"/>
+        <Setter Property="BorderThickness"     Value="0"/>
+        <Setter Property="Background"          Value="Transparent"/>
+        <Setter Property="Foreground"          Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="FontFamily"          Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize"            Value="11"/>
+        <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource XD_ToolbarViewToggleActiveBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked"   Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource XD_ToolbarViewToggleActiveBrush}"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
          PanelDropdownButtonStyle
          Text-label dropdown button (e.g., "Actions ▾", "Export ▾").
          Auto width, 22px height, normal font (not MDL2).

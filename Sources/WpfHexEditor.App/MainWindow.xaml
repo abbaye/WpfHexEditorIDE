@@ -1292,7 +1292,8 @@
                               SelectedItem="{Binding ActiveStartupProjectName, ElementName=ThisWindow, Mode=TwoWay}"
                               IsEnabled="{Binding HasSolution, ElementName=ThisWindow}"
                               Background="Transparent"
-                              Foreground="{DynamicResource DockMenuForegroundBrush}">
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              SelectionChanged="OnStartupProjectSelectionChanged">
                         <ComboBox.ItemContainerStyle>
                             <Style TargetType="ComboBoxItem">
                                 <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
