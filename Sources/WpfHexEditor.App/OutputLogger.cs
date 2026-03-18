@@ -162,6 +162,20 @@ internal static class OutputLogger
         _panel.OutputBox.Dispatcher.Invoke(() => _panel.ClearOutput());
     }
 
+    /// <summary>
+    /// Switches to <paramref name="source"/> and clears its output.
+    /// No-op if the panel is not registered.
+    /// </summary>
+    public static void ClearChannel(string source)
+    {
+        if (_panel is null) return;
+        _panel.OutputBox.Dispatcher.Invoke(() =>
+        {
+            _panel.SetActiveSource(source);
+            _panel.ClearOutput();
+        });
+    }
+
     // --- Internals -----------------------------------------------------
 
     private static void Log(string level, string message, Brush? color, string source)

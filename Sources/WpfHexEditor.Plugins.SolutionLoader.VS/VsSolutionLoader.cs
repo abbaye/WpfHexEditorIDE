@@ -273,6 +273,7 @@ public sealed class VsSolutionLoader : ISolutionLoader
                     Name            = entry.Name,
                     ProjectFilePath = entry.Path,
                     ProjectGuid     = entry.Guid,
+                    ProjectType     = System.IO.Path.GetExtension(entry.Path).TrimStart('.').ToLowerInvariant(),
                 };
             }
         }, ct).ConfigureAwait(false);
