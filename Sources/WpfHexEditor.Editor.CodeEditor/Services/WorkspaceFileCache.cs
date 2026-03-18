@@ -47,6 +47,15 @@ internal static class WorkspaceFileCache
         SolutionManager.Instance.SolutionChanged += (_, _) => Invalidate();
     }
 
+    // ── Events ────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Raised (on an arbitrary thread) after the workspace cache has been
+    /// invalidated — i.e., when the solution opens, closes, or reloads.
+    /// Subscribers that touch WPF objects must marshal back to the UI thread.
+    /// </summary>
+    internal static event Action? WorkspaceChanged;
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -120,6 +129,9 @@ internal static class WorkspaceFileCache
             _solutionPaths = BuildSolutionPaths();
         }
         finally { _lock.ExitWriteLock(); }
+
+        // Notify subscribers outside the lock to prevent deadlocks.
+        WorkspaceChanged?.Invoke();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

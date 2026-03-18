@@ -222,9 +222,20 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
     public ICommand TogglePauseCommand     => _activeSession?.TogglePauseCommand  ?? NullCommand;
     public ICommand ToggleFindCommand      => _activeSession?.ToggleFindCommand   ?? NullCommand;
 
-    // Switch-mode command delegates to session (keeps XAML unchanged).
-    public ICommand SwitchModeCommand =>
-        new RelayCommand(p => { /* mode is per-session in multi-tab; tab type = mode */ });
+    // Switch-mode command: creates a new session of the selected shell type.
+    // In a multi-tab design, existing sessions cannot change their shell type
+    // (the process is already running), so the correct behavior is to open a new tab.
+    public ICommand SwitchModeCommand => new RelayCommand(p =>
+    {
+        var shellType = p as string switch
+        {
+            "PowerShell" => TerminalShellType.PowerShell,
+            "Bash"       => TerminalShellType.Bash,
+            "CMD"        => TerminalShellType.Cmd,
+            _            => TerminalShellType.HxTerminal
+        };
+        CreateSession(shellType);
+    });
 
     // -- Constructor --------------------------------------------------------------
 

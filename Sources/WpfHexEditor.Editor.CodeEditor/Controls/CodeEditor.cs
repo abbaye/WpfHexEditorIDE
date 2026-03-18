@@ -280,6 +280,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private List<TextPosition> _findResults = new List<TextPosition>();
         private int _currentFindMatchIndex = -1;
         private int _findMatchLength = 0;
+        private string? _lastFindQuery;
 
         #endregion
 
@@ -2330,13 +2331,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 (sender, e) => { if (!_selection.IsEmpty) DeleteSelection(); else DeleteCharAfter(); },
                 (sender, e) => e.CanExecute = !IsReadOnly));
 
-            // Find
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Find,
-                (sender, e) => ShowFindDialog()));
-
-            // Replace
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Replace,
-                (sender, e) => ShowReplaceDialog()));
+            // Find (Ctrl+F) and Replace (Ctrl+H) are handled by CodeEditorSplitHost
+            // via PreviewKeyDown → ShowSearch(), which binds the shared QuickSearchBar
+            // to this editor through ISearchTarget. No modeless Window is needed here.
 
             // Find All References (Shift+F12) — works with or without an LSP client.
             CommandBindings.Add(new CommandBinding(
@@ -2354,149 +2351,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void ValidateMenuItem_Click(object sender, RoutedEventArgs e)
         {
             RunValidation();
-        }
-
-        // -- Find bar -----------------------------------------------------
-
-        private Window? _findWindow;
-        private System.Windows.Controls.TextBox? _findTextBox;
-        private string? _lastFindQuery;
-
-        /// <summary>
-        /// Shows the modeless find bar (public entry point for host).
-        /// </summary>
-        public void ShowFindBar()
-        {
-            if (_findWindow?.IsVisible == true)
-            {
-                _findWindow.Activate();
-                _findTextBox?.SelectAll();
-                _findTextBox?.Focus();
-                return;
-            }
-            _findWindow = BuildFindWindow(replace: false);
-            _findWindow.Show();
-            _findTextBox?.Focus();
-        }
-
-        private void ShowFindDialog() => ShowFindBar();
-
-        private void ShowReplaceDialog()
-        {
-            if (_findWindow?.IsVisible == true)
-            {
-                _findWindow.Close();
-            }
-            _findWindow = BuildFindWindow(replace: true);
-            _findWindow.Show();
-            _findTextBox?.Focus();
-        }
-
-        private Window BuildFindWindow(bool replace)
-        {
-            var tb = new System.Windows.Controls.TextBox
-            {
-                Width = 200,
-                Margin = new Thickness(4),
-                VerticalAlignment = VerticalAlignment.Center,
-                Text = _lastFindQuery ?? string.Empty
-            };
-            _findTextBox = tb;
-
-            var btnNext  = new System.Windows.Controls.Button { Content = "▼", Width = 28, Height = 28, Margin = new Thickness(2, 4, 0, 4), ToolTip = "Find Next (Enter)" };
-            var btnPrev  = new System.Windows.Controls.Button { Content = "▲", Width = 28, Height = 28, Margin = new Thickness(2, 4, 0, 4), ToolTip = "Find Previous (Shift+Enter)" };
-            var btnClose = new System.Windows.Controls.Button { Content = "✕", Width = 28, Height = 28, Margin = new Thickness(2, 4, 4, 4), ToolTip = "Close (Esc)" };
-
-            System.Windows.Controls.TextBox? tbReplace = null;
-            System.Windows.Controls.Button? btnReplace = null;
-
-            var panel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(4) };
-            var row1  = new StackPanel { Orientation = Orientation.Horizontal };
-            row1.Children.Add(new System.Windows.Controls.TextBlock { Text = "Find:", Width = 52, VerticalAlignment = VerticalAlignment.Center });
-            row1.Children.Add(tb);
-            row1.Children.Add(btnNext);
-            row1.Children.Add(btnPrev);
-            row1.Children.Add(btnClose);
-            panel.Children.Add(row1);
-
-            if (replace)
-            {
-                tbReplace   = new System.Windows.Controls.TextBox { Width = 200, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center };
-                btnReplace  = new System.Windows.Controls.Button { Content = "Replace", Margin = new Thickness(2, 4, 0, 4), Padding = new Thickness(6, 2, 6, 2) };
-                var row2 = new StackPanel { Orientation = Orientation.Horizontal };
-                row2.Children.Add(new System.Windows.Controls.TextBlock { Text = "Replace:", Width = 52, VerticalAlignment = VerticalAlignment.Center });
-                row2.Children.Add(tbReplace);
-                row2.Children.Add(btnReplace);
-                panel.Children.Add(row2);
-            }
-
-            var parentWindow = Window.GetWindow(this);
-            var win = new Window
-            {
-                Title       = replace ? "Find & Replace" : "Find",
-                Content     = panel,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode  = ResizeMode.NoResize,
-                WindowStyle = WindowStyle.ToolWindow,
-                ShowInTaskbar = false,
-                Owner       = parentWindow,
-            };
-
-            if (parentWindow != null)
-            {
-                win.Left = parentWindow.Left + (parentWindow.Width - 380) / 2;
-                win.Top  = parentWindow.Top  + 80;
-            }
-
-            // Live search as user types
-            tb.TextChanged += (s, e) =>
-            {
-                _lastFindQuery = tb.Text;
-                ExecuteFind(_lastFindQuery);
-                if (_findResults.Count > 0)
-                {
-                    _currentFindMatchIndex = 0;
-                    NavigateToFindMatch();
-                }
-                else
-                {
-                    _currentFindMatchIndex = -1;
-                    InvalidateVisual();
-                }
-            };
-
-            tb.PreviewKeyDown += (s, e) =>
-            {
-                if (e.Key == Key.Enter && (Keyboard.Modifiers & ModifierKeys.Shift) != 0)
-                    { FindPrevious(); e.Handled = true; }
-                else if (e.Key == Key.Enter)
-                    { FindNext(); e.Handled = true; }
-                else if (e.Key == Key.Escape)
-                    { ClearFind(); win.Close(); Focus(); e.Handled = true; }
-            };
-
-            btnNext.Click  += (s, e) => FindNext();
-            btnPrev.Click  += (s, e) => FindPrevious();
-            btnClose.Click += (s, e) => { ClearFind(); win.Close(); Focus(); };
-
-            if (btnReplace != null && tbReplace != null)
-            {
-                btnReplace.Click += (s, e) =>
-                {
-                    if (_currentFindMatchIndex < 0 || _currentFindMatchIndex >= _findResults.Count)
-                        return;
-                    var match = _findResults[_currentFindMatchIndex];
-                    _selection.Start = match;
-                    _selection.End   = new TextPosition(match.Line, match.Column + _findMatchLength);
-                    DeleteSelection();
-                    foreach (var ch in tbReplace.Text) InsertChar(ch);
-                    ExecuteFind(_lastFindQuery ?? string.Empty);
-                    FindNext();
-                };
-            }
-
-            win.Closed += (s, e) => { _findWindow = null; _findTextBox = null; };
-            return win;
         }
 
         private void ExecuteFind(string query)
@@ -2570,7 +2424,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public event EventHandler? SearchResultsChanged;
 
-        SearchBarCapabilities ISearchTarget.Capabilities => SearchBarCapabilities.CaseSensitive;
+        SearchBarCapabilities ISearchTarget.Capabilities =>
+            SearchBarCapabilities.CaseSensitive | SearchBarCapabilities.Replace;
 
         int ISearchTarget.MatchCount        => _findResults.Count;
         int ISearchTarget.CurrentMatchIndex => _currentFindMatchIndex;
@@ -3069,8 +2924,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _lensHitZones.Clear();
 
-            var normalBrush = (Brush?)TryFindResource("CE_Comment") ?? Brushes.DimGray;
-            var hoverBrush  = (Brush?)TryFindResource("CE_Keyword") ?? Brushes.LightGray;
+            var normalBrush = (Brush?)TryFindResource("CE_Lens")       ?? Brushes.Gray;
+            var hoverBrush  = (Brush?)TryFindResource("CE_Lens_Hover") ?? Brushes.Silver;
+            var bgBrush     = (Brush?)TryFindResource("CE_Lens_Bg")    ?? Brushes.Transparent;
             double fontSize  = LensLineHeight * 0.72;   // ~11.5 px for a 16-px slot
             double baseX     = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
             double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
@@ -3087,7 +2943,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     int indent = 0;
                     while (indent < lineText.Length && (lineText[indent] == ' ' || lineText[indent] == '\t'))
                         indent++;
-                    double x = baseX + indent * _charWidth;
+                    double x = baseX + _glyphRenderer.ComputeVisualX(lineText, indent);
 
                     string label  = entry.Count == 1 ? "1 reference" : $"{entry.Count} references";
                     var    brush  = i == _hoveredLensLine ? hoverBrush : normalBrush;
@@ -3101,8 +2957,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         pixelsPerDip);
 
                     double y = GetLensZoneY(visIdx) + 1.0;  // 1 px top padding
+                    // Subtle pill background — makes the hint visually distinct from code/comments.
+                    dc.DrawRoundedRectangle(bgBrush, null, new Rect(x - 3, y, ft.Width + 6, ft.Height + 1), 3, 3);
                     dc.DrawText(ft, new Point(x, y));
-                    _lensHitZones.Add((new Rect(x, y, ft.Width + 4, LensLineHeight - 2), i, entry.Symbol));
+                    _lensHitZones.Add((new Rect(x - 3, y, ft.Width + 6, LensLineHeight - 2), i, entry.Symbol));
                 }
 
                 visIdx++;
@@ -3781,13 +3639,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (result.Line < _firstVisibleLine || result.Line > _lastVisibleLine)
                     continue;
 
-                // Calculate Y position with virtual scrolling support
-                double y = EnableVirtualScrolling && _virtualizationEngine != null
-                    ? TopMargin + _virtualizationEngine.GetLineYPosition(result.Line)
+                // Y: use _lineYLookup so CodeLens hint rows are accounted for
+                double y = _lineYLookup.TryGetValue(result.Line, out double ry) ? ry
                     : TopMargin + (result.Line - _firstVisibleLine) * _lineHeight;
 
-                double x1 = leftEdge + (result.Column * _charWidth);
-                double x2 = leftEdge + ((result.Column + _findMatchLength) * _charWidth);
+                // X: expand tabs correctly via ComputeVisualX instead of raw column * charWidth
+                var lineText = result.Line < _document.Lines.Count ? _document.Lines[result.Line].Text : string.Empty;
+                double x1 = leftEdge + _glyphRenderer.ComputeVisualX(lineText, result.Column);
+                double x2 = leftEdge + _glyphRenderer.ComputeVisualX(lineText, result.Column + _findMatchLength);
 
                 // Use HighlightMatchColor for current match, FindResultColor for others
                 Brush highlightBrush = (i == _currentFindMatchIndex)
@@ -7490,7 +7349,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
-            // 4. External / no LSP fallback — symbol not found locally.
+            // 3b. Workspace-wide declaration scan — searches all solution files of the same
+            //     extension using CodeStructureParser.  Handles cross-file navigation when
+            //     no LSP is running (e.g. Ctrl+Click on a type defined in another project file).
+            {
+                var ext = Path.GetExtension(_currentFilePath ?? string.Empty);
+                if (!string.IsNullOrEmpty(ext))
+                {
+                    var workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
+                    foreach (var path in workspacePaths)
+                    {
+                        if (path.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        var fileLines = WorkspaceFileCache.GetLines(path);
+                        if (fileLines is null) continue;
+
+                        // Wrap string[] as CodeLine list so CodeStructureParser can consume it.
+                        var codeLines = fileLines
+                            .Select((t, i) => new CodeLine(t, i))
+                            .ToList();
+
+                        var snap  = CodeStructureParser.Parse(codeLines);
+                        var found = snap.Types.Concat(snap.Members).FirstOrDefault(item =>
+                            string.Equals(item.Name, zone.SymbolName, StringComparison.Ordinal));
+
+                        if (found is not null)
+                        {
+                            ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                            {
+                                FilePath = path,
+                                Line     = found.Line + 1,
+                                Column   = 1
+                            });
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // 4. External / no LSP fallback — symbol not found in any solution file.
             HandleExternalDefinitionAsync(zone.SymbolName);
         }
 
@@ -7502,13 +7400,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locations,
             string symbolName)
         {
+            // Multiple definition locations (e.g. interface + implementation) — show popup
+            // so the user can pick the target rather than silently navigating to the first.
+            if (locations.Count > 1)
+            {
+                var groups = BuildGroupsFromLspLocations(locations, symbolName);
+                ShowReferencesPopup(groups, symbolName, locations.Count,
+                    source: "definition", line: _cursorLine, column: _cursorColumn);
+                return;
+            }
+
             var loc = locations[0];
             bool isMetadata = loc.Uri.StartsWith("metadata:", StringComparison.OrdinalIgnoreCase)
                            || loc.Uri.StartsWith("omnisharp-metadata:", StringComparison.OrdinalIgnoreCase);
 
             if (isMetadata)
             {
-                HandleExternalDefinitionAsync(symbolName);
+                // Pass the raw URI so the host can parse assembly/type from the query string.
+                HandleExternalDefinitionAsync(symbolName, loc.Uri);
                 return;
             }
 
@@ -7518,7 +7427,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (localPath is null || !System.IO.File.Exists(localPath))
             {
-                HandleExternalDefinitionAsync(symbolName);
+                HandleExternalDefinitionAsync(symbolName, loc.Uri);
                 return;
             }
 
@@ -7540,10 +7449,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Fires <see cref="GoToExternalDefinitionRequested"/> so the IDE host can route
         /// to AssemblyExplorer or open a decompiled-source tab.
         /// </summary>
-        private void HandleExternalDefinitionAsync(string symbolName)
+        private void HandleExternalDefinitionAsync(string symbolName, string? metadataUri = null)
         {
             GoToExternalDefinitionRequested?.Invoke(this,
-                new GoToExternalDefinitionEventArgs(symbolName, _currentFilePath));
+                new GoToExternalDefinitionEventArgs(symbolName, _currentFilePath, metadataUri));
         }
 
         // ═══════════════════════════════════════════════════════════════════════
@@ -7625,10 +7534,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         public string? SourceFilePath { get; }
 
-        internal GoToExternalDefinitionEventArgs(string symbolName, string? sourceFilePath)
+        /// <summary>
+        /// Raw LSP URI that identified this symbol as external (e.g.
+        /// "omnisharp-metadata:?assembly=System.Console&amp;type=System.Console&amp;...").
+        /// The IDE host can parse <c>assembly=</c> and <c>type=</c> query parameters to
+        /// locate and decompile the assembly. Null when the symbol was not resolved via LSP.
+        /// </summary>
+        public string? MetadataUri { get; }
+
+        internal GoToExternalDefinitionEventArgs(
+            string  symbolName,
+            string? sourceFilePath,
+            string? metadataUri = null)
         {
             SymbolName     = symbolName;
             SourceFilePath = sourceFilePath;
+            MetadataUri    = metadataUri;
         }
     }
 

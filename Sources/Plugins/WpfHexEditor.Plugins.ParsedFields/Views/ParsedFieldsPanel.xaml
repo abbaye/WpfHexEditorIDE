@@ -15,9 +15,11 @@
              Background="{DynamicResource PFP_PanelBackgroundBrush}">
 
     <UserControl.Resources>
-        <!-- Converter -->
+        <!-- Converters -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <!-- Collapses groups whose name matches the ConverterParameter (default: "Format Metadata") -->
+        <local:GroupNameToExpandedConverter x:Key="GroupNameToExpandedConverter"/>
 
         <!-- Style for field items with improved colors -->
         <Style x:Key="FieldItemStyle" TargetType="ListBoxItem">
@@ -224,11 +226,9 @@
             <RowDefinition Height="30"/>   <!-- VS-style toolbar -->
             <RowDefinition Height="Auto"/> <!-- Search box -->
             <RowDefinition Height="Auto"/> <!-- Format info -->
-            <RowDefinition Height="Auto"/> <!-- Enriched format metadata (C2b) -->
-            <RowDefinition Height="Auto"/> <!-- Computed Values spotlight (C1) -->
-            <RowDefinition Height="Auto"/> <!-- Key Insights strip (C4) -->
-            <RowDefinition Height="Auto"/> <!-- Coverage bar (C6) -->
-            <RowDefinition Height="*"/>    <!-- Fields list -->
+            <RowDefinition Height="Auto"/> <!-- Key Insights strip -->
+            <RowDefinition Height="Auto"/> <!-- Coverage bar -->
+            <RowDefinition Height="*"/>    <!-- Fields list (metadata+enriched+fields as groups) -->
             <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
@@ -562,255 +562,9 @@
             </StackPanel>
         </Border>
 
-        <!-- Enriched Format Metadata — full card section (C2b) -->
-        <Border Grid.Row="3"
-                x:Name="EnrichedFormatSection"
-                Visibility="{Binding EnrichedFormat.IsAvailable,
-                             RelativeSource={RelativeSource AncestorType=local:ParsedFieldsPanel},
-                             Converter={StaticResource BoolToVisibilityConverter}}"
-                Background="{DynamicResource PFP_SectionBackgroundBrush}"
-                BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource PFP_BorderBrush}">
-            <Expander IsExpanded="False"
-                      Padding="12,6"
-                      Foreground="{DynamicResource PFP_AccentBrush}"
-                      FontWeight="SemiBold" FontSize="11">
-                <Expander.Header>
-                    <TextBlock Text="Enriched Format Metadata" FontSize="11"
-                               FontWeight="SemiBold" Foreground="{DynamicResource PFP_AccentBrush}"/>
-                </Expander.Header>
-                <StackPanel Margin="12,6,12,8"
-                            DataContext="{Binding EnrichedFormat,
-                                          RelativeSource={RelativeSource AncestorType=local:ParsedFieldsPanel}}">
-
-                    <!-- Category -->
-                    <Grid Margin="0,0,0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Category" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{Binding FormatCategory}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_AccentBrush}" FontStyle="Italic"/>
-                    </Grid>
-
-                    <!-- Description -->
-                    <TextBlock Text="{Binding FormatDescription}" FontSize="10"
-                               TextWrapping="Wrap" Foreground="{DynamicResource PFP_SubTextBrush}"
-                               Margin="0,0,0,6"/>
-
-                    <!-- MIME Types -->
-                    <Grid Margin="0,0,0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="MIME Types" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" VerticalAlignment="Top"/>
-                        <TextBlock Grid.Column="1" Text="{Binding MimeTypesDisplay}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_TextBrush}" TextWrapping="Wrap"/>
-                    </Grid>
-
-                    <!-- Extensions -->
-                    <Grid Margin="0,0,0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Extensions" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" VerticalAlignment="Top"/>
-                        <TextBlock Grid.Column="1" Text="{Binding ExtensionsDisplay}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_TextBrush}" TextWrapping="Wrap"/>
-                    </Grid>
-
-                    <!-- Software -->
-                    <Grid Margin="0,0,0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Software" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" VerticalAlignment="Top"/>
-                        <TextBlock Grid.Column="1" Text="{Binding SoftwareDisplay}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_TextBrush}" TextWrapping="Wrap"/>
-                    </Grid>
-
-                    <!-- Use Cases -->
-                    <Grid Margin="0,0,0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Use Cases" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" VerticalAlignment="Top"/>
-                        <TextBlock Grid.Column="1" Text="{Binding UseCasesDisplay}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_TextBrush}" TextWrapping="Wrap"/>
-                    </Grid>
-
-                    <!-- Quality score bar -->
-                    <Grid Margin="0,4,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Quality" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" VerticalAlignment="Center"/>
-                        <Border Grid.Column="1" Height="6"
-                                Background="{DynamicResource PFP_CoverageTrackBrush}"
-                                CornerRadius="3" Margin="0,0,6,0" VerticalAlignment="Center">
-                            <Border x:Name="EnrichedQualityBar"
-                                    HorizontalAlignment="Left" Width="0"
-                                    Background="{DynamicResource PFP_AccentBrush}"
-                                    CornerRadius="3"/>
-                        </Border>
-                        <TextBlock Grid.Column="2" Text="{Binding CompletenessScoreDisplay}"
-                                   FontSize="10" FontWeight="Bold"
-                                   Foreground="{DynamicResource PFP_AccentBrush}" VerticalAlignment="Center"/>
-                    </Grid>
-
-                    <!-- Documentation level -->
-                    <Grid Margin="0,0,0,6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Doc Level" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{Binding DocumentationLevel}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_TextBrush}" FontWeight="SemiBold"/>
-                    </Grid>
-
-                    <!-- Separator before references -->
-                    <Border Height="1" Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,6"/>
-
-                    <!-- References header -->
-                    <TextBlock Text="📚 References" FontSize="10" FontWeight="SemiBold"
-                               Foreground="{DynamicResource PFP_AccentBrush}" Margin="0,0,0,4"
-                               Visibility="{Binding HasReferences, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                    <!-- Specifications -->
-                    <StackPanel Visibility="{Binding HasSpecifications, Converter={StaticResource BoolToVisibilityConverter}}"
-                                Margin="0,0,0,4">
-                        <TextBlock Text="Specifications:" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" Margin="0,0,0,2"/>
-                        <TextBlock Text="{Binding SpecificationsDisplay}"
-                                   FontSize="10" Foreground="{DynamicResource PFP_TextBrush}"
-                                   TextWrapping="Wrap" Margin="8,0,0,0"/>
-                    </StackPanel>
-
-                    <!-- Web links (populated dynamically by code-behind) -->
-                    <StackPanel Visibility="{Binding HasWebLinks, Converter={StaticResource BoolToVisibilityConverter}}"
-                                Margin="0,0,0,4">
-                        <TextBlock Text="Documentation:" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_SubTextBrush}" Margin="0,0,0,2"/>
-                        <StackPanel x:Name="EnrichedWebLinksPanel" Margin="8,0,0,0"/>
-                    </StackPanel>
-
-                    <!-- No references fallback -->
-                    <TextBlock Text="No references available."
-                               FontSize="10" FontStyle="Italic"
-                               Foreground="{DynamicResource PFP_SubTextBrush}"
-                               Visibility="{Binding HasReferences,
-                                            Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-
-                    <!-- Technical Details -->
-                    <StackPanel Visibility="{Binding HasTechnicalDetails, Converter={StaticResource BoolToVisibilityConverter}}"
-                                Margin="0,4,0,0">
-                        <Border Height="1" Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,6"/>
-                        <TextBlock Text="⚙ Technical Details" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_AccentBrush}" Margin="0,0,0,4"/>
-                        <TextBlock Text="{Binding TechnicalSummary}" FontSize="10"
-                                   TextWrapping="Wrap" Foreground="{DynamicResource PFP_TextBrush}"/>
-                    </StackPanel>
-
-                    <!-- Detection Info -->
-                    <StackPanel Visibility="{Binding HasDetectionInfo, Converter={StaticResource BoolToVisibilityConverter}}"
-                                Margin="0,4,0,0">
-                        <Border Height="1" Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,6"/>
-                        <TextBlock Text="🔍 Detection" FontSize="10" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_AccentBrush}" Margin="0,0,0,4"/>
-                        <Grid Margin="0,0,0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="70"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Signature" FontSize="10" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource PFP_SubTextBrush}"/>
-                            <TextBlock Grid.Column="1" Text="{Binding SignatureHex}"
-                                       FontSize="10" Foreground="{DynamicResource PFP_TextBrush}"
-                                       FontFamily="Consolas" TextWrapping="Wrap"/>
-                        </Grid>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="70"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Offset" FontSize="10" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource PFP_SubTextBrush}"/>
-                            <TextBlock Grid.Column="1" Text="{Binding OffsetDisplay}"
-                                       FontSize="10" Foreground="{DynamicResource PFP_TextBrush}"
-                                       FontFamily="Consolas"/>
-                        </Grid>
-                    </StackPanel>
-
-                </StackPanel>
-            </Expander>
-        </Border>
-
-        <!-- Computed Values Spotlight (C1) -->
-        <Border x:Name="ComputedValuesSection"
-                Grid.Row="4"
-                Background="{DynamicResource PFP_ComputedSectionBackgroundBrush}"
-                Padding="10,6"
-                BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource PFP_ComputedSectionBorderBrush}"
-                Visibility="Collapsed">
-            <StackPanel>
-                <TextBlock Text="Computed Values"
-                           FontSize="11"
-                           FontWeight="SemiBold"
-                           Foreground="{DynamicResource PFP_ComputedTitleBrush}"
-                           Margin="0,0,0,4"/>
-                <ItemsControl x:Name="MetadataItemsControl"
-                              ItemsSource="{Binding MetadataFields}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0"
-                                           Text="&#x2139;"
-                                           FontSize="11"
-                                           Foreground="{DynamicResource PFP_ComputedIconBrush}"
-                                           Margin="0,0,6,0"
-                                           VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1"
-                                           Text="{Binding Name}"
-                                           FontSize="11"
-                                           Foreground="{DynamicResource PFP_TextBrush}"
-                                           VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="2"
-                                           Text="{Binding FormattedValue}"
-                                           FontSize="11"
-                                           FontWeight="SemiBold"
-                                           FontFamily="Consolas"
-                                           Foreground="{DynamicResource PFP_ComputedValueBrush}"
-                                           VerticalAlignment="Center"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </Border>
-
-        <!-- Key Insights Strip (C4) -->
+        <!-- Key Insights Strip -->
         <Border x:Name="KeyInsightsSection"
-                Grid.Row="5"
+                Grid.Row="3"
                 Background="{DynamicResource PFP_InsightSectionBackgroundBrush}"
                 Padding="10,6"
                 BorderThickness="0,0,0,1"
@@ -848,9 +602,9 @@
             </StackPanel>
         </Border>
 
-        <!-- Byte Coverage Bar (C6) -->
+        <!-- Byte Coverage Bar -->
         <Border x:Name="CoverageBarSection"
-                Grid.Row="6"
+                Grid.Row="4"
                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
                 Padding="10,4"
                 BorderThickness="0,0,0,1"
@@ -880,9 +634,9 @@
             </Grid>
         </Border>
 
-        <!-- Fields list -->
+        <!-- Fields list — metadata, enriched, and parsed fields as collapsible groups -->
         <ListBox x:Name="FieldsListBox"
-                 Grid.Row="7"
+                 Grid.Row="5"
                  ItemsSource="{Binding FilteredFields}"
                  ItemTemplate="{StaticResource FieldTemplate}"
                  ItemContainerStyle="{StaticResource FieldItemStyle}"
@@ -903,7 +657,8 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander IsExpanded="True"
+                                        <Expander IsExpanded="{Binding Name, Mode=OneTime,
+                                                             Converter={StaticResource GroupNameToExpandedConverter}}"
                                                   BorderThickness="0"
                                                   Margin="0,2,0,0">
                                             <Expander.Header>
@@ -1062,7 +817,7 @@
         </ListBox>
 
         <!-- Status bar -->
-        <Border Grid.Row="8"
+        <Border Grid.Row="6"
                 Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Padding="12,6"
                 BorderThickness="0,1,0,0"

@@ -118,6 +118,13 @@ internal static class OutputLogger
         => Append($"---- {title} ------------------------------------", null, SourceBuild);
 
     /// <summary>
+    /// Writes a raw line to the Build channel without any timestamp or level prefix.
+    /// Used for VS-style summary separators (e.g. "========== Build: ... ==========").
+    /// </summary>
+    public static void BuildRaw(string message, Brush? color = null)
+        => Append(message, color, SourceBuild);
+
+    /// <summary>
     /// Switches the Output panel to the specified source channel on the UI thread.
     /// No-op if the panel is not registered.
     /// </summary>
@@ -163,6 +170,6 @@ internal static class OutputLogger
     private static void Append(string text, Brush? color, string source)
     {
         if (_panel is null) return;
-        _panel.OutputBox.Dispatcher.Invoke(() => _panel.AppendLine(text, color, source));
+        _ = _panel.OutputBox.Dispatcher.InvokeAsync(() => _panel.AppendLine(text, color, source));
     }
 }

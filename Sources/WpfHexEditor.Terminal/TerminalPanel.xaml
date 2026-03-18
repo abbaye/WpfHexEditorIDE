@@ -170,6 +170,12 @@
                                 <MenuItem Header="PowerShell"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="PowerShell"/>
+                                <MenuItem Header="Bash"
+                                          Command="{Binding SwitchModeCommand}"
+                                          CommandParameter="Bash"/>
+                                <MenuItem Header="CMD"
+                                          Command="{Binding SwitchModeCommand}"
+                                          CommandParameter="CMD"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                         <StackPanel Orientation="Horizontal">

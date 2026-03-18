@@ -304,6 +304,9 @@
     <SolidColorBrush x:Key="CE_Brace"         Color="#323130"/>
     <SolidColorBrush x:Key="CE_Attribute"     Color="#001080"/>
     <SolidColorBrush x:Key="CE_Error"         Color="#DC2626"/>
+    <SolidColorBrush x:Key="CE_Lens"          Color="#767676"/>
+    <SolidColorBrush x:Key="CE_Lens_Hover"    Color="#424242"/>
+    <SolidColorBrush x:Key="CE_Lens_Bg"       Color="#EEF2F7"/>
     <SolidColorBrush x:Key="CE_Background"    Color="#FFFFFF"/>
     <SolidColorBrush x:Key="CE_Foreground"    Color="#323130"/>
     <SolidColorBrush x:Key="CE_LineNumBg"     Color="#F5F5F5"/>

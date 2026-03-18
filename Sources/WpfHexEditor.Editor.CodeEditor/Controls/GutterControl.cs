@@ -7,8 +7,8 @@
 // Description:
 //     Thin strip rendered to the left of the CodeEditor that shows
 //     folding toggle buttons for each FoldingRegion opener line.
-//     Brace regions use a [+] / [−] box; directive (#region) regions
-//     use a VS Code-style filled triangle (▶ / ▼).
+//     All regions (brace and directive) use a unified VS Code-style
+//     filled triangle (▶ expanded / ▼ collapsed).
 //     Positioned and sized by the host CodeEditor after each layout pass.
 //
 // Architecture Notes:
@@ -28,7 +28,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
 /// <summary>
 /// Renders fold toggle markers in the code editor gutter.
-/// Brace regions → [+] / [−] box.  Directive regions → ▶ / ▼ filled triangle.
+/// All regions (brace and directive) → ▶ / ▼ filled triangle (VS Code style).
 /// The host <see cref="CodeEditor"/> must supply updated layout parameters
 /// via <see cref="Update"/> before each render pass.
 /// </summary>
@@ -49,12 +49,11 @@ internal sealed class GutterControl : FrameworkElement
 
     // Visual constants.
     private static readonly Brush    _buttonBrush    = Brushes.DimGray;
-    private static readonly Pen      _buttonPen      = MakeFrozenPen(Colors.DimGray, 1);
     private static readonly Typeface _markerTypeface = new("Consolas");
     private const double             MarkerSize      = 11.0;
     private const double             MarkerFontSize  = 9.0;
 
-    // Pre-built frozen triangle geometries for Directive regions (▶ and ▼).
+    // Pre-built frozen triangle geometries used for all fold regions (▶ and ▼).
     private static readonly Geometry _triRight = MakeTriangle(pointRight: true);  // expanded state
     private static readonly Geometry _triDown  = MakeTriangle(pointRight: false); // collapsed state
 
@@ -158,37 +157,14 @@ internal sealed class GutterControl : FrameworkElement
 
             var rect = new Rect(markerX, markerY, MarkerSize, MarkerSize);
 
-            if (region.Kind == FoldingRegionKind.Directive)
-                DrawDirectiveToggle(dc, rect, region.IsCollapsed);
-            else
-                DrawBraceToggle(dc, rect, region.IsCollapsed);
+            DrawDirectiveToggle(dc, rect, region.IsCollapsed);
 
             // Register hit rect for click detection.
             _hitRects.Add((rect, startLine));
         }
     }
 
-    // Renders the [+] / [−] box used for brace-delimited regions.
-    private void DrawBraceToggle(DrawingContext dc, Rect rect, bool isCollapsed)
-    {
-        dc.DrawRectangle(Brushes.Transparent, _buttonPen, rect);
-
-        string symbol = isCollapsed ? "+" : "\u2212"; // minus sign
-        var ft = new FormattedText(
-            symbol,
-            System.Globalization.CultureInfo.CurrentCulture,
-            FlowDirection.LeftToRight,
-            _markerTypeface,
-            MarkerFontSize,
-            _buttonBrush,
-            VisualTreeHelper.GetDpi(this).PixelsPerDip);
-
-        dc.DrawText(ft, new Point(
-            rect.X + (rect.Width  - ft.Width)  / 2,
-            rect.Y + (rect.Height - ft.Height) / 2));
-    }
-
-    // Renders a filled triangle (▶ expanded / ▼ collapsed) for #region directive regions.
+    // Renders a filled triangle (▶ expanded / ▼ collapsed) for all fold regions.
     private static void DrawDirectiveToggle(DrawingContext dc, Rect rect, bool isCollapsed)
     {
         // Select the pre-built geometry: ▶ when expanded (collapsible), ▼ when collapsed.
@@ -231,13 +207,6 @@ internal sealed class GutterControl : FrameworkElement
     #endregion
 
     #region Helpers
-
-    private static Pen MakeFrozenPen(Color color, double thickness)
-    {
-        var pen = new Pen(new SolidColorBrush(color), thickness);
-        pen.Freeze();
-        return pen;
-    }
 
     /// <summary>
     /// Builds a frozen filled triangle fitting within a [0,0]→[MarkerSize,MarkerSize] box.

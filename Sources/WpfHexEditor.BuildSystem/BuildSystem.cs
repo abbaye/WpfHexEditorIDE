@@ -81,34 +81,62 @@ public sealed class BuildSystem : IBuildSystem
 
     public async Task CleanSolutionAsync(CancellationToken ct = default)
     {
-        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean started ==========" });
-        var progress = new Progress<string>(line => _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
-
-        var slnPath = GetVsSolutionFilePath();
-        if (slnPath is not null)
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        _activeCts = linkedCts;
+        try
         {
-            var adapter = FindAdapter(slnPath);
-            if (adapter is not null)
-                await adapter.CleanAsync(slnPath, _configurationManager.ActiveConfiguration, progress, ct);
-        }
-        else
-        {
-            foreach (var (path, config) in GetAllProjectPaths())
-                await CleanAsync(path, config, progress, ct);
-        }
+            _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean started ==========" });
+            var progress = new Progress<string>(line => _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
 
-        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean finished ==========" });
+            var slnPath = GetVsSolutionFilePath();
+            if (slnPath is not null)
+            {
+                var adapter = FindAdapter(slnPath);
+                if (adapter is not null)
+                    await adapter.CleanAsync(slnPath, _configurationManager.ActiveConfiguration, progress, linkedCts.Token);
+            }
+            else
+            {
+                foreach (var (path, config) in GetAllProjectPaths())
+                    await CleanAsync(path, config, progress, linkedCts.Token);
+            }
+
+            _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean finished ==========" });
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation is a normal user action — publish a banner and suppress the exception
+            // so it doesn't escape through the async void click handler and crash the app.
+            _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean cancelled ==========" });
+        }
+        finally
+        {
+            _activeCts = null;
+        }
     }
 
     public async Task CleanProjectAsync(string projectId, CancellationToken ct = default)
     {
-        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean started ==========" });
-        var progress = new Progress<string>(line => _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        _activeCts = linkedCts;
+        try
+        {
+            _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean started ==========" });
+            var progress = new Progress<string>(line => _eventBus.Publish(new BuildOutputLineEvent { Line = line }));
 
-        foreach (var (path, config) in GetProjectPath(projectId))
-            await CleanAsync(path, config, progress, ct);
+            foreach (var (path, config) in GetProjectPath(projectId))
+                await CleanAsync(path, config, progress, linkedCts.Token);
 
-        _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean finished ==========" });
+            _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean finished ==========" });
+        }
+        catch (OperationCanceledException)
+        {
+            _eventBus.Publish(new BuildOutputLineEvent { Line = "========== Clean cancelled ==========" });
+        }
+        finally
+        {
+            _activeCts = null;
+        }
     }
 
     public void CancelBuild()
@@ -307,7 +335,7 @@ public sealed class BuildSystem : IBuildSystem
                     StartedAt      = startedAt,
                     SucceededCount = succeededProjs,
                     FailedCount    = 0,
-                    SkippedCount   = 0,
+                    SkippedCount   = skippedProjs,
                 });
             else
                 _eventBus.Publish(new BuildFailedEvent

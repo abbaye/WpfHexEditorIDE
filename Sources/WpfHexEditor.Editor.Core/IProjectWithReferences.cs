@@ -23,6 +23,12 @@ namespace WpfHexEditor.Editor.Core;
 public interface IProjectWithReferences
 {
     /// <summary>
+    /// MSBuild output type: <c>"Exe"</c>, <c>"WinExe"</c>, <c>"Library"</c>, etc.
+    /// Used to determine whether a project can be used as a startup project.
+    /// </summary>
+    string OutputType { get; }
+
+    /// <summary>
     /// Programming language of the project.
     /// Typical values: <c>"C#"</c>, <c>"VB"</c>, <c>"F#"</c>.
     /// </summary>

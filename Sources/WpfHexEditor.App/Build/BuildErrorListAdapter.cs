@@ -57,7 +57,14 @@ internal sealed class BuildErrorListAdapter : IDiagnosticSource, IDisposable
     /// </summary>
     public void SetDiagnostics(IEnumerable<BuildDiagnostic> diagnostics)
     {
-        _entries = diagnostics
+        var list = diagnostics.ToList();
+        // TEMP DEBUG — remove once Error List warnings confirmed working
+        OutputLogger.BuildInfo(
+            $"[ErrorListAdapt] incoming={list.Count} " +
+            $"(errors={list.Count(d => d.Severity == DiagnosticSeverity.Error)}, " +
+            $"warnings={list.Count(d => d.Severity == DiagnosticSeverity.Warning)})");
+
+        _entries = list
             .Select(d => new DiagnosticEntry(
                 Severity    : MapSeverity(d.Severity),
                 Code        : d.Code,

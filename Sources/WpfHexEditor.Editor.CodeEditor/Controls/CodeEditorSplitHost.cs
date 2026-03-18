@@ -22,6 +22,7 @@
 // ==========================================================
 
 using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +33,8 @@ using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Views;
+using EditorStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
 using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
@@ -41,7 +44,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument, INavigableDocument
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor
 {
     #region Child controls
 
@@ -58,6 +61,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     // The editor that most recently received focus — commands delegate to this one.
     private CodeEditor _activeEditor;
+
+    // -- QuickSearch overlay -----------------------------------------------
+    private readonly Canvas         _searchBarCanvas;
+    private readonly QuickSearchBar _searchBarOverlay;
 
     #endregion
 
@@ -128,8 +135,8 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         // -- Initialise active editor and wire focus tracking -----------------
         _activeEditor = _primaryEditor;
 
-        _primaryEditor.GotFocus   += (_, _) => _activeEditor = _primaryEditor;
-        _secondaryEditor.GotFocus += (_, _) => _activeEditor = _secondaryEditor;
+        _primaryEditor.GotFocus   += (_, _) => { _activeEditor = _primaryEditor;   _activeEditor.RefreshJsonStatusBarItems(); };
+        _secondaryEditor.GotFocus += (_, _) => { _activeEditor = _secondaryEditor; _activeEditor.RefreshJsonStatusBarItems(); };
 
         // -- Forward events from primary editor (document is shared) -----------
         _primaryEditor.ModifiedChanged  += (s, e) => ModifiedChanged?.Invoke(this, e);
@@ -154,6 +161,18 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
         // Connect the secondary editor to the same document after primary is loaded.
         Loaded += OnHostLoaded;
+
+        // -- QuickSearch overlay (Canvas floats above all rows) ---------------
+        _searchBarCanvas = new Canvas();
+        SetRow(_searchBarCanvas, 0);
+        SetRowSpan(_searchBarCanvas, 4);        // navBar + primary + splitter + secondary
+        Panel.SetZIndex(_searchBarCanvas, 10);
+        _searchBarOverlay = new QuickSearchBar { Width = 520, Visibility = Visibility.Collapsed };
+        _searchBarOverlay.OnCloseRequested += (_, _) => HideSearch();
+        _searchBarCanvas.Children.Add(_searchBarOverlay);
+        Children.Add(_searchBarCanvas);
+
+        PreviewKeyDown += OnHostPreviewKeyDown;
     }
 
     #endregion
@@ -173,6 +192,48 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
     /// Programmatically toggles the split view.
     /// </summary>
     public void ToggleSplit() => _splitToggle.IsChecked = !_splitToggle.IsChecked;
+
+    #endregion
+
+    #region Quick Search
+
+    /// <summary>
+    /// Shows the inline unified search bar and binds it to the currently active editor.
+    /// If already visible, just re-focuses the search input.
+    /// </summary>
+    public void ShowSearch()
+    {
+        if (_searchBarOverlay.Visibility == Visibility.Visible)
+        {
+            _searchBarOverlay.FocusSearchInput();
+            return;
+        }
+
+        _searchBarOverlay.BindToTarget(_activeEditor);
+        _searchBarOverlay.Visibility = Visibility.Visible;
+        _searchBarOverlay.EnsureDefaultPosition(_searchBarCanvas);
+    }
+
+    /// <summary>Hides the inline search bar and clears its bound state.</summary>
+    public void HideSearch()
+    {
+        _searchBarOverlay.Visibility = Visibility.Collapsed;
+        _searchBarOverlay.Detach();
+    }
+
+    private void OnHostPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+        {
+            ShowSearch();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Escape && _searchBarOverlay.Visibility == Visibility.Visible)
+        {
+            HideSearch();
+            e.Handled = true;
+        }
+    }
 
     #endregion
 
@@ -372,4 +433,14 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
     public event EventHandler<GoToExternalDefinitionEventArgs>? GoToExternalDefinitionRequested;
 
     #endregion
+
+    // ═══════════════════════════════════════════════════════════════════
+    // IStatusBarContributor — delegates to the active (focused) editor pane
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// <inheritdoc />
+    public ObservableCollection<EditorStatusBarItem> StatusBarItems => _activeEditor.StatusBarItems;
+
+    /// <inheritdoc />
+    public void RefreshStatusBarItems() => _activeEditor.RefreshJsonStatusBarItems();
 }

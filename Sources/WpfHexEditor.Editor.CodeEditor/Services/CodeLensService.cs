@@ -75,12 +75,14 @@ internal sealed class CodeLensService : IDisposable
         _currentFilePath       = currentFilePath;
         _document              = document;
         _document.TextChanged += OnDocumentTextChanged;
+        WorkspaceFileCache.WorkspaceChanged += OnWorkspaceChanged;
         ScheduleRefresh();
     }
 
     /// <summary>Detaches from the current document and cancels any pending work.</summary>
     internal void Detach()
     {
+        WorkspaceFileCache.WorkspaceChanged -= OnWorkspaceChanged;
         _debounce.Stop();
 
         if (_document is not null)
@@ -106,6 +108,10 @@ internal sealed class CodeLensService : IDisposable
 
     private void OnDocumentTextChanged(object sender, TextChangedEventArgs e)
         => ScheduleRefresh();
+
+    // WorkspaceChanged fires on an arbitrary thread — marshal to the UI dispatcher.
+    private void OnWorkspaceChanged()
+        => _debounce.Dispatcher.InvokeAsync(ScheduleRefresh);
 
     private void OnDebounceTick(object? sender, EventArgs e)
     {
@@ -186,6 +192,12 @@ internal sealed class CodeLensService : IDisposable
 
             // Count in the current in-memory document.
             int count = CountWholeWordOccurrences(lines, symbol, ct);
+
+            // TODO: Count references from decompiled external assemblies (referenced NuGet/GAC/project
+            //       dependencies). Requires an IDecompilerService scan per referenced assembly,
+            //       filtering by symbol name, and summing across all resolved assembly sources.
+            //       Candidate approach: reuse AssemblyAnalysisEngine (CSharpSkeletonEmitter) +
+            //       a per-assembly WorkspaceFileCache bucket keyed by assembly identity.
 
             // Count across all solution files of the same extension, skipping the
             // current file (already counted above via in-memory lines).

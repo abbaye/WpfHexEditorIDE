@@ -2376,17 +2376,22 @@ namespace WpfHexEditor.Core.FormatDetection
         }
 
         /// <summary>
-        /// Parses PDF to find version and attempt page count extraction.
-        /// Sets variables: pdfVersion, pdfPageCount, pdfEncrypted, pdfLinearized
+        /// Parses PDF to find version, page count, encryption flag, producer, and file size.
+        /// Sets variables: pdfVersion, pdfPageCount, pdfEncrypted, pdfLinearized,
+        ///                  pdfProducer, pdfCreator, fileSize, formattedSize
         /// </summary>
         public void ParsePDFTrailer()
         {
             try
             {
-                _variables["pdfVersion"] = "Unknown";
+                _variables["pdfVersion"]   = "Unknown";
                 _variables["pdfPageCount"] = 0;
                 _variables["pdfEncrypted"] = false;
                 _variables["pdfLinearized"] = false;
+                _variables["pdfProducer"]  = "";
+                _variables["pdfCreator"]   = "";
+                _variables["fileSize"]     = (long)_data.Length;
+                _variables["formattedSize"] = FormatBytesAsString(_data.Length);
 
                 // PDF version from first line: %PDF-1.7
                 if (_data.Length >= 8 && _data[0] == 0x25 && _data[1] == 0x50)
@@ -2398,36 +2403,99 @@ namespace WpfHexEditor.Core.FormatDetection
                 }
 
                 // Search for /Linearized and /Encrypt in first 4KB
-                int searchLen = Math.Min(_data.Length, 4096);
-                string content = System.Text.Encoding.ASCII.GetString(_data, 0, searchLen);
+                int headLen = Math.Min(_data.Length, 4096);
+                string headContent = System.Text.Encoding.ASCII.GetString(_data, 0, headLen);
 
-                if (content.Contains("/Linearized"))
+                if (headContent.Contains("/Linearized"))
                     _variables["pdfLinearized"] = true;
-                if (content.Contains("/Encrypt"))
+                if (headContent.Contains("/Encrypt"))
                     _variables["pdfEncrypted"] = true;
 
-                // Try to find page count: /Count N in Pages dictionary
-                int countIdx = content.IndexOf("/Count ");
+                // Also check last 8KB for /Encrypt (may appear in trailer only)
+                int tailStart = Math.Max(0, _data.Length - 8192);
+                int tailLen   = _data.Length - tailStart;
+                string tailContent = System.Text.Encoding.ASCII.GetString(_data, tailStart, tailLen);
+
+                if (tailContent.Contains("/Encrypt"))
+                    _variables["pdfEncrypted"] = true;
+
+                // Try to find page count: /Count N (search whole file up to 32KB then tail)
+                string searchContent = headContent;
+                if (!searchContent.Contains("/Count ") && _data.Length > 4096)
+                    searchContent = tailContent;
+
+                int countIdx = searchContent.IndexOf("/Count ");
                 if (countIdx >= 0)
                 {
-                    string after = content.Substring(countIdx + 7, Math.Min(10, content.Length - countIdx - 7));
-                    string numStr = "";
+                    string after = searchContent.Substring(countIdx + 7,
+                        Math.Min(10, searchContent.Length - countIdx - 7));
+                    var numStr = new System.Text.StringBuilder();
                     foreach (char c in after)
                     {
-                        if (char.IsDigit(c)) numStr += c;
+                        if (char.IsDigit(c)) numStr.Append(c);
                         else if (numStr.Length > 0) break;
                     }
-                    if (int.TryParse(numStr, out int pageCount))
+                    if (int.TryParse(numStr.ToString(), out int pageCount) && pageCount > 0)
                         _variables["pdfPageCount"] = pageCount;
                 }
+
+                // Extract /Producer and /Creator from trailer/info dict (last 8KB)
+                _variables["pdfProducer"] = ExtractPdfStringValue(tailContent, "/Producer");
+                _variables["pdfCreator"]  = ExtractPdfStringValue(tailContent, "/Creator");
             }
             catch
             {
-                _variables["pdfVersion"] = "Error";
+                _variables["pdfVersion"]   = "Error";
                 _variables["pdfPageCount"] = 0;
                 _variables["pdfEncrypted"] = false;
                 _variables["pdfLinearized"] = false;
+                _variables["fileSize"]     = (long)_data.Length;
+                _variables["formattedSize"] = FormatBytesAsString(_data.Length);
             }
+        }
+
+        /// <summary>
+        /// Extracts a parenthesised PDF string value for a given key from content.
+        /// Handles escaped characters and UTF-16BE BOM.
+        /// </summary>
+        private static string ExtractPdfStringValue(string content, string key)
+        {
+            int keyIdx = content.IndexOf(key, StringComparison.Ordinal);
+            if (keyIdx < 0) return "";
+
+            int openParen = content.IndexOf('(', keyIdx + key.Length);
+            if (openParen < 0 || openParen - keyIdx > 40) return "";
+
+            // Read until matching closing paren (handle nesting and escapes)
+            var sb = new System.Text.StringBuilder();
+            int depth = 0;
+            for (int i = openParen + 1; i < content.Length && i < openParen + 512; i++)
+            {
+                char c = content[i];
+                if (c == '\\' && i + 1 < content.Length) { i++; continue; } // skip escape
+                if (c == '(') { depth++; continue; }
+                if (c == ')') { if (depth-- == 0) break; continue; }
+                sb.Append(c);
+            }
+
+            string result = sb.ToString().Trim();
+
+            // Strip UTF-16BE BOM if present (PDF sometimes stores as Unicode)
+            if (result.StartsWith("\xFE\xFF", StringComparison.Ordinal))
+                result = result.Substring(2);
+
+            return result.Length > 0 ? result : "";
+        }
+
+        /// <summary>
+        /// Formats a byte count as a human-readable size string (KB, MB, GB).
+        /// </summary>
+        private static string FormatBytesAsString(long bytes)
+        {
+            if (bytes < 1024)         return $"{bytes} B";
+            if (bytes < 1024 * 1024)  return $"{bytes / 1024.0:0.#} KB";
+            if (bytes < 1024L * 1024 * 1024) return $"{bytes / (1024.0 * 1024):0.##} MB";
+            return $"{bytes / (1024.0 * 1024 * 1024):0.##} GB";
         }
 
         /// <summary>

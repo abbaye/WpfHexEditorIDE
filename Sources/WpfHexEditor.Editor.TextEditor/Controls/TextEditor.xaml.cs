@@ -28,7 +28,7 @@ namespace WpfHexEditor.Editor.TextEditor.Controls;
 /// <see cref="IEditorPersistable"/>, and <see cref="INavigableDocument"/> so the project system
 /// can save/restore per-file state and the Error List can navigate to a specific line.
 /// </summary>
-public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor
+public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor, ISearchTarget
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -37,6 +37,12 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     private readonly TextEditorViewModel _vm = new();
     private CancellationTokenSource? _cts         = null; // reserved for future async operations
     private TextLinkAdorner?         _linkAdorner = null;
+
+    // -- ISearchTarget -------------------------------------------------------
+    private readonly List<(int Line, int Col)> _searchMatches = new();
+    private int    _searchCurrentIndex = -1;
+    private int    _searchMatchLength  = 0;
+    public  event  EventHandler? SearchResultsChanged;
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -663,6 +669,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     private StatusBarItem _sbTeZoom     = null!;
     private StatusBarItem _sbTeEncoding = null!;
 
+    /// <inheritdoc />
     public ObservableCollection<StatusBarItem> StatusBarItems
         => _teStatusBarItems ??= BuildTextStatusBarItems();
 
@@ -706,6 +713,162 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         string zoomLabel = _sbTeZoom.Value;
         foreach (var choice in _sbTeZoom.Choices)
             choice.IsActive = choice.DisplayName == zoomLabel;
+    }
+
+    // -----------------------------------------------------------------------
+    // ISearchTarget — inline QuickSearchBar support
+    // -----------------------------------------------------------------------
+
+    SearchBarCapabilities ISearchTarget.Capabilities =>
+        SearchBarCapabilities.CaseSensitive | SearchBarCapabilities.Replace;
+
+    int ISearchTarget.MatchCount        => _searchMatches.Count;
+    int ISearchTarget.CurrentMatchIndex => _searchCurrentIndex;
+
+    UIElement? ISearchTarget.GetCustomFiltersContent() => null;
+
+    void ISearchTarget.Find(string query, SearchTargetOptions options)
+    {
+        _searchMatches.Clear();
+        _searchCurrentIndex = -1;
+        _searchMatchLength  = 0;
+
+        if (string.IsNullOrEmpty(query)) { SearchResultsChanged?.Invoke(this, EventArgs.Empty); return; }
+
+        _searchMatchLength = query.Length;
+        var comparison = options.HasFlag(SearchTargetOptions.CaseSensitive)
+            ? StringComparison.Ordinal
+            : StringComparison.OrdinalIgnoreCase;
+
+        for (int li = 0; li < _vm.LineCount; li++)
+        {
+            var lineText = _vm.GetLine(li);
+            int idx = 0;
+            while ((idx = lineText.IndexOf(query, idx, comparison)) >= 0)
+            {
+                _searchMatches.Add((li, idx));
+                idx += query.Length;
+            }
+        }
+
+        if (_searchMatches.Count > 0)
+        {
+            _searchCurrentIndex = 0;
+            NavigateToSearchMatch(_searchCurrentIndex);
+        }
+
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void ISearchTarget.FindNext()
+    {
+        if (_searchMatches.Count == 0) return;
+        _searchCurrentIndex = (_searchCurrentIndex + 1) % _searchMatches.Count;
+        NavigateToSearchMatch(_searchCurrentIndex);
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void ISearchTarget.FindPrevious()
+    {
+        if (_searchMatches.Count == 0) return;
+        _searchCurrentIndex = (_searchCurrentIndex - 1 + _searchMatches.Count) % _searchMatches.Count;
+        NavigateToSearchMatch(_searchCurrentIndex);
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void ISearchTarget.ClearSearch()
+    {
+        _searchMatches.Clear();
+        _searchCurrentIndex = -1;
+        _searchMatchLength  = 0;
+        _vm.ClearSelection();
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void ISearchTarget.Replace(string replacement)
+    {
+        if (_searchCurrentIndex < 0 || _searchCurrentIndex >= _searchMatches.Count) return;
+        var (line, col) = _searchMatches[_searchCurrentIndex];
+
+        // Set selection to the match span, then replace via ViewModel
+        _vm.SelectionAnchorLine   = line;
+        _vm.SelectionAnchorColumn = col;
+        _vm.CaretLine   = line;
+        _vm.CaretColumn = col + _searchMatchLength;
+        _vm.DeleteSelectedText();
+        _vm.InsertText(replacement);
+
+        // Re-run find to refresh match list
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void ISearchTarget.ReplaceAll(string replacement)
+    {
+        if (_searchMatches.Count == 0) return;
+
+        // Replace from bottom to top so earlier offsets remain valid
+        for (int i = _searchMatches.Count - 1; i >= 0; i--)
+        {
+            var (line, col) = _searchMatches[i];
+            _vm.SelectionAnchorLine   = line;
+            _vm.SelectionAnchorColumn = col;
+            _vm.CaretLine   = line;
+            _vm.CaretColumn = col + _searchMatchLength;
+            _vm.DeleteSelectedText();
+            _vm.InsertText(replacement);
+        }
+
+        _searchMatches.Clear();
+        _searchCurrentIndex = -1;
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void NavigateToSearchMatch(int index)
+    {
+        var (line, col) = _searchMatches[index];
+        _vm.SelectionAnchorLine   = line;
+        _vm.SelectionAnchorColumn = col;
+        _vm.CaretLine   = line;
+        _vm.CaretColumn = col + _searchMatchLength;
+
+        if (Viewport.LineHeight > 0)
+            ScrollView.ScrollToVerticalOffset(Math.Max(0, (line - 3) * Viewport.LineHeight));
+    }
+
+    // -----------------------------------------------------------------------
+    // Quick Search Bar — show / hide + keyboard hook
+    // -----------------------------------------------------------------------
+
+    private void ShowSearch()
+    {
+        if (QuickSearchBarOverlay.Visibility == Visibility.Visible)
+        {
+            QuickSearchBarOverlay.FocusSearchInput();
+            return;
+        }
+
+        QuickSearchBarOverlay.OnCloseRequested -= OnSearchBarCloseRequested;
+        QuickSearchBarOverlay.OnCloseRequested += OnSearchBarCloseRequested;
+        QuickSearchBarOverlay.BindToTarget(this);
+        QuickSearchBarOverlay.Visibility = Visibility.Visible;
+        QuickSearchBarOverlay.EnsureDefaultPosition(SearchBarCanvas);
+    }
+
+    private void HideSearch()
+    {
+        QuickSearchBarOverlay.Visibility = Visibility.Collapsed;
+        QuickSearchBarOverlay.Detach();
+        ((ISearchTarget)this).ClearSearch();
+    }
+
+    private void OnSearchBarCloseRequested(object? sender, EventArgs e) => HideSearch();
+
+    private void OnKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+        { ShowSearch(); e.Handled = true; }
+        else if (e.Key == Key.Escape && QuickSearchBarOverlay.Visibility == Visibility.Visible)
+        { HideSearch(); e.Handled = true; }
     }
 }
 

@@ -506,6 +506,9 @@ namespace WpfHexEditor.HexEditor.ViewModels
                 WebLinks = new List<string>();
             }
 
+            // HasReferences is computed from HasSpecifications || HasWebLinks — notify explicitly
+            OnPropertyChanged(nameof(HasReferences));
+
             if (_currentFormat.QualityMetrics != null)
             {
                 CompletenessScore = _currentFormat.QualityMetrics.CompletenessScore;

@@ -118,8 +118,10 @@ public sealed class StartupProjectRunner
     /// Queries <c>dotnet msbuild -getProperty:TargetPath</c> to obtain the
     /// absolute path of the compiled output without triggering a rebuild.
     /// Available since .NET SDK 7.0.
+    /// Parses stdout line by line to handle SDK versions that emit extra header
+    /// lines before the actual property value.
     /// </summary>
-    private static async Task<string?> ResolveTargetPathAsync(
+    private async Task<string?> ResolveTargetPathAsync(
         string            csprojPath,
         string            configName,
         CancellationToken ct)
@@ -140,11 +142,30 @@ public sealed class StartupProjectRunner
         psi.ArgumentList.Add($"-p:Configuration={configName}");
 
         using var proc = Process.Start(psi)!;
-        var output = await proc.StandardOutput.ReadToEndAsync(ct);
-        await proc.WaitForExitAsync(ct);
 
-        var path = output.Trim();
-        return File.Exists(path) ? path : null;
+        // Read stdout and stderr concurrently to avoid deadlocks on large output.
+        var stdoutTask = proc.StandardOutput.ReadToEndAsync(ct);
+        var stderrTask = proc.StandardError.ReadToEndAsync(ct);
+        await proc.WaitForExitAsync(ct);
+        var stdout = await stdoutTask;
+        var stderr = await stderrTask;
+
+        // Some SDK versions emit header/warning lines before the property value.
+        // Take the last non-empty line that looks like an absolute path.
+        var path = stdout
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .LastOrDefault(Path.IsPathRooted);
+
+        if (!string.IsNullOrWhiteSpace(stderr))
+            Log($"[TargetPath] {stderr.Trim()}");
+
+        if (path is null || !File.Exists(path))
+        {
+            Log($"[TargetPath] stdout='{stdout.Trim()}' exitCode={proc.ExitCode}");
+            return null;
+        }
+
+        return path;
     }
 
     // -----------------------------------------------------------------------

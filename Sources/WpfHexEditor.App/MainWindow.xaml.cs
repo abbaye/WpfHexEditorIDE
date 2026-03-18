@@ -61,6 +61,8 @@ using System.Windows.Threading;
 using WpfHexEditor.Options;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
+using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using WpfHexEditor.SDK.Descriptors;
 using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
 using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
@@ -634,6 +636,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        RefreshStartupProjectList();
         RebuildTblItemList();
         RefreshAllChangesetNodes();
         PopulateRecentMenus();
@@ -1459,17 +1462,166 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OnOpenInTextEditorRequested(sender, entry);
     }
 
-    private void OnGoToExternalDefinitionRequested(
+    private async void OnGoToExternalDefinitionRequested(
         object? sender,
         WpfHexEditor.Editor.CodeEditor.Controls.GoToExternalDefinitionEventArgs e)
     {
-        // The symbol is external (BCL / NuGet assembly).
-        // Try to surface it in AssemblyExplorer (plugin system) if it is loaded.
-        // For now: log a helpful message in the Output panel and show an info tooltip
-        // so the user knows they can load the assembly in AssemblyExplorer manually.
-        OutputLogger.Info(
-            $"[Go to Definition] '{e.SymbolName}' is defined in an external assembly. " +
-            "Load the assembly in Assembly Explorer to navigate to its decompiled source.");
+        // Parse assembly name + type name from the LSP metadata URI (if present).
+        // OmniSharp format: omnisharp-metadata:?assembly=System.Console&type=System.Console&...
+        var (assemblyName, typeName) = ParseMetadataUri(e.MetadataUri);
+
+        if (assemblyName is null)
+        {
+            OutputLogger.Info(
+                $"[Go to Definition] '{e.SymbolName}' is in an external assembly. " +
+                "Load the assembly in Assembly Explorer to navigate to its decompiled source.");
+            return;
+        }
+
+        // Reuse an already-open tab if the same type was decompiled before.
+        var uiId = $"decompiled:{assemblyName}:{typeName ?? e.SymbolName}";
+        if (_layout.FindItemByContentId(uiId) is not null)
+        {
+            _dockingAdapter!.ShowDockablePanel(uiId);
+            return;
+        }
+
+        // Locate the assembly DLL on disk.
+        var dllPath = FindAssemblyPath(assemblyName);
+        if (dllPath is null)
+        {
+            OutputLogger.Warn(
+                $"[Go to Definition] Cannot locate '{assemblyName}.dll'. " +
+                "Load the assembly in Assembly Explorer to navigate to its decompiled source.");
+            return;
+        }
+
+        try
+        {
+            // Analyze + decompile on a background thread.
+            var engine = new AssemblyAnalysisEngine();
+            var model  = await engine.AnalyzeAsync(dllPath).ConfigureAwait(true);
+
+            var emitter    = new CSharpSkeletonEmitter();
+            var targetType = model.Types.FirstOrDefault(t =>
+                string.Equals(t.Name,     typeName ?? e.SymbolName, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(t.FullName, typeName ?? e.SymbolName, StringComparison.OrdinalIgnoreCase));
+
+            var source = targetType is not null
+                ? emitter.EmitType(targetType)
+                : emitter.EmitAssemblyInfo(model);   // fallback: show assembly overview
+
+            // Create a read-only TextEditor tab with the decompiled C# skeleton.
+            var label = targetType?.Name ?? assemblyName;
+            var te    = new WpfHexEditor.Editor.TextEditor.Controls.TextEditor();
+            te.SetContentDirect(source, readOnly: true, languageName: "C#");
+
+            _dockingAdapter!.AddDocumentTab(uiId, te,
+                new DocumentDescriptor { Title = $"{label} (decompiled)", CanClose = true });
+
+            // Scroll to the line that declares the requested symbol.
+            if (targetType is not null)
+            {
+                int targetLine = FindSymbolLineInSource(source, e.SymbolName);
+                if (targetLine > 0)
+                    te.GoToLine(targetLine);
+            }
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Warn(
+                $"[Go to Definition] Decompilation failed for '{assemblyName}': {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Parses the assembly name and type name from an OmniSharp / LSP metadata URI.
+    /// Format: omnisharp-metadata:?assembly=System.Console&amp;type=System.Console&amp;...
+    /// Returns (null, null) when the URI is null or cannot be parsed.
+    /// </summary>
+    private static (string? AssemblyName, string? TypeName) ParseMetadataUri(string? uri)
+    {
+        if (string.IsNullOrEmpty(uri)) return (null, null);
+
+        try
+        {
+            int q = uri.IndexOf('?');
+            if (q < 0) return (null, null);
+
+            string? assemblyName = null, typeName = null;
+
+            foreach (var part in uri.AsSpan(q + 1).ToString().Split('&'))
+            {
+                int idx = part.IndexOf('=');
+                if (idx < 0) continue;
+
+                var key   = part[..idx];
+                var value = Uri.UnescapeDataString(part[(idx + 1)..]);
+
+                if (key.Equals("assembly", StringComparison.OrdinalIgnoreCase))
+                    assemblyName = value;
+                else if (key.Equals("type", StringComparison.OrdinalIgnoreCase))
+                    typeName = value;
+            }
+
+            return (assemblyName, typeName);
+        }
+        catch { return (null, null); }
+    }
+
+    /// <summary>
+    /// Locates a managed assembly DLL by short name.
+    /// Search order: loaded AppDomain → .NET runtime directory → NuGet package cache.
+    /// </summary>
+    private static string? FindAssemblyPath(string assemblyName)
+    {
+        // 1. Already loaded in this AppDomain — fastest path.
+        var loaded = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => string.Equals(
+                a.GetName().Name, assemblyName, StringComparison.OrdinalIgnoreCase));
+        if (loaded?.Location is { Length: > 0 } loc) return loc;
+
+        // 2. .NET runtime directory.
+        var runtimeDir = Path.GetDirectoryName(typeof(object).Assembly.Location);
+        if (runtimeDir is not null)
+        {
+            var runtimePath = Path.Combine(runtimeDir, assemblyName + ".dll");
+            if (File.Exists(runtimePath)) return runtimePath;
+        }
+
+        // 3. NuGet package cache — first match under %USERPROFILE%\.nuget\packages.
+        var nugetCache = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".nuget", "packages");
+        if (Directory.Exists(nugetCache))
+        {
+            var match = Directory.EnumerateFiles(
+                nugetCache, assemblyName + ".dll", SearchOption.AllDirectories)
+                .FirstOrDefault();
+            if (match is not null) return match;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Scans decompiled source for the first declaration line containing the symbol.
+    /// Returns the 1-based line number, or 0 if not found.
+    /// </summary>
+    private static int FindSymbolLineInSource(string source, string symbolName)
+    {
+        var lines = source.Split('\n');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var trimmed = lines[i].TrimStart();
+            if (trimmed.Contains(symbolName, StringComparison.OrdinalIgnoreCase)
+                && (trimmed.StartsWith("public")    || trimmed.StartsWith("internal")
+                 || trimmed.StartsWith("private")   || trimmed.StartsWith("protected")
+                 || trimmed.StartsWith("class ")    || trimmed.StartsWith("interface ")
+                 || trimmed.StartsWith("struct ")   || trimmed.StartsWith("enum ")))
+                return i + 1;   // 1-based
+        }
+        return 0;
     }
 
     private void OnFindAllReferencesDockRequested(
