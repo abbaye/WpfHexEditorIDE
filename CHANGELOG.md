@@ -6,6 +6,33 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.5.3] — 2026-03-17 — Ctrl+Click Navigation, Search Highlight Fix & CodeLens Improvements
+
+### ✨ Added — Code Editor: Ctrl+Click Go-to-Definition
+
+- **Cross-file declaration scan (step 3b)** — when LSP has no result, the editor now scans all workspace files sharing the same extension via `WorkspaceFileCache.GetPathsForExtensions`; found declarations fire `ReferenceNavigationRequested` to navigate directly to the correct file and line without LSP
+- **Multi-location `ReferencesPopup`** — when LSP returns more than one definition location, `HandleDefinitionLocationsAsync` builds `ReferenceGroup`/`ReferenceItem` structs and opens `ReferencesPopup` instead of silently taking the first result
+- **`MetadataUri` passthrough** — `GoToExternalDefinitionEventArgs` now carries the raw OmniSharp metadata URI (`omnisharp-metadata:?assembly=X&type=Y&...`) extracted from the LSP response; `HandleExternalDefinitionAsync` passes it through the event
+- **External symbol decompilation** (`MainWindow.xaml.cs`) — `OnGoToExternalDefinitionRequested` now fully implements the decompilation pipeline:
+  - `ParseMetadataUri` extracts `assembly=` and `type=` from the metadata URI query string
+  - `FindAssemblyPath` resolves the DLL via 3-tier fallback: loaded `AppDomain` assemblies → .NET runtime directory → NuGet package cache (`%USERPROFILE%\.nuget\packages`)
+  - `AssemblyAnalysisEngine.AnalyzeAsync` + `CSharpSkeletonEmitter.EmitType` produce a C# skeleton
+  - Opens a **read-only TextEditor tab** (`decompiled:{assembly}:{type}`) — deduplication guard prevents duplicate tabs on repeated Ctrl+Click
+  - `GoToLine` navigates the decompiled source to the symbol's declaration line
+- **`WpfHexEditor.Core.AssemblyAnalysis` added to App project references** — enables the decompilation pipeline in `MainWindow.xaml.cs`
+
+### 🔧 Fixed — Code Editor: Search Highlight Misalignment
+
+- **`RenderFindResults` X position** — replaced raw `column * _charWidth` with `_glyphRenderer.ComputeVisualX(lineText, column)` so tab characters (rendered as expanded spaces) are accounted for correctly; highlight boxes now align exactly with the matched text regardless of tab indentation
+- **`RenderFindResults` Y position** — replaced raw `_lineHeight` arithmetic with `_lineYLookup.TryGetValue(line, out double ry)` to respect per-line Y offsets introduced by CodeLens hint rows; highlights in CodeLens-decorated files no longer drift vertically
+
+### 🔧 Fixed — Compilation Errors
+
+- **`_lastFindQuery` missing (×8)** — field was accidentally removed with the old find-bar block; restored `private string? _lastFindQuery;` in the `#region Fields - Find/Replace` section of `CodeEditor.cs`
+- **`DockDirection` not found (×10)** — `MainWindow.Build.cs` referenced `DockDirection.Bottom` without the required `using WpfHexEditor.Docking.Core;`; using directive added
+
+---
+
 ## [0.5.2] — 2026-03-16 — Code Editor Navigation Bar, Assembly Explorer Expansion & Build Refactoring
 
 ### ✨ Added — Code Editor: VS-Like Navigation Bar
