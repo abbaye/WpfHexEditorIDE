@@ -1,0 +1,464 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Sample.CodeEditor
+     File: MainWindow.xaml
+     Author: Auto
+     Created: 2026-03-18
+     Description:
+         Main window — standard WPF Window with:
+           • Menu bar  (File / Edit / View / Find / Language / Help)
+           • Toolbar   (File | Edit | Find | Language | Theme pods)
+           • CodeEditorSplitHost filling all remaining space
+           • Status bar (Language · Ln/Col · Encoding · Zoom · Dirty)
+         No docking engine. No custom chrome.
+
+     Architecture Notes:
+         Theme: all brushes via DynamicResource — auto-update on theme switch.
+           DockWindowBackgroundBrush  — window root background
+           DockMenuBackgroundBrush    — menu / toolbar / status bar background
+           DockBorderBrush            — separator lines
+           DockDarkMenuStyle          — menu style
+           DockDarkToolBarButtonStyle — toolbar buttons
+           DockToolBarPodStyle        — toolbar pod borders
+           Panel_ToolbarForegroundBrush — status bar text
+         Theme: DarkTheme.xaml (WpfHexEditor.Docking.Wpf — explicit ref)
+     ========================================================== -->
+
+<Window x:Class="WpfHexEditor.Sample.CodeEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
+        xmlns:vm="clr-namespace:WpfHexEditor.Sample.CodeEditor.ViewModels"
+        Title="{Binding Title}"
+        Width="1200" Height="760"
+        MinWidth="700" MinHeight="450"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource DockWindowBackgroundBrush}"
+        Loaded="OnLoaded"
+        Closed="OnClosed">
+
+    <!-- ── Keyboard shortcuts wired to code-behind ─────────────────────────── -->
+    <Window.InputBindings>
+        <!-- File -->
+        <KeyBinding Key="N"      Modifiers="Ctrl"       Command="{Binding NewCommand,       RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="O"      Modifiers="Ctrl"       Command="{Binding OpenCommand,      RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="S"      Modifiers="Ctrl"       Command="{Binding SaveCommand,      RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="S"      Modifiers="Ctrl+Shift" Command="{Binding SaveAsCommand,    RelativeSource={RelativeSource AncestorType=Window}}" />
+        <!-- Quick theme toggle -->
+        <KeyBinding Key="F1"                            Command="{Binding DarkThemeCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="F2"                            Command="{Binding LightThemeCommand,RelativeSource={RelativeSource AncestorType=Window}}" />
+        <!-- Zoom -->
+        <KeyBinding Key="OemPlus"  Modifiers="Ctrl"    Command="{Binding ZoomInCommand,    RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="OemMinus" Modifiers="Ctrl"    Command="{Binding ZoomOutCommand,   RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="D0"       Modifiers="Ctrl"    Command="{Binding ZoomResetCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Menu bar -->
+            <RowDefinition Height="Auto" />
+            <!-- Toolbar -->
+            <RowDefinition Height="Auto" />
+            <!-- Editor -->
+            <RowDefinition Height="*" />
+            <!-- Status bar -->
+            <RowDefinition Height="22" />
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Row 0 — Menu bar
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Menu Grid.Row="0"
+              Style="{DynamicResource DockDarkMenuStyle}">
+
+            <!-- ─── File ─── -->
+            <MenuItem Header="_File">
+                <MenuItem Header="_New"
+                          InputGestureText="Ctrl+N"
+                          Click="OnMenuNew" />
+                <MenuItem Header="_Open…"
+                          InputGestureText="Ctrl+O"
+                          Click="OnMenuOpen" />
+                <Separator />
+                <MenuItem Header="_Save"
+                          InputGestureText="Ctrl+S"
+                          Click="OnMenuSave" />
+                <MenuItem Header="Save _As…"
+                          InputGestureText="Ctrl+Shift+S"
+                          Click="OnMenuSaveAs" />
+                <Separator />
+                <MenuItem Header="E_xit"
+                          InputGestureText="Alt+F4"
+                          Click="OnMenuExit" />
+            </MenuItem>
+
+            <!-- ─── Edit ─── -->
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"
+                          InputGestureText="Ctrl+Z"
+                          Click="OnMenuUndo" />
+                <MenuItem Header="_Redo"
+                          InputGestureText="Ctrl+Y"
+                          Click="OnMenuRedo" />
+                <Separator />
+                <MenuItem Header="Cu_t"
+                          InputGestureText="Ctrl+X"
+                          Click="OnMenuCut" />
+                <MenuItem Header="_Copy"
+                          InputGestureText="Ctrl+C"
+                          Click="OnMenuCopy" />
+                <MenuItem Header="_Paste"
+                          InputGestureText="Ctrl+V"
+                          Click="OnMenuPaste" />
+                <Separator />
+                <MenuItem Header="Select _All"
+                          InputGestureText="Ctrl+A"
+                          Click="OnMenuSelectAll" />
+            </MenuItem>
+
+            <!-- ─── View ─── -->
+            <MenuItem Header="_View">
+                <MenuItem x:Name="MenuShowLineNumbers"
+                          Header="Line _Numbers"
+                          IsCheckable="True"
+                          IsChecked="True"
+                          Click="OnMenuToggleLineNumbers" />
+                <MenuItem x:Name="MenuCodeFolding"
+                          Header="Code _Folding"
+                          IsCheckable="True"
+                          IsChecked="True"
+                          Click="OnMenuToggleCodeFolding" />
+                <MenuItem x:Name="MenuCodeLens"
+                          Header="Code_Lens"
+                          IsCheckable="True"
+                          IsChecked="True"
+                          Click="OnMenuToggleCodeLens" />
+                <MenuItem x:Name="MenuIntelliSense"
+                          Header="_IntelliSense"
+                          IsCheckable="True"
+                          IsChecked="True"
+                          Click="OnMenuToggleIntelliSense" />
+                <MenuItem x:Name="MenuWordHighlight"
+                          Header="_Word Highlight"
+                          IsCheckable="True"
+                          IsChecked="True"
+                          Click="OnMenuToggleWordHighlight" />
+                <Separator />
+                <MenuItem Header="Zoom _In"
+                          InputGestureText="Ctrl++"
+                          Click="OnMenuZoomIn" />
+                <MenuItem Header="Zoom _Out"
+                          InputGestureText="Ctrl+-"
+                          Click="OnMenuZoomOut" />
+                <MenuItem Header="_Reset Zoom"
+                          InputGestureText="Ctrl+0"
+                          Click="OnMenuZoomReset" />
+                <Separator />
+                <!-- Theme submenu — radio group via IsChecked + code-behind sync -->
+                <MenuItem Header="_Theme">
+                    <MenuItem x:Name="MenuThemeDark"
+                              Header="_Dark"
+                              InputGestureText="F1"
+                              IsCheckable="True"
+                              IsChecked="True"
+                              Tag="DarkTheme"
+                              Click="OnMenuTheme" />
+                    <MenuItem x:Name="MenuThemeLight"
+                              Header="_Light (Office)"
+                              InputGestureText="F2"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Tag="OfficeTheme"
+                              Click="OnMenuTheme" />
+                    <Separator />
+                    <MenuItem x:Name="MenuThemeVS2022Dark"
+                              Header="_VS2022 Dark"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Tag="VS2022DarkTheme"
+                              Click="OnMenuTheme" />
+                    <MenuItem x:Name="MenuThemeMinimal"
+                              Header="_Minimal"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Tag="MinimalTheme"
+                              Click="OnMenuTheme" />
+                    <MenuItem x:Name="MenuThemeCyberpunk"
+                              Header="_Cyberpunk"
+                              IsCheckable="True"
+                              IsChecked="False"
+                              Tag="CyberpunkTheme"
+                              Click="OnMenuTheme" />
+                </MenuItem>
+            </MenuItem>
+
+            <!-- ─── Find ─── -->
+            <MenuItem Header="F_ind">
+                <MenuItem Header="_Find…"
+                          InputGestureText="Ctrl+F"
+                          Click="OnMenuFind" />
+                <MenuItem Header="Find &amp; _Replace…"
+                          InputGestureText="Ctrl+H"
+                          Click="OnMenuFindReplace" />
+            </MenuItem>
+
+            <!-- ─── Language ─── -->
+            <MenuItem x:Name="MenuLanguage"
+                      Header="_Language">
+                <!-- Populated dynamically in code-behind after LoadEmbeddedLanguageDefinitions() -->
+            </MenuItem>
+
+            <!-- ─── Help ─── -->
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About…"
+                          Click="OnMenuAbout" />
+            </MenuItem>
+
+        </Menu>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Row 1 — Toolbar
+             ═══════════════════════════════════════════════════════════════════ -->
+        <ToolBar Grid.Row="1"
+                 Style="{DynamicResource DockDarkToolBarStyle}">
+
+                <!-- Pod 1 — File ──────────────────────────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="New (Ctrl+N)"
+                                Click="OnMenuNew">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Open (Ctrl+O)"
+                                Click="OnMenuOpen">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E5;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Save (Ctrl+S)"
+                                Click="OnMenuSave">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}" />
+
+                <!-- Pod 2 — Edit ──────────────────────────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Undo (Ctrl+Z)"
+                                Click="OnMenuUndo">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A7;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Redo (Ctrl+Y)"
+                                Click="OnMenuRedo">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A6;" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}" />
+
+                <!-- Pod 3 — Edit clipboard ────────────────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Cut (Ctrl+X)"
+                                Click="OnMenuCut">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C6;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Copy (Ctrl+C)"
+                                Click="OnMenuCopy">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Paste (Ctrl+V)"
+                                Click="OnMenuPaste">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE77F;" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}" />
+
+                <!-- Pod 4 — Find ──────────────────────────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Find (Ctrl+F)"
+                                Click="OnMenuFind">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE721;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Find &amp; Replace (Ctrl+H)"
+                                Click="OnMenuFindReplace">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C1;" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}" />
+
+                <!-- Pod 5 — Language picker ───────────────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <ComboBox x:Name="LanguageCombo"
+                              Width="120"
+                              Height="22"
+                              ToolTip="Active language"
+                              SelectionChanged="OnLanguageComboChanged" />
+                </Border>
+
+                <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}" />
+
+                <!-- Pod 6 — Zoom ──────────────────────────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Zoom Out (Ctrl+-)"
+                                Click="OnMenuZoomOut">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71F;" />
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Zoom In (Ctrl++)"
+                                Click="OnMenuZoomIn">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A3;" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}" />
+
+                <!-- Pod 7 — Dark / Light theme toggle ─────────────────────── -->
+                <Border Style="{DynamicResource DockToolBarPodStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Dark theme (F1)"
+                                Click="OnTbtnDark"
+                                Width="52" Height="22"
+                                Padding="4,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE708;" FontSize="11" VerticalAlignment="Center" />
+                                <TextBlock Text=" Dark" FontSize="11" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                                ToolTip="Light theme (F2)"
+                                Click="OnTbtnLight"
+                                Width="56" Height="22"
+                                Padding="4,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE706;" FontSize="11" VerticalAlignment="Center" />
+                                <TextBlock Text=" Light" FontSize="11" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+        </ToolBar>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Row 2 — Code Editor (fills all remaining space)
+             ═══════════════════════════════════════════════════════════════════ -->
+        <ce:CodeEditorSplitHost x:Name="Editor"
+                                Grid.Row="2" />
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Row 3 — Status bar
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0">
+            <DockPanel LastChildFill="False">
+
+                <!-- Right: dirty indicator -->
+                <TextBlock x:Name="StatusDirty"
+                           DockPanel.Dock="Right"
+                           Text="● Unsaved"
+                           Foreground="#E8B84B"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"
+                           Visibility="Collapsed" />
+
+                <Rectangle DockPanel.Dock="Right"
+                           Width="1" Margin="0,3"
+                           Fill="{DynamicResource DockBorderBrush}" />
+
+                <!-- Right: theme label -->
+                <TextBlock x:Name="StatusThemeLabel"
+                           DockPanel.Dock="Right"
+                           Text="Theme: Dark"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="6,0"
+                           Opacity="0.75" />
+
+                <Rectangle DockPanel.Dock="Right"
+                           Width="1" Margin="0,3"
+                           Fill="{DynamicResource DockBorderBrush}" />
+
+                <!-- Right: zoom -->
+                <TextBlock x:Name="StatusZoom"
+                           DockPanel.Dock="Right"
+                           Text="Zoom: 100%"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="6,0"
+                           Opacity="0.75" />
+
+                <Rectangle DockPanel.Dock="Right"
+                           Width="1" Margin="0,3"
+                           Fill="{DynamicResource DockBorderBrush}" />
+
+                <!-- Right: encoding -->
+                <TextBlock x:Name="StatusEncoding"
+                           DockPanel.Dock="Right"
+                           Text="UTF-8"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="6,0"
+                           Opacity="0.75" />
+
+                <Rectangle DockPanel.Dock="Right"
+                           Width="1" Margin="0,3"
+                           Fill="{DynamicResource DockBorderBrush}" />
+
+                <!-- Right: Ln/Col -->
+                <TextBlock x:Name="StatusPosition"
+                           DockPanel.Dock="Right"
+                           Text="Ln 1, Col 1"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="6,0"
+                           Opacity="0.75" />
+
+                <Rectangle DockPanel.Dock="Right"
+                           Width="1" Margin="0,3"
+                           Fill="{DynamicResource DockBorderBrush}" />
+
+                <!-- Left: language -->
+                <TextBlock x:Name="StatusLanguage"
+                           DockPanel.Dock="Left"
+                           Text="Plain Text"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0"
+                           Opacity="0.75" />
+
+            </DockPanel>
+        </Border>
+
+    </Grid>
+</Window>

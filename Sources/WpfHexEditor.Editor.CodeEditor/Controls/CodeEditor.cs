@@ -62,6 +62,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Fold-label hit-zones: rebuilt on every render pass; used for click-to-toggle.
         private readonly List<(Rect rect, int line)> _foldLabelHitZones = new();
 
+        // Fold peek — VS-style hover preview of collapsed region content.
+        private FoldPeekPopup?   _foldPeekPopup;
+        private System.Windows.Threading.DispatcherTimer? _foldPeekTimer;
+        private int              _foldPeekTargetLine = -1;
+
         // The URL zone currently under the mouse pointer (null = none).
         // Drives hover underline; changing it triggers InvalidateVisual().
         private UrlHitZone? _hoveredUrlZone;
@@ -95,8 +100,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static void OnExternalHighlighterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not CodeEditor editor) return;
-            if (e.NewValue is ISyntaxHighlighter h)
-                h.Reset();
+
+            // Reset block-comment state carried over from the previous file.
+            if (e.OldValue is ISyntaxHighlighter old) old.Reset();
+            if (e.NewValue is ISyntaxHighlighter h)   h.Reset();
+
+            // Force a full repaint so the new (or cleared) highlighter is applied
+            // to all currently visible lines immediately, without waiting for a scroll.
+            editor.InvalidateVisual();
             editor.RefreshJsonStatusBarItems();
         }
 
@@ -201,14 +212,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static readonly Pen s_lineNumberSeparatorPen = MakeFrozenPen(Color.FromRgb(200, 200, 200), 1.0);
         private static readonly Pen s_glyphInnerPen          = MakeFrozenPen(Colors.White, 1.5);
 
-        // Fold-collapse inline label rendering assets (frozen for performance).
-        private static readonly Pen      s_foldLabelPen       = MakeFrozenPen(Color.FromRgb(128, 128, 128), 1.0);
-        private static readonly Brush    s_foldLabelTextBrush = MakeFrozenBrush(Color.FromRgb(160, 160, 160));
-        private static readonly Brush    s_foldLabelBgBrush   = MakeFrozenBrush(Color.FromArgb(25, 128, 128, 128));
-        private static readonly Typeface s_foldLabelTypeface  = new("Consolas");
+        // Fold-collapse inline label rendering assets.
+        // Static brushes are used as fallback when theme tokens are absent.
+        private static readonly Brush    s_foldLabelPenBrush  = MakeFrozenBrush(Color.FromRgb(86, 156, 214));   // VS blue border
+        private static readonly Brush    s_foldLabelTextBrush = MakeFrozenBrush(Color.FromRgb(200, 200, 200));
+        private static readonly Brush    s_foldLabelBgBrush   = MakeFrozenBrush(Color.FromArgb(30, 86, 156, 214)); // translucent blue
+        private static readonly Typeface s_foldLabelTypeface  = new("Segoe UI");
 
         // Scope guide line pen — semi-transparent so it doesn't obscure text.
         private static readonly Pen s_scopeGuidePen = MakeFrozenPen(Color.FromArgb(60, 128, 128, 128), 1.0);
+
+        // Active (cursor-containing) scope guide — thicker + more opaque than the passive one.
+        private static readonly Pen s_scopeGuideActivePen = MakeFrozenPen(Color.FromArgb(140, 180, 180, 180), 1.5);
 
         // Word-under-caret highlight assets (VS Code "read highlight" style).
         private static readonly Brush s_wordHighlightBg  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
@@ -1710,6 +1725,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _ctrlClickService                         = new Services.CtrlClickNavigationService();
             _ctrlClickService.TargetResolved          += OnCtrlClickTargetResolved;
 
+            // Fold peek timer — fires 1.5 s after the mouse settles over a fold label.
+            _foldPeekTimer          = new System.Windows.Threading.DispatcherTimer
+                                      { Interval = TimeSpan.FromMilliseconds(600) };
+            _foldPeekTimer.Tick    += OnFoldPeekTimerTick;
+
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
         }
@@ -2607,6 +2627,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_virtualizationEngine != null)
             {
                 bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+                // Refresh TotalLines in case this editor shares a document that was populated
+                // after SetDocument() was called (e.g. secondary pane in split view where
+                // OpenAsync runs after Loaded and only updates the primary editor).
+                _virtualizationEngine.TotalLines = _document?.Lines.Count ?? 0;
                 _virtualizationEngine.ViewportHeight = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
                 _virtualizationEngine.CalculateVisibleRange();
             }
@@ -2749,7 +2773,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>
         /// Draws vertical scope guide lines for each non-collapsed fold region.
         /// Each line is placed at the indentation column of the body content,
-        /// running from the first body line to the closing brace line.
+        /// running from the bottom of the opening brace line to the top of the closing brace line
+        /// (VS Code style — the guide covers only the body, without touching either brace).
         /// </summary>
         private void RenderScopeGuides(DrawingContext dc)
         {
@@ -2758,26 +2783,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double textX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
+            // Determine the innermost block containing the cursor for active-guide highlight.
+            var activeRegion = FindInnermostContainingRegion(_cursorLine);
+
             foreach (var region in _foldingEngine.Regions)
             {
                 if (region.IsCollapsed) continue; // body is hidden — no guide needed
-
-                int bodyFirst = region.StartLine + 1;
-                int bodyLast  = region.EndLine;
+                if (region.Kind == FoldingRegionKind.Directive) continue; // no guide for #region/#endregion
 
                 // Skip regions entirely outside the visible range.
-                if (bodyLast < _firstVisibleLine || bodyFirst > _lastVisibleLine) continue;
+                if (region.EndLine < _firstVisibleLine || region.StartLine + 1 > _lastVisibleLine) continue;
 
                 double guideX = ComputeScopeGuideX(textX, region);
                 if (guideX <= textX) continue; // block not indented — skip
 
-                int drawFirst = Math.Max(bodyFirst, _firstVisibleLine);
-                int drawLast  = Math.Min(bodyLast,  _lastVisibleLine);
+                // For Allman-style code the BraceFoldingStrategy sets StartLine = method-header line,
+                // so StartLine+1 is the standalone { line — skip it to start the guide after the {.
+                int bodyStart = region.StartLine + 1;
+                if (bodyStart < _document!.Lines.Count && _document.Lines[bodyStart].Text.Trim() == "{")
+                    bodyStart++;
 
-                double yTop    = ScopeLineIndexToY(drawFirst);
-                double yBottom = ScopeLineIndexToY(drawLast) + _lineHeight;
+                // Draw from bottom of { (first real body line) to top of } — VS Code exact behavior.
+                double yTop    = ScopeLineIndexToY(bodyStart);
+                double yBottom = ScopeLineIndexToY(region.EndLine);
 
-                dc.DrawLine(s_scopeGuidePen, new Point(guideX, yTop), new Point(guideX, yBottom));
+                // Use the active pen for the innermost block containing the cursor (VS Code style).
+                var pen = (activeRegion != null && ReferenceEquals(region, activeRegion))
+                    ? s_scopeGuideActivePen
+                    : s_scopeGuidePen;
+
+                dc.DrawLine(pen, new Point(guideX, yTop), new Point(guideX, yBottom));
             }
         }
 
@@ -2785,6 +2820,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Returns the X position for the scope guide of <paramref name="region"/> by
         /// finding the leading whitespace of the first non-empty line inside the block.
         /// </summary>
+        /// <summary>
+        /// Returns the innermost non-collapsed <see cref="FoldingRegion"/> whose body contains
+        /// <paramref name="cursorLine"/>, or <c>null</c> if none does.
+        /// "Innermost" is defined as the region with the largest <c>StartLine</c> (most nested block).
+        /// </summary>
+        private FoldingRegion? FindInnermostContainingRegion(int cursorLine)
+        {
+            FoldingRegion? best = null;
+            foreach (var r in _foldingEngine!.Regions)
+            {
+                if (r.IsCollapsed) continue;
+                if (cursorLine > r.StartLine && cursorLine <= r.EndLine)
+                    if (best == null || r.StartLine > best.StartLine)
+                        best = r;
+            }
+            return best;
+        }
+
         private double ComputeScopeGuideX(double textX, FoldingRegion region)
         {
             for (int i = region.StartLine + 1; i < region.EndLine && i < _document!.Lines.Count; i++)
@@ -3026,29 +3079,70 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var region = _foldingEngine.GetRegionAt(lineIndex);
             if (region == null || !region.IsCollapsed) return;
 
-            const string LabelText = " \u2026 "; // " … "
-            const double FontSize  = 10.0;
-            const double PaddingH  = 3.0;
-            const double PaddingV  = 1.0;
+            // Resolve theme-aware brushes at render time so theme switches are reflected immediately.
+            // Hover state: use brighter tokens when mouse is over this label.
+            bool isHovered = lineIndex == _foldPeekTargetLine;
+            var borderBrush = (isHovered
+                ? TryFindResource("CE_FoldLabelBorderHover") as Brush
+                : null)
+                ?? TryFindResource("CE_FoldLabelBorder") as Brush
+                ?? s_foldLabelPenBrush;
+            var bgBrush = (isHovered
+                ? TryFindResource("CE_FoldLabelBgHover") as Brush
+                : null)
+                ?? TryFindResource("CE_FoldLabelBg") as Brush
+                ?? s_foldLabelBgBrush;
+            var textBrush   = TryFindResource("CE_FoldLabelFg")     as Brush ?? s_foldLabelTextBrush;
+            var pen         = new Pen(borderBrush, isHovered ? 1.5 : 1.0);
+
+            double labelX;
+            string labelText;
+
+            if (region.Kind == FoldingRegionKind.Directive)
+            {
+                // For directive regions: blank the opening "#region ..." text by drawing a
+                // background-colored rect over it (drawn after text, so it renders on top),
+                // then place the label box at the original indentation level of the #region line.
+                var editorBg = TryFindResource("CE_Background") as Brush;
+                if (editorBg != null)
+                    dc.DrawRectangle(editorBg, null,
+                        new Rect(textX, y, Math.Max(0, ActualWidth - textX), _lineHeight));
+
+                string dirText  = _document.Lines[lineIndex].Text ?? string.Empty;
+                int    indentLen = dirText.Length - dirText.TrimStart().Length;
+                double indentX   = _glyphRenderer?.ComputeVisualX(dirText, indentLen)
+                                   ?? indentLen * _charWidth;
+                labelX    = textX + indentX;
+                labelText = string.IsNullOrEmpty(region.Name) ? "#region" : region.Name;
+            }
+            else
+            {
+                // For brace regions: label appears after the opening line text (e.g. after '{').
+                var codeLine = _document.Lines[lineIndex];
+                double textLen = (codeLine.Text?.TrimEnd().Length ?? 0) * _charWidth;
+                labelX    = textX + textLen + _charWidth * 0.5;
+                labelText = "{ \u2026 }";
+            }
+
+            double FontSize = _fontSize;
+            const double PaddingH = 8.0;
 
             var ft = new FormattedText(
-                LabelText,
+                labelText,
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 s_foldLabelTypeface, FontSize,
-                s_foldLabelTextBrush,
+                textBrush,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            var    codeLine = _document.Lines[lineIndex];
-            double textLen  = (codeLine.Text?.TrimEnd().Length ?? 0) * _charWidth;
-            double labelX   = textX + textLen + _charWidth * 0.5;
-            double boxW     = ft.Width  + PaddingH * 2;
-            double boxH     = ft.Height + PaddingV * 2;
-            double labelY   = y + (_lineHeight - boxH) / 2.0;
+            // Box spans the full line height so it aligns flush with the visible line boundaries.
+            double boxW   = ft.Width + PaddingH * 2;
+            double boxH   = _lineHeight;
+            double labelY = y;
 
             var rect = new Rect(labelX, labelY, boxW, boxH);
-            dc.DrawRectangle(s_foldLabelBgBrush, s_foldLabelPen, rect);
-            dc.DrawText(ft, new Point(labelX + PaddingH, labelY + PaddingV));
+            dc.DrawRoundedRectangle(bgBrush, pen, rect, 2.0, 2.0);
+            dc.DrawText(ft, new Point(labelX + PaddingH, labelY + (boxH - ft.Height) / 2.0));
             _foldLabelHitZones.Add((rect, lineIndex));
         }
 
@@ -3709,6 +3803,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (ShowCodeLens && _lensData.ContainsKey(pos.Line))
                     continue;
 
+                // Skip collapsed directive opener lines — text is blanked; a rect outline
+                // would appear as stray top/bottom horizontal strokes over the fold label.
+                if (_foldingEngine?.GetRegionAt(pos.Line) is { IsCollapsed: true, Kind: FoldingRegionKind.Directive })
+                    continue;
+
                 double y = _lineYLookup.TryGetValue(pos.Line, out double wy) ? wy
                     : (EnableVirtualScrolling && _virtualizationEngine != null
                         ? TopMargin + _virtualizationEngine.GetLineYPosition(pos.Line)
@@ -4201,6 +4300,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void RenderBracketMatching(DrawingContext dc)
         {
             if (_cursorColumn < 0 || _cursorLine < 0 || _cursorLine >= _document.Lines.Count)
+                return;
+
+            // No bracket matching on collapsed directive opener lines (text is blanked).
+            if (_foldingEngine?.GetRegionAt(_cursorLine) is { IsCollapsed: true, Kind: FoldingRegionKind.Directive })
                 return;
 
             var line = _document.Lines[_cursorLine];
@@ -4803,6 +4906,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 ToolTip = null;
                 InvalidateVisual();
             }
+
+            // Cancel fold peek on editor exit.
+            _foldPeekTargetLine = -1;
+            _foldPeekTimer?.Stop();
+            _foldPeekPopup?.Hide();
 
             // Start Quick Info grace timer — popup stays open for 200 ms so mouse can enter it.
             _quickInfoPopup?.OnEditorMouseLeft();
@@ -5441,6 +5549,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 bool overLens = _hoveredLensLine >= 0;
                 ToolTip = overLens ? lensTooltip : null;
 
+                // Fold label zones — Hand cursor + 1.5s peek-on-hover.
+                int newHoveredFoldLine = -1;
+                foreach (var (rect, line) in _foldLabelHitZones)
+                    if (rect.Contains(mousePixel)) { newHoveredFoldLine = line; break; }
+
+                bool overFoldLabel = newHoveredFoldLine >= 0;
+
+                if (overFoldLabel)
+                {
+                    if (newHoveredFoldLine != _foldPeekTargetLine)
+                    {
+                        // Mouse moved to a different label — restart peek timer + repaint hover.
+                        _foldPeekTargetLine = newHoveredFoldLine;
+                        _foldPeekTimer?.Stop();
+                        _foldPeekPopup?.Hide();
+                        _foldPeekTimer?.Start();
+                        InvalidateVisual();
+                    }
+                    // else: still on same label — timer already running.
+                }
+                else
+                {
+                    if (_foldPeekTargetLine >= 0)
+                    {
+                        // Mouse left all fold labels — cancel, close, repaint to remove hover style.
+                        _foldPeekTargetLine = -1;
+                        _foldPeekTimer?.Stop();
+                        _foldPeekPopup?.Hide();
+                        InvalidateVisual();
+                    }
+                }
+
                 if (overLens)
                 {
                     Cursor = Cursors.Hand;
@@ -5450,6 +5590,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     Cursor = Cursors.Hand;
                     ShowUrlTooltip();
+                }
+                else if (overFoldLabel)
+                {
+                    Cursor = Cursors.Hand;
+                    HideUrlTooltip();
                 }
                 else
                 {
@@ -7181,6 +7326,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Called when <see cref="Services.HoverQuickInfoService"/> fires
         /// <see cref="Services.HoverQuickInfoService.QuickInfoResolved"/>.
         /// </summary>
+        private void OnFoldPeekTimerTick(object? sender, EventArgs e)
+        {
+            _foldPeekTimer!.Stop();
+            if (_foldPeekTargetLine < 0 || _foldingEngine == null || _document == null) return;
+
+            var region = _foldingEngine.GetRegionAt(_foldPeekTargetLine);
+            if (region == null || !region.IsCollapsed) return;
+
+            // Find the label rect so we can anchor the popup beneath it.
+            Rect labelRect = default;
+            foreach (var (rect, ln) in _foldLabelHitZones)
+                if (ln == _foldPeekTargetLine) { labelRect = rect; break; }
+
+            _foldPeekPopup ??= new FoldPeekPopup();
+            _foldPeekPopup.Show(this, region, _document.Lines, _typeface, _fontSize, labelRect,
+                                ExternalHighlighter);
+        }
+
         private void OnQuickInfoResolved(object? sender, WpfHexEditor.SDK.ExtensionPoints.QuickInfoResult? result)
         {
             if (result is null)

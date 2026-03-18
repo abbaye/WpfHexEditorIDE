@@ -110,8 +110,12 @@ public sealed class FoldingEngine
     public bool IsLineHidden(int line)
     {
         foreach (var r in _regions)
-            if (r.IsCollapsed && line > r.StartLine && line < r.EndLine)
-                return true;
+        {
+            if (!r.IsCollapsed || line <= r.StartLine) continue;
+            // Both brace and directive regions hide their closing line
+            // ('}' for brace, '#endregion' for directive) — matches VS behavior.
+            if (line <= r.EndLine) return true;
+        }
         return false;
     }
 

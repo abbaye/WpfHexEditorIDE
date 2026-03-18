@@ -23,6 +23,7 @@
 //     Phase 5 — AlignmentToolbarViewModel alignment group + batch undo support.
 //     Phase 9 — DesignTimeXamlPreprocessor filters d:* from preview XAML.
 //     Phase 10 — AnimationPreviewService attached after canvas root is known.
+//     Phase 11 — Layout Mode Switcher (Design Right/Left/Bottom/Top, Ctrl+Shift+L).
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -63,6 +64,15 @@ public sealed class XamlDesignerSplitHost : Grid,
     private enum ViewMode { CodeOnly, Split, DesignOnly }
     private ViewMode _viewMode = ViewMode.Split;
 
+    private enum SplitLayout
+    {
+        HorizontalDesignRight,  // code LEFT  | design RIGHT  ← default
+        HorizontalDesignLeft,   // design LEFT | code RIGHT
+        VerticalDesignBottom,   // code TOP    / design BOTTOM
+        VerticalDesignTop,      // design TOP  / code BOTTOM
+    }
+    private SplitLayout _splitLayout = SplitLayout.HorizontalDesignRight;
+
     // ── Child controls ────────────────────────────────────────────────────────
 
     private readonly CodeEditorSplitHost _codeHost;
@@ -70,9 +80,18 @@ public sealed class XamlDesignerSplitHost : Grid,
     private readonly ZoomPanCanvas       _zoomPan;
     private readonly GridSplitter        _splitter;
 
-    private readonly ColumnDefinition    _codeColumn;
-    private readonly ColumnDefinition    _splitterColumn;
-    private readonly ColumnDefinition    _designColumn;
+    private readonly ColumnDefinition    _codeColumn     = new() { Width  = new GridLength(1, GridUnitType.Star) };
+    private readonly ColumnDefinition    _splitterColumn = new() { Width  = new GridLength(4) };
+    private readonly ColumnDefinition    _designColumn   = new() { Width  = new GridLength(1, GridUnitType.Star) };
+
+    // Row definitions for vertical split orientation.
+    private readonly RowDefinition       _contentCodeRow   = new() { Height = new GridLength(1, GridUnitType.Star) };
+    private readonly RowDefinition       _splitterRow      = new() { Height = new GridLength(4) };
+    private readonly RowDefinition       _contentDesignRow = new() { Height = new GridLength(1, GridUnitType.Star) };
+
+    // Toolbar row definition + container reference (managed by UpdateGridLayout).
+    private readonly RowDefinition       _toolbarRow = new() { Height = GridLength.Auto };
+    private Border?                      _toolbarContainer;
 
     // Toolbar strip controls
     private readonly ToggleButton _btnCodeOnly;
@@ -128,7 +147,8 @@ public sealed class XamlDesignerSplitHost : Grid,
     private readonly CoreStatusBarItem _sbElement     = new() { Label = "XAML",  Value = "" };
     private readonly CoreStatusBarItem _sbCoordinates = new() { Label = "Pos",   Value = "" };
     private readonly CoreStatusBarItem _sbZoom        = new() { Label = "Zoom",  Value = "100%" };
-    private readonly CoreStatusBarItem _sbViewMode    = new() { Label = "View",  Value = "Split" };
+    private readonly CoreStatusBarItem _sbViewMode    = new() { Label = "View",   Value = "Split" };
+    private readonly CoreStatusBarItem _sbLayout      = new() { Label = "Layout", Value = "Design Right" };
 
     // ── Toolbar contributor ────────────────────────────────────────────────────
 
@@ -147,21 +167,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     public XamlDesignerSplitHost()
     {
-        // -- Column layout ---------------------------------------------------
-        _codeColumn    = new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) };
-        _splitterColumn= new ColumnDefinition { Width = new GridLength(4) };
-        _designColumn  = new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) };
-
-        ColumnDefinitions.Add(_codeColumn);
-        ColumnDefinitions.Add(_splitterColumn);
-        ColumnDefinitions.Add(_designColumn);
-
-        // -- Row layout ------------------------------------------------------
-        var toolbarRow = new RowDefinition { Height = GridLength.Auto };
-        var contentRow = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
-
-        RowDefinitions.Add(toolbarRow);
-        RowDefinitions.Add(contentRow);
+        // Column/row definitions are declared as fields and managed by UpdateGridLayout().
 
         // -- Design canvas (Phase 1) -----------------------------------------
         _designCanvas = new DesignCanvas();
@@ -177,35 +183,23 @@ public sealed class XamlDesignerSplitHost : Grid,
         _zoomPan.ZoomChanged += (_, _) => _sbZoom.Value = _zoomVm.ZoomLabel;
 
         // -- Toolbar strip ---------------------------------------------------
-        var toolbar = BuildToolbar(out _btnCodeOnly, out _btnSplit, out _btnDesignOnly,
-                                   out _btnAutoPreview, out _errorBanner, out _errorText);
-        SetRow(toolbar, 0);
-        SetColumnSpan(toolbar, 3);
-        Children.Add(toolbar);
+        _toolbarContainer = BuildToolbar(out _btnCodeOnly, out _btnSplit, out _btnDesignOnly,
+                                         out _btnAutoPreview, out _errorBanner, out _errorText);
+        Children.Add(_toolbarContainer);
 
         // -- Code pane -------------------------------------------------------
         _codeHost = new CodeEditorSplitHost();
-        SetRow(_codeHost, 1);
-        SetColumn(_codeHost, 0);
         Children.Add(_codeHost);
 
-        // -- GridSplitter ----------------------------------------------------
+        // -- GridSplitter (direction/position configured by UpdateGridLayout) --
         _splitter = new GridSplitter
         {
-            Width               = 4,
-            VerticalAlignment   = VerticalAlignment.Stretch,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            ResizeDirection     = GridResizeDirection.Columns,
-            ResizeBehavior      = GridResizeBehavior.PreviousAndNext
+            ResizeBehavior = GridResizeBehavior.PreviousAndNext
         };
         _splitter.SetResourceReference(BackgroundProperty, "DockSplitterBrush");
-        SetRow(_splitter, 1);
-        SetColumn(_splitter, 1);
         Children.Add(_splitter);
 
         // -- Design pane (ZoomPanCanvas) -------------------------------------
-        SetRow(_zoomPan, 1);
-        SetColumn(_zoomPan, 2);
         Children.Add(_zoomPan);
 
         // -- Auto-preview timer ----------------------------------------------
@@ -260,13 +254,19 @@ public sealed class XamlDesignerSplitHost : Grid,
         _codeHost.OperationProgress  += (s, e) => OperationProgress?.Invoke(this, e);
         _codeHost.OperationCompleted += (s, e) => OperationCompleted?.Invoke(this, e);
 
-        // Apply initial view mode.
-        ApplyViewMode(ViewMode.Split);
+        // Apply initial layout + view mode (also triggers UpdateGridLayout).
+        ApplySplitLayout(SplitLayout.HorizontalDesignRight);
 
         // -- StatusBar: view mode choices ------------------------------------
         _sbViewMode.Choices.Add(new StatusBarChoice { DisplayName = "Code Only",   IsActive = false, Command = new RelayCommand(_ => ApplyViewMode(ViewMode.CodeOnly)) });
         _sbViewMode.Choices.Add(new StatusBarChoice { DisplayName = "Split",       IsActive = true,  Command = new RelayCommand(_ => ApplyViewMode(ViewMode.Split)) });
         _sbViewMode.Choices.Add(new StatusBarChoice { DisplayName = "Design Only", IsActive = false, Command = new RelayCommand(_ => ApplyViewMode(ViewMode.DesignOnly)) });
+
+        // -- StatusBar: layout choices --------------------------------------
+        _sbLayout.Choices.Add(new StatusBarChoice { DisplayName = "Design Right",  IsActive = true,  Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.HorizontalDesignRight)) });
+        _sbLayout.Choices.Add(new StatusBarChoice { DisplayName = "Design Left",   IsActive = false, Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.HorizontalDesignLeft)) });
+        _sbLayout.Choices.Add(new StatusBarChoice { DisplayName = "Design Bottom", IsActive = false, Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.VerticalDesignBottom)) });
+        _sbLayout.Choices.Add(new StatusBarChoice { DisplayName = "Design Top",    IsActive = false, Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.VerticalDesignTop)) });
 
         // -- IDE toolbar pod items -------------------------------------------
         BuildToolbarItems();
@@ -410,6 +410,7 @@ public sealed class XamlDesignerSplitHost : Grid,
         // Persist XAML designer-specific state in the Extra dictionary.
         dto.Extra ??= new Dictionary<string, string>();
         dto.Extra["xd.view"]    = _viewMode.ToString();
+        dto.Extra["xd.layout"]  = _splitLayout.ToString();
         dto.Extra["xd.ratio"]   = GetSplitRatio().ToString("F4", System.Globalization.CultureInfo.InvariantCulture);
         dto.Extra["xd.zoom"]    = _zoomPan.ZoomLevel.ToString("F4", System.Globalization.CultureInfo.InvariantCulture);
         dto.Extra["xd.selPath"] = _designCanvas.SelectedElement is null
@@ -426,6 +427,10 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         if (config.Extra is not null)
         {
+            if (config.Extra.TryGetValue("xd.layout", out var layoutStr)
+                && Enum.TryParse<SplitLayout>(layoutStr, out var sl))
+                ApplySplitLayout(sl);
+
             if (config.Extra.TryGetValue("xd.view", out var viewStr)
                 && Enum.TryParse<ViewMode>(viewStr, out var mode))
                 ApplyViewMode(mode);
@@ -475,6 +480,7 @@ public sealed class XamlDesignerSplitHost : Grid,
             StatusBarItems.Add(_sbCoordinates);
             StatusBarItems.Add(_sbZoom);
             StatusBarItems.Add(_sbViewMode);
+            StatusBarItems.Add(_sbLayout);
         }
 
         var el = _designCanvas.SelectedElement;
@@ -643,66 +649,189 @@ public sealed class XamlDesignerSplitHost : Grid,
         SelectedElementChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    // ── View mode ─────────────────────────────────────────────────────────────
+    // ── View mode & layout ────────────────────────────────────────────────────
 
     private void ApplyViewMode(ViewMode mode)
     {
         _viewMode = mode;
+        UpdateGridLayout();
+    }
 
-        switch (mode)
+    private void ApplySplitLayout(SplitLayout layout)
+    {
+        _splitLayout = layout;
+        UpdateGridLayout();
+    }
+
+    /// <summary>
+    /// Rebuilds Grid column/row definitions and repositions all children
+    /// based on the current <see cref="_viewMode"/> and <see cref="_splitLayout"/>.
+    /// This is the single source-of-truth for all layout state.
+    /// </summary>
+    private void UpdateGridLayout()
+    {
+        bool isVertical  = _splitLayout is SplitLayout.VerticalDesignBottom or SplitLayout.VerticalDesignTop;
+        bool designFirst = _splitLayout is SplitLayout.HorizontalDesignLeft  or SplitLayout.VerticalDesignTop;
+
+        var starSize   = new GridLength(1, GridUnitType.Star);
+        var zeroSize   = new GridLength(0);
+        var splitterSz = new GridLength(4);
+
+        bool showCode   = _viewMode != ViewMode.DesignOnly;
+        bool showDesign = _viewMode != ViewMode.CodeOnly;
+        bool showSplit  = _viewMode == ViewMode.Split;
+
+        // ── Rebuild definitions ───────────────────────────────────────────────
+        ColumnDefinitions.Clear();
+        RowDefinitions.Clear();
+        RowDefinitions.Add(_toolbarRow);
+
+        if (isVertical)
         {
-            case ViewMode.CodeOnly:
-                _codeColumn.Width    = new GridLength(1, GridUnitType.Star);
-                _splitterColumn.Width= new GridLength(0);
-                _designColumn.Width  = new GridLength(0);
-                _splitter.Visibility = Visibility.Collapsed;
-                break;
+            // Single content column; 4 rows: toolbar | first | splitter | second
+            ColumnDefinitions.Add(new ColumnDefinition { Width = starSize });
 
-            case ViewMode.Split:
-                _codeColumn.Width    = new GridLength(1, GridUnitType.Star);
-                _splitterColumn.Width= new GridLength(4);
-                _designColumn.Width  = new GridLength(1, GridUnitType.Star);
-                _splitter.Visibility = Visibility.Visible;
-                break;
+            var firstRow   = designFirst ? _contentDesignRow : _contentCodeRow;
+            var secondRow  = designFirst ? _contentCodeRow   : _contentDesignRow;
+            bool showFirst  = designFirst ? showDesign : showCode;
+            bool showSecond = designFirst ? showCode   : showDesign;
 
-            case ViewMode.DesignOnly:
-                _codeColumn.Width    = new GridLength(0);
-                _splitterColumn.Width= new GridLength(0);
-                _designColumn.Width  = new GridLength(1, GridUnitType.Star);
-                _splitter.Visibility = Visibility.Collapsed;
-                break;
+            if (showSplit)
+            {
+                // Preserve ratio; restore from zero if coming from a hidden-pane mode.
+                if (firstRow.Height  == zeroSize) firstRow.Height  = starSize;
+                if (secondRow.Height == zeroSize) secondRow.Height = starSize;
+                _splitterRow.Height = splitterSz;
+            }
+            else
+            {
+                firstRow.Height     = showFirst  ? starSize : zeroSize;
+                secondRow.Height    = showSecond ? starSize : zeroSize;
+                _splitterRow.Height = zeroSize;
+            }
+
+            RowDefinitions.Add(firstRow);
+            RowDefinitions.Add(_splitterRow);
+            RowDefinitions.Add(secondRow);
+        }
+        else
+        {
+            // Single content row; 3 columns: first | splitter | second
+            RowDefinitions.Add(new RowDefinition { Height = starSize });
+
+            var firstCol   = designFirst ? _designColumn  : _codeColumn;
+            var secondCol  = designFirst ? _codeColumn    : _designColumn;
+            bool showFirst  = designFirst ? showDesign : showCode;
+            bool showSecond = designFirst ? showCode   : showDesign;
+
+            if (showSplit)
+            {
+                // Preserve ratio; restore from zero if coming from a hidden-pane mode.
+                if (firstCol.Width  == zeroSize) firstCol.Width  = starSize;
+                if (secondCol.Width == zeroSize) secondCol.Width = starSize;
+                _splitterColumn.Width = splitterSz;
+            }
+            else
+            {
+                firstCol.Width        = showFirst  ? starSize : zeroSize;
+                secondCol.Width       = showSecond ? starSize : zeroSize;
+                _splitterColumn.Width = zeroSize;
+            }
+
+            ColumnDefinitions.Add(firstCol);
+            ColumnDefinitions.Add(_splitterColumn);
+            ColumnDefinitions.Add(secondCol);
         }
 
-        _btnCodeOnly.IsChecked   = mode == ViewMode.CodeOnly;
-        _btnSplit.IsChecked      = mode == ViewMode.Split;
-        _btnDesignOnly.IsChecked = mode == ViewMode.DesignOnly;
+        // ── Reposition children ───────────────────────────────────────────────
+        UIElement firstPane  = designFirst ? _zoomPan  : _codeHost;
+        UIElement secondPane = designFirst ? _codeHost : _zoomPan;
 
-        // Sync status bar view mode item.
-        var modeLabel = mode switch
+        if (isVertical)
+        {
+            SetRow(_toolbarContainer!, 0);  SetColumn(_toolbarContainer!, 0);  SetColumnSpan(_toolbarContainer!, 1);
+            SetRow(firstPane,          1);  SetColumn(firstPane,          0);  SetColumnSpan(firstPane,          1);
+            SetRow(_splitter,          2);  SetColumn(_splitter,          0);  SetColumnSpan(_splitter,          1);
+            SetRow(secondPane,         3);  SetColumn(secondPane,         0);  SetColumnSpan(secondPane,         1);
+
+            _splitter.Width               = double.NaN;
+            _splitter.Height              = 4;
+            _splitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+            _splitter.VerticalAlignment   = VerticalAlignment.Stretch;
+            _splitter.ResizeDirection     = GridResizeDirection.Rows;
+        }
+        else
+        {
+            SetRow(_toolbarContainer!, 0);  SetColumn(_toolbarContainer!, 0);  SetColumnSpan(_toolbarContainer!, 3);
+            SetRow(firstPane,          1);  SetColumn(firstPane,          0);  SetColumnSpan(firstPane,          1);
+            SetRow(_splitter,          1);  SetColumn(_splitter,          1);  SetColumnSpan(_splitter,          1);
+            SetRow(secondPane,         1);  SetColumn(secondPane,         2);  SetColumnSpan(secondPane,         1);
+
+            _splitter.Width               = 4;
+            _splitter.Height              = double.NaN;
+            _splitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+            _splitter.VerticalAlignment   = VerticalAlignment.Stretch;
+            _splitter.ResizeDirection     = GridResizeDirection.Columns;
+        }
+
+        _splitter.Visibility = showSplit ? Visibility.Visible : Visibility.Collapsed;
+
+        // ── Sync view mode toggle buttons ─────────────────────────────────────
+        _btnCodeOnly.IsChecked   = _viewMode == ViewMode.CodeOnly;
+        _btnSplit.IsChecked      = _viewMode == ViewMode.Split;
+        _btnDesignOnly.IsChecked = _viewMode == ViewMode.DesignOnly;
+
+        var modeLabel = _viewMode switch
         {
             ViewMode.CodeOnly   => "Code Only",
-            ViewMode.Split      => "Split",
             ViewMode.DesignOnly => "Design Only",
             _                   => "Split"
         };
         _sbViewMode.Value = modeLabel;
         foreach (var choice in _sbViewMode.Choices)
             choice.IsActive = choice.DisplayName == modeLabel;
+
+        // ── Sync layout status bar ────────────────────────────────────────────
+        var layoutLabel = _splitLayout switch
+        {
+            SplitLayout.HorizontalDesignLeft  => "Design Left",
+            SplitLayout.VerticalDesignBottom  => "Design Bottom",
+            SplitLayout.VerticalDesignTop     => "Design Top",
+            _                                  => "Design Right"
+        };
+        _sbLayout.Value = layoutLabel;
+        foreach (var choice in _sbLayout.Choices)
+            choice.IsActive = choice.DisplayName == layoutLabel;
     }
 
     // ── Persistence helpers ───────────────────────────────────────────────────
 
     private double GetSplitRatio()
     {
-        double total = _codeColumn.ActualWidth + _designColumn.ActualWidth;
-        return total > 0 ? _codeColumn.ActualWidth / total : 0.5;
+        bool vertical = _splitLayout is SplitLayout.VerticalDesignBottom or SplitLayout.VerticalDesignTop;
+        if (vertical)
+        {
+            double total = _contentCodeRow.ActualHeight + _contentDesignRow.ActualHeight;
+            return total > 0 ? _contentCodeRow.ActualHeight / total : 0.5;
+        }
+        double totalW = _codeColumn.ActualWidth + _designColumn.ActualWidth;
+        return totalW > 0 ? _codeColumn.ActualWidth / totalW : 0.5;
     }
 
     private void SetSplitRatio(double ratio)
     {
         if (_viewMode != ViewMode.Split) return;
-        _codeColumn.Width   = new GridLength(ratio,       GridUnitType.Star);
-        _designColumn.Width = new GridLength(1.0 - ratio, GridUnitType.Star);
+        bool vertical = _splitLayout is SplitLayout.VerticalDesignBottom or SplitLayout.VerticalDesignTop;
+        if (vertical)
+        {
+            _contentCodeRow.Height   = new GridLength(ratio,       GridUnitType.Star);
+            _contentDesignRow.Height = new GridLength(1.0 - ratio, GridUnitType.Star);
+        }
+        else
+        {
+            _codeColumn.Width   = new GridLength(ratio,       GridUnitType.Star);
+            _designColumn.Width = new GridLength(1.0 - ratio, GridUnitType.Star);
+        }
     }
 
     private static string GetElementPath(UIElement el)
@@ -767,6 +896,33 @@ public sealed class XamlDesignerSplitHost : Grid,
         localDesign.Click += (_, _) => { if (localDesign.IsChecked == true) ApplyViewMode(ViewMode.DesignOnly); };
         btnAuto.Checked   += (_, _) => _autoPreviewEnabled = true;
         btnAuto.Unchecked += (_, _) => { _autoPreviewEnabled = false; _previewTimer.Stop(); };
+
+        // ── Layout dropdown button ────────────────────────────────────────────
+        var btnLayoutLocal = MakeIconButton("\uE8B7", "Split layout (Ctrl+Shift+L)");
+        btnLayoutLocal.Click += (_, _) =>
+        {
+            var ctx = new ContextMenu();
+            ctx.SetResourceReference(ContextMenu.BackgroundProperty,  "DockMenuBackgroundBrush");
+            ctx.SetResourceReference(ContextMenu.ForegroundProperty,  "DockMenuForegroundBrush");
+            ctx.SetResourceReference(ContextMenu.BorderBrushProperty, "DockMenuBorderBrush");
+
+            MenuItem MakeLayoutItem(string glyph, string header, SplitLayout layout)
+            {
+                var item = new MenuItem { Header = header, Icon = MakeMenuIcon(glyph) };
+                item.SetResourceReference(MenuItem.ForegroundProperty, "DockMenuForegroundBrush");
+                item.Click += (_, _) => ApplySplitLayout(layout);
+                return item;
+            }
+
+            ctx.Items.Add(MakeLayoutItem("\uE8D6", "Design Right",  SplitLayout.HorizontalDesignRight));
+            ctx.Items.Add(MakeLayoutItem("\uE8D5", "Design Left",   SplitLayout.HorizontalDesignLeft));
+            ctx.Items.Add(MakeLayoutItem("\uE8D2", "Design Bottom", SplitLayout.VerticalDesignBottom));
+            ctx.Items.Add(MakeLayoutItem("\uE8D4", "Design Top",    SplitLayout.VerticalDesignTop));
+
+            ctx.PlacementTarget = btnLayoutLocal;
+            ctx.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            ctx.IsOpen          = true;
+        };
 
         // ── Undo/Redo group (Overkill) ───────────────────────────────────────
         var btnUndoLocal = MakeIconButton("\uE7A7", "Nothing to undo");
@@ -846,6 +1002,8 @@ public sealed class XamlDesignerSplitHost : Grid,
         leftStack.Children.Add(btnDesign);
         leftStack.Children.Add(MakeSeparator());
         leftStack.Children.Add(btnAuto);
+        leftStack.Children.Add(MakeSeparator());
+        leftStack.Children.Add(btnLayoutLocal);
 
         // Undo/Redo group
         leftStack.Children.Add(MakeSeparator());
@@ -908,6 +1066,20 @@ public sealed class XamlDesignerSplitHost : Grid,
                 new() { Icon = "\uE8A5", Label = "Code Only",   Tooltip = "Code Only (Ctrl+1)",   Command = new RelayCommand(_ => ApplyViewMode(ViewMode.CodeOnly)) },
                 new() { Icon = "\uE70D", Label = "Split",       Tooltip = "Split view (Ctrl+2)",  Command = new RelayCommand(_ => ApplyViewMode(ViewMode.Split)) },
                 new() { Icon = "\uE769", Label = "Design Only", Tooltip = "Design Only (Ctrl+3)", Command = new RelayCommand(_ => ApplyViewMode(ViewMode.DesignOnly)) },
+            }
+        });
+
+        // Layout dropdown
+        ToolbarItems.Add(new EditorToolbarItem
+        {
+            Icon    = "\uE8B7",
+            Tooltip = "Split layout (Ctrl+Shift+L)",
+            DropdownItems = new ObservableCollection<EditorToolbarItem>
+            {
+                new() { Icon = "\uE8D6", Label = "Design Right",  Tooltip = "Design Right",  Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.HorizontalDesignRight)) },
+                new() { Icon = "\uE8D5", Label = "Design Left",   Tooltip = "Design Left",   Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.HorizontalDesignLeft)) },
+                new() { Icon = "\uE8D2", Label = "Design Bottom", Tooltip = "Design Bottom", Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.VerticalDesignBottom)) },
+                new() { Icon = "\uE8D4", Label = "Design Top",    Tooltip = "Design Top",    Command = new RelayCommand(_ => ApplySplitLayout(SplitLayout.VerticalDesignTop)) },
             }
         });
 
@@ -1075,6 +1247,13 @@ public sealed class XamlDesignerSplitHost : Grid,
             _autoPreviewEnabled       = !_autoPreviewEnabled;
             _btnAutoPreview.IsChecked = _autoPreviewEnabled;
             if (!_autoPreviewEnabled) _previewTimer.Stop();
+            e.Handled = true;
+            return;
+        }
+
+        if (ctrl && shift && e.Key == Key.L)
+        {
+            ApplySplitLayout((SplitLayout)(((int)_splitLayout + 1) % 4));
             e.Handled = true;
             return;
         }

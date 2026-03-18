@@ -1,0 +1,41 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+
+    WpfHexEditor.Sample.CodeEditor
+    ================================
+    Standalone sample demonstrating the WpfHexEditor CodeEditor with:
+    - Full menu bar (File / Edit / View / Find / Language / Help)
+    - Toolbar with File / Edit / Find / Language / Theme pods
+    - Runtime Dark / Light theme switching (F1 / F2 / toolbar toggle)
+    - Status bar: Language · Ln/Col · Encoding · Zoom · Dirty indicator
+    - No docking engine — CodeEditorSplitHost fills the client area.
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>WpfHexEditor.Sample.CodeEditor</AssemblyName>
+    <RootNamespace>WpfHexEditor.Sample.CodeEditor</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      CodeEditor pulls transitively:
+        WpfHexEditor.Editor.Core, WpfHexEditor.ProjectSystem, WpfHexEditor.Definitions,
+        WpfHexEditor.SDK, WpfHexEditor.HexEditor, WpfHexEditor.Editor.TextEditor, etc.
+      Docking.Wpf is needed explicitly for the theme ResourceDictionaries.
+    -->
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
+  </ItemGroup>
+
+</Project>

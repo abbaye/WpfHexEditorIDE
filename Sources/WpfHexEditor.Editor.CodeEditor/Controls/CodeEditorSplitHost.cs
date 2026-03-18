@@ -221,6 +221,41 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         _searchBarOverlay.Detach();
     }
 
+    /// <summary>
+    /// Shows the inline search bar with the Replace section pre-expanded.
+    /// If already visible, just expands Replace and re-focuses the search input.
+    /// </summary>
+    public void ShowSearchAndReplace()
+    {
+        ShowSearch();
+        _searchBarOverlay.ExpandReplace();
+    }
+
+    #endregion
+
+    #region Language
+
+    /// <summary>
+    /// Applies a <see cref="LanguageDefinition"/> to both editor panes.
+    /// Builds the appropriate <see cref="ISyntaxHighlighter"/> and sets
+    /// <see cref="CodeEditor.ExternalHighlighter"/> and <see cref="CodeEditor.Language"/>
+    /// on both the primary and secondary editors.
+    /// Pass <see langword="null"/> to clear syntax highlighting (Plain Text mode).
+    /// </summary>
+    /// <param name="lang">The language to activate, or <see langword="null"/> for none.</param>
+    public void SetLanguage(LanguageDefinition? lang)
+    {
+        var highlighter = lang is not null ? CodeEditorFactory.BuildHighlighter(lang) : null;
+        _primaryEditor.ExternalHighlighter   = highlighter;
+        _secondaryEditor.ExternalHighlighter = highlighter;
+        _primaryEditor.Language   = lang;
+        _secondaryEditor.Language = lang;
+    }
+
+    #endregion
+
+    #region Quick Search — keyboard handler
+
     private void OnHostPreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
@@ -350,23 +385,31 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
     {
-        // Lazy highlighter + language definition resolution before loading
-        // so the first render is already coloured and feature gates are correct.
-        if (_primaryEditor.ExternalHighlighter is null)
-        {
-            var language = LanguageRegistry.Instance.GetLanguageForFile(filePath);
-            if (language is not null)
-            {
-                var highlighter = CodeEditorFactory.BuildHighlighter(language);
-                _primaryEditor.ExternalHighlighter   = highlighter;
-                _secondaryEditor.ExternalHighlighter = highlighter;
+        // Resolve and apply the language for EVERY file open — not just the first.
+        // The previous "lazy / null-guard" approach caused syntax highlighting to
+        // persist from the prior file when switching between files of different types.
+        var language = LanguageRegistry.Instance.GetLanguageForFile(filePath);
 
-                // Propagate the LanguageDefinition so per-language feature gates
-                // (CodeLens, Ctrl+Click navigation) apply even when the editor is
-                // created outside CodeEditorFactory (e.g. XamlDesignerSplitHost).
-                _primaryEditor.Language   = language;
-                _secondaryEditor.Language = language;
-            }
+        if (language is not null)
+        {
+            var highlighter = CodeEditorFactory.BuildHighlighter(language);
+            _primaryEditor.ExternalHighlighter   = highlighter;
+            _secondaryEditor.ExternalHighlighter = highlighter;
+
+            // Propagate the LanguageDefinition so per-language feature gates
+            // (CodeLens, Ctrl+Click navigation) apply even when the editor is
+            // created outside CodeEditorFactory (e.g. XamlDesignerSplitHost).
+            _primaryEditor.Language   = language;
+            _secondaryEditor.Language = language;
+        }
+        else
+        {
+            // Unknown / plain-text file — clear any previous highlighter so the
+            // editor does not keep colouring the new content with stale rules.
+            _primaryEditor.ExternalHighlighter   = null;
+            _secondaryEditor.ExternalHighlighter = null;
+            _primaryEditor.Language   = null;
+            _secondaryEditor.Language = null;
         }
 
         // Delegate to the primary editor's async open (file I/O runs off the UI thread).

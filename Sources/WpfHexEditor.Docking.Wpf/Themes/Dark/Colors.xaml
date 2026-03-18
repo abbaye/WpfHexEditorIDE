@@ -324,6 +324,12 @@
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#2D2000"/>
     <!-- CE_CtrlHover_Underline — Ctrl+hover symbol underline (Dark) -->
     <SolidColorBrush x:Key="CE_CtrlHover_Underline"         Color="#4EC9B0"/>
+    <!-- CE_FoldLabel_* — Collapsed region inline label (Dark) -->
+    <SolidColorBrush x:Key="CE_FoldLabelBorder"             Color="#569CD6"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBg"                 Color="#1A569CD6"/>
+    <SolidColorBrush x:Key="CE_FoldLabelFg"                 Color="#C8C8C8"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBorderHover"        Color="#7DBFFF"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBgHover"            Color="#33569CD6"/>
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#007ACC</Color>

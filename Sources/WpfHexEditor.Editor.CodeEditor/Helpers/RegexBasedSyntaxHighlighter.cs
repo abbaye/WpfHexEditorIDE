@@ -49,6 +49,7 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
             ["TE_Label"]        = new SolidColorBrush(Color.FromRgb(0xDC, 0xDC, 0xAA)),
             ["TE_Register"]     = new SolidColorBrush(Color.FromRgb(0x9C, 0xDC, 0xFE)),
             ["TE_Directive"]    = new SolidColorBrush(Color.FromRgb(0xC5, 0x86, 0xC0)),
+            ["TE_RegionName"]   = new SolidColorBrush(Color.FromRgb(0x9C, 0xDC, 0xFE)),  // VS-like light blue for region labels
             ["TE_Address"]      = new SolidColorBrush(Color.FromRgb(0xB5, 0xCE, 0xA8)),
             ["TE_Foreground"]   = Brushes.WhiteSmoke,
         };
