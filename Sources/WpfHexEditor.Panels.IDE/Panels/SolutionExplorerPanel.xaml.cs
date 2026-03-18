@@ -190,7 +190,12 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void OnCollapseAll(object sender, RoutedEventArgs e)
     {
         foreach (var root in _vm.Roots)
-            CollapseAll(root);
+        {
+            // Keep the solution root expanded — collapse only its children and below.
+            root.IsExpanded = true;
+            foreach (var child in root.Children)
+                CollapseAll(child);
+        }
     }
 
     private void OnSyncWithActiveDocument(object sender, RoutedEventArgs e)
@@ -401,8 +406,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         BuildProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
         RebuildProjectMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
         CleanProjectMenuItem    .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
-        SetStartupSeparator     .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
-        SetStartupProjectMenuItem.Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        SetStartupSeparator      .Visibility = isProject   ? Visibility.Visible : Visibility.Collapsed;
+        SetStartupProjectMenuItem.Visibility = isProject   ? Visibility.Visible : Visibility.Collapsed;
 
         NuGetSeparator       .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
         ManageNuGetMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;

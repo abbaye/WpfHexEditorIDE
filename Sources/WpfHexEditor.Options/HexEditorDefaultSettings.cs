@@ -123,4 +123,9 @@ public sealed class HexEditorDefaultSettings
 
     /// <summary>How many bytes to pre-load when the editor is first displayed.</summary>
     public PreloadByteInEditor PreloadByteInEditorMode { get; set; } = PreloadByteInEditor.None;
+
+    // -- Tooltip ----------------------------------------------------------
+
+    /// <summary>Controls where byte tooltips are shown (None / OnCustomBackgroundBlocks / Everywhere).</summary>
+    public ByteToolTipDisplayMode ByteToolTipDisplayMode { get; set; } = ByteToolTipDisplayMode.OnCustomBackgroundBlocks;
 }

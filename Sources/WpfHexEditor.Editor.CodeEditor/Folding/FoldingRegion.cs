@@ -11,6 +11,16 @@
 
 namespace WpfHexEditor.Editor.CodeEditor.Folding;
 
+/// <summary>Identifies the visual style used to render the folding toggle for a region.</summary>
+public enum FoldingRegionKind
+{
+    /// <summary>Brace-delimited block — rendered as [+] / [−] box in the gutter.</summary>
+    Brace,
+
+    /// <summary>#region / #endregion directive — rendered as ▶ / ▼ triangle in the gutter.</summary>
+    Directive
+}
+
 /// <summary>
 /// Describes a foldable region in the document, spanning from
 /// <see cref="StartLine"/> to <see cref="EndLine"/> (both 0-based, inclusive).
@@ -31,11 +41,20 @@ public sealed class FoldingRegion
     /// <summary>Whether this region is currently collapsed (hidden).</summary>
     public bool IsCollapsed { get; set; }
 
+    /// <summary>Visual kind that determines how the gutter toggle is rendered.</summary>
+    public FoldingRegionKind Kind { get; }
+
+    /// <summary>Creates a brace-style region (default kind).</summary>
     public FoldingRegion(int startLine, int endLine, string label)
+        : this(startLine, endLine, label, FoldingRegionKind.Brace) { }
+
+    /// <summary>Creates a region with an explicit kind.</summary>
+    public FoldingRegion(int startLine, int endLine, string label, FoldingRegionKind kind)
     {
         StartLine = startLine;
         EndLine   = endLine;
         Label     = label;
+        Kind      = kind;
     }
 
     /// <summary>Number of body lines hidden when collapsed (EndLine − StartLine − 1).</summary>

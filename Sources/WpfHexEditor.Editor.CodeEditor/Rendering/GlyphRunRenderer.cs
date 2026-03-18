@@ -54,6 +54,13 @@ public sealed class GlyphRunRenderer
 
     #endregion
 
+    #region Constants
+
+    // Number of space-widths used to render a single tab character.
+    private const int TabSize = 4;
+
+    #endregion
+
     #region Instance state
 
     private readonly Typeface       _regularTypeface;
@@ -81,6 +88,23 @@ public sealed class GlyphRunRenderer
     /// Usage: <c>baselineY = lineTopY + Baseline</c>
     /// </summary>
     public double Baseline { get; }
+
+    /// <summary>
+    /// Computes the visual pixel X offset for a given character column in
+    /// <paramref name="lineText"/>, expanding tab characters to
+    /// <see cref="TabSize"/> character-widths each.
+    /// </summary>
+    /// <param name="lineText">The raw text of the line (may contain tab characters).</param>
+    /// <param name="charColumn">The zero-based character index to measure up to.</param>
+    /// <returns>Visual X offset in device-independent pixels.</returns>
+    public double ComputeVisualX(string lineText, int charColumn)
+    {
+        double visualX = 0;
+        int limit = Math.Min(charColumn, lineText.Length);
+        for (int i = 0; i < limit; i++)
+            visualX += lineText[i] == '\t' ? CharWidth * TabSize : CharWidth;
+        return visualX;
+    }
 
     #endregion
 
@@ -170,6 +194,15 @@ public sealed class GlyphRunRenderer
 
         foreach (char ch in text)
         {
+            if (ch == '\t')
+            {
+                // Tab has no glyph in most monospace fonts — use space glyph with TabSize advance.
+                charMap.TryGetValue(' ', out ushort spaceGi);
+                glyphIndices.Add(spaceGi);
+                advanceWidths.Add(gt.AdvanceWidths[spaceGi] * _fontSize * TabSize);
+                continue;
+            }
+
             if (!charMap.TryGetValue(ch, out ushort gi))
             {
                 // Try replacement-character glyph; fall back to glyph index 0.
@@ -255,7 +288,8 @@ public sealed class GlyphRunRenderer
     /// </param>
     public List<GlyphRunEntry> BuildLineGlyphRuns(
         IEnumerable<SyntaxHighlightToken> tokens,
-        Brush                             urlBrush)
+        Brush                             urlBrush,
+        string                            lineText = "")
     {
         var result = new List<GlyphRunEntry>();
 
@@ -268,9 +302,12 @@ public sealed class GlyphRunRenderer
             if (gt is null)
                 continue; // fallback-font token — not cacheable as GlyphRun
 
+            // Use tab-aware X so tokens on tab-indented lines land at the correct column.
+            double tokenX = ComputeVisualX(lineText, token.StartColumn);
+
             var run = BuildGlyphRunAtOffset(
                 token.Text,
-                token.StartColumn * CharWidth,
+                tokenX,
                 Baseline,
                 gt);
 
@@ -291,17 +328,27 @@ public sealed class GlyphRunRenderer
     /// </summary>
     private GlyphRun BuildGlyphRunAtOffset(string text, double x, double baselineY, GlyphTypeface gt)
     {
-        var glyphIndices  = new ushort[text.Length];
-        var advanceWidths = new double[text.Length];
-        var charMap       = gt.CharacterToGlyphMap;
+        var idxList = new List<ushort>(text.Length);
+        var advList = new List<double>(text.Length);
+        var charMap = gt.CharacterToGlyphMap;
 
         for (int i = 0; i < text.Length; i++)
         {
-            if (!charMap.TryGetValue(text[i], out ushort gi))
+            char ch = text[i];
+            if (ch == '\t')
+            {
+                // Tab has no glyph in most monospace fonts — use space glyph with TabSize advance.
+                charMap.TryGetValue(' ', out ushort spaceGi);
+                idxList.Add(spaceGi);
+                advList.Add(gt.AdvanceWidths[spaceGi] * _fontSize * TabSize);
+                continue;
+            }
+
+            if (!charMap.TryGetValue(ch, out ushort gi))
                 charMap.TryGetValue('\uFFFD', out gi);
 
-            glyphIndices[i]  = gi;
-            advanceWidths[i] = gt.AdvanceWidths[gi] * _fontSize;
+            idxList.Add(gi);
+            advList.Add(gt.AdvanceWidths[gi] * _fontSize);
         }
 
         return new GlyphRun(
@@ -310,9 +357,9 @@ public sealed class GlyphRunRenderer
             isSideways:       false,
             renderingEmSize:  _fontSize,
             pixelsPerDip:     (float)_pixelsPerDip,
-            glyphIndices:     glyphIndices,
+            glyphIndices:     idxList,
             baselineOrigin:   new Point(x, baselineY),
-            advanceWidths:    advanceWidths,
+            advanceWidths:    advList,
             glyphOffsets:     null,
             characters:       null,
             deviceFontName:   null,

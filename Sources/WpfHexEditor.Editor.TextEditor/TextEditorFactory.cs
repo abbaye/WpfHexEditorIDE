@@ -33,9 +33,22 @@ public sealed class TextEditorFactory : IEditorFactory
     {
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
         if (string.IsNullOrEmpty(ext)) return false;
-        // Check exact extension match against known extensions.
+
+        // Fast path: single-extension match against the known list.
         if (_descriptor.SupportedExtensions.Contains(ext)) return true;
-        // Also accept if the SyntaxDefinitionCatalog knows the extension.
+
+        // Compound-extension match: Path.GetExtension only returns the last segment
+        // (e.g. "foo.whfolder.user" → ".user"). For entries in SupportedExtensions that
+        // contain more than one dot, compare against the full filename via EndsWith so that
+        // .whfolder.user, .whsln.user, and any future compound suffixes are handled
+        // automatically without additional code changes.
+        var fileName = Path.GetFileName(filePath).ToLowerInvariant();
+        if (_descriptor.SupportedExtensions.Any(s =>
+                s.Count(c => c == '.') > 1 &&
+                fileName.EndsWith(s, StringComparison.Ordinal)))
+            return true;
+
+        // SyntaxDefinitionCatalog fallback (user-defined .whlang mappings).
         return SyntaxDefinitionCatalog.Instance.FindByExtension(ext) is not null;
     }
 
@@ -75,6 +88,12 @@ file sealed class TextEditorDescriptor : IEditorDescriptor
         ".md", ".markdown", ".mkd", ".mdx",
         ".txt", ".log", ".text",
         // Generic scripts
-        ".scr", ".msg", ".evt", ".script", ".dec", ".lua"
+        ".scr", ".msg", ".evt", ".script", ".dec", ".lua",
+        // WH internal project / settings files (single and compound extensions).
+        // Compound entries (.whfolder.user, .whsln.user) are matched via the
+        // EndsWith pass in CanOpen() since Path.GetExtension() only returns the
+        // last segment of a multi-dot filename.
+        ".whfolder", ".whsln", ".whproj",
+        ".whfolder.user", ".whsln.user"
     ];
 }

@@ -9,8 +9,7 @@
 // Description:
 //     Official plugin entry point for the .NET Assembly Explorer.
 //     Implements IWpfHexEditorPlugin + IPluginWithOptions.
-//     Registers the main panel, search panel, diff panel, 4 menu items,
-//     and 1 status bar item.
+//     Registers the main panel, search panel, diff panel, and 4 menu items.
 //     Wires HexEditor FileOpened / ActiveEditorChanged events for auto-analysis.
 //
 // Architecture Notes:
@@ -45,7 +44,7 @@ namespace WpfHexEditor.Plugins.AssemblyExplorer;
 /// <summary>
 /// Entry point for the official Assembly Explorer plugin (v2.0).
 /// Multi-assembly workspace, deep hex editor integration, cross-assembly search,
-/// assembly diff, decompiler backend selection, cross-ref navigation, status bar stats.
+/// assembly diff, decompiler backend selection, cross-ref navigation.
 /// </summary>
 public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 {
@@ -69,8 +68,6 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     private const string PanelUiId        = "WpfHexEditor.Plugins.AssemblyExplorer.Panel.Main";
     private const string SearchPanelUiId  = "WpfHexEditor.Plugins.AssemblyExplorer.Panel.Search";
     private const string DiffPanelUiId    = "WpfHexEditor.Plugins.AssemblyExplorer.Panel.Diff";
-    private const string StatusWorkspaceId = "WpfHexEditor.Plugins.AssemblyExplorer.StatusBar.Workspace";
-
     // ── State ─────────────────────────────────────────────────────────────────
 
     private AssemblyExplorerPanel? _panel;
@@ -78,7 +75,6 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     private AssemblyDiffPanel?     _diffPanel;
     private IIDEHostContext?       _context;
     private IAssemblyAnalysisEngine? _analysisEngine;
-    private StatusBarItemDescriptor? _sbWorkspace;
     private AssemblyExplorerOptionsPage? _optionsPage;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -159,16 +155,6 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
 
         // Wire solution manager for "Extract to Project" workflow.
         _panel.SetSolutionManager(context.SolutionManager);
-
-        // Register status bar item.
-        _sbWorkspace = new StatusBarItemDescriptor
-        {
-            Text      = "🔬 0 assemblies",
-            Alignment = StatusBarAlignment.Right,
-            Order     = 20,
-            ToolTip   = "Assembly Explorer workspace — click to toggle panel"
-        };
-        context.UIRegistry.RegisterStatusBarItem(StatusWorkspaceId, Id, _sbWorkspace);
 
         // Register menu items.
         RegisterMenuItems(context);
@@ -328,16 +314,6 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     private void OnWorkspaceStatsChanged(object? sender, EventArgs e)
     {
         if (_panel is null) return;
-
-        var vm = _panel.ViewModel;
-        var n  = vm.TotalLoadedAssemblies;
-        var t  = vm.TotalLoadedTypes;
-
-        // Update status bar item text.
-        if (_sbWorkspace is not null)
-            _sbWorkspace.Text = n == 0
-                ? "🔬 0 assemblies"
-                : $"🔬 {n} {(n == 1 ? "assembly" : "assemblies")} | {t:N0} types";
 
         // Publish workspace changed event for other plugins.
         if (_context is not null && _panel?.ViewModel is not null)

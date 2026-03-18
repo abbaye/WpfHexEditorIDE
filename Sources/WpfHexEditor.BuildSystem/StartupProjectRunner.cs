@@ -76,6 +76,16 @@ public sealed class StartupProjectRunner
             return false;
         }
 
+        // Only MSBuild projects (.csproj/.vbproj/.fsproj) can be resolved via
+        // `dotnet msbuild -getProperty:TargetPath`.  WH-native .whproj projects
+        // have no compiled executable. Fixes #197 RC-3.
+        if (!IsMsBuildProject(startup.ProjectFilePath))
+        {
+            Log($"'{startup.Name}' is a WH-native project (.whproj) and cannot be launched as an executable.");
+            Log("To run a WH project, configure an external tool or script runner.");
+            return false;
+        }
+
         // Resolve the output executable path.
         var exePath = await ResolveTargetPathAsync(
             startup.ProjectFilePath,
@@ -118,8 +128,10 @@ public sealed class StartupProjectRunner
     /// Queries <c>dotnet msbuild -getProperty:TargetPath</c> to obtain the
     /// absolute path of the compiled output without triggering a rebuild.
     /// Available since .NET SDK 7.0.
+    /// Parses stdout line by line to handle SDK versions that emit extra header
+    /// lines before the actual property value.
     /// </summary>
-    private static async Task<string?> ResolveTargetPathAsync(
+    private async Task<string?> ResolveTargetPathAsync(
         string            csprojPath,
         string            configName,
         CancellationToken ct)
@@ -140,14 +152,46 @@ public sealed class StartupProjectRunner
         psi.ArgumentList.Add($"-p:Configuration={configName}");
 
         using var proc = Process.Start(psi)!;
-        var output = await proc.StandardOutput.ReadToEndAsync(ct);
-        await proc.WaitForExitAsync(ct);
 
-        var path = output.Trim();
-        return File.Exists(path) ? path : null;
+        // Read stdout and stderr concurrently to avoid deadlocks on large output.
+        var stdoutTask = proc.StandardOutput.ReadToEndAsync(ct);
+        var stderrTask = proc.StandardError.ReadToEndAsync(ct);
+        await proc.WaitForExitAsync(ct);
+        var stdout = await stdoutTask;
+        var stderr = await stderrTask;
+
+        // Some SDK versions emit header/warning lines before the property value.
+        // Take the last non-empty line that looks like an absolute path.
+        var path = stdout
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .LastOrDefault(Path.IsPathRooted);
+
+        if (!string.IsNullOrWhiteSpace(stderr))
+            Log($"[TargetPath] {stderr.Trim()}");
+
+        if (path is null || !File.Exists(path))
+        {
+            Log($"[TargetPath] stdout='{stdout.Trim()}' exitCode={proc.ExitCode}");
+            return null;
+        }
+
+        return path;
     }
 
     // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="path"/> points to an
+    /// MSBuild project file that supports <c>dotnet msbuild -getProperty:TargetPath</c>.
+    /// WH-native <c>.whproj</c> files return <see langword="false"/>.
+    /// </summary>
+    private static bool IsMsBuildProject(string path)
+    {
+        var ext = Path.GetExtension(path);
+        return ext.Equals(".csproj", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".vbproj", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".fsproj", StringComparison.OrdinalIgnoreCase);
+    }
 
     private void Log(string line)
         => _eventBus.Publish(new BuildOutputLineEvent { Line = line });

@@ -378,6 +378,16 @@ internal static class VSProjectParser
     // Helpers — file enumeration
     // -----------------------------------------------------------------------
 
+    /// <summary>
+    /// Project file extensions that are never content items — they represent the project itself
+    /// and must not appear as children in the Solution Explorer file list.
+    /// </summary>
+    private static readonly HashSet<string> ProjectFileExtensions =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".csproj", ".vbproj", ".fsproj", ".esproj", ".njsproj", ".pyproj", ".sqlproj"
+        };
+
     private static IEnumerable<string> EnumerateProjectFiles(string dir)
     {
         var skip = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "obj", "bin", ".git", ".vs" };
@@ -390,6 +400,9 @@ internal static class VSProjectParser
             var parts = rel.Split(System.IO.Path.DirectorySeparatorChar,
                                   System.IO.Path.AltDirectorySeparatorChar);
             if (parts.Any(p => skip.Contains(p))) continue;
+
+            // Project files represent the project node itself — never show them as file items.
+            if (ProjectFileExtensions.Contains(System.IO.Path.GetExtension(file))) continue;
 
             yield return file;
         }

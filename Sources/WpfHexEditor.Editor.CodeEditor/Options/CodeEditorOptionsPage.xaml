@@ -104,6 +104,11 @@
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
+            <CheckBox Content="Show scope guides"
+                      IsChecked="{Binding ShowScopeGuides}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Features ─────────────────────────────────────────── -->
@@ -126,6 +131,24 @@
                       IsChecked="{Binding EnableMultiCaret}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <CheckBox Content="Enable Find All References (Shift+F12)"
+                      IsChecked="{Binding EnableFindAllReferences}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Requires an active Language Server (LSP) for the current file type" />
+
+            <CheckBox Content="Show Code Lens (inline reference counts)"
+                      IsChecked="{Binding ShowCodeLens}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Shows reference count above each declaration. Click the hint to open the References popup." />
+
+            <CheckBox Content="Highlight word under caret"
+                      IsChecked="{Binding EnableWordHighlight}"
+                      Margin="0,2,0,2"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      ToolTip="Highlights all occurrences of the word under the cursor and shows tick marks on the scroll bar" />
 
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 

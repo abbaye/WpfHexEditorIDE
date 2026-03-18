@@ -60,7 +60,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             CheckHighlightLine.IsChecked = ce.HighlightCurrentLine;
             TxtZoom.Text      = ((int)(ce.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = ce.MouseWheelSpeed;
-            CheckChangeset.IsChecked = ce.ChangesetEnabled;
+            CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
 
             LoadColorPicker(ChkBg,  CpBg,  ce.BackgroundColor, "TE_Background");
             LoadColorPicker(ChkFg,  CpFg,  ce.ForegroundColor, "TE_Foreground");

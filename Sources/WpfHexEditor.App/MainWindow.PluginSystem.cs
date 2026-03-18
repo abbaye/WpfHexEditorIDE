@@ -317,6 +317,16 @@ public partial class MainWindow
 
                 UpdatePluginStatusBar();
 
+                // Enable "Open Folder…" only when a loader for .whfolder is registered.
+                // The menu item is hidden at startup (IsEnabled=false set in XAML) and revealed here.
+                if (MenuOpenFolder is not null)
+                {
+                    MenuOpenFolder.IsEnabled = extensionRegistry
+                        .GetExtensions<ISolutionLoader>()
+                        .Any(l => l.SupportedExtensions
+                                   .Contains("whfolder", StringComparer.OrdinalIgnoreCase));
+                }
+
                 // Restore a VS solution that was deferred in TryRestoreSession() because the
                 // plugin loaders (ISolutionLoader extensions) were not yet registered at that point.
                 if (!string.IsNullOrEmpty(_pendingRestoreSolutionPath))
@@ -379,9 +389,8 @@ public partial class MainWindow
 
     private void OnStatusBarBlinkTick(object? sender, EventArgs e)
     {
-        if (PluginStatusIcon is null) return;
         _statusBarBlinkState = !_statusBarBlinkState;
-        PluginStatusIcon.Opacity = _statusBarBlinkState ? 1.0 : 0.3;
+        PluginWarningBadge.Opacity = _statusBarBlinkState ? 1.0 : 0.3;
     }
 
     // --- Plugin InfoBar (VS-style notification banner) -------------------
@@ -445,82 +454,22 @@ public partial class MainWindow
     /// </summary>
     private void UpdatePluginStatusBar()
     {
-        if (_pluginHost is null || PluginStatusText is null) return;
+        if (_pluginHost is null) return;
 
-        var all    = _pluginHost.GetAllPlugins();
-        var loaded = all.Count(e => e.State == SDK.Models.PluginState.Loaded);
-        var total  = all.Count;
-
-        PluginStatusText.Text = total == 0
-            ? "No plugins"
-            : loaded == total
-                ? $"{loaded} plugin{(loaded == 1 ? "" : "s")}"
-                : $"{loaded}/{total} plugins";
-
-        // Aggregate metrics for tooltip
-        double totalCpu = 0;
-        long   totalMem = 0;
-        string lastLoaded = "—";
-        DateTime? lastTime = null;
-
-        foreach (var entry in all.Where(e => e.State == SDK.Models.PluginState.Loaded))
-        {
-            var snap = entry.Diagnostics.GetLatest();
-            if (snap is not null) { totalCpu += snap.CpuPercent; totalMem += snap.MemoryBytes; }
-            if (entry.LoadedAt.HasValue && (lastTime is null || entry.LoadedAt > lastTime))
-            {
-                lastTime   = entry.LoadedAt;
-                lastLoaded = $"{entry.Manifest.Name} ({entry.InitDuration.TotalMilliseconds:F0} ms)";
-            }
-        }
-
-        // Build tooltip
-        var tooltipLines = new System.Text.StringBuilder();
-        tooltipLines.AppendLine($"Plugins: {loaded}/{total} loaded");
-        if (loaded > 0)
-        {
-            tooltipLines.AppendLine($"CPU avg: {totalCpu / loaded:F1}%   RAM: {totalMem / 1024 / 1024} MB");
-            tooltipLines.AppendLine($"Last loaded: {lastLoaded}");
-        }
-        if (_slowPluginName is not null)
-            tooltipLines.AppendLine($"⚠ Slow plugin: {_slowPluginName}");
-        tooltipLines.Append(_pluginFaultCount > 0
-            ? $"⛔ {_pluginFaultCount} fault(s) — click to open Plugin Manager"
-            : "Click to open Plugin Manager");
-
-        PluginStatusItem.ToolTip = tooltipLines.ToString().TrimEnd();
-
-        // Icon color: red = faults, amber = slow or partial, green = healthy
-        if (_pluginFaultCount > 0)
-        {
-            PluginStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44));
-            // Start blink
-            if (_statusBarBlinkTimer is not null && !_statusBarBlinkTimer.IsEnabled)
-                _statusBarBlinkTimer.Start();
-        }
-        else if (_slowPluginName is not null || loaded < total)
-        {
-            PluginStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B));
-            _statusBarBlinkTimer?.Stop();
-            PluginStatusIcon.Opacity = 1.0;
-        }
-        else
-        {
-            PluginStatusIcon.Foreground = (Brush?)TryFindResource("DockTabActiveTextBrush")
-                                          ?? Brushes.White;
-            _statusBarBlinkTimer?.Stop();
-            PluginStatusIcon.Opacity = 1.0;
-        }
-
-        // Fault badge
+        // Show fault badge when one or more plugins have crashed; blink to draw attention.
         if (_pluginFaultCount > 0)
         {
             PluginWarningText.Text        = _pluginFaultCount.ToString();
             PluginWarningBadge.Visibility = Visibility.Visible;
+            PluginWarningBadge.Opacity    = 1.0;
+            if (_statusBarBlinkTimer is not null && !_statusBarBlinkTimer.IsEnabled)
+                _statusBarBlinkTimer.Start();
         }
         else
         {
+            _statusBarBlinkTimer?.Stop();
             PluginWarningBadge.Visibility = Visibility.Collapsed;
+            PluginWarningBadge.Opacity    = 1.0;
         }
     }
 
@@ -534,7 +483,7 @@ public partial class MainWindow
 
     private void OpenPluginQuickStatusPopup()
     {
-        if (_pluginHost is null || PluginStatusItem is null) return;
+        if (_pluginHost is null) return;
 
         var content = new WpfHexEditor.App.Controls.PluginQuickStatusPopup
         {
@@ -547,7 +496,7 @@ public partial class MainWindow
         var popup = new System.Windows.Controls.Primitives.Popup
         {
             Child           = content,
-            PlacementTarget = PluginStatusItem,
+            PlacementTarget = PluginWarningBadge,
             Placement       = System.Windows.Controls.Primitives.PlacementMode.Top,
             StaysOpen       = false,
             AllowsTransparency = true

@@ -1,0 +1,66 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+
+    WpfHexEditor.Plugins.SolutionLoader.Folder
+    ==========================================
+    Plugin: opens any folder on disk as a VS Code–style "Open Folder" session.
+    Creates a .whfolder marker file, enumerates the directory tree recursively,
+    mirrors the structure into the Solution Explorer, and auto-refreshes via
+    FileSystemWatcher when files change on disk.
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>false</UseWPF>
+    <RootNamespace>WpfHexEditor.Plugins.SolutionLoader.Folder</RootNamespace>
+    <AssemblyName>WpfHexEditor.Plugins.SolutionLoader.Folder</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>WpfHexEditor plugin — opens any folder as a VS Code–style folder session.</Description>
+    <Version>1.0.0</Version>
+
+    <!-- Plugin metadata -->
+    <PluginId>WpfHexEditor.Plugins.SolutionLoader.Folder</PluginId>
+    <PluginName>Folder Mode Loader</PluginName>
+    <PluginVersion>1.0.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.SolutionLoader.Folder.FolderSolutionLoaderPlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>Opens any folder on disk as a VS Code-style folder session in the Solution Explorer.</PluginDescription>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
+    <PluginLoadPriority>85</PluginLoadPriority>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
+
+    <!-- Permissions -->
+    <PluginPermAccessHexEditor>false</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem>true</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>false</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>true</PluginPermWriteOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

@@ -107,6 +107,289 @@
         </Setter>
     </Style>
 
+    <!-- ── ComboBox ────────────────────────────────────────────────────────── -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}" />
+        <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding"      Value="4,2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton x:Name="ToggleButton"
+                                      Focusable="False" ClickMode="Press"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      Foreground="{TemplateBinding Foreground}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="Bd"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="18" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="1"
+                                                    BorderThickness="1,0,0,0"
+                                                    BorderBrush="{TemplateBinding BorderBrush}" />
+                                            <Path x:Name="Arrow"
+                                                  Grid.Column="1"
+                                                  Data="M 0 0 L 4 4 L 8 0 Z"
+                                                  Fill="{TemplateBinding Foreground}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource DockAccentBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+
+                        <ContentPresenter x:Name="ContentSite"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          Margin="6,2,22,2"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left" />
+
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Visibility="Hidden"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Background="Transparent"
+                                 Foreground="{TemplateBinding Foreground}"
+                                 Margin="4,2,22,2" />
+
+                        <Popup x:Name="Popup"
+                               Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                            <Grid x:Name="DropDown"
+                                  SnapsToDevicePixels="True"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border x:Name="DropDownBorder"
+                                        Background="{DynamicResource DockMenuBackgroundBrush}"
+                                        BorderBrush="{DynamicResource DockBorderBrush}"
+                                        BorderThickness="1" />
+                                <ScrollViewer SnapsToDevicePixels="True" Margin="1">
+                                    <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Padding"    Value="6,3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── ListBox / ListBoxItem ─────────────────────────────────────────────── -->
+    <Style TargetType="ListBox">
+        <Setter Property="Background"  Value="{DynamicResource DockWindowBackgroundBrush}" />
+        <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
+    </Style>
+
+    <Style TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Padding"    Value="4,2" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                <Setter Property="Foreground" Value="White" />
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ── TreeView ─────────────────────────────────────────────────────────── -->
+    <Style TargetType="TreeView">
+        <Setter Property="Background"  Value="{DynamicResource DockWindowBackgroundBrush}" />
+        <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style TargetType="TreeViewItem">
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding"    Value="2,2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TreeViewItem">
+                    <StackPanel>
+                        <!-- Row: expander chevron + header -->
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!-- Expand/collapse toggle -->
+                                <ToggleButton x:Name="Expander"
+                                              Grid.Column="0"
+                                              IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Focusable="False"
+                                              Visibility="Collapsed"
+                                              Width="14" Height="14"
+                                              Cursor="Hand">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Background="Transparent">
+                                                <Path x:Name="Arrow"
+                                                      Data="M 0 0 L 4 4 L 8 0 Z"
+                                                      Fill="{DynamicResource DockMenuForegroundBrush}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      RenderTransformOrigin="0.5,0.5">
+                                                    <Path.RenderTransform>
+                                                        <RotateTransform Angle="-90" />
+                                                    </Path.RenderTransform>
+                                                </Path>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Arrow" Property="RenderTransform">
+                                                        <Setter.Value>
+                                                            <RotateTransform Angle="0" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <!-- Header text / content -->
+                                <ContentPresenter x:Name="PART_Header"
+                                                  Grid.Column="1"
+                                                  ContentSource="Header"
+                                                  VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <!-- Indented children -->
+                        <ItemsPresenter x:Name="ItemsHost"
+                                        Margin="16,0,0,0"
+                                        Visibility="Collapsed" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="True">
+                            <Setter TargetName="Expander" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected"  Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockMenuBackgroundBrush}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── DataGrid ──────────────────────────────────────────────────────────── -->
+    <Style TargetType="DataGrid">
+        <Setter Property="Background"                   Value="{DynamicResource DockWindowBackgroundBrush}" />
+        <Setter Property="Foreground"                   Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush"                  Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="HorizontalGridLinesBrush"     Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="VerticalGridLinesBrush"       Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="RowBackground"                Value="{DynamicResource DockWindowBackgroundBrush}" />
+        <Setter Property="AlternatingRowBackground"     Value="{DynamicResource DockMenuBackgroundBrush}" />
+        <Setter Property="GridLinesVisibility"          Value="Horizontal" />
+    </Style>
+
+    <Style TargetType="DataGridRow">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource DockMenuBackgroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background"       Value="{DynamicResource DockMenuBackgroundBrush}" />
+        <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush"      Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="BorderThickness"  Value="0,0,1,1" />
+        <Setter Property="Padding"          Value="6,4" />
+        <Setter Property="SeparatorBrush"   Value="{DynamicResource DockBorderBrush}" />
+    </Style>
+
+    <Style TargetType="DataGridCell">
+        <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- ── Button — VS2026-style overlay template ──────────────────────────── -->
     <!--
         FocusVisualStyle="{x:Null}" prevents the OS-native blue focus rectangle.

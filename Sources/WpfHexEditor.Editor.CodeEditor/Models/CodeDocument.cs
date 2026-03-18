@@ -149,6 +149,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// </summary>
         public event EventHandler<TextChangedEventArgs> TextChanged;
 
+        /// <summary>
+        /// Raised when the entire document content is replaced via <see cref="LoadLines"/>.
+        /// Subscribers that cache structural information (navigation bar, code lens) must refresh.
+        /// </summary>
+        public event EventHandler? ContentReplaced;
+
         #endregion
 
         #region Constructor
@@ -509,6 +515,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             _dirtyLines.Clear(); // fresh load — no dirty lines
             IsModified = false;
             InvalidateAllCache();
+
+            // Notify structural caches (navigation bar, code lens) that content was fully replaced.
+            ContentReplaced?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

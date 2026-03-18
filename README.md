@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.5.2-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.5.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -80,7 +80,7 @@
 - **400+ file format** auto-detection with **format-aware editor routing**
 - **Parsed Fields Panel** with structure overlay
 - **Data Inspector** — 40+ type interpretations
-- **Assembly Explorer** — .NET PE inspection, types, methods, fields; C# decompilation to Code Editor tab; Extract to Project; Collapse/Close All *(#104-106 — in progress)*
+- **Assembly Explorer** — .NET PE inspection, types, methods, fields; C# decompilation to Code Editor tab; Extract to Project; Collapse/Close All; **Ctrl+Click external symbol decompilation** (AppDomain + runtime + NuGet resolution) *(#104-106 — in progress)*
 - **HexEditor control** — 19 languages with instant switching *(IDE UI is English only — full localization engine coming soon)*
 
 </td>
@@ -97,7 +97,7 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 |--------|--------|----------|-------------|
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ✅ Active | ~75% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL, status bar contributor |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~80% | Multi-language code editor — VS-like navigation bar (types/members combos, Segoe MDL2 icons, caret tracking), full `.whlang` syntax highlighting, URL hover/click, find/replace, `IEditorPersistable`, split view; hosts decompiled C# from Assembly Explorer |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~85% | Multi-language code editor — VS-like navigation bar (types/members combos, Segoe MDL2 icons, caret tracking), full `.whlang` syntax highlighting, URL hover/click, find/replace, `IEditorPersistable`, split view; **Ctrl+Click** cross-file navigation + external symbol decompilation; tab/CodeLens-aware search highlights; hosts decompiled C# from Assembly Explorer |
 | **[Text Editor](Sources/WpfHexEditor.Editor.TextEditor/README.md)** | ✅ Active | ~50% | Text editing with 26 embedded language definitions, auto-detection by extension, encoding support |
 | **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ✅ Active | ~45% | `.hxscript` editor with syntax highlighting, run-in-terminal integration, `HxScriptEngine` backend |
 | **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | 🔧 Active | ~30% | Binary image viewer — zoom/pan, transform pipeline (rotate/flip/crop/resize), `FileShare.ReadWrite` for concurrent open |

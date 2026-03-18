@@ -111,18 +111,63 @@ public sealed class VsSolutionLoader : ISolutionLoader
         var rootFolders = BuildSolutionFolders(solutionFolderEntries, nestedMap, projects);
 
         // ---- Determine startup project ---------------------------------------
-        var startupProject = DetermineStartupProject(projects, content);
+        // Priority: 1) user sidecar (.sln.user)  2) heuristic (Sample/Test exclusion)
+        var startupProject = await ResolveStartupProjectAsync(filePath, projects, content, ct)
+                                   .ConfigureAwait(false);
 
-        return new VsSolution
+        var solution = new VsSolution
         {
-            Name                    = System.IO.Path.GetFileNameWithoutExtension(filePath),
-            FilePath                = filePath,
-            Projects                = projects,
-            RootFolders             = rootFolders,
-            StartupProject          = startupProject,
+            Name                     = System.IO.Path.GetFileNameWithoutExtension(filePath),
+            FilePath                 = filePath,
+            Projects                 = projects,
+            RootFolders              = rootFolders,
             DefaultConfigurationName = defaultConfig,
             DefaultPlatform          = defaultPlatform,
         };
+        solution.InitStartupProject(startupProject);
+        return solution;
+    }
+
+    /// <summary>
+    /// Returns the startup project for a VS solution.
+    /// Checks the per-user sidecar (<c>.sln.user</c>) first; falls back to the
+    /// heuristic when no user preference has been saved.
+    /// </summary>
+    private static async Task<VsProject?> ResolveStartupProjectAsync(
+        string                filePath,
+        IReadOnlyList<VsProject> projects,
+        string                content,
+        CancellationToken     ct)
+    {
+        // Try to read user preference from sidecar file.
+        var sidecarPath = filePath + ".user";
+        if (File.Exists(sidecarPath))
+        {
+            try
+            {
+                var json = await File.ReadAllTextAsync(sidecarPath, ct).ConfigureAwait(false);
+                var doc  = System.Text.Json.JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("startupProjectPath", out var prop))
+                {
+                    var relPath = prop.GetString();
+                    if (!string.IsNullOrWhiteSpace(relPath))
+                    {
+                        var solutionDir = System.IO.Path.GetDirectoryName(filePath)!;
+                        var absPath     = System.IO.Path.GetFullPath(
+                                              System.IO.Path.Combine(solutionDir, relPath));
+                        var match = projects.FirstOrDefault(p =>
+                            p.ProjectFilePath.Equals(absPath, StringComparison.OrdinalIgnoreCase));
+                        if (match is not null) return match;
+                    }
+                }
+            }
+            catch
+            {
+                // Corrupt sidecar — fall through to heuristic.
+            }
+        }
+
+        return DetermineStartupProject(projects, content);
     }
 
     // -----------------------------------------------------------------------
@@ -283,10 +328,37 @@ public sealed class VsSolutionLoader : ISolutionLoader
     private static VsProject? DetermineStartupProject(
         IEnumerable<VsProject> projects, string content)
     {
-        // Heuristic: find the first project whose OutputType is Exe or WinExe.
-        return projects.FirstOrDefault(p =>
+        var executables = projects.Where(p =>
             p.OutputType.Equals("Exe",    StringComparison.OrdinalIgnoreCase) ||
-            p.OutputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase));
+            p.OutputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase)).ToList();
+
+        if (executables.Count == 0) return null;
+
+        // Pass 1 — prefer projects not in Sample / Test / Sandbox folders.
+        // Fixes #197 RC-5: WpfHexEditor.Sample.HexEditor was picked over
+        // WpfHexEditor.App because it appeared first in the .sln file.
+        var primary = executables.FirstOrDefault(p =>
+            !ContainsSampleOrTestSegment(p.ProjectFilePath));
+
+        // Pass 2 — fall back to original behaviour when every executable
+        // lives in a sample or test folder (edge case, preserves compat).
+        return primary ?? executables[0];
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="path"/> contains a
+    /// path segment that identifies the project as a sample, test, or sandbox,
+    /// disqualifying it from being auto-selected as the startup project.
+    /// </summary>
+    private static bool ContainsSampleOrTestSegment(string path)
+    {
+        // Normalise separators and test individual segments so that a project
+        // named e.g. "TestResults.App" in a non-test folder is not excluded.
+        var segments = path.Replace('\\', '/').Split('/');
+        return segments.Any(s =>
+            s.Contains("Sample",  StringComparison.OrdinalIgnoreCase) ||
+            s.Contains("Test",    StringComparison.OrdinalIgnoreCase) ||
+            s.Contains("Sandbox", StringComparison.OrdinalIgnoreCase));
     }
 
     // -----------------------------------------------------------------------

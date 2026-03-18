@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.HexEditor.ViewModels;
 using WpfHexEditor.Plugins.ParsedFields.Dialogs;
 using WpfHexEditor.SDK.UI;
 
@@ -41,6 +42,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         private int _sortMode = 0; // 0=offset, 1=nameAZ, 2=nameZA, 3=type, 4=size
         private long _totalFileSize;
         private ToolbarOverflowManager _overflowManager = null!;
+        private readonly EnrichedFormatViewModel _enrichedVm = new();
 
         public ParsedFieldsPanel()
         {
@@ -77,6 +79,12 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
             };
         }
+
+        /// <summary>
+        /// ViewModel for the embedded "Enriched Format Metadata" expander section.
+        /// Bound in XAML via RelativeSource; populated by SetEnrichedFormat().
+        /// </summary>
+        public EnrichedFormatViewModel EnrichedFormat => _enrichedVm;
 
         /// <summary>
         /// Collection of parsed fields to display
@@ -207,20 +215,105 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         /// </summary>
         public event EventHandler RefreshRequested;
 
+        // GroupName used for enriched format fields injected into the main fields list
+        private const string EnrichedGroupName = "Format Metadata";
+
         /// <summary>
-        /// Set the format definition for enriched metadata display
+        /// Injects enriched format metadata fields directly into ParsedFields so they appear
+        /// as a "Format Metadata" group inside the main fields ListBox.
         /// </summary>
-        public void SetEnrichedFormat(FormatDefinition format)
+        public void SetEnrichedFormat(FormatDefinition? format)
         {
-            // EnrichedFormatInfoPanel moved to WpfHexEditor.Plugins.FormatInfo — managed by FormatInfoPlugin
+            _enrichedVm.CurrentFormat = format;
+            RemoveEnrichedFields();
+            if (format != null)
+                InjectEnrichedFields();
         }
 
         /// <summary>
-        /// Clear the enriched format information
+        /// Removes all injected enriched fields and clears the VM.
         /// </summary>
         public void ClearEnrichedFormat()
         {
-            // EnrichedFormatInfoPanel moved to WpfHexEditor.Plugins.FormatInfo — managed by FormatInfoPlugin
+            _enrichedVm.CurrentFormat = null;
+            RemoveEnrichedFields();
+        }
+
+        /// <summary>
+        /// Removes previously injected enriched fields from ParsedFields.
+        /// </summary>
+        private void RemoveEnrichedFields()
+        {
+            var toRemove = ParsedFields
+                .Where(f => string.Equals(f.ValueType, "enriched",
+                                          StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            foreach (var f in toRemove)
+                ParsedFields.Remove(f);
+        }
+
+        /// <summary>
+        /// Creates flat ParsedFieldViewModel entries from EnrichedFormatViewModel and inserts
+        /// them at the start of ParsedFields so they form a "Format Metadata" group.
+        /// </summary>
+        private void InjectEnrichedFields()
+        {
+            var fields = new System.Collections.Generic.List<ParsedFieldViewModel>();
+
+            void Add(string name, string? value, string icon = "ℹ", string? desc = null)
+            {
+                if (string.IsNullOrWhiteSpace(value) || value == "N/A") return;
+                fields.Add(new ParsedFieldViewModel
+                {
+                    Name           = name,
+                    FormattedValue = value,
+                    ValueType      = "enriched",
+                    Offset         = -2,   // Distinct from metadata (-1)
+                    Length         = 0,
+                    FieldIcon      = icon,
+                    GroupName      = EnrichedGroupName,
+                    Description    = desc ?? string.Empty,
+                    IsValid        = true
+                });
+            }
+
+            Add("Category",      _enrichedVm.FormatCategory,          "🏷");
+            Add("MIME Types",    _enrichedVm.MimeTypesDisplay,         "📄");
+            Add("Extensions",    _enrichedVm.ExtensionsDisplay,        "🔖");
+            Add("Software",      _enrichedVm.SoftwareDisplay,          "💾");
+            Add("Use Cases",     _enrichedVm.UseCasesDisplay,          "📋");
+            Add("Doc Level",     _enrichedVm.DocumentationLevel,       "📚");
+            Add("Quality",       _enrichedVm.CompletenessScoreDisplay, "⭐");
+            if (_enrichedVm.HasDetectionInfo)
+                Add("Signature", _enrichedVm.SignatureHex,             "🔍", "Magic bytes");
+            if (_enrichedVm.HasRelatedFormats)
+                Add("Related",   _enrichedVm.RelatedFormatsDisplay,    "🔗");
+            if (_enrichedVm.HasTechnicalDetails)
+                Add("Technical", _enrichedVm.TechnicalSummary,         "⚙");
+            if (_enrichedVm.HasSpecifications)
+                Add("Specs",      _enrichedVm.SpecificationsDisplay,                           "📑");
+            if (_enrichedVm.HasWebLinks)
+                Add("References", string.Join(" · ", _enrichedVm.WebLinks.Select(u =>
+                {
+                    if (Uri.TryCreate(u, UriKind.Absolute, out var uri)) return uri.Host;
+                    return u.Length > 40 ? u[..37] + "…" : u;
+                })), "🌐");
+
+            // Insert in reverse so they stay in declaration order at the top
+            for (int i = fields.Count - 1; i >= 0; i--)
+                ParsedFields.Insert(0, fields[i]);
+        }
+
+        private void OnEnrichedLinkNavigate(object sender,
+            System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    { FileName = e.Uri.AbsoluteUri, UseShellExecute = true });
+            }
+            catch { /* silently ignore */ }
+            e.Handled = true;
         }
 
         /// <summary>
@@ -785,10 +878,11 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         }
 
         /// <summary>
-        /// Clear all fields
+        /// Clear all fields (including injected enriched fields).
         /// </summary>
         public void Clear()
         {
+            RemoveEnrichedFields();
             ParsedFields.Clear();
             FilteredFields.Clear();
             FormatInfo = new FormatInfo();
@@ -847,16 +941,6 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
 
             foreach (var field in ParsedFields)
             {
-                // Separate metadata fields into spotlight section (C1)
-                bool isMetadata = field.Offset < 0 ||
-                    string.Equals(field.ValueType, "metadata", System.StringComparison.OrdinalIgnoreCase);
-
-                if (isMetadata && !hasSearchFilter && typeFilter == 0 && !_showBookmarksOnly)
-                {
-                    MetadataFields.Add(field);
-                    continue;
-                }
-
                 // Bookmark filter
                 if (_showBookmarksOnly && !field.IsBookmarked)
                     continue;
@@ -940,15 +1024,10 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 SearchResultText = string.Empty;
             }
 
-            // Update validation badges (C2)
+            // Update validation badges
             UpdateValidationBadges(validCount, invalidCount);
 
-            // Update computed values spotlight visibility (C1)
-            if (ComputedValuesSection != null)
-                ComputedValuesSection.Visibility = MetadataFields.Count > 0
-                    ? Visibility.Visible : Visibility.Collapsed;
-
-            // Build key insight chips (C4)
+            // Build key insight chips
             BuildInsightChips();
 
             // Update byte coverage bar (C6)
@@ -1017,8 +1096,9 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 });
             }
 
-            // Look for color type in metadata
-            var colorType = MetadataFields?.FirstOrDefault(f =>
+            // Look for color type in computed metadata fields
+            var colorType = ParsedFields.FirstOrDefault(f =>
+                f.ValueType == "metadata" &&
                 f.Name?.IndexOf("Color", StringComparison.OrdinalIgnoreCase) >= 0);
             if (colorType != null && !string.IsNullOrEmpty(colorType.FormattedValue) && colorType.FormattedValue != "0")
             {
@@ -1031,10 +1111,11 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 });
             }
 
-            // Look for formatted file size in metadata
-            var sizeField = MetadataFields?.FirstOrDefault(f =>
-                f.Name?.IndexOf("Size", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                f.Name?.IndexOf("Formatted", StringComparison.OrdinalIgnoreCase) >= 0);
+            // Look for formatted file size in computed metadata fields
+            var sizeField = ParsedFields.FirstOrDefault(f =>
+                f.ValueType == "metadata" &&
+                (f.Name?.IndexOf("Size", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 f.Name?.IndexOf("Formatted", StringComparison.OrdinalIgnoreCase) >= 0));
             if (sizeField != null && !string.IsNullOrEmpty(sizeField.FormattedValue) &&
                 sizeField.FormattedValue != "0" && sizeField.FormattedValue != "")
             {
@@ -1047,8 +1128,9 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 });
             }
 
-            // Look for compression name in metadata
-            var compression = MetadataFields?.FirstOrDefault(f =>
+            // Look for compression name in computed metadata fields
+            var compression = ParsedFields.FirstOrDefault(f =>
+                f.ValueType == "metadata" &&
                 f.Name?.IndexOf("Compression", StringComparison.OrdinalIgnoreCase) >= 0);
             if (compression != null && !string.IsNullOrEmpty(compression.FormattedValue) && compression.FormattedValue != "0")
             {
@@ -1061,8 +1143,9 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 });
             }
 
-            // Look for duration in metadata
-            var duration = MetadataFields?.FirstOrDefault(f =>
+            // Look for duration in computed metadata fields
+            var duration = ParsedFields.FirstOrDefault(f =>
+                f.ValueType == "metadata" &&
                 f.Name?.IndexOf("Duration", StringComparison.OrdinalIgnoreCase) >= 0);
             if (duration != null && !string.IsNullOrEmpty(duration.FormattedValue) && duration.FormattedValue != "0")
             {
@@ -1738,6 +1821,30 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         public string Value { get; set; }
         public System.Windows.Media.Brush Background { get; set; }
         public System.Windows.Media.Brush TextForeground { get; set; }
+    }
+
+    /// <summary>
+    /// Converts a group name to an IsExpanded bool.
+    /// Groups listed in the ConverterParameter (comma-separated) start collapsed.
+    /// Default collapsed groups: "Format Metadata"
+    /// </summary>
+    public class GroupNameToExpandedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is not string groupName) return true;
+
+            // Parameter overrides the default collapsed list
+            string collapsed = parameter as string ?? "Format Metadata";
+            foreach (var entry in collapsed.Split(','))
+                if (string.Equals(groupName, entry.Trim(), StringComparison.Ordinal))
+                    return false;
+
+            return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
     }
 
     /// <summary>

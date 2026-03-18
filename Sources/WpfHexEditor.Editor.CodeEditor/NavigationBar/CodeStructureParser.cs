@@ -73,6 +73,19 @@ public static class CodeStructureParser
         @"^\s*([A-Z]\w*)\s*(?:=\s*.+?)?\s*,?\s*$",
         RegexOptions.Compiled);
 
+    // Multi-line property: "public Type Name" with '{' on the next non-blank line.
+    // Must end cleanly after the name (no '(', '{', '=>', ';', '=').
+    private static readonly Regex s_propertyStart = new(
+        @"^\s*(?:(?:public|private|protected|internal|static|virtual|override|abstract|sealed|new)\s+)*" +
+        @"[\w<>\[\],\s\?]+\s+([\w]+)\s*$",
+        RegexOptions.Compiled);
+
+    // DependencyProperty backing field (excluded by generic field check due to '(' in Register()).
+    private static readonly Regex s_dependencyProperty = new(
+        @"^\s*(?:(?:public|private|protected|internal|static|readonly)\s+)*" +
+        @"DependencyProperty\s+([\w]+)\s*=\s*DependencyProperty\.",
+        RegexOptions.Compiled);
+
     // Lines to ignore (avoid false positives)
     private static readonly Regex s_skipLine = new(
         @"^\s*(?://|/\*|\*|#|using\s|var\s|return\s|if\s*\(|else|for\s*\(|foreach|while|switch|catch|finally|throw|new\s)",
@@ -191,6 +204,27 @@ public static class CodeStructureParser
                 continue;
             }
 
+            // ── Multi-line property: name alone on line, '{' on the next non-blank line ──
+            if (!text.Contains('(') && !text.Contains('{') && !text.Contains("=>")
+                && !text.Contains(';')  && !text.Contains('='))
+            {
+                string? next = GetNextNonBlankLine(lines, i);
+                if (next is not null && next.TrimStart().StartsWith('{'))
+                {
+                    m = s_propertyStart.Match(text);
+                    if (m.Success)
+                    {
+                        string name = m.Groups[1].Value;
+                        if (IsValidMemberName(name))
+                            members.Add(new NavigationBarItem(
+                                NavigationItemKind.Member, name,
+                                QualifiedName(currentType, name),
+                                i, MemberKind: MemberKind.Property));
+                        continue;
+                    }
+                }
+            }
+
             // ── Method / Constructor ──────────────────────────────────────
             m = s_method.Match(text);
             if (m.Success)
@@ -206,6 +240,19 @@ public static class CodeStructureParser
                         QualifiedName(currentType, name),
                         i, MemberKind: mk));
                 }
+                continue;
+            }
+
+            // ── DependencyProperty backing field (has '(' in Register() — excluded by generic field guard) ──
+            m = s_dependencyProperty.Match(text);
+            if (m.Success)
+            {
+                string name = m.Groups[1].Value;
+                if (IsValidMemberName(name))
+                    members.Add(new NavigationBarItem(
+                        NavigationItemKind.Member, name,
+                        QualifiedName(currentType, name),
+                        i, MemberKind: MemberKind.Property));  // Property icon — semantically a DP is a property
                 continue;
             }
 
@@ -264,4 +311,16 @@ public static class CodeStructureParser
     private static bool IsValidMemberName(string name)
         => name.Length > 1 && !s_reserved.Contains(name)
            && (char.IsUpper(name[0]) || name[0] == '_');  // allow _camelCase private fields
+
+    /// <summary>Returns the text of the first non-blank line after <paramref name="fromLine"/>,
+    /// or <see langword="null"/> if no such line exists.</summary>
+    private static string? GetNextNonBlankLine(IReadOnlyList<CodeLine> lines, int fromLine)
+    {
+        for (int j = fromLine + 1; j < lines.Count; j++)
+        {
+            string t = lines[j].Text;
+            if (!string.IsNullOrWhiteSpace(t)) return t;
+        }
+        return null;
+    }
 }

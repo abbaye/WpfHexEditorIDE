@@ -207,12 +207,16 @@ public sealed class DesignCanvas : Border
 
     // ── XAML preprocessing ────────────────────────────────────────────────────
 
-    // Window-specific attributes that are meaningless (or forbidden) inside a ContentPresenter.
+    // Window-specific attributes and events that are meaningless (or forbidden) inside a Border.
     private static readonly string[] WindowOnlyAttributes =
     [
+        // Properties
         "Title", "Icon", "WindowStyle", "WindowStartupLocation", "WindowState",
         "ResizeMode", "ShowInTaskbar", "Topmost", "AllowsTransparency",
-        "SizeToContent", "ShowActivated"
+        "SizeToContent", "ShowActivated",
+        // Events (Window-only — not present on Border/FrameworkElement)
+        "Closed", "Closing", "Activated", "Deactivated",
+        "StateChanged", "LocationChanged", "ContentRendered", "SourceInitialized"
     ];
 
     /// <summary>
@@ -224,6 +228,32 @@ public sealed class DesignCanvas : Border
     {
         // Remove x:Class, x:Subclass, x:FieldModifier — all require code-behind resolution.
         xaml = Regex.Replace(xaml, @"\s+x:(Class|Subclass|FieldModifier)=""[^""]*""", string.Empty);
+
+        // Strip event handler attributes anywhere in the document.
+        // XamlReader.Parse has no code-behind context so any attribute whose value is a
+        // C# method reference (no curly braces, no dots, looks like a method name) will
+        // cause "Cannot bind to target method" / "Unknown member" exceptions.
+        // Heuristic: plain identifier values that start with "On" or contain an underscore
+        // are virtually always event handlers; enum/property values never follow that pattern.
+        xaml = Regex.Replace(
+            xaml,
+            @"\s+\w+=""(On[A-Za-z][A-Za-z0-9_]*|[A-Za-z][A-Za-z0-9]*_[A-Za-z0-9_]+)""",
+            string.Empty);
+
+        // Strip Window-shell property elements that internally cast to Window at runtime.
+        // e.g. <WindowChrome.WindowChrome>...</WindowChrome.WindowChrome>,
+        //      <TaskbarItemInfo.Overlay>...</TaskbarItemInfo.Overlay>
+        // After Window→Border replacement these cause InvalidCastException in WPF internals.
+        xaml = Regex.Replace(
+            xaml,
+            @"<WindowChrome\.\w+>[\s\S]*?</WindowChrome\.\w+>",
+            string.Empty,
+            RegexOptions.Singleline);
+        xaml = Regex.Replace(
+            xaml,
+            @"<TaskbarItemInfo\.\w+>[\s\S]*?</TaskbarItemInfo\.\w+>",
+            string.Empty,
+            RegexOptions.Singleline);
 
         // Replace a Window root with Border (Window cannot be hosted in a ContentPresenter).
         xaml = ReplaceWindowRoot(xaml);

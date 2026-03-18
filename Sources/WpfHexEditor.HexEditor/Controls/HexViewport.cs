@@ -88,9 +88,10 @@ namespace WpfHexEditor.HexEditor.Controls
         // Encoding support (non-TBL character table types)
         private CharacterTableType _charTableType = CharacterTableType.Ascii;
         private System.Text.Encoding? _customEncoding;
-        private ByteToolTipDisplayMode _byteToolTipDisplayMode = ByteToolTipDisplayMode.None;
+        private ByteToolTipDisplayMode _byteToolTipDisplayMode = ByteToolTipDisplayMode.OnCustomBackgroundBlocks;
         private ByteToolTipDetailLevel _byteToolTipDetailLevel = ByteToolTipDetailLevel.Standard;
         private System.Windows.Controls.ToolTip _byteToolTip; // Custom tooltip that follows mouse
+        private Window? _parentWindow; // Tracked for Deactivated subscription
 
         // Viewport display properties (backing fields)
         private ByteSpacerGroup _byteGrouping = ByteSpacerGroup.EightByte;
@@ -368,6 +369,10 @@ namespace WpfHexEditor.HexEditor.Controls
             _hoverOverlayVisual = new DrawingVisual();
             AddVisualChild(_hoverOverlayVisual);
             AddLogicalChild(_hoverOverlayVisual);
+
+            // Subscribe to window lifecycle to dismiss stale tooltips on focus loss
+            Loaded   += OnViewportLoaded;
+            Unloaded += OnViewportUnloaded;
         }
 
         /// <summary>
@@ -3172,6 +3177,19 @@ namespace WpfHexEditor.HexEditor.Controls
             }
         }
 
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            // Dismiss tooltip and clear hover highlight when the mouse exits the control
+            CloseTooltip();
+            if (_mouseHoverPosition != -1)
+            {
+                _mouseHoverPosition = -1;
+                UpdateHoverOverlay();
+            }
+        }
+
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
@@ -3200,18 +3218,6 @@ namespace WpfHexEditor.HexEditor.Controls
                 _offsetDragStartLineIndex = -1;
                 _dragStartPosition = null;
                 ReleaseMouseCapture();
-            }
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-
-            // Clear hover highlight when mouse leaves control (overlay only, no full re-render)
-            if (_mouseHoverPosition != -1)
-            {
-                _mouseHoverPosition = -1;
-                UpdateHoverOverlay();
             }
         }
 
@@ -3246,8 +3252,10 @@ namespace WpfHexEditor.HexEditor.Controls
                 return;
             }
 
-            // Check if byte is in a CustomBackgroundBlock
+            // Check if byte is in a tooltip-eligible CustomBackgroundBlock
+            // Blocks with ShowInTooltip=false (e.g. auto-detected whole-file spans) are excluded.
             var block = _customBackgroundBlocks?.FirstOrDefault(b =>
+                b.ShowInTooltip &&
                 position.Value >= b.StartOffset && position.Value < b.StopOffset);
 
             // OnCustomBackgroundBlocks mode: only show if in a CBB
@@ -3389,9 +3397,29 @@ namespace WpfHexEditor.HexEditor.Controls
         private void CloseTooltip()
         {
             if (_byteToolTip != null)
-            {
                 _byteToolTip.IsOpen = false;
+        }
+
+        private void OnViewportLoaded(object sender, RoutedEventArgs e)
+        {
+            _parentWindow = Window.GetWindow(this);
+            if (_parentWindow != null)
+                _parentWindow.Deactivated += OnParentWindowDeactivated;
+        }
+
+        private void OnViewportUnloaded(object sender, RoutedEventArgs e)
+        {
+            if (_parentWindow != null)
+            {
+                _parentWindow.Deactivated -= OnParentWindowDeactivated;
+                _parentWindow = null;
             }
+            CloseTooltip();
+        }
+
+        private void OnParentWindowDeactivated(object? sender, EventArgs e)
+        {
+            CloseTooltip();
         }
 
         #endregion

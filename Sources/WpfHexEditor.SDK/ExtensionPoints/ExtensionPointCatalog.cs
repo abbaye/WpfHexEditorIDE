@@ -31,6 +31,7 @@ public static class ExtensionPointCatalog
             ["HexViewOverlay"]  = typeof(IHexViewOverlayExtension),
             ["BinaryParser"]    = typeof(IBinaryParserExtension),
             ["Decompiler"]      = typeof(IDecompilerExtension),
+            ["QuickInfo"]       = typeof(IQuickInfoProvider),
         };
 
     /// <summary>

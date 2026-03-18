@@ -4,7 +4,7 @@
   "author": "WpfHexEditor Team",
   "description": "Syntax highlighting for XML, HTML and XAML markup.",
   "category": "Data",
-  "extensions": [ ".xml", ".html", ".htm", ".xsl", ".xslt", ".svg", ".xhtml", ".rss", ".atom", ".resx" ],
+  "extensions": [ ".xml", ".xsl", ".xslt", ".svg", ".rss", ".atom", ".resx" ],
   "lineComment": "",
   "blockCommentStart": "<!--",
   "blockCommentEnd": "-->",

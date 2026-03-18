@@ -32,7 +32,14 @@ public sealed class BraceFoldingStrategy : IFoldingStrategy
             foreach (char ch in text)
             {
                 if (ch == '{')
-                    stack.Push(i);
+                {
+                    // When '{' is the only non-whitespace char on this line (e.g. Allman style),
+                    // attach the region to the keyword line above so that collapsing hides only
+                    // the body, not the declaration itself.
+                    bool braceAlone = text.Trim() == "{";
+                    int effectiveStart = (braceAlone && i > 0) ? i - 1 : i;
+                    stack.Push(effectiveStart);
+                }
                 else if (ch == '}' && stack.Count > 0)
                 {
                     int startLine = stack.Pop();

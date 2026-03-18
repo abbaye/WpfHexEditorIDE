@@ -90,11 +90,17 @@ public sealed class MSBuildAdapter : IBuildAdapter
         // closing quote when embedded in a manually-built Arguments string.
         var psi = new ProcessStartInfo("dotnet")
         {
-            WorkingDirectory       = Path.GetDirectoryName(projectFilePath)!,
-            RedirectStandardOutput = true,
-            RedirectStandardError  = true,
-            UseShellExecute        = false,
-            CreateNoWindow         = true,
+            WorkingDirectory        = Path.GetDirectoryName(projectFilePath)!,
+            RedirectStandardOutput  = true,
+            RedirectStandardError   = true,
+            UseShellExecute         = false,
+            CreateNoWindow          = true,
+            // Use UTF-8 explicitly: dotnet always emits UTF-8 to its stdout pipe,
+            // but Process defaults to the host's ANSI code page on Windows.
+            // Without this, accented characters in messages are garbled (e.g. French locale).
+            // ASCII-only structural tokens (file path, "warning", code) are unaffected
+            // either way, but explicit UTF-8 is cleaner and future-proof.
+            StandardOutputEncoding  = System.Text.Encoding.UTF8,
         };
 
         psi.ArgumentList.Add(clean ? "clean" : "build");
@@ -104,6 +110,13 @@ public sealed class MSBuildAdapter : IBuildAdapter
 
         if (!clean)
         {
+            // Minimal verbosity: keeps individual file(line,col): warning/error lines
+            // but suppresses the localized "N Warning(s) / N Error(s)" summary block
+            // that dotnet emits in the host locale (French on French Windows, etc.).
+            // The IDE's BuildOutputAdapter produces its own English summary from
+            // BuildSucceededEvent / BuildFailedEvent, so we don't need the dotnet one.
+            psi.ArgumentList.Add("-v:m");
+
             psi.ArgumentList.Add($"-p:Platform={platform}");
 
             if (!string.IsNullOrWhiteSpace(configuration.OutputPath))
@@ -122,13 +135,19 @@ public sealed class MSBuildAdapter : IBuildAdapter
             }
         }
 
+        // Collect every stdout line so we can parse diagnostics *after* the process
+        // has fully exited. Parsing inside OutputDataReceived has a race: callbacks
+        // run on thread-pool threads and some may fire after WaitForExitAsync returns.
+        // BeginOutputReadLine serialises callbacks for a single stream, so no lock needed.
+        var collectedLines = new List<string>();
+
         using var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
 
         process.OutputDataReceived += (_, e) =>
         {
             if (e.Data is null) return;
-            progress?.Report(e.Data);
-            ParseDiagnostic(e.Data, errors, warnings);
+            progress?.Report(e.Data);  // real-time stream to Output panel
+            collectedLines.Add(e.Data);
         };
 
         process.ErrorDataReceived += (_, e) =>
@@ -142,6 +161,15 @@ public sealed class MSBuildAdapter : IBuildAdapter
         process.BeginErrorReadLine();
 
         await process.WaitForExitAsync(ct).ConfigureAwait(false);
+
+        // WaitForExitAsync alone does NOT guarantee all OutputDataReceived callbacks
+        // have fired. The no-arg WaitForExit() overload explicitly flushes the async
+        // I/O pump so every line in collectedLines is present before we parse.
+        process.WaitForExit();
+
+        // Parse all collected lines now that stdout is fully consumed.
+        foreach (var line in collectedLines)
+            ParseDiagnostic(line, errors, warnings);
 
         sw.Stop();
         var success = process.ExitCode == 0;

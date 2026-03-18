@@ -157,6 +157,8 @@
                   Content="Track edits in .whchg companion file (requires Tracked save mode)"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
+                  IsEnabled="False"
+                  ToolTip="Not yet implemented"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 

@@ -18,6 +18,21 @@
   },
   "rules": [
     {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "String",
+      "pattern": "(<<<'?[A-Za-z_][A-Za-z0-9_]*'?[\\s\\S]*?^[A-Za-z_][A-Za-z0-9_]*;|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "(//.*$|#.*$)",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Keyword",
       "pattern": "\\b(abstract|and|array|as|break|callable|case|catch|class|clone|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|final|finally|fn|for|foreach|function|global|goto|if|implements|include|include_once|instanceof|insteadof|interface|isset|list|match|namespace|new|null|or|print|private|protected|public|readonly|require|require_once|return|static|switch|throw|trait|try|unset|use|var|while|xor|yield|false|true|self|parent|__CLASS__|__DIR__|__FILE__|__FUNCTION__|__LINE__|__METHOD__|__NAMESPACE__|__TRAIT__)\\b",
       "colorKey": "TE_Keyword"
@@ -38,24 +53,10 @@
       "colorKey": "TE_Number"
     },
     {
-      "type": "String",
-      "pattern": "(<<<'?[A-Za-z_][A-Za-z0-9_]*'?[\\s\\S]*?^[A-Za-z_][A-Za-z0-9_]*;|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
-      "colorKey": "TE_String"
-    },
-    {
       "type": "Tag",
       "pattern": "<\\?php|<\\?=|\\?>",
       "colorKey": "TE_Directive"
     },
-    {
-      "type": "Comment",
-      "pattern": "(//.*$|#.*$)",
-      "colorKey": "TE_Comment"
-    },
-    {
-      "type": "BlockComment",
-      "pattern": "/\\*[\\s\\S]*?\\*/",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
   ]
 }

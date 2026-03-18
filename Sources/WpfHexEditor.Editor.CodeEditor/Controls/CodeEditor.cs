@@ -25,6 +25,7 @@ using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Rendering;
 using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
+using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
@@ -39,7 +40,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     /// Phase 2: Syntax highlighting with CodeSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class CodeEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor, ISearchTarget, IEditorPersistable
+    public class CodeEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, INavigableDocument, IStatusBarContributor, ISearchTarget, IEditorPersistable
     {
         #region Fields - Document Model
 
@@ -57,6 +58,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // URL hit-zones: rebuilt on every render pass; used for cursor + Ctrl+Click.
         private readonly List<UrlHitZone> _urlHitZones = new();
+
+        // Fold-label hit-zones: rebuilt on every render pass; used for click-to-toggle.
+        private readonly List<(Rect rect, int line)> _foldLabelHitZones = new();
 
         // The URL zone currently under the mouse pointer (null = none).
         // Drives hover underline; changing it triggers InvalidateVisual().
@@ -90,8 +94,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private static void OnExternalHighlighterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CodeEditor editor && e.NewValue is ISyntaxHighlighter h)
+            if (d is not CodeEditor editor) return;
+            if (e.NewValue is ISyntaxHighlighter h)
                 h.Reset();
+            editor.RefreshJsonStatusBarItems();
         }
 
         #endregion
@@ -140,6 +146,43 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Debounce timer for textDocument/didChange — 300 ms after last keystroke.
         private System.Windows.Threading.DispatcherTimer? _lspChangeTimer;
 
+        // Inline "Find All References" popup (lazily created on first use).
+        private ReferencesPopup?           _referencesPopup;
+
+        // Last reference results — used when the user pins the popup to a docked panel.
+        private List<ReferenceGroup> _lastReferenceGroups = new();
+        private string               _lastReferenceSymbol = string.Empty;
+
+        // ── CodeLens ──────────────────────────────────────────────────────────
+        private readonly Services.CodeLensService                                    _codeLensService  = new();
+        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush)> _lensData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush)>();
+        private readonly List<(Rect Zone, int LineIndex, string Symbol)>             _lensHitZones     = new();
+        private readonly List<(int LineIndex, double Y)>                             _visLinePositions = new();
+        private readonly Dictionary<int, double>                                     _lineYLookup      = new();
+        private          int                                                         _hoveredLensLine  = -1;
+
+        // ── Quick Info Hover ──────────────────────────────────────────────────
+        private Services.HoverQuickInfoService?      _hoverQuickInfoService;
+        private QuickInfoPopup?                      _quickInfoPopup;
+        private Point                                _lastHoverPixel;
+        private TextPosition                         _lastHoverTextPos = new(-1, -1);
+
+        // ── Ctrl+Click Navigation ─────────────────────────────────────────────
+        private Services.CtrlClickNavigationService? _ctrlClickService;
+        private bool                                 _ctrlDown;
+        private readonly List<SymbolHitZone>         _symbolHitZones    = new();
+        private SymbolHitZone?                       _hoveredSymbolZone;
+
+        /// <summary>
+        /// Routed command for "Find All References" — default gesture Shift+F12,
+        /// matching the Visual Studio keyboard binding.
+        /// </summary>
+        public static readonly RoutedUICommand FindAllReferencesCommand = new(
+            "Find All References",
+            "FindAllReferences",
+            typeof(CodeEditor),
+            new InputGestureCollection { new KeyGesture(Key.F12, ModifierKeys.Shift) });
+
         #endregion
 
         #region Fields - Validation (Phase 5)
@@ -158,6 +201,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static readonly Pen s_lineNumberSeparatorPen = MakeFrozenPen(Color.FromRgb(200, 200, 200), 1.0);
         private static readonly Pen s_glyphInnerPen          = MakeFrozenPen(Colors.White, 1.5);
 
+        // Fold-collapse inline label rendering assets (frozen for performance).
+        private static readonly Pen      s_foldLabelPen       = MakeFrozenPen(Color.FromRgb(128, 128, 128), 1.0);
+        private static readonly Brush    s_foldLabelTextBrush = MakeFrozenBrush(Color.FromRgb(160, 160, 160));
+        private static readonly Brush    s_foldLabelBgBrush   = MakeFrozenBrush(Color.FromArgb(25, 128, 128, 128));
+        private static readonly Typeface s_foldLabelTypeface  = new("Consolas");
+
+        // Scope guide line pen — semi-transparent so it doesn't obscure text.
+        private static readonly Pen s_scopeGuidePen = MakeFrozenPen(Color.FromArgb(60, 128, 128, 128), 1.0);
+
+        // Word-under-caret highlight assets (VS Code "read highlight" style).
+        private static readonly Brush s_wordHighlightBg  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
+        private static readonly Pen   s_wordHighlightPen = MakeFrozenPen(Color.FromArgb(180, 86, 156, 214), 1.0);
+
         private static Pen MakeSquigglyPen(Color color) => MakeFrozenPen(color, 1.5);
 
         private static Pen MakeFrozenPen(Color color, double thickness)
@@ -166,6 +222,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             pen.Brush.Freeze();
             pen.Freeze();
             return pen;
+        }
+
+        private static Brush MakeFrozenBrush(Color color)
+        {
+            var b = new SolidColorBrush(color);
+            b.Freeze();
+            return b;
+        }
+
+        /// <summary>Creates a theme-aware Segoe MDL2 Assets icon TextBlock for context menu items.</summary>
+        private static TextBlock MakeMenuIcon(string glyph)
+        {
+            var tb = new TextBlock
+            {
+                Text                = glyph,
+                FontFamily          = new FontFamily("Segoe MDL2 Assets"),
+                FontSize            = 13,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+            };
+            tb.SetResourceReference(System.Windows.Documents.TextElement.ForegroundProperty, "DockMenuForegroundBrush");
+            return tb;
         }
 
         #endregion
@@ -202,6 +280,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private List<TextPosition> _findResults = new List<TextPosition>();
         private int _currentFindMatchIndex = -1;
         private int _findMatchLength = 0;
+        private string? _lastFindQuery;
+
+        #endregion
+
+        #region Fields - Word Highlight
+
+        private readonly List<TextPosition> _wordHighlights           = new();
+        private string                      _wordHighlightWord        = string.Empty;
+        private int                         _wordHighlightLen         = 0;
+        private int                         _wordHighlightTrackedLine = -1; // last cursor line seen in OnRender
+        private int                         _wordHighlightTrackedCol  = -1; // last cursor column seen in OnRender
+        private System.Windows.Threading.DispatcherTimer? _wordHighlightTimer;
+        private CodeScrollMarkerPanel?      _codeScrollMarkerPanel;
 
         #endregion
 
@@ -222,6 +313,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Folding support (Phase B3).
         private FoldingEngine?  _foldingEngine;
         private GutterControl?  _gutterControl;
+
+        // True between the first Ctrl+M press and the second chord key (outlining commands).
+        private bool _outlineChordPending;
 
         // 500ms folding debounce timer (P1-CE-01) — prevents O(n) scan on every keystroke
         private System.Windows.Threading.DispatcherTimer? _foldingDebounceTimer;
@@ -261,6 +355,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private const double TextAreaLeftOffset = 70; // LineNumberWidth + margin
         private const double ScrollBarThickness = 12.0;
         private const double SelectionCornerRadius = 3.0;
+
+        // Extra vertical space reserved at the top of each line slot for CodeLens hints.
+        private const double LensLineHeight = 16.0;
 
         #endregion
 
@@ -316,6 +413,49 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             editor.InvalidateMeasure();
         }
 
+        public static readonly DependencyProperty ShowScopeGuidesProperty =
+            DependencyProperty.Register(nameof(ShowScopeGuides), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>
+        /// Show or hide the vertical scope guide lines that connect matching brace pairs.
+        /// Toggled via the Code Editor options panel.
+        /// </summary>
+        public bool ShowScopeGuides
+        {
+            get => (bool)GetValue(ShowScopeGuidesProperty);
+            set => SetValue(ShowScopeGuidesProperty, value);
+        }
+
+        public static readonly DependencyProperty EnableWordHighlightProperty =
+            DependencyProperty.Register(nameof(EnableWordHighlight), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnEnableWordHighlightChanged));
+
+        /// <summary>
+        /// When true, places a subtle highlight box on every occurrence of the word under the
+        /// caret and shows proportional tick marks on the vertical scrollbar.
+        /// </summary>
+        public bool EnableWordHighlight
+        {
+            get => (bool)GetValue(EnableWordHighlightProperty);
+            set => SetValue(EnableWordHighlightProperty, value);
+        }
+
+        private static void OnEnableWordHighlightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var ce = (CodeEditor)d;
+            if (!(bool)e.NewValue)
+            {
+                ce._wordHighlights.Clear();
+                ce._codeScrollMarkerPanel?.ClearWordMarkers();
+                ce.InvalidateVisual();
+            }
+            else
+            {
+                ce.ScheduleWordHighlightUpdate();
+            }
+        }
+
         /// <summary>
         /// Injectable <see cref="Snippets.SnippetManager"/> that provides language-specific snippets.
         /// When set, pressing Tab after a matching trigger word expands the snippet instead of
@@ -352,6 +492,88 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 SetValue(EnableIntelliSenseProperty, value);
                 _enableIntelliSense = value;
             }
+        }
+
+        public static readonly DependencyProperty EnableFindAllReferencesProperty =
+            DependencyProperty.Register(nameof(EnableFindAllReferences), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// When false, the Find All References command (Shift+F12) and its
+        /// context-menu item are disabled regardless of LSP availability.
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Enable Find All References")]
+        [Description("Enables the Find All References command (Shift+F12) via the language server.")]
+        public bool EnableFindAllReferences
+        {
+            get => (bool)GetValue(EnableFindAllReferencesProperty);
+            set => SetValue(EnableFindAllReferencesProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowCodeLensProperty =
+            DependencyProperty.Register(nameof(ShowCodeLens), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true,
+                    FrameworkPropertyMetadataOptions.AffectsRender,
+                    OnShowCodeLensChanged));
+
+        [Category("Features")]
+        [DisplayName("Show Code Lens")]
+        [Description("Shows inline reference counts above each declaration.")]
+        public bool ShowCodeLens
+        {
+            get => (bool)GetValue(ShowCodeLensProperty);
+            set => SetValue(ShowCodeLensProperty, value);
+        }
+
+        private static void OnShowCodeLensChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce) return;
+            // Trigger layout/scrollbar recalculation — _lineHeight is no longer affected by CodeLens.
+            // Only visible-line Y positions change (per-declaration extra space), handled in OnRender.
+            ce.InvalidateMeasure();
+        }
+
+        // ── Quick Info DPs ─────────────────────────────────────────────────────
+
+        public static readonly DependencyProperty ShowQuickInfoProperty =
+            DependencyProperty.Register(nameof(ShowQuickInfo), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnShowQuickInfoChanged));
+
+        [Category("Features")]
+        [DisplayName("Show Quick Info")]
+        [Description("Shows an interactive VS-like hover tooltip with symbol information (Quick Info).")]
+        public bool ShowQuickInfo
+        {
+            get => (bool)GetValue(ShowQuickInfoProperty);
+            set => SetValue(ShowQuickInfoProperty, value);
+        }
+
+        private static void OnShowQuickInfoChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || (bool)e.NewValue) return;
+            ce._quickInfoPopup?.Hide();
+            ce._hoverQuickInfoService?.Cancel();
+        }
+
+        public static readonly DependencyProperty QuickInfoDelayMsProperty =
+            DependencyProperty.Register(nameof(QuickInfoDelayMs), typeof(int), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(400, OnQuickInfoDelayChanged));
+
+        [Category("Features")]
+        [DisplayName("Quick Info Delay (ms)")]
+        [Description("Hover dwell time in milliseconds before Quick Info appears (200–1000 ms).")]
+        public int QuickInfoDelayMs
+        {
+            get => (int)GetValue(QuickInfoDelayMsProperty);
+            set => SetValue(QuickInfoDelayMsProperty, value);
+        }
+
+        private static void OnQuickInfoDelayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || ce._hoverQuickInfoService is null) return;
+            ce._hoverQuickInfoService.SetDebounceInterval(
+                TimeSpan.FromMilliseconds(Math.Max(200, (int)e.NewValue)));
         }
 
         public static readonly DependencyProperty EnableValidationProperty =
@@ -1431,15 +1653,43 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _scrollBarChildren.Add(_hScrollBar);
 
             // Initialize folding subsystem (B3).
-            _foldingEngine = new FoldingEngine(new BraceFoldingStrategy());
+            // CompositeFoldingStrategy combines brace folding ({}) with #region/#endregion directive folding.
+            _foldingEngine = new FoldingEngine(
+                new CompositeFoldingStrategy(
+                    new BraceFoldingStrategy(),
+                    new RegionDirectiveFoldingStrategy()));
             _gutterControl = new GutterControl();
             _gutterControl.SetEngine(_foldingEngine);
             // Re-render text content when fold state changes (gutter re-renders internally via its own handler).
             _foldingEngine.RegionsChanged += (_, _) => InvalidateVisual();
             _scrollBarChildren.Add(_gutterControl);
 
+            // Initialize word-highlight scroll marker overlay.
+            _codeScrollMarkerPanel = new CodeScrollMarkerPanel();
+            _scrollBarChildren.Add(_codeScrollMarkerPanel); // renders on top of _vScrollBar
+
+            // Debounce timer: update word highlights 250 ms after the caret stops moving.
+            _wordHighlightTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+            _wordHighlightTimer.Tick += (_, _) => { _wordHighlightTimer.Stop(); UpdateWordHighlights(); };
+
+            // Attach CodeLens service to the initial document.
+            _codeLensService.LensDataRefreshed += OnLensDataRefreshed;
+            _codeLensService.Attach(_document, _currentFilePath);
+
+            // Initialize Quick Info and Ctrl+Click services.
+            _hoverQuickInfoService                    = new Services.HoverQuickInfoService();
+            _hoverQuickInfoService.QuickInfoResolved  += OnQuickInfoResolved;
+            _ctrlClickService                         = new Services.CtrlClickNavigationService();
+            _ctrlClickService.TargetResolved          += OnCtrlClickTargetResolved;
+
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
+        }
+
+        private void OnLensDataRefreshed(object? sender, EventArgs e)
+        {
+            _lensData = _codeLensService.LensData;
+            InvalidateVisual();
         }
 
         /// <summary>
@@ -1500,7 +1750,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (options.FontSize is > 6 and < 72)
                 EditorFontSize = options.FontSize;
 
-            ShowLineNumbers = options.ShowLineNumbers;
+            ShowLineNumbers          = options.ShowLineNumbers;
+            ShowScopeGuides          = options.ShowScopeGuides;
+            EnableFindAllReferences  = options.EnableFindAllReferences;
+            ShowCodeLens             = options.ShowCodeLens;
+            EnableWordHighlight      = options.EnableWordHighlight;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
             // A null override clears the local value so DynamicResource (CE_*) takes effect again.
@@ -1824,30 +2078,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Cut
             var cutMenuItem = new MenuItem
             {
-                Header = "Cu_t",
+                Header           = "Cu_t",
                 InputGestureText = "Ctrl+X",
-                Command = ApplicationCommands.Cut,
-                CommandTarget = this
+                Command          = ApplicationCommands.Cut,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE74E")
             };
             contextMenu.Items.Add(cutMenuItem);
 
             // Copy
             var copyMenuItem = new MenuItem
             {
-                Header = "_Copy",
+                Header           = "_Copy",
                 InputGestureText = "Ctrl+C",
-                Command = ApplicationCommands.Copy,
-                CommandTarget = this
+                Command          = ApplicationCommands.Copy,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8C8")
             };
             contextMenu.Items.Add(copyMenuItem);
 
             // Paste
             var pasteMenuItem = new MenuItem
             {
-                Header = "_Paste",
+                Header           = "_Paste",
                 InputGestureText = "Ctrl+V",
-                Command = ApplicationCommands.Paste,
-                CommandTarget = this
+                Command          = ApplicationCommands.Paste,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE9F5")
             };
             contextMenu.Items.Add(pasteMenuItem);
 
@@ -1857,20 +2114,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Undo
             var undoMenuItem = new MenuItem
             {
-                Header = "_Undo",
+                Header           = "_Undo",
                 InputGestureText = "Ctrl+Z",
-                Command = ApplicationCommands.Undo,
-                CommandTarget = this
+                Command          = ApplicationCommands.Undo,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE7A7")
             };
             contextMenu.Items.Add(undoMenuItem);
 
             // Redo
             var redoMenuItem = new MenuItem
             {
-                Header = "_Redo",
+                Header           = "_Redo",
                 InputGestureText = "Ctrl+Y",
-                Command = ApplicationCommands.Redo,
-                CommandTarget = this
+                Command          = ApplicationCommands.Redo,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE7A6")
             };
             contextMenu.Items.Add(redoMenuItem);
 
@@ -1880,20 +2139,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Select All
             var selectAllMenuItem = new MenuItem
             {
-                Header = "Select _All",
+                Header           = "Select _All",
                 InputGestureText = "Ctrl+A",
-                Command = ApplicationCommands.SelectAll,
-                CommandTarget = this
+                Command          = ApplicationCommands.SelectAll,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8B3")
             };
             contextMenu.Items.Add(selectAllMenuItem);
 
             // Delete
             var deleteMenuItem = new MenuItem
             {
-                Header = "_Delete",
+                Header           = "_Delete",
                 InputGestureText = "Del",
-                Command = ApplicationCommands.Delete,
-                CommandTarget = this
+                Command          = ApplicationCommands.Delete,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE74D")
             };
             contextMenu.Items.Add(deleteMenuItem);
 
@@ -1903,22 +2164,43 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Find
             var findMenuItem = new MenuItem
             {
-                Header = "_Find...",
+                Header           = "_Find...",
                 InputGestureText = "Ctrl+F",
-                Command = ApplicationCommands.Find,
-                CommandTarget = this
+                Command          = ApplicationCommands.Find,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE721")
             };
             contextMenu.Items.Add(findMenuItem);
 
             // Replace
             var replaceMenuItem = new MenuItem
             {
-                Header = "_Replace...",
+                Header           = "_Replace...",
                 InputGestureText = "Ctrl+H",
-                Command = ApplicationCommands.Replace,
-                CommandTarget = this
+                Command          = ApplicationCommands.Replace,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8AB")
             };
             contextMenu.Items.Add(replaceMenuItem);
+
+            // Separator
+            contextMenu.Items.Add(new Separator());
+
+            // Find All References (LSP)
+            var findRefsMenuItem = new MenuItem
+            {
+                Header           = "Find All _References",
+                InputGestureText = "Shift+F12",
+                Command          = FindAllReferencesCommand,
+                CommandTarget    = this,
+                Icon             = MakeMenuIcon("\uE8FD")
+            };
+            contextMenu.Items.Add(findRefsMenuItem);
+
+            // Dynamically enable/disable the item when the menu opens.
+            contextMenu.Opened += (_, _) =>
+                findRefsMenuItem.IsEnabled = EnableFindAllReferences
+                                             && _document is not null;
 
             // Separator
             contextMenu.Items.Add(new Separator());
@@ -1926,8 +2208,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Format JSON
             var formatJsonMenuItem = new MenuItem
             {
-                Header = "F_ormat JSON",
-                InputGestureText = "Ctrl+Shift+F"
+                Header           = "F_ormat JSON",
+                InputGestureText = "Ctrl+Shift+F",
+                Icon             = MakeMenuIcon("\uE70F")
             };
             formatJsonMenuItem.Click += FormatJsonMenuItem_Click;
             contextMenu.Items.Add(formatJsonMenuItem);
@@ -1935,11 +2218,72 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Validate
             var validateMenuItem = new MenuItem
             {
-                Header = "_Validate JSON",
-                InputGestureText = "F5"
+                Header           = "_Validate JSON",
+                InputGestureText = "F5",
+                Icon             = MakeMenuIcon("\uE73E")
             };
             validateMenuItem.Click += ValidateMenuItem_Click;
             contextMenu.Items.Add(validateMenuItem);
+
+            // Separator
+            contextMenu.Items.Add(new Separator());
+
+            // ── Outlining submenu — mirrors Visual Studio outlining menu ──
+            var outlineMenu = new MenuItem { Header = "_Outlining" };
+
+            var miToggleCurrent = new MenuItem
+            {
+                Header           = "Toggle _Outlining",
+                InputGestureText = "Ctrl+M, Ctrl+M",
+                Icon             = MakeMenuIcon("\uE8A0")
+            };
+            miToggleCurrent.Click += (_, _) => OutlineToggleCurrent();
+
+            var miToggleAll = new MenuItem
+            {
+                Header           = "Toggle _All Outlining",
+                InputGestureText = "Ctrl+M, Ctrl+L",
+                Icon             = MakeMenuIcon("\uE8B7")
+            };
+            miToggleAll.Click += (_, _) => OutlineToggleAll();
+
+            var miStop = new MenuItem
+            {
+                Header           = "_Stop Outlining",
+                InputGestureText = "Ctrl+M, Ctrl+P",
+                Icon             = MakeMenuIcon("\uE711")
+            };
+            miStop.Click += (_, _) => OutlineStop();
+
+            var miStopHiding = new MenuItem
+            {
+                Header           = "Stop _Hiding Current",
+                InputGestureText = "Ctrl+M, Ctrl+U",
+                Icon             = MakeMenuIcon("\uE7B3")
+            };
+            miStopHiding.Click += (_, _) => OutlineStopHidingCurrent();
+
+            var miCollapseDefs = new MenuItem
+            {
+                Header           = "_Collapse to Definitions",
+                InputGestureText = "Ctrl+M, Ctrl+O",
+                Icon             = MakeMenuIcon("\uE8C4")
+            };
+            miCollapseDefs.Click += (_, _) => OutlineCollapseToDefinitions();
+
+            outlineMenu.Items.Add(miToggleCurrent);
+            outlineMenu.Items.Add(miToggleAll);
+            outlineMenu.Items.Add(new Separator());
+            outlineMenu.Items.Add(miStop);
+            outlineMenu.Items.Add(miStopHiding);
+            outlineMenu.Items.Add(new Separator());
+            outlineMenu.Items.Add(miCollapseDefs);
+
+            // Enable the submenu only when folding is active.
+            contextMenu.Opened += (_, _) => outlineMenu.IsEnabled = IsFoldingEnabled;
+
+            contextMenu.Items.Add(outlineMenu);
+            // ─────────────────────────────────────────────────────────────────────────
 
             // Set context menu
             ContextMenu = contextMenu;
@@ -1984,16 +2328,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Delete
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete,
-                (sender, e) => DeleteSelection(),
-                (sender, e) => e.CanExecute = !_selection.IsEmpty));
+                (sender, e) => { if (!_selection.IsEmpty) DeleteSelection(); else DeleteCharAfter(); },
+                (sender, e) => e.CanExecute = !IsReadOnly));
 
-            // Find
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Find,
-                (sender, e) => ShowFindDialog()));
+            // Find (Ctrl+F) and Replace (Ctrl+H) are handled by CodeEditorSplitHost
+            // via PreviewKeyDown → ShowSearch(), which binds the shared QuickSearchBar
+            // to this editor through ISearchTarget. No modeless Window is needed here.
 
-            // Replace
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Replace,
-                (sender, e) => ShowReplaceDialog()));
+            // Find All References (Shift+F12) — works with or without an LSP client.
+            CommandBindings.Add(new CommandBinding(
+                FindAllReferencesCommand,
+                async (_, _) => await FindAllReferencesAsync(),
+                (_, e) => e.CanExecute = EnableFindAllReferences
+                                         && _document is not null));
         }
 
         private void FormatJsonMenuItem_Click(object sender, RoutedEventArgs e)
@@ -2004,149 +2351,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void ValidateMenuItem_Click(object sender, RoutedEventArgs e)
         {
             RunValidation();
-        }
-
-        // -- Find bar -----------------------------------------------------
-
-        private Window? _findWindow;
-        private System.Windows.Controls.TextBox? _findTextBox;
-        private string? _lastFindQuery;
-
-        /// <summary>
-        /// Shows the modeless find bar (public entry point for host).
-        /// </summary>
-        public void ShowFindBar()
-        {
-            if (_findWindow?.IsVisible == true)
-            {
-                _findWindow.Activate();
-                _findTextBox?.SelectAll();
-                _findTextBox?.Focus();
-                return;
-            }
-            _findWindow = BuildFindWindow(replace: false);
-            _findWindow.Show();
-            _findTextBox?.Focus();
-        }
-
-        private void ShowFindDialog() => ShowFindBar();
-
-        private void ShowReplaceDialog()
-        {
-            if (_findWindow?.IsVisible == true)
-            {
-                _findWindow.Close();
-            }
-            _findWindow = BuildFindWindow(replace: true);
-            _findWindow.Show();
-            _findTextBox?.Focus();
-        }
-
-        private Window BuildFindWindow(bool replace)
-        {
-            var tb = new System.Windows.Controls.TextBox
-            {
-                Width = 200,
-                Margin = new Thickness(4),
-                VerticalAlignment = VerticalAlignment.Center,
-                Text = _lastFindQuery ?? string.Empty
-            };
-            _findTextBox = tb;
-
-            var btnNext  = new System.Windows.Controls.Button { Content = "▼", Width = 28, Height = 28, Margin = new Thickness(2, 4, 0, 4), ToolTip = "Find Next (Enter)" };
-            var btnPrev  = new System.Windows.Controls.Button { Content = "▲", Width = 28, Height = 28, Margin = new Thickness(2, 4, 0, 4), ToolTip = "Find Previous (Shift+Enter)" };
-            var btnClose = new System.Windows.Controls.Button { Content = "✕", Width = 28, Height = 28, Margin = new Thickness(2, 4, 4, 4), ToolTip = "Close (Esc)" };
-
-            System.Windows.Controls.TextBox? tbReplace = null;
-            System.Windows.Controls.Button? btnReplace = null;
-
-            var panel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(4) };
-            var row1  = new StackPanel { Orientation = Orientation.Horizontal };
-            row1.Children.Add(new System.Windows.Controls.TextBlock { Text = "Find:", Width = 52, VerticalAlignment = VerticalAlignment.Center });
-            row1.Children.Add(tb);
-            row1.Children.Add(btnNext);
-            row1.Children.Add(btnPrev);
-            row1.Children.Add(btnClose);
-            panel.Children.Add(row1);
-
-            if (replace)
-            {
-                tbReplace   = new System.Windows.Controls.TextBox { Width = 200, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center };
-                btnReplace  = new System.Windows.Controls.Button { Content = "Replace", Margin = new Thickness(2, 4, 0, 4), Padding = new Thickness(6, 2, 6, 2) };
-                var row2 = new StackPanel { Orientation = Orientation.Horizontal };
-                row2.Children.Add(new System.Windows.Controls.TextBlock { Text = "Replace:", Width = 52, VerticalAlignment = VerticalAlignment.Center });
-                row2.Children.Add(tbReplace);
-                row2.Children.Add(btnReplace);
-                panel.Children.Add(row2);
-            }
-
-            var parentWindow = Window.GetWindow(this);
-            var win = new Window
-            {
-                Title       = replace ? "Find & Replace" : "Find",
-                Content     = panel,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode  = ResizeMode.NoResize,
-                WindowStyle = WindowStyle.ToolWindow,
-                ShowInTaskbar = false,
-                Owner       = parentWindow,
-            };
-
-            if (parentWindow != null)
-            {
-                win.Left = parentWindow.Left + (parentWindow.Width - 380) / 2;
-                win.Top  = parentWindow.Top  + 80;
-            }
-
-            // Live search as user types
-            tb.TextChanged += (s, e) =>
-            {
-                _lastFindQuery = tb.Text;
-                ExecuteFind(_lastFindQuery);
-                if (_findResults.Count > 0)
-                {
-                    _currentFindMatchIndex = 0;
-                    NavigateToFindMatch();
-                }
-                else
-                {
-                    _currentFindMatchIndex = -1;
-                    InvalidateVisual();
-                }
-            };
-
-            tb.PreviewKeyDown += (s, e) =>
-            {
-                if (e.Key == Key.Enter && (Keyboard.Modifiers & ModifierKeys.Shift) != 0)
-                    { FindPrevious(); e.Handled = true; }
-                else if (e.Key == Key.Enter)
-                    { FindNext(); e.Handled = true; }
-                else if (e.Key == Key.Escape)
-                    { ClearFind(); win.Close(); Focus(); e.Handled = true; }
-            };
-
-            btnNext.Click  += (s, e) => FindNext();
-            btnPrev.Click  += (s, e) => FindPrevious();
-            btnClose.Click += (s, e) => { ClearFind(); win.Close(); Focus(); };
-
-            if (btnReplace != null && tbReplace != null)
-            {
-                btnReplace.Click += (s, e) =>
-                {
-                    if (_currentFindMatchIndex < 0 || _currentFindMatchIndex >= _findResults.Count)
-                        return;
-                    var match = _findResults[_currentFindMatchIndex];
-                    _selection.Start = match;
-                    _selection.End   = new TextPosition(match.Line, match.Column + _findMatchLength);
-                    DeleteSelection();
-                    foreach (var ch in tbReplace.Text) InsertChar(ch);
-                    ExecuteFind(_lastFindQuery ?? string.Empty);
-                    FindNext();
-                };
-            }
-
-            win.Closed += (s, e) => { _findWindow = null; _findTextBox = null; };
-            return win;
         }
 
         private void ExecuteFind(string query)
@@ -2220,7 +2424,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public event EventHandler? SearchResultsChanged;
 
-        SearchBarCapabilities ISearchTarget.Capabilities => SearchBarCapabilities.CaseSensitive;
+        SearchBarCapabilities ISearchTarget.Capabilities =>
+            SearchBarCapabilities.CaseSensitive | SearchBarCapabilities.Replace;
 
         int ISearchTarget.MatchCount        => _findResults.Count;
         int ISearchTarget.CurrentMatchIndex => _currentFindMatchIndex;
@@ -2483,6 +2688,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// <see cref="INavigableDocument"/> implementation.
+        /// Accepts 1-based line/column (IDE convention) and converts to 0-based internal coords.
+        /// Used by the host when navigating from the References popup or the Error List.
+        /// </summary>
+        void INavigableDocument.NavigateTo(int line, int column)
+        {
+            int zeroLine = Math.Max(0, line - 1);
+            int zeroCol  = Math.Max(0, column - 1);
+            if (_document == null || zeroLine >= _document.Lines.Count) return;
+
+            _cursorLine   = zeroLine;
+            _cursorColumn = Math.Min(zeroCol, _document.Lines[zeroLine].Length);
+            _selection.Clear();
+            EnsureCursorVisible();
+            InvalidateVisual();
+        }
+
         #endregion
 
         #region Rendering - OnRender Override
@@ -2493,12 +2716,312 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// fraction from the virtualization engine so lines align correctly during smooth scroll.
         /// </summary>
         /// <param name="visIdx">0-based index among non-hidden visible lines.</param>
+        #region Scope Guide Lines
+
+        /// <summary>
+        /// Draws vertical scope guide lines for each non-collapsed fold region.
+        /// Each line is placed at the indentation column of the body content,
+        /// running from the first body line to the closing brace line.
+        /// </summary>
+        private void RenderScopeGuides(DrawingContext dc)
+        {
+            if (!ShowScopeGuides || _foldingEngine == null || _document == null || _lineHeight <= 0)
+                return;
+
+            double textX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            foreach (var region in _foldingEngine.Regions)
+            {
+                if (region.IsCollapsed) continue; // body is hidden — no guide needed
+
+                int bodyFirst = region.StartLine + 1;
+                int bodyLast  = region.EndLine;
+
+                // Skip regions entirely outside the visible range.
+                if (bodyLast < _firstVisibleLine || bodyFirst > _lastVisibleLine) continue;
+
+                double guideX = ComputeScopeGuideX(textX, region);
+                if (guideX <= textX) continue; // block not indented — skip
+
+                int drawFirst = Math.Max(bodyFirst, _firstVisibleLine);
+                int drawLast  = Math.Min(bodyLast,  _lastVisibleLine);
+
+                double yTop    = ScopeLineIndexToY(drawFirst);
+                double yBottom = ScopeLineIndexToY(drawLast) + _lineHeight;
+
+                dc.DrawLine(s_scopeGuidePen, new Point(guideX, yTop), new Point(guideX, yBottom));
+            }
+        }
+
+        /// <summary>
+        /// Returns the X position for the scope guide of <paramref name="region"/> by
+        /// finding the leading whitespace of the first non-empty line inside the block.
+        /// </summary>
+        private double ComputeScopeGuideX(double textX, FoldingRegion region)
+        {
+            for (int i = region.StartLine + 1; i < region.EndLine && i < _document!.Lines.Count; i++)
+            {
+                var text = _document.Lines[i].Text;
+                if (string.IsNullOrWhiteSpace(text)) continue;
+                int spaces = 0;
+                foreach (char c in text)
+                {
+                    if      (c == ' ')  spaces++;
+                    else if (c == '\t') spaces += IndentSize;
+                    else break;
+                }
+                return spaces > 0 ? textX + spaces * _charWidth : textX;
+            }
+            return textX;
+        }
+
+        /// <summary>
+        /// Converts a document line index to its Y pixel position in the viewport,
+        /// accounting for fold-collapsed lines (mirrors <see cref="GetFoldAwareLineY"/>
+        /// but takes an absolute line index instead of a visible-line counter).
+        /// </summary>
+        private double ScopeLineIndexToY(int lineIndex)
+        {
+            int visIdx = 0;
+            for (int i = _firstVisibleLine; i < lineIndex && i < _document!.Lines.Count; i++)
+                if (_foldingEngine == null || !_foldingEngine.IsLineHidden(i)) visIdx++;
+            return GetFoldAwareLineY(visIdx);
+        }
+
+        #endregion
+
+        #region Outlining Commands (Ctrl+M chord)
+
+        /// <summary>Toggle the fold region that starts on the cursor line (Ctrl+M, Ctrl+M).</summary>
+        private void OutlineToggleCurrent()
+        {
+            if (_foldingEngine == null || !IsFoldingEnabled) return;
+            _foldingEngine.ToggleRegion(_cursorLine);
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Collapse all regions if none are collapsed; otherwise expand all (Ctrl+M, Ctrl+L).
+        /// </summary>
+        private void OutlineToggleAll()
+        {
+            if (_foldingEngine == null || !IsFoldingEnabled) return;
+            bool anyCollapsed = _foldingEngine.Regions.Any(r => r.IsCollapsed);
+            if (anyCollapsed) _foldingEngine.ExpandAll();
+            else              _foldingEngine.CollapseAll();
+            InvalidateVisual();
+        }
+
+        /// <summary>Expand all regions and disable outlining (Ctrl+M, Ctrl+P).</summary>
+        private void OutlineStop()
+        {
+            _foldingEngine?.ExpandAll();
+            IsFoldingEnabled = false;
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Expand the innermost collapsed region that contains the cursor (Ctrl+M, Ctrl+U).
+        /// </summary>
+        private void OutlineStopHidingCurrent()
+        {
+            if (_foldingEngine == null || !IsFoldingEnabled) return;
+            // Find the innermost collapsed region containing the cursor.
+            FoldingRegion? innermost = null;
+            foreach (var r in _foldingEngine.Regions)
+            {
+                if (!r.IsCollapsed) continue;
+                if (_cursorLine < r.StartLine || _cursorLine > r.EndLine) continue;
+                if (innermost == null || (r.EndLine - r.StartLine) < (innermost.EndLine - innermost.StartLine))
+                    innermost = r;
+            }
+            if (innermost != null)
+                _foldingEngine.ToggleRegion(innermost.StartLine);
+            InvalidateVisual();
+        }
+
+        /// <summary>Collapse all regions (Ctrl+M, Ctrl+O).</summary>
+        private void OutlineCollapseToDefinitions()
+        {
+            if (_foldingEngine == null || !IsFoldingEnabled) return;
+            _foldingEngine.CollapseAll();
+            InvalidateVisual();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Returns the Y coordinate where the code text for visible-index
+        /// <paramref name="visIdx"/> should be drawn.
+        /// For declaration lines with CodeLens active the Y is pushed down by
+        /// <see cref="LensLineHeight"/>; for all other lines it sits at the slot top.
+        /// Falls back to the uniform formula when the precomputed list is unavailable.
+        /// </summary>
         private double GetFoldAwareLineY(int visIdx)
         {
+            if (visIdx < _visLinePositions.Count)
+                return _visLinePositions[visIdx].Y;
+
+            // Fallback: uniform layout (no CodeLens offset).
             double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
                 ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
                 : 0.0;
             return TopMargin + scrollFraction + visIdx * _lineHeight;
+        }
+
+        /// <summary>
+        /// Returns the top Y of the lens hint zone for visible-index <paramref name="visIdx"/>
+        /// (the LensLineHeight zone immediately above the code text).
+        /// </summary>
+        private double GetLensZoneY(int visIdx) => GetFoldAwareLineY(visIdx) - LensLineHeight;
+
+        /// <summary>
+        /// Precomputes per-visible-line Y positions, adding <see cref="LensLineHeight"/>
+        /// only for lines that have a CodeLens entry.  Must be called in OnRender immediately
+        /// after <see cref="CalculateVisibleLines"/>.
+        /// </summary>
+        private void ComputeVisibleLinePositions()
+        {
+            _visLinePositions.Clear();
+            _lineYLookup.Clear();
+
+            double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                : 0.0;
+            double y = TopMargin + scrollFraction;
+
+            for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
+            {
+                if (_foldingEngine?.IsLineHidden(i) == true) continue;
+
+                if (ShowCodeLens && _lensData.ContainsKey(i))
+                {
+                    // Code text sits below the hint zone.
+                    double codeY = y + LensLineHeight;
+                    _visLinePositions.Add((i, codeY));
+                    _lineYLookup[i] = codeY;
+                    y += _lineHeight + LensLineHeight;
+                }
+                else
+                {
+                    _visLinePositions.Add((i, y));
+                    _lineYLookup[i] = y;
+                    y += _lineHeight;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws "N références" hints in the lens zone (top <see cref="LensLineHeight"/> px of
+        /// each line slot) for lines that have declaration items in <see cref="_lensData"/>.
+        /// Hit zones are stored in <see cref="_lensHitZones"/> for mouse interaction.
+        /// Called from OnRender after the text-area clip but before the H-scroll transform,
+        /// so hints are clipped to the text column yet not scrolled horizontally.
+        /// </summary>
+        private void RenderCodeLensHints(DrawingContext dc)
+        {
+            if (!ShowCodeLens || _lensData.Count == 0 || _document == null) return;
+
+            _lensHitZones.Clear();
+
+            var normalBrush = (Brush?)TryFindResource("CE_Lens")       ?? Brushes.Gray;
+            var hoverBrush  = (Brush?)TryFindResource("CE_Lens_Hover") ?? Brushes.Silver;
+            var bgBrush     = (Brush?)TryFindResource("CE_Lens_Bg")    ?? Brushes.Transparent;
+            double fontSize  = LensLineHeight * 0.72;   // ~11.5 px for a 16-px slot
+            double baseX     = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
+            int visIdx = 0;
+            for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
+            {
+                if (_foldingEngine?.IsLineHidden(i) == true) { continue; }
+
+                if (_lensData.TryGetValue(i, out var entry) && entry.Count > 0)
+                {
+                    // Indent hint to match the leading whitespace of the declaration line.
+                    string lineText = _document.Lines[i].Text ?? string.Empty;
+                    int indent = 0;
+                    while (indent < lineText.Length && (lineText[indent] == ' ' || lineText[indent] == '\t'))
+                        indent++;
+                    double x = baseX + _glyphRenderer.ComputeVisualX(lineText, indent);
+
+                    string label  = entry.Count == 1 ? "1 reference" : $"{entry.Count} references";
+                    var    brush  = i == _hoveredLensLine ? hoverBrush : normalBrush;
+                    var ft = new System.Windows.Media.FormattedText(
+                        label,
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        _typeface,
+                        fontSize,
+                        brush,
+                        pixelsPerDip);
+
+                    double y = GetLensZoneY(visIdx) + 1.0;  // 1 px top padding
+                    // Subtle pill background — makes the hint visually distinct from code/comments.
+                    dc.DrawRoundedRectangle(bgBrush, null, new Rect(x - 3, y, ft.Width + 6, ft.Height + 1), 3, 3);
+                    dc.DrawText(ft, new Point(x, y));
+                    _lensHitZones.Add((new Rect(x - 3, y, ft.Width + 6, LensLineHeight - 2), i, entry.Symbol));
+                }
+
+                visIdx++;
+            }
+        }
+
+        /// <summary>
+        /// Returns the 0-based column of the first whole-word occurrence of
+        /// <paramref name="symbol"/> in line <paramref name="lineIdx"/>.
+        /// Falls back to 0 if not found (cursor lands at line start).
+        /// </summary>
+        private int FindSymbolColumnInLine(int lineIdx, string symbol)
+        {
+            if (string.IsNullOrEmpty(symbol) || _document == null || lineIdx >= _document.Lines.Count)
+                return 0;
+
+            string text = _document.Lines[lineIdx].Text;
+            if (string.IsNullOrEmpty(text)) return 0;
+
+            int idx = text.IndexOf(symbol, StringComparison.Ordinal);
+            if (idx < 0) return 0;
+
+            bool leftOk  = idx == 0             || !IsWordChar(text[idx - 1]);
+            bool rightOk = idx + symbol.Length >= text.Length || !IsWordChar(text[idx + symbol.Length]);
+            return (leftOk && rightOk) ? idx : 0;
+        }
+
+        /// <summary>
+        /// Draws a "[…]" badge after the text of a collapsed fold-opener line and
+        /// registers the badge rect in <see cref="_foldLabelHitZones"/> for click-to-toggle.
+        /// </summary>
+        private void RenderFoldCollapseLabel(DrawingContext dc, int lineIndex, double textX, double y)
+        {
+            if (_foldingEngine == null) return;
+            var region = _foldingEngine.GetRegionAt(lineIndex);
+            if (region == null || !region.IsCollapsed) return;
+
+            const string LabelText = " \u2026 "; // " … "
+            const double FontSize  = 10.0;
+            const double PaddingH  = 3.0;
+            const double PaddingV  = 1.0;
+
+            var ft = new FormattedText(
+                LabelText,
+                System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                s_foldLabelTypeface, FontSize,
+                s_foldLabelTextBrush,
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            var    codeLine = _document.Lines[lineIndex];
+            double textLen  = (codeLine.Text?.TrimEnd().Length ?? 0) * _charWidth;
+            double labelX   = textX + textLen + _charWidth * 0.5;
+            double boxW     = ft.Width  + PaddingH * 2;
+            double boxH     = ft.Height + PaddingV * 2;
+            double labelY   = y + (_lineHeight - boxH) / 2.0;
+
+            var rect = new Rect(labelX, labelY, boxW, boxH);
+            dc.DrawRectangle(s_foldLabelBgBrush, s_foldLabelPen, rect);
+            dc.DrawText(ft, new Point(labelX + PaddingH, labelY + PaddingV));
+            _foldLabelHitZones.Add((rect, lineIndex));
         }
 
         /// <summary>
@@ -2512,6 +3035,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document == null || _document.Lines.Count == 0)
                 return;
 
+            // Cursor-change detection: covers every code path that moves the caret
+            // (mouse click, keyboard, undo/redo, NavigateToLine, etc.) without requiring
+            // a ScheduleWordHighlightUpdate() call at each individual site.
+            if (_cursorLine != _wordHighlightTrackedLine || _cursorColumn != _wordHighlightTrackedCol)
+            {
+                _wordHighlightTrackedLine = _cursorLine;
+                _wordHighlightTrackedCol  = _cursorColumn;
+                ScheduleWordHighlightUpdate();
+            }
+
+
             bool hasVBar = _vScrollBar?.Visibility == Visibility.Visible;
             bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
             double contentW = ActualWidth  - (hasVBar ? ScrollBarThickness : 0);
@@ -2520,6 +3054,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Calculate visible line range
             CalculateVisibleLines();
+            // Pre-compute per-visible-line Y positions; only declaration lines get +LensLineHeight.
+            ComputeVisibleLinePositions();
 
             // -- Clip to content area (prevent drawing over scrollbars) --
             dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
@@ -2536,13 +3072,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // -- Text area clip + horizontal translate -------------------
             dc.PushClip(new RectangleGeometry(new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
+
+            // 3b. CodeLens hints — drawn inside the text-area clip but WITHOUT the
+            //     H-scroll transform so they stay anchored at the left edge.
+            RenderCodeLensHints(dc);
+
             dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
 
             // 4. Find result highlights
             RenderFindResults(dc);
 
+            // 4b. Word-under-caret highlights (rendered below selection so selection stays visible)
+            RenderWordHighlights(dc);
+
+            // 4c. Ctrl+hover symbol underline (above word highlights, below selection)
+            _symbolHitZones.Clear();
+            RenderCtrlHoverUnderline(dc);
+
             // 5. Selection
             RenderSelection(dc);
+
+            // 6a. Scope guides (drawn behind text so they don't obscure characters)
+            RenderScopeGuides(dc);
 
             // 6. Text content
             RenderTextContent(dc);
@@ -2653,8 +3204,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _vScrollBar.Visibility = needsV ? Visibility.Visible : Visibility.Hidden;
             _hScrollBar.Visibility = needsH ? Visibility.Visible : Visibility.Hidden;
 
-            _vScrollBar.Arrange(needsV ? new Rect(contentW, 0, ScrollBarThickness, contentH) : new Rect(0, 0, 0, 0));
+            var vScrollRect = needsV ? new Rect(contentW, 0, ScrollBarThickness, contentH) : new Rect(0, 0, 0, 0);
+            _vScrollBar.Arrange(vScrollRect);
             _hScrollBar.Arrange(needsH ? new Rect(0, contentH, contentW, ScrollBarThickness) : new Rect(0, 0, 0, 0));
+
+            // Overlay scroll marker panel on top of the vertical scrollbar (click-through).
+            _codeScrollMarkerPanel?.Arrange(vScrollRect);
 
             // Arrange the folding gutter flush against the left edge (inside the line-number strip).
             if (_gutterControl != null)
@@ -2686,7 +3241,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
                 // -- Vertical --------------------------------------------
-                double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight;
+                double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight
+                    + (ShowCodeLens ? _lensData.Count * LensLineHeight : 0);
                 double maxV   = Math.Max(0, totalH - contentH);
 
                 // Clamp internal offset (e.g. file got shorter after edit)
@@ -2830,7 +3386,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             // Sync gutter layout with the newly computed visible range.
-            _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin);
+            // Pass scroll fraction so gutter markers follow smooth-scroll sub-pixel offset.
+            double gutterScrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                : 0.0;
+            _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
+                                   TopMargin, gutterScrollFraction, _lineYLookup);
         }
 
         /// <summary>
@@ -2992,10 +3553,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    // Phase 11: Calculate Y position with virtual scrolling support
-                    double y = EnableVirtualScrolling && _virtualizationEngine != null
-                        ? TopMargin + _virtualizationEngine.GetLineYPosition(start.Line)
-                        : TopMargin + (start.Line - _firstVisibleLine) * _lineHeight;
+                    double y = _lineYLookup.TryGetValue(start.Line, out double sy) ? sy
+                        : (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? TopMargin + _virtualizationEngine.GetLineYPosition(start.Line)
+                            : TopMargin + (start.Line - _firstVisibleLine) * _lineHeight);
 
                     double x1 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (start.Column * _charWidth);
                     double x2 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (end.Column * _charWidth);
@@ -3014,9 +3575,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // First line — extend bottom by CornerRadius so the rounded tail merges with next segment
                 if (start.Line >= _firstVisibleLine && start.Line <= _lastVisibleLine)
                 {
-                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                        ? _virtualizationEngine.GetLineYPosition(start.Line)
-                        : (start.Line - _firstVisibleLine) * _lineHeight);
+                    double y  = _lineYLookup.TryGetValue(start.Line, out double fsy) ? fsy
+                        : TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? _virtualizationEngine.GetLineYPosition(start.Line)
+                            : (start.Line - _firstVisibleLine) * _lineHeight);
                     double x1 = leftEdge + (start.Column * _charWidth);
                     double x2 = leftEdge + (_document.Lines[start.Line].Length * _charWidth);
                     segments.Add(new RectangleGeometry(new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
@@ -3028,9 +3590,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 int middleLast  = Math.Min(end.Line   - 1, _lastVisibleLine);
                 for (int line = middleFirst; line <= middleLast; line++)
                 {
-                    double y     = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                        ? _virtualizationEngine.GetLineYPosition(line)
-                        : (line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
+                    double lineBaseY = _lineYLookup.TryGetValue(line, out double mly) ? mly
+                        : TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? _virtualizationEngine.GetLineYPosition(line)
+                            : (line - _firstVisibleLine) * _lineHeight);
+                    double y = lineBaseY - SelectionCornerRadius;
                     double width = _document.Lines[line].Length * _charWidth;
                     segments.Add(new RectangleGeometry(new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight + SelectionCornerRadius * 2), SelectionCornerRadius, SelectionCornerRadius));
                 }
@@ -3038,9 +3602,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Last line — extend top by CornerRadius so the rounded head merges with previous segment
                 if (end.Line >= _firstVisibleLine && end.Line <= _lastVisibleLine)
                 {
-                    double y  = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                        ? _virtualizationEngine.GetLineYPosition(end.Line)
-                        : (end.Line - _firstVisibleLine) * _lineHeight) - SelectionCornerRadius;
+                    double y  = (_lineYLookup.TryGetValue(end.Line, out double ely) ? ely
+                        : TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                            ? _virtualizationEngine.GetLineYPosition(end.Line)
+                            : (end.Line - _firstVisibleLine) * _lineHeight)) - SelectionCornerRadius;
                     double x2 = leftEdge + (end.Column * _charWidth);
                     segments.Add(new RectangleGeometry(new Rect(leftEdge, y, x2 - leftEdge, _lineHeight + SelectionCornerRadius), SelectionCornerRadius, SelectionCornerRadius));
                 }
@@ -3074,13 +3639,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (result.Line < _firstVisibleLine || result.Line > _lastVisibleLine)
                     continue;
 
-                // Calculate Y position with virtual scrolling support
-                double y = EnableVirtualScrolling && _virtualizationEngine != null
-                    ? TopMargin + _virtualizationEngine.GetLineYPosition(result.Line)
+                // Y: use _lineYLookup so CodeLens hint rows are accounted for
+                double y = _lineYLookup.TryGetValue(result.Line, out double ry) ? ry
                     : TopMargin + (result.Line - _firstVisibleLine) * _lineHeight;
 
-                double x1 = leftEdge + (result.Column * _charWidth);
-                double x2 = leftEdge + ((result.Column + _findMatchLength) * _charWidth);
+                // X: expand tabs correctly via ComputeVisualX instead of raw column * charWidth
+                var lineText = result.Line < _document.Lines.Count ? _document.Lines[result.Line].Text : string.Empty;
+                double x1 = leftEdge + _glyphRenderer.ComputeVisualX(lineText, result.Column);
+                double x2 = leftEdge + _glyphRenderer.ComputeVisualX(lineText, result.Column + _findMatchLength);
 
                 // Use HighlightMatchColor for current match, FindResultColor for others
                 Brush highlightBrush = (i == _currentFindMatchIndex)
@@ -3094,6 +3660,182 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Renders a subtle highlight box on every occurrence of the word currently under the caret.
+        /// Called from OnRender after RenderFindResults and before RenderSelection.
+        /// </summary>
+        private void RenderWordHighlights(DrawingContext dc)
+        {
+            if (_wordHighlights.Count == 0 || _wordHighlightLen == 0)
+                return;
+
+            double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            foreach (var pos in _wordHighlights)
+            {
+                if (pos.Line < _firstVisibleLine || pos.Line > _lastVisibleLine)
+                    continue;
+
+                // Word highlights on CodeLens declaration lines are distracting:
+                // the hint zone sits above the code text and the rectangle would
+                // overlap it.  Skip these lines entirely.
+                if (ShowCodeLens && _lensData.ContainsKey(pos.Line))
+                    continue;
+
+                double y = _lineYLookup.TryGetValue(pos.Line, out double wy) ? wy
+                    : (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? TopMargin + _virtualizationEngine.GetLineYPosition(pos.Line)
+                        : TopMargin + (pos.Line - _firstVisibleLine) * _lineHeight);
+
+                double x1 = leftEdge + pos.Column * _charWidth;
+                double x2 = x1 + _wordHighlightLen * _charWidth;
+
+                dc.DrawRectangle(s_wordHighlightBg, s_wordHighlightPen,
+                    new Rect(x1, y, x2 - x1, _lineHeight));
+            }
+        }
+
+        /// <summary>
+        /// Extracts the identifier word at <paramref name="col"/> within <paramref name="text"/>.
+        /// Returns an empty string if the character at col is not a word character or the word is shorter than 2 chars.
+        /// </summary>
+        private (string Word, int StartCol) GetWordAt(string text, int col)
+        {
+            if (string.IsNullOrEmpty(text) || col < 0 || col >= text.Length)
+                return (string.Empty, col);
+
+            if (!IsWordChar(text[col]))
+                return (string.Empty, col);
+
+            int start = col;
+            while (start > 0 && IsWordChar(text[start - 1]))
+                start--;
+
+            int end = col;
+            while (end < text.Length - 1 && IsWordChar(text[end + 1]))
+                end++;
+
+            string word = text.Substring(start, end - start + 1);
+            return word.Length >= 2 ? (word, start) : (string.Empty, start);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="SyntaxTokenKind"/> of the cached syntax token that covers
+        /// <paramref name="column"/> on <paramref name="lineIndex"/>.
+        /// Returns <see cref="SyntaxTokenKind.Default"/> when the cache is not yet populated
+        /// or no token covers that column (uncached lines are treated as potentially navigable).
+        /// </summary>
+        private SyntaxTokenKind GetTokenKindAtColumn(int lineIndex, int column)
+        {
+            if (lineIndex < 0 || lineIndex >= _document.Lines.Count) return SyntaxTokenKind.Default;
+
+            var cache = _document.Lines[lineIndex].TokensCache;
+            if (cache is null) return SyntaxTokenKind.Default;
+
+            foreach (var token in cache)
+            {
+                if (column >= token.StartColumn && column < token.StartColumn + token.Length)
+                    return token.Kind;
+            }
+            return SyntaxTokenKind.Default;
+        }
+
+        /// <summary>
+        /// Rescans the document for all occurrences of the word under the caret and
+        /// updates both the viewport highlight list and the scroll marker panel.
+        /// Called by the debounce timer; runs on the UI thread.
+        /// </summary>
+        private void UpdateWordHighlights()
+        {
+            _wordHighlights.Clear();
+            _wordHighlightWord = string.Empty;
+            _wordHighlightLen  = 0;
+
+            string word = ResolveHighlightWord();
+
+            if (word.Length >= 2)
+            {
+                _wordHighlightWord = word;
+                _wordHighlightLen  = word.Length;
+
+                // Whole-word scan across all lines.
+                for (int li = 0; li < _document.Lines.Count; li++)
+                {
+                    string lineText = _document.Lines[li].Text ?? string.Empty;
+                    int idx = 0;
+                    while ((idx = lineText.IndexOf(word, idx, StringComparison.Ordinal)) >= 0)
+                    {
+                        bool leftOk  = idx == 0                          || !IsWordChar(lineText[idx - 1]);
+                        bool rightOk = idx + word.Length >= lineText.Length || !IsWordChar(lineText[idx + word.Length]);
+
+                        if (leftOk && rightOk)
+                            _wordHighlights.Add(new TextPosition(li, idx));
+
+                        idx += word.Length;
+                    }
+                }
+            }
+
+            InvalidateVisual();
+
+            // Update scroll bar tick marks.
+            if (_codeScrollMarkerPanel != null)
+            {
+                if (_wordHighlights.Count == 0)
+                    _codeScrollMarkerPanel.ClearWordMarkers();
+                else
+                {
+                    var distinctLines = _wordHighlights
+                        .Select(p => p.Line)
+                        .Distinct()
+                        .ToList();
+                    _codeScrollMarkerPanel.UpdateWordMarkers(distinctLines,
+                        Math.Max(1, _document?.TotalLines ?? 1));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the word to highlight: the selected text (single-line, ≥2 chars) if a
+        /// selection is active, otherwise the identifier word at the current caret position.
+        /// Returns <see cref="string.Empty"/> when no suitable word is found.
+        /// </summary>
+        private string ResolveHighlightWord()
+        {
+            if (!EnableWordHighlight || _document == null || _document.Lines.Count == 0)
+                return string.Empty;
+
+            // Single-line selection takes priority.
+            if (!_selection.IsEmpty && !_selection.IsMultiLine)
+            {
+                int li = _selection.NormalizedStart.Line;
+                int s  = _selection.NormalizedStart.Column;
+                int e  = _selection.NormalizedEnd.Column;
+                if (li < _document.Lines.Count && e > s)
+                {
+                    string lt = _document.Lines[li].Text ?? string.Empty;
+                    if (e <= lt.Length)
+                        return lt.Substring(s, e - s);
+                }
+            }
+
+            // Fall back to word at caret.
+            if (_cursorLine < _document.Lines.Count)
+                return GetWordAt(_document.Lines[_cursorLine].Text ?? string.Empty, _cursorColumn).Word;
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Arms (or re-arms) the 250 ms debounce timer that fires <see cref="UpdateWordHighlights"/>.
+        /// Safe to call on every keystroke / caret move.
+        /// </summary>
+        private void ScheduleWordHighlightUpdate()
+        {
+            _wordHighlightTimer?.Stop();
+            _wordHighlightTimer?.Start();
+        }
+
+        /// <summary>
         /// Render text content with syntax highlighting (Phase 2)
         /// </summary>
         private void RenderTextContent(DrawingContext dc)
@@ -3104,6 +3846,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Rebuild URL hit-zones each render pass (document may have changed).
             _urlHitZones.Clear();
+            _foldLabelHitZones.Clear();
 
             // Lazy-init the underline pen from the current SyntaxUrlColor DP.
             // Re-created each render so theme changes are reflected immediately.
@@ -3163,6 +3906,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                                 }
                             }
                         }
+
+                        // Draw fold-collapse label at end of line if this is a collapsed region opener.
+                        RenderFoldCollapseLabel(dc, i, x, y);
 
                         continue; // skip slow path
                     }
@@ -3224,7 +3970,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                     foreach (var token in renderTokens)
                     {
-                        double tokenX = x + (token.StartColumn * _charWidth);
+                        // Use tab-aware X so tokens on tab-indented lines are not shifted left.
+                        double tokenX = x + (_glyphRenderer?.ComputeVisualX(line.Text, token.StartColumn)
+                                             ?? token.StartColumn * _charWidth);
 
                         if (_glyphRenderer != null)
                         {
@@ -3270,7 +4018,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                                 renderTokens)
                             : (IEnumerable<Helpers.SyntaxHighlightToken>)renderTokens;
 
-                        line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor);
+                        line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor, line.Text);
                         line.IsGlyphCacheDirty = false;
 
                         // Cache URL zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
@@ -3281,6 +4029,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     }
                     // ── end cache build ───────────────────────────────────────────────
                 }
+
+                // Draw fold-collapse label (handles both non-empty and empty opener lines).
+                RenderFoldCollapseLabel(dc, i, x, y);
             }
         }
 
@@ -3336,10 +4087,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_cursorLine < _firstVisibleLine || _cursorLine > _lastVisibleLine)
                 return;
 
-            // Phase 11: Calculate Y position with virtual scrolling support
-            double y = EnableVirtualScrolling && _virtualizationEngine != null
-                ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
-                : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight;
+            // Use per-line Y lookup so the caret sits at the code-text Y on CodeLens lines.
+            double y = _lineYLookup.TryGetValue(_cursorLine, out double cy) ? cy
+                : (EnableVirtualScrolling && _virtualizationEngine != null
+                    ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
+                    : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight);
 
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (_cursorColumn * _charWidth);
 
@@ -3480,9 +4232,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (line < _firstVisibleLine || line > _lastVisibleLine)
                 return;
 
-            double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                ? _virtualizationEngine.GetLineYPosition(line)
-                : (line - _firstVisibleLine) * _lineHeight);
+            // Use _lineYLookup to account for CodeLens hint zone height offset (same pattern as RenderCursor/RenderSelection/RenderWordHighlights)
+            double y = _lineYLookup.TryGetValue(line, out double by) ? by
+                : (EnableVirtualScrolling && _virtualizationEngine != null
+                    ? TopMargin + _virtualizationEngine.GetLineYPosition(line)
+                    : TopMargin + (line - _firstVisibleLine) * _lineHeight);
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (column * _charWidth);
 
             // Draw background highlight
@@ -3656,6 +4410,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnKeyDown(e);
 
+            // Track Ctrl key to enable symbol underline + Ctrl+Click navigation.
+            if ((e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) && !_ctrlDown)
+            {
+                _ctrlDown = true;
+                InvalidateVisual();
+            }
+
             // Reset caret blink on keypress
             ResetCaretBlink();
 
@@ -3672,15 +4433,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             bool ctrlPressed = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
             bool shiftPressed = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
 
+            // Cancel any pending outline chord on any key press without Ctrl held.
+            if (!ctrlPressed) _outlineChordPending = false;
+
             switch (e.Key)
             {
                 case Key.Left:
-                    MoveCursor(-1, 0, shiftPressed);
+                    if (ctrlPressed) MoveWordLeft(shiftPressed);
+                    else             MoveCursor(-1, 0, shiftPressed);
                     e.Handled = true;
                     break;
 
                 case Key.Right:
-                    MoveCursor(1, 0, shiftPressed);
+                    if (ctrlPressed) MoveWordRight(shiftPressed);
+                    else             MoveCursor(1, 0, shiftPressed);
                     e.Handled = true;
                     break;
 
@@ -3695,12 +4461,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     break;
 
                 case Key.Home:
-                    MoveCursorToLineStart(shiftPressed);
+                    if (ctrlPressed) MoveCursorToDocumentStart(shiftPressed);
+                    else             MoveCursorToLineStart(shiftPressed);
                     e.Handled = true;
                     break;
 
                 case Key.End:
-                    MoveCursorToLineEnd(shiftPressed);
+                    if (ctrlPressed) MoveCursorToDocumentEnd(shiftPressed);
+                    else             MoveCursorToLineEnd(shiftPressed);
                     e.Handled = true;
                     break;
 
@@ -3791,14 +4559,59 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 // ── Folding keyboard shortcuts (P2-02) ─────────────────────
                 // Ctrl+M → toggle fold at caret line
+                // ── Outlining chord: Ctrl+M arms the chord; second key executes action ────
                 case Key.M:
-                    if (ctrlPressed && IsFoldingEnabled && _foldingEngine != null)
+                    if (ctrlPressed && IsFoldingEnabled)
                     {
-                        _foldingEngine.ToggleRegion(_cursorLine);
-                        InvalidateVisual();
+                        if (_outlineChordPending)
+                        {
+                            _outlineChordPending = false;
+                            OutlineToggleCurrent(); // Ctrl+M, Ctrl+M
+                        }
+                        else
+                        {
+                            _outlineChordPending = true; // arm chord, wait for second key
+                        }
                         e.Handled = true;
                     }
                     break;
+
+                case Key.L:
+                    if (ctrlPressed && _outlineChordPending)
+                    {
+                        _outlineChordPending = false;
+                        OutlineToggleAll(); // Ctrl+M, Ctrl+L
+                        e.Handled = true;
+                    }
+                    break;
+
+                case Key.P:
+                    if (ctrlPressed && _outlineChordPending)
+                    {
+                        _outlineChordPending = false;
+                        OutlineStop(); // Ctrl+M, Ctrl+P
+                        e.Handled = true;
+                    }
+                    break;
+
+                case Key.U:
+                    if (ctrlPressed && _outlineChordPending)
+                    {
+                        _outlineChordPending = false;
+                        OutlineStopHidingCurrent(); // Ctrl+M, Ctrl+U
+                        e.Handled = true;
+                    }
+                    break;
+
+                case Key.O:
+                    if (ctrlPressed && _outlineChordPending)
+                    {
+                        _outlineChordPending = false;
+                        OutlineCollapseToDefinitions(); // Ctrl+M, Ctrl+O
+                        e.Handled = true;
+                    }
+                    break;
+                // ────────────────────────────────────────────────────────────────────────
                 // Ctrl+Shift+[ → collapse all folds
                 case Key.OemOpenBrackets:
                     if (ctrlPressed && shiftPressed && IsFoldingEnabled && _foldingEngine != null)
@@ -3818,6 +4631,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     }
                     break;
                 // ───────────────────────────────────────────────────────────
+
+                case Key.Escape:
+                    // Dismiss Quick Info popup on Escape.
+                    _quickInfoPopup?.Hide();
+                    _hoverQuickInfoService?.Cancel();
+                    e.Handled = _quickInfoPopup?.IsShowing == true;
+                    break;
             }
 
             InvalidateVisual();
@@ -3920,6 +4740,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
+
+            // Clear Ctrl+hover state when Ctrl is released.
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                _ctrlDown = false;
+                _hoveredSymbolZone = null;
+                _ctrlClickService?.Cancel();
+                Cursor = Cursors.IBeam;
+                InvalidateVisual();
+            }
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)
@@ -3931,6 +4761,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _hoveredUrlZone = null;
                 Cursor = Cursors.IBeam;
                 HideUrlTooltip();
+                InvalidateVisual();
+            }
+
+            if (_hoveredLensLine >= 0)
+            {
+                _hoveredLensLine = -1;
+                ToolTip = null;
+                InvalidateVisual();
+            }
+
+            // Start Quick Info grace timer — popup stays open for 200 ms so mouse can enter it.
+            _quickInfoPopup?.OnEditorMouseLeft();
+            _hoverQuickInfoService?.Cancel();
+
+            // Clear Ctrl+hover state on mouse leave.
+            if (_ctrlDown)
+            {
+                _ctrlDown = false;
+                _hoveredSymbolZone = null;
+                _ctrlClickService?.Cancel();
                 InvalidateVisual();
             }
         }
@@ -3981,6 +4831,118 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 _selection.Clear();
             }
+        }
+
+        private void MoveCursorToDocumentStart(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            _cursorLine   = 0;
+            _cursorColumn = 0;
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        private void MoveCursorToDocumentEnd(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            _cursorLine   = Math.Max(0, _document.Lines.Count - 1);
+            _cursorColumn = _document.Lines[_cursorLine].Length;
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        private void MoveWordLeft(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+
+            // Skip non-word chars to the left (punctuation, whitespace)
+            while (col > 0 && !IsWordChar(line[col - 1])) col--;
+            // Skip word chars to the left
+            while (col > 0 && IsWordChar(line[col - 1])) col--;
+
+            if (col == _cursorColumn && _cursorLine > 0)
+            {
+                // Step to end of previous line
+                _cursorLine--;
+                _cursorColumn = _document.Lines[_cursorLine].Text.Length;
+            }
+            else
+            {
+                _cursorColumn = col;
+            }
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        private void MoveWordRight(bool extendSelection)
+        {
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+
+            // Skip word chars to the right
+            while (col < line.Length && IsWordChar(line[col])) col++;
+            // Skip non-word chars to the right (punctuation, whitespace)
+            while (col < line.Length && !IsWordChar(line[col])) col++;
+
+            if (col == _cursorColumn && _cursorLine < _document.Lines.Count - 1)
+            {
+                // Step to start of next line
+                _cursorLine++;
+                _cursorColumn = 0;
+            }
+            else
+            {
+                _cursorColumn = col;
+            }
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty)
+                    _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
         }
 
         #endregion
@@ -4207,6 +5169,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnMouseWheel(e);
 
+            // Swallow wheel events while the references popup is open so the editor
+            // does not scroll under it. The user must dismiss the popup first.
+            if (_referencesPopup?.IsOpen == true)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            _quickInfoPopup?.Hide();
+
             // Ctrl + wheel → zoom in / out (B6).
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
@@ -4259,6 +5231,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnMouseDown(e);
 
+            // Dismiss any open references popup on any click in the editor,
+            // but NOT when the click originated inside the popup itself.
+            // Two complementary guards cover both WPF-routing and Win32 click-through paths:
+            //   1. IsEventFromInsidePopup — detects via PresentationSource (HWND-aware)
+            //   2. IsClickInsidePopupBounds — screen-coordinate fallback
+            if (!IsEventFromInsidePopup(e.OriginalSource) && !IsClickInsidePopupBounds(e.GetPosition(this)))
+                _referencesPopup?.Close();
+
+            // Dismiss Quick Info popup and cancel pending hover on any click.
+            _quickInfoPopup?.Hide();
+            _hoverQuickInfoService?.Cancel();
+
             Focus(); // Ensure editor gets keyboard focus
 
             var pos = e.GetPosition(this);
@@ -4287,6 +5271,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
+            // Left-click on an inline fold-collapse label → toggle the fold.
+            if (e.LeftButton == MouseButtonState.Pressed && _foldLabelHitZones.Count > 0)
+            {
+                var clickPos = e.GetPosition(this);
+                foreach (var (rect, line) in _foldLabelHitZones)
+                {
+                    if (rect.Contains(clickPos))
+                    {
+                        _foldingEngine?.ToggleRegion(line);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            }
+
+            // Left-click on a CodeLens hint → navigate cursor onto the symbol and open references popup.
+            if (ShowCodeLens && e.LeftButton == MouseButtonState.Pressed && _lensHitZones.Count > 0)
+            {
+                var clickPos = e.GetPosition(this);
+                foreach (var (zone, lineIdx, symbol) in _lensHitZones)
+                {
+                    if (zone.Contains(clickPos))
+                    {
+                        // Do NOT move the caret — pass line/symbol directly so the
+                        // user's cursor position is preserved.
+                        _ = FindAllReferencesAsync(lineOverride: lineIdx, symbolOverride: symbol);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            }
+
             // Ctrl+Left-click on a URL → open in browser.
             if (e.LeftButton == MouseButtonState.Pressed
                 && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -4302,6 +5318,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     e.Handled = true;
                     return;
                 }
+
+                // Ctrl+Left-click on a symbol → Go to Definition.
+                if (_hoveredSymbolZone.HasValue)
+                {
+                    _ = NavigateToDefinitionAsync(_hoveredSymbolZone.Value);
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            // Block caret placement when clicking in the CodeLens hint zone
+            // (the LensLineHeight strip above the code text of a declaration line).
+            if (ShowCodeLens
+                && _lineYLookup.TryGetValue(textPos.Line, out double codeTextY)
+                && pos.Y < codeTextY)
+            {
+                e.Handled = true;
+                return;
             }
 
             // Left-click behavior (unchanged)
@@ -4349,7 +5383,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     InvalidateVisual();
                 }
 
-                if (urlZone.HasValue)
+                // CodeLens hint zones: Hand cursor, hover highlight, and tooltip.
+                var mousePixel = e.GetPosition(this);
+                int prevHover  = _hoveredLensLine;
+                _hoveredLensLine = -1;
+                string? lensTooltip = null;
+                foreach (var (zone, lineIdx, sym) in _lensHitZones)
+                {
+                    if (zone.Contains(mousePixel))
+                    {
+                        _hoveredLensLine = lineIdx;
+                        if (_lensData.TryGetValue(lineIdx, out var entry))
+                        {
+                            lensTooltip = entry.Count == 1
+                                ? $"1 reference to '{sym}'  (Alt+3)"
+                                : $"{entry.Count} references to '{sym}'  (Alt+3)";
+                        }
+                        break;
+                    }
+                }
+                if (_hoveredLensLine != prevHover)
+                    InvalidateVisual();
+
+                bool overLens = _hoveredLensLine >= 0;
+                ToolTip = overLens ? lensTooltip : null;
+
+                if (overLens)
+                {
+                    Cursor = Cursors.Hand;
+                    HideUrlTooltip();
+                }
+                else if (urlZone.HasValue)
                 {
                     Cursor = Cursors.Hand;
                     ShowUrlTooltip();
@@ -4358,6 +5422,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     Cursor = Cursors.IBeam;
                     HideUrlTooltip();
+                }
+
+                // Quick Info hover — dispatch after cursor state is settled
+                if (ShowQuickInfo && _hoverQuickInfoService is not null && !_isSelecting)
+                    HandleQuickInfoHover(hoverPos, e.GetPosition(this));
+
+                // Ctrl+hover symbol underline.
+                // Force Hand cursor for the full duration of Ctrl held — signals navigability.
+                if (_ctrlDown)
+                {
+                    HandleCtrlHover(hoverPos);
+                    if (!overLens && !urlZone.HasValue)
+                        Cursor = _hoveredSymbolZone.HasValue ? Cursors.Hand : Cursors.IBeam;
                 }
             }
 
@@ -4445,6 +5522,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _caretVisible = false;
             }
 
+            // Clear Ctrl+hover and Quick Info state on focus loss.
+            _quickInfoPopup?.Hide();
+            _hoverQuickInfoService?.Cancel();
+            if (_ctrlDown)
+            {
+                _ctrlDown = false;
+                _hoveredSymbolZone = null;
+                _ctrlClickService?.Cancel();
+            }
+
             // Repaint to show inactive selection
             InvalidateVisual();
         }
@@ -4470,14 +5557,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private TextPosition PixelToTextPosition(Point pixel)
         {
             double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            int line;
 
-            // Calculate line — use VirtualizationEngine for sub-line scroll accuracy.
-            // Plain formula (_firstVisibleLine + offset/lineHeight) breaks with pixel-based
-            // smooth scrolling because the fractional scroll remainder shifts rendered text
-            // without updating _firstVisibleLine.
-            int line = EnableVirtualScrolling && _virtualizationEngine != null
-                ? _virtualizationEngine.GetLineAtYPosition(pixel.Y - TopMargin)
-                : _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
+            if (ShowCodeLens && _visLinePositions.Count > 0)
+            {
+                // Variable-height scan: CodeLens declaration lines have a taller slot.
+                // Each lens-line slot spans (codeY - LensLineHeight → codeY + _lineHeight).
+                // Each normal-line slot spans (codeY → codeY + _lineHeight).
+                line = _visLinePositions[^1].LineIndex; // default: last visible line
+                for (int k = 0; k < _visLinePositions.Count; k++)
+                {
+                    var (lineIdx, codeY) = _visLinePositions[k];
+                    double slotTop = _lensData.ContainsKey(lineIdx) ? codeY - LensLineHeight : codeY;
+                    if (pixel.Y >= slotTop && pixel.Y < codeY + _lineHeight)
+                    {
+                        line = lineIdx;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // Uniform-height path: use VirtualizationEngine for sub-line scroll accuracy.
+                line = EnableVirtualScrolling && _virtualizationEngine != null
+                    ? _virtualizationEngine.GetLineAtYPosition(pixel.Y - TopMargin)
+                    : _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
+            }
+
             line = Math.Max(0, Math.Min(_document.Lines.Count - 1, line));
 
             // Calculate column (account for horizontal scroll offset)
@@ -4754,6 +5860,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void Document_TextChanged(object sender, Models.TextChangedEventArgs e)
         {
+            // Dismiss Quick Info when the document changes — content is stale.
+            _quickInfoPopup?.Hide();
+            _hoverQuickInfoService?.Cancel();
+
             // Phase 3: Add to undo/redo stack (unless this is an undo/redo operation itself)
             if (!_isInternalEdit)
             {
@@ -4969,6 +6079,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Subscribe to the new document.
             _document.TextChanged += Document_TextChanged;
+
+            // Re-attach CodeLens service to the new document.
+            _codeLensService.Attach(_document, _currentFilePath);
 
             // Reset view state.
             _cursorLine = 0;
@@ -5200,6 +6313,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateMeasure();
             _currentFilePath = filePath;
 
+            // Re-attach CodeLens with the resolved file path so workspace-wide
+            // counting uses the correct extension filter.
+            _codeLensService.Attach(_document, _currentFilePath);
+
             // Apply .editorconfig settings (P2-03): indent style, size, EOL, etc.
             ApplyEditorConfig(Services.EditorConfigService.Resolve(filePath));
 
@@ -5242,6 +6359,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _lspClient = client;
+            _hoverQuickInfoService?.SetLspClient(client);
+            _ctrlClickService?.SetLspClient(client);
             _lspDocVersion = 0;
 
             if (_lspClient is null) return;
@@ -5318,6 +6437,422 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateVisual();
         }
 
+        // -- Find All References (LSP) ------------------------------------
+
+        /// <summary>
+        /// Returns the identifier word (letters, digits, underscore) at the current caret
+        /// position, or <see cref="string.Empty"/> when the caret is not on a word character.
+        /// Reuses the same boundary logic as <see cref="SelectWordAtPosition"/>.
+        /// </summary>
+        private string GetWordAtCursor()
+        {
+            if (_document is null
+                || _cursorLine  < 0
+                || _cursorLine  >= _document.Lines.Count)
+                return string.Empty;
+
+            var lineText = _document.Lines[_cursorLine].Text;
+            if (string.IsNullOrEmpty(lineText) || _cursorColumn > lineText.Length)
+                return string.Empty;
+
+            // Snap column to valid range
+            int col   = Math.Min(_cursorColumn, lineText.Length - 1);
+            if (!IsWordChar(lineText[col]))
+                return string.Empty;
+
+            int start = col;
+            int end   = col;
+
+            while (start > 0 && IsWordChar(lineText[start - 1]))
+                start--;
+
+            while (end < lineText.Length && IsWordChar(lineText[end]))
+                end++;
+
+            return lineText[start..end];
+        }
+
+        /// <summary>
+        /// Invokes <c>textDocument/references</c> for the symbol at the caret, groups
+        /// the results by file, reads snippets, then shows <see cref="ReferencesPopup"/>.
+        /// </summary>
+        private async Task FindAllReferencesAsync(int? lineOverride = null, string? symbolOverride = null)
+        {
+            if (_document is null) return;
+
+            // When called from a CodeLens click, line/symbol are supplied directly
+            // so the caret is never mutated. The Shift+F12 path supplies no overrides
+            // and reads _cursorLine / _cursorColumn as before.
+            int    line   = lineOverride ?? _cursorLine;
+            int    column = lineOverride.HasValue
+                                ? FindSymbolColumnInLine(line, symbolOverride ?? string.Empty)
+                                : _cursorColumn;
+            string symbol = symbolOverride ?? GetWordAtCursor();
+
+            if (string.IsNullOrEmpty(symbol))
+            {
+                StatusMessage?.Invoke(this, "Place the caret on a symbol to find references.");
+                return;
+            }
+
+            List<ReferenceGroup> groups;
+
+            // ── LSP path (preferred when a language server is running) ─────────
+            if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+            {
+                using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+                IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locations;
+                try
+                {
+                    locations = await _lspClient.ReferencesAsync(
+                        _currentFilePath, line, column, cts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    StatusMessage?.Invoke(this, "Find References timed out — falling back to local scan.");
+                    locations = Array.Empty<WpfHexEditor.Editor.Core.LSP.LspLocation>();
+                }
+
+                if (locations.Count > 0)
+                {
+                    groups = BuildGroupsFromLspLocations(locations, symbol);
+                    ShowReferencesPopup(groups, symbol, locations.Count, source: "LSP", line: line, column: column);
+                    return;
+                }
+                // Fall through to local scan when LSP returns no results.
+            }
+
+            // ── Local/workspace scan fallback ────────────────────────────────
+            // When a solution is loaded, search across all files of the same
+            // extension; otherwise fall back to the current document only.
+            groups = BuildGroupsFromWorkspaceScan(symbol);
+            int total = groups.Sum(g => g.Items.Count);
+
+            if (total == 0)
+            {
+                StatusMessage?.Invoke(this, $"No occurrences of '{symbol}' found.");
+                return;
+            }
+
+            ShowReferencesPopup(groups, symbol, total, source: "workspace", line: line, column: column);
+        }
+
+        /// <summary>
+        /// Scans the current in-memory document AND all solution files of the same
+        /// file extension for whole-word occurrences of <paramref name="symbol"/>.
+        /// Falls back to current-document-only scan when no solution is loaded.
+        /// </summary>
+        private List<ReferenceGroup> BuildGroupsFromWorkspaceScan(string symbol)
+        {
+            // Step 1 — always scan the current in-memory document.
+            var groups = BuildGroupsFromLocalScan(symbol);
+
+            // Step 2 — scan workspace files of matching extension.
+            var ext = Path.GetExtension(_currentFilePath ?? string.Empty);
+            if (string.IsNullOrEmpty(ext)) return groups;
+
+            var workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
+            foreach (var path in workspacePaths)
+            {
+                if (path.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                    continue; // already covered by the in-memory scan above
+
+                var lines = WorkspaceFileCache.GetLines(path);
+                if (lines is null) continue;
+
+                var items = new List<ReferenceItem>();
+                for (int lineIdx = 0; lineIdx < lines.Length; lineIdx++)
+                {
+                    var lineText = lines[lineIdx];
+                    if (string.IsNullOrEmpty(lineText)) continue;
+
+                    int col = 0;
+                    while (true)
+                    {
+                        int pos = lineText.IndexOf(symbol, col, StringComparison.Ordinal);
+                        if (pos < 0) break;
+
+                        bool leftOk  = pos == 0                       || !IsWordChar(lineText[pos - 1]);
+                        bool rightOk = pos + symbol.Length >= lineText.Length
+                                       || !IsWordChar(lineText[pos + symbol.Length]);
+
+                        if (leftOk && rightOk)
+                        {
+                            var snippet = lineText.Length > 200 ? lineText[..200] : lineText;
+                            items.Add(new ReferenceItem
+                            {
+                                Line    = lineIdx,
+                                Column  = pos,
+                                Snippet = snippet.TrimStart()
+                            });
+                        }
+
+                        col = pos + symbol.Length;
+                    }
+                }
+
+                if (items.Count > 0)
+                    groups.Add(new ReferenceGroup
+                    {
+                        FilePath     = path,
+                        DisplayLabel = Path.GetFileName(path),
+                        Items        = items
+                    });
+            }
+
+            return groups;
+        }
+
+        /// <summary>
+        /// Converts LSP location results into <see cref="ReferenceGroup"/> list,
+        /// reading snippets from the in-memory document or disk.
+        /// </summary>
+        private List<ReferenceGroup> BuildGroupsFromLspLocations(
+            IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locations,
+            string symbol)
+        {
+            var byFile = new Dictionary<string, List<WpfHexEditor.Editor.Core.LSP.LspLocation>>(
+                StringComparer.OrdinalIgnoreCase);
+
+            foreach (var loc in locations)
+            {
+                var path = UriToFilePath(loc.Uri);
+                if (!byFile.TryGetValue(path, out var list))
+                    byFile[path] = list = new List<WpfHexEditor.Editor.Core.LSP.LspLocation>();
+                list.Add(loc);
+            }
+
+            var groups = new List<ReferenceGroup>(byFile.Count);
+            foreach (var (filePath, locs) in byFile)
+            {
+                string[]? lines = null;
+                if (filePath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                    lines = _document.Lines.Select(l => l.Text).ToArray();
+                else if (File.Exists(filePath))
+                    lines = File.ReadAllLines(filePath);
+
+                var items = new List<ReferenceItem>(locs.Count);
+                foreach (var loc in locs)
+                {
+                    var raw = (lines != null && loc.StartLine < lines.Length)
+                        ? lines[loc.StartLine]
+                        : string.Empty;
+                    if (raw.Length > 200) raw = raw[..200];
+
+                    items.Add(new ReferenceItem
+                    {
+                        Line    = loc.StartLine,
+                        Column  = loc.StartColumn,
+                        Snippet = raw.TrimStart()
+                    });
+                }
+
+                groups.Add(new ReferenceGroup
+                {
+                    FilePath     = filePath,
+                    DisplayLabel = Path.GetFileName(filePath),
+                    Items        = items
+                });
+            }
+
+            return groups;
+        }
+
+        /// <summary>
+        /// Scans the current in-memory document for all whole-word occurrences of
+        /// <paramref name="symbol"/> and returns them as a single-file
+        /// <see cref="ReferenceGroup"/>. Used when no LSP client is available.
+        /// </summary>
+        private List<ReferenceGroup> BuildGroupsFromLocalScan(string symbol)
+        {
+            var items = new List<ReferenceItem>();
+
+            for (int lineIdx = 0; lineIdx < _document.Lines.Count; lineIdx++)
+            {
+                var lineText = _document.Lines[lineIdx].Text;
+                if (string.IsNullOrEmpty(lineText)) continue;
+
+                int col = 0;
+                while (true)
+                {
+                    int pos = lineText.IndexOf(symbol, col, StringComparison.Ordinal);
+                    if (pos < 0) break;
+
+                    // Whole-word boundary check — skip if adjacent chars are word chars.
+                    bool leftOk  = pos == 0                       || !IsWordChar(lineText[pos - 1]);
+                    bool rightOk = pos + symbol.Length >= lineText.Length
+                                   || !IsWordChar(lineText[pos + symbol.Length]);
+
+                    if (leftOk && rightOk)
+                    {
+                        var snippet = lineText.Length > 200 ? lineText[..200] : lineText;
+                        items.Add(new ReferenceItem
+                        {
+                            Line    = lineIdx,
+                            Column  = pos,
+                            Snippet = snippet.TrimStart()
+                        });
+                    }
+
+                    col = pos + symbol.Length;
+                }
+            }
+
+            if (items.Count == 0) return new List<ReferenceGroup>();
+
+            return new List<ReferenceGroup>
+            {
+                new ReferenceGroup
+                {
+                    FilePath     = _currentFilePath ?? string.Empty,
+                    DisplayLabel = _currentFilePath is not null
+                                   ? Path.GetFileName(_currentFilePath)
+                                   : "(unsaved document)",
+                    Items        = items
+                }
+            };
+        }
+
+        /// <summary>
+        /// Computes the anchor Point, shows the popup and updates the status bar.
+        /// </summary>
+        private void ShowReferencesPopup(
+            List<ReferenceGroup> groups, string symbol, int total, string source,
+            int line = -1, int column = -1)
+        {
+            // Defaults: Shift+F12 path supplies no overrides, reads cursor fields.
+            if (line   < 0) line   = _cursorLine;
+            if (column < 0) column = _cursorColumn;
+
+            int visLineOffset = line - _firstVisibleLine;
+            double lh = _lineHeight > 0 ? _lineHeight : 16.0;
+            double cw = _charWidth  > 0 ? _charWidth  : 8.0;
+            double x  = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + column * cw;
+
+            // Prefer the actual rendered hit-zone Top as anchor Y.
+            // _lineYLookup can accumulate rounding errors when many CodeLens lines appear
+            // above the declaration, causing the popup to float too high.
+            double anchorY = -1;
+            foreach (var (hz, hzLine, _) in _lensHitZones)
+            {
+                if (hzLine == line) { anchorY = hz.Top; break; }
+            }
+            if (anchorY < 0)
+            {
+                // Shift+F12 / hint not currently rendered — fall back to _lineYLookup.
+                double codeY = _lineYLookup.TryGetValue(line, out double ly)
+                    ? ly : TopMargin + visLineOffset * lh;
+                anchorY = codeY - LensLineHeight;
+            }
+
+            var anchor = new Point(x, anchorY);
+
+            // Resolve kind icon from lens data (null-safe: Shift+F12 invocations have no lens entry).
+            string iconGlyph = "\uE8A5";
+            System.Windows.Media.Brush iconBrush = System.Windows.Media.Brushes.Gray;
+            if (_lensData.TryGetValue(line, out var lensEntry))
+            {
+                iconGlyph = lensEntry.IconGlyph;
+                iconBrush = lensEntry.IconBrush;
+            }
+
+            // Store latest results so pin handler can forward them to the dock host.
+            _lastReferenceGroups = groups;
+            _lastReferenceSymbol = symbol;
+
+            _referencesPopup ??= new ReferencesPopup();
+            _referencesPopup.NavigationRequested -= OnReferencesNavigationRequested;
+            _referencesPopup.NavigationRequested += OnReferencesNavigationRequested;
+            _referencesPopup.RefreshRequested    -= OnPopupRefreshRequested;
+            _referencesPopup.RefreshRequested    += OnPopupRefreshRequested;
+            _referencesPopup.PinRequested        -= OnPopupPinRequested;
+            _referencesPopup.PinRequested        += OnPopupPinRequested;
+
+            _referencesPopup.Show(this, groups, symbol, anchor, lh, iconGlyph, iconBrush);
+            StatusMessage?.Invoke(this,
+                $"{total} occurrence{(total != 1 ? "s" : "")} of '{symbol}' ({source}).");
+        }
+
+        /// <summary>Converts a <c>file:///</c> URI to a local file-system path.</summary>
+        private static string UriToFilePath(string uri)
+        {
+            if (uri.StartsWith("file:///", StringComparison.OrdinalIgnoreCase))
+                return Uri.UnescapeDataString(uri[8..]).Replace('/', Path.DirectorySeparatorChar);
+            if (uri.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+                return Uri.UnescapeDataString(uri[7..]).Replace('/', Path.DirectorySeparatorChar);
+            return uri;
+        }
+
+        /// <summary>
+        /// Routes a reference-popup navigation event: same-file → local scroll;
+        /// different file → propagates to the IDE host.
+        /// </summary>
+        private void OnReferencesNavigationRequested(
+            object? sender, ReferencesNavigationEventArgs e)
+        {
+            _referencesPopup?.Close();
+
+            if (e.FilePath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                NavigateToLine(e.Line);
+            else
+                ReferenceNavigationRequested?.Invoke(this, e);
+        }
+
+        private async void OnPopupRefreshRequested(object? sender, EventArgs e)
+            => await FindAllReferencesAsync();
+
+        private void OnPopupPinRequested(object? sender, EventArgs e)
+        {
+            _referencesPopup?.Close();
+            FindAllReferencesDockRequested?.Invoke(this, new FindAllReferencesDockEventArgs
+            {
+                Groups     = _lastReferenceGroups,
+                SymbolName = _lastReferenceSymbol
+            });
+        }
+
+        /// <summary>
+        /// Returns true when <paramref name="originalSource"/> lives in the same Win32 HWND
+        /// (PresentationSource) as the references popup — i.e., the click originated inside
+        /// the popup's own layered window, not in the CodeEditor window.
+        /// <para>
+        /// VisualTreeHelper.GetParent cannot cross HWND boundaries, so an HWND-aware check
+        /// via <see cref="PresentationSource.FromVisual"/> is required for AllowsTransparency
+        /// popups that live in their own HwndSource.
+        /// </para>
+        /// </summary>
+        private bool IsEventFromInsidePopup(object? originalSource)
+        {
+            if (_referencesPopup?.IsOpen != true || _referencesPopup.Child is null)
+                return false;
+            if (originalSource is not Visual visual)
+                return false;
+
+            // Compare HwndSource instances: equal ⟹ same HWND ⟹ click is from the popup.
+            var clickSource = PresentationSource.FromVisual(visual);
+            var popupSource = PresentationSource.FromVisual(_referencesPopup.Child);
+            return clickSource is not null && ReferenceEquals(clickSource, popupSource);
+        }
+
+        /// <summary>
+        /// Returns true when the click position (relative to this editor) maps to a screen
+        /// point that falls within the references popup's bounding rectangle.
+        /// Belt-and-suspenders fallback for the Win32 click-through scenario where
+        /// <see cref="IsEventFromInsidePopup"/> cannot detect the popup source.
+        /// </summary>
+        private bool IsClickInsidePopupBounds(Point posRelativeToThis)
+        {
+            if (_referencesPopup?.IsOpen != true || _referencesPopup.Child is not UIElement child)
+                return false;
+            try
+            {
+                var screenPt     = PointToScreen(posRelativeToThis);
+                var popupTopLeft = child.PointToScreen(new Point(0, 0));
+                return new Rect(popupTopLeft, child.RenderSize).Contains(screenPt);
+            }
+            catch { return false; }
+        }
+
         // -- Public methods (IDocumentEditor) -----------------------------
 
         void IDocumentEditor.Copy() => CopyToClipboard();
@@ -5331,6 +6866,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Notify the LSP server before clearing the path (Phase 4).
             if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
                 _lspClient.CloseDocument(_currentFilePath);
+
+            _quickInfoPopup?.Hide();
+            _hoverQuickInfoService?.Dispose();
+            _hoverQuickInfoService = null;
+            _ctrlClickService?.Dispose();
+            _ctrlClickService = null;
 
             _document = new Models.CodeDocument();
             _currentFilePath = null;
@@ -5354,6 +6895,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>Fired when the caret moves to a different line (debounced to line-level changes).</summary>
         public event EventHandler? CaretMoved;
 
+        /// <summary>
+        /// Raised when the user navigates to a reference in a different file via the
+        /// Find All References popup. The host should open the target file and move
+        /// the caret to the specified position.
+        /// </summary>
+        public event EventHandler<ReferencesNavigationEventArgs>? ReferenceNavigationRequested;
+
+        /// <summary>
+        /// Raised when the user pins the References popup into a docked panel.
+        /// The host should open (or activate) a <see cref="FindReferencesPanel"/>
+        /// and call <c>Refresh</c> with the supplied groups.
+        /// </summary>
+        public event EventHandler<FindAllReferencesDockEventArgs>? FindAllReferencesDockRequested;
+
         public event EventHandler? ModifiedChanged;
         public event EventHandler? CanUndoChanged;
         public event EventHandler? CanRedoChanged;
@@ -5361,6 +6916,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         public event EventHandler<string>? StatusMessage;
         public event EventHandler<string>? OutputMessage;
         public event EventHandler? SelectionChanged;
+
+        /// <summary>
+        /// Raised when Ctrl+Click targets an external symbol (e.g. BCL / NuGet assembly).
+        /// The IDE host should route this to AssemblyExplorer or open a decompiled-source tab.
+        /// </summary>
+        public event EventHandler<GoToExternalDefinitionEventArgs>? GoToExternalDefinitionRequested;
 
         // -- Long-running operations (no-op: CodeEditor has no async operations) --
         public bool IsBusy => false;
@@ -5391,26 +6952,68 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // ═══════════════════════════════════════════════════════════════════
 
         private ObservableCollection<StatusBarItem>? _jsonStatusBarItems;
-        private StatusBarItem _sbJsonFile = null!;
+        private StatusBarItem _sbLanguage  = null!;
+        private StatusBarItem _sbPosition  = null!;
+        private StatusBarItem _sbZoom      = null!;
+        private StatusBarItem _sbSelection = null!;
+
+        /// <summary>Current caret column (0-based). Companion to <see cref="CursorLine"/>.</summary>
+        public int CursorColumn => _cursorColumn;
 
         public ObservableCollection<StatusBarItem> StatusBarItems
             => _jsonStatusBarItems ??= BuildJsonStatusBarItems();
 
         private ObservableCollection<StatusBarItem> BuildJsonStatusBarItems()
         {
-            _sbJsonFile = new StatusBarItem { Label = "File", Tooltip = "Current JSON file" };
+            _sbLanguage  = new StatusBarItem { Label = "Language", Tooltip = "Detected syntax language" };
+            _sbPosition  = new StatusBarItem { Label = "Position", Tooltip = "Caret line and column" };
+            _sbZoom      = new StatusBarItem { Label = "Zoom",     Tooltip = "Editor zoom level" };
+            _sbSelection = new StatusBarItem { Label = "Sel",      Tooltip = "Number of selected characters", IsVisible = false };
+
+            // Zoom preset choices — selecting one applies the zoom level immediately.
+            foreach (var (pct, factor) in new (string, double)[] { ("50%", 0.5), ("75%", 0.75), ("100%", 1.0), ("125%", 1.25), ("150%", 1.5), ("200%", 2.0) })
+            {
+                var capture = factor;
+                _sbZoom.Choices.Add(new StatusBarChoice
+                {
+                    DisplayName = pct,
+                    Command     = new JsonRelayCommand(_ => ZoomLevel = capture),
+                });
+            }
+
+            // Wire live-update events once (lazy-init guard ensures single subscription).
+            CaretMoved       += (_, _) => RefreshJsonStatusBarItems();
+            ZoomLevelChanged += (_, _) => RefreshJsonStatusBarItems();
+            SelectionChanged += (_, _) => RefreshJsonStatusBarItems();
+
             RefreshJsonStatusBarItems();
-            return new ObservableCollection<StatusBarItem> { _sbJsonFile };
+            return new ObservableCollection<StatusBarItem> { _sbLanguage, _sbPosition, _sbZoom, _sbSelection };
         }
 
         void IStatusBarContributor.RefreshStatusBarItems() => RefreshJsonStatusBarItems();
 
         internal void RefreshJsonStatusBarItems()
         {
-            if (_jsonStatusBarItems == null) return;
-            _sbJsonFile.Value = !string.IsNullOrEmpty(_currentFilePath)
-                ? Path.GetFileName(_currentFilePath)
-                : "(unsaved)";
+            if (_jsonStatusBarItems is null) return;
+
+            _sbLanguage.Value = ExternalHighlighter?.LanguageName ?? _highlighter.LanguageName ?? "JSON";
+            _sbPosition.Value = $"Ln {_cursorLine + 1}, Col {_cursorColumn + 1}";
+            _sbZoom.Value     = $"{(int)(ZoomLevel * 100)}%";
+
+            bool hasSelection = !_selection.IsEmpty;
+            _sbSelection.IsVisible = hasSelection;
+            if (hasSelection)
+            {
+                int charCount = _selection.IsMultiLine
+                    ? (_document?.GetText(_selection.NormalizedStart, _selection.NormalizedEnd).Length ?? 0)
+                    : Math.Abs(_selection.NormalizedEnd.Column - _selection.NormalizedStart.Column);
+                _sbSelection.Value = charCount.ToString();
+            }
+
+            // Keep zoom choice checkmarks in sync.
+            string zoomLabel = $"{(int)(ZoomLevel * 100)}%";
+            foreach (var choice in _sbZoom.Choices)
+                choice.IsActive = choice.DisplayName == zoomLabel;
         }
 
         // ═══════════════════════════════════════════════════════════════════
@@ -5496,6 +7099,397 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             )).ToList();
         }
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // Quick Info — hover dispatch and popup management
+        // ═══════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Evaluates whether a new Quick Info request should be dispatched for the
+        /// given hover position, then calls <see cref="Services.HoverQuickInfoService.RequestAsync"/>.
+        /// </summary>
+        private void HandleQuickInfoHover(TextPosition hoverPos, Point pixelPos)
+        {
+            if (_hoverQuickInfoService is null) return;
+
+            // Suppress if the mouse is already inside the popup itself.
+            if (_quickInfoPopup?.IsMouseOverPopup == true) return;
+
+            // Jitter guard: don't re-dispatch unless the text position actually changed.
+            if (hoverPos == _lastHoverTextPos) return;
+            _lastHoverTextPos = hoverPos;
+            _lastHoverPixel   = pixelPos;
+
+            if (_currentFilePath is null || _document is null) return;
+
+            var lineText = hoverPos.Line >= 0 && hoverPos.Line < _document.Lines.Count
+                ? _document.Lines[hoverPos.Line].Text ?? string.Empty
+                : string.Empty;
+            var (word, _) = GetWordAt(lineText, hoverPos.Column);
+
+            if (string.IsNullOrEmpty(word))
+            {
+                _hoverQuickInfoService.Cancel();
+                return;
+            }
+
+            // Snapshot diagnostics for the service (cross-thread safe copy).
+            _hoverQuickInfoService.SetDiagnostics(_validationErrors.ToArray());
+
+            var lineSnapshot = _document.Lines.ToArray();
+            _hoverQuickInfoService.RequestAsync(
+                _currentFilePath, hoverPos.Line, hoverPos.Column, word, lineSnapshot);
+        }
+
+        /// <summary>
+        /// Called when <see cref="Services.HoverQuickInfoService"/> fires
+        /// <see cref="Services.HoverQuickInfoService.QuickInfoResolved"/>.
+        /// </summary>
+        private void OnQuickInfoResolved(object? sender, WpfHexEditor.SDK.ExtensionPoints.QuickInfoResult? result)
+        {
+            if (result is null)
+            {
+                _quickInfoPopup?.Hide();
+                return;
+            }
+
+            // Lazy-create popup on first use.
+            if (_quickInfoPopup is null)
+            {
+                _quickInfoPopup = new QuickInfoPopup();
+                _quickInfoPopup.ActionRequested += OnQuickInfoActionRequested;
+            }
+
+            // Compute anchor below the hovered line (CodeLens-aware Y via _lineYLookup).
+            double anchorX = TextAreaLeftOffset + _lastHoverTextPos.Column * _charWidth
+                             - _horizontalScrollOffset;
+            double anchorY = _lineYLookup.TryGetValue(_lastHoverTextPos.Line, out double ly)
+                ? ly + _lineHeight + 2
+                : _lastHoverTextPos.Line * _lineHeight + _lineHeight + 2;
+            var anchor = new Point(anchorX, anchorY);
+
+            _quickInfoPopup.Show(this, result, anchor);
+        }
+
+        /// <summary>Routes action link clicks from the Quick Info popup.</summary>
+        private void OnQuickInfoActionRequested(object? sender, QuickInfoActionEventArgs e)
+        {
+            switch (e.Command)
+            {
+                case "GoToDefinition":
+                    if (_hoveredSymbolZone.HasValue)
+                        _ = NavigateToDefinitionAsync(_hoveredSymbolZone.Value);
+                    break;
+
+                case "FindAllReferences":
+                    _ = FindAllReferencesAsync();
+                    break;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // Ctrl+Click — symbol underline and definition navigation
+        // ═══════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Updates <see cref="_hoveredSymbolZone"/> and dispatches an async resolution
+        /// via <see cref="Services.CtrlClickNavigationService"/> when Ctrl is held.
+        /// </summary>
+        private void HandleCtrlHover(TextPosition hoverPos)
+        {
+            if (_document is null || _ctrlClickService is null) return;
+
+            var lineText = hoverPos.Line >= 0 && hoverPos.Line < _document.Lines.Count
+                ? _document.Lines[hoverPos.Line].Text ?? string.Empty
+                : string.Empty;
+            var (word, startCol) = GetWordAt(lineText, hoverPos.Column);
+
+            if (string.IsNullOrEmpty(word))
+            {
+                // Keep the zone when the cursor is still within the word's column span.
+                // WPF fires MouseMove just before MouseDown; a sub-pixel shift can land on
+                // a column boundary where GetWordAt returns empty even though the pointer is
+                // visually inside the underlined token. Clearing here would make OnMouseDown
+                // see HasValue = false and silently skip navigation.
+                if (_hoveredSymbolZone.HasValue
+                    && hoverPos.Line   == _hoveredSymbolZone.Value.Line
+                    && hoverPos.Column >= _hoveredSymbolZone.Value.StartCol
+                    && hoverPos.Column <= _hoveredSymbolZone.Value.EndCol)
+                    return;
+
+                if (_hoveredSymbolZone.HasValue)
+                {
+                    _hoveredSymbolZone = null;
+                    _ctrlClickService.Cancel();
+                    InvalidateVisual();
+                }
+                return;
+            }
+
+            int endCol = startCol + word.Length;
+
+            // Skip non-navigable token kinds (keywords, literals, comments, operators).
+            // Only Identifier, Type, Attribute, and Default (unclassified) tokens are navigable.
+            var tokenKind = GetTokenKindAtColumn(hoverPos.Line, startCol);
+            if (tokenKind is SyntaxTokenKind.Keyword
+                          or SyntaxTokenKind.Comment
+                          or SyntaxTokenKind.String
+                          or SyntaxTokenKind.Number
+                          or SyntaxTokenKind.Operator
+                          or SyntaxTokenKind.Bracket)
+            {
+                if (_hoveredSymbolZone.HasValue)
+                {
+                    _hoveredSymbolZone = null;
+                    _ctrlClickService.Cancel();
+                    // Cursor stays Hand — Ctrl is still held.
+                    InvalidateVisual();
+                }
+                return;
+            }
+
+            // Skip if zone is identical to the current one (avoid redundant invalidate + async call).
+            if (_hoveredSymbolZone.HasValue
+                && _hoveredSymbolZone.Value.Line     == hoverPos.Line
+                && _hoveredSymbolZone.Value.StartCol == startCol
+                && _hoveredSymbolZone.Value.EndCol   == endCol)
+                return;
+
+            // Create provisional zone; TargetFilePath will be filled in by OnCtrlClickTargetResolved.
+            _hoveredSymbolZone = new SymbolHitZone(
+                hoverPos.Line, startCol, endCol, word,
+                string.Empty, 0, 0, false);
+
+            InvalidateVisual();
+
+            if (_currentFilePath is null) return;
+            var lineSnapshot = _document.Lines.ToArray();
+            _ctrlClickService.RequestAsync(
+                _currentFilePath, hoverPos.Line, hoverPos.Column,
+                startCol, endCol, word, lineSnapshot);
+        }
+
+        /// <summary>
+        /// Called when <see cref="Services.CtrlClickNavigationService"/> fires
+        /// <see cref="Services.CtrlClickNavigationService.TargetResolved"/>.
+        /// Updates the hovered zone with the resolved target location.
+        /// </summary>
+        private void OnCtrlClickTargetResolved(
+            object? sender, Services.CtrlClickTarget? target)
+        {
+            if (target is null || !_hoveredSymbolZone.HasValue) return;
+
+            // Only apply if the resolution still matches the zone currently under the cursor.
+            var current = _hoveredSymbolZone.Value;
+            if (current.Line     != target.Line
+                || current.StartCol != target.StartCol
+                || current.EndCol   != target.EndCol)
+                return;
+
+            _hoveredSymbolZone = new SymbolHitZone(
+                target.Line, target.StartCol, target.EndCol, target.SymbolName,
+                target.TargetFilePath, target.TargetLine, target.TargetColumn,
+                target.IsExternal);
+        }
+
+        /// <summary>Navigates to the definition of the given symbol zone.</summary>
+        private async Task NavigateToDefinitionAsync(SymbolHitZone zone)
+        {
+            _quickInfoPopup?.Hide();
+
+            // 1. Already resolved to an in-project file — navigate directly.
+            if (!string.IsNullOrEmpty(zone.TargetFilePath) && !zone.IsExternal)
+            {
+                if (zone.TargetFilePath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                    NavigateToLine(zone.TargetLine);
+                else
+                    ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                    {
+                        FilePath = zone.TargetFilePath,
+                        Line     = zone.TargetLine + 1,
+                        Column   = zone.TargetColumn + 1
+                    });
+                return;
+            }
+
+            // 2. Ask LSP for definition.
+            if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+            {
+                try
+                {
+                    using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+                    var locations = await _lspClient.DefinitionAsync(
+                        _currentFilePath, zone.Line, zone.StartCol, cts.Token)
+                        .ConfigureAwait(true);
+
+                    if (locations.Count > 0)
+                    {
+                        await HandleDefinitionLocationsAsync(locations, zone.SymbolName)
+                            .ConfigureAwait(true);
+                        return;
+                    }
+                }
+                catch (OperationCanceledException) { }
+                catch (Exception) { }
+            }
+
+            // 3. Local CodeStructureParser scan — finds declarations within the current document.
+            //    Runs synchronously so a Ctrl+Click always produces feedback even without LSP.
+            if (_document.Lines.Count > 0)
+            {
+                var snapshot = CodeStructureParser.Parse(_document.Lines);
+                var all      = snapshot.Types.Concat(snapshot.Members);
+                var decl     = all.FirstOrDefault(item =>
+                    string.Equals(item.Name, zone.SymbolName, StringComparison.Ordinal)
+                    && item.Line != zone.Line);
+
+                if (decl is not null)
+                {
+                    NavigateToLine(decl.Line);
+                    return;
+                }
+            }
+
+            // 3b. Workspace-wide declaration scan — searches all solution files of the same
+            //     extension using CodeStructureParser.  Handles cross-file navigation when
+            //     no LSP is running (e.g. Ctrl+Click on a type defined in another project file).
+            {
+                var ext = Path.GetExtension(_currentFilePath ?? string.Empty);
+                if (!string.IsNullOrEmpty(ext))
+                {
+                    var workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
+                    foreach (var path in workspacePaths)
+                    {
+                        if (path.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        var fileLines = WorkspaceFileCache.GetLines(path);
+                        if (fileLines is null) continue;
+
+                        // Wrap string[] as CodeLine list so CodeStructureParser can consume it.
+                        var codeLines = fileLines
+                            .Select((t, i) => new CodeLine(t, i))
+                            .ToList();
+
+                        var snap  = CodeStructureParser.Parse(codeLines);
+                        var found = snap.Types.Concat(snap.Members).FirstOrDefault(item =>
+                            string.Equals(item.Name, zone.SymbolName, StringComparison.Ordinal));
+
+                        if (found is not null)
+                        {
+                            ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                            {
+                                FilePath = path,
+                                Line     = found.Line + 1,
+                                Column   = 1
+                            });
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // 4. External / no LSP fallback — symbol not found in any solution file.
+            HandleExternalDefinitionAsync(zone.SymbolName);
+        }
+
+        /// <summary>
+        /// Processes a list of LSP definition locations: navigates in-project targets
+        /// directly; routes external/metadata targets via <see cref="GoToExternalDefinitionRequested"/>.
+        /// </summary>
+        private async Task HandleDefinitionLocationsAsync(
+            IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locations,
+            string symbolName)
+        {
+            // Multiple definition locations (e.g. interface + implementation) — show popup
+            // so the user can pick the target rather than silently navigating to the first.
+            if (locations.Count > 1)
+            {
+                var groups = BuildGroupsFromLspLocations(locations, symbolName);
+                ShowReferencesPopup(groups, symbolName, locations.Count,
+                    source: "definition", line: _cursorLine, column: _cursorColumn);
+                return;
+            }
+
+            var loc = locations[0];
+            bool isMetadata = loc.Uri.StartsWith("metadata:", StringComparison.OrdinalIgnoreCase)
+                           || loc.Uri.StartsWith("omnisharp-metadata:", StringComparison.OrdinalIgnoreCase);
+
+            if (isMetadata)
+            {
+                // Pass the raw URI so the host can parse assembly/type from the query string.
+                HandleExternalDefinitionAsync(symbolName, loc.Uri);
+                return;
+            }
+
+            string? localPath = null;
+            try { localPath = new Uri(loc.Uri).LocalPath; }
+            catch { /* malformed URI — treat as external */ }
+
+            if (localPath is null || !System.IO.File.Exists(localPath))
+            {
+                HandleExternalDefinitionAsync(symbolName, loc.Uri);
+                return;
+            }
+
+            // In-project navigation.
+            if (localPath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+                NavigateToLine(loc.StartLine);
+            else
+                ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                {
+                    FilePath = localPath,
+                    Line     = loc.StartLine + 1,
+                    Column   = loc.StartColumn + 1
+                });
+
+            await Task.CompletedTask.ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Fires <see cref="GoToExternalDefinitionRequested"/> so the IDE host can route
+        /// to AssemblyExplorer or open a decompiled-source tab.
+        /// </summary>
+        private void HandleExternalDefinitionAsync(string symbolName, string? metadataUri = null)
+        {
+            GoToExternalDefinitionRequested?.Invoke(this,
+                new GoToExternalDefinitionEventArgs(symbolName, _currentFilePath, metadataUri));
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // Ctrl+Hover underline rendering
+        // ═══════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Draws a single-pixel underline beneath the symbol token currently hovered
+        /// while Ctrl is held.  Called from <see cref="OnRender"/> inside the
+        /// H-scroll transform so coordinates are in document space.
+        /// </summary>
+        private void RenderCtrlHoverUnderline(DrawingContext dc)
+        {
+            if (!_ctrlDown || !_hoveredSymbolZone.HasValue) return;
+
+            var zone = _hoveredSymbolZone.Value;
+
+            // Lazy-create pen from theme resource; recreated each render pass so
+            // theme switches are reflected immediately (same pattern as urlPen).
+            var brush = TryFindResource("CE_CtrlHover_Underline") as Brush ?? Brushes.Cyan;
+            var pen   = new Pen(brush, 1.0);
+            pen.Freeze();
+
+            double y        = _lineYLookup.TryGetValue(zone.Line, out double ly)
+                ? ly + _lineHeight - 2
+                : zone.Line * _lineHeight + _lineHeight - 2;
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double x1       = textLeft + zone.StartCol * _charWidth;
+            double x2       = textLeft + zone.EndCol   * _charWidth;
+
+            // Add the symbol to the hit-zone list so OnMouseMove can detect it even
+            // when the async resolution hasn't completed yet.
+            _symbolHitZones.Add(zone);
+
+            dc.DrawLine(pen, new Point(x1, y), new Point(x2, y));
+        }
+
         // -- URL hit-zone (per-render, rebuilt in RenderTextContent) ---------------
 
         /// <summary>
@@ -5503,6 +7497,60 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// The list of active zones is rebuilt in <see cref="RenderTextContent"/> on each render.
         /// </summary>
         private readonly record struct UrlHitZone(int Line, int StartCol, int EndCol, string Url);
+
+        // -- Symbol hit-zone (per-render when Ctrl is held) ────────────────────
+
+        /// <summary>
+        /// Identifier token position for Ctrl+hover underline and Ctrl+Click navigation.
+        /// TargetFilePath/Line/Column are set by <see cref="Services.CtrlClickNavigationService"/>
+        /// after async resolution. IsExternal = true requires decompilation fallback.
+        /// </summary>
+        private readonly record struct SymbolHitZone(
+            int    Line,
+            int    StartCol,
+            int    EndCol,
+            string SymbolName,
+            string TargetFilePath,
+            int    TargetLine,
+            int    TargetColumn,
+            bool   IsExternal);
+    }
+
+    // -- GoToExternalDefinition event args ─────────────────────────────────────
+
+    /// <summary>
+    /// Carries the symbol name and originating file path for a
+    /// <see cref="CodeEditor.GoToExternalDefinitionRequested"/> event.
+    /// The IDE host should route this to AssemblyExplorer or open a decompiled tab.
+    /// </summary>
+    public sealed class GoToExternalDefinitionEventArgs : EventArgs
+    {
+        /// <summary>Symbol name (type, method, property, etc.) to navigate to.</summary>
+        public string SymbolName { get; }
+
+        /// <summary>
+        /// Full path of the source file that triggered the navigation request.
+        /// May be null when the editor has no current file (untitled buffer).
+        /// </summary>
+        public string? SourceFilePath { get; }
+
+        /// <summary>
+        /// Raw LSP URI that identified this symbol as external (e.g.
+        /// "omnisharp-metadata:?assembly=System.Console&amp;type=System.Console&amp;...").
+        /// The IDE host can parse <c>assembly=</c> and <c>type=</c> query parameters to
+        /// locate and decompile the assembly. Null when the symbol was not resolved via LSP.
+        /// </summary>
+        public string? MetadataUri { get; }
+
+        internal GoToExternalDefinitionEventArgs(
+            string  symbolName,
+            string? sourceFilePath,
+            string? metadataUri = null)
+        {
+            SymbolName     = symbolName;
+            SourceFilePath = sourceFilePath;
+            MetadataUri    = metadataUri;
+        }
     }
 
     // -- File-scoped RelayCommand ----------------------------------------------

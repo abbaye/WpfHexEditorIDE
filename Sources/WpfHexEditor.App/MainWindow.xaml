@@ -155,6 +155,13 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <MenuItem x:Name="MenuOpenFolder" Header="_Folder..." Click="OnOpenFolder" InputGestureText="Ctrl+Shift+K" IsEnabled="False">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xED41;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="_File..." Click="OnOpenFile" InputGestureText="Ctrl+O">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -851,6 +858,13 @@
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
+                                <MenuItem Header="Open _Folder…" Click="OnOpenFolder"
+                                          InputGestureText="Ctrl+Shift+K">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xED41;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </Button.ContextMenu>
                         <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
@@ -1272,13 +1286,56 @@
                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <!-- Startup project selector -->
                     <ComboBox x:Name="CbStartupProject"
-                              Width="140" Margin="2,0" VerticalAlignment="Center"
+                              Width="160" Margin="2,0" VerticalAlignment="Center"
                               ToolTip="Startup Project — launched by ▶ Start (Ctrl+F5)"
                               ItemsSource="{Binding StartupProjectNames, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveStartupProjectName, ElementName=ThisWindow, Mode=TwoWay}"
                               IsEnabled="{Binding HasSolution, ElementName=ThisWindow}"
                               Background="Transparent"
-                              Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              SelectionChanged="OnStartupProjectSelectionChanged">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+                                <Setter Property="Padding"    Value="6,3" />
+                                <Style.Triggers>
+                                    <!-- Sentinel: custom template with separator line above + italic text -->
+                                    <DataTrigger Binding="{Binding}" Value="⚙ Configure startup projects…">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ComboBoxItem">
+                                                    <StackPanel>
+                                                        <Rectangle Height="1"
+                                                                   Fill="{DynamicResource DockBorderBrush}"
+                                                                   Margin="4,2,4,0" />
+                                                        <Border x:Name="Bd"
+                                                                Background="Transparent"
+                                                                Padding="6,4">
+                                                            <TextBlock Text="{TemplateBinding Content}"
+                                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                                       FontStyle="Italic" />
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background"
+                                                                    Value="{DynamicResource DockAccentBrush}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
                     <!-- Start (Run startup project without debugger — Ctrl+F5) -->
                     <Button x:Name="BtnRunStartup"
@@ -1542,28 +1599,13 @@
                                    Margin="0,0,12,0"/>
                     </StackPanel>
 
-                    <!-- Plugin health indicator (click to open Plugin Manager) -->
-                    <StackPanel x:Name="PluginStatusItem" Orientation="Horizontal" 
-                                Cursor="Hand" Background="Transparent"
-                                MouseLeftButtonDown="OnPluginStatusBarClick"
-                                MouseRightButtonDown="OnPluginStatusBarRightClick"
-                                Margin="0,0,8,0">
-                        <StackPanel.ToolTip>
-                            <ToolTip Content="Plugin System Status — Click to open Plugin Manager"/>
-                        </StackPanel.ToolTip>
-                        <TextBlock x:Name="PluginStatusIcon" Text="&#xE74C;" FontFamily="Segoe MDL2 Assets"
-                                   FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"
-                                   Foreground="{DynamicResource DockTabActiveTextBrush}"/>
-                        <TextBlock x:Name="PluginStatusText" Text="0 plugins"
-                                   FontSize="11" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DockTabActiveTextBrush}"/>
-                        <!-- Warning badge (hidden until a plugin faults) -->
-                        <Border x:Name="PluginWarningBadge" Background="{DynamicResource PM_BadgeFaultedBrush}" CornerRadius="8"
-                                Padding="4,1" Margin="4,0,0,0" VerticalAlignment="Center"
-                                Visibility="Collapsed">
-                            <TextBlock x:Name="PluginWarningText" Text="" FontSize="10" Foreground="White"/>
-                        </Border>
-                    </StackPanel>
+                    <!-- Plugin warning badge (visible only when a plugin faults) -->
+                    <Border x:Name="PluginWarningBadge" Background="{DynamicResource PM_BadgeFaultedBrush}" CornerRadius="8"
+                            Padding="4,1" Margin="0,0,8,0" VerticalAlignment="Center"
+                            Cursor="Hand" Visibility="Collapsed"
+                            MouseLeftButtonDown="OnPluginStatusBarClick">
+                        <TextBlock x:Name="PluginWarningText" Text="" FontSize="10" Foreground="White"/>
+                    </Border>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>

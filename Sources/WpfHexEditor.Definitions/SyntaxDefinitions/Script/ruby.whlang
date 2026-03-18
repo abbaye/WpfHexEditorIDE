@@ -17,6 +17,16 @@
   },
   "rules": [
     {
+      "type": "String",
+      "pattern": "(%[qQrwWxsiI]?(?:[\\{\\[\\(][^\\}\\]\\)]*[\\}\\]\\)]|[^A-Za-z0-9 ][^\\1]*[^A-Za-z0-9 ])|<<[-~]?['\"]?[A-Za-z_][A-Za-z0-9_]*['\"]?[\\s\\S]*?^[A-Za-z_][A-Za-z0-9_]*$|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`(?:[^`\\\\]|\\\\.)*`)",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "#.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Keyword",
       "pattern": "\\b(BEGIN|END|__ENCODING__|__END__|__FILE__|__LINE__|alias|and|begin|break|case|class|def|defined\\?|do|else|elsif|end|ensure|false|for|if|in|module|next|nil|not|or|redo|rescue|retry|return|self|super|then|true|undef|unless|until|when|while|yield|lambda|proc|raise|fail|require|require_relative|include|extend|prepend|attr_reader|attr_writer|attr_accessor|protected|private|public|freeze|frozen\\?|send|respond_to\\?|method|methods|new|initialize|to_s|to_i|to_f|to_a|to_h|inspect|puts|print|p|pp|gets|chomp|strip|split|join|map|select|reject|each|times|upto|downto|reduce|inject|any\\?|all\\?|none\\?|empty\\?|nil\\?|is_a\\?|kind_of\\?|class)\\b",
       "colorKey": "TE_Keyword"
@@ -36,15 +46,6 @@
       "pattern": "\\b(0x[0-9A-Fa-f_]+|0b[01_]+|0o[0-7_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[ri]?)\\b",
       "colorKey": "TE_Number"
     },
-    {
-      "type": "String",
-      "pattern": "(%[qQrwWxsiI]?(?:[\\{\\[\\(][^\\}\\]\\)]*[\\}\\]\\)]|[^A-Za-z0-9 ][^\\1]*[^A-Za-z0-9 ])|<<[-~]?['\"]?[A-Za-z_][A-Za-z0-9_]*['\"]?[\\s\\S]*?^[A-Za-z_][A-Za-z0-9_]*$|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`(?:[^`\\\\]|\\\\.)*`)",
-      "colorKey": "TE_String"
-    },
-    {
-      "type": "Comment",
-      "pattern": "#.*$",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
   ]
 }

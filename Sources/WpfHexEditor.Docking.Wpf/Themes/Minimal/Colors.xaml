@@ -304,6 +304,9 @@
     <SolidColorBrush x:Key="CE_Brace"         Color="#333333"/>
     <SolidColorBrush x:Key="CE_Attribute"     Color="#003399"/>
     <SolidColorBrush x:Key="CE_Error"         Color="#CC0000"/>
+    <SolidColorBrush x:Key="CE_Lens"          Color="#767676"/>
+    <SolidColorBrush x:Key="CE_Lens_Hover"    Color="#424242"/>
+    <SolidColorBrush x:Key="CE_Lens_Bg"       Color="#EFEFEF"/>
     <SolidColorBrush x:Key="CE_Background"    Color="#FEFEFE"/>
     <SolidColorBrush x:Key="CE_Foreground"    Color="#333333"/>
     <SolidColorBrush x:Key="CE_LineNumBg"     Color="#F8F8F8"/>
@@ -313,6 +316,19 @@
     <SolidColorBrush x:Key="CE_CurrentLine"   Color="#F5F5F5"/>
     <SolidColorBrush x:Key="CE_Selection"         Color="#E0E0E0"/>
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#CCCCCC"/>
+
+    <!-- CE_QuickInfo_* — Quick Info hover popup (Minimal) -->
+    <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#F8F8F8"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#BBBBBB"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Text"              Color="#333333"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_TypeText"          Color="#888888"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_SignatureText"      Color="#555555"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_LinkText"          Color="#444444"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Separator"         Color="#DDDDDD"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticError"   Color="#F5DEDE"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#FAF3DC"/>
+    <!-- CE_CtrlHover_Underline — Ctrl+hover symbol underline (Minimal) -->
+    <SolidColorBrush x:Key="CE_CtrlHover_Underline"         Color="#555555"/>
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#333333</Color>

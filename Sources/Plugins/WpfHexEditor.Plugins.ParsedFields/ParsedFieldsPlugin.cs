@@ -21,9 +21,11 @@
 // ==========================================================
 
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Plugins.ParsedFields.Views;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
@@ -96,6 +98,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Reconnect when the active tab changes.
         context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
         context.HexEditor.FileOpened          += OnFileOpened;
+        context.HexEditor.FormatDetected      += OnFormatDetected;
 
         // Route TemplateApplyRequestedEvent to this panel (was handled by MainWindow).
         _templateSub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateApplyRequested);
@@ -115,6 +118,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         {
             _context.HexEditor.ActiveEditorChanged -= OnActiveEditorChanged;
             _context.HexEditor.FileOpened          -= OnFileOpened;
+            _context.HexEditor.FormatDetected      -= OnFormatDetected;
             _context.HexEditor.DisconnectParsedFieldsPanel();
         }
 
@@ -135,11 +139,31 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         _context.HexEditor.DisconnectParsedFieldsPanel();
         if (_context.HexEditor.IsActive)
             _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+        // Enriched data is re-populated by OnParsedFieldsPanelChanged inside the HexEditor DP callback
+        // (calls newPanel.SetEnrichedFormat(_detectedFormat) when reconnecting to an already-detected editor).
     }
 
     /// <summary>Clears the panel when a new file is opened (no parsed fields yet).</summary>
     private void OnFileOpened(object? sender, EventArgs e)
-        => _panel?.Clear();
+    {
+        _panel?.Clear();
+        // Do NOT call SetEnrichedFormat(null) here.
+        // AutoDetectAndApplyFormat is queued at Background priority before this deferred
+        // FileOpened event; clearing here causes the enriched section to appear then vanish.
+        // Safety: Clear() sets FormatInfo.IsDetected=false → parent Border collapses → any
+        // stale enriched data is hidden until format detection re-runs and sets IsDetected=true.
+    }
+
+    /// <summary>
+    /// Receives format detection result and pushes enriched metadata into the panel.
+    /// RawFormatDefinition is cast to FormatDefinition — available to bundled plugins via SDK→HexEditor.
+    /// </summary>
+    private void OnFormatDetected(object? sender, FormatDetectedArgs e)
+    {
+        if (_panel is null) return;
+        var format = e.RawFormatDefinition as FormatDefinition;
+        _panel.Dispatcher.InvokeAsync(() => _panel.SetEnrichedFormat(format));
+    }
 
     // ── EventBus handler ──────────────────────────────────────────────────
 

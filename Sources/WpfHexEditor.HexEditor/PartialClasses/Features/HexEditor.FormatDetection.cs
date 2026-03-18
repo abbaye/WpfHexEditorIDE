@@ -438,6 +438,18 @@ namespace WpfHexEditor.HexEditor
                         AddCustomBackgroundBlock(block);
                     }
 
+                    // Mark whole-file "catch-all" blocks as tooltip-ineligible so that
+                    // OnCustomBackgroundBlocks mode does not fire on every byte.
+                    var fileLen = Length;
+                    if (fileLen > 0)
+                    {
+                        foreach (var b in _customBackgroundService.GetAllBlocks())
+                        {
+                            if (b.Length >= fileLen * 0.8)
+                                b.ShowInTooltip = false;
+                        }
+                    }
+
                     // Store the detected format, variables, and candidates for parsed fields panel
                     _detectedFormat = result.Format;
                     _detectionVariables = result.Variables; // Variables from function execution
@@ -528,6 +540,17 @@ namespace WpfHexEditor.HexEditor
                     foreach (var block in blocks)
                     {
                         AddCustomBackgroundBlock(block);
+                    }
+
+                    // Mark whole-file "catch-all" blocks as tooltip-ineligible
+                    var fileLenM = Length;
+                    if (fileLenM > 0)
+                    {
+                        foreach (var b in _customBackgroundService.GetAllBlocks())
+                        {
+                            if (b.Length >= fileLenM * 0.8)
+                                b.ShowInTooltip = false;
+                        }
                     }
 
                     // Store the detected format for parsed fields panel

@@ -10,9 +10,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
-    <Version>0.5.0</Version>
-    <AssemblyVersion>0.5.0.0</AssemblyVersion>
-    <FileVersion>0.5.0.0</FileVersion>
+    <Version>0.5.8</Version>
+    <AssemblyVersion>0.5.8.0</AssemblyVersion>
+    <FileVersion>0.5.8.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
@@ -50,6 +51,7 @@
     <ProjectReference Include="..\WpfHexEditor.BuildSystem\WpfHexEditor.BuildSystem.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
     <ProjectReference Include="..\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />
   </ItemGroup>
 
   <!-- Sandbox host process: build-only reference so the exe is always up to date,

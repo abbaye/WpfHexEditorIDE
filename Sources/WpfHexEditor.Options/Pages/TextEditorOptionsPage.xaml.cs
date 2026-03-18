@@ -57,7 +57,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
             CheckLineNumbers.IsChecked = te.ShowLineNumbers;
             TxtZoom.Text = ((int)(te.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = te.MouseWheelSpeed;
-            CheckChangeset.IsChecked = te.ChangesetEnabled;
+            CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
 
             LoadColorPicker(ChkBg,  CpBg,  te.BackgroundColor, "TE_Background");
             LoadColorPicker(ChkFg,  CpFg,  te.ForegroundColor, "TE_Foreground");

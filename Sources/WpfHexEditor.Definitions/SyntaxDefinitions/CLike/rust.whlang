@@ -20,6 +20,21 @@
   },
   "rules": [
     {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "String",
+      "pattern": "(r#*\"[\\s\\S]*?\"#*|b\"(?:[^\"\\\\]|\\\\.)*\"|\"(?:[^\"\\\\]|\\\\.)*\"|b'(?:[^'\\\\]|\\\\.)*'|'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "//.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
       "type": "Keyword",
       "pattern": "\\b(as|async|await|break|const|continue|crate|dyn|else|enum|extern|false|fn|for|if|impl|in|let|loop|match|mod|move|mut|pub|ref|return|self|Self|static|struct|super|trait|true|type|union|unsafe|use|where|while|abstract|become|box|do|final|macro|override|priv|try|typeof|unsized|virtual|yield)\\b",
       "colorKey": "TE_Keyword"
@@ -49,20 +64,6 @@
       "pattern": "\\b(0x[0-9A-Fa-f_]+(?:u8|u16|u32|u64|u128|usize|i8|i16|i32|i64|i128|isize)?|0b[01_]+(?:u8|u16|u32|u64|u128|usize|i8|i16|i32|i64|i128|isize)?|0o[0-7_]+(?:u8|u16|u32|u64|u128|usize|i8|i16|i32|i64|i128|isize)?|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?(?:f32|f64|u8|u16|u32|u64|u128|usize|i8|i16|i32|i64|i128|isize)?)\\b",
       "colorKey": "TE_Number"
     },
-    {
-      "type": "String",
-      "pattern": "(r#*\"[\\s\\S]*?\"#*|b\"(?:[^\"\\\\]|\\\\.)*\"|\"(?:[^\"\\\\]|\\\\.)*\"|b'(?:[^'\\\\]|\\\\.)*'|'(?:[^'\\\\]|\\\\.)*')",
-      "colorKey": "TE_String"
-    },
-    {
-      "type": "Comment",
-      "pattern": "//.*$",
-      "colorKey": "TE_Comment"
-    },
-    {
-      "type": "BlockComment",
-      "pattern": "/\\*[\\s\\S]*?\\*/",
-      "colorKey": "TE_Comment"
-    }
+    { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
   ]
 }

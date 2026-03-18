@@ -44,7 +44,7 @@ namespace WpfHexEditor.Core.Interfaces
 
         void RefreshView();
         void Clear();
-        void SetEnrichedFormat(WpfHexEditor.Core.FormatDetection.FormatDefinition format);
+        void SetEnrichedFormat(WpfHexEditor.Core.FormatDetection.FormatDefinition? format);
     }
 
     /// <summary>

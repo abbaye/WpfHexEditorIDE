@@ -25,7 +25,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor;
@@ -418,24 +417,16 @@ public sealed class XamlDesignerSplitHost : Grid,
         out ToggleButton btnCode, out ToggleButton btnSplit, out ToggleButton btnDesign,
         out ToggleButton btnAuto, out Border errorBanner, out TextBlock errorText)
     {
-        // Toggle button factory.
+        // Toggle button factory — uses XD_ToolbarToggleButtonStyle (defined in PanelCommon.xaml)
+        // which provides a chrome-free template with DynamicResource hover/checked states.
         ToggleButton MakeToggle(string glyph, string tooltip)
         {
             var btn = new ToggleButton
             {
-                Content             = glyph,
-                FontFamily          = new FontFamily("Segoe MDL2 Assets"),
-                FontSize            = 11,
-                Width               = 26,
-                Height              = 22,
-                Padding             = new Thickness(0),
-                Margin              = new Thickness(1, 0, 0, 0),
-                VerticalAlignment   = VerticalAlignment.Center,
-                ToolTip             = tooltip,
-                Background          = Brushes.Transparent,
-                BorderThickness     = new Thickness(0)
+                Content   = glyph,
+                ToolTip   = tooltip
             };
-            btn.SetResourceReference(TextElement.ForegroundProperty, "DockMenuForegroundBrush");
+            btn.SetResourceReference(StyleProperty, "XD_ToolbarToggleButtonStyle");
             return btn;
         }
 

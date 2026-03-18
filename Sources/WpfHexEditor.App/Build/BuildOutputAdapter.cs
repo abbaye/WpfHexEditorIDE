@@ -16,6 +16,7 @@
 //     IDEEventBus may invoke handlers on a background thread.
 // ==========================================================
 
+using System.Windows.Media;
 using WpfHexEditor.Events;
 using WpfHexEditor.Events.IDEEvents;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -52,29 +53,43 @@ internal sealed class BuildOutputAdapter : IDisposable
     // -----------------------------------------------------------------------
 
     private void OnBuildStarted(BuildStartedEvent e)
-        => _output.Write("Build", "========== Build started ==========");
+        => OutputLogger.BuildRaw("========== Build started ==========");
 
     private void OnOutputLine(BuildOutputLineEvent e)
         => _output.Write("Build", e.Line);
 
+    private static readonly Brush _successBrush = MakeBrush(78, 201, 176);
+    private static readonly Brush _errorBrush   = MakeBrush(240,  80,  60);
+
+    private static Brush MakeBrush(byte r, byte g, byte b)
+    {
+        var b2 = new SolidColorBrush(Color.FromRgb(r, g, b));
+        b2.Freeze();
+        return b2;
+    }
+
     private void OnBuildSucceeded(BuildSucceededEvent e)
     {
-        _output.Write("Build",
-            $"========== Build: {e.SucceededCount} succeeded, {e.FailedCount} failed, {e.SkippedCount} skipped ==========");
-        _output.Write("Build",
-            $"========== Build finished at {e.StartedAt:HH:mm} and took {e.Duration.TotalSeconds:F3} seconds ==========");
+        var finishedAt = e.StartedAt + e.Duration;
+        OutputLogger.BuildRaw(
+            $"========== Build: {e.SucceededCount} succeeded, {e.FailedCount} failed, {e.SkippedCount} up-to-date, 0 skipped ==========",
+            _successBrush);
+        OutputLogger.BuildRaw(
+            $"========== Build finished at {finishedAt:HH:mm} and took {e.Duration.TotalSeconds:00.000} seconds ==========");
     }
 
     private void OnBuildFailed(BuildFailedEvent e)
     {
-        _output.Write("Build",
-            $"========== Build: {e.SucceededCount} succeeded, {e.FailedCount} failed, {e.SkippedCount} skipped ==========");
-        _output.Write("Build",
-            $"========== Build finished at {e.StartedAt:HH:mm} and took {e.Duration.TotalSeconds:F3} seconds ==========");
+        var finishedAt = e.StartedAt + e.Duration;
+        OutputLogger.BuildRaw(
+            $"========== Build: {e.SucceededCount} succeeded, {e.FailedCount} failed, {e.SkippedCount} up-to-date, 0 skipped ==========",
+            _errorBrush);
+        OutputLogger.BuildRaw(
+            $"========== Build finished at {finishedAt:HH:mm} and took {e.Duration.TotalSeconds:00.000} seconds ==========");
     }
 
     private void OnBuildCancelled(BuildCancelledEvent e)
-        => _output.Write("Build", "========== Build cancelled ==========");
+        => OutputLogger.BuildRaw("========== Build cancelled ==========");
 
     // -----------------------------------------------------------------------
 

@@ -15,6 +15,7 @@
              xmlns:controls="clr-namespace:WpfHexEditor.HexEditor.Controls"
              xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              xmlns:prop="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
+             xmlns:hexServices="clr-namespace:WpfHexEditor.Core.Services"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              FontFamily="Consolas"
@@ -215,6 +216,12 @@
     <!-- V1 Compatible Context Menu -->
     <UserControl.ContextMenu>
         <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed">
+            <!-- Inject localized strings directly so DynamicResource resolves correctly
+                 inside the Popup's isolated visual tree (Application.Resources lookup can
+                 fail for ContextMenu popups; placing the dictionary here guarantees it). -->
+            <ContextMenu.Resources>
+                <hexServices:LocalizedResourceDictionary/>
+            </ContextMenu.Resources>
             <!-- Undo -->
             <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>
