@@ -123,11 +123,11 @@
                     <TextBlock FontSize="12" FontFamily="Consolas"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Margin="0,0,0,4"
-                               Text="// 1. Reference WpfHexEditor.Docking.Wpf in your .csproj" />
+                               Text="// 1. Reference WpfHexEditor.Shell in your .csproj" />
                     <TextBlock FontSize="12" FontFamily="Consolas"
                                Foreground="{DynamicResource DockTabActiveBrush}"
                                Margin="0,0,0,12"
-                               Text="&lt;ProjectReference Include=&quot;WpfHexEditor.Docking.Wpf.csproj&quot; /&gt;" />
+                               Text="&lt;ProjectReference Include=&quot;WpfHexEditor.Shell.csproj&quot; /&gt;" />
 
                     <TextBlock FontSize="12" FontFamily="Consolas"
                                Foreground="{DynamicResource DockTabTextBrush}"

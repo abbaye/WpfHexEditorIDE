@@ -1,0 +1,152 @@
+<UserControl
+    x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.DesignDataPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Panels"
+    MinHeight="80">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28"/>  <!-- Toolbar -->
+            <RowDefinition Height="*"/>   <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ─────────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource DockBorderBrush}">
+            <Border.Background>
+                <DynamicResourceExtension ResourceKey="XD_PanelToolbarBrush"/>
+            </Border.Background>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+
+                <TextBlock Text="Design-Time Data"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Margin="4,0,8,0"/>
+
+                <Separator Width="1" Margin="0,4" Background="{DynamicResource DockBorderBrush}"/>
+
+                <!-- Refresh button -->
+                <Button x:Name="BtnRefresh"
+                        Width="22" Height="22"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ToolTip="Refresh design data"
+                        Click="OnRefreshClick"
+                        Cursor="Hand">
+                    <TextBlock Text="&#xE72C;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ── Content ─────────────────────────────────────────────── -->
+        <Grid Grid.Row="1" Background="{DynamicResource DockBackgroundBrush}">
+
+            <!-- No-data placeholder -->
+            <TextBlock x:Name="PlaceholderText"
+                       Text="No d:DesignInstance detected in current XAML."
+                       FontSize="11"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Opacity="0.5"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="16"
+                       Visibility="Visible"/>
+
+            <!-- Data info panel -->
+            <StackPanel x:Name="DataInfoPanel"
+                        Margin="8"
+                        Visibility="Collapsed">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Text="Type:"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,8,4"/>
+                    <TextBlock x:Name="TypeLabel"
+                               Grid.Row="0" Grid.Column="1"
+                               FontSize="11"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               TextTrimming="CharacterEllipsis"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                               Text="Source:"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,8,4"/>
+                    <TextBlock x:Name="SourceLabel"
+                               Grid.Row="1" Grid.Column="1"
+                               FontSize="11"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0"
+                               Text="Status:"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,8,4"/>
+                    <TextBlock x:Name="StatusLabel"
+                               Grid.Row="2" Grid.Column="1"
+                               FontSize="11"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                </Grid>
+
+                <Separator Margin="0,8" Background="{DynamicResource DockBorderBrush}"/>
+
+                <TextBlock Text="Properties"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Margin="0,0,0,4"/>
+
+                <ListBox x:Name="PropertyList"
+                         MaxHeight="200"
+                         Background="Transparent"
+                         BorderThickness="1"
+                         BorderBrush="{DynamicResource DockBorderBrush}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Key}"
+                                           FontSize="10"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Value}"
+                                           FontSize="10"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           Opacity="0.7"
+                                           TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

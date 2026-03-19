@@ -1,0 +1,125 @@
+<UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.DesignHistoryPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Editor.XamlDesigner.ViewModels"
+             MinHeight="80">
+
+    <!-- ==========================================================
+         File: DesignHistoryPanel.xaml
+         Created: 2026-03-18
+         Description: VS-Like dockable panel showing the full XAML designer
+                      undo/redo history. Applied entries appear at full opacity;
+                      undone entries appear dimmed. Click an entry to jump to
+                      that state in the design history.
+         Theme: XD_History* + XD_* tokens (all DynamicResource)
+         ========================================================== -->
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ───────────────────────────────────────────── -->
+        <Border Grid.Row="0" Height="26" BorderThickness="0,0,0,1"
+                Background="{DynamicResource XD_PanelToolbarBrush}"
+                BorderBrush="{DynamicResource XD_PanelToolbarBorderBrush}">
+            <StackPanel Orientation="Horizontal" Margin="4,0">
+                <!-- Clear History -->
+                <Button Width="24" Height="20"
+                        Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                        ToolTip="Clear history"
+                        Command="{Binding ClearHistoryCommand}"
+                        Background="Transparent" BorderThickness="0"
+                        Foreground="{DynamicResource XD_HistoryIconBrush}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Separator ─────────────────────────────────────────── -->
+        <Rectangle Grid.Row="1" Fill="{DynamicResource DockBorderBrush}"/>
+
+        <!-- ── History list ──────────────────────────────────────── -->
+        <ListView x:Name="HistoryList"
+                  Grid.Row="2"
+                  ItemsSource="{Binding Entries}"
+                  Background="{DynamicResource XD_HistoryPanelBackground}"
+                  BorderThickness="0"
+                  SelectionMode="Single"
+                  MouseLeftButtonUp="OnListMouseLeftButtonUp">
+
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:DesignHistoryEntryViewModel}">
+                    <Grid Opacity="{Binding OpacityFactor}" Margin="2,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="18"/>   <!-- operation icon -->
+                            <ColumnDefinition Width="14"/>   <!-- ▶ current marker -->
+                            <ColumnDefinition Width="*"/>    <!-- description -->
+                            <ColumnDefinition Width="54"/>   <!-- HH:mm:ss timestamp -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Operation type icon -->
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding GlyphIcon}"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource XD_HistoryIconBrush}"/>
+
+                        <!-- Current-state marker (▶) — visible only for the active entry -->
+                        <TextBlock Grid.Column="1"
+                                   Text="&#x25B6;"
+                                   FontSize="7"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource XD_HistoryCurrentMarkerBrush}"
+                                   Visibility="Collapsed">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Description -->
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding Description}"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource XD_HistoryAppliedForeground}"/>
+
+                        <!-- Timestamp (HH:mm:ss) -->
+                        <TextBlock Grid.Column="3"
+                                   Text="{Binding Timestamp, StringFormat=HH:mm:ss}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,4,0"
+                                   Foreground="{DynamicResource XD_HistoryUndoneForeground}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Background"      Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding"         Value="0"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <!-- IMPORTANT: Use Property Trigger (not DataTrigger) for IsMouseOver -->
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource XD_HistoryEntryHoverBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+    </Grid>
+</UserControl>

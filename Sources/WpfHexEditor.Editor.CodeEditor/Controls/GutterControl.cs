@@ -98,17 +98,11 @@ internal sealed class GutterControl : FrameworkElement
                        double topMargin, double scrollFraction,
                        IReadOnlyDictionary<int, double> lineYLookup)
     {
-        // Only invalidate when something actually changed (called on every CodeEditor OnRender).
-        // Note: lineYLookup is the same Dictionary instance cleared/repopulated in-place by
-        // CodeEditor, so we do not guard on reference equality — just assign unconditionally
-        // and rely on the other five scalar fields to suppress spurious redraws.
-        if (_lineHeight       == lineHeight     &&
-            _firstVisibleLine == firstVisible   &&
-            _lastVisibleLine  == lastVisible    &&
-            _topMargin        == topMargin      &&
-            _scrollFraction   == scrollFraction)
-            return;
-
+        // Always update all params and invalidate — the early-return optimisation that compared
+        // the 5 scalar fields caused stale hit-rects: when the user toggled a fold without
+        // scrolling, the scalars were unchanged so InvalidateVisual() was skipped, leaving the
+        // gutter with wrong Y positions for sibling region toggles.
+        // The gutter is a small element; the extra InvalidateVisual() calls are negligible.
         _lineHeight       = lineHeight;
         _firstVisibleLine = firstVisible;
         _lastVisibleLine  = lastVisible;

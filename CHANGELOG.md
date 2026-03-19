@@ -6,6 +6,60 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.0] — 2026-03-18 — Visual XAML Designer, Shared Undo Engine & Rect Selection
+
+### ✨ Added — Visual XAML Designer: Bidirectional Sync & Full IDE Integration
+
+- **Bidirectional canvas↔code selection sync** (~95% fidelity) — selecting an element on the design canvas highlights its XAML tag in the code editor; cursor moves in the code editor highlight the corresponding canvas element; position/size changes propagate both ways in real time
+- **`#region` colorization** — XAML code editor renders `#region`/`#endregion` markers with dedicated brush tokens; collapsed regions show an inline `{…}` badge without affecting the gutter triangle
+- **Error card overlay** — when XAML is malformed, the designer surface displays an inline error card with the message and line reference instead of a blank canvas; card dismisses as soon as the error is resolved
+- **Rotation handle** — element resize overlay now includes a rotation arc handle above the selection frame; dragging rotates the element and patches the `RenderTransform` XAML attribute in real time
+- **Parent selection via `Escape`** — pressing `Escape` on a selected element walks up to its parent container (VS-like hierarchical selection); repeated presses bubble to the root
+- **4 split layouts** — `HorizontalDesignRight` (default), `HorizontalDesignLeft`, `VerticalDesignBottom`, `VerticalDesignTop`; toggled via inline toolbar dropdown button or `Ctrl+Shift+L`; persisted as `xd.layout` in `EditorConfigDto.Extra`; status bar 5th item reflects active layout
+- **Overkill overhaul (phases A–F)** — F4 property inspector improvements, refined multi-select handles, panel UX polishing, ZoomPanCanvas `TransformGroup` correction, advanced element alignment guides
+
+### ✨ Added — Shared Undo/Redo Engine (`UndoEngine`)
+
+- **`UndoEngine`** (`WpfHexEditor.Editor.Core.Undo`) — replaces both editors' custom undo stacks; `List<IUndoEntry>` with split pointer, max 500 entries; each entry implements `Undo()`/`Redo()` for clean replay
+- **Coalescing** — `IUndoEntry.TryMerge` combines consecutive same-type edits within a 500 ms window (e.g., `Insert+Insert` in `CodeEditorUndoEntry`) to prevent micro-entry flooding on fast typing
+- **Transactions** — `BeginTransaction()` / `CommitTransaction()` groups multiple entries into a `CompositeUndoEntry`; all nested operations replay atomically as a single undo step
+- **Save-point tracking** — `MarkSaved()` / `IsAtSavePoint` drives `IsDirty` directly; `StateChanged` event propagates the dirty flag to the IDE title bar without polling
+- **`Ctrl+Shift+Z` redo** — added to both CodeEditor and TextEditor key bindings (previously only `Ctrl+Y` was available)
+- **Dynamic context menu headers** — Undo and Redo items display the pending operation count: "Undo (3)" / "Redo (1)"
+- **`IDocumentEditor`** extended with `UndoCount` / `RedoCount` default interface members (DIMs) for status bar consumption; old `UndoRedoStack` class and file removed
+
+### ✨ Added — Rectangular Selection + Drag-and-Drop (CodeEditor + TextEditor)
+
+- **Alt+Click rectangular selection** — starts a column-aligned block selection in both editors; rendered as a single merged rectangle (no visible row seams at join lines)
+- **Text drag-to-move** — click-and-drag a non-rectangular selection to relocate it inline; recorded as a single compound undo entry equivalent to cut + paste
+- **Rectangular block drag-to-move** — dragging a rectangular selection moves the entire block to the target column position; columns outside the block are preserved unchanged
+- **`IUndoEntry` migration** — `TextEdit` (TextEditor) converted to `IUndoEntry` to participate in the shared `UndoEngine`; no external API change
+
+### ✨ Added — NuGet Solution Manager
+
+- **`NuGetSolutionManagerDocument`** + `NuGetSolutionManagerViewModel` — solution-level NuGet panel aggregating all packages across all VS projects in the workspace; opened via right-click on the solution node → "Manage NuGet Packages for Solution…"
+- **4 tabs** — Browse (online `nuget.org/v3` search), Installed (current packages per project), Consolidate (cross-project version mismatches), Updates (available upgrades)
+- Content ID `doc-nuget-solution-{name}` — content router matches this prefix before single-project `doc-nuget-` entries to avoid routing collisions; `_nugetSolutionManagerMap` prevents duplicate documents
+
+### ✨ Added — CodeLens: Per-Language Gates + 29 New Language Definitions
+
+- **Per-language CodeLens** — CodeLens hints and Ctrl+Click navigation are now gated per-language via the `.whlang` definition; languages that do not declare symbol-resolution support no longer fire spurious LSP requests on hover
+- **29 new `.whlang` definitions** — extended the embedded language set; total embedded language definitions now exceeds 55, covering most common text, markup, config, and code file types
+
+### 🔧 Refactored — Shell Rename (`WpfHexEditor.Docking.Wpf` → `WpfHexEditor.Shell`)
+
+- Assembly, namespace root (`WpfHexEditor.Shell.*`), and Pack URI prefix updated across the entire solution
+- `using Core = WpfHexEditor.Docking.Core;` alias added to 4 files that reference both namespaces; 0 build errors after rename
+
+### 🔧 Fixed
+
+- **ZoomPanCanvas `RenderTransform`** — corrected to use a single `TransformGroup` combining `ScaleTransform` + `TranslateTransform`; zoom and pan no longer produce coordinate-system drift under rapid interaction
+- **Zoom-pan content anchoring** — transforms now applied to the inner content element rather than the `ZoomPanCanvas` frame itself; zoom origin stays correctly anchored to the mouse cursor position
+- **Ctrl+Click navigation** — restored definition navigation when the `Language` dependency property is not explicitly set on `CodeEditorSplitHost.OpenAsync`; previously fell through without navigating
+- **Toolbar layout pod** — removed duplicate layout pod from the main IDE toolbar; the pod is now exclusive to the XAML Designer toolbar strip
+
+---
+
 ## [0.5.8] — 2026-03-17 — Ctrl+Click Navigation, Search Highlight Fix & CodeLens Improvements
 
 ### ✨ Added — Code Editor: Ctrl+Click Go-to-Definition

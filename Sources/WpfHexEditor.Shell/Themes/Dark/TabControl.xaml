@@ -1,0 +1,334 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Shell
+     File: Dark/TabControl.xaml
+     Author: Derek Tremblay (derektremblay666@gmail.com)
+     Contributors: Claude (Anthropic)
+     Created: 2026-03-06
+     Description:
+         DockTabControl and DockTabItem control templates for dark-themed tab strips.
+         Includes the TabOverflowPanel layout, TabOverflowButton, TabConfigButton,
+         and the per-tab AccentBrush color stripe template.
+
+     Architecture Notes:
+         ResourceDictionary. Consumes TabColorizerAttached.AccentBrush for the color
+         stripe. All color DynamicResource keys originate from the theme's Colors.xaml.
+         Shared across all dark-variant themes.
+     ========================================================== -->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:WpfHexEditor.Shell.Controls"
+                    xmlns:attached="clr-namespace:WpfHexEditor.Shell.Attached">
+
+    <!-- DocumentTabHost: tab strip at TOP (VS2026 document area style) — single-row with ⋯ + ⚙ -->
+    <Style x:Key="DocumentTabHostStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource DockMenuBackgroundBrush}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <controls:TabOverflowPanel x:Name="PART_OverflowPanel"
+                                                           IsItemsHost="True"
+                                                           Background="Transparent"
+                                                           Margin="4,2,4,0"
+                                                           Grid.Column="0" />
+                                <controls:TabOverflowButton Grid.Column="1"
+                                                            ShowAllDocuments="True"
+                                                            OverflowPanel="{Binding ElementName=PART_OverflowPanel}"
+                                                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                                <controls:TabConfigButton x:Name="PART_ConfigButton"
+                                                          Grid.Column="2"
+                                                          Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                            </Grid>
+                        </Border>
+                        <ContentPresenter Grid.Row="1"
+                                          x:Name="PART_SelectedContentHost"
+                                          ContentSource="SelectedContent"
+                                          KeyboardNavigation.TabNavigation="Local"
+                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DocumentTabHost: multi-row variant — WrapPanel so tabs wrap instead of overflowing -->
+    <Style x:Key="DocumentTabHostMultiRowStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource DockMenuBackgroundBrush}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <!-- WrapPanel as ItemsHost: tabs wrap to additional rows -->
+                                <WrapPanel x:Name="PART_OverflowPanel"
+                                           IsItemsHost="True"
+                                           Margin="4,2,4,0"
+                                           Grid.Column="0" />
+                                <controls:TabConfigButton x:Name="PART_ConfigButton"
+                                                          Grid.Column="1"
+                                                          Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                            </Grid>
+                        </Border>
+                        <ContentPresenter Grid.Row="1"
+                                          x:Name="PART_SelectedContentHost"
+                                          ContentSource="SelectedContent"
+                                          KeyboardNavigation.TabNavigation="Local"
+                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DockTabControl: content area top, tab strip at bottom -->
+    <Style x:Key="DockTabControlStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ContentPresenter Grid.Row="0"
+                                          x:Name="PART_SelectedContentHost"
+                                          ContentSource="SelectedContent"
+                                          KeyboardNavigation.TabNavigation="Local"
+                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                        <Border Grid.Row="1"
+                                Background="{DynamicResource DockMenuBackgroundBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                BorderThickness="0,1,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <controls:TabOverflowPanel x:Name="PART_OverflowPanel2"
+                                                           IsItemsHost="True"
+                                                           Background="Transparent"
+                                                           Margin="2,0,2,0"
+                                                           Grid.Column="0" />
+                                <controls:TabOverflowButton Grid.Column="1"
+                                                            OverflowPanel="{Binding ElementName=PART_OverflowPanel2}"
+                                                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DockTabItem: VSCode-style selection — top 2px accent + 1px left/right frame when selected.
+         SelectionBorder: collapsed by default, visible on IsSelected=True (BorderThickness=1,2,1,0).
+         ColorStripe: AccentBrush overlay (per-tab colorization), hidden when AccentBrush=Transparent. -->
+    <Style x:Key="DockTabItemStyle" TargetType="{x:Type TabItem}">
+        <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,4,8,4" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border x:Name="TabBorder"
+                                Background="Transparent"
+                                CornerRadius="4,4,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                        <!-- VSCode-style selection frame: top 2px accent + left/right 1px borders.
+                             Collapsed by default; shown only when tab is selected. -->
+                        <Border x:Name="SelectionBorder"
+                                BorderThickness="1,2,1,0"
+                                BorderBrush="{DynamicResource DockTabActiveBrush}"
+                                CornerRadius="4,4,0,0"
+                                Visibility="Collapsed" />
+                        <!-- AccentBrush colorizer: 2px top stripe for per-tab color coding.
+                             Opacity=0 by default; shown at full opacity when tab is selected. -->
+                        <Border x:Name="ColorStripe"
+                                Height="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Opacity="0"
+                                Background="{Binding Path=(attached:TabColorizerAttached.AccentBrush),
+                                                     RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Selected: bg matches content area, VSCode frame visible, AccentBrush overlay shown -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="TabBorder"       Property="Background"  Value="{DynamicResource DockBackgroundBrush}" />
+                            <Setter TargetName="SelectionBorder" Property="Visibility"  Value="Visible" />
+                            <Setter TargetName="ColorStripe"     Property="Opacity"     Value="1.0" />
+                            <Setter Property="Foreground"                               Value="{DynamicResource DockTabActiveTextBrush}" />
+                        </Trigger>
+                        <!-- Hover on unselected -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="TabBorder" Property="Background"
+                                    Value="{DynamicResource DockTabHoverBrush}" />
+                        </MultiTrigger>
+                        <!-- Hover on selected -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="TabBorder" Property="Background"
+                                    Value="{DynamicResource DockTabSelectedHoverBrush}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Tab item style for LEFT placement: inherit DockTabItemStyle and rotate 90° CCW -->
+    <Style x:Key="DocumentTabItemLeftStyle" TargetType="{x:Type TabItem}"
+           BasedOn="{StaticResource DockTabItemStyle}">
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="-90" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Tab item style for RIGHT placement: inherit DockTabItemStyle and rotate 90° CW -->
+    <Style x:Key="DocumentTabItemRightStyle" TargetType="{x:Type TabItem}"
+           BasedOn="{StaticResource DockTabItemStyle}">
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <RotateTransform Angle="90" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DocumentTabHost: LEFT placement — tab strip on left side, tabs rotated 90° CCW -->
+    <Style x:Key="DocumentTabHostLeftStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource DocumentTabItemLeftStyle}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="28" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
+                                Background="{DynamicResource DockMenuBackgroundBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                BorderThickness="0,0,1,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel x:Name="PART_OverflowPanel"
+                                            IsItemsHost="True"
+                                            Orientation="Vertical"
+                                            Margin="2,4,2,0"
+                                            Grid.Row="0" />
+                                <controls:TabConfigButton x:Name="PART_ConfigButton"
+                                                          Grid.Row="1"
+                                                          VerticalAlignment="Bottom"
+                                                          Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                            </Grid>
+                        </Border>
+                        <ContentPresenter Grid.Column="1"
+                                          x:Name="PART_SelectedContentHost"
+                                          ContentSource="SelectedContent"
+                                          KeyboardNavigation.TabNavigation="Local"
+                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DocumentTabHost: RIGHT placement — tab strip on right side, tabs rotated 90° CW -->
+    <Style x:Key="DocumentTabHostRightStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource DocumentTabItemRightStyle}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" MinWidth="28" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Grid.Column="0"
+                                          x:Name="PART_SelectedContentHost"
+                                          ContentSource="SelectedContent"
+                                          KeyboardNavigation.TabNavigation="Local"
+                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                        <Border Grid.Column="1"
+                                Background="{DynamicResource DockMenuBackgroundBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                BorderThickness="1,0,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel x:Name="PART_OverflowPanel"
+                                            IsItemsHost="True"
+                                            Orientation="Vertical"
+                                            Margin="2,4,2,0"
+                                            Grid.Row="0" />
+                                <controls:TabConfigButton x:Name="PART_ConfigButton"
+                                                          Grid.Row="1"
+                                                          VerticalAlignment="Bottom"
+                                                          Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

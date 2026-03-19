@@ -21,7 +21,7 @@ using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Core.Serialization;
-using WpfHexEditor.Docking.Wpf;
+using WpfHexEditor.Shell;
 using WpfHexEditor.App.Controls;
 using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Models;
@@ -128,6 +128,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // NuGet manager map: doc-nuget-{name} → IProject (for deferred content creation)
     private readonly Dictionary<string, IProject> _nugetManagerMap = new();
+
+    // Solution-level NuGet manager map: doc-nuget-solution-{name} → ISolution
+    private readonly Dictionary<string, ISolution> _nugetSolutionManagerMap = new();
 
     // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
     // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
@@ -1178,7 +1181,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")       => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
-            _ when item.ContentId.StartsWith("doc-nuget-")     => CreateNuGetManagerContent(item),
+            _ when item.ContentId.StartsWith("doc-nuget-solution-") => CreateNuGetSolutionManagerContent(item),
+            _ when item.ContentId.StartsWith("doc-nuget-")          => CreateNuGetManagerContent(item),
             _ when item.ContentId.StartsWith("doc-proj-")      => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
@@ -1220,7 +1224,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.PhysicalFileIncludeRequested     += OnSEPhysicalFileInclude;
         panel.ImportExternalFileRequested      += OnSEImportExternalFile;
         panel.PropertiesRequested              += OnSEPropertiesRequested;
-        panel.ManageNuGetPackagesRequested     += OnSEManageNuGetPackages;
+        panel.ManageNuGetPackagesRequested         += OnSEManageNuGetPackages;
+        panel.ManageSolutionNuGetPackagesRequested += OnSEManageSolutionNuGetPackages;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         panel.SolutionFolderCreateRequested    += OnSESolutionFolderCreateRequested;
@@ -4834,14 +4839,56 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         switch (editor)
         {
             case WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor ce:
-                ce.MouseWheelSpeed = settings.CodeEditorDefaults.MouseWheelSpeed;
-                ce.ZoomLevel       = settings.CodeEditorDefaults.DefaultZoom;
+                ce.MouseWheelSpeed         = settings.CodeEditorDefaults.MouseWheelSpeed;
+                ce.ZoomLevel               = settings.CodeEditorDefaults.DefaultZoom;
+                ce.FoldToggleOnDoubleClick = settings.CodeEditorDefaults.FoldToggleOnDoubleClick;
+                ce.ShowCodeLens            = settings.CodeEditorDefaults.ShowCodeLens;
+                // Treat 0 as All (migration: old settings.json without CodeLensVisibleKinds defaults to 0).
+                ce.CodeLensVisibleKinds = settings.CodeEditorDefaults.CodeLensVisibleKinds == 0
+                    ? WpfHexEditor.Editor.Core.CodeLensSymbolKinds.All
+                    : (WpfHexEditor.Editor.Core.CodeLensSymbolKinds)settings.CodeEditorDefaults.CodeLensVisibleKinds;
+                ApplySyntaxColorOverrides(ce, settings.CodeEditorDefaults);
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
                 te.MouseWheelSpeed = settings.TextEditorDefaults.MouseWheelSpeed;
                 te.ZoomLevel       = settings.TextEditorDefaults.DefaultZoom;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Applies all stored syntax colour overrides from <paramref name="ce"/> settings
+    /// to the live <paramref name="editor"/> instance.
+    /// An empty string means "use theme default" (no override).
+    /// </summary>
+    private static void ApplySyntaxColorOverrides(
+        WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor editor,
+        CodeEditorDefaultSettings ce)
+    {
+        Apply(SyntaxTokenKind.Keyword,    ce.KeywordColor);
+        Apply(SyntaxTokenKind.String,     ce.StringColor);
+        Apply(SyntaxTokenKind.Number,     ce.NumberColor);
+        Apply(SyntaxTokenKind.Comment,    ce.CommentColor);
+        Apply(SyntaxTokenKind.Type,       ce.TypeColor);
+        Apply(SyntaxTokenKind.Identifier, ce.IdentifierColor);
+        Apply(SyntaxTokenKind.Operator,   ce.OperatorColor);
+        Apply(SyntaxTokenKind.Bracket,    ce.BracketColor);
+        Apply(SyntaxTokenKind.Attribute,  ce.AttributeColor);
+
+        void Apply(SyntaxTokenKind k, string? hex)
+            => editor.SetSyntaxColorOverride(k, TryParseHexColor(hex, out var c) ? c : null);
+    }
+
+    private static bool TryParseHexColor(string? hex, out System.Windows.Media.Color color)
+    {
+        color = default;
+        if (string.IsNullOrWhiteSpace(hex)) return false;
+        try
+        {
+            color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(hex.Trim());
+            return true;
+        }
+        catch { return false; }
     }
 
     private void ApplyHexEditorDefaults(HexEditorControl hex)
@@ -5094,6 +5141,78 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
 
         return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerDocument
+        {
+            DataContext = vm
+        };
+    }
+
+    // ── Solution-level NuGet Manager ─────────────────────────────────────────
+
+    private void OnSEManageSolutionNuGetPackages(object? sender, ManageSolutionNuGetRequestedEventArgs e)
+        => OpenNuGetSolutionManagerDocument(e.Solution);
+
+    /// <summary>
+    /// Opens (or activates) the solution-level NuGet Manager document tab.
+    /// Uses contentId "doc-nuget-solution-{SolutionName}" for deduplication.
+    /// </summary>
+    private void OpenNuGetSolutionManagerDocument(ISolution solution)
+    {
+        var contentId = $"doc-nuget-solution-{solution.Name}";
+
+        // Dedup: activate existing tab if already open.
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        _nugetSolutionManagerMap[contentId] = solution;
+
+        var item = new DockItem
+        {
+            Title     = $"NuGet — {solution.Name} (Solution)",
+            ContentId = contentId,
+            Metadata  = { ["SolutionName"] = solution.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-nuget-solution-*" items.
+    /// Creates the <see cref="NuGetSolutionManagerDocument"/> backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateNuGetSolutionManagerContent(DockItem item)
+    {
+        if (!_nugetSolutionManagerMap.TryGetValue(item.ContentId, out var solution))
+        {
+            solution = _solutionManager.CurrentSolution;
+            if (solution is null)
+                return new System.Windows.Controls.TextBlock { Text = "Solution not loaded." };
+
+            _nugetSolutionManagerMap[item.ContentId] = solution;
+        }
+
+        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetSolutionManagerViewModel(
+            solution,
+            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+
+        // Reload solution tree after any .csproj write-back to keep the Solution Explorer in sync.
+        vm.SolutionModified += (_, _) =>
+        {
+            var sol = _solutionManager.CurrentSolution;
+            if (sol is not null)
+                _solutionExplorerPanel?.SetSolution(sol);
+        };
+
+        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument
         {
             DataContext = vm
         };
@@ -5538,7 +5657,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Application.Current.Resources.MergedDictionaries.Add(
             new ResourceDictionary
             {
-                Source = new Uri($"pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/{themeFile}")
+                Source = new Uri($"pack://application:,,,/WpfHexEditor.Shell;component/Themes/{themeFile}")
             });
         SyncAllHexEditorThemes();
         OutputLogger.Info($"Theme changed to {themeName}.");

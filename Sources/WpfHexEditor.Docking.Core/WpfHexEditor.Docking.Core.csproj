@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="WpfHexEditor.Docking.Tests" />
-    <InternalsVisibleTo Include="WpfHexEditor.Docking.Wpf" />
+    <InternalsVisibleTo Include="WpfHexEditor.Shell" />
   </ItemGroup>
 
 </Project>

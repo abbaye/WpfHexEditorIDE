@@ -15,7 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- HexEditor localized strings (UndoString, CopyString, etc.) -->
                 <hexServices:LocalizedResourceDictionary/>
-                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

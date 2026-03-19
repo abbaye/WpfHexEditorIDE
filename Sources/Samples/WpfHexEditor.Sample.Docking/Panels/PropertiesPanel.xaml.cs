@@ -31,7 +31,7 @@ public partial class PropertiesPanel : UserControl
         PropertyList.ItemsSource = new List<PropertyRow>
         {
             new("Framework",     ".NET 8.0-windows"),
-            new("Docking",       "WpfHexEditor.Docking.Wpf"),
+            new("Docking",       "WpfHexEditor.Shell"),
             new("Themes",        "Dark · Office Light"),
             new("Layout",        "Persistent (JSON)"),
             new("Float",         "Yes — drag any tab"),

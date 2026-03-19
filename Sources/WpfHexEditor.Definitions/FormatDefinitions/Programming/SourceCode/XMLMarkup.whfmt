@@ -1,0 +1,25 @@
+{
+  "formatName": "XML Markup Source File",
+  "version": "1.0",
+  "extensions": [".xsl", ".xslt", ".xhtml", ".resx", ".svg"],
+  "description": "XML-derived markup source files: XSLT stylesheets, XHTML documents, .NET resource files, and SVG vector graphics.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-18",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/xml", "image/svg+xml", "text/html", "text/x-xslt"],
+  "Software": ["Visual Studio", "VS Code", "Altova XMLSpy"],
+  "UseCases": ["XSLT transformations", ".NET resource files", "SVG vector graphics", "XHTML web pages"]
+}

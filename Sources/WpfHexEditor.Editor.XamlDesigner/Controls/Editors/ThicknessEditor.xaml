@@ -1,0 +1,47 @@
+<UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Controls.Editors.ThicknessEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="22">
+
+    <!-- ==========================================================
+         File: ThicknessEditor.xaml
+         Created: 2026-03-17
+         Description: Inline Thickness editor with 4 numeric fields (L, T, R, B)
+                      and a link-all toggle for uniform editing.
+         ========================================================== -->
+
+    <StackPanel Orientation="Horizontal">
+        <TextBox x:Name="TbLeft"   Width="32" Height="18" Margin="0,0,2,0" FontSize="10"
+                 ToolTip="Left"
+                 Text="{Binding Left,  RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
+                 Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
+                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                 VerticalContentAlignment="Center" Padding="2,0"/>
+        <TextBox x:Name="TbTop"    Width="32" Height="18" Margin="0,0,2,0" FontSize="10"
+                 ToolTip="Top"
+                 Text="{Binding Top,   RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
+                 Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
+                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                 VerticalContentAlignment="Center" Padding="2,0"/>
+        <TextBox x:Name="TbRight"  Width="32" Height="18" Margin="0,0,2,0" FontSize="10"
+                 ToolTip="Right"
+                 Text="{Binding Right, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
+                 Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
+                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                 VerticalContentAlignment="Center" Padding="2,0"/>
+        <TextBox x:Name="TbBottom" Width="32" Height="18" Margin="0,0,4,0" FontSize="10"
+                 ToolTip="Bottom"
+                 Text="{Binding Bottom,RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
+                 Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
+                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                 VerticalContentAlignment="Center" Padding="2,0"/>
+        <!-- Link toggle -->
+        <ToggleButton x:Name="BtnLink" Width="18" Height="18"
+                      Content="\uE71B" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                      ToolTip="Link all sides"
+                      IsChecked="{Binding Linked, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Background="Transparent"
+                      Foreground="{DynamicResource XD_PropertyNameForeground}"
+                      BorderThickness="0"/>
+    </StackPanel>
+</UserControl>

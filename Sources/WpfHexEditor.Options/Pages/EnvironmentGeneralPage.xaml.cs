@@ -78,7 +78,7 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
             new ResourceDictionary
             {
                 Source = new Uri(
-                    $"pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/{stem}.xaml")
+                    $"pack://application:,,,/WpfHexEditor.Shell;component/Themes/{stem}.xaml")
             });
 
         // Sync all open HexEditor instances

@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
   </ItemGroup>
 
 </Project>

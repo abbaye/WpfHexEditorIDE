@@ -117,6 +117,13 @@
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
+        <CheckBox x:Name="CheckFoldDoubleClick"
+                  Content="Toggle fold regions on double-click"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
@@ -292,6 +299,106 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpNum" Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            ShowAlphaChannel="False"
+                            ColorChanged="OnColorPickerChanged"/>
+        </Grid>
+
+        <!-- Type -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Type:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <CheckBox x:Name="ChkType" Grid.Column="1"
+                      VerticalAlignment="Center"
+                      Checked="OnColorCheckChanged"
+                      Unchecked="OnColorCheckChanged"/>
+            <cp:ColorPicker x:Name="CpType" Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            ShowAlphaChannel="False"
+                            ColorChanged="OnColorPickerChanged"/>
+        </Grid>
+
+        <!-- Identifier -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Identifier:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <CheckBox x:Name="ChkId" Grid.Column="1"
+                      VerticalAlignment="Center"
+                      Checked="OnColorCheckChanged"
+                      Unchecked="OnColorCheckChanged"/>
+            <cp:ColorPicker x:Name="CpId" Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            ShowAlphaChannel="False"
+                            ColorChanged="OnColorPickerChanged"/>
+        </Grid>
+
+        <!-- Operator -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Operator:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <CheckBox x:Name="ChkOp" Grid.Column="1"
+                      VerticalAlignment="Center"
+                      Checked="OnColorCheckChanged"
+                      Unchecked="OnColorCheckChanged"/>
+            <cp:ColorPicker x:Name="CpOp" Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            ShowAlphaChannel="False"
+                            ColorChanged="OnColorPickerChanged"/>
+        </Grid>
+
+        <!-- Bracket -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Bracket:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <CheckBox x:Name="ChkBracket" Grid.Column="1"
+                      VerticalAlignment="Center"
+                      Checked="OnColorCheckChanged"
+                      Unchecked="OnColorCheckChanged"/>
+            <cp:ColorPicker x:Name="CpBracket" Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            ShowAlphaChannel="False"
+                            ColorChanged="OnColorPickerChanged"/>
+        </Grid>
+
+        <!-- Attribute -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Attribute:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <CheckBox x:Name="ChkAttr" Grid.Column="1"
+                      VerticalAlignment="Center"
+                      Checked="OnColorCheckChanged"
+                      Unchecked="OnColorCheckChanged"/>
+            <cp:ColorPicker x:Name="CpAttr" Grid.Column="2"
                             HorizontalAlignment="Stretch"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>

@@ -1,0 +1,24 @@
+{
+  "name": "NASM",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for Netwide Assembler (NASM) and YASM assembly.",
+  "category": "Misc",
+  "extensions": [ ".asm", ".nasm", ".yasm" ],
+  "lineComment": ";",
+  "references": {
+    "specifications": [ "NASM Manual" ],
+    "webLinks": [ "https://www.nasm.us/doc/" ]
+  },
+  "rules": [
+    { "type": "Comment",    "pattern": ";.*$", "colorKey": "TE_Comment" },
+    { "type": "String",     "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`(?:[^`\\\\]|\\\\.)*`)", "colorKey": "TE_String" },
+    { "type": "Directive",  "pattern": "^\\s*(?:section|segment|global|extern|common|bits|use16|use32|use64|org|align|cpu|default|float|group|absolute|struc|endstruc|istruc|iend|at|db|dw|dd|dq|dt|do|dy|dz|resb|resw|resd|resq|rest|reso|resy|resz|equ|times|incbin|include|macro|endmacro|rotate|local|exitm|rep|endrep|if|elif|else|endif|ifdef|ifndef|elseifdef|elseifndef|assign|define|undef|defstr|deftok|substr|strlen|strcat|defalias|push|pop|repl)\\b", "colorKey": "TE_Directive" },
+    { "type": "Keyword",    "pattern": "(?i)\\b(aaa|aad|aam|aas|adc|add|and|arpl|bb0_reset|bb1_reset|bound|bsf|bsr|bswap|bt|btc|btr|bts|call|cbw|cdq|cdqe|clc|cld|cli|clts|cmc|cmov\\w+|cmp|cmps[bwdq]|cmpxchg|cmpxchg8b|cmpxchg16b|cpuid|cqo|cwd|cwde|daa|das|dec|div|emms|enter|hlt|idiv|imul|in|inc|ins[bwdq]?|int|into|invd|invlpg|iret[dq]?|j(?:mp|[a-z]+)|lahf|lar|lds|lea|leave|les|lfs|lgdt|lgs|lidt|lldt|lmsw|lods[bwdq]|loop\\w*|lsl|lss|ltr|mov\\w*|movs[bwdq]|movsx|movsxd|movzx|mul|neg|nop|not|or|out|outs[bwdq]?|pop|popa[dq]?|popf[dq]?|push|pusha[dq]?|pushf[dq]?|rcl|rcr|rdmsr|rdpmc|rdtsc|ret|rol|ror|rsm|sahf|sal|sar|sbb|scas[bwdq]|set\\w+|sgdt|shl|shld|shr|shrd|sidt|sldt|smsw|stc|std|sti|stos[bwdq]|str|sub|syscall|sysenter|sysexit|sysret|test|ud2|verr|verw|wbinvd|wrmsr|xadd|xchg|xlat[b]?|xor)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Register",   "pattern": "(?i)\\b(rax|rbx|rcx|rdx|rsi|rdi|rbp|rsp|r[89]|r1[0-5]|eax|ebx|ecx|edx|esi|edi|ebp|esp|ax|bx|cx|dx|si|di|bp|sp|al|bl|cl|dl|ah|bh|ch|dh|sil|dil|bpl|spl|r[89]b|r1[0-5]b|r[89]w|r1[0-5]w|r[89]d|r1[0-5]d|cs|ds|es|fs|gs|ss|cr[0-9]|dr[0-9]|mm[0-7]|xmm[0-9]|xmm1[0-5]|ymm[0-9]|ymm1[0-5]|zmm[0-9]|zmm[12]?[0-9]|zmm3[01])\\b", "colorKey": "TE_Register" },
+    { "type": "Keyword",    "pattern": "(?i)\\b(byte|word|dword|qword|tword|oword|yword|zword|ptr|near|far|short)\\b", "colorKey": "TE_Type" },
+    { "type": "Number",     "pattern": "\\b(0x[0-9A-Fa-f]+[hH]?|0b[01]+|0q[0-7]+|[0-9][0-9A-Fa-f]*[hH]|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[fF]?)\\b", "colorKey": "TE_Number" },
+    { "type": "Label",      "pattern": "^\\s*[A-Za-z_.][A-Za-z0-9_.]*\\s*:", "colorKey": "TE_Label" }
+  ],
+  "foldingStrategy": "None"
+}

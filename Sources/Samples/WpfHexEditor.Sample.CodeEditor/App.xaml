@@ -1,0 +1,30 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Sample.CodeEditor
+     File: App.xaml
+     Author: Auto
+     Created: 2026-03-18
+     Description:
+         Application entry point. Loads the Dark theme ResourceDictionary
+         by default. Theme switching is handled by App.SwitchTheme(name).
+
+     Architecture Notes:
+         Theme: DarkTheme.xaml (from WpfHexEditor.Shell)
+         All DynamicResource bindings update automatically when SwitchTheme()
+         removes the old theme and adds the new one to MergedDictionaries.
+     ========================================================== -->
+
+<Application x:Class="WpfHexEditor.Sample.CodeEditor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Default theme: Dark -->
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>

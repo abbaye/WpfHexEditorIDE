@@ -3,7 +3,7 @@
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
     Theme: Global theme via XD_* and DockBackgroundBrush tokens (DynamicResource)
-    ResourceDictionaries: WpfHexEditor.Docking.Wpf/Themes/{Theme}/Colors.xaml
+    ResourceDictionaries: WpfHexEditor.Shell/Themes/{Theme}/Colors.xaml
 -->
 
 <UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.XamlOutlinePanel"

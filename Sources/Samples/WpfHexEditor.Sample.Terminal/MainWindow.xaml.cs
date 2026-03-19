@@ -29,8 +29,8 @@ public partial class MainWindow : Window
 {
     // -- Theme URIs ---------------------------------------------------------------
 
-    private static readonly Uri DarkThemeUri  = new("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml");
-    private static readonly Uri LightThemeUri = new("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/OfficeTheme.xaml");
+    private static readonly Uri DarkThemeUri  = new("pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml");
+    private static readonly Uri LightThemeUri = new("pack://application:,,,/WpfHexEditor.Shell;component/Themes/OfficeTheme.xaml");
 
     // -- ViewModel ----------------------------------------------------------------
 

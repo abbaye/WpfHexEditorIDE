@@ -6,12 +6,12 @@
      Created: 2026-03-07
      Description:
          Application entry point. Merges the default Dark theme from
-         WpfHexEditor.Docking.Wpf. Theme can be switched at runtime via
+         WpfHexEditor.Shell. Theme can be switched at runtime via
          App.SwitchTheme(uri) — see App.xaml.cs.
 
      Architecture Notes:
          Theme: DarkTheme.xaml (VS2022 Dark, default)
-         ResourceDictionaries applied: WpfHexEditor.Docking.Wpf/Themes/DarkTheme.xaml
+         ResourceDictionaries applied: WpfHexEditor.Shell/Themes/DarkTheme.xaml
      ========================================================== -->
 
 <Application x:Class="WpfHexEditor.Sample.Docking.App"
@@ -23,7 +23,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- Default theme: VS2022 Dark -->
-                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

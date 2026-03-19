@@ -1001,6 +1001,17 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                    <!-- Manage NuGet Packages for Solution (solution node only) -->
+                    <Separator x:Name="SolutionNuGetSeparator" Visibility="Collapsed"/>
+                    <MenuItem x:Name="ManageSolutionNuGetMenuItem"
+                              Header="Manage NuGet Packages for Solution…"
+                              Visibility="Collapsed"
+                              Click="OnManageSolutionNuGetPackages">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE7B8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                     <!-- Solution bottom: Save All + Close Solution -->
                     <Separator x:Name="SolutionBottomSeparator"/>
                     <MenuItem x:Name="SaveAllMenuItem" Header="Save All" Click="OnSaveAll">

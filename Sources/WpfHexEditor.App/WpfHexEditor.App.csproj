@@ -10,9 +10,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
-    <Version>0.5.8</Version>
-    <AssemblyVersion>0.5.8.0</AssemblyVersion>
-    <FileVersion>0.5.8.0</FileVersion>
+    <Version>0.6.0</Version>
+    <AssemblyVersion>0.6.0.0</AssemblyVersion>
+    <FileVersion>0.6.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Panels.IDE\WpfHexEditor.Panels.IDE.csproj" />
@@ -108,6 +108,8 @@
     <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.WH\WpfHexEditor.Plugins.SolutionLoader.WH.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\WpfHexEditor.Plugins.Build.MSBuild\WpfHexEditor.Plugins.Build.MSBuild.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.XamlDesigner\WpfHexEditor.Plugins.XamlDesigner.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
 

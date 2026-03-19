@@ -1,0 +1,35 @@
+{
+  "name": "F#",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the F# functional-first programming language.",
+  "category": "C-like",
+  "extensions": [ ".fs", ".fsi", ".fsx", ".fsscript" ],
+  "lineComment": "//",
+  "blockCommentStart": "(*",
+  "blockCommentEnd": "*)",
+  "references": {
+    "specifications": [ "F# Language Specification" ],
+    "webLinks": [ "https://learn.microsoft.com/dotnet/fsharp/language-reference/" ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "\\(\\*[\\s\\S]*?\\*\\)", "colorKey": "TE_Comment" },
+    { "type": "String",        "pattern": "(\"\"\"[\\s\\S]*?\"\"\"|@\"(?:[^\"]|\"\")*\"|\"(?:[^\"\\\\]|\\\\.)*\")", "colorKey": "TE_String" },
+    { "type": "Comment",       "pattern": "//.*$", "colorKey": "TE_Comment" },
+    { "type": "Preprocessor",  "pattern": "^\\s*#(?:if|else|endif|light|nowarn|load|r|I|time|help|quit)\\b[^\\n]*", "colorKey": "TE_Directive" },
+    { "type": "Keyword",       "pattern": "\\b(abstract|and|as|assert|base|begin|class|default|delegate|do|done|downcast|downto|elif|else|end|exception|extern|false|finally|fixed|for|fun|function|global|if|in|inherit|inline|interface|internal|lazy|let|match|member|module|mutable|namespace|new|not|null|of|open|or|override|private|public|rec|return|select|static|struct|then|to|true|try|type|upcast|use|val|void|when|while|with|yield|async|task|seq|list|array|option|result|unit)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\b(string|int|float|bool|char|byte|int64|uint64|decimal|obj|unit|exn|Option|Result|List|Array|Seq|Map|Set|Dictionary|Task|Async|CancellationToken)\\b", "colorKey": "TE_Type" },
+    { "type": "Number",        "pattern": "\\b(0x[0-9A-Fa-f_]+[uUlLyYnN]?|0o[0-7_]+[uUlLyY]?|0b[01_]+[uUlLyY]?|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[fFmlMuUnsI]?)\\b", "colorKey": "TE_Number" },
+    { "type": "Attribute",     "pattern": "\\[<[A-Za-z][A-Za-z0-9_\\.]*(?:\\([^)]*\\))?\\s*>\\]", "colorKey": "TE_Directive" },
+    { "type": "Operator",      "pattern": "(\\|>|<\\||>>|<<|::|->|=>|=|<>|<=|>=|<|>|\\+|-|\\*|/|%|\\^|&|\\|)", "colorKey": "TE_Keyword" },
+    { "type": "MethodCall",    "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
+  ],
+  "snippets": [
+    { "trigger": "let",  "body": "let $cursor = ", "description": "Let binding" },
+    { "trigger": "letf", "body": "let $cursor () = \n    ()", "description": "Let function" },
+    { "trigger": "match","body": "match $cursor with\n| _ -> ()", "description": "Match expression" },
+    { "trigger": "type", "body": "type $cursor =\n    | Case1\n    | Case2", "description": "Discriminated union" },
+    { "trigger": "rec",  "body": "type $cursor = {\n    Field: string\n}", "description": "Record type" }
+  ],
+  "foldingStrategy": "Indent"
+}

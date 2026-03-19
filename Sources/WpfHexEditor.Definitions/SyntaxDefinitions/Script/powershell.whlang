@@ -1,0 +1,36 @@
+{
+  "name": "PowerShell",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for Windows PowerShell and PowerShell Core.",
+  "category": "Script",
+  "extensions": [ ".ps1", ".psm1", ".psd1", ".ps1xml" ],
+  "lineComment": "#",
+  "blockCommentStart": "<#",
+  "blockCommentEnd": "#>",
+  "references": {
+    "specifications": [ "PowerShell Language Specification 3.0" ],
+    "webLinks": [ "https://learn.microsoft.com/powershell/scripting/" ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "<#[\\s\\S]*?#>", "colorKey": "TE_Comment" },
+    { "type": "String",        "pattern": "(@\"[\\s\\S]*?\"@|@'[\\s\\S]*?'@|\"(?:[^\"\\\\`]|``|`[^])*\"|'[^']*')", "colorKey": "TE_String" },
+    { "type": "Comment",       "pattern": "#[^>].*$|#$", "colorKey": "TE_Comment" },
+    { "type": "Preprocessor",  "pattern": "^\\s*#requires\\b[^\\n]*", "colorKey": "TE_Directive" },
+    { "type": "Cmdlet",        "pattern": "(?i)\\b(?:Get|Set|New|Remove|Add|Clear|Copy|Move|Rename|Test|Invoke|Start|Stop|Restart|Suspend|Resume|Wait|Write|Read|Out|Export|Import|ConvertTo|ConvertFrom|Compare|Select|Sort|Group|Where|ForEach|Measure|Format|Register|Unregister|Enable|Disable|Show|Hide|Find|Search|Update|Publish|Install|Uninstall|Save|Restore|Backup|Compress|Expand|Debug|Trace|Enter|Exit|Push|Pop|Mount|Dismount|Join|Split|Sync|Connect|Disconnect|Send|Receive|Protect|Unprotect|Limit|Optimize)-[A-Za-z]+\\b", "colorKey": "TE_Keyword" },
+    { "type": "Keyword",       "pattern": "(?i)\\b(Begin|Break|Catch|Class|Continue|Data|Define|Do|DynamicParam|Else|ElseIf|End|Enum|Exit|Filter|Finally|For|ForEach|From|Function|Hidden|If|In|InlineScript|Param|Process|Return|Static|Switch|Throw|Trap|Try|Until|Using|Var|While|Workflow)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Keyword",       "pattern": "(?i)\\b(True|False|Null)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Variable",      "pattern": "\\$[A-Za-z_][A-Za-z0-9_]*|\\$\\{[^}]+\\}", "colorKey": "TE_Register" },
+    { "type": "Operator",      "pattern": "(?i)-(?:eq|ne|gt|ge|lt|le|like|notlike|match|notmatch|contains|notcontains|in|notin|is|isnot|and|or|not|band|bor|bxor|bnot|shl|shr|replace|join|split|f)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\[[A-Za-z][A-Za-z0-9_\\.\\[\\]]*\\]", "colorKey": "TE_Type" },
+    { "type": "Number",        "pattern": "\\b([0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[kKmMgGtTpP]?[bB]?)\\b", "colorKey": "TE_Number" },
+    { "type": "Attribute",     "pattern": "\\[(?:Parameter|ValidateSet|ValidateNotNull|ValidateRange|OutputType|CmdletBinding|Alias|AllowNull|AllowEmptyString|AllowEmptyCollection|ValidatePattern|ValidateLength|ValidateScript|ValidateCount|Mandatory|ValueFromPipeline)[^\\]]*\\]", "colorKey": "TE_Directive" }
+  ],
+  "snippets": [
+    { "trigger": "func",  "body": "function $cursor {\n    [CmdletBinding()]\n    param()\n    begin {}\n    process {}\n    end {}\n}", "description": "Advanced function" },
+    { "trigger": "param", "body": "[Parameter(Mandatory)]\n[string]$cursor", "description": "Mandatory parameter" },
+    { "trigger": "fore",  "body": "foreach ($item in $collection) {\n    $cursor\n}", "description": "Foreach loop" },
+    { "trigger": "try",   "body": "try {\n    $cursor\n}\ncatch {\n    Write-Error $_\n}", "description": "Try/catch" }
+  ],
+  "foldingStrategy": "Brace"
+}

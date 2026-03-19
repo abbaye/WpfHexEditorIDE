@@ -28,7 +28,7 @@
     <!--
       Single explicit reference. Transitively pulls:
         WpfHexEditor.Core.Terminal  (commands, macros, scripting engine)
-        WpfHexEditor.Docking.Wpf   (theme ResourceDictionaries — used for themes only, not docking)
+        WpfHexEditor.Shell   (theme ResourceDictionaries — used for themes only, not docking)
         WpfHexEditor.SDK           (service contracts for StandaloneIDEHostContext)
     -->
     <ProjectReference Include="..\..\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />

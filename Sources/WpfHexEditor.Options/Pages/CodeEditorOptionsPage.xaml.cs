@@ -26,12 +26,17 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         MouseWheelCombo.ItemsSource = Enum.GetValues<MouseWheelSpeed>();
 
         // Auto-check the override checkbox whenever the user picks a new color.
-        WireAutoCheck(ChkBg,  CpBg);
-        WireAutoCheck(ChkFg,  CpFg);
-        WireAutoCheck(ChkKw,  CpKw);
-        WireAutoCheck(ChkStr, CpStr);
-        WireAutoCheck(ChkCmt, CpCmt);
-        WireAutoCheck(ChkNum, CpNum);
+        WireAutoCheck(ChkBg,      CpBg);
+        WireAutoCheck(ChkFg,      CpFg);
+        WireAutoCheck(ChkKw,      CpKw);
+        WireAutoCheck(ChkStr,     CpStr);
+        WireAutoCheck(ChkCmt,     CpCmt);
+        WireAutoCheck(ChkNum,     CpNum);
+        WireAutoCheck(ChkType,    CpType);
+        WireAutoCheck(ChkId,      CpId);
+        WireAutoCheck(ChkOp,      CpOp);
+        WireAutoCheck(ChkBracket, CpBracket);
+        WireAutoCheck(ChkAttr,    CpAttr);
     }
 
     private void WireAutoCheck(CheckBox chk, ColorPickerControl cp)
@@ -57,17 +62,23 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             CheckUseSpaces.IsChecked     = ce.UseSpaces;
             CheckIntelliSense.IsChecked  = ce.ShowIntelliSense;
             CheckLineNumbers.IsChecked   = ce.ShowLineNumbers;
-            CheckHighlightLine.IsChecked = ce.HighlightCurrentLine;
+            CheckHighlightLine.IsChecked   = ce.HighlightCurrentLine;
+            CheckFoldDoubleClick.IsChecked = ce.FoldToggleOnDoubleClick;
             TxtZoom.Text      = ((int)(ce.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = ce.MouseWheelSpeed;
             CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
 
-            LoadColorPicker(ChkBg,  CpBg,  ce.BackgroundColor, "TE_Background");
-            LoadColorPicker(ChkFg,  CpFg,  ce.ForegroundColor, "TE_Foreground");
-            LoadColorPicker(ChkKw,  CpKw,  ce.KeywordColor,    "TE_Keyword");
-            LoadColorPicker(ChkStr, CpStr, ce.StringColor,     "TE_String");
-            LoadColorPicker(ChkCmt, CpCmt, ce.CommentColor,    "TE_Comment");
-            LoadColorPicker(ChkNum, CpNum, ce.NumberColor,     "TE_Number");
+            LoadColorPicker(ChkBg,      CpBg,      ce.BackgroundColor,  "TE_Background");
+            LoadColorPicker(ChkFg,      CpFg,      ce.ForegroundColor,  "TE_Foreground");
+            LoadColorPicker(ChkKw,      CpKw,      ce.KeywordColor,     "TE_Keyword");
+            LoadColorPicker(ChkStr,     CpStr,     ce.StringColor,      "TE_String");
+            LoadColorPicker(ChkCmt,     CpCmt,     ce.CommentColor,     "TE_Comment");
+            LoadColorPicker(ChkNum,     CpNum,     ce.NumberColor,      "TE_Number");
+            LoadColorPicker(ChkType,    CpType,    ce.TypeColor,        "CE_Type");
+            LoadColorPicker(ChkId,      CpId,      ce.IdentifierColor,  "CE_Identifier");
+            LoadColorPicker(ChkOp,      CpOp,      ce.OperatorColor,    "CE_Operator");
+            LoadColorPicker(ChkBracket, CpBracket, ce.BracketColor,     "CE_Bracket");
+            LoadColorPicker(ChkAttr,    CpAttr,    ce.AttributeColor,   "CE_Attribute");
         }
         finally { _loading = false; }
     }
@@ -82,17 +93,23 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.UseSpaces         = CheckUseSpaces.IsChecked    == true;
         ce.ShowIntelliSense  = CheckIntelliSense.IsChecked == true;
         ce.ShowLineNumbers   = CheckLineNumbers.IsChecked  == true;
-        ce.HighlightCurrentLine = CheckHighlightLine.IsChecked == true;
+        ce.HighlightCurrentLine    = CheckHighlightLine.IsChecked   == true;
+        ce.FoldToggleOnDoubleClick = CheckFoldDoubleClick.IsChecked == true;
         ce.DefaultZoom     = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
         if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)
             ce.MouseWheelSpeed = mws;
         ce.ChangesetEnabled = CheckChangeset.IsChecked == true;
-        ce.BackgroundColor   = FlushColorPicker(ChkBg,  CpBg);
-        ce.ForegroundColor   = FlushColorPicker(ChkFg,  CpFg);
-        ce.KeywordColor      = FlushColorPicker(ChkKw,  CpKw);
-        ce.StringColor       = FlushColorPicker(ChkStr, CpStr);
-        ce.CommentColor      = FlushColorPicker(ChkCmt, CpCmt);
-        ce.NumberColor       = FlushColorPicker(ChkNum, CpNum);
+        ce.BackgroundColor   = FlushColorPicker(ChkBg,      CpBg);
+        ce.ForegroundColor   = FlushColorPicker(ChkFg,      CpFg);
+        ce.KeywordColor      = FlushColorPicker(ChkKw,      CpKw);
+        ce.StringColor       = FlushColorPicker(ChkStr,     CpStr);
+        ce.CommentColor      = FlushColorPicker(ChkCmt,     CpCmt);
+        ce.NumberColor       = FlushColorPicker(ChkNum,     CpNum);
+        ce.TypeColor         = FlushColorPicker(ChkType,    CpType);
+        ce.IdentifierColor   = FlushColorPicker(ChkId,      CpId);
+        ce.OperatorColor     = FlushColorPicker(ChkOp,      CpOp);
+        ce.BracketColor      = FlushColorPicker(ChkBracket, CpBracket);
+        ce.AttributeColor    = FlushColorPicker(ChkAttr,    CpAttr);
     }
 
     // -- Control handlers -------------------------------------------------

@@ -42,7 +42,8 @@ public static class LanguageDefinitionSerializer
         new(StringComparer.OrdinalIgnoreCase)
     {
         // ── Standard names (direct match) ────────────────────────────────
-        { "Keyword",    SyntaxTokenKind.Keyword    },
+        { "Keyword",     SyntaxTokenKind.Keyword     },
+        { "ControlFlow", SyntaxTokenKind.ControlFlow },
         { "Comment",    SyntaxTokenKind.Comment    },
         { "String",     SyntaxTokenKind.String     },
         { "Number",     SyntaxTokenKind.Number     },
@@ -50,6 +51,7 @@ public static class LanguageDefinitionSerializer
         { "Operator",   SyntaxTokenKind.Operator   },
         { "Bracket",    SyntaxTokenKind.Bracket    },
         { "Type",       SyntaxTokenKind.Type       },
+        { "UserType",   SyntaxTokenKind.Type       },   // PascalCase heuristic (C#, VB.NET)
         { "Attribute",  SyntaxTokenKind.Attribute  },
 
         // ── XML / HTML / XAML ─────────────────────────────────────────────
@@ -69,6 +71,11 @@ public static class LanguageDefinitionSerializer
         { "Variable",   SyntaxTokenKind.Identifier },   // $var, @var, …
         { "Symbol",     SyntaxTokenKind.Attribute  },   // Ruby :symbol
         { "Key",        SyntaxTokenKind.Attribute  },   // JSON / YAML / INI key
+        { "Field",         SyntaxTokenKind.Attribute  },   // _underscore private fields (C#, VB.NET)
+        { "NamespaceDecl", SyntaxTokenKind.Default    },   // name after 'namespace' / 'Namespace' — left uncolored
+        { "UsingRef",      SyntaxTokenKind.Default    },   // name after 'using' / 'Imports' — left uncolored
+        { "RegionKeyword", SyntaxTokenKind.Keyword    },   // #region / #endregion directive word
+        { "RegionName", SyntaxTokenKind.Attribute  },   // label text after #region
 
         // ── Markup / scripting keywords ───────────────────────────────────
         { "Cmdlet",     SyntaxTokenKind.Keyword    },   // PowerShell / shell built-ins
@@ -163,9 +170,13 @@ public static class LanguageDefinitionSerializer
                 Body        = s.Body    ?? string.Empty,
                 Description = s.Description ?? string.Empty
             }).ToArray() ?? [],
-            FoldingStrategy   = dto.FoldingStrategy,
-            LineCommentPrefix = dto.LineCommentPrefix,
-            IsDefault         = dto.IsDefault,
+            FoldingStrategy          = dto.FoldingStrategy,
+            LineCommentPrefix        = dto.LineCommentPrefix,
+            BlockCommentStart        = dto.BlockCommentStart,
+            BlockCommentEnd          = dto.BlockCommentEnd,
+            EnableCodeLens           = dto.EnableCodeLens,
+            EnableCtrlClickNavigation = dto.EnableCtrlClickNavigation,
+            IsDefault                = dto.IsDefault,
         };
     }
 
@@ -193,7 +204,19 @@ public static class LanguageDefinitionSerializer
         public SyntaxRuleDto[]?      SyntaxRules       { get; set; }
         public SnippetDefinitionDto[]? Snippets         { get; set; }
         public FoldingStrategyKind   FoldingStrategy   { get; set; } = FoldingStrategyKind.Brace;
-        public string?               LineCommentPrefix { get; set; }
+        public string?               LineCommentPrefix   { get; set; }
+        public string?               BlockCommentStart   { get; set; }
+        public string?               BlockCommentEnd     { get; set; }
+        /// <summary>
+        /// When true, the CodeEditor renders CodeLens hints for this language.
+        /// </summary>
+        public bool EnableCodeLens { get; set; }
+
+        /// <summary>
+        /// When true, Ctrl+click go-to-definition is active for this language.
+        /// </summary>
+        public bool EnableCtrlClickNavigation { get; set; }
+
         /// <summary>
         /// When true, the registry will call SetProjectDefault() automatically for all
         /// extensions declared in the file, making this the preferred language.

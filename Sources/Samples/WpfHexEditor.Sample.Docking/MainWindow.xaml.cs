@@ -49,9 +49,9 @@ public partial class MainWindow : Window
         "WpfHexEditor", "Samples", "Docking", "layout.json");
 
     private static readonly Uri DarkThemeUri = new(
-        "pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml");
+        "pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml");
     private static readonly Uri LightThemeUri = new(
-        "pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/OfficeTheme.xaml");
+        "pack://application:,,,/WpfHexEditor.Shell;component/Themes/OfficeTheme.xaml");
 
     // ─── State ────────────────────────────────────────────────────────────────
 

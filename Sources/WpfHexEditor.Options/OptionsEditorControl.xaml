@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/WpfHexEditor.Docking.Wpf;component/Themes/PanelCommon.xaml"/>
+                <ResourceDictionary Source="/WpfHexEditor.Shell;component/Themes/PanelCommon.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Chevron d'expansion style Visual Studio -->

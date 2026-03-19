@@ -1,0 +1,104 @@
+<UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.ResourceBrowserPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Editor.XamlDesigner.ViewModels">
+
+    <!-- ==========================================================
+         File: ResourceBrowserPanel.xaml
+         Created: 2026-03-17
+         Description: VS-Like dockable panel browsing all application resources.
+                      Supports text filtering, scope grouping, and Find Usages.
+         Theme: XD_* tokens (DynamicResource)
+         ========================================================== -->
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ──────────────────────────────────────────── -->
+        <Border Grid.Row="0" BorderThickness="0,0,0,1" Height="26"
+                Background="{DynamicResource XD_PanelToolbarBrush}"
+                BorderBrush="{DynamicResource XD_PanelToolbarBorderBrush}">
+            <DockPanel Margin="4,0">
+                <!-- Scan button -->
+                <Button DockPanel.Dock="Right"
+                        Width="24" Height="20" Margin="2,0,0,0"
+                        Content="\uE72C" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        ToolTip="Scan resources"
+                        Command="{Binding ScanCommand}"
+                        Background="Transparent" BorderThickness="0"
+                        Foreground="{DynamicResource XD_PropertyNameForeground}"/>
+                <!-- Find Usages button -->
+                <Button DockPanel.Dock="Right"
+                        Width="24" Height="20" Margin="2,0,0,0"
+                        Content="\uE773" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        ToolTip="Find usages of selected resource"
+                        Command="{Binding FindUsagesCommand}"
+                        Background="Transparent" BorderThickness="0"
+                        Foreground="{DynamicResource XD_PropertyNameForeground}"/>
+                <!-- Filter text box -->
+                <TextBox Height="18" FontSize="11"
+                         Background="Transparent"
+                         Foreground="{DynamicResource XD_PropertyValueForeground}"
+                         BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                         VerticalContentAlignment="Center" Padding="2,0"
+                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Filter resources"/>
+            </DockPanel>
+        </Border>
+
+        <Rectangle Grid.Row="1" Fill="{DynamicResource DockBorderBrush}"/>
+
+        <!-- ── Resource list ─────────────────────────────────────── -->
+        <ListView Grid.Row="2"
+                  ItemsSource="{Binding EntriesView}"
+                  SelectedItem="{Binding SelectedEntry}"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0,0,0,1" Padding="4,3"
+                                    Background="{DynamicResource XD_PropertyGroupHeaderBackground}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}">
+                                <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource XD_PropertyNameForeground}"/>
+                            </Border>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+
+            <ListView.View>
+                <GridView>
+                    <!-- Color swatch + key -->
+                    <GridViewColumn Header="Key" Width="140">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ResourceEntryViewModel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="12" Height="12" Margin="0,0,4,0"
+                                            BorderThickness="1"
+                                            BorderBrush="{DynamicResource XD_ColorSwatchBorder}"
+                                            Background="{Binding PreviewBrush}"
+                                            Visibility="{Binding PreviewBrush, Converter={x:Static vm:NullToVisibilityConverter.Instance}}"/>
+                                    <TextBlock Text="{Binding Key}" FontSize="11"
+                                               Foreground="{DynamicResource XD_PropertyNameForeground}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Type"    Width="80"
+                                    DisplayMemberBinding="{Binding ValueType}"/>
+                    <GridViewColumn Header="Preview" Width="100"
+                                    DisplayMemberBinding="{Binding PreviewText}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

@@ -27,6 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 
@@ -45,10 +46,10 @@ internal sealed class CodeLensService : IDisposable
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Current lens data: 0-based line index → (reference count, symbol name, MDL2 icon glyph, icon brush).
+    /// Current lens data: 0-based line index → (reference count, symbol name, MDL2 icon glyph, icon brush, symbol kind).
     /// </summary>
-    public IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush)> LensData
-        { get; private set; } = new Dictionary<int, (int, string, string, Brush)>();
+    public IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, CodeLensSymbolKinds Kind)> LensData
+        { get; private set; } = new Dictionary<int, (int, string, string, Brush, CodeLensSymbolKinds)>();
 
     /// <summary>Raised on the UI thread when <see cref="LensData"/> has been refreshed.</summary>
     public event EventHandler? LensDataRefreshed;
@@ -93,7 +94,7 @@ internal sealed class CodeLensService : IDisposable
 
         _currentFilePath = null;
         CancelPending();
-        LensData = new Dictionary<int, (int, string, string, Brush)>();
+        LensData = new Dictionary<int, (int, string, string, Brush, CodeLensSymbolKinds)>();
     }
 
     public void Dispose()
@@ -166,14 +167,14 @@ internal sealed class CodeLensService : IDisposable
     /// file extension via <see cref="WorkspaceFileCache"/>.
     /// Must not touch any WPF objects — only BCL + snapshotted CodeLine data.
     /// </summary>
-    private static IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush)> ComputeLensData(
+    private static IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, CodeLensSymbolKinds Kind)> ComputeLensData(
         IReadOnlyList<CodeLine> lines, string? currentFilePath, CancellationToken ct)
     {
         var snapshot = CodeStructureParser.Parse(lines);
 
         // Collect declaration items — Types + Members; skip Namespaces (too broad).
         var items = snapshot.Types.Concat(snapshot.Members).ToList();
-        if (items.Count == 0) return new Dictionary<int, (int, string, string, Brush)>();
+        if (items.Count == 0) return new Dictionary<int, (int, string, string, Brush, CodeLensSymbolKinds)>();
 
         // Gather workspace files of matching extension once per ComputeLensData call.
         IReadOnlyList<string> workspacePaths = [];
@@ -181,7 +182,7 @@ internal sealed class CodeLensService : IDisposable
         if (!string.IsNullOrEmpty(ext))
             workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
 
-        var result = new Dictionary<int, (int, string, string, Brush)>(items.Count);
+        var result = new Dictionary<int, (int, string, string, Brush, CodeLensSymbolKinds)>(items.Count);
 
         foreach (var item in items)
         {
@@ -216,11 +217,34 @@ internal sealed class CodeLensService : IDisposable
 
             // Skip 0-count entries to avoid cluttering the lens layer.
             if (count > 0)
-                result[item.Line] = (count, item.Name, item.IconGlyph, item.IconBrush);
+                result[item.Line] = (count, item.Name, item.IconGlyph, item.IconBrush, MapToCodeLensKind(item));
         }
 
         return result;
     }
+
+    /// <summary>
+    /// Maps a <see cref="NavigationBarItem"/>'s Kind/TypeKind/MemberKind to the
+    /// corresponding <see cref="CodeLensSymbolKinds"/> flag for render filtering.
+    /// </summary>
+    private static CodeLensSymbolKinds MapToCodeLensKind(NavigationBarItem item) =>
+        (item.Kind, item.TypeKind, item.MemberKind) switch
+        {
+            (NavigationItemKind.Type,   TypeKind.Class,       _)                    => CodeLensSymbolKinds.Class,
+            (NavigationItemKind.Type,   TypeKind.Interface,   _)                    => CodeLensSymbolKinds.Interface,
+            (NavigationItemKind.Type,   TypeKind.Struct,      _)                    => CodeLensSymbolKinds.Struct,
+            (NavigationItemKind.Type,   TypeKind.Enum,        _)                    => CodeLensSymbolKinds.Enum,
+            (NavigationItemKind.Type,   TypeKind.Record,      _)                    => CodeLensSymbolKinds.Record,
+            (NavigationItemKind.Type,   TypeKind.Delegate,    _)                    => CodeLensSymbolKinds.Delegate,
+            (NavigationItemKind.Member, _,                    MemberKind.Method)    => CodeLensSymbolKinds.Method,
+            (NavigationItemKind.Member, _,                    MemberKind.Constructor) => CodeLensSymbolKinds.Constructor,
+            (NavigationItemKind.Member, _,                    MemberKind.Property)  => CodeLensSymbolKinds.Property,
+            (NavigationItemKind.Member, _,                    MemberKind.Indexer)   => CodeLensSymbolKinds.Indexer,
+            (NavigationItemKind.Member, _,                    MemberKind.Field)     => CodeLensSymbolKinds.Field,
+            (NavigationItemKind.Member, _,                    MemberKind.Event)     => CodeLensSymbolKinds.Event,
+            // Unknown/Namespace fall-through: include in All so they are never silently hidden.
+            _                                                                       => CodeLensSymbolKinds.All,
+        };
 
     /// <summary>Counts whole-word occurrences of <paramref name="symbol"/> in a
     /// <see cref="CodeLine"/> list (current in-memory document).</summary>

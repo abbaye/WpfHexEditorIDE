@@ -8,7 +8,7 @@
          by default. Theme switching is handled by App.SwitchTheme().
 
      Architecture Notes:
-         Theme: DarkTheme.xaml (from WpfHexEditor.Docking.Wpf — transitive ref)
+         Theme: DarkTheme.xaml (from WpfHexEditor.Shell — transitive ref)
          All DynamicResource bindings in the application update automatically
          when SwitchTheme() replaces the active ResourceDictionary.
      ========================================================== -->
@@ -22,7 +22,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- Default theme: VS2022 Dark -->
-                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

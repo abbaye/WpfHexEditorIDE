@@ -3,17 +3,25 @@
 // File: XamlDesignerPlugin.cs
 // Author: Derek Tremblay
 // Created: 2026-03-16
+// Updated: 2026-03-18 — Added BindingInspectorPanel (8th) + LiveVisualTreePanel (9th).
+//                        Added Outline↔Canvas bidirectional sync (C3).
 // Description:
 //     Official plugin entry point for the XAML Designer.
 //     Implements IWpfHexEditorPlugin + IPluginWithOptions.
 //     Registers:
-//       - XamlOutlinePanel        (Left, AutoHide, width=220)
-//       - PropertyInspectorPanel  (Right, width=260)
-//       - Status bar item         (Left, order=15)
-//       - View menu items: "XAML _Outline", "XAML _Properties"
+//       - XamlOutlinePanel          (Left, AutoHide, width=220)
+//       - PropertyInspectorPanel    (Right, width=260)
+//       - DesignHistoryPanel        (Right, auto-hide, width=240)
+//       - BindingInspectorPanel     (Right, auto-hide, width=280)
+//       - LiveVisualTreePanel       (Left, auto-hide, width=240)
+//       - Status bar item           (Left, order=15)
+//       - View menu items for all panels
 //     Subscribes to FocusContext.FocusChanged to wire the active
-//     XamlDesignerSplitHost's SelectedElementChanged event to both
+//     XamlDesignerSplitHost's SelectedElementChanged event to all
 //     side panels and the status bar item on each document switch.
+//     On each host switch: DesignHistoryPanel.ViewModel.Manager is updated and
+//     JumpRequested is wired to host.JumpToHistoryEntry.
+//     C3: XamlOutlinePanel ↔ DesignCanvas bidirectional selection sync.
 //
 // Architecture Notes:
 //     Pattern: Observer — subscribes to IFocusContextService.FocusChanged.
@@ -25,6 +33,7 @@ using System.Windows;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.XamlDesigner.Controls;
 using WpfHexEditor.Editor.XamlDesigner.Panels;
+using WpfHexEditor.Editor.XamlDesigner.ViewModels;
 using WpfHexEditor.Plugins.XamlDesigner.Options;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
@@ -58,14 +67,29 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     // ── UI ID constants ───────────────────────────────────────────────────────
 
-    private const string OutlinePanelUiId    = "WpfHexEditor.Plugins.XamlDesigner.Panel.Outline";
-    private const string PropertiesPanelUiId = "WpfHexEditor.Plugins.XamlDesigner.Panel.Properties";
-    private const string StatusBarElementId  = "WpfHexEditor.Plugins.XamlDesigner.StatusBar.Element";
+    private const string OutlinePanelUiId       = "WpfHexEditor.Plugins.XamlDesigner.Panel.Outline";
+    private const string PropertiesPanelUiId    = "WpfHexEditor.Plugins.XamlDesigner.Panel.Properties";
+    private const string ToolboxPanelUiId       = "WpfHexEditor.Plugins.XamlDesigner.Panel.Toolbox";
+    private const string ResourcePanelUiId      = "WpfHexEditor.Plugins.XamlDesigner.Panel.Resource";
+    private const string DesignDataPanelUiId    = "WpfHexEditor.Plugins.XamlDesigner.Panel.DesignData";
+    private const string AnimationPanelUiId     = "WpfHexEditor.Plugins.XamlDesigner.Panel.Animation";
+    private const string HistoryPanelUiId       = "WpfHexEditor.Plugins.XamlDesigner.Panel.History";
+    private const string BindingPanelUiId       = "WpfHexEditor.Plugins.XamlDesigner.Panel.BindingInspector";
+    private const string LiveTreePanelUiId      = "WpfHexEditor.Plugins.XamlDesigner.Panel.LiveVisualTree";
+    private const string StatusBarElementId     = "WpfHexEditor.Plugins.XamlDesigner.StatusBar.Element";
 
     // ── State ─────────────────────────────────────────────────────────────────
 
-    private XamlOutlinePanel?          _outlinePanel;
-    private PropertyInspectorPanel?    _propertiesPanel;
+    private XamlOutlinePanel?                 _outlinePanel;
+    private PropertyInspectorPanel?           _propertiesPanel;
+    private XamlToolboxPanel?                 _toolboxPanel;
+    private ResourceBrowserPanel?             _resourcePanel;
+    private DesignDataPanel?                  _designDataPanel;
+    private AnimationTimelinePanel?           _animationPanel;
+    private AnimationTimelinePanelViewModel?  _animationVm;
+    private DesignHistoryPanel?               _historyPanel;
+    private BindingInspectorPanel?            _bindingPanel;
+    private LiveVisualTreePanel?              _liveTreePanel;
     private IIDEHostContext?           _context;
     private XamlDesignerOptionsPage?   _optionsPage;
     private StatusBarItemDescriptor?   _sbElement;
@@ -82,6 +106,15 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Build panels.
         _outlinePanel    = new XamlOutlinePanel();
         _propertiesPanel = new PropertyInspectorPanel();
+        _toolboxPanel    = new XamlToolboxPanel();
+        _resourcePanel   = new ResourceBrowserPanel();
+        _designDataPanel = new DesignDataPanel();
+        _animationVm     = new AnimationTimelinePanelViewModel();
+        _animationPanel  = new AnimationTimelinePanel();
+        _animationPanel.SetViewModel(_animationVm);
+        _historyPanel    = new DesignHistoryPanel();
+        _bindingPanel    = new BindingInspectorPanel();
+        _liveTreePanel   = new LiveVisualTreePanel();
 
         // Register the XAML Outline panel (left side, auto-hide).
         context.UIRegistry.RegisterPanel(
@@ -109,6 +142,104 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 DefaultAutoHide = false,
                 CanClose        = true,
                 PreferredWidth  = 260
+            });
+
+        // Register the XAML Toolbox panel (left side, auto-hide).
+        context.UIRegistry.RegisterPanel(
+            ToolboxPanelUiId,
+            _toolboxPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "XAML Toolbox",
+                DefaultDockSide = "Left",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 220
+            });
+
+        // Register the Resource Browser panel (right side, auto-hide).
+        context.UIRegistry.RegisterPanel(
+            ResourcePanelUiId,
+            _resourcePanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Resource Browser",
+                DefaultDockSide = "Right",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 260
+            });
+
+        // Register the Design Data panel (bottom).
+        context.UIRegistry.RegisterPanel(
+            DesignDataPanelUiId,
+            _designDataPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title            = "Design Data",
+                DefaultDockSide  = "Bottom",
+                DefaultAutoHide  = false,
+                CanClose         = true,
+                PreferredHeight  = 180
+            });
+
+        // Register the Animation Timeline panel (bottom).
+        context.UIRegistry.RegisterPanel(
+            AnimationPanelUiId,
+            _animationPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title            = "Animation Timeline",
+                DefaultDockSide  = "Bottom",
+                DefaultAutoHide  = false,
+                CanClose         = true,
+                PreferredHeight  = 180
+            });
+
+        // Register the Design History panel (right side, auto-hide).
+        context.UIRegistry.RegisterPanel(
+            HistoryPanelUiId,
+            _historyPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Design History",
+                DefaultDockSide = "Right",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 240
+            });
+
+        // Register the Binding Inspector panel (8th panel — right side, auto-hide).
+        context.UIRegistry.RegisterPanel(
+            BindingPanelUiId,
+            _bindingPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Binding Inspector",
+                DefaultDockSide = "Right",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 280
+            });
+
+        // Register the Live Visual Tree panel (9th panel — left side, auto-hide).
+        context.UIRegistry.RegisterPanel(
+            LiveTreePanelUiId,
+            _liveTreePanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Live Visual Tree",
+                DefaultDockSide = "Left",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 240
             });
 
         // Register status bar item (left, order=15).
@@ -139,6 +270,13 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
         _outlinePanel    = null;
         _propertiesPanel = null;
+        _toolboxPanel    = null;
+        _resourcePanel   = null;
+        _designDataPanel = null;
+        _animationPanel  = null;
+        _historyPanel    = null;
+        _bindingPanel    = null;
+        _liveTreePanel   = null;
         _context         = null;
         _optionsPage     = null;
         _sbElement       = null;
@@ -167,13 +305,56 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             if (_propertiesPanel?.ViewModel is not null)
                 _propertiesPanel.ViewModel.SelectedObject = null;
             _propertiesPanel?.SetElementName(null);
+            if (_historyPanel is not null)
+                _historyPanel.ViewModel.Manager = null;
+            _bindingPanel?.SetTarget(null);
+            _liveTreePanel?.ViewModel.Refresh(null);
             UpdateStatusBar(null);
             return;
         }
 
         // Wire the new host: outline + property inspector + status bar.
-        host.SelectedElementChanged += OnSelectedElementChanged;
-        host.Document.XamlChanged   += OnXamlChanged;
+        host.SelectedElementChanged        += OnSelectedElementChanged;
+        host.Document.XamlChanged         += OnXamlChanged;
+        host.FocusPropertiesPanelRequested += OnFocusPropertiesRequested;
+
+        // Wire the history panel to the new host's undo manager.
+        if (_historyPanel is not null)
+        {
+            _historyPanel.ViewModel.Manager = host.UndoManager;
+            _historyPanel.JumpRequested     += OnHistoryPanelJumpRequested;
+        }
+
+        // Live Visual Tree — subscribe to the post-render event so Refresh() always
+        // receives a stable, fully-laid-out DesignRoot (never a timing-race null).
+        if (host.Canvas is { } canvas)
+            canvas.DesignRendered += OnCanvasDesignRendered;
+
+        // Live Visual Tree — reverse sync: tree node click → canvas highlight.
+        if (_liveTreePanel is not null)
+        {
+            _liveTreePanel.NodeSelected -= OnLiveTreeNodeSelected;
+            _liveTreePanel.NodeSelected += OnLiveTreeNodeSelected;
+        }
+
+        // Seed new panels with the current canvas state.
+        _bindingPanel?.SetTarget(host.Canvas?.SelectedElement as System.Windows.DependencyObject);
+
+        // Best-effort seed for Live Tree (DesignRoot may already be valid on tab-switch).
+        // OnCanvasDesignRendered will follow with the authoritative stable value after the next render.
+        _liveTreePanel?.ViewModel.Refresh(host.Canvas?.DesignRoot);
+
+        // Seed Design Data and Animation panels from current XAML source.
+        _designDataPanel?.SetXamlSource(host.Document.RawXaml);
+        if (_animationVm is not null)
+            _animationVm.XamlSource = host.Document.RawXaml;
+
+        // C3 — Outline → Canvas: sync XAML outline selection to the canvas.
+        if (_outlinePanel is not null)
+        {
+            _outlinePanel.SyncRequested -= OnOutlineSyncRequested;
+            _outlinePanel.SyncRequested += OnOutlineSyncRequested;
+        }
 
         _outlinePanel?.ViewModel?.RebuildTree(host.Document.ParsedRoot);
         UpdateSidePanels(host);
@@ -182,15 +363,93 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private void UnwireCurrentHost()
     {
         if (_wiredHost is null) return;
-        _wiredHost.SelectedElementChanged -= OnSelectedElementChanged;
-        _wiredHost.Document.XamlChanged   -= OnXamlChanged;
+        _wiredHost.SelectedElementChanged        -= OnSelectedElementChanged;
+        _wiredHost.Document.XamlChanged         -= OnXamlChanged;
+        _wiredHost.FocusPropertiesPanelRequested -= OnFocusPropertiesRequested;
+
+        // Detach history panel from the outgoing host.
+        if (_historyPanel is not null)
+        {
+            _historyPanel.JumpRequested     -= OnHistoryPanelJumpRequested;
+            _historyPanel.ViewModel.Manager  = null;
+        }
+
+        // Detach outline sync from the outgoing host.
+        if (_outlinePanel is not null)
+            _outlinePanel.SyncRequested -= OnOutlineSyncRequested;
+
+        // Detach Live Visual Tree post-render event and reverse-sync event.
+        if (_wiredHost.Canvas is { } canvas)
+            canvas.DesignRendered -= OnCanvasDesignRendered;
+        if (_liveTreePanel is not null)
+            _liveTreePanel.NodeSelected -= OnLiveTreeNodeSelected;
+
         _wiredHost = null;
+    }
+
+    private void OnHistoryPanelJumpRequested(object? sender, JumpToEntryEventArgs e)
+        => _wiredHost?.JumpToHistoryEntry(e.UndoCount, e.RedoCount);
+
+    // Fired by DesignCanvas.DesignRendered — DesignRoot is now stable and the visual tree is walkable.
+    private void OnCanvasDesignRendered(object? sender, System.Windows.UIElement? root)
+        => _liveTreePanel?.ViewModel.Refresh(root);
+
+    // Fired when the user clicks a node in the Live Visual Tree — highlights that element on the canvas.
+    private void OnLiveTreeNodeSelected(object? sender, System.Windows.UIElement? element)
+        => _wiredHost?.Canvas?.SelectElement(element);
+
+    /// <summary>
+    /// C3 — Outline → Canvas sync: when the outline panel's "Sync to code" button is
+    /// clicked, find the matching UIElement on the canvas by x:Name / element type path
+    /// and select it so the canvas adorner follows the outline selection.
+    /// </summary>
+    private void OnOutlineSyncRequested(object? sender, XamlOutlineNode? node)
+    {
+        if (_wiredHost is null || node is null) return;
+
+        // Use the outline node's ElementPath (slash-delimited tag path) to find a
+        // matching element by x:Name first, then fall back to type-name search.
+        var canvas = _wiredHost.Canvas;
+        if (canvas is null) return;
+
+        // Try locating by x:Name when the node exposes one.
+        if (!string.IsNullOrEmpty(node.XName_))
+        {
+            var named = canvas.DesignRoot is System.Windows.FrameworkElement root
+                ? FindByName(root, node.XName_)
+                : null;
+            if (named is not null)
+            {
+                canvas.SelectElement(named);
+                return;
+            }
+        }
+
+        // Fallback: select by walking the outline path on the visual tree.
+        // When no x:Name is available this is a best-effort match.
+        var target = FindByPath(canvas.DesignRoot, node.ElementPath);
+        if (target is not null)
+            canvas.SelectElement(target);
+    }
+
+    private void OnFocusPropertiesRequested(object? sender, EventArgs e)
+    {
+        if (_context is null) return;
+        _context.UIRegistry.FocusPanel(PropertiesPanelUiId);
     }
 
     private void OnXamlChanged(object? sender, EventArgs e)
     {
         if (_wiredHost is null) return;
         _outlinePanel?.ViewModel?.RebuildTree(_wiredHost.Document.ParsedRoot);
+
+        // Live Visual Tree is now refreshed via DesignCanvas.DesignRendered (fires after
+        // RenderXaml() completes at DispatcherPriority.Loaded), so no Refresh() call here.
+
+        // Feed XAML source to panels that parse it independently.
+        _designDataPanel?.SetXamlSource(_wiredHost.Document.RawXaml);
+        if (_animationVm is not null)
+            _animationVm.XamlSource = _wiredHost.Document.RawXaml;
     }
 
     private void OnSelectedElementChanged(object? sender, EventArgs e)
@@ -207,6 +466,22 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_propertiesPanel?.ViewModel is not null)
             _propertiesPanel.ViewModel.SelectedObject = dep;
 
+        // Update Binding Inspector with the newly selected element.
+        _bindingPanel?.SetTarget(dep);
+
+        // Live Visual Tree — highlight the node that corresponds to the canvas-selected element.
+        _liveTreePanel?.ViewModel.SelectNodeByElement(selectedUi);
+
+        // C3 — Canvas → Outline sync: move the outline selection to match the canvas.
+        if (_outlinePanel is not null && selectedUi is not null)
+        {
+            var path = dep is System.Windows.FrameworkElement fe && !string.IsNullOrEmpty(fe.Name)
+                ? fe.Name
+                : null;
+            if (!string.IsNullOrEmpty(path))
+                _outlinePanel.ViewModel.SelectNodeByPath(path);
+        }
+
         var elementName = dep?.GetType().Name ?? string.Empty;
         _propertiesPanel?.SetElementName(elementName);
         UpdateStatusBar(elementName);
@@ -218,6 +493,78 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _sbElement.Text = string.IsNullOrEmpty(elementName)
             ? string.Empty
             : $"⬚ {elementName}";
+    }
+
+    // ── Helpers: visual-tree element search ───────────────────────────────────
+
+    /// <summary>
+    /// Searches <paramref name="root"/>'s visual tree for a FrameworkElement
+    /// whose <see cref="System.Windows.FrameworkElement.Name"/> matches <paramref name="name"/>.
+    /// Returns null when not found or the tree is empty.
+    /// </summary>
+    private static System.Windows.UIElement? FindByName(System.Windows.FrameworkElement root, string name)
+    {
+        if (root.Name == name) return root;
+
+        int count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(root);
+        for (int i = 0; i < count; i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(root, i);
+            if (child is System.Windows.FrameworkElement fe)
+            {
+                var found = FindByName(fe, name);
+                if (found is not null) return found;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Best-effort element lookup by outline element path (slash-delimited type names).
+    /// Walks the visual tree matching each segment by type name.
+    /// Returns null when no match is found.
+    /// </summary>
+    private static System.Windows.UIElement? FindByPath(System.Windows.UIElement? root, string elementPath)
+    {
+        if (root is null || string.IsNullOrEmpty(elementPath)) return null;
+
+        var segments = elementPath.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0) return null;
+
+        // The first segment must match the root's type name.
+        var rootTypeName = root.GetType().Name;
+        if (!elementPath.StartsWith(rootTypeName, System.StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        // Single-segment path — the root is the target.
+        if (segments.Length == 1) return root;
+
+        // Walk child segments recursively.
+        return FindChildBySegments(root, segments, 1);
+    }
+
+    private static System.Windows.UIElement? FindChildBySegments(
+        System.Windows.DependencyObject parent,
+        string[] segments,
+        int segmentIndex)
+    {
+        if (segmentIndex >= segments.Length) return parent as System.Windows.UIElement;
+
+        var segment  = segments[segmentIndex];
+        int count    = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+
+        for (int i = 0; i < count; i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+            if (child.GetType().Name.Equals(segment, System.StringComparison.OrdinalIgnoreCase))
+            {
+                var result = FindChildBySegments(child, segments, segmentIndex + 1);
+                if (result is not null) return result;
+            }
+        }
+
+        return null;
     }
 
     // ── Helper: resolve XamlDesignerSplitHost from IDocument ─────────────────
@@ -262,6 +609,104 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 IconGlyph  = "\uE946",
                 ToolTip    = "Show or hide the XAML Property Inspector panel",
                 Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(PropertiesPanelUiId))
+            });
+
+        // View > XAML Toolbox
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleToolbox",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "XAML _Toolbox",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE7A6",
+                ToolTip    = "Show or hide the XAML Toolbox panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(ToolboxPanelUiId))
+            });
+
+        // View > Resource Browser
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleResourceBrowser",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Resource Browser",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE8B9",
+                ToolTip    = "Show or hide the Resource Browser panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(ResourcePanelUiId))
+            });
+
+        // View > Design Data
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleDesignData",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Design Data",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE9D9",
+                ToolTip    = "Show or hide the Design Data panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(DesignDataPanelUiId))
+            });
+
+        // View > Animation Timeline
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleAnimation",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Animation Timeline",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE916",
+                ToolTip    = "Show or hide the Animation Timeline panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(AnimationPanelUiId))
+            });
+
+        // View > Design History
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleHistory",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "Design _History",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE81C",
+                ToolTip    = "Show or hide the Design History panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(HistoryPanelUiId))
+            });
+
+        // View > Binding Inspector
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleBindingInspector",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Binding Inspector",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE8EC",
+                ToolTip    = "Show or hide the Binding Inspector panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(BindingPanelUiId))
+            });
+
+        // View > Live Visual Tree
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.ToggleLiveVisualTree",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Live Visual Tree",
+                ParentPath = "View",
+                Group      = "Panels",
+                IconGlyph  = "\uE8B0",
+                ToolTip    = "Show or hide the Live Visual Tree panel",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(LiveTreePanelUiId))
             });
     }
 

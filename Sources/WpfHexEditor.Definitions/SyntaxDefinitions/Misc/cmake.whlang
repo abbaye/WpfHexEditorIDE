@@ -1,0 +1,26 @@
+{
+  "name": "CMake",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for CMake build system scripts.",
+  "category": "Misc",
+  "extensions": [ ".cmake", ".in" ],
+  "lineComment": "#",
+  "blockCommentStart": "#[[",
+  "blockCommentEnd": "]]",
+  "references": {
+    "specifications": [ "CMake Language Reference" ],
+    "webLinks": [ "https://cmake.org/cmake/help/latest/manual/cmake-language.7.html" ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "#\\[\\[[\\s\\S]*?\\]\\]", "colorKey": "TE_Comment" },
+    { "type": "Comment",       "pattern": "#[^\\[].*$|#$", "colorKey": "TE_Comment" },
+    { "type": "String",        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"|\\[=*\\[[\\s\\S]*?\\]=*\\]", "colorKey": "TE_String" },
+    { "type": "Cmdlet",        "pattern": "(?i)\\b(cmake_minimum_required|project|add_executable|add_library|target_link_libraries|target_include_directories|target_compile_options|target_compile_definitions|set|message|option|if|elseif|else|endif|foreach|endforeach|while|endwhile|function|endfunction|macro|endmacro|include|find_package|find_path|find_library|find_file|find_program|install|configure_file|file|list|string|math|get_filename_component|add_subdirectory|add_dependencies|add_custom_command|add_custom_target|enable_testing|add_test|include_directories|link_directories|cmake_policy|cmake_parse_arguments|source_group|set_target_properties|get_target_property|export|return|break|continue)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Variable",      "pattern": "\\$\\{[^}]+\\}|\\$<[^>]+>|\\$ENV\\{[^}]+\\}", "colorKey": "TE_Register" },
+    { "type": "Boolean",       "pattern": "(?i)\\b(ON|OFF|TRUE|FALSE|YES|NO|NOTFOUND)\\b", "colorKey": "TE_Keyword" },
+    { "type": "UserType",      "pattern": "\\b[A-Z][A-Z0-9_]+\\b", "colorKey": "TE_Type" },
+    { "type": "Number",        "pattern": "\\b[0-9]+(?:\\.[0-9]+)*\\b", "colorKey": "TE_Number" }
+  ],
+  "foldingStrategy": "None"
+}

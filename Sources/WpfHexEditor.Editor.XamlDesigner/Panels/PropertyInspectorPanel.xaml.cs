@@ -10,11 +10,14 @@
 //
 // Architecture Notes:
 //     VS-Like Panel Pattern. Never nulls _vm on OnUnloaded (MEMORY.md rule).
-//     DataTemplateSelector dispatches bool vs. text value editors.
+//     Phase D: DataTemplateSelector dispatches to rich editors based on
+//     PropertyInspectorEntry.PropertyType: Bool, Thickness, Enum, Numeric,
+//     Color, FontFamily — falls back to TextPropertyTemplate for all others.
 // ==========================================================
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.ViewModels;
@@ -39,8 +42,9 @@ public partial class PropertyInspectorPanel : UserControl
         InitializeComponent();
         DataContext = _vm;
 
-        // Wire value cell template selector.
-        PropertyList.Resources.Add("PropertyValueTemplateSelector", new PropertyEditorTemplateSelector(this));
+        // Wire the DataTemplateSelector directly to the GridViewColumn — a ContentControl
+        // cannot be assigned to CellTemplateSelector (must be a DataTemplateSelector subclass).
+        ValueColumn.CellTemplateSelector = new PropertyEditorTemplateSelector(this);
 
         Loaded   += OnLoaded;
         Unloaded += OnUnloaded;
@@ -88,6 +92,18 @@ public partial class PropertyInspectorPanel : UserControl
 
     // ── Inner: DataTemplateSelector ───────────────────────────────────────────
 
+    /// <summary>
+    /// Selects the appropriate DataTemplate for a property value cell
+    /// based on <see cref="PropertyInspectorEntry.PropertyType"/>.
+    /// Dispatch priority (first match wins):
+    ///   bool          → BoolPropertyTemplate
+    ///   Thickness     → ThicknessPropertyTemplate
+    ///   Enum          → EnumPropertyTemplate
+    ///   double/float/int → NumericPropertyTemplate
+    ///   Color (struct) → ColorPropertyTemplate  (Brush hierarchy → TextPropertyTemplate)
+    ///   FontFamily    → FontPropertyTemplate
+    ///   (default)     → TextPropertyTemplate
+    /// </summary>
     private sealed class PropertyEditorTemplateSelector : DataTemplateSelector
     {
         private readonly PropertyInspectorPanel _panel;
@@ -99,10 +115,34 @@ public partial class PropertyInspectorPanel : UserControl
         {
             if (item is not PropertyInspectorEntry entry) return null;
 
-            if (entry.PropertyType == typeof(bool))
-                return _panel.Resources["BoolPropertyTemplate"] as DataTemplate;
+            var key = ResolveTemplateKey(entry.PropertyType);
+            return _panel.Resources[key] as DataTemplate;
+        }
 
-            return _panel.Resources["TextPropertyTemplate"] as DataTemplate;
+        private static string ResolveTemplateKey(Type propertyType)
+        {
+            if (propertyType == typeof(bool))
+                return "BoolPropertyTemplate";
+
+            if (propertyType == typeof(Thickness))
+                return "ThicknessPropertyTemplate";
+
+            if (propertyType.IsEnum)
+                return "EnumPropertyTemplate";
+
+            if (propertyType == typeof(double) || propertyType == typeof(float) || propertyType == typeof(int))
+                return "NumericPropertyTemplate";
+
+            // ColorPickerEditor handles Color (struct), not Brush hierarchy —
+            // Brush-typed DPs (Background, Foreground, etc.) fall through to TextPropertyTemplate
+            // until a dedicated BrushPickerEditor is implemented.
+            if (propertyType == typeof(Color))
+                return "ColorPropertyTemplate";
+
+            if (propertyType == typeof(FontFamily))
+                return "FontPropertyTemplate";
+
+            return "TextPropertyTemplate";
         }
     }
 }

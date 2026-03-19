@@ -36,6 +36,7 @@ public static class OptionsPageRegistry
 
         // Code Editor
         new("Code Editor",        "General",          () => new CodeEditorOptionsPage(),      "💻"),
+        new("Code Editor",        "Code Lens",        () => new CodeEditorCodeLensPage(),     "💻"),
 
         // Text Editor
         new("Text Editor",        "General",          () => new TextEditorOptionsPage(),      "📝"),

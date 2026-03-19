@@ -1,0 +1,28 @@
+{
+  "name": "Objective-C",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the Objective-C programming language.",
+  "category": "C-like",
+  "extensions": [ ".m", ".mm", ".h" ],
+  "lineComment": "//",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [ "Objective-C Programming Language Reference" ],
+    "webLinks": [ "https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/" ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "/\\*[\\s\\S]*?\\*/", "colorKey": "TE_Comment" },
+    { "type": "String",        "pattern": "(@\"(?:[^\"\\\\]|\\\\.)*\"|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')", "colorKey": "TE_String" },
+    { "type": "Comment",       "pattern": "//.*$", "colorKey": "TE_Comment" },
+    { "type": "Preprocessor",  "pattern": "^\\s*#(?:import|include|define|undef|if|ifdef|ifndef|elif|else|endif|pragma|warning|error)\\b[^/\\n]*", "colorKey": "TE_Directive" },
+    { "type": "Keyword",       "pattern": "\\b(auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|_Bool|_Complex|_Imaginary|__block|__weak|__strong|__autoreleasing|__unsafe_unretained)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Keyword",       "pattern": "@(?:interface|implementation|protocol|end|class|selector|encode|synchronized|try|catch|finally|throw|autoreleasepool|property|synthesize|dynamic|optional|required|public|private|protected|package)", "colorKey": "TE_Type" },
+    { "type": "Keyword",       "pattern": "\\b(YES|NO|nil|NULL|Nil|self|super|true|false)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\b(NSString|NSArray|NSDictionary|NSSet|NSNumber|NSInteger|NSUInteger|NSData|NSDate|NSError|BOOL|CGFloat|CGRect|CGPoint|CGSize|NSObject|NSView|UIView|NSViewController|UIViewController|id|Class|SEL|IMP)\\b", "colorKey": "TE_Type" },
+    { "type": "Number",        "pattern": "\\b(0x[0-9A-Fa-f]+[uUlL]*|0[0-7]+[uUlL]*|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[fFlL]?)\\b", "colorKey": "TE_Number" },
+    { "type": "MethodCall",    "pattern": "\\b[a-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
+  ],
+  "foldingStrategy": "Brace"
+}

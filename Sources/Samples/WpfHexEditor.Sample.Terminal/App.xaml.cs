@@ -25,7 +25,7 @@ public partial class App : Application
     /// </summary>
     /// <param name="themeUri">
     /// Pack URI of the theme, e.g.
-    /// <c>pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/OfficeTheme.xaml</c>
+    /// <c>pack://application:,,,/WpfHexEditor.Shell;component/Themes/OfficeTheme.xaml</c>
     /// </param>
     public static void SwitchTheme(Uri themeUri)
     {

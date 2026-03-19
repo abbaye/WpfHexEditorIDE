@@ -1,0 +1,30 @@
+{
+  "name": "R",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the R statistical computing language.",
+  "category": "Script",
+  "extensions": [ ".r", ".R", ".rmd", ".Rmd", ".rdata" ],
+  "lineComment": "#",
+  "references": {
+    "specifications": [ "R Language Definition" ],
+    "webLinks": [ "https://cran.r-project.org/manuals.html" ]
+  },
+  "rules": [
+    { "type": "String",      "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`[^`]*`)", "colorKey": "TE_String" },
+    { "type": "Comment",     "pattern": "#.*$", "colorKey": "TE_Comment" },
+    { "type": "Keyword",     "pattern": "\\b(break|else|for|function|if|in|next|repeat|return|switch|while|try|tryCatch|stop|warning|message|invisible|on\\.exit)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Keyword",     "pattern": "\\b(TRUE|FALSE|NULL|NA|NA_integer_|NA_real_|NA_complex_|NA_character_|Inf|NaN|LETTERS|letters|month\\.name|month\\.abb|pi|T|F)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",        "pattern": "\\b(character|numeric|integer|logical|complex|raw|list|vector|data\\.frame|matrix|array|factor|tibble|tbl_df|environment|formula|function|expression)\\b", "colorKey": "TE_Type" },
+    { "type": "Operator",    "pattern": "(<-|->|<<-|->>|::|:::|%[^%]+%|~)", "colorKey": "TE_Keyword" },
+    { "type": "MethodCall",  "pattern": "\\b[A-Za-z\\.][A-Za-z0-9_\\.]*(?=\\s*\\()", "colorKey": "TE_Label" },
+    { "type": "Number",      "pattern": "\\b([0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[iL]?|0x[0-9A-Fa-f]+[L]?)\\b", "colorKey": "TE_Number" }
+  ],
+  "snippets": [
+    { "trigger": "func",   "body": "$cursor <- function(x) {\n  \n}", "description": "Function" },
+    { "trigger": "forin",  "body": "for ($cursor in seq_along(x)) {\n  \n}", "description": "For loop" },
+    { "trigger": "df",     "body": "$cursor <- data.frame(\n  col = c()\n)", "description": "Data frame" },
+    { "trigger": "apply",  "body": "lapply($cursor, function(x) x)", "description": "lapply" }
+  ],
+  "foldingStrategy": "Brace"
+}

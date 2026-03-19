@@ -1,0 +1,33 @@
+{
+  "name": "Haskell",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the Haskell purely functional programming language.",
+  "category": "Script",
+  "extensions": [ ".hs", ".lhs" ],
+  "lineComment": "--",
+  "blockCommentStart": "{-",
+  "blockCommentEnd": "-}",
+  "references": {
+    "specifications": [ "Haskell 2010 Language Report" ],
+    "webLinks": [ "https://www.haskell.org/documentation/" ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "\\{-[\\s\\S]*?-\\}", "colorKey": "TE_Comment" },
+    { "type": "String",        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')", "colorKey": "TE_String" },
+    { "type": "Comment",       "pattern": "--.*$", "colorKey": "TE_Comment" },
+    { "type": "Preprocessor",  "pattern": "^\\s*\\{-#\\s*[A-Z_]+[^#]*#-\\}", "colorKey": "TE_Directive" },
+    { "type": "Keyword",       "pattern": "\\b(case|class|data|default|deriving|do|else|forall|foreign|hiding|if|import|in|infix|infixl|infixr|instance|let|module|newtype|of|qualified|then|type|where|as|family|pattern|mdo|proc|rec|role|stock|anyclass|via)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\b(Bool|Char|Double|Float|Int|Integer|IO|Maybe|Either|String|List|Map|Set|Seq|Text|ByteString|Word|Ordering|Rational|Complex|Num|Eq|Ord|Show|Read|Functor|Applicative|Monad|Monoid|Semigroup|Foldable|Traversable|Enum|Bounded|Real|Integral|Floating|RealFloat)\\b", "colorKey": "TE_Type" },
+    { "type": "Keyword",       "pattern": "\\b(True|False|Nothing|Just|Left|Right|GT|LT|EQ|minBound|maxBound|undefined|error|otherwise)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Operator",      "pattern": "(\\\\|->|<-|=>|::|\\.\\.|\\.\\.|<\\$>|<\\*>|>>=|>>|<>|\\|\\||&&|/=|!!)", "colorKey": "TE_Keyword" },
+    { "type": "Number",        "pattern": "\\b(0x[0-9A-Fa-f]+|0o[0-7]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b", "colorKey": "TE_Number" },
+    { "type": "UserType",      "pattern": "\\b[A-Z][A-Za-z0-9_']*\\b", "colorKey": "TE_Type" }
+  ],
+  "snippets": [
+    { "trigger": "main",  "body": "main :: IO ()\nmain = do\n  $cursor", "description": "Main entry point" },
+    { "trigger": "data",  "body": "data $cursor = Constructor\n  deriving (Show, Eq)", "description": "Data type" },
+    { "trigger": "func",  "body": "$cursor :: a -> b\n$cursor x = ", "description": "Function with signature" }
+  ],
+  "foldingStrategy": "Indent"
+}

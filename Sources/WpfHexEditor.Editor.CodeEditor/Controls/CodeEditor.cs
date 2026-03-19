@@ -31,6 +31,8 @@ using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.CodeEditor.Options;
 using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Editor.CodeEditor.Selection;
+using WpfHexEditor.Editor.CodeEditor.Input;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -61,6 +63,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // Fold-label hit-zones: rebuilt on every render pass; used for click-to-toggle.
         private readonly List<(Rect rect, int line)> _foldLabelHitZones = new();
+
+        // Fold peek — VS-style hover preview of collapsed region content.
+        private FoldPeekPopup?   _foldPeekPopup;
+        private System.Windows.Threading.DispatcherTimer? _foldPeekTimer;
+        private int              _foldPeekTargetLine = -1;
 
         // The URL zone currently under the mouse pointer (null = none).
         // Drives hover underline; changing it triggers InvalidateVisual().
@@ -95,19 +102,29 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static void OnExternalHighlighterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not CodeEditor editor) return;
-            if (e.NewValue is ISyntaxHighlighter h)
-                h.Reset();
+
+            // Reset block-comment state carried over from the previous file.
+            if (e.OldValue is ISyntaxHighlighter old) old.Reset();
+            if (e.NewValue is ISyntaxHighlighter h)   h.Reset();
+
+            // Force a full repaint so the new (or cleared) highlighter is applied
+            // to all currently visible lines immediately, without waiting for a scroll.
+            editor.InvalidateVisual();
             editor.RefreshJsonStatusBarItems();
         }
 
         #endregion
 
-        #region Fields - Undo/Redo (Phase 3)
+        #region Fields - Undo/Redo
 
-        private UndoRedoStack _undoRedoStack;
-        private bool _isInternalEdit = false; // Prevent undo during undo/redo operations
+        private readonly WpfHexEditor.Editor.Core.Undo.UndoEngine _undoEngine = new();
+        private bool _isInternalEdit = false; // Prevent undo recording during undo/redo
         private bool _isDirty = false;        // IDocumentEditor: unsaved changes flag
         private string? _currentFilePath;     // IDocumentEditor: last saved file path
+
+        // Context-menu items that need dynamic headers (Undo (3) / Redo (0)).
+        private System.Windows.Controls.MenuItem? _undoMenuItem;
+        private System.Windows.Controls.MenuItem? _redoMenuItem;
 
         #endregion
 
@@ -124,6 +141,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // the visible viewport while a selection drag is in progress.
         private System.Windows.Threading.DispatcherTimer _autoScrollTimer;
         private Point _lastMousePosition;
+
+        // Feature A — Rectangular (block/column) selection (Alt+LeftClick+drag)
+        private readonly RectangularSelection _rectSelection = new();
+        private bool _isRectSelecting;
+
+        // Feature B — Text drag-and-drop (move selection by dragging)
+        private readonly DragDropState _dragDrop = new();
+        private bool _isRectDrag; // true when the active drag originates from a rect selection block
 
         #endregion
 
@@ -154,12 +179,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private string               _lastReferenceSymbol = string.Empty;
 
         // ── CodeLens ──────────────────────────────────────────────────────────
-        private readonly Services.CodeLensService                                    _codeLensService  = new();
-        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush)> _lensData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush)>();
-        private readonly List<(Rect Zone, int LineIndex, string Symbol)>             _lensHitZones     = new();
-        private readonly List<(int LineIndex, double Y)>                             _visLinePositions = new();
-        private readonly Dictionary<int, double>                                     _lineYLookup      = new();
-        private          int                                                         _hoveredLensLine  = -1;
+        private readonly Services.CodeLensService                                                                                              _codeLensService  = new();
+        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush, WpfHexEditor.Editor.Core.CodeLensSymbolKinds Kind)> _lensData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush, WpfHexEditor.Editor.Core.CodeLensSymbolKinds)>();
+        private          int                                                                                                                   _visibleLensCount = 0;
+        private readonly List<(Rect Zone, int LineIndex, string Symbol)>                                                                       _lensHitZones     = new();
+        private readonly List<(int LineIndex, double Y)>                                                                                       _visLinePositions = new();
+        private readonly Dictionary<int, double>                                                                                               _lineYLookup      = new();
+        private          int                                                                                                                   _hoveredLensLine  = -1;
 
         // ── Quick Info Hover ──────────────────────────────────────────────────
         private Services.HoverQuickInfoService?      _hoverQuickInfoService;
@@ -201,14 +227,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static readonly Pen s_lineNumberSeparatorPen = MakeFrozenPen(Color.FromRgb(200, 200, 200), 1.0);
         private static readonly Pen s_glyphInnerPen          = MakeFrozenPen(Colors.White, 1.5);
 
-        // Fold-collapse inline label rendering assets (frozen for performance).
-        private static readonly Pen      s_foldLabelPen       = MakeFrozenPen(Color.FromRgb(128, 128, 128), 1.0);
-        private static readonly Brush    s_foldLabelTextBrush = MakeFrozenBrush(Color.FromRgb(160, 160, 160));
-        private static readonly Brush    s_foldLabelBgBrush   = MakeFrozenBrush(Color.FromArgb(25, 128, 128, 128));
-        private static readonly Typeface s_foldLabelTypeface  = new("Consolas");
+        // Fold-collapse inline label rendering assets.
+        // Static brushes are used as fallback when theme tokens are absent.
+        private static readonly Brush    s_foldLabelPenBrush  = MakeFrozenBrush(Color.FromRgb(86, 156, 214));   // VS blue border
+        private static readonly Brush    s_foldLabelTextBrush = MakeFrozenBrush(Color.FromRgb(200, 200, 200));
+        private static readonly Brush    s_foldLabelBgBrush   = MakeFrozenBrush(Color.FromArgb(30, 86, 156, 214)); // translucent blue
+        private static readonly Typeface s_foldLabelTypeface  = new("Segoe UI");
 
         // Scope guide line pen — semi-transparent so it doesn't obscure text.
         private static readonly Pen s_scopeGuidePen = MakeFrozenPen(Color.FromArgb(60, 128, 128, 128), 1.0);
+
+        // Active (cursor-containing) scope guide — thicker + more opaque than the passive one.
+        private static readonly Pen s_scopeGuideActivePen = MakeFrozenPen(Color.FromArgb(140, 180, 180, 180), 1.5);
 
         // Word-under-caret highlight assets (VS Code "read highlight" style).
         private static readonly Brush s_wordHighlightBg  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
@@ -337,6 +367,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
         private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
 
+        // OPT-D: lineYLookup dirty flag — avoids rebuilding per-line Y positions on every
+        // render frame (e.g. caret blink at 530 ms).  Rebuilt only when the visible range,
+        // CodeLens data, or folding regions actually change.
+        private bool _linePositionsDirty = true;
+
         #endregion
 
         #region Fields - Caret Blinking
@@ -411,6 +446,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if ((bool)e.NewValue && editor._document != null)
                 editor._foldingEngine?.Analyze(editor._document.Lines);
             editor.InvalidateMeasure();
+        }
+
+        public static readonly DependencyProperty FoldToggleOnDoubleClickProperty =
+            DependencyProperty.Register(nameof(FoldToggleOnDoubleClick), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnFoldToggleOnDoubleClickChanged));
+
+        /// <summary>
+        /// When true, the inline collapsed block label ({…} / "Constructor") requires a
+        /// double-click to expand. The gutter toggle triangle is unaffected (always single-click).
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Fold Open on Double-Click")]
+        [Description("When enabled, the inline collapsed block label requires a double-click to expand. The gutter triangle is unaffected.")]
+        public bool FoldToggleOnDoubleClick
+        {
+            get => (bool)GetValue(FoldToggleOnDoubleClickProperty);
+            set => SetValue(FoldToggleOnDoubleClickProperty, value);
+        }
+
+        private static void OnFoldToggleOnDoubleClickChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // Inline label behavior only — gutter triangle is unaffected.
         }
 
         public static readonly DependencyProperty ShowScopeGuidesProperty =
@@ -534,6 +591,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ce.InvalidateMeasure();
         }
 
+        public static readonly DependencyProperty CodeLensVisibleKindsProperty =
+            DependencyProperty.Register(
+                nameof(CodeLensVisibleKinds),
+                typeof(WpfHexEditor.Editor.Core.CodeLensSymbolKinds),
+                typeof(CodeEditor),
+                new FrameworkPropertyMetadata(
+                    WpfHexEditor.Editor.Core.CodeLensSymbolKinds.All,
+                    FrameworkPropertyMetadataOptions.AffectsRender,
+                    OnCodeLensVisibleKindsChanged));
+
+        [Category("Features")]
+        [DisplayName("Code Lens Visible Kinds")]
+        [Description("Bitmask of symbol kinds for which inline reference-count hints are displayed.")]
+        public WpfHexEditor.Editor.Core.CodeLensSymbolKinds CodeLensVisibleKinds
+        {
+            get => (WpfHexEditor.Editor.Core.CodeLensSymbolKinds)GetValue(CodeLensVisibleKindsProperty);
+            set => SetValue(CodeLensVisibleKindsProperty, value);
+        }
+
+        private static void OnCodeLensVisibleKindsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce) return;
+            ce.RebuildVisibleLensCount();
+            ce.InvalidateMeasure();
+        }
+
         // ── Quick Info DPs ─────────────────────────────────────────────────────
 
         public static readonly DependencyProperty ShowQuickInfoProperty =
@@ -574,6 +657,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (d is not CodeEditor ce || ce._hoverQuickInfoService is null) return;
             ce._hoverQuickInfoService.SetDebounceInterval(
                 TimeSpan.FromMilliseconds(Math.Max(200, (int)e.NewValue)));
+        }
+
+        // ── Language Definition DP ─────────────────────────────────────────────
+
+        public static readonly DependencyProperty LanguageProperty =
+            DependencyProperty.Register(nameof(Language), typeof(LanguageDefinition), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender,
+                    OnLanguageChanged));
+
+        [Category("Features")]
+        [DisplayName("Language Definition")]
+        [Description("Active language definition controlling CodeLens and Ctrl+Click navigation per language.")]
+        public LanguageDefinition? Language
+        {
+            get => (LanguageDefinition?)GetValue(LanguageProperty);
+            set => SetValue(LanguageProperty, value);
+        }
+
+        private static void OnLanguageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce) return;
+            var lang = e.NewValue as LanguageDefinition;
+            // Re-evaluate CodeLens service attachment: only attach when the language declares support.
+            if (lang?.EnableCodeLens == true)
+                ce._codeLensService.Attach(ce._document, ce._currentFilePath);
+            else
+                ce._codeLensService.Detach();
         }
 
         public static readonly DependencyProperty EnableValidationProperty =
@@ -1561,8 +1672,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _highlighter = new CodeSyntaxHighlighter();
             UpdateSyntaxHighlighterColors();
 
-            // Initialize undo/redo stack (Phase 3)
-            _undoRedoStack = new UndoRedoStack();
+            // Initialize undo engine — size from options (or default 500).
+            _undoEngine.MaxHistorySize = 500; // updated via ApplyOptions when options are provided
+            _undoEngine.MarkSaved();   // Initial state is clean.
+            _undoEngine.StateChanged  += OnUndoEngineStateChanged;
 
             // Initialize IntelliSense popup (Phase 4)
             _intelliSensePopup = new IntelliSensePopup(this);
@@ -1660,8 +1773,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     new RegionDirectiveFoldingStrategy()));
             _gutterControl = new GutterControl();
             _gutterControl.SetEngine(_foldingEngine);
-            // Re-render text content when fold state changes (gutter re-renders internally via its own handler).
-            _foldingEngine.RegionsChanged += (_, _) => InvalidateVisual();
+            // Fold state change: re-arrange (→ UpdateScrollBars corrects the range) and re-render content.
+            // Gutter re-renders internally via its own RegionsChanged handler.
+            _foldingEngine.RegionsChanged += (_, _) => { _linePositionsDirty = true; InvalidateMeasure(); InvalidateVisual(); };
             _scrollBarChildren.Add(_gutterControl);
 
             // Initialize word-highlight scroll marker overlay.
@@ -1682,14 +1796,48 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _ctrlClickService                         = new Services.CtrlClickNavigationService();
             _ctrlClickService.TargetResolved          += OnCtrlClickTargetResolved;
 
+            // Fold peek timer — fires 1.5 s after the mouse settles over a fold label.
+            _foldPeekTimer          = new System.Windows.Threading.DispatcherTimer
+                                      { Interval = TimeSpan.FromMilliseconds(600) };
+            _foldPeekTimer.Tick    += OnFoldPeekTimerTick;
+
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
         }
 
         private void OnLensDataRefreshed(object? sender, EventArgs e)
         {
-            _lensData = _codeLensService.LensData;
+            _lensData           = _codeLensService.LensData;
+            RebuildVisibleLensCount();
+            _linePositionsDirty = true; // OPT-D: CodeLens data affects per-line Y offsets
             InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Returns true when <paramref name="lineIndex"/> has a CodeLens entry whose
+        /// <see cref="WpfHexEditor.Editor.Core.CodeLensSymbolKinds"/> flag matches the
+        /// current <see cref="CodeLensVisibleKinds"/> filter.
+        /// </summary>
+        private bool IsLensEntryVisible(int lineIndex)
+        {
+            if (!_lensData.TryGetValue(lineIndex, out var entry)) return false;
+            return (entry.Kind & CodeLensVisibleKinds) != 0;
+        }
+
+        /// <summary>
+        /// Recounts filtered CodeLens entries and caches the result in <see cref="_visibleLensCount"/>.
+        /// Must be called whenever <see cref="_lensData"/> or <see cref="CodeLensVisibleKinds"/> changes
+        /// so that scrollbar height calculations use the correct filtered count.
+        /// </summary>
+        private void RebuildVisibleLensCount()
+        {
+            var kinds = CodeLensVisibleKinds;
+            int count = 0;
+            foreach (var entry in _lensData.Values)
+            {
+                if ((entry.Kind & kinds) != 0) count++;
+            }
+            _visibleLensCount = count;
         }
 
         /// <summary>
@@ -1752,8 +1900,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             ShowLineNumbers          = options.ShowLineNumbers;
             ShowScopeGuides          = options.ShowScopeGuides;
+            FoldToggleOnDoubleClick  = options.FoldToggleOnDoubleClick;
             EnableFindAllReferences  = options.EnableFindAllReferences;
             ShowCodeLens             = options.ShowCodeLens;
+            CodeLensVisibleKinds     = options.CodeLensVisibleKinds;
             EnableWordHighlight      = options.EnableWordHighlight;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
@@ -1777,6 +1927,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // idempotent and ensures CE_* theme resources are live for all
             // non-overridden token kinds (overridden ones keep their SetValue).
             ApplyThemeResourceBindings();
+        }
+
+        /// <summary>
+        /// Applies or removes a per-kind syntax colour override on this editor instance.
+        /// Calling with a non-null <paramref name="color"/> sets the DP local value to the
+        /// specified brush, which wins over the active theme resource.
+        /// Calling with null clears the local value and re-binds the DP to the CE_* theme
+        /// resource so the editor tracks theme changes again.
+        /// </summary>
+        public void SetSyntaxColorOverride(SyntaxTokenKind kind, Color? color)
+        {
+            var dp = SyntaxTokenKindToColorProperty(kind);
+            if (dp is null) return;
+
+            if (color.HasValue)
+            {
+                SetValue(dp, new SolidColorBrush(color.Value));
+            }
+            else
+            {
+                ClearValue(dp);
+                // Re-bind to the CE_* theme resource so colour tracks theme changes.
+                if (s_kindToResourceKey.TryGetValue(kind, out var key))
+                    SetResourceReference(dp, key);
+            }
         }
 
         /// <summary>
@@ -2111,8 +2286,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Separator
             contextMenu.Items.Add(new Separator());
 
-            // Undo
-            var undoMenuItem = new MenuItem
+            // Undo — stored as field so the Opened handler can update the header dynamically.
+            _undoMenuItem = new MenuItem
             {
                 Header           = "_Undo",
                 InputGestureText = "Ctrl+Z",
@@ -2120,18 +2295,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 CommandTarget    = this,
                 Icon             = MakeMenuIcon("\uE7A7")
             };
-            contextMenu.Items.Add(undoMenuItem);
+            contextMenu.Items.Add(_undoMenuItem);
 
             // Redo
-            var redoMenuItem = new MenuItem
+            _redoMenuItem = new MenuItem
             {
                 Header           = "_Redo",
-                InputGestureText = "Ctrl+Y",
+                InputGestureText = "Ctrl+Y / Ctrl+Shift+Z",
                 Command          = ApplicationCommands.Redo,
                 CommandTarget    = this,
                 Icon             = MakeMenuIcon("\uE7A6")
             };
-            contextMenu.Items.Add(redoMenuItem);
+            contextMenu.Items.Add(_redoMenuItem);
+
+            // Update dynamic headers just before the menu appears.
+            contextMenu.Opened += (_, _) =>
+            {
+                if (_undoMenuItem != null)
+                    _undoMenuItem.Header = _undoEngine.CanUndo
+                        ? $"_Undo ({_undoEngine.UndoCount})"
+                        : "_Undo";
+                if (_redoMenuItem != null)
+                    _redoMenuItem.Header = _undoEngine.CanRedo
+                        ? $"_Redo ({_undoEngine.RedoCount})"
+                        : "_Redo";
+            };
 
             // Separator
             contextMenu.Items.Add(new Separator());
@@ -2297,30 +2485,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RegisterContextMenuCommands()
         {
-            // Cut
+            // Cut — enabled for both normal and rectangular selection.
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Cut,
                 (sender, e) => CutToClipboard(),
-                (sender, e) => e.CanExecute = !_selection.IsEmpty));
+                (sender, e) => e.CanExecute = !IsReadOnly && (!_selection.IsEmpty || !_rectSelection.IsEmpty)));
 
-            // Copy
+            // Copy — enabled for both normal and rectangular selection.
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy,
                 (sender, e) => CopyToClipboard(),
-                (sender, e) => e.CanExecute = !_selection.IsEmpty));
+                (sender, e) => e.CanExecute = !_selection.IsEmpty || !_rectSelection.IsEmpty));
 
-            // Paste
+            // Paste — disabled when a rectangular selection is active (no block-paste support).
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste,
                 (sender, e) => PasteFromClipboard(),
-                (sender, e) => e.CanExecute = Clipboard.ContainsText()));
+                (sender, e) => e.CanExecute = Clipboard.ContainsText() && _rectSelection.IsEmpty));
 
             // Undo
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo,
                 (sender, e) => Undo(),
-                (sender, e) => e.CanExecute = _undoRedoStack.CanUndo));
+                (sender, e) => e.CanExecute = _undoEngine.CanUndo));
 
             // Redo
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Redo,
                 (sender, e) => Redo(),
-                (sender, e) => e.CanExecute = _undoRedoStack.CanRedo));
+                (sender, e) => e.CanExecute = _undoEngine.CanRedo));
 
             // Select All
             CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll,
@@ -2579,6 +2767,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_virtualizationEngine != null)
             {
                 bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+                // Refresh TotalLines in case this editor shares a document that was populated
+                // after SetDocument() was called (e.g. secondary pane in split view where
+                // OpenAsync runs after Loaded and only updates the primary editor).
+                _virtualizationEngine.TotalLines = _document?.Lines.Count ?? 0;
                 _virtualizationEngine.ViewportHeight = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
                 _virtualizationEngine.CalculateVisibleRange();
             }
@@ -2721,7 +2913,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>
         /// Draws vertical scope guide lines for each non-collapsed fold region.
         /// Each line is placed at the indentation column of the body content,
-        /// running from the first body line to the closing brace line.
+        /// running from the bottom of the opening brace line to the top of the closing brace line
+        /// (VS Code style — the guide covers only the body, without touching either brace).
         /// </summary>
         private void RenderScopeGuides(DrawingContext dc)
         {
@@ -2730,26 +2923,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double textX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
+            // Determine the innermost block containing the cursor for active-guide highlight.
+            var activeRegion = FindInnermostContainingRegion(_cursorLine);
+
             foreach (var region in _foldingEngine.Regions)
             {
                 if (region.IsCollapsed) continue; // body is hidden — no guide needed
-
-                int bodyFirst = region.StartLine + 1;
-                int bodyLast  = region.EndLine;
+                if (region.Kind == FoldingRegionKind.Directive) continue; // no guide for #region/#endregion
 
                 // Skip regions entirely outside the visible range.
-                if (bodyLast < _firstVisibleLine || bodyFirst > _lastVisibleLine) continue;
+                if (region.EndLine < _firstVisibleLine || region.StartLine + 1 > _lastVisibleLine) continue;
 
                 double guideX = ComputeScopeGuideX(textX, region);
                 if (guideX <= textX) continue; // block not indented — skip
 
-                int drawFirst = Math.Max(bodyFirst, _firstVisibleLine);
-                int drawLast  = Math.Min(bodyLast,  _lastVisibleLine);
+                // For Allman-style code the BraceFoldingStrategy sets StartLine = method-header line,
+                // so StartLine+1 is the standalone { line — skip it to start the guide after the {.
+                int bodyStart = region.StartLine + 1;
+                if (bodyStart < _document!.Lines.Count && _document.Lines[bodyStart].Text.Trim() == "{")
+                    bodyStart++;
 
-                double yTop    = ScopeLineIndexToY(drawFirst);
-                double yBottom = ScopeLineIndexToY(drawLast) + _lineHeight;
+                // Draw from bottom of { (first real body line) to top of } — VS Code exact behavior.
+                double yTop    = ScopeLineIndexToY(bodyStart);
+                double yBottom = ScopeLineIndexToY(region.EndLine);
 
-                dc.DrawLine(s_scopeGuidePen, new Point(guideX, yTop), new Point(guideX, yBottom));
+                // Use the active pen for the innermost block containing the cursor (VS Code style).
+                var pen = (activeRegion != null && ReferenceEquals(region, activeRegion))
+                    ? s_scopeGuideActivePen
+                    : s_scopeGuidePen;
+
+                dc.DrawLine(pen, new Point(guideX, yTop), new Point(guideX, yBottom));
             }
         }
 
@@ -2757,6 +2960,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Returns the X position for the scope guide of <paramref name="region"/> by
         /// finding the leading whitespace of the first non-empty line inside the block.
         /// </summary>
+        /// <summary>
+        /// Returns the innermost non-collapsed <see cref="FoldingRegion"/> whose body contains
+        /// <paramref name="cursorLine"/>, or <c>null</c> if none does.
+        /// "Innermost" is defined as the region with the largest <c>StartLine</c> (most nested block).
+        /// </summary>
+        private FoldingRegion? FindInnermostContainingRegion(int cursorLine)
+        {
+            FoldingRegion? best = null;
+            foreach (var r in _foldingEngine!.Regions)
+            {
+                if (r.IsCollapsed) continue;
+                if (cursorLine > r.StartLine && cursorLine <= r.EndLine)
+                    if (best == null || r.StartLine > best.StartLine)
+                        best = r;
+            }
+            return best;
+        }
+
         private double ComputeScopeGuideX(double textX, FoldingRegion region)
         {
             for (int i = region.StartLine + 1; i < region.EndLine && i < _document!.Lines.Count; i++)
@@ -2894,7 +3115,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 if (_foldingEngine?.IsLineHidden(i) == true) continue;
 
-                if (ShowCodeLens && _lensData.ContainsKey(i))
+                if (ShowCodeLens && IsLensEntryVisible(i))
                 {
                     // Code text sits below the hint zone.
                     double codeY = y + LensLineHeight;
@@ -2920,7 +3141,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderCodeLensHints(DrawingContext dc)
         {
-            if (!ShowCodeLens || _lensData.Count == 0 || _document == null) return;
+            if (!ShowCodeLens || _visibleLensCount == 0 || _document == null) return;
 
             _lensHitZones.Clear();
 
@@ -2936,7 +3157,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 if (_foldingEngine?.IsLineHidden(i) == true) { continue; }
 
-                if (_lensData.TryGetValue(i, out var entry) && entry.Count > 0)
+                if (IsLensEntryVisible(i) && _lensData.TryGetValue(i, out var entry) && entry.Count > 0)
                 {
                     // Indent hint to match the leading whitespace of the declaration line.
                     string lineText = _document.Lines[i].Text ?? string.Empty;
@@ -2998,29 +3219,70 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var region = _foldingEngine.GetRegionAt(lineIndex);
             if (region == null || !region.IsCollapsed) return;
 
-            const string LabelText = " \u2026 "; // " … "
-            const double FontSize  = 10.0;
-            const double PaddingH  = 3.0;
-            const double PaddingV  = 1.0;
+            // Resolve theme-aware brushes at render time so theme switches are reflected immediately.
+            // Hover state: use brighter tokens when mouse is over this label.
+            bool isHovered = lineIndex == _foldPeekTargetLine;
+            var borderBrush = (isHovered
+                ? TryFindResource("CE_FoldLabelBorderHover") as Brush
+                : null)
+                ?? TryFindResource("CE_FoldLabelBorder") as Brush
+                ?? s_foldLabelPenBrush;
+            var bgBrush = (isHovered
+                ? TryFindResource("CE_FoldLabelBgHover") as Brush
+                : null)
+                ?? TryFindResource("CE_FoldLabelBg") as Brush
+                ?? s_foldLabelBgBrush;
+            var textBrush   = TryFindResource("CE_FoldLabelFg")     as Brush ?? s_foldLabelTextBrush;
+            var pen         = new Pen(borderBrush, isHovered ? 1.5 : 1.0);
+
+            double labelX;
+            string labelText;
+
+            if (region.Kind == FoldingRegionKind.Directive)
+            {
+                // For directive regions: blank the opening "#region ..." text by drawing a
+                // background-colored rect over it (drawn after text, so it renders on top),
+                // then place the label box at the original indentation level of the #region line.
+                var editorBg = TryFindResource("CE_Background") as Brush;
+                if (editorBg != null)
+                    dc.DrawRectangle(editorBg, null,
+                        new Rect(textX, y, Math.Max(0, ActualWidth - textX), _lineHeight));
+
+                string dirText  = _document.Lines[lineIndex].Text ?? string.Empty;
+                int    indentLen = dirText.Length - dirText.TrimStart().Length;
+                double indentX   = _glyphRenderer?.ComputeVisualX(dirText, indentLen)
+                                   ?? indentLen * _charWidth;
+                labelX    = textX + indentX;
+                labelText = string.IsNullOrEmpty(region.Name) ? "#region" : region.Name;
+            }
+            else
+            {
+                // For brace regions: label appears after the opening line text (e.g. after '{').
+                var codeLine = _document.Lines[lineIndex];
+                double textLen = (codeLine.Text?.TrimEnd().Length ?? 0) * _charWidth;
+                labelX    = textX + textLen + _charWidth * 0.5;
+                labelText = "{ \u2026 }";
+            }
+
+            double FontSize = _fontSize;
+            const double PaddingH = 8.0;
 
             var ft = new FormattedText(
-                LabelText,
+                labelText,
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 s_foldLabelTypeface, FontSize,
-                s_foldLabelTextBrush,
+                textBrush,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            var    codeLine = _document.Lines[lineIndex];
-            double textLen  = (codeLine.Text?.TrimEnd().Length ?? 0) * _charWidth;
-            double labelX   = textX + textLen + _charWidth * 0.5;
-            double boxW     = ft.Width  + PaddingH * 2;
-            double boxH     = ft.Height + PaddingV * 2;
-            double labelY   = y + (_lineHeight - boxH) / 2.0;
+            // Box spans the full line height so it aligns flush with the visible line boundaries.
+            double boxW   = ft.Width + PaddingH * 2;
+            double boxH   = _lineHeight;
+            double labelY = y;
 
             var rect = new Rect(labelX, labelY, boxW, boxH);
-            dc.DrawRectangle(s_foldLabelBgBrush, s_foldLabelPen, rect);
-            dc.DrawText(ft, new Point(labelX + PaddingH, labelY + PaddingV));
+            dc.DrawRoundedRectangle(bgBrush, pen, rect, 2.0, 2.0);
+            dc.DrawText(ft, new Point(labelX + PaddingH, labelY + (boxH - ft.Height) / 2.0));
             _foldLabelHitZones.Add((rect, lineIndex));
         }
 
@@ -3053,9 +3315,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
             // Calculate visible line range
+            int prevFirstVisible = _firstVisibleLine, prevLastVisible = _lastVisibleLine;
             CalculateVisibleLines();
             // Pre-compute per-visible-line Y positions; only declaration lines get +LensLineHeight.
             ComputeVisibleLinePositions();
+
+            // OPT-D: rebuild per-line Y positions only when the visible range, CodeLens, or
+            // folding state changed — not on every caret-blink render frame.
+            if (_firstVisibleLine != prevFirstVisible || _lastVisibleLine != prevLastVisible)
+                _linePositionsDirty = true;
+
+            if (_linePositionsDirty)
+            {
+                ComputeVisibleLinePositions();
+                _linePositionsDirty = false;
+            }
 
             // -- Clip to content area (prevent drawing over scrollbars) --
             dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
@@ -3091,6 +3365,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // 5. Selection
             RenderSelection(dc);
+
+            // 5a. Rectangular (block/column) selection overlay — Feature A
+            RenderRectSelection(dc);
+
+            // 5b. Drag-and-drop insertion caret — Feature B
+            RenderDragDropCaret(dc);
 
             // 6a. Scope guides (drawn behind text so they don't obscure characters)
             RenderScopeGuides(dc);
@@ -3188,9 +3468,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
-            double totalH  = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight;
-            double totalTW = textLeft + _maxContentWidth;
+            double textLeft    = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            int    hiddenLines = _foldingEngine?.TotalHiddenLineCount ?? 0;
+            double totalH      = TopMargin + ((_document?.Lines.Count ?? 0) - hiddenLines) * _lineHeight
+                             + (ShowCodeLens ? _visibleLensCount * LensLineHeight : 0);
+            double totalTW     = textLeft + _maxContentWidth;
 
             // Determine which scrollbars are needed (check for mutual dependency)
             bool needsV = totalH  > finalSize.Height;
@@ -3241,9 +3523,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
                 // -- Vertical --------------------------------------------
-                double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight
-                    + (ShowCodeLens ? _lensData.Count * LensLineHeight : 0);
-                double maxV   = Math.Max(0, totalH - contentH);
+                // Subtract collapsed fold lines so the scrollbar range matches actual rendered content.
+                int    foldHidden = _foldingEngine?.TotalHiddenLineCount ?? 0;
+                double totalH     = TopMargin + ((_document?.Lines.Count ?? 0) - foldHidden) * _lineHeight
+                    + (ShowCodeLens ? _visibleLensCount * LensLineHeight : 0);
+                double maxV       = Math.Max(0, totalH - contentH);
 
                 // Clamp internal offset (e.g. file got shorter after edit)
                 _verticalScrollOffset = Math.Min(_verticalScrollOffset, maxV);
@@ -3375,14 +3659,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     (int)(viewportH / _lineHeight));
             }
 
-            // Extend _lastVisibleLine by the count of hidden lines in the current range so the
-            // viewport stays filled after collapsing fold regions.
-            if (_foldingEngine != null && _foldingEngine.Regions.Count > 0)
+            // Forward-scan: count visible (non-hidden) lines from _firstVisibleLine until the
+            // viewport + render buffer is filled.  Single-pass; correctly handles folds whose
+            // hidden range spans the initial VirtualizationEngine window.
+            if (_foldingEngine != null && _foldingEngine.TotalHiddenLineCount > 0)
             {
-                int extra = 0;
-                for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
-                    if (_foldingEngine.IsLineHidden(i)) extra++;
-                _lastVisibleLine = Math.Min(_document.Lines.Count - 1, _lastVisibleLine + extra);
+                int needed  = (int)(viewportH / _lineHeight) + RenderBuffer + 1;
+                int visible = 0;
+                int i       = _firstVisibleLine;
+                while (i < _document.Lines.Count)
+                {
+                    if (!_foldingEngine.IsLineHidden(i))
+                    {
+                        visible++;
+                        if (visible >= needed) break;
+                    }
+                    i++;
+                }
+                _lastVisibleLine = Math.Min(_document.Lines.Count - 1, i);
             }
 
             // Sync gutter layout with the newly computed visible range.
@@ -3622,6 +3916,58 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Renders the rectangular (block/column) selection overlay as a single seamless rectangle
+        /// spanning the full vertical extent of the selection. Drawing one rectangle eliminates
+        /// the anti-aliasing seams that appear when drawing one rect per line.
+        /// Uses _lineYLookup for CodeLens-aware Y offsets (mandatory).
+        /// </summary>
+        private void RenderRectSelection(DrawingContext dc)
+        {
+            if (_rectSelection.IsEmpty) return;
+
+            // Clamp selection range to the visible viewport.
+            int visTop    = Math.Max(_rectSelection.TopLine,    _firstVisibleLine);
+            int visBottom = Math.Min(_rectSelection.BottomLine, _lastVisibleLine);
+            if (visTop > visBottom) return; // selection entirely outside viewport
+
+            Brush selBrush = IsKeyboardFocusWithin ? SelectionBackground : InactiveSelectionBackground;
+
+            double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            var (leftCol, rightCol) = _rectSelection.GetColumnRange();
+            double x1    = leftEdge + leftCol  * _charWidth;
+            double x2    = leftEdge + rightCol * _charWidth;
+            double width = Math.Max(x2 - x1, 1.0); // at least 1px when collapsed
+
+            // Mandatory: use _lineYLookup for CodeLens-aware Y offset.
+            double yTop = _lineYLookup.TryGetValue(visTop, out double lt) ? lt
+                : TopMargin + (visTop - _firstVisibleLine) * _lineHeight;
+            double yBottom = (_lineYLookup.TryGetValue(visBottom, out double lb) ? lb
+                : TopMargin + (visBottom - _firstVisibleLine) * _lineHeight) + _lineHeight;
+
+            dc.DrawRectangle(selBrush, null, new Rect(x1, yTop, width, yBottom - yTop));
+        }
+
+        /// <summary>
+        /// Renders a 2px wide vertical insertion-caret bar at the drag-drop target position.
+        /// Orange by default (VS convention for drag insertion points).
+        /// </summary>
+        private void RenderDragDropCaret(DrawingContext dc)
+        {
+            if (_dragDrop.Phase != DragPhase.Dragging) return;
+
+            var drop = _dragDrop.DropPosition;
+            if (drop.Line < _firstVisibleLine || drop.Line > _lastVisibleLine) return;
+
+            double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double y = _lineYLookup.TryGetValue(drop.Line, out double ly) ? ly
+                : TopMargin + (drop.Line - _firstVisibleLine) * _lineHeight;
+            double x = leftEdge + drop.Column * _charWidth;
+
+            var caretBrush = TryFindResource("CE_DragCaret") as Brush ?? Brushes.Orange;
+            dc.DrawRectangle(caretBrush, null, new Rect(x - 1, y, 2, _lineHeight));
+        }
+
+        /// <summary>
         /// Render find/replace results highlighting
         /// </summary>
         private void RenderFindResults(DrawingContext dc)
@@ -3678,7 +4024,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Word highlights on CodeLens declaration lines are distracting:
                 // the hint zone sits above the code text and the rectangle would
                 // overlap it.  Skip these lines entirely.
-                if (ShowCodeLens && _lensData.ContainsKey(pos.Line))
+                if (ShowCodeLens && IsLensEntryVisible(pos.Line))
+                    continue;
+
+                // Skip collapsed directive opener lines — text is blanked; a rect outline
+                // would appear as stray top/bottom horizontal strokes over the fold label.
+                if (_foldingEngine?.GetRegionAt(pos.Line) is { IsCollapsed: true, Kind: FoldingRegionKind.Directive })
                     continue;
 
                 double y = _lineYLookup.TryGetValue(pos.Line, out double wy) ? wy
@@ -3790,6 +4141,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         .ToList();
                     _codeScrollMarkerPanel.UpdateWordMarkers(distinctLines,
                         Math.Max(1, _document?.TotalLines ?? 1));
+                }
+
+                // Sync caret + selection markers every render pass.
+                if (_document != null)
+                {
+                    int visibleLines = Math.Max(1, _document.Lines.Count - (_foldingEngine?.TotalHiddenLineCount ?? 0));
+                    bool hasSelection = !_selection.IsEmpty && _selection.NormalizedStart.Line != _selection.NormalizedEnd.Line;
+                    _codeScrollMarkerPanel.UpdateCaretAndSelection(
+                        _cursorLine,
+                        hasSelection ? _selection.NormalizedStart.Line : -1,
+                        hasSelection ? _selection.NormalizedEnd.Line   : -1,
+                        visibleLines);
                 }
             }
         }
@@ -3910,9 +4273,41 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         // Draw fold-collapse label at end of line if this is a collapsed region opener.
                         RenderFoldCollapseLabel(dc, i, x, y);
 
+                        // Advance stateful highlighter even when using the glyph cache,
+                        // so block-comment tracking (_inBlockComment) stays correct for
+                        // subsequent lines that may not be cached.
+                        ExternalHighlighter?.Highlight(line.Text, i);
+
                         continue; // skip slow path
                     }
                     // ── end fast path ─────────────────────────────────────────────────
+
+                    // ── OPT-A Fast path B: optimistic stale-cache rendering ───────────
+                    // The background pipeline has not yet refreshed this line (IsCacheDirty=true)
+                    // but a GlyphRun cache from the previous frame is still available.
+                    // Render the stale frame immediately so the caret stays instant, and let
+                    // the pipeline trigger a clean frame within ~100 ms when it finishes.
+                    if (_glyphRenderer != null
+                        && line.IsCacheDirty
+                        && line.IsGlyphCacheDirty
+                        && line.GlyphRunCache is { Count: > 0 } staleRuns)
+                    {
+                        if (line.CachedUrlZones is { } zones)
+                            foreach (var z in zones)
+                                _urlHitZones.Add(new UrlHitZone(i, z.StartCol, z.EndCol, z.Url));
+
+                        dc.PushTransform(new System.Windows.Media.TranslateTransform(x, y));
+                        foreach (var entry in staleRuns)
+                            dc.DrawGlyphRun(entry.Foreground, entry.Run);
+                        dc.Pop();
+
+                        // Advance stateful block-comment tracking even when using stale cache
+                        // so subsequent (non-cached) lines in the same frame have correct state.
+                        ExternalHighlighter?.Highlight(line.Text, i);
+                        RenderFoldCollapseLabel(dc, i, x, y);
+                        continue;
+                    }
+                    // ── end OPT-A Fast path B ─────────────────────────────────────────
 
                     // Use external (language-pluggable) highlighter when available,
                     // otherwise fall back to the built-in JSON highlighter.
@@ -3921,14 +4316,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                     if (ExternalHighlighter is { } ext)
                     {
-                        // Resolve brushes at render time from live CodeEditor DPs (CE_* keys).
-                        // This ensures correct colors even when the theme changes after file open,
-                        // and avoids the timing issue of baking brushes at file-open time.
-                        rawTokens = ext.Highlight(line.Text, i)
-                            .Select(t => t with
+                        // OPT-A Fast path C: background pipeline has refreshed this line
+                        // (IsCacheDirty=false) and fresh tokens are cached.  Use them directly
+                        // instead of re-running the regex highlighter on the UI thread.
+                        // ext.Highlight() is still called (result discarded) to keep the stateful
+                        // block-comment tracker in sync for subsequent lines in this frame.
+                        if (!line.IsCacheDirty && line.TokensCache is { Count: > 0 } freshTokens)
+                        {
+                            ext.Highlight(line.Text, i); // state tracking only — result discarded
+                            rawTokens = freshTokens.Select(t => t with
                             {
                                 Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
                             });
+                        }
+                        else
+                        {
+                            // Resolve brushes at render time from live CodeEditor DPs (CE_* keys).
+                            // This ensures correct colors even when the theme changes after file open,
+                            // and avoids the timing issue of baking brushes at file-open time.
+                            rawTokens = ext.Highlight(line.Text, i)
+                                .Select(t => t with
+                                {
+                                    Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground
+                                });
+                        }
                     }
                     else
                     {
@@ -4168,6 +4579,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void RenderBracketMatching(DrawingContext dc)
         {
             if (_cursorColumn < 0 || _cursorLine < 0 || _cursorLine >= _document.Lines.Count)
+                return;
+
+            // No bracket matching on collapsed directive opener lines (text is blanked).
+            if (_foldingEngine?.GetRegionAt(_cursorLine) is { IsCollapsed: true, Kind: FoldingRegionKind.Directive })
                 return;
 
             var line = _document.Lines[_cursorLine];
@@ -4522,9 +4937,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     }
                     break;
 
-                // Undo/Redo (Phase 3)
+                // Undo/Redo
                 case Key.Z:
-                    if (ctrlPressed)
+                    if (ctrlPressed && shiftPressed)   // Ctrl+Shift+Z = alternate Redo
+                    {
+                        Redo();
+                        e.Handled = true;
+                    }
+                    else if (ctrlPressed)
                     {
                         Undo();
                         e.Handled = true;
@@ -4633,6 +5053,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // ───────────────────────────────────────────────────────────
 
                 case Key.Escape:
+                    // Feature A: clear rectangular selection first.
+                    if (!_rectSelection.IsEmpty)
+                    {
+                        _rectSelection.Clear();
+                        _isRectSelecting = false;
+                        InvalidateVisual();
+                        e.Handled = true;
+                        break;
+                    }
+
+                    // Feature B: cancel active drag-to-move.
+                    if (_dragDrop.Phase != DragPhase.None)
+                    {
+                        if (_dragDrop.Phase == DragPhase.Dragging)
+                            ReleaseMouseCapture();
+                        Cursor = Cursors.IBeam;
+                        // Restore original selection.
+                        _selection.Start = _dragDrop.SelectionStart;
+                        _selection.End   = _dragDrop.SelectionEnd;
+                        _cursorLine   = _dragDrop.SelectionEnd.Line;
+                        _cursorColumn = _dragDrop.SelectionEnd.Column;
+                        _dragDrop.Reset();
+                        InvalidateVisual();
+                        e.Handled = true;
+                        break;
+                    }
+
                     // Dismiss Quick Info popup on Escape.
                     _quickInfoPopup?.Hide();
                     _hoverQuickInfoService?.Cancel();
@@ -4675,7 +5122,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         TriggerIntelliSenseWithDelay();
                     }
                 }
-                InvalidateVisual();
+                // OPT-B: InvalidateVisual() removed — Document_TextChanged fires in the same
+                // call stack and already calls InvalidateVisual() or InvalidateMeasure() as
+                // appropriate via smart-invalidation routing.  Calling it again here produced
+                // a guaranteed double render on every single keystroke.
             }
         }
 
@@ -4770,6 +5220,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 ToolTip = null;
                 InvalidateVisual();
             }
+
+            // Cancel fold peek on editor exit.
+            _foldPeekTargetLine = -1;
+            _foldPeekTimer?.Stop();
+            _foldPeekPopup?.Hide();
 
             // Start Quick Info grace timer — popup stays open for 200 ms so mouse can enter it.
             _quickInfoPopup?.OnEditorMouseLeft();
@@ -5271,8 +5726,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
-            // Left-click on an inline fold-collapse label → toggle the fold.
-            if (e.LeftButton == MouseButtonState.Pressed && _foldLabelHitZones.Count > 0)
+            // Left-click (or double-click when FoldToggleOnDoubleClick is set) on an inline
+            // fold-collapse label → toggle the fold.
+            bool foldClickOk = e.LeftButton == MouseButtonState.Pressed
+                && (!FoldToggleOnDoubleClick || e.ClickCount == 2);
+            if (foldClickOk && _foldLabelHitZones.Count > 0)
             {
                 var clickPos = e.GetPosition(this);
                 foreach (var (rect, line) in _foldLabelHitZones)
@@ -5338,6 +5796,47 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
+            // Feature A: Alt+LeftClick → start rectangular selection.
+            // e.Handled = true prevents menu-bar Alt activation.
+            bool altDown = (Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt;
+            if (altDown && e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 1)
+            {
+                _isSelecting    = false;
+                _isRectSelecting = true;
+                _selection.Clear();
+                _rectSelection.Begin(textPos);
+                _cursorLine   = textPos.Line;
+                _cursorColumn = textPos.Column;
+                CaptureMouse();
+                InvalidateVisual();
+                NotifyCaretMovedIfChanged();
+                e.Handled = true;
+                return;
+            }
+
+            // Any non-Alt, single click: check for rect-block drag BEFORE clearing the rect.
+            if (!_rectSelection.IsEmpty && e.ClickCount == 1
+                && IsInsideRectBlock(textPos.Line, textPos.Column))
+            {
+                // Click inside the active rect block → start potential rect drag-to-move.
+                _dragDrop.Phase           = DragPhase.Pending;
+                _dragDrop.ClickPixel      = pos;
+                _dragDrop.ClickedPosition = textPos;
+                _dragDrop.SelectionStart  = new TextPosition(_rectSelection.TopLine,    _rectSelection.LeftColumn);
+                _dragDrop.SelectionEnd    = new TextPosition(_rectSelection.BottomLine, _rectSelection.RightColumn);
+                _isRectDrag = true;
+                e.Handled   = true;
+                return;
+            }
+
+            // Non-Alt click with no rect-drag → clear rectangular selection.
+            if (!_rectSelection.IsEmpty)
+            {
+                _rectSelection.Clear();
+                _isRectSelecting = false;
+            }
+            _isRectDrag = false;
+
             // Left-click behavior (unchanged)
             _cursorLine = textPos.Line;
             _cursorColumn = textPos.Column;
@@ -5354,7 +5853,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             else
             {
-                // Start selection
+                // Feature B: click inside existing text selection → potential drag-to-move.
+                if (!_selection.IsEmpty && IsPositionInSelection(textPos))
+                {
+                    _dragDrop.Phase           = DragPhase.Pending;
+                    _dragDrop.ClickPixel      = pos;
+                    _dragDrop.ClickedPosition = textPos;
+                    _dragDrop.SelectionStart  = _selection.NormalizedStart;
+                    _dragDrop.SelectionEnd    = _selection.NormalizedEnd;
+                    // Do NOT set _isSelecting — wait to see if threshold is crossed.
+                    e.Handled = true;
+                    return;
+                }
+
+                // Start normal selection
                 _isSelecting = true;
                 _mouseDownPosition = textPos;
                 _selection.Start = textPos;
@@ -5408,6 +5920,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 bool overLens = _hoveredLensLine >= 0;
                 ToolTip = overLens ? lensTooltip : null;
 
+                // Fold label zones — Hand cursor + 1.5s peek-on-hover.
+                int newHoveredFoldLine = -1;
+                foreach (var (rect, line) in _foldLabelHitZones)
+                    if (rect.Contains(mousePixel)) { newHoveredFoldLine = line; break; }
+
+                bool overFoldLabel = newHoveredFoldLine >= 0;
+
+                if (overFoldLabel)
+                {
+                    if (newHoveredFoldLine != _foldPeekTargetLine)
+                    {
+                        // Mouse moved to a different label — restart peek timer + repaint hover.
+                        _foldPeekTargetLine = newHoveredFoldLine;
+                        _foldPeekTimer?.Stop();
+                        _foldPeekPopup?.Hide();
+                        _foldPeekTimer?.Start();
+                        InvalidateVisual();
+                    }
+                    // else: still on same label — timer already running.
+                }
+                else
+                {
+                    if (_foldPeekTargetLine >= 0)
+                    {
+                        // Mouse left all fold labels — cancel, close, repaint to remove hover style.
+                        _foldPeekTargetLine = -1;
+                        _foldPeekTimer?.Stop();
+                        _foldPeekPopup?.Hide();
+                        InvalidateVisual();
+                    }
+                }
+
                 if (overLens)
                 {
                     Cursor = Cursors.Hand;
@@ -5417,6 +5961,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     Cursor = Cursors.Hand;
                     ShowUrlTooltip();
+                }
+                else if (overFoldLabel)
+                {
+                    Cursor = Cursors.Hand;
+                    HideUrlTooltip();
                 }
                 else
                 {
@@ -5429,13 +5978,66 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     HandleQuickInfoHover(hoverPos, e.GetPosition(this));
 
                 // Ctrl+hover symbol underline.
-                // Force Hand cursor for the full duration of Ctrl held — signals navigability.
-                if (_ctrlDown)
+                // Enabled when: (a) no LanguageDefinition is registered for this file type
+                // (Language == null → backward-compatible default ON), or (b) the language
+                // explicitly declares EnableCtrlClickNavigation = true.
+                // Languages that set EnableCtrlClickNavigation = false (e.g. JSON, YAML, HTML)
+                // suppress the hand-cursor and block navigation.
+                if (_ctrlDown && (Language is null || Language.EnableCtrlClickNavigation))
                 {
                     HandleCtrlHover(hoverPos);
                     if (!overLens && !urlZone.HasValue)
                         Cursor = _hoveredSymbolZone.HasValue ? Cursors.Hand : Cursors.IBeam;
                 }
+            }
+
+            // Feature A: extend rectangular selection during Alt+drag.
+            if (_isRectSelecting && e.LeftButton == MouseButtonState.Pressed)
+            {
+                var pos     = e.GetPosition(this);
+                var textPos = PixelToTextPosition(pos);
+                _rectSelection.Extend(textPos);
+                _cursorLine   = textPos.Line;
+                _cursorColumn = textPos.Column;
+                if (!_selectionRenderPending)
+                {
+                    _selectionRenderPending = true;
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        _selectionRenderPending = false;
+                        InvalidateVisual();
+                    }, System.Windows.Threading.DispatcherPriority.Render);
+                }
+                return;
+            }
+
+            // Feature B: handle drag-pending or drag-in-progress state.
+            if (_dragDrop.Phase != DragPhase.None && e.LeftButton == MouseButtonState.Pressed)
+            {
+                var pos     = e.GetPosition(this);
+                var textPos = PixelToTextPosition(pos);
+
+                if (_dragDrop.Phase == DragPhase.Pending && _dragDrop.HasMovedBeyondThreshold(pos))
+                {
+                    _dragDrop.Phase = DragPhase.Dragging;
+                    CaptureMouse();
+                    Cursor = Cursors.SizeAll;
+                }
+
+                if (_dragDrop.Phase == DragPhase.Dragging)
+                {
+                    _dragDrop.DropPosition = textPos;
+                    if (!_selectionRenderPending)
+                    {
+                        _selectionRenderPending = true;
+                        Dispatcher.InvokeAsync(() =>
+                        {
+                            _selectionRenderPending = false;
+                            InvalidateVisual();
+                        }, System.Windows.Threading.DispatcherPriority.Render);
+                    }
+                }
+                return;
             }
 
             if (_isSelecting && e.LeftButton == MouseButtonState.Pressed)
@@ -5478,6 +6080,42 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
+
+            // Feature A: terminate rectangular selection drag.
+            if (_isRectSelecting)
+            {
+                _isRectSelecting = false;
+                _autoScrollTimer.Stop();
+                ReleaseMouseCapture();
+                return;
+            }
+
+            // Feature B: commit or cancel text drag-to-move.
+            if (_dragDrop.Phase != DragPhase.None)
+            {
+                ReleaseMouseCapture();
+                Cursor = Cursors.IBeam;
+
+                if (_dragDrop.Phase == DragPhase.Dragging)
+                {
+                    if (_isRectDrag) CommitRectDrop();
+                    else             CommitTextDrop();
+                }
+                else
+                {
+                    // Pending phase (no threshold crossed): clear selection, place caret.
+                    _cursorLine   = _dragDrop.ClickedPosition.Line;
+                    _cursorColumn = _dragDrop.ClickedPosition.Column;
+                    _selection.Clear();
+                    _rectSelection.Clear();
+                    InvalidateVisual();
+                    NotifyCaretMovedIfChanged();
+                }
+
+                _isRectDrag = false;
+                _dragDrop.Reset();
+                return;
+            }
 
             if (_isSelecting)
             {
@@ -5568,7 +6206,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 for (int k = 0; k < _visLinePositions.Count; k++)
                 {
                     var (lineIdx, codeY) = _visLinePositions[k];
-                    double slotTop = _lensData.ContainsKey(lineIdx) ? codeY - LensLineHeight : codeY;
+                    double slotTop = IsLensEntryVisible(lineIdx) ? codeY - LensLineHeight : codeY;
                     if (pixel.Y >= slotTop && pixel.Y < codeY + _lineHeight)
                     {
                         line = lineIdx;
@@ -5681,6 +6319,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void CopyToClipboard()
         {
+            // Feature A: rectangular selection takes priority.
+            if (!_rectSelection.IsEmpty) { CopyRectSelection(); return; }
+
             if (_selection.IsEmpty)
                 return;
 
@@ -5695,34 +6336,80 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
         }
 
+        private void CopyRectSelection()
+        {
+            if (_rectSelection.IsEmpty || _document is null) return;
+            var lines = _document.Lines.Select(l => l.Text).ToList();
+            string text = _rectSelection.ExtractText(lines);
+            if (!string.IsNullOrEmpty(text))
+            {
+                try { Clipboard.SetText(text); }
+                catch { /* Silently ignore clipboard errors */ }
+            }
+        }
+
+        private void CutRectSelection()
+        {
+            if (_rectSelection.IsEmpty || _document is null || IsReadOnly) return;
+            CopyRectSelection();
+            DeleteRectSelection();
+        }
+
+        private void DeleteRectSelection()
+        {
+            if (_rectSelection.IsEmpty || _document is null || IsReadOnly) return;
+
+            var (left, right) = _rectSelection.GetColumnRange();
+
+            // Wrap all per-line deletes in a single atomic undo step.
+            using (_undoEngine.BeginTransaction("Delete Rectangular Selection"))
+            {
+                // Iterate bottom-to-top so that per-line deletions don't shift line indices.
+                for (int li = _rectSelection.BottomLine; li >= _rectSelection.TopLine; li--)
+                {
+                    if (li >= _document.Lines.Count) continue;
+                    var line  = _document.Lines[li].Text;
+                    int safeL = Math.Min(left,  line.Length);
+                    int safeR = Math.Min(right, line.Length);
+                    if (safeR <= safeL) continue;
+
+                    var delStart = new TextPosition(li, safeL);
+                    var delEnd   = new TextPosition(li, safeR);
+                    _document.DeleteRange(delStart, delEnd);
+                }
+            }
+
+            _cursorLine   = _rectSelection.TopLine;
+            _cursorColumn = _rectSelection.LeftColumn;
+            _rectSelection.Clear();
+            InvalidateVisual();
+            NotifyCaretMovedIfChanged();
+        }
+
         private void PasteFromClipboard()
         {
             try
             {
-                if (!Clipboard.ContainsText())
-                    return;
+                if (!Clipboard.ContainsText()) return;
 
                 string text = Clipboard.GetText();
 
-                // Delete selection first if any
-                if (!_selection.IsEmpty)
+                // Wrap the entire paste (selection delete + multi-line insert) atomically.
+                using (_undoEngine.BeginTransaction("Paste"))
                 {
-                    DeleteSelection();
-                }
+                    if (!_selection.IsEmpty)
+                        DeleteSelection();
 
-                // Insert text at cursor
-                _document.InsertText(new TextPosition(_cursorLine, _cursorColumn), text);
+                    _document.InsertText(new TextPosition(_cursorLine, _cursorColumn), text);
 
-                // Move cursor to end of inserted text
-                var lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                if (lines.Length == 1)
-                {
-                    _cursorColumn += text.Length;
-                }
-                else
-                {
-                    _cursorLine += lines.Length - 1;
-                    _cursorColumn = lines[lines.Length - 1].Length;
+                    var lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    if (lines.Length == 1)
+                        _cursorColumn += text.Length;
+                    else
+                    {
+                        _cursorLine  += lines.Length - 1;
+                        _cursorColumn = lines[lines.Length - 1].Length;
+                    }
                 }
 
                 _selection.Clear();
@@ -5736,11 +6423,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void CutToClipboard()
         {
+            // Feature A: rectangular selection takes priority.
+            if (!_rectSelection.IsEmpty) { CutRectSelection(); return; }
+
             if (_selection.IsEmpty)
                 return;
 
             CopyToClipboard();
-            DeleteSelection();
+            using (_undoEngine.BeginTransaction("Cut"))
+                DeleteSelection();
         }
 
         private void DeleteSelection()
@@ -5768,23 +6459,168 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InvalidateVisual();
         }
 
+        // -----------------------------------------------------------------------
+        // Feature B — Text drag-and-drop commit logic
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Executes the text move: deletes source selection, adjusts drop position for the
+        /// deletion offset, then inserts at the adjusted target.
+        /// </summary>
+        private void CommitTextDrop()
+        {
+            if (_document is null || IsReadOnly) return;
+
+            var drop     = _dragDrop.DropPosition;
+            var srcStart = _dragDrop.SelectionStart;
+            var srcEnd   = _dragDrop.SelectionEnd;
+
+            // Drop inside the original selection → cancel (no-op move).
+            if (DragDropState.IsDropInsideSelection(drop, srcStart, srcEnd))
+            {
+                _selection.Start = srcStart;
+                _selection.End   = srcEnd;
+                _cursorLine   = srcEnd.Line;
+                _cursorColumn = srcEnd.Column;
+                InvalidateVisual();
+                return;
+            }
+
+            string movedText = _document.GetText(srcStart, srcEnd);
+            bool dropBefore  = drop < srcStart;
+
+            _document.DeleteRange(srcStart, srcEnd);
+            _selection.Clear();
+
+            // If the drop target came after the deleted range, shift it to account for
+            // the removed content.
+            TextPosition insertAt = dropBefore
+                ? drop
+                : AdjustPositionAfterDelete(drop, srcStart, srcEnd);
+
+            _document.InsertText(insertAt, movedText);
+
+            _cursorLine   = insertAt.Line;
+            _cursorColumn = insertAt.Column;
+            InvalidateVisual();
+            NotifyCaretMovedIfChanged();
+        }
+
+        /// <summary>
+        /// Returns true when (line, col) falls inside the active rectangular selection block.
+        /// </summary>
+        private bool IsInsideRectBlock(int line, int col)
+            => !_rectSelection.IsEmpty
+               && line >= _rectSelection.TopLine    && line <= _rectSelection.BottomLine
+               && col  >= _rectSelection.LeftColumn && col  <= _rectSelection.RightColumn;
+
+        /// <summary>
+        /// Executes a rect-block move: extracts the selected column block, deletes it, then
+        /// re-inserts each row at the drop column, preserving the block's row count.
+        /// </summary>
+        private void CommitRectDrop()
+        {
+            if (_document is null || IsReadOnly) { _isRectDrag = false; _dragDrop.Reset(); return; }
+
+            int topLine    = _rectSelection.TopLine;
+            int bottomLine = _rectSelection.BottomLine;
+            int leftCol    = _rectSelection.LeftColumn;
+            int rightCol   = _rectSelection.RightColumn;
+            int blockWidth = rightCol - leftCol;
+            int blockHeight= bottomLine - topLine + 1;
+
+            int dropLine   = _dragDrop.DropPosition.Line;
+            int dropCol    = _dragDrop.DropPosition.Column;
+
+            // Drop inside the original block → no-op.
+            if (dropLine >= topLine && dropLine <= bottomLine
+                && dropCol >= leftCol && dropCol <= rightCol)
+            {
+                _isRectDrag = false;
+                _dragDrop.Reset();
+                return;
+            }
+
+            // Snapshot block text before deletion.
+            var lineTexts = _document.Lines.Select(l => l.Text).ToList();
+            string blockText = _rectSelection.ExtractText(lineTexts);
+            string[] blockLines = blockText.Split('\n');
+
+            // Delete the source block (bottom-to-top to preserve indices).
+            using (_undoEngine.BeginTransaction("Move Rectangular Block"))
+            {
+                for (int li = bottomLine; li >= topLine; li--)
+                {
+                    if (li >= _document.Lines.Count) continue;
+                    var lineText = _document.Lines[li].Text;
+                    int safeL = Math.Min(leftCol,  lineText.Length);
+                    int safeR = Math.Min(rightCol, lineText.Length);
+                    if (safeR > safeL)
+                        _document.DeleteRange(new TextPosition(li, safeL), new TextPosition(li, safeR));
+                }
+
+                // Adjust drop column when drop is on an affected line and after the deleted block.
+                if (dropLine >= topLine && dropLine <= bottomLine && dropCol > rightCol)
+                    dropCol = Math.Max(leftCol, dropCol - blockWidth);
+
+                // Insert each block row at the drop column.
+                for (int i = 0; i < blockHeight; i++)
+                {
+                    int targetLine = dropLine + i;
+                    if (targetLine >= _document.Lines.Count) break;
+                    string lineContent = i < blockLines.Length ? blockLines[i] : string.Empty;
+                    if (!string.IsNullOrEmpty(lineContent))
+                        _document.InsertText(new TextPosition(targetLine, Math.Min(dropCol, _document.Lines[targetLine].Length)), lineContent);
+                }
+            }
+
+            // Reposition rect selection at the new block location.
+            _rectSelection.Begin(new TextPosition(dropLine, dropCol));
+            _rectSelection.Extend(new TextPosition(Math.Min(dropLine + blockHeight - 1, _document.Lines.Count - 1), dropCol + blockWidth));
+
+            _cursorLine   = dropLine;
+            _cursorColumn = dropCol;
+            _isRectDrag   = false;
+            _dragDrop.Reset();
+            InvalidateVisual();
+            NotifyCaretMovedIfChanged();
+        }
+
+        /// <summary>
+        /// Shifts <paramref name="pos"/> to account for the text that was deleted between
+        /// <paramref name="delStart"/> and <paramref name="delEnd"/>.
+        /// Used when the drop target lies after the deleted source range.
+        /// </summary>
+        private static TextPosition AdjustPositionAfterDelete(
+            TextPosition pos,
+            TextPosition delStart,
+            TextPosition delEnd)
+        {
+            int newLine = pos.Line - (delEnd.Line - delStart.Line);
+            int newCol  = pos.Column;
+
+            // If the drop was on the same line where the deletion ended, adjust column.
+            if (pos.Line == delEnd.Line)
+                newCol = delStart.Column + (pos.Column - delEnd.Column);
+
+            return new TextPosition(Math.Max(0, newLine), Math.Max(0, newCol));
+        }
+
         #endregion
 
-        #region Undo/Redo Operations (Phase 3)
+        #region Undo/Redo Operations
 
         public void Undo()
         {
-            if (!_undoRedoStack.CanUndo)
-                return;
-
-            _isInternalEdit = true;
+            if (!_undoEngine.CanUndo) return;
 
             try
             {
-                var edit = _undoRedoStack.Undo();
-                if (edit != null)
+                _isInternalEdit = true;
+                var entry = _undoEngine.TryUndo();
+                if (entry != null)
                 {
-                    ApplyInverseEdit(edit);
+                    ApplyInverseEntry(entry);
                     InvalidateVisual();
                 }
             }
@@ -5792,24 +6628,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 _isInternalEdit = false;
             }
-
-            CanUndoChanged?.Invoke(this, EventArgs.Empty);
-            CanRedoChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Redo()
         {
-            if (!_undoRedoStack.CanRedo)
-                return;
-
-            _isInternalEdit = true;
+            if (!_undoEngine.CanRedo) return;
 
             try
             {
-                var edit = _undoRedoStack.Redo();
-                if (edit != null)
+                _isInternalEdit = true;
+                var entry = _undoEngine.TryRedo();
+                if (entry != null)
                 {
-                    ApplyEdit(edit);
+                    ApplyForwardEntry(entry);
                     InvalidateVisual();
                 }
             }
@@ -5817,41 +6648,147 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 _isInternalEdit = false;
             }
+        }
 
+        // Apply the entry in the forward (redo) direction.
+        private void ApplyForwardEntry(WpfHexEditor.Editor.Core.Undo.IUndoEntry entry)
+        {
+            if (entry is WpfHexEditor.Editor.Core.Undo.CompositeUndoEntry composite)
+            {
+                foreach (var child in composite.Children)
+                    ApplyForwardEntry(child);
+                return;
+            }
+
+            if (entry is not Models.CodeEditorUndoEntry e) return;
+
+            switch (e.Kind)
+            {
+                case Models.CodeEditKind.Insert:
+                {
+                    _document.InsertText(e.Position, e.Text);
+                    // Compute cursor end — accounts for embedded newlines in multi-line pastes.
+                    var fwdLines = e.Text.Split('\n');
+                    if (fwdLines.Length == 1)
+                    {
+                        _cursorLine   = e.Position.Line;
+                        _cursorColumn = e.Position.Column + e.Text.Length;
+                    }
+                    else
+                    {
+                        _cursorLine   = e.Position.Line + fwdLines.Length - 1;
+                        _cursorColumn = fwdLines[^1].Length;
+                    }
+                    break;
+                }
+
+                case Models.CodeEditKind.Delete:
+                {
+                    // Compute the actual end of the deleted range — accounts for multi-line text.
+                    var fwdDelLines = e.Text.Split('\n');
+                    var delEnd = fwdDelLines.Length == 1
+                        ? new TextPosition(e.Position.Line, e.Position.Column + e.Text.Length)
+                        : new TextPosition(e.Position.Line + fwdDelLines.Length - 1, fwdDelLines[^1].Length);
+                    _document.DeleteRange(e.Position, delEnd);
+                    _cursorLine   = e.Position.Line;
+                    _cursorColumn = e.Position.Column;
+                    break;
+                }
+
+                case Models.CodeEditKind.NewLine:
+                    // Redo: re-split the line at the original position.
+                    _document.InsertNewLine(e.Position.Line, e.Position.Column);
+                    _cursorLine   = e.Position.Line + 1;
+                    _cursorColumn = 0;
+                    break;
+
+                case Models.CodeEditKind.DeleteLine:
+                    // Redo: re-merge. At redo time Lines[line-1]=part1, Lines[line]=e.Text.
+                    int prevLen = _document.Lines[e.Position.Line - 1].Text.Length;
+                    _document.Lines[e.Position.Line - 1].Text += e.Text;  // direct merge (no event)
+                    _document.DeleteLine(e.Position.Line);                 // _isInternalEdit=true → not re-recorded
+                    _cursorLine   = e.Position.Line - 1;
+                    _cursorColumn = prevLen;
+                    break;
+            }
+        }
+
+        // Apply the inverse (undo) direction.
+        private void ApplyInverseEntry(WpfHexEditor.Editor.Core.Undo.IUndoEntry entry)
+        {
+            if (entry is WpfHexEditor.Editor.Core.Undo.CompositeUndoEntry composite)
+            {
+                // Apply children in reverse order for undo.
+                for (int i = composite.Children.Count - 1; i >= 0; i--)
+                    ApplyInverseEntry(composite.Children[i]);
+                return;
+            }
+
+            if (entry is not Models.CodeEditorUndoEntry e) return;
+
+            switch (e.Kind)
+            {
+                case Models.CodeEditKind.Insert:
+                {
+                    // Inverse of insert = delete the inserted text.
+                    // For multi-line text the end position is on a different line.
+                    var invLines = e.Text.Split('\n');
+                    var insEnd = invLines.Length == 1
+                        ? new TextPosition(e.Position.Line, e.Position.Column + e.Text.Length)
+                        : new TextPosition(e.Position.Line + invLines.Length - 1, invLines[^1].Length);
+                    _document.DeleteRange(e.Position, insEnd);
+                    _cursorLine   = e.Position.Line;
+                    _cursorColumn = e.Position.Column;
+                    break;
+                }
+
+                case Models.CodeEditKind.Delete:
+                {
+                    // Inverse of delete = re-insert the deleted text.
+                    _document.InsertText(e.Position, e.Text);
+                    _cursorLine   = e.Position.Line;
+                    _cursorColumn = e.Position.Column;
+                    break;
+                }
+
+                case Models.CodeEditKind.NewLine:
+                    // e.Text = right part (content of line+1) stored at recording time.
+                    // At undo time (LIFO): Lines[line].Text = left, Lines[line+1].Text = e.Text.
+                    var leftText = _document.Lines[e.Position.Line].Text;
+                    _document.Lines[e.Position.Line].Text = leftText + e.Text;
+                    if (e.Position.Line + 1 < _document.Lines.Count)
+                        _document.DeleteLine(e.Position.Line + 1);  // _isInternalEdit=true → not re-recorded
+                    _cursorLine   = e.Position.Line;
+                    _cursorColumn = e.Position.Column;
+                    break;
+
+                case Models.CodeEditKind.DeleteLine:
+                    // e.Position=(deletedLine,0), e.Text=content of the deleted line.
+                    // At undo time (LIFO): Lines[line-1].Text = part1 + e.Text (merged).
+                    var mergedText = _document.Lines[e.Position.Line - 1].Text;
+                    int splitAt    = mergedText.Length - e.Text.Length;
+                    _document.Lines[e.Position.Line - 1].Text = splitAt > 0 ? mergedText[..splitAt] : string.Empty;
+                    _document.InsertNewLine(e.Position.Line - 1,
+                        _document.Lines[e.Position.Line - 1].Text.Length);  // splits at end → creates empty line+1
+                    _document.Lines[e.Position.Line].Text = e.Text;          // restore deleted line content
+                    _cursorLine   = e.Position.Line;
+                    _cursorColumn = 0;
+                    break;
+            }
+        }
+
+        // Handles UndoEngine state changes: updates _isDirty and fires events.
+        private void OnUndoEngineStateChanged(object? sender, EventArgs e)
+        {
+            bool dirty = !_undoEngine.IsAtSavePoint;
+            if (dirty != _isDirty)
+            {
+                _isDirty = dirty;
+                ModifiedChanged?.Invoke(this, EventArgs.Empty);
+                TitleChanged?.Invoke(this, BuildTitle());
+            }
             CanUndoChanged?.Invoke(this, EventArgs.Empty);
             CanRedoChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ApplyEdit(TextEdit edit)
-        {
-            switch (edit.Type)
-            {
-                case TextEditType.Insert:
-                    _document.InsertText(edit.Position, edit.Text);
-                    _cursorLine = edit.Position.Line;
-                    _cursorColumn = edit.Position.Column + edit.Text.Length;
-                    break;
-
-                case TextEditType.Delete:
-                    var endPos = new TextPosition(edit.Position.Line, edit.Position.Column + edit.Text.Length);
-                    _document.DeleteRange(edit.Position, endPos);
-                    _cursorLine = edit.Position.Line;
-                    _cursorColumn = edit.Position.Column;
-                    break;
-
-                case TextEditType.Replace:
-                    // Replace is handled as delete + insert in document model
-                    break;
-            }
-        }
-
-        private void ApplyInverseEdit(TextEdit edit)
-        {
-            var inverse = edit.CreateInverse();
-            if (inverse != null)
-            {
-                ApplyEdit(inverse);
-            }
         }
 
         #endregion
@@ -5864,22 +6801,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _quickInfoPopup?.Hide();
             _hoverQuickInfoService?.Cancel();
 
-            // Phase 3: Add to undo/redo stack (unless this is an undo/redo operation itself)
+            // Record in undo engine (unless replaying an undo/redo operation).
             if (!_isInternalEdit)
             {
-                // Convert TextChangeType to TextEditType (same enum values, different types)
-                var editType = (TextEditType)((int)e.ChangeType);
-                var textEdit = new TextEdit(editType, e.Position, e.Text);
-                _undoRedoStack.Push(textEdit);
+                var kind = (Models.CodeEditKind)(int)e.ChangeType;
 
-                if (!_isDirty)
-                {
-                    _isDirty = true;
-                    ModifiedChanged?.Invoke(this, EventArgs.Empty);
-                    TitleChanged?.Invoke(this, BuildTitle());
-                }
-                CanUndoChanged?.Invoke(this, EventArgs.Empty);
-                CanRedoChanged?.Invoke(this, EventArgs.Empty);
+                // For NewLine, store the RIGHT part (content that went to line+1).
+                // e.Text = Environment.NewLine is useless for reconstruction; we need
+                // the actual text so ApplyInverseEntry can merge the lines back.
+                string recordedText = e.ChangeType == Models.TextChangeType.NewLine
+                    ? (e.Position.Line + 1 < _document.Lines.Count
+                        ? _document.Lines[e.Position.Line + 1].Text
+                        : string.Empty)
+                    : e.Text;
+
+                var entry = new Models.CodeEditorUndoEntry(kind, e.Position, recordedText);
+                _undoEngine.Push(entry);
+                // _isDirty + events are handled by OnUndoEngineStateChanged via StateChanged.
             }
 
             // Phase 5: Trigger validation with debounce
@@ -5904,7 +6842,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             // Incremental max-width update (P1-CE-02) — O(1) on growth, O(n) only on shrink
-            int changedLine = e.Position.Line;
+            int changedLine    = e.Position.Line;
+            int prevMaxLength  = _cachedMaxLineLength;
             if (changedLine >= 0 && changedLine < _document.Lines.Count)
             {
                 int newLen = _document.Lines[changedLine].Text.Length;
@@ -5914,16 +6853,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _cachedMaxLineLength = _document.Lines.Count > 0
                         ? _document.Lines.Max(l => l.Text.Length) : 0;
             }
+            bool maxWidthChanged = _cachedMaxLineLength != prevMaxLength;
 
             // Invalidate line-number cache for the changed line (P1-CE-03)
             _lineNumberCache.Remove(changedLine);
 
-            // Reset highlight tracking so the next render re-schedules the pipeline (content changed).
-            _lastHighlightFirst = -1;
-            _lastHighlightLast  = -1;
+            // OPT-B: Smart invalidation routing — only trigger a full layout pass when
+            // the document *structure* changes (line count or max-line-width).  For a plain
+            // char insert/delete on an existing line the scrollbar ranges are unchanged, so
+            // InvalidateVisual() is sufficient and avoids the heavier Measure→Arrange chain.
+            bool lineCountChanged = e.ChangeType is TextChangeType.NewLine
+                                                 or TextChangeType.DeleteLine;
+            if (lineCountChanged)
+                _linePositionsDirty = true; // OPT-D: new/deleted lines shift subsequent Y positions
 
-            // InvalidateMeasure triggers full layout pass → UpdateScrollBars (ranges may have changed)
-            InvalidateMeasure();
+            if (lineCountChanged || maxWidthChanged)
+                InvalidateMeasure(); // scrollbar ranges may have changed
+            else
+                InvalidateVisual();  // layout unaffected — redraw only
         }
 
         #endregion
@@ -6115,13 +7062,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _currentScrollOffset    = 0;
             _targetScrollOffset     = 0;
             _horizontalScrollOffset = 0;
-            // Sync TotalLines so the virtualization engine reflects the newly loaded document.
-            // Without this call, the engine keeps the initial count (27 lines from the default
-            // template) and clamps LastVisibleLine prematurely for any larger file.
-            UpdateVirtualization();
-            RebuildMaxLineLength(); // single O(n) scan at load time
 
-            // Initial folding analysis on freshly loaded content.
+            // Clear undo history — loaded content is the new baseline.
+            _undoEngine.Reset();
+            _undoEngine.MarkSaved();
+            _isDirty = false;
+
+            // Sync TotalLines so the virtualization engine reflects the newly loaded document.
+            UpdateVirtualization();
+            RebuildMaxLineLength();
+
             if (IsFoldingEnabled && _foldingEngine != null)
                 _foldingEngine.Analyze(_document.Lines);
 
@@ -6150,12 +7100,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>
         /// Check if can undo
         /// </summary>
-        public bool CanUndo => _undoRedoStack.CanUndo;
+        public bool CanUndo => _undoEngine.CanUndo;
 
         /// <summary>
         /// Check if can redo
         /// </summary>
-        public bool CanRedo => _undoRedoStack.CanRedo;
+        public bool CanRedo => _undoEngine.CanRedo;
+
+        /// <summary>Number of available undo steps.</summary>
+        public int UndoCount => _undoEngine.UndoCount;
+
+        /// <summary>Number of available redo steps.</summary>
+        public int RedoCount => _undoEngine.RedoCount;
 
         /// <summary>
         /// Get validation error count
@@ -6236,6 +7192,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _currentFilePath = filePath;
+            _undoEngine.MarkSaved();  // Stamp save-point so Undo can detect "back to clean".
             _isDirty = false;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
             TitleChanged?.Invoke(this, BuildTitle());
@@ -6298,6 +7255,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // UI-thread work: swap the pre-built line array into the document, then run the same
             // post-load steps as LoadText() so VirtualizationEngine.TotalLines is updated.
             _document.LoadLines(lines, text);
+            _undoEngine.Reset();    // Loaded content is the new baseline.
+            _undoEngine.MarkSaved();
+            _isDirty = false;
             _cursorLine             = 0;
             _cursorColumn           = 0;
             _selection.Clear();
@@ -6879,7 +7839,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _cursorLine = 0;
             _cursorColumn = 0;
             _selection.Clear();
-            _undoRedoStack.Clear();
+            _undoEngine.Reset();
             _validationErrors.Clear();
             InvalidateVisual();
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
@@ -7058,6 +8018,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         void IEditorPersistable.MarkChangesetSaved()
         {
+            _undoEngine.MarkSaved();
             _isDirty = false;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -7144,6 +8105,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Called when <see cref="Services.HoverQuickInfoService"/> fires
         /// <see cref="Services.HoverQuickInfoService.QuickInfoResolved"/>.
         /// </summary>
+        private void OnFoldPeekTimerTick(object? sender, EventArgs e)
+        {
+            _foldPeekTimer!.Stop();
+            if (_foldPeekTargetLine < 0 || _foldingEngine == null || _document == null) return;
+
+            var region = _foldingEngine.GetRegionAt(_foldPeekTargetLine);
+            if (region == null || !region.IsCollapsed) return;
+
+            // Find the label rect so we can anchor the popup beneath it.
+            Rect labelRect = default;
+            foreach (var (rect, ln) in _foldLabelHitZones)
+                if (ln == _foldPeekTargetLine) { labelRect = rect; break; }
+
+            _foldPeekPopup ??= new FoldPeekPopup();
+            _foldPeekPopup.Show(this, region, _document.Lines, _typeface, _fontSize, labelRect,
+                                ExternalHighlighter);
+        }
+
         private void OnQuickInfoResolved(object? sender, WpfHexEditor.SDK.ExtensionPoints.QuickInfoResult? result)
         {
             if (result is null)

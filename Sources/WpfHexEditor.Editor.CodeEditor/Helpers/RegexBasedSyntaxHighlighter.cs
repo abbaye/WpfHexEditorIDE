@@ -13,6 +13,8 @@
 //     Adapter Pattern — wraps TextEditor.RegexSyntaxHighlighter behind ISyntaxHighlighter.
 //     Color resolution uses WPF TryFindResource on the host visual, falling back to a
 //     static default-brush table so the highlighter works even before the control is loaded.
+//     Block-comment state machine: reads blockCommentStart/blockCommentEnd from the
+//     SyntaxDefinition (.whlang metadata) to highlight multi-line block comments correctly.
 // ==========================================================
 
 using System.Windows;
@@ -28,6 +30,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 /// Syntax highlighter that uses a <see cref="SyntaxDefinition"/> (.whlang) and the
 /// <see cref="RegexSyntaxHighlighter"/> engine from the TextEditor assembly.
 /// Resolves <c>TE_*</c> color keys through the WPF resource system.
+/// Tracks multi-line block comments using the <c>blockCommentStart</c> /
+/// <c>blockCommentEnd</c> metadata declared in the .whlang file.
 /// </summary>
 public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
 {
@@ -45,13 +49,20 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
             ["TE_Label"]        = new SolidColorBrush(Color.FromRgb(0xDC, 0xDC, 0xAA)),
             ["TE_Register"]     = new SolidColorBrush(Color.FromRgb(0x9C, 0xDC, 0xFE)),
             ["TE_Directive"]    = new SolidColorBrush(Color.FromRgb(0xC5, 0x86, 0xC0)),
+            ["TE_RegionName"]   = new SolidColorBrush(Color.FromRgb(0x9C, 0xDC, 0xFE)),  // VS-like light blue for region labels
             ["TE_Address"]      = new SolidColorBrush(Color.FromRgb(0xB5, 0xCE, 0xA8)),
+            ["TE_ControlFlow"]  = new SolidColorBrush(Color.FromRgb(0xC5, 0x86, 0xC0)),  // #C586C0 pink
             ["TE_Foreground"]   = Brushes.WhiteSmoke,
         };
 
     private readonly TextEditorHighlighter _inner;
     private readonly Brush                  _defaultForeground;
     private readonly FrameworkElement?      _resourceHost;
+
+    // Block-comment state — populated from .whlang blockCommentStart/blockCommentEnd.
+    private readonly string? _blockCommentStart;
+    private readonly string? _blockCommentEnd;
+    private bool             _inBlockComment;
 
     /// <summary>
     /// Creates a new <see cref="RegexBasedSyntaxHighlighter"/>.
@@ -68,9 +79,11 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
         Brush?            defaultForeground = null)
     {
         ArgumentNullException.ThrowIfNull(definition);
-        _inner             = new TextEditorHighlighter(definition);
-        _resourceHost      = resourceHost;
-        _defaultForeground = defaultForeground ?? Brushes.WhiteSmoke;
+        _inner              = new TextEditorHighlighter(definition);
+        _resourceHost       = resourceHost;
+        _defaultForeground  = defaultForeground ?? Brushes.WhiteSmoke;
+        _blockCommentStart  = definition.BlockCommentStart;
+        _blockCommentEnd    = definition.BlockCommentEnd;
     }
 
     /// <inheritdoc />
@@ -82,9 +95,86 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
         if (string.IsNullOrEmpty(lineText))
             return [];
 
-        var spans = _inner.Highlight(lineText);
+        var commentBrush = ResolveBrush("TE_Comment");
+
+        // --- Continuation: we are inside an open block comment ---
+        if (_inBlockComment && _blockCommentEnd != null)
+        {
+            int closeIdx = lineText.IndexOf(_blockCommentEnd, StringComparison.Ordinal);
+
+            if (closeIdx < 0)
+            {
+                // Entire line is inside the block comment.
+                return [new SyntaxHighlightToken(0, lineText.Length, lineText, commentBrush)];
+            }
+
+            // Closing delimiter found on this line.
+            int closeEnd = closeIdx + _blockCommentEnd.Length;
+            _inBlockComment = false;
+
+            var tokens = new List<SyntaxHighlightToken>();
+            tokens.Add(new SyntaxHighlightToken(0, closeEnd, lineText[..closeEnd], commentBrush));
+
+            if (closeEnd < lineText.Length)
+                tokens.AddRange(HighlightNormalFragment(lineText[closeEnd..], closeEnd));
+
+            return tokens;
+        }
+
+        // --- Check for a block comment opening on this line ---
+        if (_blockCommentStart != null)
+        {
+            int openIdx = lineText.IndexOf(_blockCommentStart, StringComparison.Ordinal);
+
+            if (openIdx >= 0)
+            {
+                int closeIdx = _blockCommentEnd != null
+                    ? lineText.IndexOf(_blockCommentEnd, openIdx + _blockCommentStart.Length, StringComparison.Ordinal)
+                    : -1;
+
+                if (closeIdx < 0)
+                {
+                    // Block comment opens on this line but does not close — multi-line.
+                    _inBlockComment = true;
+
+                    var tokens = new List<SyntaxHighlightToken>();
+
+                    if (openIdx > 0)
+                        tokens.AddRange(HighlightNormalFragment(lineText[..openIdx], 0));
+
+                    tokens.Add(new SyntaxHighlightToken(
+                        openIdx, lineText.Length - openIdx, lineText[openIdx..], commentBrush));
+
+                    return tokens;
+                }
+
+                // Both opening and closing delimiters are on the same line — the inner
+                // regex rule (e.g. <!--[\s\S]*?-->) will match it correctly; fall through.
+            }
+        }
+
+        // --- Normal line: delegate entirely to the inner regex highlighter ---
+        return HighlightNormalFragment(lineText, 0);
+    }
+
+    /// <inheritdoc />
+    public void Reset() { _inBlockComment = false; }
+
+    // -- Private helpers -------------------------------------------------------
+
+    /// <summary>
+    /// Runs the inner (stateless) regex highlighter on <paramref name="text"/> and
+    /// returns tokens with column positions offset by <paramref name="columnOffset"/>.
+    /// </summary>
+    private IReadOnlyList<SyntaxHighlightToken> HighlightNormalFragment(string text, int columnOffset)
+    {
+        if (string.IsNullOrEmpty(text))
+            return [];
+
+        var spans = _inner.Highlight(text);
+
         if (spans.Count == 0)
-            return [new SyntaxHighlightToken(0, lineText.Length, lineText, _defaultForeground)];
+            return [new SyntaxHighlightToken(columnOffset, text.Length, text, _defaultForeground)];
 
         var tokens   = new List<SyntaxHighlightToken>(spans.Count + 2);
         int position = 0;
@@ -94,30 +184,25 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
             // Fill uncovered gap before this span with default colour.
             if (span.Start > position)
             {
-                var gap = lineText.Substring(position, span.Start - position);
-                tokens.Add(new SyntaxHighlightToken(position, gap.Length, gap, _defaultForeground));
+                var gap = text.Substring(position, span.Start - position);
+                tokens.Add(new SyntaxHighlightToken(columnOffset + position, gap.Length, gap, _defaultForeground));
             }
 
-            var brush = ResolveBrush(span.ColorKey);
-            var text  = lineText.Substring(span.Start, Math.Min(span.Length, lineText.Length - span.Start));
-            tokens.Add(new SyntaxHighlightToken(span.Start, text.Length, text, brush));
+            var brush    = ResolveBrush(span.ColorKey);
+            var spanText = text.Substring(span.Start, Math.Min(span.Length, text.Length - span.Start));
+            tokens.Add(new SyntaxHighlightToken(columnOffset + span.Start, spanText.Length, spanText, brush));
             position = span.Start + span.Length;
         }
 
         // Fill trailing uncovered text.
-        if (position < lineText.Length)
+        if (position < text.Length)
         {
-            var tail = lineText.Substring(position);
-            tokens.Add(new SyntaxHighlightToken(position, tail.Length, tail, _defaultForeground));
+            var tail = text.Substring(position);
+            tokens.Add(new SyntaxHighlightToken(columnOffset + position, tail.Length, tail, _defaultForeground));
         }
 
         return tokens;
     }
-
-    /// <inheritdoc />
-    public void Reset() { /* RegexSyntaxHighlighter is stateless — no-op. */ }
-
-    // -- Private helpers -------------------------------------------------------
 
     private Brush ResolveBrush(string colorKey)
     {

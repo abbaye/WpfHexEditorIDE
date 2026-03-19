@@ -1,0 +1,41 @@
+<UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Controls.Editors.ColorPickerEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker"
+             Height="22">
+
+    <!-- ==========================================================
+         File: ColorPickerEditor.xaml
+         Created: 2026-03-17
+         Description: Inline color swatch that opens a full WpfHexEditor.ColorPicker
+                      popup when clicked. Thin wrapper — delegates all color editing
+                      to the shared ColorPicker control (HSV canvas, RGB sliders,
+                      alpha, recent colors, palettes).
+         Theme: XD_ColorSwatchBorder (DynamicResource) on the swatch border.
+         ========================================================== -->
+
+    <StackPanel Orientation="Horizontal">
+
+        <!-- Color swatch — click opens picker popup (wired in code-behind) -->
+        <Border x:Name="SwatchBorder"
+                Width="16" Height="16"
+                BorderThickness="1" Margin="0,0,4,0"
+                Cursor="Hand" VerticalAlignment="Center"
+                BorderBrush="{DynamicResource XD_ColorSwatchBorder}">
+            <Border.Background>
+                <SolidColorBrush x:Name="SwatchFill" Color="Transparent"/>
+            </Border.Background>
+        </Border>
+
+        <!-- Full-featured ColorPicker inside a StaysOpen=False popup -->
+        <Popup x:Name="InnerPickerPopup"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               PlacementTarget="{Binding ElementName=SwatchBorder}">
+            <cp:ColorPicker x:Name="InnerPicker"
+                            ShowAlphaChannel="True"/>
+        </Popup>
+
+    </StackPanel>
+</UserControl>

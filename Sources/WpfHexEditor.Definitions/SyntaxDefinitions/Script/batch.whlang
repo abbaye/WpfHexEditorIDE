@@ -1,0 +1,22 @@
+{
+  "name": "Batch",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for Windows Batch (CMD) scripts.",
+  "category": "Script",
+  "extensions": [ ".bat", ".cmd", ".btm" ],
+  "lineComment": "REM",
+  "references": {
+    "webLinks": [ "https://learn.microsoft.com/windows-server/administration/windows-commands/windows-commands" ]
+  },
+  "rules": [
+    { "type": "Comment",    "pattern": "(?i)^\\s*(?:REM|::)[^\\n]*", "colorKey": "TE_Comment" },
+    { "type": "String",     "pattern": "\"[^\"]*\"", "colorKey": "TE_String" },
+    { "type": "Variable",   "pattern": "%[A-Za-z_][A-Za-z0-9_]*%|%~?[0-9]|%%[A-Za-z_][A-Za-z0-9_]*|!%?[A-Za-z_][A-Za-z0-9_]*!?", "colorKey": "TE_Register" },
+    { "type": "Cmdlet",     "pattern": "(?i)^\\s*@?(?:echo|set|if|else|for|goto|call|exit|pause|cd|dir|del|copy|move|ren|md|rd|type|cls|color|title|prompt|path|date|time|ver|vol|label|format|diskpart|tasklist|taskkill|start|timeout|ping|ipconfig|netstat|findstr|find|sort|more|choice|errorlevel)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Keyword",    "pattern": "(?i)\\b(NOT|EQU|NEQ|LSS|LEQ|GTR|GEQ|AND|OR|DO|IN|EXIST|DEFINED|ERRORLEVEL)\\b", "colorKey": "TE_Keyword" },
+    { "type": "BatchLabel", "pattern": "^\\s*:[A-Za-z_][A-Za-z0-9_]*", "colorKey": "TE_Label" },
+    { "type": "Number",     "pattern": "\\b[0-9]+\\b", "colorKey": "TE_Number" }
+  ],
+  "foldingStrategy": "None"
+}

@@ -24,6 +24,12 @@ public interface IDocumentEditor
     bool CanRedo    { get; }
     bool IsReadOnly { get; set; }   // DP-backed in WPF implementations
 
+    /// <summary>Number of available undo steps (0 if unsupported).</summary>
+    int UndoCount { get => 0; }
+
+    /// <summary>Number of available redo steps (0 if unsupported).</summary>
+    int RedoCount { get => 0; }
+
     /// <summary>
     /// Title displayed in the host tab ("file.bin", "file.bin *" if dirty).
     /// </summary>

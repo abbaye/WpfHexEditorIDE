@@ -1,0 +1,31 @@
+{
+  "name": "Protocol Buffers",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for Protocol Buffers (proto2 and proto3) schema files.",
+  "category": "Data",
+  "extensions": [ ".proto" ],
+  "lineComment": "//",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [ "Protocol Buffers Language Guide (proto3)" ],
+    "webLinks": [ "https://protobuf.dev/programming-guides/proto3/" ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "/\\*[\\s\\S]*?\\*/", "colorKey": "TE_Comment" },
+    { "type": "Comment",       "pattern": "//.*$", "colorKey": "TE_Comment" },
+    { "type": "String",        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"", "colorKey": "TE_String" },
+    { "type": "Keyword",       "pattern": "\\b(syntax|package|import|option|message|enum|service|rpc|returns|oneof|map|extensions|reserved|extend|stream|weak|public|optional|required|repeated)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\b(double|float|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|bool|string|bytes|any)\\b", "colorKey": "TE_Type" },
+    { "type": "Keyword",       "pattern": "\\b(true|false)\\b", "colorKey": "TE_Keyword" },
+    { "type": "UserType",      "pattern": "\\b[A-Z][A-Za-z0-9_]*\\b", "colorKey": "TE_Type" },
+    { "type": "Number",        "pattern": "\\b[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b", "colorKey": "TE_Number" }
+  ],
+  "snippets": [
+    { "trigger": "msg",   "body": "message $cursor {\n  \n}", "description": "Message" },
+    { "trigger": "enum",  "body": "enum $cursor {\n  UNKNOWN = 0;\n}", "description": "Enum" },
+    { "trigger": "svc",   "body": "service $cursor {\n  rpc Method(Request) returns (Response);\n}", "description": "Service" }
+  ],
+  "foldingStrategy": "Brace"
+}

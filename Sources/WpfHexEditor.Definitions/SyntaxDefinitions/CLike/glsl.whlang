@@ -1,0 +1,29 @@
+{
+  "name": "GLSL",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the OpenGL Shading Language (GLSL) and HLSL.",
+  "category": "C-like",
+  "extensions": [ ".glsl", ".vert", ".frag", ".geom", ".comp", ".tesc", ".tese", ".hlsl", ".fx", ".fxh" ],
+  "lineComment": "//",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [ "GLSL 4.60 Specification", "HLSL Reference" ],
+    "webLinks": [
+      "https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.4.60.pdf",
+      "https://learn.microsoft.com/windows/win32/direct3dhlsl/dx-graphics-hlsl-reference"
+    ]
+  },
+  "rules": [
+    { "type": "BlockComment",  "pattern": "/\\*[\\s\\S]*?\\*/", "colorKey": "TE_Comment" },
+    { "type": "Comment",       "pattern": "//.*$", "colorKey": "TE_Comment" },
+    { "type": "Preprocessor",  "pattern": "^\\s*#(?:version|extension|define|undef|if|ifdef|ifndef|elif|else|endif|error|pragma|line)\\b[^/\\n]*", "colorKey": "TE_Directive" },
+    { "type": "Keyword",       "pattern": "\\b(attribute|break|case|centroid|const|continue|default|discard|do|else|flat|for|highp|if|in|inout|invariant|layout|lowp|mediump|noperspective|out|patch|precise|precision|return|sample|smooth|struct|subroutine|switch|uniform|varying|void|while|buffer|shared|coherent|volatile|restrict|readonly|writeonly)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\b(bool|bvec[234]|double|dvec[234]|dmat[234](?:x[234])?|float|vec[234]|int|ivec[234]|mat[234](?:x[234])?|sampler[123]D|samplerCube|sampler[12]DArray|samplerBuffer|sampler2DMS|sampler2DRect|usampler\\w+|isampler\\w+|uint|uvec[234]|atomic_uint|image\\w+)\\b", "colorKey": "TE_Type" },
+    { "type": "Keyword",       "pattern": "\\b(gl_Position|gl_PointSize|gl_ClipDistance|gl_FragCoord|gl_FrontFacing|gl_PointCoord|gl_FragDepth|gl_VertexID|gl_InstanceID|gl_PrimitiveID|gl_Layer|gl_ViewportIndex)\\b", "colorKey": "TE_Register" },
+    { "type": "Keyword",       "pattern": "\\b(abs|acos|all|any|asin|atan|ceil|clamp|cos|cross|degrees|dFdx|dFdy|distance|dot|equal|exp|exp2|faceforward|floor|fma|fract|ftransform|fwidth|greaterThan|greaterThanEqual|inversesqrt|isinf|isnan|length|lessThan|lessThanEqual|log|log2|matrixCompMult|max|min|mix|mod|modf|noise|normalize|not|notEqual|outerProduct|pow|radians|reflect|refract|round|roundEven|sign|sin|smoothstep|sqrt|step|tan|texelFetch|texture|trunc|transpose|inverse|determinant|emit|endPrimitive)\\b", "colorKey": "TE_Label" },
+    { "type": "Number",        "pattern": "\\b(0x[0-9A-Fa-f]+[uU]?|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[fFlLuU]?)\\b", "colorKey": "TE_Number" }
+  ],
+  "foldingStrategy": "Brace"
+}

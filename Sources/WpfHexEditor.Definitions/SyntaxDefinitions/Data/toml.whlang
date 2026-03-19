@@ -1,0 +1,23 @@
+{
+  "name": "TOML",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the TOML configuration file format.",
+  "category": "Data",
+  "extensions": [ ".toml" ],
+  "lineComment": "#",
+  "references": {
+    "specifications": [ "TOML v1.0.0 Specification" ],
+    "webLinks": [ "https://toml.io/en/v1.0.0" ]
+  },
+  "rules": [
+    { "type": "Comment",    "pattern": "#.*$", "colorKey": "TE_Comment" },
+    { "type": "String",     "pattern": "(\"\"\"|'''|\"\"\"[\\s\\S]*?\"\"\"|'''[\\s\\S]*?'''|\"(?:[^\"\\\\]|\\\\.)*\"|'[^']*')", "colorKey": "TE_String" },
+    { "type": "Section",    "pattern": "^\\s*\\[\\[?[^\\]]*\\]\\]?", "colorKey": "TE_Type" },
+    { "type": "Key",        "pattern": "^\\s*[A-Za-z_\\-][A-Za-z0-9_\\-\\.]*\\s*(?==)", "colorKey": "TE_Attribute" },
+    { "type": "Boolean",    "pattern": "\\b(true|false)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Number",     "pattern": "\\b(0x[0-9A-Fa-f_]+|0o[0-7_]+|0b[01_]+|[+-]?(?:[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?|nan|inf))\\b", "colorKey": "TE_Number" },
+    { "type": "Keyword",    "pattern": "(?<=\\s)(\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})?)?)", "colorKey": "TE_String" }
+  ],
+  "foldingStrategy": "None"
+}

@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.5.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.0-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -66,12 +66,14 @@
 
 ### 📋 IDE Infrastructure
 - **IDocumentEditor** plugin contract — every editor is pluggable
-- **Undo/Redo/Copy/Cut/Paste** unified via menu bindings
+- **Shared `UndoEngine`** — coalescing (500 ms), transactions, save-point tracking; `Ctrl+Z/Y/Shift+Z` across all editors
+- **Rectangular selection** (Alt+Click) + **drag-to-move** — CodeEditor & TextEditor
 - **VS2022-style status bar** (edit mode, bytes/line, caret offset)
 - **Output panel** + **Error/Diagnostics panel** + **Quick Search** (inline + advanced)
 - **VS2026-style Options** — document tab, auto-save, live theme preview
 - **Integrated Terminal** (`Ctrl+`` `) — 31 built-in commands, panel/plugin/file management
 - **Plugin System** — `WpfHexEditor.SDK` open API, `.whxplugin` packages, Plugin Manager, **IDE EventBus**, **Capability Registry**, **Extension Points**, **Dependency Graph**
+- **NuGet Solution Manager** — Browse/Installed/Consolidate/Updates across all projects
 
 </td>
 <td width="50%">
@@ -97,7 +99,8 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 |--------|--------|----------|-------------|
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ✅ Active | ~75% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL, status bar contributor |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~85% | Multi-language code editor — VS-like navigation bar (types/members combos, Segoe MDL2 icons, caret tracking), full `.whlang` syntax highlighting, URL hover/click, find/replace, `IEditorPersistable`, split view; **Ctrl+Click** cross-file navigation + external symbol decompilation; tab/CodeLens-aware search highlights; hosts decompiled C# from Assembly Explorer |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~90% | Multi-language code editor — VS-like navigation bar (types/members combos, Segoe MDL2 icons, caret tracking), full `.whlang` syntax highlighting (55+ languages), URL hover/click, find/replace, `IEditorPersistable`, split view; **Ctrl+Click** cross-file navigation + external symbol decompilation; tab/CodeLens-aware search highlights; **Alt+Click rectangular selection**; **text & block drag-to-move**; **shared `UndoEngine`** (coalescing, transactions, save-point); `#region` colorization; hosts decompiled C# from Assembly Explorer |
+| **[XAML Designer](Sources/WpfHexEditor.Editor.XamlDesigner/README.md)** | ✅ Active | ~70% | Full split-pane XAML designer — live WPF rendering canvas with **bidirectional sync** (canvas↔code, ~95%); move/resize/rotate handles; property inspector (F4); multi-select + alignment guides; snap grid; `#region` colorization; error card overlay; **4 split layouts** (`Ctrl+Shift+L`); zoom/pan; VS-like `Ctrl+Z/Y` undo/redo with `DesignHistoryPanel`; Toolbox, Resource Browser, Design Data and Animation panels; right-click context menu; `Ctrl+1/2/3` view modes |
 | **[Text Editor](Sources/WpfHexEditor.Editor.TextEditor/README.md)** | ✅ Active | ~50% | Text editing with 26 embedded language definitions, auto-detection by extension, encoding support |
 | **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ✅ Active | ~45% | `.hxscript` editor with syntax highlighting, run-in-terminal integration, `HxScriptEngine` backend |
 | **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | 🔧 Active | ~30% | Binary image viewer — zoom/pan, transform pipeline (rotate/flip/crop/resize), `FileShare.ReadWrite` for concurrent open |
@@ -127,7 +130,7 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 | **[HexBox](Sources/WpfHexEditor.HexBox/README.md)** | net8.0-windows | ~80% | Lightweight hex input field — zero external dependencies, MVVM-ready |
 | **[ColorPicker](Sources/WpfHexEditor.ColorPicker/README.md)** | net8.0-windows | ~95% | Compact color picker UserControl with RGB/HSV/hex input |
 | **[BarChart](Sources/WpfHexEditor.BarChart/README.md)** | net48 \| net8.0-windows | ~85% | Standalone byte-frequency bar chart — visualizes distribution of all 256 byte values (0x00–0xFF) in a binary file |
-| **[Docking.Wpf](Sources/WpfHexEditor.Docking.Wpf/README.md)** | net8.0-windows | ~65% | **Custom-built** VS-style docking engine — float, dock, auto-hide, colored tabs, 8 themes — 100% in-house, zero third-party dependency |
+| **[Shell](Sources/WpfHexEditor.Shell/README.md)** | net8.0-windows | ~65% | **Custom-built** VS-style docking engine — float, dock, auto-hide, colored tabs, 8 themes — 100% in-house, zero third-party dependency *(formerly `WpfHexEditor.Docking.Wpf`)* |
 
 ### Libraries & Infrastructure
 

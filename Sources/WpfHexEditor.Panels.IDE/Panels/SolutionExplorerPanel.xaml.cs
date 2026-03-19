@@ -103,7 +103,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ProjectItemEventArgs>?               ItemDeleteFromDiskRequested;
     public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
     public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
-    public event EventHandler<ManageNuGetRequestedEventArgs>?      ManageNuGetPackagesRequested;
+    public event EventHandler<ManageNuGetRequestedEventArgs>?         ManageNuGetPackagesRequested;
+    public event EventHandler<ManageSolutionNuGetRequestedEventArgs>? ManageSolutionNuGetPackagesRequested;
 
     // -- Tree events -----------------------------------------------------------
 
@@ -415,6 +416,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         // Properties
         PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
         PropertiesMenuItem .Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
+
+        // Manage NuGet for Solution (solution node only, when at least one csproj is present)
+        bool hasMsBuildProjects = isSolution &&
+            (_contextMenuTarget as SolutionNodeVm)?.Source?.Projects
+            .Any(p => p.ProjectType is string pt &&
+                      (pt.Contains("csproj", StringComparison.OrdinalIgnoreCase) ||
+                       pt.Contains("vbproj", StringComparison.OrdinalIgnoreCase) ||
+                       pt.Contains("fsproj", StringComparison.OrdinalIgnoreCase))) == true;
+        SolutionNuGetSeparator      .Visibility = hasMsBuildProjects ? Visibility.Visible : Visibility.Collapsed;
+        ManageSolutionNuGetMenuItem .Visibility = hasMsBuildProjects ? Visibility.Visible : Visibility.Collapsed;
 
         // Solution bottom: Save All + Close Solution
         SolutionBottomSeparator.Visibility = isSolution ? Visibility.Visible : Visibility.Collapsed;
@@ -891,6 +902,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     {
         if (_contextMenuTarget is ProjectNodeVm pv)
             ManageNuGetPackagesRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = pv.Source });
+    }
+
+    private void OnManageSolutionNuGetPackages(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is SolutionNodeVm sv)
+            ManageSolutionNuGetPackagesRequested?.Invoke(this,
+                new ManageSolutionNuGetRequestedEventArgs { Solution = sv.Source });
     }
 
     // -- Go To Definition (context menu for source nodes) ----------------------

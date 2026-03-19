@@ -1,0 +1,23 @@
+{
+  "name": "Makefile",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for GNU Make and NMAKE build files.",
+  "category": "Misc",
+  "extensions": [ ".mk", ".mak" ],
+  "lineComment": "#",
+  "references": {
+    "specifications": [ "GNU Make Manual" ],
+    "webLinks": [ "https://www.gnu.org/software/make/manual/make.html" ]
+  },
+  "rules": [
+    { "type": "Comment",    "pattern": "#.*$", "colorKey": "TE_Comment" },
+    { "type": "String",     "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"|'[^']*'", "colorKey": "TE_String" },
+    { "type": "Keyword",    "pattern": "^\\s*\\.(?:PHONY|SUFFIXES|DEFAULT|PRECIOUS|INTERMEDIATE|SECONDARY|SECONDEXPANSION|DELETE_ON_ERROR|IGNORE|LOW_RESOLUTION_TIME|SILENT|EXPORT_ALL_VARIABLES|NOTPARALLEL|ONESHELL|POSIX)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Cmdlet",     "pattern": "(?i)\\b(include|sinclude|-include|define|endef|ifdef|ifndef|ifeq|ifneq|else|endif|override|export|unexport|vpath|undefine|private|call|eval|origin|flavor|value|subst|patsubst|strip|findstring|filter|filter-out|sort|word|words|wordlist|firstword|lastword|dir|notdir|suffix|basename|addsuffix|addprefix|join|wildcard|realpath|abspath|error|warning|info|shell|foreach|if|or|and|let|file|guile)\\b", "colorKey": "TE_Type" },
+    { "type": "Variable",   "pattern": "\\$[\\(\\{][A-Za-z_][A-Za-z0-9_\\.\\-]*[\\)\\}]|\\$[A-Za-z@<\\*\\^\\+\\?%]", "colorKey": "TE_Register" },
+    { "type": "Operator",   "pattern": ":(?::)?=|\\?=|\\+=", "colorKey": "TE_Keyword" },
+    { "type": "Number",     "pattern": "\\b[0-9]+\\b", "colorKey": "TE_Number" }
+  ],
+  "foldingStrategy": "None"
+}

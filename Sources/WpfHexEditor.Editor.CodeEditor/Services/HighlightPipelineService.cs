@@ -99,7 +99,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
 
                     if (li < lines.Count && !token.IsCancellationRequested)
                     {
-                        lines[li].TokensCache       = new System.Collections.Generic.List<WpfHexEditor.Editor.CodeEditor.Helpers.SyntaxHighlightToken>(tokens);
+                        // OPT-F: reuse existing TokensCache list to avoid Gen-0 allocation per line.
+                        AssignTokensCache(lines[li], tokens);
                         lines[li].IsCacheDirty      = false;
                         lines[li].IsGlyphCacheDirty = true; // force GlyphRun rebuild on next render
                         lines[li].GlyphRunCache     = null;
@@ -118,7 +119,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
 
                     if (li < lines.Count && !token.IsCancellationRequested)
                     {
-                        lines[li].TokensCache       = new System.Collections.Generic.List<WpfHexEditor.Editor.CodeEditor.Helpers.SyntaxHighlightToken>(tokens);
+                        // OPT-F: reuse existing TokensCache list to avoid Gen-0 allocation per line.
+                        AssignTokensCache(lines[li], tokens);
                         lines[li].IsCacheDirty      = false;
                         lines[li].IsGlyphCacheDirty = true;
                         lines[li].GlyphRunCache     = null;
@@ -135,6 +137,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
                     syncCtx.Post(_ => HighlightsComputed?.Invoke(completedFirst, completedLast), null);
                 }
             }, token);
+        }
+
+        // OPT-F: writes tokens into the line's existing TokensCache list rather than
+        // allocating a new List<> on every highlight pass.  In steady-state editing, the
+        // list capacity is already correct, so Clear+AddRange produces zero heap allocation.
+        private static void AssignTokensCache(
+            WpfHexEditor.Editor.CodeEditor.Models.CodeLine line,
+            System.Collections.Generic.IEnumerable<WpfHexEditor.Editor.CodeEditor.Helpers.SyntaxHighlightToken> tokens)
+        {
+            if (line.TokensCache is null)
+            {
+                line.TokensCache = new System.Collections.Generic.List<WpfHexEditor.Editor.CodeEditor.Helpers.SyntaxHighlightToken>(tokens);
+            }
+            else
+            {
+                line.TokensCache.Clear();
+                line.TokensCache.AddRange(tokens);
+            }
         }
 
         public void Dispose()

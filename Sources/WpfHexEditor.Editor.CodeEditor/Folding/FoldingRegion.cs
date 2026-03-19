@@ -44,6 +44,13 @@ public sealed class FoldingRegion
     /// <summary>Visual kind that determines how the gutter toggle is rendered.</summary>
     public FoldingRegionKind Kind { get; }
 
+    /// <summary>
+    /// Human-readable region name extracted from the label
+    /// (e.g. "Value Converters" from "#region Value Converters …").
+    /// Empty string for brace regions or unnamed directive regions.
+    /// </summary>
+    public string Name { get; }
+
     /// <summary>Creates a brace-style region (default kind).</summary>
     public FoldingRegion(int startLine, int endLine, string label)
         : this(startLine, endLine, label, FoldingRegionKind.Brace) { }
@@ -55,6 +62,26 @@ public sealed class FoldingRegion
         EndLine   = endLine;
         Label     = label;
         Kind      = kind;
+
+        // Extract clean name for Directive regions (e.g. "#region Value Converters …" → "Value Converters").
+        Name = kind == FoldingRegionKind.Directive
+            ? ExtractDirectiveName(label)
+            : string.Empty;
+    }
+
+    private static string ExtractDirectiveName(string label)
+    {
+        const string prefix = "#region ";
+        const string suffix = " \u2026"; // " …"
+
+        if (!label.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            return string.Empty;
+
+        var name = label[prefix.Length..];
+        if (name.EndsWith(suffix, StringComparison.Ordinal))
+            name = name[..^suffix.Length];
+
+        return name.Trim();
     }
 
     /// <summary>Number of body lines hidden when collapsed (EndLine − StartLine − 1).</summary>

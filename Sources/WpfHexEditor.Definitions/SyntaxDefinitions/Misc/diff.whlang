@@ -1,0 +1,20 @@
+{
+  "name": "Diff / Patch",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for unified and context diff/patch files.",
+  "category": "Misc",
+  "extensions": [ ".diff", ".patch" ],
+  "references": {
+    "webLinks": [ "https://www.gnu.org/software/diffutils/manual/diffutils.html" ]
+  },
+  "rules": [
+    { "type": "Keyword",    "pattern": "^(?:---|\\ \\-\\-\\-).*$", "colorKey": "TE_Register" },
+    { "type": "Keyword",    "pattern": "^(?:\\+\\+\\+|\\ \\+\\+\\+).*$", "colorKey": "TE_Keyword" },
+    { "type": "Comment",    "pattern": "^@@[^@]*@@.*$", "colorKey": "TE_Directive" },
+    { "type": "String",     "pattern": "^\\+[^+].*$|^\\+$", "colorKey": "TE_String" },
+    { "type": "Comment",    "pattern": "^\\-[^-].*$|^\\-$", "colorKey": "TE_Comment" },
+    { "type": "Keyword",    "pattern": "^(?:diff|index|new file|deleted file|rename|similarity|dissimilarity|old mode|new mode)\\b.*$", "colorKey": "TE_Type" }
+  ],
+  "foldingStrategy": "None"
+}

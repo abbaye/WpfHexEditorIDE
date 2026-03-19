@@ -50,6 +50,26 @@ public sealed class LanguageDefinition
     /// </summary>
     public string? LineCommentPrefix { get; init; }
 
+    /// <summary>Opening delimiter for block comments (e.g. "/*" or "&lt;!--"). Null if not applicable.</summary>
+    public string? BlockCommentStart { get; init; }
+
+    /// <summary>Closing delimiter for block comments (e.g. "*/" or "--&gt;"). Null if not applicable.</summary>
+    public string? BlockCommentEnd { get; init; }
+
+    /// <summary>
+    /// When <see langword="true"/>, the CodeEditor will render CodeLens hints (inline
+    /// reference counts) for this language.  Should only be enabled for languages that
+    /// have structural parsing support (e.g. C#, VB.NET).
+    /// </summary>
+    public bool EnableCodeLens { get; init; }
+
+    /// <summary>
+    /// When <see langword="true"/>, Ctrl+click go-to-definition navigation is active for
+    /// this language.  Disable for data/markup/script languages that have no declaration
+    /// model understood by the local parser.
+    /// </summary>
+    public bool EnableCtrlClickNavigation { get; init; }
+
     /// <summary>
     /// When <see langword="true"/>, this language is the preferred (default) highlighter
     /// for its declared extensions inside the owning project.
@@ -96,7 +116,8 @@ public enum SyntaxTokenKind
     Operator,
     Bracket,
     Type,
-    Attribute
+    Attribute,
+    ControlFlow
 }
 
 /// <summary>Selects the folding algorithm used by the CodeEditor gutter.</summary>

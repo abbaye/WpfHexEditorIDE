@@ -1,0 +1,21 @@
+<UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Controls.Editors.EnumEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="22">
+
+    <!-- ==========================================================
+         File: EnumEditor.xaml
+         Created: 2026-03-17
+         Description: Auto-generated ComboBox editor for any Enum property.
+                      Items populated via Enum.GetValues() in code-behind.
+         ========================================================== -->
+
+    <ComboBox x:Name="CbEnum"
+              Height="18" FontSize="11"
+              Background="Transparent"
+              Foreground="{DynamicResource XD_PropertyValueForeground}"
+              BorderBrush="{DynamicResource DockBorderBrush}"
+              BorderThickness="1"
+              SelectedItem="{Binding SelectedValue, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+              SelectionChanged="OnSelectionChanged"/>
+</UserControl>

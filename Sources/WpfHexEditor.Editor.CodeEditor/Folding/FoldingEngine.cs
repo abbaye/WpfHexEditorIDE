@@ -31,7 +31,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Folding;
 public sealed class FoldingEngine
 {
     private readonly IFoldingStrategy _strategy;
-    private List<FoldingRegion>       _regions = new();
+    private List<FoldingRegion>       _regions    = new();
+    // OPT-E: pre-computed hidden-line set — turns IsLineHidden() from O(regions) to O(1).
+    private HashSet<int>              _hiddenLines = new();
 
     /// <summary>Raised after <see cref="Analyze"/> updates the region list.</summary>
     public event EventHandler? RegionsChanged;
@@ -70,7 +72,20 @@ public sealed class FoldingEngine
         }
 
         _regions = updated;
+        RebuildHiddenSet();
         RegionsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    // OPT-E: rebuilds the O(1) hidden-line lookup after any region state change.
+    private void RebuildHiddenSet()
+    {
+        _hiddenLines.Clear();
+        foreach (var r in _regions)
+        {
+            if (!r.IsCollapsed) continue;
+            for (int i = r.StartLine + 1; i <= r.EndLine; i++)
+                _hiddenLines.Add(i);
+        }
     }
 
     /// <summary>
@@ -85,6 +100,7 @@ public sealed class FoldingEngine
             if (r.StartLine == line)
             {
                 r.IsCollapsed = !r.IsCollapsed;
+                RebuildHiddenSet();
                 RegionsChanged?.Invoke(this, EventArgs.Empty);
                 return true;
             }
@@ -105,15 +121,18 @@ public sealed class FoldingEngine
 
     /// <summary>
     /// Determines whether the given <paramref name="line"/> is hidden because it
-    /// falls inside a collapsed region.
+    /// falls inside a collapsed region.  O(1) via pre-computed <see cref="_hiddenLines"/> set.
     /// </summary>
-    public bool IsLineHidden(int line)
-    {
-        foreach (var r in _regions)
-            if (r.IsCollapsed && line > r.StartLine && line < r.EndLine)
-                return true;
-        return false;
-    }
+    public bool IsLineHidden(int line) => _hiddenLines.Contains(line);
+
+    /// <summary>
+    /// Total number of lines hidden across all currently-collapsed regions.
+    /// Uses the pre-computed <see cref="_hiddenLines"/> set so that nested collapsed
+    /// regions are not double-counted (a line inside two overlapping collapsed regions
+    /// is still only one hidden line).
+    /// Used by <c>CodeEditor</c> to adjust the vertical scrollbar range.
+    /// </summary>
+    public int TotalHiddenLineCount => _hiddenLines.Count;
 
     /// <summary>
     /// Collapses all regions. Fires <see cref="RegionsChanged"/> once if any changed.
@@ -123,7 +142,7 @@ public sealed class FoldingEngine
         bool any = false;
         foreach (var r in _regions)
             if (!r.IsCollapsed) { r.IsCollapsed = true; any = true; }
-        if (any) RegionsChanged?.Invoke(this, EventArgs.Empty);
+        if (any) { RebuildHiddenSet(); RegionsChanged?.Invoke(this, EventArgs.Empty); }
     }
 
     /// <summary>
@@ -134,6 +153,6 @@ public sealed class FoldingEngine
         bool any = false;
         foreach (var r in _regions)
             if (r.IsCollapsed) { r.IsCollapsed = false; any = true; }
-        if (any) RegionsChanged?.Invoke(this, EventArgs.Empty);
+        if (any) { RebuildHiddenSet(); RegionsChanged?.Invoke(this, EventArgs.Empty); }
     }
 }

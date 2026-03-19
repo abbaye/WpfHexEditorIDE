@@ -233,6 +233,12 @@ public interface ISolutionExplorerPanel
     event EventHandler<ManageNuGetRequestedEventArgs>? ManageNuGetPackagesRequested;
 
     /// <summary>
+    /// Fired when the user chooses "Manage NuGet Packages for Solution…" from the solution-node context menu.
+    /// Opens the solution-level NuGet Manager which aggregates all VS projects in the solution.
+    /// </summary>
+    event EventHandler<ManageSolutionNuGetRequestedEventArgs>? ManageSolutionNuGetPackagesRequested;
+
+    /// <summary>
     /// Fired when the user chooses "Properties" from the context menu.
     /// <see cref="NodePropertiesEventArgs.Item"/> is <see langword="null"/> when the target is the
     /// project node itself; otherwise it is the selected file node.

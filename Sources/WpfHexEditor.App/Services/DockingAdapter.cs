@@ -9,7 +9,7 @@ using System.Windows;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using DockItemState = WpfHexEditor.Docking.Core.DockItemState;
-using WpfHexEditor.Docking.Wpf;
+using WpfHexEditor.Shell;
 using WpfHexEditor.PluginHost.Adapters;
 using WpfHexEditor.SDK.Descriptors;
 

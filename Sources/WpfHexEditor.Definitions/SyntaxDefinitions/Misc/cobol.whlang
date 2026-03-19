@@ -1,0 +1,22 @@
+{
+  "name": "COBOL",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for Common Business-Oriented Language (COBOL).",
+  "category": "Misc",
+  "extensions": [ ".cob", ".cbl", ".cpy", ".pco" ],
+  "lineComment": "*>",
+  "references": {
+    "specifications": [ "ISO/IEC 1989:2014 COBOL Standard" ],
+    "webLinks": [ "https://www.ibm.com/docs/en/cobol-zos" ]
+  },
+  "rules": [
+    { "type": "Comment",    "pattern": "^.{6}\\*.*$|\\*>.*$", "colorKey": "TE_Comment" },
+    { "type": "String",     "pattern": "(\"[^\"]*\"|'[^']*'|X\"[0-9A-Fa-f]*\"|Z\"[^\"]*\")", "colorKey": "TE_String" },
+    { "type": "Keyword",    "pattern": "(?i)\\b(ACCEPT|ADD|ALTER|CALL|CANCEL|CLOSE|COMPUTE|CONTINUE|DELETE|DISABLE|DISPLAY|DIVIDE|ENABLE|ENTER|EVALUATE|EXEC|EXIT|GENERATE|GO|GOBACK|IF|INITIALIZE|INSPECT|INVOKE|MERGE|MOVE|MULTIPLY|OPEN|PERFORM|PURGE|READ|RECEIVE|RELEASE|RETURN|REWRITE|SEARCH|SEND|SET|SORT|START|STOP|STRING|SUBTRACT|SUPPRESS|TERMINATE|TRANSFORM|UNLOCK|UNSTRING|USE|WRITE|XML)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",       "pattern": "(?i)\\b(IDENTIFICATION|ENVIRONMENT|DATA|PROCEDURE|DIVISION|SECTION|PARAGRAPH|CONFIGURATION|INPUT-OUTPUT|FILE-CONTROL|SELECT|ASSIGN|WORKING-STORAGE|LOCAL-STORAGE|LINKAGE|FILE|PROGRAM-ID|AUTHOR|DATE-WRITTEN|DATE-COMPILED|SECURITY|INSTALLATION|REMARKS)\\b", "colorKey": "TE_Type" },
+    { "type": "Keyword",    "pattern": "(?i)\\b(PIC|PICTURE|COMP|COMPUTATIONAL|BINARY|PACKED-DECIMAL|DISPLAY|OCCURS|REDEFINES|RENAMES|SYNCHRONIZED|JUSTIFIED|BLANK|VALUE|JUST|DEPENDING|INDEXED|ASCENDING|DESCENDING|VARYING|AFTER|BEFORE|UNTIL|WITH|TEST|TIMES|THROUGH|THRU|BY|OF|TO|FROM|INTO|AT|NOT|AND|OR|END-IF|END-EVALUATE|END-PERFORM|END-SEARCH|END-STRING|END-UNSTRING|END-READ|END-WRITE|END-CALL|END-COMPUTE|END-ADD|END-SUBTRACT|END-MULTIPLY|END-DIVIDE)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Number",     "pattern": "\\b[0-9]+(?:\\.[0-9]+)?\\b", "colorKey": "TE_Number" }
+  ],
+  "foldingStrategy": "None"
+}

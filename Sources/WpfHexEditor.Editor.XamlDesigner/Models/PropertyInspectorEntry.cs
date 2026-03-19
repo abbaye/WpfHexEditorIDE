@@ -9,6 +9,8 @@
 //
 // Architecture Notes:
 //     INPC — value changes trigger write-back to the live DependencyObject.
+//     Phase D — bidirectional pipeline: _xamlPatchCallback propagates edits to
+//     the XAML source text via XamlDesignerSplitHost.PatchPropertyFromInspector.
 // ==========================================================
 
 using System.ComponentModel;
@@ -23,6 +25,15 @@ namespace WpfHexEditor.Editor.XamlDesigner.Models;
 public sealed class PropertyInspectorEntry : INotifyPropertyChanged
 {
     private object? _value;
+
+    // ── Write-back callbacks ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Optional callback invoked when <see cref="Value"/> changes.
+    /// Signature: (propertyName, newStringValue).
+    /// Set by <see cref="ViewModels.PropertyInspectorPanelViewModel"/> when building entries.
+    /// </summary>
+    private Action<string, string?>? _xamlPatchCallback;
 
     // ── Identity ──────────────────────────────────────────────────────────────
 
@@ -44,11 +55,17 @@ public sealed class PropertyInspectorEntry : INotifyPropertyChanged
     /// <summary>True when this property cannot be edited (read-only DP or no setter).</summary>
     public bool IsReadOnly { get; init; }
 
+    /// <summary>
+    /// Allowed values for enum-typed properties, populated by
+    /// <see cref="Services.PropertyInspectorService"/> when <see cref="PropertyType"/> is an enum.
+    /// </summary>
+    public IReadOnlyList<object>? AllowedValues { get; init; }
+
     // ── Value (INPC) ──────────────────────────────────────────────────────────
 
     /// <summary>
     /// Current property value. Setting this fires <see cref="PropertyChanged"/>
-    /// and the owning ViewModel performs write-back to the live DependencyObject.
+    /// and invokes the XAML patch callback to update the source XAML text.
     /// </summary>
     public object? Value
     {
@@ -58,8 +75,20 @@ public sealed class PropertyInspectorEntry : INotifyPropertyChanged
             if (Equals(_value, value)) return;
             _value = value;
             OnPropertyChanged();
+            // Phase D: propagate the change to the XAML source text.
+            _xamlPatchCallback?.Invoke(PropertyName, value?.ToString());
         }
     }
+
+    // ── Factory helper ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Attaches the XAML patch callback after construction.
+    /// Called by <see cref="ViewModels.PropertyInspectorPanelViewModel"/> so the
+    /// callback can be supplied once it is known (avoids constructor over-coupling).
+    /// </summary>
+    internal void SetXamlPatchCallback(Action<string, string?>? callback)
+        => _xamlPatchCallback = callback;
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 

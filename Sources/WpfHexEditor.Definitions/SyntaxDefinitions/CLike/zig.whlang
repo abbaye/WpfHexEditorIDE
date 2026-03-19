@@ -1,0 +1,31 @@
+{
+  "name": "Zig",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the Zig systems programming language.",
+  "category": "C-like",
+  "extensions": [ ".zig", ".zon" ],
+  "lineComment": "//",
+  "references": {
+    "specifications": [ "Zig Language Reference" ],
+    "webLinks": [ "https://ziglang.org/documentation/master/" ]
+  },
+  "rules": [
+    { "type": "String",        "pattern": "(\\\\\\\\[^\\n]*|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')", "colorKey": "TE_String" },
+    { "type": "Comment",       "pattern": "//[/!]?.*$", "colorKey": "TE_Comment" },
+    { "type": "Keyword",       "pattern": "\\b(addrspace|align|allowzero|and|anyframe|anytype|asm|async|await|break|callconv|catch|comptime|const|continue|defer|else|enum|errdefer|error|export|extern|fn|for|if|inline|linksection|noalias|noinline|nosuspend|opaque|or|orelse|packed|pub|resume|return|struct|suspend|switch|test|threadlocal|try|union|unreachable|usingnamespace|var|volatile|while)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Type",          "pattern": "\\b(bool|f16|f32|f64|f80|f128|i8|i16|i32|i64|i128|isize|u8|u16|u32|u64|u128|usize|c_char|c_short|c_int|c_long|c_longlong|c_ushort|c_uint|c_ulong|c_ulonglong|c_longdouble|anyerror|void|noreturn|type|comptime_int|comptime_float)\\b", "colorKey": "TE_Type" },
+    { "type": "Keyword",       "pattern": "\\b(null|undefined|true|false)\\b", "colorKey": "TE_Keyword" },
+    { "type": "Preprocessor",  "pattern": "@[A-Za-z_][A-Za-z0-9_]*", "colorKey": "TE_Directive" },
+    { "type": "Number",        "pattern": "\\b(0x[0-9A-Fa-f_]+(?:\\.[0-9A-Fa-f_]+)?(?:p[+-]?[0-9]+)?|0o[0-7_]+|0b[01_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?)\\b", "colorKey": "TE_Number" },
+    { "type": "MethodCall",    "pattern": "\\b[a-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
+  ],
+  "snippets": [
+    { "trigger": "fn",     "body": "fn $cursor() void {\n}", "description": "Function" },
+    { "trigger": "pub",    "body": "pub fn $cursor() void {\n}", "description": "Public function" },
+    { "trigger": "struct", "body": "const $cursor = struct {\n    field: u32,\n};", "description": "Struct" },
+    { "trigger": "test",   "body": "test \"$cursor\" {\n}", "description": "Test block" },
+    { "trigger": "try",    "body": "try $cursor;", "description": "Try expression" }
+  ],
+  "foldingStrategy": "Brace"
+}
