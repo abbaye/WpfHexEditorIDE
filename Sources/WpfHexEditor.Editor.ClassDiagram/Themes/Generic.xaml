@@ -1,0 +1,66 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        CD_* brush tokens are defined in WpfHexEditor.Shell/Themes/*/Colors.xaml
+        This file contains structural styles only — no hardcoded colors.
+
+        Token reference:
+          CD_CanvasBackground          - diagram canvas background
+          CD_GridLineBrush             - grid dot/line color
+          CD_ClassBoxBackground        - class box fill
+          CD_ClassBoxBorderBrush       - class box 1px border
+          CD_ClassBoxHeaderBackground  - header band fill
+          CD_ClassNameForeground       - class name text
+          CD_StereotypeForeground      - stereotype text (<<interface>> etc.)
+          CD_MemberTextForeground      - member text default
+          CD_FieldForeground           - field icon/text accent
+          CD_PropertyForeground        - property icon/text accent
+          CD_MethodForeground          - method icon/text accent
+          CD_EventForeground           - event icon/text accent
+          CD_ClassBoxSectionDivider    - horizontal rule between sections
+          CD_SelectionBorderBrush      - selection outline
+          CD_SelectionHandleFill       - resize handle fill
+          CD_RubberBandBorderBrush     - rubber-band selection border
+          CD_RubberBandFill            - rubber-band selection fill
+          CD_InheritanceArrowBrush     - inheritance arrow stroke
+          CD_AssociationArrowBrush     - association arrow stroke
+          CD_DependencyArrowBrush      - dependency arrow stroke
+          CD_AggregationArrowBrush     - aggregation arrow stroke
+          CD_CompositionArrowBrush     - composition arrow stroke
+          CD_DslEditorBackground       - DSL text pane background
+          CD_DslEditorForeground       - DSL text pane foreground
+          CD_ToolbarBackground         - inner toolbar background
+          CD_StatusBarBackground       - status bar region background
+    -->
+
+    <!-- Structural style: DSL text pane TextBox -->
+    <Style x:Key="CD_DslTextBoxStyle" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Consolas, Courier New, monospace" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="AcceptsTab" Value="True" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="Background" Value="{DynamicResource CD_DslEditorBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource CD_DslEditorForeground}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource CD_DslEditorForeground}" />
+    </Style>
+
+    <!-- Structural style: diagram canvas outer border -->
+    <Style x:Key="CD_CanvasBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource CD_CanvasBackground}" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <!-- Structural style: toolbar container -->
+    <Style x:Key="CD_ToolbarBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource CD_ToolbarBackground}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DockToolBarBorderBrush}" />
+        <Setter Property="Padding" Value="4,2" />
+    </Style>
+
+</ResourceDictionary>

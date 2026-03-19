@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Editor.ClassDiagram</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.ClassDiagram</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>1.0.0</Version>
+    <Authors>WpfHexEditor Contributors</Authors>
+    <Description>VS-Like interactive class diagram editor for WpfHexEditor IDE. Supports .classdiagram files with WPF canvas, bidirectional DSL sync, 6 dockable panels, undo/redo, and full IDE integration.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Editor.ClassDiagram.Core\WpfHexEditor.Editor.ClassDiagram.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Generic.xaml" />
+  </ItemGroup>
+</Project>

@@ -42,6 +42,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />

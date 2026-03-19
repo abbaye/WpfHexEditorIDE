@@ -10,6 +10,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Panels.IDE.ViewModels;
@@ -44,11 +47,39 @@ public enum FilterMode
 /// </summary>
 public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 {
+    // -- Flat-cache search node (pre-lowercased for zero-alloc matching) --------
+
+    private readonly struct FlatNode
+    {
+        public readonly SolutionExplorerNodeVm  Node;
+        public readonly SolutionExplorerNodeVm? Parent;
+        public readonly string                  SearchKey; // DisplayName.ToLowerInvariant(), built once
+
+        public FlatNode(SolutionExplorerNodeVm node, SolutionExplorerNodeVm? parent, string searchKey)
+        {
+            Node      = node;
+            Parent    = parent;
+            SearchKey = searchKey;
+        }
+    }
+
     private ISolution? _solution;
     private string     _searchText = "";
     private bool       _showAllFiles;
     private SortMode   _currentSort   = SortMode.None;
     private FilterMode _currentFilter = FilterMode.All;
+
+    // -- Search async pipeline fields -----------------------------------------
+
+    // Captured at construction (UI thread) — used to dispatch back from Task.Run.
+    private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+
+    // Flat ordered list of all tree nodes; rebuilt after every Rebuild().
+    // volatile: background thread reads the reference; UI thread swaps it atomically.
+    private volatile List<FlatNode> _flatNodeCache = [];
+
+    private DispatcherTimer?         _searchDebounceTimer;
+    private CancellationTokenSource? _searchCts;
 
     // -- Collapse-state memory (session-level) ---------------------------------
     // Persists IsExpanded across Rebuild() calls so tree state is not lost on
@@ -186,8 +217,66 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             if (_searchText == value) return;
             _searchText = value;
             OnPropertyChanged();
-            ApplySearch();
+            ScheduleSearch();
         }
+    }
+
+    // -- Debounce + async search pipeline -------------------------------------
+
+    /// <summary>
+    /// Cancels any in-flight background search and stops the debounce timer.
+    /// Safe to call from any UI-thread context (Rebuild, ScheduleSearch, Dispose).
+    /// </summary>
+    private void CancelSearch()
+    {
+        _searchDebounceTimer?.Stop();
+        _searchDebounceTimer = null;
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+        _searchCts = null;
+    }
+
+    /// <summary>
+    /// Entry point called on every <see cref="SearchText"/> change.
+    /// Empty queries are resolved immediately (fast path).
+    /// Non-empty queries are debounced at 200 ms to avoid per-keystroke O(n) walks.
+    /// </summary>
+    private void ScheduleSearch()
+    {
+        CancelSearch();
+
+        if (string.IsNullOrWhiteSpace(_searchText))
+        {
+            // Fast path: no background work needed; ResetToStructuralExpansion is O(n)
+            // but synchronous and imperceptibly fast for any realistic tree size.
+            ResetToStructuralExpansion(Roots);
+            return;
+        }
+
+        // Debounce: restart 200 ms window on each keystroke.
+        _searchDebounceTimer = new DispatcherTimer(DispatcherPriority.Background)
+            { Interval = TimeSpan.FromMilliseconds(200) };
+        _searchDebounceTimer.Tick += OnSearchDebounceTimerTick;
+        _searchDebounceTimer.Start();
+    }
+
+    /// <summary>
+    /// Fires 200 ms after the last keystroke.  Captures a stable query snapshot
+    /// and launches the background match task.
+    /// </summary>
+    private void OnSearchDebounceTimerTick(object? sender, EventArgs e)
+    {
+        _searchDebounceTimer?.Stop();
+        _searchDebounceTimer = null;
+
+        // Capture immutable locals before entering async context.
+        var query = _searchText.ToLowerInvariant(); // single allocation per completed search
+        var cache = _flatNodeCache;                  // volatile read — gets latest complete list
+
+        var cts = new CancellationTokenSource();
+        _searchCts = cts;
+
+        _ = ExecuteSearchAsync(query, cache, cts.Token);
     }
 
     // -- Show All Files -------------------------------------------------------
@@ -301,6 +390,50 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         // Restore remembered IsExpanded state (first Rebuild after loading will use defaults)
         RestoreExpandedState(Roots);
+
+        // Cancel any in-flight search — the cache is about to be replaced.
+        CancelSearch();
+
+        // Build the flat search cache from the fully-populated tree.
+        RebuildFlatCache();
+
+        // Re-apply a pending query against the new cache.
+        if (!string.IsNullOrWhiteSpace(_searchText))
+            ScheduleSearch();
+    }
+
+    // -- Flat-cache construction -----------------------------------------------
+
+    /// <summary>
+    /// Rebuilds <see cref="_flatNodeCache"/> from the live tree.
+    /// Must be called on the UI thread immediately after the tree is fully populated.
+    /// The resulting list is immutable once assigned; the background search thread
+    /// reads it via a volatile reference swap with no locking required.
+    /// </summary>
+    private void RebuildFlatCache()
+    {
+        var cache = new List<FlatNode>(256);
+        foreach (var root in Roots)
+            PopulateCacheRecursive(root, parent: null, cache);
+        _flatNodeCache = cache; // volatile write — visible to background thread
+    }
+
+    /// <summary>
+    /// Depth-first traversal that appends one <see cref="FlatNode"/> per node.
+    /// <see cref="LoadingNodeVm"/> sentinels are skipped: they have no stable
+    /// display name and are not user-searchable.
+    /// </summary>
+    private static void PopulateCacheRecursive(
+        SolutionExplorerNodeVm  node,
+        SolutionExplorerNodeVm? parent,
+        List<FlatNode>          cache)
+    {
+        if (node is LoadingNodeVm) return;
+
+        cache.Add(new FlatNode(node, parent, node.DisplayName.ToLowerInvariant()));
+
+        foreach (var child in node.Children)
+            PopulateCacheRecursive(child, node, cache);
     }
 
     // -- Collapse-state cross-session persistence ------------------------------
@@ -883,25 +1016,108 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         };
     }
 
-    // -- Search filter ---------------------------------------------------------
+    // -- Async search pipeline -------------------------------------------------
 
-    private void ApplySearch()
+    /// <summary>
+    /// Runs <see cref="ComputeMatchSet"/> on a background thread and applies the
+    /// result on the UI thread via a single batched <see cref="ApplySearchResultBatch"/> call.
+    /// Silently exits on cancellation so a superseding search can take over.
+    /// </summary>
+    private async Task ExecuteSearchAsync(
+        string             lowerQuery,
+        List<FlatNode>     cache,
+        CancellationToken  cancellationToken)
     {
-        // Visibility filter: expand nodes that match the query; collapse non-matching ones.
-        // When the search is cleared, restore structural nodes (solution/project/folder) to
-        // their natural expanded state while collapsing file-level nodes back to collapsed.
-        // We must NOT call SetExpanded(Roots, true) here — that would eagerly set IsExpanded=true
-        // on every FileNodeVm and DependentFileNodeVm, triggering OnTreeItemExpanded and loading
-        // all source outlines at once.
-        if (string.IsNullOrWhiteSpace(_searchText))
+        HashSet<SolutionExplorerNodeVm>? matches;
+        try
         {
-            ResetToStructuralExpansion(Roots);
-            return;
+            matches = await Task.Run(
+                () => ComputeMatchSet(lowerQuery, cache, cancellationToken),
+                cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return; // superseded by a newer search — do nothing
         }
 
-        foreach (var root in Roots)
-            ExpandIfMatch(root, _searchText.ToLowerInvariant());
+        // Return to UI thread; pass the token so a Rebuild() cancellation skips the apply.
+        await _dispatcher.InvokeAsync(
+            () => ApplySearchResultBatch(matches),
+            DispatcherPriority.Background,
+            cancellationToken);
     }
+
+    /// <summary>
+    /// Runs entirely on a background thread.
+    /// Iterates the flat cache linearly and builds the set of nodes that must be
+    /// expanded: every node whose <see cref="FlatNode.SearchKey"/> contains
+    /// <paramref name="lowerQuery"/>, plus all their ancestors.
+    /// </summary>
+    private static HashSet<SolutionExplorerNodeVm> ComputeMatchSet(
+        string            lowerQuery,
+        List<FlatNode>    cache,
+        CancellationToken cancellationToken)
+    {
+        // Build parent-lookup once — O(n).  ReferenceEqualityComparer avoids
+        // string allocations and is correct because each node is a unique object.
+        var parentMap = new Dictionary<SolutionExplorerNodeVm, SolutionExplorerNodeVm?>(
+            cache.Count,
+            ReferenceEqualityComparer.Instance);
+        foreach (var flat in cache)
+            parentMap[flat.Node] = flat.Parent;
+
+        var result = new HashSet<SolutionExplorerNodeVm>(ReferenceEqualityComparer.Instance);
+
+        foreach (var flat in cache)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Ordinal comparison on already-lowercased strings — fastest possible path.
+            if (!flat.SearchKey.Contains(lowerQuery, StringComparison.Ordinal)) continue;
+
+            result.Add(flat.Node);
+
+            // Walk up the parent chain; short-circuit once an ancestor is already in the set
+            // (all its ancestors are too, because we added them when we first processed a
+            //  match below it).
+            var current = flat.Parent;
+            while (current is not null)
+            {
+                if (!result.Add(current)) break;
+                parentMap.TryGetValue(current, out current);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// UI-thread finaliser: applies all <see cref="SolutionExplorerNodeVm.IsExpanded"/>
+    /// changes in a single tight loop, replacing the per-node <c>PropertyChanged</c> storm
+    /// of the old recursive approach.
+    /// <para>
+    /// <b>Critical guard:</b> <see cref="FileNodeVm"/> and <see cref="DependentFileNodeVm"/>
+    /// must never be expanded by search — doing so triggers
+    /// <c>OnTreeItemExpanded</c> → <c>LoadSourceOutlineAsync</c>.
+    /// These nodes are visible when their parent folder is expanded; they need no
+    /// <c>IsExpanded</c> change of their own.
+    /// </para>
+    /// </summary>
+    private void ApplySearchResultBatch(HashSet<SolutionExplorerNodeVm> matchedAndAncestors)
+    {
+        var cache = _flatNodeCache; // volatile read — use the same list that was searched
+        foreach (var flat in cache)
+        {
+            // Guard: never set IsExpanded on file-level nodes — it fires the lazy outline loader.
+            if (flat.Node is FileNodeVm or DependentFileNodeVm) continue;
+
+            var shouldExpand = matchedAndAncestors.Contains(flat.Node);
+            if (flat.Node.IsExpanded != shouldExpand)
+                flat.Node.IsExpanded = shouldExpand;
+        }
+    }
+
+    // -- Search reset ----------------------------------------------------------
 
     /// <summary>
     /// Restores the tree to its "natural" post-search state: structural nodes (solution,
@@ -927,18 +1143,6 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
             ResetToStructuralExpansion(n.Children);
         }
-    }
-
-    private static bool ExpandIfMatch(SolutionExplorerNodeVm node, string query)
-    {
-        bool selfMatch = node.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase);
-        bool childMatch = false;
-
-        foreach (var child in node.Children)
-            childMatch |= ExpandIfMatch(child, query);
-
-        node.IsExpanded = selfMatch || childMatch;
-        return selfMatch || childMatch;
     }
 
     // -- INPC -----------------------------------------------------------------

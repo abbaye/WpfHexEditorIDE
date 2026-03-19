@@ -148,9 +148,13 @@ public sealed class ZoomPanCanvas : ContentControl
         if (Content is not FrameworkElement fe) return;
         if (fe.ActualWidth <= 0 || fe.ActualHeight <= 0) return;
 
-        double scaleX = ActualWidth  / fe.ActualWidth;
-        double scaleY = ActualHeight / fe.ActualHeight;
-        ZoomLevel = Math.Clamp(Math.Min(scaleX, scaleY) * 0.9, MinZoom, MaxZoom);
+        // Fit to viewport WIDTH (fill horizontal space at 90%).
+        // When scaleX ≤ scaleY (normal case): identical to min(scaleX,scaleY)*0.9 — no change.
+        // When scaleX > scaleY (wide-short viewport, e.g. VerticalDesignTop thin strip):
+        //   min-scale used scaleY → tiny canvas with huge side margins ("rectangles on each side").
+        //   width-fit uses scaleX → canvas fills width, overflows vertically via scrollbar.
+        double scaleX = ActualWidth / fe.ActualWidth;
+        ZoomLevel = Math.Clamp(scaleX * 0.9, MinZoom, MaxZoom);
         CenterContent();
     }
 

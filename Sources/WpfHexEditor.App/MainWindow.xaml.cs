@@ -46,6 +46,7 @@ using WpfHexEditor.Editor.AudioViewer;
 using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
 using WpfHexEditor.Editor.MarkdownEditor;
+using WpfHexEditor.Editor.ClassDiagram;
 using WpfHexEditor.Editor.XamlDesigner;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
@@ -470,6 +471,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new AudioViewerFactory());
         _editorRegistry.Register(new ScriptEditorFactory());
         _editorRegistry.Register(new ChangesetEditorFactory());
+        _editorRegistry.Register(new ClassDiagramFactory());
         _editorRegistry.Register(new XamlDesignerFactory());
 
         // Register VS-style project templates

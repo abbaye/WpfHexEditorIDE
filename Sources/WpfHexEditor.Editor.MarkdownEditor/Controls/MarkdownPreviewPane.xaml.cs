@@ -125,7 +125,14 @@ public sealed partial class MarkdownPreviewPane : UserControl
         // Discard if a newer render was requested while we were working
         if (stamp != _renderStamp) return;
 
-        _webView.NavigateToString(html);
+        // NavigateToString has a ~2 MB size limit and throws ArgumentException when
+        // bundled assets are inlined (mermaid.js alone is ~2.9 MB). Write to a temp
+        // file instead and navigate via file:// URI to bypass the size restriction.
+        var tempDir  = Path.Combine(Path.GetTempPath(), "WpfHexEditor");
+        Directory.CreateDirectory(tempDir);
+        var tempFile = Path.Combine(tempDir, $"md_preview_{Environment.ProcessId}.html");
+        await File.WriteAllTextAsync(tempFile, html, System.Text.Encoding.UTF8);
+        _webView.CoreWebView2.Navigate(new Uri(tempFile).AbsoluteUri);
     }
 
     /// <summary>
@@ -148,7 +155,17 @@ public sealed partial class MarkdownPreviewPane : UserControl
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         Loaded -= OnLoaded;
-        await InitializeAsync();
+        try
+        {
+            await InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            // Prevent unhandled async-void exception from crashing the host.
+            System.Diagnostics.Debug.WriteLine($"[MarkdownPreviewPane] Init failed: {ex.Message}");
+            _loadingOverlay.Visibility = Visibility.Collapsed;
+            _fallback.Visibility       = Visibility.Visible;
+        }
     }
 
     private void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)

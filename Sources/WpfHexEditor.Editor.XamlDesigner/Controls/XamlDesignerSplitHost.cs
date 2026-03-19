@@ -1083,29 +1083,43 @@ public sealed class XamlDesignerSplitHost : Grid,
         double vh    = _zoomPan.ActualHeight;
         double extra = ZoomPanCanvas.ScrollExtraMargin;
 
+        // Hide scrollbars entirely when the canvas fits — no "dead strip" rectangles
+        // bordering the canvas. The Auto-sized grid row/column collapses to 0px when
+        // its child is Collapsed, giving _zoomPan the full design pane space.
+        bool needsH = cw > vw + 0.5;
+        bool needsV = ch > vh + 0.5;
+        _hScrollBar.Visibility = needsH ? Visibility.Visible : Visibility.Collapsed;
+        _vScrollBar.Visibility = needsV ? Visibility.Visible : Visibility.Collapsed;
+
         _isSyncingScrollBars = true;
         try
         {
-            // Horizontal — total range = content + 2×extra margins - viewport (always enabled).
-            // Value 0 → OffsetX = +extra (left blank margin), Value hMax → OffsetX = vw-cw-extra (right blank margin).
-            double hMax = Math.Max(0, cw + extra * 2 - vw);
-            _hScrollBar.IsEnabled    = hMax > 1;
-            _hScrollBar.Minimum      = 0;
-            _hScrollBar.Maximum      = Math.Max(1, hMax);
-            _hScrollBar.ViewportSize = vw;
-            _hScrollBar.LargeChange  = vw;
-            _hScrollBar.SmallChange  = 50;
-            _hScrollBar.Value        = Math.Clamp(extra - _zoomPan.OffsetX, 0, Math.Max(1, hMax));
+            if (needsH)
+            {
+                // Horizontal — total range = content + 2×extra margins - viewport.
+                // Value 0 → OffsetX = +extra (left blank margin visible).
+                double hMax = Math.Max(0, cw + extra * 2 - vw);
+                _hScrollBar.IsEnabled    = true;
+                _hScrollBar.Minimum      = 0;
+                _hScrollBar.Maximum      = Math.Max(1, hMax);
+                _hScrollBar.ViewportSize = vw;
+                _hScrollBar.LargeChange  = vw;
+                _hScrollBar.SmallChange  = 50;
+                _hScrollBar.Value        = Math.Clamp(extra - _zoomPan.OffsetX, 0, Math.Max(1, hMax));
+            }
 
-            // Vertical
-            double vMax = Math.Max(0, ch + extra * 2 - vh);
-            _vScrollBar.IsEnabled    = vMax > 1;
-            _vScrollBar.Minimum      = 0;
-            _vScrollBar.Maximum      = Math.Max(1, vMax);
-            _vScrollBar.ViewportSize = vh;
-            _vScrollBar.LargeChange  = vh;
-            _vScrollBar.SmallChange  = 50;
-            _vScrollBar.Value        = Math.Clamp(extra - _zoomPan.OffsetY, 0, Math.Max(1, vMax));
+            if (needsV)
+            {
+                // Vertical
+                double vMax = Math.Max(0, ch + extra * 2 - vh);
+                _vScrollBar.IsEnabled    = true;
+                _vScrollBar.Minimum      = 0;
+                _vScrollBar.Maximum      = Math.Max(1, vMax);
+                _vScrollBar.ViewportSize = vh;
+                _vScrollBar.LargeChange  = vh;
+                _vScrollBar.SmallChange  = 50;
+                _vScrollBar.Value        = Math.Clamp(extra - _zoomPan.OffsetY, 0, Math.Max(1, vMax));
+            }
         }
         finally
         {

@@ -741,6 +741,8 @@
 
         <!-- Tree -->
         <TreeView x:Name="SolutionTree" Grid.Row="2"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Standard"
                   ItemsSource="{Binding Roots}"
                   SelectedItemChanged="OnSelectedItemChanged"
                   PreviewMouseDoubleClick="OnItemDoubleClick"
