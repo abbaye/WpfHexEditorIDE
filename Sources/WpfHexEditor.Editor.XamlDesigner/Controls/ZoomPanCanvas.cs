@@ -64,16 +64,12 @@ public sealed class ZoomPanCanvas : ContentControl
 
     public ZoomPanCanvas()
     {
-        // Scale then translate in a single RenderTransform group.
-        // RenderTransform keeps layout stable (viewport size never changes),
-        // which is required for the "zoom toward mouse" anchor formula to work.
-        // LayoutTransform must NOT be used — it re-measures children at scaled
-        // size, making content.ActualWidth ≈ viewport/zoom and breaking ClampOffsets.
-        var group = new TransformGroup();
-        group.Children.Add(_scale);
-        group.Children.Add(_translate);
-        RenderTransform = group;
-
+        // ZoomPanCanvas itself has NO transform.
+        // Transforms are applied to the content element in OnContentChanged:
+        //   LayoutTransform = _scale   → content is measured/arranged at scaled size
+        //   RenderTransform = _translate → content pans without re-measuring
+        // HorizontalAlignment=Left + VerticalAlignment=Top on the content element
+        // ensures content.ActualWidth reflects its natural size, not the viewport.
         ClipToBounds = true;
 
         MouseWheel += OnMouseWheel;
@@ -126,9 +122,45 @@ public sealed class ZoomPanCanvas : ContentControl
         double scaleX = ActualWidth  / fe.ActualWidth;
         double scaleY = ActualHeight / fe.ActualHeight;
         ZoomLevel = Math.Clamp(Math.Min(scaleX, scaleY) * 0.9, MinZoom, MaxZoom);
-        OffsetX   = 0;
-        OffsetY   = 0;
-        ClampOffsets();
+        CenterContent();
+    }
+
+    // ── Content wiring ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Applies zoom/pan transforms directly to the content element so that only
+    /// the design content scales — not the ZoomPanCanvas viewport frame.
+    /// Also anchors content to top-left so ActualWidth/Height reflect natural size.
+    /// </summary>
+    protected override void OnContentChanged(object oldContent, object newContent)
+    {
+        base.OnContentChanged(oldContent, newContent);
+
+        // Remove transforms from previous content.
+        if (oldContent is FrameworkElement oldFe)
+        {
+            oldFe.LayoutTransform = Transform.Identity;
+            oldFe.RenderTransform = Transform.Identity;
+            oldFe.SizeChanged -= OnContentSizeChanged;
+        }
+
+        // Apply transforms to new content.
+        if (newContent is FrameworkElement newEl)
+        {
+            newEl.LayoutTransform = _scale;
+            newEl.RenderTransform = _translate;
+            // Left+Top alignment: content.ActualWidth = natural design width (not viewport).
+            newEl.HorizontalAlignment = HorizontalAlignment.Left;
+            newEl.VerticalAlignment   = VerticalAlignment.Top;
+            newEl.SizeChanged += OnContentSizeChanged;
+        }
+    }
+
+    /// <summary>Auto-fits content once it has a measured natural size.</summary>
+    private void OnContentSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (ActualWidth > 0 && e.NewSize.Width > 10)
+            Dispatcher.InvokeAsync(FitToContent, DispatcherPriority.Render);
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

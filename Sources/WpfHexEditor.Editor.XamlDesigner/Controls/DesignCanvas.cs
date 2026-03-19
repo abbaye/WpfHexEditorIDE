@@ -79,6 +79,14 @@ public sealed class DesignCanvas : Border
         SetResourceReference(BorderBrushProperty, "XD_CanvasBorderBrush");
         BorderThickness = new Thickness(1);
 
+        // Explicit natural size so ZoomPanCanvas formulas (ClampOffsets, FitToContent,
+        // zoom-toward-mouse) see the real design dimensions rather than the viewport size.
+        // Updated in RenderXaml() to match the root element's declared Width/Height.
+        Width  = 1280;
+        Height = 720;
+        HorizontalAlignment = HorizontalAlignment.Left;
+        VerticalAlignment   = VerticalAlignment.Top;
+
         _presenter = new ContentPresenter
         {
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -182,6 +190,17 @@ public sealed class DesignCanvas : Border
             {
                 _presenter.Content = uiResult;
                 DesignRoot         = uiResult;
+
+                // Resize canvas to match root element's declared dimensions so that
+                // ZoomPanCanvas always sees a natural (non-viewport-dependent) size.
+                // +18 accounts for: 2×BorderThickness(1px) + 2×ContentPresenter.Margin(8px)
+                if (uiResult is FrameworkElement rootFe)
+                {
+                    const double Extra = 18.0;
+                    if (!double.IsNaN(rootFe.Width)  && rootFe.Width  > 0) Width  = rootFe.Width  + Extra;
+                    if (!double.IsNaN(rootFe.Height) && rootFe.Height > 0) Height = rootFe.Height + Extra;
+                }
+
                 SelectElement(null);
 
                 // Build the UIElement → XElement map after the element is in the tree.
@@ -206,9 +225,84 @@ public sealed class DesignCanvas : Border
         }
         catch (Exception ex)
         {
-            _presenter.Content = null;
             DesignRoot         = null;
+            _presenter.Content = BuildRenderErrorCard(ex.Message);
             RenderError?.Invoke(this, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Builds a centered error card displayed on the design surface when XAML
+    /// parsing or rendering fails. Never throws — inner exceptions are swallowed
+    /// to prevent cascading failures from crashing the IDE.
+    /// </summary>
+    private static UIElement BuildRenderErrorCard(string message)
+    {
+        try
+        {
+            var icon = new TextBlock
+            {
+                Text                = "\uE783",   // Segoe MDL2: Error circle
+                FontFamily          = new FontFamily("Segoe MDL2 Assets"),
+                FontSize            = 32,
+                Foreground          = new SolidColorBrush(Color.FromRgb(0xF4, 0x85, 0x57)),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin              = new Thickness(0, 0, 0, 8)
+            };
+
+            var title = new TextBlock
+            {
+                Text                = "XAML Parse Error",
+                FontSize            = 14,
+                FontWeight          = FontWeights.SemiBold,
+                Foreground          = new SolidColorBrush(Color.FromRgb(0xF4, 0x85, 0x57)),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin              = new Thickness(0, 0, 0, 6)
+            };
+
+            var detail = new TextBlock
+            {
+                Text                = message,
+                FontSize            = 11,
+                Foreground          = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC)),
+                TextWrapping        = TextWrapping.Wrap,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                TextAlignment       = TextAlignment.Center,
+                MaxWidth            = 480
+            };
+
+            var stack = new StackPanel
+            {
+                Orientation         = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center
+            };
+            stack.Children.Add(icon);
+            stack.Children.Add(title);
+            stack.Children.Add(detail);
+
+            return new Border
+            {
+                Background          = new SolidColorBrush(Color.FromArgb(0xCC, 0x1E, 0x1E, 0x1E)),
+                BorderBrush         = new SolidColorBrush(Color.FromRgb(0xF4, 0x85, 0x57)),
+                BorderThickness     = new Thickness(1),
+                CornerRadius        = new CornerRadius(6),
+                Padding             = new Thickness(24, 20, 24, 20),
+                MaxWidth            = 560,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+                Child               = stack
+            };
+        }
+        catch
+        {
+            // Last-resort fallback — never return null.
+            return new TextBlock
+            {
+                Text       = $"[Render error] {message}",
+                Foreground = Brushes.OrangeRed,
+                Margin     = new Thickness(12)
+            };
         }
     }
 
