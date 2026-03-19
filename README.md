@@ -287,7 +287,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 
 > **NuGet:** A legacy package (`WPFHexaEditor`) is still available on NuGet but is no longer maintained. NuGet packaging is planned (#109).
 
-> **JetBrains Rider:** See the **[Rider Guide](docs/IDE/RIDER_GUIDE.md)** for SmartComplete tips.
+> **JetBrains Rider:** Fully compatible — open the solution and press F5. SmartComplete (LSP) works out of the box.
 
 **[Complete Tutorial →](GETTING_STARTED.md)**
 
@@ -410,7 +410,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 | **[Core Systems](docs/architecture/core-systems/)** | ByteProvider, position mapping, undo/redo, rendering |
 | **[Data Flow](docs/architecture/data-flow/)** | File, edit, search and save operation sequences |
 | **[API Reference](docs/api-reference/)** | Full API documentation with code examples |
-| **[Rider Guide](docs/IDE/RIDER_GUIDE.md)** | JetBrains Rider setup and tips |
+| **[Wiki — Getting Started](https://github.com/abbaye/WpfHexEditorIDE/wiki/Getting-Started)** | Build, run, embed the control — step by step |
 
 ---
 
