@@ -389,7 +389,7 @@
 
     <!-- XAML Designer (XD_*) — VisualStudio theme -->
     <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#2A2A2A"/>
-    <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#3F3F46"/>
+    <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#686868"/>
     <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#353535"/>
     <SolidColorBrush x:Key="XD_SelectionBorderBrush"             Color="#007ACC"/>
     <SolidColorBrush x:Key="XD_SelectionHandleFillBrush"         Color="#FFFFFF"/>

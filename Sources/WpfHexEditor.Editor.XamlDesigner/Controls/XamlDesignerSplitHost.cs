@@ -285,6 +285,9 @@ public sealed class XamlDesignerSplitHost : Grid,
         _vScrollBar = new ScrollBar { Orientation = Orientation.Vertical   };
 
         _designPaneGrid = new Grid();
+        // XD_CanvasBackground gives the design surface its own visual identity so the
+        // dock panel's dark background does not bleed through the transparent ZoomPanCanvas.
+        _designPaneGrid.SetResourceReference(BackgroundProperty, "XD_CanvasBackground");
         _designPaneGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         _designPaneGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         _designPaneGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
