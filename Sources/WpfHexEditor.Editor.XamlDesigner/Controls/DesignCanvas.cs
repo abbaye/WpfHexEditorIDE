@@ -65,6 +65,9 @@ public sealed class DesignCanvas : Border
     private int               _altClickDepth    = 0;
     private List<UIElement>   _lastHitElements  = new();
 
+    // Hover adorner state — the element currently highlighted under the cursor.
+    private UIElement? _hoveredElement;
+
     /// <summary>
     /// When true, selection uses ResizeAdorner instead of SelectionAdorner
     /// and wires DesignInteractionService for drag-move/resize.
@@ -98,6 +101,8 @@ public sealed class DesignCanvas : Border
         Child = _presenter;
 
         PreviewMouseLeftButtonDown += OnCanvasMouseDown;
+        MouseMove  += OnCanvasMouseMove;
+        MouseLeave += OnCanvasMouseLeave;
 
         // Escape key — if something is selected, walk up to the nearest selectable parent;
         // if already at root (or nothing is selected), deselect entirely.
@@ -176,6 +181,7 @@ public sealed class DesignCanvas : Border
     /// <summary>Programmatically selects an element and places the adorner.</summary>
     public void SelectElement(UIElement? el)
     {
+        RemoveHoverAdorner();       // Clear hover first so selection adorner has priority.
         RemoveSelectionAdorner();
 
         SelectedElement    = el;
@@ -452,6 +458,77 @@ public sealed class DesignCanvas : Border
         if (obj is ContentControl cc && cc.Content is UIElement) return false;
         if (obj is Decorator d && d.Child is not null) return false;
         return obj is UIElement;
+    }
+
+    // ── Hover highlighting ────────────────────────────────────────────────────
+
+    private void OnCanvasMouseMove(object sender, MouseEventArgs e)
+    {
+        if (DesignRoot is null) return;
+
+        var hovered = HitTestElement(e.GetPosition(_presenter));
+
+        // Don't overlay hover on the already-selected element.
+        if (ReferenceEquals(hovered, SelectedElement))
+            hovered = null;
+
+        UpdateHoverAdorner(hovered);
+    }
+
+    private void OnCanvasMouseLeave(object sender, MouseEventArgs e)
+        => UpdateHoverAdorner(null);
+
+    /// <summary>
+    /// Returns the leaf-preferred UIElement at <paramref name="positionInPresenter"/>
+    /// within the <see cref="_presenter"/> hit area, excluding adorners.
+    /// </summary>
+    private UIElement? HitTestElement(Point positionInPresenter)
+    {
+        var hits = new List<UIElement>();
+        VisualTreeHelper.HitTest(
+            _presenter,
+            d => d is Adorner
+                ? HitTestFilterBehavior.ContinueSkipSelfAndChildren
+                : HitTestFilterBehavior.Continue,
+            r =>
+            {
+                if (r.VisualHit is UIElement u && !ReferenceEquals(u, _presenter))
+                    hits.Add(u);
+                return HitTestResultBehavior.Continue;
+            },
+            new PointHitTestParameters(positionInPresenter));
+
+        return hits.FirstOrDefault(IsLeafElement) ?? hits.FirstOrDefault();
+    }
+
+    private void UpdateHoverAdorner(UIElement? target)
+    {
+        if (ReferenceEquals(target, _hoveredElement)) return;
+
+        RemoveHoverAdorner();
+        _hoveredElement = target;
+
+        if (_hoveredElement is not null)
+        {
+            var layer = AdornerLayer.GetAdornerLayer(_hoveredElement);
+            layer?.Add(new HoverAdorner(_hoveredElement));
+        }
+    }
+
+    private void RemoveHoverAdorner()
+    {
+        if (_hoveredElement is null) return;
+
+        var layer = AdornerLayer.GetAdornerLayer(_hoveredElement);
+        if (layer is not null)
+        {
+            var adorners = layer.GetAdorners(_hoveredElement);
+            if (adorners is not null)
+                foreach (var a in adorners.OfType<HoverAdorner>().ToList())
+                    layer.Remove(a);
+        }
+
+        _hoveredElement = null;
     }
 
     // ── XAML preprocessing ────────────────────────────────────────────────────

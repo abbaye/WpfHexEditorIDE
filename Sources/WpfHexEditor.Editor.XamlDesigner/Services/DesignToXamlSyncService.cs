@@ -327,21 +327,27 @@ public sealed class DesignToXamlSyncService
     /// </summary>
     private static string PatchRotation(string rawXaml, int uid, string angleDeg)
     {
-        if (string.IsNullOrWhiteSpace(rawXaml)) return rawXaml;
+        // uid < 0 means the rotation started without a valid element (DragStarted didn't fire).
+        if (string.IsNullOrWhiteSpace(rawXaml) || uid < 0) return rawXaml;
         try
         {
             var doc    = XDocument.Parse(rawXaml, LoadOptions.PreserveWhitespace);
             var target = FindElementByUid(doc.Root, uid);
             if (target is null) return rawXaml;
 
+            // Use the document root namespace for all generated elements.
+            // This avoids XLinq emitting redundant xmlns= attributes inside property elements.
+            var ns = doc.Root!.Name.Namespace;
+
             bool removeRotation = !double.TryParse(angleDeg, NumberStyles.Any,
                 CultureInfo.InvariantCulture, out double angle)
                 || Math.Abs(angle) < 0.01;
 
-            // Remove any existing RenderTransform property element.
+            // Remove ALL existing RenderTransform property elements (may be more than one on malformed XAML).
             target.Elements()
-                  .FirstOrDefault(e => e.Name.LocalName.EndsWith(".RenderTransform"))
-                  ?.Remove();
+                  .Where(e => e.Name.LocalName.EndsWith(".RenderTransform"))
+                  .ToList()
+                  .ForEach(e => e.Remove());
 
             if (removeRotation)
             {
@@ -351,11 +357,10 @@ public sealed class DesignToXamlSyncService
             {
                 target.SetAttributeValue("RenderTransformOrigin", "0.5,0.5");
 
-                var wpfNs   = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
-                var propTag = target.Name.LocalName + ".RenderTransform";
-                var rt      = new XElement(
-                    target.Name.Namespace + propTag,
-                    new XElement(wpfNs + "RotateTransform",
+                // <TypeName.RenderTransform><RotateTransform Angle="X"/></TypeName.RenderTransform>
+                var rt = new XElement(
+                    ns + (target.Name.LocalName + ".RenderTransform"),
+                    new XElement(ns + "RotateTransform",
                         new XAttribute("Angle", angleDeg)));
 
                 target.AddFirst(rt);

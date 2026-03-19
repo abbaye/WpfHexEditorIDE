@@ -321,6 +321,10 @@ public sealed class DesignInteractionService
         if (!_isInRotate) return;
         _isInRotate = false;
 
+        // Guard: if OnRotateStarted never ran (e.g. DragStarted lost to event routing),
+        // _rotateUid is still -1 → PatchRotation would receive uid=-1 and return unchanged XAML.
+        if (_rotateUid < 0) return;
+
         double after = GetCurrentRotation(element);
         if (Math.Abs(after - _rotateStartAngle) < 0.01) return; // no-op
 

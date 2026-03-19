@@ -404,6 +404,7 @@
     <SolidColorBrush x:Key="XD_ToolbarViewToggleActiveBrush"     Color="#007ACC"/>
     <!-- XD Phase 1-10 extended tokens (DarkGlass) -->
     <SolidColorBrush x:Key="XD_MoveAdornerBrush"                Color="#00BCD4"/>
+    <SolidColorBrush x:Key="XD_HoverBorderBrush"                Color="#B200A8E8"/>
     <SolidColorBrush x:Key="XD_RotationHandleFillBrush"           Color="#FF4FC1FF"/>
     <SolidColorBrush x:Key="XD_ResizeHandleFillBrush"           Color="#FFFFFF"/>
     <SolidColorBrush x:Key="XD_ResizeHandleStrokeBrush"         Color="#00BCD4"/>
@@ -427,4 +428,14 @@
     <SolidColorBrush x:Key="XD_HistoryCurrentMarkerBrush"       Color="#007ACC"/>
     <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#252525"/>
     <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#88BBDD"/>
+
+    <!-- CE_Rect* / TE_Rect* — Rectangular (block) selection brushes -->
+    <SolidColorBrush x:Key="CE_RectSelection"       Color="#331A3A5C"/>
+    <SolidColorBrush x:Key="CE_RectSelectionBorder" Color="#801A3A5C"/>
+    <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF8C00"/>
+    <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8C00"/>
+    <SolidColorBrush x:Key="TE_RectSelection"       Color="#331A3A5C"/>
+    <SolidColorBrush x:Key="TE_RectSelectionBorder" Color="#801A3A5C"/>
+    <SolidColorBrush x:Key="TE_DragCaret"           Color="#FFFF8C00"/>
+    <SolidColorBrush x:Key="TE_DragDropTarget"      Color="#1AFF8C00"/>
 </ResourceDictionary>
