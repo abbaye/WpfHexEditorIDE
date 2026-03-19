@@ -127,6 +127,12 @@ public sealed class XamlDesignerSplitHost : Grid,
     private Button? _btnUndo;
     private Button? _btnRedo;
 
+    // ── Pod toolbar item references (for runtime state sync) ──────────────────
+
+    private EditorToolbarItem? _podAutoPreviewItem;
+    private EditorToolbarItem? _podUndoItem;
+    private EditorToolbarItem? _podRedoItem;
+
     // ── Phase 1 — Design interaction ──────────────────────────────────────────
 
     private readonly DesignToXamlSyncService     _syncService        = new();
@@ -762,6 +768,27 @@ public sealed class XamlDesignerSplitHost : Grid,
             _btnRedo.ToolTip = _undoManager.CanRedo
                 ? $"Redo: {_undoManager.RedoDescription}"
                 : "Nothing to redo";
+
+        // Mirror to pod toolbar items (Tooltip is now mutable with INPC).
+        if (_podUndoItem is not null)
+            _podUndoItem.Tooltip = _undoManager.CanUndo
+                ? $"Undo: {_undoManager.UndoDescription}"
+                : "Nothing to undo";
+
+        if (_podRedoItem is not null)
+            _podRedoItem.Tooltip = _undoManager.CanRedo
+                ? $"Redo: {_undoManager.RedoDescription}"
+                : "Nothing to redo";
+    }
+
+    /// <summary>
+    /// Mirrors the current <see cref="_autoPreviewEnabled"/> state to the pod toolbar toggle item.
+    /// Called whenever the flag changes (embedded toolbar button, keyboard shortcut, or pod command).
+    /// </summary>
+    private void SyncAutoPreviewPodItem()
+    {
+        if (_podAutoPreviewItem is not null)
+            _podAutoPreviewItem.IsChecked = _autoPreviewEnabled;
     }
 
     // ── Phase 1 — Design operation committed → undo manager + XAML patch ─────
@@ -906,7 +933,11 @@ public sealed class XamlDesignerSplitHost : Grid,
         while (current is not null)
         {
             if (ReferenceEquals(current, ancestor)) return true;
-            current = System.Windows.Media.VisualTreeHelper.GetParent(current);
+            // VisualTreeHelper.GetParent throws for non-Visual types (e.g. FlowDocument).
+            // Fall back to LogicalTreeHelper for those nodes.
+            current = current is System.Windows.Media.Visual or System.Windows.Media.Media3D.Visual3D
+                ? System.Windows.Media.VisualTreeHelper.GetParent(current)
+                : System.Windows.LogicalTreeHelper.GetParent(current);
         }
         return false;
     }
@@ -979,6 +1010,11 @@ public sealed class XamlDesignerSplitHost : Grid,
     {
         _splitLayout = layout;
         UpdateGridLayout();
+        // Re-fit after layout settles: switching orientation changes the pane dimensions
+        // and ClampOffsets alone may leave content partially outside the viewport.
+        Dispatcher.InvokeAsync(
+            () => { if (_zoomPan.ActualWidth > 0) _zoomPan.FitToContent(); },
+            System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     /// <summary>
@@ -1252,19 +1288,8 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         Button MakeIconButton(string glyph, string tooltip)
         {
-            var btn = new Button
-            {
-                Content         = glyph,
-                ToolTip         = tooltip,
-                Width           = 22,
-                Height          = 22,
-                Background      = System.Windows.Media.Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                FontFamily      = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
-                FontSize        = 12,
-                Cursor          = System.Windows.Input.Cursors.Hand
-            };
-            btn.SetResourceReference(System.Windows.Documents.TextElement.ForegroundProperty, "DockMenuForegroundBrush");
+            var btn = new Button { Content = glyph, ToolTip = tooltip };
+            btn.SetResourceReference(StyleProperty, "XD_ToolbarIconButtonStyle");
             return btn;
         }
 
@@ -1281,8 +1306,10 @@ public sealed class XamlDesignerSplitHost : Grid,
         localCode.Click   += (_, _) => { if (localCode.IsChecked == true)   ApplyViewMode(ViewMode.CodeOnly); };
         localSplit.Click  += (_, _) => { if (localSplit.IsChecked == true)  ApplyViewMode(ViewMode.Split); };
         localDesign.Click += (_, _) => { if (localDesign.IsChecked == true) ApplyViewMode(ViewMode.DesignOnly); };
-        btnAuto.Checked   += (_, _) => _autoPreviewEnabled = true;
-        btnAuto.Unchecked += (_, _) => { _autoPreviewEnabled = false; _previewTimer.Stop(); };
+        // Delegate to the shared ToggleAutoPreview helper so both toolbar and keyboard
+        // shortcut stay in sync with the pod item's IsChecked.
+        btnAuto.Checked   += (_, _) => { _autoPreviewEnabled = true;  SyncAutoPreviewPodItem(); };
+        btnAuto.Unchecked += (_, _) => { _autoPreviewEnabled = false; _previewTimer.Stop(); SyncAutoPreviewPodItem(); };
 
         // ── Layout dropdown button ────────────────────────────────────────────
         var btnLayoutLocal = MakeIconButton("\uE8B7", "Split layout (Ctrl+Shift+L)");
@@ -1503,17 +1530,39 @@ public sealed class XamlDesignerSplitHost : Grid,
         ToolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
 
         // Auto-preview toggle
-        ToolbarItems.Add(new EditorToolbarItem
+        _podAutoPreviewItem = new EditorToolbarItem
         {
-            Icon    = "\uE8EA",
-            Tooltip = "Toggle auto-preview (Ctrl+Shift+P)",
-            Command = new RelayCommand(_ =>
+            Icon      = "\uE8EA",
+            IsToggle  = true,
+            IsChecked = _autoPreviewEnabled,
+            Tooltip   = "Toggle auto-preview (Ctrl+Shift+P)",
+            Command   = new RelayCommand(_ =>
             {
-                _autoPreviewEnabled   = !_autoPreviewEnabled;
+                _autoPreviewEnabled       = !_autoPreviewEnabled;
                 _btnAutoPreview.IsChecked = _autoPreviewEnabled;
                 if (!_autoPreviewEnabled) _previewTimer.Stop();
+                SyncAutoPreviewPodItem();
             })
-        });
+        };
+        ToolbarItems.Add(_podAutoPreviewItem);
+
+        ToolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+
+        // Undo / Redo
+        _podUndoItem = new EditorToolbarItem
+        {
+            Icon    = "\uE7A7",
+            Tooltip = "Nothing to undo",
+            Command = new RelayCommand(_ => Undo(), _ => _undoManager.CanUndo)
+        };
+        _podRedoItem = new EditorToolbarItem
+        {
+            Icon    = "\uE7A6",
+            Tooltip = "Nothing to redo",
+            Command = new RelayCommand(_ => Redo(), _ => _undoManager.CanRedo)
+        };
+        ToolbarItems.Add(_podUndoItem);
+        ToolbarItems.Add(_podRedoItem);
 
         ToolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
 
@@ -1697,6 +1746,7 @@ public sealed class XamlDesignerSplitHost : Grid,
             _autoPreviewEnabled       = !_autoPreviewEnabled;
             _btnAutoPreview.IsChecked = _autoPreviewEnabled;
             if (!_autoPreviewEnabled) _previewTimer.Stop();
+            SyncAutoPreviewPodItem();
             e.Handled = true;
             return;
         }
