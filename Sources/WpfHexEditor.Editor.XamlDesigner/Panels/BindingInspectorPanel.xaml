@@ -2,10 +2,14 @@
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
+    Updated: 2026-03-19 — Overkill upgrade: Status icon column, Trigger badge, Converter column,
+                          Validation badge, row expander (FallbackValue/TargetNullValue),
+                          MultiBinding child expansion, CopyExpression toolbar button,
+                          row context menu (Copy/GoToSource/InspectConverter).
     Theme: Global theme via XD_* and DockBackgroundBrush tokens (DynamicResource)
     ResourceDictionaries: WpfHexEditor.Shell/Themes/{Theme}/Colors.xaml
     Panel: Binding Inspector — shows active bindings on the selected design canvas element.
-    Columns: Property | Path | Mode | Source | Status
+    Columns: Status | Property | Path | Mode | Source | Converter | Trigger | Validation
 -->
 
 <UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.BindingInspectorPanel"
@@ -15,7 +19,9 @@
              Background="{DynamicResource DockBackgroundBrush}">
 
     <UserControl.Resources>
-        <!-- Icon button style — identical pattern to PropertyInspectorPanel / XamlOutlinePanel -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Icon button style — identical pattern to PropertyInspectorPanel -->
         <Style x:Key="XD_BindIconButton" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -49,17 +55,193 @@
             </Setter>
         </Style>
 
-        <!-- Status cell color: green-tinted for OK, warning-tinted for Error -->
-        <Style x:Key="XD_BindStatusCell" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="FontSize"   Value="11"/>
-            <Setter Property="Padding"    Value="2,1"/>
-            <Style.Triggers>
-                <Trigger Property="Text" Value="Error">
-                    <Setter Property="Foreground" Value="{DynamicResource XD_CanvasBorderBrush}"/>
-                    <Setter Property="FontWeight"  Value="SemiBold"/>
-                </Trigger>
-            </Style.Triggers>
+        <!-- ToggleButton style matching XD_BindIconButton -->
+        <Style x:Key="XD_BindIconToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Padding"         Value="3"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="2" SnapsToDevicePixels="True"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource XD_ToolbarViewToggleActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Trigger badge style: small pill with colored background -->
+        <Style x:Key="XD_TriggerBadgeText" TargetType="TextBlock">
+            <Setter Property="FontSize"             Value="9"/>
+            <Setter Property="FontWeight"           Value="SemiBold"/>
+            <Setter Property="Foreground"           Value="{DynamicResource DockBackgroundBrush}"/>
+            <Setter Property="HorizontalAlignment"  Value="Center"/>
+            <Setter Property="VerticalAlignment"    Value="Center"/>
+            <Setter Property="Padding"              Value="2,0"/>
+        </Style>
+
+        <!-- Validation badge (✓ checkmark) shown when ShowValidation=True -->
+        <Style x:Key="XD_ValidationBadge" TargetType="TextBlock">
+            <Setter Property="FontFamily"   Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"     Value="10"/>
+            <Setter Property="Foreground"   Value="{DynamicResource XD_BindingStatusOkBrush}"/>
+            <Setter Property="Text"         Value="&#xE73E;"/>
+            <Setter Property="ToolTip"      Value="Validates on data/notify errors"/>
+            <Setter Property="Visibility"   Value="Collapsed"/>
+        </Style>
+
+        <!-- Row expander — shows FallbackValue / TargetNullValue in small italic text -->
+        <DataTemplate x:Key="BindingExpanderTemplate" DataType="{x:Type local:BindingEntryViewModel}">
+            <StackPanel Orientation="Vertical" Margin="4,2,4,4">
+                <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+                    <TextBlock Text="Fallback: "
+                               FontSize="10" FontStyle="Italic"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Opacity="0.65"/>
+                    <TextBlock Text="{Binding FallbackDisplay}"
+                               FontSize="10" FontStyle="Italic"
+                               Foreground="{DynamicResource XD_PropertyValueForeground}"
+                               Opacity="0.85"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+                    <TextBlock Text="TargetNull: "
+                               FontSize="10" FontStyle="Italic"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Opacity="0.65"/>
+                    <TextBlock Text="{Binding TargetNullDisplay}"
+                               FontSize="10" FontStyle="Italic"
+                               Foreground="{DynamicResource XD_PropertyValueForeground}"
+                               Opacity="0.85"/>
+                </StackPanel>
+
+                <!-- Child bindings for MultiBinding rows -->
+                <ItemsControl ItemsSource="{Binding ChildEntries}"
+                              Visibility="{Binding IsMultiBinding, Converter={StaticResource BoolToVis}}"
+                              Margin="0,4,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
+                            <Border BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="0,0,0,1" Padding="4,2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Child index -->
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding PropertyName}"
+                                               FontSize="10"
+                                               Foreground="{DynamicResource XD_PropertyNameForeground}"
+                                               VerticalAlignment="Center"/>
+                                    <!-- Child path -->
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Path}"
+                                               FontSize="10"
+                                               Foreground="{DynamicResource XD_PropertyValueForeground}"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip="{Binding Path}"
+                                               VerticalAlignment="Center"/>
+                                    <!-- Child mode -->
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Mode}"
+                                               FontSize="10"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <!-- Child source -->
+                                    <TextBlock Grid.Column="3"
+                                               Text="{Binding Source}"
+                                               FontSize="10"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Row item container style with Expander and context menu -->
+        <Style x:Key="XD_BindingListItemStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding"                    Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <StackPanel>
+                            <Border x:Name="RowBd"
+                                    Background="Transparent"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="0,0,0,1"
+                                    SnapsToDevicePixels="True">
+                                <GridViewRowPresenter Content="{TemplateBinding Content}"
+                                                      Columns="{Binding Path=View.Columns,
+                                                                RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                            </Border>
+
+                            <!-- Expander for FallbackValue / TargetNullValue / child bindings -->
+                            <Expander x:Name="RowExpander"
+                                      IsExpanded="False"
+                                      Visibility="Collapsed"
+                                      BorderBrush="{DynamicResource DockBorderBrush}"
+                                      BorderThickness="0,0,0,1"
+                                      Background="{DynamicResource DockMenuBackgroundBrush}">
+                                <Expander.Header>
+                                    <TextBlock Text="Details"
+                                               FontSize="10"
+                                               FontStyle="Italic"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               Opacity="0.65"/>
+                                </Expander.Header>
+                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{StaticResource BindingExpanderTemplate}"/>
+                            </Expander>
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowBd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RowBd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                            <!-- Show expander for rows that have non-default fallback/null/children -->
+                            <DataTrigger Binding="{Binding IsMultiBinding}" Value="True">
+                                <Setter TargetName="RowExpander" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
         </Style>
     </UserControl.Resources>
 
@@ -80,9 +262,47 @@
                 <!-- Always-visible right panel (ToolbarOverflowManager anchor) -->
                 <StackPanel x:Name="ToolbarRightPanel" DockPanel.Dock="Right"
                             Orientation="Horizontal" Margin="0,0,2,0">
+                    <!-- Copy binding expression for selected row -->
+                    <Button x:Name="BtnCopyExpr" Style="{StaticResource XD_BindIconButton}"
+                            Content="&#xE8C8;" ToolTip="Copy binding expression to clipboard"/>
                     <!-- Refresh bindings -->
                     <Button x:Name="BtnRefresh" Style="{StaticResource XD_BindIconButton}"
                             Content="&#xE72C;" ToolTip="Refresh bindings"/>
+                    <!-- Separator -->
+                    <Separator Width="1" Height="16" Margin="2,0"
+                               Background="{DynamicResource DockBorderBrush}"/>
+                    <!-- Show only broken bindings toggle -->
+                    <ToggleButton x:Name="BtnErrorsOnly"
+                                  Style="{StaticResource XD_BindIconToggleButton}"
+                                  ToolTip="Show only broken bindings"
+                                  IsChecked="{Binding ShowErrorsOnly, Mode=TwoWay}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE814;"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ToggleButton>
+                    <!-- Re-evaluate all binding statuses -->
+                    <Button x:Name="BtnValidateAll"
+                            Style="{StaticResource XD_BindIconButton}"
+                            ToolTip="Re-evaluate all binding statuses"
+                            Click="OnValidateAll">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE73E;"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <!-- Clear filter -->
+                    <Button x:Name="BtnClearFilter"
+                            Style="{StaticResource XD_BindIconButton}"
+                            ToolTip="Clear filter"
+                            Click="OnClearFilter">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE711;"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <!-- Error count badge -->
+                    <TextBlock x:Name="TbxErrorCount"
+                               Text="{Binding ErrorCountLabel}"
+                               Foreground="{DynamicResource XD_BindingStatusWarnBrush}"
+                               VerticalAlignment="Center"
+                               Margin="4,0"
+                               FontSize="11"
+                               Visibility="{Binding HasErrors, Converter={StaticResource BoolToVis}}"/>
                     <!-- Overflow toggle (managed by ToolbarOverflowManager — initially hidden) -->
                     <ToggleButton x:Name="ToolbarOverflowButton"
                                   Width="22" Height="22" Padding="3"
@@ -147,14 +367,84 @@
         <!-- ── Binding List (Row 3) ── -->
         <ListView x:Name="BindingList" Grid.Row="3"
                   ItemsSource="{Binding FilteredEntries}"
+                  ItemContainerStyle="{StaticResource XD_BindingListItemStyle}"
                   Background="{DynamicResource DockBackgroundBrush}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   BorderThickness="0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ContextMenuOpening="OnBindingListContextMenuOpening">
+
+            <!-- Context menu on the list level — avoids Style.Setter connectionId collision -->
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Binding Expression"
+                              Click="OnCtxCopyBindingExpression">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Go to Source"
+                              Click="OnCtxGoToSource">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem x:Name="CtxInspectConverter"
+                              Header="Inspect Converter"
+                              Click="OnCtxInspectConverter">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE9CE;"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
 
             <ListView.View>
                 <GridView>
-                    <!-- Column: Property -->
+
+                    <!-- Column: Status (icon glyph, 30px) -->
+                    <GridViewColumn Header="" Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
+                                <TextBlock Text="{Binding StatusIcon}"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           ToolTip="{Binding StatusTooltip}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Padding="2,1">
+                                    <!-- Status color via style trigger on StatusColorKey string;
+                                         we set Foreground conditionally based on status. -->
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding StatusColorKey}"
+                                                             Value="XD_BindingStatusOkBrush">
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource XD_BindingStatusOkBrush}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding StatusColorKey}"
+                                                             Value="XD_BindingStatusErrorBrush">
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource XD_BindingStatusErrorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Column: Property (120px) -->
                     <GridViewColumn Header="Property" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
@@ -165,7 +455,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <!-- Column: Path -->
+                    <!-- Column: Path (130px) — shows "(MultiBinding)" for multi-binding rows -->
                     <GridViewColumn Header="Path" Width="130">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
@@ -173,12 +463,23 @@
                                            Foreground="{DynamicResource XD_PropertyValueForeground}"
                                            FontSize="11" Padding="2,1"
                                            TextTrimming="CharacterEllipsis"
-                                           ToolTip="{Binding Path}"/>
+                                           ToolTip="{Binding Path}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMultiBinding}" Value="True">
+                                                    <Setter Property="FontStyle" Value="Italic"/>
+                                                    <Setter Property="Opacity"   Value="0.75"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <!-- Column: Mode -->
+                    <!-- Column: Mode (70px) -->
                     <GridViewColumn Header="Mode" Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
@@ -189,7 +490,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <!-- Column: Source -->
+                    <!-- Column: Source (130px) -->
                     <GridViewColumn Header="Source" Width="130">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
@@ -202,15 +503,86 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <!-- Column: Status -->
-                    <GridViewColumn Header="Status" Width="55">
+                    <!-- Column: Converter (90px) -->
+                    <GridViewColumn Header="Converter" Width="90">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
-                                <TextBlock Text="{Binding Status}"
-                                           Style="{StaticResource XD_BindStatusCell}"/>
+                                <TextBlock Text="{Binding ConverterDisplay}"
+                                           Foreground="{DynamicResource XD_PropertyValueForeground}"
+                                           FontSize="11" Padding="2,1"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding ConverterDisplay}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasConverter}" Value="False">
+                                                    <Setter Property="Opacity" Value="0.4"/>
+                                                    <Setter Property="FontStyle" Value="Italic"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+
+                    <!-- Column: Trigger badge (40px) — PC / LF / Ex pill -->
+                    <GridViewColumn Header="Trig" Width="40">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
+                                <Border x:Name="TrigBorder"
+                                        CornerRadius="3" Padding="2,0"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TriggerColorKey}"
+                                                             Value="XD_BindingTriggerPropertyBrush">
+                                                    <Setter Property="Background"
+                                                            Value="{DynamicResource XD_BindingTriggerPropertyBrush}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TriggerColorKey}"
+                                                             Value="XD_BindingTriggerLostFocusBrush">
+                                                    <Setter Property="Background"
+                                                            Value="{DynamicResource XD_BindingTriggerLostFocusBrush}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TriggerColorKey}"
+                                                             Value="XD_BindingTriggerExplicitBrush">
+                                                    <Setter Property="Background"
+                                                            Value="{DynamicResource XD_BindingTriggerExplicitBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding TriggerBadge}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource XD_TriggerBadgeText}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding TriggerBadge}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Column: Validation badge (30px) — ✓ when ShowValidation=True -->
+                    <GridViewColumn Header="Val" Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
+                                <TextBlock Style="{StaticResource XD_ValidationBadge}"
+                                           Visibility="{Binding ShowValidation, Converter={StaticResource BoolToVis}}"
+                                           HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
                 </GridView>
             </ListView.View>
         </ListView>

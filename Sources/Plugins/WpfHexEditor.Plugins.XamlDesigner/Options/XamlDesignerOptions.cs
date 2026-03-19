@@ -55,6 +55,27 @@ public sealed class XamlDesignerOptions
     /// <summary>Show properties with default values in the Property Inspector.</summary>
     public bool ShowDefaultProperties { get; set; } = false;
 
+    // ── Toolbox preferences ───────────────────────────────────────────────────
+
+    /// <summary>Keys of toolbox items starred as favorites.</summary>
+    public List<string> ToolboxFavoriteKeys { get; set; } = [];
+
+    /// <summary>Keys of the 8 most recently used toolbox items (front = most recent).</summary>
+    public List<string> ToolboxRecentKeys { get; set; } = [];
+
+    /// <summary>Category names that are currently collapsed in the Toolbox panel.</summary>
+    public List<string> ToolboxCollapsedCategories { get; set; } = [];
+
+    // ── Animation preferences ─────────────────────────────────────────────────
+
+    /// <summary>Frame rate used for keyframe snapping in the Animation Timeline.</summary>
+    public int AnimationFrameRate { get; set; } = 30;
+
+    // ── Resource Browser preferences ──────────────────────────────────────────
+
+    /// <summary>When true, the Resource Browser auto-rescans when XAML changes.</summary>
+    public bool ResourceBrowserAutoRescan { get; set; } = true;
+
     // ── Persistence ───────────────────────────────────────────────────────────
 
     private static readonly string FilePath = Path.Combine(

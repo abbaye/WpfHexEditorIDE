@@ -4,49 +4,158 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.XamlDesigner.ViewModels">
 
     <!-- ==========================================================
+         Project: WpfHexEditor.Editor.XamlDesigner
          File: ResourceBrowserPanel.xaml
-         Created: 2026-03-17
+         Created: 2026-03-17 | Updated: 2026-03-19
          Description: VS-Like dockable panel browsing all application resources.
-                      Supports text filtering, scope grouping, and Find Usages.
+                      Supports text filtering, scope grouping, Go to Definition,
+                      Rename (F2), Copy Key, Find Usages, duplicate warning,
+                      and usage-count display.
          Theme: XD_* tokens (DynamicResource)
          ========================================================== -->
 
+    <UserControl.Resources>
+
+        <Style x:Key="RbToolButtonStyle" TargetType="Button">
+            <Setter Property="Width"           Value="24"/>
+            <Setter Property="Height"          Value="20"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource XD_PropertyNameForeground}"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Margin"          Value="1,0"/>
+        </Style>
+
+        <!-- Usage count color selector via DataTrigger on the cell -->
+        <Style x:Key="UsageLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize"    Value="10"/>
+            <Setter Property="Foreground"  Value="{DynamicResource XD_PropertyValueForeground}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding UsageCount}" Value="0">
+                    <Setter Property="Opacity" Value="0.4"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="26"/>
             <RowDefinition Height="1"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ──────────────────────────────────────────── -->
-        <Border Grid.Row="0" BorderThickness="0,0,0,1" Height="26"
+        <Border Grid.Row="0"
                 Background="{DynamicResource XD_PanelToolbarBrush}"
-                BorderBrush="{DynamicResource XD_PanelToolbarBorderBrush}">
-            <DockPanel Margin="4,0">
-                <!-- Scan button -->
-                <Button DockPanel.Dock="Right"
-                        Width="24" Height="20" Margin="2,0,0,0"
-                        Content="\uE72C" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        ToolTip="Scan resources"
-                        Command="{Binding ScanCommand}"
-                        Background="Transparent" BorderThickness="0"
-                        Foreground="{DynamicResource XD_PropertyNameForeground}"/>
-                <!-- Find Usages button -->
-                <Button DockPanel.Dock="Right"
-                        Width="24" Height="20" Margin="2,0,0,0"
-                        Content="\uE773" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        ToolTip="Find usages of selected resource"
-                        Command="{Binding FindUsagesCommand}"
-                        Background="Transparent" BorderThickness="0"
-                        Foreground="{DynamicResource XD_PropertyNameForeground}"/>
-                <!-- Filter text box -->
-                <TextBox Height="18" FontSize="11"
+                BorderBrush="{DynamicResource XD_PanelToolbarBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel Margin="4,0" VerticalAlignment="Center">
+
+                <!-- Right side: filter TextBox -->
+                <TextBox DockPanel.Dock="Right"
+                         Height="18" MinWidth="80" FontSize="11"
                          Background="Transparent"
                          Foreground="{DynamicResource XD_PropertyValueForeground}"
                          BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                          VerticalContentAlignment="Center" Padding="2,0"
                          Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="Filter resources"/>
+
+                <!-- Left side: action buttons -->
+                <StackPanel Orientation="Horizontal">
+
+                    <!-- Scan / Refresh -->
+                    <Button Style="{StaticResource RbToolButtonStyle}"
+                            Content="&#xE72C;" ToolTip="Scan resources"
+                            Command="{Binding ScanCommand}"/>
+
+                    <!-- Find Usages -->
+                    <Button Style="{StaticResource RbToolButtonStyle}"
+                            Content="&#xE773;" ToolTip="Find usages of selected resource"
+                            Command="{Binding FindUsagesCommand}"/>
+
+                    <!-- Go to Definition -->
+                    <Button Style="{StaticResource RbToolButtonStyle}"
+                            Content="&#xE8A0;" ToolTip="Go to definition"
+                            Command="{Binding GoToDefinitionCommand}"
+                            CommandParameter="{Binding SelectedEntry}"/>
+
+                    <!-- Copy Key -->
+                    <Button Style="{StaticResource RbToolButtonStyle}"
+                            Content="&#xE8C8;" ToolTip="Copy resource key"
+                            Command="{Binding CopyKeyCommand}"
+                            CommandParameter="{Binding SelectedEntry}"/>
+
+                    <Separator Width="1" Margin="4,2" Background="{DynamicResource DockBorderBrush}">
+                        <Separator.Template>
+                            <ControlTemplate TargetType="Separator">
+                                <Rectangle Width="{TemplateBinding Width}"
+                                           Fill="{TemplateBinding Background}"/>
+                            </ControlTemplate>
+                        </Separator.Template>
+                    </Separator>
+
+                    <!-- Rename (F2) -->
+                    <Button Style="{StaticResource RbToolButtonStyle}"
+                            Width="30"
+                            FontFamily="{x:Static SystemFonts.MessageFontFamily}" FontSize="10"
+                            Content="F2" ToolTip="Rename selected resource (F2)"
+                            Command="{Binding RenameCommand}"
+                            CommandParameter="{Binding SelectedEntry}"/>
+
+                    <Separator Width="1" Margin="4,2" Background="{DynamicResource DockBorderBrush}">
+                        <Separator.Template>
+                            <ControlTemplate TargetType="Separator">
+                                <Rectangle Width="{TemplateBinding Width}"
+                                           Fill="{TemplateBinding Background}"/>
+                            </ControlTemplate>
+                        </Separator.Template>
+                    </Separator>
+
+                    <!-- Add new resource entry -->
+                    <Button x:Name="BtnAddResource"
+                            Style="{StaticResource RbToolButtonStyle}"
+                            ToolTip="Add new resource entry"
+                            Command="{Binding AddResourceCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE710;"/>
+                    </Button>
+
+                    <!-- Sort resources -->
+                    <Button x:Name="BtnSortBy"
+                            Style="{StaticResource RbToolButtonStyle}"
+                            ToolTip="Sort resources by…"
+                            Click="OnSortByClick">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE174;"/>
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Name (A–Z)"  Tag="Name"  Click="OnSortModeSelected"/>
+                                <MenuItem Header="Type"        Tag="Type"  Click="OnSortModeSelected"/>
+                                <MenuItem Header="Usage Count" Tag="Usage" Click="OnSortModeSelected"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+
+                    <!-- Filter by scope -->
+                    <Button x:Name="BtnScopeFilter"
+                            Style="{StaticResource RbToolButtonStyle}"
+                            ToolTip="Filter by scope…"
+                            Click="OnScopeFilterClick">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE7B3;"/>
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="All Scopes" Tag="All"    Click="OnScopeSelected"/>
+                                <MenuItem Header="Local"      Tag="Local"  Click="OnScopeSelected"/>
+                                <MenuItem Header="Merged"     Tag="Merged" Click="OnScopeSelected"/>
+                                <MenuItem Header="App"        Tag="App"    Click="OnScopeSelected"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+
+                </StackPanel>
             </DockPanel>
         </Border>
 
@@ -54,11 +163,13 @@
 
         <!-- ── Resource list ─────────────────────────────────────── -->
         <ListView Grid.Row="2"
+                  x:Name="ResourceListView"
                   ItemsSource="{Binding EntriesView}"
                   SelectedItem="{Binding SelectedEntry}"
                   Background="Transparent"
                   BorderThickness="0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  KeyDown="OnListKeyDown">
 
             <ListView.GroupStyle>
                 <GroupStyle>
@@ -75,28 +186,175 @@
                 </GroupStyle>
             </ListView.GroupStyle>
 
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding"          Value="0"/>
+                    <Setter Property="Background"       Value="Transparent"/>
+                    <Setter Property="BorderThickness"  Value="0"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DockTabActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <!-- Row context menu -->
+            <ListView.ContextMenu>
+                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="Go to Definition"
+                              Command="{Binding GoToDefinitionCommand}"
+                              CommandParameter="{Binding SelectedEntry}">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Find Usages"
+                              Command="{Binding FindUsagesCommand}">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Rename (F2)"
+                              Command="{Binding RenameCommand}"
+                              CommandParameter="{Binding SelectedEntry}">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Copy Key"
+                              Command="{Binding CopyKeyCommand}"
+                              CommandParameter="{Binding SelectedEntry}">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Copy Value" Click="OnCopyValueClick">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+
             <ListView.View>
                 <GridView>
-                    <!-- Color swatch + key -->
-                    <GridViewColumn Header="Key" Width="140">
+
+                    <!-- Preview swatch (32px) -->
+                    <GridViewColumn Header="Preview" Width="32">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:ResourceEntryViewModel}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Width="12" Height="12" Margin="0,0,4,0"
-                                            BorderThickness="1"
-                                            BorderBrush="{DynamicResource XD_ColorSwatchBorder}"
-                                            Background="{Binding PreviewBrush}"
-                                            Visibility="{Binding PreviewBrush, Converter={x:Static vm:NullToVisibilityConverter.Instance}}"/>
-                                    <TextBlock Text="{Binding Key}" FontSize="11"
-                                               Foreground="{DynamicResource XD_PropertyNameForeground}"/>
-                                </StackPanel>
+                                <Border Width="18" Height="14"
+                                        BorderThickness="1"
+                                        BorderBrush="{DynamicResource XD_ColorSwatchBorder}"
+                                        Background="{Binding PreviewBrush}"
+                                        Margin="2,0">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PreviewBrush}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Type"    Width="80"
-                                    DisplayMemberBinding="{Binding ValueType}"/>
-                    <GridViewColumn Header="Preview" Width="100"
-                                    DisplayMemberBinding="{Binding PreviewText}"/>
+
+                    <!-- Key (130px, inline-editable) -->
+                    <GridViewColumn Header="Key" Width="130">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ResourceEntryViewModel}">
+                                <Grid>
+                                    <!-- Display mode -->
+                                    <TextBlock Text="{Binding Key}" FontSize="11"
+                                               Foreground="{DynamicResource XD_PropertyNameForeground}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <!-- Edit mode -->
+                                    <TextBox Text="{Binding EditKey, UpdateSourceTrigger=PropertyChanged}"
+                                             FontSize="11"
+                                             Background="{DynamicResource DockBackgroundBrush}"
+                                             Foreground="{DynamicResource XD_PropertyValueForeground}"
+                                             BorderBrush="{DynamicResource XD_PropertyFocusBorder}"
+                                             BorderThickness="1"
+                                             LostFocus="OnKeyEditLostFocus"
+                                             KeyDown="OnKeyEditKeyDown">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Type (80px) -->
+                    <GridViewColumn Header="Type" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ResourceEntryViewModel}">
+                                <TextBlock Text="{Binding ValueType}" FontSize="10"
+                                           Foreground="{DynamicResource XD_PropertyNameForeground}"
+                                           TextTrimming="CharacterEllipsis"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Usage (70px) -->
+                    <GridViewColumn Header="Usage" Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ResourceEntryViewModel}">
+                                <TextBlock Text="{Binding UsageLabel}"
+                                           Style="{StaticResource UsageLabelStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Duplicate (30px) -->
+                    <GridViewColumn Header="" Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ResourceEntryViewModel}">
+                                <TextBlock Text="&#x26A0;" FontSize="11"
+                                           Foreground="Orange"
+                                           ToolTip="Duplicate value detected">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasDuplicate}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
                 </GridView>
             </ListView.View>
         </ListView>

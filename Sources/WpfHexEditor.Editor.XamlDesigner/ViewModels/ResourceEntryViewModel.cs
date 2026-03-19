@@ -23,7 +23,11 @@ namespace WpfHexEditor.Editor.XamlDesigner.ViewModels;
 /// </summary>
 public sealed class ResourceEntryViewModel : INotifyPropertyChanged
 {
-    private bool _isSelected;
+    private bool   _isSelected;
+    private bool   _isEditing;
+    private bool   _hasDuplicate;
+    private int    _usageCount;
+    private string _editKey = string.Empty;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -46,10 +50,64 @@ public sealed class ResourceEntryViewModel : INotifyPropertyChanged
     public string   PreviewText  { get; }
     public Brush?   PreviewBrush { get; }
 
+    /// <summary>Source line number in the XAML document (1-based). 0 when unknown.</summary>
+    public int LineNumber { get; set; }
+
+    /// <summary>Number of {StaticResource}/{DynamicResource} references to this key in the document.</summary>
+    public int UsageCount
+    {
+        get => _usageCount;
+        set { if (_usageCount == value) return; _usageCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(UsageLabel)); }
+    }
+
+    /// <summary>Human-readable usage label: "(1 usage)" / "(3 usages)" / "(unused)".</summary>
+    public string UsageLabel => _usageCount switch
+    {
+        0 => "(unused)",
+        1 => "(1 usage)",
+        _ => $"({_usageCount} usages)"
+    };
+
+    /// <summary>True when another resource in the same scope has an identical value (duplicate detection).</summary>
+    public bool HasDuplicate
+    {
+        get => _hasDuplicate;
+        set { if (_hasDuplicate == value) return; _hasDuplicate = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>True while the user is inline-editing the resource key.</summary>
+    public bool IsEditing
+    {
+        get => _isEditing;
+        set { if (_isEditing == value) return; _isEditing = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Temporary key during inline rename. Commit via CommitRename().</summary>
+    public string EditKey
+    {
+        get => _editKey;
+        set { _editKey = value; OnPropertyChanged(); }
+    }
+
     public bool IsSelected
     {
         get => _isSelected;
         set { if (_isSelected == value) return; _isSelected = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Begins inline renaming; seeds EditKey with the current Key.</summary>
+    public void BeginRename()
+    {
+        EditKey   = Key;
+        IsEditing = true;
+    }
+
+    /// <summary>Commits the rename; returns new key or null if unchanged/empty.</summary>
+    public string? CommitRename()
+    {
+        IsEditing = false;
+        var newKey = EditKey.Trim();
+        return string.IsNullOrEmpty(newKey) || newKey == Key ? null : newKey;
     }
 
     // ── INPC ──────────────────────────────────────────────────────────────────

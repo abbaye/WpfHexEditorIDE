@@ -1,4 +1,4 @@
-﻿<!-- ==========================================================
+<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: VS2022Dark/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -18,7 +18,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- VS2022 Dark Theme â€” exact color palette from Visual Studio 2022 -->
+    <!-- VS2022 Dark Theme — exact color palette from Visual Studio 2022 -->
 
     <!-- Core UI -->
     <Color x:Key="DockBackgroundColor">#1E1E1E</Color>
@@ -142,7 +142,7 @@
         </Setter>
     </Style>
 
-    <!-- Window title bar close button â€” red hover -->
+    <!-- Window title bar close button — red hover -->
     <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
@@ -241,7 +241,8 @@
     <SolidColorBrush x:Key="PP_DescriptionForegroundBrush"   Color="#AAAAAA"/>
     <SolidColorBrush x:Key="PP_EditableForegroundBrush"      Color="#9CDCFE"/>
     <SolidColorBrush x:Key="PP_BorderBrush"                  Color="#3F3F46"/>
-
+    <SolidColorBrush x:Key="PP_ValidationErrorBrush"         Color="#F48557"/>
+    <SolidColorBrush x:Key="PP_NonDefaultIndicatorBrush"     Color="#9CDCFE"/>
     <!-- Error Panel (ERR) Theme Resources -->
     <SolidColorBrush x:Key="ERR_BackgroundBrush"      Color="#1E1E1E"/>
     <SolidColorBrush x:Key="ERR_ForegroundBrush"      Color="#D4D4D4"/>
@@ -256,7 +257,7 @@
     <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#3E3E42"/>
     <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1A1A1C"/>
 
-    <!-- Common Panel Resources (PanelCommon.xaml keys â€” shared across all IDE panels) -->
+    <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#2D2D30"/>
     <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#333337"/>
     <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
@@ -264,10 +265,10 @@
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#3E3E42"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#454548"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#D4D4D4"/>
-    <!-- PFP toolbar â€” aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
+    <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
     <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#2D2D30"/>
 
-    <!-- TE_* â€” Text Editor (syntax highlighting, viewport) -->
+    <!-- TE_* — Text Editor (syntax highlighting, viewport) -->
     <SolidColorBrush x:Key="TE_Background"             Color="#1E1E1E"/>
     <SolidColorBrush x:Key="TE_Foreground"             Color="#D4D4D4"/>
     <Color           x:Key="TE_CaretColor"                    >#D4D4D4</Color>
@@ -286,7 +287,7 @@
     <SolidColorBrush x:Key="TE_Directive"              Color="#C586C0"/>
     <SolidColorBrush x:Key="TE_RegionName"             Color="#DCDCAA"/>
 
-    <!-- CE_* â€” Code Editor syntax token colors (used by CodeEditor DPs via implicit Style) -->
+    <!-- CE_* — Code Editor syntax token colors (used by CodeEditor DPs via implicit Style) -->
     <SolidColorBrush x:Key="CE_Keyword"       Color="#569CD6"/>
     <SolidColorBrush x:Key="CE_ControlFlow"   Color="#C586C0"/>
     <SolidColorBrush x:Key="CE_Comment"       Color="#6A9955"/>
@@ -312,7 +313,7 @@
     <SolidColorBrush x:Key="CE_Selection"         Color="#264F78"/>
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#3E3E42"/>
 
-    <!-- CE_QuickInfo_* â€” Quick Info hover popup (VS2022Dark) -->
+    <!-- CE_QuickInfo_* — Quick Info hover popup (VS2022Dark) -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#252526"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#454545"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Text"              Color="#D4D4D4"/>
@@ -322,9 +323,9 @@
     <SolidColorBrush x:Key="CE_QuickInfo_Separator"         Color="#3F3F46"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticError"   Color="#3C1515"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#2D2000"/>
-    <!-- CE_CtrlHover_Underline â€” Ctrl+hover symbol underline (VS2022Dark) -->
+    <!-- CE_CtrlHover_Underline — Ctrl+hover symbol underline (VS2022Dark) -->
     <SolidColorBrush x:Key="CE_CtrlHover_Underline"         Color="#4EC9B0"/>
-    <!-- CE_FoldLabel_* â€” Collapsed region inline label (VS2022Dark) -->
+    <!-- CE_FoldLabel_* — Collapsed region inline label (VS2022Dark) -->
     <SolidColorBrush x:Key="CE_FoldLabelBorder"             Color="#569CD6"/>
     <SolidColorBrush x:Key="CE_FoldLabelBg"                 Color="#1A569CD6"/>
     <SolidColorBrush x:Key="CE_FoldLabelFg"                 Color="#C8C8C8"/>
@@ -336,7 +337,7 @@
     <SolidColorBrush x:Key="BackgroundBrush"       Color="{StaticResource DockWindowBackgroundColor}"/>
     <SolidColorBrush x:Key="ForegroundBrush"       Color="{StaticResource DockMenuForegroundColor}"/>
     <SolidColorBrush x:Key="AccentBrush"           Color="{StaticResource AccentColor}"/>
-    <!-- Elevated surface (popup/dialog background) â€” used by ColorPicker and other floating controls -->
+    <!-- Elevated surface (popup/dialog background) — used by ColorPicker and other floating controls -->
     <SolidColorBrush x:Key="SurfaceElevatedBrush"  Color="{StaticResource DockMenuBackgroundColor}"/>
     <SolidColorBrush x:Key="BorderBrush"           Color="{StaticResource DockBorderColor}"/>
 
@@ -379,7 +380,7 @@
     <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#F59E0B"/>
     <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#FCD34D"/>
 
-    <!-- XAML Designer (XD_*) â€” VS2022Dark theme -->
+    <!-- XAML Designer (XD_*) — VS2022Dark theme -->
     <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#2A2A2A"/>
     <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#3F3F46"/>
     <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#353535"/>
@@ -411,8 +412,24 @@
     <SolidColorBrush x:Key="XD_ColorSwatchBorder"               Color="#3F3F46"/>
     <SolidColorBrush x:Key="XD_GradientStopHandle"              Color="#569CD6"/>
     <SolidColorBrush x:Key="XD_BindingBadgeBackground"          Color="#1A3A5C"/>
+    <SolidColorBrush x:Key="XD_BindingStatusOkBrush"             Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="XD_BindingStatusErrorBrush"          Color="#F14C4C"/>
+    <SolidColorBrush x:Key="XD_BindingTriggerPropertyBrush"      Color="#569CD6"/>
+    <SolidColorBrush x:Key="XD_BindingTriggerLostFocusBrush"     Color="#DCDCAA"/>
+    <SolidColorBrush x:Key="XD_BindingTriggerExplicitBrush"      Color="#C586C0"/>
+    <SolidColorBrush x:Key="XD_TimelineKeyframeSelectedBrush"    Color="#FF9E3D"/>
     <SolidColorBrush x:Key="XD_TimelineBackground"              Color="#1E1E1E"/>
     <SolidColorBrush x:Key="XD_KeyframeThumbBrush"              Color="#FF8C00"/>
+
+    <!-- Live Visual Tree Panel (LVT_*) -->
+    <SolidColorBrush x:Key="LVT_NameBrush"                      Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="LVT_BadgeHiddenBrush"               Color="#5A3A00"/>
+    <SolidColorBrush x:Key="LVT_BadgeDisabledBrush"             Color="#4A1515"/>
+    <SolidColorBrush x:Key="LVT_BadgeTextBrush"                 Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="LVT_SearchBarBrush"              Color="#252526"/>
+    <SolidColorBrush x:Key="LVT_SearchHighlightBrush"        Color="#330078D4"/>
+    <SolidColorBrush x:Key="LVT_SearchMatchBrush"            Color="#660078D4"/>
+    <SolidColorBrush x:Key="LVT_InspectRootBadgeBrush"       Color="#1A3A2A"/>
 
     <!-- History Panel (XD_History*) -->
     <SolidColorBrush x:Key="XD_HistoryPanelBackground"          Color="#1E1E1E"/>
@@ -421,6 +438,7 @@
     <SolidColorBrush x:Key="XD_HistoryCurrentMarkerBrush"       Color="#0078D4"/>
     <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#2A2A2A"/>
     <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#9CDCFE"/>
+    <SolidColorBrush x:Key="XD_HistoryCheckpointBrush"          Color="#FFD700"/>
     <!-- Binding Inspector -->
     <SolidColorBrush x:Key="XD_BindingValidForeground"          Color="#4EC9B0"/>
     <SolidColorBrush x:Key="XD_BindingErrorForeground"          Color="#F44747"/>
@@ -434,4 +452,16 @@
     <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8C00"/>
     <SolidColorBrush x:Key="TE_DragCaret"           Color="#FFFF8C00"/>
     <SolidColorBrush x:Key="TE_DragDropTarget"      Color="#1AFF8C00"/>
+
+    <!-- Overkill Panel Tokens (2026-03-19) -->
+    <SolidColorBrush x:Key="XD_ResourceDuplicateBrush"          Color="#FF9800"/>
+    <SolidColorBrush x:Key="XD_ResourcePreviewBorderBrush"      Color="#555555"/>
+    <SolidColorBrush x:Key="XD_ToolboxFavoriteBrush"            Color="#FFD700"/>
+    <SolidColorBrush x:Key="XD_ToolboxRecentBrush"              Color="#9CDCFE"/>
+    <SolidColorBrush x:Key="XD_KeyframeEasingBrush"             Color="#C586C0"/>
+    <SolidColorBrush x:Key="XD_TimelineZoomBrush"               Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="XD_TimelineGroupHeaderBrush"        Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="XD_ContextMatchTrackBrush"          Color="#1A4A6B"/>
+    <SolidColorBrush x:Key="XD_HistoryCurrentStateBrush"        Color="#4FC1FF"/>
+    <SolidColorBrush x:Key="XD_BindingStatusWarnBrush"          Color="#FF9800"/>
 </ResourceDictionary>

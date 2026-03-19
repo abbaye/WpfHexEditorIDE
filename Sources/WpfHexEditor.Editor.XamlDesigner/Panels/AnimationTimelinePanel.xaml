@@ -7,69 +7,36 @@
     xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Controls"
     MinHeight="140">
 
+    <!-- ==========================================================
+         Project: WpfHexEditor.Editor.XamlDesigner
+         File: AnimationTimelinePanel.xaml
+         Created: 2026-03-17 | Updated: 2026-03-19
+         Description: Animation Timeline dockable panel.
+                      Toolbar: Stop, Play/Pause, Add/Delete Keyframe, Loop,
+                               AutoReverse, FrameRate, Export, Duration/Time labels,
+                               Storyboard name dropdown.
+                      Track headers: PropertyIcon glyph + label + Remove button.
+                      Context-matching tracks: lighter background via DataTrigger.
+         Theme: XD_* + Dock* tokens (DynamicResource)
+         ========================================================== -->
+
     <UserControl.Resources>
-        <!-- Track row header style -->
-        <Style x:Key="TrackHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontSize"          Value="11"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Padding"           Value="6,0"/>
-            <Setter Property="TextTrimming"      Value="CharacterEllipsis"/>
-            <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
-        </Style>
 
-        <!-- Keyframe dot style -->
-        <Style x:Key="KeyframeDotStyle" TargetType="Ellipse">
-            <Setter Property="Width"  Value="8"/>
-            <Setter Property="Height" Value="8"/>
-            <Setter Property="Fill"   Value="{DynamicResource XD_KeyframeThumbBrush}"/>
-            <Setter Property="Stroke" Value="{DynamicResource DockBorderBrush}"/>
-            <Setter Property="StrokeThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-
-        <!-- Track list item style -->
-        <Style x:Key="TrackListItemStyle" TargetType="ListBoxItem">
-            <Setter Property="Padding"           Value="0"/>
-            <Setter Property="Margin"            Value="0"/>
-            <Setter Property="Background"        Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{DynamicResource DockBorderBrush}"
-                                BorderThickness="0,0,0,1"
-                                Height="24">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource XD_TimelineBackground}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Play/Pause button style -->
-        <Style x:Key="PlayButtonStyle" TargetType="Button">
-            <Setter Property="Width"            Value="22"/>
-            <Setter Property="Height"           Value="22"/>
-            <Setter Property="Background"       Value="Transparent"/>
-            <Setter Property="BorderThickness"  Value="0"/>
-            <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="FontFamily"       Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize"         Value="12"/>
-            <Setter Property="Cursor"           Value="Hand"/>
+        <!-- Shared toolbar button style -->
+        <Style x:Key="TlButtonStyle" TargetType="Button">
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="2"
-                                Padding="3">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                        <Border Background="{TemplateBinding Background}" CornerRadius="2" Padding="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -83,6 +50,95 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Toggle button style for Loop/AutoReverse -->
+        <Style x:Key="TlToggleButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="PART_Border" Background="{TemplateBinding Background}"
+                                CornerRadius="2" Padding="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="PART_Border" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PART_Border" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Track list item style — context-match gets lighter BG -->
+        <Style x:Key="TrackListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding"    Value="0"/>
+            <Setter Property="Margin"     Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="PART_Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Height="24">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="PART_Bd" Property="Background"
+                                        Value="{DynamicResource XD_TimelineBackground}"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsContextMatch}" Value="True">
+                                <Setter TargetName="PART_Bd" Property="Background"
+                                        Value="{DynamicResource XD_ContextMatchTrackBrush}"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Keyframe dot style -->
+        <Style x:Key="KeyframeDotStyle" TargetType="Ellipse">
+            <Setter Property="Width"            Value="8"/>
+            <Setter Property="Height"           Value="8"/>
+            <Setter Property="Fill"             Value="{DynamicResource XD_KeyframeThumbBrush}"/>
+            <Setter Property="Stroke"           Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="StrokeThickness"  Value="1"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Thin separator helper -->
+        <Style x:Key="TlSepStyle" TargetType="Separator">
+            <Setter Property="Width"      Value="1"/>
+            <Setter Property="Margin"     Value="4,4"/>
+            <Setter Property="Background" Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Rectangle Width="{TemplateBinding Width}"
+                                   Fill="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid>
@@ -95,24 +151,53 @@
         <!-- ── Toolbar ─────────────────────────────────────────────── -->
         <Border Grid.Row="0"
                 BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource DockBorderBrush}">
-            <Border.Background>
-                <DynamicResourceExtension ResourceKey="XD_PanelToolbarBrush"/>
-            </Border.Background>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                Background="{DynamicResource XD_PanelToolbarBrush}">
+            <DockPanel VerticalAlignment="Center" Margin="4,0">
 
-                <!-- Stop -->
-                <Button Style="{StaticResource PlayButtonStyle}"
-                        Content="&#xE71A;"
-                        ToolTip="Stop"
-                        Command="{Binding StopCommand}"/>
+                <!-- Right-aligned: Duration label + Time label + Storyboard dropdown -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
 
-                <!-- Play -->
-                <Button Style="{StaticResource PlayButtonStyle}"
-                        ToolTip="Play"
-                        Command="{Binding PlayCommand}"
-                        x:Name="BtnPlay">
-                    <Button.Content>
+                    <!-- Storyboard name dropdown -->
+                    <ComboBox ItemsSource="{Binding StoryboardNames}"
+                              SelectedItem="{Binding ActiveStoryboardName, Mode=TwoWay}"
+                              Height="18" MinWidth="90" FontSize="10"
+                              Background="Transparent"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              ToolTip="Active storyboard"
+                              Margin="4,0"/>
+
+                    <Separator Style="{StaticResource TlSepStyle}"/>
+
+                    <!-- Duration display -->
+                    <TextBlock VerticalAlignment="Center" FontSize="10"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="4,0,0,0">
+                        <Run Text="Dur:"/>
+                        <Run Text="{Binding Duration, StringFormat={}{0:mm\\:ss\\.ff}, Mode=OneWay}"/>
+                    </TextBlock>
+
+                    <!-- Current time display -->
+                    <TextBlock VerticalAlignment="Center" FontSize="10"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="6,0,4,0">
+                        <Run Text="T:"/>
+                        <Run Text="{Binding CurrentTime, StringFormat={}{0:mm\\:ss\\.ff}, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- Left-aligned controls -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <!-- Stop -->
+                    <Button Style="{StaticResource TlButtonStyle}"
+                            Content="&#xE71A;" ToolTip="Stop"
+                            Command="{Binding StopCommand}"/>
+
+                    <!-- Play / Pause toggle -->
+                    <Button Style="{StaticResource TlButtonStyle}"
+                            ToolTip="Play / Pause"
+                            Command="{Binding PlayCommand}"
+                            x:Name="BtnPlay">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -125,38 +210,107 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                    </Button.Content>
-                </Button>
+                    </Button>
 
-                <!-- Pause -->
-                <Button Style="{StaticResource PlayButtonStyle}"
-                        Content="&#xE769;"
-                        ToolTip="Pause"
-                        Command="{Binding PauseCommand}"/>
+                    <Separator Style="{StaticResource TlSepStyle}"/>
 
-                <Separator Width="1" Margin="4,4" Background="{DynamicResource DockBorderBrush}"/>
+                    <!-- Add Keyframe -->
+                    <Button Style="{StaticResource TlButtonStyle}"
+                            Content="&#xE710;" ToolTip="Add Keyframe at current time"
+                            Command="{Binding AddKeyframeCommand}"
+                            Click="OnAddKeyframeClick"/>
 
-                <!-- Duration display -->
-                <TextBlock VerticalAlignment="Center"
-                           FontSize="10"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           Margin="4,0,0,0">
-                    <Run Text="Duration: "/>
-                    <Run Text="{Binding Duration, StringFormat={}{0:mm\\:ss\\.ff}, Mode=OneWay}"/>
-                </TextBlock>
+                    <!-- Delete Keyframe -->
+                    <Button Style="{StaticResource TlButtonStyle}"
+                            Content="&#xE74D;" ToolTip="Delete selected keyframe"
+                            Command="{Binding DeleteKeyframeCommand}"
+                            Click="OnDeleteKeyframeClick"/>
 
-                <Separator Width="1" Margin="4,4" Background="{DynamicResource DockBorderBrush}"/>
+                    <Separator Style="{StaticResource TlSepStyle}"/>
 
-                <!-- Current time display -->
-                <TextBlock VerticalAlignment="Center"
-                           FontSize="10"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           Margin="4,0,0,0">
-                    <Run Text="Time: "/>
-                    <Run Text="{Binding CurrentTime, StringFormat={}{0:mm\\:ss\\.ff}, Mode=OneWay}"/>
-                </TextBlock>
+                    <!-- Loop toggle -->
+                    <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
+                                  Content="&#xE8EE;" ToolTip="Loop playback"
+                                  IsChecked="{Binding IsLooping, Mode=TwoWay}"/>
 
-            </StackPanel>
+                    <!-- AutoReverse toggle -->
+                    <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
+                                  Content="&#xE7C4;" ToolTip="Auto-reverse"
+                                  IsChecked="{Binding AutoReverse, Mode=TwoWay}"/>
+
+                    <Separator Style="{StaticResource TlSepStyle}"/>
+
+                    <!-- Playback speed multiplier -->
+                    <ComboBox x:Name="CbxPlaybackSpeed"
+                              Width="55"
+                              VerticalAlignment="Center"
+                              ToolTip="Playback speed multiplier"
+                              ItemsSource="{x:Static vm:AnimationTimelinePanelViewModel.AvailablePlaybackSpeeds}"
+                              SelectedItem="{Binding PlaybackSpeed, Mode=TwoWay}"
+                              Height="18" FontSize="10"
+                              Background="Transparent"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock FontSize="10">
+                                    <Run Text="{Binding Mode=OneWay}"/>
+                                    <Run Text="x"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <!-- Zoom in timeline -->
+                    <Button x:Name="BtnZoomIn"
+                            Style="{StaticResource TlButtonStyle}"
+                            ToolTip="Zoom in timeline"
+                            Command="{Binding ZoomInCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8A3;"/>
+                    </Button>
+
+                    <!-- Zoom out timeline -->
+                    <Button x:Name="BtnZoomOut"
+                            Style="{StaticResource TlButtonStyle}"
+                            ToolTip="Zoom out timeline"
+                            Command="{Binding ZoomOutCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE71F;"/>
+                    </Button>
+
+                    <Separator Style="{StaticResource TlSepStyle}"/>
+
+                    <!-- FrameRate ComboBox -->
+                    <ComboBox ItemsSource="{x:Static vm:AnimationTimelinePanelViewModel.AvailableFrameRates}"
+                              SelectedItem="{Binding FrameRate, Mode=TwoWay}"
+                              Height="18" Width="54" FontSize="10"
+                              Background="Transparent"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              ToolTip="Frame rate">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock FontSize="10">
+                                    <Run Text="{Binding Mode=OneWay}"/>
+                                    <Run Text="fps"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Separator Style="{StaticResource TlSepStyle}"/>
+
+                    <!-- Export to clipboard -->
+                    <Button Style="{StaticResource TlButtonStyle}"
+                            Content="&#xE8C8;" ToolTip="Export storyboard to clipboard"
+                            Command="{Binding ExportStoryboardCommand}"/>
+
+                    <!-- Add track -->
+                    <Button Style="{StaticResource TlButtonStyle}"
+                            Content="&#xE948;" ToolTip="Add track"
+                            Command="{Binding AddTrackCommand}"/>
+
+                </StackPanel>
+            </DockPanel>
         </Border>
 
         <!-- ── Time Ruler ───────────────────────────────────────────── -->
@@ -171,16 +325,15 @@
         <!-- ── Track list + keyframe area ──────────────────────────── -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="140"/>         <!-- Track headers -->
-                <ColumnDefinition Width="Auto"/>        <!-- Splitter -->
-                <ColumnDefinition Width="*"/>           <!-- Keyframe lane -->
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Track header list -->
             <ListBox Grid.Column="0"
                      ItemsSource="{Binding Tracks}"
                      SelectedItem="{Binding SelectedTrack}"
-                     ItemContainerStyle="{StaticResource TrackListItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
                      Background="{DynamicResource DockBackgroundBrush}"
@@ -188,10 +341,66 @@
                      x:Name="TrackHeaders">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:AnimationTrackViewModel}">
-                        <TextBlock Style="{StaticResource TrackHeaderStyle}"
-                                   Text="{Binding TrackLabel}"/>
+                        <Grid x:Name="TrackHeaderRoot">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Property type icon -->
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding PropertyIcon}"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="11"
+                                       Width="16"
+                                       VerticalAlignment="Center"
+                                       Margin="4,0,2,0"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+
+                            <!-- Track label -->
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TrackLabel}"
+                                       FontSize="11"
+                                       VerticalAlignment="Center"
+                                       Padding="0,0,4,0"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+
+                            <!-- Remove track button — shown when row is hovered (code-behind wires visibility) -->
+                            <Button Grid.Column="2"
+                                    x:Name="BtnRemoveTrack"
+                                    Width="14" Height="14"
+                                    Margin="0,0,2,0"
+                                    FontFamily="Segoe MDL2 Assets" FontSize="9"
+                                    Content="&#xE8BB;"
+                                    Background="Transparent" BorderThickness="0"
+                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                    Cursor="Hand" Visibility="Hidden"
+                                    ToolTip="Remove track"
+                                    Command="{Binding DataContext.RemoveTrackCommand,
+                                              RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                    CommandParameter="{Binding}"/>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <!-- Show remove button when hovering over the row -->
+                            <DataTrigger Binding="{Binding IsMouseOver,
+                                         RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                         Value="True">
+                                <Setter TargetName="BtnRemoveTrack" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource TrackListItemStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
 
             <!-- Column separator -->
@@ -210,13 +419,15 @@
                               x:Name="KeyframeLanes">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:AnimationTrackViewModel}">
-                            <!-- One 24px-high Canvas row per track -->
                             <Canvas Height="24"
                                     Background="Transparent"
                                     ClipToBounds="True"
                                     x:Name="LaneCanvas"
                                     Loaded="OnLaneLoaded"
-                                    Tag="{Binding}"/>
+                                    Tag="{Binding}"
+                                    PreviewMouseLeftButtonDown="OnLanePreviewMouseDown"
+                                    PreviewMouseMove="OnLanePreviewMouseMove"
+                                    PreviewMouseLeftButtonUp="OnLanePreviewMouseUp"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>

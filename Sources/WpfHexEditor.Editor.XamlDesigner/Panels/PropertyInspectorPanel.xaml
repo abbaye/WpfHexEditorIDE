@@ -2,9 +2,18 @@
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
+    Updated: 2026-03-19 — Overkill upgrade:
+        · Binding badge column {B} (teal) / ● animated (gold) before Value column.
+        · Brush swatch column (20px Rectangle filled with ResolvedBrush).
+        · Inline Reset button (✕, 14×14) in TextPropertyTemplate when IsLocalValue=True.
+        · BrushPropertyTemplate: 20px color swatch + hex TextBox.
+        · ToggleGroup toolbar button [≡] for grouped/flat view toggle.
+        · Bold FontWeight DataTrigger on IsLocalValue=True rows.
+        · 0.6 opacity DataTrigger on IsDefault=True rows.
+        · Dim italic "(inherited)" suffix for inherited values.
     Theme: Global theme via XD_* and DockBackgroundBrush tokens (DynamicResource)
     ResourceDictionaries: WpfHexEditor.Shell/Themes/{Theme}/Colors.xaml
-    Phase D: Rich property editor DataTemplates added (Thickness, Enum, Numeric, Color, Font).
+    Phase D: Rich property editor DataTemplates (Thickness, Enum, Numeric, Color, Font, Brush).
 -->
 
 <UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.PropertyInspectorPanel"
@@ -80,7 +89,7 @@
             </Setter>
         </Style>
 
-        <!-- Property group header -->
+        <!-- Property group header (used when IsGroupedView=True) -->
         <Style x:Key="XD_GroupHeaderStyle" TargetType="GroupItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -101,15 +110,98 @@
             </Setter>
         </Style>
 
-        <!-- Property row: text value template -->
+        <!-- ListView row container: bold when IsLocalValue, 0.6 opacity when IsDefault,
+             "(inherited)" suffix rendered via the Property name cell. -->
+        <Style x:Key="XD_PropertyRowStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding"                    Value="0"/>
+            <Setter Property="FontWeight"                 Value="Normal"/>
+            <Setter Property="Opacity"                    Value="1.0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLocalValue}" Value="True">
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDefault}" Value="True">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ── Property name cell: name + optional "(inherited)" dim suffix ── -->
+        <DataTemplate x:Key="PropertyNameCellTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding PropertyName}"
+                           Foreground="{DynamicResource XD_PropertyNameForeground}"
+                           FontSize="11" Padding="2,1"
+                           VerticalAlignment="Center"/>
+                <!-- "(inherited)" suffix shown only when not local and not from style and not default
+                     (i.e. value comes from inheritance). Only shown when !IsLocalValue && !IsFromStyle && !IsDefault -->
+                <TextBlock Text=" (inherited)"
+                           FontSize="10" FontStyle="Italic"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.45"
+                           VerticalAlignment="Center"
+                           Padding="0,1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <!-- Visible when inherited: not local, not from style, not default -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsLocalValue}" Value="False"/>
+                                        <Condition Binding="{Binding IsFromStyle}"  Value="False"/>
+                                        <Condition Binding="{Binding IsDefault}"    Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- ── TextPropertyTemplate — text value with inline Reset (✕) button ── -->
         <DataTemplate x:Key="TextPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
-            <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                     Background="{DynamicResource DockMenuBackgroundBrush}"
-                     Foreground="{DynamicResource XD_PropertyValueForeground}"
-                     BorderBrush="{DynamicResource DockBorderBrush}"
-                     BorderThickness="1" Padding="2,1"
-                     IsReadOnly="{Binding IsReadOnly}"
-                     FontSize="11"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <!-- Reset button column — only occupies space when IsLocalValue -->
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         Background="{DynamicResource DockMenuBackgroundBrush}"
+                         Foreground="{DynamicResource XD_PropertyValueForeground}"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         BorderThickness="1" Padding="2,1"
+                         IsReadOnly="{Binding IsReadOnly}"
+                         FontSize="11"/>
+
+                <!-- Inline Reset button: 14×14, only visible when IsLocalValue=True.
+                     Click is handled in code-behind via ResetButtonClicked attached pattern. -->
+                <Button Grid.Column="1"
+                        x:Name="BtnResetValue"
+                        Width="14" Height="14"
+                        Margin="2,0,0,0"
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="8"
+                        Content="&#xE711;"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Reset to default"
+                        Tag="{Binding}"
+                        Click="OnResetValueClick"
+                        Visibility="{Binding IsLocalValue, Converter={StaticResource BoolToVis}}">
+                    <Button.Foreground>
+                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+                    </Button.Foreground>
+                </Button>
+            </Grid>
         </DataTemplate>
 
         <!-- Property row: boolean value template -->
@@ -154,6 +246,68 @@
             <editors:FontPickerEditor FamilyName="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"/>
         </DataTemplate>
+
+        <!-- Property row: Brush template — 20px swatch + hex TextBox (Phase upgrade 2026-03-19) -->
+        <DataTemplate x:Key="BrushPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Swatch rectangle — filled with the resolved brush -->
+                <Rectangle Grid.Column="0"
+                           Width="16" Height="16"
+                           Fill="{Binding ResolvedBrush}"
+                           Stroke="{DynamicResource DockBorderBrush}"
+                           StrokeThickness="1"
+                           VerticalAlignment="Center"
+                           SnapsToDevicePixels="True">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ResolvedBrush}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+
+                <!-- Hex/string editor for the brush value -->
+                <TextBox Grid.Column="2"
+                         Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         Background="{DynamicResource DockMenuBackgroundBrush}"
+                         Foreground="{DynamicResource XD_PropertyValueForeground}"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         BorderThickness="1" Padding="2,1"
+                         IsReadOnly="{Binding IsReadOnly}"
+                         FontSize="11"/>
+
+                <!-- Reset button -->
+                <Button Grid.Column="3"
+                        Width="14" Height="14"
+                        Margin="2,0,0,0"
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="8"
+                        Content="&#xE711;"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Reset to default"
+                        Tag="{Binding}"
+                        Click="OnResetValueClick"
+                        Visibility="{Binding IsLocalValue, Converter={StaticResource BoolToVis}}">
+                    <Button.Foreground>
+                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+                    </Button.Foreground>
+                </Button>
+            </Grid>
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <Grid>
@@ -173,10 +327,45 @@
                 <!-- Right panel -->
                 <StackPanel x:Name="ToolbarRightPanel" DockPanel.Dock="Right"
                             Orientation="Horizontal" Margin="0,0,2,0">
+                    <!-- Show default values toggle -->
                     <ToggleButton x:Name="BtnShowDefault"
                                   Style="{StaticResource XD_PropToggleButton}"
                                   Content="&#xE73E;" ToolTip="Show properties with default values"
                                   IsChecked="{Binding ShowDefaultValues}"/>
+                    <!-- Group/flat view toggle: ≡ (list icon) -->
+                    <ToggleButton x:Name="BtnToggleGroup"
+                                  Style="{StaticResource XD_PropToggleButton}"
+                                  Content="&#xE8FD;" ToolTip="Toggle grouped / flat view"
+                                  IsChecked="{Binding IsGroupedView}"
+                                  Command="{Binding ToggleGroupCommand}"/>
+                    <!-- Separator -->
+                    <Separator Width="1" Height="16" Margin="2,0"
+                               Background="{DynamicResource DockBorderBrush}"/>
+                    <!-- Reset all locally-set properties to default -->
+                    <Button x:Name="BtnResetAll"
+                            Style="{StaticResource XD_PropIconButton}"
+                            ToolTip="Reset all locally-set properties to default"
+                            Command="{Binding ResetAllCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE777;"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <!-- Copy visible properties to clipboard -->
+                    <Button x:Name="BtnCopyProperties"
+                            Style="{StaticResource XD_PropIconButton}"
+                            ToolTip="Copy visible properties to clipboard"
+                            Command="{Binding CopyPropertiesCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8C8;"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <!-- Show/hide attached and system properties -->
+                    <ToggleButton x:Name="BtnShowAttached"
+                                  Style="{StaticResource XD_PropToggleButton}"
+                                  ToolTip="Show/hide attached and system properties"
+                                  IsChecked="{Binding ShowAttachedProperties, Mode=TwoWay}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE7C4;"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ToggleButton>
+                    <!-- Overflow toggle (managed by ToolbarOverflowManager) -->
                     <ToggleButton x:Name="ToolbarOverflowButton"
                                   Width="22" Height="22" Padding="3"
                                   Background="Transparent" BorderThickness="0"
@@ -241,6 +430,7 @@
         <!-- ── Property List (Row 3) ── -->
         <ListView x:Name="PropertyList" Grid.Row="3"
                   ItemsSource="{Binding PropertiesView}"
+                  ItemContainerStyle="{StaticResource XD_PropertyRowStyle}"
                   Background="{DynamicResource DockBackgroundBrush}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   BorderThickness="0"
@@ -252,17 +442,93 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Property" Width="130">
+
+                    <!-- Column: Property name (130px) — includes "(inherited)" suffix -->
+                    <GridViewColumn Header="Property" Width="130"
+                                    CellTemplate="{StaticResource PropertyNameCellTemplate}"/>
+
+                    <!-- Column: Binding badge (30px)
+                         {B} in teal when HasBinding=True,
+                         ● in gold when IsAnimated=True.
+                         Click handled in code-behind → BindingBadgeClicked event. -->
+                    <GridViewColumn Header="" Width="30">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:PropertyInspectorEntry}">
-                                <TextBlock Text="{Binding PropertyName}"
-                                           Foreground="{DynamicResource XD_PropertyNameForeground}"
-                                           FontSize="11" Padding="2,1"/>
+                                <Grid>
+                                    <!-- {B} badge — HasBinding -->
+                                    <TextBlock x:Name="BindingBadge"
+                                               Text="{}{B}"
+                                               FontSize="9" FontWeight="Bold"
+                                               Foreground="{DynamicResource XD_BindingStatusOkBrush}"
+                                               ToolTip="Has active data binding — click to inspect"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Cursor="Hand"
+                                               Tag="{Binding}"
+                                               MouseDown="OnBindingBadgeMouseDown"
+                                               Visibility="Collapsed"/>
+
+                                    <!-- ● badge — IsAnimated -->
+                                    <TextBlock x:Name="AnimBadge"
+                                               Text="●"
+                                               FontSize="9"
+                                               Foreground="{DynamicResource XD_TimelineKeyframeSelectedBrush}"
+                                               ToolTip="Property is animated"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Visibility="Collapsed"/>
+
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasBinding}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                </Grid>
+
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding HasBinding}" Value="True">
+                                        <Setter TargetName="BindingBadge" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="AnimBadge"    Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsAnimated}" Value="True">
+                                        <Setter TargetName="AnimBadge"    Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="BindingBadge" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
+                    <!-- Column: Brush swatch (20px Rectangle with ResolvedBrush, Collapsed when null) -->
+                    <GridViewColumn Header="" Width="20">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:PropertyInspectorEntry}">
+                                <!-- Default Visibility=Visible; collapsed only when ResolvedBrush is null. -->
+                                <Rectangle x:Name="BrushSwatch"
+                                           Width="14" Height="14"
+                                           Fill="{Binding ResolvedBrush}"
+                                           Stroke="{DynamicResource DockBorderBrush}"
+                                           StrokeThickness="1"
+                                           SnapsToDevicePixels="True"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Visibility="Visible"/>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding ResolvedBrush}" Value="{x:Null}">
+                                        <Setter TargetName="BrushSwatch" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Column: Value (160px) — template selected by PropertyEditorTemplateSelector -->
                     <GridViewColumn x:Name="ValueColumn" Header="Value" Width="160"/>
+
                 </GridView>
             </ListView.View>
         </ListView>

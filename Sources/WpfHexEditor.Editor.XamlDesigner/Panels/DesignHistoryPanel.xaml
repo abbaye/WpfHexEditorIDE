@@ -1,78 +1,290 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Updated: 2026-03-19 — Checkpoint star column, filter TextBox, history size label,
+                          keyboard navigation, context menu, CheckpointsOnly toggle
+    File: DesignHistoryPanel.xaml
+    Description: VS-Like dockable panel showing the full XAML designer undo/redo history.
+                 Applied entries appear at full opacity; undone entries appear dimmed.
+                 Click or Enter an entry to jump to that state. ⭐ marks checkpoints.
+    Theme: XD_History* + XD_* tokens (all DynamicResource)
+    ResourceDictionaries: WpfHexEditor.Shell/Themes/{Theme}/Colors.xaml
+-->
+
 <UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.DesignHistoryPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.XamlDesigner.ViewModels"
-             MinHeight="80">
+             MinHeight="80"
+             Background="{DynamicResource XD_HistoryPanelBackground}">
 
-    <!-- ==========================================================
-         File: DesignHistoryPanel.xaml
-         Created: 2026-03-18
-         Description: VS-Like dockable panel showing the full XAML designer
-                      undo/redo history. Applied entries appear at full opacity;
-                      undone entries appear dimmed. Click an entry to jump to
-                      that state in the design history.
-         Theme: XD_History* + XD_* tokens (all DynamicResource)
-         ========================================================== -->
+    <UserControl.Resources>
+
+        <!-- ── Icon button style matching VS-Like panel standard ── -->
+        <Style x:Key="XD_HistIconButton" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Padding"         Value="3"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Foreground"      Value="{DynamicResource XD_HistoryIconBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="2" SnapsToDevicePixels="True"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource XD_HistoryEntryHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── ToggleButton style for CheckpointsOnly ── -->
+        <Style x:Key="XD_HistToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Padding"         Value="3"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Foreground"      Value="{DynamicResource XD_HistoryIconBrush}"/>
+            <Setter Property="ToolTip"         Value="Show checkpoints only"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="2" SnapsToDevicePixels="True"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource XD_HistoryEntryHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource XD_HistoryCheckpointBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Filter TextBox style ── -->
+        <Style x:Key="XD_HistFilterBox" TargetType="TextBox">
+            <Setter Property="Width"           Value="120"/>
+            <Setter Property="Height"          Value="18"/>
+            <Setter Property="Padding"         Value="4,1"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background"      Value="{DynamicResource XD_PanelToolbarBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CaretBrush"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="SelectionBrush"  Value="{DynamicResource DockTabActiveBrush}"/>
+        </Style>
+
+        <!-- ── BoolToVisibility ── -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <!-- Row 0: Toolbar (26px fixed) -->
+            <RowDefinition Height="26"/>
+            <!-- Row 1: Separator (1px) -->
             <RowDefinition Height="1"/>
+            <!-- Row 2: History ListView (*) -->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ── Toolbar ───────────────────────────────────────────── -->
-        <Border Grid.Row="0" Height="26" BorderThickness="0,0,0,1"
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Row 0 — Toolbar                                           -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <Border x:Name="ToolbarBorder" Grid.Row="0"
                 Background="{DynamicResource XD_PanelToolbarBrush}"
-                BorderBrush="{DynamicResource XD_PanelToolbarBorderBrush}">
-            <StackPanel Orientation="Horizontal" Margin="4,0">
-                <!-- Clear History -->
-                <Button Width="24" Height="20"
-                        Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                        ToolTip="Clear history"
-                        Command="{Binding ClearHistoryCommand}"
-                        Background="Transparent" BorderThickness="0"
-                        Foreground="{DynamicResource XD_HistoryIconBrush}"/>
-            </StackPanel>
+                BorderBrush="{DynamicResource XD_PanelToolbarBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="False">
+
+                <!-- Right anchor: history size label -->
+                <TextBlock DockPanel.Dock="Right"
+                           Text="{Binding HistorySizeLabel}"
+                           FontSize="10"
+                           VerticalAlignment="Center"
+                           Margin="0,0,6,0"
+                           Opacity="0.65"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           ToolTip="Entries / Max capacity"/>
+
+                <!-- Left group: action buttons + filter -->
+                <StackPanel DockPanel.Dock="Left"
+                            Orientation="Horizontal" Margin="4,0,0,0"
+                            VerticalAlignment="Center">
+
+                    <!-- Clear History -->
+                    <Button x:Name="BtnClearHistory"
+                            Style="{StaticResource XD_HistIconButton}"
+                            Content="&#xE74D;" ToolTip="Clear history"
+                            Command="{Binding ClearHistoryCommand}"/>
+
+                    <!-- Separator -->
+                    <Rectangle Width="1" Height="14" Margin="3,0"
+                               Fill="{DynamicResource DockBorderBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <Button x:Name="BtnMarkCheckpoint"
+                            Style="{StaticResource XD_HistIconButton}"
+                            ToolTip="Mark current state as checkpoint"
+                            Command="{Binding MarkCurrentCheckpointCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE734;"/>
+                    </Button>
+                    <Button x:Name="BtnJumpFirst"
+                            Style="{StaticResource XD_HistIconButton}"
+                            ToolTip="Jump to oldest state"
+                            Command="{Binding JumpToFirstCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE892;"/>
+                    </Button>
+                    <Button x:Name="BtnJumpLatest"
+                            Style="{StaticResource XD_HistIconButton}"
+                            ToolTip="Jump to most recent state"
+                            Command="{Binding JumpToLatestCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE893;"/>
+                    </Button>
+                    <Button x:Name="BtnExportHistory"
+                            Style="{StaticResource XD_HistIconButton}"
+                            ToolTip="Copy history list to clipboard"
+                            Command="{Binding ExportHistoryCommand}">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8C8;"/>
+                    </Button>
+
+                    <!-- Separator -->
+                    <Rectangle Width="1" Height="14" Margin="3,0"
+                               Fill="{DynamicResource DockBorderBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <!-- Checkpoints Only toggle -->
+                    <ToggleButton x:Name="BtnCheckpointsOnly"
+                                  Style="{StaticResource XD_HistToggleButton}"
+                                  Content="&#xE734;"
+                                  IsChecked="{Binding CheckpointsOnly, Mode=TwoWay}"
+                                  ToolTip="Show checkpoints only"/>
+
+                    <!-- Separator -->
+                    <Rectangle Width="1" Height="14" Margin="3,0"
+                               Fill="{DynamicResource DockBorderBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <!-- Filter TextBox with placeholder -->
+                    <Grid VerticalAlignment="Center">
+                        <TextBox x:Name="TbxFilter"
+                                 Style="{StaticResource XD_HistFilterBox}"
+                                 ToolTip="Filter history entries"/>
+                        <TextBlock x:Name="TbxFilterPlaceholder"
+                                   Text="Filter history…"
+                                   FontSize="11"
+                                   Margin="5,0,0,0"
+                                   Opacity="0.4"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </Grid>
+
+                </StackPanel>
+            </DockPanel>
         </Border>
 
-        <!-- ── Separator ─────────────────────────────────────────── -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Row 1 — Separator                                         -->
+        <!-- ══════════════════════════════════════════════════════════ -->
         <Rectangle Grid.Row="1" Fill="{DynamicResource DockBorderBrush}"/>
 
-        <!-- ── History list ──────────────────────────────────────── -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Row 2 — History list                                      -->
+        <!-- ══════════════════════════════════════════════════════════ -->
         <ListView x:Name="HistoryList"
                   Grid.Row="2"
-                  ItemsSource="{Binding Entries}"
+                  ItemsSource="{Binding FilteredEntries}"
                   Background="{DynamicResource XD_HistoryPanelBackground}"
                   BorderThickness="0"
                   SelectionMode="Single"
-                  MouseLeftButtonUp="OnListMouseLeftButtonUp">
+                  MouseLeftButtonUp="OnListMouseLeftButtonUp"
+                  PreviewKeyDown="OnListPreviewKeyDown">
 
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:DesignHistoryEntryViewModel}">
                     <Grid Opacity="{Binding OpacityFactor}" Margin="2,1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="18"/>   <!-- operation icon -->
-                            <ColumnDefinition Width="14"/>   <!-- ▶ current marker -->
-                            <ColumnDefinition Width="*"/>    <!-- description -->
-                            <ColumnDefinition Width="54"/>   <!-- HH:mm:ss timestamp -->
+                            <!-- Col 0: checkpoint star (16px) -->
+                            <ColumnDefinition Width="16"/>
+                            <!-- Col 1: operation icon (18px) -->
+                            <ColumnDefinition Width="18"/>
+                            <!-- Col 2: ▶ current marker (14px) -->
+                            <ColumnDefinition Width="14"/>
+                            <!-- Col 3: description (*) -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Col 4: timestamp (54px) -->
+                            <ColumnDefinition Width="54"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Operation type icon -->
+                        <!-- ── Checkpoint star ── -->
                         <TextBlock Grid.Column="0"
+                                   Text="&#xE734;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource XD_HistoryCheckpointBrush}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCheckpoint}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- ── Operation type icon ── -->
+                        <TextBlock Grid.Column="1"
                                    Text="{Binding GlyphIcon}"
                                    FontFamily="Segoe MDL2 Assets"
                                    FontSize="11"
                                    VerticalAlignment="Center"
                                    Foreground="{DynamicResource XD_HistoryIconBrush}"/>
 
-                        <!-- Current-state marker (▶) — visible only for the active entry -->
-                        <TextBlock Grid.Column="1"
+                        <!-- ── Current-state marker (▶) ── -->
+                        <TextBlock Grid.Column="2"
                                    Text="&#x25B6;"
                                    FontSize="7"
                                    VerticalAlignment="Center"
-                                   Foreground="{DynamicResource XD_HistoryCurrentMarkerBrush}"
-                                   Visibility="Collapsed">
+                                   Foreground="{DynamicResource XD_HistoryCurrentMarkerBrush}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -85,22 +297,47 @@
                             </TextBlock.Style>
                         </TextBlock>
 
-                        <!-- Description -->
-                        <TextBlock Grid.Column="2"
+                        <!-- ── Description ── -->
+                        <TextBlock Grid.Column="3"
                                    Text="{Binding Description}"
                                    FontSize="11"
                                    VerticalAlignment="Center"
                                    TextTrimming="CharacterEllipsis"
                                    Foreground="{DynamicResource XD_HistoryAppliedForeground}"/>
 
-                        <!-- Timestamp (HH:mm:ss) -->
-                        <TextBlock Grid.Column="3"
+                        <!-- ── Timestamp (HH:mm:ss) ── -->
+                        <TextBlock Grid.Column="4"
                                    Text="{Binding Timestamp, StringFormat=HH:mm:ss}"
                                    FontSize="10"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Margin="0,0,4,0"
                                    Foreground="{DynamicResource XD_HistoryUndoneForeground}"/>
+
+                        <!-- ── Row context menu ── -->
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="CtxToggleCheckpoint"
+                                          Header="Toggle Checkpoint"
+                                          Tag="{Binding}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE734;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource XD_HistoryCheckpointBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem x:Name="CtxJumpToState"
+                                          Header="Jump to State"
+                                          Tag="{Binding}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE72D;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="12"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -111,14 +348,20 @@
                     <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="Padding"         Value="0"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <!-- IMPORTANT: Use Property Trigger (not DataTrigger) for IsMouseOver -->
+                    <!-- MEMORY.md rule: IsMouseOver must use Property Trigger, never DataTrigger -->
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource XD_HistoryEntryHoverBrush}"/>
+                            <Setter Property="Background"
+                                    Value="{DynamicResource XD_HistoryEntryHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background"
+                                    Value="{DynamicResource DockTabActiveBrush}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
+
         </ListView>
 
     </Grid>

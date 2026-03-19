@@ -3,23 +3,28 @@
 // File: ResourceBrowserPanelViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-17
+// Updated: 2026-03-19
 // Description:
 //     ViewModel for the Resource Browser dockable panel.
 //     Provides a filterable, grouped view of application resources
-//     and exposes commands for scanning and navigating to usages.
+//     and exposes commands for scanning, navigating, renaming, and copying.
 //
 // Architecture Notes:
 //     INPC. ICollectionView grouped by Scope.
 //     ResourceScannerService provides raw entries.
-//     ResourceReferenceService provides usage navigation.
+//     ResourceUsageAnalyzer fills UsageCount post-scan.
+//     Duplicate detection groups entries by PreviewText.
+//     500ms debounce timer guards rapid successive scans.
 // ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Data;
-using WpfHexEditor.SDK.Commands;
+using System.Windows.Threading;
 using WpfHexEditor.Editor.XamlDesigner.Services;
+using WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.Editor.XamlDesigner.ViewModels;
 
@@ -28,9 +33,13 @@ namespace WpfHexEditor.Editor.XamlDesigner.ViewModels;
 /// </summary>
 public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
 {
-    private readonly ResourceScannerService   _scanner   = new();
+    private readonly ResourceScannerService   _scanner        = new();
+    private readonly ResourceUsageAnalyzer    _usageAnalyzer  = new();
     private readonly ObservableCollection<ResourceEntryViewModel> _entries = new();
-    private string _filterText = string.Empty;
+    private DispatcherTimer? _debounceTimer;
+
+    private string _filterText    = string.Empty;
+    private string _xamlSource    = string.Empty;
     private ResourceEntryViewModel? _selectedEntry;
 
     // ── Constructor ───────────────────────────────────────────────────────────
@@ -43,8 +52,11 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
         if (EntriesView.GroupDescriptions != null)
             EntriesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ResourceEntryViewModel.Scope)));
 
-        ScanCommand       = new RelayCommand(_ => Scan());
-        FindUsagesCommand = new RelayCommand(_ => OnFindUsages(), _ => _selectedEntry is not null);
+        ScanCommand            = new RelayCommand(_ => Scan());
+        FindUsagesCommand      = new RelayCommand(_ => OnFindUsages(), _ => _selectedEntry is not null);
+        GoToDefinitionCommand  = new RelayCommand(p => ExecuteGoToDefinition(p as ResourceEntryViewModel), _ => _selectedEntry is not null);
+        RenameCommand          = new RelayCommand(p => ExecuteRename(p as ResourceEntryViewModel));
+        CopyKeyCommand         = new RelayCommand(p => ExecuteCopyKey(p as ResourceEntryViewModel));
     }
 
     // ── Properties ────────────────────────────────────────────────────────────
@@ -74,25 +86,105 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>XAML source used by the usage analyzer. Set by the plugin host.</summary>
+    public string XamlSource
+    {
+        get => _xamlSource;
+        set { _xamlSource = value; ScheduleRescan(); }
+    }
+
     // ── Commands ──────────────────────────────────────────────────────────────
 
-    public System.Windows.Input.ICommand ScanCommand       { get; }
-    public System.Windows.Input.ICommand FindUsagesCommand { get; }
+    public System.Windows.Input.ICommand ScanCommand           { get; }
+    public System.Windows.Input.ICommand FindUsagesCommand     { get; }
+    public System.Windows.Input.ICommand GoToDefinitionCommand { get; }
+    public System.Windows.Input.ICommand RenameCommand         { get; }
+    public System.Windows.Input.ICommand CopyKeyCommand        { get; }
 
     // ── Events ────────────────────────────────────────────────────────────────
 
-    /// <summary>Raised when the user clicks "Find Usages" on a resource entry.</summary>
-    public event EventHandler<string>? FindUsagesRequested;
+    /// <summary>Raised when the user requests Find Usages on a resource entry.</summary>
+    public event EventHandler<string>?                        FindUsagesRequested;
+
+    /// <summary>Raised when the user requests navigation to a resource definition.</summary>
+    public event EventHandler<(string key, int line)>?        GoToDefinitionRequested;
 
     // ── Public API ────────────────────────────────────────────────────────────
 
-    /// <summary>Rescans all application resources and rebuilds the view.</summary>
+    /// <summary>Schedules a scan after a 500ms debounce delay.</summary>
+    public void ScheduleRescan()
+    {
+        _debounceTimer?.Stop();
+        _debounceTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(500)
+        };
+        _debounceTimer.Tick += (_, _) => { _debounceTimer.Stop(); Scan(); };
+        _debounceTimer.Start();
+    }
+
+    /// <summary>Rescans all application resources, fills usage counts, detects duplicates.</summary>
     public void Scan()
     {
         _entries.Clear();
         foreach (var entry in _scanner.ScanAll())
             _entries.Add(entry);
+
+        PostProcessEntries();
         EntriesView.Refresh();
+    }
+
+    // ── Private: post-processing ──────────────────────────────────────────────
+
+    private void PostProcessEntries()
+    {
+        FillUsageCounts();
+        DetectDuplicates();
+    }
+
+    private void FillUsageCounts()
+    {
+        if (string.IsNullOrEmpty(_xamlSource)) return;
+
+        var usages = _usageAnalyzer.AnalyzeUsages(_xamlSource);
+        foreach (var entry in _entries)
+            entry.UsageCount = usages.TryGetValue(entry.Key, out int count) ? count : 0;
+    }
+
+    private void DetectDuplicates()
+    {
+        var groups = _entries
+            .GroupBy(e => e.PreviewText, StringComparer.Ordinal)
+            .Where(g => g.Count() > 1);
+
+        foreach (var group in groups)
+            foreach (var entry in group)
+                entry.HasDuplicate = true;
+    }
+
+    // ── Private: commands ─────────────────────────────────────────────────────
+
+    private void ExecuteGoToDefinition(ResourceEntryViewModel? entry)
+    {
+        if (entry is null) return;
+        GoToDefinitionRequested?.Invoke(this, (entry.Key, entry.LineNumber));
+    }
+
+    private void ExecuteRename(ResourceEntryViewModel? entry)
+    {
+        entry?.BeginRename();
+    }
+
+    private void ExecuteCopyKey(ResourceEntryViewModel? entry)
+    {
+        if (entry is null) return;
+        Clipboard.SetText(entry.Key);
+    }
+
+    private void OnFindUsages()
+    {
+        if (_selectedEntry is not null)
+            FindUsagesRequested?.Invoke(this, _selectedEntry.Key);
     }
 
     // ── INPC ──────────────────────────────────────────────────────────────────
@@ -102,7 +194,7 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ── Private ───────────────────────────────────────────────────────────────
+    // ── Private: filter ───────────────────────────────────────────────────────
 
     private bool FilterEntry(object obj)
     {
@@ -111,11 +203,5 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
 
         return entry.Key.Contains(_filterText, StringComparison.OrdinalIgnoreCase)
             || entry.ValueType.Contains(_filterText, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private void OnFindUsages()
-    {
-        if (_selectedEntry is not null)
-            FindUsagesRequested?.Invoke(this, _selectedEntry.Key);
     }
 }

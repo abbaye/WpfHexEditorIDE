@@ -38,19 +38,22 @@ public sealed class BindingInspectorService
         if (binding is null) return null;
 
         return new BindingInfo(
-            Path:             binding.Path?.Path ?? string.Empty,
-            Mode:             binding.Mode,
-            Source:           binding.Source?.GetType().Name ?? string.Empty,
-            ElementName:      binding.ElementName ?? string.Empty,
-            RelativeSource:   binding.RelativeSource?.Mode.ToString() ?? string.Empty,
-            Converter:        binding.Converter?.GetType().Name ?? string.Empty,
-            FallbackValue:    binding.FallbackValue?.ToString() ?? string.Empty,
-            UpdateSourceTrigger: binding.UpdateSourceTrigger,
-            IsValid:          expression.Status == BindingStatus.Active);
+            Path:                        binding.Path?.Path ?? string.Empty,
+            Mode:                        binding.Mode,
+            Source:                      binding.Source?.GetType().Name ?? string.Empty,
+            ElementName:                 binding.ElementName ?? string.Empty,
+            RelativeSource:              binding.RelativeSource?.Mode.ToString() ?? string.Empty,
+            Converter:                   binding.Converter?.GetType().Name ?? string.Empty,
+            FallbackValue:               binding.FallbackValue?.ToString() ?? string.Empty,
+            TargetNullValue:             binding.TargetNullValue?.ToString() ?? string.Empty,
+            UpdateSourceTrigger:         binding.UpdateSourceTrigger,
+            ValidatesOnDataErrors:       binding.ValidatesOnDataErrors,
+            ValidatesOnNotifyDataErrors: binding.ValidatesOnNotifyDataErrors,
+            IsValid:                     expression.Status == BindingStatus.Active);
     }
 
     /// <summary>
-    /// Returns all bindings set on the given object.
+    /// Returns all bindings set on the given object, including MultiBindings.
     /// </summary>
     public IReadOnlyList<(DependencyProperty Dp, BindingInfo Info)> GetAllBindings(DependencyObject obj)
     {
@@ -60,26 +63,75 @@ public sealed class BindingInspectorService
         while (localValueEnumerator.MoveNext())
         {
             var entry = localValueEnumerator.Current;
-            if (entry.Value is BindingExpressionBase)
+            if (entry.Value is not BindingExpressionBase) continue;
+
+            // Check for MultiBinding first.
+            var multiBinding = BindingOperations.GetMultiBinding(obj, entry.Property);
+            if (multiBinding is not null)
             {
-                var info = GetBinding(obj, entry.Property);
-                if (info is not null)
-                    result.Add((entry.Property, info));
+                var children = new List<BindingInfo>();
+                foreach (var child in multiBinding.Bindings)
+                {
+                    if (child is Binding cb)
+                        children.Add(BuildBindingInfo(cb, isValid: true));
+                }
+
+                result.Add((entry.Property, new BindingInfo(
+                    Path:                        string.Empty,
+                    Mode:                        multiBinding.Mode,
+                    Source:                      "(MultiBinding)",
+                    ElementName:                 string.Empty,
+                    RelativeSource:              string.Empty,
+                    Converter:                   multiBinding.Converter?.GetType().Name ?? string.Empty,
+                    FallbackValue:               multiBinding.FallbackValue?.ToString() ?? string.Empty,
+                    TargetNullValue:             string.Empty,
+                    UpdateSourceTrigger:         multiBinding.UpdateSourceTrigger,
+                    ValidatesOnDataErrors:       multiBinding.ValidatesOnDataErrors,
+                    ValidatesOnNotifyDataErrors: multiBinding.ValidatesOnNotifyDataErrors,
+                    IsValid:                     true,
+                    IsMultiBinding:              true,
+                    ChildBindings:               children)));
+                continue;
             }
+
+            var info = GetBinding(obj, entry.Property);
+            if (info is not null)
+                result.Add((entry.Property, info));
         }
 
         return result;
     }
+
+    // ── Private ───────────────────────────────────────────────────────────────
+
+    private static BindingInfo BuildBindingInfo(Binding binding, bool isValid) =>
+        new(Path:                        binding.Path?.Path ?? string.Empty,
+            Mode:                        binding.Mode,
+            Source:                      binding.Source?.GetType().Name ?? string.Empty,
+            ElementName:                 binding.ElementName ?? string.Empty,
+            RelativeSource:              binding.RelativeSource?.Mode.ToString() ?? string.Empty,
+            Converter:                   binding.Converter?.GetType().Name ?? string.Empty,
+            FallbackValue:               binding.FallbackValue?.ToString() ?? string.Empty,
+            TargetNullValue:             binding.TargetNullValue?.ToString() ?? string.Empty,
+            UpdateSourceTrigger:         binding.UpdateSourceTrigger,
+            ValidatesOnDataErrors:       binding.ValidatesOnDataErrors,
+            ValidatesOnNotifyDataErrors: binding.ValidatesOnNotifyDataErrors,
+            IsValid:                     isValid);
 }
 
-/// <summary>Structured information about a WPF Binding expression.</summary>
+/// <summary>Structured information about a WPF Binding (or MultiBinding) expression.</summary>
 public sealed record BindingInfo(
-    string        Path,
-    BindingMode   Mode,
-    string        Source,
-    string        ElementName,
-    string        RelativeSource,
-    string        Converter,
-    string        FallbackValue,
+    string              Path,
+    BindingMode         Mode,
+    string              Source,
+    string              ElementName,
+    string              RelativeSource,
+    string              Converter,
+    string              FallbackValue,
+    string              TargetNullValue,
     UpdateSourceTrigger UpdateSourceTrigger,
-    bool          IsValid);
+    bool                ValidatesOnDataErrors,
+    bool                ValidatesOnNotifyDataErrors,
+    bool                IsValid,
+    bool                IsMultiBinding    = false,
+    IReadOnlyList<BindingInfo>? ChildBindings = null);

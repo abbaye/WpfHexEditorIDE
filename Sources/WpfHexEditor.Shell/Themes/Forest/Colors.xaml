@@ -413,6 +413,10 @@
     <SolidColorBrush x:Key="LVT_BadgeHiddenBrush"               Color="#2A2010"/>
     <SolidColorBrush x:Key="LVT_BadgeDisabledBrush"             Color="#2A1010"/>
     <SolidColorBrush x:Key="LVT_BadgeTextBrush"                 Color="#D4D9C8"/>
+    <SolidColorBrush x:Key="LVT_SearchBarBrush"              Color="#1A2210"/>
+    <SolidColorBrush x:Key="LVT_SearchHighlightBrush"        Color="#334CAF50"/>
+    <SolidColorBrush x:Key="LVT_SearchMatchBrush"            Color="#664CAF50"/>
+    <SolidColorBrush x:Key="LVT_InspectRootBadgeBrush"       Color="#152A10"/>
 
     <!-- History Panel -->
     <SolidColorBrush x:Key="XD_HistoryPanelBackground"          Color="#181E14"/>

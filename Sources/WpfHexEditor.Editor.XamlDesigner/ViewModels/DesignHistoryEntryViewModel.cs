@@ -34,8 +34,9 @@ public sealed class DesignHistoryEntryViewModel : INotifyPropertyChanged
 
     // ── INPC state ────────────────────────────────────────────────────────────
 
-    private bool _isApplied = true;
+    private bool _isApplied    = true;
     private bool _isCurrent;
+    private bool _isCheckpoint;
 
     /// <summary>
     /// True when this entry is in the undo stack (has been applied).
@@ -63,6 +64,21 @@ public sealed class DesignHistoryEntryViewModel : INotifyPropertyChanged
         {
             if (_isCurrent == value) return;
             _isCurrent = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// True when the user has starred this entry as a checkpoint.
+    /// Checkpoints survive Clear() if the manager preserves them.
+    /// </summary>
+    public bool IsCheckpoint
+    {
+        get => _isCheckpoint;
+        set
+        {
+            if (_isCheckpoint == value) return;
+            _isCheckpoint = value;
             OnPropertyChanged();
         }
     }

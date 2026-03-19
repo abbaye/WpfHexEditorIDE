@@ -3,6 +3,9 @@
 // File: PropertyInspectorPanel.xaml.cs
 // Author: Derek Tremblay
 // Created: 2026-03-16
+// Updated: 2026-03-19 — Added BindingBadgeClicked event, OnBindingBadgeMouseDown handler,
+//                        OnResetValueClick handler, BrushPropertyTemplate registration in
+//                        PropertyEditorTemplateSelector, ToggleGroupButton wiring.
 // Description:
 //     Code-behind for the XAML Property Inspector dockable panel.
 //     Wires DataTemplateSelector for property value cells and manages
@@ -12,11 +15,16 @@
 //     VS-Like Panel Pattern. Never nulls _vm on OnUnloaded (MEMORY.md rule).
 //     Phase D: DataTemplateSelector dispatches to rich editors based on
 //     PropertyInspectorEntry.PropertyType: Bool, Thickness, Enum, Numeric,
-//     Color, FontFamily — falls back to TextPropertyTemplate for all others.
+//     Color, FontFamily, Brush — falls back to TextPropertyTemplate for all others.
+//     Phase upgrade 2026-03-19:
+//       · BindingBadgeClicked — raised when the {B} badge is clicked.
+//       · OnResetValueClick   — calls entry.ResetToDefault() if defined.
+//       · ToggleGroupButton   — wired to vm.ToggleGroupCommand.
 // ==========================================================
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.XamlDesigner.Models;
@@ -42,13 +50,20 @@ public partial class PropertyInspectorPanel : UserControl
         InitializeComponent();
         DataContext = _vm;
 
-        // Wire the DataTemplateSelector directly to the GridViewColumn — a ContentControl
-        // cannot be assigned to CellTemplateSelector (must be a DataTemplateSelector subclass).
+        // Wire the DataTemplateSelector directly to the GridViewColumn.
         ValueColumn.CellTemplateSelector = new PropertyEditorTemplateSelector(this);
 
         Loaded   += OnLoaded;
         Unloaded += OnUnloaded;
     }
+
+    // ── Events ────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Raised when the user clicks the {B} binding badge on a property row.
+    /// Allows the host to open the Binding Inspector for the specific property.
+    /// </summary>
+    public event EventHandler<PropertyInspectorEntry>? BindingBadgeClicked;
 
     // ── Public API ────────────────────────────────────────────────────────────
 
@@ -81,6 +96,42 @@ public partial class PropertyInspectorPanel : UserControl
         // Per MEMORY.md rule: never null _vm on unload.
     }
 
+    // ── Binding badge handler ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// Handles MouseDown on the {B} binding badge TextBlock.
+    /// Fires <see cref="BindingBadgeClicked"/> with the associated entry.
+    /// Tag is set in XAML to {Binding} so it carries the PropertyInspectorEntry.
+    /// </summary>
+    internal void OnBindingBadgeMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton != MouseButton.Left) return;
+
+        if (sender is FrameworkElement fe && fe.Tag is PropertyInspectorEntry entry)
+        {
+            BindingBadgeClicked?.Invoke(this, entry);
+            e.Handled = true;
+        }
+    }
+
+    // ── Reset value handler ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Handles Click on the inline Reset (✕) button inside TextPropertyTemplate
+    /// and BrushPropertyTemplate.
+    /// Currently resets via clearing the local value by setting Value to null.
+    /// A future iteration may call a dedicated ResetToDefault() on the entry.
+    /// </summary>
+    internal void OnResetValueClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement fe && fe.Tag is PropertyInspectorEntry entry)
+        {
+            // Clear the locally set value — triggers write-back pipeline via INPC.
+            entry.Value = null;
+            e.Handled = true;
+        }
+    }
+
     // ── Size changes ──────────────────────────────────────────────────────────
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -96,13 +147,14 @@ public partial class PropertyInspectorPanel : UserControl
     /// Selects the appropriate DataTemplate for a property value cell
     /// based on <see cref="PropertyInspectorEntry.PropertyType"/>.
     /// Dispatch priority (first match wins):
-    ///   bool          → BoolPropertyTemplate
-    ///   Thickness     → ThicknessPropertyTemplate
-    ///   Enum          → EnumPropertyTemplate
-    ///   double/float/int → NumericPropertyTemplate
-    ///   Color (struct) → ColorPropertyTemplate  (Brush hierarchy → TextPropertyTemplate)
-    ///   FontFamily    → FontPropertyTemplate
-    ///   (default)     → TextPropertyTemplate
+    ///   bool                → BoolPropertyTemplate
+    ///   Thickness           → ThicknessPropertyTemplate
+    ///   Enum                → EnumPropertyTemplate
+    ///   double/float/int    → NumericPropertyTemplate
+    ///   Color (struct)      → ColorPropertyTemplate
+    ///   Brush (hierarchy)   → BrushPropertyTemplate   ← added 2026-03-19
+    ///   FontFamily          → FontPropertyTemplate
+    ///   (default)           → TextPropertyTemplate
     /// </summary>
     private sealed class PropertyEditorTemplateSelector : DataTemplateSelector
     {
@@ -133,11 +185,13 @@ public partial class PropertyInspectorPanel : UserControl
             if (propertyType == typeof(double) || propertyType == typeof(float) || propertyType == typeof(int))
                 return "NumericPropertyTemplate";
 
-            // ColorPickerEditor handles Color (struct), not Brush hierarchy —
-            // Brush-typed DPs (Background, Foreground, etc.) fall through to TextPropertyTemplate
-            // until a dedicated BrushPickerEditor is implemented.
+            // Color struct → dedicated color picker.
             if (propertyType == typeof(Color))
                 return "ColorPropertyTemplate";
+
+            // Brush hierarchy (SolidColorBrush, LinearGradientBrush, etc.) → swatch + hex editor.
+            if (typeof(Brush).IsAssignableFrom(propertyType))
+                return "BrushPropertyTemplate";
 
             if (propertyType == typeof(FontFamily))
                 return "FontPropertyTemplate";

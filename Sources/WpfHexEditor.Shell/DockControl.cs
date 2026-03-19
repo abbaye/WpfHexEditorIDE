@@ -1234,9 +1234,14 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         if (_engine is null || Layout is null) return;
 
-        // Remove from auto-hide, then float
+        // Save IsDocument before RestoreFromAutoHide: docking into MainDocumentHost
+        // (a DocumentHostNode) sets IsDocument=true via DockGroupNode.AddItem, which
+        // corrupts DockDragManager routing and prevents re-docking to panel zones.
+        // Mirrors the same preserve pattern used in DockEngine.Float for multi-item groups.
+        bool wasDocument = item.IsDocument;
         _engine.RestoreFromAutoHide(item, Layout.MainDocumentHost, DockDirection.Center);
         _engine.Float(item);
+        item.IsDocument = wasDocument;  // Restore panel identity after float
         RebuildVisualTree();
     }
 

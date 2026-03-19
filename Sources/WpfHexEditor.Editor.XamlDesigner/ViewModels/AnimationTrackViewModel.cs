@@ -23,7 +23,8 @@ namespace WpfHexEditor.Editor.XamlDesigner.ViewModels;
 /// </summary>
 public sealed class AnimationTrackViewModel : INotifyPropertyChanged
 {
-    private bool _isExpanded = true;
+    private bool _isExpanded    = true;
+    private bool _isContextMatch;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -34,6 +35,7 @@ public sealed class AnimationTrackViewModel : INotifyPropertyChanged
         TrackLabel    = string.IsNullOrEmpty(targetName)
             ? propertyName
             : $"{targetName}.{propertyName}";
+        PropertyIcon  = ResolvePropertyIcon(propertyName);
     }
 
     // ── Properties ────────────────────────────────────────────────────────────
@@ -41,6 +43,19 @@ public sealed class AnimationTrackViewModel : INotifyPropertyChanged
     public string TargetName   { get; }
     public string PropertyName { get; }
     public string TrackLabel   { get; }
+
+    /// <summary>
+    /// Segoe MDL2 glyph that represents the type of the animated property.
+    /// (e.g. double=\uE8F4, Color=\uE790, Thickness=\uE8A0, Point=\uE80F)
+    /// </summary>
+    public string PropertyIcon { get; }
+
+    /// <summary>True when this track's TargetName matches the currently selected canvas element.</summary>
+    public bool IsContextMatch
+    {
+        get => _isContextMatch;
+        set { _isContextMatch = value; OnPropertyChanged(); }
+    }
 
     public ObservableCollection<KeyframeViewModel> Keyframes { get; } = new();
 
@@ -56,4 +71,26 @@ public sealed class AnimationTrackViewModel : INotifyPropertyChanged
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    // ── Private ───────────────────────────────────────────────────────────────
+
+    private static string ResolvePropertyIcon(string propertyName) => propertyName switch
+    {
+        "Opacity"              => "\uE7A7",
+        "Width" or "Height"    => "\uE8F4",
+        "Margin" or "Padding"  => "\uE8A0",
+        "Background"
+         or "Foreground"
+         or "Fill"
+         or "Stroke"
+         or "BorderBrush"      => "\uE790",
+        "FontSize"             => "\uE8D2",
+        "FontFamily"           => "\uE8D2",
+        "Visibility"           => "\uE7B3",
+        "RenderTransform"
+         or "LayoutTransform"  => "\uE8CB",
+        "Canvas.Left"
+         or "Canvas.Top"       => "\uE80F",
+        _                      => "\uE8F4"
+    };
 }

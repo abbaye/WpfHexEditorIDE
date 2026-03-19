@@ -317,6 +317,27 @@ public sealed class DesignToXamlSyncService
         }
     }
 
+    /// <summary>
+    /// Returns the current string value of <paramref name="attrName"/> on the element
+    /// at pre-order position <paramref name="elementUid"/> in <paramref name="rawXaml"/>,
+    /// or <c>null</c> when the attribute is absent or the element is not found.
+    /// Used by callers to capture the "before" value for lightweight undo entries.
+    /// </summary>
+    public string? ReadAttributeValue(string rawXaml, int elementUid, string attrName)
+    {
+        if (string.IsNullOrWhiteSpace(rawXaml)) return null;
+        try
+        {
+            var doc    = XDocument.Parse(rawXaml, LoadOptions.PreserveWhitespace);
+            var target = FindElementByUid(doc.Root, elementUid);
+            return target?.Attribute(attrName)?.Value;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /// <summary>

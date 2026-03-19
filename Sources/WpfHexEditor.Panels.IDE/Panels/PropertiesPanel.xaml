@@ -13,9 +13,12 @@
              Foreground="{DynamicResource PP_ForegroundBrush}">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <local:InverseBoolConverter   x:Key="InverseBool"/>
-        <local:StringToColorConverter x:Key="StringToColor"/>
+        <BooleanToVisibilityConverter       x:Key="BoolToVis"/>
+        <local:InverseBoolConverter         x:Key="InverseBool"/>
+        <local:StringToColorConverter       x:Key="StringToColor"/>
+        <local:ThicknessPartConverter       x:Key="ThicknessPart"/>
+        <local:NullToCollapsedConverter     x:Key="NullToCollapsed"/>
+        <local:DefaultToFontWeightConverter x:Key="DefaultToWeight"/>
 
         <!-- ── Value cell DataTemplates ─────────────────────────────────── -->
 
@@ -118,11 +121,107 @@
                            Padding="2,1"/>
             </DockPanel>
         </DataTemplate>
+
+        <!-- Thickness — four numeric fields L / T / R / B (P5) -->
+        <DataTemplate x:Key="ThicknessTemplate" DataType="{x:Type ec:PropertyEntry}">
+            <StackPanel Orientation="Vertical" Margin="0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding Value, Converter={StaticResource ThicknessPart}, ConverterParameter=Left, Mode=OneWay}"
+                             Tag="Left"
+                             Background="Transparent"
+                             Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                             BorderBrush="{DynamicResource PP_BorderBrush}"
+                             BorderThickness="0,0,1,1"
+                             Padding="2,1"
+                             ToolTip="Left"
+                             LostFocus="OnThicknessPartCommit"
+                             KeyDown="OnThicknessKeyDown"/>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding Value, Converter={StaticResource ThicknessPart}, ConverterParameter=Top, Mode=OneWay}"
+                             Tag="Top"
+                             Background="Transparent"
+                             Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                             BorderBrush="{DynamicResource PP_BorderBrush}"
+                             BorderThickness="0,0,1,1"
+                             Padding="2,1"
+                             ToolTip="Top"
+                             LostFocus="OnThicknessPartCommit"
+                             KeyDown="OnThicknessKeyDown"/>
+                    <TextBox Grid.Column="2"
+                             Text="{Binding Value, Converter={StaticResource ThicknessPart}, ConverterParameter=Right, Mode=OneWay}"
+                             Tag="Right"
+                             Background="Transparent"
+                             Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                             BorderBrush="{DynamicResource PP_BorderBrush}"
+                             BorderThickness="0,0,1,1"
+                             Padding="2,1"
+                             ToolTip="Right"
+                             LostFocus="OnThicknessPartCommit"
+                             KeyDown="OnThicknessKeyDown"/>
+                    <TextBox Grid.Column="3"
+                             Text="{Binding Value, Converter={StaticResource ThicknessPart}, ConverterParameter=Bottom, Mode=OneWay}"
+                             Tag="Bottom"
+                             Background="Transparent"
+                             Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                             BorderBrush="{DynamicResource PP_BorderBrush}"
+                             BorderThickness="0,0,0,1"
+                             Padding="2,1"
+                             ToolTip="Bottom"
+                             LostFocus="OnThicknessPartCommit"
+                             KeyDown="OnThicknessKeyDown"/>
+                </Grid>
+                <!-- L T R B labels -->
+                <UniformGrid Columns="4" Margin="0,1,0,0">
+                    <TextBlock Text="L" FontSize="9" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
+                    <TextBlock Text="T" FontSize="9" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
+                    <TextBlock Text="R" FontSize="9" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
+                    <TextBlock Text="B" FontSize="9" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
+                </UniformGrid>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Brush — color swatch + hex TextBox (P5) -->
+        <DataTemplate x:Key="BrushTemplate" DataType="{x:Type ec:PropertyEntry}">
+            <DockPanel LastChildFill="True">
+                <Border DockPanel.Dock="Left"
+                        Width="14" Height="14"
+                        Margin="0,0,5,0"
+                        CornerRadius="2"
+                        BorderThickness="1"
+                        Cursor="Hand"
+                        BorderBrush="{DynamicResource PP_BorderBrush}"
+                        MouseLeftButtonDown="OnBrushSwatchClick">
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding Value, Converter={StaticResource StringToColor}}"/>
+                    </Border.Background>
+                </Border>
+                <TextBox Text="{Binding Value, Mode=OneWay}"
+                         Background="Transparent"
+                         Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                         BorderBrush="{DynamicResource PP_BorderBrush}"
+                         BorderThickness="0,0,0,1"
+                         Padding="2,1"
+                         LostFocus="OnTextBoxCommit"
+                         KeyDown="OnTextBoxKeyDown"/>
+            </DockPanel>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="26"/>  <!-- toolbar (with context label) -->
+            <RowDefinition Height="24"/>  <!-- search/filter bar (P4)       -->
             <RowDefinition Height="*"/>   <!-- properties list              -->
             <RowDefinition Height="60"/>  <!-- description area             -->
         </Grid.RowDefinitions>
@@ -219,8 +318,47 @@
             </DockPanel>
         </Border>
 
+        <!-- ── Search/filter bar (P4) ───────────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource PP_BackgroundBrush}"
+                BorderBrush="{DynamicResource PP_BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="4,2">
+            <DockPanel>
+                <!-- Search glyph -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="&#xE721;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="11"
+                           Foreground="{DynamicResource PP_DescriptionForegroundBrush}"
+                           VerticalAlignment="Center"
+                           Margin="2,0,4,0"/>
+                <!-- Clear button (right, hidden when empty) -->
+                <Button x:Name="SearchClearButton"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Visibility="Collapsed"
+                        Width="16" Height="16"
+                        Click="OnSearchClearClick">
+                    <TextBlock Text="&#xE711;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="9"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+                </Button>
+                <!-- Filter text box -->
+                <TextBox x:Name="SearchBox"
+                         Background="Transparent"
+                         Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                         BorderThickness="0"
+                         VerticalAlignment="Center"
+                         TextChanged="OnSearchTextChanged"
+                         KeyDown="OnSearchKeyDown"/>
+            </DockPanel>
+        </Border>
+
         <!-- ── Property groups ───────────────────────────────────────────── -->
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <ItemsControl x:Name="GroupsControl">
@@ -315,14 +453,33 @@
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <!-- Name -->
-                                                <TextBlock Grid.Column="0"
-                                                           Text="{Binding Name}"
-                                                           Foreground="{DynamicResource PP_ForegroundBrush}"
-                                                           VerticalAlignment="Center"
-                                                           Padding="6,3,4,3"
-                                                           TextTrimming="CharacterEllipsis"
-                                                           ToolTip="{Binding Name}"/>
+                                                <!-- Name + reset button (P7) -->
+                                                <DockPanel Grid.Column="0">
+                                                    <!-- Reset-to-default icon (hidden when IsDefault=true or OnResetToDefault=null) -->
+                                                    <Button DockPanel.Dock="Right"
+                                                            Style="{DynamicResource PanelIconButtonStyle}"
+                                                            Width="14" Height="14"
+                                                            Margin="0,0,2,0"
+                                                            ToolTip="Reset to default"
+                                                            Click="OnResetPropertyClick"
+                                                            Visibility="{Binding OnResetToDefault,
+                                                                Converter={StaticResource NullToCollapsed}}">
+                                                        <TextBlock Text="&#xE777;"
+                                                                   FontFamily="Segoe MDL2 Assets"
+                                                                   FontSize="9"
+                                                                   VerticalAlignment="Center"
+                                                                   HorizontalAlignment="Center"
+                                                                   Foreground="{DynamicResource PP_NonDefaultIndicatorBrush}"/>
+                                                    </Button>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               Foreground="{DynamicResource PP_ForegroundBrush}"
+                                                               FontWeight="{Binding IsDefault,
+                                                                   Converter={StaticResource DefaultToWeight}}"
+                                                               VerticalAlignment="Center"
+                                                               Padding="6,3,4,3"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               ToolTip="{Binding Name}"/>
+                                                </DockPanel>
 
                                                 <!-- Value (DataTemplateSelector in code-behind) -->
                                                 <ContentPresenter Grid.Column="1"
@@ -341,7 +498,7 @@
         </ScrollViewer>
 
         <!-- ── Description area ─────────────────────────────────────────── -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
                 Background="{DynamicResource PP_DescriptionBackgroundBrush}"
                 BorderBrush="{DynamicResource PP_BorderBrush}"
                 BorderThickness="0,1,0,0"

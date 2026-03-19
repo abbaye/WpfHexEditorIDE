@@ -5,148 +5,258 @@
     xmlns:local="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Panels"
     MinHeight="80">
 
+    <!-- ==========================================================
+         Project: WpfHexEditor.Editor.XamlDesigner
+         File: DesignDataPanel.xaml
+         Created: 2026-03-17 | Updated: 2026-03-19
+         Description: Design-Time Data dockable panel.
+                      Toolbar: Refresh | Generate Mock Data | Pick Type…
+                               | status label.
+                      TabControl: Properties (virtualized TreeView),
+                                  JSON (read-only monospaced TextBox),
+                                  XAML (read-only TextBox with d:DesignInstance markup).
+         Theme: XD_* + Dock* tokens (DynamicResource)
+         ========================================================== -->
+
+    <UserControl.Resources>
+
+        <Style x:Key="DdToolButtonStyle" TargetType="Button">
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Margin"          Value="2,0"/>
+            <Setter Property="Padding"         Value="4,0"/>
+        </Style>
+
+        <!-- TreeView item style -->
+        <Style x:Key="DataNodeItemStyle" TargetType="TreeViewItem">
+            <Setter Property="IsExpanded" Value="False"/>
+            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="FontSize"   Value="11"/>
+        </Style>
+
+        <Style x:Key="ReadOnlyCodeBoxStyle" TargetType="TextBox">
+            <Setter Property="IsReadOnly"               Value="True"/>
+            <Setter Property="IsReadOnlyCaretVisible"   Value="True"/>
+            <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
+            <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderThickness"          Value="0"/>
+            <Setter Property="FontFamily"               Value="Consolas"/>
+            <Setter Property="FontSize"                 Value="11"/>
+            <Setter Property="VerticalScrollBarVisibility"   Value="Auto"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="AcceptsReturn"            Value="True"/>
+            <Setter Property="TextWrapping"             Value="NoWrap"/>
+        </Style>
+
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="28"/>  <!-- Toolbar -->
-            <RowDefinition Height="*"/>   <!-- Content -->
+            <RowDefinition Height="26"/>  <!-- Toolbar -->
+            <RowDefinition Height="*"/>   <!-- TabControl -->
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ─────────────────────────────────────────────── -->
         <Border Grid.Row="0"
                 BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource DockBorderBrush}">
-            <Border.Background>
-                <DynamicResourceExtension ResourceKey="XD_PanelToolbarBrush"/>
-            </Border.Background>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                Background="{DynamicResource XD_PanelToolbarBrush}">
+            <DockPanel VerticalAlignment="Center" Margin="4,0">
 
-                <TextBlock Text="Design-Time Data"
-                           FontSize="11"
-                           FontWeight="SemiBold"
+                <!-- Status label (right-aligned) -->
+                <TextBlock x:Name="StatusTypeLabel"
+                           DockPanel.Dock="Right"
+                           FontSize="10"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           Margin="4,0,8,0"/>
+                           Opacity="0.6"
+                           Margin="8,0,4,0"
+                           Text="(no design data)"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="140"/>
 
-                <Separator Width="1" Margin="0,4" Background="{DynamicResource DockBorderBrush}"/>
+                <StackPanel Orientation="Horizontal">
 
-                <!-- Refresh button -->
-                <Button x:Name="BtnRefresh"
-                        Width="22" Height="22"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ToolTip="Refresh design data"
-                        Click="OnRefreshClick"
-                        Cursor="Hand">
-                    <TextBlock Text="&#xE72C;"
-                               FontFamily="Segoe MDL2 Assets"
-                               FontSize="12"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                </Button>
+                    <!-- Refresh -->
+                    <Button Style="{StaticResource DdToolButtonStyle}"
+                            Width="22"
+                            Content="&#xE72C;"
+                            ToolTip="Refresh design data"
+                            Click="OnRefreshClick"/>
 
-            </StackPanel>
+                    <!-- Generate Mock Data -->
+                    <Button Style="{StaticResource DdToolButtonStyle}"
+                            Width="22"
+                            Content="&#xE8D5;"
+                            ToolTip="Generate mock data"
+                            Click="OnGenerateMockDataClick"/>
+
+                    <!-- Pick Type -->
+                    <Button x:Name="BtnPickType"
+                            Style="{StaticResource DdToolButtonStyle}"
+                            Width="22"
+                            Content="&#xE8A0;"
+                            ToolTip="Pick design data type…"
+                            Click="OnPickTypeClick"/>
+                    <Popup x:Name="TypePickerPopup"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           Placement="Bottom"
+                           PlacementTarget="{Binding ElementName=BtnPickType}">
+                        <Border Background="{DynamicResource Shell_ToolWindowBg}"
+                                BorderBrush="{DynamicResource Shell_ToolWindowBorder}"
+                                BorderThickness="1"
+                                Width="240">
+                            <DockPanel LastChildFill="True">
+                                <TextBox x:Name="TypeSearchBox"
+                                         DockPanel.Dock="Top"
+                                         Margin="4"
+                                         TextChanged="OnTypeSearchChanged"
+                                         Tag="Search types…"/>
+                                <ListBox x:Name="TypePickerList"
+                                         MaxHeight="200"
+                                         MouseDoubleClick="OnTypePickerDoubleClick"
+                                         PreviewKeyDown="OnTypePickerKeyDown"/>
+                            </DockPanel>
+                        </Border>
+                    </Popup>
+
+                    <Separator Width="1" Margin="4,3" Background="{DynamicResource DockBorderBrush}">
+                        <Separator.Template>
+                            <ControlTemplate TargetType="Separator">
+                                <Rectangle Width="{TemplateBinding Width}"
+                                           Fill="{TemplateBinding Background}"/>
+                            </ControlTemplate>
+                        </Separator.Template>
+                    </Separator>
+
+                    <!-- Copy JSON -->
+                    <Button Style="{StaticResource DdToolButtonStyle}"
+                            x:Name="BtnCopyJson"
+                            Width="22"
+                            Content="&#xE8C8;"
+                            ToolTip="Copy instance JSON to clipboard"
+                            Click="OnCopyJsonClick"/>
+
+                    <!-- Clear Data -->
+                    <Button Style="{StaticResource DdToolButtonStyle}"
+                            x:Name="BtnClearData"
+                            Width="22"
+                            Content="&#xE74D;"
+                            ToolTip="Clear current design instance"
+                            Click="OnClearDataClick"/>
+
+                    <!-- Paste JSON -->
+                    <Button Style="{StaticResource DdToolButtonStyle}"
+                            x:Name="BtnPasteJson"
+                            Width="22"
+                            Content="&#xE77F;"
+                            ToolTip="Paste JSON from clipboard"
+                            Click="OnPasteJsonClick"/>
+
+                </StackPanel>
+            </DockPanel>
         </Border>
 
-        <!-- ── Content ─────────────────────────────────────────────── -->
-        <Grid Grid.Row="1" Background="{DynamicResource DockBackgroundBrush}">
+        <!-- ── TabControl ──────────────────────────────────────────── -->
+        <TabControl Grid.Row="1"
+                    x:Name="TabMain"
+                    Background="{DynamicResource DockBackgroundBrush}"
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    Padding="0">
 
-            <!-- No-data placeholder -->
-            <TextBlock x:Name="PlaceholderText"
-                       Text="No d:DesignInstance detected in current XAML."
-                       FontSize="11"
-                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       Opacity="0.5"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       TextWrapping="Wrap"
-                       Margin="16"
-                       Visibility="Visible"/>
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem">
+                    <Setter Property="Padding"     Value="8,3"/>
+                    <Setter Property="FontSize"    Value="11"/>
+                    <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+                    <Setter Property="Background"  Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
 
-            <!-- Data info panel -->
-            <StackPanel x:Name="DataInfoPanel"
-                        Margin="8"
-                        Visibility="Collapsed">
-
+            <!-- ── Tab: Properties ───────────────────────────────── -->
+            <TabItem Header="Properties">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <!-- Placeholder -->
+                    <TextBlock x:Name="PropertiesPlaceholder"
+                               Text="No d:DesignInstance detected in current XAML."
+                               FontSize="11" FontStyle="Italic"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Opacity="0.5"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap" Margin="16"
+                               Visibility="Visible"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0"
-                               Text="Type:"
-                               FontSize="11" FontWeight="SemiBold"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               Margin="0,0,8,4"/>
-                    <TextBlock x:Name="TypeLabel"
-                               Grid.Row="0" Grid.Column="1"
-                               FontSize="11"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               TextTrimming="CharacterEllipsis"/>
-
-                    <TextBlock Grid.Row="1" Grid.Column="0"
-                               Text="Source:"
-                               FontSize="11" FontWeight="SemiBold"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               Margin="0,0,8,4"/>
-                    <TextBlock x:Name="SourceLabel"
-                               Grid.Row="1" Grid.Column="1"
-                               FontSize="11"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-
-                    <TextBlock Grid.Row="2" Grid.Column="0"
-                               Text="Status:"
-                               FontSize="11" FontWeight="SemiBold"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               Margin="0,0,8,4"/>
-                    <TextBlock x:Name="StatusLabel"
-                               Grid.Row="2" Grid.Column="1"
-                               FontSize="11"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    <!-- Virtualized TreeView -->
+                    <TreeView x:Name="PropertyTree"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              ItemContainerStyle="{StaticResource DataNodeItemStyle}"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              Visibility="Collapsed">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type local:DesignDataNodeViewModel}"
+                                                      ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="11" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource XD_PropertyNameForeground}"
+                                               Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding ValueDisplay}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource XD_PropertyValueForeground}"
+                                               Opacity="0.8"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
                 </Grid>
+            </TabItem>
 
-                <Separator Margin="0,8" Background="{DynamicResource DockBorderBrush}"/>
+            <!-- ── Tab: JSON ─────────────────────────────────────── -->
+            <TabItem Header="JSON">
+                <Grid>
+                    <TextBlock x:Name="JsonPlaceholder"
+                               Text="No data available."
+                               FontSize="11" FontStyle="Italic"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Opacity="0.5"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Visibility="Visible"/>
+                    <TextBox x:Name="JsonTextBox"
+                             Style="{StaticResource ReadOnlyCodeBoxStyle}"
+                             Visibility="Collapsed"/>
+                </Grid>
+            </TabItem>
 
-                <TextBlock Text="Properties"
-                           FontSize="11" FontWeight="SemiBold"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           Margin="0,0,0,4"/>
+            <!-- ── Tab: XAML ─────────────────────────────────────── -->
+            <TabItem Header="XAML">
+                <Grid>
+                    <TextBlock x:Name="XamlPlaceholder"
+                               Text="No d:DesignInstance detected."
+                               FontSize="11" FontStyle="Italic"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Opacity="0.5"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Visibility="Visible"/>
+                    <TextBox x:Name="XamlTextBox"
+                             Style="{StaticResource ReadOnlyCodeBoxStyle}"
+                             Visibility="Collapsed"/>
+                </Grid>
+            </TabItem>
 
-                <ListBox x:Name="PropertyList"
-                         MaxHeight="200"
-                         Background="Transparent"
-                         BorderThickness="1"
-                         BorderBrush="{DynamicResource DockBorderBrush}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0"
-                                           Text="{Binding Key}"
-                                           FontSize="10"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Grid.Column="1"
-                                           Text="{Binding Value}"
-                                           FontSize="10"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           Opacity="0.7"
-                                           TextTrimming="CharacterEllipsis"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-            </StackPanel>
-        </Grid>
+        </TabControl>
     </Grid>
 </UserControl>

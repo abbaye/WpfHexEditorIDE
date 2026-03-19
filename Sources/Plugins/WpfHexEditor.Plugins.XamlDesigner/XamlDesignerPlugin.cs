@@ -90,12 +90,16 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private DesignHistoryPanel?               _historyPanel;
     private BindingInspectorPanel?            _bindingPanel;
     private LiveVisualTreePanel?              _liveTreePanel;
+    private bool                              _isPickModeActive;
     private IIDEHostContext?           _context;
     private XamlDesignerOptionsPage?   _optionsPage;
     private StatusBarItemDescriptor?   _sbElement;
 
     // Track the currently wired host to properly unwire on document switch.
     private XamlDesignerSplitHost?     _wiredHost;
+
+    // ── Debounce state for resource rescan ────────────────────────────────────
+    private System.Windows.Threading.DispatcherTimer? _resourceRescanTimer;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -258,7 +262,31 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Subscribe to document focus changes so panels sync to the active designer.
         context.FocusContext.FocusChanged += OnFocusChanged;
 
+        // Seed panels immediately for any document that was already active when the plugin
+        // loaded (e.g. XAML file open at startup — FocusChanged will never fire for it).
+        SeedFromCurrentDocument(context);
+
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Seeds all side panels from the document that is currently active at plugin load time.
+    /// Without this, a XAML file already open before the plugin loaded would never trigger
+    /// OnFocusChanged, leaving the Live Visual Tree and other panels permanently empty.
+    /// </summary>
+    private void SeedFromCurrentDocument(IIDEHostContext context)
+    {
+        // Defer to ApplicationIdle so AssociatedEditor is fully set before we resolve the host.
+        // Calling this synchronously in InitializeAsync hits a timing window where
+        // model.AssociatedEditor is still null, causing ResolveActiveHost to return null
+        // and the null-null guard to silently skip wiring.
+        System.Windows.Application.Current.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+            () =>
+            {
+                if (context.FocusContext.ActiveDocument is not { } activeDoc) return;
+                OnFocusChanged(this, new FocusChangedEventArgs { ActiveDocument = activeDoc });
+            });
     }
 
     public Task ShutdownAsync(CancellationToken ct = default)
@@ -292,7 +320,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Resolve the active XamlDesignerSplitHost from the newly active document.
         var host = ResolveActiveHost(e.ActiveDocument);
 
-        if (ReferenceEquals(host, _wiredHost))
+        if (host is not null && ReferenceEquals(host, _wiredHost))
             return; // Same designer — no rewiring needed.
 
         UnwireCurrentHost();
@@ -331,10 +359,19 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             canvas.DesignRendered += OnCanvasDesignRendered;
 
         // Live Visual Tree — reverse sync: tree node click → canvas highlight.
+        // Also wire RefreshRequested (panel becomes visible) and NodeHovered (hover overlay).
         if (_liveTreePanel is not null)
         {
-            _liveTreePanel.NodeSelected -= OnLiveTreeNodeSelected;
-            _liveTreePanel.NodeSelected += OnLiveTreeNodeSelected;
+            _liveTreePanel.NodeSelected             -= OnLiveTreeNodeSelected;
+            _liveTreePanel.NodeSelected             += OnLiveTreeNodeSelected;
+            _liveTreePanel.RefreshRequested         -= OnLiveTreeRefreshRequested;
+            _liveTreePanel.RefreshRequested         += OnLiveTreeRefreshRequested;
+            _liveTreePanel.NodeHovered              -= OnLiveTreeNodeHovered;
+            _liveTreePanel.NodeHovered              += OnLiveTreeNodeHovered;
+            _liveTreePanel.NavigateToXamlRequested  -= OnLiveTreeNavigateToXaml;
+            _liveTreePanel.NavigateToXamlRequested  += OnLiveTreeNavigateToXaml;
+            _liveTreePanel.PickModeChanged          -= OnLiveTreePickModeChanged;
+            _liveTreePanel.PickModeChanged          += OnLiveTreePickModeChanged;
         }
 
         // Seed new panels with the current canvas state.
@@ -352,8 +389,38 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // C3 — Outline → Canvas: sync XAML outline selection to the canvas.
         if (_outlinePanel is not null)
         {
-            _outlinePanel.SyncRequested -= OnOutlineSyncRequested;
-            _outlinePanel.SyncRequested += OnOutlineSyncRequested;
+            _outlinePanel.SyncRequested       -= OnOutlineSyncRequested;
+            _outlinePanel.SyncRequested       += OnOutlineSyncRequested;
+            _outlinePanel.DeleteRequested     -= OnOutlineDeleteRequested;
+            _outlinePanel.DeleteRequested     += OnOutlineDeleteRequested;
+            _outlinePanel.MoveRequested       -= OnOutlineMoveRequested;
+            _outlinePanel.MoveRequested       += OnOutlineMoveRequested;
+            _outlinePanel.WrapRequested       -= OnOutlineWrapRequested;
+            _outlinePanel.WrapRequested       += OnOutlineWrapRequested;
+        }
+
+        // Wire new panel events.
+        if (_bindingPanel is not null)
+        {
+            _bindingPanel.NavigateToSourceRequested -= OnBindingNavigateToSourceRequested;
+            _bindingPanel.NavigateToSourceRequested += OnBindingNavigateToSourceRequested;
+        }
+        if (_propertiesPanel is not null)
+        {
+            _propertiesPanel.BindingBadgeClicked -= OnPropertyBindingBadgeClicked;
+            _propertiesPanel.BindingBadgeClicked += OnPropertyBindingBadgeClicked;
+        }
+        if (_resourcePanel is not null)
+        {
+            _resourcePanel.GoToDefinitionRequested -= OnResourceGoToDefinitionRequested;
+            _resourcePanel.GoToDefinitionRequested += OnResourceGoToDefinitionRequested;
+        }
+        if (_toolboxPanel is not null)
+        {
+            _toolboxPanel.InsertRequested -= OnToolboxInsertRequested;
+            _toolboxPanel.InsertRequested += OnToolboxInsertRequested;
+            _toolboxPanel.DropCompleted   -= OnToolboxDropCompleted;
+            _toolboxPanel.DropCompleted   += OnToolboxDropCompleted;
         }
 
         _outlinePanel?.ViewModel?.RebuildTree(host.Document.ParsedRoot);
@@ -376,13 +443,37 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
         // Detach outline sync from the outgoing host.
         if (_outlinePanel is not null)
-            _outlinePanel.SyncRequested -= OnOutlineSyncRequested;
+        {
+            _outlinePanel.SyncRequested       -= OnOutlineSyncRequested;
+            _outlinePanel.DeleteRequested     -= OnOutlineDeleteRequested;
+            _outlinePanel.MoveRequested       -= OnOutlineMoveRequested;
+            _outlinePanel.WrapRequested       -= OnOutlineWrapRequested;
+        }
 
-        // Detach Live Visual Tree post-render event and reverse-sync event.
+        // Detach Live Visual Tree post-render event, reverse-sync, refresh, hover, and navigate events.
         if (_wiredHost.Canvas is { } canvas)
             canvas.DesignRendered -= OnCanvasDesignRendered;
         if (_liveTreePanel is not null)
-            _liveTreePanel.NodeSelected -= OnLiveTreeNodeSelected;
+        {
+            _liveTreePanel.NodeSelected            -= OnLiveTreeNodeSelected;
+            _liveTreePanel.RefreshRequested        -= OnLiveTreeRefreshRequested;
+            _liveTreePanel.NodeHovered             -= OnLiveTreeNodeHovered;
+            _liveTreePanel.NavigateToXamlRequested -= OnLiveTreeNavigateToXaml;
+            _liveTreePanel.PickModeChanged         -= OnLiveTreePickModeChanged;
+        }
+
+        // Detach new panel cross-wiring.
+        if (_bindingPanel is not null)
+            _bindingPanel.NavigateToSourceRequested -= OnBindingNavigateToSourceRequested;
+        if (_propertiesPanel is not null)
+            _propertiesPanel.BindingBadgeClicked -= OnPropertyBindingBadgeClicked;
+        if (_resourcePanel is not null)
+            _resourcePanel.GoToDefinitionRequested -= OnResourceGoToDefinitionRequested;
+        if (_toolboxPanel is not null)
+        {
+            _toolboxPanel.InsertRequested -= OnToolboxInsertRequested;
+            _toolboxPanel.DropCompleted   -= OnToolboxDropCompleted;
+        }
 
         _wiredHost = null;
     }
@@ -391,12 +482,49 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         => _wiredHost?.JumpToHistoryEntry(e.UndoCount, e.RedoCount);
 
     // Fired by DesignCanvas.DesignRendered — DesignRoot is now stable and the visual tree is walkable.
+    // Respects the AutoRefresh toggle: when off the tree is frozen until the user clicks Refresh.
     private void OnCanvasDesignRendered(object? sender, System.Windows.UIElement? root)
-        => _liveTreePanel?.ViewModel.Refresh(root);
+    {
+        if (_liveTreePanel?.ViewModel.AutoRefresh == true)
+            _liveTreePanel.ViewModel.Refresh(root);
+    }
 
     // Fired when the user clicks a node in the Live Visual Tree — highlights that element on the canvas.
     private void OnLiveTreeNodeSelected(object? sender, System.Windows.UIElement? element)
         => _wiredHost?.Canvas?.SelectElement(element);
+
+    // Fired when the Live Visual Tree panel becomes visible — reseed from the current DesignRoot
+    // so the panel is never empty when revealed without a prior document-switch event.
+    private void OnLiveTreeRefreshRequested(object? sender, EventArgs e)
+    {
+        var root = _wiredHost?.Canvas?.DesignRoot;
+        if (root is null) return;   // No active canvas — preserve the existing _root in the ViewModel
+        _liveTreePanel?.ViewModel.Refresh(root);
+    }
+
+    // Fired when the user hovers a tree node — draws a non-selecting overlay on the canvas.
+    private void OnLiveTreeNodeHovered(object? sender, System.Windows.UIElement? element)
+        => _wiredHost?.Canvas?.HighlightHoverElement(element);
+
+    // Fired when "Navigate to XAML" context menu is chosen — syncs the XAML outline panel
+    // to the element's x:Name so the code editor scrolls to the right line.
+    private void OnLiveTreeNavigateToXaml(object? sender, string? elementName)
+    {
+        if (string.IsNullOrEmpty(elementName)) return;
+        _outlinePanel?.ViewModel?.SelectNodeByPath(elementName);
+    }
+
+    // D: Pick Element mode toggled from the Live Visual Tree toolbar.
+    // When active, every canvas SelectedElementChanged fires → SelectNodeByElement → TrackSelection
+    // (forced to true) → the tree auto-scrolls to the clicked element.
+    private void OnLiveTreePickModeChanged(object? sender, bool isActive)
+    {
+        _isPickModeActive = isActive;
+
+        // Force TrackSelection on while pick mode is active so every canvas click navigates the tree.
+        if (isActive && _liveTreePanel is not null)
+            _liveTreePanel.ViewModel.TrackSelection = true;
+    }
 
     /// <summary>
     /// C3 — Outline → Canvas sync: when the outline panel's "Sync to code" button is
@@ -450,6 +578,37 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _designDataPanel?.SetXamlSource(_wiredHost.Document.RawXaml);
         if (_animationVm is not null)
             _animationVm.XamlSource = _wiredHost.Document.RawXaml;
+
+        // Trigger debounced resource rescan when XAML changes.
+        if (XamlDesignerOptions.Instance.ResourceBrowserAutoRescan)
+            ScheduleResourceRescan(_wiredHost.Document.RawXaml);
+    }
+
+    /// <summary>
+    /// Schedules a 500ms debounced resource rescan after a XAML document change.
+    /// Resets the timer on every call so rapid typing doesn't trigger multiple scans.
+    /// </summary>
+    private void ScheduleResourceRescan(string rawXaml)
+    {
+        if (_resourceRescanTimer is not null)
+        {
+            _resourceRescanTimer.Stop();
+            _resourceRescanTimer = null;
+        }
+
+        _resourceRescanTimer = new System.Windows.Threading.DispatcherTimer
+        {
+            Interval = System.TimeSpan.FromMilliseconds(500)
+        };
+
+        _resourceRescanTimer.Tick += (_, _) =>
+        {
+            _resourceRescanTimer?.Stop();
+            _resourceRescanTimer = null;
+            _resourcePanel?.ViewModel.ScheduleRescan();
+        };
+
+        _resourceRescanTimer.Start();
     }
 
     private void OnSelectedElementChanged(object? sender, EventArgs e)
@@ -481,6 +640,10 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             if (!string.IsNullOrEmpty(path))
                 _outlinePanel.ViewModel.SelectNodeByPath(path);
         }
+
+        // Propagate selected element name to the Animation Timeline (filters tracks by TargetName).
+        var frameworkName = dep is System.Windows.FrameworkElement fwEl ? fwEl.Name : string.Empty;
+        _animationVm?.SetContextElement(string.IsNullOrEmpty(frameworkName) ? null : frameworkName);
 
         var elementName = dep?.GetType().Name ?? string.Empty;
         _propertiesPanel?.SetElementName(elementName);
@@ -577,6 +740,97 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             .FirstOrDefault(d => d.ContentId == doc.ContentId);
 
         return model?.AssociatedEditor as XamlDesignerSplitHost;
+    }
+
+    // ── New panel event handlers ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Outline panel: Delete element — routes to XamlReorderService, applies via undo entry.
+    /// </summary>
+    private void OnOutlineDeleteRequested(object? sender, WpfHexEditor.Editor.XamlDesigner.Panels.DeleteRequestedEventArgs e)
+    {
+        if (_wiredHost?.Document is null || e.Node is null) return;
+
+        var service = new WpfHexEditor.Editor.XamlDesigner.Services.XamlReorderService();
+        var newXaml = service.DeleteElement(_wiredHost.Document.RawXaml, e.Node.ElementPath);
+        if (newXaml is not null)
+            _wiredHost.Document.SetXaml(newXaml);
+    }
+
+    /// <summary>
+    /// Outline panel: Move element up or down among siblings.
+    /// </summary>
+    private void OnOutlineMoveRequested(object? sender, WpfHexEditor.Editor.XamlDesigner.Panels.MoveRequestedEventArgs e)
+    {
+        if (_wiredHost?.Document is null || e.Node is null) return;
+
+        var service = new WpfHexEditor.Editor.XamlDesigner.Services.XamlReorderService();
+        // Direction: -1 = move up, +1 = move down (see MoveRequestedEventArgs).
+        var newXaml = e.Direction < 0
+            ? service.MoveUp(_wiredHost.Document.RawXaml, e.Node.ElementPath)
+            : service.MoveDown(_wiredHost.Document.RawXaml, e.Node.ElementPath);
+
+        if (newXaml is not null)
+            _wiredHost.Document.SetXaml(newXaml);
+    }
+
+    /// <summary>
+    /// Outline panel: Wrap element in a container (Grid, StackPanel, Border).
+    /// </summary>
+    private void OnOutlineWrapRequested(object? sender, WpfHexEditor.Editor.XamlDesigner.Panels.WrapRequestedEventArgs e)
+    {
+        if (_wiredHost?.Document is null || e.Node is null) return;
+
+        var service = new WpfHexEditor.Editor.XamlDesigner.Services.XamlReorderService();
+        var newXaml = service.WrapIn(_wiredHost.Document.RawXaml, e.Node.ElementPath, e.ContainerTag);
+        if (newXaml is not null)
+            _wiredHost.Document.SetXaml(newXaml);
+    }
+
+    /// <summary>
+    /// Binding Inspector: navigate to the source type (focuses Properties panel).
+    /// </summary>
+    private void OnBindingNavigateToSourceRequested(object? sender, string? sourceName)
+    {
+        if (_context is null || string.IsNullOrEmpty(sourceName)) return;
+        _context.UIRegistry.FocusPanel(PropertiesPanelUiId);
+    }
+
+    /// <summary>
+    /// Property Inspector: binding badge clicked → bring Binding Inspector to front.
+    /// </summary>
+    private void OnPropertyBindingBadgeClicked(object? sender, WpfHexEditor.Editor.XamlDesigner.Models.PropertyInspectorEntry entry)
+    {
+        if (_context is null) return;
+        _context.UIRegistry.ShowPanel(BindingPanelUiId);
+        _context.UIRegistry.FocusPanel(BindingPanelUiId);
+    }
+
+    /// <summary>
+    /// Resource Browser: navigate code editor to the resource definition line.
+    /// </summary>
+    private void OnResourceGoToDefinitionRequested(object? sender, (string Key, int Line) args)
+    {
+        if (_wiredHost is null || args.Line <= 0) return;
+        // Route to the code editor via the host's document.
+        _wiredHost.NavigateToLine(args.Line);
+    }
+
+    /// <summary>
+    /// Toolbox: double-click/Enter insert at current canvas selection.
+    /// </summary>
+    private void OnToolboxInsertRequested(object? sender, WpfHexEditor.Editor.XamlDesigner.Models.ToolboxItem item)
+    {
+        if (_wiredHost?.Canvas is null) return;
+        _wiredHost.InsertElementAtSelection(item);
+    }
+
+    /// <summary>
+    /// Toolbox: drag completed → track recent usage in options.
+    /// </summary>
+    private void OnToolboxDropCompleted(object? sender, WpfHexEditor.Editor.XamlDesigner.Models.ToolboxItem item)
+    {
+        // Recent usage is tracked by the ViewModel; persist when options are saved.
     }
 
     // ── Menu items ────────────────────────────────────────────────────────────

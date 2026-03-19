@@ -49,4 +49,26 @@ public sealed class PropertyEntry
     /// for Enum entries, or <c>string</c> / <c>bool</c> / <c>int</c> for the others).
     /// </summary>
     public Action<object?>? OnValueChanged { get; set; }
+
+    /// <summary>
+    /// Optional validation delegate invoked by the panel before calling
+    /// <see cref="OnValueChanged"/>.  Return <see langword="null"/> when the
+    /// value is valid; return a human-readable error message string otherwise.
+    /// When this is <see langword="null"/> no validation is performed.
+    /// </summary>
+    public Func<object?, string?>? Validator { get; set; }
+
+    /// <summary>
+    /// When <see langword="true"/> the property holds its default / unset value.
+    /// The panel renders the property name in normal weight and hides the reset button.
+    /// </summary>
+    public bool IsDefault { get; set; } = true;
+
+    /// <summary>
+    /// Called when the user clicks the "Reset to default" icon next to this property.
+    /// Passing <see langword="null"/> to the underlying patch callback removes the
+    /// XML attribute, restoring the WPF default.
+    /// When this is <see langword="null"/> the reset button is hidden.
+    /// </summary>
+    public Action? OnResetToDefault { get; set; }
 }
