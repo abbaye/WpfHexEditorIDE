@@ -257,6 +257,39 @@ public partial class XamlToolboxPanel : UserControl
         return btn;
     }
 
+    // ── Sort / Expand / Collapse / Clear Recent ───────────────────────────────
+
+    private void OnToolboxSortClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn) btn.ContextMenu!.IsOpen = true;
+    }
+
+    private void OnToolboxSortSelected(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string tag })
+            _vm.SortMode = tag;
+    }
+
+    private void OnExpandAllCategories(object sender, RoutedEventArgs e)
+    {
+        foreach (var key in _vm.CategoryExpanded.Keys.ToList())
+            _vm.CategoryExpanded[key] = true;
+        _vm.ApplyCategorySort();
+    }
+
+    private void OnCollapseAllCategories(object sender, RoutedEventArgs e)
+    {
+        foreach (var key in _vm.CategoryExpanded.Keys.ToList())
+            _vm.CategoryExpanded[key] = false;
+        _vm.ApplyCategorySort();
+    }
+
+    private void OnClearRecent(object sender, RoutedEventArgs e)
+    {
+        _vm.RecentItems.Clear();
+        RefreshRecentSection();
+    }
+
     // ── Private helper: enumerate all toolbox items ───────────────────────────
 
     private IEnumerable<ToolboxItem> GetAllToolboxItems()

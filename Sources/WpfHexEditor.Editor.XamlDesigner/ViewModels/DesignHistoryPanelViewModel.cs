@@ -187,6 +187,33 @@ public sealed class DesignHistoryPanelViewModel : INotifyPropertyChanged
         ClearHistoryCommand     = new RelayCommand(_ => _manager?.Clear());
         JumpToEntryCommand      = new RelayCommand(OnJumpToEntry);
         ToggleCheckpointCommand = new RelayCommand(OnToggleCheckpoint);
+
+        MarkCurrentCheckpointCommand = new RelayCommand(
+            _ =>
+            {
+                var last = Entries.Count > 0 ? Entries[^1] : null;
+                if (last is not null)
+                    last.IsCheckpoint = !last.IsCheckpoint;
+            },
+            _ => Entries.Count > 0);
+
+        JumpToFirstCommand = new RelayCommand(
+            _ => JumpRequested?.Invoke(this, new JumpToEntryEventArgs(Entries.Count - 1, 0)),
+            _ => Entries.Count > 1);
+
+        JumpToLatestCommand = new RelayCommand(
+            _ => JumpRequested?.Invoke(this, new JumpToEntryEventArgs(0, 0)),
+            _ => Entries.Count > 0);
+
+        ExportHistoryCommand = new RelayCommand(
+            _ =>
+            {
+                var text = string.Join(Environment.NewLine,
+                    Entries.Select((e, i) => $"{i + 1}. [{(e.IsCheckpoint ? "★" : " ")}] {e.Description}"));
+                if (!string.IsNullOrEmpty(text))
+                    Clipboard.SetText(text);
+            },
+            _ => Entries.Count > 0);
     }
 
     // ── Private methods ───────────────────────────────────────────────────────

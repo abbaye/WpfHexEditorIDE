@@ -98,6 +98,24 @@ public sealed class XamlToolboxPanelViewModel : INotifyPropertyChanged
     /// <summary>Collapsed state per category name (default: all true = expanded).</summary>
     public Dictionary<string, bool> CategoryExpanded { get; } = new(StringComparer.Ordinal);
 
+    private string _sortMode = "ByCategory";
+
+    /// <summary>
+    /// Active sort mode: "ByCategory" (default), "ByNameAZ", or "ByRecent".
+    /// Changing this property triggers an immediate <see cref="ApplyCategorySort"/> call.
+    /// </summary>
+    public string SortMode
+    {
+        get => _sortMode;
+        set
+        {
+            if (_sortMode == value) return;
+            _sortMode = value;
+            OnPropertyChanged();
+            ApplyCategorySort();
+        }
+    }
+
     // ── Commands ──────────────────────────────────────────────────────────────
 
     public ICommand ToggleCategoryCommand { get; }
@@ -123,6 +141,39 @@ public sealed class XamlToolboxPanelViewModel : INotifyPropertyChanged
         RemoveExistingRecentEntry(item);
         RecentItems.Insert(0, item);
         TrimRecentItemsToMax();
+    }
+
+    // ── Sort ──────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Applies sort descriptions to <see cref="ItemsView"/> based on the current <see cref="SortMode"/>.
+    /// Also called by the code-behind after toggling category expanded state.
+    /// </summary>
+    public void ApplyCategorySort()
+    {
+        ItemsView.SortDescriptions.Clear();
+        switch (_sortMode)
+        {
+            case "ByNameAZ":
+                ItemsView.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(ToolboxItem.Name), System.ComponentModel.ListSortDirection.Ascending));
+                break;
+            case "ByRecent":
+                // Sort by name within category; recently-used section is separate.
+                ItemsView.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(ToolboxItem.Category), System.ComponentModel.ListSortDirection.Ascending));
+                ItemsView.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(ToolboxItem.Name), System.ComponentModel.ListSortDirection.Ascending));
+                break;
+            default: // ByCategory
+                ItemsView.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(ToolboxItem.Category), System.ComponentModel.ListSortDirection.Ascending));
+                ItemsView.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(ToolboxItem.Name), System.ComponentModel.ListSortDirection.Ascending));
+                break;
+        }
+        ItemsView.Refresh();
+        OnPropertyChanged(nameof(CategoryExpanded));
     }
 
     // ── Private ───────────────────────────────────────────────────────────────

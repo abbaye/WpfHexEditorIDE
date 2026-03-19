@@ -149,6 +149,60 @@
                               Checked="OnFavoritesToggleChanged"
                               Unchecked="OnFavoritesToggleChanged"/>
 
+                <!-- Clear Recent -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="BtnClearRecent"
+                        Style="{StaticResource TbxToolButtonStyle}"
+                        ToolTip="Clear recently used items"
+                        Click="OnClearRecent">
+                    <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                </Button>
+
+                <!-- Collapse all categories -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="BtnCollapseAllCategories"
+                        Style="{StaticResource TbxToolButtonStyle}"
+                        ToolTip="Collapse all categories"
+                        Click="OnCollapseAllCategories">
+                    <TextBlock Text="&#xE972;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                </Button>
+
+                <!-- Expand all categories -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="BtnExpandAllCategories"
+                        Style="{StaticResource TbxToolButtonStyle}"
+                        ToolTip="Expand all categories"
+                        Click="OnExpandAllCategories">
+                    <TextBlock Text="&#xE9A0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                </Button>
+
+                <!-- Sort -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="BtnSortBy"
+                        Style="{StaticResource TbxToolButtonStyle}"
+                        ToolTip="Sort toolbox items"
+                        Click="OnToolboxSortClick">
+                    <TextBlock Text="&#xE174;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Name (A–Z)"    Tag="ByNameAZ"   Click="OnToolboxSortSelected"/>
+                            <MenuItem Header="By Category"   Tag="ByCategory" Click="OnToolboxSortSelected"/>
+                            <MenuItem Header="Recently Used" Tag="ByRecent"   Click="OnToolboxSortSelected"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Separator between sort buttons and search box -->
+                <Separator DockPanel.Dock="Right" Width="1" Margin="4,3"
+                           Background="{DynamicResource DockBorderBrush}">
+                    <Separator.Template>
+                        <ControlTemplate TargetType="Separator">
+                            <Rectangle Width="{TemplateBinding Width}"
+                                       Fill="{TemplateBinding Background}"/>
+                        </ControlTemplate>
+                    </Separator.Template>
+                </Separator>
+
                 <!-- Search icon + TextBox -->
                 <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                            VerticalAlignment="Center" Margin="0,0,4,0"

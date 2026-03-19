@@ -111,4 +111,28 @@ public partial class ResourceBrowserPanel : UserControl
         if (_vm.SelectedEntry?.PreviewText is { Length: > 0 } text)
             System.Windows.Clipboard.SetText(text);
     }
+
+    // ── Sort / scope toolbar handlers ─────────────────────────────────────────
+
+    private void OnSortByClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn) btn.ContextMenu!.IsOpen = true;
+    }
+
+    private void OnSortModeSelected(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi)
+            _vm.SortMode = mi.Tag?.ToString() ?? "Name";
+    }
+
+    private void OnScopeFilterClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn) btn.ContextMenu!.IsOpen = true;
+    }
+
+    private void OnScopeSelected(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi)
+            _vm.ScopeFilter = mi.Tag?.ToString() ?? "All";
+    }
 }

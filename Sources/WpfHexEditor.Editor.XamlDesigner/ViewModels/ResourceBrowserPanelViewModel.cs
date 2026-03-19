@@ -40,6 +40,8 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
 
     private string _filterText    = string.Empty;
     private string _xamlSource    = string.Empty;
+    private string _sortMode      = "Name";
+    private string _scopeFilter   = "All";
     private ResourceEntryViewModel? _selectedEntry;
 
     // ── Constructor ───────────────────────────────────────────────────────────
@@ -52,6 +54,7 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
         if (EntriesView.GroupDescriptions != null)
             EntriesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ResourceEntryViewModel.Scope)));
 
+        AddResourceCommand     = new RelayCommand(_ => ExecuteAddResource());
         ScanCommand            = new RelayCommand(_ => Scan());
         FindUsagesCommand      = new RelayCommand(_ => OnFindUsages(), _ => _selectedEntry is not null);
         GoToDefinitionCommand  = new RelayCommand(p => ExecuteGoToDefinition(p as ResourceEntryViewModel), _ => _selectedEntry is not null);
@@ -95,6 +98,7 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
 
     // ── Commands ──────────────────────────────────────────────────────────────
 
+    public System.Windows.Input.ICommand AddResourceCommand    { get; }
     public System.Windows.Input.ICommand ScanCommand           { get; }
     public System.Windows.Input.ICommand FindUsagesCommand     { get; }
     public System.Windows.Input.ICommand GoToDefinitionCommand { get; }
@@ -121,6 +125,32 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
         };
         _debounceTimer.Tick += (_, _) => { _debounceTimer.Stop(); Scan(); };
         _debounceTimer.Start();
+    }
+
+    /// <summary>Active sort mode: "Name", "Type", or "Usage".</summary>
+    public string SortMode
+    {
+        get => _sortMode;
+        set
+        {
+            if (_sortMode == value) return;
+            _sortMode = value;
+            OnPropertyChanged();
+            ApplySortAndFilter();
+        }
+    }
+
+    /// <summary>Active scope filter: "All", "Local", "Merged", or "App".</summary>
+    public string ScopeFilter
+    {
+        get => _scopeFilter;
+        set
+        {
+            if (_scopeFilter == value) return;
+            _scopeFilter = value;
+            OnPropertyChanged();
+            ApplySortAndFilter();
+        }
     }
 
     /// <summary>Rescans all application resources, fills usage counts, detects duplicates.</summary>
@@ -162,6 +192,35 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
                 entry.HasDuplicate = true;
     }
 
+    // ── Private: sort / scope ─────────────────────────────────────────────────
+
+    private void ApplySortAndFilter()
+    {
+        using (EntriesView.DeferRefresh())
+        {
+            // Rebuild sort descriptions based on current sort mode.
+            EntriesView.SortDescriptions.Clear();
+            var sortDescription = _sortMode switch
+            {
+                "Type"  => new SortDescription(nameof(ResourceEntryViewModel.ValueType),  ListSortDirection.Ascending),
+                "Usage" => new SortDescription(nameof(ResourceEntryViewModel.UsageCount), ListSortDirection.Descending),
+                _       => new SortDescription(nameof(ResourceEntryViewModel.Key),        ListSortDirection.Ascending),
+            };
+            EntriesView.SortDescriptions.Add(sortDescription);
+
+            // Reassign filter to fold in the scope constraint.
+            EntriesView.Filter = FilterEntry;
+        }
+    }
+
+    private void ExecuteAddResource()
+    {
+        var blank = new ResourceEntryViewModel("(new key)", null, "Local");
+        _entries.Add(blank);
+        SelectedEntry = blank;
+        blank.BeginRename();
+    }
+
     // ── Private: commands ─────────────────────────────────────────────────────
 
     private void ExecuteGoToDefinition(ResourceEntryViewModel? entry)
@@ -199,6 +258,11 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
     private bool FilterEntry(object obj)
     {
         if (obj is not ResourceEntryViewModel entry) return false;
+
+        // Apply scope filter when not set to "All".
+        if (_scopeFilter != "All" && entry.Scope != _scopeFilter)
+            return false;
+
         if (string.IsNullOrWhiteSpace(_filterText)) return true;
 
         return entry.Key.Contains(_filterText, StringComparison.OrdinalIgnoreCase)

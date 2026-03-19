@@ -200,25 +200,38 @@ public sealed class ZoomPanCanvas : ContentControl
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /// <summary>
-    /// Clamps pan offsets so the canvas can be scrolled up to ScrollExtraMargin px
-    /// beyond each edge — matching the VS Designer blank-canvas breathing room.
+    /// When content fits inside the viewport, forces it to the center (no panning needed).
+    /// When content overflows, clamps pan offsets so the canvas can be scrolled up to
+    /// ScrollExtraMargin px beyond each edge — matching the VS Designer blank-canvas breathing room.
+    /// Force-centering on every SizeChanged (including layout switches) ensures the canvas is never
+    /// left at a stale offset after the viewport is resized.
     /// </summary>
     private void ClampOffsets()
     {
         if (Content is not FrameworkElement content || ActualWidth <= 0 || ActualHeight <= 0)
             return;
+
         double cw = content.ActualWidth  * ZoomLevel;
         double ch = content.ActualHeight * ZoomLevel;
-        // When content fits inside the viewport, allow OffsetX to reach the exact centering position
-        // ((ActualWidth - cw) / 2). Without this, ClampOffsets would cap at ScrollExtraMargin (300)
-        // and fight CenterContent, leaving the canvas pinned left with blank space on the right.
-        // When content overflows (cw > ActualWidth), xMax collapses back to ScrollExtraMargin.
-        double xMax = Math.Max(ScrollExtraMargin, (ActualWidth  - cw) / 2.0);
-        double yMax = Math.Max(ScrollExtraMargin, (ActualHeight - ch) / 2.0);
-        double xMin = Math.Min(ActualWidth  - cw - xMax, xMax);
-        double yMin = Math.Min(ActualHeight - ch - yMax, yMax);
-        OffsetX = Math.Clamp(OffsetX, xMin, xMax);
-        OffsetY = Math.Clamp(OffsetY, yMin, yMax);
+
+        // Content fits horizontally → force-center; no user panning is meaningful here.
+        if (cw <= ActualWidth)
+            OffsetX = (ActualWidth - cw) / 2.0;
+        else
+        {
+            // Content overflows → allow panning within [content-left-edge - margin, margin].
+            double xMin = ActualWidth - cw - ScrollExtraMargin;
+            OffsetX = Math.Clamp(OffsetX, Math.Min(xMin, -ScrollExtraMargin), ScrollExtraMargin);
+        }
+
+        // Same logic vertically.
+        if (ch <= ActualHeight)
+            OffsetY = (ActualHeight - ch) / 2.0;
+        else
+        {
+            double yMin = ActualHeight - ch - ScrollExtraMargin;
+            OffsetY = Math.Clamp(OffsetY, Math.Min(yMin, -ScrollExtraMargin), ScrollExtraMargin);
+        }
     }
 
     /// <summary>Centers content in the viewport.</summary>

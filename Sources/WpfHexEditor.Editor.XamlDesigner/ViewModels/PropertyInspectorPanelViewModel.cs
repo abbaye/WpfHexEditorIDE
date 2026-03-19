@@ -45,9 +45,10 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
     private readonly ObservableCollection<PropertyInspectorEntry> _allEntries = new();
 
     private DependencyObject? _selectedObject;
-    private string            _filterText        = string.Empty;
-    private bool              _showDefaultValues = false;
-    private bool              _isGroupedView     = true;
+    private string            _filterText             = string.Empty;
+    private bool              _showDefaultValues      = false;
+    private bool              _isGroupedView          = true;
+    private bool              _showAttachedProperties = true;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -60,6 +61,27 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
         ApplyGroupedLayout();
 
         ToggleGroupCommand = new RelayCommand(_ => IsGroupedView = !IsGroupedView);
+
+        ResetAllCommand = new RelayCommand(
+            _ =>
+            {
+                if (PropertiesView is null || XamlPatchCallback is null) return;
+                foreach (var entry in PropertiesView.OfType<PropertyInspectorEntry>()
+                             .Where(e => e.IsLocalValue).ToList())
+                    XamlPatchCallback(entry.PropertyName, null);
+            },
+            _ => SelectedObject is not null);
+
+        CopyPropertiesCommand = new RelayCommand(
+            _ =>
+            {
+                if (PropertiesView is null) return;
+                var sb = new StringBuilder();
+                foreach (var entry in PropertiesView.OfType<PropertyInspectorEntry>())
+                    sb.AppendLine($"{entry.PropertyName}: {entry.Value?.ToString() ?? string.Empty}");
+                if (sb.Length > 0) System.Windows.Clipboard.SetText(sb.ToString());
+            },
+            _ => SelectedObject is not null);
     }
 
     // ── Properties ────────────────────────────────────────────────────────────
@@ -137,6 +159,29 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
     /// <summary>Toggles between grouped-by-category and flat-alphabetical views.</summary>
     public ICommand ToggleGroupCommand { get; }
 
+    /// <summary>Resets all locally-set properties on the selected element back to their default values.</summary>
+    public ICommand ResetAllCommand { get; }
+
+    /// <summary>Copies all currently-visible property names and values to the clipboard.</summary>
+    public ICommand CopyPropertiesCommand { get; }
+
+    /// <summary>
+    /// When false, attached properties (names containing ".") and inherited system properties
+    /// whose declaring type differs from the selected object's type are hidden.
+    /// Default is true (show all).
+    /// </summary>
+    public bool ShowAttachedProperties
+    {
+        get => _showAttachedProperties;
+        set
+        {
+            if (_showAttachedProperties == value) return;
+            _showAttachedProperties = value;
+            OnPropertyChanged();
+            PropertiesView.Refresh();
+        }
+    }
+
     // ── INPC ──────────────────────────────────────────────────────────────────
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -170,6 +215,9 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
 
         // Hide defaults when ShowDefaultValues is false.
         if (!_showDefaultValues && entry.IsDefault) return false;
+
+        // Hide attached properties (names containing ".") when ShowAttachedProperties is false.
+        if (!_showAttachedProperties && entry.PropertyName.Contains('.')) return false;
 
         // Apply text filter.
         if (!string.IsNullOrEmpty(_filterText))

@@ -79,11 +79,109 @@ public partial class DesignDataPanel : UserControl
         Refresh();
     }
 
+    // ── Type Picker ───────────────────────────────────────────────────────────
+
+    private List<Type> _allKnownTypes = [];
+    private List<Type> _filteredTypes = [];
+
+    private void EnsureKnownTypes()
+    {
+        if (_allKnownTypes.Count > 0) return;
+        _allKnownTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a => !a.IsDynamic)
+            .SelectMany(a => { try { return a.GetExportedTypes(); } catch { return []; } })
+            .Where(t => t.IsClass && !t.IsAbstract
+                        && t.GetConstructor(Type.EmptyTypes) is not null
+                        && t.Namespace?.StartsWith("System")    != true
+                        && t.Namespace?.StartsWith("Microsoft") != true)
+            .OrderBy(t => t.Name)
+            .Take(500)
+            .ToList();
+    }
+
     private void OnPickTypeClick(object sender, RoutedEventArgs e)
     {
-        // Placeholder — picking a type requires a type-browser dialog that
-        // is outside the scope of this panel. Shows a tooltip status for now.
-        StatusTypeLabel.Text = "(type picker: not yet wired)";
+        EnsureKnownTypes();
+        _filteredTypes = _allKnownTypes;
+        TypePickerList.ItemsSource = _filteredTypes.Select(t => t.FullName).ToList();
+        TypeSearchBox.Text = string.Empty;
+        TypePickerPopup.IsOpen = true;
+        TypeSearchBox.Focus();
+    }
+
+    private void OnTypeSearchChanged(object sender, TextChangedEventArgs e)
+    {
+        var query = TypeSearchBox.Text.Trim();
+        _filteredTypes = string.IsNullOrEmpty(query)
+            ? _allKnownTypes
+            : _allKnownTypes.Where(t => t.Name.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+        TypePickerList.ItemsSource = _filteredTypes
+            .Select(t => $"{t.Name}  ({t.Namespace})")
+            .ToList();
+    }
+
+    private void CommitTypePick()
+    {
+        int idx = TypePickerList.SelectedIndex;
+        if (idx < 0 || idx >= _filteredTypes.Count) return;
+        TypePickerPopup.IsOpen = false;
+        _currentInstance = Activator.CreateInstance(_filteredTypes[idx]);
+        StatusTypeLabel.Text = _filteredTypes[idx].Name;
+        RefreshFromInstance();
+    }
+
+    private void OnTypePickerDoubleClick(object sender, MouseButtonEventArgs e)
+        => CommitTypePick();
+
+    private void OnTypePickerKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)  CommitTypePick();
+        else if (e.Key == Key.Escape) TypePickerPopup.IsOpen = false;
+    }
+
+    // ── New toolbar handlers ──────────────────────────────────────────────────
+
+    private void OnCopyJsonClick(object sender, RoutedEventArgs e)
+    {
+        var text = JsonTextBox?.Text;
+        if (!string.IsNullOrEmpty(text))
+            System.Windows.Clipboard.SetText(text);
+    }
+
+    private void OnClearDataClick(object sender, RoutedEventArgs e)
+    {
+        _currentInstance = null;
+        ShowPlaceholders("(no design data)");
+    }
+
+    private void OnPasteJsonClick(object sender, RoutedEventArgs e)
+    {
+        var json = System.Windows.Clipboard.GetText();
+        if (string.IsNullOrEmpty(json) || _currentInstance is null) return;
+
+        try
+        {
+            var pasted = System.Text.Json.JsonSerializer.Deserialize(
+                json, _currentInstance.GetType());
+            if (pasted is null) return;
+            _currentInstance = pasted;
+            RefreshFromInstance();
+        }
+        catch { /* silently ignore malformed JSON */ }
+    }
+
+    /// <summary>
+    /// Populates all tabs from the current <see cref="_currentInstance"/> directly,
+    /// bypassing the XAML-source check used by <see cref="Refresh"/>.
+    /// Used when the instance was set via the type picker or clipboard paste.
+    /// </summary>
+    private void RefreshFromInstance()
+    {
+        if (_currentInstance is null) return;
+        PopulatePropertyTab(_currentInstance);
+        PopulateJsonTab(_currentInstance);
+        PopulateXamlTab(_currentInstance);
+        StatusTypeLabel.Text = _currentInstance.GetType().Name;
     }
 
     // ── Private: refresh pipeline ─────────────────────────────────────────────

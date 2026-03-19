@@ -99,6 +99,8 @@ public sealed class XamlDesignerSplitHost : Grid,
     private ScrollBar _hScrollBar        = null!;
     private ScrollBar _vScrollBar        = null!;
     private bool      _isSyncingScrollBars;
+    // Set by ApplySplitLayout(); consumed by _zoomPan.SizeChanged to re-fit at correct size.
+    private bool      _pendingFitToContent;
 
     private readonly ColumnDefinition    _codeColumn     = new() { Width  = new GridLength(1, GridUnitType.Star) };
     private readonly ColumnDefinition    _splitterColumn = new() { Width  = new GridLength(4) };
@@ -316,7 +318,18 @@ public sealed class XamlDesignerSplitHost : Grid,
         // Canvas → scrollbars: refresh ranges/values on every zoom, pan, or resize.
         _zoomPan.ZoomChanged += (_, _) => UpdateScrollBars();
         _zoomPan.PanChanged  += (_, _) => UpdateScrollBars();
-        _zoomPan.SizeChanged += (_, _) => UpdateScrollBars();
+        _zoomPan.SizeChanged += (_, _) =>
+        {
+            UpdateScrollBars();
+            // If a layout switch is pending, call FitToContent now — ActualWidth is the
+            // exact final arranged value here (we are inside ArrangeOverride), so the zoom
+            // calculation is guaranteed to use the correct viewport size.
+            if (_pendingFitToContent && _zoomPan.ActualWidth > 0 && _zoomPan.ActualHeight > 0)
+            {
+                _pendingFitToContent = false;
+                _zoomPan.FitToContent();
+            }
+        };
 
         Children.Add(_designPaneGrid);
 
@@ -1035,14 +1048,22 @@ public sealed class XamlDesignerSplitHost : Grid,
     {
         _splitLayout = layout;
         UpdateGridLayout();
-        // Re-fit after ALL layout passes settle. Loaded (6) is not sufficient: the first
-        // Render (7) pass triggers SizeChanged → UpdateScrollBars → ScrollBar DP changes,
-        // which can queue a second Render (7) pass AFTER our Loaded (6) item is already
-        // in the queue. FitToContent would then run between the two Render passes with an
-        // intermediate ActualWidth, producing wrong zoom/offset. Background (4) runs after
-        // Render, Loaded, and Input — guaranteeing _zoomPan.ActualWidth is the final value.
+        // Signal the SizeChanged handler to call FitToContent with the correct ActualWidth.
+        // SizeChanged fires inside ArrangeOverride — ActualWidth is the final measured size
+        // at that exact moment, not a deferred/stale value like Dispatcher.InvokeAsync produces
+        // when the layout invalidation is processed after the dispatch item was already queued.
+        _pendingFitToContent = true;
+        // Fallback: if the layout switch produces no size change (e.g. equal-width column swap),
+        // SizeChanged won't fire — Background handles that case.
         Dispatcher.InvokeAsync(
-            () => { if (_zoomPan.ActualWidth > 0) _zoomPan.FitToContent(); },
+            () =>
+            {
+                if (_pendingFitToContent && _zoomPan.ActualWidth > 0)
+                {
+                    _pendingFitToContent = false;
+                    _zoomPan.FitToContent();
+                }
+            },
             System.Windows.Threading.DispatcherPriority.Background);
     }
 
