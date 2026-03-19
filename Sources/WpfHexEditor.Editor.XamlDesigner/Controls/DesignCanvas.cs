@@ -24,8 +24,10 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -178,6 +180,40 @@ public sealed class DesignCanvas : Border
         return null; // reached presenter boundary → caller should deselect
     }
 
+    /// <summary>
+    /// Selects the element whose injected Tag matches <c>xd_<paramref name="uid"/></c>.
+    /// Used by the bidirectional code↔canvas sync to drive selection from the code editor.
+    /// Does nothing when the canvas has no content or the UID is not found.
+    /// </summary>
+    public void SelectElementByUid(int uid)
+    {
+        if (uid < 0 || _presenter.Content is not UIElement root) return;
+        var target = FindElementWithUid(root, uid);
+        if (target is not null) SelectElement(target);
+    }
+
+    /// <summary>
+    /// Recursively walks the visual tree looking for a <see cref="FrameworkElement"/>
+    /// whose Tag equals <c>xd_<paramref name="uid"/></c>.
+    /// </summary>
+    private static UIElement? FindElementWithUid(UIElement root, int uid)
+    {
+        var tag = $"xd_{uid}";
+        if (root is FrameworkElement fe && fe.Tag is string t && t == tag) return root;
+
+        int n = VisualTreeHelper.GetChildrenCount(root);
+        for (int i = 0; i < n; i++)
+        {
+            if (VisualTreeHelper.GetChild(root, i) is UIElement child)
+            {
+                var found = FindElementWithUid(child, uid);
+                if (found is not null) return found;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>Programmatically selects an element and places the adorner.</summary>
     public void SelectElement(UIElement? el)
     {
@@ -217,6 +253,19 @@ public sealed class DesignCanvas : Border
             // Inject UIDs so the element mapper can link UIElements → XElements.
             var withUids  = _syncService.InjectUids(sanitized, out var uidMap);
             var prepared  = EnsureWpfNamespaces(withUids);
+
+            // Pre-validate XML syntax before calling XamlReader.Parse().
+            // XmlException is caught inside TryValidateXml — it never propagates,
+            // so the VS debugger has no first-chance exception to pause on.
+            var (xmlOk, xmlError) = TryValidateXml(prepared);
+            if (!xmlOk)
+            {
+                DesignRoot         = null;
+                _presenter.Content = BuildRenderErrorCard(xmlError!);
+                RenderError?.Invoke(this, xmlError);
+                return;
+            }
+
             var result    = ParseXaml(prepared);
 
             if (result is UIElement uiResult)
@@ -272,6 +321,27 @@ public sealed class DesignCanvas : Border
     /// </summary>
     [DebuggerHidden]
     private static object ParseXaml(string xaml) => XamlReader.Parse(xaml);
+
+    /// <summary>
+    /// Validates that <paramref name="xml"/> is well-formed XML without throwing.
+    /// <see cref="XmlException"/> is caught internally so the VS debugger never sees a
+    /// first-chance exception from XML-level syntax errors (invalid comments, encoding, etc.).
+    /// </summary>
+    [DebuggerNonUserCode]
+    private static (bool Ok, string? Error) TryValidateXml(string xml)
+    {
+        try
+        {
+            var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore };
+            using var reader = XmlReader.Create(new StringReader(xml), settings);
+            while (reader.Read()) { }
+            return (true, null);
+        }
+        catch (XmlException ex)
+        {
+            return (false, ex.Message);
+        }
+    }
 
     /// <summary>
     /// Builds a centered error card displayed on the design surface when XAML

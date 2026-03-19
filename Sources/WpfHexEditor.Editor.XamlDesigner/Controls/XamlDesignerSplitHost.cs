@@ -121,8 +121,18 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     // ── Phase 1 — Design interaction ──────────────────────────────────────────
 
-    private readonly DesignToXamlSyncService  _syncService        = new();
-    private readonly DesignInteractionService _interactionService = new();
+    private readonly DesignToXamlSyncService     _syncService        = new();
+    private readonly DesignInteractionService     _interactionService = new();
+
+    // ── Bidirectional canvas↔code selection sync ──────────────────────────────
+
+    private readonly XamlSourceLocationService _locationService = new();
+
+    /// <summary>
+    /// Guards against feedback loops: when we're programmatically driving a
+    /// sync in one direction, we suppress the event that would trigger the other.
+    /// </summary>
+    private bool _isSyncingSelection;
 
     // ── Phase 4 — Toolbox drag-drop ───────────────────────────────────────────
 
@@ -264,6 +274,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         // -- Wire code host events -------------------------------------------
         _codeHost.PrimaryEditor.ModifiedChanged += OnCodeModified;
+        _codeHost.PrimaryEditor.CaretMoved      += OnCodeEditorCaretMoved;
         _designCanvas.RenderError               += OnRenderError;
         _designCanvas.SelectedElementChanged    += OnDesignSelectionChanged;
 
@@ -715,7 +726,48 @@ public sealed class XamlDesignerSplitHost : Grid,
     {
         RefreshStatusBarItems();
         SelectedElementChanged?.Invoke(this, EventArgs.Empty);
+
+        // Canvas → Code sync: navigate the code editor to the selected element's line.
+        if (_isSyncingSelection || !IsDesignVisible()) return;
+
+        int uid = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var raw  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        int line = _locationService.FindElementStartLine(raw, uid);
+        if (line < 0) return;
+
+        _isSyncingSelection = true;
+        try   { ((INavigableDocument)_codeHost.PrimaryEditor).NavigateTo(line + 1, 1); }
+        finally { _isSyncingSelection = false; }
     }
+
+    /// <summary>
+    /// Code → Canvas sync: when the caret moves in the code editor (without an
+    /// active text selection), find the XAML element that spans that line and
+    /// select it on the design canvas.
+    /// </summary>
+    private void OnCodeEditorCaretMoved(object? sender, EventArgs e)
+    {
+        if (_isSyncingSelection || !IsDesignVisible()) return;
+        if (!_codeHost.PrimaryEditor.Selection.IsEmpty) return;  // ignore selection drags
+
+        var raw  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        int line = _codeHost.PrimaryEditor.CursorPosition.Line;  // 0-based
+        int uid  = _locationService.FindUidAtLine(raw, line);
+        if (uid < 0) return;
+
+        _isSyncingSelection = true;
+        try   { _designCanvas.SelectElementByUid(uid); }
+        finally { _isSyncingSelection = false; }
+    }
+
+    /// <summary>
+    /// Returns true when the design canvas is visible (Split or Design-Only mode).
+    /// Sync is suppressed in Code-Only mode since the canvas is hidden.
+    /// </summary>
+    private bool IsDesignVisible()
+        => _viewMode is ViewMode.Split or ViewMode.DesignOnly;
 
     // ── Phase B — Property provider update ────────────────────────────────────
 
