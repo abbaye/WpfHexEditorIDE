@@ -45,6 +45,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Documents;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Editor.CodeEditor.Controls;
@@ -92,6 +93,12 @@ public sealed class XamlDesignerSplitHost : Grid,
     private readonly ZoomPanCanvas       _zoomPan;
     private readonly GridSplitter        _splitter;
 
+    // Design pane scroll wrapper (contains _zoomPan + H/V scrollbars).
+    private Grid      _designPaneGrid    = null!;
+    private ScrollBar _hScrollBar        = null!;
+    private ScrollBar _vScrollBar        = null!;
+    private bool      _isSyncingScrollBars;
+
     private readonly ColumnDefinition    _codeColumn     = new() { Width  = new GridLength(1, GridUnitType.Star) };
     private readonly ColumnDefinition    _splitterColumn = new() { Width  = new GridLength(4) };
     private readonly ColumnDefinition    _designColumn   = new() { Width  = new GridLength(1, GridUnitType.Star) };
@@ -129,10 +136,20 @@ public sealed class XamlDesignerSplitHost : Grid,
     private readonly XamlSourceLocationService _locationService = new();
 
     /// <summary>
-    /// Guards against feedback loops: when we're programmatically driving a
-    /// sync in one direction, we suppress the event that would trigger the other.
+    /// Guards against feedback loops: when we're programmatically driving a sync in one
+    /// direction, this flag suppresses the reactive event that would trigger the reverse.
+    /// Also set by ApplyXamlToCode to prevent LoadFromString's caret-reset from
+    /// launching a spurious Code→Canvas sync.
     /// </summary>
     private bool _isSyncingSelection;
+
+    /// <summary>
+    /// Debounce timer for Code→Canvas sync (150ms idle window).
+    /// Coalesces rapid CaretMoved + SelectionChanged events so that FindUidAtLine
+    /// (which parses the full XAML) is called at most once per idle interval.
+    /// </summary>
+    private readonly DispatcherTimer _codeToCanvasSyncTimer = new()
+        { Interval = TimeSpan.FromMilliseconds(150) };
 
     // ── Phase 4 — Toolbox drag-drop ───────────────────────────────────────────
 
@@ -209,10 +226,14 @@ public sealed class XamlDesignerSplitHost : Grid,
         _designCanvas.EnableInteraction(_interactionService);
 
         // -- ZoomPanCanvas wrapping DesignCanvas (Phase 3) -------------------
+        // AdornerDecorator ensures adorners (selection/resize/hover) are rendered
+        // inside ZoomPanCanvas.ClipToBounds — not at the Window-level AdornerLayer,
+        // which would cause them to bleed outside the designer viewport.
+        var designAdornerHost = new AdornerDecorator { Child = _designCanvas };
         _zoomPan = new ZoomPanCanvas
         {
-            Content    = _designCanvas,
-            AllowDrop  = true
+            Content   = designAdornerHost,
+            AllowDrop = true
         };
         _zoomVm = new ZoomPanViewModel(_zoomPan);
         _zoomPan.ZoomChanged += (_, _) => _sbZoom.Value = _zoomVm.ZoomLabel;
@@ -234,8 +255,48 @@ public sealed class XamlDesignerSplitHost : Grid,
         _splitter.SetResourceReference(BackgroundProperty, "DockSplitterBrush");
         Children.Add(_splitter);
 
-        // -- Design pane (ZoomPanCanvas) -------------------------------------
-        Children.Add(_zoomPan);
+        // -- Design pane wrapper: ZoomPanCanvas + H/V scrollbars -------------
+        _hScrollBar = new ScrollBar { Orientation = Orientation.Horizontal, Visibility = Visibility.Collapsed };
+        _vScrollBar = new ScrollBar { Orientation = Orientation.Vertical,   Visibility = Visibility.Collapsed };
+
+        _designPaneGrid = new Grid();
+        _designPaneGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        _designPaneGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        _designPaneGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        _designPaneGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        Grid.SetRow(_zoomPan,    0); Grid.SetColumn(_zoomPan,    0);
+        Grid.SetRow(_hScrollBar, 1); Grid.SetColumn(_hScrollBar, 0);
+        Grid.SetRow(_vScrollBar, 0); Grid.SetColumn(_vScrollBar, 1);
+
+        // Corner rectangle filling the gap where both scrollbars meet.
+        var scrollCorner = new Rectangle { Width = SystemParameters.VerticalScrollBarWidth };
+        scrollCorner.SetResourceReference(Rectangle.FillProperty, "DockSplitterBrush");
+        Grid.SetRow(scrollCorner, 1); Grid.SetColumn(scrollCorner, 1);
+
+        _designPaneGrid.Children.Add(_zoomPan);
+        _designPaneGrid.Children.Add(_hScrollBar);
+        _designPaneGrid.Children.Add(_vScrollBar);
+        _designPaneGrid.Children.Add(scrollCorner);
+
+        // Scrollbar → canvas: translate scrollbar value to canvas offset.
+        _hScrollBar.ValueChanged += (_, _) =>
+        {
+            if (_isSyncingScrollBars) return;
+            _zoomPan.OffsetX = -_hScrollBar.Value;
+        };
+        _vScrollBar.ValueChanged += (_, _) =>
+        {
+            if (_isSyncingScrollBars) return;
+            _zoomPan.OffsetY = -_vScrollBar.Value;
+        };
+
+        // Canvas → scrollbars: refresh ranges/values on every zoom, pan, or resize.
+        _zoomPan.ZoomChanged += (_, _) => UpdateScrollBars();
+        _zoomPan.PanChanged  += (_, _) => UpdateScrollBars();
+        _zoomPan.SizeChanged += (_, _) => UpdateScrollBars();
+
+        Children.Add(_designPaneGrid);
 
         // -- Auto-preview timer ----------------------------------------------
         _previewTimer = new DispatcherTimer
@@ -273,10 +334,14 @@ public sealed class XamlDesignerSplitHost : Grid,
         };
 
         // -- Wire code host events -------------------------------------------
-        _codeHost.PrimaryEditor.ModifiedChanged += OnCodeModified;
-        _codeHost.PrimaryEditor.CaretMoved      += OnCodeEditorCaretMoved;
-        _designCanvas.RenderError               += OnRenderError;
-        _designCanvas.SelectedElementChanged    += OnDesignSelectionChanged;
+        _codeHost.PrimaryEditor.ModifiedChanged  += OnCodeModified;
+        // Code→Canvas debounced sync: coalesce CaretMoved (line changes) and
+        // SelectionChanged (same-line clicks) into a single 150ms-idle timer tick.
+        _codeToCanvasSyncTimer.Tick              += OnCodeToCanvasSyncTimerTick;
+        _codeHost.PrimaryEditor.CaretMoved       += (_, _) => RequestCodeToCanvasSync();
+        _codeHost.PrimaryEditor.SelectionChanged += (_, _) => RequestCodeToCanvasSync();
+        _designCanvas.RenderError                += OnRenderError;
+        _designCanvas.SelectedElementChanged     += OnDesignSelectionChanged;
 
         // -- Phase B: wire property provider to selection changes ------------
         _designCanvas.SelectedElementChanged += (_, _) => UpdateIdePropertyProvider();
@@ -737,23 +802,42 @@ public sealed class XamlDesignerSplitHost : Grid,
         int line = _locationService.FindElementStartLine(raw, uid);
         if (line < 0) return;
 
+        // Don't steal the caret if it is already on the element's line — avoids jarring
+        // caret jumps after the render-restore cycle that silently re-selects an element.
+        if (_codeHost.PrimaryEditor.CursorPosition.Line == line) return;
+
         _isSyncingSelection = true;
         try   { ((INavigableDocument)_codeHost.PrimaryEditor).NavigateTo(line + 1, 1); }
         finally { _isSyncingSelection = false; }
     }
 
+    // ── Code → Canvas sync (debounced) ────────────────────────────────────────
+
     /// <summary>
-    /// Code → Canvas sync: when the caret moves in the code editor (without an
-    /// active text selection), find the XAML element that spans that line and
-    /// select it on the design canvas.
+    /// Starts / restarts the 150ms Code→Canvas debounce timer.
+    /// Called by both CaretMoved (line changes) and SelectionChanged (same-line clicks)
+    /// to ensure same-line re-clicks also trigger a canvas sync.
     /// </summary>
-    private void OnCodeEditorCaretMoved(object? sender, EventArgs e)
+    private void RequestCodeToCanvasSync()
     {
         if (_isSyncingSelection || !IsDesignVisible()) return;
-        if (!_codeHost.PrimaryEditor.Selection.IsEmpty) return;  // ignore selection drags
+        _codeToCanvasSyncTimer.Stop();
+        _codeToCanvasSyncTimer.Start();
+    }
+
+    /// <summary>
+    /// Fired 150ms after the last caret/selection change.
+    /// Finds the XAML element at the caret line and selects it on the canvas.
+    /// </summary>
+    private void OnCodeToCanvasSyncTimerTick(object? sender, EventArgs e)
+    {
+        _codeToCanvasSyncTimer.Stop();
+        if (_isSyncingSelection || !IsDesignVisible()) return;
+        if (!_codeHost.PrimaryEditor.Selection.IsEmpty) return;  // ignore text-selection drags
 
         var raw  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
         int line = _codeHost.PrimaryEditor.CursorPosition.Line;  // 0-based
+        if (line < 0) return;
         int uid  = _locationService.FindUidAtLine(raw, line);
         if (uid < 0) return;
 
@@ -813,6 +897,54 @@ public sealed class XamlDesignerSplitHost : Grid,
     {
         _splitLayout = layout;
         UpdateGridLayout();
+    }
+
+    /// <summary>
+    /// Refreshes H/V scrollbar visibility, range, and thumb position to match
+    /// the current ZoomPanCanvas zoom level and pan offset.
+    /// Scrollbars are hidden when the design canvas fits entirely inside the viewport.
+    /// </summary>
+    private void UpdateScrollBars()
+    {
+        if (_isSyncingScrollBars) return;
+        if (_zoomPan.Content is not FrameworkElement content) return;
+
+        double cw = content.ActualWidth  * _zoomPan.ZoomLevel;
+        double ch = content.ActualHeight * _zoomPan.ZoomLevel;
+        double vw = _zoomPan.ActualWidth;
+        double vh = _zoomPan.ActualHeight;
+
+        _isSyncingScrollBars = true;
+        try
+        {
+            // Horizontal scrollbar — visible only when content is wider than the viewport.
+            double hMax = Math.Max(0, cw - vw);
+            _hScrollBar.Visibility = hMax > 1 ? Visibility.Visible : Visibility.Collapsed;
+            if (hMax > 1)
+            {
+                _hScrollBar.Maximum      = hMax;
+                _hScrollBar.ViewportSize = vw;
+                _hScrollBar.LargeChange  = vw;
+                _hScrollBar.SmallChange  = 50;
+                _hScrollBar.Value        = Math.Clamp(-_zoomPan.OffsetX, 0, hMax);
+            }
+
+            // Vertical scrollbar — visible only when content is taller than the viewport.
+            double vMax = Math.Max(0, ch - vh);
+            _vScrollBar.Visibility = vMax > 1 ? Visibility.Visible : Visibility.Collapsed;
+            if (vMax > 1)
+            {
+                _vScrollBar.Maximum      = vMax;
+                _vScrollBar.ViewportSize = vh;
+                _vScrollBar.LargeChange  = vh;
+                _vScrollBar.SmallChange  = 50;
+                _vScrollBar.Value        = Math.Clamp(-_zoomPan.OffsetY, 0, vMax);
+            }
+        }
+        finally
+        {
+            _isSyncingScrollBars = false;
+        }
     }
 
     /// <summary>
@@ -896,8 +1028,8 @@ public sealed class XamlDesignerSplitHost : Grid,
         }
 
         // ── Reposition children ───────────────────────────────────────────────
-        UIElement firstPane  = designFirst ? _zoomPan  : _codeHost;
-        UIElement secondPane = designFirst ? _codeHost : _zoomPan;
+        UIElement firstPane  = designFirst ? _designPaneGrid : _codeHost;
+        UIElement secondPane = designFirst ? _codeHost       : _designPaneGrid;
 
         if (isVertical)
         {
@@ -931,9 +1063,9 @@ public sealed class XamlDesignerSplitHost : Grid,
         // ── Position search bar over the design pane ──────────────────────────
         if (_searchBar is not null)
         {
-            SetRow(_searchBar,        GetRow(_zoomPan));
-            SetColumn(_searchBar,     GetColumn(_zoomPan));
-            SetColumnSpan(_searchBar, GetColumnSpan(_zoomPan));
+            SetRow(_searchBar,        GetRow(_designPaneGrid));
+            SetColumn(_searchBar,     GetColumn(_designPaneGrid));
+            SetColumnSpan(_searchBar, GetColumnSpan(_designPaneGrid));
         }
 
         // ── Sync view mode toggle buttons ─────────────────────────────────────
@@ -1006,12 +1138,23 @@ public sealed class XamlDesignerSplitHost : Grid,
     /// </summary>
     private void ApplyXamlToCode(string xaml)
     {
-        // Stop the debounce timer before writing — we wrote the content ourselves,
-        // so the TextChanged event that fires next must not schedule another render.
-        _previewTimer.Stop();
-        _codeHost.PrimaryEditor.Document?.LoadFromString(xaml);
-        if (_autoPreviewEnabled)
-            TriggerPreview();
+        // Set _isSyncingSelection before LoadFromString: LoadFromString resets the
+        // caret to (0,0), which fires CaretMoved / SelectionChanged, which would
+        // otherwise start the _codeToCanvasSyncTimer and select the root element.
+        _isSyncingSelection = true;
+        try
+        {
+            // Stop the debounce timer before writing — we wrote the content ourselves,
+            // so the TextChanged event that fires next must not schedule another render.
+            _previewTimer.Stop();
+            _codeHost.PrimaryEditor.Document?.LoadFromString(xaml);
+            if (_autoPreviewEnabled)
+                TriggerPreview();
+        }
+        finally
+        {
+            _isSyncingSelection = false;
+        }
     }
 
     // ── Toolbar builder ───────────────────────────────────────────────────────

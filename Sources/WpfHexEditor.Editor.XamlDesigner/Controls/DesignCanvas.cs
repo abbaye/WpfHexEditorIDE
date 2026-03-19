@@ -185,11 +185,12 @@ public sealed class DesignCanvas : Border
     /// Used by the bidirectional code↔canvas sync to drive selection from the code editor.
     /// Does nothing when the canvas has no content or the UID is not found.
     /// </summary>
-    public void SelectElementByUid(int uid)
+    /// <param name="suppressEvent">Forwarded to <see cref="SelectElement"/>.</param>
+    public void SelectElementByUid(int uid, bool suppressEvent = false)
     {
         if (uid < 0 || _presenter.Content is not UIElement root) return;
         var target = FindElementWithUid(root, uid);
-        if (target is not null) SelectElement(target);
+        if (target is not null) SelectElement(target, suppressEvent);
     }
 
     /// <summary>
@@ -215,7 +216,12 @@ public sealed class DesignCanvas : Border
     }
 
     /// <summary>Programmatically selects an element and places the adorner.</summary>
-    public void SelectElement(UIElement? el)
+    /// <param name="suppressEvent">
+    /// When <c>true</c>, <see cref="SelectedElementChanged"/> is NOT raised.
+    /// Use for programmatic/restore selections (e.g. after re-render) to avoid
+    /// triggering the canvas→code caret navigation on the user's behalf.
+    /// </param>
+    public void SelectElement(UIElement? el, bool suppressEvent = false)
     {
         RemoveHoverAdorner();       // Clear hover first so selection adorner has priority.
         RemoveSelectionAdorner();
@@ -227,7 +233,8 @@ public sealed class DesignCanvas : Border
         if (el is not null)
             PlaceSelectionAdorner(el);
 
-        SelectedElementChanged?.Invoke(this, EventArgs.Empty);
+        if (!suppressEvent)
+            SelectedElementChanged?.Invoke(this, EventArgs.Empty);
     }
 
     // ── Rendering ─────────────────────────────────────────────────────────────
@@ -283,12 +290,22 @@ public sealed class DesignCanvas : Border
                     if (!double.IsNaN(rootFe.Height) && rootFe.Height > 0) Height = rootFe.Height + Extra;
                 }
 
-                SelectElement(null);
+                // Capture previous selection UID before clearing — used to silently restore
+                // it after the mapper rebuilds, so the canvas doesn't flash as "deselected"
+                // after every code edit → 500ms debounce → re-render cycle.
+                var prevUid = SelectedElementUid;
+                SelectElement(null, suppressEvent: true);   // silent: no caret movement
 
-                // Build the UIElement → XElement map after the element is in the tree.
+                // Build the UIElement → XElement map after the element is in the tree,
+                // then attempt to restore the previously selected element by UID.
+                // suppressEvent: true — the restore is programmatic; we must NOT fire
+                // SelectedElementChanged here or the canvas→code sync would steal the
+                // code editor's caret while the user is typing.
                 Dispatcher.InvokeAsync(() =>
                 {
                     _mapper.Build(uidMap, uiResult);
+                    if (prevUid >= 0)
+                        SelectElementByUid(prevUid, suppressEvent: true);
                 }, System.Windows.Threading.DispatcherPriority.Loaded);
 
                 RenderError?.Invoke(this, null);
