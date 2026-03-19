@@ -64,15 +64,15 @@ public sealed class ZoomPanCanvas : ContentControl
 
     public ZoomPanCanvas()
     {
+        // Scale then translate in a single RenderTransform group.
+        // RenderTransform keeps layout stable (viewport size never changes),
+        // which is required for the "zoom toward mouse" anchor formula to work.
+        // LayoutTransform must NOT be used — it re-measures children at scaled
+        // size, making content.ActualWidth ≈ viewport/zoom and breaking ClampOffsets.
         var group = new TransformGroup();
         group.Children.Add(_scale);
         group.Children.Add(_translate);
-
-        // LayoutTransform keeps hit-testing accurate after zoom.
-        LayoutTransform = _scale;
-
-        // RenderTransform handles pan offset without affecting layout.
-        RenderTransform = _translate;
+        RenderTransform = group;
 
         ClipToBounds = true;
 
