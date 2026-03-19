@@ -4839,19 +4839,56 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         switch (editor)
         {
             case WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor ce:
-                ce.MouseWheelSpeed    = settings.CodeEditorDefaults.MouseWheelSpeed;
-                ce.ZoomLevel          = settings.CodeEditorDefaults.DefaultZoom;
-                ce.ShowCodeLens       = settings.CodeEditorDefaults.ShowCodeLens;
+                ce.MouseWheelSpeed         = settings.CodeEditorDefaults.MouseWheelSpeed;
+                ce.ZoomLevel               = settings.CodeEditorDefaults.DefaultZoom;
+                ce.FoldToggleOnDoubleClick = settings.CodeEditorDefaults.FoldToggleOnDoubleClick;
+                ce.ShowCodeLens            = settings.CodeEditorDefaults.ShowCodeLens;
                 // Treat 0 as All (migration: old settings.json without CodeLensVisibleKinds defaults to 0).
                 ce.CodeLensVisibleKinds = settings.CodeEditorDefaults.CodeLensVisibleKinds == 0
                     ? WpfHexEditor.Editor.Core.CodeLensSymbolKinds.All
                     : (WpfHexEditor.Editor.Core.CodeLensSymbolKinds)settings.CodeEditorDefaults.CodeLensVisibleKinds;
+                ApplySyntaxColorOverrides(ce, settings.CodeEditorDefaults);
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
                 te.MouseWheelSpeed = settings.TextEditorDefaults.MouseWheelSpeed;
                 te.ZoomLevel       = settings.TextEditorDefaults.DefaultZoom;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Applies all stored syntax colour overrides from <paramref name="ce"/> settings
+    /// to the live <paramref name="editor"/> instance.
+    /// An empty string means "use theme default" (no override).
+    /// </summary>
+    private static void ApplySyntaxColorOverrides(
+        WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor editor,
+        CodeEditorDefaultSettings ce)
+    {
+        Apply(SyntaxTokenKind.Keyword,    ce.KeywordColor);
+        Apply(SyntaxTokenKind.String,     ce.StringColor);
+        Apply(SyntaxTokenKind.Number,     ce.NumberColor);
+        Apply(SyntaxTokenKind.Comment,    ce.CommentColor);
+        Apply(SyntaxTokenKind.Type,       ce.TypeColor);
+        Apply(SyntaxTokenKind.Identifier, ce.IdentifierColor);
+        Apply(SyntaxTokenKind.Operator,   ce.OperatorColor);
+        Apply(SyntaxTokenKind.Bracket,    ce.BracketColor);
+        Apply(SyntaxTokenKind.Attribute,  ce.AttributeColor);
+
+        void Apply(SyntaxTokenKind k, string? hex)
+            => editor.SetSyntaxColorOverride(k, TryParseHexColor(hex, out var c) ? c : null);
+    }
+
+    private static bool TryParseHexColor(string? hex, out System.Windows.Media.Color color)
+    {
+        color = default;
+        if (string.IsNullOrWhiteSpace(hex)) return false;
+        try
+        {
+            color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(hex.Trim());
+            return true;
+        }
+        catch { return false; }
     }
 
     private void ApplyHexEditorDefaults(HexEditorControl hex)

@@ -80,15 +80,16 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     // ── State ─────────────────────────────────────────────────────────────────
 
-    private XamlOutlinePanel?          _outlinePanel;
-    private PropertyInspectorPanel?    _propertiesPanel;
-    private XamlToolboxPanel?          _toolboxPanel;
-    private ResourceBrowserPanel?      _resourcePanel;
-    private DesignDataPanel?           _designDataPanel;
-    private AnimationTimelinePanel?    _animationPanel;
-    private DesignHistoryPanel?        _historyPanel;
-    private BindingInspectorPanel?     _bindingPanel;
-    private LiveVisualTreePanel?       _liveTreePanel;
+    private XamlOutlinePanel?                 _outlinePanel;
+    private PropertyInspectorPanel?           _propertiesPanel;
+    private XamlToolboxPanel?                 _toolboxPanel;
+    private ResourceBrowserPanel?             _resourcePanel;
+    private DesignDataPanel?                  _designDataPanel;
+    private AnimationTimelinePanel?           _animationPanel;
+    private AnimationTimelinePanelViewModel?  _animationVm;
+    private DesignHistoryPanel?               _historyPanel;
+    private BindingInspectorPanel?            _bindingPanel;
+    private LiveVisualTreePanel?              _liveTreePanel;
     private IIDEHostContext?           _context;
     private XamlDesignerOptionsPage?   _optionsPage;
     private StatusBarItemDescriptor?   _sbElement;
@@ -108,7 +109,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _toolboxPanel    = new XamlToolboxPanel();
         _resourcePanel   = new ResourceBrowserPanel();
         _designDataPanel = new DesignDataPanel();
+        _animationVm     = new AnimationTimelinePanelViewModel();
         _animationPanel  = new AnimationTimelinePanel();
+        _animationPanel.SetViewModel(_animationVm);
         _historyPanel    = new DesignHistoryPanel();
         _bindingPanel    = new BindingInspectorPanel();
         _liveTreePanel   = new LiveVisualTreePanel();
@@ -322,9 +325,29 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _historyPanel.JumpRequested     += OnHistoryPanelJumpRequested;
         }
 
+        // Live Visual Tree — subscribe to the post-render event so Refresh() always
+        // receives a stable, fully-laid-out DesignRoot (never a timing-race null).
+        if (host.Canvas is { } canvas)
+            canvas.DesignRendered += OnCanvasDesignRendered;
+
+        // Live Visual Tree — reverse sync: tree node click → canvas highlight.
+        if (_liveTreePanel is not null)
+        {
+            _liveTreePanel.NodeSelected -= OnLiveTreeNodeSelected;
+            _liveTreePanel.NodeSelected += OnLiveTreeNodeSelected;
+        }
+
         // Seed new panels with the current canvas state.
         _bindingPanel?.SetTarget(host.Canvas?.SelectedElement as System.Windows.DependencyObject);
+
+        // Best-effort seed for Live Tree (DesignRoot may already be valid on tab-switch).
+        // OnCanvasDesignRendered will follow with the authoritative stable value after the next render.
         _liveTreePanel?.ViewModel.Refresh(host.Canvas?.DesignRoot);
+
+        // Seed Design Data and Animation panels from current XAML source.
+        _designDataPanel?.SetXamlSource(host.Document.RawXaml);
+        if (_animationVm is not null)
+            _animationVm.XamlSource = host.Document.RawXaml;
 
         // C3 — Outline → Canvas: sync XAML outline selection to the canvas.
         if (_outlinePanel is not null)
@@ -355,11 +378,25 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_outlinePanel is not null)
             _outlinePanel.SyncRequested -= OnOutlineSyncRequested;
 
+        // Detach Live Visual Tree post-render event and reverse-sync event.
+        if (_wiredHost.Canvas is { } canvas)
+            canvas.DesignRendered -= OnCanvasDesignRendered;
+        if (_liveTreePanel is not null)
+            _liveTreePanel.NodeSelected -= OnLiveTreeNodeSelected;
+
         _wiredHost = null;
     }
 
     private void OnHistoryPanelJumpRequested(object? sender, JumpToEntryEventArgs e)
         => _wiredHost?.JumpToHistoryEntry(e.UndoCount, e.RedoCount);
+
+    // Fired by DesignCanvas.DesignRendered — DesignRoot is now stable and the visual tree is walkable.
+    private void OnCanvasDesignRendered(object? sender, System.Windows.UIElement? root)
+        => _liveTreePanel?.ViewModel.Refresh(root);
+
+    // Fired when the user clicks a node in the Live Visual Tree — highlights that element on the canvas.
+    private void OnLiveTreeNodeSelected(object? sender, System.Windows.UIElement? element)
+        => _wiredHost?.Canvas?.SelectElement(element);
 
     /// <summary>
     /// C3 — Outline → Canvas sync: when the outline panel's "Sync to code" button is
@@ -406,8 +443,13 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_wiredHost is null) return;
         _outlinePanel?.ViewModel?.RebuildTree(_wiredHost.Document.ParsedRoot);
 
-        // Refresh live visual tree after XAML re-render (canvas DesignRoot may have changed).
-        _liveTreePanel?.ViewModel.Refresh(_wiredHost.Canvas?.DesignRoot);
+        // Live Visual Tree is now refreshed via DesignCanvas.DesignRendered (fires after
+        // RenderXaml() completes at DispatcherPriority.Loaded), so no Refresh() call here.
+
+        // Feed XAML source to panels that parse it independently.
+        _designDataPanel?.SetXamlSource(_wiredHost.Document.RawXaml);
+        if (_animationVm is not null)
+            _animationVm.XamlSource = _wiredHost.Document.RawXaml;
     }
 
     private void OnSelectedElementChanged(object? sender, EventArgs e)
@@ -426,6 +468,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
         // Update Binding Inspector with the newly selected element.
         _bindingPanel?.SetTarget(dep);
+
+        // Live Visual Tree — highlight the node that corresponds to the canvas-selected element.
+        _liveTreePanel?.ViewModel.SelectNodeByElement(selectedUi);
 
         // C3 — Canvas → Outline sync: move the outline selection to match the canvas.
         if (_outlinePanel is not null && selectedUi is not null)

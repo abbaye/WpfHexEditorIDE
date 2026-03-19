@@ -230,6 +230,21 @@ public sealed class XamlDesignerSplitHost : Grid,
         // inside ZoomPanCanvas.ClipToBounds — not at the Window-level AdornerLayer,
         // which would cause them to bleed outside the designer viewport.
         var designAdornerHost = new AdornerDecorator { Child = _designCanvas };
+
+        // Explicit size so ZoomPanCanvas.FitToContent / ClampOffsets / CenterContent see
+        // the natural design canvas width (e.g. 1280) rather than (viewportWidth / zoom).
+        // Without this, LayoutTransform on the AdornerDecorator makes ActualWidth =
+        // viewportWidth / zoom, causing all zoom/scroll formulas to resolve to viewport size.
+        designAdornerHost.Width  = _designCanvas.Width;    // initially 1280
+        designAdornerHost.Height = _designCanvas.Height;   // initially 720
+
+        // Sync when DesignCanvas changes its declared size (XAML root parsing sets new W/H).
+        _designCanvas.SizeChanged += (_, _) =>
+        {
+            designAdornerHost.Width  = _designCanvas.Width;
+            designAdornerHost.Height = _designCanvas.Height;
+        };
+
         _zoomPan = new ZoomPanCanvas
         {
             Content   = designAdornerHost,
@@ -256,8 +271,8 @@ public sealed class XamlDesignerSplitHost : Grid,
         Children.Add(_splitter);
 
         // -- Design pane wrapper: ZoomPanCanvas + H/V scrollbars -------------
-        _hScrollBar = new ScrollBar { Orientation = Orientation.Horizontal, Visibility = Visibility.Collapsed };
-        _vScrollBar = new ScrollBar { Orientation = Orientation.Vertical,   Visibility = Visibility.Collapsed };
+        _hScrollBar = new ScrollBar { Orientation = Orientation.Horizontal };
+        _vScrollBar = new ScrollBar { Orientation = Orientation.Vertical   };
 
         _designPaneGrid = new Grid();
         _designPaneGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -279,16 +294,16 @@ public sealed class XamlDesignerSplitHost : Grid,
         _designPaneGrid.Children.Add(_vScrollBar);
         _designPaneGrid.Children.Add(scrollCorner);
 
-        // Scrollbar → canvas: translate scrollbar value to canvas offset.
+        // Scrollbar → canvas: value 0 = content at +ScrollExtraMargin (left/top blank margin visible).
         _hScrollBar.ValueChanged += (_, _) =>
         {
             if (_isSyncingScrollBars) return;
-            _zoomPan.OffsetX = -_hScrollBar.Value;
+            _zoomPan.OffsetX = ZoomPanCanvas.ScrollExtraMargin - _hScrollBar.Value;
         };
         _vScrollBar.ValueChanged += (_, _) =>
         {
             if (_isSyncingScrollBars) return;
-            _zoomPan.OffsetY = -_vScrollBar.Value;
+            _zoomPan.OffsetY = ZoomPanCanvas.ScrollExtraMargin - _vScrollBar.Value;
         };
 
         // Canvas → scrollbars: refresh ranges/values on every zoom, pan, or resize.
@@ -909,37 +924,35 @@ public sealed class XamlDesignerSplitHost : Grid,
         if (_isSyncingScrollBars) return;
         if (_zoomPan.Content is not FrameworkElement content) return;
 
-        double cw = content.ActualWidth  * _zoomPan.ZoomLevel;
-        double ch = content.ActualHeight * _zoomPan.ZoomLevel;
-        double vw = _zoomPan.ActualWidth;
-        double vh = _zoomPan.ActualHeight;
+        double cw    = content.ActualWidth  * _zoomPan.ZoomLevel;
+        double ch    = content.ActualHeight * _zoomPan.ZoomLevel;
+        double vw    = _zoomPan.ActualWidth;
+        double vh    = _zoomPan.ActualHeight;
+        double extra = ZoomPanCanvas.ScrollExtraMargin;
 
         _isSyncingScrollBars = true;
         try
         {
-            // Horizontal scrollbar — visible only when content is wider than the viewport.
-            double hMax = Math.Max(0, cw - vw);
-            _hScrollBar.Visibility = hMax > 1 ? Visibility.Visible : Visibility.Collapsed;
-            if (hMax > 1)
-            {
-                _hScrollBar.Maximum      = hMax;
-                _hScrollBar.ViewportSize = vw;
-                _hScrollBar.LargeChange  = vw;
-                _hScrollBar.SmallChange  = 50;
-                _hScrollBar.Value        = Math.Clamp(-_zoomPan.OffsetX, 0, hMax);
-            }
+            // Horizontal — total range = content + 2×extra margins - viewport (always enabled).
+            // Value 0 → OffsetX = +extra (left blank margin), Value hMax → OffsetX = vw-cw-extra (right blank margin).
+            double hMax = Math.Max(0, cw + extra * 2 - vw);
+            _hScrollBar.IsEnabled    = hMax > 1;
+            _hScrollBar.Minimum      = 0;
+            _hScrollBar.Maximum      = Math.Max(1, hMax);
+            _hScrollBar.ViewportSize = vw;
+            _hScrollBar.LargeChange  = vw;
+            _hScrollBar.SmallChange  = 50;
+            _hScrollBar.Value        = Math.Clamp(extra - _zoomPan.OffsetX, 0, Math.Max(1, hMax));
 
-            // Vertical scrollbar — visible only when content is taller than the viewport.
-            double vMax = Math.Max(0, ch - vh);
-            _vScrollBar.Visibility = vMax > 1 ? Visibility.Visible : Visibility.Collapsed;
-            if (vMax > 1)
-            {
-                _vScrollBar.Maximum      = vMax;
-                _vScrollBar.ViewportSize = vh;
-                _vScrollBar.LargeChange  = vh;
-                _vScrollBar.SmallChange  = 50;
-                _vScrollBar.Value        = Math.Clamp(-_zoomPan.OffsetY, 0, vMax);
-            }
+            // Vertical
+            double vMax = Math.Max(0, ch + extra * 2 - vh);
+            _vScrollBar.IsEnabled    = vMax > 1;
+            _vScrollBar.Minimum      = 0;
+            _vScrollBar.Maximum      = Math.Max(1, vMax);
+            _vScrollBar.ViewportSize = vh;
+            _vScrollBar.LargeChange  = vh;
+            _vScrollBar.SmallChange  = 50;
+            _vScrollBar.Value        = Math.Clamp(extra - _zoomPan.OffsetY, 0, Math.Max(1, vMax));
         }
         finally
         {

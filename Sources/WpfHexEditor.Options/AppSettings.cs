@@ -226,6 +226,14 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
 
+    // -- Folding -------------------------------------------------------------
+
+    /// <summary>
+    /// When true, fold regions (gutter triangle and inline label) require a double-click
+    /// to toggle instead of a single click.
+    /// </summary>
+    public bool FoldToggleOnDoubleClick { get; set; } = true;
+
     // -- CodeLens ------------------------------------------------------------
 
     /// <summary>
@@ -269,6 +277,21 @@ public sealed class CodeEditorDefaultSettings
 
     /// <summary>Number literal token colour override. Empty = use theme.</summary>
     public string NumberColor { get; set; } = string.Empty;
+
+    /// <summary>Type name token colour override (CE_Type). Empty = use theme.</summary>
+    public string TypeColor { get; set; } = string.Empty;
+
+    /// <summary>Identifier token colour override (CE_Identifier). Empty = use theme.</summary>
+    public string IdentifierColor { get; set; } = string.Empty;
+
+    /// <summary>Operator token colour override (CE_Operator). Empty = use theme.</summary>
+    public string OperatorColor { get; set; } = string.Empty;
+
+    /// <summary>Bracket token colour override (CE_Bracket). Empty = use theme.</summary>
+    public string BracketColor { get; set; } = string.Empty;
+
+    /// <summary>Attribute token colour override (CE_Attribute). Empty = use theme.</summary>
+    public string AttributeColor { get; set; } = string.Empty;
 }
 
 // ----------------------------------------------------------------------------

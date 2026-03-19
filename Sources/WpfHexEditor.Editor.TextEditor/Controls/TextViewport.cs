@@ -84,6 +84,7 @@ internal sealed class TextViewport : FrameworkElement
 
     // Feature B — Text drag-and-drop (move selection by dragging)
     private readonly DragDropState _textDragDrop = new();
+    private bool _isRectDrag; // true when the active drag originates from a rect selection block
 
     // Cursor blink
     private readonly DispatcherTimer _cursorBlinkTimer;
@@ -406,12 +407,18 @@ internal sealed class TextViewport : FrameworkElement
     }
 
     /// <summary>
-    /// Draws the rectangular (block/column) selection overlay — Feature A.
-    /// Each line in the selection range receives an independent rectangle.
+    /// Draws the rectangular (block/column) selection overlay as a single seamless rectangle
+    /// spanning the full vertical extent of the visible selection. One draw call eliminates
+    /// the anti-aliasing seams produced by per-line independent rasterization.
     /// </summary>
     private void DrawRectSelectionRects(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
     {
         if (_rectSelection.IsEmpty) return;
+
+        // Clamp selection to visible viewport.
+        int visTop    = Math.Max(_rectSelection.TopLine,    firstVisLine);
+        int visBottom = Math.Min(_rectSelection.BottomLine, lastVisLine);
+        if (visTop > visBottom) return;
 
         var selBrush = GetBrush("TE_SelectionBackground");
 
@@ -420,12 +427,10 @@ internal sealed class TextViewport : FrameworkElement
         double x2    = codeX + rightCol * _charWidth;
         double width = Math.Max(x2 - x1, 1.0);
 
-        for (int line = _rectSelection.TopLine; line <= _rectSelection.BottomLine; line++)
-        {
-            if (line < firstVisLine || line > lastVisLine) continue;
-            double y = (line - firstVisLine) * _lineHeight;
-            dc.DrawRoundedRectangle(selBrush, null, new Rect(x1, y, width, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
-        }
+        double yTop    = (visTop    - firstVisLine) * _lineHeight;
+        double yBottom = (visBottom - firstVisLine + 1) * _lineHeight;
+
+        dc.DrawRectangle(selBrush, null, new Rect(x1, yTop, width, yBottom - yTop));
     }
 
     /// <summary>
@@ -827,6 +832,9 @@ internal sealed class TextViewport : FrameworkElement
                     ScrollIntoView(_vm.CaretLine);
                 }
                 e.Handled = true; break;
+            case Key.Z when ctrl && shift:
+                _vm.Redo(); ScrollIntoView(_vm.CaretLine);
+                e.Handled = true; break;
             case Key.Z when ctrl:
                 _vm.Undo(); ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
@@ -920,12 +928,31 @@ internal sealed class TextViewport : FrameworkElement
             return;
         }
 
-        // Any non-Alt click clears the rectangular selection.
+        // Any non-Alt, single click: check for rect-block drag BEFORE clearing the rect.
+        if (!_rectSelection.IsEmpty && e.ClickCount == 1
+            && IsInsideRectBlock(line, col))
+        {
+            // Click inside the active rect block → start potential rect drag-to-move.
+            _textDragDrop.Phase             = DragPhase.Pending;
+            _textDragDrop.ClickPixel        = pos;
+            _textDragDrop.ClickedLine       = line;
+            _textDragDrop.ClickedCol        = col;
+            _textDragDrop.SnapshotStartLine = _rectSelection.TopLine;
+            _textDragDrop.SnapshotStartCol  = _rectSelection.LeftColumn;
+            _textDragDrop.SnapshotEndLine   = _rectSelection.BottomLine;
+            _textDragDrop.SnapshotEndCol    = _rectSelection.RightColumn;
+            _isRectDrag = true;
+            e.Handled   = true;
+            return;
+        }
+
+        // Non-Alt click with no rect-drag → clear rectangular selection.
         if (!_rectSelection.IsEmpty)
         {
             _rectSelection.Clear();
             _isRectSelecting = false;
         }
+        _isRectDrag = false;
 
         if (shift)
         {
@@ -938,7 +965,7 @@ internal sealed class TextViewport : FrameworkElement
         }
         else
         {
-            // Feature B: click inside existing selection → potential drag-to-move.
+            // Feature B: click inside existing text selection → potential drag-to-move.
             if (!shift && e.ChangedButton == MouseButton.Left
                 && _vm.HasSelection && IsInsideSelection(line, col))
             {
@@ -1090,18 +1117,23 @@ internal sealed class TextViewport : FrameworkElement
             Cursor = Cursors.IBeam;
 
             if (_textDragDrop.Phase == DragPhase.Dragging)
-                CommitTextDrop();
+            {
+                if (_isRectDrag) CommitRectDrop();
+                else             CommitTextDrop();
+            }
             else
             {
                 // Pending phase: simple click inside selection — clear selection, move caret.
                 if (_vm is not null)
                 {
                     _vm.ClearSelection();
+                    _rectSelection.Clear();
                     _vm.CaretLine   = _textDragDrop.ClickedLine;
                     _vm.CaretColumn = _textDragDrop.ClickedCol;
                 }
             }
 
+            _isRectDrag = false;
             _textDragDrop.Reset();
             _cursorVisible = true;
             DrawCursor();
@@ -1175,6 +1207,79 @@ internal sealed class TextViewport : FrameworkElement
         _vm.CaretColumn = Math.Max(0, insertCol);
         _vm.ClearSelection();
         _vm.InsertText(movedText);
+    }
+
+    /// <summary>
+    /// Returns true when (line, col) falls inside the active rectangular selection block.
+    /// </summary>
+    private bool IsInsideRectBlock(int line, int col)
+        => !_rectSelection.IsEmpty
+           && line >= _rectSelection.TopLine    && line <= _rectSelection.BottomLine
+           && col  >= _rectSelection.LeftColumn && col  <= _rectSelection.RightColumn;
+
+    /// <summary>
+    /// Commits a rect-block drag-to-move: extracts the column block, deletes it, then
+    /// inserts each row at the drop column. Feature A+B combined.
+    /// </summary>
+    private void CommitRectDrop()
+    {
+        if (_vm is null || _vm.IsReadOnly) { _isRectDrag = false; _textDragDrop.Reset(); return; }
+
+        int topLine    = _rectSelection.TopLine;
+        int bottomLine = _rectSelection.BottomLine;
+        int leftCol    = _rectSelection.LeftColumn;
+        int rightCol   = _rectSelection.RightColumn;
+        int blockWidth = rightCol - leftCol;
+        int blockHeight= bottomLine - topLine + 1;
+
+        int dropLine   = _textDragDrop.DropLine;
+        int dropCol    = _textDragDrop.DropCol;
+
+        // Drop inside the original block → no-op.
+        if (dropLine >= topLine && dropLine <= bottomLine
+            && dropCol >= leftCol && dropCol <= rightCol)
+        {
+            _isRectDrag = false;
+            _textDragDrop.Reset();
+            return;
+        }
+
+        // Snapshot block text before deletion.
+        var lineList = new List<string>();
+        for (int i = 0; i < _vm.LineCount; i++) lineList.Add(_vm.GetLine(i));
+        string blockText = _rectSelection.ExtractText(lineList);
+        string[] blockLines = blockText.Split('\n');
+
+        // Delete the source block (bottom-to-top to preserve line indices).
+        DeleteRectSelection();
+
+        // Adjust drop column when drop is on an affected line and after the deleted block.
+        if (dropLine >= topLine && dropLine <= bottomLine && dropCol > rightCol)
+            dropCol = Math.Max(leftCol, dropCol - blockWidth);
+
+        // Insert each block row at the drop column.
+        for (int i = 0; i < blockHeight && (dropLine + i) < _vm.LineCount; i++)
+        {
+            string lineContent = i < blockLines.Length ? blockLines[i] : string.Empty;
+            if (string.IsNullOrEmpty(lineContent)) continue;
+
+            int targetLine = dropLine + i;
+            int targetCol  = Math.Min(dropCol, _vm.GetLine(targetLine).Length);
+            _vm.CaretLine   = targetLine;
+            _vm.CaretColumn = targetCol;
+            _vm.InsertText(lineContent);
+        }
+
+        // Reposition rect selection at the new block location.
+        int newBottom = Math.Min(dropLine + blockHeight - 1, _vm.LineCount - 1);
+        _rectSelection.Begin(dropLine, dropCol);
+        _rectSelection.Extend(newBottom, dropCol + blockWidth);
+
+        _vm.CaretLine   = dropLine;
+        _vm.CaretColumn = dropCol;
+        _isRectDrag     = false;
+        _textDragDrop.Reset();
+        UpdateBackground();
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -1349,21 +1454,25 @@ internal sealed class TextViewport : FrameworkElement
 
         var (left, right) = _rectSelection.GetColumnRange();
 
-        // Iterate bottom-to-top so line indices stay stable.
-        for (int li = _rectSelection.BottomLine; li >= _rectSelection.TopLine; li--)
+        // Wrap all per-line deletions in a single transaction so Ctrl+Z undoes the entire rect-delete atomically.
+        using (_vm.BeginUndoTransaction("Delete Rectangular Selection"))
         {
-            if (li >= _vm.LineCount) continue;
-            var   line  = _vm.GetLine(li);
-            int   safeL = Math.Min(left,  line.Length);
-            int   safeR = Math.Min(right, line.Length);
-            if (safeR <= safeL) continue;
+            // Iterate bottom-to-top so line indices stay stable.
+            for (int li = _rectSelection.BottomLine; li >= _rectSelection.TopLine; li--)
+            {
+                if (li >= _vm.LineCount) continue;
+                var   line  = _vm.GetLine(li);
+                int   safeL = Math.Min(left,  line.Length);
+                int   safeR = Math.Min(right, line.Length);
+                if (safeR <= safeL) continue;
 
-            // Position anchor+caret on this line's column range, then delete.
-            _vm.SelectionAnchorLine   = li;
-            _vm.SelectionAnchorColumn = safeL;
-            _vm.CaretLine   = li;
-            _vm.CaretColumn = safeR;
-            _vm.DeleteSelectedText();
+                // Position anchor+caret on this line's column range, then delete.
+                _vm.SelectionAnchorLine   = li;
+                _vm.SelectionAnchorColumn = safeL;
+                _vm.CaretLine   = li;
+                _vm.CaretColumn = safeR;
+                _vm.DeleteSelectedText();
+            }
         }
 
         _vm.CaretLine   = _rectSelection.TopLine;

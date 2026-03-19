@@ -423,8 +423,15 @@
     <SolidColorBrush x:Key="XD_HistoryCurrentMarkerBrush"       Color="#007ACC"/>
     <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#E8F0FE"/>
     <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#0078D4"/>
+    <!-- Binding Inspector -->
+    <SolidColorBrush x:Key="XD_BindingValidForeground"          Color="#217346"/>
+    <SolidColorBrush x:Key="XD_BindingErrorForeground"          Color="#CC0000"/>
+    <SolidColorBrush x:Key="XD_BindingPathForeground"           Color="#001080"/>
+    <!-- Live Visual Tree -->
+    <SolidColorBrush x:Key="XD_LiveTreeBackground"              Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="XD_LiveTreeSelectionBrush"          Color="#0078D7"/>
+    <SolidColorBrush x:Key="XD_LiveTreeHighlightBrush"          Color="#ADD6FF"/>
 
-    <!-- CE_Rect* / TE_Rect* â€” Rectangular (block) selection brushes -->
     <!-- CE_DragCaret / TE_DragCaret â€” drag-to-move insertion caret (orange = VS convention) -->
     <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF8C00"/>
     <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8C00"/>

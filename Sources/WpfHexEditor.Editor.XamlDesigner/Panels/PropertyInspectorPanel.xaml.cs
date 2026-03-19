@@ -42,8 +42,9 @@ public partial class PropertyInspectorPanel : UserControl
         InitializeComponent();
         DataContext = _vm;
 
-        // Wire value cell template selector.
-        PropertyList.Resources.Add("PropertyValueTemplateSelector", new PropertyEditorTemplateSelector(this));
+        // Wire the DataTemplateSelector directly to the GridViewColumn — a ContentControl
+        // cannot be assigned to CellTemplateSelector (must be a DataTemplateSelector subclass).
+        ValueColumn.CellTemplateSelector = new PropertyEditorTemplateSelector(this);
 
         Loaded   += OnLoaded;
         Unloaded += OnUnloaded;

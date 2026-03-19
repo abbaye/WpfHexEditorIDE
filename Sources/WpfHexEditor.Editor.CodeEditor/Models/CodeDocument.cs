@@ -407,25 +407,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             {
                 // Multi-line deletion
                 var firstLine = Lines[start.Line];
-                var lastLine = Lines[end.Line];
+                var lastLine  = Lines[end.Line];
 
-                // Clamp columns to valid ranges
+                // Clamp columns to valid ranges.
                 int startCol = Math.Max(0, Math.Min(start.Column, firstLine.Text.Length));
-                int endCol = Math.Max(0, Math.Min(end.Column, lastLine.Text.Length));
+                int endCol   = Math.Max(0, Math.Min(end.Column,   lastLine.Text.Length));
 
-                string leftPart = firstLine.Text.Substring(0, startCol);
+                // Capture the deleted text BEFORE mutating Lines so the undo engine can reconstruct it.
+                var sb = new System.Text.StringBuilder();
+                sb.Append(firstLine.Text.Substring(startCol));
+                for (int i = start.Line + 1; i < end.Line; i++)
+                    sb.Append('\n').Append(Lines[i].Text);
+                sb.Append('\n').Append(lastLine.Text.Substring(0, endCol));
+                string deletedText = sb.ToString();
+
+                string leftPart  = firstLine.Text.Substring(0, startCol);
                 string rightPart = lastLine.Text.Substring(endCol);
 
-                // Update first line
+                // Merge first and last lines; remove intermediate and last lines.
                 firstLine.Text = leftPart + rightPart;
-
-                // Remove middle and last lines
                 for (int i = end.Line; i > start.Line; i--)
-                {
                     Lines.RemoveAt(i);
-                }
 
                 UpdateLineNumbers(start.Line);
+
+                // Notify listeners (undo engine, syntax highlighter, LSP, …) of the deletion.
+                OnTextChanged(new TextChangedEventArgs
+                {
+                    ChangeType = TextChangeType.Delete,
+                    Position   = start,
+                    Text       = deletedText,
+                    Length     = deletedText.Length
+                });
             }
 
             IsModified = true;

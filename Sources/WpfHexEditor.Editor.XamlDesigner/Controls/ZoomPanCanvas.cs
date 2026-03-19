@@ -35,6 +35,10 @@ public sealed class ZoomPanCanvas : ContentControl
     private const double MaxZoom  = 4.00;
     private const double ZoomStep = 0.10;
 
+    // Extra blank space around the canvas that scrollbars expose (VS-Like).
+    // Shared with XamlDesignerSplitHost so both sides use the same constant.
+    internal const double ScrollExtraMargin = 300.0;
+
     // ── State ─────────────────────────────────────────────────────────────────
 
     private readonly ScaleTransform     _scale     = new(1, 1);
@@ -72,10 +76,13 @@ public sealed class ZoomPanCanvas : ContentControl
         // ensures content.ActualWidth reflects its natural size, not the viewport.
         ClipToBounds = true;
 
-        MouseWheel += OnMouseWheel;
-        MouseDown  += OnMouseDown;
-        MouseMove  += OnMouseMove;
-        MouseUp    += OnMouseUp;
+        // Use PreviewMouseWheel (tunneling) so Ctrl+Wheel zoom works even when
+        // inner content (e.g. ScrollViewer in the designed XAML) would otherwise
+        // consume the bubbling MouseWheel event first.
+        PreviewMouseWheel += OnMouseWheel;
+        MouseDown         += OnMouseDown;
+        MouseMove         += OnMouseMove;
+        MouseUp           += OnMouseUp;
 
         // Clamp offsets whenever the host viewport is resized.
         SizeChanged += (_, _) => ClampOffsets();
@@ -165,16 +172,18 @@ public sealed class ZoomPanCanvas : ContentControl
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
-    /// <summary>Clamps pan offsets so at least 40px of content remain visible.</summary>
+    /// <summary>
+    /// Clamps pan offsets so the canvas can be scrolled up to ScrollExtraMargin px
+    /// beyond each edge — matching the VS Designer blank-canvas breathing room.
+    /// </summary>
     private void ClampOffsets()
     {
         if (Content is not FrameworkElement content || ActualWidth <= 0 || ActualHeight <= 0)
             return;
         double cw = content.ActualWidth  * ZoomLevel;
         double ch = content.ActualHeight * ZoomLevel;
-        const double margin = 40.0;
-        OffsetX = Math.Clamp(OffsetX, -(cw - margin), ActualWidth  - margin);
-        OffsetY = Math.Clamp(OffsetY, -(ch - margin), ActualHeight - margin);
+        OffsetX = Math.Clamp(OffsetX, ActualWidth  - cw - ScrollExtraMargin, ScrollExtraMargin);
+        OffsetY = Math.Clamp(OffsetY, ActualHeight - ch - ScrollExtraMargin, ScrollExtraMargin);
     }
 
     /// <summary>Centers content in the viewport.</summary>
@@ -189,6 +198,7 @@ public sealed class ZoomPanCanvas : ContentControl
     // ── Events ────────────────────────────────────────────────────────────────
 
     public event EventHandler? ZoomChanged;
+    public event EventHandler? PanChanged;
 
     // ── Mouse wheel ───────────────────────────────────────────────────────────
 
@@ -227,13 +237,34 @@ public sealed class ZoomPanCanvas : ContentControl
 
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.MiddleButton != MouseButtonState.Pressed) return;
+        // Middle-button → pan.
+        if (e.MiddleButton == MouseButtonState.Pressed)
+        {
+            _panStart  = e.GetPosition(this);
+            _isPanning = true;
+            CaptureMouse();
+            Cursor    = Cursors.Hand;
+            e.Handled = true;
+            return;
+        }
 
-        _panStart  = e.GetPosition(this);
-        _isPanning = true;
-        CaptureMouse();
-        Cursor    = Cursors.Hand;
-        e.Handled = true;
+        // Ctrl+Left-Click → zoom in toward the click point.
+        // Ctrl+Alt+Left-Click → zoom out from the click point.
+        if (e.LeftButton == MouseButtonState.Pressed &&
+            (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+        {
+            bool zoomOut = (Keyboard.Modifiers & ModifierKeys.Alt) != 0;
+            var mousePos = e.GetPosition(this);
+            double factor   = zoomOut ? 1.0 - ZoomStep : 1.0 + ZoomStep;
+            double newZoom  = Math.Clamp(ZoomLevel * factor, MinZoom, MaxZoom);
+
+            // Anchor zoom to the mouse position.
+            OffsetX   = mousePos.X - (mousePos.X - OffsetX) * (newZoom / ZoomLevel);
+            OffsetY   = mousePos.Y - (mousePos.Y - OffsetY) * (newZoom / ZoomLevel);
+            ZoomLevel = newZoom;
+            ClampOffsets();
+            e.Handled = true;
+        }
     }
 
     private void OnMouseMove(object sender, MouseEventArgs e)
@@ -271,5 +302,6 @@ public sealed class ZoomPanCanvas : ContentControl
         var ctrl = (ZoomPanCanvas)d;
         ctrl._translate.X = ctrl.OffsetX;
         ctrl._translate.Y = ctrl.OffsetY;
+        ctrl.PanChanged?.Invoke(ctrl, EventArgs.Empty);
     }
 }

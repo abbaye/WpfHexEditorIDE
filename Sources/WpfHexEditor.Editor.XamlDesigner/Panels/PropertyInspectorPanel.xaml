@@ -262,12 +262,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Value" Width="160">
-                        <GridViewColumn.CellTemplateSelector>
-                            <!-- Assigned in code-behind via PropertyEditorTemplateSelector -->
-                            <ContentControl x:Name="ValueTemplateSelector"/>
-                        </GridViewColumn.CellTemplateSelector>
-                    </GridViewColumn>
+                    <GridViewColumn x:Name="ValueColumn" Header="Value" Width="160"/>
                 </GridView>
             </ListView.View>
         </ListView>

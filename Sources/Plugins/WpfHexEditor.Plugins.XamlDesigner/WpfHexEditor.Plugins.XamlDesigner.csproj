@@ -40,7 +40,7 @@
   <!-- Copy compiled plugin to App Plugins directory after build -->
   <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
     <PropertyGroup>
-      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json"

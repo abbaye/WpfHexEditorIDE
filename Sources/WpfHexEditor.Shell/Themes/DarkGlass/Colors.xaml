@@ -428,8 +428,15 @@
     <SolidColorBrush x:Key="XD_HistoryCurrentMarkerBrush"       Color="#007ACC"/>
     <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#252525"/>
     <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#88BBDD"/>
+    <!-- Binding Inspector -->
+    <SolidColorBrush x:Key="XD_BindingValidForeground"          Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="XD_BindingErrorForeground"          Color="#F44747"/>
+    <SolidColorBrush x:Key="XD_BindingPathForeground"           Color="#9CDCFE"/>
+    <!-- Live Visual Tree -->
+    <SolidColorBrush x:Key="XD_LiveTreeBackground"              Color="#1E1E28"/>
+    <SolidColorBrush x:Key="XD_LiveTreeSelectionBrush"          Color="#3F5FBF"/>
+    <SolidColorBrush x:Key="XD_LiveTreeHighlightBrush"          Color="#264F78"/>
 
-    <!-- CE_Rect* / TE_Rect* â€” Rectangular (block) selection brushes -->
     <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF8C00"/>
     <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8C00"/>
     <SolidColorBrush x:Key="TE_DragCaret"           Color="#FFFF8C00"/>

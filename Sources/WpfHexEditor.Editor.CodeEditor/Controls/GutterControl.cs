@@ -174,18 +174,9 @@ internal sealed class GutterControl : FrameworkElement
 
     #region Mouse interaction
 
-    /// <summary>
-    /// When <c>true</c>, a double-click is required to toggle a fold region.
-    /// Set by the host <see cref="CodeEditor"/> from its <c>FoldToggleOnDoubleClick</c> DP.
-    /// </summary>
-    internal bool ToggleOnDoubleClick { get; set; }
-
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
         if (_engine == null || e.ChangedButton != MouseButton.Left)
-            return;
-
-        if (ToggleOnDoubleClick && e.ClickCount != 2)
             return;
 
         var pos = e.GetPosition(this);

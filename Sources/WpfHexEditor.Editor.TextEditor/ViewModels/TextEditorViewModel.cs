@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using WpfHexEditor.Editor.Core.Undo;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.Services;
 
@@ -31,15 +32,32 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     private SyntaxDefinition? _syntaxDefinition;
     private RegexSyntaxHighlighter? _highlighter;
 
-    // Incremental max-width tracking (P1-TE-01) — O(1) on growth, O(n) only on shrink
+    // Incremental max-width tracking (P1-TE-01) â€” O(1) on growth, O(n) only on shrink
     private int _cachedMaxLineLength;
 
     // Background highlight pipeline (P1-TE-06)
     private CancellationTokenSource? _highlightCts;
     private readonly SynchronizationContext? _syncContext = SynchronizationContext.Current;
 
-    // Undo/redo
-    private readonly UndoRedoStack _undoRedo = new();
+    // Undo/redo — shared UndoEngine from Editor.Core.
+    private readonly UndoEngine _undoEngine = new() { MaxHistorySize = 1000 };
+
+    // -----------------------------------------------------------------------
+    // Constructor
+    // -----------------------------------------------------------------------
+
+    internal TextEditorViewModel()
+    {
+        // Propagate engine state changes to IsDirty and command properties.
+        _undoEngine.StateChanged += (_, _) =>
+        {
+            IsDirty = !_undoEngine.IsAtSavePoint;
+            OnPropertyChanged(nameof(CanUndo));
+            OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(UndoCount));
+            OnPropertyChanged(nameof(RedoCount));
+        };
+    }
 
     // -----------------------------------------------------------------------
     // Caret / selection
@@ -117,8 +135,14 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
     public string CaretStatus => $"Ln {_caretLine + 1}, Col {_caretColumn + 1}";
 
-    public bool CanUndo => _undoRedo.CanUndo;
-    public bool CanRedo => _undoRedo.CanRedo;
+    public bool CanUndo    => _undoEngine.CanUndo;
+    public bool CanRedo    => _undoEngine.CanRedo;
+    public int  UndoCount  => _undoEngine.UndoCount;
+    public int  RedoCount  => _undoEngine.RedoCount;
+
+    /// <summary>Opens a named undo transaction; dispose the returned scope to commit it atomically.</summary>
+    public WpfHexEditor.Editor.Core.Undo.TransactionScope BeginUndoTransaction(string description)
+        => _undoEngine.BeginTransaction(description);
 
     /// <summary>Maximum line length in characters (O(1) lookup, updated incrementally).</summary>
     public int MaxLineLength => _cachedMaxLineLength;
@@ -134,13 +158,13 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
     // Per-line highlight cache: null means "needs recompute".
-    // List<T> uses doubling strategy → O(n) total copy work vs O(n²) for chunk-64 Array.Resize.
-    // List element assignment is atomic for reference types → safe for concurrent background writes.
+    // List<T> uses doubling strategy â†’ O(n) total copy work vs O(nÂ²) for chunk-64 Array.Resize.
+    // List element assignment is atomic for reference types â†’ safe for concurrent background writes.
     private readonly List<IReadOnlyList<ColoredSpan>?> _highlightCache = new(256);
 
     /// <summary>
     /// Returns cached highlight spans for <paramref name="lineIndex"/>.
-    /// Returns empty immediately if not yet computed — caller should invoke
+    /// Returns empty immediately if not yet computed â€” caller should invoke
     /// <see cref="ScheduleHighlightAsync"/> to populate in the background.
     /// </summary>
     public IReadOnlyList<ColoredSpan> GetHighlightedSpans(int lineIndex)
@@ -150,7 +174,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
         GrowHighlightCacheIfNeeded(lineIndex);
 
-        // Return cached result (may be null → render plain, background will fill later).
+        // Return cached result (may be null â†’ render plain, background will fill later).
         return _highlightCache[lineIndex] ?? [];
     }
 
@@ -175,7 +199,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Schedules syntax highlighting for the visible range (and a ±20-line buffer) on a
+    /// Schedules syntax highlighting for the visible range (and a Â±20-line buffer) on a
     /// background thread. Visible lines are highlighted first. Cancels any in-flight task.
     /// When complete, raises <see cref="HighlightsComputed"/> on the UI thread.
     /// </summary>
@@ -187,7 +211,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _highlightCts = new CancellationTokenSource();
         var token = _highlightCts.Token;
 
-        // Extend buffer — pre-warm nearby lines for smooth scrolling
+        // Extend buffer â€” pre-warm nearby lines for smooth scrolling
         int bufStart = Math.Max(0, firstVisible - 20);
         int bufEnd   = Math.Min(_lines.Count - 1, lastVisible + 20);
         if (bufEnd < bufStart) return;
@@ -215,7 +239,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
         Task.Run(() =>
         {
-            // Pass 1 — visible range first (lowest latency)
+            // Pass 1 â€” visible range first (lowest latency)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
                 int li = indices[i];
@@ -225,7 +249,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                     cache[li] = result;
             }
 
-            // Pass 2 — buffer lines (smoother pre-fetch for upcoming scroll)
+            // Pass 2 â€” buffer lines (smoother pre-fetch for upcoming scroll)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
                 int li = indices[i];
@@ -256,12 +280,12 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _lines.Clear();
         _lines.AddRange(SplitLines(text));
         if (_lines.Count == 0) _lines.Add(string.Empty);
-        if (clearUndoHistory) _undoRedo.Clear();
+        if (clearUndoHistory) _undoEngine.Reset();
         IsDirty = false;
         _caretLine = 0;
         _caretColumn = 0;
         _selAnchorLine = -1;
-        // Single O(n) scan at load time — acceptable cost
+        // Single O(n) scan at load time â€” acceptable cost
         RebuildMaxLineLength();
         InvalidateHighlightCache();
         OnPropertyChanged(nameof(Lines));
@@ -309,10 +333,10 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             int splitLine   = _caretLine; // capture before increment
             _lines[_caretLine] = before;
             _lines.Insert(_caretLine + 1, after);
-            _undoRedo.Push(edit);
+            _undoEngine.Push(edit);
             _caretLine++;
             _caretColumn = 0;
-            // Newline splits line — both halves are shorter; max may have decreased
+            // Newline splits line â€” both halves are shorter; max may have decreased
             OnLineLengthMayHaveShrunk();
             InvalidateHighlightCache(splitLine);
         }
@@ -321,12 +345,11 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             var newLine = line.Insert(col, c.ToString());
             var edit    = new TextEdit(TextEditType.Insert, _caretLine, col, c.ToString(), line, newLine);
             _lines[_caretLine] = newLine;
-            _undoRedo.Push(edit);
+            _undoEngine.Push(edit);
             _caretColumn = col + 1;
             OnLineLengthGrew(_caretLine);
             InvalidateHighlightLine(_caretLine);
         }
-        IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
     }
@@ -344,13 +367,13 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             var newLine = line.Remove(col, 1);
             var edit    = new TextEdit(TextEditType.Delete, _caretLine, col, line[col].ToString(), line, newLine);
             _lines[_caretLine] = newLine;
-            _undoRedo.Push(edit);
+            _undoEngine.Push(edit);
             _caretColumn = col;
             OnLineLengthMayHaveShrunk();
         }
         else if (_caretLine > 0)
         {
-            // Merge with previous line — merged line can be longer than either half
+            // Merge with previous line â€” merged line can be longer than either half
             var prevLine  = _lines[_caretLine - 1];
             var curLine   = _lines[_caretLine];
             var merged    = prevLine + curLine;
@@ -358,18 +381,16 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             int mergeLine = _caretLine - 1; // line that absorbs content
             _lines[_caretLine - 1] = merged;
             _lines.RemoveAt(_caretLine);
-            _undoRedo.Push(edit);
+            _undoEngine.Push(edit);
             _caretLine--;
             _caretColumn = prevLine.Length;
             OnLineLengthGrew(mergeLine); // merged line may be longer than previous max
             InvalidateHighlightCache(mergeLine);
-            IsDirty = true;
             OnPropertyChanged(nameof(Lines));
             OnPropertyChanged(nameof(LineCount));
             return;
         }
         InvalidateHighlightLine(_caretLine);
-        IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
     }
@@ -387,7 +408,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             var newLine = line.Remove(col, 1);
             var edit    = new TextEdit(TextEditType.Delete, _caretLine, col, line[col].ToString(), line, newLine);
             _lines[_caretLine] = newLine;
-            _undoRedo.Push(edit);
+            _undoEngine.Push(edit);
             OnLineLengthMayHaveShrunk();
         }
         else if (_caretLine < _lines.Count - 1)
@@ -397,16 +418,14 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             var edit     = new TextEdit(TextEditType.DeleteLine, _caretLine + 1, 0, "\n", nextLine, string.Empty);
             _lines[_caretLine] = merged;
             _lines.RemoveAt(_caretLine + 1);
-            _undoRedo.Push(edit);
+            _undoEngine.Push(edit);
             OnLineLengthGrew(_caretLine); // merged line may be longer than previous max
             InvalidateHighlightCache(_caretLine);
-            IsDirty = true;
             OnPropertyChanged(nameof(Lines));
             OnPropertyChanged(nameof(LineCount));
             return;
         }
         InvalidateHighlightLine(_caretLine);
-        IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
     }
@@ -417,36 +436,53 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
     public void Undo()
     {
-        if (!_undoRedo.CanUndo) return;
-        var edit = _undoRedo.Undo();
-        ApplyEditInverse(edit);
-        if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
-            InvalidateHighlightCache(edit.Line);
-        else
-            InvalidateHighlightLine(_caretLine);
-        OnLineLengthMayHaveShrunk(); // conservative: undo can shrink lines
-        IsDirty = _undoRedo.CanUndo;
+        if (!_undoEngine.CanUndo) return;
+        var entry = _undoEngine.TryUndo();
+        if (entry is null) return;
+
+        if (entry is WpfHexEditor.Editor.Core.Undo.CompositeUndoEntry composite)
+        {
+            for (int i = composite.Children.Count - 1; i >= 0; i--)
+                if (composite.Children[i] is TextEdit ce) ApplyEditInverse(ce);
+        }
+        else if (entry is TextEdit edit)
+        {
+            ApplyEditInverse(edit);
+            if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
+                InvalidateHighlightCache(edit.Line);
+            else
+                InvalidateHighlightLine(_caretLine);
+        }
+
+        OnLineLengthMayHaveShrunk();
+        // IsDirty + CanUndo/CanRedo are updated by the StateChanged handler in the constructor.
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
-        OnPropertyChanged(nameof(CanUndo));
-        OnPropertyChanged(nameof(CanRedo));
     }
 
     public void Redo()
     {
-        if (!_undoRedo.CanRedo) return;
-        var edit = _undoRedo.Redo();
-        ApplyEdit(edit);
-        if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
-            InvalidateHighlightCache(edit.Line);
-        else
-            InvalidateHighlightLine(_caretLine);
-        OnLineLengthMayHaveShrunk(); // conservative: redo can both grow and shrink
-        IsDirty = true;
+        if (!_undoEngine.CanRedo) return;
+        var entry = _undoEngine.TryRedo();
+        if (entry is null) return;
+
+        if (entry is WpfHexEditor.Editor.Core.Undo.CompositeUndoEntry composite)
+        {
+            foreach (var child in composite.Children)
+                if (child is TextEdit ce) ApplyEdit(ce);
+        }
+        else if (entry is TextEdit edit)
+        {
+            ApplyEdit(edit);
+            if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
+                InvalidateHighlightCache(edit.Line);
+            else
+                InvalidateHighlightLine(_caretLine);
+        }
+
+        OnLineLengthMayHaveShrunk();
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
-        OnPropertyChanged(nameof(CanUndo));
-        OnPropertyChanged(nameof(CanRedo));
     }
 
     private void ApplyEdit(TextEdit edit)
@@ -465,7 +501,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 break;
             case TextEditType.NewLine:
                 // OldText = "before" (prefix up to col), NewText = "after" (suffix from col).
-                // Restore both halves explicitly — OldText[col..] would always be "" and is wrong.
+                // Restore both halves explicitly â€” OldText[col..] would always be "" and is wrong.
                 _lines[edit.Line] = edit.OldText ?? string.Empty;
                 _lines.Insert(edit.Line + 1, edit.NewText ?? string.Empty);
                 _caretLine++;
@@ -482,7 +518,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             case TextEditType.Replace:
             {
                 // Redo a multi-line selection delete.
-                // edit.Text    = selected text (\n-separated) — tells us how many lines to remove.
+                // edit.Text    = selected text (\n-separated) â€” tells us how many lines to remove.
                 // At redo time the lines have been restored by the undo, so we re-merge them.
                 var parts   = edit.Text.Split('\n');
                 int endLine = edit.Line + parts.Length - 1;
@@ -515,19 +551,27 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 _caretColumn = edit.Column + edit.Text.Length;
                 break;
             case TextEditType.NewLine:
-                var before = _lines[edit.Line];
-                var after  = _lines.Count > edit.Line + 1 ? _lines[edit.Line + 1] : string.Empty;
-                _lines[edit.Line] = before + after;
+                // Use stored OldText/NewText instead of reading live _lines.
+                // Equivalent for sequential LIFO undo but explicit and safe.
+                _lines[edit.Line] = (edit.OldText ?? string.Empty) + (edit.NewText ?? string.Empty);
                 if (_lines.Count > edit.Line + 1)
                     _lines.RemoveAt(edit.Line + 1);
-                _caretColumn = before.Length;
+                _caretColumn = (edit.OldText ?? string.Empty).Length;
                 break;
             case TextEditType.DeleteLine:
-                _lines[edit.Line - 1] = edit.OldText ?? string.Empty;
-                _lines.Insert(edit.Line, edit.NewText ?? string.Empty);
+            {
+                // At undo time (LIFO): _lines[edit.Line - 1] = part1 + edit.OldText (merged).
+                // Restore part1 by stripping edit.OldText from the end, then re-insert the line.
+                var mergedLine  = _lines[edit.Line - 1];
+                int stripLength = (edit.OldText ?? string.Empty).Length;
+                _lines[edit.Line - 1] = mergedLine.Length >= stripLength
+                    ? mergedLine[..^stripLength]
+                    : string.Empty;
+                _lines.Insert(edit.Line, edit.OldText ?? string.Empty);
                 _caretLine   = edit.Line;
                 _caretColumn = 0;
                 break;
+            }
 
             case TextEditType.Replace:
             {
@@ -606,7 +650,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             endCol      = Math.Min(endCol,   line.Length);
             var deleted = line[startCol..endCol];
             var newLine = line[..startCol] + line[endCol..];
-            _undoRedo.Push(new TextEdit(TextEditType.Delete, startLine, startCol, deleted, line, newLine));
+            _undoEngine.Push(new TextEdit(TextEditType.Delete, startLine, startCol, deleted, line, newLine));
             _lines[startLine] = newLine;
         }
         else
@@ -621,7 +665,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             // Push a replace edit storing the merged line in OldText so that
             // ApplyEditInverse can reconstruct all original lines without reading
             // stale _lines state.
-            _undoRedo.Push(new TextEdit(TextEditType.Replace, startLine, startCol,
+            _undoEngine.Push(new TextEdit(TextEditType.Replace, startLine, startCol,
                 GetSelectedText(), merged, null));
 
             _lines[startLine] = merged;
@@ -633,7 +677,6 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         ClearSelection();
         InvalidateHighlightCache(startLine);
         OnLineLengthMayHaveShrunk(); // deletion always removes content
-        IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
         OnPropertyChanged(nameof(CanUndo));
@@ -646,8 +689,13 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     public void InsertText(string text)
     {
         if (_isReadOnly) return;
-        if (HasSelection) DeleteSelectedText();
-        foreach (var c in text) InsertChar(c);
+        if (string.IsNullOrEmpty(text)) return;
+        // Wrap in a transaction so paste/multi-char insert is one undo step.
+        using (_undoEngine.BeginTransaction("Paste"))
+        {
+            if (HasSelection) DeleteSelectedText();
+            foreach (var c in text) InsertChar(c);
+        }
     }
 
     public void ClearSelection()
@@ -683,17 +731,17 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         encoding ??= Encoding.UTF8;
         var text = await File.ReadAllTextAsync(filePath, encoding, ct);
 
-        // SplitLines is pure computation (no WPF access) — safe on background thread.
+        // SplitLines is pure computation (no WPF access) â€” safe on background thread.
         // This prevents the UI thread from being blocked on large file parsing.
         var splitLines = await Task.Run(() => SplitLines(text).ToList(), ct);
 
-        // UI-thread section: minimal work — only a List<string> swap
+        // UI-thread section: minimal work â€” only a List<string> swap
         FilePath = filePath;
         Encoding = encoding;
         _lines.Clear();
         _lines.AddRange(splitLines);
         if (_lines.Count == 0) _lines.Add(string.Empty);
-        _undoRedo.Clear();
+        _undoEngine.Reset();
         IsDirty = false;
         _caretLine = 0;
         _caretColumn = 0;
@@ -712,7 +760,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     {
         await File.WriteAllTextAsync(filePath, GetText(), _encoding, ct);
         FilePath = filePath;
-        IsDirty = false;
+        _undoEngine.MarkSaved();   // StateChanged fires → IsDirty = false
     }
 
     // -----------------------------------------------------------------------
@@ -721,7 +769,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
     // -- Max-width incremental tracking (P1-TE-01) -------------------------
 
-    /// <summary>O(1) — called when a line grows (insert, merge).</summary>
+    /// <summary>O(1) â€” called when a line grows (insert, merge).</summary>
     private void OnLineLengthGrew(int lineIndex)
     {
         if (lineIndex >= 0 && lineIndex < _lines.Count)
@@ -731,13 +779,13 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         }
     }
 
-    /// <summary>O(n) — called only when a line may have shrunk (delete, split, paste-delete).</summary>
+    /// <summary>O(n) â€” called only when a line may have shrunk (delete, split, paste-delete).</summary>
     private void OnLineLengthMayHaveShrunk()
     {
         _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;
     }
 
-    /// <summary>Full O(n) rebuild — used at initial load only.</summary>
+    /// <summary>Full O(n) rebuild â€” used at initial load only.</summary>
     private void RebuildMaxLineLength()
     {
         _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;
@@ -779,7 +827,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
 internal enum TextEditType { Insert, Delete, NewLine, DeleteLine, Replace }
 
-internal sealed class TextEdit
+internal sealed class TextEdit : WpfHexEditor.Editor.Core.Undo.IUndoEntry
 {
     public TextEditType Type    { get; }
     public int          Line    { get; }
@@ -787,6 +835,15 @@ internal sealed class TextEdit
     public string       Text    { get; }
     public string?      OldText { get; }
     public string?      NewText { get; }
+
+    // IUndoEntry
+    public string   Description => $"{Type} L{Line}:{Column}";
+    public long     Revision    { get; set; }
+    public DateTime Timestamp   { get; } = DateTime.UtcNow;
+
+    public bool TryMerge(WpfHexEditor.Editor.Core.Undo.IUndoEntry next,
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out WpfHexEditor.Editor.Core.Undo.IUndoEntry? merged)
+    { merged = null; return false; }
 
     public TextEdit(TextEditType type, int line, int column, string text, string? oldText = null, string? newText = null)
     {
@@ -799,24 +856,3 @@ internal sealed class TextEdit
     }
 }
 
-internal sealed class UndoRedoStack
-{
-    private const int MaxStack = 1000;
-    private readonly Stack<TextEdit> _undo = new();
-    private readonly Stack<TextEdit> _redo = new();
-
-    public bool CanUndo => _undo.Count > 0;
-    public bool CanRedo => _redo.Count > 0;
-
-    public void Push(TextEdit edit)
-    {
-        _redo.Clear();
-        if (_undo.Count >= MaxStack) { /* drop oldest — stacks can't remove bottom */ }
-        _undo.Push(edit);
-    }
-
-    public TextEdit Undo() { var e = _undo.Pop(); _redo.Push(e); return e; }
-    public TextEdit Redo() { var e = _redo.Pop(); _undo.Push(e); return e; }
-
-    public void Clear() { _undo.Clear(); _redo.Clear(); }
-}

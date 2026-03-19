@@ -36,7 +36,7 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool    _showWhitespace      = false;
     private bool    _showLineNumbers     = true;
     private bool    _enableFolding            = true;
-    private bool    _foldToggleOnDoubleClick  = false;
+    private bool    _foldToggleOnDoubleClick  = true;
     private bool    _showScopeGuides     = true;
     private bool    _enableMultiCaret    = true;
     private bool    _enableIntelliSense       = true;
@@ -152,6 +152,18 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _codeLensVisibleKinds;
         set { _codeLensVisibleKinds = value; Notify(); }
+    }
+
+    private int  _maxUndoHistory      = 500;
+
+    /// <summary>
+    /// Maximum number of undo steps retained in memory. Oldest entries are silently
+    /// trimmed when the limit is exceeded. Clamped to [10, 5000].
+    /// </summary>
+    public int MaxUndoHistory
+    {
+        get => _maxUndoHistory;
+        set { _maxUndoHistory = Math.Clamp(value, 10, 5000); Notify(); }
     }
 
     private bool _enableWordHighlight = true;

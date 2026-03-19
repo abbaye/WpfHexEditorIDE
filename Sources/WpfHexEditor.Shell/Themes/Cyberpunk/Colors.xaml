@@ -427,8 +427,15 @@
     <SolidColorBrush x:Key="XD_HistoryCurrentMarkerBrush"       Color="#FF007A"/>
     <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#14142A"/>
     <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#00FFCC"/>
+    <!-- Binding Inspector -->
+    <SolidColorBrush x:Key="XD_BindingValidForeground"          Color="#00FF9C"/>
+    <SolidColorBrush x:Key="XD_BindingErrorForeground"          Color="#FF0040"/>
+    <SolidColorBrush x:Key="XD_BindingPathForeground"           Color="#00CFFF"/>
+    <!-- Live Visual Tree -->
+    <SolidColorBrush x:Key="XD_LiveTreeBackground"              Color="#0A0A1A"/>
+    <SolidColorBrush x:Key="XD_LiveTreeSelectionBrush"          Color="#6A00D4"/>
+    <SolidColorBrush x:Key="XD_LiveTreeHighlightBrush"          Color="#1A003A"/>
 
-    <!-- CE_Rect* / TE_Rect* â€” Rectangular (block) selection brushes -->
     <!-- Cyberpunk: cyan rect selection, magenta drag caret -->
     <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF00FF"/>
     <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF00FF"/>

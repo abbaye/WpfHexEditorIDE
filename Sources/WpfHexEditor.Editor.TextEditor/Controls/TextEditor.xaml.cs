@@ -38,6 +38,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     private CancellationTokenSource? _cts         = null; // reserved for future async operations
     private TextLinkAdorner?         _linkAdorner = null;
 
+    // -- Context menu dynamic headers ---
+    private MenuItem? _undoMenuItem;
+    private MenuItem? _redoMenuItem;
+
     // -- ISearchTarget -------------------------------------------------------
     private readonly List<(int Line, int Col)> _searchMatches = new();
     private int    _searchCurrentIndex = -1;
@@ -101,13 +105,28 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         cm.Items.Add(new MenuItem { Header = "_Copy",       InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8C8") });
         cm.Items.Add(new MenuItem { Header = "_Paste",      InputGestureText = "Ctrl+V", Command = ApplicationCommands.Paste,     CommandTarget = Viewport, Icon = MakeMenuIcon("\uE9F5") });
         cm.Items.Add(new Separator());
-        cm.Items.Add(new MenuItem { Header = "_Undo",       InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") });
-        cm.Items.Add(new MenuItem { Header = "_Redo",       InputGestureText = "Ctrl+Y", Command = ApplicationCommands.Redo,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") });
+        _undoMenuItem = new MenuItem { Header = "_Undo", InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") };
+        _redoMenuItem = new MenuItem { Header = "_Redo", InputGestureText = "Ctrl+Y/Ctrl+Shift+Z", Command = ApplicationCommands.Redo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") };
+        cm.Items.Add(_undoMenuItem);
+        cm.Items.Add(_redoMenuItem);
         cm.Items.Add(new Separator());
         cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
         cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
 
+        // Update undo/redo headers dynamically with step count when menu opens.
+        cm.Opened += (_, _) =>
+        {
+            int undoCount = _vm.UndoCount;
+            int redoCount = _vm.RedoCount;
+            _undoMenuItem.Header = undoCount > 0 ? $"_Undo ({undoCount})" : "_Undo";
+            _redoMenuItem.Header = redoCount > 0 ? $"_Redo ({redoCount})" : "_Redo";
+        };
+
         Viewport.ContextMenu = cm;
+
+        // Ctrl+Shift+Z → Redo (VS-standard alternative shortcut).
+        Viewport.InputBindings.Add(new KeyBinding(ApplicationCommands.Redo,
+            new KeyGesture(Key.Z, ModifierKeys.Control | ModifierKeys.Shift)));
 
         // Cut — enabled when normal or rectangular selection is active.
         Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Cut,
@@ -319,7 +338,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         Copy();
         if (_vm.HasSelection)
         {
-            _vm.DeleteSelectedText();
+            using (_vm.BeginUndoTransaction("Cut"))
+                _vm.DeleteSelectedText();
             RefreshCommands();
         }
     }

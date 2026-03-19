@@ -149,6 +149,13 @@ public sealed class DesignCanvas : Border
     public event EventHandler? SelectedElementChanged;
 
     /// <summary>
+    /// Raised after a XAML render completes and <see cref="DesignRoot"/> is stable
+    /// (fires inside <c>DispatcherPriority.Loaded</c>, after the UIElement mapper builds).
+    /// Subscribe here — not to <c>XamlChanged</c> — to safely walk the visual tree.
+    /// </summary>
+    public event EventHandler<UIElement?>? DesignRendered;
+
+    /// <summary>
     /// Wires the DesignInteractionService and enables interactive adorners.
     /// </summary>
     public void EnableInteraction(DesignInteractionService service)
@@ -306,6 +313,8 @@ public sealed class DesignCanvas : Border
                     _mapper.Build(uidMap, uiResult);
                     if (prevUid >= 0)
                         SelectElementByUid(prevUid, suppressEvent: true);
+                    // Notify subscribers that DesignRoot is now stable and the visual tree is walkable.
+                    DesignRendered?.Invoke(this, DesignRoot);
                 }, System.Windows.Threading.DispatcherPriority.Loaded);
 
                 RenderError?.Invoke(this, null);

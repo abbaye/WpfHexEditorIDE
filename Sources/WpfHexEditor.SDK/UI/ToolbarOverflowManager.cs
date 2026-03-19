@@ -55,7 +55,7 @@ public sealed class ToolbarOverflowManager
     private readonly FrameworkElement   _toolbarContainer;
     private readonly FrameworkElement   _alwaysVisiblePanel;
     private readonly ButtonBase         _overflowButton;
-    private readonly ContextMenu        _overflowMenu;
+    private readonly ContextMenu?       _overflowMenu;
     private readonly FrameworkElement[] _groups;
 
     /// <summary>
@@ -88,7 +88,7 @@ public sealed class ToolbarOverflowManager
         FrameworkElement    toolbarContainer,
         FrameworkElement    alwaysVisiblePanel,
         ButtonBase          overflowButton,
-        ContextMenu         overflowMenu,
+        ContextMenu?        overflowMenu,
         FrameworkElement[]  groupsInCollapseOrder,
         FrameworkElement[]? leftFixedElements = null)
     {
@@ -197,6 +197,9 @@ public sealed class ToolbarOverflowManager
     /// </summary>
     public void SyncMenuVisibility()
     {
+        // No overflow menu configured for this panel — nothing to sync.
+        if (_overflowMenu is null) return;
+
         // Build a lookup: group name → is collapsed
         var collapsed = new System.Collections.Generic.Dictionary<string, bool>(_groups.Length);
         foreach (var g in _groups)
