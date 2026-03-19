@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Forest/Colors.xaml" />
+        <ResourceDictionary Source="Dark/Menu.xaml" />
+        <ResourceDictionary Source="Dark/TabControl.xaml" />
+        <ResourceDictionary Source="Dark/ContentControls.xaml" />
+        <ResourceDictionary Source="PanelCommon.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

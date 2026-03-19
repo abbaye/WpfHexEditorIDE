@@ -17,14 +17,29 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
     private static readonly IReadOnlyDictionary<string, string> ThemeMap =
         new Dictionary<string, string>
         {
-            { "Dark",            "DarkTheme"         },
-            { "Light",           "Generic"            },
-            { "VS2022 Dark",     "VS2022DarkTheme"    },
-            { "Dark Glass",      "DarkGlassTheme"     },
-            { "Visual Studio",   "VisualStudioTheme"  },
-            { "Cyberpunk",       "CyberpunkTheme"     },
-            { "Minimal",         "MinimalTheme"       },
-            { "Office",          "OfficeTheme"        },
+            // Dark IDE
+            { "Dark",              "DarkTheme"             },
+            { "VS2022 Dark",       "VS2022DarkTheme"       },
+            { "Visual Studio",     "VisualStudioTheme"     },
+            // Dark Atmospheric
+            { "Dark Glass",        "DarkGlassTheme"        },
+            { "Cyberpunk",         "CyberpunkTheme"        },
+            { "Synthwave '84",     "Synthwave84Theme"      },
+            { "Matrix",            "MatrixTheme"           },
+            // Dark Legends
+            { "Nord",              "NordTheme"             },
+            { "Dracula",           "DraculaTheme"          },
+            { "Gruvbox Dark",      "GruvboxDarkTheme"      },
+            { "Catppuccin Mocha",  "CatppuccinMochaTheme"  },
+            { "Tokyo Night",       "TokyoNightTheme"       },
+            // Light
+            { "Light",             "Generic"               },
+            { "Office",            "OfficeTheme"           },
+            { "Catppuccin Latte",  "CatppuccinLatteTheme"  },
+            // Special
+            { "Minimal",           "MinimalTheme"          },
+            { "Forest",            "ForestTheme"           },
+            { "High Contrast",     "HighContrastTheme"     },
         };
 
     public event EventHandler? Changed;

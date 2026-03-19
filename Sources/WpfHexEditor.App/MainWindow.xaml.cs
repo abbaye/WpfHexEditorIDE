@@ -5693,14 +5693,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Themes
     // -----------------------------------------------------------------------
 
-    private void OnDarkTheme(object sender, RoutedEventArgs e)         => ApplyTheme("DarkTheme.xaml",         "Dark");
-    private void OnLightTheme(object sender, RoutedEventArgs e)        => ApplyTheme("Generic.xaml",           "Light");
-    private void OnVS2022DarkTheme(object sender, RoutedEventArgs e)   => ApplyTheme("VS2022DarkTheme.xaml",   "VS2022 Dark");
-    private void OnDarkGlassTheme(object sender, RoutedEventArgs e)    => ApplyTheme("DarkGlassTheme.xaml",    "Dark Glass");
-    private void OnVisualStudioTheme(object sender, RoutedEventArgs e) => ApplyTheme("VisualStudioTheme.xaml", "Visual Studio");
-    private void OnCyberpunkTheme(object sender, RoutedEventArgs e)    => ApplyTheme("CyberpunkTheme.xaml",    "Cyberpunk");
-    private void OnMinimalTheme(object sender, RoutedEventArgs e)      => ApplyTheme("MinimalTheme.xaml",      "Minimal");
-    private void OnOfficeTheme(object sender, RoutedEventArgs e)       => ApplyTheme("OfficeTheme.xaml",       "Office");
+    private void OnDarkTheme(object sender, RoutedEventArgs e)             => ApplyTheme("DarkTheme.xaml",             "Dark");
+    private void OnLightTheme(object sender, RoutedEventArgs e)            => ApplyTheme("Generic.xaml",               "Light");
+    private void OnVS2022DarkTheme(object sender, RoutedEventArgs e)       => ApplyTheme("VS2022DarkTheme.xaml",       "VS2022 Dark");
+    private void OnDarkGlassTheme(object sender, RoutedEventArgs e)        => ApplyTheme("DarkGlassTheme.xaml",        "Dark Glass");
+    private void OnVisualStudioTheme(object sender, RoutedEventArgs e)     => ApplyTheme("VisualStudioTheme.xaml",     "Visual Studio");
+    private void OnCyberpunkTheme(object sender, RoutedEventArgs e)        => ApplyTheme("CyberpunkTheme.xaml",        "Cyberpunk");
+    private void OnMinimalTheme(object sender, RoutedEventArgs e)          => ApplyTheme("MinimalTheme.xaml",          "Minimal");
+    private void OnOfficeTheme(object sender, RoutedEventArgs e)           => ApplyTheme("OfficeTheme.xaml",           "Office");
+    private void OnNordTheme(object sender, RoutedEventArgs e)             => ApplyTheme("NordTheme.xaml",             "Nord");
+    private void OnDraculaTheme(object sender, RoutedEventArgs e)          => ApplyTheme("DraculaTheme.xaml",          "Dracula");
+    private void OnGruvboxDarkTheme(object sender, RoutedEventArgs e)      => ApplyTheme("GruvboxDarkTheme.xaml",      "Gruvbox Dark");
+    private void OnCatppuccinMochaTheme(object sender, RoutedEventArgs e)  => ApplyTheme("CatppuccinMochaTheme.xaml",  "Catppuccin Mocha");
+    private void OnTokyoNightTheme(object sender, RoutedEventArgs e)       => ApplyTheme("TokyoNightTheme.xaml",       "Tokyo Night");
+    private void OnSynthwave84Theme(object sender, RoutedEventArgs e)      => ApplyTheme("Synthwave84Theme.xaml",      "Synthwave '84");
+    private void OnMatrixTheme(object sender, RoutedEventArgs e)           => ApplyTheme("MatrixTheme.xaml",           "Matrix");
+    private void OnForestTheme(object sender, RoutedEventArgs e)           => ApplyTheme("ForestTheme.xaml",           "Forest");
+    private void OnHighContrastTheme(object sender, RoutedEventArgs e)     => ApplyTheme("HighContrastTheme.xaml",     "High Contrast");
+    private void OnCatppuccinLatteTheme(object sender, RoutedEventArgs e)  => ApplyTheme("CatppuccinLatteTheme.xaml",  "Catppuccin Latte");
 
     private void SyncAllHexEditorThemes()
     {

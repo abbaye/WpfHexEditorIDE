@@ -627,6 +627,9 @@
 
                     <!-- ═══════════ Theme ═══════════ -->
                     <MenuItem Header="_Theme">
+
+                        <!-- ─── Dark IDE ─── -->
+                        <MenuItem Header="─── Dark IDE ───" IsEnabled="False" />
                         <MenuItem Header="_Dark" Click="OnDarkTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE708;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -634,21 +637,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Light" Click="OnLightTheme">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE706;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
                         <MenuItem Header="VS2022 Dar_k" Click="OnVS2022DarkTheme">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Dark _Glass" Click="OnDarkGlassTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -662,6 +651,17 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+
+                        <!-- ─── Dark Atmospheric ─── -->
+                        <Separator />
+                        <MenuItem Header="─── Dark Atmospheric ───" IsEnabled="False" />
+                        <MenuItem Header="Dark _Glass" Click="OnDarkGlassTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="_Cyberpunk" Click="OnCyberpunkTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -669,10 +669,66 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <Separator />
-                        <MenuItem Header="_Minimal" Click="OnMinimalTheme">
+                        <MenuItem Header="Synthwave '8_4" Click="OnSynthwave84Theme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Matri_x / Terminal" Click="OnMatrixTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!-- ─── Dark Legends ─── -->
+                        <Separator />
+                        <MenuItem Header="─── Dark Legends ───" IsEnabled="False" />
+                        <MenuItem Header="_Nord" Click="OnNordTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Dr_acula" Click="OnDraculaTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Gruvbo_x Dark" Click="OnGruvboxDarkTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Catppuccin _Mocha" Click="OnCatppuccinMochaTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Tokyo _Night" Click="OnTokyoNightTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!-- ─── Light ─── -->
+                        <Separator />
+                        <MenuItem Header="─── Light ───" IsEnabled="False" />
+                        <MenuItem Header="_Light" Click="OnLightTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE706;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -680,6 +736,38 @@
                         <MenuItem Header="_Office" Click="OnOfficeTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Catppuccin _Latte" Click="OnCatppuccinLatteTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!-- ─── Special ─── -->
+                        <Separator />
+                        <MenuItem Header="─── Special ───" IsEnabled="False" />
+                        <MenuItem Header="_Minimal" Click="OnMinimalTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Forest" Click="OnForestTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_High Contrast" Click="OnHighContrastTheme">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -1081,23 +1169,14 @@
                                     </Button>
                                 </DataTemplate>
                             </appCtrl:EditorToolbarItemTemplateSelector.ButtonTemplate>
-                            <!-- Dropdown button (simplified: button with context menu) -->
-                            <appCtrl:EditorToolbarItemTemplateSelector.DropdownTemplate>
+                            <!-- Toggle button — renders as ToggleButton with checked visual state -->
+                            <appCtrl:EditorToolbarItemTemplateSelector.ToggleTemplate>
                                 <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
-                                    <Button Command="{Binding Command}"
-                                            IsEnabled="{Binding IsEnabled}"
-                                            ToolTip="{Binding Tooltip}"
-                                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                                        <Button.ContextMenu>
-                                            <ContextMenu ItemsSource="{Binding DropdownItems}">
-                                                <ContextMenu.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
-                                                        <MenuItem Header="{Binding Label}"
-                                                                  Command="{Binding Command}"/>
-                                                    </DataTemplate>
-                                                </ContextMenu.ItemTemplate>
-                                            </ContextMenu>
-                                        </Button.ContextMenu>
+                                    <ToggleButton IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                  Command="{Binding Command}"
+                                                  IsEnabled="{Binding IsEnabled}"
+                                                  ToolTip="{Binding Tooltip}"
+                                                  Style="{DynamicResource DockDarkToolBarToggleButtonStyle}">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Icon}"
                                                        FontFamily="Segoe MDL2 Assets" FontSize="14"
@@ -1105,9 +1184,62 @@
                                                        Margin="0,0,4,0"/>
                                             <TextBlock Text="{Binding Label}"
                                                        VerticalAlignment="Center"/>
-                                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets"
-                                                       FontSize="8" VerticalAlignment="Center"
-                                                       Margin="2,0,0,0"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                </DataTemplate>
+                            </appCtrl:EditorToolbarItemTemplateSelector.ToggleTemplate>
+                            <!-- Dropdown button: uses DockToolBarPodDropDownButtonStyle which adds ▾ automatically.
+                                 Left-click opens the ContextMenu via OnToolBarDropDownClick handler.
+                                 ContextMenu supports icons (via ItemTemplate) and IsSeparator (via ItemContainerStyle). -->
+                            <appCtrl:EditorToolbarItemTemplateSelector.DropdownTemplate>
+                                <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
+                                    <Button Click="OnToolBarDropDownClick"
+                                            IsEnabled="{Binding IsEnabled}"
+                                            ToolTip="{Binding Tooltip}"
+                                            Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
+                                        <Button.ContextMenu>
+                                            <ContextMenu ItemsSource="{Binding DropdownItems}">
+                                                <!-- Icon + label in the menu item header -->
+                                                <ContextMenu.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Icon}"
+                                                                       FontFamily="Segoe MDL2 Assets"
+                                                                       FontSize="11"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,0,4,0"/>
+                                                            <TextBlock Text="{Binding Label}"
+                                                                       VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ContextMenu.ItemTemplate>
+                                                <!-- Command wiring + IsSeparator support -->
+                                                <ContextMenu.ItemContainerStyle>
+                                                    <Style TargetType="MenuItem">
+                                                        <Setter Property="Command" Value="{Binding Command}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate TargetType="MenuItem">
+                                                                            <Separator/>
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ContextMenu.ItemContainerStyle>
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                        <!-- Content: icon + label (chevron ▾ added by DockToolBarPodDropDownButtonStyle) -->
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding Label}"
+                                                       VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                 </DataTemplate>
