@@ -45,6 +45,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor;
@@ -337,6 +338,18 @@ public sealed class XamlDesignerSplitHost : Grid,
             (_, _) => Redo(),
             (_, e) => { e.CanExecute = CanRedo; e.Handled = true; }));
 
+        // -- Deselect when clicking outside the design canvas (Phase E3) ----
+        // A click anywhere in the ZoomPanCanvas viewport that does NOT land inside
+        // _designCanvas should clear the active selection.
+        _zoomPan.PreviewMouseLeftButtonDown += (_, e) =>
+        {
+            if (e.OriginalSource is DependencyObject src
+                && !IsDescendantOf(src, _designCanvas))
+            {
+                _designCanvas.SelectElement(null);
+            }
+        };
+
         // -- Wire toolbox drop (Phase 4) ------------------------------------
         _zoomPan.Drop  += OnZoomPanDrop;
         _zoomPan.DragOver += (_, e) =>
@@ -360,6 +373,9 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         // -- Phase B: wire property provider to selection changes ------------
         _designCanvas.SelectedElementChanged += (_, _) => UpdateIdePropertyProvider();
+
+        // -- P3: refresh F4 after every successful re-render (code edits, auto-preview, undo/redo).
+        _designCanvas.DesignRendered += OnDesignRendered;
 
         // -- Phase F5: build search overlay (floats over design pane) --------
         _searchBar = BuildSearchBar(out _searchBox);
@@ -700,6 +716,9 @@ public sealed class XamlDesignerSplitHost : Grid,
             _                          => rawXaml
         };
         ApplyXamlToCode(restored);
+
+        // P2: sync F4 after undo restores element attributes.
+        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     /// <summary>
@@ -717,6 +736,9 @@ public sealed class XamlDesignerSplitHost : Grid,
             _                          => rawXaml
         };
         ApplyXamlToCode(restored);
+
+        // P2: sync F4 after redo re-applies element attributes.
+        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     // ── Overkill Undo/Redo — history changed notification ─────────────────────
@@ -751,6 +773,9 @@ public sealed class XamlDesignerSplitHost : Grid,
         var patched  = _syncService.ApplyOperation(rawXaml, e.Operation);
         _undoManager.PushEntry(new SingleDesignUndoEntry(e.Operation));
         ApplyXamlToCode(patched);
+
+        // P2: sync F4 after canvas re-renders with updated element position/size.
+        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     // ── Phase 5 — Alignment batch undo ────────────────────────────────────────
@@ -770,6 +795,9 @@ public sealed class XamlDesignerSplitHost : Grid,
         // Sync code editor — canvas UIElements are already moved by AlignmentService.
         var rawXaml = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
         ApplyXamlToCode(_syncService.ApplyBatchRedo(rawXaml, ops));
+
+        // P2: sync F4 after alignment patches are applied.
+        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     // ── Phase 4 — Toolbox drag-drop onto ZoomPanCanvas ───────────────────────
@@ -868,6 +896,21 @@ public sealed class XamlDesignerSplitHost : Grid,
     private bool IsDesignVisible()
         => _viewMode is ViewMode.Split or ViewMode.DesignOnly;
 
+    /// <summary>
+    /// Returns true when <paramref name="obj"/> is <paramref name="ancestor"/> or
+    /// any descendant of it in the visual tree.
+    /// </summary>
+    private static bool IsDescendantOf(DependencyObject obj, DependencyObject ancestor)
+    {
+        var current = obj;
+        while (current is not null)
+        {
+            if (ReferenceEquals(current, ancestor)) return true;
+            current = System.Windows.Media.VisualTreeHelper.GetParent(current);
+        }
+        return false;
+    }
+
     // ── Phase B — Property provider update ────────────────────────────────────
 
     /// <summary>
@@ -882,8 +925,23 @@ public sealed class XamlDesignerSplitHost : Grid,
     }
 
     /// <summary>
+    /// P3: Refreshes the F4 panel after every successful canvas re-render
+    /// (triggered by code edits, auto-preview, undo, and redo).
+    /// Guard: skip when a programmatic code↔canvas selection sync is in progress
+    /// to avoid double-refresh during caret navigation.
+    /// </summary>
+    private void OnDesignRendered(object? sender, UIElement? root)
+    {
+        if (_isSyncingSelection) return;
+        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
+    }
+
+    /// <summary>
     /// Callback supplied to <see cref="XamlDesignPropertyProvider"/>: applies a
-    /// single attribute patch to the code editor and registers a snapshot undo entry.
+    /// single attribute patch to the code editor and registers a lightweight
+    /// attribute-diff undo entry (P8) instead of a full snapshot.
+    /// After applying the patch the F4 panel is refreshed on the next dispatcher
+    /// frame so it reflects the newly rendered element instance (P1).
     /// </summary>
     private void PatchPropertyFromProvider(string propName, string? val)
     {
@@ -896,8 +954,17 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         if (string.Equals(before, after, StringComparison.Ordinal)) return;
 
-        _undoManager.PushEntry(new SnapshotDesignUndoEntry(before, after, $"Set {propName}"));
+        // P8: lightweight attribute-diff undo instead of a full XAML snapshot.
+        var valueBefore = _syncService.ReadAttributeValue(before, uid, propName);
+        var op          = DesignOperation.CreatePropertyChange(uid, propName, valueBefore, val);
+        _undoManager.PushEntry(new SingleDesignUndoEntry(op));
+
         ApplyXamlToCode(after);
+
+        // P1: refresh F4 after canvas re-renders and rebuilds the UID map.
+        // DispatcherPriority.Loaded fires after DesignCanvas.RenderXaml posts its own
+        // Loaded-priority work item, guaranteeing the UID map and selection are stable.
+        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     // ── View mode & layout ────────────────────────────────────────────────────
