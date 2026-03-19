@@ -5,7 +5,7 @@
   "description": "Markdown lightweight markup language document.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "text-editor",
+  "preferredEditor": "markdown-editor",
   "detection": {
     "isTextFormat": true,
     "required": false

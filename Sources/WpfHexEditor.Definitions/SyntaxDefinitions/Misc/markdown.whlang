@@ -76,6 +76,26 @@
       "type": "FrontMatter",
       "pattern": "^---[\\s\\S]*?^---",
       "colorKey": "TE_Directive"
+    },
+    {
+      "type": "MermaidFence",
+      "pattern": "^```mermaid",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "EmojiShortcode",
+      "pattern": ":[a-zA-Z0-9_+\\-]+:",
+      "colorKey": "TE_Literal"
+    },
+    {
+      "type": "HtmlTag",
+      "pattern": "</?[a-zA-Z][a-zA-Z0-9]*(?:\\s[^>]*)?>",
+      "colorKey": "TE_Punctuation"
+    },
+    {
+      "type": "TaskListItem",
+      "pattern": "^\\s*[-*+]\\s+\\[[ xX]\\]\\s",
+      "colorKey": "TE_Operator"
     }
   ]
 }

@@ -612,6 +612,13 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     // Scroll sync
     // -----------------------------------------------------------------------
 
+    /// <summary>
+    /// Raised whenever the scroll position of the editor's main scroll viewer changes.
+    /// External consumers (e.g. MarkdownEditorHost sync-scroll) can subscribe to this
+    /// event instead of accessing the internal ScrollView directly.
+    /// </summary>
+    public event EventHandler<ScrollChangedEventArgs>? ViewportScrollChanged;
+
     private void ScrollView_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (_vm is null || Viewport.LineHeight <= 0) return;
@@ -623,6 +630,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         // Adjust the viewport height to fill the scroll area
         Viewport.Width  = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
         Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+
+        ViewportScrollChanged?.Invoke(this, e);
     }
 
     // -----------------------------------------------------------------------

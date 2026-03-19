@@ -45,6 +45,7 @@ using WpfHexEditor.Editor.TileEditor;
 using WpfHexEditor.Editor.AudioViewer;
 using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
+using WpfHexEditor.Editor.MarkdownEditor;
 using WpfHexEditor.Editor.XamlDesigner;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
@@ -458,6 +459,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Register editor factories (doc-proj-* dispatcher)
         _editorRegistry.Register(new TblEditorFactory());
         _editorRegistry.Register(new CodeEditorFactory());
+        _editorRegistry.Register(new MarkdownEditorFactory()); // must be before TextEditorFactory
         _editorRegistry.Register(new TextEditorFactory());
         _editorRegistry.Register(new ImageViewerFactory());
         _editorRegistry.Register(new EntropyViewerFactory());
