@@ -3,7 +3,8 @@
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
     Theme: Global theme via XD_* and DockBackgroundBrush tokens (DynamicResource)
-    ResourceDictionaries: WpfHexEditor.Docking.Wpf/Themes/{Theme}/Colors.xaml
+    ResourceDictionaries: WpfHexEditor.Shell/Themes/{Theme}/Colors.xaml
+    Phase D: Rich property editor DataTemplates added (Thickness, Enum, Numeric, Color, Font).
 -->
 
 <UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Panels.PropertyInspectorPanel"
@@ -11,6 +12,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.XamlDesigner.ViewModels"
              xmlns:models="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Models"
+             xmlns:editors="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Controls.Editors"
              Background="{DynamicResource DockBackgroundBrush}">
 
     <UserControl.Resources>
@@ -115,6 +117,42 @@
             <CheckBox IsChecked="{Binding Value, Mode=TwoWay}"
                       IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"
                       Foreground="{DynamicResource XD_PropertyValueForeground}"/>
+        </DataTemplate>
+
+        <!-- Property row: Thickness editor template (Phase D) -->
+        <DataTemplate x:Key="ThicknessPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <editors:ThicknessEditor Value="{Binding Value, Mode=TwoWay}"
+                                     IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"/>
+        </DataTemplate>
+
+        <!-- Property row: Enum ComboBox template (Phase D) -->
+        <DataTemplate x:Key="EnumPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <ComboBox ItemsSource="{Binding AllowedValues}"
+                      SelectedItem="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"
+                      Background="{DynamicResource DockMenuBackgroundBrush}"
+                      Foreground="{DynamicResource XD_PropertyValueForeground}"
+                      BorderBrush="{DynamicResource DockBorderBrush}"
+                      BorderThickness="1"
+                      Height="22" FontSize="11"/>
+        </DataTemplate>
+
+        <!-- Property row: Numeric slider+textbox template (Phase D) -->
+        <DataTemplate x:Key="NumericPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <editors:NumericSliderEditor Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"/>
+        </DataTemplate>
+
+        <!-- Property row: Color picker template (Phase D) -->
+        <DataTemplate x:Key="ColorPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <editors:ColorPickerEditor Value="{Binding Value, Mode=TwoWay}"
+                                       IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"/>
+        </DataTemplate>
+
+        <!-- Property row: Font family picker template (Phase D) -->
+        <DataTemplate x:Key="FontPropertyTemplate" DataType="{x:Type models:PropertyInspectorEntry}">
+            <editors:FontPickerEditor FamilyName="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource BoolToVis}}"/>
         </DataTemplate>
     </UserControl.Resources>
 

@@ -15,6 +15,7 @@
 //     and pushes the DesignOperation onto the undo stack.
 // ==========================================================
 
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -37,6 +38,10 @@ public sealed class DesignInteractionService
     private double _startCanvasTop;
     private bool   _isInMove;
     private int    _activeUid = -1;
+
+    // Multi-element move state
+    private Point _multiMoveStart;
+    private readonly Dictionary<int, (Thickness StartMargin, double StartLeft, double StartTop)> _multiMoveStates = new();
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -117,6 +122,85 @@ public sealed class DesignInteractionService
 
         var op = DesignOperation.CreateMove(_activeUid, before, after);
         OperationCommitted?.Invoke(this, new DesignOperationCommittedEventArgs(op, element));
+    }
+
+    // ── Multi-element Move API ────────────────────────────────────────────────
+
+    /// <summary>Starts a coordinated move for multiple elements.</summary>
+    public void OnMultiMoveStart(IReadOnlyList<FrameworkElement> elements, Point canvasPosition)
+    {
+        _multiMoveStart = canvasPosition;
+        _multiMoveStates.Clear();
+        foreach (var el in elements)
+        {
+            int uid = GetUidFromTag(el);
+            if (uid >= 0)
+                _multiMoveStates[uid] = CaptureElementState(el);
+        }
+    }
+
+    /// <summary>Called on each mouse move during a multi-element drag-move operation.</summary>
+    public void OnMultiMoveDelta(IReadOnlyList<FrameworkElement> elements, Point canvasPosition)
+    {
+        if (_multiMoveStates.Count == 0) return;
+
+        double dx = canvasPosition.X - _multiMoveStart.X;
+        double dy = canvasPosition.Y - _multiMoveStart.Y;
+
+        foreach (var el in elements)
+        {
+            int uid = GetUidFromTag(el);
+            if (!_multiMoveStates.TryGetValue(uid, out var state)) continue;
+
+            if (el.Parent is Canvas)
+            {
+                Canvas.SetLeft(el, (double.IsNaN(state.StartLeft)  ? 0 : state.StartLeft)  + dx);
+                Canvas.SetTop(el,  (double.IsNaN(state.StartTop)   ? 0 : state.StartTop)   + dy);
+            }
+            else
+            {
+                el.Margin = new Thickness(
+                    state.StartMargin.Left + dx,
+                    state.StartMargin.Top  + dy,
+                    state.StartMargin.Right,
+                    state.StartMargin.Bottom);
+            }
+        }
+    }
+
+    /// <summary>Called when the user releases the mouse after a multi-element drag-move.</summary>
+    public void OnMultiMoveCompleted(IReadOnlyList<FrameworkElement> elements)
+    {
+        if (_multiMoveStates.Count == 0) return;
+
+        foreach (var el in elements)
+        {
+            int uid = GetUidFromTag(el);
+            if (!_multiMoveStates.TryGetValue(uid, out var state)) continue;
+
+            var before = new Dictionary<string, string?>();
+            var after  = new Dictionary<string, string?>();
+
+            if (el.Parent is Canvas)
+            {
+                before["Canvas.Left"] = DoubleToXaml(state.StartLeft);
+                before["Canvas.Top"]  = DoubleToXaml(state.StartTop);
+                after["Canvas.Left"]  = DoubleToXaml(Canvas.GetLeft(el));
+                after["Canvas.Top"]   = DoubleToXaml(Canvas.GetTop(el));
+            }
+            else
+            {
+                before["Margin"] = ThicknessToString(state.StartMargin);
+                after["Margin"]  = ThicknessToString(el.Margin);
+            }
+
+            if (IsSameState(before, after)) continue;
+
+            var op = DesignOperation.CreateMove(uid, before, after);
+            OperationCommitted?.Invoke(this, new DesignOperationCommittedEventArgs(op, el));
+        }
+
+        _multiMoveStates.Clear();
     }
 
     // ── Resize API ────────────────────────────────────────────────────────────
@@ -203,6 +287,25 @@ public sealed class DesignInteractionService
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Extracts the numeric UID from an element's Tag string (format: "xd_N").
+    /// Returns -1 when the tag is absent or malformed.
+    /// </summary>
+    private static int GetUidFromTag(FrameworkElement el)
+    {
+        if (el.Tag is not string tag) return -1;
+        const string prefix = "xd_";
+        if (!tag.StartsWith(prefix, StringComparison.Ordinal)) return -1;
+        return int.TryParse(tag.AsSpan(prefix.Length), out int uid) ? uid : -1;
+    }
+
+    /// <summary>
+    /// Snapshots the current position state of an element for later delta computation.
+    /// </summary>
+    private static (Thickness StartMargin, double StartLeft, double StartTop) CaptureElementState(
+        FrameworkElement el)
+        => (el.Margin, Canvas.GetLeft(el), Canvas.GetTop(el));
 
     private static string ThicknessToString(Thickness t) =>
         t.Left  == t.Right  && t.Left == t.Top && t.Left == t.Bottom

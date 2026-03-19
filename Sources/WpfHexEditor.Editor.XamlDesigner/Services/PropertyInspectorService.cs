@@ -11,11 +11,16 @@
 //     Pure C# service — no WPF rendering dependency beyond DependencyObject.
 //     Uses DependencyPropertyDescriptor + reflection for DP discovery.
 //     SetPropertyValue handles type conversion for TextBox input.
+//     Phase D — attached property discovery: scans Grid/Canvas/DockPanel/
+//     ScrollViewer for parent-attached DPs when the element has a typed parent.
+//     Phase D — AllowedValues: enum DPs are enriched with Enum.GetValues() so
+//     the PropertyInspectorPanel can render a ComboBox editor automatically.
 // ==========================================================
 
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Services;
@@ -85,16 +90,21 @@ public sealed class PropertyInspectorService
 
                 result.Add(new PropertyInspectorEntry
                 {
-                    PropertyName = name,
-                    CategoryName = GetCategory(name),
-                    PropertyType = dp.PropertyType,
-                    DP           = dp,
-                    Value        = FormatValue(currentValue),
-                    IsDefault    = isDefault,
-                    IsReadOnly   = descriptor.IsReadOnly
+                    PropertyName  = name,
+                    CategoryName  = GetCategory(name),
+                    PropertyType  = dp.PropertyType,
+                    DP            = dp,
+                    Value         = FormatValue(currentValue),
+                    IsDefault     = isDefault,
+                    IsReadOnly    = descriptor.IsReadOnly,
+                    // Phase D (D5): populate allowed values for enum DPs.
+                    AllowedValues = BuildAllowedValues(dp.PropertyType)
                 });
             }
         }
+
+        // Phase D: discover attached properties from common container-parent types.
+        AppendAttachedProperties(obj, result, visited);
 
         // Sort: category order (Layout → Appearance → Misc), then name alphabetically.
         result.Sort((a, b) =>
@@ -107,6 +117,70 @@ public sealed class PropertyInspectorService
         });
 
         return result;
+    }
+
+    // ── Phase D: Attached property discovery ──────────────────────────────────
+
+    /// <summary>
+    /// Discovers parent-attached DPs from Grid, Canvas, DockPanel, and ScrollViewer
+    /// when the element has a typed parent that matches one of those sources.
+    /// </summary>
+    private static void AppendAttachedProperties(
+        DependencyObject obj,
+        List<PropertyInspectorEntry> result,
+        HashSet<string> visited)
+    {
+        if (obj is not FrameworkElement fe || fe.Parent is not DependencyObject parent)
+            return;
+
+        var attachedSources = new[] { typeof(Grid), typeof(Canvas), typeof(DockPanel), typeof(ScrollViewer) };
+
+        foreach (var sourceType in attachedSources)
+        {
+            // Only inspect when the parent is an instance of this source type.
+            if (!sourceType.IsInstanceOfType(parent))
+                continue;
+
+            AppendAttachedFromSource(obj, parent, sourceType, result, visited);
+        }
+    }
+
+    private static void AppendAttachedFromSource(
+        DependencyObject obj,
+        DependencyObject parent,
+        Type sourceType,
+        List<PropertyInspectorEntry> result,
+        HashSet<string> visited)
+    {
+        var fields = sourceType.GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(f => f.FieldType == typeof(DependencyProperty));
+
+        foreach (var field in fields)
+        {
+            if (field.GetValue(null) is not DependencyProperty dp) continue;
+            if (dp.ReadOnly) continue;
+
+            var displayName = $"{sourceType.Name}.{dp.Name}";
+            if (!visited.Add(displayName)) continue;
+
+            object? currentValue;
+            try   { currentValue = obj.GetValue(dp); }
+            catch { continue; }
+
+            var allowedValues = BuildAllowedValues(dp.PropertyType);
+
+            result.Add(new PropertyInspectorEntry
+            {
+                PropertyName  = displayName,
+                CategoryName  = "Layout (Attached)",
+                PropertyType  = dp.PropertyType,
+                DP            = dp,
+                Value         = FormatValue(currentValue),
+                IsDefault     = IsDefaultValue(obj, dp, currentValue),
+                IsReadOnly    = false,
+                AllowedValues = allowedValues
+            });
+        }
     }
 
     /// <summary>
@@ -172,6 +246,16 @@ public sealed class PropertyInspectorService
         double d when double.IsNaN(d) => "Auto",
         _      => value
     };
+
+    /// <summary>
+    /// Returns an ordered list of all enum values when <paramref name="type"/> is an enum;
+    /// otherwise returns null. Used to populate ComboBox editors in the Property Inspector.
+    /// </summary>
+    private static IReadOnlyList<object>? BuildAllowedValues(Type type)
+    {
+        if (!type.IsEnum) return null;
+        return Enum.GetValues(type).Cast<object>().ToList();
+    }
 
     private static object? Convert(object? value, Type targetType)
     {

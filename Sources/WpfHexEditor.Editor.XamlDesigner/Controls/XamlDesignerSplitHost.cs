@@ -3,6 +3,10 @@
 // File: XamlDesignerSplitHost.cs
 // Author: Derek Tremblay
 // Created: 2026-03-16
+// Updated: 2026-03-18 — Phase B: IPropertyProviderSource + XamlDesignPropertyProvider.
+//                       Phase C2: Arrow key nudge (1px / 10px with Shift).
+//                       Phase E4+E5: Rulers/Grid/Snap toggles + Cut/Copy/Paste toolbar + context menu.
+//                       Phase F3+F5: Copy/Paste/Duplicate/WrapIn + Ctrl+F element search bar.
 // Description:
 //     Main document editor for .xaml files.
 //     Hosts a CodeEditorSplitHost (code pane) and a ZoomPanCanvas-wrapped
@@ -24,6 +28,12 @@
 //     Phase 9 — DesignTimeXamlPreprocessor filters d:* from preview XAML.
 //     Phase 10 — AnimationPreviewService attached after canvas root is known.
 //     Phase 11 — Layout Mode Switcher (Design Right/Left/Bottom/Top, Ctrl+Shift+L).
+//     Phase B  — IPropertyProviderSource: XamlDesignPropertyProvider wired to F4 panel.
+//     Phase C2 — Arrow key nudge on canvas selection.
+//     Phase E4 — Rulers / Grid / Snap + Cut/Copy/Paste toolbar buttons.
+//     Phase E5 — Context menu extended with Cut/Copy/Paste/Duplicate/Wrap In.
+//     Phase F3 — Internal clipboard for XAML element copy/paste.
+//     Phase F5 — Ctrl+F element search overlay on the design canvas.
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -38,6 +48,7 @@ using System.Windows.Documents;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Editor.CodeEditor.Controls;
+using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
@@ -57,7 +68,8 @@ public sealed class XamlDesignerSplitHost : Grid,
     IOpenableDocument,
     IEditorPersistable,
     IStatusBarContributor,
-    IEditorToolbarContributor
+    IEditorToolbarContributor,
+    IPropertyProviderSource
 {
     // ── View mode ─────────────────────────────────────────────────────────────
 
@@ -131,6 +143,19 @@ public sealed class XamlDesignerSplitHost : Grid,
     // ── Phase 3 — Zoom toolbar ────────────────────────────────────────────────
 
     private readonly ZoomPanViewModel _zoomVm;
+
+    // ── Phase B — F4 property provider ────────────────────────────────────────
+
+    private readonly XamlDesignPropertyProvider _idePropertyProvider = new();
+
+    // ── Phase F3 — Internal XAML clipboard ────────────────────────────────────
+
+    private string? _clipboardXaml;
+
+    // ── Phase F5 — Element search overlay ─────────────────────────────────────
+
+    private Border?  _searchBar;
+    private TextBox? _searchBox;
 
     // ── Auto-preview debounce ─────────────────────────────────────────────────
 
@@ -242,6 +267,18 @@ public sealed class XamlDesignerSplitHost : Grid,
         _designCanvas.RenderError               += OnRenderError;
         _designCanvas.SelectedElementChanged    += OnDesignSelectionChanged;
 
+        // -- Phase B: wire property provider to selection changes ------------
+        _designCanvas.SelectedElementChanged += (_, _) => UpdateIdePropertyProvider();
+
+        // -- Phase F5: build search overlay (floats over design pane) --------
+        _searchBar = BuildSearchBar(out _searchBox);
+        _searchBar.HorizontalAlignment = HorizontalAlignment.Right;
+        _searchBar.VerticalAlignment   = VerticalAlignment.Top;
+        _searchBar.Margin              = new Thickness(0, 4, 4, 0);
+        _searchBar.Visibility          = Visibility.Collapsed;
+        Panel.SetZIndex(_searchBar, 100); // appear above splitter and panes
+        Children.Add(_searchBar);
+
         // -- Forward IDocumentEditor events from code pane ------------------
         _codeHost.ModifiedChanged  += (s, e) => ModifiedChanged?.Invoke(this, e);
         _codeHost.CanUndoChanged   += (s, e) => CanUndoChanged?.Invoke(this, e);
@@ -303,15 +340,31 @@ public sealed class XamlDesignerSplitHost : Grid,
     /// <summary>Exposes the undo manager for the History Panel plugin wiring.</summary>
     public DesignUndoManager UndoManager => _undoManager;
 
+    // ── IPropertyProviderSource ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the long-lived property provider that reflects the current canvas selection.
+    /// Called by the IDE when the active document tab changes.
+    /// </summary>
+    public IPropertyProvider? GetPropertyProvider() => _idePropertyProvider;
+
     // ── IOpenableDocument ─────────────────────────────────────────────────────
 
     async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
     {
         _filePath = filePath;
 
+        // Unsubscribe from any previous document before loading a new file.
+        if (_codeHost.PrimaryEditor.Document is { } prevDoc)
+            prevDoc.TextChanged -= OnDocumentTextChanged;
+
         // Delegate to the code host — it resolves the XAML language highlighter
         // internally via LanguageRegistry.Instance.GetLanguageForFile (CodeEditorSplitHost.OpenAsync).
         await ((IOpenableDocument)_codeHost).OpenAsync(filePath, ct);
+
+        // Subscribe to raw text changes for live auto-preview on every keystroke.
+        if (_codeHost.PrimaryEditor.Document is { } doc)
+            doc.TextChanged += OnDocumentTextChanged;
 
         // Trigger initial render after the file is loaded.
         if (_autoPreviewEnabled)
@@ -499,6 +552,18 @@ public sealed class XamlDesignerSplitHost : Grid,
         _previewTimer.Start();
     }
 
+    /// <summary>
+    /// Fires on every raw keystroke (document TextChanged), debouncing the preview.
+    /// This supplements OnCodeModified which only fires when the "is modified" flag
+    /// transitions (true→false or false→true), not on every edit.
+    /// </summary>
+    private void OnDocumentTextChanged(object? sender, WpfHexEditor.Editor.CodeEditor.Models.TextChangedEventArgs e)
+    {
+        if (!_autoPreviewEnabled) return;
+        _previewTimer.Stop();
+        _previewTimer.Start();
+    }
+
     private void OnPreviewTimerTick(object? sender, EventArgs e)
     {
         _previewTimer.Stop();
@@ -649,6 +714,38 @@ public sealed class XamlDesignerSplitHost : Grid,
         SelectedElementChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    // ── Phase B — Property provider update ────────────────────────────────────
+
+    /// <summary>
+    /// Notifies the IDE property provider of the current canvas selection.
+    /// Called every time the canvas raises SelectedElementChanged.
+    /// </summary>
+    private void UpdateIdePropertyProvider()
+    {
+        var el   = _designCanvas.SelectedElement as System.Windows.DependencyObject;
+        var name = el?.GetType().Name ?? "No selection";
+        _idePropertyProvider.SetTarget(el, name, PatchPropertyFromProvider);
+    }
+
+    /// <summary>
+    /// Callback supplied to <see cref="XamlDesignPropertyProvider"/>: applies a
+    /// single attribute patch to the code editor and registers a snapshot undo entry.
+    /// </summary>
+    private void PatchPropertyFromProvider(string propName, string? val)
+    {
+        var uid = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var before = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after  = _syncService.PatchElement(before, uid,
+                         new Dictionary<string, string?> { [propName] = val });
+
+        if (string.Equals(before, after, StringComparison.Ordinal)) return;
+
+        _undoManager.PushEntry(new SnapshotDesignUndoEntry(before, after, $"Set {propName}"));
+        ApplyXamlToCode(after);
+    }
+
     // ── View mode & layout ────────────────────────────────────────────────────
 
     private void ApplyViewMode(ViewMode mode)
@@ -776,6 +873,14 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         _splitter.Visibility = showSplit ? Visibility.Visible : Visibility.Collapsed;
 
+        // ── Position search bar over the design pane ──────────────────────────
+        if (_searchBar is not null)
+        {
+            SetRow(_searchBar,        GetRow(_zoomPan));
+            SetColumn(_searchBar,     GetColumn(_zoomPan));
+            SetColumnSpan(_searchBar, GetColumnSpan(_zoomPan));
+        }
+
         // ── Sync view mode toggle buttons ─────────────────────────────────────
         _btnCodeOnly.IsChecked   = _viewMode == ViewMode.CodeOnly;
         _btnSplit.IsChecked      = _viewMode == ViewMode.Split;
@@ -841,10 +946,14 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     /// <summary>
     /// Pushes updated XAML back into the code editor and triggers a preview refresh.
+    /// Stops the debounce timer first to prevent a double-render caused by the
+    /// document TextChanged event that LoadFromString raises internally.
     /// </summary>
     private void ApplyXamlToCode(string xaml)
     {
-        // Replace code editor content (triggers ModifiedChanged → preview timer).
+        // Stop the debounce timer before writing — we wrote the content ourselves,
+        // so the TextChanged event that fires next must not schedule another render.
+        _previewTimer.Stop();
         _codeHost.PrimaryEditor.Document?.LoadFromString(xaml);
         if (_autoPreviewEnabled)
             TriggerPreview();
@@ -970,6 +1079,24 @@ public sealed class XamlDesignerSplitHost : Grid,
         btnAlignTop.Click    += (_, _) => _alignVm.AlignTopCommand.Execute(null);
         btnAlignBottom.Click += (_, _) => _alignVm.AlignBottomCommand.Execute(null);
 
+        // ── Phase E4: View options group ─────────────────────────────────────
+        var btnRulers = MakeIconButton("\uE8B2", "Toggle rulers (Ctrl+R)");
+        var btnGrid   = MakeIconButton("\uE80A", "Toggle grid (Ctrl+G)");
+        var btnSnap   = MakeIconButton("\uE8C6", "Toggle snap (Ctrl+Shift+S)");
+
+        btnRulers.Click += (_, _) => { /* TODO Phase E4: toggle ruler overlay */ };
+        btnGrid.Click   += (_, _) => { /* TODO Phase E4: toggle design grid  */ };
+        btnSnap.Click   += (_, _) => { /* TODO Phase E4: toggle snap engine  */ };
+
+        // ── Phase E4: Edit group ─────────────────────────────────────────────
+        var btnCut   = MakeIconButton("\uE8C6", "Cut element (Ctrl+X)");
+        var btnCopy  = MakeIconButton("\uE8C8", "Copy element (Ctrl+C)");
+        var btnPaste = MakeIconButton("\uE77F", "Paste element (Ctrl+V)");
+
+        btnCut.Click   += (_, _) => CutElement();
+        btnCopy.Click  += (_, _) => CopyElement();
+        btnPaste.Click += (_, _) => PasteElement();
+
         // ── Error banner ─────────────────────────────────────────────────────
         errorText = new TextBlock
         {
@@ -1025,6 +1152,18 @@ public sealed class XamlDesignerSplitHost : Grid,
         leftStack.Children.Add(btnAlignRight);
         leftStack.Children.Add(btnAlignTop);
         leftStack.Children.Add(btnAlignBottom);
+
+        // View options group (Phase E4)
+        leftStack.Children.Add(MakeSeparator());
+        leftStack.Children.Add(btnRulers);
+        leftStack.Children.Add(btnGrid);
+        leftStack.Children.Add(btnSnap);
+
+        // Edit group (Phase E4)
+        leftStack.Children.Add(MakeSeparator());
+        leftStack.Children.Add(btnCut);
+        leftStack.Children.Add(btnCopy);
+        leftStack.Children.Add(btnPaste);
 
         DockPanel.SetDock(leftStack, Dock.Left);
         dp.Children.Add(leftStack);
@@ -1153,6 +1292,26 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         menu.Items.Add(MakeItem("\uE74D", "Delete",         new RelayCommand(_ => DeleteSelectedElement()),                                              "Del"));
         menu.Items.Add(new Separator());
+        menu.Items.Add(MakeItem("\uE8C6", "Cut",           new RelayCommand(_ => CutElement()),                                                         "Ctrl+X"));
+        menu.Items.Add(MakeItem("\uE8C8", "Copy",          new RelayCommand(_ => CopyElement()),                                                         "Ctrl+C"));
+        menu.Items.Add(MakeItem("\uE77F", "Paste",         new RelayCommand(_ => PasteElement()),                                                        "Ctrl+V"));
+        menu.Items.Add(MakeItem("\uE8A9", "Duplicate",     new RelayCommand(_ => DuplicateElement())));
+        menu.Items.Add(new Separator());
+
+        // Wrap In submenu (Phase E5)
+        var wrapMenu = new MenuItem { Header = "Wrap in" };
+        wrapMenu.SetResourceReference(MenuItem.ForegroundProperty, "DockMenuForegroundBrush");
+        foreach (var tag in new[] { "Border", "Grid", "StackPanel", "Canvas", "ScrollViewer" })
+        {
+            var tagCapture = tag;
+            var wrapItem   = new MenuItem { Header = tagCapture };
+            wrapItem.SetResourceReference(MenuItem.ForegroundProperty, "DockMenuForegroundBrush");
+            wrapItem.Click += (_, _) => WrapSelectedElement(tagCapture);
+            wrapMenu.Items.Add(wrapItem);
+        }
+        menu.Items.Add(wrapMenu);
+
+        menu.Items.Add(new Separator());
         menu.Items.Add(MakeItem("\uE898", "Bring to Front", new RelayCommand(_ => _alignVm.BringToFrontCommand.Execute(null)),                           "Alt+Home"));
         menu.Items.Add(MakeItem("\uE896", "Send to Back",   new RelayCommand(_ => _alignVm.SendToBackCommand.Execute(null)),                             "Alt+End"));
         menu.Items.Add(new Separator());
@@ -1270,6 +1429,306 @@ public sealed class XamlDesignerSplitHost : Grid,
         {
             DeleteSelectedElement();
             e.Handled = true;
+            return;
         }
+
+        // Phase F5 — Ctrl+F opens the element search bar when canvas has focus.
+        if (ctrl && !shift && e.Key == Key.F && _designCanvas.IsKeyboardFocusWithin)
+        {
+            OpenSearch();
+            e.Handled = true;
+            return;
+        }
+
+        // Phase C2 — Arrow key nudge (1px plain, 10px with Shift) on canvas selection.
+        if (_designCanvas.IsKeyboardFocusWithin && _designCanvas.SelectedElement is FrameworkElement nudgeEl)
+        {
+            var step = shift ? 10.0 : 1.0;
+            switch (e.Key)
+            {
+                case Key.Left:  NudgeElement(nudgeEl, -step, 0);   e.Handled = true; return;
+                case Key.Right: NudgeElement(nudgeEl,  step, 0);   e.Handled = true; return;
+                case Key.Up:    NudgeElement(nudgeEl, 0, -step);   e.Handled = true; return;
+                case Key.Down:  NudgeElement(nudgeEl, 0,  step);   e.Handled = true; return;
+            }
+        }
+    }
+
+    // ── Phase C2 — Arrow key nudge ────────────────────────────────────────────
+
+    /// <summary>
+    /// Moves the selected element by (dx, dy) pixels by synthesising a
+    /// move-start / delta / completed sequence on the interaction service,
+    /// which records the operation and generates an undo entry.
+    /// </summary>
+    private void NudgeElement(FrameworkElement el, double dx, double dy)
+    {
+        var uid = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var origin = new System.Windows.Point(0, 0);
+        _interactionService.OnMoveStart(el, origin, uid);
+        _interactionService.OnMoveDelta(el, new System.Windows.Point(dx, dy));
+        _interactionService.OnMoveCompleted(el);
+    }
+
+    // ── Phase F3 — Copy / Paste / Duplicate / Wrap In ─────────────────────────
+
+    /// <summary>Copies the selected element's XAML fragment to the internal clipboard.</summary>
+    private void CopyElement()
+    {
+        if (_designCanvas.SelectedElementUid < 0) return;
+        var raw  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var xdoc = System.Xml.Linq.XDocument.Parse(raw, System.Xml.Linq.LoadOptions.PreserveWhitespace);
+        var el   = FindXElementByUid(xdoc, _designCanvas.SelectedElementUid);
+        if (el is null) return;
+        _clipboardXaml = el.ToString();
+        System.Windows.Clipboard.SetText(_clipboardXaml);
+    }
+
+    /// <summary>Cuts the selected element (copy + delete).</summary>
+    private void CutElement()
+    {
+        CopyElement();
+        DeleteSelectedElement();
+    }
+
+    /// <summary>Pastes the internal clipboard XAML as a new sibling / last child of root.</summary>
+    private void PasteElement()
+    {
+        var text = _clipboardXaml ?? System.Windows.Clipboard.GetText();
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        var before = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after  = InsertXamlSnippet(before, text);
+        if (string.Equals(before, after, StringComparison.Ordinal)) return;
+
+        _undoManager.PushEntry(new SnapshotDesignUndoEntry(before, after, "Paste element"));
+        ApplyXamlToCode(after);
+    }
+
+    /// <summary>Duplicates the selected element in-place.</summary>
+    private void DuplicateElement()
+    {
+        CopyElement();
+        PasteElement();
+    }
+
+    /// <summary>
+    /// Wraps the selected element in a new container element (e.g. Border, Grid).
+    /// </summary>
+    private void WrapSelectedElement(string containerTag)
+    {
+        var uid = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var before = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after  = _syncService.WrapInContainer(before, uid, containerTag);
+        if (string.Equals(before, after, StringComparison.Ordinal)) return;
+
+        _undoManager.PushEntry(new SnapshotDesignUndoEntry(before, after, $"Wrap in {containerTag}"));
+        ApplyXamlToCode(after);
+    }
+
+    /// <summary>
+    /// Inserts <paramref name="snippet"/> as the last child of the root panel element.
+    /// Falls back to appending before the root closing tag when no panel is found.
+    /// </summary>
+    private static string InsertXamlSnippet(string rawXaml, string snippet)
+    {
+        if (string.IsNullOrWhiteSpace(rawXaml)) return rawXaml;
+        try
+        {
+            var doc  = System.Xml.Linq.XDocument.Parse(rawXaml, System.Xml.Linq.LoadOptions.PreserveWhitespace);
+            var root = doc.Root;
+            if (root is null) return rawXaml;
+
+            var parsed = System.Xml.Linq.XElement.Parse(snippet, System.Xml.Linq.LoadOptions.PreserveWhitespace);
+            root.Add(parsed);
+
+            var sb = new System.Text.StringBuilder();
+            using var w = System.Xml.XmlWriter.Create(sb, new System.Xml.XmlWriterSettings
+            {
+                OmitXmlDeclaration = true,
+                Indent             = false,
+                NewLineHandling    = System.Xml.NewLineHandling.None
+            });
+            doc.WriteTo(w);
+            w.Flush();
+            return sb.ToString();
+        }
+        catch
+        {
+            return rawXaml;
+        }
+    }
+
+    /// <summary>
+    /// Finds the <see cref="System.Xml.Linq.XElement"/> at the given pre-order UID
+    /// (mirrors DesignToXamlSyncService.FindUid but operates on an already-parsed document).
+    /// </summary>
+    private static System.Xml.Linq.XElement? FindXElementByUid(
+        System.Xml.Linq.XDocument doc, int uid)
+    {
+        if (doc.Root is null) return null;
+        int counter = 0;
+        return FindXElementByUidCore(doc.Root, uid, ref counter);
+    }
+
+    private static System.Xml.Linq.XElement? FindXElementByUidCore(
+        System.Xml.Linq.XElement el, int uid, ref int counter)
+    {
+        if (counter == uid) return el;
+        counter++;
+        foreach (var child in el.Elements())
+        {
+            var found = FindXElementByUidCore(child, uid, ref counter);
+            if (found is not null) return found;
+        }
+        return null;
+    }
+
+    // ── Phase F5 — Element search bar ─────────────────────────────────────────
+
+    /// <summary>Builds the collapsible search overlay placed at the top-right of the canvas area.</summary>
+    private Border BuildSearchBar(out TextBox searchBox)
+    {
+        searchBox = new TextBox { Width = 200, Height = 24, Margin = new Thickness(4) };
+        searchBox.SetResourceReference(TextBox.ForegroundProperty, "DockMenuForegroundBrush");
+        searchBox.SetResourceReference(TextBox.BackgroundProperty, "DockBackgroundBrush");
+
+        var localBox = searchBox; // capture for lambda
+        searchBox.TextChanged += (_, _) => SearchElements(localBox.Text);
+        searchBox.KeyDown     += (_, e) => { if (e.Key == Key.Escape) CloseSearch(); };
+
+        var closeBtn = new Button
+        {
+            Content         = "\uE711",
+            Width           = 22,
+            Background      = System.Windows.Media.Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            FontFamily      = new System.Windows.Media.FontFamily("Segoe MDL2 Assets")
+        };
+        closeBtn.SetResourceReference(System.Windows.Documents.TextElement.ForegroundProperty, "DockMenuForegroundBrush");
+        closeBtn.Click += (_, _) => CloseSearch();
+
+        var panel = new StackPanel { Orientation = Orientation.Horizontal };
+        panel.Children.Add(searchBox);
+        panel.Children.Add(closeBtn);
+
+        var border = new Border
+        {
+            CornerRadius    = new CornerRadius(3),
+            Padding         = new Thickness(2),
+            BorderThickness = new Thickness(1),
+            Child           = panel
+        };
+        border.SetResourceReference(Border.BackgroundProperty,   "DockMenuBackgroundBrush");
+        border.SetResourceReference(Border.BorderBrushProperty,  "DockBorderBrush");
+        return border;
+    }
+
+    /// <summary>Opens the search bar and moves focus to the search text box.</summary>
+    private void OpenSearch()
+    {
+        if (_searchBar is null) return;
+        _searchBar.Visibility = Visibility.Visible;
+        _searchBox?.Focus();
+    }
+
+    /// <summary>Hides the search bar and clears the search query.</summary>
+    private void CloseSearch()
+    {
+        if (_searchBar is null) return;
+        _searchBar.Visibility = Visibility.Collapsed;
+        if (_searchBox is not null) _searchBox.Text = string.Empty;
+    }
+
+    /// <summary>
+    /// Selects the first canvas element whose type name or x:Name contains <paramref name="query"/>.
+    /// Operates on the parsed XDocument to identify the target UID, then calls SelectElement.
+    /// </summary>
+    private void SearchElements(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query) || _designCanvas.DesignRoot is null) return;
+
+        var raw = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(raw)) return;
+
+        try
+        {
+            var doc = System.Xml.Linq.XDocument.Parse(raw, System.Xml.Linq.LoadOptions.PreserveWhitespace);
+            var uid = FindUidByNameQuery(doc, query);
+            if (uid < 0) return;
+
+            // Select the matching element on the canvas via UID.
+            SelectCanvasElementByUid(uid);
+        }
+        catch { /* swallow parse errors */ }
+    }
+
+    /// <summary>
+    /// Traverses the XDocument in pre-order and returns the UID of the first element
+    /// whose local name or x:Name attribute contains <paramref name="query"/> (case-insensitive).
+    /// </summary>
+    private static int FindUidByNameQuery(System.Xml.Linq.XDocument doc, string query)
+    {
+        if (doc.Root is null) return -1;
+        int counter = 0;
+        return FindUidByNameQueryCore(doc.Root, query, ref counter);
+    }
+
+    private static int FindUidByNameQueryCore(
+        System.Xml.Linq.XElement el, string query, ref int counter)
+    {
+        bool nameMatch = el.Name.LocalName.Contains(query, StringComparison.OrdinalIgnoreCase);
+        bool keyMatch  = (el.Attribute("{http://schemas.microsoft.com/winfx/2006/xaml}Name")?.Value
+                         ?? string.Empty).Contains(query, StringComparison.OrdinalIgnoreCase);
+
+        if (nameMatch || keyMatch) return counter;
+        counter++;
+
+        foreach (var child in el.Elements())
+        {
+            var found = FindUidByNameQueryCore(child, query, ref counter);
+            if (found >= 0) return found;
+        }
+        return -1;
+    }
+
+    /// <summary>
+    /// Selects the canvas UIElement that was mapped to the given UID during the last render.
+    /// Uses XamlElementMapper (exposed via DesignCanvas) to retrieve the UIElement.
+    /// </summary>
+    private void SelectCanvasElementByUid(int uid)
+    {
+        // Re-use the existing hit-test mapper by asking the canvas to select by UID.
+        // DesignCanvas.SelectElement(null) clears, but we need the mapper. Walk the
+        // visual tree to find an element whose Tag string is "xd_{uid}".
+        if (_designCanvas.DesignRoot is null) return;
+        var target = FindElementByTagUid(_designCanvas.DesignRoot, uid);
+        if (target is not null)
+            _designCanvas.SelectElement(target);
+    }
+
+    private static UIElement? FindElementByTagUid(UIElement root, int uid)
+    {
+        var tagKey = $"xd_{uid}";
+        return FindElementByTagUidCore(root, tagKey);
+    }
+
+    private static UIElement? FindElementByTagUidCore(DependencyObject node, string tagKey)
+    {
+        if (node is FrameworkElement fe && fe.Tag is string tag && tag == tagKey)
+            return fe;
+
+        int childCount = System.Windows.Media.VisualTreeHelper.GetChildrenCount(node);
+        for (int i = 0; i < childCount; i++)
+        {
+            var child  = System.Windows.Media.VisualTreeHelper.GetChild(node, i);
+            var result = FindElementByTagUidCore(child, tagKey);
+            if (result is not null) return result;
+        }
+        return null;
     }
 }

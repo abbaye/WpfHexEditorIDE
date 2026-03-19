@@ -225,7 +225,86 @@ public sealed class DesignToXamlSyncService
         }
     }
 
+    /// <summary>
+    /// Wraps the element at <paramref name="elementUid"/> inside a new container element.
+    /// Example: wraps a Button in a Border → &lt;Border&gt;&lt;Button .../&gt;&lt;/Border&gt;.
+    /// Returns <paramref name="rawXaml"/> unchanged on error or when element is not found.
+    /// </summary>
+    public string WrapInContainer(string rawXaml, int elementUid, string containerTag)
+    {
+        if (string.IsNullOrWhiteSpace(rawXaml) || string.IsNullOrWhiteSpace(containerTag))
+            return rawXaml;
+        try
+        {
+            var doc    = XDocument.Parse(rawXaml, LoadOptions.PreserveWhitespace);
+            var target = FindElementByUid(doc.Root, elementUid);
+            if (target?.Parent is null) return rawXaml;
+
+            // Use the same namespace as the document root so XAML parsers resolve it correctly.
+            var ns        = doc.Root!.Name.Namespace;
+            var container = new XElement(ns + containerTag, new XElement(target));
+            target.ReplaceWith(container);
+
+            return Serialize(doc);
+        }
+        catch
+        {
+            return rawXaml;
+        }
+    }
+
+    /// <summary>
+    /// Removes the container element at <paramref name="elementUid"/> and promotes its
+    /// children directly to the container's parent.
+    /// Property elements (names containing '.') are excluded from promotion.
+    /// Returns <paramref name="rawXaml"/> unchanged on error or when element is not found.
+    /// </summary>
+    public string UnwrapContainer(string rawXaml, int elementUid)
+    {
+        if (string.IsNullOrWhiteSpace(rawXaml)) return rawXaml;
+        try
+        {
+            var doc    = XDocument.Parse(rawXaml, LoadOptions.PreserveWhitespace);
+            var target = FindElementByUid(doc.Root, elementUid);
+            if (target?.Parent is null) return rawXaml;
+
+            // Collect UIElement children only (skip XAML property elements such as <Grid.RowDefinitions>).
+            var children = target.Elements()
+                .Where(e => !e.Name.LocalName.Contains('.'))
+                .Select(e => new XElement(e))   // clone before removal
+                .ToList();
+
+            // Insert promoted children at the target's position, then remove the container.
+            foreach (var child in children)
+                target.AddBeforeSelf(child);
+            target.Remove();
+
+            return Serialize(doc);
+        }
+        catch
+        {
+            return rawXaml;
+        }
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>Serializes an XDocument to a XAML-compatible string without an XML declaration.</summary>
+    private static string Serialize(XDocument doc)
+    {
+        var sb = new StringBuilder();
+        using var writer = System.Xml.XmlWriter.Create(
+            sb,
+            new System.Xml.XmlWriterSettings
+            {
+                OmitXmlDeclaration = true,
+                Indent             = false,
+                NewLineHandling    = System.Xml.NewLineHandling.None
+            });
+        doc.WriteTo(writer);
+        writer.Flush();
+        return sb.ToString();
+    }
 
     private static XElement? FindElementByUid(XElement? root, int uid)
     {

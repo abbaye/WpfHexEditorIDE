@@ -11,6 +11,9 @@
 // Architecture Notes:
 //     INPC. Uses ICollectionView for filtering + grouping.
 //     PropertyInspectorService handles reflection.
+//     Phase D — XamlPatchCallback: external code (XamlDesignerSplitHost) sets
+//     this property so every PropertyInspectorEntry edit is routed to the XAML
+//     source text via DesignToXamlSyncService.
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -53,6 +56,14 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
 
     /// <summary>Filtered and grouped view of all property entries.</summary>
     public ICollectionView PropertiesView { get; }
+
+    /// <summary>
+    /// Called when the user edits a property value in the inspector.
+    /// Propagates the change to the XAML source text.
+    /// Set by XamlDesignerSplitHost after panel wiring.
+    /// Signature: (propertyName, newStringValue).
+    /// </summary>
+    public Action<string, string?>? XamlPatchCallback { get; set; }
 
     /// <summary>
     /// The DependencyObject whose properties are displayed.
@@ -113,7 +124,12 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
 
         var entries = _service.GetProperties(_selectedObject);
         foreach (var entry in entries)
+        {
+            // Phase D: attach the XAML patch callback so every Value edit
+            // propagates to the XAML source text via XamlDesignerSplitHost.
+            entry.SetXamlPatchCallback(XamlPatchCallback);
             _allEntries.Add(entry);
+        }
 
         PropertiesView.Refresh();
     }

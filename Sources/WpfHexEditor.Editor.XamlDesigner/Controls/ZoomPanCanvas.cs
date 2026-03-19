@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Controls;
 
@@ -75,10 +76,20 @@ public sealed class ZoomPanCanvas : ContentControl
 
         ClipToBounds = true;
 
-        MouseWheel           += OnMouseWheel;
-        MouseDown            += OnMouseDown;
-        MouseMove            += OnMouseMove;
-        MouseUp              += OnMouseUp;
+        MouseWheel += OnMouseWheel;
+        MouseDown  += OnMouseDown;
+        MouseMove  += OnMouseMove;
+        MouseUp    += OnMouseUp;
+
+        // Clamp offsets whenever the host viewport is resized.
+        SizeChanged += (_, _) => ClampOffsets();
+
+        // Auto-fit content when the control first becomes visible.
+        Loaded += (_, _) =>
+        {
+            if (ActualWidth > 0 && Content is FrameworkElement)
+                Dispatcher.InvokeAsync(FitToContent, DispatcherPriority.Loaded);
+        };
     }
 
     // ── Properties ────────────────────────────────────────────────────────────
@@ -117,6 +128,30 @@ public sealed class ZoomPanCanvas : ContentControl
         ZoomLevel = Math.Clamp(Math.Min(scaleX, scaleY) * 0.9, MinZoom, MaxZoom);
         OffsetX   = 0;
         OffsetY   = 0;
+        ClampOffsets();
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>Clamps pan offsets so at least 40px of content remain visible.</summary>
+    private void ClampOffsets()
+    {
+        if (Content is not FrameworkElement content || ActualWidth <= 0 || ActualHeight <= 0)
+            return;
+        double cw = content.ActualWidth  * ZoomLevel;
+        double ch = content.ActualHeight * ZoomLevel;
+        const double margin = 40.0;
+        OffsetX = Math.Clamp(OffsetX, -(cw - margin), ActualWidth  - margin);
+        OffsetY = Math.Clamp(OffsetY, -(ch - margin), ActualHeight - margin);
+    }
+
+    /// <summary>Centers content in the viewport.</summary>
+    private void CenterContent()
+    {
+        if (Content is not FrameworkElement content || ActualWidth <= 0) return;
+        // Setting OffsetX/OffsetY triggers OnOffsetChanged which syncs transforms.
+        OffsetX = (ActualWidth  - content.ActualWidth  * ZoomLevel) / 2.0;
+        OffsetY = (ActualHeight - content.ActualHeight * ZoomLevel) / 2.0;
     }
 
     // ── Events ────────────────────────────────────────────────────────────────
@@ -139,16 +174,19 @@ public sealed class ZoomPanCanvas : ContentControl
             OffsetY = mousePos.Y - (mousePos.Y - OffsetY) * (newZoom / ZoomLevel);
 
             ZoomLevel = newZoom;
+            ClampOffsets();
             e.Handled = true;
         }
         else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
             OffsetX += e.Delta * 0.3;
+            ClampOffsets();
             e.Handled = true;
         }
         else
         {
             OffsetY += e.Delta * 0.3;
+            ClampOffsets();
             e.Handled = true;
         }
     }
@@ -174,6 +212,7 @@ public sealed class ZoomPanCanvas : ContentControl
         OffsetX += current.X - _panStart.X;
         OffsetY += current.Y - _panStart.Y;
         _panStart = current;
+        ClampOffsets();
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)

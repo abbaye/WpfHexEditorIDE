@@ -6,6 +6,7 @@
 // Updated: 2026-03-17 — Phase 1: UID injection, XamlElementMapper, ResizeAdorner,
 //                        DesignInteractionService wiring, element-to-XElement mapping.
 //                        Phase 3: ZoomPanCanvas host integration.
+//          2026-03-18 — Phase E2: Page boundary shadow + border drawn via OnRender override.
 // Description:
 //     Live WPF rendering surface for the XAML designer.
 //     Parses XAML via XamlReader.Parse() and presents the result
@@ -21,6 +22,8 @@
 //       back from the rendered tree to build UIElement→XElement mapping.
 // ==========================================================
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -57,6 +60,10 @@ public sealed class DesignCanvas : Border
     private readonly XamlElementMapper _mapper = new();
     private readonly DesignToXamlSyncService _syncService = new();
 
+    // Alt+Click cycling state — tracks the last hit list and current depth.
+    private int               _altClickDepth    = 0;
+    private List<UIElement>   _lastHitElements  = new();
+
     /// <summary>
     /// When true, selection uses ResizeAdorner instead of SelectionAdorner
     /// and wires DesignInteractionService for drag-move/resize.
@@ -82,6 +89,17 @@ public sealed class DesignCanvas : Border
         Child = _presenter;
 
         PreviewMouseLeftButtonDown += OnCanvasMouseDown;
+
+        // Escape key deselects the current element.
+        Focusable = true;
+        PreviewKeyDown += (_, e) =>
+        {
+            if (e.Key == Key.Escape)
+            {
+                SelectElement(null);
+                e.Handled = true;
+            }
+        };
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -235,31 +253,75 @@ public sealed class DesignCanvas : Border
     {
         if (DesignRoot is null) return;
 
-        var hit = e.OriginalSource as DependencyObject;
-        if (hit is null) return;
-
         // Don't reselect when clicking on resize/move handles.
-        if (hit is System.Windows.Controls.Primitives.Thumb) return;
+        if (e.OriginalSource is System.Windows.Controls.Primitives.Thumb) return;
 
-        var target = FindSelectableElement(hit);
-        SelectElement(target);
+        var clickPoint = e.GetPosition(_presenter);
+        bool isAlt     = (Keyboard.Modifiers & ModifierKeys.Alt) != 0;
+
+        if (!isAlt)
+        {
+            // Fresh click — rebuild the full hit list (z-order: topmost first).
+            _lastHitElements.Clear();
+            _altClickDepth = 0;
+            VisualTreeHelper.HitTest(
+                _presenter,
+                d => d is Adorner
+                    ? HitTestFilterBehavior.ContinueSkipSelfAndChildren
+                    : HitTestFilterBehavior.Continue,
+                r =>
+                {
+                    if (r.VisualHit is UIElement u && !ReferenceEquals(u, _presenter))
+                        _lastHitElements.Add(u);
+                    return HitTestResultBehavior.Continue;
+                },
+                new PointHitTestParameters(clickPoint));
+
+            // Prefer a leaf element (not a container with children); fall back to topmost.
+            var target = _lastHitElements.FirstOrDefault(IsLeafElement)
+                      ?? _lastHitElements.FirstOrDefault();
+            SelectElement(target);
+        }
+        else
+        {
+            // Alt+Click — cycle to the next element in the existing hit list.
+            if (_lastHitElements.Count == 0)
+            {
+                VisualTreeHelper.HitTest(
+                    _presenter,
+                    d => d is Adorner
+                        ? HitTestFilterBehavior.ContinueSkipSelfAndChildren
+                        : HitTestFilterBehavior.Continue,
+                    r =>
+                    {
+                        if (r.VisualHit is UIElement u && !ReferenceEquals(u, _presenter))
+                            _lastHitElements.Add(u);
+                        return HitTestResultBehavior.Continue;
+                    },
+                    new PointHitTestParameters(clickPoint));
+            }
+
+            if (_lastHitElements.Count > 0)
+            {
+                _altClickDepth = (_altClickDepth + 1) % _lastHitElements.Count;
+                SelectElement(_lastHitElements[_altClickDepth]);
+            }
+        }
+
         e.Handled = false;
     }
 
-    private UIElement? FindSelectableElement(DependencyObject? source)
+    /// <summary>
+    /// Returns true for visual leaf elements that are meaningful design targets.
+    /// Container panels and decorator elements with children are excluded so that
+    /// the topmost rendered control is preferred over its invisible host panel.
+    /// </summary>
+    private static bool IsLeafElement(DependencyObject obj)
     {
-        if (source is null) return null;
-
-        var current = source as UIElement;
-        while (current is not null)
-        {
-            var parent = VisualTreeHelper.GetParent(current) as UIElement;
-            if (parent is null || ReferenceEquals(parent, _presenter) || ReferenceEquals(current, DesignRoot))
-                return current;
-            current = parent;
-        }
-
-        return DesignRoot;
+        if (obj is Panel p && p.Children.Count > 0) return false;
+        if (obj is ContentControl cc && cc.Content is UIElement) return false;
+        if (obj is Decorator d && d.Child is not null) return false;
+        return obj is UIElement;
     }
 
     // ── XAML preprocessing ────────────────────────────────────────────────────
@@ -347,5 +409,40 @@ public sealed class DesignCanvas : Border
         while (i < xaml.Length && !char.IsWhiteSpace(xaml[i]) && xaml[i] != '>' && xaml[i] != '/')
             i++;
         return i < xaml.Length ? i : -1;
+    }
+
+    // ── Phase E2 — Page boundary rendering ────────────────────────────────────
+
+    /// <summary>
+    /// Draws a drop-shadow and a 1-pixel accent border around the rendered design root
+    /// to indicate the page / form boundary on the design canvas.
+    /// </summary>
+    protected override void OnRender(DrawingContext dc)
+    {
+        base.OnRender(dc);
+        DrawPageBoundary(dc);
+    }
+
+    /// <summary>
+    /// Renders a soft shadow offset and a subtle 1px border around the design root's
+    /// bounding rectangle. Called every layout cycle via <see cref="OnRender"/>.
+    /// </summary>
+    private void DrawPageBoundary(DrawingContext dc)
+    {
+        if (DesignRoot is not FrameworkElement root) return;
+
+        var pos  = root.TranslatePoint(new Point(0, 0), this);
+        var rect = new Rect(pos, new Size(root.ActualWidth, root.ActualHeight));
+
+        // Semi-transparent shadow (3px offset, 40-alpha black).
+        var shadowBrush = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0));
+        shadowBrush.Freeze();
+        dc.DrawRectangle(shadowBrush, null,
+            new Rect(rect.X + 3, rect.Y + 3, rect.Width, rect.Height));
+
+        // 1px page-boundary accent border.
+        var pen = new Pen(SystemColors.ControlDarkBrush, 1.0);
+        pen.Freeze();
+        dc.DrawRectangle(null, pen, rect);
     }
 }
