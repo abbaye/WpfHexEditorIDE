@@ -194,11 +194,15 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Called by the view code-behind on Loaded.
-    /// Loads popular packages from nuget.org (Browse tab).
+    /// Loads popular packages from nuget.org (Browse tab)
+    /// and checks for available updates in the background.
     /// </summary>
     public async Task LoadAsync()
     {
         await ExecuteSearchAsync(query: "", skip: 0, clearList: true);
+
+        // Fire-and-forget: count available updates so the badge shows immediately.
+        _ = CountUpdatesInBackgroundAsync();
     }
 
     // ── Search (Browse tab) ───────────────────────────────────────────────────
@@ -423,6 +427,45 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
             : $"{PackageList.Count} update(s) available.";
 
         IsBusy = false;
+    }
+
+    /// <summary>
+    /// Counts available updates in the background without affecting the current PackageList.
+    /// Sets <see cref="UpdateCount"/> so the badge on the "Updates" tab header appears immediately.
+    /// </summary>
+    private async Task CountUpdatesInBackgroundAsync()
+    {
+        try
+        {
+            var allInstalled = GetAllInstalledPackages();
+            var unique = new Dictionary<string, List<ProjectSelectionViewModel>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (_, refs) in allInstalled)
+            {
+                foreach (var pkg in refs)
+                {
+                    if (!unique.ContainsKey(pkg.Id))
+                        unique[pkg.Id] = BuildProjectRows(pkg.Id, allInstalled);
+                }
+            }
+
+            int count = 0;
+            foreach (var (id, rows) in unique)
+            {
+                var versions = await _client.GetVersionsAsync(id, _includePrerelease);
+                var latest = versions.FirstOrDefault();
+                if (latest is null) continue;
+
+                bool anyOutdated = rows.Any(r => r.HasPackage &&
+                    !string.Equals(r.InstalledVersion, latest, StringComparison.OrdinalIgnoreCase));
+                if (anyOutdated) count++;
+            }
+
+            UpdateCount = count;
+        }
+        catch
+        {
+            // Silently ignore — the badge will remain at 0 until the user clicks "Updates".
+        }
     }
 
     // ── Version loading ───────────────────────────────────────────────────────
