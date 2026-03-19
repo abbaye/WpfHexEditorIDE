@@ -12,6 +12,8 @@ using System.Windows.Threading;
 using WpfHexEditor.Core;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
+using WpfHexEditor.Editor.TextEditor.Selection;
+using WpfHexEditor.Editor.TextEditor.Input;
 
 namespace WpfHexEditor.Editor.TextEditor.Controls;
 
@@ -72,6 +74,16 @@ internal sealed class TextViewport : FrameworkElement
     // Set to true while OnMouseMove updates the caret directly so that
     // OnVmPropertyChanged does not queue a redundant background render.
     private bool _suppressVmNotify;
+
+    // Feature A — Rectangular (block/column) selection (Alt+LeftClick+drag)
+    private readonly RectangularSelection _rectSelection = new();
+    private bool _isRectSelecting;
+
+    /// <summary>Exposes the rectangular selection for clipboard operations in TextEditor.</summary>
+    internal RectangularSelection RectSelection => _rectSelection;
+
+    // Feature B — Text drag-and-drop (move selection by dragging)
+    private readonly DragDropState _textDragDrop = new();
 
     // Cursor blink
     private readonly DispatcherTimer _cursorBlinkTimer;
@@ -319,6 +331,12 @@ internal sealed class TextViewport : FrameworkElement
         // Selection rectangles
         if (_vm.HasSelection)
             DrawSelectionRects(dc, firstLine, lastLine, codeX);
+
+        // Feature A: rectangular (block) selection overlay.
+        DrawRectSelectionRects(dc, firstLine, lastLine, codeX);
+
+        // Feature B: drag-to-move insertion caret.
+        DrawDragDropCaret(dc, firstLine, codeX);
     }
 
     private void DrawSelectionRects(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
@@ -385,6 +403,48 @@ internal sealed class TextViewport : FrameworkElement
             combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
         combined.Freeze();
         dc.DrawGeometry(selBrush, null, combined);
+    }
+
+    /// <summary>
+    /// Draws the rectangular (block/column) selection overlay — Feature A.
+    /// Each line in the selection range receives an independent rectangle.
+    /// </summary>
+    private void DrawRectSelectionRects(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
+    {
+        if (_rectSelection.IsEmpty) return;
+
+        var selBrush = GetBrush("TE_SelectionBackground");
+
+        var (leftCol, rightCol) = _rectSelection.GetColumnRange();
+        double x1    = codeX + leftCol  * _charWidth;
+        double x2    = codeX + rightCol * _charWidth;
+        double width = Math.Max(x2 - x1, 1.0);
+
+        for (int line = _rectSelection.TopLine; line <= _rectSelection.BottomLine; line++)
+        {
+            if (line < firstVisLine || line > lastVisLine) continue;
+            double y = (line - firstVisLine) * _lineHeight;
+            dc.DrawRoundedRectangle(selBrush, null, new Rect(x1, y, width, _lineHeight), SelectionCornerRadius, SelectionCornerRadius);
+        }
+    }
+
+    /// <summary>
+    /// Draws a 2px wide vertical insertion-caret at the drag-drop target — Feature B.
+    /// </summary>
+    private void DrawDragDropCaret(DrawingContext dc, int firstVisLine, double codeX)
+    {
+        if (_textDragDrop.Phase != DragPhase.Dragging) return;
+
+        int dropLine = _textDragDrop.DropLine;
+        int dropCol  = _textDragDrop.DropCol;
+
+        if (dropLine < firstVisLine || dropLine > firstVisLine + _visibleLineCount) return;
+
+        double y = (dropLine - firstVisLine) * _lineHeight;
+        double x = codeX + dropCol * _charWidth;
+
+        var caretBrush = GetBrush("TE_DragCaret");
+        dc.DrawRectangle(caretBrush, null, new Rect(x - 1, y, 2, _lineHeight));
     }
 
     // -----------------------------------------------------------------------
@@ -634,6 +694,33 @@ internal sealed class TextViewport : FrameworkElement
 
         switch (e.Key)
         {
+            // Feature A/B: Escape clears rect selection or cancels drag.
+            case Key.Escape:
+                if (!_rectSelection.IsEmpty)
+                {
+                    _rectSelection.Clear();
+                    _isRectSelecting = false;
+                    UpdateBackground();
+                    e.Handled = true;
+                }
+                else if (_textDragDrop.Phase != DragPhase.None)
+                {
+                    if (_textDragDrop.Phase == DragPhase.Dragging) ReleaseMouseCapture();
+                    Cursor = Cursors.IBeam;
+                    // Restore original selection.
+                    if (_vm is not null)
+                    {
+                        _vm.SelectionAnchorLine   = _textDragDrop.SnapshotStartLine;
+                        _vm.SelectionAnchorColumn = _textDragDrop.SnapshotStartCol;
+                        _vm.CaretLine   = _textDragDrop.SnapshotEndLine;
+                        _vm.CaretColumn = _textDragDrop.SnapshotEndCol;
+                    }
+                    _textDragDrop.Reset();
+                    UpdateBackground();
+                    e.Handled = true;
+                }
+                break;
+
             // -- Zoom shortcuts (P2-01) -----------------------------------
             case Key.OemPlus  when ctrl:
             case Key.Add      when ctrl:
@@ -817,6 +904,29 @@ internal sealed class TextViewport : FrameworkElement
             return;
         }
 
+        bool altDown = Keyboard.Modifiers.HasFlag(ModifierKeys.Alt);
+
+        // Feature A: Alt+LeftClick → start rectangular selection.
+        if (altDown && e.ChangedButton == MouseButton.Left && e.ClickCount == 1)
+        {
+            _isDragging = false;
+            _vm.ClearSelection();
+            if (!_rectSelection.IsEmpty) _rectSelection.Clear();
+            _rectSelection.Begin(line, col);
+            _isRectSelecting = true;
+            CaptureMouse();
+            UpdateBackground();
+            e.Handled = true;
+            return;
+        }
+
+        // Any non-Alt click clears the rectangular selection.
+        if (!_rectSelection.IsEmpty)
+        {
+            _rectSelection.Clear();
+            _isRectSelecting = false;
+        }
+
         if (shift)
         {
             // Shift+click: extend existing selection or start one from old caret
@@ -828,6 +938,23 @@ internal sealed class TextViewport : FrameworkElement
         }
         else
         {
+            // Feature B: click inside existing selection → potential drag-to-move.
+            if (!shift && e.ChangedButton == MouseButton.Left
+                && _vm.HasSelection && IsInsideSelection(line, col))
+            {
+                _vm.NormalizeSelection(out int sl, out int sc, out int el, out int ec);
+                _textDragDrop.Phase             = DragPhase.Pending;
+                _textDragDrop.ClickPixel        = pos;
+                _textDragDrop.ClickedLine       = line;
+                _textDragDrop.ClickedCol        = col;
+                _textDragDrop.SnapshotStartLine = sl;
+                _textDragDrop.SnapshotStartCol  = sc;
+                _textDragDrop.SnapshotEndLine   = el;
+                _textDragDrop.SnapshotEndCol    = ec;
+                e.Handled = true;
+                return;
+            }
+
             _vm.ClearSelection();
         }
 
@@ -845,11 +972,70 @@ internal sealed class TextViewport : FrameworkElement
         e.Handled = true;
     }
 
+    /// <summary>Returns true if (line, col) lies within the VM's current selection.</summary>
+    private bool IsInsideSelection(int line, int col)
+    {
+        if (_vm is null || !_vm.HasSelection) return false;
+        _vm.NormalizeSelection(out int sl, out int sc, out int el, out int ec);
+        if (line < sl || line > el) return false;
+        if (line == sl && col < sc) return false;
+        if (line == el && col > ec) return false;
+        return true;
+    }
+
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
 
-        if (!_isDragging || _vm is null || e.LeftButton != MouseButtonState.Pressed) return;
+        if (_vm is null) return;
+
+        // Feature A: extend rectangular selection.
+        if (_isRectSelecting && e.LeftButton == MouseButtonState.Pressed)
+        {
+            var rectPos  = e.GetPosition(this);
+            int mLine = Math.Clamp((int)(rectPos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
+            int mCol  = Math.Clamp((int)((rectPos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(mLine).Length);
+            _rectSelection.Extend(mLine, mCol);
+
+            long rectNow = System.Diagnostics.Stopwatch.GetTimestamp();
+            if (rectNow - _lastDragRenderTick >= DragThrottleTicks)
+            {
+                _lastDragRenderTick = rectNow;
+                UpdateBackground();
+            }
+            return;
+        }
+
+        // Feature B: handle drag-pending or drag-in-progress.
+        if (_textDragDrop.Phase != DragPhase.None && e.LeftButton == MouseButtonState.Pressed)
+        {
+            var ddPos  = e.GetPosition(this);
+            int dLine = Math.Clamp((int)(ddPos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
+            int dCol  = Math.Clamp((int)((ddPos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(dLine).Length);
+
+            if (_textDragDrop.Phase == DragPhase.Pending && _textDragDrop.HasMovedBeyondThreshold(ddPos))
+            {
+                _textDragDrop.Phase = DragPhase.Dragging;
+                CaptureMouse();
+                Cursor = Cursors.SizeAll;
+            }
+
+            if (_textDragDrop.Phase == DragPhase.Dragging)
+            {
+                _textDragDrop.DropLine = dLine;
+                _textDragDrop.DropCol  = dCol;
+
+                long ddNow = System.Diagnostics.Stopwatch.GetTimestamp();
+                if (ddNow - _lastDragRenderTick >= DragThrottleTicks)
+                {
+                    _lastDragRenderTick = ddNow;
+                    UpdateBackground();
+                }
+            }
+            return;
+        }
+
+        if (!_isDragging || e.LeftButton != MouseButtonState.Pressed) return;
 
         // 60 Hz gate: skip if last drag-render was < 16.7 ms ago (P1-TE-02)
         long now = System.Diagnostics.Stopwatch.GetTimestamp();
@@ -888,6 +1074,41 @@ internal sealed class TextViewport : FrameworkElement
     {
         base.OnMouseLeftButtonUp(e);
 
+        // Feature A: end rectangular selection drag.
+        if (_isRectSelecting)
+        {
+            _isRectSelecting = false;
+            ReleaseMouseCapture();
+            UpdateBackground();
+            return;
+        }
+
+        // Feature B: commit or cancel text drag-to-move.
+        if (_textDragDrop.Phase != DragPhase.None)
+        {
+            ReleaseMouseCapture();
+            Cursor = Cursors.IBeam;
+
+            if (_textDragDrop.Phase == DragPhase.Dragging)
+                CommitTextDrop();
+            else
+            {
+                // Pending phase: simple click inside selection — clear selection, move caret.
+                if (_vm is not null)
+                {
+                    _vm.ClearSelection();
+                    _vm.CaretLine   = _textDragDrop.ClickedLine;
+                    _vm.CaretColumn = _textDragDrop.ClickedCol;
+                }
+            }
+
+            _textDragDrop.Reset();
+            _cursorVisible = true;
+            DrawCursor();
+            UpdateBackground();
+            return;
+        }
+
         if (!_isDragging) return;
         _isDragging = false;
         ReleaseMouseCapture();
@@ -901,6 +1122,59 @@ internal sealed class TextViewport : FrameworkElement
         }
 
         UpdateBackground();
+    }
+
+    /// <summary>
+    /// Commits the text drag-to-move: deletes source selection, adjusts the drop position,
+    /// and inserts at the target. Feature B.
+    /// </summary>
+    private void CommitTextDrop()
+    {
+        if (_vm is null || _vm.IsReadOnly) return;
+
+        int dropLine = _textDragDrop.DropLine;
+        int dropCol  = _textDragDrop.DropCol;
+        int sl       = _textDragDrop.SnapshotStartLine;
+        int sc       = _textDragDrop.SnapshotStartCol;
+        int el       = _textDragDrop.SnapshotEndLine;
+        int ec       = _textDragDrop.SnapshotEndCol;
+
+        // Drop inside original selection → cancel.
+        if (_textDragDrop.IsDropInsideSnapshot(dropLine, dropCol))
+        {
+            _vm.SelectionAnchorLine   = sl;
+            _vm.SelectionAnchorColumn = sc;
+            _vm.CaretLine   = el;
+            _vm.CaretColumn = ec;
+            return;
+        }
+
+        // Restore selection to snapshot so GetSelectedText works correctly.
+        _vm.SelectionAnchorLine   = sl;
+        _vm.SelectionAnchorColumn = sc;
+        _vm.CaretLine   = el;
+        _vm.CaretColumn = ec;
+
+        string movedText  = _vm.GetSelectedText();
+        bool   dropBefore = dropLine < sl || (dropLine == sl && dropCol <= sc);
+
+        _vm.DeleteSelectedText();
+
+        // Adjust insertion point for lines removed above the drop.
+        int insertLine = dropLine;
+        int insertCol  = dropCol;
+        if (!dropBefore)
+        {
+            int removedLines = el - sl;
+            insertLine -= removedLines;
+            if (dropLine == el) // on the line where deletion ended → fix column
+                insertCol = sc + (dropCol - ec);
+        }
+
+        _vm.CaretLine   = Math.Max(0, insertLine);
+        _vm.CaretColumn = Math.Max(0, insertCol);
+        _vm.ClearSelection();
+        _vm.InsertText(movedText);
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -1025,6 +1299,8 @@ internal sealed class TextViewport : FrameworkElement
 
     private void ViewportCopy()
     {
+        // Feature A: rect selection takes priority.
+        if (!_rectSelection.IsEmpty) { CopyRectSelection(); return; }
         if (_vm is null || !_vm.HasSelection) return;
         var text = _vm.GetSelectedText();
         if (!string.IsNullOrEmpty(text)) Clipboard.SetText(text);
@@ -1032,6 +1308,8 @@ internal sealed class TextViewport : FrameworkElement
 
     private void ViewportCut()
     {
+        // Feature A: rect selection takes priority.
+        if (!_rectSelection.IsEmpty) { CutRectSelection(); return; }
         if (_vm is null || !_vm.HasSelection || _vm.IsReadOnly) return;
         ViewportCopy();
         _vm.DeleteSelectedText();
@@ -1040,9 +1318,58 @@ internal sealed class TextViewport : FrameworkElement
 
     private void ViewportPaste()
     {
+        // Paste is disabled when a rectangular selection is active.
+        if (!_rectSelection.IsEmpty) return;
         if (_vm is null || _vm.IsReadOnly || !Clipboard.ContainsText()) return;
         _vm.InsertText(Clipboard.GetText());
         // Lines/LineCount PropertyChanged → QueueFullRender()
+    }
+
+    internal void CopyRectSelection()
+    {
+        if (_rectSelection.IsEmpty || _vm is null) return;
+        string text = _rectSelection.ExtractText(_vm.Lines);
+        if (!string.IsNullOrEmpty(text))
+        {
+            try { Clipboard.SetText(text); }
+            catch { /* Silently ignore clipboard errors */ }
+        }
+    }
+
+    internal void CutRectSelection()
+    {
+        if (_rectSelection.IsEmpty || _vm is null || _vm.IsReadOnly) return;
+        CopyRectSelection();
+        DeleteRectSelection();
+    }
+
+    internal void DeleteRectSelection()
+    {
+        if (_rectSelection.IsEmpty || _vm is null || _vm.IsReadOnly) return;
+
+        var (left, right) = _rectSelection.GetColumnRange();
+
+        // Iterate bottom-to-top so line indices stay stable.
+        for (int li = _rectSelection.BottomLine; li >= _rectSelection.TopLine; li--)
+        {
+            if (li >= _vm.LineCount) continue;
+            var   line  = _vm.GetLine(li);
+            int   safeL = Math.Min(left,  line.Length);
+            int   safeR = Math.Min(right, line.Length);
+            if (safeR <= safeL) continue;
+
+            // Position anchor+caret on this line's column range, then delete.
+            _vm.SelectionAnchorLine   = li;
+            _vm.SelectionAnchorColumn = safeL;
+            _vm.CaretLine   = li;
+            _vm.CaretColumn = safeR;
+            _vm.DeleteSelectedText();
+        }
+
+        _vm.CaretLine   = _rectSelection.TopLine;
+        _vm.CaretColumn = _rectSelection.LeftColumn;
+        _rectSelection.Clear();
+        UpdateBackground();
     }
 
     // -----------------------------------------------------------------------

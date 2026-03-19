@@ -42,7 +42,8 @@ public static class LanguageDefinitionSerializer
         new(StringComparer.OrdinalIgnoreCase)
     {
         // ── Standard names (direct match) ────────────────────────────────
-        { "Keyword",    SyntaxTokenKind.Keyword    },
+        { "Keyword",     SyntaxTokenKind.Keyword     },
+        { "ControlFlow", SyntaxTokenKind.ControlFlow },
         { "Comment",    SyntaxTokenKind.Comment    },
         { "String",     SyntaxTokenKind.String     },
         { "Number",     SyntaxTokenKind.Number     },
@@ -50,6 +51,7 @@ public static class LanguageDefinitionSerializer
         { "Operator",   SyntaxTokenKind.Operator   },
         { "Bracket",    SyntaxTokenKind.Bracket    },
         { "Type",       SyntaxTokenKind.Type       },
+        { "UserType",   SyntaxTokenKind.Type       },   // PascalCase heuristic (C#, VB.NET)
         { "Attribute",  SyntaxTokenKind.Attribute  },
 
         // ── XML / HTML / XAML ─────────────────────────────────────────────
@@ -69,6 +71,11 @@ public static class LanguageDefinitionSerializer
         { "Variable",   SyntaxTokenKind.Identifier },   // $var, @var, …
         { "Symbol",     SyntaxTokenKind.Attribute  },   // Ruby :symbol
         { "Key",        SyntaxTokenKind.Attribute  },   // JSON / YAML / INI key
+        { "Field",         SyntaxTokenKind.Attribute  },   // _underscore private fields (C#, VB.NET)
+        { "NamespaceDecl", SyntaxTokenKind.Default    },   // name after 'namespace' / 'Namespace' — left uncolored
+        { "UsingRef",      SyntaxTokenKind.Default    },   // name after 'using' / 'Imports' — left uncolored
+        { "RegionKeyword", SyntaxTokenKind.Keyword    },   // #region / #endregion directive word
+        { "RegionName", SyntaxTokenKind.Attribute  },   // label text after #region
 
         // ── Markup / scripting keywords ───────────────────────────────────
         { "Cmdlet",     SyntaxTokenKind.Keyword    },   // PowerShell / shell built-ins

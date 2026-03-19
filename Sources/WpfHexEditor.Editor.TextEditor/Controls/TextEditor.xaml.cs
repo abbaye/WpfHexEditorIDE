@@ -109,17 +109,20 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
 
         Viewport.ContextMenu = cm;
 
+        // Cut — enabled when normal or rectangular selection is active.
         Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Cut,
-            (_, _) => Cut(),
-            (_, e) => e.CanExecute = _vm.HasSelection && !IsReadOnly));
+            (_, _) => { if (!Viewport.RectSelection.IsEmpty) Viewport.CutRectSelection(); else Cut(); },
+            (_, e) => e.CanExecute = !IsReadOnly && (_vm.HasSelection || !Viewport.RectSelection.IsEmpty)));
 
+        // Copy — enabled when normal or rectangular selection is active.
         Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy,
-            (_, _) => Copy(),
-            (_, e) => e.CanExecute = _vm.HasSelection));
+            (_, _) => { if (!Viewport.RectSelection.IsEmpty) Viewport.CopyRectSelection(); else Copy(); },
+            (_, e) => e.CanExecute = _vm.HasSelection || !Viewport.RectSelection.IsEmpty));
 
+        // Paste — disabled when a rectangular selection is active (no block-paste support).
         Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste,
             (_, _) => Paste(),
-            (_, e) => e.CanExecute = !IsReadOnly && Clipboard.ContainsText()));
+            (_, e) => e.CanExecute = !IsReadOnly && Clipboard.ContainsText() && Viewport.RectSelection.IsEmpty));
 
         Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo,
             (_, _) => Undo(),

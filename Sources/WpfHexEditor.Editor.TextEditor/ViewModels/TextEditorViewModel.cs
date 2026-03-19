@@ -658,7 +658,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     }
 
     // Returns (startLine, startCol, endLine, endCol) in document order (start <= end).
-    private void NormalizeSelection(out int startLine, out int startCol, out int endLine, out int endCol)
+    internal void NormalizeSelection(out int startLine, out int startCol, out int endLine, out int endCol)
     {
         bool anchorFirst = _selAnchorLine < _caretLine
                         || (_selAnchorLine == _caretLine && _selAnchorColumn <= _caretColumn);

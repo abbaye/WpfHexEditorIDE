@@ -62,15 +62,19 @@ internal sealed class FoldPeekPopup : Popup
         };
         _textBlock.SetResourceReference(TextBlock.ForegroundProperty, "CE_QuickInfo_Text");
 
-        // ScrollViewer — provides scroll when content exceeds MaxPopupWidth/Height.
+        // ScrollViewer — clips content to MaxPopupWidth/Height.
+        // Horizontal scroll is disabled; long lines fade out via OpacityMask instead.
+        // Vertical scroll is hidden (mouse-wheel works but no bar chrome shown).
         _scrollViewer = new ScrollViewer
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-            VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            VerticalScrollBarVisibility   = ScrollBarVisibility.Hidden,
             MaxHeight = MaxPopupHeight,
             MaxWidth  = MaxPopupWidth,
             Content   = _textBlock,
         };
+        // Recompute the 20 px right-edge fade whenever the popup is sized/resized.
+        _scrollViewer.SizeChanged += (_, _) => UpdateOpacityMask();
 
         // Border — themed background + rounded corners + drop shadow.
         _border = new Border
@@ -163,26 +167,38 @@ internal sealed class FoldPeekPopup : Popup
                 }
                 else
                 {
-                    // Map each token from originalLine coordinates to strippedLine coordinates.
+                    // Gap-fill: emit a plain Run for any text the highlighter skipped
+                    // (spaces, operators, punctuation), then a colored Run for each token.
+                    // ISyntaxHighlighter implementations return only matched-pattern tokens —
+                    // the gaps between them must be filled explicitly using originalLine.
+                    int pos = 0;
                     foreach (var token in tokens)
                     {
-                        int start = token.StartColumn - commonIndent;
-                        int end   = start + token.Length;
+                        // Emit gap text before this token (clamped past commonIndent).
+                        int gapStart = Math.Max(pos, commonIndent);
+                        int gapEnd   = Math.Max(token.StartColumn, commonIndent);
+                        if (gapEnd > gapStart && gapEnd <= originalLine.Length)
+                            _textBlock.Inlines.Add(new Run(originalLine[gapStart..gapEnd]));
 
-                        // Skip tokens that are entirely in the stripped indent.
-                        if (end <= 0) continue;
-                        start = Math.Max(start, 0);
-                        end   = Math.Min(end, lineText.Length);
-                        if (start >= end) continue;
-
-                        var run = new Run(lineText[start..end]) { Foreground = token.Foreground };
-                        if (token.IsBold)   run.FontWeight = FontWeights.Bold;
-                        if (token.IsItalic) run.FontStyle  = FontStyles.Italic;
-                        _textBlock.Inlines.Add(run);
+                        // Emit colored token text, skipping any prefix inside the stripped indent.
+                        int    skip    = Math.Max(0, commonIndent - token.StartColumn);
+                        string runText = skip < token.Text.Length ? token.Text[skip..] : string.Empty;
+                        if (runText.Length > 0)
+                        {
+                            var run = new Run(runText) { Foreground = token.Foreground };
+                            if (token.IsBold)   run.FontWeight = FontWeights.Bold;
+                            if (token.IsItalic) run.FontStyle  = FontStyles.Italic;
+                            _textBlock.Inlines.Add(run);
+                        }
+                        pos = token.StartColumn + token.Text.Length;
                     }
 
-                    // Safety: if the token mapping produced no inlines for this line, fall back.
-                    // (Can happen when all tokens fall inside the stripped indent.)
+                    // Tail: emit any text after the last token.
+                    int tailStart = Math.Max(pos, commonIndent);
+                    if (tailStart < originalLine.Length)
+                        _textBlock.Inlines.Add(new Run(originalLine[tailStart..]));
+
+                    // Safety fallback: if nothing was emitted (all tokens inside stripped indent).
                     if (_textBlock.Inlines.Count == 0 || _textBlock.Inlines.Last() is LineBreak)
                         _textBlock.Inlines.Add(new Run(lineText));
                 }
@@ -203,6 +219,34 @@ internal sealed class FoldPeekPopup : Popup
         _scrollViewer.ScrollToLeftEnd();
 
         IsOpen = true;
+    }
+
+    /// <summary>
+    /// Applies a fixed 20 px right-edge fade to <see cref="_scrollViewer"/> so that
+    /// lines wider than the popup fade to transparent instead of hard-clipping.
+    /// Theme-agnostic: uses <c>OpacityMask</c> so the Border's background shows through.
+    /// </summary>
+    private void UpdateOpacityMask()
+    {
+        double w = _scrollViewer.ActualWidth;
+        if (w <= 20)
+        {
+            _scrollViewer.OpacityMask = null;
+            return;
+        }
+
+        // fadeStop is the relative position (0–1) at which the 20 px fade begins.
+        double fadeStop = (w - 20.0) / w;
+
+        var mask = new LinearGradientBrush
+        {
+            StartPoint  = new Point(0, 0),
+            EndPoint    = new Point(1, 0),
+            MappingMode = BrushMappingMode.RelativeToBoundingBox,
+        };
+        mask.GradientStops.Add(new GradientStop(Colors.Black,       fadeStop));
+        mask.GradientStops.Add(new GradientStop(Colors.Transparent, 1.0));
+        _scrollViewer.OpacityMask = mask;
     }
 
     /// <summary>Hides the popup immediately.</summary>

@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Options;
@@ -34,13 +35,15 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool    _convertTabsToSpaces = true;
     private bool    _showWhitespace      = false;
     private bool    _showLineNumbers     = true;
-    private bool    _enableFolding       = true;
+    private bool    _enableFolding            = true;
+    private bool    _foldToggleOnDoubleClick  = false;
     private bool    _showScopeGuides     = true;
     private bool    _enableMultiCaret    = true;
     private bool    _enableIntelliSense       = true;
     private bool    _enableSnippets           = true;
     private bool    _enableFindAllReferences  = true;
     private bool    _showCodeLens             = true;
+    private CodeLensSymbolKinds _codeLensVisibleKinds = CodeLensSymbolKinds.All;
     private string? _themeOverride       = null;
 
     // -----------------------------------------------------------------------
@@ -87,6 +90,16 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _enableFolding = value; Notify(); }
     }
 
+    /// <summary>
+    /// When true, fold regions (gutter triangle and inline label) require a double-click
+    /// to toggle instead of a single click.
+    /// </summary>
+    public bool FoldToggleOnDoubleClick
+    {
+        get => _foldToggleOnDoubleClick;
+        set { _foldToggleOnDoubleClick = value; Notify(); }
+    }
+
     public bool ShowScopeGuides
     {
         get => _showScopeGuides;
@@ -129,6 +142,16 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _showCodeLens;
         set { _showCodeLens = value; Notify(); }
+    }
+
+    /// <summary>
+    /// Bitmask controlling which symbol kinds display CodeLens hints.
+    /// Default: <see cref="CodeLensSymbolKinds.All"/> (all 12 kinds visible).
+    /// </summary>
+    public CodeLensSymbolKinds CodeLensVisibleKinds
+    {
+        get => _codeLensVisibleKinds;
+        set { _codeLensVisibleKinds = value; Notify(); }
     }
 
     private bool _enableWordHighlight = true;

@@ -116,7 +116,8 @@ public enum SyntaxTokenKind
     Operator,
     Bracket,
     Type,
-    Attribute
+    Attribute,
+    ControlFlow
 }
 
 /// <summary>Selects the folding algorithm used by the CodeEditor gutter.</summary>

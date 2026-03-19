@@ -4839,8 +4839,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         switch (editor)
         {
             case WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor ce:
-                ce.MouseWheelSpeed = settings.CodeEditorDefaults.MouseWheelSpeed;
-                ce.ZoomLevel       = settings.CodeEditorDefaults.DefaultZoom;
+                ce.MouseWheelSpeed    = settings.CodeEditorDefaults.MouseWheelSpeed;
+                ce.ZoomLevel          = settings.CodeEditorDefaults.DefaultZoom;
+                ce.ShowCodeLens       = settings.CodeEditorDefaults.ShowCodeLens;
+                // Treat 0 as All (migration: old settings.json without CodeLensVisibleKinds defaults to 0).
+                ce.CodeLensVisibleKinds = settings.CodeEditorDefaults.CodeLensVisibleKinds == 0
+                    ? WpfHexEditor.Editor.Core.CodeLensSymbolKinds.All
+                    : (WpfHexEditor.Editor.Core.CodeLensSymbolKinds)settings.CodeEditorDefaults.CodeLensVisibleKinds;
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
                 te.MouseWheelSpeed = settings.TextEditorDefaults.MouseWheelSpeed;

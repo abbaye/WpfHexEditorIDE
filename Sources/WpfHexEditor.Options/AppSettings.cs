@@ -226,6 +226,21 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
 
+    // -- CodeLens ------------------------------------------------------------
+
+    /// <summary>
+    /// Master toggle: when false, no CodeLens hints are rendered regardless of
+    /// <see cref="CodeLensVisibleKinds"/>.
+    /// </summary>
+    public bool ShowCodeLens { get; set; } = true;
+
+    /// <summary>
+    /// Bitmask of symbol kinds (integer cast of <c>CodeLensSymbolKinds</c>) for which
+    /// hints are visible. Stored as int to avoid a cross-project enum dependency in
+    /// AppSettings. 4095 = CodeLensSymbolKinds.All = (1 &lt;&lt; 12) − 1.
+    /// </summary>
+    public int CodeLensVisibleKinds { get; set; } = 4095;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>

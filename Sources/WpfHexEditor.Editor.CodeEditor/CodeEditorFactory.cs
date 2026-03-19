@@ -91,7 +91,7 @@ public sealed class CodeEditorFactory : IEditorFactory
         var rules = language.SyntaxRules.Select(rule => new RegexHighlightRule(
             rule.Pattern,
             TokenKindToBrush(rule.Kind),
-            isBold:   rule.Kind is SyntaxTokenKind.Keyword or SyntaxTokenKind.Type,
+            isBold:   rule.Kind is SyntaxTokenKind.Keyword,
             isItalic: rule.Kind is SyntaxTokenKind.Comment,
             kind:     rule.Kind));
 
@@ -128,8 +128,9 @@ public sealed class CodeEditorFactory : IEditorFactory
             SyntaxTokenKind.Identifier => "CE_Identifier",
             SyntaxTokenKind.Operator   => "CE_Operator",
             SyntaxTokenKind.Bracket    => "CE_Bracket",
-            SyntaxTokenKind.Attribute  => "CE_Attribute",
-            _                          => "CE_Foreground"
+            SyntaxTokenKind.Attribute   => "CE_Attribute",
+            SyntaxTokenKind.ControlFlow => "CE_ControlFlow",
+            _                           => "CE_Foreground"
         };
 
         if (Application.Current?.TryFindResource(resourceKey) is Brush themeBrush)
@@ -151,8 +152,9 @@ public sealed class CodeEditorFactory : IEditorFactory
         SyntaxTokenKind.Identifier => new SolidColorBrush(Color.FromRgb(220, 220, 170)),  // #DCDCAA
         SyntaxTokenKind.Operator   => new SolidColorBrush(Color.FromRgb(212, 212, 212)),  // #D4D4D4
         SyntaxTokenKind.Bracket    => new SolidColorBrush(Color.FromRgb(255, 215, 0)),    // #FFD700
-        SyntaxTokenKind.Attribute  => new SolidColorBrush(Color.FromRgb(156, 220, 254)),  // #9CDCFE
-        _                          => new SolidColorBrush(Color.FromRgb(212, 212, 212))   // #D4D4D4
+        SyntaxTokenKind.Attribute   => new SolidColorBrush(Color.FromRgb(156, 220, 254)),  // #9CDCFE
+        SyntaxTokenKind.ControlFlow => new SolidColorBrush(Color.FromRgb(197, 134, 192)), // #C586C0 pink
+        _                           => new SolidColorBrush(Color.FromRgb(212, 212, 212))  // #D4D4D4
     };
 }
 

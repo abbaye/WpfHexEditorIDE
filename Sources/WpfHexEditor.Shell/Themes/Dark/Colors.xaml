@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Dark/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -112,7 +112,7 @@
     <Style TargetType="{x:Type controls:TabOverflowButton}" BasedOn="{StaticResource DockTitleButtonStyle}" />
     <Style TargetType="{x:Type controls:TabConfigButton}"   BasedOn="{StaticResource DockTitleButtonStyle}" />
 
-    <!-- Window title bar button (minimize, maximize/restore) — VS Code style -->
+    <!-- Window title bar button (minimize, maximize/restore) â€” VS Code style -->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
@@ -144,7 +144,7 @@
         </Setter>
     </Style>
 
-    <!-- Window title bar close button — red hover like VS Code -->
+    <!-- Window title bar close button â€” red hover like VS Code -->
     <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
@@ -258,7 +258,7 @@
     <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#3E3E42"/>
     <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1A1A1C"/>
 
-    <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
+    <!-- Common Panel Resources (PanelCommon.xaml keys â€” shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#2D2D30"/>
     <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#3F3F46"/>
     <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
@@ -266,10 +266,10 @@
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#3E3E40"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#3E3E42"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#D4D4D4"/>
-    <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
+    <!-- PFP toolbar â€” aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
     <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#2D2D30"/>
 
-    <!-- TE_* — Text Editor (syntax highlighting, viewport) -->
+    <!-- TE_* â€” Text Editor (syntax highlighting, viewport) -->
     <SolidColorBrush x:Key="TE_Background"             Color="#1E1E1E"/>
     <SolidColorBrush x:Key="TE_Foreground"             Color="#D4D4D4"/>
     <Color           x:Key="TE_CaretColor"                    >#D4D4D4</Color>
@@ -288,7 +288,7 @@
     <SolidColorBrush x:Key="TE_Directive"              Color="#C586C0"/>
     <SolidColorBrush x:Key="TE_RegionName"             Color="#DCDCAA"/>
 
-    <!-- CE_* — Code Editor syntax token colors (used by CodeEditor DPs via implicit Style) -->
+    <!-- CE_* â€” Code Editor syntax token colors (used by CodeEditor DPs via implicit Style) -->
     <SolidColorBrush x:Key="CE_Keyword"       Color="#569CD6"/>
     <SolidColorBrush x:Key="CE_ControlFlow"   Color="#C586C0"/>
     <SolidColorBrush x:Key="CE_Comment"       Color="#6A9955"/>
@@ -314,7 +314,7 @@
     <SolidColorBrush x:Key="CE_Selection"         Color="#264F78"/>
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#3E3E42"/>
 
-    <!-- CE_QuickInfo_* — Quick Info hover popup (Dark) -->
+    <!-- CE_QuickInfo_* â€” Quick Info hover popup (Dark) -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#252526"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#454545"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Text"              Color="#D4D4D4"/>
@@ -324,9 +324,9 @@
     <SolidColorBrush x:Key="CE_QuickInfo_Separator"         Color="#3F3F46"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticError"   Color="#3C1515"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#2D2000"/>
-    <!-- CE_CtrlHover_Underline — Ctrl+hover symbol underline (Dark) -->
+    <!-- CE_CtrlHover_Underline â€” Ctrl+hover symbol underline (Dark) -->
     <SolidColorBrush x:Key="CE_CtrlHover_Underline"         Color="#4EC9B0"/>
-    <!-- CE_FoldLabel_* — Collapsed region inline label (Dark) -->
+    <!-- CE_FoldLabel_* â€” Collapsed region inline label (Dark) -->
     <SolidColorBrush x:Key="CE_FoldLabelBorder"             Color="#569CD6"/>
     <SolidColorBrush x:Key="CE_FoldLabelBg"                 Color="#1A569CD6"/>
     <SolidColorBrush x:Key="CE_FoldLabelFg"                 Color="#C8C8C8"/>
@@ -338,7 +338,7 @@
     <SolidColorBrush x:Key="BackgroundBrush"       Color="{StaticResource DockWindowBackgroundColor}"/>
     <SolidColorBrush x:Key="ForegroundBrush"       Color="{StaticResource DockMenuForegroundColor}"/>
     <SolidColorBrush x:Key="AccentBrush"           Color="{StaticResource AccentColor}"/>
-    <!-- Elevated surface (popup/dialog background) — used by ColorPicker and other floating controls -->
+    <!-- Elevated surface (popup/dialog background) â€” used by ColorPicker and other floating controls -->
     <SolidColorBrush x:Key="SurfaceElevatedBrush"  Color="{StaticResource DockMenuBackgroundColor}"/>
     <SolidColorBrush x:Key="BorderBrush"           Color="{StaticResource DockBorderColor}"/>
 
@@ -381,7 +381,7 @@
     <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#F59E0B"/>
     <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#FCD34D"/>
 
-    <!-- XAML Designer (XD_*) — Dark theme -->
+    <!-- XAML Designer (XD_*) â€” Dark theme -->
     <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#2A2A2A"/>
     <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#3F3F46"/>
     <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#353535"/>
@@ -424,14 +424,10 @@
     <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#2A2A2A"/>
     <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#9CDCFE"/>
 
-    <!-- CE_Rect* / TE_Rect* — Rectangular (block) selection brushes -->
-    <!-- CE_DragCaret / TE_DragCaret — drag-to-move insertion caret (orange = VS convention) -->
-    <SolidColorBrush x:Key="CE_RectSelection"       Color="#33264F78"/>
-    <SolidColorBrush x:Key="CE_RectSelectionBorder" Color="#80264F78"/>
+    <!-- CE_Rect* / TE_Rect* â€” Rectangular (block) selection brushes -->
+    <!-- CE_DragCaret / TE_DragCaret â€” drag-to-move insertion caret (orange = VS convention) -->
     <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF8C00"/>
     <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8C00"/>
-    <SolidColorBrush x:Key="TE_RectSelection"       Color="#33264F78"/>
-    <SolidColorBrush x:Key="TE_RectSelectionBorder" Color="#80264F78"/>
     <SolidColorBrush x:Key="TE_DragCaret"           Color="#FFFF8C00"/>
     <SolidColorBrush x:Key="TE_DragDropTarget"      Color="#1AFF8C00"/>
 </ResourceDictionary>
