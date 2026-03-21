@@ -306,6 +306,15 @@ public sealed class DesignCanvas : Border
         if (nearestGrid is null || !ReferenceEquals(nearestGrid, _insertAdornerGrid))
             HideGridInsertAdorner();
 
+        // Immediately refresh the insert guide at the current mouse position so it
+        // appears right after selection without waiting for the next MouseMove event.
+        // Mouse.GetPosition(_presenter) is safe to call synchronously here (UI thread).
+        if (nearestGrid is not null)
+        {
+            var mouseNow = Mouse.GetPosition(_presenter);
+            UpdateGridInsertAdorner(HitTestElement(mouseNow), mouseNow);
+        }
+
         if (!suppressEvent)
             SelectedElementChanged?.Invoke(this, EventArgs.Empty);
     }
@@ -1250,9 +1259,17 @@ public sealed class DesignCanvas : Border
 
     private void OnCanvasMouseLeave(object sender, MouseEventArgs e)
     {
-        if (_isRubberBanding) return;  // keep hover clear but don't abort rubber-band
+        if (_isRubberBanding) return;
         UpdateHoverAdorner(null);
-        HideGridInsertAdorner();
+
+        // Hide the insert guide only when the mouse actually leaves the canvas bounds.
+        // WPF fires MouseLeave spuriously when adorners (ResizeAdorner thumbs) appear/
+        // disappear — check that the mouse is truly outside before hiding.
+        var pos = e.GetPosition(this);
+        bool trulyOutside = pos.X < 0 || pos.Y < 0
+                         || pos.X > ActualWidth || pos.Y > ActualHeight;
+        if (trulyOutside)
+            HideGridInsertAdorner();
     }
 
     private void OnCanvasMouseUp(object sender, MouseButtonEventArgs e)
