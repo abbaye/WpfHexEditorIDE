@@ -784,8 +784,13 @@ public sealed class DesignCanvas : Border
     {
         var grid = FindNearestGrid(hitElement) ?? FindGridByBounds(mouseInPresenter);
 
-        // Guide is only shown when the found Grid is the currently selected element.
-        if (grid is null || !ReferenceEquals(grid, SelectedElement))
+        // Guide is only shown when:
+        //   (a) the found Grid IS the selected element, OR
+        //   (b) the selected element is a visual descendant of the found Grid
+        //       (the user selected a child but the parent Grid is what's being edited).
+        // This handles the case where HitTestElement returns a leaf child of the Grid
+        // rather than the Grid itself, which would make a plain ReferenceEquals fail.
+        if (grid is null || !IsGridActiveForInsert(grid))
         {
             HideGridInsertAdorner();
             return;
@@ -949,6 +954,29 @@ public sealed class DesignCanvas : Border
         {
             return presenterPt; // element detached from tree (re-render in progress)
         }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="grid"/> should show the insert guide:
+    ///   • the Grid itself is the selected element, OR
+    ///   • the selected element is a visual descendant of the Grid (child selected inside it).
+    /// This covers the case where <see cref="HitTestElement"/> returns a leaf child instead
+    /// of the Grid, making a plain <see cref="ReferenceEquals"/> against SelectedElement fail.
+    /// </summary>
+    private bool IsGridActiveForInsert(System.Windows.Controls.Grid grid)
+    {
+        if (SelectedElement is null) return false;
+        if (ReferenceEquals(SelectedElement, grid)) return true;
+
+        // Walk up from SelectedElement; if we reach the Grid it is an ancestor.
+        var node = SelectedElement as DependencyObject;
+        while (node is not null)
+        {
+            if (ReferenceEquals(node, grid)) return true;
+            if (node is not Visual and not System.Windows.Media.Media3D.Visual3D) break;
+            node = VisualTreeHelper.GetParent(node);
+        }
+        return false;
     }
 
     /// <summary>
