@@ -132,6 +132,12 @@ public sealed class DesignCanvas : Border
 
         Child = _presenter;
 
+        // Force the Arrow cursor at all times so child controls rendered inside the
+        // design surface (TextBox, RichTextBox, etc.) cannot propagate their own
+        // cursor (I-beam caret) up to the canvas level.
+        Cursor      = Cursors.Arrow;
+        ForceCursor = true;
+
         PreviewMouseLeftButtonDown += OnCanvasMouseDown;
         PreviewMouseLeftButtonUp   += OnCanvasMouseUp;
         MouseMove  += OnCanvasMouseMove;
@@ -1183,18 +1189,22 @@ public sealed class DesignCanvas : Border
             var lp = PresenterToGridLocal(mousePos, _insertAdornerGrid);
             if (_insertAdorner.ToggleBounds.Contains(lp))
             {
+                ForceCursor = false;
                 Cursor = Cursors.Hand;
                 return;
             }
             if (_insertAdorner.LineBounds.Contains(lp))
             {
+                ForceCursor = false;
                 Cursor = _insertAdorner.Mode == GridInsertAdorner.InsertMode.Row
                     ? Cursors.SizeNS
                     : Cursors.SizeWE;
                 return;
             }
         }
-        Cursor = Cursors.Arrow;  // force arrow over any child element cursor (e.g. TextBox caret)
+        // Restore forced Arrow — blocks any child cursor propagation.
+        Cursor      = Cursors.Arrow;
+        ForceCursor = true;
     }
 
     private void OnCanvasMouseLeave(object sender, MouseEventArgs e)
