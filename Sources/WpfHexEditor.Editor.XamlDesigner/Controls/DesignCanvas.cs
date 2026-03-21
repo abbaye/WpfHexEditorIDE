@@ -317,7 +317,10 @@ public sealed class DesignCanvas : Border
         SelectedElementUid = primary is not null ? _mapper.GetUid(primary) : -1;
 
         if (_selectedElements.Count == 1)
+        {
             PlaceSelectionAdorner(_selectedElements[0]);
+            UpdateGridGuideAdorner(_selectedElements[0] as System.Windows.Controls.Grid);
+        }
         else if (_selectedElements.Count > 1)
             PlaceMultiSelectionAdorners();
 
@@ -640,6 +643,10 @@ public sealed class DesignCanvas : Border
         foreach (var el in _selectedElements) toClean.Add(el);
         foreach (var el in toClean) RemoveElementAdorners(el);
         RemoveMultiAdorner();
+
+        // Remove the grid guide adorner whenever selection adorners are rebuilt
+        // (handles deselect, multi-select, and XAML re-render restores).
+        RemoveGridGuideAdorner();
     }
 
     /// <summary>Rebuilds adorners from the current <see cref="_selectedElements"/> list without changing the list.</summary>
