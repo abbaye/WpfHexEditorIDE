@@ -140,8 +140,9 @@ public sealed class DesignCanvas : Border
 
         PreviewMouseLeftButtonDown += OnCanvasMouseDown;
         PreviewMouseLeftButtonUp   += OnCanvasMouseUp;
-        MouseMove  += OnCanvasMouseMove;
-        MouseLeave += OnCanvasMouseLeave;
+        PreviewMouseMove += OnCanvasMouseMove;   // Preview = tunnel, not intercepted by adorners/children
+        MouseLeave       += OnCanvasMouseLeave;
+        MouseEnter       += OnCanvasMouseEnter;  // restore guide when mouse re-enters after adorner flicker
 
         // Escape key:
         //   • 2+ elements selected → narrow to primary (first in list).
@@ -1257,19 +1258,19 @@ public sealed class DesignCanvas : Border
         ForceCursor = true;
     }
 
+    private void OnCanvasMouseEnter(object sender, MouseEventArgs e)
+    {
+        if (DesignRoot is null) return;
+        var mousePos   = e.GetPosition(_presenter);
+        var hitElement = HitTestElement(mousePos);
+        UpdateGridInsertAdorner(hitElement, mousePos);
+    }
+
     private void OnCanvasMouseLeave(object sender, MouseEventArgs e)
     {
         if (_isRubberBanding) return;
         UpdateHoverAdorner(null);
-
-        // Hide the insert guide only when the mouse actually leaves the canvas bounds.
-        // WPF fires MouseLeave spuriously when adorners (ResizeAdorner thumbs) appear/
-        // disappear — check that the mouse is truly outside before hiding.
-        var pos = e.GetPosition(this);
-        bool trulyOutside = pos.X < 0 || pos.Y < 0
-                         || pos.X > ActualWidth || pos.Y > ActualHeight;
-        if (trulyOutside)
-            HideGridInsertAdorner();
+        HideGridInsertAdorner();
     }
 
     private void OnCanvasMouseUp(object sender, MouseButtonEventArgs e)
