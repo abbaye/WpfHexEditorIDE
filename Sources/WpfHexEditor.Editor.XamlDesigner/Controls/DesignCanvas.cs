@@ -294,11 +294,37 @@ public sealed class DesignCanvas : Border
             PlaceSelectionAdorner(el);
         }
 
-        // Grid guide adorner: place when a Grid is selected, remove otherwise.
-        UpdateGridGuideAdorner(el as System.Windows.Controls.Grid);
+        // Resolve the nearest Grid ancestor (the element itself or the first Grid parent).
+        // Used by both the GridGuideAdorner (column/row chips) and GridInsertAdorner (insert guide).
+        var nearestGrid = FindNearestGridAncestor(el);
+
+        // Grid guide adorner: place when a Grid is selected (directly or via ancestor).
+        UpdateGridGuideAdorner(nearestGrid);
+
+        // Grid insert adorner: keep alive on the same Grid after selection changes.
+        // If the new selection still resolves to the same Grid, the adorner stays.
+        if (nearestGrid is null || !ReferenceEquals(nearestGrid, _insertAdornerGrid))
+            HideGridInsertAdorner();
 
         if (!suppressEvent)
             SelectedElementChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Returns <paramref name="el"/> itself if it is a <see cref="System.Windows.Controls.Grid"/>,
+    /// otherwise walks up the visual tree and returns the first Grid ancestor found within
+    /// the <see cref="_presenter"/> boundary. Returns <see langword="null"/> when none is found.
+    /// </summary>
+    private System.Windows.Controls.Grid? FindNearestGridAncestor(UIElement? el)
+    {
+        var node = el as DependencyObject;
+        while (node is not null && !ReferenceEquals(node, _presenter))
+        {
+            if (node is System.Windows.Controls.Grid g) return g;
+            if (node is not Visual and not System.Windows.Media.Media3D.Visual3D) break;
+            node = VisualTreeHelper.GetParent(node);
+        }
+        return null;
     }
 
     /// <summary>All currently selected elements (0 = none, 1 = single, 2+ = multi).</summary>
@@ -964,20 +990,7 @@ public sealed class DesignCanvas : Border
     /// of the Grid, making a plain <see cref="ReferenceEquals"/> against SelectedElement fail.
     /// </summary>
     private bool IsGridActiveForInsert(System.Windows.Controls.Grid grid)
-    {
-        if (SelectedElement is null) return false;
-        if (ReferenceEquals(SelectedElement, grid)) return true;
-
-        // Walk up from SelectedElement; if we reach the Grid it is an ancestor.
-        var node = SelectedElement as DependencyObject;
-        while (node is not null)
-        {
-            if (ReferenceEquals(node, grid)) return true;
-            if (node is not Visual and not System.Windows.Media.Media3D.Visual3D) break;
-            node = VisualTreeHelper.GetParent(node);
-        }
-        return false;
-    }
+        => ReferenceEquals(FindNearestGridAncestor(SelectedElement), grid);
 
     /// <summary>
     /// Returns the 0-based index after which a new definition should be inserted
