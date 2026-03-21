@@ -181,6 +181,10 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     private readonly AlignmentToolbarViewModel _alignVm = new();
 
+    // ── Phase GG — Grid guides ────────────────────────────────────────────────
+
+    private readonly GridDefinitionService _gridDefinitionService = new();
+
     // ── Phase 9 — Design-time data ────────────────────────────────────────────
 
     private readonly DesignTimeXamlPreprocessor _preprocessor = new();
@@ -630,6 +634,12 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         // -- P3: refresh F4 after every successful re-render (code edits, auto-preview, undo/redo).
         _designCanvas.DesignRendered += OnDesignRendered;
+
+        // -- Phase GG: Grid guide events → XAML patch + undo ----------------
+        _designCanvas.GridGuideResized     += OnGridGuideResized;
+        _designCanvas.GridGuideAdded       += OnGridGuideAdded;
+        _designCanvas.GridGuideRemoved     += OnGridGuideRemoved;
+        _designCanvas.GridGuideTypeChanged += OnGridGuideTypeChanged;
 
         // -- Phase F5: build search overlay (floats over design pane) --------
         _searchBar = BuildSearchBar(out _searchBox);
@@ -1345,7 +1355,12 @@ public sealed class XamlDesignerSplitHost : Grid,
     private void OnDesignRendered(object? sender, UIElement? root)
     {
         if (_syncDepth > 0) return;
-        Dispatcher.InvokeAsync(UpdateIdePropertyProvider, System.Windows.Threading.DispatcherPriority.Loaded);
+        Dispatcher.InvokeAsync(() =>
+        {
+            UpdateIdePropertyProvider();
+            // Phase GG: refresh grid guide adorner so handle positions reflect new pixel sizes.
+            _designCanvas.RefreshGridGuide();
+        }, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     /// <summary>
@@ -2134,6 +2149,79 @@ public sealed class XamlDesignerSplitHost : Grid,
             _undoManager.PushEntry(new SnapshotDesignUndoEntry(beforeXaml, afterXaml, $"Delete {uids.Count} elements"));
             ApplyXamlToCode(afterXaml);
         }
+    }
+
+    // ── Phase GG — Grid guide event handlers ─────────────────────────────────
+
+    /// <summary>
+    /// Shared helper — patches the XAML, registers a snapshot undo entry,
+    /// and triggers a live preview refresh.
+    /// </summary>
+    private void ApplyGridGuideXaml(string afterXaml, string undoDescription)
+    {
+        var beforeXaml = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        if (string.Equals(beforeXaml, afterXaml, StringComparison.Ordinal)) return;
+
+        _undoManager.PushEntry(new SnapshotDesignUndoEntry(beforeXaml, afterXaml, undoDescription));
+        ApplyXamlToCode(afterXaml);
+    }
+
+    /// <summary>User dragged a boundary grip → resize column or row.</summary>
+    private void OnGridGuideResized(object? sender,
+        WpfHexEditor.Editor.XamlDesigner.Models.GridGuideResizedEventArgs e)
+    {
+        var uid  = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var xaml  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after = _gridDefinitionService.ResizeDefinition(xaml, uid, e.IsColumn, e.Index, e.NewRawValue);
+
+        var kind  = e.IsColumn ? "Column" : "Row";
+        ApplyGridGuideXaml(after, $"Resize {kind} {e.Index} → {e.NewRawValue}");
+    }
+
+    /// <summary>User clicked "+" to add a new column or row.</summary>
+    private void OnGridGuideAdded(object? sender,
+        WpfHexEditor.Editor.XamlDesigner.Models.GridGuideAddedEventArgs e)
+    {
+        var uid  = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var xaml  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after = _gridDefinitionService.AddDefinition(
+                        xaml, uid, e.IsColumn, e.InsertAfter, e.Definition);
+
+        var kind = e.IsColumn ? "Column" : "Row";
+        ApplyGridGuideXaml(after, $"Add {kind} ({e.Definition})");
+    }
+
+    /// <summary>User clicked "×" on a handle chip → remove column or row.</summary>
+    private void OnGridGuideRemoved(object? sender,
+        WpfHexEditor.Editor.XamlDesigner.Models.GridGuideRemovedEventArgs e)
+    {
+        var uid  = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var xaml  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after = _gridDefinitionService.RemoveDefinition(xaml, uid, e.IsColumn, e.Index);
+
+        var kind = e.IsColumn ? "Column" : "Row";
+        ApplyGridGuideXaml(after, $"Remove {kind} {e.Index}");
+    }
+
+    /// <summary>User picked a new size type from the chip dropdown → change type.</summary>
+    private void OnGridGuideTypeChanged(object? sender,
+        WpfHexEditor.Editor.XamlDesigner.Models.GridGuideTypeChangedEventArgs e)
+    {
+        var uid  = _designCanvas.SelectedElementUid;
+        if (uid < 0) return;
+
+        var xaml  = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
+        var after = _gridDefinitionService.ResizeDefinition(
+                        xaml, uid, e.IsColumn, e.Index, e.NewRawValue);
+
+        var kind = e.IsColumn ? "Column" : "Row";
+        ApplyGridGuideXaml(after, $"Set {kind} {e.Index} → {e.NewRawValue}");
     }
 
     // ── Keyboard shortcuts ────────────────────────────────────────────────────

@@ -40,7 +40,6 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
-
 namespace WpfHexEditor.Editor.XamlDesigner.Controls;
 
 /// <summary>
@@ -86,6 +85,12 @@ public sealed class DesignCanvas : Border
     private RubberBandAdorner? _rubberBandAdorner;
     private bool               _isRubberBanding;
     private Point              _rubberBandStart;   // in DesignRoot coordinate space
+
+    // ── Grid guide adorner ─────────────────────────────────────────────────────
+
+    private GridGuideAdorner?      _gridAdorner;
+    private UIElement?             _gridAdornedElement;
+    private readonly GridDefinitionService _gridService = new();
 
     /// <summary>
     /// When true, selection uses ResizeAdorner instead of SelectionAdorner
@@ -278,6 +283,9 @@ public sealed class DesignCanvas : Border
             PlaceSelectionAdorner(el);
         }
 
+        // Grid guide adorner: place when a Grid is selected, remove otherwise.
+        UpdateGridGuideAdorner(el as System.Windows.Controls.Grid);
+
         if (!suppressEvent)
             SelectedElementChanged?.Invoke(this, EventArgs.Empty);
     }
@@ -337,6 +345,31 @@ public sealed class DesignCanvas : Border
 
         if (!suppressEvent)
             SelectedElementChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    // ── Grid guide events (forwarded from GridGuideAdorner) ───────────────────
+
+    /// <summary>Fired when the user drags a grid boundary grip to resize a column/row.</summary>
+    public event EventHandler<GridGuideResizedEventArgs>?     GridGuideResized;
+
+    /// <summary>Fired when the user clicks "+" to add a column or row to the selected Grid.</summary>
+    public event EventHandler<GridGuideAddedEventArgs>?       GridGuideAdded;
+
+    /// <summary>Fired when the user clicks "×" on a handle chip to remove a column/row.</summary>
+    public event EventHandler<GridGuideRemovedEventArgs>?     GridGuideRemoved;
+
+    /// <summary>Fired when the user selects a new size type via the chip dropdown.</summary>
+    public event EventHandler<GridGuideTypeChangedEventArgs>? GridGuideTypeChanged;
+
+    /// <summary>
+    /// Refreshes the grid guide adorner from the current live Grid layout.
+    /// Called by XamlDesignerSplitHost after every successful re-render.
+    /// </summary>
+    public void RefreshGridGuide()
+    {
+        if (_gridAdorner is null || _gridAdornedElement is not System.Windows.Controls.Grid g) return;
+        var info = _gridService.GetGridInfo(g);
+        _gridAdorner.Refresh(info.Columns, info.Rows);
     }
 
     // ── Rendering ─────────────────────────────────────────────────────────────
@@ -673,6 +706,50 @@ public sealed class DesignCanvas : Border
         {
             layer.Add(new SelectionAdorner(el));
         }
+    }
+
+    // ── Grid guide adorner management ─────────────────────────────────────────
+
+    /// <summary>
+    /// Places a <see cref="GridGuideAdorner"/> on <paramref name="grid"/> (or removes it
+    /// when <paramref name="grid"/> is null, i.e. the selected element is not a Grid).
+    /// </summary>
+    private void UpdateGridGuideAdorner(System.Windows.Controls.Grid? grid)
+    {
+        // Remove existing adorner if it belongs to a different element.
+        if (_gridAdorner is not null)
+        {
+            if (ReferenceEquals(_gridAdornedElement, grid)) return; // same Grid, no change
+            RemoveGridGuideAdorner();
+        }
+
+        if (grid is null) return;
+
+        var layer = AdornerLayer.GetAdornerLayer(grid);
+        if (layer is null) return;
+
+        _gridAdorner          = new GridGuideAdorner(grid);
+        _gridAdornedElement   = grid;
+        _gridAdorner.GuideResized     += (_, e) => GridGuideResized?.Invoke(this, e);
+        _gridAdorner.GuideAdded       += (_, e) => GridGuideAdded?.Invoke(this, e);
+        _gridAdorner.GuideRemoved     += (_, e) => GridGuideRemoved?.Invoke(this, e);
+        _gridAdorner.GuideTypeChanged += (_, e) => GridGuideTypeChanged?.Invoke(this, e);
+
+        var info = _gridService.GetGridInfo(grid);
+        _gridAdorner.Refresh(info.Columns, info.Rows);
+        layer.Add(_gridAdorner);
+    }
+
+    private void RemoveGridGuideAdorner()
+    {
+        if (_gridAdorner is null) return;
+        if (_gridAdornedElement is not null)
+        {
+            var layer = AdornerLayer.GetAdornerLayer(_gridAdornedElement);
+            layer?.Remove(_gridAdorner);
+        }
+        _gridAdorner        = null;
+        _gridAdornedElement = null;
     }
 
     // ── Mouse selection ───────────────────────────────────────────────────────
