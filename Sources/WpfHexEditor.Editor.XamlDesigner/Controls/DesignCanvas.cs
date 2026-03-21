@@ -1194,7 +1194,7 @@ public sealed class DesignCanvas : Border
                 return;
             }
         }
-        Cursor = null;  // restore default
+        Cursor = Cursors.Arrow;  // force arrow over any child element cursor (e.g. TextBox caret)
     }
 
     private void OnCanvasMouseLeave(object sender, MouseEventArgs e)
