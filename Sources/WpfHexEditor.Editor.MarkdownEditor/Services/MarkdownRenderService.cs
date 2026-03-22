@@ -159,9 +159,11 @@ public static class MarkdownRenderService
         // Custom renderer: intercept fenced code blocks to detect mermaid
         sb.AppendLine("    const renderer = new marked.Renderer();");
         sb.AppendLine("    renderer.code = function(code, lang) {");
-        // Handle both old string form and new object form from marked v9+
-        sb.AppendLine("      const language = (typeof lang === 'object' && lang) ? lang.lang : lang;");
-        sb.AppendLine("      const text = (typeof code === 'object' && code) ? code.text : code;");
+        // marked v9+ passes a single token object {text, lang, ...}; older versions pass (string, string).
+        // Always prefer code.lang when code is an object (v9+ token form).
+        sb.AppendLine("      const isToken = typeof code === 'object' && code !== null;");
+        sb.AppendLine("      const language = isToken ? (code.lang || '') : (lang || '');");
+        sb.AppendLine("      const text = isToken ? (code.text || '') : (code || '');");
         sb.AppendLine("      if (language === 'mermaid') {");
         sb.AppendLine("        return '<div class=\"mermaid\">' + text + '</div>';");
         sb.AppendLine("      }");
