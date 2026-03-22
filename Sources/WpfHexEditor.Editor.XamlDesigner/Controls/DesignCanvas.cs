@@ -273,6 +273,7 @@ public sealed class DesignCanvas : Border
 
     private void ApplyCanvasPresetWidth(double width)
     {
+        const double Extra = 18.0;   // mirrors RenderXaml: 2×border(1px) + 2×ContentPresenter.Margin(8px)
         if (DesignRoot is FrameworkElement rootFe)
         {
             if (double.IsNaN(width) || width <= 0)
@@ -284,7 +285,9 @@ public sealed class DesignCanvas : Border
             {
                 rootFe.MaxWidth = width;
                 rootFe.Width    = width;
+                Width           = width + Extra;   // keep DesignCanvas extents in sync so ZoomPanCanvas fits correctly
             }
+            rootFe.InvalidateMeasure();            // force a WPF layout pass, not just a repaint
         }
         InvalidateVisual();
     }
@@ -678,6 +681,12 @@ public sealed class DesignCanvas : Border
                     if (!double.IsNaN(rootFe.Width)  && rootFe.Width  > 0) Width  = rootFe.Width  + Extra;
                     if (!double.IsNaN(rootFe.Height) && rootFe.Height > 0) Height = rootFe.Height + Extra;
                 }
+
+                // Re-apply any active breakpoint preset so that a fresh render honours the
+                // current viewport width. Without this, every XAML edit would reset to the
+                // root's declared width regardless of which breakpoint is active.
+                if (!double.IsNaN(CanvasPresetWidth) && CanvasPresetWidth > 0)
+                    ApplyCanvasPresetWidth(CanvasPresetWidth);
 
                 // Build the UIElement → XElement map after the element is in the tree,
                 // then attempt to restore the previously selected element by UID.

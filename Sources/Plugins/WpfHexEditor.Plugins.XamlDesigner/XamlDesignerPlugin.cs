@@ -643,6 +643,10 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private void UpdateSidePanels(XamlDesignerSplitHost host)
     {
         var selectedUi = host.Canvas?.SelectedElement;
+        // If nothing is selected yet (e.g., file just opened), fall back to the design root
+        // so Properties / Binding Inspector populate immediately without requiring a click.
+        if (selectedUi is null)
+            selectedUi = host.Canvas?.DesignRoot;
         var dep = selectedUi as System.Windows.DependencyObject;
 
         if (_propertiesPanel?.ViewModel is not null)
