@@ -724,6 +724,16 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                     SelectionChanged?.Invoke(this, EventArgs.Empty);
                     RefreshCommands();
                     break;
+                case nameof(TextEditorViewModel.MaxLineLength):
+                    if (!Viewport.IsWordWrapEnabled)
+                    {
+                        // Clear the explicit Width set by ScrollView_ScrollChanged so the
+                        // next measure pass runs with infinity available width and
+                        // MeasureOverride reads fresh EstimatedMaxWidth from the ViewModel.
+                        Viewport.ClearValue(FrameworkElement.WidthProperty);
+                        Viewport.InvalidateMeasure();
+                    }
+                    break;
             }
         });
     }
@@ -738,6 +748,18 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         double caretAbsX = Viewport.GetCaretAbsoluteX(_vm.CaretColumn);
         double visLeft   = ScrollView.HorizontalOffset;
         double visRight  = visLeft + ScrollView.ViewportWidth;
+
+        // If the caret is ahead of the current scrollable extent (typing past right edge),
+        // clear the stale explicit Width and force a synchronous layout so ExtentWidth is
+        // up-to-date before ScrollToHorizontalOffset — otherwise the offset gets clamped.
+        double minExtent = caretAbsX + Viewport.CharWidth * 2;
+        if (minExtent > ScrollView.ExtentWidth)
+        {
+            Viewport.ClearValue(FrameworkElement.WidthProperty);
+            Viewport.InvalidateMeasure();
+            ScrollView.UpdateLayout();
+        }
+
         if (caretAbsX < visLeft)
             ScrollView.ScrollToHorizontalOffset(Math.Max(0, caretAbsX - Viewport.CharWidth));
         else if (caretAbsX + Viewport.CharWidth > visRight)

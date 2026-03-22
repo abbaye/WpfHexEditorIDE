@@ -794,14 +794,21 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         if (lineIndex >= 0 && lineIndex < _lines.Count)
         {
             int len = _lines[lineIndex].Length;
-            if (len > _cachedMaxLineLength) _cachedMaxLineLength = len;
+            if (len > _cachedMaxLineLength)
+            {
+                _cachedMaxLineLength = len;
+                OnPropertyChanged(nameof(MaxLineLength));
+            }
         }
     }
 
     /// <summary>O(n) â€” called only when a line may have shrunk (delete, split, paste-delete).</summary>
     private void OnLineLengthMayHaveShrunk()
     {
+        var prev = _cachedMaxLineLength;
         _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;
+        if (_cachedMaxLineLength != prev)
+            OnPropertyChanged(nameof(MaxLineLength));
     }
 
     /// <summary>Full O(n) rebuild â€” used at initial load only.</summary>

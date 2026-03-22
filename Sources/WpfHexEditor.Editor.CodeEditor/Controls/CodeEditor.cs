@@ -3269,10 +3269,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     var (logLine, subRow) = WrapVisualRowToLogical(vr);
                     if (logLine >= _document!.Lines.Count) break;
-                    _visLinePositions.Add((logLine, y));
+                    double codeY = y;
+                    if (subRow == 0 && ShowInlineHints && IsHintEntryVisible(logLine))
+                    {
+                        codeY = y + HintLineHeight;   // hint zone sits above the first sub-row
+                        _lineYLookup[logLine] = codeY;
+                    }
+                    else if (subRow == 0)
+                    {
+                        _lineYLookup[logLine] = y;
+                    }
+                    _visLinePositions.Add((logLine, codeY));
                     _visLineSubRows.Add(subRow);
-                    if (subRow == 0) _lineYLookup[logLine] = y;
-                    y += _lineHeight;
+                    y = codeY + _lineHeight;
                     vr++;
                 }
                 return;
@@ -3316,8 +3325,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderInlineHints(DrawingContext dc)
         {
-            if (!ShowInlineHints || _visibleHintsCount == 0 || _document == null
-                || IsWordWrapEnabled) return;  // hints layout is incompatible with word-wrap visual rows
+            if (!ShowInlineHints || _visibleHintsCount == 0 || _document == null) return;
 
             _hintsHitZones.Clear();
 
@@ -3328,10 +3336,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double baseX     = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
             double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
-            int visIdx = 0;
             for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
             {
-                if (_foldingEngine?.IsLineHidden(i) == true) { continue; }
+                if (_foldingEngine?.IsLineHidden(i) == true) continue;
 
                 if (IsHintEntryVisible(i) && _hintsData.TryGetValue(i, out var entry) && entry.Count > 0)
                 {
@@ -3353,14 +3360,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         brush,
                         pixelsPerDip);
 
-                    double y = GetLensZoneY(visIdx) + 1.0;  // 1 px top padding
+                    // Use _lineYLookup (code-text Y) minus HintLineHeight — works in both normal
+                    // and word-wrap modes without relying on a visIdx counter.
+                    double hintZoneY = _lineYLookup.TryGetValue(i, out double codeY)
+                        ? codeY - HintLineHeight
+                        : GetLensZoneY(0);   // defensive fallback
+                    double y = hintZoneY + 1.0;  // 1 px top padding
                     // Subtle pill background — makes the hint visually distinct from code/comments.
                     dc.DrawRoundedRectangle(bgBrush, null, new Rect(x - 3, y, ft.Width + 6, ft.Height + 1), 3, 3);
                     dc.DrawText(ft, new Point(x, y));
                     _hintsHitZones.Add((new Rect(x - 3, y, ft.Width + 6, HintLineHeight - 2), i, entry.Symbol));
                 }
-
-                visIdx++;
             }
         }
 
@@ -4518,10 +4528,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void RenderTextContentWrapped(DrawingContext dc, double x)
         {
             if (_document is null) return;
-            double dpi             = VisualTreeHelper.GetDpi(this).PixelsPerDip;
-            var    defaultFg       = (Brush?)TryFindResource("CE_Foreground") ?? Brushes.White;
+            double dpi       = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            var    defaultFg = (Brush?)TryFindResource("CE_Foreground") ?? Brushes.White;
 
             ExternalHighlighter?.Reset();
+
+            // Cache fresh tokens for the current logical line so continuation sub-rows
+            // reuse the same UI-thread-resolved brushes instead of the pipeline-cached ones.
+            IReadOnlyList<Helpers.SyntaxHighlightToken>? lineTokensCache = null;
+            int lastCachedLine = -1;
 
             for (int visPos = 0; visPos < _visLinePositions.Count; visPos++)
             {
@@ -4535,20 +4550,39 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (startCol > 0 && startCol >= lineText.Length) continue;
                 if (string.IsNullOrEmpty(lineText)) continue;
 
-                // Advance external highlighter state for every sub-row==0 (logical line boundary).
-                if (subRow == 0 && ExternalHighlighter is not null && startCol > 0)
-                    ExternalHighlighter.Highlight(lineText, logLine);
+                // Highlight the logical line once (subRow == 0) and cache for continuation rows.
+                // All sub-rows of the same logical line share one UI-thread highlight call so
+                // brushes are resolved correctly and the block-comment state advances once.
+                if (ExternalHighlighter is { } ext && (subRow == 0 || logLine != lastCachedLine))
+                {
+                    lineTokensCache = ext.Highlight(lineText, logLine)
+                        .Select(t => t with { Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground })
+                        .ToList();
+                    lastCachedLine = logLine;
+                }
 
-                // Collect tokens for this logical line.
-                IEnumerable<Helpers.SyntaxHighlightToken> rawTokens = [];
-                if (ExternalHighlighter is { } ext)
-                    rawTokens = subRow == 0
-                        ? ext.Highlight(lineText, logLine).Select(t => t with { Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground })
-                        : _document.Lines[logLine].TokensCache?.Select(t => t with { Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground })
-                            ?? rawTokens;
+                IEnumerable<Helpers.SyntaxHighlightToken> rawTokens =
+                    lineTokensCache ?? (IEnumerable<Helpers.SyntaxHighlightToken>)[];
 
-                var subLine = lineText.Substring(startCol, endCol - startCol);
-                int pos     = startCol;
+                double baselineY = _glyphRenderer != null
+                    ? y + _glyphRenderer.Baseline
+                    : y + _charHeight * 0.8;
+
+                // Base pass: paint the sub-line in the default foreground so characters not
+                // covered by any token remain visible — mirrors the non-wrap base pass.
+                if (ExternalHighlighter is not null && endCol > startCol)
+                {
+                    var subLine   = lineText.Substring(startCol, endCol - startCol);
+                    var baseToken = new Helpers.SyntaxHighlightToken(startCol, endCol - startCol, subLine, defaultFg);
+                    if (_glyphRenderer != null)
+                        _glyphRenderer.RenderToken(dc, baseToken, x, y, baselineY);
+                    else
+                    {
+                        var ftBase = new FormattedText(subLine, System.Globalization.CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi);
+                        dc.DrawText(ftBase, new Point(x, y));
+                    }
+                }
 
                 foreach (var token in rawTokens.OrderBy(t => t.StartColumn))
                 {
@@ -4556,35 +4590,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     if (tokenEnd <= startCol) continue;
                     if (token.StartColumn >= endCol) break;
 
-                    int gapEnd = Math.Min(Math.Max(pos, token.StartColumn), endCol);
-                    if (gapEnd > pos)
-                    {
-                        var gap = lineText.Substring(pos, gapEnd - pos);
-                        var ft  = new FormattedText(gap, System.Globalization.CultureInfo.CurrentCulture,
-                            FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi);
-                        dc.DrawText(ft, new Point(x + (pos - startCol) * _charWidth, y));
-                    }
-
                     int ss = Math.Max(token.StartColumn, startCol);
                     int se = Math.Min(tokenEnd, endCol);
-                    if (se > ss)
-                    {
-                        var span   = lineText.Substring(ss, se - ss);
-                        var brush  = token.Foreground ?? defaultFg;
-                        var ft     = new FormattedText(span, System.Globalization.CultureInfo.CurrentCulture,
-                            FlowDirection.LeftToRight, _typeface, _fontSize, brush, dpi);
-                        dc.DrawText(ft, new Point(x + (ss - startCol) * _charWidth, y));
-                    }
-                    pos = Math.Max(pos, tokenEnd);
-                }
+                    if (se <= ss) continue;
 
-                int tail = pos;
-                if (tail < endCol)
-                {
-                    var t2 = lineText.Substring(tail, endCol - tail);
-                    var ft2 = new FormattedText(t2, System.Globalization.CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi);
-                    dc.DrawText(ft2, new Point(x + (tail - startCol) * _charWidth, y));
+                    var    span   = lineText.Substring(ss, se - ss);
+                    var    brush  = token.Foreground ?? defaultFg;
+                    double tokenX = x + (ss - startCol) * _charWidth;
+
+                    // Use GlyphRunRenderer when available — same sharp ClearType rendering
+                    // as the non-wrap path; correctly applies IsBold / IsItalic flags.
+                    if (_glyphRenderer != null)
+                    {
+                        var sliced = token with { Text = span, StartColumn = ss, Length = se - ss };
+                        _glyphRenderer.RenderToken(dc, sliced, tokenX, y, baselineY);
+                    }
+                    else
+                    {
+                        var typeface = token.IsBold ? _boldTypeface : _typeface;
+                        var ft = new FormattedText(span, System.Globalization.CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight, typeface, _fontSize, brush, dpi);
+                        if (token.IsItalic)
+                            ft.SetFontStyle(FontStyles.Italic);
+                        dc.DrawText(ft, new Point(tokenX, y));
+                    }
                 }
             }
         }
@@ -5549,6 +5578,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // appropriate via smart-invalidation routing.  Calling it again here produced
                 // a guaranteed double render on every single keystroke.
             }
+            EnsureCursorVisible();
         }
 
         #endregion
@@ -6854,6 +6884,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
 
                 _selection.Clear();
+                EnsureCursorVisible();
                 InvalidateVisual();
             }
             catch (Exception)
