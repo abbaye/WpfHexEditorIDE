@@ -715,6 +715,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                     StatusMessage?.Invoke(this, _vm.CaretStatus);
                     RefreshTextStatusBarItems();
                     EnsureCaretHorizontallyVisible();
+                    Viewport.ScrollIntoView(_vm.CaretLine);
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);

@@ -3316,7 +3316,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void RenderInlineHints(DrawingContext dc)
         {
-            if (!ShowInlineHints || _visibleHintsCount == 0 || _document == null) return;
+            if (!ShowInlineHints || _visibleHintsCount == 0 || _document == null
+                || IsWordWrapEnabled) return;  // hints layout is incompatible with word-wrap visual rows
 
             _hintsHitZones.Clear();
 
