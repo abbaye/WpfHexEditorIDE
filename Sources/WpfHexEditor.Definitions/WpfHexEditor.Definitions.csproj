@@ -7,7 +7,7 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Description>Embedded definition files (.whfmt format definitions, .whlang syntax definitions) and their catalog services.</Description>
+    <Description>Embedded definition files (.whfmt format definitions) and their catalog services.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
@@ -16,7 +16,6 @@
   <ItemGroup>
     <EmbeddedResource Include="FormatDefinitions\**\*.whfmt" />
     <EmbeddedResource Include="FormatDefinitions\**\*.grammar" />
-    <EmbeddedResource Include="SyntaxDefinitions\**\*.whlang" />
   </ItemGroup>
 
   <ItemGroup>

@@ -77,6 +77,24 @@ public sealed class LanguageDefinition
     /// <see cref="LanguageRegistry.SetProjectDefault"/> to enforce this constraint.
     /// </summary>
     public bool IsDefault { get; init; }
+
+    /// <summary>
+    /// IDs of languages whose rules are prepended as a base layer.
+    /// Resolved in <see cref="LanguageRegistry.ResolveIncludes"/> after full registration.
+    /// </summary>
+    public IReadOnlyList<string> Includes { get; init; } = [];
+
+    /// <summary>
+    /// Editor affinity inherited from "preferredEditor" in the parent .whfmt.
+    /// "code-editor" | "text-editor" | null.
+    /// </summary>
+    public string? EditorHint { get; init; }
+
+    /// <summary>
+    /// Data-driven folding configuration deserialized from "foldingRules" in the .whfmt.
+    /// Null = no explicit rules → CodeEditor uses its built-in default strategy.
+    /// </summary>
+    public FoldingRules? FoldingRules { get; init; }
 }
 
 /// <summary>Maps a regex pattern to a token kind for syntax highlighting.</summary>
@@ -126,4 +144,45 @@ public enum FoldingStrategyKind
     None,
     Brace,
     Indent
+}
+
+// ==========================================================
+// Project: WpfHexEditor.ProjectSystem
+// File: FoldingRules.cs (embedded in LanguageDefinition.cs)
+// Description: Data-driven folding configuration for a language.
+// ==========================================================
+
+/// <summary>
+/// Describes how the CodeEditor should build fold regions for a given language.
+/// All properties are optional; null/empty disables the corresponding strategy.
+/// </summary>
+public sealed record FoldingRules
+{
+    // ── Pattern-based (C#, JS, JSON, Rust, …) ─────────────────────────────
+    public IReadOnlyList<string> StartPatterns { get; init; } = [];
+    public IReadOnlyList<string> EndPatterns   { get; init; } = [];
+
+    // ── Named-region directives (C#: #region / #endregion) ────────────────
+    public string? NamedRegionStartPattern { get; init; }
+    public string? NamedRegionEndPattern   { get; init; }
+
+    // ── Indentation-based (Python, YAML, CoffeeScript, …) ─────────────────
+    public bool    IndentBased       { get; init; }
+    public string? BlockStartPattern { get; init; }
+    public int     IndentTabWidth    { get; init; } = 4;
+
+    // ── Tag-based (HTML, XML, XAML) ────────────────────────────────────────
+    public bool                  TagBased           { get; init; }
+    public IReadOnlyList<string> SelfClosingTags    { get; init; } = [];
+
+    /// <summary>
+    /// When true, <see cref="TagFoldingStrategy"/> merges continuation lines
+    /// (attributes on separate lines before the closing &gt;) into a single virtual
+    /// line before running the tag-matching regex. Required for XAML and HTML.
+    /// </summary>
+    public bool MultilineTagSupport { get; init; }
+
+    // ── Heading-based (Markdown) ───────────────────────────────────────────
+    public bool HeadingBased    { get; init; }
+    public int  MinHeadingLevel { get; init; } = 2;
 }

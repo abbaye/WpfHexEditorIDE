@@ -68,6 +68,51 @@ public sealed class ResourceReferenceService
 
         return keys.OrderBy(k => k).ToList();
     }
+
+    /// <summary>
+    /// Replaces the attribute value of <paramref name="attributeName"/> on the element
+    /// with uid tag <c>xd_<paramref name="elementUid"/></c> with a StaticResource reference.
+    /// Returns the patched XAML or null on failure.
+    /// </summary>
+    public string? ApplyResourceReference(string xaml, int elementUid, string attributeName, string resourceKey)
+    {
+        if (string.IsNullOrWhiteSpace(xaml)) return null;
+
+        // Find the element by its UID tag attribute (Tag="xd_N").
+        var tagPattern = $@"Tag=""xd_{elementUid}""";
+        int tagPos     = xaml.IndexOf(tagPattern, StringComparison.Ordinal);
+        if (tagPos < 0) return null;
+
+        // Find the start of the element's opening tag.
+        int tagStart = xaml.LastIndexOf('<', tagPos);
+        if (tagStart < 0) return null;
+
+        // Find the end of the opening tag (either '>' or '/>').
+        int tagEnd = xaml.IndexOf('>', tagPos);
+        if (tagEnd < 0) return null;
+        string openTag = xaml.Substring(tagStart, tagEnd - tagStart + 1);
+
+        // Build the replacement value.
+        string newRef    = $"{{StaticResource {resourceKey}}}";
+        string attrValue = $"{attributeName}=\"{newRef}\"";
+
+        // Try to replace an existing attribute.
+        var existingPattern = new System.Text.RegularExpressions.Regex(
+            $@"{System.Text.RegularExpressions.Regex.Escape(attributeName)}=""[^""]*""");
+        string newTag;
+        if (existingPattern.IsMatch(openTag))
+            newTag = existingPattern.Replace(openTag, attrValue, 1);
+        else
+        {
+            // Insert before the closing '>' or '/>'.
+            int insertBefore = openTag.EndsWith("/>", StringComparison.Ordinal)
+                ? openTag.Length - 2
+                : openTag.Length - 1;
+            newTag = openTag.Insert(insertBefore, $" {attrValue}");
+        }
+
+        return xaml.Substring(0, tagStart) + newTag + xaml.Substring(tagEnd + 1);
+    }
 }
 
 /// <summary>Location of a single resource reference within a XAML file.</summary>

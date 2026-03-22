@@ -328,7 +328,33 @@
                             Foreground="{DynamicResource DockMenuForegroundBrush}">
                     <TabItem Header="Browse"/>
                     <TabItem Header="Installed"/>
-                    <TabItem Header="Updates"/>
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Updates" VerticalAlignment="Center"/>
+                                <Border CornerRadius="9" MinWidth="18" Height="18"
+                                        Margin="5,0,0,0" Padding="4,0"
+                                        Background="{DynamicResource DockTabActiveBrush}"
+                                        VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UpdateCount}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding UpdateCount}"
+                                               Foreground="White"
+                                               FontSize="10" FontWeight="SemiBold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
                 </TabControl>
 
                 <!-- Search box -->

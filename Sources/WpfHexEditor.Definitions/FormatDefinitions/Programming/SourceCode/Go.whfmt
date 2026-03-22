@@ -1,7 +1,9 @@
 {
   "formatName": "Go Source File",
-  "version": "1.0",
-  "extensions": [".go"],
+  "version": "2.0",
+  "extensions": [
+    ".go"
+  ],
   "description": "Go (Golang) programming language source file.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +17,75 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-go"],
-  "Software": ["VS Code", "GoLand"],
-  "UseCases": ["Backend services", "CLI tools", "Cloud-native development"]
+  "MimeTypes": [
+    "text/x-go"
+  ],
+  "Software": [
+    "VS Code",
+    "GoLand"
+  ],
+  "UseCases": [
+    "Backend services",
+    "CLI tools",
+    "Cloud-native development"
+  ],
+  "syntaxDefinition": {
+    "id": "go",
+    "name": "Go",
+    "extensions": [
+      ".go"
+    ],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "String",
+        "pattern": "(`[^`]*`|\"(?:[^\"\\]|\\.)*\"|\\'(?:[^\\'\\]|\\.)*\\')",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "//.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go|goto|if|import|interface|map|package|range|return|select|struct|switch|type|var|nil|true|false|iota|any)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(bool|byte|complex64|complex128|error|float32|float64|int|int8|int16|int32|int64|rune|string|uint|uint8|uint16|uint32|uint64|uintptr|append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover|Error|String|Reader|Writer|ReadWriter|ReadCloser|WriteCloser|ReadWriteCloser|Stringer|Context|WaitGroup|Mutex|RWMutex|Once)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f_]+|0b[01_]+|0o[0-7_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?i?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ]
+    }
+  }
 }

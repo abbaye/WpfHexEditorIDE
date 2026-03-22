@@ -155,7 +155,16 @@ public sealed class AutoHideBarHoverPreview
     {
         foreach (UIElement child in _owner.Children)
         {
-            if (child is Button btn && btn.Tag is DockItem item)
+            if (child is not Button btn) continue;
+
+            DockItem? item = btn.Tag switch
+            {
+                DockItem di                                        => di,
+                IReadOnlyList<DockItem> list when list.Count > 0  => list[0],
+                _                                                  => null
+            };
+
+            if (item is not null)
                 WireButton(btn, item);
         }
     }

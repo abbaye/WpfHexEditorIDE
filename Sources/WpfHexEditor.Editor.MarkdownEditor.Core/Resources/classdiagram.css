@@ -1,0 +1,51 @@
+/* ==========================================================
+   classdiagram.css — VS-Like Class Diagram Static Preview
+   Used by MarkdownRenderService to style classDiagram fenced blocks.
+   ========================================================== */
+
+.cd-preview {
+  display: block;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+.cd-preview svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Dark theme overrides — applied when parent has data-cd-theme="dark" */
+.cd-preview[data-cd-theme="dark"] .cd-box-bg       { fill: #252526; }
+.cd-preview[data-cd-theme="dark"] .cd-box-border   { stroke: #3F3F46; }
+.cd-preview[data-cd-theme="dark"] .cd-header-bg    { fill: #1E1E1E; }
+.cd-preview[data-cd-theme="dark"] .cd-header-text  { fill: #4FC1FF; }
+.cd-preview[data-cd-theme="dark"] .cd-stereo-text  { fill: #9B9B9B; }
+.cd-preview[data-cd-theme="dark"] .cd-member-text  { fill: #D4D4D4; }
+.cd-preview[data-cd-theme="dark"] .cd-field-icon   { fill: #9CDCFE; }
+.cd-preview[data-cd-theme="dark"] .cd-prop-icon    { fill: #4EC9B0; }
+.cd-preview[data-cd-theme="dark"] .cd-method-icon  { fill: #C586C0; }
+.cd-preview[data-cd-theme="dark"] .cd-event-icon   { fill: #CE9178; }
+.cd-preview[data-cd-theme="dark"] .cd-arrow        { stroke: #569CD6; }
+.cd-preview[data-cd-theme="dark"] .cd-inherit-arrow { stroke: #4FC1FF; }
+.cd-preview[data-cd-theme="dark"] .cd-arrow-label  { fill: #9B9B9B; }
+.cd-preview[data-cd-theme="dark"] .cd-divider      { stroke: #3F3F46; }
+.cd-preview[data-cd-theme="dark"] .cd-canvas-bg    { fill: #2A2A2A; }
+
+/* Light theme values (default) */
+.cd-box-bg       { fill: #FFFFFF; }
+.cd-box-border   { stroke: #C0C0C0; }
+.cd-header-bg    { fill: #BDD7EE; }
+.cd-header-text  { fill: #1F497D; font-weight: bold; }
+.cd-stereo-text  { fill: #7F7F7F; font-style: italic; font-size: 10px; }
+.cd-member-text  { fill: #2B2B2B; font-size: 11px; }
+.cd-field-icon   { fill: #0070C0; }
+.cd-prop-icon    { fill: #008080; }
+.cd-method-icon  { fill: #7030A0; }
+.cd-event-icon   { fill: #C55A11; }
+.cd-arrow        { stroke: #2E75B6; stroke-width: 1.5; fill: none; }
+.cd-inherit-arrow { stroke: #2E75B6; stroke-width: 1.5; fill: none; }
+.cd-dep-arrow    { stroke: #7F7F7F; stroke-width: 1; stroke-dasharray: 5,3; fill: none; }
+.cd-arrow-label  { fill: #7F7F7F; font-size: 10px; }
+.cd-divider      { stroke: #C0C0C0; stroke-width: 0.5; }
+.cd-canvas-bg    { fill: #F5F5F5; }

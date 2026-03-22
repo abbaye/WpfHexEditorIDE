@@ -37,14 +37,23 @@ public sealed class CodeEditorFactory : IEditorFactory
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
         if (ext is ".json" or ".whfmt" or ".whjson" or ".whlang") return true;
 
+        // EditorHint fast-path: language definition carries the preferred editor hint
+        // populated from the parent .whfmt "preferredEditor" field.  O(1) after registry warmup.
+        var language = ext is not null ? LanguageRegistry.Instance.GetLanguageForFile(filePath) : null;
+        if (language?.EditorHint == "code-editor") return true;
+
+        // If EditorHint is explicitly set to a different editor (e.g. "xaml-designer", "hex-editor"),
+        // defer — do not steal the file from its dedicated factory.
+        if (language?.EditorHint is not null) return false;
+
         // Catalog-driven: accept any extension explicitly mapped to this editor via .whfmt preferredEditor field.
         var entry = EmbeddedFormatCatalog.Instance.GetAll()
             .FirstOrDefault(e => e.Extensions.Any(
                 x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
         if (entry?.PreferredEditor == "code-editor") return true;
 
-        // Fallback: language definition registered at runtime via .whlang.
-        return ext is not null && LanguageRegistry.Instance.GetLanguageForFile(filePath) is not null;
+        // Fallback: any registered language definition implies the code editor handles this file.
+        return language is not null;
     }
 
     /// <summary>

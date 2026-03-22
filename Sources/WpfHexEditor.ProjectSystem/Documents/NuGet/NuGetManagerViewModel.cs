@@ -48,6 +48,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
     private string  _statusText        = "";
     private bool    _hasMoreResults;
     private int     _currentSkip       = 0;
+    private int     _updateCount;
 
     private CancellationTokenSource _searchCts = new();
 
@@ -152,6 +153,15 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
         private set { _hasMoreResults = value; OnPropertyChanged(); ((AsyncRelayCommand)LoadMoreCommand).RaiseCanExecuteChanged(); }
     }
 
+    /// <summary>
+    /// Number of packages with available updates. Drives the badge on the "Updates" tab header.
+    /// </summary>
+    public int UpdateCount
+    {
+        get => _updateCount;
+        private set { _updateCount = value; OnPropertyChanged(); }
+    }
+
     public bool HasSelectedPackage => _selectedPackage is not null;
 
     public ObservableCollection<NuGetPackageViewModel> PackageList      { get; }
@@ -169,11 +179,15 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Called by the view code-behind on Loaded.
-    /// Loads the first page of popular packages (empty search).
+    /// Loads the first page of popular packages (empty search)
+    /// and checks for available updates in the background.
     /// </summary>
     public async Task LoadAsync()
     {
         await ExecuteSearchAsync(query: "", skip: 0, clearList: true);
+
+        // Fire-and-forget: count available updates so the badge shows immediately.
+        _ = CountUpdatesInBackgroundAsync();
     }
 
     // ── Search ────────────────────────────────────────────────────────────────
@@ -312,7 +326,36 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
         StatusText = PackageList.Count == 0
             ? "All packages are up to date."
             : $"{PackageList.Count} update(s) available.";
+        UpdateCount = PackageList.Count;
         IsBusy = false;
+    }
+
+    /// <summary>
+    /// Counts available updates in the background without affecting the current PackageList.
+    /// Sets <see cref="UpdateCount"/> so the badge on the "Updates" tab header appears immediately.
+    /// </summary>
+    private async Task CountUpdatesInBackgroundAsync()
+    {
+        try
+        {
+            var installed = CsprojPackageWriter.GetPackageReferences(_project.ProjectFilePath);
+            int count = 0;
+            foreach (var pkg in installed)
+            {
+                var versions = await _client.GetVersionsAsync(pkg.Id, _includePrerelease);
+                var latest = versions.FirstOrDefault();
+                if (latest is null) continue;
+
+                if (!string.Equals(latest, pkg.Version, StringComparison.OrdinalIgnoreCase))
+                    count++;
+            }
+
+            UpdateCount = count;
+        }
+        catch
+        {
+            // Silently ignore — the badge will remain at 0 until the user clicks "Updates".
+        }
     }
 
     // ── Version loading ───────────────────────────────────────────────────────

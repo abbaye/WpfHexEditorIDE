@@ -180,6 +180,62 @@ public static class LanguageDefinitionSerializer
         };
     }
 
+    /// <summary>
+    /// Parses a <c>syntaxDefinition</c> JSON block extracted from a <c>.whfmt</c> file
+    /// and returns the corresponding <see cref="LanguageDefinition"/>.
+    /// </summary>
+    /// <param name="syntaxJson">JSON string of the syntaxDefinition sub-object.</param>
+    /// <param name="formatName">Human-readable format name from the parent .whfmt root.</param>
+    /// <param name="extensions">File extensions declared in the parent .whfmt root.</param>
+    /// <param name="preferredEditor">Value of "preferredEditor" in the parent .whfmt root.</param>
+    public static LanguageDefinition ParseSyntaxDefinitionBlock(
+        string                  syntaxJson,
+        string                  formatName,
+        IReadOnlyList<string>   extensions,
+        string?                 preferredEditor)
+    {
+        var dto = JsonSerializer.Deserialize<SyntaxDefinitionBlockDto>(syntaxJson, s_options)
+            ?? throw new InvalidOperationException("Failed to deserialise syntaxDefinition block: JSON root is null.");
+
+        // "id" inside the block takes precedence; fall back to the format name.
+        var id = !string.IsNullOrWhiteSpace(dto.Id)
+            ? dto.Id!
+            : formatName.ToLowerInvariant().Replace(' ', '-').Replace('/', '-');
+
+        // Extensions declared inside the block override the parent-level extensions.
+        var resolvedExtensions = (dto.Extensions is { Length: > 0 })
+            ? dto.Extensions
+            : extensions;
+
+        return new LanguageDefinition
+        {
+            Id          = id,
+            Name        = !string.IsNullOrWhiteSpace(dto.Name) ? dto.Name! : formatName,
+            Extensions  = resolvedExtensions,
+            SyntaxRules = dto.SyntaxRules?.Select(r => new SyntaxRule
+            {
+                Pattern = r.Pattern ?? string.Empty,
+                Kind    = MapKind(r.KindRaw)
+            }).ToArray() ?? [],
+            Snippets = dto.Snippets?.Select(s => new SnippetDefinition
+            {
+                Trigger     = s.Trigger ?? string.Empty,
+                Body        = s.Body    ?? string.Empty,
+                Description = s.Description ?? string.Empty
+            }).ToArray() ?? [],
+            FoldingStrategy           = dto.FoldingStrategy,
+            LineCommentPrefix         = dto.LineCommentPrefix,
+            BlockCommentStart         = dto.BlockCommentStart,
+            BlockCommentEnd           = dto.BlockCommentEnd,
+            EnableInlineHints         = dto.EnableInlineHints,
+            EnableCtrlClickNavigation = dto.EnableCtrlClickNavigation,
+            IsDefault                 = dto.IsDefault,
+            Includes                  = dto.Includes ?? [],
+            EditorHint                = preferredEditor,
+            FoldingRules              = MapFoldingRules(dto.FoldingRules),
+        };
+    }
+
     // -- Helpers --------------------------------------------------------------
 
     /// <summary>
@@ -190,6 +246,31 @@ public static class LanguageDefinitionSerializer
     {
         if (string.IsNullOrWhiteSpace(raw)) return SyntaxTokenKind.Default;
         return s_typeMap.TryGetValue(raw, out var kind) ? kind : SyntaxTokenKind.Default;
+    }
+
+    /// <summary>
+    /// Maps a <see cref="FoldingRulesDto"/> to the <see cref="FoldingRules"/> domain model.
+    /// Returns null when <paramref name="dto"/> is null (no explicit folding rules declared).
+    /// </summary>
+    private static FoldingRules? MapFoldingRules(FoldingRulesDto? dto)
+    {
+        if (dto is null) return null;
+
+        return new FoldingRules
+        {
+            StartPatterns           = dto.StartPatterns            ?? [],
+            EndPatterns             = dto.EndPatterns              ?? [],
+            NamedRegionStartPattern = dto.NamedRegionStart,
+            NamedRegionEndPattern   = dto.NamedRegionEnd,
+            IndentBased             = dto.IndentBased,
+            BlockStartPattern       = dto.BlockStartPattern,
+            IndentTabWidth          = dto.IndentTabWidth,
+            TagBased                = dto.TagBased,
+            SelfClosingTags         = dto.SelfClosingTags          ?? [],
+            MultilineTagSupport     = dto.MultilineTagSupport,
+            HeadingBased            = dto.HeadingBased,
+            MinHeadingLevel         = dto.MinHeadingLevel,
+        };
     }
 
     // -- Internal DTO ---------------------------------------------------------
@@ -240,5 +321,44 @@ public static class LanguageDefinitionSerializer
         public string? Trigger     { get; set; }
         public string? Body        { get; set; }
         public string? Description { get; set; }
+    }
+
+    /// <summary>
+    /// DTO for a "syntaxDefinition" block embedded inside a .whfmt file.
+    /// Mirrors LanguageDefinitionDto with additional fields for .whfmt context.
+    /// </summary>
+    private sealed class SyntaxDefinitionBlockDto
+    {
+        public string?               Id                { get; set; }
+        public string?               Name              { get; set; }
+        public string[]?             Extensions        { get; set; }
+        [JsonPropertyName("rules")]
+        public SyntaxRuleDto[]?      SyntaxRules       { get; set; }
+        public SnippetDefinitionDto[]? Snippets         { get; set; }
+        public FoldingStrategyKind   FoldingStrategy   { get; set; } = FoldingStrategyKind.Brace;
+        public string?               LineCommentPrefix  { get; set; }
+        public string?               BlockCommentStart  { get; set; }
+        public string?               BlockCommentEnd    { get; set; }
+        public bool                  EnableInlineHints        { get; set; }
+        public bool                  EnableCtrlClickNavigation { get; set; }
+        public bool                  IsDefault                { get; set; }
+        public List<string>?         Includes                 { get; set; }
+        public FoldingRulesDto?      FoldingRules             { get; set; }
+    }
+
+    private sealed class FoldingRulesDto
+    {
+        [JsonPropertyName("startPatterns")]     public List<string>? StartPatterns     { get; set; }
+        [JsonPropertyName("endPatterns")]       public List<string>? EndPatterns       { get; set; }
+        [JsonPropertyName("namedRegionStart")]  public string?       NamedRegionStart  { get; set; }
+        [JsonPropertyName("namedRegionEnd")]    public string?       NamedRegionEnd    { get; set; }
+        [JsonPropertyName("indentBased")]       public bool          IndentBased       { get; set; }
+        [JsonPropertyName("blockStartPattern")] public string?       BlockStartPattern { get; set; }
+        [JsonPropertyName("indentTabWidth")]    public int           IndentTabWidth    { get; set; } = 4;
+        [JsonPropertyName("tagBased")]             public bool          TagBased             { get; set; }
+        [JsonPropertyName("selfClosingTags")]      public List<string>? SelfClosingTags      { get; set; }
+        [JsonPropertyName("multilineTagSupport")]  public bool          MultilineTagSupport  { get; set; }
+        [JsonPropertyName("headingBased")]         public bool          HeadingBased         { get; set; }
+        [JsonPropertyName("minHeadingLevel")]      public int           MinHeadingLevel      { get; set; } = 2;
     }
 }

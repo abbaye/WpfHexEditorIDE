@@ -1,7 +1,9 @@
 {
   "formatName": "XAML Source File",
-  "version": "1.1",
-  "extensions": [".xaml"],
+  "version": "2.3",
+  "extensions": [
+    ".xaml"
+  ],
   "description": "XAML markup files for WPF, Silverlight, UWP, and WinUI user interfaces.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -11,15 +13,109 @@
     "required": false
   },
   "QualityMetrics": {
-    "CompletenessScore": 85,
+    "CompletenessScore": 80,
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-18",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["application/xaml+xml"],
-  "Software": ["Visual Studio", "Blend for Visual Studio", "WpfHexEditor IDE"],
-  "UseCases": ["WPF UI design", "UWP layouts", "WinUI controls", "XAML resource dictionaries"]
+  "MimeTypes": [
+    "application/xaml+xml"
+  ],
+  "Software": [
+    "Visual Studio",
+    "VS Code",
+    "Rider"
+  ],
+  "UseCases": [
+    "WPF UI",
+    "WinUI 3 applications",
+    "Xamarin/MAUI layouts"
+  ],
+  "syntaxDefinition": {
+    "id": "xaml",
+    "name": "XAML",
+    "extensions": [
+      ".xaml"
+    ],
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "includes": [
+      "xml"
+    ],
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "ProcInstr",
+        "pattern": "<\\?[\\s\\S]*?\\?>",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "XmlNsDecl",
+        "pattern": "xmlns(?::[A-Za-z_][A-Za-z0-9_-]*)?\\s*=\\s*\"[^\"]*\"",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "XPrefix",
+        "pattern": "(?<=[<\\s])[A-Za-z_][A-Za-z0-9_-]*:",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "MarkupExtensionKeyword",
+        "pattern": "(?<=\\{)[A-Za-z][A-Za-z0-9.]*(?=[\\s}])",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "MarkupExtensionClose",
+        "pattern": "\\}",
+        "colorKey": "TE_Operator"
+      },
+      {
+        "type": "TagOpenName",
+        "pattern": "(?<=<)[A-Za-z_][A-Za-z0-9_.-]*",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "TagCloseName",
+        "pattern": "(?<=</)[A-Za-z_][A-Za-z0-9_.-]*",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "AttachedProp",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9]*\\.[A-Za-z][A-Za-z0-9]*(?=\\s*=)",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "AttrName",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_-]*(?=\\s*=)",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "AttrValue",
+        "pattern": "\"[^\"]*\"",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Entity",
+        "pattern": "&(?:[A-Za-z]+|#[0-9]+|#x[0-9A-Fa-f]+);",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "TagBracket",
+        "pattern": "</?|/?>",
+        "colorKey": "TE_Operator"
+      }
+    ],
+    "foldingRules": {
+      "tagBased": true,
+      "multilineTagSupport": true,
+      "selfClosingTags": []
+    }
+  }
 }

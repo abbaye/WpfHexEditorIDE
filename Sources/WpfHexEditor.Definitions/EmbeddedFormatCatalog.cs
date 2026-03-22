@@ -104,6 +104,31 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         return reader.ReadToEnd();
     }
 
+    // -- Public API (syntaxDefinition) ----------------------------------------
+
+    /// <summary>
+    /// Extracts the raw JSON text of the <c>syntaxDefinition</c> block from the .whfmt
+    /// resource identified by <paramref name="resourceKey"/>.
+    /// Returns <see langword="null"/> when the resource has no syntaxDefinition block.
+    /// <para>
+    /// Callers that have access to <c>LanguageDefinitionSerializer</c> should pass
+    /// the returned JSON to
+    /// <c>LanguageDefinitionSerializer.ParseSyntaxDefinitionBlock()</c>.
+    /// </para>
+    /// </summary>
+    public string? GetSyntaxDefinitionJson(string resourceKey)
+    {
+        using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
+        if (stream is null) return null;
+
+        using var doc  = JsonDocument.Parse(stream);
+        var root = doc.RootElement;
+
+        if (!root.TryGetProperty("syntaxDefinition", out var syntaxBlock)) return null;
+
+        return syntaxBlock.GetRawText();
+    }
+
     // -- Private helpers -------------------------------------------------------
 
     private static EmbeddedFormatEntry? LoadHeader(string resourceKey)
@@ -145,7 +170,10 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             itf.ValueKind == JsonValueKind.True)
             isTextFormat = true;
 
-        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality, version, author, platform, preferredEditor, isTextFormat);
+        // Detect presence of a syntaxDefinition block for language registration.
+        bool hasSyntaxDef = root.TryGetProperty("syntaxDefinition", out _);
+
+        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality, version, author, platform, preferredEditor, isTextFormat, hasSyntaxDef);
     }
 
     private static string? GetString(JsonElement root, string property)

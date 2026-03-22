@@ -65,7 +65,8 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 | #94 | **Advanced Refactoring** | Rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions. |
 | #96 | **Code Analysis & Metrics** | Cyclomatic complexity, code duplication detection, dependency graphs; dedicated panel with filter/sort. |
 | #106 | **.NET Decompilation via ILSpy** | C# skeleton view + full IL disassembly per method; "Go to Metadata Token" navigation; decompiled source in Code Editor tab. |
-| #155 | **Visual XAML Editor — Phase 2** | Core designer shipped in v0.6.0. Remaining: trigger & animation timeline editor (beyond stub), data-binding wizard, "Go to Definition" for resource keys, multi-resolution DPI preview, export as standalone `.xaml`. |
+| #155 | **Visual XAML Editor — Phase 2** | Core designer shipped in v0.6.0; overkill 10-phase improvement (constraint adorner, gradient editor, binding path picker, perf overlay, responsive breakpoint bar) shipped in v0.6.3. Remaining: trigger & animation timeline editor (beyond stub), data-binding wizard, "Go to Definition" for resource keys, multi-resolution DPI preview, export as standalone `.xaml`. |
+| #156 | **Class Diagram Plugin** | Full-featured class diagram editor shipped in v0.6.3: regex-based C#/VB.NET source analysis, canvas with 6 docking panels, 36 CD_* theme tokens, Solution Explorer context menus ("View Class Diagram", "Generate for Project/Solution"), plugin menu registration fix (View menu grouping) and double-separator fix. Remaining: live Roslyn-backed analysis, export to SVG/PNG. |
 
 ---
 

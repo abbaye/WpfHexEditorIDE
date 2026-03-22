@@ -69,6 +69,12 @@ public class DockItem : INotifyPropertyChanged
     public DockSide LastDockSide { get; set; } = DockSide.Bottom;
 
     /// <summary>
+    /// When non-null, this item was auto-hidden as part of a group.
+    /// All items sharing the same ID will be shown and restored together.
+    /// </summary>
+    public Guid? AutoHideGroupId { get; set; }
+
+    /// <summary>
     /// The group this item belongs to (null if floating or hidden).
     /// </summary>
     public DockGroupNode? Owner { get; internal set; }

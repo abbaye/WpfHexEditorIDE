@@ -1,0 +1,36 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Editor.MarkdownEditor
+     File: Controls/MarkdownEditorHost.xaml
+     Author: Derek Tremblay (derektremblay666@gmail.com)
+     Contributors: Claude Sonnet 4.6
+     Created: 2026-03-19
+     Description:
+         Split-pane host: TextEditor (source) + MarkdownPreviewPane (preview).
+         Supports 4 split layouts and 3 view modes.
+         Toolbar and status bar are contributed via IEditorToolbarContributor
+         and IStatusBarContributor.
+
+     Theme: Applies MD_PreviewBorder as the splitter color.
+     ResourceDictionaries: inherits from application theme.
+     ========================================================== -->
+<UserControl x:Class="WpfHexEditor.Editor.MarkdownEditor.Controls.MarkdownEditorHost"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.Editor.MarkdownEditor.Controls">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WpfHexEditor.Editor.MarkdownEditor;component/Themes/MdContextMenu.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!--
+        The actual grid layout (rows/columns, splitter position and direction)
+        is built and rebuilt entirely in code-behind via UpdateGridLayout().
+        This XAML only provides the named root Grid container.
+    -->
+    <Grid x:Name="_rootGrid" />
+
+</UserControl>

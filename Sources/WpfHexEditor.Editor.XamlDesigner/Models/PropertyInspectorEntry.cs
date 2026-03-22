@@ -55,6 +55,24 @@ public sealed class PropertyInspectorEntry : INotifyPropertyChanged
     /// <summary>True when this property cannot be edited (read-only DP or no setter).</summary>
     public bool IsReadOnly { get; init; }
 
+    /// <summary>True when the property has an active binding on the current element.</summary>
+    public bool HasBinding { get; init; }
+
+    /// <summary>True when this property is animated by the current active Storyboard.</summary>
+    public bool IsAnimated { get; set; }
+
+    /// <summary>True when the value is set locally (not inherited or from a style/trigger).</summary>
+    public bool IsLocalValue { get; init; }
+
+    /// <summary>True when the value originates from an applied Style setter.</summary>
+    public bool IsFromStyle { get; init; }
+
+    /// <summary>
+    /// The resolved Brush for Brush-typed DependencyProperties, for inline preview swatches.
+    /// Null for non-Brush properties.
+    /// </summary>
+    public System.Windows.Media.Brush? ResolvedBrush { get; init; }
+
     /// <summary>
     /// Allowed values for enum-typed properties, populated by
     /// <see cref="Services.PropertyInspectorService"/> when <see cref="PropertyType"/> is an enum.
@@ -87,7 +105,7 @@ public sealed class PropertyInspectorEntry : INotifyPropertyChanged
     /// Called by <see cref="ViewModels.PropertyInspectorPanelViewModel"/> so the
     /// callback can be supplied once it is known (avoids constructor over-coupling).
     /// </summary>
-    internal void SetXamlPatchCallback(Action<string, string?>? callback)
+    public void SetXamlPatchCallback(Action<string, string?>? callback)
         => _xamlPatchCallback = callback;
 
     // ── INPC ──────────────────────────────────────────────────────────────────

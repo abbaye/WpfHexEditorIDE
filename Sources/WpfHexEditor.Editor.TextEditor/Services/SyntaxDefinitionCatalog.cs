@@ -15,7 +15,8 @@ namespace WpfHexEditor.Editor.TextEditor.Services;
 /// <para>
 /// Sources (in order of loading):
 /// <list type="number">
-///   <item>26 embedded <c>.whlang</c> resources within <c>WpfHexEditor.Editor.TextEditor.dll</c></item>
+///   <item>Embedded <c>.whfmt</c> resources that carry a <c>syntaxDefinition</c> block
+///         (loaded via <c>EmbeddedFormatCatalog</c>).</item>
 ///   <item>User-defined files in <c>%AppData%\WpfHexEditor\SyntaxDefinitions\*.whlang</c></item>
 /// </list>
 /// User definitions with the same name as an embedded one override the embedded version.
@@ -106,15 +107,30 @@ public sealed class SyntaxDefinitionCatalog
         // Use a dictionary keyed by name so that user-defined definitions override embedded ones.
         var byName = new Dictionary<string, SyntaxDefinition>(StringComparer.OrdinalIgnoreCase);
 
-        // 1. Embedded resources via EmbeddedSyntaxCatalog (WpfHexEditor.Definitions)
-        foreach (var entry in EmbeddedSyntaxCatalog.Instance.GetAll())
+        // 1. Embedded .whfmt resources that contain a syntaxDefinition block.
+        var formatCatalog = EmbeddedFormatCatalog.Instance;
+        foreach (var entry in formatCatalog.GetAll())
         {
-            using var stream = EmbeddedSyntaxCatalog.Instance.GetStream(entry.ResourceKey);
-            if (stream is null) continue;
+            if (!entry.HasSyntaxDefinition) continue;
+            try
+            {
+                var syntaxJson = formatCatalog.GetSyntaxDefinitionJson(entry.ResourceKey);
+                if (syntaxJson is null) continue;
 
-            var def = JsonSyntaxDefinitionParser.Parse(stream, entry.ResourceKey);
-            if (def is not null && !string.IsNullOrEmpty(def.Name))
-                byName[def.Name] = def;
+                var def = JsonSyntaxDefinitionParser.ParseFromSyntaxDefinitionBlock(
+                    syntaxJson,
+                    entry.Name,
+                    entry.Category,
+                    entry.Extensions,
+                    entry.ResourceKey);
+
+                if (def is not null && !string.IsNullOrEmpty(def.Name))
+                    byName[def.Name] = def;
+            }
+            catch
+            {
+                // Skip malformed or incomplete syntaxDefinition blocks.
+            }
         }
 
         // 2. User directory: %AppData%\WpfHexEditor\SyntaxDefinitions\

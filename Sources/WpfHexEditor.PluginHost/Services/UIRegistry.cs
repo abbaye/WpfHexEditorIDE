@@ -23,6 +23,9 @@ public sealed class UIRegistry : IUIRegistry
     private readonly object _lock = new();
     // Maps uiId -> registration info (pluginId + type tag)
     private readonly Dictionary<string, UIRegistration> _registrations = new(StringComparer.OrdinalIgnoreCase);
+    // Maps pluginId -> Solution Explorer context menu contributor (one per plugin)
+    private readonly Dictionary<string, ISolutionExplorerContextMenuContributor> _contextMenuContributors
+        = new(StringComparer.OrdinalIgnoreCase);
     private int _idCounter;
 
     public UIRegistry(IDockingAdapter dockingAdapter, IMenuAdapter menuAdapter, IStatusBarAdapter statusBarAdapter)
@@ -154,11 +157,38 @@ public sealed class UIRegistry : IUIRegistry
         }
     }
 
+    // -- Solution Explorer Context Menu Contributors --------------------------
+
+    /// <inheritdoc />
+    public void RegisterContextMenuContributor(string pluginId, ISolutionExplorerContextMenuContributor contributor)
+    {
+        lock (_lock)
+            _contextMenuContributors[pluginId] = contributor;
+    }
+
+    /// <inheritdoc />
+    public void UnregisterContextMenuContributor(string pluginId)
+    {
+        lock (_lock)
+            _contextMenuContributors.Remove(pluginId);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<ISolutionExplorerContextMenuContributor> GetContextMenuContributors()
+    {
+        lock (_lock)
+            return [.. _contextMenuContributors.Values];
+    }
+
+    // -- Bulk Unregister (also removes contributor) ----------------------------
+
     /// <inheritdoc />
     public void UnregisterAllForPlugin(string pluginId)
     {
         lock (_lock)
         {
+            _contextMenuContributors.Remove(pluginId);
+
             var toRemove = _registrations
                 .Where(kvp => kvp.Value.PluginId == pluginId)
                 .Select(kvp => kvp.Key)

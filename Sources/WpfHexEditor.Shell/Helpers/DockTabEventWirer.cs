@@ -57,7 +57,11 @@ internal sealed class DockTabEventWirer : IDisposable
         _autoHideHandler = item =>
         {
             if (host.Engine is null) return;
-            host.Engine.AutoHide(item);
+            // Auto-hide the entire group so all tabs move together
+            if (item.Owner is { } group)
+                host.Engine.AutoHideGroup(group);
+            else
+                host.Engine.AutoHide(item);  // fallback: item already detached from its group
             host.RebuildVisualTree();
         };
 

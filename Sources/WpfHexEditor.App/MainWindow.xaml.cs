@@ -45,6 +45,8 @@ using WpfHexEditor.Editor.TileEditor;
 using WpfHexEditor.Editor.AudioViewer;
 using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
+using WpfHexEditor.Editor.MarkdownEditor;
+using WpfHexEditor.Editor.ClassDiagram;
 using WpfHexEditor.Editor.XamlDesigner;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
@@ -106,11 +108,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // --- Constants -----------------------------------------------------
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "WpfHexEditor", "Sample.Docking", "layout.json");
+        "WpfHexEditor", "App", "layout.json");
 
     private static readonly string SessionFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "WpfHexEditor", "session.json");
+        "WpfHexEditor", "App", "session.json");
 
     private const string SolutionExplorerContentId    = "panel-solution-explorer";
 
@@ -143,6 +145,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Per-document format tracking: ContentId → last logged format name
     private readonly Dictionary<string, string> _loggedFormats = new();
 
+    // Last file path synced to the Solution Explorer (used to re-reveal after a solution reload)
+    private string? _lastSyncFilePath;
+
     // QuickSearchBar instances for CodeEditor documents (CodeEditor has no embedded Canvas)
     private readonly Dictionary<CodeEditorControl, QuickSearchBar> _codeEditorBars = new();
 
@@ -165,6 +170,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private const string OptionsContentId       = "panel-options";
     private const string FileComparisonPanelContentId    = "panel-file-comparison";
     private const string ArchivePanelContentId           = "panel-archive";
+    private const string MarkdownOutlinePanelContentId   = "panel-md-outline";
+
+    // Markdown Outline panel (persistent singleton)
+    private WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel? _markdownOutlinePanel;
     private string _lastAppliedTheme = string.Empty;
 
     // TBL dropdown — tracks which project TBL item is applied per hex editor
@@ -414,29 +423,46 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Registers all embedded .whlang syntax definitions into <see cref="LanguageRegistry"/>
+    /// Registers all embedded syntax definitions into <see cref="LanguageRegistry"/>
     /// so that <see cref="CodeEditorFactory"/> can resolve the correct
     /// <see cref="ISyntaxHighlighter"/> for every file type it opens.
+    /// <para>
+    /// Loads embedded <c>.whfmt</c> files that carry a <c>syntaxDefinition</c> block
+    /// (detected by <see cref="EmbeddedFormatEntry.HasSyntaxDefinition"/>).
+    /// </para>
     /// Must be called before any editor factory is used.
     /// </summary>
     private static void LoadEmbeddedLanguageDefinitions()
     {
-        var catalog  = EmbeddedSyntaxCatalog.Instance;
         var registry = LanguageRegistry.Instance;
 
-        foreach (var entry in catalog.GetAll())
+        // Load .whfmt files that embed a syntaxDefinition block.
+        var formatCatalog = EmbeddedFormatCatalog.Instance;
+        foreach (var entry in formatCatalog.GetAll())
         {
+            if (!entry.HasSyntaxDefinition) continue;
             try
             {
-                var json = catalog.GetContent(entry.ResourceKey);
-                var def  = LanguageDefinitionSerializer.Parse(json);
+                var syntaxJson = formatCatalog.GetSyntaxDefinitionJson(entry.ResourceKey);
+                if (syntaxJson is null) continue;
+
+                var def = LanguageDefinitionSerializer.ParseSyntaxDefinitionBlock(
+                    syntaxJson,
+                    entry.Name,
+                    entry.Extensions,
+                    entry.PreferredEditor);
+
+                // .whfmt definitions take precedence over legacy .whlang definitions.
                 registry.RegisterBuiltin(def);
             }
             catch
             {
-                // Skip malformed or incomplete .whlang entries to avoid blocking startup.
+                // Skip malformed syntaxDefinition blocks to avoid blocking startup.
             }
         }
+
+        // Resolve Includes chains after all definitions are registered.
+        registry.ResolveIncludes();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -458,6 +484,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Register editor factories (doc-proj-* dispatcher)
         _editorRegistry.Register(new TblEditorFactory());
         _editorRegistry.Register(new CodeEditorFactory());
+        _editorRegistry.Register(new MarkdownEditorFactory()); // must be before TextEditorFactory
         _editorRegistry.Register(new TextEditorFactory());
         _editorRegistry.Register(new ImageViewerFactory());
         _editorRegistry.Register(new EntropyViewerFactory());
@@ -468,6 +495,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new AudioViewerFactory());
         _editorRegistry.Register(new ScriptEditorFactory());
         _editorRegistry.Register(new ChangesetEditorFactory());
+        _editorRegistry.Register(new ClassDiagramFactory());
         _editorRegistry.Register(new XamlDesignerFactory());
 
         // Register VS-style project templates
@@ -639,6 +667,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+
+        // After a solution reload the tree is collapsed; re-reveal the last active document.
+        if (_lastSyncFilePath is not null)
+            _solutionExplorerPanel?.SyncWithFile(_lastSyncFilePath);
+
         RefreshStartupProjectList();
         RebuildTblItemList();
         RefreshAllChangesetNodes();
@@ -782,7 +815,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         OutputLogger.Debug("No saved layout found, using defaults.");
-        SetupDefaultLayout();
+        LoadDefaultLayoutFromResource(restoreWindowState: true);
     }
 
     private void RestoreWindowState(DockLayoutRoot layout)
@@ -1027,6 +1060,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // --- Layout helpers ------------------------------------------------
 
+    private void LoadDefaultLayoutFromResource(bool restoreWindowState = false)
+    {
+        try
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            using var stream = asm.GetManifestResourceStream("WpfHexEditor.App.defaultLayout.json");
+            if (stream is not null)
+            {
+                using var reader = new System.IO.StreamReader(stream);
+                var layout = DockLayoutSerializer.Deserialize(reader.ReadToEnd());
+                if (restoreWindowState) RestoreWindowState(layout);
+                PruneStaleDocumentItems(layout);
+                ApplyLayout(layout);
+                EnsureErrorPanel();
+                OutputLogger.Debug("Default layout applied from embedded resource.");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to load embedded default layout: {ex.Message}");
+        }
+        SetupDefaultLayout(); // ultimate fallback
+    }
+
     private void SetupDefaultLayout()
     {
         _solutionExplorerPanel ??= CreateSolutionExplorerPanel();
@@ -1178,6 +1236,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             TerminalPanelContentId         => CreateTerminalPanelContent(),
             PluginMonitorContentId         => CreatePluginMonitorPanelContent(),
             PluginManagerContentId         => CreatePluginManagerContent(),
+            MarkdownOutlinePanelContentId  => CreateMarkdownOutlinePanelContent(),
             _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")       => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
@@ -1247,6 +1306,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
+
+        // Wire plugin-contributed context menu items: queries UIRegistry on every right-click.
+        // Deferred lambda: _ideHostContext may not be set yet at panel creation time — that's fine,
+        // the lambda captures the field reference and resolves it lazily at menu-open time.
+        panel.SetContextMenuContributorResolver((nodeKind, nodePath) =>
+        {
+            var registry = _ideHostContext?.UIRegistry;
+            if (registry is null) return [];
+            var contributors = registry.GetContextMenuContributors();
+            if (contributors.Count == 0) return [];
+            var result = new List<WpfHexEditor.SDK.Contracts.SolutionContextMenuItem>();
+            foreach (var c in contributors)
+                result.AddRange(c.GetContextMenuItems(nodeKind, nodePath));
+            return result;
+        });
+
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
         return panel;
@@ -1269,6 +1344,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // FileComparisonPanel manages its own file selection internally
         var panel = new WpfHexEditor.Panels.FileOps.FileComparisonPanel();
         return panel;
+    }
+
+    private UIElement CreateMarkdownOutlinePanelContent()
+    {
+        _markdownOutlinePanel ??= new WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel();
+        // Seed with the current active editor if it is already a Markdown editor.
+        if (_markdownOutlinePanel is not null && ActiveDocumentEditor is WpfHexEditor.Editor.MarkdownEditor.Controls.MarkdownEditorHost mdHost)
+            _markdownOutlinePanel.SetEditor(mdHost);
+        return _markdownOutlinePanel!;
     }
 
     private UIElement CreateArchivePanelContent()
@@ -2643,7 +2727,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
     {
-        var catalog = EmbeddedSyntaxCatalog.Instance;
+        var catalog = EmbeddedFormatCatalog.Instance;
         var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project, e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
 
@@ -2656,9 +2740,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                                  .Replace(' ', '_');
             var destPath = Path.Combine(destDir, safeName + ".whlang");
 
-            // Read the full embedded resource content and write it to disk.
-            var content = catalog.GetContent(entry.ResourceKey);
-            File.WriteAllText(destPath, content, System.Text.Encoding.UTF8);
+            // Extract the syntaxDefinition block from the .whfmt resource and write it as a .whlang file.
+            var syntaxJson = catalog.GetSyntaxDefinitionJson(entry.ResourceKey)
+                             ?? catalog.GetJson(entry.ResourceKey);
+            File.WriteAllText(destPath, syntaxJson, System.Text.Encoding.UTF8);
 
             // Await registration then open the file so the user sees the imported content.
             var item = await _solutionManager.AddItemAsync(
@@ -3604,7 +3689,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrEmpty(syncPath) && item.Metadata.TryGetValue("FilePath", out var fp))
             syncPath = fp;
         if (!string.IsNullOrEmpty(syncPath))
+        {
+            _lastSyncFilePath = syncPath;
             _solutionExplorerPanel?.SyncWithFile(syncPath);
+        }
 
         // Sync Properties panel provider (M5: cached per editor instance)
         if (content is IPropertyProviderSource providerSource)
@@ -3620,6 +3708,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             _propertiesPanel?.SetProvider(null);
         }
+
+        // Sync Markdown Outline panel — only populated when a MarkdownEditorHost is active.
+        if (_markdownOutlinePanel is not null)
+            _markdownOutlinePanel.SetEditor(content as WpfHexEditor.Editor.MarkdownEditor.Controls.MarkdownEditorHost);
 
         // Sync active document in DocumentManager so IsActive / ActiveDocument are accurate.
         SyncActiveDocument(item.ContentId);
@@ -4824,7 +4916,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var stem = AppSettingsService.Instance.Current.ActiveThemeName;
         if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
-        _lastAppliedTheme = stem;
         ApplyTheme($"{stem}.xaml", stem);
     }
 
@@ -4842,6 +4933,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 ce.MouseWheelSpeed         = settings.CodeEditorDefaults.MouseWheelSpeed;
                 ce.ZoomLevel               = settings.CodeEditorDefaults.DefaultZoom;
                 ce.FoldToggleOnDoubleClick = settings.CodeEditorDefaults.FoldToggleOnDoubleClick;
+                ce.IsWordWrapEnabled       = settings.CodeEditorDefaults.WordWrap;
                 ce.ShowInlineHints            = settings.CodeEditorDefaults.ShowInlineHints;
                 // Treat 0 as All (migration: old settings.json without InlineHintsVisibleKinds defaults to 0).
                 ce.InlineHintsVisibleKinds = settings.CodeEditorDefaults.InlineHintsVisibleKinds == 0
@@ -4850,8 +4942,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 ApplySyntaxColorOverrides(ce, settings.CodeEditorDefaults);
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
-                te.MouseWheelSpeed = settings.TextEditorDefaults.MouseWheelSpeed;
-                te.ZoomLevel       = settings.TextEditorDefaults.DefaultZoom;
+                te.MouseWheelSpeed  = settings.TextEditorDefaults.MouseWheelSpeed;
+                te.ZoomLevel        = settings.TextEditorDefaults.DefaultZoom;
+                te.IsWordWrapEnabled = settings.TextEditorDefaults.WordWrap;
                 break;
         }
     }
@@ -5391,6 +5484,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnShowErrorPanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Error List", ErrorPanelContentId, DockDirection.Bottom);
 
+    private void OnShowMarkdownOutline(object sender, RoutedEventArgs e)
+        => ShowOrCreatePanel("Markdown Outline", MarkdownOutlinePanelContentId, DockDirection.Left);
+
     private async System.Threading.Tasks.Task RefreshAnalysisPanelsAsync(HexEditorControl hex)
     {
         try
@@ -5627,7 +5723,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             .Select(i => new DockItem { ContentId = i.ContentId, Title = i.Title, CanClose = i.CanClose })
             .ToList();
 
-        SetupDefaultLayout();
+        LoadDefaultLayoutFromResource(restoreWindowState: false);
 
         // Re-dock all previously open document tabs into the document host.
         foreach (var doc in openDocs)
@@ -5671,6 +5767,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 Application.Current.Resources);
             _ = _pluginHost.NotifyThemeChangedAsync(themeXaml);
         }
+
+        // Persist theme selection so it survives app restarts.
+        var stem = System.IO.Path.GetFileNameWithoutExtension(themeFile);
+        AppSettingsService.Instance.Current.ActiveThemeName = stem;
+        AppSettingsService.Instance.Save();
+        _lastAppliedTheme = stem;
     }
 
     // -----------------------------------------------------------------------
@@ -5693,14 +5795,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Themes
     // -----------------------------------------------------------------------
 
-    private void OnDarkTheme(object sender, RoutedEventArgs e)         => ApplyTheme("DarkTheme.xaml",         "Dark");
-    private void OnLightTheme(object sender, RoutedEventArgs e)        => ApplyTheme("Generic.xaml",           "Light");
-    private void OnVS2022DarkTheme(object sender, RoutedEventArgs e)   => ApplyTheme("VS2022DarkTheme.xaml",   "VS2022 Dark");
-    private void OnDarkGlassTheme(object sender, RoutedEventArgs e)    => ApplyTheme("DarkGlassTheme.xaml",    "Dark Glass");
-    private void OnVisualStudioTheme(object sender, RoutedEventArgs e) => ApplyTheme("VisualStudioTheme.xaml", "Visual Studio");
-    private void OnCyberpunkTheme(object sender, RoutedEventArgs e)    => ApplyTheme("CyberpunkTheme.xaml",    "Cyberpunk");
-    private void OnMinimalTheme(object sender, RoutedEventArgs e)      => ApplyTheme("MinimalTheme.xaml",      "Minimal");
-    private void OnOfficeTheme(object sender, RoutedEventArgs e)       => ApplyTheme("OfficeTheme.xaml",       "Office");
+    private void OnDarkTheme(object sender, RoutedEventArgs e)             => ApplyTheme("DarkTheme.xaml",             "Dark");
+    private void OnLightTheme(object sender, RoutedEventArgs e)            => ApplyTheme("Generic.xaml",               "Light");
+    private void OnVS2022DarkTheme(object sender, RoutedEventArgs e)       => ApplyTheme("VS2022DarkTheme.xaml",       "VS2022 Dark");
+    private void OnDarkGlassTheme(object sender, RoutedEventArgs e)        => ApplyTheme("DarkGlassTheme.xaml",        "Dark Glass");
+    private void OnVisualStudioTheme(object sender, RoutedEventArgs e)     => ApplyTheme("VisualStudioTheme.xaml",     "Visual Studio");
+    private void OnCyberpunkTheme(object sender, RoutedEventArgs e)        => ApplyTheme("CyberpunkTheme.xaml",        "Cyberpunk");
+    private void OnMinimalTheme(object sender, RoutedEventArgs e)          => ApplyTheme("MinimalTheme.xaml",          "Minimal");
+    private void OnOfficeTheme(object sender, RoutedEventArgs e)           => ApplyTheme("OfficeTheme.xaml",           "Office");
+    private void OnNordTheme(object sender, RoutedEventArgs e)             => ApplyTheme("NordTheme.xaml",             "Nord");
+    private void OnDraculaTheme(object sender, RoutedEventArgs e)          => ApplyTheme("DraculaTheme.xaml",          "Dracula");
+    private void OnGruvboxDarkTheme(object sender, RoutedEventArgs e)      => ApplyTheme("GruvboxDarkTheme.xaml",      "Gruvbox Dark");
+    private void OnCatppuccinMochaTheme(object sender, RoutedEventArgs e)  => ApplyTheme("CatppuccinMochaTheme.xaml",  "Catppuccin Mocha");
+    private void OnTokyoNightTheme(object sender, RoutedEventArgs e)       => ApplyTheme("TokyoNightTheme.xaml",       "Tokyo Night");
+    private void OnSynthwave84Theme(object sender, RoutedEventArgs e)      => ApplyTheme("Synthwave84Theme.xaml",      "Synthwave '84");
+    private void OnMatrixTheme(object sender, RoutedEventArgs e)           => ApplyTheme("MatrixTheme.xaml",           "Matrix");
+    private void OnForestTheme(object sender, RoutedEventArgs e)           => ApplyTheme("ForestTheme.xaml",           "Forest");
+    private void OnHighContrastTheme(object sender, RoutedEventArgs e)     => ApplyTheme("HighContrastTheme.xaml",     "High Contrast");
+    private void OnCatppuccinLatteTheme(object sender, RoutedEventArgs e)  => ApplyTheme("CatppuccinLatteTheme.xaml",  "Catppuccin Latte");
 
     private void SyncAllHexEditorThemes()
     {

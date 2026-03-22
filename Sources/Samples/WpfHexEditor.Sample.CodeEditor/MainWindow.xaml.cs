@@ -104,27 +104,36 @@ public partial class MainWindow : Window
     // -- Language definitions bootstrap -------------------------------------------
 
     /// <summary>
-    /// Loads all embedded .whlang syntax definitions into LanguageRegistry.
+    /// Loads all embedded language definitions (from .whfmt syntaxDefinition blocks) into LanguageRegistry.
     /// Must be called once before any file is opened.
     /// </summary>
     private static void LoadEmbeddedLanguageDefinitions()
     {
-        var catalog  = EmbeddedSyntaxCatalog.Instance;
-        var registry = LanguageRegistry.Instance;
+        var formatCatalog = EmbeddedFormatCatalog.Instance;
+        var registry      = LanguageRegistry.Instance;
 
-        foreach (var entry in catalog.GetAll())
+        foreach (var entry in formatCatalog.GetAll())
         {
+            if (!entry.HasSyntaxDefinition) continue;
             try
             {
-                var json = catalog.GetContent(entry.ResourceKey);
-                var def  = LanguageDefinitionSerializer.Parse(json);
+                var syntaxJson = formatCatalog.GetSyntaxDefinitionJson(entry.ResourceKey);
+                if (syntaxJson is null) continue;
+
+                var def = LanguageDefinitionSerializer.ParseSyntaxDefinitionBlock(
+                    syntaxJson,
+                    entry.Name,
+                    entry.Extensions,
+                    entry.PreferredEditor);
                 registry.RegisterBuiltin(def);
             }
             catch
             {
-                // Skip malformed or incomplete .whlang entries.
+                // Skip malformed or incomplete syntaxDefinition blocks.
             }
         }
+
+        registry.ResolveIncludes();
     }
 
     // -- Language picker ----------------------------------------------------------

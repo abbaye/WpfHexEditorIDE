@@ -86,7 +86,7 @@ public sealed class SnapEngineService
 
             // Find best X snap.
             double bestXDist = SnapThreshold;
-            foreach (var (val, guideX, _) in xCandidates)
+            foreach (var (val, guideX, isCenter) in xCandidates)
             {
                 foreach (var edge in new[] { x, r, cx })
                 {
@@ -99,14 +99,16 @@ public sealed class SnapEngineService
                                        : val;
                         x = offset;
                         guides.RemoveAll(g => g.IsVertical);
-                        guides.Add(new SnapGuide(IsVertical: true, Position: guideX));
+                        // Distance label: gap between dragged element edge and snap target (skip center snaps).
+                        string? label = !isCenter && dist > 0.5 ? $"{Math.Round(dist)}px" : null;
+                        guides.Add(new SnapGuide(IsVertical: true, Position: guideX, DistanceLabel: label));
                     }
                 }
             }
 
             // Find best Y snap.
             double bestYDist = SnapThreshold;
-            foreach (var (val, guideY, _) in yCandidates)
+            foreach (var (val, guideY, isCenter) in yCandidates)
             {
                 foreach (var edge in new[] { y, b, cy })
                 {
@@ -119,7 +121,8 @@ public sealed class SnapEngineService
                                        : val;
                         y = offset;
                         guides.RemoveAll(g => !g.IsVertical);
-                        guides.Add(new SnapGuide(IsVertical: false, Position: guideY));
+                        string? label = !isCenter && dist > 0.5 ? $"{Math.Round(dist)}px" : null;
+                        guides.Add(new SnapGuide(IsVertical: false, Position: guideY, DistanceLabel: label));
                     }
                 }
             }
@@ -158,4 +161,8 @@ public sealed class SnapEngineService
 /// <summary>A single snap guide line to be rendered by <see cref="Controls.SnapGuideOverlay"/>.</summary>
 /// <param name="IsVertical">True for a vertical line, false for a horizontal line.</param>
 /// <param name="Position">Canvas-relative coordinate of the guide (X if vertical, Y if horizontal).</param>
-public sealed record SnapGuide(bool IsVertical, double Position);
+/// <param name="DistanceLabel">
+/// Optional label shown on the guide (e.g. "24px") when snapping to a sibling edge.
+/// Null means no label is drawn.
+/// </param>
+public sealed record SnapGuide(bool IsVertical, double Position, string? DistanceLabel = null);

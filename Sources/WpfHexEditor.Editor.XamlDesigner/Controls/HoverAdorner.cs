@@ -37,16 +37,16 @@ public sealed class HoverAdorner : Adorner
         var brush = Application.Current?.TryFindResource("XD_HoverBorderBrush") as Brush
                     ?? new SolidColorBrush(Color.FromArgb(180, 0, 160, 255));
 
-        var pen = new Pen(brush, 1.0);
+        var pen = new Pen(brush, 1.5);
         pen.Freeze();
 
         var bounds = new Rect(AdornedElement.RenderSize);
         dc.DrawRectangle(
             null, pen,
             new Rect(
-                bounds.X + 0.5,
-                bounds.Y + 0.5,
-                Math.Max(0, bounds.Width  - 1),
-                Math.Max(0, bounds.Height - 1)));
+                bounds.X + 0.75,
+                bounds.Y + 0.75,
+                Math.Max(0, bounds.Width  - 1.5),
+                Math.Max(0, bounds.Height - 1.5)));
     }
 }

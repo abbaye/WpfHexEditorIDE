@@ -1,7 +1,9 @@
 {
   "formatName": "Lua Script",
-  "version": "1.0",
-  "extensions": [".lua"],
+  "version": "2.0",
+  "extensions": [
+    ".lua"
+  ],
   "description": "Lua scripting language source file (embedded scripting, game modding).",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +17,77 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-lua"],
-  "Software": ["VS Code", "ZeroBrane Studio"],
-  "UseCases": ["Game scripting", "Embedded scripting", "Neovim configuration"]
+  "MimeTypes": [
+    "text/x-lua"
+  ],
+  "Software": [
+    "VS Code",
+    "ZeroBrane Studio"
+  ],
+  "UseCases": [
+    "Game scripting",
+    "Embedded scripting",
+    "Configuration"
+  ],
+  "syntaxDefinition": {
+    "id": "lua",
+    "name": "Lua",
+    "extensions": [
+      ".lua"
+    ],
+    "lineCommentPrefix": "--",
+    "blockCommentStart": "--[[",
+    "blockCommentEnd": "]]",
+    "rules": [
+      {
+        "type": "BlockComment",
+        "pattern": "--\\[\\[[\\s\\S]*?\\]\\]",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "String",
+        "pattern": "(\\[\\[[\\s\\S]*?\\]\\]|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "--.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(string|number|boolean|table|function|userdata|thread|nil)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\bfunction\\b",
+        "\\bdo\\b",
+        "\\bthen\\b"
+      ],
+      "endPatterns": [
+        "\\bend\\b"
+      ]
+    }
+  }
 }

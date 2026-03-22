@@ -1,6 +1,6 @@
 {
   "formatName": "C++ Source File",
-  "version": "1.0",
+  "version": "2.0",
   "extensions": [".cpp", ".cc", ".cxx", ".hpp", ".hxx", ".inl"],
   "description": "C++ programming language source and header files.",
   "category": "Programming",
@@ -15,11 +15,61 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "MimeTypes": ["text/x-c++src"],
   "Software": ["Visual Studio", "CLion", "Qt Creator"],
-  "UseCases": ["Systems programming", "Game development", "Embedded systems"]
+  "UseCases": ["Systems programming", "Game development", "Embedded systems"],
+  "syntaxDefinition": {
+    "id": "c_cpp",
+    "name": "C / C++",
+    "extensions": [".c", ".h", ".cpp", ".hpp", ".cc", ".cxx", ".hxx", ".inl"],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "String",
+        "pattern": "(L?R?\"(?:[^\"\\\\]|\\\\.)*\"|L?'(?:[^'\\\\]|\\\\.)*')",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "//.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Preprocessor",
+        "pattern": "^\\s*#\\s*(include|define|undef|ifdef|ifndef|if|elif|else|endif|pragma|error|warning|line|import|using)\\b[^/\\n]*",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|inline|int|long|register|restrict|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|nullptr|true|false|bool|class|namespace|template|typename|virtual|override|final|explicit|operator|new|delete|this|throw|try|catch|noexcept|constexpr|consteval|constinit|decltype|using|friend|public|private|protected|mutable|static_assert|co_await|co_return|co_yield|concept|requires|export|module|import|__attribute__|__declspec|__cdecl|__stdcall|__fastcall|__forceinline|_Noreturn|_Thread_local|alignas|alignof|and|and_eq|bitand|bitor|compl|not|not_eq|or|or_eq|xor|xor_eq|asm|__asm__|__volatile__)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(int8_t|int16_t|int32_t|int64_t|uint8_t|uint16_t|uint32_t|uint64_t|size_t|ssize_t|ptrdiff_t|intptr_t|uintptr_t|wchar_t|char8_t|char16_t|char32_t|nullptr_t|FILE|va_list|std::[A-Za-z_][A-Za-z0-9_:]*|BYTE|WORD|DWORD|QWORD|HANDLE|HWND|HRESULT|BOOL|LPSTR|LPWSTR|LPCSTR|LPCWSTR|PVOID|LPVOID)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f]+[uUlLfF]*|0b[01]+[uUlL]*|0[0-7]+[uUlL]*|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[uUlLfFdD]*)\\b",
+        "colorKey": "TE_Number"
+      },
+      { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
+    ],
+    "foldingRules": {
+      "startPatterns": ["\\{"],
+      "endPatterns": ["\\}"]
+    }
+  }
 }

@@ -16,6 +16,7 @@ using WpfHexEditor.Core.SourceAnalysis.Services;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Panels.IDE.Services;
 using WpfHexEditor.Panels.IDE.ViewModels;
+using WpfHexEditor.SDK.Contracts;
 
 namespace WpfHexEditor.Panels.IDE;
 
@@ -32,10 +33,14 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private SolutionExplorerNodeVm? _contextMenuTarget;
     private IReadOnlyList<IEditorFactory> _editorFactories = [];
 
+    // Plugin-contributed context menu items resolver (set by MainWindow after UIRegistry is ready)
+    private Func<string, string?, IReadOnlyList<SolutionContextMenuItem>>? _contextMenuContributorResolver;
+
     public SolutionExplorerPanel()
     {
         InitializeComponent();
         DataContext = _vm;
+        UpdateSearchModeMenuCheckmarks(SearchMode.FileName);
         // Use AddHandler with handledEventsToo=true so we receive MouseLeftButtonUp
         // even when the TreeViewItem has already marked the event as handled.
         // This is required for the slow-click rename to work reliably.
@@ -95,6 +100,14 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// <inheritdoc/>
     public void SetEditorRegistry(IReadOnlyList<IEditorFactory> factories)
         => _editorFactories = factories;
+
+    /// <summary>
+    /// Sets the delegate that resolves plugin-contributed context menu items.
+    /// Called by MainWindow after the UIRegistry is ready.
+    /// </summary>
+    public void SetContextMenuContributorResolver(
+        Func<string, string?, IReadOnlyList<SolutionContextMenuItem>> resolver)
+        => _contextMenuContributorResolver = resolver;
 
     public event EventHandler<ProjectItemActivatedEventArgs>?      ItemActivated;
     public event EventHandler<ProjectItemEventArgs>?               ItemSelected;
@@ -241,6 +254,27 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
         => SearchPlaceholder.Visibility =
             string.IsNullOrEmpty(SearchBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+
+    // -- Search mode dropdown --------------------------------------------------
+
+    private void OnSearchModeButtonClick(object sender, RoutedEventArgs e)
+        => SearchModeButton.ContextMenu.IsOpen = true;
+
+    private void OnSearchModeMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string tag } &&
+            Enum.TryParse<SearchMode>(tag, out var mode))
+        {
+            _vm.CurrentSearchMode = mode;
+            UpdateSearchModeMenuCheckmarks(mode);
+        }
+    }
+
+    private void UpdateSearchModeMenuCheckmarks(SearchMode active)
+    {
+        foreach (var item in SearchModeContextMenu.Items.OfType<MenuItem>())
+            item.IsChecked = item.Tag is string t && Enum.TryParse<SearchMode>(t, out var m) && m == active;
+    }
 
     // -- Context menu ----------------------------------------------------------
 
@@ -433,8 +467,106 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         CloseSolutionSeparator .Visibility = isSolution ? Visibility.Visible : Visibility.Collapsed;
         CloseSolutionMenuItem  .Visibility = isSolution ? Visibility.Visible : Visibility.Collapsed;
 
+        // Inject plugin-contributed items (always last, before Properties)
+        RebuildPluginMenuItems(node);
+
         return canOpen || canAdd || isPhysNotIn || isTbl || hasExplorer
             || isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn || isChangeset || isExternal || isDep;
+    }
+
+    /// <summary>
+    /// Removes previously-injected plugin menu items and re-inserts fresh ones
+    /// from all registered <see cref="ISolutionExplorerContextMenuContributor"/>s.
+    /// Items are appended after <see cref="PluginMenuSeparator"/>.
+    /// </summary>
+    private void RebuildPluginMenuItems(SolutionExplorerNodeVm? node)
+    {
+        var contextMenu = SolutionTree.ContextMenu;
+        if (contextMenu is null) return;
+
+        // 1. Remove all previously-injected plugin items (tagged with "plugin-contrib")
+        var toRemove = contextMenu.Items.OfType<FrameworkElement>()
+            .Where(e => e.Tag is string t && t == "plugin-contrib")
+            .ToList();
+        foreach (var item in toRemove)
+            contextMenu.Items.Remove(item);
+
+        PluginMenuSeparator.Visibility = Visibility.Collapsed; // always collapsed — position marker only
+
+        if (_contextMenuContributorResolver is null || node is null) return;
+
+        // 2. Map node to kind + path
+        string? nodePath = node switch
+        {
+            FileNodeVm           fn  => fn.Source.AbsolutePath,
+            DependentFileNodeVm  dep => dep.Source.AbsolutePath,
+            PhysicalFileNodeVm   pfn => pfn.PhysicalPath,
+            ProjectNodeVm        pn  => pn.Source.ProjectFilePath,
+            SolutionNodeVm       sn  => sn.Source.FilePath,
+            PhysicalFolderNodeVm pfn2 => pfn2.PhysicalPath,
+            FolderNodeVm         fvn => fvn.Project?.ProjectFilePath is { } pf
+                                        ? System.IO.Path.Combine(
+                                              System.IO.Path.GetDirectoryName(pf) ?? string.Empty,
+                                              fvn.Folder.PhysicalRelativePath ?? fvn.ComputedRelPath ?? string.Empty)
+                                        : null,
+            _                        => null
+        };
+        string nodeKind = node switch
+        {
+            FileNodeVm or DependentFileNodeVm or PhysicalFileNodeVm => "File",
+            ProjectNodeVm       => "Project",
+            SolutionNodeVm      => "Solution",
+            FolderNodeVm or PhysicalFolderNodeVm => "Folder",
+            SolutionFolderNodeVm => "SolutionFolder",
+            _                    => "Unknown"
+        };
+
+        var items = _contextMenuContributorResolver(nodeKind, nodePath);
+        if (items.Count == 0) return;
+
+        // 3. Find insertion index — right before PluginMenuSeparator (used as a stable position marker)
+        int insertIndex = contextMenu.Items.IndexOf(PluginMenuSeparator);
+        if (insertIndex < 0) insertIndex = contextMenu.Items.Count - 1;
+
+        // PluginMenuSeparator stays Collapsed (it's a marker only).
+        // Inject a self-cleaning tagged separator as the visual divider before plugin items —
+        // this avoids double-separator scenarios with PropertiesSeparator that follows.
+        var divider = new Separator { Tag = "plugin-contrib" };
+        contextMenu.Items.Insert(insertIndex + 1, divider);
+
+        // 4. Insert items after the divider
+        int offset = 2;
+        foreach (var contrib in items)
+        {
+            FrameworkElement element;
+            if (contrib.IsSeparator)
+            {
+                element = new Separator();
+            }
+            else
+            {
+                var icon = contrib.IconGlyph is not null
+                    ? new TextBlock
+                    {
+                        Text = contrib.IconGlyph,
+                        FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
+                        FontSize = 14,
+                        VerticalAlignment = VerticalAlignment.Center
+                    }
+                    : null;
+
+                element = new MenuItem
+                {
+                    Header  = contrib.Header,
+                    Command = contrib.Command,
+                    CommandParameter = contrib.CommandParameter,
+                    Icon    = icon
+                };
+            }
+            element.Tag = "plugin-contrib";
+            contextMenu.Items.Insert(insertIndex + offset, element);
+            offset++;
+        }
     }
 
     private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)

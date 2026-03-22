@@ -361,6 +361,54 @@
         </Setter>
     </Style>
 
+    <!-- Toggle button à l'intérieur d'un pod : flat comme DockDarkToolBarButtonStyle
+         mais visuellement distinguable quand IsChecked = True (DockTabActiveBrush highlight). -->
+    <Style x:Key="DockDarkToolBarToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="Background"        Value="Transparent"/>
+        <Setter Property="BorderThickness"   Value="0"/>
+        <Setter Property="Padding"           Value="5,3"/>
+        <Setter Property="Cursor"            Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize"          Value="12"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource DockMenuHighlightBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource DockTabActiveBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush"
+                                    Value="{DynamicResource DockTabActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource DockTabHoverBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush"
+                                    Value="{DynamicResource DockTabActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Séparateur FIN entre boutons à l'intérieur d'un même pod -->
     <Style x:Key="DockToolBarPodDividerStyle" TargetType="Separator">
         <Setter Property="Background" Value="#30808080"/>

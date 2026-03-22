@@ -102,6 +102,24 @@ public interface IUIRegistry
     /// </summary>
     bool IsPanelVisible(string uiId);
 
+    // -- Solution Explorer Context Menu Contributors --------------------------
+
+    /// <summary>
+    /// Registers a contributor that injects items into the Solution Explorer
+    /// right-click context menu.  Only one contributor per pluginId is kept;
+    /// calling again replaces the previous one.
+    /// </summary>
+    void RegisterContextMenuContributor(string pluginId, ISolutionExplorerContextMenuContributor contributor);
+
+    /// <summary>Removes the context menu contributor registered for <paramref name="pluginId"/>.</summary>
+    void UnregisterContextMenuContributor(string pluginId);
+
+    /// <summary>
+    /// Returns a snapshot of all currently-registered context menu contributors.
+    /// Called on the UI thread during context menu opening — must be thread-safe.
+    /// </summary>
+    IReadOnlyList<ISolutionExplorerContextMenuContributor> GetContextMenuContributors();
+
     // -- Bulk Unregister ------------------------------------------------------
 
     /// <summary>

@@ -1,0 +1,538 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Shell
+     File: Synthwave84/Colors.xaml
+     Author: Derek Tremblay (derektremblay666@gmail.com)
+     Contributors: Claude (Anthropic)
+     Created: 2026-03-19
+     Description:
+         Color token definitions for the Synthwave '84 theme. Retro-futuristic
+         80s VHS aesthetic: deep purple (#262335) background with neon pink (#FF7EDB),
+         cyan (#03EDF9), orange (#FF8B39) and green (#72F1B8) accents.
+
+     Architecture Notes:
+         ResourceDictionary. Consumed as the first merged dictionary in Synthwave84Theme.xaml.
+         Defines all Dock* and Panel_* keys required by Dark/ shared templates
+         and PanelCommon.xaml.
+     ========================================================== -->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Synthwave '84 Theme — Retro 80s neon on deep purple background -->
+
+    <!-- Core UI -->
+    <Color x:Key="DockBackgroundColor">#262335</Color>
+    <Color x:Key="DockBorderColor">#6644AA</Color>
+    <Color x:Key="DockTabActiveColor">#FF7EDB</Color>
+    <Color x:Key="DockTabInactiveColor">#2A2139</Color>
+    <Color x:Key="DockTabHoverColor">#34294F</Color>
+    <Color x:Key="DockTabSelectedHoverColor">#2E2444</Color>
+    <Color x:Key="DockTabTextColor">#B0AACF</Color>
+    <Color x:Key="DockTabActiveTextColor">#FFFFFF</Color>
+    <Color x:Key="DockSplitterColor">#34294F</Color>
+    <Color x:Key="DockOverlayColor">#40FF7EDB</Color>
+    <Color x:Key="DockDocumentHostBorderColor">#FF7EDB</Color>
+
+    <!-- Menu / toolbar -->
+    <Color x:Key="DockMenuBackgroundColor">#2A2139</Color>
+    <Color x:Key="DockMenuForegroundColor">#F0F0F5</Color>
+    <Color x:Key="DockMenuHighlightColor">#34294F</Color>
+    <Color x:Key="DockMenuBorderColor">#6644AA</Color>
+    <Color x:Key="DockMenuHighlightBorderColor">#FF7EDB</Color>
+    <Color x:Key="DockToolBarBackgroundColor">#2A2139</Color>
+    <Color x:Key="DockWindowBackgroundColor">#1E1B2E</Color>
+
+    <!-- HexEditor Colors -->
+    <Color x:Key="HexEditor_BackgroundColor">#262335</Color>
+    <Color x:Key="HexEditor_HeaderBackgroundColor">#2A2139</Color>
+    <Color x:Key="HexEditor_HeaderForegroundColor">#7B6FA8</Color>
+    <Color x:Key="HexEditor_ColumnSeparatorColor">#34294F</Color>
+    <Color x:Key="HexEditor_ForegroundFirstColor">#F0F0F5</Color>
+    <Color x:Key="HexEditor_ForegroundSecondColor">#03EDF9</Color>
+    <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#7B6FA8</Color>
+    <Color x:Key="HexEditor_SelectionFirstColor">#66FF7EDB</Color>
+    <Color x:Key="HexEditor_SelectionSecondColor">#336644AA</Color>
+    <Color x:Key="HexEditor_ForegroundContrast">#FFFFFF</Color>
+    <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#03EDF9</Color>
+    <Color x:Key="HexEditor_AsciiForegroundColor">#7B6FA8</Color>
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#2A2139</Color>
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#B0AACF</Color>
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#1E1B2E</Color>
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#463465</Color>
+    <Color x:Key="HexEditor_ByteModifiedColor">#F3E4A1</Color>
+    <Color x:Key="HexEditor_HighLightColor">#F3E4A1</Color>
+    <Color x:Key="HexEditor_AutoHighLiteSelectionByteBrush">#72F1B8</Color>
+    <Color x:Key="HexEditor_TblDteColor">#FE4450</Color>
+    <Color x:Key="HexEditor_TblMteColor">#72F1B8</Color>
+    <Color x:Key="HexEditor_TblEndBlockColor">#F3E4A1</Color>
+    <Color x:Key="HexEditor_TblEndLineColor">#03EDF9</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="DockBackgroundBrush"           Color="{StaticResource DockBackgroundColor}" />
+    <SolidColorBrush x:Key="DockBorderBrush"               Color="{StaticResource DockBorderColor}" />
+    <SolidColorBrush x:Key="DockTabActiveBrush"            Color="{StaticResource DockTabActiveColor}" />
+    <SolidColorBrush x:Key="DockTabInactiveBrush"          Color="{StaticResource DockTabInactiveColor}" />
+    <SolidColorBrush x:Key="DockTabHoverBrush"             Color="{StaticResource DockTabHoverColor}" />
+    <SolidColorBrush x:Key="DockTabSelectedHoverBrush"     Color="{StaticResource DockTabSelectedHoverColor}" />
+    <SolidColorBrush x:Key="DockTabTextBrush"              Color="{StaticResource DockTabTextColor}" />
+    <SolidColorBrush x:Key="DockTabActiveTextBrush"        Color="{StaticResource DockTabActiveTextColor}" />
+    <SolidColorBrush x:Key="DockSplitterBrush"             Color="{StaticResource DockSplitterColor}" />
+    <SolidColorBrush x:Key="DockDocumentHostBorderBrush"   Color="{StaticResource DockDocumentHostBorderColor}" />
+    <SolidColorBrush x:Key="DockMenuBackgroundBrush"       Color="{StaticResource DockMenuBackgroundColor}" />
+    <SolidColorBrush x:Key="DockMenuForegroundBrush"       Color="{StaticResource DockMenuForegroundColor}" />
+    <SolidColorBrush x:Key="DockMenuHighlightBrush"        Color="{StaticResource DockMenuHighlightColor}" />
+    <SolidColorBrush x:Key="DockMenuBorderBrush"           Color="{StaticResource DockMenuBorderColor}" />
+    <SolidColorBrush x:Key="DockMenuHighlightBorderBrush"  Color="{StaticResource DockMenuHighlightBorderColor}" />
+    <SolidColorBrush x:Key="DockToolBarBackgroundBrush"    Color="{StaticResource DockToolBarBackgroundColor}" />
+    <SolidColorBrush x:Key="DockWindowBackgroundBrush"     Color="{StaticResource DockWindowBackgroundColor}" />
+
+    <Style x:Key="DockTitleButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="4,2"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
+                            CornerRadius="2" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabActiveBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width" Value="46"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabActiveBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="Transparent" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#E81123"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#F1707A"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- PFP -->
+    <Color x:Key="PFP_TitleBarStartColor">#FF7EDB</Color>
+    <Color x:Key="PFP_TitleBarEndColor">#CD84E5</Color>
+    <Color x:Key="PFP_ItemSelectedStartColor">#3A1A4A</Color>
+    <Color x:Key="PFP_ItemSelectedEndColor">#4A2A5A</Color>
+    <Color x:Key="PFP_ItemSelectedHoverStartColor">#4A2A5A</Color>
+    <Color x:Key="PFP_ItemSelectedHoverEndColor">#5A3A6A</Color>
+    <LinearGradientBrush x:Key="PFP_TitleBarBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PFP_TitleBarStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource PFP_TitleBarEndColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="PFP_ItemSelectedBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PFP_ItemSelectedStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource PFP_ItemSelectedEndColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="PFP_ItemSelectedHoverBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PFP_ItemSelectedHoverStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource PFP_ItemSelectedHoverEndColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="PFP_PanelBackgroundBrush"              Color="#262335"/>
+    <SolidColorBrush x:Key="PFP_SectionBackgroundBrush"            Color="#2A2139"/>
+    <SolidColorBrush x:Key="PFP_BorderBrush"                       Color="#6644AA"/>
+    <SolidColorBrush x:Key="PFP_ItemSeparatorBrush"                Color="#34294F"/>
+    <SolidColorBrush x:Key="PFP_TextBrush"                         Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="PFP_SubTextBrush"                      Color="#B0AACF"/>
+    <SolidColorBrush x:Key="PFP_PlaceholderBrush"                  Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="PFP_ValueBrush"                        Color="#03EDF9"/>
+    <SolidColorBrush x:Key="PFP_AccentBrush"                       Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="PFP_ItemHoverBrush"                    Color="#2A2139"/>
+    <SolidColorBrush x:Key="PFP_ItemSelectedForegroundBrush"       Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="PFP_ItemSelectedBorderBrush"           Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="PFP_ComputedSectionBackgroundBrush"    Color="#1A1628"/>
+    <SolidColorBrush x:Key="PFP_ComputedSectionBorderBrush"        Color="#4A3A6A"/>
+    <SolidColorBrush x:Key="PFP_ComputedTitleBrush"                Color="#03EDF9"/>
+    <SolidColorBrush x:Key="PFP_ComputedIconBrush"                 Color="#72F1B8"/>
+    <SolidColorBrush x:Key="PFP_ComputedValueBrush"                Color="#36F9F6"/>
+    <SolidColorBrush x:Key="PFP_InsightSectionBackgroundBrush"     Color="#2A1A00"/>
+    <SolidColorBrush x:Key="PFP_InsightSectionBorderBrush"         Color="#503A00"/>
+    <SolidColorBrush x:Key="PFP_InsightTitleBrush"                 Color="#F3E4A1"/>
+    <SolidColorBrush x:Key="PFP_InputBorderBrush"                  Color="#6644AA"/>
+    <SolidColorBrush x:Key="PFP_GroupBadgeBackgroundBrush"         Color="#34294F"/>
+    <SolidColorBrush x:Key="PFP_CoverageTrackBrush"                Color="#34294F"/>
+    <SolidColorBrush x:Key="PFP_CoverageProgressBrush"             Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="PFP_ValidationErrorBackgroundBrush"    Color="#3A0A10"/>
+    <SolidColorBrush x:Key="PFP_ValidationErrorBorderBrush"        Color="#FE4450"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeBackgroundBrush"      Color="#2A1A00"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeBorderBrush"          Color="#F3E4A1"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeForegroundBrush"      Color="#F3E4A1"/>
+
+    <!-- SE -->
+    <SolidColorBrush x:Key="SE_BackgroundBrush"            Color="#262335"/>
+    <SolidColorBrush x:Key="SE_ForegroundBrush"            Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="SE_SelectedBrush"              Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="SE_HoverBrush"                 Color="#34294F"/>
+    <SolidColorBrush x:Key="SE_SelectionBorderBrush"       Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="SE_ModifiedIndicatorBrush"     Color="#FF8B39"/>
+    <SolidColorBrush x:Key="SE_SearchBoxBrush"             Color="#2A2139"/>
+    <SolidColorBrush x:Key="SE_SearchBoxForegroundBrush"   Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="SE_TitleBarBrush"              Color="#2A2139"/>
+    <SolidColorBrush x:Key="SE_ToolbarBrush"               Color="#2A2139"/>
+    <SolidColorBrush x:Key="SE_GroupHeaderBrush"           Color="#2A2139"/>
+    <SolidColorBrush x:Key="SE_SeparatorBrush"             Color="#6644AA"/>
+
+    <!-- PP -->
+    <SolidColorBrush x:Key="PP_BackgroundBrush"                    Color="#262335"/>
+    <SolidColorBrush x:Key="PP_ForegroundBrush"                    Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="PP_CategoryHeaderBackgroundBrush"      Color="#221E33"/>
+    <SolidColorBrush x:Key="PP_CategoryHeaderForegroundBrush"      Color="#B0AACF"/>
+    <SolidColorBrush x:Key="PP_SelectedEntryBrush"                 Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="PP_DescriptionBackgroundBrush"         Color="#221E33"/>
+    <SolidColorBrush x:Key="PP_DescriptionForegroundBrush"         Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="PP_EditableForegroundBrush"            Color="#72F1B8"/>
+    <SolidColorBrush x:Key="PP_BorderBrush"                        Color="#6644AA"/>
+    <SolidColorBrush x:Key="PP_ValidationErrorBrush"               Color="#FE4450"/>
+    <SolidColorBrush x:Key="PP_NonDefaultIndicatorBrush"           Color="#03EDF9"/>
+
+    <!-- ERR -->
+    <SolidColorBrush x:Key="ERR_BackgroundBrush"      Color="#262335"/>
+    <SolidColorBrush x:Key="ERR_ForegroundBrush"      Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="ERR_ToolbarBrush"         Color="#2A2139"/>
+    <SolidColorBrush x:Key="ERR_GridLinesBrush"        Color="#34294F"/>
+    <SolidColorBrush x:Key="ERR_SelectedRowBrush"      Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="ERR_HoverRowBrush"         Color="#34294F"/>
+    <SolidColorBrush x:Key="ERR_FilterActiveBrush"     Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="ERR_FilterInactiveBrush"   Color="Transparent"/>
+    <SolidColorBrush x:Key="ERR_SearchBoxBrush"        Color="#2A2139"/>
+    <SolidColorBrush x:Key="ERR_HeaderBrush"           Color="#221E33"/>
+    <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#34294F"/>
+    <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1E1B2E"/>
+
+    <!-- Panel common -->
+    <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#2A2139"/>
+    <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#6644AA"/>
+    <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#1A1826"/>
+    <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#34294F"/>
+    <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#463465"/>
+    <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#2A2139"/>
+
+    <!-- TE_* -->
+    <SolidColorBrush x:Key="TE_Background"             Color="#262335"/>
+    <SolidColorBrush x:Key="TE_Foreground"             Color="#F0F0F5"/>
+    <Color           x:Key="TE_CaretColor"                   >#F0F0F5</Color>
+    <SolidColorBrush x:Key="TE_LineNumberBackground"   Color="#221E33"/>
+    <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#463465"/>
+    <SolidColorBrush x:Key="TE_CurrentLineBrush"       Color="#2A2139"/>
+    <SolidColorBrush x:Key="TE_SelectionBackground"    Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="TE_Keyword"                Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="TE_Comment"                Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="TE_String"                 Color="#72F1B8"/>
+    <SolidColorBrush x:Key="TE_Number"                 Color="#CD84E5"/>
+    <SolidColorBrush x:Key="TE_Register"               Color="#03EDF9"/>
+    <SolidColorBrush x:Key="TE_Label"                  Color="#FF8B39"/>
+    <SolidColorBrush x:Key="TE_Operator"               Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="TE_Type"                   Color="#36F9F6"/>
+    <SolidColorBrush x:Key="TE_Directive"              Color="#FE4450"/>
+    <SolidColorBrush x:Key="TE_RegionName"             Color="#FF7EDB"/>
+
+    <!-- CE_* -->
+    <SolidColorBrush x:Key="CE_Keyword"       Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="CE_ControlFlow"   Color="#CD84E5"/>
+    <SolidColorBrush x:Key="CE_Comment"       Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="CE_String"        Color="#72F1B8"/>
+    <SolidColorBrush x:Key="CE_Number"        Color="#CD84E5"/>
+    <SolidColorBrush x:Key="CE_Type"          Color="#36F9F6"/>
+    <SolidColorBrush x:Key="CE_Identifier"    Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="CE_Operator"      Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="CE_Bracket"       Color="#F3E4A1"/>
+    <SolidColorBrush x:Key="CE_Brace"         Color="#B0AACF"/>
+    <SolidColorBrush x:Key="CE_Attribute"     Color="#03EDF9"/>
+    <SolidColorBrush x:Key="CE_Error"         Color="#FE4450"/>
+    <SolidColorBrush x:Key="CE_Lens"          Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="CE_Lens_Hover"    Color="#AA99CC"/>
+    <SolidColorBrush x:Key="CE_Lens_Bg"       Color="#221E33"/>
+    <SolidColorBrush x:Key="CE_Background"    Color="#262335"/>
+    <SolidColorBrush x:Key="CE_Foreground"    Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="CE_LineNumBg"     Color="#221E33"/>
+    <SolidColorBrush x:Key="CE_NavBarBg"      Color="#221E33"/>
+    <SolidColorBrush x:Key="CE_NavBarBorder"  Color="#6644AA"/>
+    <SolidColorBrush x:Key="CE_LineNumFg"     Color="#463465"/>
+    <SolidColorBrush x:Key="CE_CurrentLine"   Color="#2A2139"/>
+    <SolidColorBrush x:Key="CE_Selection"         Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="CE_SelectionInactive" Color="#3A1A3A"/>
+
+    <!-- CE_QuickInfo_* -->
+    <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#1E1B2E"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Text"              Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_TypeText"          Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_SignatureText"      Color="#03EDF9"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_LinkText"          Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Separator"         Color="#34294F"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticError"   Color="#3A0A10"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#2A1A00"/>
+    <SolidColorBrush x:Key="CE_CtrlHover_Underline"         Color="#03EDF9"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBorder"             Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBg"                 Color="#1AFF7EDB"/>
+    <SolidColorBrush x:Key="CE_FoldLabelFg"                 Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBorderHover"        Color="#CD84E5"/>
+    <SolidColorBrush x:Key="CE_FoldLabelBgHover"            Color="#2BFF7EDB"/>
+
+    <!-- Generic Dialog -->
+    <Color x:Key="AccentColor">#FF7EDB</Color>
+    <SolidColorBrush x:Key="BackgroundBrush"      Color="{StaticResource DockWindowBackgroundColor}"/>
+    <SolidColorBrush x:Key="ForegroundBrush"      Color="{StaticResource DockMenuForegroundColor}"/>
+    <SolidColorBrush x:Key="AccentBrush"          Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="{StaticResource DockMenuBackgroundColor}"/>
+    <SolidColorBrush x:Key="BorderBrush"          Color="{StaticResource DockBorderColor}"/>
+
+    <!-- InfoBar -->
+    <SolidColorBrush x:Key="InfoBar_BackgroundBrush"            Color="#2A2139"/>
+    <SolidColorBrush x:Key="InfoBar_ForegroundBrush"            Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="InfoBar_BorderBrush"                Color="#6644AA"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonBackgroundBrush"      Color="#34294F"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonHoverBackgroundBrush" Color="#463465"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonForegroundBrush"      Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="InfoBar_DismissButtonBrush"         Color="#7B6FA8"/>
+
+    <!-- Diff -->
+    <SolidColorBrush x:Key="DiffAdded_BackgroundBrush"    Color="#1A2A1A"/>
+    <SolidColorBrush x:Key="DiffAdded_BorderBrush"         Color="#72F1B8"/>
+    <SolidColorBrush x:Key="DiffModified_BackgroundBrush"  Color="#2A1A00"/>
+    <SolidColorBrush x:Key="DiffModified_BorderBrush"      Color="#FF8B39"/>
+    <SolidColorBrush x:Key="DiffRemoved_BackgroundBrush"   Color="#2A0A10"/>
+    <SolidColorBrush x:Key="DiffRemoved_BorderBrush"       Color="#FE4450"/>
+
+    <!-- Warning banners -->
+    <SolidColorBrush x:Key="Panel_WarningBackgroundBrush"  Color="#2A1A00"/>
+    <SolidColorBrush x:Key="Panel_WarningBorderBrush"      Color="#FF8B39"/>
+    <SolidColorBrush x:Key="Panel_WarningTextBrush"        Color="#F3E4A1"/>
+
+    <!-- PM_* -->
+    <SolidColorBrush x:Key="PM_ListBackgroundBrush"             Color="#1E1B2E"/>
+    <SolidColorBrush x:Key="PM_ListItemHoverBrush"              Color="#2A2139"/>
+    <SolidColorBrush x:Key="PM_ListItemSelectedBrush"           Color="#4A2A5A"/>
+    <SolidColorBrush x:Key="PM_CategoryHeaderBrush"             Color="#18152A"/>
+    <SolidColorBrush x:Key="PM_CategoryHeaderForegroundBrush"   Color="#7B6FA8"/>
+    <SolidColorBrush x:Key="PM_DetailHeaderBackgroundBrush"     Color="#221E33"/>
+    <SolidColorBrush x:Key="PM_BadgeLoadedBrush"                Color="#72F1B8"/>
+    <SolidColorBrush x:Key="PM_BadgeDisabledBrush"              Color="#463465"/>
+    <SolidColorBrush x:Key="PM_BadgeFaultedBrush"               Color="#FE4450"/>
+    <SolidColorBrush x:Key="PM_BadgeSlowBrush"                  Color="#FF8B39"/>
+    <SolidColorBrush x:Key="PM_BadgeTrustedBrush"               Color="#72F1B8"/>
+    <SolidColorBrush x:Key="DangerBrush"                        Color="#FE4450"/>
+    <SolidColorBrush x:Key="DangerHoverBrush"                   Color="#FF6670"/>
+    <SolidColorBrush x:Key="WarningBannerBrush"                 Color="#3DFF8B39"/>
+    <SolidColorBrush x:Key="WarningBorderBrush"                 Color="#FF8B39"/>
+    <SolidColorBrush x:Key="WarningForegroundBrush"             Color="#F3E4A1"/>
+
+    <!-- XD_* -->
+    <SolidColorBrush x:Key="XD_CanvasBackground"                Color="#1E1B2E"/>
+    <SolidColorBrush x:Key="XD_CanvasBorderBrush"               Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_CanvasGridLineBrush"             Color="#2A2139"/>
+    <SolidColorBrush x:Key="XD_SelectionBorderBrush"            Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleFillBrush"        Color="#262335"/>
+    <SolidColorBrush x:Key="XD_SelectionHandleStrokeBrush"      Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBackground"           Color="#3A0A10"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerForeground"           Color="#FE4450"/>
+    <SolidColorBrush x:Key="XD_ErrorBannerBorder"               Color="#FE4450"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBrush"               Color="#2A2139"/>
+    <SolidColorBrush x:Key="XD_PanelToolbarBorderBrush"         Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_PropertyNameForeground"          Color="#03EDF9"/>
+    <SolidColorBrush x:Key="XD_PropertyValueForeground"         Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="XD_PropertyGroupHeaderBackground"   Color="#221E33"/>
+    <SolidColorBrush x:Key="XD_ToolbarViewToggleActiveBrush"    Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_MoveAdornerBrush"                Color="#03EDF9"/>
+    <SolidColorBrush x:Key="XD_HoverBorderBrush"                Color="#B2FF7EDB"/>
+    <SolidColorBrush x:Key="XD_RotationHandleFillBrush"         Color="#FF36F9F6"/>
+    <SolidColorBrush x:Key="XD_ResizeHandleFillBrush"           Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_ResizeHandleStrokeBrush"         Color="#03EDF9"/>
+    <SolidColorBrush x:Key="XD_RulerBackground"                 Color="#262335"/>
+    <SolidColorBrush x:Key="XD_RulerTickBrush"                  Color="#463465"/>
+    <SolidColorBrush x:Key="XD_RulerCursorBrush"                Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_SnapGuideBrush"                  Color="#72F1B8"/>
+    <SolidColorBrush x:Key="XD_ToolboxBackground"               Color="#1E1B2E"/>
+    <SolidColorBrush x:Key="XD_ToolboxItemHover"                Color="#2A2139"/>
+    <SolidColorBrush x:Key="XD_ToolboxCategoryHeader"           Color="#18152A"/>
+    <SolidColorBrush x:Key="XD_ColorSwatchBorder"               Color="#34294F"/>
+    <SolidColorBrush x:Key="XD_GradientStopHandle"              Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_BindingBadgeBackground"          Color="#3A1A4A"/>
+    <SolidColorBrush x:Key="XD_BindingStatusOkBrush"             Color="#72F1B8"/>
+    <SolidColorBrush x:Key="XD_BindingStatusErrorBrush"          Color="#FE4450"/>
+    <SolidColorBrush x:Key="XD_BindingTriggerPropertyBrush"      Color="#03EDF9"/>
+    <SolidColorBrush x:Key="XD_BindingTriggerLostFocusBrush"     Color="#FFC600"/>
+    <SolidColorBrush x:Key="XD_BindingTriggerExplicitBrush"      Color="#F92AAD"/>
+    <SolidColorBrush x:Key="XD_TimelineKeyframeSelectedBrush"    Color="#FF7E40"/>
+    <SolidColorBrush x:Key="XD_TimelineBackground"              Color="#262335"/>
+    <SolidColorBrush x:Key="XD_KeyframeThumbBrush"              Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_RubberBandFillBrush"            Color="#40FF7EDB"/>
+    <SolidColorBrush x:Key="XD_DimensionBadgeBackground"       Color="#C8181818"/>
+    <SolidColorBrush x:Key="XD_DimensionBadgeForeground"       Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="XD_MeasureGuideBrush"              Color="#FFFF8C00"/>
+    <SolidColorBrush x:Key="XD_MeasureLabelBackground"         Color="#C8181818"/>
+    <SolidColorBrush x:Key="XD_TransformOriginDotBrush"    Color="#B2FF006E"/>
+    <SolidColorBrush x:Key="XD_TransformOriginActiveBrush" Color="#FFFF79C6"/>
+    <SolidColorBrush x:Key="XD_AngleBadgeBackground"       Color="#C8120C1E"/>
+    <SolidColorBrush x:Key="XD_SkewHandleBrush"            Color="#FFBD93F9"/>
+    <SolidColorBrush x:Key="XD_BoxModelMarginBrush"      Color="#3CFF006E"/>
+    <SolidColorBrush x:Key="XD_BoxModelPaddingBrush"     Color="#3C00FF88"/>
+    <SolidColorBrush x:Key="XD_BoxModelBorderZoneBrush"  Color="#3C4B00FF"/>
+    <SolidColorBrush x:Key="XD_InlineEditBackground"     Color="#DC120C1E"/>
+    <SolidColorBrush x:Key="XD_DrawToolActiveBrush"     Color="#FFFF006E"/>
+    <SolidColorBrush x:Key="XD_DrawPreviewStrokeBrush"  Color="#C8FF006E"/>
+    <SolidColorBrush x:Key="XD_DrawPreviewFillBrush"    Color="#28FF006E"/>
+    <SolidColorBrush x:Key="XD_TemplateScopeBannerBrush"       Color="#DC1A0030"/>
+    <SolidColorBrush x:Key="XD_TemplateBreadcrumbBackground"   Color="#28FF79C6"/>
+    <SolidColorBrush x:Key="XD_TemplateBreadcrumbForeground"   Color="#FFFF79C6"/>
+    <SolidColorBrush x:Key="XD_PlaybackBarBackground"    Color="#FF0D0921"/>
+    <SolidColorBrush x:Key="XD_PlayButtonBrush"          Color="#FFFF79C6"/>
+    <SolidColorBrush x:Key="XD_PlaybackScrubberThumb"    Color="#FFFF006E"/>
+    <SolidColorBrush x:Key="XD_EasingCurveStroke"        Color="#FF00FFFF"/>
+    <SolidColorBrush x:Key="XD_EasingHandleBrush"        Color="#FFBD93F9"/>
+    <SolidColorBrush x:Key="XD_ConstraintPinnedBrush"      Color="#FFFF7EDB"/>
+    <SolidColorBrush x:Key="XD_ConstraintUnpinnedBrush"    Color="#FF5A4A72"/>
+    <SolidColorBrush x:Key="XD_BreakpointActiveBackground" Color="#50FF7EDB"/>
+    <SolidColorBrush x:Key="XD_SafeAreaGuideBrush"         Color="#40FE4450"/>
+    <SolidColorBrush x:Key="XD_GradientEditorLineBrush"   Color="#FF2D2B55"/>
+    <SolidColorBrush x:Key="XD_GradientStopSelectedBrush" Color="#FFFF7EDB"/>
+    <SolidColorBrush x:Key="XD_BindingPickerBackground"   Color="#FF262335"/>
+    <SolidColorBrush x:Key="XD_BindingPickerSelectedBrush" Color="#50FF7EDB"/>
+    <SolidColorBrush x:Key="XD_PerfOverlayBackground"     Color="#CC1A1033"/>
+    <SolidColorBrush x:Key="XD_PerfOverlayForeground"     Color="#FFFFFAFA"/>
+    <SolidColorBrush x:Key="XD_PerfFpsGoodBrush"          Color="#FF72F1B8"/>
+    <SolidColorBrush x:Key="XD_PerfFpsWarnBrush"          Color="#FFFF7EDB"/>
+    <SolidColorBrush x:Key="XD_PerfFpsBadBrush"           Color="#FFFE4450"/>
+
+    <!-- LVT_* -->
+    <SolidColorBrush x:Key="LVT_NameBrush"                      Color="#03EDF9"/>
+    <SolidColorBrush x:Key="LVT_BadgeHiddenBrush"               Color="#3A2A00"/>
+    <SolidColorBrush x:Key="LVT_BadgeDisabledBrush"             Color="#2A0A10"/>
+    <SolidColorBrush x:Key="LVT_BadgeTextBrush"                 Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="LVT_SearchBarBrush"              Color="#1A0833"/>
+    <SolidColorBrush x:Key="LVT_SearchHighlightBrush"        Color="#33F92AAD"/>
+    <SolidColorBrush x:Key="LVT_SearchMatchBrush"            Color="#66F92AAD"/>
+    <SolidColorBrush x:Key="LVT_InspectRootBadgeBrush"       Color="#1A2A0A"/>
+
+    <!-- History Panel -->
+    <SolidColorBrush x:Key="XD_HistoryPanelBackground"          Color="#1E1B2E"/>
+    <SolidColorBrush x:Key="XD_HistoryAppliedForeground"        Color="#F0F0F5"/>
+    <SolidColorBrush x:Key="XD_HistoryUndoneForeground"         Color="#463465"/>
+    <SolidColorBrush x:Key="XD_HistoryCurrentMarkerBrush"       Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_HistoryEntryHoverBrush"          Color="#2A2139"/>
+    <SolidColorBrush x:Key="XD_HistoryIconBrush"                Color="#72F1B8"/>
+    <SolidColorBrush x:Key="XD_HistoryCheckpointBrush"          Color="#FFD700"/>
+    <SolidColorBrush x:Key="XD_BindingValidForeground"          Color="#72F1B8"/>
+    <SolidColorBrush x:Key="XD_BindingErrorForeground"          Color="#FE4450"/>
+    <SolidColorBrush x:Key="XD_BindingPathForeground"           Color="#03EDF9"/>
+    <SolidColorBrush x:Key="XD_LiveTreeBackground"              Color="#18152A"/>
+    <SolidColorBrush x:Key="XD_LiveTreeSelectionBrush"          Color="#FF7EDB"/>
+    <SolidColorBrush x:Key="XD_LiveTreeHighlightBrush"          Color="#4A2A5A"/>
+
+    <!-- Drag caret -->
+    <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF8B39"/>
+    <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8B39"/>
+    <SolidColorBrush x:Key="TE_DragCaret"           Color="#FFFF8B39"/>
+    <SolidColorBrush x:Key="TE_DragDropTarget"      Color="#1AFF8B39"/>
+
+    <!-- Overkill Panel Tokens (2026-03-19) -->
+    <SolidColorBrush x:Key="XD_ResourceDuplicateBrush"          Color="#FF9800"/>
+    <SolidColorBrush x:Key="XD_ResourcePreviewBorderBrush"      Color="#555555"/>
+    <SolidColorBrush x:Key="XD_ToolboxFavoriteBrush"            Color="#FFD700"/>
+    <SolidColorBrush x:Key="XD_ToolboxRecentBrush"              Color="#9CDCFE"/>
+    <SolidColorBrush x:Key="XD_KeyframeEasingBrush"             Color="#C586C0"/>
+    <SolidColorBrush x:Key="XD_TimelineZoomBrush"               Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="XD_TimelineGroupHeaderBrush"        Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="XD_ContextMatchTrackBrush"          Color="#1A4A6B"/>
+    <SolidColorBrush x:Key="XD_HistoryCurrentStateBrush"        Color="#4FC1FF"/>
+    <SolidColorBrush x:Key="XD_BindingStatusWarnBrush"          Color="#FF9800"/>
+
+    <!-- Markdown Editor Preview Tokens (2026-03-19) -->
+    <SolidColorBrush x:Key="MD_PreviewBackground"  Color="#262335"/>
+    <SolidColorBrush x:Key="MD_PreviewBorder"       Color="#FF7EDB"/>
+
+    <!-- Class Diagram (CD_*) -->
+    <SolidColorBrush x:Key="CD_CanvasBackground"             Color="#2A2A2A" />
+    <SolidColorBrush x:Key="CD_CanvasBorderBrush"            Color="#3F3F46" />
+    <SolidColorBrush x:Key="CD_CanvasGridLineBrush"          Color="#333333" />
+    <SolidColorBrush x:Key="CD_ClassBoxBackground"           Color="#252526" />
+    <SolidColorBrush x:Key="CD_ClassBoxBorderBrush"          Color="#3F3F46" />
+    <SolidColorBrush x:Key="CD_ClassBoxHeaderBackground"     Color="#1E1E1E" />
+    <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#3F3F46" />
+    <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#569CD6" />
+    <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#4EC9B0" />
+    <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#4FC1FF" />
+    <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#9B9B9B" />
+    <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#D4D4D4" />
+    <SolidColorBrush x:Key="CD_FieldForeground"              Color="#9CDCFE" />
+    <SolidColorBrush x:Key="CD_PropertyForeground"           Color="#4EC9B0" />
+    <SolidColorBrush x:Key="CD_MethodForeground"             Color="#C586C0" />
+    <SolidColorBrush x:Key="CD_EventForeground"              Color="#CE9178" />
+    <SolidColorBrush x:Key="CD_InheritanceArrowBrush"        Color="#4FC1FF" />
+    <SolidColorBrush x:Key="CD_AssociationArrowBrush"        Color="#569CD6" />
+    <SolidColorBrush x:Key="CD_DependencyArrowBrush"         Color="#7F7F7F" />
+    <SolidColorBrush x:Key="CD_AggregationArrowBrush"        Color="#4EC9B0" />
+    <SolidColorBrush x:Key="CD_CompositionArrowBrush"        Color="#CE9178" />
+    <SolidColorBrush x:Key="CD_RelationshipLabelForeground"  Color="#9B9B9B" />
+    <SolidColorBrush x:Key="CD_PanelToolbarBrush"            Color="#2D2D30" />
+    <SolidColorBrush x:Key="CD_PanelToolbarBorderBrush"      Color="#3F3F46" />
+    <SolidColorBrush x:Key="CD_OutlineSelectedBrush"         Color="#094771" />
+    <SolidColorBrush x:Key="CD_OutlineHoverBrush"            Color="#2A2D2E" />
+    <SolidColorBrush x:Key="CD_PropertyNameForeground"       Color="#AEAFAD" />
+    <SolidColorBrush x:Key="CD_PropertyValueForeground"      Color="#D4D4D4" />
+    <SolidColorBrush x:Key="CD_PropertyGroupHeaderBackground" Color="#252526" />
+    <SolidColorBrush x:Key="CD_HistoryPanelBackground"       Color="#1E1E1E" />
+    <SolidColorBrush x:Key="CD_HistoryAppliedForeground"     Color="#D4D4D4" />
+    <SolidColorBrush x:Key="CD_HistoryUndoneForeground"      Color="#7F7F7F" />
+    <SolidColorBrush x:Key="CD_HistoryCurrentMarkerBrush"    Color="#569CD6" />
+    <SolidColorBrush x:Key="CD_SearchMatchBrush"             Color="#613315" />
+    <SolidColorBrush x:Key="CD_SearchCurrentMatchBrush"      Color="#A87B29" />
+    <SolidColorBrush x:Key="CD_ErrorBannerBackground"        Color="#6C1A1A" />
+    <SolidColorBrush x:Key="CD_ErrorBannerForeground"        Color="#F48771" />
+</ResourceDictionary>

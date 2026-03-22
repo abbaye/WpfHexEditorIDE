@@ -22,16 +22,13 @@
       Phase 7 — Nav header uppercase label style (PP_NavHeaderStyle)
 -->
 
-<UserControl x:Class="WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument"
+<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfHexEditor.ProjectSystem.Documents"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument"
              Background="{DynamicResource DockMenuBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}">
-
-    <UserControl.InputBindings>
-        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
-    </UserControl.InputBindings>
 
     <UserControl.Resources>
 
@@ -39,7 +36,7 @@
              PP_ComboBoxStyle — Full ControlTemplate to theme the dropdown Popup.
              Simple <Style> setters do NOT reach the Popup ToggleButton in WPF.
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_ComboBoxStyle" TargetType="ComboBox">
+        <Style x:Key="PP_ComboBoxStyle" TargetType="{x:Type ComboBox}">
             <Setter Property="Background"        Value="{DynamicResource DockWindowBackgroundBrush}" />
             <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush"       Value="{DynamicResource DockBorderBrush}" />
@@ -50,16 +47,15 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
                         <Grid>
                             <!-- ToggleButton fills the entire ComboBox area -->
                             <ToggleButton x:Name="ToggleButton"
-                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
-                                                      RelativeSource={RelativeSource TemplatedParent}}"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                           Focusable="False"
                                           ClickMode="Press">
                                 <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
                                         <Border x:Name="Bg"
                                                 Background="{DynamicResource DockWindowBackgroundBrush}"
                                                 BorderBrush="{DynamicResource DockBorderBrush}"
@@ -151,14 +147,14 @@
         </Style>
 
         <!-- ComboBoxItem — themed hover and selection inside the dropdown -->
-        <Style x:Key="PP_ComboBoxItemStyle" TargetType="ComboBoxItem">
+        <Style x:Key="PP_ComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
             <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="Background"   Value="Transparent" />
             <Setter Property="Padding"      Value="10,5" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ComboBoxItem">
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 Padding="{TemplateBinding Padding}"
@@ -184,7 +180,7 @@
         <!-- ══════════════════════════════════════════════════════════════════════
              PP_TextBoxStyle — Accent border on focus, dimmed when read-only.
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_TextBoxStyle" TargetType="TextBox">
+        <Style x:Key="PP_TextBoxStyle" TargetType="{x:Type TextBox}">
             <Setter Property="Background"      Value="{DynamicResource DockWindowBackgroundBrush}" />
             <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}" />
@@ -205,17 +201,17 @@
         </Style>
 
         <!-- Implicit TextBox style (applies to all TextBoxes unless overridden) -->
-        <Style TargetType="TextBox" BasedOn="{StaticResource PP_TextBoxStyle}" />
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PP_TextBoxStyle}" />
 
         <!-- ══════════════════════════════════════════════════════════════════════
              PP_CheckBoxStyle — Custom template with accent checkmark.
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_CheckBoxStyle" TargetType="CheckBox">
+        <Style x:Key="PP_CheckBoxStyle" TargetType="{x:Type CheckBox}">
             <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="Margin"     Value="0,6,0,0" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="CheckBox">
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Border x:Name="Box"
                                     Width="15" Height="15"
@@ -250,12 +246,12 @@
         </Style>
 
         <!-- Implicit CheckBox style -->
-        <Style TargetType="CheckBox" BasedOn="{StaticResource PP_CheckBoxStyle}" />
+        <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource PP_CheckBoxStyle}" />
 
         <!-- ══════════════════════════════════════════════════════════════════════
              PP_PrimaryButtonStyle — Accent-filled button (Save).
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_PrimaryButtonStyle" TargetType="Button">
+        <Style x:Key="PP_PrimaryButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background"      Value="{DynamicResource DockTabActiveBrush}" />
             <Setter Property="Foreground"      Value="White" />
             <Setter Property="BorderBrush"     Value="{DynamicResource DockTabActiveBrush}" />
@@ -264,7 +260,7 @@
             <Setter Property="Cursor"          Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
+                    <ControlTemplate TargetType="{x:Type Button}">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -292,7 +288,7 @@
         <!-- ══════════════════════════════════════════════════════════════════════
              PP_SecondaryButtonStyle — Flat ghost button (Add/Remove/Browse).
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_SecondaryButtonStyle" TargetType="Button">
+        <Style x:Key="PP_SecondaryButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background"      Value="Transparent" />
             <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}" />
@@ -301,7 +297,7 @@
             <Setter Property="Cursor"          Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
+                    <ControlTemplate TargetType="{x:Type Button}">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -334,7 +330,7 @@
         <!-- ══════════════════════════════════════════════════════════════════════
              PP_NavItemStyle — ListBoxItem with left 3-px accent bar (VS pattern).
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_NavItemStyle" TargetType="ListBoxItem">
+        <Style x:Key="PP_NavItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"  Value="Transparent" />
             <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="Padding"     Value="0" />
@@ -342,7 +338,7 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
                         <Grid>
                             <!-- 3-px left accent bar — visible only when selected (VS pattern) -->
                             <Rectangle x:Name="AccentBar"
@@ -376,7 +372,7 @@
         <!-- ══════════════════════════════════════════════════════════════════════
              PP_NavHeaderStyle — Uppercase label for non-selectable group headers.
              ══════════════════════════════════════════════════════════════════════ -->
-        <Style x:Key="PP_NavHeaderStyle" TargetType="ListBoxItem">
+        <Style x:Key="PP_NavHeaderStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="IsEnabled"   Value="False" />
             <Setter Property="Focusable"   Value="False" />
             <Setter Property="Background"  Value="Transparent" />
@@ -384,7 +380,7 @@
             <Setter Property="Margin"      Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
                         <TextBlock Text="{Binding Label}"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    FontWeight="SemiBold"
@@ -402,22 +398,22 @@
         </Style>
 
         <!-- ── Shared common styles ──────────────────────────────────────────── -->
-        <Style TargetType="TextBlock">
+        <Style TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <Style TargetType="Label">
+        <Style TargetType="{x:Type Label}">
             <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Padding"           Value="0,0,8,0" />
         </Style>
-        <Style TargetType="ListView">
+        <Style TargetType="{x:Type ListView}">
             <Setter Property="Background"  Value="{DynamicResource DockWindowBackgroundBrush}" />
             <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
         </Style>
         <!-- ListViewItem: override system selection highlight with theme tokens -->
-        <Style TargetType="ListViewItem">
+        <Style TargetType="{x:Type ListViewItem}">
             <Setter Property="Background"             Value="Transparent" />
             <Setter Property="Foreground"             Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderThickness"        Value="0" />
@@ -433,17 +429,17 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="GridViewColumnHeader">
+        <Style TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Background"  Value="{DynamicResource DockMenuBackgroundBrush}" />
             <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
             <Setter Property="Padding"     Value="8,4" />
         </Style>
-        <Style TargetType="Separator">
+        <Style TargetType="{x:Type Separator}">
             <Setter Property="Background" Value="{DynamicResource DockBorderBrush}" />
             <Setter Property="Margin"     Value="0,8,0,12" />
         </Style>
-        <Style TargetType="DataGrid">
+        <Style TargetType="{x:Type DataGrid}">
             <Setter Property="Background"               Value="{DynamicResource DockWindowBackgroundBrush}" />
             <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}" />
@@ -457,13 +453,13 @@
             <Setter Property="SelectionUnit"            Value="FullRow" />
             <Setter Property="HeadersVisibility"        Value="Column" />
         </Style>
-        <Style TargetType="DataGridColumnHeader">
+        <Style TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="Background"  Value="{DynamicResource DockMenuBackgroundBrush}" />
             <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
             <Setter Property="Padding"     Value="8,4" />
         </Style>
-        <Style TargetType="DataGridRow">
+        <Style TargetType="{x:Type DataGridRow}">
             <Setter Property="Background" Value="{DynamicResource DockMenuBackgroundBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
             <Style.Triggers>
@@ -475,14 +471,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="DataGridCell">
+        <Style TargetType="{x:Type DataGridCell}">
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding"         Value="6,3" />
             <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
         </Style>
 
         <!-- ── Section title shared style ────────────────────────────────────── -->
-        <Style x:Key="PP_SectionTitleStyle" TargetType="TextBlock">
+        <Style x:Key="PP_SectionTitleStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize"         Value="18" />
             <Setter Property="FontWeight"       Value="Bold" />
             <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}" />
@@ -491,7 +487,7 @@
         </Style>
 
         <!-- ── Field description hint style ─────────────────────────────────── -->
-        <Style x:Key="PP_FieldDescStyle" TargetType="TextBlock">
+        <Style x:Key="PP_FieldDescStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize"     Value="11" />
             <Setter Property="Opacity"      Value="0.55" />
             <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
@@ -503,7 +499,7 @@
         </Style>
 
         <!-- ── Field label style ─────────────────────────────────────────────── -->
-        <Style x:Key="PP_FieldLabelStyle" TargetType="TextBlock">
+        <Style x:Key="PP_FieldLabelStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="FontWeight"   Value="SemiBold" />
             <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="Margin"       Value="0,8,0,3" />
@@ -511,7 +507,7 @@
         </Style>
 
         <!-- ── Validation error style ─────────────────────────────────────────── -->
-        <Style x:Key="PP_ValidationErrorStyle" TargetType="TextBlock">
+        <Style x:Key="PP_ValidationErrorStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground"   Value="{DynamicResource PFP_ValidationErrorBorderBrush}" />
             <Setter Property="FontSize"     Value="11" />
             <Setter Property="Margin"       Value="0,2,0,0" />
@@ -527,13 +523,19 @@
 
     </UserControl.Resources>
 
+    <UserControl.InputBindings>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
+    </UserControl.InputBindings>
+
     <!-- ════════════════════════════════════════════════════════════════════════
          Root grid: title bar row + main content row
          ════════════════════════════════════════════════════════════════════════ -->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />   <!-- title bar / save button -->
-            <RowDefinition Height="*" />      <!-- nav + section content  -->
+            <RowDefinition Height="Auto" />
+            <!-- title bar / save button -->
+            <RowDefinition Height="*" />
+            <!-- nav + section content  -->
         </Grid.RowDefinitions>
 
         <!-- ── Title / Save bar ──────────────────────────────────────────────── -->
@@ -637,8 +639,7 @@
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="{Binding ProjectNameError}"
                                        Style="{StaticResource PP_ValidationErrorStyle}"
-                                       Visibility="{Binding ProjectNameError,
-                                           Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
+                                       Visibility="{Binding ProjectNameError, Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
                             <TextBlock Text="Nom logique utilisé dans le Solution Explorer."
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
@@ -648,8 +649,7 @@
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="{Binding AssemblyNameError}"
                                        Style="{StaticResource PP_ValidationErrorStyle}"
-                                       Visibility="{Binding AssemblyNameError,
-                                           Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
+                                       Visibility="{Binding AssemblyNameError, Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
                             <TextBlock Text="Nom du fichier de sortie compilé (sans extension)."
                                        Style="{StaticResource PP_FieldDescStyle}" />
 

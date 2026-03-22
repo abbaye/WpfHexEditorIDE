@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>WpfHexEditor.Editor.MarkdownEditor.Core</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.MarkdownEditor.Core</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>WpfHexEditor.Editor.MarkdownEditor.Core</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>WpfHexEditor Contributors</Authors>
+    <Description>Core rendering services for the WpfHexEditor Markdown editor — HTML page builder (marked.js, Mermaid, highlight.js, emoji) and IDE theme selector. No WPF dependency; reusable by other modules (e.g. ClassDiagram preview).</Description>
+    <PackageTags>wpf;hex;editor;markdown;rendering;mermaid</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Embedded JS / CSS assets for offline-capable Markdown preview -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\marked.min.js" />
+    <EmbeddedResource Include="Resources\mermaid.min.js" />
+    <EmbeddedResource Include="Resources\highlight.min.js" />
+    <EmbeddedResource Include="Resources\highlight-github-dark.min.css" />
+    <EmbeddedResource Include="Resources\highlight-github.min.css" />
+    <EmbeddedResource Include="Resources\github-markdown-dark.css" />
+    <EmbeddedResource Include="Resources\github-markdown.css" />
+    <EmbeddedResource Include="Resources\emoji.js" />
+    <EmbeddedResource Include="Resources\classdiagram.js" />
+    <EmbeddedResource Include="Resources\classdiagram.css" />
+  </ItemGroup>
+
+</Project>

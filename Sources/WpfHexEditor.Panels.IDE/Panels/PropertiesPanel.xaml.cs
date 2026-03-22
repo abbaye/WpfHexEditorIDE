@@ -46,6 +46,7 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
 
     private IPropertyProvider?      _provider;
     private bool                    _isSorted;
+    private string                  _filterText  = string.Empty;
     private PropertyEntry?          _selectedEntry;
     private ToolbarOverflowManager  _overflowManager = null!;
 
@@ -101,6 +102,21 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
                 .ToList();
         }
 
+        // P4: apply text filter — keep only groups that have at least one matching entry.
+        if (!string.IsNullOrWhiteSpace(_filterText))
+        {
+            groups = groups
+                .Select(g => new PropertyGroup
+                {
+                    Name    = g.Name,
+                    Entries = g.Entries
+                        .Where(e => e.Name.Contains(_filterText, StringComparison.OrdinalIgnoreCase))
+                        .ToList()
+                })
+                .Where(g => g.Entries.Count > 0)
+                .ToList();
+        }
+
         GroupsControl.ItemsSource = new ObservableCollection<PropertyGroup>(groups);
     }
 
@@ -115,6 +131,33 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
     {
         _isSorted = SortToggle.IsChecked ?? false;
         Refresh();
+    }
+
+    // -- Reset-to-default handler (P7) ----------------------------------------
+
+    private void OnResetPropertyClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement fe && fe.DataContext is PropertyEntry entry)
+            entry.OnResetToDefault?.Invoke();
+    }
+
+    // -- Search bar handlers (P4) ---------------------------------------------
+
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        _filterText = SearchBox.Text;
+        SearchClearButton.Visibility = _filterText.Length > 0
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        Refresh();
+    }
+
+    private void OnSearchClearClick(object sender, RoutedEventArgs e)
+        => SearchBox.Clear(); // triggers OnSearchTextChanged automatically
+
+    private void OnSearchKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape) OnSearchClearClick(sender, e);
     }
 
     // -- Entry events ---------------------------------------------------------
@@ -136,8 +179,18 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
 
     private void OnTextBoxCommit(object sender, RoutedEventArgs e)
     {
-        if (sender is TextBox tb && tb.DataContext is PropertyEntry entry)
-            entry.OnValueChanged?.Invoke(tb.Text);
+        if (sender is not TextBox tb || tb.DataContext is not PropertyEntry entry) return;
+
+        // P6: run inline validator before committing.
+        var error = entry.Validator?.Invoke(tb.Text);
+        if (error is not null)
+        {
+            ShowValidationError(tb, error);
+            return;
+        }
+
+        ClearValidationError(tb);
+        entry.OnValueChanged?.Invoke(tb.Text);
     }
 
     private void OnTextBoxKeyDown(object sender, KeyEventArgs e)
@@ -201,12 +254,140 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
         }
     }
 
+    // -- Thickness editor handlers (P5) ----------------------------------------
+
+    private void OnThicknessPartCommit(object sender, RoutedEventArgs e)
+    {
+        if (sender is not TextBox tb) return;
+        if (tb.DataContext is not PropertyEntry entry) return;
+
+        // Find all 4 TextBox siblings inside the parent Grid of the thickness template.
+        var grid = FindAncestorInTemplate<Grid>(tb);
+        if (grid is null) return;
+
+        var boxes  = grid.Children.OfType<TextBox>().ToList();
+        string GetPart(string tag) =>
+            boxes.FirstOrDefault(b => b.Tag as string == tag)?.Text ?? "0";
+
+        var value = $"{GetPart("Left")},{GetPart("Top")},{GetPart("Right")},{GetPart("Bottom")}";
+
+        // P6: validate before committing.
+        var error = entry.Validator?.Invoke(value);
+        if (error is not null)
+        {
+            ShowValidationError(tb, error);
+            return;
+        }
+
+        ClearValidationError(tb);
+        entry.OnValueChanged?.Invoke(value);
+    }
+
+    private void OnThicknessKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)       { OnThicknessPartCommit(sender, e); e.Handled = true; }
+        else if (e.Key == Key.Escape) { Refresh();                        e.Handled = true; }
+    }
+
+    // -- Brush swatch handler (P5) --------------------------------------------
+
+    private void OnBrushSwatchClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not Border swatch || swatch.DataContext is not PropertyEntry entry) return;
+
+        // Open a lightweight popup containing a color spectrum or hex edit.
+        // Falls back to a simple color TextBox dialog until a full picker is integrated.
+        ShowColorPickerPopup(swatch, entry);
+    }
+
+    private static void ShowColorPickerPopup(Border anchor, PropertyEntry entry)
+    {
+        var hexBox = new TextBox
+        {
+            Text             = entry.Value?.ToString() ?? "#FF000000",
+            Width            = 120,
+            Margin           = new Thickness(4),
+            BorderThickness  = new Thickness(1),
+        };
+        hexBox.SetResourceReference(TextBox.BorderBrushProperty, "PP_BorderBrush");
+        hexBox.SetResourceReference(TextBox.ForegroundProperty,  "PP_EditableForegroundBrush");
+        hexBox.SetResourceReference(TextBox.BackgroundProperty,  "PP_BackgroundBrush");
+
+        var popup = new Popup
+        {
+            StaysOpen          = false,
+            AllowsTransparency = true,
+            PlacementTarget    = anchor,
+            Placement          = PlacementMode.Bottom,
+            Child              = new Border
+            {
+                Padding         = new Thickness(2),
+                BorderThickness = new Thickness(1),
+                Child           = hexBox
+            }
+        };
+        var popupBorder = (Border)popup.Child;
+        popupBorder.SetResourceReference(Border.BorderBrushProperty,  "PP_BorderBrush");
+        popupBorder.SetResourceReference(Border.BackgroundProperty,    "PP_BackgroundBrush");
+
+        hexBox.KeyDown += (_, ke) =>
+        {
+            if (ke.Key == Key.Enter)
+            {
+                entry.OnValueChanged?.Invoke(hexBox.Text);
+                popup.IsOpen = false;
+                ke.Handled   = true;
+            }
+            else if (ke.Key == Key.Escape)
+            {
+                popup.IsOpen = false;
+                ke.Handled   = true;
+            }
+        };
+
+        popup.IsOpen = true;
+        hexBox.SelectAll();
+        hexBox.Focus();
+    }
+
     // -- Helpers --------------------------------------------------------------
 
     private static void TrySetClipboard(string text)
     {
         try { Clipboard.SetText(text); }
         catch { /* silently ignored — clipboard may be locked by another process */ }
+    }
+
+    // -- Validation helpers (P6) ----------------------------------------------
+
+    private static void ShowValidationError(TextBox tb, string message)
+    {
+        tb.SetResourceReference(TextBox.BorderBrushProperty, "PP_ValidationErrorBrush");
+        tb.BorderThickness = new Thickness(0, 0, 0, 2);
+        tb.ToolTip         = message;
+    }
+
+    private static void ClearValidationError(TextBox tb)
+    {
+        tb.SetResourceReference(TextBox.BorderBrushProperty, "PP_BorderBrush");
+        tb.BorderThickness = new Thickness(0, 0, 0, 1);
+        tb.ToolTip         = null;
+    }
+
+    /// <summary>
+    /// Walks the visual tree starting at <paramref name="d"/> looking for
+    /// the first ancestor of type <typeparamref name="T"/> that is within
+    /// the same DataTemplate (stops at a UserControl boundary).
+    /// </summary>
+    private static T? FindAncestorInTemplate<T>(DependencyObject? d) where T : DependencyObject
+    {
+        while (d != null)
+        {
+            d = VisualTreeHelper.GetParent(d);
+            if (d is T t)   return t;
+            if (d is UserControl) break; // don't escape the template boundary
+        }
+        return null;
     }
 
     // ── Toolbar overflow ─────────────────────────────────────────────────────
@@ -256,13 +437,15 @@ public sealed class PropertyEntryDataTemplateSelector : DataTemplateSelector
 
         return entry.Type switch
         {
-            PropertyEntryType.Boolean  => uc.FindResource("BooleanTemplate")      as DataTemplate,
-            PropertyEntryType.Enum     => uc.FindResource("EnumTemplate")          as DataTemplate,
-            PropertyEntryType.Integer  => uc.FindResource("EditIntegerTemplate")   as DataTemplate,
-            PropertyEntryType.Hex      => uc.FindResource("EditIntegerTemplate")   as DataTemplate,
-            PropertyEntryType.FilePath => uc.FindResource("FilePathTemplate")      as DataTemplate,
-            PropertyEntryType.Color    => uc.FindResource("ColorTemplate")         as DataTemplate,
-            _                          => uc.FindResource("EditTextTemplate")      as DataTemplate,
+            PropertyEntryType.Boolean   => uc.FindResource("BooleanTemplate")      as DataTemplate,
+            PropertyEntryType.Enum      => uc.FindResource("EnumTemplate")          as DataTemplate,
+            PropertyEntryType.Integer   => uc.FindResource("EditIntegerTemplate")   as DataTemplate,
+            PropertyEntryType.Hex       => uc.FindResource("EditIntegerTemplate")   as DataTemplate,
+            PropertyEntryType.FilePath  => uc.FindResource("FilePathTemplate")      as DataTemplate,
+            PropertyEntryType.Color     => uc.FindResource("ColorTemplate")         as DataTemplate,
+            PropertyEntryType.Thickness => uc.FindResource("ThicknessTemplate")     as DataTemplate, // P5
+            PropertyEntryType.Brush     => uc.FindResource("BrushTemplate")         as DataTemplate, // P5
+            _                           => uc.FindResource("EditTextTemplate")      as DataTemplate,
         };
     }
 
@@ -308,4 +491,61 @@ public sealed class StringToColorConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => value is Color c ? c.ToString() : "";
+}
+
+/// <summary>
+/// Converts a nullable <see cref="Action"/> to <see cref="Visibility"/>:
+/// <c>null</c> → <see cref="Visibility.Collapsed"/>, non-null → <see cref="Visibility.Visible"/>.
+/// Used to hide the reset button when <see cref="PropertyEntry.OnResetToDefault"/> is null (P7).
+/// </summary>
+public sealed class NullToCollapsedConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is null ? Visibility.Collapsed : Visibility.Visible;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => DependencyProperty.UnsetValue;
+}
+
+/// <summary>
+/// Converts <see cref="PropertyEntry.IsDefault"/> to a <see cref="FontWeight"/>:
+/// <c>true</c> (default value) → <see cref="FontWeights.Normal"/>,
+/// <c>false</c> (user-set value) → <see cref="FontWeights.SemiBold"/>.
+/// Helps users spot modified properties at a glance (P7).
+/// </summary>
+public sealed class DefaultToFontWeightConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is bool isDefault && !isDefault
+               ? FontWeights.SemiBold
+               : FontWeights.Normal;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => DependencyProperty.UnsetValue;
+}
+
+/// <summary>
+/// Extracts a single component (Left / Top / Right / Bottom) from a
+/// comma-separated Thickness string (e.g. "4,4,4,4" or "8,0,8,0").
+/// Used by the ThicknessTemplate to populate each of the four TextBox fields.
+/// </summary>
+public sealed class ThicknessPartConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is not string raw || parameter is not string part) return "0";
+
+        var parts = raw.Split(',');
+        return part switch
+        {
+            "Left"   => parts.Length > 0 ? parts[0].Trim() : "0",
+            "Top"    => parts.Length > 1 ? parts[1].Trim() : "0",
+            "Right"  => parts.Length > 2 ? parts[2].Trim() : "0",
+            "Bottom" => parts.Length > 3 ? parts[3].Trim() : "0",
+            _        => "0"
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => DependencyProperty.UnsetValue;
 }

@@ -40,17 +40,17 @@ public sealed class SelectionAdorner : Adorner
         var brush = Application.Current?.TryFindResource("XD_SelectionBorderBrush") as Brush
                     ?? new SolidColorBrush(Color.FromRgb(0, 122, 204));
 
-        var pen = new Pen(brush, 1.5) { DashStyle = _dashStyle };
+        var pen = new Pen(brush, 2.0) { DashStyle = _dashStyle };
         pen.Freeze();
 
         var bounds = new Rect(AdornedElement.RenderSize);
 
-        // Inset by half-pixel to keep border fully inside the element bounds.
+        // Inset by half the pen width so the stroke stays fully inside the element bounds.
         var inset = new Rect(
-            bounds.X      + 0.5,
-            bounds.Y      + 0.5,
-            Math.Max(0, bounds.Width  - 1),
-            Math.Max(0, bounds.Height - 1));
+            bounds.X      + 1.0,
+            bounds.Y      + 1.0,
+            Math.Max(0, bounds.Width  - 2.0),
+            Math.Max(0, bounds.Height - 2.0));
 
         dc.DrawRectangle(null, pen, inset);
     }

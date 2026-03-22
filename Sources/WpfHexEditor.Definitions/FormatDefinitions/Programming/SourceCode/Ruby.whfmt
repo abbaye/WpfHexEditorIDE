@@ -1,7 +1,12 @@
 {
   "formatName": "Ruby Source File",
-  "version": "1.0",
-  "extensions": [".rb", ".rbw", ".rake", ".gemspec"],
+  "version": "2.0",
+  "extensions": [
+    ".rb",
+    ".rbw",
+    ".rake",
+    ".gemspec"
+  ],
   "description": "Ruby programming language source files and Rake build scripts.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +20,71 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-ruby"],
-  "Software": ["RubyMine", "VS Code"],
-  "UseCases": ["Ruby on Rails development", "Scripting", "Rake build tasks"]
+  "MimeTypes": [
+    "text/x-ruby"
+  ],
+  "Software": [
+    "VS Code",
+    "RubyMine"
+  ],
+  "UseCases": [
+    "Web development (Rails)",
+    "Scripting",
+    "DevOps automation"
+  ],
+  "syntaxDefinition": {
+    "id": "ruby",
+    "name": "Ruby",
+    "extensions": [
+      ".rb",
+      ".rbw",
+      ".rake",
+      ".gemspec"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|%[qQwWiI]?[{(\\[|!].*?[})\\]|!])",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "#.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(BEGIN|END|alias|and|begin|break|case|class|def|defined\\?|do|else|elsif|end|ensure|extend|false|for|if|in|include|lambda|module|next|nil|not|or|prepend|private|protected|public|raise|redo|rescue|retry|return|self|send|super|then|true|undef|unless|until|when|while|yield)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Symbol",
+        "pattern": ":[A-Za-z_][A-Za-z0-9_]*[?!]?",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "Variable",
+        "pattern": "(?:@@?|\\$)[A-Za-z_][A-Za-z0-9_]*",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f_]+|0b[01_]+|0o[0-7_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*[?!]?(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "type": "indent"
+    }
+  }
 }

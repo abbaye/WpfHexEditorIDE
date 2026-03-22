@@ -112,14 +112,27 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         cm.Items.Add(new Separator());
         cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
         cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
+        cm.Items.Add(new Separator());
 
-        // Update undo/redo headers dynamically with step count when menu opens.
+        // Word Wrap toggle
+        var miWordWrap = new MenuItem
+        {
+            Header           = "_Word Wrap",
+            IsCheckable      = true,
+            InputGestureText = "Alt+Z",
+            Icon             = MakeMenuIcon("\uE751")
+        };
+        miWordWrap.Click += (_, _) => IsWordWrapEnabled = !IsWordWrapEnabled;
+        cm.Items.Add(miWordWrap);
+
+        // Update undo/redo headers and word wrap checkmark dynamically when menu opens.
         cm.Opened += (_, _) =>
         {
             int undoCount = _vm.UndoCount;
             int redoCount = _vm.RedoCount;
-            _undoMenuItem.Header = undoCount > 0 ? $"_Undo ({undoCount})" : "_Undo";
-            _redoMenuItem.Header = redoCount > 0 ? $"_Redo ({redoCount})" : "_Redo";
+            _undoMenuItem.Header      = undoCount > 0 ? $"_Undo ({undoCount})" : "_Undo";
+            _redoMenuItem.Header      = redoCount > 0 ? $"_Redo ({redoCount})" : "_Redo";
+            miWordWrap.IsChecked      = IsWordWrapEnabled;
         };
 
         Viewport.ContextMenu = cm;
@@ -127,6 +140,11 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         // Ctrl+Shift+Z → Redo (VS-standard alternative shortcut).
         Viewport.InputBindings.Add(new KeyBinding(ApplicationCommands.Redo,
             new KeyGesture(Key.Z, ModifierKeys.Control | ModifierKeys.Shift)));
+
+        // Alt+Z → toggle word wrap
+        Viewport.InputBindings.Add(new KeyBinding(
+            new RelayCommand(() => IsWordWrapEnabled = !IsWordWrapEnabled),
+            new KeyGesture(Key.Z, ModifierKeys.Alt)));
 
         // Cut — enabled when normal or rectangular selection is active.
         Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Cut,
@@ -221,6 +239,22 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     {
         add    => Viewport.ZoomLevelChanged += value;
         remove => Viewport.ZoomLevelChanged -= value;
+    }
+
+    /// <summary>
+    /// When true, lines wrap visually at the viewport edge instead of scrolling horizontally.
+    /// Forwarded to <see cref="TextViewport.IsWordWrapEnabled"/>. (ADR-049)
+    /// </summary>
+    public bool IsWordWrapEnabled
+    {
+        get => Viewport.IsWordWrapEnabled;
+        set
+        {
+            Viewport.IsWordWrapEnabled = value;
+            ScrollView.HorizontalScrollBarVisibility = value
+                ? ScrollBarVisibility.Disabled
+                : ScrollBarVisibility.Auto;
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -454,6 +488,17 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     public string GetText() => _vm.GetText();
 
     /// <summary>
+    /// Inserts <paramref name="text"/> at the current caret position, replacing
+    /// the current selection if any. Participates in undo/redo.
+    /// </summary>
+    public void InsertText(string text) => _vm.InsertText(text);
+
+    /// <summary>
+    /// Returns the currently selected text, or an empty string when nothing is selected.
+    /// </summary>
+    public string GetSelectedText() => _vm.GetSelectedText();
+
+    /// <summary>
     /// Populates the editor with raw text, bypassing file I/O.
     /// Optionally applies a syntax language by name (e.g. "C#") and/or marks the
     /// document as read-only. Intended for plugin-generated content such as
@@ -550,6 +595,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         FirstVisibleLine  = Viewport.FirstVisibleLine,
         // HexEditor fields are not applicable — leave at defaults
         SelectionStart    = -1,
+        Extra             = new Dictionary<string, string> { ["wordWrap"] = IsWordWrapEnabled ? "1" : "0" },
     };
 
     /// <inheritdoc/>
@@ -580,6 +626,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
             var def = SyntaxDefinitionCatalog.Instance.FindByName(config.SyntaxLanguageId);
             if (def is not null) SetSyntaxDefinition(def);
         }
+
+        // Restore word wrap state
+        if (config.Extra?.TryGetValue("wordWrap", out var ww) == true)
+            IsWordWrapEnabled = ww == "1";
     }
 
     /// <inheritdoc/>
@@ -612,6 +662,13 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     // Scroll sync
     // -----------------------------------------------------------------------
 
+    /// <summary>
+    /// Raised whenever the scroll position of the editor's main scroll viewer changes.
+    /// External consumers (e.g. MarkdownEditorHost sync-scroll) can subscribe to this
+    /// event instead of accessing the internal ScrollView directly.
+    /// </summary>
+    public event EventHandler<ScrollChangedEventArgs>? ViewportScrollChanged;
+
     private void ScrollView_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (_vm is null || Viewport.LineHeight <= 0) return;
@@ -620,9 +677,14 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         Viewport.FirstVisibleLine   = firstLine;
         Viewport.HorizontalOffset   = e.HorizontalOffset;
 
-        // Adjust the viewport height to fill the scroll area
-        Viewport.Width  = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
+        // Adjust the viewport dimensions to fill the scroll area.
+        // Word wrap: clamp width to viewport (no horizontal extent needed).
+        Viewport.Width  = Viewport.IsWordWrapEnabled
+            ? ScrollView.ViewportWidth
+            : Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
         Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+
+        ViewportScrollChanged?.Invoke(this, e);
     }
 
     // -----------------------------------------------------------------------
@@ -652,6 +714,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                     CaretText.Text = _vm.CaretStatus;
                     StatusMessage?.Invoke(this, _vm.CaretStatus);
                     RefreshTextStatusBarItems();
+                    EnsureCaretHorizontallyVisible();
+                    Viewport.ScrollIntoView(_vm.CaretLine);
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);
@@ -660,8 +724,46 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                     SelectionChanged?.Invoke(this, EventArgs.Empty);
                     RefreshCommands();
                     break;
+                case nameof(TextEditorViewModel.MaxLineLength):
+                    if (!Viewport.IsWordWrapEnabled)
+                    {
+                        // Clear the explicit Width set by ScrollView_ScrollChanged so the
+                        // next measure pass runs with infinity available width and
+                        // MeasureOverride reads fresh EstimatedMaxWidth from the ViewModel.
+                        Viewport.ClearValue(FrameworkElement.WidthProperty);
+                        Viewport.InvalidateMeasure();
+                    }
+                    break;
             }
         });
+    }
+
+    /// <summary>
+    /// Scrolls the viewport horizontally so the caret column is always visible.
+    /// Called whenever <see cref="TextEditorViewModel.CaretStatus"/> changes.
+    /// </summary>
+    private void EnsureCaretHorizontallyVisible()
+    {
+        if (_vm is null || Viewport.CharWidth <= 0 || Viewport.IsWordWrapEnabled) return;
+        double caretAbsX = Viewport.GetCaretAbsoluteX(_vm.CaretColumn);
+        double visLeft   = ScrollView.HorizontalOffset;
+        double visRight  = visLeft + ScrollView.ViewportWidth;
+
+        // If the caret is ahead of the current scrollable extent (typing past right edge),
+        // clear the stale explicit Width and force a synchronous layout so ExtentWidth is
+        // up-to-date before ScrollToHorizontalOffset — otherwise the offset gets clamped.
+        double minExtent = caretAbsX + Viewport.CharWidth * 2;
+        if (minExtent > ScrollView.ExtentWidth)
+        {
+            Viewport.ClearValue(FrameworkElement.WidthProperty);
+            Viewport.InvalidateMeasure();
+            ScrollView.UpdateLayout();
+        }
+
+        if (caretAbsX < visLeft)
+            ScrollView.ScrollToHorizontalOffset(Math.Max(0, caretAbsX - Viewport.CharWidth));
+        else if (caretAbsX + Viewport.CharWidth > visRight)
+            ScrollView.ScrollToHorizontalOffset(caretAbsX + Viewport.CharWidth - ScrollView.ViewportWidth + Viewport.CharWidth);
     }
 
     private void RefreshCommands()

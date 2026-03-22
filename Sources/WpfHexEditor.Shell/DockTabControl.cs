@@ -760,6 +760,10 @@ public class DockTabHeader : StackPanel
     {
         if (e.LeftButton != MouseButtonState.Pressed) return;
 
+        // Guard: PointToScreen throws InvalidOperationException when the Visual is detached
+        // from its PresentationSource (HWND) during a drag/float transition.
+        if (PresentationSource.FromVisual(this) is null) return;
+
         if (_item.Owner is DocumentHostNode)
         {
             if (_isDragging) return;
@@ -808,6 +812,8 @@ public class DockTabHeader : StackPanel
     {
         if (_isReordering)
         {
+            // Guard: Visual may be detached during float transition — skip drop if no HWND.
+            if (PresentationSource.FromVisual(this) is null) return;
             ReorderDropped?.Invoke(PointToScreen(e.GetPosition(this)));
             _isReordering = false;
         }

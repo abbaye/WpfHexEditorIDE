@@ -1,6 +1,6 @@
 {
   "formatName": "C# Source File",
-  "version": "1.0",
+  "version": "2.0",
   "extensions": [".cs"],
   "description": "C# programming language source file (Microsoft .NET platform).",
   "category": "Programming",
@@ -15,11 +15,44 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "MimeTypes": ["text/x-csharp"],
   "Software": ["Visual Studio", "Rider", "VS Code"],
-  "UseCases": ["C# source code development", ".NET applications"]
+  "UseCases": ["C# source code development", ".NET applications"],
+  "syntaxDefinition": {
+    "id": "csharp",
+    "name": "C#",
+    "extensions": [".cs"],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "enableInlineHints": true,
+    "enableCtrlClickNavigation": true,
+    "rules": [
+      { "type": "BlockComment",  "pattern": "/\\*[\\s\\S]*?\\*/" },
+      { "type": "String",        "pattern": "(@\"(?:[^\"]|\"\")*\"|\\$@?\"(?:[^\"\\\\]|\\\\.)*\"|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')" },
+      { "type": "Comment",       "pattern": "//.*$" },
+      { "type": "Preprocessor",  "pattern": "^\\s*#(?:if|elif|else|endif|define|undef|pragma|warning|error|nullable|line)\\b[^/\\n]*" },
+      { "type": "RegionName",    "pattern": "^\\s*#(?:region|endregion)\\b\\s+(\\S[^\\n]*)" },
+      { "type": "RegionKeyword", "pattern": "^\\s*#(?:region|endregion)\\b" },
+      { "type": "ControlFlow",   "pattern": "\\b(if|else|for|foreach|while|do|switch|case|default|break|continue|return|throw|try|catch|finally|yield|goto|when)\\b" },
+      { "type": "Keyword",       "pattern": "\\b(abstract|as|base|bool|break|byte|case|catch|char|checked|class|const|continue|decimal|default|delegate|do|double|else|enum|event|explicit|extern|false|finally|fixed|float|for|foreach|goto|if|implicit|in|int|interface|internal|is|lock|long|namespace|new|null|object|operator|out|override|params|private|protected|public|readonly|record|ref|return|sbyte|sealed|short|sizeof|stackalloc|static|string|struct|switch|this|throw|true|try|typeof|uint|ulong|unchecked|unsafe|ushort|using|virtual|void|volatile|while|async|await|dynamic|var|yield|from|select|where|orderby|group|by|join|into|let|on|equals|ascending|descending|global|partial|file|required|with|init|get|set|add|remove|value|nameof|when|and|or|not|nint|nuint)\\b" },
+      { "type": "Type",          "pattern": "\\b(Action|Func|Task|List|Dictionary|HashSet|Queue|Stack|IEnumerable|IList|IDictionary|ICollection|IReadOnlyList|IReadOnlyDictionary|Span|Memory|ReadOnlySpan|ReadOnlyMemory|StringBuilder|Exception|CancellationToken|EventArgs|EventHandler|Nullable|Tuple|ValueTuple|Type|Assembly|MethodInfo|PropertyInfo|Attribute|ObservableCollection|INotifyPropertyChanged|ICommand|DependencyProperty|FrameworkElement|UserControl|Window|Control|DataContext|Binding|DateTime|DateOnly|TimeOnly|TimeSpan|Guid|Uri|Regex|Stream|FileStream|MemoryStream|BinaryReader|BinaryWriter|StreamReader|StreamWriter|Console|Math|Environment|GC|Marshal|NativeMemory)\\b" },
+      { "type": "Attribute",     "pattern": "\\[\\s*[A-Za-z][A-Za-z0-9,\\s=\\(\\)\"'_\\.]*\\]" },
+      { "type": "Number",        "pattern": "\\b(0x[0-9A-Fa-f_]+[uUlL]*|0b[01_]+[uUlL]*|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[uUlLfFdDmM]?)\\b" },
+      { "type": "Field",         "pattern": "\\b_[a-zA-Z][a-zA-Z0-9_]*\\b" },
+      { "type": "NamespaceDecl", "pattern": "(?<=\\bnamespace\\s{1,50})[A-Za-z][A-Za-z0-9._]*" },
+      { "type": "UsingRef",      "pattern": "(?<=\\busing(?:\\s+static)?\\s{1,50})[A-Za-z][A-Za-z0-9._]*" },
+      { "type": "UserType",      "pattern": "(?<!\\.)\\b[A-Z][a-z][A-Za-z0-9_]*\\b(?!\\.)" }
+    ],
+    "foldingRules": {
+      "startPatterns": ["\\{"],
+      "endPatterns":   ["\\}"],
+      "namedRegionStart": "^\\s*#region\\b(.*)$",
+      "namedRegionEnd":   "^\\s*#endregion\\b"
+    }
+  }
 }

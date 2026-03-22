@@ -234,6 +234,9 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public bool FoldToggleOnDoubleClick { get; set; } = true;
 
+    /// <summary>Wrap long lines visually at the viewport edge (hides horizontal scrollbar).</summary>
+    public bool WordWrap { get; set; } = false;
+
     // -- InlineHints ---------------------------------------------------------
 
     /// <summary>
@@ -323,6 +326,9 @@ public sealed class TextEditorDefaultSettings
 
     /// <summary>Show line numbers in the gutter.</summary>
     public bool ShowLineNumbers { get; set; } = true;
+
+    /// <summary>Wrap long lines visually at the viewport edge (hides horizontal scrollbar).</summary>
+    public bool WordWrap { get; set; } = false;
 
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;

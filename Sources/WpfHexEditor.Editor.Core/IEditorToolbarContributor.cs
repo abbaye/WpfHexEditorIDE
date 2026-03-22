@@ -27,11 +27,13 @@ public interface IEditorToolbarContributor
 
 /// <summary>
 /// A single item in an editor's contextual toolbar contribution.
-/// Can represent an icon button, a labelled button, a dropdown button, or a separator.
+/// Can represent an icon button, a toggle button, a dropdown button, or a separator.
 /// </summary>
 public sealed class EditorToolbarItem : INotifyPropertyChanged
 {
-    private bool _isEnabled = true;
+    private bool    _isEnabled = true;
+    private bool    _isChecked;
+    private string? _tooltip;
 
     /// <summary>
     /// Segoe MDL2 Assets character code, e.g. <c>"\uE74E"</c> (Save).
@@ -41,8 +43,15 @@ public sealed class EditorToolbarItem : INotifyPropertyChanged
     /// <summary>Optional text label displayed beside the icon.</summary>
     public string? Label { get; init; }
 
-    /// <summary>Tooltip shown on hover.</summary>
-    public string? Tooltip { get; init; }
+    /// <summary>
+    /// Tooltip shown on hover.  Mutable so callers can update it at runtime
+    /// (e.g. Undo description changes with each operation).
+    /// </summary>
+    public string? Tooltip
+    {
+        get => _tooltip;
+        set { if (_tooltip == value) return; _tooltip = value; OnPropertyChanged(); }
+    }
 
     /// <summary>Command executed when the button is clicked (non-dropdown buttons).</summary>
     public ICommand? Command { get; init; }
@@ -60,12 +69,28 @@ public sealed class EditorToolbarItem : INotifyPropertyChanged
     public ObservableCollection<EditorToolbarItem>? DropdownItems { get; init; }
 
     /// <summary>
+    /// When <see langword="true"/>, the item renders as a two-state <see cref="System.Windows.Controls.Primitives.ToggleButton"/>
+    /// instead of a plain <c>Button</c>. Use <see cref="IsChecked"/> to drive its visual state.
+    /// </summary>
+    public bool IsToggle { get; init; }
+
+    /// <summary>
+    /// Checked / pressed state for toggle items.  Bindable — change at runtime to
+    /// update the visual without re-creating the item.
+    /// </summary>
+    public bool IsChecked
+    {
+        get => _isChecked;
+        set { if (_isChecked == value) return; _isChecked = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>
     /// Bindable enabled state — change this to enable/disable the button at runtime.
     /// </summary>
     public bool IsEnabled
     {
         get => _isEnabled;
-        set { _isEnabled = value; OnPropertyChanged(); }
+        set { if (_isEnabled == value) return; _isEnabled = value; OnPropertyChanged(); }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

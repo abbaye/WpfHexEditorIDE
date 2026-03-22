@@ -314,6 +314,21 @@ internal sealed class IpcUIRegistry : IUIRegistry
             cmd.Execute(null);
     }
 
+    // ── Solution Explorer Context Menu Contributors ───────────────────────────
+    // Sandbox plugins run out-of-process and cannot inject WPF controls into
+    // the host's Solution Explorer. Contributors are registered locally but have
+    // no effect on the host-side context menu. In-process plugins (ClassDiagram)
+    // use the in-process UIRegistry which does support this fully.
+
+    public void RegisterContextMenuContributor(string pluginId, ISolutionExplorerContextMenuContributor contributor)
+    { /* No-op in sandbox: context menu injection is in-process only */ }
+
+    public void UnregisterContextMenuContributor(string pluginId)
+    { /* No-op in sandbox */ }
+
+    public IReadOnlyList<ISolutionExplorerContextMenuContributor> GetContextMenuContributors()
+        => [];
+
     // ── Bulk unregister ───────────────────────────────────────────────────────
 
     public void UnregisterAllForPlugin(string pluginId)

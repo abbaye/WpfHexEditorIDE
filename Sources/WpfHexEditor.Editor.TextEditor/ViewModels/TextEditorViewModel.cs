@@ -31,6 +31,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     private Encoding _encoding = Encoding.UTF8;
     private SyntaxDefinition? _syntaxDefinition;
     private RegexSyntaxHighlighter? _highlighter;
+    private IContextualHighlighter? _contextualHighlighter;
 
     // Incremental max-width tracking (P1-TE-01) â€” O(1) on growth, O(n) only on shrink
     private int _cachedMaxLineLength;
@@ -118,6 +119,10 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             {
                 _syntaxDefinition = value;
                 _highlighter = value is not null ? new RegexSyntaxHighlighter(value) : null;
+                // Auto-activate embedded language injection when the definition declares it
+                _contextualHighlighter = value?.EmbeddedLanguages.Count > 0
+                    ? new FencedCodeHighlighter(value.EmbeddedLanguages, _highlighter!)
+                    : null;
                 InvalidateHighlightCache();
                 OnPropertyChanged();
             }
@@ -233,28 +238,42 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             texts[i]   = needed[i] ? _lines[li] : string.Empty;
         }
 
-        var cache      = _highlightCache;
-        var highlighter = _highlighter;
-        var syncCtx    = _syncContext;
+        var cache                 = _highlightCache;
+        var highlighter           = _highlighter;
+        var contextualHighlighter = _contextualHighlighter;
+        var syncCtx               = _syncContext;
+
+        // Capture all lines on the UI thread (fast pointer copy, ~5 µs / 1000 lines).
+        // The O(N) BuildContext fence scan runs inside Task.Run on the background thread.
+        var linesSnapshot = contextualHighlighter is not null ? _lines.ToArray() : null;
 
         Task.Run(() =>
         {
-            // Pass 1 â€” visible range first (lowest latency)
+            // Build cross-line context (fenced code regions) entirely on the background thread.
+            var ctx = linesSnapshot is not null && contextualHighlighter is not null
+                ? contextualHighlighter.BuildContext(linesSnapshot)
+                : null;
+
+            // Pass 1 — visible range first (lowest latency)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
                 int li = indices[i];
                 if (!needed[i] || li < firstVisible || li > lastVisible) continue;
-                var result = highlighter.Highlight(texts[i]);
+                var result = ctx is not null
+                    ? contextualHighlighter!.Highlight(texts[i], indices[i], ctx)
+                    : highlighter!.Highlight(texts[i]);
                 if (li < cache.Count && !token.IsCancellationRequested)
                     cache[li] = result;
             }
 
-            // Pass 2 â€” buffer lines (smoother pre-fetch for upcoming scroll)
+            // Pass 2 — buffer lines (smoother pre-fetch for upcoming scroll)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
                 int li = indices[i];
                 if (!needed[i] || (li >= firstVisible && li <= lastVisible)) continue;
-                var result = highlighter.Highlight(texts[i]);
+                var result = ctx is not null
+                    ? contextualHighlighter!.Highlight(texts[i], indices[i], ctx)
+                    : highlighter!.Highlight(texts[i]);
                 if (li < cache.Count && !token.IsCancellationRequested)
                     cache[li] = result;
             }
@@ -775,14 +794,21 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         if (lineIndex >= 0 && lineIndex < _lines.Count)
         {
             int len = _lines[lineIndex].Length;
-            if (len > _cachedMaxLineLength) _cachedMaxLineLength = len;
+            if (len > _cachedMaxLineLength)
+            {
+                _cachedMaxLineLength = len;
+                OnPropertyChanged(nameof(MaxLineLength));
+            }
         }
     }
 
     /// <summary>O(n) â€” called only when a line may have shrunk (delete, split, paste-delete).</summary>
     private void OnLineLengthMayHaveShrunk()
     {
+        var prev = _cachedMaxLineLength;
         _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;
+        if (_cachedMaxLineLength != prev)
+            OnPropertyChanged(nameof(MaxLineLength));
     }
 
     /// <summary>Full O(n) rebuild â€” used at initial load only.</summary>

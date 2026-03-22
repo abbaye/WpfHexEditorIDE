@@ -1,6 +1,6 @@
-﻿{
+{
   "formatName": "YAML (Binary)",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
     ".yaml",
     ".yml"
@@ -94,7 +94,7 @@
     "DocumentationLevel": "basic",
     "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": false,
     "AutoRefined": false
   },
@@ -102,5 +102,71 @@
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"
+  },
+  "syntaxDefinition": {
+    "id": "yaml",
+    "name": "YAML / TOML",
+    "extensions": [
+      ".yaml",
+      ".yml",
+      ".toml"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "DocumentMark",
+        "pattern": "^---\\s*$|^\\.\\.\\.\\s*$",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "Section",
+        "pattern": "^\\[[^\\]]+\\]$",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Key",
+        "pattern": "^\\s*[^:\\s#][^:\n]*(?=\\s*:)",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Anchor",
+        "pattern": "&[A-Za-z][A-Za-z0-9_-]*|\\*[A-Za-z][A-Za-z0-9_-]*",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "Tag",
+        "pattern": "!!?[A-Za-z][A-Za-z0-9_/:-]*",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "Boolean",
+        "pattern": "\b(?i)(true|false|yes|no|on|off|null|~)\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Number",
+        "pattern": "\b(0x[0-9A-Fa-f]+|0o[0-7]+|0b[01]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?|\\.(inf|nan))\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\]|\\.)*\"|'[^']*')",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "ListItem",
+        "pattern": "^\\s*-\\s",
+        "colorKey": "TE_Operator"
+      },
+      {
+        "type": "Comment",
+        "pattern": "#.*$",
+        "colorKey": "TE_Comment"
+      }
+    ],
+    "foldingRules": {
+      "indentBased": true,
+      "indentTabWidth": 2
+    }
   }
 }

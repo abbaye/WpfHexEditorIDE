@@ -42,6 +42,9 @@ public sealed class LanguageRegistry
     private readonly Dictionary<string, LanguageDefinition> _builtin = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, LanguageDefinition> _user    = new(StringComparer.OrdinalIgnoreCase);
 
+    // Id → language (case-insensitive) for O(1) FindById lookups.
+    private readonly Dictionary<string, LanguageDefinition> _byId = new(StringComparer.OrdinalIgnoreCase);
+
     // Project-level default overrides: projectId → (extension → language).
     private readonly Dictionary<string, Dictionary<string, LanguageDefinition>> _projectDefaults
         = new(StringComparer.Ordinal);
@@ -58,6 +61,7 @@ public sealed class LanguageRegistry
         {
             foreach (var ext in definition.Extensions)
                 _builtin[ext] = definition;
+            _byId[definition.Id] = definition;
         }
     }
 
@@ -79,6 +83,7 @@ public sealed class LanguageRegistry
         {
             foreach (var ext in definition.Extensions)
                 _user[ext] = definition;
+            _byId[definition.Id] = definition;
         }
 
         // Honour the IsDefault flag by promoting to project-level default when a context is available
@@ -173,8 +178,84 @@ public sealed class LanguageRegistry
     {
         lock (_lock)
         {
-            return _user.Values.FirstOrDefault(l => string.Equals(l.Id, id, StringComparison.OrdinalIgnoreCase))
-                ?? _builtin.Values.FirstOrDefault(l => string.Equals(l.Id, id, StringComparison.OrdinalIgnoreCase));
+            return _byId.TryGetValue(id, out var lang) ? lang : null;
         }
+    }
+
+    /// <summary>
+    /// Resolves all <see cref="LanguageDefinition.Includes"/> chains and re-registers
+    /// each definition with its merged base-layer rules.
+    /// Call once after all built-in and user definitions have been registered.
+    /// </summary>
+    public void ResolveIncludes()
+    {
+        lock (_lock)
+        {
+            // Collect all unique definitions to process (avoid duplicate work).
+            var all = _byId.Values.ToList();
+            foreach (var definition in all)
+            {
+                if (definition.Includes.Count == 0) continue;
+
+                var merged = MergeIncludes(definition, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+                // Re-register the merged definition under the same id and all its extensions.
+                _byId[merged.Id] = merged;
+                foreach (var ext in merged.Extensions)
+                {
+                    if (_user.ContainsKey(ext))
+                        _user[ext] = merged;
+                    else if (_builtin.ContainsKey(ext))
+                        _builtin[ext] = merged;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Recursively merges all base-layer definitions referenced by
+    /// <see cref="LanguageDefinition.Includes"/> into <paramref name="definition"/>.
+    /// </summary>
+    private LanguageDefinition MergeIncludes(LanguageDefinition definition, HashSet<string> visited)
+    {
+        if (!visited.Add(definition.Id)) return definition; // cycle guard
+
+        var resolvedBases = new List<LanguageDefinition>();
+        foreach (var includeId in definition.Includes)
+        {
+            if (!_byId.TryGetValue(includeId, out var baseDefinition)) continue;
+            resolvedBases.Add(MergeIncludes(baseDefinition, visited));
+        }
+
+        if (resolvedBases.Count == 0) return definition;
+
+        // Prepend base-layer syntax rules so the child's rules take precedence.
+        var mergedRules = resolvedBases
+            .SelectMany(b => b.SyntaxRules)
+            .Concat(definition.SyntaxRules)
+            .ToArray();
+
+        // Inherit FoldingRules from the first base that declares them when the child has none.
+        var foldingRules = definition.FoldingRules ?? resolvedBases
+            .Select(b => b.FoldingRules)
+            .FirstOrDefault(r => r is not null);
+
+        return new LanguageDefinition
+        {
+            Id                        = definition.Id,
+            Name                      = definition.Name,
+            Extensions                = definition.Extensions,
+            SyntaxRules               = mergedRules,
+            Snippets                  = definition.Snippets,
+            FoldingStrategy           = definition.FoldingStrategy,
+            LineCommentPrefix         = definition.LineCommentPrefix,
+            BlockCommentStart         = definition.BlockCommentStart,
+            BlockCommentEnd           = definition.BlockCommentEnd,
+            EnableInlineHints         = definition.EnableInlineHints,
+            EnableCtrlClickNavigation = definition.EnableCtrlClickNavigation,
+            IsDefault                 = definition.IsDefault,
+            Includes                  = definition.Includes,
+            EditorHint                = definition.EditorHint,
+            FoldingRules              = foldingRules,
+        };
     }
 }

@@ -3,6 +3,7 @@
 // File: DesignInteractionService.cs
 // Author: Derek Tremblay
 // Created: 2026-03-17
+// Updated: 2026-03-18 — Phase E4: SnapEnabled + SnapEngine wiring + SnapGuidesUpdated event.
 // Description:
 //     Orchestrates drag-move and resize interactions on the XAML design canvas.
 //     Tracks drag state, computes attribute deltas, and produces DesignOperations
@@ -13,6 +14,8 @@
 //     Strategy pattern — move vs resize handled by distinct code paths.
 //     Raises OperationCommitted event; the split host applies the XAML patch
 //     and pushes the DesignOperation onto the undo stack.
+//     Phase E4: SnapEngine is consulted on every OnMoveDelta; SnapGuidesUpdated
+//       carries the active guide lines to the SnapGuideOverlay adorner.
 // ==========================================================
 
 using System.Collections.Generic;
@@ -49,6 +52,23 @@ public sealed class DesignInteractionService
     private Point _multiMoveStart;
     private readonly Dictionary<int, (Thickness StartMargin, double StartLeft, double StartTop)> _multiMoveStates = new();
 
+    // ── Phase E4 — Snap engine ────────────────────────────────────────────────
+
+    private readonly SnapEngineService _snapEngine = new();
+
+    /// <summary>
+    /// When true, snap engine is consulted during OnMoveDelta and guide lines are emitted.
+    /// Toggled by XamlDesignerSplitHost.ToggleSnap().
+    /// </summary>
+    public bool SnapEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Raised on every OnMoveDelta when <see cref="SnapEnabled"/> is true.
+    /// The handler (XamlDesignerSplitHost) forwards the guide list to SnapGuideOverlay.
+    /// Carries an empty list when no guides are active.
+    /// </summary>
+    public event EventHandler<IReadOnlyList<SnapGuide>>? SnapGuidesUpdated;
+
     // ── Events ────────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -81,13 +101,39 @@ public sealed class DesignInteractionService
         double dx = canvasPosition.X - _moveStartPoint.X;
         double dy = canvasPosition.Y - _moveStartPoint.Y;
 
+        // Compute raw target position, then optionally snap it.
+        double rawX = _startMargin.Left   + dx;
+        double rawY = _startMargin.Top    + dy;
+        double rawCanvasLeft = (_startCanvasLeft is double.NaN ? 0 : _startCanvasLeft) + dx;
+        double rawCanvasTop  = (_startCanvasTop  is double.NaN ? 0 : _startCanvasTop)  + dy;
+
+        if (SnapEnabled)
+        {
+            var siblings    = CollectSiblingRects(element);
+            var canvasBound = GetCanvasBounds(element);
+            var dragSize    = new Size(element.ActualWidth, element.ActualHeight);
+
+            bool inCanvas = element.Parent is Canvas;
+            var raw       = inCanvas
+                ? new Point(rawCanvasLeft, rawCanvasTop)
+                : new Point(rawX, rawY);
+
+            var snapped = _snapEngine.Snap(raw, dragSize, siblings, canvasBound, out var guides);
+            SnapGuidesUpdated?.Invoke(this, guides);
+
+            dx = snapped.X - (inCanvas ? (_startCanvasLeft is double.NaN ? 0 : _startCanvasLeft) : _startMargin.Left);
+            dy = snapped.Y - (inCanvas ? (_startCanvasTop  is double.NaN ? 0 : _startCanvasTop)  : _startMargin.Top);
+        }
+        else
+        {
+            SnapGuidesUpdated?.Invoke(this, Array.Empty<SnapGuide>());
+        }
+
         // Apply position change depending on parent panel type.
         if (element.Parent is Canvas)
         {
-            double newLeft = (_startCanvasLeft is double.NaN ? 0 : _startCanvasLeft) + dx;
-            double newTop  = (_startCanvasTop  is double.NaN ? 0 : _startCanvasTop)  + dy;
-            Canvas.SetLeft(element, newLeft);
-            Canvas.SetTop(element, newTop);
+            Canvas.SetLeft(element, (_startCanvasLeft is double.NaN ? 0 : _startCanvasLeft) + dx);
+            Canvas.SetTop(element,  (_startCanvasTop  is double.NaN ? 0 : _startCanvasTop)  + dy);
         }
         else
         {
@@ -105,6 +151,9 @@ public sealed class DesignInteractionService
     {
         if (!_isInMove) return;
         _isInMove = false;
+
+        // Clear any snap guides when the drag ends.
+        SnapGuidesUpdated?.Invoke(this, Array.Empty<SnapGuide>());
 
         var before = new Dictionary<string, string?>();
         var after  = new Dictionary<string, string?>();
@@ -310,9 +359,32 @@ public sealed class DesignInteractionService
         element.RenderTransformOrigin = new Point(0.5, 0.5);
 
         if (element.RenderTransform is RotateTransform rt)
+        {
             rt.Angle = newAngle;
+        }
+        else if (element.RenderTransform is TransformGroup tg)
+        {
+            var existing = tg.Children.OfType<RotateTransform>().FirstOrDefault();
+            if (existing is not null)
+                existing.Angle = newAngle;
+            else
+                tg.Children.Add(new RotateTransform(newAngle));
+        }
         else
-            element.RenderTransform = new RotateTransform(newAngle);
+        {
+            // Preserve any existing transform by wrapping in a group.
+            if (element.RenderTransform is not null && element.RenderTransform != Transform.Identity)
+            {
+                var group = new TransformGroup();
+                group.Children.Add(element.RenderTransform);
+                group.Children.Add(new RotateTransform(newAngle));
+                element.RenderTransform = group;
+            }
+            else
+            {
+                element.RenderTransform = new RotateTransform(newAngle);
+            }
+        }
     }
 
     /// <summary>Called when the rotation drag is completed.</summary>
@@ -335,6 +407,45 @@ public sealed class DesignInteractionService
 
         OperationCommitted?.Invoke(this, new DesignOperationCommittedEventArgs(op, element));
         _rotateUid = -1;
+    }
+
+    // ── Skew API ──────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Applies a skew transform to <paramref name="element"/> live during a skew drag.
+    /// Writes into the element's existing <see cref="TransformGroup"/> when present;
+    /// otherwise wraps in a new group preserving any prior transform.
+    /// </summary>
+    public void OnSkewDelta(FrameworkElement element, double angleX, double angleY)
+    {
+        element.RenderTransformOrigin = new Point(0.5, 0.5);
+
+        if (element.RenderTransform is TransformGroup tg)
+        {
+            var sk = tg.Children.OfType<SkewTransform>().FirstOrDefault();
+            if (sk is not null)
+            {
+                sk.AngleX = angleX;
+                sk.AngleY = angleY;
+            }
+            else
+            {
+                tg.Children.Add(new SkewTransform(angleX, angleY));
+            }
+        }
+        else if (element.RenderTransform is SkewTransform existing)
+        {
+            existing.AngleX = angleX;
+            existing.AngleY = angleY;
+        }
+        else
+        {
+            var group = new TransformGroup();
+            if (element.RenderTransform is not null && element.RenderTransform != Transform.Identity)
+                group.Children.Add(element.RenderTransform);
+            group.Children.Add(new SkewTransform(angleX, angleY));
+            element.RenderTransform = group;
+        }
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -386,6 +497,52 @@ public sealed class DesignInteractionService
             if (before[key] != afterVal) return false;
         }
         return true;
+    }
+
+    // ── Phase E4 — Snap helper methods ────────────────────────────────────────
+
+    /// <summary>
+    /// Collects the canvas-relative bounding rects of the sibling elements of
+    /// <paramref name="dragged"/> so SnapEngine can align to their edges.
+    /// Returns an empty list when the parent is not a known panel type.
+    /// </summary>
+    private static IEnumerable<Rect> CollectSiblingRects(FrameworkElement dragged)
+    {
+        var results = new List<Rect>();
+        if (dragged.Parent is not UIElement parent) return results;
+
+        IEnumerable<UIElement>? children = dragged.Parent switch
+        {
+            Panel p  => p.Children.Cast<UIElement>(),
+            _        => null
+        };
+
+        if (children is null) return results;
+
+        foreach (var child in children)
+        {
+            if (ReferenceEquals(child, dragged)) continue;
+            if (child is not FrameworkElement fe) continue;
+            try
+            {
+                var pos = fe.TranslatePoint(new Point(0, 0), parent);
+                results.Add(new Rect(pos.X, pos.Y, fe.ActualWidth, fe.ActualHeight));
+            }
+            catch { /* skip elements not yet measured */ }
+        }
+
+        return results;
+    }
+
+    /// <summary>
+    /// Returns the bounding rect of the parent panel/canvas in its own coordinate system.
+    /// Falls back to an empty Rect when the parent is not a FrameworkElement.
+    /// </summary>
+    private static Rect GetCanvasBounds(FrameworkElement dragged)
+    {
+        if (dragged.Parent is FrameworkElement parent)
+            return new Rect(0, 0, parent.ActualWidth, parent.ActualHeight);
+        return Rect.Empty;
     }
 }
 

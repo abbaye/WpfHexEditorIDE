@@ -142,6 +142,14 @@
                             <Trigger Property="IsExpanded" Value="False">
                                 <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                             </Trigger>
+                            <!-- Hide row + children when node does not match the active search.
+                                 ControlTemplate.Triggers (not Style.Triggers) is required here —
+                                 Style.Triggers Visibility setter does not reliably fire for
+                                 TreeViewItem containers in a virtualised WPF tree. -->
+                            <DataTrigger Binding="{Binding IsSearchVisible}" Value="False">
+                                <Setter TargetName="RowGrid"   Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -731,16 +739,37 @@
                            Foreground="{DynamicResource SE_SearchBoxForegroundBrush}"
                            Opacity="0.45" IsHitTestVisible="False"
                            VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="1"
-                           Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                           Foreground="{DynamicResource SE_ForegroundBrush}"
-                           Opacity="0.6" VerticalAlignment="Center" Margin="4,0,0,0"
-                           IsHitTestVisible="False"/>
+                <Button x:Name="SearchModeButton"
+                        Grid.Column="1"
+                        Style="{StaticResource SE_IconButton}"
+                        ToolTip="{Binding SearchModeTooltip}"
+                        Click="OnSearchModeButtonClick"
+                        Margin="2,0,0,0" Padding="4,0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   Foreground="{DynamicResource SE_ForegroundBrush}"
+                                   Opacity="0.7" VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="7"
+                                   Foreground="{DynamicResource SE_ForegroundBrush}"
+                                   Opacity="0.5" VerticalAlignment="Center" Margin="1,2,0,0"/>
+                    </StackPanel>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="SearchModeContextMenu">
+                            <MenuItem Header="File Name"         Tag="FileName"       Click="OnSearchModeMenuItemClick"/>
+                            <MenuItem Header="Name + Content"    Tag="NameAndContent" Click="OnSearchModeMenuItemClick"/>
+                            <MenuItem Header="Content Only"      Tag="ContentOnly"    Click="OnSearchModeMenuItemClick"/>
+                            <Separator/>
+                            <MenuItem Header="Regex (file name)" Tag="Regex"          Click="OnSearchModeMenuItemClick"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
             </Grid>
         </Border>
 
         <!-- Tree -->
         <TreeView x:Name="SolutionTree" Grid.Row="2"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Standard"
                   ItemsSource="{Binding Roots}"
                   SelectedItemChanged="OnSelectedItemChanged"
                   PreviewMouseDoubleClick="OnItemDoubleClick"
@@ -992,6 +1021,9 @@
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE7B8;"/>
                         </MenuItem.Icon>
                     </MenuItem>
+
+                    <!-- Plugin-contributed items are injected here at runtime -->
+                    <Separator x:Name="PluginMenuSeparator" Visibility="Collapsed"/>
 
                     <!-- Properties -->
                     <Separator x:Name="PropertiesSeparator"/>

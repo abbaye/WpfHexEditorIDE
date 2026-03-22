@@ -201,6 +201,55 @@
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────
+         XD_ToolbarIconButtonStyle
+         22×22 regular icon button for the XAML Designer toolbar (Undo, Redo,
+         Zoom, Align, Cut/Copy/Paste, Layout dropdown, etc.).
+         Mirrors XD_ToolbarToggleButtonStyle but targets Button and uses
+         IsPressed instead of IsChecked.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="XD_ToolbarIconButtonStyle" TargetType="Button">
+        <Setter Property="Width"               Value="22"/>
+        <Setter Property="Height"              Value="22"/>
+        <Setter Property="Padding"             Value="0"/>
+        <Setter Property="Margin"              Value="1,0,0,0"/>
+        <Setter Property="BorderThickness"     Value="0"/>
+        <Setter Property="Background"          Value="Transparent"/>
+        <Setter Property="Foreground"          Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="FontFamily"          Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize"            Value="12"/>
+        <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
          PanelDropdownButtonStyle
          Text-label dropdown button (e.g., "Actions ▾", "Export ▾").
          Auto width, 22px height, normal font (not MDL2).

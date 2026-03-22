@@ -356,6 +356,11 @@ public partial class MainWindow
             return;
         }
 
+        // Panel tabs (tool windows) must not override the active document.
+        // Focusing a tool panel does not change the active editor — VS-like behavior.
+        if (activeItem.ContentId.StartsWith("panel-", StringComparison.Ordinal))
+            return;
+
         // Resolve the actual editor content
         _contentCache.TryGetValue(activeItem.ContentId, out var content);
 

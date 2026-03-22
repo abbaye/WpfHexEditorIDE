@@ -60,6 +60,43 @@ public sealed class XamlSourceLocationService
         }
     }
 
+    /// <summary>
+    /// Returns the 0-based start line of the first element whose <c>x:Name</c>
+    /// or <c>Name</c> attribute equals <paramref name="xName"/> in <paramref name="rawXaml"/>.
+    /// Returns -1 when not found or on any parse error.
+    /// </summary>
+    public int FindElementStartLineByXName(string rawXaml, string xName)
+    {
+        if (string.IsNullOrEmpty(xName) || string.IsNullOrWhiteSpace(rawXaml)) return -1;
+        try
+        {
+            var doc = XDocument.Parse(rawXaml,
+                LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
+            if (doc.Root is null) return -1;
+
+            var el = FindByXName(doc.Root, xName);
+            if (el is null) return -1;
+
+            var lineInfo = (IXmlLineInfo)el;
+            return lineInfo.HasLineInfo() ? lineInfo.LineNumber - 1 : -1;
+        }
+        catch
+        {
+            return -1;
+        }
+    }
+
+    private static XElement? FindByXName(XElement root, string xName)
+    {
+        XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";
+        foreach (var el in root.DescendantsAndSelf())
+        {
+            var nameAttr = el.Attribute(x + "Name") ?? el.Attribute("Name");
+            if (nameAttr?.Value == xName) return el;
+        }
+        return null;
+    }
+
     // ── Code → Canvas ─────────────────────────────────────────────────────────
 
     /// <summary>
@@ -74,16 +111,23 @@ public sealed class XamlSourceLocationService
         {
             var ranges = BuildUidLineRanges(rawXaml);
 
-            // Find the deepest (last inserted, largest startLine) element that covers the line.
-            int bestUid       = -1;
-            int bestStartLine = -1;
+            // Find the innermost element that contains the target line.
+            // "Innermost" = smallest span (endLine - startLine) among all candidates
+            // that cover the line.  This is more robust than "largest startLine":
+            // two sibling elements can share the same startLine when attributes span
+            // multiple lines, making startLine alone an unreliable depth proxy.
+            int bestUid  = -1;
+            int bestSpan = int.MaxValue;
 
             foreach (var (uid, startLine, endLine) in ranges)
             {
-                if (startLine <= line && line <= endLine && startLine >= bestStartLine)
+                if (startLine > line || line > endLine) continue;
+
+                int span = endLine - startLine;
+                if (span < bestSpan)
                 {
-                    bestUid       = uid;
-                    bestStartLine = startLine;
+                    bestUid  = uid;
+                    bestSpan = span;
                 }
             }
 

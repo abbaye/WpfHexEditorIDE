@@ -1,0 +1,174 @@
+<!--
+    Project  : WpfHexEditor.Editor.MarkdownEditor
+    File     : Panels/MarkdownOutlinePanel.xaml
+    Desc     : Dockable panel showing a H1–H6 heading outline for the active
+               Markdown document. Click navigates the source editor to that line.
+-->
+<UserControl x:Class="WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource SE_BackgroundBrush}"
+             Foreground="{DynamicResource SE_ForegroundBrush}">
+
+    <UserControl.Resources>
+        <!-- Icon button style (26px toolbar) -->
+        <Style x:Key="MDO_IconButton" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"         Value="4"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="VerticalContentAlignment"   Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource SE_ForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SE_ItemHoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Heading row item template -->
+        <DataTemplate x:Key="MDO_HeadingTemplate">
+            <Border x:Name="Bd"
+                    Background="Transparent"
+                    Padding="{Binding LeftPadding}"
+                    Cursor="Hand"
+                    MouseLeftButtonDown="OnHeadingClick">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding LevelIcon}"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"
+                               Foreground="{Binding LevelBrush}"/>
+                    <TextBlock Text="{Binding Text}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </StackPanel>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Bd"
+                                    Storyboard.TargetProperty="Background">
+                                    <DiscreteObjectKeyFrame KeyTime="0"
+                                        Value="{DynamicResource SE_ItemHoverBrush}"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Bd"
+                                    Storyboard.TargetProperty="Background">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"/>   <!-- toolbar -->
+            <RowDefinition Height="*"/>    <!-- list     -->
+            <RowDefinition Height="Auto"/> <!-- status   -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ──────────────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                Background="{DynamicResource SE_ToolbarBrush}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+                <TextBlock Text="Markdown Outline"
+                           FontWeight="SemiBold"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Margin="2,0,8,0"
+                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                <Button x:Name="RefreshButton"
+                        Style="{StaticResource MDO_IconButton}"
+                        ToolTip="Refresh outline (F5)"
+                        Click="OnRefreshClick">
+                    <TextBlock Text="&#xE72C;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="11"/>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Empty-state overlay ──────────────────────────────────────── -->
+        <Grid Grid.Row="1">
+            <TextBlock x:Name="EmptyLabel"
+                       Text="No Markdown file active."
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="11"
+                       Opacity="0.5"
+                       Foreground="{DynamicResource SE_ForegroundBrush}"
+                       Visibility="Visible"/>
+
+            <ListView x:Name="HeadingList"
+                      ItemTemplate="{StaticResource MDO_HeadingTemplate}"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      Visibility="Collapsed"
+                      Foreground="{DynamicResource SE_ForegroundBrush}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding"          Value="0"/>
+                        <Setter Property="Margin"           Value="0,1"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Background"       Value="Transparent"/>
+                        <Setter Property="BorderThickness"  Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </Grid>
+
+        <!-- ── Status bar ───────────────────────────────────────────────── -->
+        <Border Grid.Row="2"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                Background="{DynamicResource SE_ToolbarBrush}">
+            <TextBlock x:Name="StatusLabel"
+                       FontSize="10"
+                       Margin="6,2"
+                       Opacity="0.65"
+                       TextTrimming="CharacterEllipsis"
+                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
+        </Border>
+    </Grid>
+</UserControl>

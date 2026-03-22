@@ -1,6 +1,6 @@
-﻿{
+{
   "formatName": "JSON Data",
-  "version": "2.0",
+  "version": "2.1",
   "extensions": [
     ".json"
   ],
@@ -86,7 +86,7 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 2,
     "ValidationRules": 2,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -96,5 +96,59 @@
     "StrictSyntax": true,
     "TrailingCommas": "Not allowed per specification",
     "Comments": "Not allowed per specification"
+  },
+  "syntaxDefinition": {
+    "id": "json",
+    "name": "JSON",
+    "extensions": [
+      ".json",
+      ".jsonc",
+      ".json5"
+    ],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "Key",
+        "pattern": "\"(?:[^\"\\]|\\.)*\"(?=\\s*:)",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\b(true|false|null)\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Number",
+        "pattern": "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"\\]|\\.)*\"",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "//.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/",
+        "colorKey": "TE_Comment"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{",
+        "\\["
+      ],
+      "endPatterns": [
+        "\\}",
+        "\\]"
+      ]
+    }
   }
 }

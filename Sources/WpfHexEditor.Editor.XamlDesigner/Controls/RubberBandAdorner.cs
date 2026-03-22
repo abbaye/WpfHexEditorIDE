@@ -46,8 +46,8 @@ public sealed class RubberBandAdorner : Adorner
     {
         if (_bounds.IsEmpty || _bounds.Width < 2 || _bounds.Height < 2) return;
 
-        var fillBrush = new SolidColorBrush(Color.FromArgb(30, 0, 120, 215));
-        fillBrush.Freeze();
+        var fillBrush = Application.Current?.TryFindResource("XD_RubberBandFillBrush") as Brush
+                        ?? new SolidColorBrush(Color.FromArgb(30, 0, 120, 215));
 
         var strokeBrush = Application.Current?.TryFindResource("XD_SelectionBorderBrush") as Brush
                           ?? new SolidColorBrush(Color.FromRgb(0, 122, 204));

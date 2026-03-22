@@ -6,6 +6,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.3] — 2026-03-22 — Class Diagram Plugin Fixes
+
+### 🐛 Fixed — Class Diagram Plugin Menu & Solution Explorer
+
+- **Class Diagram menu registration** — plugin menu items (Class Outline, Class Properties, Diagram Toolbox, Relationships, Diagram History, Diagram Search) now register under `ParentPath = "View"` instead of `"View/Panels"`; the `MenuAdapter` only resolves top-level menu names so the items now correctly appear in the main View menu grouped under `Group = "ClassDiagram"`
+- **Double separator in Solution Explorer context menus** — `ClassDiagramContextMenuContributor` was prepending a `Separator()` before each contributed item in addition to the static `PluginMenuSeparator`, resulting in two consecutive separator lines before "View Class Diagram" / "Generate Class Diagram for Project" / "Generate Class Diagram for Solution"; removed the redundant contributor separators
+- **`PluginMenuSeparator` architecture** — refactored `SolutionExplorerPanel.RebuildPluginMenuItems()` so `PluginMenuSeparator` acts as a permanent invisible position marker (always `Collapsed`); a self-cleaning tagged `Separator` is now injected dynamically as the first plugin item, guaranteeing exactly one visual separator before the plugin zone regardless of node type (File / Project / Solution) or plugin count
+
+---
+
 ## [0.6.0] — 2026-03-18 — Visual XAML Designer, Shared Undo Engine & Rect Selection
 
 ### ✨ Added — Visual XAML Designer: Bidirectional Sync & Full IDE Integration

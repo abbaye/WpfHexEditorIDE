@@ -41,43 +41,41 @@ public sealed class RegexSyntaxHighlighter
             if (string.IsNullOrEmpty(rule.Pattern))
                 continue;
 
-            MatchCollection matches;
             try
             {
-                matches = rule.CompiledRegex.Matches(line);
+                foreach (Match m in rule.CompiledRegex.Matches(line))
+                {
+                    if (!m.Success || m.Length == 0)
+                        continue;
+
+                    // If a named group "1" exists (capture group), use it; otherwise use the full match.
+                    var group = m.Groups.Count > 1 && m.Groups[1].Success ? m.Groups[1] : m.Groups[0];
+                    var start = group.Index;
+                    var end = start + group.Length;
+
+                    if (start >= line.Length || end > line.Length)
+                        continue;
+
+                    // Check for overlap with already-covered positions.
+                    bool overlaps = false;
+                    for (int i = start; i < end; i++)
+                    {
+                        if (covered[i]) { overlaps = true; break; }
+                    }
+                    if (overlaps) continue;
+
+                    // Mark as covered.
+                    for (int i = start; i < end; i++)
+                        covered[i] = true;
+
+                    spans.Add(new ColoredSpan(start, group.Length, rule.ColorKey));
+                }
             }
             catch (RegexMatchTimeoutException)
             {
                 // Safety valve: skip rule if regex times out on a pathological line.
+                // MatchCollection is lazy — the timeout fires during iteration, not during Matches().
                 continue;
-            }
-
-            foreach (Match m in matches)
-            {
-                if (!m.Success || m.Length == 0)
-                    continue;
-
-                // If a named group "1" exists (capture group), use it; otherwise use the full match.
-                var group = m.Groups.Count > 1 && m.Groups[1].Success ? m.Groups[1] : m.Groups[0];
-                var start = group.Index;
-                var end = start + group.Length;
-
-                if (start >= line.Length || end > line.Length)
-                    continue;
-
-                // Check for overlap with already-covered positions.
-                bool overlaps = false;
-                for (int i = start; i < end; i++)
-                {
-                    if (covered[i]) { overlaps = true; break; }
-                }
-                if (overlaps) continue;
-
-                // Mark as covered.
-                for (int i = start; i < end; i++)
-                    covered[i] = true;
-
-                spans.Add(new ColoredSpan(start, group.Length, rule.ColorKey));
             }
         }
 

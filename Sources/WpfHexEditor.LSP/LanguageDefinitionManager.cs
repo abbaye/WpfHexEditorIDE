@@ -12,8 +12,9 @@
 //
 // Architecture Notes:
 //     Pattern: Registry + Factory
-//     - EmbeddedSyntaxCatalog provides raw JSON streams for built-in .whlang files.
-//     - WhlangParser converts JSON to LanguageDefinition objects (lazy, cached).
+//     - EmbeddedFormatCatalog provides syntaxDefinition blocks from .whfmt embedded resources.
+//     - WhfmtSyntaxParser converts the syntaxDefinition block to LanguageDefinition objects.
+//     - WhlangParser is retained for user-imported .whlang files from the workspace.
 //     - AddLanguage() lets plugins inject definitions dynamically.
 //     - Thread-safe reads; registrations protected by lock.
 // ==========================================================
@@ -21,6 +22,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using WpfHexEditor.Definitions;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.LSP.Models;
 
 namespace WpfHexEditor.LSP;
@@ -30,7 +32,7 @@ namespace WpfHexEditor.LSP;
 /// </summary>
 public sealed class LanguageDefinitionManager
 {
-    private readonly EmbeddedSyntaxCatalog _catalog;
+    private readonly EmbeddedFormatCatalog _catalog;
     private readonly object _lock = new();
 
     // Cache keyed by languageId (lower-case).
@@ -45,9 +47,9 @@ public sealed class LanguageDefinitionManager
 
     // -----------------------------------------------------------------------
 
-    public LanguageDefinitionManager() : this(EmbeddedSyntaxCatalog.Instance) { }
+    public LanguageDefinitionManager() : this(EmbeddedFormatCatalog.Instance) { }
 
-    public LanguageDefinitionManager(EmbeddedSyntaxCatalog catalog)
+    public LanguageDefinitionManager(EmbeddedFormatCatalog catalog)
     {
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
     }
@@ -123,15 +125,16 @@ public sealed class LanguageDefinitionManager
 
     private void LoadBuiltIn()
     {
-        var assembly = typeof(EmbeddedSyntaxCatalog).Assembly;
+        // Load built-in language definitions from .whfmt files that carry a syntaxDefinition block.
         foreach (var entry in _catalog.GetAll())
         {
+            if (!entry.HasSyntaxDefinition) continue;
             try
             {
-                using var stream = assembly.GetManifestResourceStream(entry.ResourceKey);
-                if (stream is null) continue;
+                var syntaxJson = _catalog.GetSyntaxDefinitionJson(entry.ResourceKey);
+                if (syntaxJson is null) continue;
 
-                var def = WhlangParser.Parse(stream, entry, LanguagePriority.BuiltIn);
+                var def = WhfmtSyntaxParser.Parse(syntaxJson, entry, LanguagePriority.BuiltIn);
                 if (def is not null)
                     RegisterDefinition(def);
             }
@@ -177,9 +180,16 @@ internal static class WhlangParser
         AllowTrailingCommas = true,
     };
 
+    /// <summary>
+    /// Parses a <c>LanguageDefinition</c> from a <c>.whlang</c> JSON stream.
+    /// Used for user-imported .whlang files from the workspace.
+    /// </summary>
     public static LanguageDefinition? Parse(
-        Stream stream,
-        EmbeddedSyntaxEntry entry,
+        Stream   stream,
+        string   fallbackName,
+        string   fallbackCategory,
+        IReadOnlyList<string> fallbackExtensions,
+        string   sourceKey,
         LanguagePriority priority)
     {
         using var reader = new System.IO.StreamReader(stream);
@@ -192,8 +202,8 @@ internal static class WhlangParser
         using (doc)
         {
             var root = doc.RootElement;
-            var name     = root.GetString("name")             ?? entry.Name;
-            var category = root.GetString("category")         ?? entry.Category;
+            var name     = root.GetString("name")     ?? fallbackName;
+            var category = root.GetString("category") ?? fallbackCategory;
             var id       = BuildId(name);
             var exts     = ParseStringArray(root, "extensions");
             var lineCmt  = root.GetString("lineComment");
@@ -204,24 +214,26 @@ internal static class WhlangParser
 
             return new LanguageDefinition
             {
-                Id               = id,
-                Name             = name,
-                Category         = category,
-                Priority         = priority,
-                Extensions       = exts.Count > 0 ? exts : entry.Extensions.ToList(),
-                LineComment      = lineCmt,
+                Id                = id,
+                Name              = name,
+                Category          = category,
+                Priority          = priority,
+                Extensions        = exts.Count > 0 ? exts : fallbackExtensions.ToList(),
+                LineComment       = lineCmt,
                 BlockCommentStart = blkStart,
-                BlockCommentEnd  = blkEnd,
-                Rules            = rules,
-                Keywords         = keywords,
-                Operators        = operators,
-                SourceKey        = entry.ResourceKey,
+                BlockCommentEnd   = blkEnd,
+                Rules             = rules,
+                Keywords          = keywords,
+                Operators         = operators,
+                SourceKey         = sourceKey,
             };
         }
     }
 
-    private static string BuildId(string name)
+    internal static string BuildIdPublic(string name)
         => Regex.Replace(name.ToLowerInvariant(), @"[^a-z0-9]+", "");
+
+    private static string BuildId(string name) => BuildIdPublic(name);
 
     private static List<string> ParseStringArray(JsonElement root, string propertyName)
     {
@@ -229,6 +241,9 @@ internal static class WhlangParser
         if (arr.ValueKind != JsonValueKind.Array) return [];
         return [.. arr.EnumerateArray().Select(e => e.GetString() ?? "").Where(s => s.Length > 0)];
     }
+
+    internal static (List<LanguageRule> Rules, List<string> Keywords, List<string> Operators)
+        ParseRulesPublic(JsonElement root) => ParseRules(root);
 
     private static (List<LanguageRule> Rules, List<string> Keywords, List<string> Operators)
         ParseRules(JsonElement root)
@@ -277,6 +292,75 @@ internal static class WhlangParser
             if (word.Length > 0 && !word.StartsWith('\\'))
                 target.Add(word);
         }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Internal .whfmt syntaxDefinition block parser
+// ---------------------------------------------------------------------------
+
+/// <summary>
+/// Parses a <c>LanguageDefinition</c> from the <c>syntaxDefinition</c> JSON block
+/// extracted from an embedded <c>.whfmt</c> resource via <see cref="EmbeddedFormatCatalog"/>.
+/// The block uses <c>lineCommentPrefix</c> (vs <c>lineComment</c> in .whlang).
+/// </summary>
+internal static class WhfmtSyntaxParser
+{
+    private static readonly JsonDocumentOptions JsonOpts = new()
+    {
+        AllowTrailingCommas = true,
+        CommentHandling     = JsonCommentHandling.Skip,
+    };
+
+    public static LanguageDefinition? Parse(
+        string           syntaxJson,
+        EmbeddedFormatEntry entry,
+        LanguagePriority priority)
+    {
+        JsonDocument doc;
+        try { doc = JsonDocument.Parse(syntaxJson, JsonOpts); }
+        catch { return null; }
+
+        using (doc)
+        {
+            var root = doc.RootElement;
+            var name     = root.GetString("name")     ?? entry.Name;
+            var category = root.GetString("category") ?? entry.Category;
+            var id       = WhlangParser.BuildIdPublic(name);
+
+            var exts = ParseStringArray(root, "extensions");
+            if (exts.Count == 0) exts = entry.Extensions.ToList();
+
+            // syntaxDefinition uses "lineCommentPrefix" not "lineComment".
+            var lineCmt  = root.GetString("lineCommentPrefix") ?? root.GetString("lineComment");
+            var blkStart = root.GetString("blockCommentStart");
+            var blkEnd   = root.GetString("blockCommentEnd");
+
+            var (rules, keywords, operators) = WhlangParser.ParseRulesPublic(root);
+
+            return new LanguageDefinition
+            {
+                Id                = id,
+                Name              = name,
+                Category          = category,
+                Priority          = priority,
+                Extensions        = exts,
+                LineComment       = lineCmt,
+                BlockCommentStart = blkStart,
+                BlockCommentEnd   = blkEnd,
+                Rules             = rules,
+                Keywords          = keywords,
+                Operators         = operators,
+                SourceKey         = entry.ResourceKey,
+            };
+        }
+    }
+
+    private static List<string> ParseStringArray(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var arr)) return [];
+        if (arr.ValueKind != JsonValueKind.Array) return [];
+        return [.. arr.EnumerateArray().Select(e => e.GetString() ?? "").Where(s => s.Length > 0)];
     }
 }
 

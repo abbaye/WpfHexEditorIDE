@@ -69,6 +69,12 @@ public sealed class SyntaxDefinition
     public IReadOnlyList<SyntaxRule> Rules { get; init; } = [];
 
     /// <summary>
+    /// Language injection map for fenced code blocks.
+    /// Non-empty when the base language embeds other languages (e.g. Markdown fences).
+    /// </summary>
+    public IReadOnlyList<EmbeddedLanguageEntry> EmbeddedLanguages { get; init; } = [];
+
+    /// <summary>
     /// Internal resource key used to identify where this definition was loaded from.
     /// </summary>
     internal string SourceKey { get; init; } = string.Empty;

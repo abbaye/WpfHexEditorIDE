@@ -30,7 +30,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Folding;
 /// </summary>
 public sealed class FoldingEngine
 {
-    private readonly IFoldingStrategy _strategy;
+    private IFoldingStrategy _strategy;
     private List<FoldingRegion>       _regions    = new();
     // OPT-E: pre-computed hidden-line set — turns IsLineHidden() from O(regions) to O(1).
     private HashSet<int>              _hiddenLines = new();
@@ -42,6 +42,10 @@ public sealed class FoldingEngine
     {
         _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
     }
+
+    /// <summary>Replaces the active folding strategy without reconstructing the engine.</summary>
+    public void ReplaceStrategy(IFoldingStrategy strategy)
+        => _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
 
     /// <summary>Current set of folding regions (may be empty before first Analyze call).</summary>
     public IReadOnlyList<FoldingRegion> Regions => _regions;

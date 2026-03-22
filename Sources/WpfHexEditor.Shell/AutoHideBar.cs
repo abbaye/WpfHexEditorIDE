@@ -38,9 +38,20 @@ public class AutoHideBar : StackPanel
     public Dock Position { get; }
 
     /// <summary>
-    /// Raised when a panel button is clicked to show/toggle its popup.
+    /// Raised when a panel button (or group button) is clicked to show/toggle its flyout.
+    /// The list contains one item for a solo panel, or all group members for a grouped entry.
     /// </summary>
-    public event Action<DockItem>? ItemClicked;
+    public event Action<IReadOnlyList<DockItem>>? GroupClicked;
+
+    /// <summary>
+    /// Raised when the user chooses "Float" from the bar button context menu.
+    /// </summary>
+    public event Action<IReadOnlyList<DockItem>>? GroupFloatRequested;
+
+    /// <summary>
+    /// Raised when the user chooses "Close" from the bar button context menu.
+    /// </summary>
+    public event Action<IReadOnlyList<DockItem>>? GroupCloseRequested;
 
     /// <summary>
     /// Raised after <see cref="UpdateItems"/> rebuilds the button list,
@@ -62,31 +73,72 @@ public class AutoHideBar : StackPanel
 
     /// <summary>
     /// Updates the bar with the given auto-hide items.
+    /// Items that share an <see cref="DockItem.AutoHideGroupId"/> are merged into a single button.
     /// </summary>
     public void UpdateItems(IEnumerable<DockItem> items)
     {
         Children.Clear();
 
-        foreach (var item in items)
+        // Group by AutoHideGroupId; items without an ID each form their own single-item group.
+        var groups = items
+            .GroupBy(i => (object?)i.AutoHideGroupId ?? (object)i)
+            .Select(g => g.ToList())
+            .ToList();
+
+        foreach (var groupItems in groups)
         {
+            var label = groupItems.Count == 1
+                ? groupItems[0].Title
+                : string.Join(" \u00b7 ", groupItems.Select(i => i.Title));  // U+00B7 = middle dot
+
             var button = new Button
             {
                 Content = new TextBlock
                 {
-                    Text = item.Title,
+                    Text = label,
                     LayoutTransform = Position is Dock.Left or Dock.Right
                         ? new RotateTransform(Position == Dock.Left ? -90 : 90)
                         : Transform.Identity
                 },
                 Padding = new Thickness(6, 4, 6, 4),
-                Margin = new Thickness(1),
-                Tag = item
+                Margin  = new Thickness(1),
+                Tag     = groupItems
             };
 
             // Apply themed style so IsMouseOver uses DockTabHoverBrush instead of default WPF chrome.
             button.SetResourceReference(FrameworkElement.StyleProperty, "DockTitleButtonStyle");
-            AutomationProperties.SetName(button, $"Show {item.Title}");
-            button.Click += (_, _) => ItemClicked?.Invoke(item);
+            AutomationProperties.SetName(button, $"Show {label}");
+            var captured = (IReadOnlyList<DockItem>)groupItems;
+            button.Click += (_, _) => GroupClicked?.Invoke(captured);
+
+            // VS-like right-click context menu: Show / Float / — / Close
+            static TextBlock MakeIcon(string glyph) => new()
+            {
+                Text       = glyph,
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize   = 12,
+                Width      = 16,
+                TextAlignment = TextAlignment.Center
+            };
+
+            var showItem  = new MenuItem { Header = "Show",  Icon = MakeIcon("\uE8BD") };
+            var floatItem = new MenuItem { Header = "Float", Icon = MakeIcon("\uE78B") };
+            var closeItem = new MenuItem { Header = "Close", Icon = MakeIcon("\uE8BB") };
+            showItem.Click  += (_, _) => GroupClicked?.Invoke(captured);
+            floatItem.Click += (_, _) => GroupFloatRequested?.Invoke(captured);
+            closeItem.Click += (_, _) => GroupCloseRequested?.Invoke(captured);
+
+            var ctxMenu = new ContextMenu();
+            ctxMenu.Items.Add(showItem);
+            ctxMenu.Items.Add(floatItem);
+            ctxMenu.Items.Add(new Separator());
+            ctxMenu.Items.Add(closeItem);
+            ctxMenu.SetResourceReference(ContextMenu.BackgroundProperty,  "DockMenuBackgroundBrush");
+            ctxMenu.SetResourceReference(ContextMenu.BorderBrushProperty, "DockMenuBorderBrush");
+            foreach (MenuItem mi in ctxMenu.Items.OfType<MenuItem>())
+                mi.SetResourceReference(MenuItem.ForegroundProperty, "DockMenuForegroundBrush");
+            button.ContextMenu = ctxMenu;
+
             Children.Add(button);
         }
 
@@ -118,8 +170,19 @@ public class AutoHideFlyout : Grid
     private const double MinSize              = 80;
     private const double ResizeThickness      = 6;
 
+    private IReadOnlyList<DockItem> _currentGroup = [];
+    private StackPanel? _tabStrip;
+    private Func<DockItem, object>? _contentFactory;
+    private bool _isOpen;
+
     public DockItem? CurrentItem { get; private set; }
-    public bool IsOpen => _panelContainer.Visibility == Visibility.Visible;
+
+    /// <summary>
+    /// All items currently shown in the flyout (one item for solo panels, multiple for grouped).
+    /// </summary>
+    public IReadOnlyList<DockItem> CurrentGroup => _currentGroup;
+
+    public bool IsOpen => _isOpen;
 
     /// <summary>
     /// Returns the panel container element so the host can capture a snapshot before closing.
@@ -290,9 +353,15 @@ public class AutoHideFlyout : Grid
         // -- Content ------------------------------------------------------------------
         _contentHost = new ContentControl();
 
+        // Tab strip: shown only when multiple grouped items are in the flyout
+        _tabStrip = new StackPanel { Orientation = Orientation.Horizontal, Visibility = Visibility.Collapsed };
+        _tabStrip.SetResourceReference(BackgroundProperty, "DockMenuBackgroundBrush");
+
         var innerStack = new DockPanel { LastChildFill = true };
-        DockPanel.SetDock(titleBar, Dock.Top);
+        DockPanel.SetDock(titleBar,  Dock.Top);
+        DockPanel.SetDock(_tabStrip, Dock.Top);
         innerStack.Children.Add(titleBar);
+        innerStack.Children.Add(_tabStrip);
         innerStack.Children.Add(_contentHost);
 
         _panel = new Border
@@ -317,6 +386,67 @@ public class AutoHideFlyout : Grid
         _panelContainer.Children.Add(_resizeHandle);
 
         Children.Add(_panelContainer);
+    }
+
+    /// <summary>
+    /// Shows the flyout for a group of items (one or more). When multiple items are present,
+    /// a tab strip is rendered below the title bar so the user can switch between them.
+    /// </summary>
+    public void ShowForItems(IReadOnlyList<DockItem> items, Func<DockItem, object>? contentFactory = null, DockSide side = DockSide.Bottom)
+    {
+        if (items.Count == 0) return;
+        _currentGroup   = items;
+        _contentFactory = contentFactory;
+        ShowForItem(items[0], contentFactory, side);
+
+        // Build tab strip when there are multiple items in the group
+        if (_tabStrip is null) return;
+        _tabStrip.Children.Clear();
+        if (items.Count > 1)
+        {
+            foreach (var tabItem in items)
+            {
+                var captured = tabItem;
+                var tabBtn = new Button
+                {
+                    Content = tabItem.Title,
+                    Padding = new Thickness(8, 3, 8, 3),
+                    Margin  = new Thickness(1, 0, 0, 0)
+                };
+                tabBtn.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
+                tabBtn.Click += (_, _) => SelectGroupTab(captured);
+                _tabStrip.Children.Add(tabBtn);
+            }
+            _tabStrip.Visibility = Visibility.Visible;
+            UpdateTabStripSelection();
+        }
+        else
+        {
+            _tabStrip.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void SelectGroupTab(DockItem item)
+    {
+        CurrentItem = item;
+        _titleBlock.Text = item.Title;
+        _contentHost.Content = _contentFactory?.Invoke(item) ?? new TextBlock
+        {
+            Text       = $"Auto-hide: {item.Title}",
+            Foreground = Brushes.White,
+            Margin     = new Thickness(8)
+        };
+        UpdateTabStripSelection();
+    }
+
+    private void UpdateTabStripSelection()
+    {
+        if (_tabStrip is null) return;
+        foreach (Button btn in _tabStrip.Children.OfType<Button>())
+        {
+            bool isActive = btn.Content as string == CurrentItem?.Title;
+            btn.FontWeight = isActive ? FontWeights.SemiBold : FontWeights.Normal;
+        }
     }
 
     /// <summary>
@@ -395,6 +525,7 @@ public class AutoHideFlyout : Grid
         else
             _panelContainer.Height = 0;
 
+        _isOpen = true;
         Visibility = Visibility.Visible;
 
         var showAnim = new DoubleAnimation(targetSize,
@@ -420,6 +551,8 @@ public class AutoHideFlyout : Grid
 
     public void Close()
     {
+        _isOpen = false;
+
         // Notify the host BEFORE animation starts so it can capture a snapshot
         // while the panel content is still fully rendered and visible.
         Dismissing?.Invoke();
@@ -433,6 +566,12 @@ public class AutoHideFlyout : Grid
             Visibility           = Visibility.Collapsed;
             _contentHost.Content = null;
             CurrentItem          = null;
+            _currentGroup        = [];
+            if (_tabStrip is not null)
+            {
+                _tabStrip.Children.Clear();
+                _tabStrip.Visibility = Visibility.Collapsed;
+            }
         };
         hideAnim.Freeze();
 
@@ -446,11 +585,18 @@ public class AutoHideFlyout : Grid
 
     private void OnResizeStart(object sender, MouseButtonEventArgs e)
     {
+        // Release the open-animation hold so manual Width/Height assignments in OnResizeMove
+        // are not silently overridden by WPF's animation clock.
+        if (_currentSide is DockSide.Left or DockSide.Right)
+            _panelContainer.BeginAnimation(WidthProperty, null);
+        else
+            _panelContainer.BeginAnimation(HeightProperty, null);
+
         _resizing        = true;
         _resizeStart     = e.GetPosition(this);
         _resizeStartSize = _currentSide is DockSide.Left or DockSide.Right
-            ? _panelContainer.Width
-            : _panelContainer.Height;
+            ? _panelContainer.ActualWidth
+            : _panelContainer.ActualHeight;
         _resizeHandle.CaptureMouse();
         e.Handled = true;
     }

@@ -1,7 +1,10 @@
 {
   "formatName": "Batch Script",
-  "version": "1.0",
-  "extensions": [".bat", ".cmd"],
+  "version": "2.0",
+  "extensions": [
+    ".bat",
+    ".cmd"
+  ],
   "description": "Windows batch script files for command-line automation.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +18,67 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["application/x-bat"],
-  "Software": ["Notepad", "VS Code", "Windows Command Prompt"],
-  "UseCases": ["Windows automation", "Build scripts", "Deployment scripts"]
+  "MimeTypes": [
+    "text/x-batch"
+  ],
+  "Software": [
+    "Windows CMD",
+    "VS Code"
+  ],
+  "UseCases": [
+    "Windows task automation",
+    "Legacy batch processing",
+    "Build scripts"
+  ],
+  "syntaxDefinition": {
+    "id": "batch",
+    "name": "Batch / CMD",
+    "extensions": [
+      ".bat",
+      ".cmd",
+      ".btm"
+    ],
+    "lineCommentPrefix": "REM",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "(?i)^\\s*(?:REM|::).*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"])*\"",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Variable",
+        "pattern": "%[A-Za-z_][A-Za-z0-9_]*%|%[0-9]|%%[A-Za-z]",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "Cmdlet",
+        "pattern": "(?i)\\b(attrib|cd|chdir|chkdsk|cls|copy|del|dir|echo|erase|format|md|mkdir|move|path|pause|print|rd|ren|rename|rmdir|robocopy|set|start|title|type|xcopy|where|whoami|ipconfig|netstat|ping|tracert|shutdown|taskkill|tasklist|sc|reg|regedit|runas|net|arp|nslookup|diskpart)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "(?i)\\b(call|defined|do|else|endlocal|errorlevel|exist|exit|for|goto|if|in|not|setlocal|shift)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "BatchLabel",
+        "pattern": "^\\s*:[A-Za-z_][A-Za-z0-9_]*\\b",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b[0-9]+\\b",
+        "colorKey": "TE_Number"
+      }
+    ]
+  }
 }

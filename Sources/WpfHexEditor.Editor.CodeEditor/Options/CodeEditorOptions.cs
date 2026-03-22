@@ -35,6 +35,7 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool    _convertTabsToSpaces = true;
     private bool    _showWhitespace      = false;
     private bool    _showLineNumbers     = true;
+    private bool    _wordWrap            = false;
     private bool    _enableFolding            = true;
     private bool    _foldToggleOnDoubleClick  = true;
     private bool    _showScopeGuides     = true;
@@ -82,6 +83,13 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _showLineNumbers;
         set { _showLineNumbers = value; Notify(); }
+    }
+
+    /// <summary>Wrap long lines visually at the viewport edge (hides horizontal scrollbar).</summary>
+    public bool WordWrap
+    {
+        get => _wordWrap;
+        set { _wordWrap = value; Notify(); }
     }
 
     public bool EnableFolding

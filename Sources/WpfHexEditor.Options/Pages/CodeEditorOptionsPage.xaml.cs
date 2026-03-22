@@ -64,6 +64,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             CheckLineNumbers.IsChecked   = ce.ShowLineNumbers;
             CheckHighlightLine.IsChecked   = ce.HighlightCurrentLine;
             CheckFoldDoubleClick.IsChecked = ce.FoldToggleOnDoubleClick;
+            CheckWordWrap.IsChecked        = ce.WordWrap;
             TxtZoom.Text      = ((int)(ce.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = ce.MouseWheelSpeed;
             CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
@@ -95,6 +96,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.ShowLineNumbers   = CheckLineNumbers.IsChecked  == true;
         ce.HighlightCurrentLine    = CheckHighlightLine.IsChecked   == true;
         ce.FoldToggleOnDoubleClick = CheckFoldDoubleClick.IsChecked == true;
+        ce.WordWrap                = CheckWordWrap.IsChecked        == true;
         ce.DefaultZoom     = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
         if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)
             ce.MouseWheelSpeed = mws;

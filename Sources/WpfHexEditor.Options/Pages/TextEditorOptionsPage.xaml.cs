@@ -55,6 +55,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
             TxtIndentSize.Text = te.IndentSize.ToString();
             CheckUseSpaces.IsChecked   = te.UseSpaces;
             CheckLineNumbers.IsChecked = te.ShowLineNumbers;
+            CheckWordWrap.IsChecked    = te.WordWrap;
             TxtZoom.Text = ((int)(te.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = te.MouseWheelSpeed;
             CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
@@ -77,6 +78,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         te.IndentSize      = ParseInt(TxtIndentSize.Text, 4);
         te.UseSpaces       = CheckUseSpaces.IsChecked   == true;
         te.ShowLineNumbers = CheckLineNumbers.IsChecked == true;
+        te.WordWrap        = CheckWordWrap.IsChecked    == true;
         te.DefaultZoom = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
         if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)
             te.MouseWheelSpeed = mws;

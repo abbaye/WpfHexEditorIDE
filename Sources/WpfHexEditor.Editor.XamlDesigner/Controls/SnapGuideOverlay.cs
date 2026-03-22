@@ -14,6 +14,7 @@
 //     DispatcherTimer drives the 800ms auto-fade after the last update.
 // ==========================================================
 
+using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -82,6 +83,9 @@ public sealed class SnapGuideOverlay : Adorner
 
         var bounds = new Rect(AdornedElement.RenderSize);
 
+        var labelBg = Application.Current?.TryFindResource("XD_MeasureLabelBackground") as Brush
+                      ?? new SolidColorBrush(Color.FromArgb(180, 30, 30, 30));
+
         foreach (var guide in _guides)
         {
             if (guide.IsVertical)
@@ -92,6 +96,39 @@ public sealed class SnapGuideOverlay : Adorner
                 dc.DrawLine(pen,
                     new Point(bounds.Left,  guide.Position),
                     new Point(bounds.Right, guide.Position));
+
+            // Distance label badge.
+            if (!string.IsNullOrEmpty(guide.DistanceLabel))
+            {
+                var dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+                var ft  = new FormattedText(
+                    guide.DistanceLabel,
+                    CultureInfo.CurrentUICulture,
+                    FlowDirection.LeftToRight,
+                    new Typeface("Segoe UI"),
+                    9.0,
+                    brush,
+                    dpi);
+
+                const double padH = 3, padV = 1;
+                double lw = ft.Width + padH * 2;
+                double lh = ft.Height + padV * 2;
+
+                double lx, ly;
+                if (guide.IsVertical)
+                {
+                    lx = guide.Position + 3;
+                    ly = bounds.Top + (bounds.Height - lh) / 2.0;
+                }
+                else
+                {
+                    lx = bounds.Left + (bounds.Width - lw) / 2.0;
+                    ly = guide.Position + 3;
+                }
+
+                dc.DrawRoundedRectangle(labelBg, null, new Rect(lx, ly, lw, lh), 2, 2);
+                dc.DrawText(ft, new Point(lx + padH, ly + padV));
+            }
         }
     }
 }

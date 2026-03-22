@@ -59,7 +59,12 @@ public sealed record EmbeddedFormatEntry(
     /// Used as a fallback to derive a preferred editor when <see cref="PreferredEditor"/>
     /// is null: <c>true</c> → "code-editor".
     /// </summary>
-    bool IsTextFormat);
+    bool IsTextFormat,
+    /// <summary>
+    /// Whether the .whfmt file contains a <c>syntaxDefinition</c> block that can be
+    /// parsed into a <see cref="WpfHexEditor.ProjectSystem.Languages.LanguageDefinition"/>.
+    /// </summary>
+    bool HasSyntaxDefinition = false);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.

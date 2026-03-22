@@ -15,12 +15,12 @@ namespace WpfHexEditor.App.Dialogs;
 
 /// <summary>
 /// Dialog that lets the user pick one or more embedded syntax definitions
-/// (.whlang) to import into a project. Preview uses <c>CodeEditor</c>
-/// in read-only mode with built-in JSON syntax highlighting.
+/// (from <c>.whfmt</c> <c>syntaxDefinition</c> blocks) to export/import into a project.
+/// Preview uses <c>CodeEditor</c> in read-only mode with built-in JSON syntax highlighting.
 /// <para>
 /// After <see cref="Window.ShowDialog"/> returns <c>true</c>, read:
 /// <list type="bullet">
-///   <item><see cref="SelectedEntries"/> — the entries to import</item>
+///   <item><see cref="SelectedEntries"/> — the format entries to import</item>
 ///   <item><see cref="TargetFolderId"/> — virtual folder id, or <c>null</c> for project root</item>
 /// </list>
 /// </para>
@@ -28,12 +28,12 @@ namespace WpfHexEditor.App.Dialogs;
 public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
 {
     // -- Output properties --------------------------------------------------
-    public IReadOnlyList<EmbeddedSyntaxEntry> SelectedEntries { get; private set; } = [];
+    public IReadOnlyList<EmbeddedFormatEntry> SelectedEntries { get; private set; } = [];
     /// <summary>Id of the virtual folder, or <c>null</c> for the project root.</summary>
     public string? TargetFolderId { get; private set; }
 
     // -- Private state ------------------------------------------------------
-    private readonly EmbeddedSyntaxCatalog _catalog;
+    private readonly EmbeddedFormatCatalog _catalog;
     private          List<CategoryNode>    _categories   = [];
     private readonly HashSet<SyntaxRow>    _checked      = [];
     private          SyntaxRow?            _lastSelected;
@@ -41,9 +41,9 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
     private static readonly StringComparison OIC = StringComparison.OrdinalIgnoreCase;
 
     // -- Constructor --------------------------------------------------------
-    /// <param name="catalog">Catalog of embedded syntax definitions.</param>
+    /// <param name="catalog">Catalog of embedded format definitions (source of syntaxDefinition blocks).</param>
     /// <param name="project">Project that will receive the imported items.</param>
-    public ImportEmbeddedSyntaxDialog(EmbeddedSyntaxCatalog catalog, IProject project, string? initialFolderId = null)
+    public ImportEmbeddedSyntaxDialog(EmbeddedFormatCatalog catalog, IProject project, string? initialFolderId = null)
     {
         _catalog = catalog;
         InitializeComponent();
@@ -73,6 +73,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
     private void BuildCategories()
     {
         _categories = _catalog.GetAll()
+            .Where(e => e.HasSyntaxDefinition)
             .GroupBy(e => e.Category, StringComparer.OrdinalIgnoreCase)
             .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
             .Select(g =>
@@ -307,7 +308,9 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
 
         try
         {
-            PreviewEditor.LoadText(_catalog.GetContent(row.Entry.ResourceKey));
+            // Show the syntaxDefinition JSON block from the .whfmt file.
+            var syntaxJson = _catalog.GetSyntaxDefinitionJson(row.Entry.ResourceKey);
+            PreviewEditor.LoadText(syntaxJson ?? "// No syntaxDefinition block found.");
         }
         catch
         {
@@ -347,9 +350,9 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
         public List<SyntaxRow> Items { get; } = [];
     }
 
-    private sealed class SyntaxRow(EmbeddedSyntaxEntry entry)
+    private sealed class SyntaxRow(EmbeddedFormatEntry entry)
     {
-        public EmbeddedSyntaxEntry Entry      { get; } = entry;
+        public EmbeddedFormatEntry Entry      { get; } = entry;
         public string              Name       => entry.Name;
         public string              Category   => entry.Category;
         public string              ExtDisplay => string.Join(", ", entry.Extensions);

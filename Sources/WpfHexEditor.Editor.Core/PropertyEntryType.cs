@@ -46,4 +46,17 @@ public enum PropertyEntryType
     /// Filesystem path; the panel shows a TextBox + browse button.
     /// </summary>
     FilePath,
+
+    /// <summary>
+    /// WPF <see cref="System.Windows.Thickness"/> (Left, Top, Right, Bottom);
+    /// the panel renders four numeric TextBox fields labelled L / T / R / B.
+    /// </summary>
+    Thickness,
+
+    /// <summary>
+    /// WPF <see cref="System.Windows.Media.Brush"/> value.
+    /// Routes to the color picker for <see cref="System.Windows.Media.SolidColorBrush"/>
+    /// and falls back to a text editor for gradient / image brushes.
+    /// </summary>
+    Brush,
 }

@@ -1,7 +1,12 @@
 {
   "formatName": "Shell Script",
-  "version": "1.0",
-  "extensions": [".sh", ".bash", ".zsh", ".fish"],
+  "version": "2.0",
+  "extensions": [
+    ".sh",
+    ".bash",
+    ".zsh",
+    ".fish"
+  ],
   "description": "Unix/Linux shell script files (Bash, Zsh, Fish).",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +20,82 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["application/x-sh"],
-  "Software": ["VS Code", "Vim", "Nano"],
-  "UseCases": ["Automation scripts", "Build pipelines", "System administration"]
+  "MimeTypes": [
+    "text/x-shellscript"
+  ],
+  "Software": [
+    "VS Code",
+    "Bash",
+    "Zsh"
+  ],
+  "UseCases": [
+    "System automation",
+    "CI/CD pipelines",
+    "DevOps scripting"
+  ],
+  "syntaxDefinition": {
+    "id": "shell",
+    "name": "Shell / Bash",
+    "extensions": [
+      ".sh",
+      ".bash",
+      ".zsh",
+      ".fish"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|`(?:[^`\\\\]|\\\\.)*`)",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "#.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(break|case|continue|do|done|elif|else|esac|eval|exec|exit|export|fi|for|function|if|in|local|read|readonly|return|select|set|shift|source|then|time|trap|type|unset|until|while)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\$(?:[A-Za-z_][A-Za-z0-9_]*|\\{[^}]+\\}|[0-9]|[@*#?$!-])",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "Cmdlet",
+        "pattern": "\\b(echo|printf|cat|ls|cd|pwd|mkdir|rm|cp|mv|touch|chmod|chown|grep|sed|awk|find|sort|uniq|wc|head|tail|cut|tr|curl|wget|ssh|scp|tar|zip|unzip|which|whereis|alias|history|jobs|kill|ps|top|df|du|mount|umount|sudo|su|env|date|uname|hostname|ping|netstat|ifconfig|ip|nmap)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b[0-9]+\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "BatchLabel",
+        "pattern": "^:[A-Za-z_][A-Za-z0-9_]*\\b",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "FuncDef",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\(\\s*\\))",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ]
+    }
+  }
 }

@@ -1,7 +1,11 @@
 {
   "formatName": "SQL Source File",
-  "version": "1.0",
-  "extensions": [".sql", ".ddl", ".dml"],
+  "version": "2.0",
+  "extensions": [
+    ".sql",
+    ".ddl",
+    ".dml"
+  ],
   "description": "Structured Query Language source files for databases.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +19,78 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["application/sql"],
-  "Software": ["SQL Server Management Studio", "DBeaver", "DataGrip"],
-  "UseCases": ["Database schema definition", "Data manipulation scripts", "Stored procedures"]
+  "MimeTypes": [
+    "text/x-sql"
+  ],
+  "Software": [
+    "DBeaver",
+    "SQL Server Management Studio",
+    "DataGrip"
+  ],
+  "UseCases": [
+    "Database queries",
+    "Schema migration",
+    "Stored procedures"
+  ],
+  "syntaxDefinition": {
+    "id": "sql",
+    "name": "SQL",
+    "extensions": [
+      ".sql",
+      ".ddl",
+      ".dml"
+    ],
+    "lineCommentPrefix": "--",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "Keyword",
+        "pattern": "(?i)\\b(ADD|ALL|ALTER|AND|ANY|AS|ASC|BACKUP|BETWEEN|BY|CASE|CHECK|COLUMN|CONSTRAINT|CREATE|CROSS|DATABASE|DEFAULT|DELETE|DESC|DISTINCT|DROP|EXEC|EXISTS|FOREIGN|FROM|FULL|GROUP|HAVING|INNER|INSERT|INTO|IS|JOIN|KEY|LEFT|LIKE|LIMIT|NOT|NULL|NULLS|OF|OFFSET|ON|OR|ORDER|OUTER|PRIMARY|PROCEDURE|RIGHT|ROWNUM|SELECT|SET|SOME|TABLE|TOP|TRUNCATE|UNION|UNIQUE|UPDATE|VALUES|VIEW|WHERE|WITH|BEGIN|END|COMMIT|ROLLBACK|TRANSACTION|INDEX|TRIGGER|FUNCTION|RETURNS|RETURN|DECLARE|IF|ELSE|WHILE|LOOP|CURSOR|OPEN|FETCH|CLOSE|DEALLOCATE|GRANT|REVOKE|DENY|USE|SCHEMA|SEQUENCE|REPLACE|MERGE|CALL|EXECUTE|EXPLAIN|VACUUM|ANALYZE|REINDEX|ATTACH|DETACH)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Function",
+        "pattern": "(?i)\\b(ABS|AVG|CAST|CEIL|COALESCE|CONCAT|COUNT|CURDATE|CURTIME|DATE|DATEDIFF|DAY|FLOOR|FORMAT|GETDATE|HOUR|ISNULL|LCASE|LEFT|LEN|LENGTH|LOWER|LTRIM|MAX|MIN|MOD|MONTH|NOW|NULLIF|NVIL|PATINDEX|RAND|REPLACE|REVERSE|RIGHT|ROUND|RTRIM|SIGN|SQRT|STR|STUFF|SUBSTR|SUBSTRING|SUM|SYSDATE|TRIM|UCASE|UPPER|YEAR|ROW_NUMBER|RANK|DENSE_RANK|NTILE|LAG|LEAD|FIRST_VALUE|LAST_VALUE|NTH_VALUE|JSON_EXTRACT|JSON_VALUE|JSON_QUERY|JSON_ARRAYAGG|JSON_OBJECTAGG|GROUP_CONCAT|STRING_AGG|LISTAGG|ARRAY_AGG)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "DataType",
+        "pattern": "(?i)\\b(BIGINT|BINARY|BIT|BLOB|BOOLEAN|CHAR|CHARACTER|CLOB|DATE|DATETIME|DECIMAL|DOUBLE|FLOAT|INT|INTEGER|LONGBLOB|LONGTEXT|MEDIUMBLOB|MEDIUMINT|MEDIUMTEXT|MONEY|NCHAR|NTEXT|NUMERIC|NVARCHAR|REAL|SMALLDATETIME|SMALLINT|SMALLMONEY|TEXT|TIME|TIMESTAMP|TINYINT|TINYTEXT|UNIQUEIDENTIFIER|VARBINARY|VARCHAR|XML|JSON|JSONB|UUID|SERIAL|BYTEA)\\b",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "String",
+        "pattern": "(N?'(?:[^'\\\\]|\\\\.)*'|N?\"(?:[^\"\\\\]|\\\\.)*\")",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "--.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/",
+        "colorKey": "TE_Comment"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\bBEGIN\\b"
+      ],
+      "endPatterns": [
+        "\\bEND\\b"
+      ]
+    }
+  }
 }

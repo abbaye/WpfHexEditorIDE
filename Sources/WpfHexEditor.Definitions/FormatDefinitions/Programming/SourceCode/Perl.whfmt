@@ -1,7 +1,11 @@
 {
   "formatName": "Perl Script",
-  "version": "1.0",
-  "extensions": [".pl", ".pm", ".pod"],
+  "version": "2.0",
+  "extensions": [
+    ".pl",
+    ".pm",
+    ".pod"
+  ],
   "description": "Perl scripting language source files and modules.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -15,11 +19,71 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-perl"],
-  "Software": ["VS Code", "Padre"],
-  "UseCases": ["Text processing", "System administration scripts", "CGI web scripting"]
+  "MimeTypes": [
+    "text/x-perl"
+  ],
+  "Software": [
+    "VS Code",
+    "Komodo IDE"
+  ],
+  "UseCases": [
+    "System administration",
+    "Text processing",
+    "Web CGI scripting"
+  ],
+  "syntaxDefinition": {
+    "id": "perl",
+    "name": "Perl",
+    "extensions": [
+      ".pl",
+      ".pm",
+      ".pod",
+      ".t"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*'|q[qw]?\\{[^}]*\\}|q[qw]?\\[[^\\]]*\\]|q[qw]?\\([^)]*\\))",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "#.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(BEGIN|END|CHECK|INIT|UNITCHECK|and|cmp|continue|do|else|elsif|eq|for|foreach|ge|gt|if|last|le|local|lt|my|ne|next|no|not|or|our|package|print|printf|push|pop|q|qq|qw|redo|ref|require|return|shift|state|sub|tie|undef|unless|until|use|while|xor)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Variable",
+        "pattern": "[\\$@%][a-zA-Z_][a-zA-Z0-9_]*|[\\$@%]\\{[^}]+\\}",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f]+|0b[01]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ]
+    }
+  }
 }

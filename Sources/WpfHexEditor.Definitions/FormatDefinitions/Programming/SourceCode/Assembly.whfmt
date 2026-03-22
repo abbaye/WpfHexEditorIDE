@@ -1,6 +1,6 @@
 {
   "formatName": "Assembly Source File",
-  "version": "1.0",
+  "version": "2.0",
   "extensions": [".asm", ".s", ".z80", ".arm", ".mips", ".65s", ".6502"],
   "description": "Assembly language source files for various architectures (x86, ARM, Z80, 6502, MIPS).",
   "category": "Programming",
@@ -15,11 +15,54 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 0,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-07",
+    "LastUpdated": "2026-03-22",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "MimeTypes": ["text/x-asm"],
   "Software": ["NASM", "MASM", "VS Code"],
-  "UseCases": ["Low-level systems programming", "Reverse engineering", "Embedded ROM development", "Retro computing"]
+  "UseCases": ["Low-level systems programming", "Reverse engineering", "Embedded ROM development", "Retro computing"],
+  "syntaxDefinition": {
+    "id": "asm_x86",
+    "name": "Assembly x86/x64",
+    "extensions": [".asm", ".s"],
+    "lineCommentPrefix": ";",
+    "rules": [
+      {
+        "type": "Keyword",
+        "pattern": "\\b(?i)(mov|movsx|movzx|movq|push|pop|pushf|popf|call|ret|retn|retf|jmp|je|jne|jz|jnz|jl|jle|jg|jge|ja|jb|jae|jbe|jo|jno|js|jns|jcxz|jecxz|loop|loope|loopne|add|sub|mul|imul|div|idiv|xor|and|or|not|neg|shl|shr|sal|sar|rol|ror|rcl|rcr|lea|nop|int|int3|hlt|clc|stc|cld|std|cli|sti|rep|repe|repz|repne|repnz|cmp|test|inc|dec|cbw|cwd|cwde|cdq|bswap|bsf|bsr|bt|bts|btr|btc|xchg|xadd|cmpxchg|enter|leave|pusha|popa|pushad|popad|lods|stos|movs|cmps|scas|in|out|cpuid|rdtsc|syscall|sysret|sysexit|sysenter)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Register",
+        "pattern": "\\b(?i)(eax|ebx|ecx|edx|esi|edi|esp|ebp|rax|rbx|rcx|rdx|rsi|rdi|rsp|rbp|r8|r9|r10|r11|r12|r13|r14|r15|al|ah|bl|bh|cl|ch|dl|dh|ax|bx|cx|dx|si|di|sp|bp|cs|ds|es|fs|gs|ss|eip|rip|eflags|rflags|xmm[0-9]+|ymm[0-9]+|zmm[0-9]+|mm[0-9]+|cr[0-9]+|dr[0-9]+)\\b",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "Directive",
+        "pattern": "\\b(?i)(db|dw|dd|dq|dt|resb|resw|resd|resq|rest|section|segment|bits|use16|use32|use64|global|extern|export|import|align|org|times|equ|%define|%macro|%endmacro|%include|%if|%else|%endif|%ifdef|%ifndef|%undef|struc|endstruc|istruc|iend|proc|endp|public|private|label|byte|word|dword|qword|oword|yword|zword|ptr|offset|flat|near|far|short)\\b",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f]+|0b[01]+|0o[0-7]+|[0-9]+[hH]|[0-9A-Fa-f]+[hH]|[01]+[bB]|[0-7]+[oOqQ]|[0-9]+)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "String",
+        "pattern": "('(?:[^'\\\\]|\\\\.)*'|\"(?:[^\"\\\\]|\\\\.)*\")",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Label",
+        "pattern": "^\\s*[A-Za-z_][A-Za-z0-9_]*:",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "Comment",
+        "pattern": ";.*$",
+        "colorKey": "TE_Comment"
+      }
+    ]
+  }
 }

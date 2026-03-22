@@ -11,6 +11,7 @@
 // ==========================================================
 
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using WpfHexEditor.Editor.CodeEditor.Models;
 
 namespace WpfHexEditor.Editor.CodeEditor.Folding;
@@ -22,10 +23,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Folding;
 /// </summary>
 public sealed class IndentFoldingStrategy : IFoldingStrategy
 {
-    private readonly int _tabWidth;
+    private readonly int    _tabWidth;
+    private readonly Regex? _blockStartPattern;
 
     /// <param name="tabWidth">Number of spaces equivalent to one tab character (default 4).</param>
-    public IndentFoldingStrategy(int tabWidth = 4) => _tabWidth = tabWidth;
+    /// <param name="blockStartPattern">
+    /// Optional regex pattern.  When provided, only lines matching this pattern can open
+    /// a new fold region, regardless of indentation changes.
+    /// </param>
+    public IndentFoldingStrategy(int tabWidth = 4, string? blockStartPattern = null)
+    {
+        _tabWidth           = tabWidth;
+        _blockStartPattern  = blockStartPattern is not null
+            ? new Regex(blockStartPattern, RegexOptions.Compiled)
+            : null;
+    }
 
     public IReadOnlyList<FoldingRegion> Analyze(IReadOnlyList<CodeLine> lines)
     {
@@ -50,8 +62,10 @@ public sealed class IndentFoldingStrategy : IFoldingStrategy
             }
 
             // Peek: if the next non-blank line is deeper, this line opens a region.
+            // When a blockStartPattern is configured, also require the current line to match it.
             int nextIndent = GetNextNonBlankIndent(lines, i + 1);
-            if (nextIndent > indent)
+            if (nextIndent > indent &&
+                (_blockStartPattern is null || _blockStartPattern.IsMatch(text)))
                 stack.Push((i, indent));
         }
 
