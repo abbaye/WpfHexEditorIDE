@@ -40,6 +40,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     {
         InitializeComponent();
         DataContext = _vm;
+        UpdateSearchModeMenuCheckmarks(SearchMode.FileName);
         // Use AddHandler with handledEventsToo=true so we receive MouseLeftButtonUp
         // even when the TreeViewItem has already marked the event as handled.
         // This is required for the slow-click rename to work reliably.
@@ -253,6 +254,27 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
         => SearchPlaceholder.Visibility =
             string.IsNullOrEmpty(SearchBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+
+    // -- Search mode dropdown --------------------------------------------------
+
+    private void OnSearchModeButtonClick(object sender, RoutedEventArgs e)
+        => SearchModeButton.ContextMenu.IsOpen = true;
+
+    private void OnSearchModeMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string tag } &&
+            Enum.TryParse<SearchMode>(tag, out var mode))
+        {
+            _vm.CurrentSearchMode = mode;
+            UpdateSearchModeMenuCheckmarks(mode);
+        }
+    }
+
+    private void UpdateSearchModeMenuCheckmarks(SearchMode active)
+    {
+        foreach (var item in SearchModeContextMenu.Items.OfType<MenuItem>())
+            item.IsChecked = item.Tag is string t && Enum.TryParse<SearchMode>(t, out var m) && m == active;
+    }
 
     // -- Context menu ----------------------------------------------------------
 

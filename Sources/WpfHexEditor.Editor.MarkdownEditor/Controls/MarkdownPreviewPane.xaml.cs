@@ -226,6 +226,19 @@ public sealed partial class MarkdownPreviewPane : UserControl
     // --- Context menu sync ------------------------------------------------
 
     /// <summary>
+    /// Applies an HTML zoom level to the preview content.
+    /// </summary>
+    /// <param name="zoom">Zoom factor (e.g. 1.5 = 150 %).  Clamped to [0.5, 3.0].</param>
+    public void SetZoom(double zoom)
+    {
+        if (!_isInitialized) return;
+        var pct = (Math.Clamp(zoom, 0.5, 3.0) * 100).ToString("F0",
+            System.Globalization.CultureInfo.InvariantCulture);
+        _webView.CoreWebView2.ExecuteScriptAsync(
+            $"document.body.style.zoom='{pct}%';");
+    }
+
+    /// <summary>
     /// Updates the Sync Scroll checkmark from the host when the panel opens.
     /// </summary>
     public void SetSyncScrollChecked(bool value)

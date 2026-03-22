@@ -21,6 +21,7 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
 {
     private bool _isExpanded = true;
     private bool _isSelected;
+    private bool _isSearchVisible = true;
 
     public abstract string DisplayName { get; }
     /// <summary>
@@ -44,6 +45,18 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
     /// True while an inline rename TextBox is active on this node.
     /// </summary>
     public virtual bool IsEditing => false;
+
+    /// <summary>
+    /// Set to <see langword="false"/> while a search is active and this node
+    /// does not match the query (nor is an ancestor of a matching node).
+    /// Bound to <see cref="System.Windows.Visibility"/> via a DataTrigger in the panel XAML.
+    /// Reset to <see langword="true"/> when the search box is cleared.
+    /// </summary>
+    public bool IsSearchVisible
+    {
+        get => _isSearchVisible;
+        set { if (_isSearchVisible == value) return; _isSearchVisible = value; OnPropertyChanged(); }
+    }
 
     /// <summary>
     /// True for nodes that support on-demand child expansion (outline load).

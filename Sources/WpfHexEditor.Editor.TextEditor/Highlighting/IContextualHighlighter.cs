@@ -6,32 +6,43 @@
 // Created: 2026-03-22
 // Description:
 //     Contract for stateful, multi-line syntax highlighters.
-//     Unlike RegexSyntaxHighlighter (which is stateless and line-by-line),
-//     an IContextualHighlighter first receives a full document snapshot
-//     via Prepare() so it can build cross-line context (e.g. fence regions),
-//     then handles per-line Highlight() calls that delegate to the correct
-//     language highlighter based on that context.
+//     BuildContext() scans the full document snapshot and returns an opaque
+//     context array that is then passed to each Highlight() call.
+//     Both methods are safe to call from a background thread — no shared
+//     mutable state is retained between calls.
 // ==========================================================
 
 namespace WpfHexEditor.Editor.TextEditor.Highlighting;
 
 /// <summary>
-/// Stateful, multi-line syntax highlighter that builds cross-line context
-/// before processing individual lines.
+/// Multi-line syntax highlighter that builds cross-line context before
+/// processing individual lines.
 /// </summary>
+/// <remarks>
+/// The two-step API is designed so that <see cref="BuildContext"/> can run
+/// entirely on a background thread alongside <see cref="Highlight"/>.
+/// No mutable state is shared between concurrent invocations.
+/// </remarks>
 internal interface IContextualHighlighter
 {
     /// <summary>
-    /// Scans the entire document to build cross-line context (e.g. fence regions).
-    /// Must be called once per highlight pass before any <see cref="Highlight"/> call.
+    /// Scans the entire document snapshot and returns an opaque per-line
+    /// context array (e.g. fence-language tags).
     /// </summary>
     /// <param name="allLines">All document lines at the time of the highlight pass.</param>
-    void Prepare(IReadOnlyList<string> allLines);
+    /// <returns>
+    /// A <c>string?[]</c> whose meaning is defined by the implementing type.
+    /// Pass the returned value to every subsequent <see cref="Highlight"/> call
+    /// in the same pass.
+    /// </returns>
+    string?[] BuildContext(IReadOnlyList<string> allLines);
 
     /// <summary>
-    /// Returns syntax highlight spans for the given line using context built by <see cref="Prepare"/>.
+    /// Returns syntax highlight spans for the given line using the context
+    /// produced by <see cref="BuildContext"/>.
     /// </summary>
     /// <param name="lineText">Text content of the line.</param>
     /// <param name="lineIndex">Zero-based line index in the document.</param>
-    IReadOnlyList<ColoredSpan> Highlight(string lineText, int lineIndex);
+    /// <param name="context">Context array returned by <see cref="BuildContext"/>.</param>
+    IReadOnlyList<ColoredSpan> Highlight(string lineText, int lineIndex, string?[] context);
 }

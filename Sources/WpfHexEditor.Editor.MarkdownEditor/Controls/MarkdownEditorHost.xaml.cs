@@ -98,13 +98,29 @@ public sealed partial class MarkdownEditorHost : UserControl,
     // to avoid calling GetText() on every keystroke.
     private int _cachedDocLength;
 
+    // Open / loading guard — prevents double-render when ModifiedChanged fires during OpenAsync
+    private bool _isOpening;
+
+    // Word wrap
+    private bool _wordWrap = true;
+
+    // Splitter ratio (0.0–1.0) — persisted across sessions
+    private double _splitRatio = 0.5;
+
+    // Preview zoom (1.0 = 100 %) — persisted across sessions
+    private double _previewZoom = 1.0;
+
     // --- Toolbar ----------------------------------------------------------
     private readonly ObservableCollection<EditorToolbarItem> _toolbarItems = new();
+
+    // Toolbar built flag — prevents double-build on Unloaded/Loaded cycles
+    private bool _toolbarBuilt;
 
     // Toolbar items that need runtime updates
     private EditorToolbarItem? _podView;
     private EditorToolbarItem? _podLayout;
     private EditorToolbarItem? _podSync;
+    private EditorToolbarItem? _podWrap;
 
     // --- Status bar -------------------------------------------------------
     private readonly ObservableCollection<StatusBarItem> _statusItems = new();
@@ -112,6 +128,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
     private readonly StatusBarItem _sbWordCount   = new() { Label = "Words", Tooltip = "Approximate word count" };
     private readonly StatusBarItem _sbLineCount   = new() { Label = "Lines", Tooltip = "Total line count" };
     private readonly StatusBarItem _sbReadingTime = new() { Label = "Read",  Tooltip = "Estimated reading time (200 wpm)" };
+    private readonly StatusBarItem _sbZoom        = new() { Label = "Zoom",  Tooltip = "Preview zoom (Ctrl+scroll in preview)" };
 
     // --- Construction -----------------------------------------------------
 
@@ -139,8 +156,11 @@ public sealed partial class MarkdownEditorHost : UserControl,
         };
         _syncScrollTimer.Tick += OnSyncScrollTimerTick;
 
+        // Enable word wrap by default for Markdown source
+        _editor.IsWordWrapEnabled = true;
+
         // Wire inner editor events
-        _editor.ModifiedChanged  += (_, _) => { ModifiedChanged?.Invoke(this, EventArgs.Empty); ContentChanged?.Invoke(this, EventArgs.Empty); ScheduleRefresh(); };
+        _editor.ModifiedChanged  += (_, _) => { ModifiedChanged?.Invoke(this, EventArgs.Empty); ContentChanged?.Invoke(this, EventArgs.Empty); if (!_isOpening) ScheduleRefresh(); };
         _editor.CanUndoChanged   += (_, _) => CanUndoChanged?.Invoke(this, EventArgs.Empty);
         _editor.CanRedoChanged   += (_, _) => CanRedoChanged?.Invoke(this, EventArgs.Empty);
         _editor.TitleChanged     += (_, s) => TitleChanged?.Invoke(this, s);
@@ -187,14 +207,32 @@ public sealed partial class MarkdownEditorHost : UserControl,
         InputBindings.Add(new KeyBinding(MdCommands.SplitView,      new KeyGesture(Key.D2, ModifierKeys.Control)));
         InputBindings.Add(new KeyBinding(MdCommands.PreviewOnly,    new KeyGesture(Key.D3, ModifierKeys.Control)));
         InputBindings.Add(new KeyBinding(MdCommands.CycleLayout,    new KeyGesture(Key.L,  ModifierKeys.Control | ModifierKeys.Shift)));
+        InputBindings.Add(new KeyBinding(MdCommands.ToggleWordWrap, new KeyGesture(Key.Z,  ModifierKeys.Alt)));
 
-        BuildToolbarItems();
+        CommandBindings.Add(new CommandBinding(MdCommands.ToggleWordWrap, (_, _) => SetWordWrap(!_wordWrap)));
+
+        // Wire splitter drag-complete for ratio persistence
+        _splitter.DragCompleted += OnSplitterDragCompleted;
+
+        // Wire Ctrl+scroll on the preview pane for zoom
+        _preview.PreviewMouseWheel += OnPreviewPaneMouseWheel;
+
         BuildStatusBar();
         UpdateGridLayout();
 
         Loaded += async (_, _) =>
         {
             _isDark = DetectDarkTheme();
+
+            // Build toolbar items here (not in constructor) so the IDE shell has already
+            // subscribed to ToolbarItems.CollectionChanged — each Add fires an event the
+            // shell can receive. Guard prevents double-build on Unloaded/Loaded cycles.
+            if (!_toolbarBuilt)
+            {
+                BuildToolbarItems();
+                _toolbarBuilt = true;
+            }
+
             await _preview.InitializeAsync();
         };
     }
@@ -264,9 +302,17 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
-        _filePath = filePath;
-        await _editor.OpenAsync(filePath, ct);
-        await ForceRefreshAsync();  // updates word count + cache + preview
+        _filePath  = filePath;
+        _isOpening = true;
+        try
+        {
+            await _editor.OpenAsync(filePath, ct);
+        }
+        finally
+        {
+            _isOpening = false;
+        }
+        await ForceRefreshAsync();  // single render — ModifiedChanged during open is suppressed
     }
 
     // --- INavigableDocument -----------------------------------------------
@@ -279,9 +325,12 @@ public sealed partial class MarkdownEditorHost : UserControl,
     {
         var dto = _editorPersist.GetEditorConfig();
         dto.Extra ??= new Dictionary<string, string>();
-        dto.Extra["md.viewMode"] = _viewMode.ToString();
-        dto.Extra["md.layout"]   = _layout.ToString();
-        dto.Extra["md.sync"]     = _syncScroll.ToString();
+        dto.Extra["md.viewMode"]    = _viewMode.ToString();
+        dto.Extra["md.layout"]      = _layout.ToString();
+        dto.Extra["md.sync"]        = _syncScroll.ToString();
+        dto.Extra["md.wordWrap"]    = _wordWrap.ToString();
+        dto.Extra["md.splitRatio"]  = _splitRatio.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        dto.Extra["md.previewZoom"] = _previewZoom.ToString(System.Globalization.CultureInfo.InvariantCulture);
         return dto;
     }
 
@@ -302,6 +351,23 @@ public sealed partial class MarkdownEditorHost : UserControl,
         if (config.Extra.TryGetValue("md.sync", out var sync) &&
             bool.TryParse(sync, out var syncBool))
             SetSyncScroll(syncBool);
+
+        if (config.Extra.TryGetValue("md.wordWrap", out var ww) &&
+            bool.TryParse(ww, out var wwBool))
+            SetWordWrap(wwBool);
+
+        if (config.Extra.TryGetValue("md.splitRatio", out var sr) &&
+            double.TryParse(sr, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var ratio))
+        {
+            _splitRatio = Math.Clamp(ratio, 0.1, 0.9);
+            UpdateGridLayout();
+        }
+
+        if (config.Extra.TryGetValue("md.previewZoom", out var pz) &&
+            double.TryParse(pz, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var zoom))
+            SetPreviewZoom(zoom);
     }
 
     public byte[]? GetUnsavedModifications()            => _editorPersist.GetUnsavedModifications();
@@ -481,6 +547,17 @@ public sealed partial class MarkdownEditorHost : UserControl,
         menu.Items.Add(MakeEditorMenuItem("Image",          "", () => InsertSnippet("![alt text](image.png)")));
         menu.Items.Add(MakeEditorMenuItem("Horizontal Rule","", () => InsertSnippet("\n---\n")));
 
+        var sep2 = new Separator();
+        sep2.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
+        menu.Items.Add(sep2);
+
+        // VIEW group
+        var viewHeader = new MenuItem { Header = "VIEW" };
+        viewHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
+        menu.Items.Add(viewHeader);
+
+        menu.Items.Add(MakeEditorMenuItem("Word Wrap\tAlt+Z", "", () => SetWordWrap(!_wordWrap)));
+
         return menu;
     }
 
@@ -602,10 +679,11 @@ public sealed partial class MarkdownEditorHost : UserControl,
     private void BuildHorizontalLayout(bool editorFirst,
         bool showEditor, bool showPreview, bool isSplit)
     {
+        double r1 = _splitRatio, r2 = 1.0 - _splitRatio;
         // Col 0: first pane
         _rootGrid.ColumnDefinitions.Add(new ColumnDefinition
         {
-            Width = isSplit ? new GridLength(1, GridUnitType.Star) : GridLength.Auto,
+            Width    = isSplit ? new GridLength(r1, GridUnitType.Star) : GridLength.Auto,
             MinWidth = isSplit ? 80 : 0,
         });
 
@@ -616,7 +694,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
             // Col 2: second pane
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition
             {
-                Width = new GridLength(1, GridUnitType.Star),
+                Width    = new GridLength(r2, GridUnitType.Star),
                 MinWidth = 80,
             });
         }
@@ -653,9 +731,10 @@ public sealed partial class MarkdownEditorHost : UserControl,
     private void BuildVerticalLayout(bool editorFirst,
         bool showEditor, bool showPreview, bool isSplit)
     {
+        double r1 = _splitRatio, r2 = 1.0 - _splitRatio;
         _rootGrid.RowDefinitions.Add(new RowDefinition
         {
-            Height = isSplit ? new GridLength(1, GridUnitType.Star) : GridLength.Auto,
+            Height    = isSplit ? new GridLength(r1, GridUnitType.Star) : GridLength.Auto,
             MinHeight = isSplit ? 60 : 0,
         });
 
@@ -664,7 +743,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
             _rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(4) });
             _rootGrid.RowDefinitions.Add(new RowDefinition
             {
-                Height = new GridLength(1, GridUnitType.Star),
+                Height    = new GridLength(r2, GridUnitType.Star),
                 MinHeight = 60,
             });
         }
@@ -736,9 +815,13 @@ public sealed partial class MarkdownEditorHost : UserControl,
     private void OnEditorScrollChanged(object? sender, ScrollChangedEventArgs e)
     {
         if (!_syncScroll || _viewMode != MdViewMode.Split) return;
-        if (e.ExtentHeight <= 0) return;
 
-        _pendingScrollPct = e.VerticalOffset / e.ExtentHeight;
+        // Max scroll distance = ExtentHeight - ViewportHeight (not ExtentHeight alone).
+        // Dividing by ExtentHeight would cap the percentage at ~50% on a typical document.
+        var scrollRange = e.ExtentHeight - e.ViewportHeight;
+        if (scrollRange <= 0) return;
+
+        _pendingScrollPct = Math.Clamp(e.VerticalOffset / scrollRange, 0.0, 1.0);
         _syncScrollTimer.Stop();
         _syncScrollTimer.Start();
     }
@@ -782,6 +865,14 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
         // Separator
         var sep = new EditorToolbarItem { IsSeparator = true };
+
+        // Word-wrap toggle
+        _podWrap = new EditorToolbarItem
+        {
+            Icon = "\uE8A3", Label = "Wrap", Tooltip = "Word wrap (Alt+Z)",
+            IsToggle = true, IsChecked = _wordWrap,
+            Command = new RelayCmd(() => SetWordWrap(!_wordWrap)),
+        };
 
         // Sync-scroll toggle
         _podSync = new EditorToolbarItem
@@ -833,6 +924,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         _toolbarItems.Add(podInsert);
         _toolbarItems.Add(podFormat);
         _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+        _toolbarItems.Add(_podWrap);
         _toolbarItems.Add(_podSync);
         _toolbarItems.Add(podRefresh);
 
@@ -869,10 +961,25 @@ public sealed partial class MarkdownEditorHost : UserControl,
             });
         }
 
+        _sbZoom.Value = "100 %";
+        // Add preset zoom choices — clicking a choice applies that zoom level
+        foreach (var (pct, factor) in new (string, double)[] {
+            ("50 %", 0.5), ("75 %", 0.75), ("100 %", 1.0),
+            ("125 %", 1.25), ("150 %", 1.5), ("200 %", 2.0), ("300 %", 3.0) })
+        {
+            var f = factor; // capture
+            _sbZoom.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = pct,
+                Command     = new RelayCmd(() => SetPreviewZoom(f)),
+            });
+        }
+
         _statusItems.Add(_sbView);
         _statusItems.Add(_sbWordCount);
         _statusItems.Add(_sbLineCount);
         _statusItems.Add(_sbReadingTime);
+        _statusItems.Add(_sbZoom);
 
         UpdateStatusBar();
     }
@@ -937,6 +1044,60 @@ public sealed partial class MarkdownEditorHost : UserControl,
         return true; // default to dark
     }
 
+    // --- Word wrap --------------------------------------------------------
+
+    private void SetWordWrap(bool value)
+    {
+        _wordWrap = value;
+        _editor.IsWordWrapEnabled = value;
+        if (_podWrap is not null)
+            _podWrap.IsChecked = value;
+    }
+
+    // --- Splitter ratio ---------------------------------------------------
+
+    private void OnSplitterDragCompleted(object? sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+    {
+        // Compute the actual ratio from the current column / row star sizes.
+        bool isVertical = _layout == MdSplitLayout.PreviewRight ||
+                          _layout == MdSplitLayout.PreviewLeft;
+        if (isVertical && _rootGrid.ColumnDefinitions.Count == 3)
+        {
+            var total = _rootGrid.ColumnDefinitions[0].ActualWidth +
+                        _rootGrid.ColumnDefinitions[2].ActualWidth;
+            if (total > 0)
+                _splitRatio = Math.Clamp(
+                    _rootGrid.ColumnDefinitions[0].ActualWidth / total, 0.1, 0.9);
+        }
+        else if (!isVertical && _rootGrid.RowDefinitions.Count == 3)
+        {
+            var total = _rootGrid.RowDefinitions[0].ActualHeight +
+                        _rootGrid.RowDefinitions[2].ActualHeight;
+            if (total > 0)
+                _splitRatio = Math.Clamp(
+                    _rootGrid.RowDefinitions[0].ActualHeight / total, 0.1, 0.9);
+        }
+    }
+
+    // --- Preview zoom -----------------------------------------------------
+
+    private void OnPreviewPaneMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
+        e.Handled = true;
+        SetPreviewZoom(_previewZoom + (e.Delta > 0 ? 0.1 : -0.1));
+    }
+
+    private void SetPreviewZoom(double zoom)
+    {
+        _previewZoom  = Math.Clamp(Math.Round(zoom, 1), 0.5, 3.0);
+        var label     = $"{(int)(_previewZoom * 100)} %";
+        _sbZoom.Value = label;
+        foreach (var c in _sbZoom.Choices)
+            c.IsActive = c.DisplayName == label;
+        _preview.SetZoom(_previewZoom);
+    }
+
     // ─── Minimal RelayCommand (avoids dependency on full RelayCommand impl) ──
     private sealed class RelayCmd : ICommand
     {
@@ -964,5 +1125,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         public static readonly RoutedCommand SplitView      = new(nameof(SplitView),      typeof(MarkdownEditorHost));
         public static readonly RoutedCommand PreviewOnly    = new(nameof(PreviewOnly),    typeof(MarkdownEditorHost));
         public static readonly RoutedCommand CycleLayout    = new(nameof(CycleLayout),    typeof(MarkdownEditorHost));
+        public static readonly RoutedCommand ToggleWordWrap = new(nameof(ToggleWordWrap), typeof(MarkdownEditorHost));
     }
 }

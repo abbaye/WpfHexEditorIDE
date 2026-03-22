@@ -243,31 +243,36 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         var contextualHighlighter = _contextualHighlighter;
         var syncCtx               = _syncContext;
 
-        // Prepare contextual highlighter with a snapshot of all lines (UI thread, before Task.Run)
-        if (contextualHighlighter != null)
-            contextualHighlighter.Prepare(_lines);
+        // Capture all lines on the UI thread (fast pointer copy, ~5 µs / 1000 lines).
+        // The O(N) BuildContext fence scan runs inside Task.Run on the background thread.
+        var linesSnapshot = contextualHighlighter is not null ? _lines.ToArray() : null;
 
         Task.Run(() =>
         {
-            // Pass 1 â€” visible range first (lowest latency)
+            // Build cross-line context (fenced code regions) entirely on the background thread.
+            var ctx = linesSnapshot is not null && contextualHighlighter is not null
+                ? contextualHighlighter.BuildContext(linesSnapshot)
+                : null;
+
+            // Pass 1 — visible range first (lowest latency)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
                 int li = indices[i];
                 if (!needed[i] || li < firstVisible || li > lastVisible) continue;
-                var result = contextualHighlighter != null
-                    ? contextualHighlighter.Highlight(texts[i], indices[i])
+                var result = ctx is not null
+                    ? contextualHighlighter!.Highlight(texts[i], indices[i], ctx)
                     : highlighter!.Highlight(texts[i]);
                 if (li < cache.Count && !token.IsCancellationRequested)
                     cache[li] = result;
             }
 
-            // Pass 2 â€” buffer lines (smoother pre-fetch for upcoming scroll)
+            // Pass 2 — buffer lines (smoother pre-fetch for upcoming scroll)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
                 int li = indices[i];
                 if (!needed[i] || (li >= firstVisible && li <= lastVisible)) continue;
-                var result = contextualHighlighter != null
-                    ? contextualHighlighter.Highlight(texts[i], indices[i])
+                var result = ctx is not null
+                    ? contextualHighlighter!.Highlight(texts[i], indices[i], ctx)
                     : highlighter!.Highlight(texts[i]);
                 if (li < cache.Count && !token.IsCancellationRequested)
                     cache[li] = result;

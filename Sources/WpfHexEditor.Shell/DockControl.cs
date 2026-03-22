@@ -369,10 +369,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideFlyout.FloatRequested   += OnAutoHideFloatRequested;
         _centerHost = new ContentControl();
 
-        _autoHideLeft.ItemClicked += OnAutoHideItemClicked;
-        _autoHideRight.ItemClicked += OnAutoHideItemClicked;
-        _autoHideTop.ItemClicked += OnAutoHideItemClicked;
-        _autoHideBottom.ItemClicked += OnAutoHideItemClicked;
+        _autoHideLeft.GroupClicked   += OnAutoHideGroupClicked;
+        _autoHideRight.GroupClicked  += OnAutoHideGroupClicked;
+        _autoHideTop.GroupClicked    += OnAutoHideGroupClicked;
+        _autoHideBottom.GroupClicked += OnAutoHideGroupClicked;
 
         // Attach hover-preview to all four auto-hide bars.
         // The bitmap provider returns the last-captured snapshot for a given item.
@@ -901,13 +901,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             RebuildVisualTree();
         };
 
-        // Pin button (Pin MDL2) — sends to auto-hide
+        // Pin button (Pin MDL2) — sends entire group to auto-hide
         var pinButton = MakeTitleButton("\uE141", "Auto Hide");
         pinButton.Click += (_, _) =>
         {
-            var item = group.ActiveItem;
-            if (item is null) return;
-            _engine?.AutoHide(item);
+            _engine?.AutoHideGroup(group);
             RebuildVisualTree();
         };
 
@@ -934,7 +932,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             menu.Items.Add(floatMenuItem);
 
             var autoHideMenuItem = new MenuItem { Header = "Auto Hide", Foreground = menuFg };
-            autoHideMenuItem.Click += (_, _) => { _engine?.AutoHide(item); RebuildVisualTree(); };
+            autoHideMenuItem.Click += (_, _) => { _engine?.AutoHideGroup(group); RebuildVisualTree(); };
             menu.Items.Add(autoHideMenuItem);
 
             menu.Items.Add(new Separator());
@@ -1186,16 +1184,23 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideBottom.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == Core.DockSide.Bottom));
     }
 
-    private void OnAutoHideItemClicked(DockItem item)
+    private void OnAutoHideGroupClicked(IReadOnlyList<DockItem> items)
     {
-        if (_autoHideFlyout.IsOpen && _autoHideFlyout.CurrentItem == item)
+        if (items.Count == 0) return;
+
+        var representative = items[0];
+
+        // Toggle off if the same group is already open
+        if (_autoHideFlyout.IsOpen &&
+            _autoHideFlyout.CurrentGroup.Count > 0 &&
+            _autoHideFlyout.CurrentGroup[0] == representative)
         {
             // Toggle off — snapshot is captured by the Dismissing event inside Close()
             _autoHideFlyout.Close();
             return;
         }
 
-        _autoHideFlyout.ShowForItem(item, CachedContentFactory, item.LastDockSide);
+        _autoHideFlyout.ShowForItems(items, CachedContentFactory, representative.LastDockSide);
     }
 
     private void OnAutoHideRestoreRequested(DockItem item)
@@ -1204,17 +1209,24 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         if (_engine is null || Layout is null) return;
 
-        // Re-dock to original side
-        var direction = item.LastDockSide switch
+        // Restore the whole group if the item was auto-hidden as part of one
+        if (item.AutoHideGroupId is { } groupId)
         {
-            Core.DockSide.Left => DockDirection.Left,
-            Core.DockSide.Right => DockDirection.Right,
-            Core.DockSide.Top => DockDirection.Top,
-            Core.DockSide.Bottom => DockDirection.Bottom,
-            _ => DockDirection.Bottom
-        };
+            _engine.RestoreGroupFromAutoHide(groupId, Layout.MainDocumentHost);
+        }
+        else
+        {
+            var direction = item.LastDockSide switch
+            {
+                Core.DockSide.Left   => DockDirection.Left,
+                Core.DockSide.Right  => DockDirection.Right,
+                Core.DockSide.Top    => DockDirection.Top,
+                Core.DockSide.Bottom => DockDirection.Bottom,
+                _                    => DockDirection.Bottom
+            };
+            _engine.RestoreFromAutoHide(item, Layout.MainDocumentHost, direction);
+        }
 
-        _engine.RestoreFromAutoHide(item, Layout.MainDocumentHost, direction);
         RebuildVisualTree();
     }
 
@@ -1252,7 +1264,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     private void CaptureAutoHideSnapshot()
     {
-        if (_autoHideFlyout.CurrentItem is not { } item) return;
+        if (_autoHideFlyout.CurrentGroup.Count == 0) return;
+        var item = _autoHideFlyout.CurrentGroup[0];
         var panel = _autoHideFlyout.PanelElement;
         if (!panel.IsVisible) return;
 

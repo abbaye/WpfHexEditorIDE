@@ -69,6 +69,7 @@ public class DockItemDto
     public bool IsDocument { get; set; }
     public DockItemState State { get; set; }
     public DockSide LastDockSide { get; set; } = DockSide.Bottom;
+    public Guid? AutoHideGroupId { get; set; }
     public double? FloatLeft { get; set; }
     public double? FloatTop { get; set; }
     public double? FloatWidth { get; set; }

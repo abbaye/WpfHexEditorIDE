@@ -42,6 +42,17 @@ public enum FilterMode
 }
 
 /// <summary>
+/// Controls how the search query is matched against tree nodes.
+/// </summary>
+public enum SearchMode
+{
+    FileName,       // substring match on display name only (default)
+    NameAndContent, // substring match on name OR file content
+    ContentOnly,    // substring match on file content only
+    Regex           // regex match on file name
+}
+
+/// <summary>
 /// Root view-model for <see cref="SolutionExplorerPanel"/>.
 /// Builds and synchronises the tree from an <see cref="ISolution"/>.
 /// </summary>
@@ -53,18 +64,24 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         public readonly SolutionExplorerNodeVm  Node;
         public readonly SolutionExplorerNodeVm? Parent;
-        public readonly string                  SearchKey; // DisplayName.ToLowerInvariant(), built once
+        public readonly string                  SearchKey;  // DisplayName.ToLowerInvariant(), built once
+        public readonly string?                 FilePath;   // absolute path; null for non-file nodes
+        public readonly bool                    IsTextFile; // false for Binary/Image/Tile
 
-        public FlatNode(SolutionExplorerNodeVm node, SolutionExplorerNodeVm? parent, string searchKey)
+        public FlatNode(SolutionExplorerNodeVm node, SolutionExplorerNodeVm? parent,
+                        string searchKey, string? filePath, bool isTextFile)
         {
-            Node      = node;
-            Parent    = parent;
-            SearchKey = searchKey;
+            Node       = node;
+            Parent     = parent;
+            SearchKey  = searchKey;
+            FilePath   = filePath;
+            IsTextFile = isTextFile;
         }
     }
 
     private ISolution? _solution;
-    private string     _searchText = "";
+    private string     _searchText   = "";
+    private SearchMode _searchMode   = SearchMode.FileName;
     private bool       _showAllFiles;
     private SortMode   _currentSort   = SortMode.None;
     private FilterMode _currentFilter = FilterMode.All;
@@ -221,6 +238,28 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
+    public SearchMode CurrentSearchMode
+    {
+        get => _searchMode;
+        set
+        {
+            if (_searchMode == value) return;
+            _searchMode = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SearchModeTooltip));
+            ScheduleSearch();
+        }
+    }
+
+    public string SearchModeTooltip => _searchMode switch
+    {
+        SearchMode.FileName       => "Search: File Name",
+        SearchMode.NameAndContent => "Search: Name + Content",
+        SearchMode.ContentOnly    => "Search: Content Only",
+        SearchMode.Regex          => "Search: Regex (file name)",
+        _                         => "Search"
+    };
+
     // -- Debounce + async search pipeline -------------------------------------
 
     /// <summary>
@@ -253,9 +292,10 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             return;
         }
 
-        // Debounce: restart 200 ms window on each keystroke.
+        // Adaptive debounce: 400 ms for content modes (disk I/O), 200 ms for name/regex.
+        var debounceMs = _searchMode is SearchMode.NameAndContent or SearchMode.ContentOnly ? 400 : 200;
         _searchDebounceTimer = new DispatcherTimer(DispatcherPriority.Background)
-            { Interval = TimeSpan.FromMilliseconds(200) };
+            { Interval = TimeSpan.FromMilliseconds(debounceMs) };
         _searchDebounceTimer.Tick += OnSearchDebounceTimerTick;
         _searchDebounceTimer.Start();
     }
@@ -271,12 +311,13 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         // Capture immutable locals before entering async context.
         var query = _searchText.ToLowerInvariant(); // single allocation per completed search
+        var mode  = _searchMode;                    // snapshot — mode may change while searching
         var cache = _flatNodeCache;                  // volatile read — gets latest complete list
 
         var cts = new CancellationTokenSource();
         _searchCts = cts;
 
-        _ = ExecuteSearchAsync(query, cache, cts.Token);
+        _ = ExecuteSearchAsync(query, mode, cache, cts.Token);
     }
 
     // -- Show All Files -------------------------------------------------------
@@ -439,7 +480,16 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         if (node is LoadingNodeVm) return;
 
-        cache.Add(new FlatNode(node, parent, node.DisplayName.ToLowerInvariant()));
+        string? filePath   = null;
+        bool    isTextFile = false;
+        if (node is FileNodeVm fn)
+        {
+            filePath   = fn.Source.AbsolutePath;
+            isTextFile = fn.Source.ItemType is not (
+                ProjectItemType.Binary or ProjectItemType.Image or ProjectItemType.Tile);
+        }
+
+        cache.Add(new FlatNode(node, parent, node.DisplayName.ToLowerInvariant(), filePath, isTextFile));
 
         foreach (var child in node.Children)
             PopulateCacheRecursive(child, node, cache);
@@ -1034,6 +1084,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// </summary>
     private async Task ExecuteSearchAsync(
         string             lowerQuery,
+        SearchMode         mode,
         List<FlatNode>     cache,
         CancellationToken  cancellationToken)
     {
@@ -1041,7 +1092,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         try
         {
             matches = await Task.Run(
-                () => ComputeMatchSet(lowerQuery, cache, cancellationToken),
+                () => ComputeMatchSet(lowerQuery, mode, cache, cancellationToken),
                 cancellationToken);
         }
         catch (OperationCanceledException)
@@ -1062,11 +1113,39 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// expanded: every node whose <see cref="FlatNode.SearchKey"/> contains
     /// <paramref name="lowerQuery"/>, plus all their ancestors.
     /// </summary>
+    private const long ContentSearchMaxBytes = 512 * 1024; // 512 KB guard
+
     private static HashSet<SolutionExplorerNodeVm> ComputeMatchSet(
         string            lowerQuery,
+        SearchMode        mode,
         List<FlatNode>    cache,
         CancellationToken cancellationToken)
     {
+        // For Regex mode compile the pattern once; invalid pattern yields empty results.
+        System.Text.RegularExpressions.Regex? regex = null;
+        if (mode == SearchMode.Regex)
+        {
+            try
+            {
+                regex = new System.Text.RegularExpressions.Regex(
+                    lowerQuery,
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase |
+                    System.Text.RegularExpressions.RegexOptions.Compiled);
+            }
+            catch
+            {
+                return new HashSet<SolutionExplorerNodeVm>(ReferenceEqualityComparer.Instance);
+            }
+        }
+
+        // Glob auto-detection: FileName queries containing * or ? are converted to regex.
+        System.Text.RegularExpressions.Regex? globRegex = null;
+        if (mode == SearchMode.FileName &&
+            (lowerQuery.Contains('*') || lowerQuery.Contains('?')))
+        {
+            globRegex = GlobToRegex(lowerQuery);
+        }
+
         // Build parent-lookup once — O(n).  ReferenceEqualityComparer avoids
         // string allocations and is correct because each node is a unique object.
         var parentMap = new Dictionary<SolutionExplorerNodeVm, SolutionExplorerNodeVm?>(
@@ -1081,8 +1160,19 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            // Ordinal comparison on already-lowercased strings — fastest possible path.
-            if (!flat.SearchKey.Contains(lowerQuery, StringComparison.Ordinal)) continue;
+            bool isMatch = mode switch
+            {
+                SearchMode.Regex          => regex!.IsMatch(flat.Node.DisplayName),
+                SearchMode.ContentOnly    => MatchesContent(flat, lowerQuery),
+                SearchMode.NameAndContent => flat.SearchKey.Contains(lowerQuery, StringComparison.Ordinal)
+                                             || MatchesContent(flat, lowerQuery),
+                // FileName: use glob regex when * or ? detected, otherwise fast Contains.
+                _ => globRegex is not null
+                    ? globRegex.IsMatch(flat.Node.DisplayName)
+                    : flat.SearchKey.Contains(lowerQuery, StringComparison.Ordinal)
+            };
+
+            if (!isMatch) continue;
 
             result.Add(flat.Node);
 
@@ -1098,6 +1188,48 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Reads up to <see cref="ContentSearchMaxBytes"/> of a text file and checks
+    /// whether it contains <paramref name="lowerQuery"/> (case-insensitive).
+    /// Returns false for binary/image files, files over the size limit, or on any I/O error.
+    /// Runs on a background thread; synchronous I/O is acceptable here.
+    /// </summary>
+    private static bool MatchesContent(in FlatNode flat, string lowerQuery)
+    {
+        if (flat.FilePath is null || !flat.IsTextFile) return false;
+        try
+        {
+            var info = new FileInfo(flat.FilePath);
+            if (!info.Exists || info.Length > ContentSearchMaxBytes) return false;
+            return File.ReadAllText(flat.FilePath)
+                       .Contains(lowerQuery, StringComparison.OrdinalIgnoreCase);
+        }
+        catch { return false; }
+    }
+
+    /// <summary>
+    /// Converts a glob pattern (<c>*</c> = any chars, <c>?</c> = one char) into a
+    /// case-insensitive anchored regex. All other regex metacharacters are escaped.
+    /// </summary>
+    private static System.Text.RegularExpressions.Regex GlobToRegex(string glob)
+    {
+        var sb = new System.Text.StringBuilder("^");
+        foreach (char c in glob)
+        {
+            sb.Append(c switch
+            {
+                '*' => ".*",
+                '?' => ".",
+                _   => System.Text.RegularExpressions.Regex.Escape(c.ToString())
+            });
+        }
+        sb.Append('$');
+        return new System.Text.RegularExpressions.Regex(
+            sb.ToString(),
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase |
+            System.Text.RegularExpressions.RegexOptions.Compiled);
     }
 
     /// <summary>
@@ -1117,12 +1249,16 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         var cache = _flatNodeCache; // volatile read — use the same list that was searched
         foreach (var flat in cache)
         {
-            // Guard: never set IsExpanded on file-level nodes — it fires the lazy outline loader.
-            if (flat.Node is FileNodeVm or DependentFileNodeVm) continue;
+            var inSet = matchedAndAncestors.Contains(flat.Node);
 
-            var shouldExpand = matchedAndAncestors.Contains(flat.Node);
-            if (flat.Node.IsExpanded != shouldExpand)
-                flat.Node.IsExpanded = shouldExpand;
+            // Visibility: ALL nodes — hide everything not matched or an ancestor of a match.
+            if (flat.Node.IsSearchVisible != inSet)
+                flat.Node.IsSearchVisible = inSet;
+
+            // Expansion: containers only — never set IsExpanded on file nodes (triggers lazy outline load).
+            if (flat.Node is FileNodeVm or DependentFileNodeVm) continue;
+            if (flat.Node.IsExpanded != inSet)
+                flat.Node.IsExpanded = inSet;
         }
     }
 
@@ -1161,6 +1297,9 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         foreach (var n in nodes)
         {
+            // Restore visibility unconditionally — nodes may have been hidden during search.
+            n.IsSearchVisible = true;
+
             // File and dependent-file nodes must stay collapsed — expanding them triggers
             // lazy outline loading which must remain user-initiated.
             if (n is FileNodeVm or DependentFileNodeVm)

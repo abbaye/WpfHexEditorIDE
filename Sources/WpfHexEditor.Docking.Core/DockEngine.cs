@@ -506,6 +506,68 @@ public class DockEngine
     }
 
     /// <summary>
+    /// Moves all items in the given group to auto-hide state together, assigning a shared
+    /// <see cref="DockItem.AutoHideGroupId"/> so they appear as one button in the auto-hide
+    /// bar and can be restored as a group.
+    /// </summary>
+    public void AutoHideGroup(DockGroupNode group)
+    {
+        ArgumentNullException.ThrowIfNull(group);
+
+        var items = group.Items.ToList();  // snapshot before mutation
+        if (items.Count == 0) return;
+
+        var side    = InferDockSide(group); // capture before items are removed
+        var groupId = Guid.NewGuid();
+
+        BeginTransaction();
+        foreach (var item in items)
+        {
+            item.AutoHideGroupId = groupId;
+            AutoHide(item);
+            item.LastDockSide = side;      // override: ensures whole group shares the same bar
+        }
+        CommitTransaction();
+    }
+
+    /// <summary>
+    /// Restores all auto-hidden items that share the given <paramref name="groupId"/>,
+    /// re-creating the original tab group on the correct dock side.
+    /// </summary>
+    public void RestoreGroupFromAutoHide(Guid groupId, DockGroupNode? target = null)
+    {
+        var items = Layout.AutoHideItems
+            .Where(i => i.AutoHideGroupId == groupId)
+            .ToList();
+        if (items.Count == 0) return;
+
+        var direction = items[0].LastDockSide switch
+        {
+            DockSide.Left   => DockDirection.Left,
+            DockSide.Right  => DockDirection.Right,
+            DockSide.Top    => DockDirection.Top,
+            DockSide.Bottom => DockDirection.Bottom,
+            _               => DockDirection.Bottom
+        };
+
+        BeginTransaction();
+
+        // Restore the first item to create the docked group at the correct side
+        RestoreFromAutoHide(items[0], target ?? Layout.MainDocumentHost, direction);
+        var newGroup = items[0].Owner;
+
+        // Tab the remaining items into the same group
+        for (int i = 1; i < items.Count && newGroup is not null; i++)
+            RestoreFromAutoHide(items[i], newGroup, DockDirection.Center);
+
+        // Clear group IDs — items are fully restored
+        foreach (var item in items)
+            item.AutoHideGroupId = null;
+
+        CommitTransaction();
+    }
+
+    /// <summary>
     /// Moves all matching docked items to auto-hide in a single transaction.
     /// </summary>
     public void AutoHideAll(Predicate<DockItem>? filter = null)

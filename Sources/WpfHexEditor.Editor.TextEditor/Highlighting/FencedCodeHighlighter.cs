@@ -15,6 +15,12 @@
 //     Fence delimiter lines themselves are highlighted by the base highlighter
 //     so they keep their existing Markdown colors (TE_String / TE_Keyword).
 //     Lines inside an unknown fence tag are returned plain (empty span list).
+//
+// Architecture:
+//     BuildContext() — O(N) fence scan; runs on the background Task.Run thread.
+//     Highlight()    — O(k) per visible line; no shared mutable state.
+//     Thread-safety  — fully thread-safe: no instance fields are written after
+//                      construction; context array is local to each call site.
 // ==========================================================
 
 using WpfHexEditor.Editor.TextEditor.Services;
@@ -28,15 +34,12 @@ namespace WpfHexEditor.Editor.TextEditor.Highlighting;
 internal sealed class FencedCodeHighlighter : IContextualHighlighter
 {
     // -----------------------------------------------------------------------
-    // Fields
+    // Fields — immutable after construction
     // -----------------------------------------------------------------------
 
     private readonly RegexSyntaxHighlighter                       _base;
     private readonly Dictionary<string, string>                   _langMap;   // id → extension
     private readonly Dictionary<string, RegexSyntaxHighlighter?>  _langCache; // extension → highlighter (null = not found)
-
-    // Per-line context built by Prepare(): null = outside fence, "" = unknown lang, else = lang id
-    private string?[] _lineLanguage = [];
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -60,15 +63,22 @@ internal sealed class FencedCodeHighlighter : IContextualHighlighter
 
     /// <summary>
     /// Scans all lines and builds the per-line language context array.
-    /// Called once per highlight pass before any <see cref="Highlight"/> call.
+    /// Safe to call from a background thread — no instance state is modified.
     /// </summary>
-    public void Prepare(IReadOnlyList<string> allLines)
+    /// <returns>
+    /// A <c>string?[]</c> where each element is:
+    /// <list type="bullet">
+    ///   <item><c>null</c> — outside a fence or the fence delimiter line itself (base Markdown colors)</item>
+    ///   <item><c>""</c>   — inside an anonymous or unknown-language fence (plain text)</item>
+    ///   <item>lang id     — inside a named, known-language fence</item>
+    /// </list>
+    /// </returns>
+    public string?[] BuildContext(IReadOnlyList<string> allLines)
     {
-        if (_lineLanguage.Length != allLines.Count)
-            _lineLanguage = new string?[allLines.Count];
+        var context = new string?[allLines.Count];
 
         string? currentLang = null; // null = outside fence
-        string? fenceMarker = null; // "```" or "~~~" — the opening delimiter sequence
+        string? fenceMarker = null; // "```" or "~~~"
 
         for (int i = 0; i < allLines.Count; i++)
         {
@@ -76,45 +86,47 @@ internal sealed class FencedCodeHighlighter : IContextualHighlighter
 
             if (currentLang is null)
             {
-                // Look for a fence opening line: ``` or ~~~, optionally followed by a lang tag
                 var fence = DetectFenceOpen(line);
                 if (fence.HasValue)
                 {
-                    fenceMarker        = fence.Value.Delimiter;
-                    currentLang        = fence.Value.LangId;   // "" for anonymous fences
-                    _lineLanguage[i]   = null; // the delimiter line itself is "base" (Markdown colors)
+                    fenceMarker   = fence.Value.Delimiter;
+                    currentLang   = fence.Value.LangId;
+                    context[i]    = null; // delimiter line → base Markdown colors
                 }
                 else
                 {
-                    _lineLanguage[i] = null; // normal Markdown line
+                    context[i] = null; // normal Markdown line
                 }
             }
             else
             {
-                // Check for matching closing delimiter
                 if (IsClosingFence(line, fenceMarker!))
                 {
-                    _lineLanguage[i] = null; // closing delimiter → base Markdown colors
-                    currentLang      = null;
-                    fenceMarker      = null;
+                    context[i]  = null; // closing delimiter → base Markdown colors
+                    currentLang = null;
+                    fenceMarker = null;
                 }
                 else
                 {
-                    _lineLanguage[i] = currentLang; // "" = unknown lang, else = lang id
+                    context[i] = currentLang; // "" = unknown lang, else = lang id
                 }
             }
         }
+
+        return context;
     }
 
     /// <summary>
-    /// Returns highlight spans for the given line using context from <see cref="Prepare"/>.
+    /// Returns highlight spans for the given line using the context from
+    /// <see cref="BuildContext"/>.
+    /// Safe to call from a background thread.
     /// </summary>
-    public IReadOnlyList<ColoredSpan> Highlight(string lineText, int lineIndex)
+    public IReadOnlyList<ColoredSpan> Highlight(string lineText, int lineIndex, string?[] context)
     {
-        if (lineIndex < 0 || lineIndex >= _lineLanguage.Length)
+        if (lineIndex < 0 || lineIndex >= context.Length)
             return _base.Highlight(lineText);
 
-        var lang = _lineLanguage[lineIndex];
+        var lang = context[lineIndex];
 
         // null = outside fence or fence delimiter line → use base Markdown highlighter
         if (lang is null)
@@ -161,7 +173,6 @@ internal sealed class FencedCodeHighlighter : IContextualHighlighter
     {
         var trimmed = line.TrimEnd();
         if (trimmed.Length < openDelimiter.Length) return false;
-        // The closing line must consist entirely of the same character, at least as many as opener
         char c = openDelimiter[0];
         foreach (var ch in trimmed)
             if (ch != c) return false;
@@ -172,6 +183,12 @@ internal sealed class FencedCodeHighlighter : IContextualHighlighter
     /// Lazily resolves (and caches) the <see cref="RegexSyntaxHighlighter"/> for a lang id.
     /// Returns <see langword="null"/> when no definition exists for that extension.
     /// </summary>
+    /// <remarks>
+    /// <c>_langCache</c> is written from background threads. This is safe because
+    /// duplicate-write races produce the same value and Dictionary reads/writes on
+    /// a single key are atomic for reference types on x64 CLR.  If strict thread
+    /// safety is ever required, replace with <c>ConcurrentDictionary</c>.
+    /// </remarks>
     private RegexSyntaxHighlighter? ResolveHighlighter(string langId)
     {
         if (!_langMap.TryGetValue(langId, out var ext))
@@ -180,7 +197,7 @@ internal sealed class FencedCodeHighlighter : IContextualHighlighter
         if (_langCache.TryGetValue(ext, out var cached))
             return cached;
 
-        var def        = SyntaxDefinitionCatalog.Instance.FindByExtension(ext);
+        var def         = SyntaxDefinitionCatalog.Instance.FindByExtension(ext);
         var highlighter = def is not null ? new RegexSyntaxHighlighter(def) : null;
         _langCache[ext] = highlighter;
         return highlighter;
