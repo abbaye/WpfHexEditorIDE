@@ -634,6 +634,21 @@ public sealed class DesignCanvas : Border
             return;
         }
 
+        // ── Non-renderable root guard ─────────────────────────────────────────
+        // Detect root elements that are not UIElements (ResourceDictionary, Style, etc.)
+        // BEFORE sanitization or InjectUids so no XamlParseException is ever thrown.
+        var rootTag = PeekRootTagName(xaml);
+        if (rootTag is not null && s_nonRenderableRoots.Contains(rootTag))
+        {
+            SelectElement(null, suppressEvent: true);
+            DesignRoot         = null;
+            _presenter.Content = null;
+            RenderError?.Invoke(this, new XamlRenderError(
+                $"Design preview is not available for <{rootTag}>.",
+                Kind: XamlRenderErrorKind.NonRenderableRoot));
+            return;
+        }
+
         try
         {
             var sanitized = SanitizeForPreview(xaml);
@@ -687,6 +702,16 @@ public sealed class DesignCanvas : Border
                 // root's declared width regardless of which breakpoint is active.
                 if (!double.IsNaN(CanvasPresetWidth) && CanvasPresetWidth > 0)
                     ApplyCanvasPresetWidth(CanvasPresetWidth);
+
+                // Force synchronous layout BEFORE scheduling the async mapper work.
+                // Without this, layout exceptions (e.g. Panel.ConnectToGenerator when a Panel
+                // has IsItemsHost="True" outside an ItemsControl, or any MeasureOverride fault)
+                // escape the try/catch below because WPF defers the measure pass to
+                // DispatcherPriority.Render — which runs AFTER RenderXaml() returns.
+                // UpdateLayout() flushes measure+arrange synchronously so any layout exception
+                // is caught by the existing catch block, clears the content, and shows the
+                // error card instead of crashing the IDE.
+                _presenter.UpdateLayout();
 
                 // Build the UIElement → XElement map after the element is in the tree,
                 // then attempt to restore the previously selected element by UID.
@@ -2148,6 +2173,73 @@ public sealed class DesignCanvas : Border
     {
         xaml = Regex.Replace(xaml, @"\s+x:(Class|Subclass|FieldModifier)=""[^""]*""", string.Empty);
 
+        // mc:Ignorable is a design-time markup-compatibility directive. Strip it so
+        // XamlReader.Parse does not try to resolve prefixes listed in it (e.g. "d") that
+        // may no longer be declared after DesignTimeXamlPreprocessor strips d:* attributes.
+        xaml = Regex.Replace(xaml, @"\s+mc:Ignorable=""[^""]*""", string.Empty);
+
+        // Convert {StaticResource} → {DynamicResource} so missing resources don't crash ParseXaml.
+        // StaticResource throws XamlParseException when the key isn't in scope (common in preview:
+        // theme dictionaries and merged ResourceDictionaries are not loaded). DynamicResource
+        // silently falls back to null — the element renders without the style/brush but doesn't crash.
+        xaml = xaml.Replace("{StaticResource ", "{DynamicResource ");
+
+        // Strip Converter/Source/ConverterParameter inside Binding/MultiBinding that reference
+        // resource keys. DynamicResource is ONLY valid on DependencyProperties of DependencyObjects.
+        // Binding.Converter, Binding.Source, and Binding.ConverterParameter are plain CLR properties —
+        // assigning a DynamicResource (or StaticResource) there throws XamlParseException.
+        // Two passes per property:
+        //   Pass A — comma BEFORE   : "{Binding Path, Converter={…}}"
+        //   Pass B — no leading comma: "{Binding Converter={…}}" (converter-only binding, no path)
+        //            Trailing comma stripped so the next argument stays valid.
+        xaml = Regex.Replace(
+            xaml,
+            @",\s*Converter=\{(?:Static|Dynamic)Resource\s+[^}]+\}",
+            string.Empty);
+        xaml = Regex.Replace(
+            xaml,
+            @"Converter=\{(?:Static|Dynamic)Resource\s+[^}]+\},?\s*",
+            string.Empty);
+
+        xaml = Regex.Replace(
+            xaml,
+            @",\s*ConverterParameter=\{(?:Static|Dynamic)Resource\s+[^}]+\}",
+            string.Empty);
+        xaml = Regex.Replace(
+            xaml,
+            @"ConverterParameter=\{(?:Static|Dynamic)Resource\s+[^}]+\},?\s*",
+            string.Empty);
+
+        xaml = Regex.Replace(
+            xaml,
+            @",\s*Source=\{(?:Static|Dynamic)Resource\s+[^}]+\}",
+            string.Empty);
+        xaml = Regex.Replace(
+            xaml,
+            @"Source=\{(?:Static|Dynamic)Resource\s+[^}]+\},?\s*",
+            string.Empty);
+
+        // Strip Converter/ConverterParameter as standalone XML attributes (e.g. <MultiBinding Converter="...">).
+        // In this form the value is always quoted; the markup-extension passes above target unquoted occurrences
+        // inside {Binding ...} strings.  DynamicResource (produced by the StaticResource→DynamicResource pass)
+        // is invalid on these CLR properties and crashes XamlReader.Parse.
+        xaml = Regex.Replace(
+            xaml,
+            @"\s+Converter=""\{(?:Static|Dynamic)Resource\s+[^}]+\}""",
+            string.Empty);
+        xaml = Regex.Replace(
+            xaml,
+            @"\s+ConverterParameter=""\{(?:Static|Dynamic)Resource\s+[^}]+\}""",
+            string.Empty);
+
+        // Style.BasedOn is a CLR property — DynamicResource is not valid there.
+        // After the StaticResource→DynamicResource pass, BasedOn="{DynamicResource ...}" would throw.
+        // Strip the attribute; the style will render without inheritance but won't crash.
+        xaml = Regex.Replace(
+            xaml,
+            @"\s+BasedOn=""\{(?:Static|Dynamic)Resource\s+[^}]+\}""",
+            string.Empty);
+
         xaml = Regex.Replace(
             xaml,
             @"\s+\w+=""(On[A-Za-z][A-Za-z0-9_]*|[A-Za-z][A-Za-z0-9]*_[A-Za-z0-9_]+)""",
@@ -2167,6 +2259,10 @@ public sealed class DesignCanvas : Border
 
         xaml = ReplaceWindowRoot(xaml);
 
+        // Strip IsItemsHost="true/false" — valid only inside ItemsControl.ItemsPanel templates;
+        // causes InvalidOperationException when the panel is rendered standalone in the preview.
+        xaml = Regex.Replace(xaml, @"\s+IsItemsHost=""[^""]*""", string.Empty, RegexOptions.IgnoreCase);
+
         // Strip custom clr-namespace: prefix declarations and all their usages.
         // Prevents XamlReader.Parse from throwing on unknown types from renamed/unavailable assemblies.
         xaml = StripCustomClrNamespacePrefixes(xaml);
@@ -2181,7 +2277,9 @@ public sealed class DesignCanvas : Border
         RegexOptions.Compiled);
 
     private static readonly HashSet<string> s_safeNamespacePrefixes =
-        new(StringComparer.OrdinalIgnoreCase) { "x", "mc", "d", "local" };
+        new(StringComparer.OrdinalIgnoreCase) { "x", "mc", "d" };
+        // "local" intentionally excluded: it maps to a user-defined clr-namespace unavailable
+        // in the designer sandbox and must be stripped like any other custom prefix.
 
     /// <summary>
     /// Removes xmlns declarations for custom clr-namespace: assemblies and all
@@ -2189,6 +2287,145 @@ public sealed class DesignCanvas : Border
     /// throwing on unknown types from renamed or unavailable assemblies.
     /// Safe prefixes (x, mc, d, local) are always retained.
     /// </summary>
+    /// <summary>
+    /// If the document root element uses a custom clr-namespace: prefix (e.g. &lt;ec:ThemedDialog&gt;),
+    /// replaces it with <c>UserControl</c> so the document has a renderable root after stripping.
+    /// Also rewrites inner property-element tags: &lt;ec:ThemedDialog.Resources&gt; → &lt;UserControl.Resources&gt;.
+    /// Must be called BEFORE stripping all other custom-prefixed elements.
+    /// </summary>
+    private static string SubstituteCustomPrefixedRoot(string xaml, IReadOnlySet<string> customPrefixes)
+    {
+        // Find the first real element start in the document — skip XML declarations and comments.
+        int rootIdx = FindFirstElementIndex(xaml);
+        if (rootIdx < 0) return xaml;
+
+        // Check whether the root tag has a custom prefix: <PREFIX:LocalName ...>
+        var rootMatch = Regex.Match(
+            xaml[rootIdx..],
+            @"^<(?<prefix>[\w]+):(?<local>[\w]+)(?<attrs>[^>]*)>",
+            RegexOptions.Singleline);
+
+        if (!rootMatch.Success) return xaml;
+
+        var prefix    = rootMatch.Groups["prefix"].Value;
+        var localName = rootMatch.Groups["local"].Value;
+
+        if (!customPrefixes.Contains(prefix)) return xaml;
+
+        // Substitute the opening root tag: <ec:ThemedDialog ...> → <UserControl ...>
+        // Strip Window-only attributes (Title, WindowStyle, etc.) that don't exist on UserControl
+        // — preserving them would cause XamlParseException: "UserControl.Title unknown member".
+        var attrs = rootMatch.Groups["attrs"].Value;
+        foreach (var attr in WindowOnlyAttributes)
+            attrs = Regex.Replace(attrs, $@"\s+{attr}=""[^""]*""", string.Empty);
+        var newOpen = $"<UserControl{attrs}>";
+        xaml = xaml[..rootIdx] + newOpen + xaml[(rootIdx + rootMatch.Length)..];
+
+        // Substitute property-element open/close tags: <ec:ThemedDialog.X> → <UserControl.X>
+        xaml = xaml.Replace($"<{prefix}:{localName}.",  "<UserControl.");
+        xaml = xaml.Replace($"</{prefix}:{localName}.", "</UserControl.");
+
+        // Substitute the closing root tag.
+        xaml = xaml.Replace($"</{prefix}:{localName}>", "</UserControl>");
+
+        // Many custom Window-derived controls use <Window.Resources>, <Window.Style>, etc.
+        // as the property-element tag (the WPF base-class form). After we replace the root
+        // with UserControl, any remaining <Window.X> tags are unknown members on UserControl.
+        // Replace them the same way ReplaceWindowRoot does — UserControl inherits Resources,
+        // Style, InputBindings etc. from FrameworkElement, so <UserControl.X> is valid.
+        xaml = xaml.Replace("<Window.",  "<UserControl.");
+        xaml = xaml.Replace("</Window.", "</UserControl.");
+
+        return xaml;
+    }
+
+    /// <summary>
+    /// Returns the index of the first actual element start tag (&lt;Letter…&gt;) in the XAML,
+    /// skipping any leading XML declarations (&lt;?…?&gt;) and comments (&lt;!--…--&gt;).
+    /// Returns -1 if no element is found.
+    /// </summary>
+    private static int FindFirstElementIndex(string xaml)
+    {
+        int i = 0;
+        while (i < xaml.Length)
+        {
+            int lt = xaml.IndexOf('<', i);
+            if (lt < 0 || lt + 1 >= xaml.Length) return -1;
+
+            char next = xaml[lt + 1];
+            if (next == '?')
+            {
+                // XML declaration or processing instruction: skip to ?>
+                int end = xaml.IndexOf("?>", lt + 2);
+                i = end >= 0 ? end + 2 : xaml.Length;
+            }
+            else if (next == '!')
+            {
+                // Comment <!-- --> or DOCTYPE: skip to >
+                int end = xaml.IndexOf("-->", lt + 4);
+                i = end >= 0 ? end + 3 : xaml.Length;
+            }
+            else if (char.IsLetter(next))
+            {
+                return lt;   // Regular element open tag
+            }
+            else
+            {
+                i = lt + 1;
+            }
+        }
+        return -1;
+    }
+
+    // ── Non-renderable root detection ──────────────────────────────────────────
+
+    /// <summary>
+    /// Root element types that are never UIElements and cannot be rendered on the design surface.
+    /// When detected, the canvas emits <see cref="XamlRenderErrorKind.NonRenderableRoot"/> and
+    /// the split host auto-switches to CodeOnly rather than attempting to parse/render the file.
+    /// </summary>
+    private static readonly HashSet<string> s_nonRenderableRoots =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "ResourceDictionary",
+            "Application",
+            "Style",
+            "DataTemplate",
+            "ControlTemplate",
+            "ItemsPanelTemplate",
+            "HierarchicalDataTemplate",
+            "Storyboard",
+            "AnimationTimeline",
+        };
+
+    /// <summary>
+    /// Returns the local name of the document root element (stripping any namespace prefix),
+    /// or <see langword="null"/> if no root element can be found.
+    /// Uses <see cref="FindFirstElementIndex"/> to skip leading XML declarations and comments.
+    /// </summary>
+    private static string? PeekRootTagName(string xaml)
+    {
+        int start = FindFirstElementIndex(xaml);
+        if (start < 0) return null;
+
+        // Skip '<'
+        int i = start + 1;
+
+        // Skip any namespace prefix (e.g. "ec:" in "<ec:ThemedDialog") to get the local name.
+        int colon = -1;
+        while (i < xaml.Length && xaml[i] != '>' && xaml[i] != '/' && !char.IsWhiteSpace(xaml[i]))
+        {
+            if (xaml[i] == ':') colon = i;
+            i++;
+        }
+
+        int nameStart = colon >= 0 ? colon + 1 : start + 1;
+        int nameEnd   = i;
+        if (nameEnd <= nameStart) return null;
+
+        return xaml[nameStart..nameEnd];
+    }
+
     private static string StripCustomClrNamespacePrefixes(string xaml)
     {
         // Collect custom prefixes (clr-namespace: only, excluding safe WPF ones).
@@ -2198,6 +2435,11 @@ public sealed class DesignCanvas : Border
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         if (customPrefixes.Count == 0) return xaml;
+
+        // If the document ROOT element itself uses a custom prefix (e.g. <ec:ThemedDialog>),
+        // substitute it with UserControl BEFORE stripping — otherwise the entire document
+        // is removed, leaving no root element and causing "Root element is missing."
+        xaml = SubstituteCustomPrefixedRoot(xaml, customPrefixes);
 
         // 1. Remove xmlns:PREFIX="clr-namespace:..." declarations.
         xaml = s_customXmlns.Replace(xaml, m =>
@@ -2223,6 +2465,33 @@ public sealed class DesignCanvas : Border
                 xaml,
                 $@"\s+{prefix}:[A-Za-z][A-Za-z0-9.]*\s*=\s*""[^""]*""",
                 string.Empty);
+
+            // 5. Replace {x:Type PREFIX:TypeName} inside attribute values with {x:Type FrameworkElement}.
+            // After stripping the xmlns declaration, any remaining {x:Type PREFIX:...} references
+            // would cause XamlParseException: "prefix 'PREFIX' is not defined" (common in DataTemplate
+            // DataType=, Style TargetType=, RelativeSource AncestorType=, etc.).
+            // FrameworkElement is a safe stand-in: DataTemplate without a real DataType renders as
+            // untyped; Style TargetType=FrameworkElement applies broadly but does not crash.
+            xaml = Regex.Replace(
+                xaml,
+                $@"\{{x:Type\s+{prefix}:[A-Za-z][A-Za-z0-9.]*\}}",
+                "{x:Type FrameworkElement}");
+
+            // 6. Replace {x:Static PREFIX:ClassName.Member} — member references to unavailable
+            // assemblies — with an empty string literal so the outer attribute remains syntactically
+            // valid.  We can't know the value type so we strip the whole attribute value reference.
+            // Replace with empty string to avoid unknown-prefix crash.
+            xaml = Regex.Replace(
+                xaml,
+                $@"\{{x:Static\s+{prefix}:[A-Za-z][A-Za-z0-9.]*\}}",
+                string.Empty);
+
+            // 7. Remove any orphaned closing tags left by step 2 when the block regex matched
+            // an inner closing tag for a nested element instead of the outer one.
+            // E.g. <PREFIX:Outer><PREFIX:Inner>text</PREFIX:Inner></PREFIX:Outer> →
+            //   step 2 matches <PREFIX:Outer>...<PREFIX:Inner>text</PREFIX:Inner>
+            //   leaving stray </PREFIX:Outer>, which would fail XML validation.
+            xaml = Regex.Replace(xaml, $@"</\s*{prefix}:[^>]+>", string.Empty);
         }
 
         return xaml;
@@ -2240,7 +2509,14 @@ public sealed class DesignCanvas : Border
 
         var newOpen = $"<Border{attrs}>";
         xaml = xaml[..openTag.Index] + newOpen + xaml[(openTag.Index + openTag.Length)..];
-        xaml = xaml.Replace("</Window>", "</Border>");
+        xaml = xaml.Replace("</Window>",  "</Border>");
+
+        // Replace Window.Xxx property-element tags (e.g. <Window.Resources>) so they target
+        // Border instead.  Without this XamlReader.Parse throws XamlParseException:
+        // "unknown member 'System.Windows.Resources'" because the property belongs to Window,
+        // not to the Border we substituted as root.
+        xaml = xaml.Replace("<Window.",  "<Border.");
+        xaml = xaml.Replace("</Window.", "</Border.");
 
         return xaml;
     }

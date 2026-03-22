@@ -1,6 +1,6 @@
 ﻿{
   "formatName": "XML Document",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".xml"
   ],
@@ -334,6 +334,7 @@
     ],
     "foldingRules": {
       "tagBased": true,
+      "multilineTagSupport": true,
       "selfClosingTags": ["br", "hr", "img", "input", "link", "meta", "area", "base", "col", "embed", "param", "source", "track", "wbr"]
     }
   }

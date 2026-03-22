@@ -815,7 +815,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         OutputLogger.Debug("No saved layout found, using defaults.");
-        SetupDefaultLayout();
+        LoadDefaultLayoutFromResource(restoreWindowState: true);
     }
 
     private void RestoreWindowState(DockLayoutRoot layout)
@@ -1059,6 +1059,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     // --- Layout helpers ------------------------------------------------
+
+    private void LoadDefaultLayoutFromResource(bool restoreWindowState = false)
+    {
+        try
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            using var stream = asm.GetManifestResourceStream("WpfHexEditor.App.defaultLayout.json");
+            if (stream is not null)
+            {
+                using var reader = new System.IO.StreamReader(stream);
+                var layout = DockLayoutSerializer.Deserialize(reader.ReadToEnd());
+                if (restoreWindowState) RestoreWindowState(layout);
+                PruneStaleDocumentItems(layout);
+                ApplyLayout(layout);
+                EnsureErrorPanel();
+                OutputLogger.Debug("Default layout applied from embedded resource.");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to load embedded default layout: {ex.Message}");
+        }
+        SetupDefaultLayout(); // ultimate fallback
+    }
 
     private void SetupDefaultLayout()
     {
@@ -4891,7 +4916,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var stem = AppSettingsService.Instance.Current.ActiveThemeName;
         if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
-        _lastAppliedTheme = stem;
         ApplyTheme($"{stem}.xaml", stem);
     }
 
@@ -5699,7 +5723,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             .Select(i => new DockItem { ContentId = i.ContentId, Title = i.Title, CanClose = i.CanClose })
             .ToList();
 
-        SetupDefaultLayout();
+        LoadDefaultLayoutFromResource(restoreWindowState: false);
 
         // Re-dock all previously open document tabs into the document host.
         foreach (var doc in openDocs)
@@ -5743,6 +5767,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 Application.Current.Resources);
             _ = _pluginHost.NotifyThemeChangedAsync(themeXaml);
         }
+
+        // Persist theme selection so it survives app restarts.
+        var stem = System.IO.Path.GetFileNameWithoutExtension(themeFile);
+        AppSettingsService.Instance.Current.ActiveThemeName = stem;
+        AppSettingsService.Instance.Save();
+        _lastAppliedTheme = stem;
     }
 
     // -----------------------------------------------------------------------

@@ -427,8 +427,45 @@ public sealed class DesignToXamlSyncService
         if (localName.EndsWith("Template",  StringComparison.Ordinal)) return false;
         if (localName.EndsWith("Condition", StringComparison.Ordinal)) return false;
 
-        // Resources
+        // Resources container
         if (localName == "ResourceDictionary")                          return false;
+
+        // Input bindings & gestures — InputBinding → Freezable (no Tag)
+        // Covers: KeyBinding, MouseBinding, InputBinding, CommandBinding,
+        //         MultiBinding, PriorityBinding, Binding (as element), …
+        if (localName.EndsWith("Binding", StringComparison.Ordinal))   return false;
+        // Covers: KeyGesture, MouseGesture, InputGesture
+        if (localName.EndsWith("Gesture", StringComparison.Ordinal))   return false;
+
+        // Style setters beyond "Setter" — EventSetter, etc.
+        if (localName.EndsWith("Setter", StringComparison.Ordinal))    return false;
+
+        // Storyboard trigger-actions — BeginStoryboard, StopStoryboard, …
+        // (TriggerAction → DependencyObject, no Tag)
+        if (localName.EndsWith("Storyboard", StringComparison.Ordinal) &&
+            localName != "Storyboard")                                  return false;
+
+        // ListView/GridView infrastructure.
+        // GridView and GridViewColumn derive from ViewBase/DependencyObject — no Tag DP.
+        if (localName == "GridView")                                    return false;
+        if (localName == "GridViewColumn")                              return false;
+
+        // DataGrid column types (DataGridTextColumn, DataGridCheckBoxColumn, …)
+        // All derive from DataGridColumn → DependencyObject — no Tag DP.
+        if (localName.StartsWith("DataGrid", StringComparison.Ordinal) &&
+            localName.EndsWith("Column",     StringComparison.Ordinal)) return false;
+
+        // WPF value-type / struct elements that appear in resource dictionaries.
+        // These are NOT FrameworkElements — they have no Tag dependency property.
+        if (localName == "Color")                                       return false;
+        if (localName == "Point")                                       return false;
+        if (localName == "Rect")                                        return false;
+        if (localName == "Size")                                        return false;
+        if (localName == "Thickness")                                   return false;
+        if (localName == "CornerRadius")                                return false;
+        if (localName == "FontFamily")                                  return false;
+        if (localName == "Duration")                                    return false;
+        if (localName == "KeySpline")                                   return false;
 
         return true;
     }

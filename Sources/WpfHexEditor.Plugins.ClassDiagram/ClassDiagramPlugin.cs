@@ -457,7 +457,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             new MenuItemDescriptor
             {
                 Header     = "Class _Outline",
-                ParentPath = "View/Panels",
+                ParentPath = "View",
                 IconGlyph  = "\uE8A5",
                 ToolTip    = "Show / hide the Class Outline panel",
                 Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(OutlinePanelUiId)),
@@ -470,7 +470,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             new MenuItemDescriptor
             {
                 Header     = "Class _Properties",
-                ParentPath = "View/Panels",
+                ParentPath = "View",
                 GestureText = "F4",
                 IconGlyph  = "\uE90F",
                 ToolTip    = "Show / hide the Class Properties panel (F4)",
@@ -484,7 +484,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             new MenuItemDescriptor
             {
                 Header     = "Diagram _Toolbox",
-                ParentPath = "View/Panels",
+                ParentPath = "View",
                 IconGlyph  = "\uE7EF",
                 ToolTip    = "Show / hide the Diagram Toolbox panel",
                 Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(ToolboxPanelUiId)),
@@ -497,7 +497,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             new MenuItemDescriptor
             {
                 Header     = "_Relationships",
-                ParentPath = "View/Panels",
+                ParentPath = "View",
                 IconGlyph  = "\uE8D9",
                 ToolTip    = "Show / hide the Relationships panel",
                 Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(RelationshipsPanelUiId)),
@@ -510,7 +510,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             new MenuItemDescriptor
             {
                 Header     = "Diagram _History",
-                ParentPath = "View/Panels",
+                ParentPath = "View",
                 IconGlyph  = "\uE81C",
                 ToolTip    = "Show / hide the Diagram History panel",
                 Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(HistoryPanelUiId)),
@@ -523,7 +523,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             new MenuItemDescriptor
             {
                 Header     = "Diagram _Search",
-                ParentPath = "View/Panels",
+                ParentPath = "View",
                 GestureText = "Ctrl+Shift+D",
                 IconGlyph  = "\uE721",
                 ToolTip    = "Show / hide the Diagram Search panel (Ctrl+Shift+D)",
@@ -752,7 +752,6 @@ file sealed class ClassDiagramContextMenuContributor : ISolutionExplorerContextM
             case "File":
                 // Only for .cs / .vb source files
                 if (nodePath is null || !IsSourceFile(nodePath)) break;
-                items.Add(SolutionContextMenuItem.Separator());
                 items.Add(SolutionContextMenuItem.Item(
                     header:   "View Class Diagram",
                     command:  new RelayCommand(_ => _ = _plugin.OpenClassDiagramForFileAsync(nodePath!, _context)),
@@ -763,7 +762,6 @@ file sealed class ClassDiagramContextMenuContributor : ISolutionExplorerContextM
                 if (nodePath is null) break;
                 var projectDir = Path.GetDirectoryName(nodePath);
                 if (projectDir is null) break;
-                items.Add(SolutionContextMenuItem.Separator());
                 items.Add(SolutionContextMenuItem.Item(
                     header:   "Generate Class Diagram for Project",
                     command:  new RelayCommand(_ => _ = _plugin.OpenClassDiagramForFolderAsync(projectDir, _context)),
@@ -772,7 +770,6 @@ file sealed class ClassDiagramContextMenuContributor : ISolutionExplorerContextM
 
             case "Solution":
                 if (!_context.SolutionExplorer.HasActiveSolution) break;
-                items.Add(SolutionContextMenuItem.Separator());
                 items.Add(SolutionContextMenuItem.Item(
                     header:   "Generate Class Diagram for Solution",
                     command:  new RelayCommand(_ => _ = OpenDiagramForSolutionAsync()),

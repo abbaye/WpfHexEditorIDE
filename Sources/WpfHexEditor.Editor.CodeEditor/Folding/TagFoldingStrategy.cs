@@ -6,11 +6,16 @@
 // Created: 2026-03-22
 // Updated: 2026-03-22 — ADR-048: Added NormalizeLines() pre-processor for multi-line
 //                        tag support (XAML/HTML attributes spanning several lines).
+//            2026-03-22 — ADR-050: Replaced naive Contains('>') with quote-aware
+//                        IsTagCloserPresent() to handle '>' inside attribute values.
+//            2026-03-22 — ADR-051: NormalizeLines() now called unconditionally so
+//                        multi-line root elements (<UserControl>, <Window>) always fold.
+//            2026-03-22 — ADR-052: Added FindCommentRegions() to fold <!-- ... --> blocks.
 // Description:
 //     Tag-based folding for HTML, XML, and XAML documents.
 //     Matches open and close tags across lines to build fold regions.
-//     When multilineTagSupport=true, attribute continuation lines are merged
-//     into a single virtual line before regex matching.
+//     Multi-line opening tags are always normalized before matching.
+//     Multi-line XML comment blocks are folded independently.
 //
 // Architecture Notes:
 //     Strategy Pattern — implements IFoldingStrategy.
@@ -53,10 +58,9 @@ internal sealed class TagFoldingStrategy : IFoldingStrategy
         var regions = new List<FoldingRegion>();
         var stack   = new Stack<(int Line, string Tag)>();
 
-        // Use virtual normalized lines when multi-line tag support is on.
-        var virtualLines = _multilineTagSupport
-            ? NormalizeLines(lines)
-            : lines.Select((l, idx) => (ActualLine: idx, Text: l.Text ?? string.Empty)).ToList();
+        // Always normalize: merges multi-line opening tags so s_openTag can match them.
+        // NormalizeLines() is O(n) and safe for single-line tags (they pass through unchanged).
+        var virtualLines = NormalizeLines(lines);
 
         foreach (var (actualLine, text) in virtualLines)
         {
@@ -80,7 +84,48 @@ internal sealed class TagFoldingStrategy : IFoldingStrategy
             }
         }
 
+        // Fold multi-line comment blocks <!-- ... --> independently of tag matching.
+        FindCommentRegions(lines, regions);
+
         return regions;
+    }
+
+    // ── Comment block folding ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// Scans <paramref name="lines"/> for multi-line XML comment blocks
+    /// (<c>&lt;!-- … --&gt;</c>) and appends a <see cref="FoldingRegion"/> for each
+    /// block that spans 3 or more physical lines.
+    /// Single-line comments (<c>&lt;!-- text --&gt;</c>) are skipped.
+    /// </summary>
+    private static void FindCommentRegions(IReadOnlyList<CodeLine> lines,
+                                            List<FoldingRegion> regions)
+    {
+        int i = 0;
+        while (i < lines.Count)
+        {
+            var text    = lines[i].Text ?? string.Empty;
+            var trimmed = text.TrimStart();
+
+            // Multi-line comment: opens with <!-- but --> not on the same line.
+            if (trimmed.StartsWith("<!--") && !text.Contains("-->"))
+            {
+                int startLine = i;
+                i++;
+                while (i < lines.Count && !(lines[i].Text ?? string.Empty).Contains("-->"))
+                    i++;
+
+                // i is now at the "-->" line (or EOF if unterminated).
+                if (i < lines.Count && i > startLine + 1)
+                    regions.Add(new FoldingRegion(startLine, i, "<!-- \u2026 -->", FoldingRegionKind.Brace));
+
+                i++; // advance past the "-->" line
+            }
+            else
+            {
+                i++;
+            }
+        }
     }
 
     // ── Multi-line pre-processing ─────────────────────────────────────────────
@@ -110,7 +155,7 @@ internal sealed class TagFoldingStrategy : IFoldingStrategy
                                   && !trimmed.StartsWith("</")
                                   && !trimmed.StartsWith("<!--")
                                   && !trimmed.StartsWith("<!")
-                                  && !text.Contains('>');
+                                  && !IsTagCloserPresent(text);
 
             if (startsUnclosedTag)
             {
@@ -119,7 +164,9 @@ internal sealed class TagFoldingStrategy : IFoldingStrategy
                 i++;
 
                 // Accumulate continuation lines until we find the > that closes the tag.
-                while (i < lines.Count && !sb.ToString().Contains('>'))
+                // Use quote-aware check so '>' inside attribute values (e.g. ToolTip="A > B")
+                // does not prematurely end the merge.
+                while (i < lines.Count && !IsTagCloserPresent(sb.ToString()))
                 {
                     sb.Append(' ').Append((lines[i].Text ?? string.Empty).TrimStart());
                     i++;
@@ -135,5 +182,28 @@ internal sealed class TagFoldingStrategy : IFoldingStrategy
         }
 
         return result;
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="text"/> contains a
+    /// tag-closing <c>&gt;</c> that is NOT enclosed in single or double quotes —
+    /// i.e. an actual XML tag delimiter, not a <c>&gt;</c> inside an attribute value
+    /// such as <c>ToolTip="A &gt; B"</c>.
+    /// </summary>
+    private static bool IsTagCloserPresent(string text)
+    {
+        bool inSingle = false, inDouble = false;
+        foreach (char c in text)
+        {
+            switch (c)
+            {
+                case '\'': if (!inDouble) inSingle = !inSingle; break;
+                case '"':  if (!inSingle) inDouble = !inDouble; break;
+                case '>':  if (!inSingle && !inDouble) return true; break;
+            }
+        }
+        return false;
     }
 }

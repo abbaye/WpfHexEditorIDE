@@ -137,6 +137,7 @@ public sealed class XamlDesignerSplitHost : Grid,
     private readonly TextBlock    _errorText;
     private Border?               _errorOverlay;     // centred error card over the design pane
     private TextBlock?            _overlayDetail;    // detail text inside _errorOverlay
+    private bool                  _isNonRenderableRoot; // true when root is ResourceDictionary/Style/etc.
 
     // ── Template editing (Phase 6) ────────────────────────────────────────────
 
@@ -266,6 +267,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     private readonly XamlDocument _document = new();
     private string?  _filePath;
+    private bool     _designerDirty;
 
     // ── Status bar ─────────────────────────────────────────────────────────────
 
@@ -467,6 +469,8 @@ public sealed class XamlDesignerSplitHost : Grid,
         };
         Grid.SetRow(_errorOverlay, 0);
         Grid.SetColumn(_errorOverlay, 0);
+        Grid.SetRowSpan(_errorOverlay, 3);
+        Grid.SetColumnSpan(_errorOverlay, 2);
         Panel.SetZIndex(_errorOverlay, 99);
         _designPaneGrid.Children.Add(_errorOverlay);
 
@@ -827,6 +831,10 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
     {
+        // Reset non-renderable state so a new file gets a fresh render attempt.
+        _isNonRenderableRoot = false;
+        HideBanner();
+
         _filePath = filePath;
 
         // Phase EL: keep the canvas in sync so DiagnosticEntry.FilePath is always current.
@@ -855,7 +863,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     private IDocumentEditor Active => _codeHost;
 
-    public bool     IsDirty    => Active.IsDirty;
+    public bool     IsDirty    => _designerDirty || Active.IsDirty;
     public bool     CanUndo    => Active.CanUndo || _undoManager.CanUndo;
     public bool     CanRedo    => Active.CanRedo || _undoManager.CanRedo;
     public bool     IsReadOnly { get => Active.IsReadOnly; set { Active.IsReadOnly = value; } }
@@ -905,7 +913,18 @@ public sealed class XamlDesignerSplitHost : Grid,
     }
 
     public void Save()          => Active.Save();
-    public Task SaveAsync(CancellationToken ct = default)                    => Active.SaveAsync(ct);
+
+    public async Task SaveAsync(CancellationToken ct = default)
+    {
+        await Active.SaveAsync(ct);
+        if (_designerDirty)
+        {
+            _designerDirty = false;
+            ModifiedChanged?.Invoke(this, EventArgs.Empty);
+            TitleChanged?.Invoke(this, Active.Title);
+        }
+    }
+
     public Task SaveAsAsync(string filePath, CancellationToken ct = default) => Active.SaveAsAsync(filePath, ct);
     public void Copy()          => Active.Copy();
     public void Cut()           => Active.Cut();
@@ -1038,6 +1057,7 @@ public sealed class XamlDesignerSplitHost : Grid,
     private void OnCodeModified(object? sender, EventArgs e)
     {
         if (!_autoPreviewEnabled) return;
+        if (_isNonRenderableRoot)  return;
         _previewTimer.Stop();
         _previewTimer.Start();
     }
@@ -1050,6 +1070,7 @@ public sealed class XamlDesignerSplitHost : Grid,
     private void OnDocumentTextChanged(object? sender, WpfHexEditor.Editor.CodeEditor.Models.TextChangedEventArgs e)
     {
         if (!_autoPreviewEnabled) return;
+        if (_isNonRenderableRoot)  return;
         _previewTimer.Stop();
         _previewTimer.Start();
     }
@@ -1264,14 +1285,22 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     private void OnRenderError(object? sender, XamlRenderError? error)
     {
+        // ── Non-renderable root: auto CodeOnly + neutral info banner ──────────
+        // ResourceDictionary, Style, DataTemplate, etc. are not UIElements.
+        // Switch to CodeOnly silently — no error card, no ErrorPanel entry.
+        if (error?.Kind == XamlRenderErrorKind.NonRenderableRoot)
+        {
+            _isNonRenderableRoot = true;
+            ApplyViewMode(ViewMode.CodeOnly);
+            return;
+        }
+
+        _isNonRenderableRoot = false;
+
         bool hasError = error is not null;
         var  message  = error?.Message ?? string.Empty;
 
-        // ── 1. Toolbar banner (compact, always visible at top of designer) ────
-        _errorBanner.Visibility = hasError ? Visibility.Visible : Visibility.Collapsed;
-        _errorText.Text         = message;
-
-        // ── 2. Centred card overlay over the ZoomPanCanvas (zoom-independent) ─
+        // ── 1. Centred card overlay over the ZoomPanCanvas (zoom-independent) ─
         if (_errorOverlay is not null)
         {
             _errorOverlay.Visibility = hasError ? Visibility.Visible : Visibility.Collapsed;
@@ -1318,6 +1347,37 @@ public sealed class XamlDesignerSplitHost : Grid,
                     column : error.Column > 0 ? error.Column : -1);
             }
         }
+    }
+
+    /// <summary>
+    /// Shows the toolbar banner with an error style (orange) or an info style (blue).
+    /// <paramref name="isInfo"/> = true for non-renderable roots; false for parse errors.
+    /// </summary>
+    private void ShowBanner(string message, bool isInfo)
+    {
+        _errorText.Text = message;
+
+        if (isInfo)
+        {
+            // Neutral VS-like info bar: dark blue background, accent-blue border.
+            _errorBanner.Background  = new SolidColorBrush(Color.FromRgb(0x1B, 0x3A, 0x5C));
+            _errorBanner.BorderBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC));
+            _errorText.Foreground    = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC));
+        }
+        else
+        {
+            // Restore theme-resource-driven error colors.
+            _errorBanner.SetResourceReference(BackgroundProperty,          "XD_ErrorBannerBackground");
+            _errorBanner.SetResourceReference(Border.BorderBrushProperty,  "XD_ErrorBannerBorder");
+            _errorText.SetResourceReference(TextElement.ForegroundProperty, "XD_ErrorBannerForeground");
+        }
+
+        _errorBanner.Visibility = Visibility.Visible;
+    }
+
+    private void HideBanner()
+    {
+        _errorBanner.Visibility = Visibility.Collapsed;
     }
 
     // ── Design canvas selection ───────────────────────────────────────────────
@@ -1823,6 +1883,21 @@ public sealed class XamlDesignerSplitHost : Grid,
         {
             _previewTimer.Stop();
             _codeHost.PrimaryEditor.Document?.LoadFromString(xaml);
+
+            // Track dirty at the host level, independent of the undo engine.
+            // CodeEditor._isDirty is reset by OnUndoEngineStateChanged whenever
+            // undo engine state changes (since LoadFromString never pushes an entry,
+            // IsAtSavePoint stays true → dirty reverts to false on next key press).
+            if (!_designerDirty)
+            {
+                _designerDirty = true;
+                var title = !string.IsNullOrEmpty(_filePath)
+                    ? System.IO.Path.GetFileName(_filePath) + " *"
+                    : Active.Title + " *";
+                ModifiedChanged?.Invoke(this, EventArgs.Empty);
+                TitleChanged?.Invoke(this, title);
+            }
+
             if (_autoPreviewEnabled)
                 TriggerPreview();
         }

@@ -491,7 +491,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         foreach (var item in toRemove)
             contextMenu.Items.Remove(item);
 
-        PluginMenuSeparator.Visibility = Visibility.Collapsed;
+        PluginMenuSeparator.Visibility = Visibility.Collapsed; // always collapsed — position marker only
 
         if (_contextMenuContributorResolver is null || node is null) return;
 
@@ -524,14 +524,18 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         var items = _contextMenuContributorResolver(nodeKind, nodePath);
         if (items.Count == 0) return;
 
-        // 3. Find insertion index — right before PluginMenuSeparator
+        // 3. Find insertion index — right before PluginMenuSeparator (used as a stable position marker)
         int insertIndex = contextMenu.Items.IndexOf(PluginMenuSeparator);
         if (insertIndex < 0) insertIndex = contextMenu.Items.Count - 1;
 
-        PluginMenuSeparator.Visibility = Visibility.Visible;
+        // PluginMenuSeparator stays Collapsed (it's a marker only).
+        // Inject a self-cleaning tagged separator as the visual divider before plugin items —
+        // this avoids double-separator scenarios with PropertiesSeparator that follows.
+        var divider = new Separator { Tag = "plugin-contrib" };
+        contextMenu.Items.Insert(insertIndex + 1, divider);
 
-        // 4. Insert items after the separator
-        int offset = 1;
+        // 4. Insert items after the divider
+        int offset = 2;
         foreach (var contrib in items)
         {
             FrameworkElement element;

@@ -18,6 +18,7 @@
   <ItemGroup>
     <Resource Include="Logo.ico" />
     <Resource Include="..\..\Images\Logo2026.png" Link="Images\Logo2026.png" />
+    <EmbeddedResource Include="defaultLayout.json" />
   </ItemGroup>
 
   <ItemGroup>

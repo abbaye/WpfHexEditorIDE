@@ -1,0 +1,207 @@
+{
+  "version": 2,
+  "rootNode": {
+    "orientation": 0,
+    "children": [
+      {
+        "orientation": 0,
+        "children": [
+          {
+            "items": [
+              {
+                "title": "Solution Explorer",
+                "contentId": "panel-solution-explorer",
+                "canClose": true,
+                "canFloat": true,
+                "isPinned": false,
+                "isDocument": false,
+                "state": 0,
+                "lastDockSide": 0,
+                "autoHideGroupId": null,
+                "floatLeft": null,
+                "floatTop": null,
+                "floatWidth": null,
+                "floatHeight": null,
+                "metadata": null
+              }
+            ],
+            "activeItemContentId": "panel-solution-explorer",
+            "type": "Group",
+            "id": "820581b6-b49d-4bb4-b093-5afed3e233a2",
+            "lockMode": 0,
+            "dockMinWidth": null,
+            "dockMinHeight": null,
+            "dockMaxWidth": null,
+            "dockMaxHeight": null
+          },
+          {
+            "orientation": 1,
+            "children": [
+              {
+                "isMain": true,
+                "items": [
+                  {
+                    "title": "Welcome",
+                    "contentId": "doc-welcome",
+                    "canClose": true,
+                    "canFloat": true,
+                    "isPinned": false,
+                    "isDocument": true,
+                    "state": 0,
+                    "lastDockSide": 3,
+                    "autoHideGroupId": null,
+                    "floatLeft": null,
+                    "floatTop": null,
+                    "floatWidth": null,
+                    "floatHeight": null,
+                    "metadata": null
+                  }
+                ],
+                "activeItemContentId": "doc-welcome",
+                "type": "DocumentHost",
+                "id": "2fcf956a-d509-4a51-ae1c-f77b85f56ca3",
+                "lockMode": 0,
+                "dockMinWidth": null,
+                "dockMinHeight": null,
+                "dockMaxWidth": null,
+                "dockMaxHeight": null
+              },
+              {
+                "items": [
+                  {
+                    "title": "Error List",
+                    "contentId": "panel-errors",
+                    "canClose": true,
+                    "canFloat": true,
+                    "isPinned": false,
+                    "isDocument": false,
+                    "state": 0,
+                    "lastDockSide": 3,
+                    "autoHideGroupId": null,
+                    "floatLeft": null,
+                    "floatTop": null,
+                    "floatWidth": null,
+                    "floatHeight": null,
+                    "metadata": null
+                  },
+                  {
+                    "title": "Output",
+                    "contentId": "panel-output",
+                    "canClose": true,
+                    "canFloat": true,
+                    "isPinned": false,
+                    "isDocument": false,
+                    "state": 0,
+                    "lastDockSide": 3,
+                    "autoHideGroupId": null,
+                    "floatLeft": null,
+                    "floatTop": null,
+                    "floatWidth": null,
+                    "floatHeight": null,
+                    "metadata": null
+                  }
+                ],
+                "activeItemContentId": "panel-output",
+                "type": "Group",
+                "id": "f6eec58a-42a5-473c-a028-d2edfa94bc5a",
+                "lockMode": 0,
+                "dockMinWidth": null,
+                "dockMinHeight": null,
+                "dockMaxWidth": null,
+                "dockMaxHeight": null
+              }
+            ],
+            "ratios": [
+              0.75,
+              0.25
+            ],
+            "pixelSizes": [
+              null,
+              325.01
+            ],
+            "type": "Split",
+            "id": "57a08790-2c96-4035-bdbf-0a6e1176b432",
+            "lockMode": 0,
+            "dockMinWidth": null,
+            "dockMinHeight": null,
+            "dockMaxWidth": null,
+            "dockMaxHeight": null
+          }
+        ],
+        "ratios": [
+          0.1824390243902439,
+          0.817560975609756
+        ],
+        "pixelSizes": [
+          374,
+          null
+        ],
+        "type": "Split",
+        "id": "9c8dd6c0-33c3-416c-8bc4-280b56c02bf7",
+        "lockMode": 0,
+        "dockMinWidth": null,
+        "dockMinHeight": null,
+        "dockMaxWidth": null,
+        "dockMaxHeight": null
+      },
+      {
+        "items": [
+          {
+            "title": "Plugin Monitor",
+            "contentId": "plugin-monitor",
+            "canClose": true,
+            "canFloat": true,
+            "isPinned": false,
+            "isDocument": false,
+            "state": 0,
+            "lastDockSide": 1,
+            "autoHideGroupId": null,
+            "floatLeft": null,
+            "floatTop": null,
+            "floatWidth": null,
+            "floatHeight": null,
+            "metadata": null
+          }
+        ],
+        "activeItemContentId": "plugin-monitor",
+        "type": "Group",
+        "id": "d9df2843-a448-41c2-9b2c-0ac0ea6fe76e",
+        "lockMode": 0,
+        "dockMinWidth": null,
+        "dockMinHeight": null,
+        "dockMaxWidth": null,
+        "dockMaxHeight": null
+      }
+    ],
+    "ratios": [
+      0.804858934169279,
+      0.195141065830721
+    ],
+    "pixelSizes": [
+      null,
+      498
+    ],
+    "type": "Split",
+    "id": "a5a5719c-b401-463e-8feb-d5fbcba760ee",
+    "lockMode": 0,
+    "dockMinWidth": null,
+    "dockMinHeight": null,
+    "dockMaxWidth": null,
+    "dockMaxHeight": null
+  },
+  "floatingItems": [],
+  "autoHideItems": [],
+  "hiddenItems": [],
+  "tabBarSettings": {
+    "tabPlacement": 0,
+    "colorMode": 0,
+    "multiRowTabs": false,
+    "multiRowWithMouseWheel": true,
+    "regexRules": []
+  },
+  "windowState": 2,
+  "windowLeft": 680,
+  "windowTop": 296,
+  "windowWidth": 1200,
+  "windowHeight": 800
+}

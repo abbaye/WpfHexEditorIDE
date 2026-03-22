@@ -3028,7 +3028,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (region.EndLine < _firstVisibleLine || region.StartLine + 1 > _lastVisibleLine) continue;
 
                 double guideX = ComputeScopeGuideX(textX, region);
-                if (guideX <= textX) continue; // block not indented — skip
+                if (guideX < textX) continue; // never draw before text area origin
 
                 // For Allman-style code the BraceFoldingStrategy sets StartLine = method-header line,
                 // so StartLine+1 is the standalone { line — skip it to start the guide after the {.
@@ -3073,20 +3073,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private double ComputeScopeGuideX(double textX, FoldingRegion region)
         {
-            for (int i = region.StartLine + 1; i < region.EndLine && i < _document!.Lines.Count; i++)
+            // Use the opening tag / declaration line's own indentation as the guide X.
+            // Previously this used startLine+1 (first content line), which placed XML/XAML
+            // guides at the attribute-alignment indent instead of the tag's column (ADR-054).
+            if (_document is null || region.StartLine >= _document.Lines.Count)
+                return textX;
+
+            var startText = _document.Lines[region.StartLine].Text ?? string.Empty;
+            int spaces = 0;
+            foreach (char c in startText)
             {
-                var text = _document.Lines[i].Text;
-                if (string.IsNullOrWhiteSpace(text)) continue;
-                int spaces = 0;
-                foreach (char c in text)
-                {
-                    if      (c == ' ')  spaces++;
-                    else if (c == '\t') spaces += IndentSize;
-                    else break;
-                }
-                return spaces > 0 ? textX + spaces * _charWidth : textX;
+                if      (c == ' ')  spaces++;
+                else if (c == '\t') spaces += IndentSize;
+                else break;
             }
-            return textX;
+            return textX + spaces * _charWidth;
         }
 
         /// <summary>
