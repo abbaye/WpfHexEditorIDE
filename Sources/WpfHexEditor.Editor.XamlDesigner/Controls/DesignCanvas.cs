@@ -96,6 +96,9 @@ public sealed class DesignCanvas : Border
 
     private GridInsertAdorner?                    _insertAdorner;
     private System.Windows.Controls.Grid?         _insertAdornerGrid;
+    // Set to true by SelectElement so the spurious MouseLeave fired by WPF when
+    // a new adorner (ResizeAdorner) appears over the canvas is ignored once.
+    private bool                                  _suppressNextMouseLeave;
 
     /// <summary>
     /// When true, selection uses ResizeAdorner instead of SelectionAdorner
@@ -307,9 +310,14 @@ public sealed class DesignCanvas : Border
         if (nearestGrid is null || !ReferenceEquals(nearestGrid, _insertAdornerGrid))
             HideGridInsertAdorner();
 
+        // WPF fires a spurious MouseLeave on the canvas after PlaceSelectionAdorner adds the
+        // ResizeAdorner to the AdornerLayer — even though the mouse is still inside the canvas.
+        // Suppress that single MouseLeave so the insert guide is not immediately destroyed.
+        if (nearestGrid is not null)
+            _suppressNextMouseLeave = true;
+
         // Immediately refresh the insert guide at the current mouse position so it
         // appears right after selection without waiting for the next MouseMove event.
-        // Mouse.GetPosition(_presenter) is safe to call synchronously here (UI thread).
         if (nearestGrid is not null)
         {
             var mouseNow = Mouse.GetPosition(_presenter);
@@ -1280,6 +1288,16 @@ public sealed class DesignCanvas : Border
     {
         if (_isRubberBanding) return;
         UpdateHoverAdorner(null);
+
+        // WPF fires a spurious MouseLeave on the canvas each time a new adorner
+        // (e.g. ResizeAdorner) is added to the AdornerLayer, even though the mouse
+        // is still physically over the canvas.  SelectElement sets this flag so the
+        // very next MouseLeave after a selection change is ignored.
+        if (_suppressNextMouseLeave)
+        {
+            _suppressNextMouseLeave = false;
+            return;
+        }
         HideGridInsertAdorner();
     }
 
