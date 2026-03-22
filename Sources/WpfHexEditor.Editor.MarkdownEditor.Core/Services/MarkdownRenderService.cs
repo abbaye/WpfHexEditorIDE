@@ -52,6 +52,17 @@ public static class MarkdownRenderService
     private static readonly Lazy<string> _classDiagramJs     = Load("classdiagram.js");
     private static readonly Lazy<string> _classDiagramCss    = Load("classdiagram.css");
 
+    // mermaid.js (2.9 MB) is written once to a temp file and referenced via <script src="file://...">.
+    // This prevents re-parsing the bundle on every render and lets WebView2 cache the script.
+    private static readonly Lazy<string> _mermaidJsFileUri = new(() =>
+    {
+        var dir  = Path.Combine(Path.GetTempPath(), "WpfHexEditor", "assets");
+        Directory.CreateDirectory(dir);
+        var path = Path.Combine(dir, "mermaid.min.js");
+        File.WriteAllText(path, _mermaidJs.Value, System.Text.Encoding.UTF8);
+        return new Uri(path).AbsoluteUri;
+    });
+
     // --- Public API -------------------------------------------------------
 
     /// <summary>
@@ -147,22 +158,20 @@ public static class MarkdownRenderService
         sb.AppendLine(_highlightJs.Value);
         sb.AppendLine("  </script>");
 
-        // mermaid.js — only injected when the source contains at least one mermaid block
+        // mermaid.js — only injected when the source contains at least one mermaid block.
+        // Loaded via <script src="file://..."> instead of inlining (avoids re-parsing 2.9 MB
+        // on every render; WebView2 caches the file after the first load).
         if (hasMermaid)
-        {
-            sb.AppendLine("  <script>");
-            sb.AppendLine(_mermaidJs.Value);
-            sb.AppendLine("  </script>");
-        }
+            sb.AppendLine($"  <script src=\"{_mermaidJsFileUri.Value}\"></script>");
 
         // classdiagram.js (VS-Like static diagram renderer)
         sb.AppendLine("  <script>");
         sb.AppendLine(_classDiagramJs.Value);
         sb.AppendLine("  </script>");
 
-        // Render script
+        // Render script — async IIFE so we can await mermaid.run()
         sb.AppendLine("  <script>");
-        sb.AppendLine("  (function() {");
+        sb.AppendLine("  (async function() {");
 
         // Configure marked with GFM + extensions
         sb.AppendLine("    marked.setOptions({");
@@ -182,9 +191,11 @@ public static class MarkdownRenderService
         // Custom renderer: intercept fenced code blocks
         sb.AppendLine("    const renderer = new marked.Renderer();");
         sb.AppendLine("    renderer.code = function(code, lang) {");
-        // Handle both old string form and new object form from marked v9+
-        sb.AppendLine("      const language = (typeof lang === 'object' && lang) ? lang.lang : lang;");
-        sb.AppendLine("      const text = (typeof code === 'object' && code) ? code.text : code;");
+        // marked v9+ passes a single token object {text, lang, ...}; older versions pass (string, string).
+        // Prefer code.lang when code is an object (marked v9+ token form).
+        sb.AppendLine("      const isToken = typeof code === 'object' && code !== null;");
+        sb.AppendLine("      const language = isToken ? (code.lang || '') : (lang || '');");
+        sb.AppendLine("      const text = isToken ? (code.text || '') : (code || '');");
         // mermaid block
         sb.AppendLine("      if (language === 'mermaid') {");
         sb.AppendLine("        return '<div class=\"mermaid\">' + text + '</div>';");
@@ -223,10 +234,13 @@ public static class MarkdownRenderService
         sb.AppendLine("    document.getElementById('content').innerHTML = html;");
         sb.AppendLine();
 
-        // Run mermaid on all .mermaid divs (only when mermaid.js was injected)
+        // Run mermaid on all .mermaid divs — awaited so errors are caught and
+        // the browser doesn't freeze when processing complex diagrams.
         if (hasMermaid)
         {
-            sb.AppendLine("    mermaid.run({ nodes: document.querySelectorAll('.mermaid') });");
+            sb.AppendLine("    try {");
+            sb.AppendLine("      await mermaid.run({ nodes: document.querySelectorAll('.mermaid') });");
+            sb.AppendLine("    } catch(e) { console.warn('[mermaid]', e); }");
             sb.AppendLine();
         }
 
