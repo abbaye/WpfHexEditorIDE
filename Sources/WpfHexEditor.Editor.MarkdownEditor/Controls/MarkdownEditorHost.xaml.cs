@@ -85,14 +85,11 @@ public sealed partial class MarkdownEditorHost : UserControl,
     // --- State ------------------------------------------------------------
     private MdViewMode   _viewMode    = MdViewMode.Split;
     private MdSplitLayout _layout     = MdSplitLayout.PreviewRight;
-    private bool          _syncScroll = true;
     private bool          _isDark;
     private string?       _filePath;
 
     // Debounce timers
     private readonly DispatcherTimer _refreshTimer;
-    private readonly DispatcherTimer _syncScrollTimer;
-    private double  _pendingScrollPct;
 
     // Cached document length — updated after each render, used by ScheduleRefresh()
     // to avoid calling GetText() on every keystroke.
@@ -119,7 +116,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
     // Toolbar items that need runtime updates
     private EditorToolbarItem? _podView;
     private EditorToolbarItem? _podLayout;
-    private EditorToolbarItem? _podSync;
     private EditorToolbarItem? _podWrap;
 
     // --- Status bar -------------------------------------------------------
@@ -149,13 +145,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         };
         _refreshTimer.Tick += OnRefreshTimerTick;
 
-        // Sync-scroll timer (200 ms debounce)
-        _syncScrollTimer = new DispatcherTimer(DispatcherPriority.Background)
-        {
-            Interval = TimeSpan.FromMilliseconds(200),
-        };
-        _syncScrollTimer.Tick += OnSyncScrollTimerTick;
-
         // Enable word wrap by default for Markdown source
         _editor.IsWordWrapEnabled = true;
 
@@ -171,9 +160,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         _editor.OperationProgress  += (_, e) => OperationProgress?.Invoke(this, e);
         _editor.OperationCompleted += (_, e) => OperationCompleted?.Invoke(this, e);
 
-        // Forward scroll percent from TextEditor viewport (for sync-scroll)
-        _editor.ViewportScrollChanged += OnEditorScrollChanged;
-
         // Preview link clicks → open in browser
         _preview.LinkClicked += (_, href) =>
         {
@@ -186,9 +172,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
         // Source editor context menu — FORMAT + INSERT groups
         _editor.ContextMenu = BuildEditorContextMenu();
-
-        // Sync scroll checkmark whenever the preview context menu opens
-        _preview.ContextMenu!.Opened += (_, _) => _preview.SetSyncScrollChecked(_syncScroll);
 
         // Intercept Ctrl+V for image paste before forwarding to the inner TextEditor.
         PreviewKeyDown += OnPreviewKeyDown;
@@ -275,7 +258,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
     public void Close()
     {
         _refreshTimer.Stop();
-        _syncScrollTimer.Stop();
         _editor.Close();
     }
 
@@ -327,7 +309,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         dto.Extra ??= new Dictionary<string, string>();
         dto.Extra["md.viewMode"]    = _viewMode.ToString();
         dto.Extra["md.layout"]      = _layout.ToString();
-        dto.Extra["md.sync"]        = _syncScroll.ToString();
         dto.Extra["md.wordWrap"]    = _wordWrap.ToString();
         dto.Extra["md.splitRatio"]  = _splitRatio.ToString(System.Globalization.CultureInfo.InvariantCulture);
         dto.Extra["md.previewZoom"] = _previewZoom.ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -347,10 +328,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         if (config.Extra.TryGetValue("md.layout", out var lt) &&
             Enum.TryParse<MdSplitLayout>(lt, out var layout))
             SetSplitLayout(layout);
-
-        if (config.Extra.TryGetValue("md.sync", out var sync) &&
-            bool.TryParse(sync, out var syncBool))
-            SetSyncScroll(syncBool);
 
         if (config.Extra.TryGetValue("md.wordWrap", out var ww) &&
             bool.TryParse(ww, out var wwBool))
@@ -509,7 +486,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
             case MdPreviewContextAction.SplitView:        SetViewMode(MdViewMode.Split);         break;
             case MdPreviewContextAction.PreviewOnly:      SetViewMode(MdViewMode.PreviewOnly);   break;
             case MdPreviewContextAction.Refresh:          _ = ForceRefreshAsync();               break;
-            case MdPreviewContextAction.ToggleSyncScroll: SetSyncScroll(!_syncScroll);           break;
             case MdPreviewContextAction.CycleLayout:      CycleSplitLayout();                    break;
         }
     }
@@ -577,10 +553,14 @@ public sealed partial class MarkdownEditorHost : UserControl,
     private void SetViewMode(MdViewMode mode)
     {
         if (_viewMode == mode) return;
+        var wasSourceOnly = _viewMode == MdViewMode.SourceOnly;
         _viewMode = mode;
         UpdateGridLayout();
         SyncViewModeToToolbar();
         UpdateStatusBar();
+        // Preview was suppressed while SourceOnly — render it now that it is visible
+        if (wasSourceOnly && mode != MdViewMode.SourceOnly)
+            _ = ForceRefreshAsync();
     }
 
     private void SetSplitLayout(MdSplitLayout layout)
@@ -589,13 +569,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         _layout = layout;
         UpdateGridLayout();
         SyncLayoutToToolbar();
-    }
-
-    private void SetSyncScroll(bool value)
-    {
-        _syncScroll = value;
-        if (_podSync is not null)
-            _podSync.IsChecked = value;
     }
 
     private void CycleViewMode()
@@ -683,8 +656,8 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Col 0: first pane
         _rootGrid.ColumnDefinitions.Add(new ColumnDefinition
         {
-            Width    = isSplit ? new GridLength(r1, GridUnitType.Star) : GridLength.Auto,
-            MinWidth = isSplit ? 80 : 0,
+            Width    = isSplit ? new GridLength(r1, GridUnitType.Star) : new GridLength(1, GridUnitType.Star),
+            MinWidth = 80,
         });
 
         if (isSplit)
@@ -734,8 +707,8 @@ public sealed partial class MarkdownEditorHost : UserControl,
         double r1 = _splitRatio, r2 = 1.0 - _splitRatio;
         _rootGrid.RowDefinitions.Add(new RowDefinition
         {
-            Height    = isSplit ? new GridLength(r1, GridUnitType.Star) : GridLength.Auto,
-            MinHeight = isSplit ? 60 : 0,
+            Height    = isSplit ? new GridLength(r1, GridUnitType.Star) : new GridLength(1, GridUnitType.Star),
+            MinHeight = 60,
         });
 
         if (isSplit)
@@ -810,28 +783,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
     private static bool HasMermaidDiagram(string? text)
         => text != null && text.Contains("```mermaid", StringComparison.OrdinalIgnoreCase);
 
-    // --- Sync scroll ------------------------------------------------------
-
-    private void OnEditorScrollChanged(object? sender, ScrollChangedEventArgs e)
-    {
-        if (!_syncScroll || _viewMode != MdViewMode.Split) return;
-
-        // Max scroll distance = ExtentHeight - ViewportHeight (not ExtentHeight alone).
-        // Dividing by ExtentHeight would cap the percentage at ~50% on a typical document.
-        var scrollRange = e.ExtentHeight - e.ViewportHeight;
-        if (scrollRange <= 0) return;
-
-        _pendingScrollPct = Math.Clamp(e.VerticalOffset / scrollRange, 0.0, 1.0);
-        _syncScrollTimer.Stop();
-        _syncScrollTimer.Start();
-    }
-
-    private void OnSyncScrollTimerTick(object? sender, EventArgs e)
-    {
-        _syncScrollTimer.Stop();
-        _preview.ScrollToPercent(_pendingScrollPct);
-    }
-
     // --- Toolbar helpers --------------------------------------------------
 
     private void BuildToolbarItems()
@@ -872,14 +823,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
             Icon = "\uE8A3", Label = "Wrap", Tooltip = "Word wrap (Alt+Z)",
             IsToggle = true, IsChecked = _wordWrap,
             Command = new RelayCmd(() => SetWordWrap(!_wordWrap)),
-        };
-
-        // Sync-scroll toggle
-        _podSync = new EditorToolbarItem
-        {
-            Icon = "\uE8CB", Label = "Sync", Tooltip = "Sync scroll",
-            IsToggle = true, IsChecked = _syncScroll,
-            Command = new RelayCmd(() => SetSyncScroll(!_syncScroll)),
         };
 
         // Force-refresh button
@@ -925,7 +868,6 @@ public sealed partial class MarkdownEditorHost : UserControl,
         _toolbarItems.Add(podFormat);
         _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
         _toolbarItems.Add(_podWrap);
-        _toolbarItems.Add(_podSync);
         _toolbarItems.Add(podRefresh);
 
         SyncViewModeToToolbar();

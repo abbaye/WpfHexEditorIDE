@@ -6,7 +6,7 @@
 // Created: 2026-03-19
 // Description:
 //     Code-behind for the WebView2-based Markdown preview pane.
-//     Manages WebView2 initialization, HTML rendering, scroll sync,
+//     Manages WebView2 initialization, HTML rendering, zoom,
 //     and link-click forwarding to the host.
 //
 // Architecture Notes:
@@ -33,7 +33,6 @@ public enum MdPreviewContextAction
     SplitView,
     PreviewOnly,
     Refresh,
-    ToggleSyncScroll,
     CycleLayout,
 }
 
@@ -47,9 +46,18 @@ public sealed partial class MarkdownPreviewPane : UserControl
     private bool   _isInitialized;
     private string _pendingMarkdown = string.Empty;
     private bool   _pendingIsDark;
+    private bool   _pendingHasMermaidInit = true;   // used before initialization only
 
     // Monotonically-increasing render stamp; used to discard stale renders.
     private int    _renderStamp;
+
+    // Incremental-render shell state — shell is written once per (theme × mermaid) combination.
+    // Subsequent renders call window.updateMarkdown() via ExecuteScriptAsync instead of Navigate().
+    private bool   _shellReady;
+    private bool?  _shellIsDark;      // null = shell never loaded
+    private bool?  _shellHasMermaid;
+    private string? _pendingMdUpdate; // markdown queued for post-navigation injection
+    private double  _currentZoom = 1.0;
 
     // --- Events -----------------------------------------------------------
 
@@ -95,7 +103,8 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
             await _webView.EnsureCoreWebView2Async(env);
 
-            _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+            _webView.CoreWebView2.WebMessageReceived    += OnWebMessageReceived;
+            _webView.CoreWebView2.NavigationCompleted  += OnNavigationCompleted;
 
             // Disable default context menu and DevTools (cleaner UX)
             _webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
@@ -110,7 +119,7 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
             // Render any content that arrived before initialization completed
             if (!string.IsNullOrEmpty(_pendingMarkdown))
-                await RenderAsync(_pendingMarkdown, _pendingIsDark, _pendingHasMermaid);
+                await RenderAsync(_pendingMarkdown, _pendingIsDark, _pendingHasMermaidInit);
         }
         catch (Exception ex) when (IsWebView2RuntimeMissing(ex))
         {
@@ -119,60 +128,69 @@ public sealed partial class MarkdownPreviewPane : UserControl
         }
     }
 
-    // Cached mermaid detection flag — updated each render call
-    private bool _pendingHasMermaid = true;
-
     /// <summary>
-    /// Renders the given Markdown text as a full HTML page in the preview pane.
+    /// Renders the given Markdown text in the preview pane.
     /// Safe to call before <see cref="InitializeAsync"/> completes — the render
     /// will be queued and executed once initialization finishes.
+    /// On the first call (or when theme/mermaid changes) the HTML shell is written to disk
+    /// and navigated once.  All subsequent calls update content via
+    /// <c>window.updateMarkdown()</c> — no page reload, no disk I/O.
     /// </summary>
     /// <param name="hasMermaid">
     ///   Pass <see langword="false"/> when the source contains no mermaid blocks
-    ///   to skip the 2.9 MB mermaid.js bundle injection.
+    ///   to skip the 2.9 MB mermaid.js bundle.
     /// </param>
     public async Task RenderAsync(string markdownText, bool isDarkTheme, bool hasMermaid = true)
     {
         if (!_isInitialized)
         {
             // Queue for later; InitializeAsync will pick it up
-            _pendingMarkdown    = markdownText;
-            _pendingIsDark      = isDarkTheme;
-            _pendingHasMermaid  = hasMermaid;
+            _pendingMarkdown         = markdownText;
+            _pendingIsDark           = isDarkTheme;
+            _pendingHasMermaidInit   = hasMermaid;
             return;
         }
 
         var stamp = System.Threading.Interlocked.Increment(ref _renderStamp);
 
-        // Build HTML off the UI thread to keep it responsive during large docs
-        var html = await Task.Run(() => MarkdownRenderService.GetHtmlPage(markdownText, isDarkTheme, hasMermaid));
+        // Shell reload required when theme or mermaid availability changes (or first render)
+        bool needsShellReload = _shellIsDark != isDarkTheme || _shellHasMermaid != hasMermaid;
+        if (needsShellReload)
+        {
+            _shellReady      = false;
+            _shellIsDark     = isDarkTheme;
+            _shellHasMermaid = hasMermaid;
+            _pendingMdUpdate = markdownText;
 
-        // Discard if a newer render was requested while we were working
+            // Build shell page off the UI thread (heavy — ~300 KB StringBuilder)
+            var shellHtml = await Task.Run(() =>
+                MarkdownRenderService.GetShellPage(isDarkTheme, hasMermaid));
+            if (stamp != _renderStamp) return;
+
+            var shellFile = Path.Combine(Path.GetTempPath(), "WpfHexEditor",
+                $"md_shell_{Environment.ProcessId}.html");
+            Directory.CreateDirectory(Path.GetDirectoryName(shellFile)!);
+            await File.WriteAllTextAsync(shellFile, shellHtml, System.Text.Encoding.UTF8);
+            if (stamp != _renderStamp) return;
+
+            _webView.CoreWebView2.Navigate(new Uri(shellFile).AbsoluteUri);
+            // Content injection happens in OnNavigationCompleted
+            return;
+        }
+
+        if (!_shellReady)
+        {
+            // Shell navigation still in progress — keep latest markdown queued
+            _pendingMdUpdate = markdownText;
+            return;
+        }
+
+        // --- Hot path: incremental update — no Navigate, no disk I/O ---
+        var escaped = await Task.Run(() =>
+            MarkdownRenderService.EscapeMarkdownForJs(markdownText));
         if (stamp != _renderStamp) return;
-
-        // NavigateToString has a ~2 MB size limit and throws ArgumentException when
-        // bundled assets are inlined (mermaid.js alone is ~2.9 MB). Write to a temp
-        // file instead and navigate via file:// URI to bypass the size restriction.
-        var tempDir  = Path.Combine(Path.GetTempPath(), "WpfHexEditor");
-        Directory.CreateDirectory(tempDir);
-        var tempFile = Path.Combine(tempDir, $"md_preview_{Environment.ProcessId}.html");
-        await File.WriteAllTextAsync(tempFile, html, System.Text.Encoding.UTF8);
-        _webView.CoreWebView2.Navigate(new Uri(tempFile).AbsoluteUri);
-    }
-
-    /// <summary>
-    /// Scrolls the preview to the given vertical percentage (0.0 – 1.0).
-    /// Used by the sync-scroll feature in <see cref="MarkdownEditorHost"/>.
-    /// </summary>
-    public void ScrollToPercent(double percent)
-    {
-        if (!_isInitialized) return;
-
-        var pct = Math.Clamp(percent, 0.0, 1.0).ToString("F4",
-            System.Globalization.CultureInfo.InvariantCulture);
-
-        _webView.CoreWebView2.ExecuteScriptAsync(
-            $"if(window.scrollToPercent)window.scrollToPercent({pct});");
+        await _webView.CoreWebView2.ExecuteScriptAsync(
+            $"window.updateMarkdown(\"{escaped}\");");
     }
 
     // --- Private ----------------------------------------------------------
@@ -223,31 +241,42 @@ public sealed partial class MarkdownPreviewPane : UserControl
            ex.Message.Contains("WebView2", StringComparison.OrdinalIgnoreCase) ||
            ex.InnerException is WebView2RuntimeNotFoundException;
 
-    // --- Context menu sync ------------------------------------------------
+    private async void OnNavigationCompleted(object? sender,
+        CoreWebView2NavigationCompletedEventArgs e)
+    {
+        _shellReady = true;
+
+        // Inject any markdown that was queued while navigation was in progress
+        var md = _pendingMdUpdate;
+        _pendingMdUpdate = null;
+        if (md is null) return;
+
+        var escaped = await Task.Run(() =>
+            MarkdownRenderService.EscapeMarkdownForJs(md));
+        await _webView.CoreWebView2.ExecuteScriptAsync(
+            $"window.updateMarkdown(\"{escaped}\");");
+
+        // Restore zoom level after shell reload
+        if (_currentZoom != 1.0)
+            SetZoom(_currentZoom);
+    }
+
+    // --- Context menu handlers --------------------------------------------
 
     /// <summary>
     /// Applies an HTML zoom level to the preview content.
+    /// Zoom is persisted in <c>_currentZoom</c> and re-applied after shell reloads.
     /// </summary>
     /// <param name="zoom">Zoom factor (e.g. 1.5 = 150 %).  Clamped to [0.5, 3.0].</param>
     public void SetZoom(double zoom)
     {
-        if (!_isInitialized) return;
-        var pct = (Math.Clamp(zoom, 0.5, 3.0) * 100).ToString("F0",
+        _currentZoom = Math.Clamp(zoom, 0.5, 3.0);
+        if (!_isInitialized || !_shellReady) return;
+        var pct = (_currentZoom * 100).ToString("F0",
             System.Globalization.CultureInfo.InvariantCulture);
         _webView.CoreWebView2.ExecuteScriptAsync(
             $"document.body.style.zoom='{pct}%';");
     }
-
-    /// <summary>
-    /// Updates the Sync Scroll checkmark from the host when the panel opens.
-    /// </summary>
-    public void SetSyncScrollChecked(bool value)
-    {
-        if (_ctxSyncScroll is not null)
-            _ctxSyncScroll.IsChecked = value;
-    }
-
-    // --- Context menu handlers --------------------------------------------
 
     private void OnCtxSourceOnly(object sender, RoutedEventArgs e)
         => PreviewContextMenuAction?.Invoke(this, MdPreviewContextAction.SourceOnly);
@@ -260,9 +289,6 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
     private void OnCtxRefresh(object sender, RoutedEventArgs e)
         => PreviewContextMenuAction?.Invoke(this, MdPreviewContextAction.Refresh);
-
-    private void OnCtxSyncScroll(object sender, RoutedEventArgs e)
-        => PreviewContextMenuAction?.Invoke(this, MdPreviewContextAction.ToggleSyncScroll);
 
     private void OnCtxCycleLayout(object sender, RoutedEventArgs e)
         => PreviewContextMenuAction?.Invoke(this, MdPreviewContextAction.CycleLayout);

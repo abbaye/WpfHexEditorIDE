@@ -34,10 +34,6 @@
             <!-- ACTIONS group -->
             <MenuItem Header="ACTIONS" Style="{StaticResource MD_GroupHeaderStyle}"/>
             <MenuItem Header="Refresh Preview"  InputGestureText="F9"            Click="OnCtxRefresh"/>
-            <MenuItem x:Name="_ctxSyncScroll"
-                      Header="Sync Scroll"
-                      IsCheckable="True"
-                      Click="OnCtxSyncScroll"/>
             <MenuItem Header="Cycle Layout"     InputGestureText="Ctrl+Shift+L"  Click="OnCtxCycleLayout"/>
         </ContextMenu>
     </UserControl.ContextMenu>

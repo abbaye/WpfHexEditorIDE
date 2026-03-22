@@ -27,6 +27,7 @@
 //     can reuse the rendering pipeline without a WPF dependency.
 // ==========================================================
 
+using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -62,6 +63,11 @@ public static class MarkdownRenderService
         File.WriteAllText(path, _mermaidJs.Value, System.Text.Encoding.UTF8);
         return new Uri(path).AbsoluteUri;
     });
+
+    // Shell page cache — at most 4 variants (isDark × hasMermaid).
+    // Built lazily and reused across all subsequent renders.
+    private static readonly ConcurrentDictionary<(bool dark, bool mermaid), string>
+        _shellCache = new();
 
     // --- Public API -------------------------------------------------------
 
@@ -274,7 +280,182 @@ public static class MarkdownRenderService
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Returns a self-contained HTML shell page with all CSS/JS assets inlined and
+    /// <c>window.updateMarkdown(md)</c> exposed for incremental content updates.
+    /// The result is cached per <paramref name="isDarkTheme"/> / <paramref name="hasMermaid"/>
+    /// combination (at most 4 variants per process lifetime).
+    /// </summary>
+    /// <remarks>
+    /// Use this for the initial <c>Navigate()</c> call, then drive subsequent renders via
+    /// <c>ExecuteScriptAsync("window.updateMarkdown(\"...\");")</c> — no page reload needed.
+    /// </remarks>
+    public static string GetShellPage(bool isDarkTheme, bool hasMermaid = true)
+        => _shellCache.GetOrAdd((isDarkTheme, hasMermaid), key => BuildShellPage(key.dark, key.mermaid));
+
+    /// <summary>
+    /// Escapes a raw Markdown string so it can be safely passed as a JS double-quoted
+    /// string argument to <c>window.updateMarkdown("...")</c> via
+    /// <c>ExecuteScriptAsync</c>.
+    /// </summary>
+    public static string EscapeMarkdownForJs(string text) => EscapeForJsString(text);
+
     // --- Private helpers --------------------------------------------------
+
+    /// <summary>
+    /// Builds the HTML shell page (called at most once per theme/mermaid variant).
+    /// </summary>
+    private static string BuildShellPage(bool isDarkTheme, bool hasMermaid)
+    {
+        var ghCss        = isDarkTheme ? _ghDarkCss.Value    : _ghLightCss.Value;
+        var hljsCss      = isDarkTheme ? _hljsDarkCss.Value  : _hljsLightCss.Value;
+        var bodyBg       = isDarkTheme ? "#0d1117" : "#ffffff";
+        var bodyColor    = isDarkTheme ? "#c9d1d9" : "#24292f";
+        var mermaidTheme = isDarkTheme ? "dark" : "default";
+        var cdTheme      = isDarkTheme ? "dark" : "light";
+
+        var sb = new StringBuilder(300 * 1024);   // ~300 KB expected
+        sb.AppendLine("<!DOCTYPE html>");
+        sb.AppendLine("<html lang=\"en\">");
+        sb.AppendLine("<head>");
+        sb.AppendLine("  <meta charset=\"UTF-8\">");
+        sb.AppendLine("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+        sb.AppendLine("  <title>Preview</title>");
+        sb.AppendLine();
+
+        sb.AppendLine("  <style>");
+        sb.AppendLine(ghCss);
+        sb.AppendLine("  </style>");
+
+        sb.AppendLine("  <style>");
+        sb.AppendLine(hljsCss);
+        sb.AppendLine("  </style>");
+
+        sb.AppendLine("  <style>");
+        sb.AppendLine($"    body {{ background-color: {bodyBg}; color: {bodyColor}; margin: 0; padding: 0; }}");
+        sb.AppendLine("    .markdown-body {");
+        sb.AppendLine("      box-sizing: border-box;");
+        sb.AppendLine("      min-width: 200px;");
+        sb.AppendLine("      max-width: 980px;");
+        sb.AppendLine("      margin: 0 auto;");
+        sb.AppendLine("      padding: 24px 32px;");
+        sb.AppendLine("    }");
+        sb.AppendLine("    @media (max-width: 767px) { .markdown-body { padding: 15px; } }");
+        sb.AppendLine("    .task-list-item { list-style-type: none; }");
+        sb.AppendLine("    .task-list-item input { margin: 0 0.2em 0.25em -1.4em; vertical-align: middle; }");
+        sb.AppendLine("    .emoji { font-style: normal; }");
+        sb.AppendLine("    .mermaid { margin: 1em 0; }");
+        sb.AppendLine("  </style>");
+
+        sb.AppendLine("  <style>");
+        sb.AppendLine(_classDiagramCss.Value);
+        sb.AppendLine("  </style>");
+
+        sb.AppendLine("</head>");
+        sb.AppendLine("<body>");
+        sb.AppendLine("  <article class=\"markdown-body\" id=\"content\"></article>");
+        sb.AppendLine();
+
+        sb.AppendLine("  <script>");
+        sb.AppendLine(_markedJs.Value);
+        sb.AppendLine("  </script>");
+
+        sb.AppendLine("  <script>");
+        sb.AppendLine(_emojiJs.Value);
+        sb.AppendLine("  </script>");
+
+        sb.AppendLine("  <script>");
+        sb.AppendLine(_highlightJs.Value);
+        sb.AppendLine("  </script>");
+
+        if (hasMermaid)
+            sb.AppendLine($"  <script src=\"{_mermaidJsFileUri.Value}\"></script>");
+
+        sb.AppendLine("  <script>");
+        sb.AppendLine(_classDiagramJs.Value);
+        sb.AppendLine("  </script>");
+
+        // One-time init IIFE — sets up marked/mermaid/renderer, then exposes window.updateMarkdown
+        sb.AppendLine("  <script>");
+        sb.AppendLine("  (function() {");
+
+        sb.AppendLine("    marked.setOptions({ gfm: true, breaks: false, pedantic: false });");
+        sb.AppendLine();
+
+        if (hasMermaid)
+        {
+            sb.AppendLine($"    mermaid.initialize({{ startOnLoad: false, theme: '{mermaidTheme}', securityLevel: 'loose' }});");
+            sb.AppendLine();
+        }
+
+        sb.AppendLine("    const renderer = new marked.Renderer();");
+        sb.AppendLine("    renderer.code = function(code, lang) {");
+        sb.AppendLine("      const isToken = typeof code === 'object' && code !== null;");
+        sb.AppendLine("      const language = isToken ? (code.lang || '') : (lang || '');");
+        sb.AppendLine("      const text = isToken ? (code.text || '') : (code || '');");
+        sb.AppendLine("      if (language === 'mermaid') {");
+        sb.AppendLine("        return '<div class=\"mermaid\">' + text + '</div>';");
+        sb.AppendLine("      }");
+        sb.AppendLine("      if (language === 'classDiagram') {");
+        sb.AppendLine("        const enc = btoa(unescape(encodeURIComponent(text)));");
+        sb.AppendLine("        return '<div class=\"cd-preview\" data-cd=\"' + enc + '\"></div>';");
+        sb.AppendLine("      }");
+        sb.AppendLine("      const validLang = language && hljs.getLanguage(language);");
+        sb.AppendLine("      const highlighted = validLang");
+        sb.AppendLine("        ? hljs.highlight(text, { language: language }).value");
+        sb.AppendLine("        : hljs.highlightAuto(text).value;");
+        sb.AppendLine("      const cls = validLang ? ' class=\"hljs language-' + language + '\"' : ' class=\"hljs\"';");
+        sb.AppendLine("      return '<pre><code' + cls + '>' + highlighted + '</code></pre>';");
+        sb.AppendLine("    };");
+        sb.AppendLine();
+
+        sb.AppendLine("    renderer.listitem = function(item) {");
+        sb.AppendLine("      const text = (typeof item === 'object' && item) ? item.text : item;");
+        sb.AppendLine("      const task = (typeof item === 'object' && item) ? item.task : false;");
+        sb.AppendLine("      const checked = (typeof item === 'object' && item) ? item.checked : false;");
+        sb.AppendLine("      if (task) {");
+        sb.AppendLine("        const chk = checked ? ' checked' : '';");
+        sb.AppendLine("        return '<li class=\"task-list-item\"><input type=\"checkbox\" disabled' + chk + '> ' + text + '</li>\\n';");
+        sb.AppendLine("      }");
+        sb.AppendLine("      return '<li>' + text + '</li>\\n';");
+        sb.AppendLine("    };");
+        sb.AppendLine();
+
+        // Incremental update function — called via ExecuteScriptAsync on every debounce tick
+        sb.AppendLine("    window.updateMarkdown = async function(md) {");
+        sb.AppendLine("      const html = marked.parse(md, { renderer: renderer });");
+        sb.AppendLine("      document.getElementById('content').innerHTML = html;");
+        if (hasMermaid)
+        {
+            sb.AppendLine("      try {");
+            sb.AppendLine("        await mermaid.run({ nodes: document.querySelectorAll('.mermaid') });");
+            sb.AppendLine("      } catch(e) { console.warn('[mermaid]', e); }");
+        }
+        sb.AppendLine($"      if (typeof ClassDiagramPreview !== 'undefined') ClassDiagramPreview.renderAll('{cdTheme}');");
+        sb.AppendLine("    };");
+        sb.AppendLine();
+
+        sb.AppendLine("    window.scrollToPercent = function(pct) {");
+        sb.AppendLine("      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
+        sb.AppendLine("      if (h > 0) window.scrollTo(0, h * pct);");
+        sb.AppendLine("    };");
+        sb.AppendLine();
+
+        sb.AppendLine("    document.addEventListener('click', function(e) {");
+        sb.AppendLine("      const a = e.target.closest('a');");
+        sb.AppendLine("      if (a && a.href && !a.href.startsWith('about:') && window.chrome && window.chrome.webview) {");
+        sb.AppendLine("        e.preventDefault();");
+        sb.AppendLine("        window.chrome.webview.postMessage(JSON.stringify({ type: 'link', href: a.href }));");
+        sb.AppendLine("      }");
+        sb.AppendLine("    });");
+
+        sb.AppendLine("  })();");
+        sb.AppendLine("  </script>");
+        sb.AppendLine("</body>");
+        sb.AppendLine("</html>");
+
+        return sb.ToString();
+    }
 
     /// <summary>
     /// Escapes a string so it can be safely embedded in a JS double-quoted string literal.
