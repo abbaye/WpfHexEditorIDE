@@ -1,459 +1,798 @@
-# 📘 CLAUDE.md — Global Engineering & Governance Rules (v2.3)
+\# 📘 CLAUDE.md — WpfHexEditor Prompt OS (v5)
+
+
 
 ---
 
-## 1️⃣ Initialisation Obligatoire du Contexte
 
-**À chaque début de session, Claude doit lire :**
 
-1. `~/.claude/CLAUDE.md` (règles globales)  
-2. `CLAUDE.md` du projet courant (racine du repo si présent)  
-3. `~/.claude/projects/<ProjectName>/memory/`  
-   - `MEMORY.md` et tous fichiers référencés
+Claude must infer flags implicitly without explicit declaration.
 
-⚠️ Interdiction de commencer à coder ou exécuter toute action avant cette lecture.
+Claude must keep analysis lightweight unless task is LEVEL 3 or 4.
 
-Objectifs : continuité architecturale, respect des décisions passées, cohérence, maintien des conventions.
+
 
 ---
 
-## 2️⃣ 🔐 Git — Gouvernance et Autorisations
 
-### 2.1 Mode Lecture Seule (par défaut)
 
-- Autorisé : `status`, `diff`, `log`, `blame`, `show`  
-- Interdit : `commit`, `push`, `pull`, `branch`, `merge`, `rebase`, `tag`, `amend`, `reset`, `cherry-pick`
+\## 1. Context Boot
 
-### 2.2 Mode Plan Approuvé → Autorisation Étendue
 
-Si un plan est **présenté et approuvé** :  
 
-- Toutes les actions Git nécessaires pour le plan sont autorisées **sans redemander confirmation**  
-- Retour automatique en lecture seule à la fin du plan ou de la session  
+Load:
 
-### 2.3 Restrictions
 
-- Pas de modification hors plan  
-- Pas de push forcé non prévu  
-- Pas de changement d’architecture non planifié  
 
----
+\* Global rules
 
-## 3️⃣ Architecture & Separation of Concerns
+\* Project CLAUDE.md
 
-- 1 fichier = 1 responsabilité  
-- Ne jamais mélanger : UI ↔ logique métier, Infrastructure ↔ domaine, BD ↔ contrôleur  
-- Respect strict : Controllers, Services, Repositories, Models, Views, Infrastructure  
-- Nouveaux éléments → nouvelle couche dédiée  
+\* Project memory
+
+
+
+❌ No execution before full context load
+
+
 
 ---
 
-## 4️⃣ Qualité du Code
 
-- Fonctions : 15–25 lignes max, 1 responsabilité, nom explicite, pas d’abréviations  
-- Lisibilité : early return > nested if, guard clauses, pas de side-effects cachés, pas de variables globales implicites  
 
----
+\## 2. Execution Model
 
-## 5️⃣ Patterns & Maintenabilité
 
-- Appliquer patterns si amélioration : Repository, Strategy, Factory, Observer, Mediator, CQRS, Pipeline, State, Adapter  
-- Favoriser composition > héritage  
-- Respect strict SOLID  
-- Documenter le pattern utilisé  
 
----
+\* Default: READ-ONLY
 
-## 6️⃣ Discipline de Correction (Root Cause First)
+\* `PLAN` mandatory before execution
 
-- Identifier la cause racine  
-- Évaluer l’impact  
-- Corriger proprement  
-- Fix temporaire = mention obligatoire + plan correctif définitif  
+\* Wait for explicit `GO`
 
----
 
-## 7️⃣ Performance & Scalabilité
 
-- Évaluer complexité algorithmique  
-- Minimiser allocations et copies mémoire  
-- Streaming / lazy loading pour datasets volumineux  
-- Virtualisation si nécessaire  
-- Benchmarkable et scalable  
+Rules:
 
---- 
 
-## 7️⃣b WPF Global Theme Enforcement (Mandatory)
 
-- **Tout ce qui est créé ou modifié par Claude doit respecter le thème global du projet.**  
-  - Fenêtres (`Window`)  
-  - Contrôles (`UserControl`, `CustomControl`)  
-  - DataTemplates, Styles, Brushes, ResourceDictionaries  
-  - Dialogs et popups  
-- Le thème global (Light, Dark, ou personnalisé) **doit être appliqué automatiquement** à chaque composant WPF.  
-- Aucun composant WPF **ne peut rester sans thème ni style défini**.  
-- Si un contrôle temporaire ou spécifique doit déroger au thème global, il faut :  
-  1. Mentionner l’exception dans le **PLAN**  
-  2. Documenter la raison dans la **mémoire du projet**  
+\* No out-of-plan changes
 
-### Documentation automatique
+\* No architecture drift
 
-- Chaque fichier `.CS` ou `.XAML` généré par Claude doit indiquer :  
-  - Quel thème global est utilisé  
-  - Les ResourceDictionaries appliqués  
-  - Les styles et templates particuliers, si besoin  
-- Les fichiers `.MD` correspondants sont générés ou mis à jour automatiquement pour refléter la conformité au thème global.  
 
-### Validation
-
-- À la fin de chaque PLAN ou correction (`COR`), Claude doit vérifier que **tous les composants WPF du plan sont conformes au thème global**.  
-- Toute violation = plan considéré **incomplet** jusqu’à mise en conformité.
 
 ---
 
-## 7️⃣c Dockable Panels — VS-Like Standard
 
-- **Tout nouveau Panel Dockable créé par Claude doit respecter le standard Visual Studio-Like** :  
-  - Barre d’outils (`Toolbar`) en haut du panel, configurable via XAML/Code-behind  
-  - Possibilité de **drag & drop**, dock, float et tab group  
-  - Suivi des **ResourceDictionaries et thèmes globaux** (voir 7️⃣b)  
-  - Styles, brushes et icons conformes au thème global du projet  
-  - Composants WPF internes doivent respecter la séparation des responsabilités (Controls, ViewModels, Services)  
 
-### Documentation automatique
+\## 3. Workflow Engine
 
-- Chaque nouveau Panel Dockable doit générer ou mettre à jour un `.MD` associé :  
-  - Nom du panel  
-  - Fonctionnalité / responsabilité  
-  - Composants internes utilisés  
-  - Toolbar items et bindings  
-  - Conformité thème global (oui/non)  
-- Mise à jour automatique à la **fin du PLAN** si le panel a été modifié ou ajouté  
 
-### Validation
 
-- Après exécution d’un PLAN ou correction (`COR`), Claude doit vérifier :  
-  - Le panel respecte le **layout VS-Like**  
-  - La **toolbar est présente et fonctionnelle**  
-  - Le panel est conforme au **thème global WPF**  
-- Toute violation = PLAN considéré **incomplet** jusqu’à mise en conformité
+1\. Analyze request
 
----
+2\. Detect context (see section 4)
 
-## 7️⃣d Editor Plug-In — Full IDE Integration Requirement
+3\. Load required modules
 
-- **Tout nouveau module Editor (“plug-in”) créé par Claude doit prévoir l’intégration complète dans l’IDE WPFHexEditor.App**.  
+4\. Build PLAN
 
-### Obligations
+5\. WAIT for GO
 
-Chaque nouveau module doit inclure dans la planification et la génération :  
-1. **Pop-up menus / context menus**  
-2. **Toolbar / buttons / shortcuts**  
-3. **Options Panel / Settings integration**  
-4. **Status Bar updates / Personality display**  
-5. **Search / Find / Replace functionality**  
-6. **Docking panel structure VS-Like**  
-7. **Conformité au thème global WPF** (voir 7️⃣b)  
-8. **Documentation automatique `.MD` pour le module**  
+6\. Execute
 
-### Planification obligatoire
+7\. Validate
 
-- Chaque plan (`PLAN:`) pour un nouveau module **doit inclure** :  
-  - Architecture globale du module  
-  - Tous composants WPF à créer ou modifier  
-  - Liste des services et ViewModels nécessaires  
-  - Points de personnalisation (toolbar, statusbar, options)  
-  - Intégration dans les workflows existants (Search, Undo/Redo, Docking, Themes)  
+8\. Update memory
 
-### Validation
 
-- À la fin du plan ou d’une correction (`COR:`) :  
-  - Claude doit vérifier que **tous les composants listés ci-dessus sont inclus et fonctionnels**  
-  - Toute omission = plan considéré **incomplet** jusqu’à correction  
-- Chaque fichier `.CS` / `.XAML` créé doit générer ou mettre à jour son `.MD` de documentation  
-- Le `README.md` principal doit être révisé automatiquement pour refléter l’ajout du nouveau module  
 
-### Workflow
+❌ Cannot skip steps
 
-1. Déclencheur : `PLAN: New Editor Module`  
-2. Analyse complète de l’IDE et modules existants  
-3. Plan détaillé incluant **tous composants WPF et features**  
-4. Exécution et génération des fichiers  
-5. Validation des thèmes, docking, toolbar, menus, statusbar, search, options  
-6. Mise à jour mémoire projet et documentation `.MD`  
 
-> ⚠️ Aucun module Editor ne doit être créé sans ce workflow complet.
 
 ---
 
-## 8️⃣ Workflow Orchestrateur Obligatoire
 
-Pour CHAQUE demande :  
 
-1. **Analyse** : reformuler, identifier contraintes et risques  
-2. **Identification des domaines** : .NET, WPF, sécurité, DevOps, BD, performance  
-3. **Chargement des skills** : conventions, patterns existants, mémoire projet  
-4. **Planification** : découpage clair, fichiers impactés, risques identifiés  
-5. **Exécution** : code propre, architecture respectée, séparation stricte  
-6. **Validation** : SOLID, lisibilité, performance, absence de duplication  
+\## 4. Smart Context Detection (IDE-AWARE)
 
-⚠️ Interdiction de sauter l’orchestrateur.
 
----
 
-## 8️⃣a Sub-Project Validation — Granularity & Maintainability
+Claude must auto-detect:
 
-- **Objectif** : S’assurer que toute nouvelle fonctionnalité est intégrée dans le(s) sous-projet(s) approprié(s) pour **maximiser la maintenabilité, la granularité et la cohérence**.  
 
-### Étapes obligatoires lors de la planification (`PLAN:`)
 
-1. **Analyse de la fonctionnalité**  
-   - Identifier clairement les responsabilités et composants nécessaires  
-   - Déterminer l’impact sur l’IDE et les modules existants  
+\### UI Layer
 
-2. **Validation des sous-projets existants**  
-   - Vérifier si un sous-projet existant peut accueillir la fonctionnalité  
-   - Considérer : séparation des responsabilités, dépendances, testabilité, modularité  
 
-3. **Création de sous-projet(s) si nécessaire**  
-   - Si aucun sous-projet existant n’est approprié :  
-     - Créer automatiquement un nouveau sous-projet dédié  
-     - Nommer le sous-projet de façon descriptive et cohérente  
-     - Documenter dans la **mémoire projet** et `.MD` associé  
 
-4. **Documentation dans le plan**  
-   - Indiquer le sous-projet choisi ou créé pour la fonctionnalité  
-   - Détailler tous les fichiers/folders qui seront impactés  
-   - Prévoir l’intégration avec les workflows existants (Docking Panels, Themes WPF, Editor Modules, etc.)  
+\* `.xaml`, `UserControl`, `Window`
 
-5. **Validation finale avant exécution**  
-   - Vérifier que la granularité et modularité sont respectées  
-   - Aucune exécution de code ou modification ne peut se faire tant que la validation de sous-projet n’est pas complétée  
+&nbsp; → Load `claude.wpf.md`
 
-### Résultat attendu
 
-- Chaque fonctionnalité est :  
-  - Placée dans le sous-projet le plus logique  
-  - Documentée et traçable dans la mémoire projet  
-  - Conforme aux standards de l’IDE et aux workflows existants  
 
-> ⚠️ Claude **ne doit jamais placer une nouvelle fonctionnalité de manière arbitraire** dans un projet existant sans cette validation.
+\### Editor / Plugin System
+
+
+
+\* keywords: Editor, Tool, Plugin, Module
+
+&nbsp; → Load `claude.plugins.md`
+
+
+
+\### Core Engine / Binary / Hex
+
+
+
+\* HexEditor, buffer, stream, memory, binary parsing
+
+&nbsp; → Load `claude.perf.md`
+
+
+
+\### Documentation request
+
+
+
+\* `DOC`, `README`, `.md`
+
+&nbsp; → Load `claude.doc.md`
+
+
 
 ---
 
-### 8️⃣b PLAN Execution Approval — Human GO Required
 
-- **Règle stricte** : Claude **ne doit jamais exécuter un plan automatiquement** après l’avoir généré.  
-- **Validation obligatoire** :  
-  1. Claude élabore le PLAN complet selon le workflow : analyse, identification des domaines, sous-projets, modules, docking panels, thèmes WPF, etc.  
-  2. **Attendre explicitement l’instruction `GO`** de l’utilisateur pour démarrer l’exécution.  
-- **Implications** :  
-  - Aucun code, commit, création de fichiers `.CS/.XAML` ou mise à jour de mémoire n’est permis avant `GO`.  
-  - L’approbation humaine garantit que les changements et la documentation sont validés avant exécution.  
-- **Workflow intégré** :  
-  ```mermaid
-  flowchart TD
-      PLAN[Generate Plan] --> WAIT[Wait for GO command]
-      WAIT -->|GO| EXEC[Execute Plan → Update Memory / Docs / IDE]
-      WAIT -->|No GO| HOLD[Hold Execution]
 
----
+\## 5. Core Engineering Rules
 
-## 9️⃣ Mémoire Projet (Claude Memory System)
 
-- Tous plans approuvés ou corrections **doivent** mettre à jour : `~/.claude/projects/<ProjectName>/memory/`  
-- Organisation : `architecture-decisions.md`, `performance-notes.md`, `rendering-pipeline.md`, `auth-flow.md`, `db-migrations.md`  
-- Contenu minimum : date, objectif, décisions, modifs structurelles, impact perf, points de vigilance  
-- Interdiction : fichiers `.md` dans repo source  
 
----
+\* 1 file = 1 responsibility
 
-## 🔟 Mode Excellence
 
-- Code production-ready  
-- Niveau senior / staff engineer  
-- Standard open-source top mondial  
-- Question permanente : “Est-ce acceptable dans un projet top mondial ?”  
 
----
+\* Strict separation:
 
-## 11️⃣ Trigger Words — Workflow Automatisé
 
-| Mot-clé | Effet |
-|----------|-------|
-| `PLAN:` | Passe en **mode plan** obligatoire avant exécution. Plan structuré + approbation obligatoire. |
-| `BUG:`  | Déclenche workflow strict : GitHub issue obligatoire, root cause, plan, mémoire mise à jour. |
-| `COR:`  | Correction rapide pour problèmes légers, pas d’issue mais documentation mémoire obligatoire. |
+
+&nbsp; \* UI (WPF)
+
+&nbsp; \* Application (ViewModels / Services)
+
+&nbsp; \* Domain (logic)
+
+&nbsp; \* Infrastructure
+
+
+
+\* SOLID mandatory
+
+
+
+\* Composition > inheritance
+
+
+
+Code:
+
+
+
+\* Small, explicit, readable
+
+\* No hidden side-effects
+
+
 
 ---
 
-### 11.1 PLAN Mode
 
-- Analyse complète, identification des domaines, chargement des skills, planification détaillée  
-- Blocage de toute exécution tant que plan non approuvé  
-- Après approbation → autorisations Git étendues + mémoire obligatoire  
 
-#### 🔹 Documentation automatique
-- Pour chaque fichier `.CS` ajouté ou modifié :  
-  - Créer ou mettre à jour automatiquement un fichier `.MD` correspondant  
-  - Inclut nom de la classe/fichier, description, méthodes principales, design patterns, exemples  
-- Mise à jour automatique à la **fin du plan** si le fichier a changé  
-- Après chaque plan, **réviser automatiquement le `README.md` principal**  
+\## 6. Root Cause Rule
 
----
 
-### 11.2 BUG Workflow
 
-- Création GitHub issue obligatoire : title, description, reproduction steps, root cause, resolution  
-- Numéro issue référencé dans la session et commits (`Fixes #<issueNumber>`)  
-- Root cause et plan de résolution obligatoire  
-- Mise à jour mémoire obligatoire après exécution  
+Always fix root cause
+
+Temp fix → must include resolution plan
+
+
 
 ---
 
-### 11.3 COR Workflow
 
-- Pour petits problèmes légers uniquement  
-- Correction rapide autorisée  
-- Pas d’issue GitHub mais documentation mémoire obligatoire  
-- Commentaire explicatif en anglais obligatoire  
 
----
+\## 7. Project Architecture Awareness (CRITICAL)
 
-### 11.4 DOC Trigger — Complete Documentation & Missing Items
 
-- **Mot-clé** : `DOC:`  
-- **Effet** : Lorsque ce mot est lancé, Claude doit :  
-  1. Scanner **tous les sous-dossiers** de la solution/projet  
-  2. Identifier **tous les objets, classes, modules, fichiers `.CS` ou `.XAML`** qui n’ont **pas de documentation `.MD` associée**  
-     - Si un fichier ou objet est **sans documentation**, Claude **doit la créer automatiquement**  
-  3. Mettre à jour **tous les fichiers de documentation existants** :  
-     - Documentation `.MD` des classes/fichiers  
-     - `README.md` principal  
-     - Architecture overview / diagrammes  
-     - WIKI interne si existant  
-  4. Vérifier que **tous les liens internes et externes** fonctionnent correctement  
-  5. Générer un **résumé global** des changements de documentation  
-  6. Mettre à jour la **mémoire du projet** avec le log de la mise à jour complète  
 
-- **Règles** :  
-  - Aucune exécution de code ou modification du projet tant que la documentation n’est pas complète si `DOC:` est lancé.  
-  - Toutes les nouvelles classes ou objets détectés **doivent avoir leur `.MD` créé automatiquement**, incluant :  
-    - Nom de l’objet / classe  
-    - Responsabilité principale  
-    - Méthodes / propriétés principales  
-    - Patterns utilisés  
-    - Exemple d’utilisation si applicable  
-  - La mise à jour doit inclure les **diagrammes Mermaid**, **ResourceDictionaries WPF**, **panels dockables**, et **modules Editor** pour assurer une cohérence totale de la solution.
+Claude must respect IDE structure:
+
+
+
+\* WpfHexEditor.App → UI shell
+
+\* Editors → independent modules
+
+\* Services → shared logic
+
+\* Plugins → isolated + reloadable
+
+\* Docking system → central UI layout
+
+
+
+❌ Never break modularity
+
+
 
 ---
 
-### 11.5 DOCR Trigger — Rapid Documentation Review (Last 24h)
 
-- **Mot-clé** : `DOCR:`  
-- **Effet** : Lorsque ce mot est lancé, Claude doit :  
-  1. Scanner **tous les fichiers modifiés dans les 24 dernières heures** selon l’historique des commits Git  
-  2. Vérifier et mettre à jour **la documentation `.MD` correspondante** pour ces fichiers uniquement  
-  3. Mettre à jour **README.md principal et architecture overview** si des changements récents impactent leur contenu  
-  4. Vérifier que **tous les liens internes/externes affectés** par les modifications récentes fonctionnent  
-  5. Mettre à jour la **mémoire projet** avec un résumé des modifications de documentation récentes  
 
-- **Règles** :  
-  - Pas de scan complet de la solution → économie de tokens et gain de rapidité  
-  - Si un fichier récent n’a pas de documentation, Claude **doit la créer automatiquement**  
-  - Validation WPF themes, Dockable Panels et modules Editor si impactés par les changements récents  
+\## 8. Memory \& Documentation
 
-- **Objectif** : Permettre une **révision rapide de la documentation** sans relancer un scan complet `DOC:`, tout en maintenant la cohérence de la solution.
+
+
+After execution:
+
+
+
+\* Update project memory
+
+\* Document:
+
+
+
+&nbsp; \* decisions
+
+&nbsp; \* architecture changes
+
+&nbsp; \* performance impacts
+
+
 
 ---
 
-## 12️⃣ File Header Enforcement
-
-Chaque nouveau fichier doit inclure :  
-
-```c
-// ==========================================================
-// Project: <ProjectName>
-// File: <FileName>
-// Author: <Auto or Git config>
-// Created: <YYYY-MM-DD>
-// Description:
-//     Clear explanation of file responsibility.
-//
-// Architecture Notes:
-//     Patterns used (if any)
-//     Important design decisions
-//
-// ==========================================================
-
-## 13️⃣ Comment Language Policy
-
-Par défaut : anglais
-Explicatif, technique, clair
-Abréviations locales ou mélange FR/EN interdits
-Exception si explicitement demandé : Write comments in French.
-
-## 14️⃣ Option encore plus stricte (recommandée)
-
-Une session BUG ou un plan approuvé ne peut pas se terminer sans :
-1. GitHub issue créé (si applicable)
-2. Documentation complète de la cause racine
-3. Stratégie de résolution définie
-4. Mise à jour mémoire projet obligatoire
 
 
-## 15️⃣ Workflow Mermaid Diagram — Global Plan/Execution
+\## 9. Triggers
 
-flowchart TD
-    A[Start] --> B[Load Context]
-    B --> C{Trigger Word?}
-    C -->|PLAN| D[Generate PLAN → Analyze → Domains → Skills → Sub-Project Validation]
-    C -->|BUG| E[BUG Workflow]
-    C -->|COR| F[Quick Fix]
-    C -->|DOC| G[Complete Documentation Update]
-    C -->|DOCR| H[Rapid Doc Review - Last 24h]
-    
-    D --> I[WAIT for Human GO]
-    I -->|GO| J[Execute Plan]
-    I -->|No GO| K[Hold Execution]
-    
-    J --> L[Apply Themes WPF, Dockable Panels, Editor Modules]
-    L --> M[Generate/Update .MD for .CS/.XAML files → Update README & WIKI → Update Memory]
-    E --> N[Open GitHub Issue → Root Cause → Resolution → Update Memory]
-    F --> O[Apply Minor Fix → Update Memory]
-    G --> P[Scan All Files → Update Docs → README & WIKI → Verify Links → Update Memory]
-    H --> Q[Scan Last 24h Commits → Update Docs → Update Memory]
-    
-    M --> R[Return to Idle / Wait Next Command]
-    N --> R
-    O --> R
-    P --> R
-    Q --> R
 
-## 16️⃣ Workflow Mermaid Diagram — Trigger / Documentation Flow
 
-flowchart TD
-    PLAN[PLAN Trigger] --> WAITGO[Wait for GO]
-    WAITGO -->|GO| DOC[Generate / Update .MD for .CS & .XAML files]
-    DOC --> README[Review / Update README.md & WIKI]
-    DOC --> THEMES[Check WPF Theme Compliance]
-    DOC --> PANELS[Check Dockable Panels VS-Like]
-    DOC --> EDITOR[Check Editor Modules Full Integration]
-    
-    BUG[BUG Trigger] --> ISSUE[Create GitHub Issue → Root Cause → Resolution]
-    ISSUE --> MEM[Update Project Memory]
-    
-    COR[COR Trigger] --> MEM2[Apply Minor Fix → Update Project Memory]
-    
-    DOC2[DOC Trigger] --> ALLDOCS[Full Doc Scan & Update All Files → README & WIKI → Verify Links → Update Memory]
-    DOCR[DOCR Trigger] --> RECENT[Scan Last 24h Commits → Update Docs & Memory]
-    
-    MEM --> END[End]
-    MEM2 --> END
-    ALLDOCS --> END
-    RECENT --> END
-    PLAN --> WAITGO
-    DOC --> END
+\* `PLAN` → full plan required
 
-    ##17 Comit restriction
-    - Claude ne doit pas comiter le dossier DevPlans
+\* `BUG` → root cause mandatory
+
+\* `COR` → quick fix
+
+\* `DOC` → full documentation scan
+
+\* `DOCR` → recent docs only
+
+
+
+---
+
+
+
+\## 10. Quality Standard
+
+
+
+Production-grade only
+
+
+
+Question:
+
+👉 Would this fit inside Visual Studio-level IDE?
+
+
+
+---
+
+
+
+\## 🧠 11. INTELLIGENT ANALYSIS ENGINE
+
+
+
+Claude must evaluate and simulate before execution.
+
+
+
+---
+
+
+
+\### 1. Scoring
+
+
+
+\* Architecture Score
+
+\* Integration Score
+
+\* Performance Score
+
+
+
+---
+
+
+
+\### 2. Risk Detection
+
+
+
+\* Breaking changes
+
+\* Plugin incompatibility
+
+\* Performance regression
+
+\* UI inconsistency
+
+
+
+---
+
+
+
+\### 3. Impact Simulation
+
+
+
+Before execution:
+
+
+
+\* Affected modules
+
+\* Plugin impact
+
+\* Memory/performance impact
+
+
+
+---
+
+
+
+\### 4. Output (for complex tasks)
+
+
+
+\* Risk Level: LOW / MEDIUM / HIGH
+
+\* Impact Scope: SMALL / MEDIUM / LARGE
+
+\* Recommendation: PROCEED / ADJUST / STOP
+
+
+
+---
+
+
+
+\### 5. Guardrails
+
+
+
+Claude must prevent:
+
+
+
+\* Architecture drift
+
+\* Full memory load
+
+\* UI / logic mixing
+
+
+
+---
+
+
+
+\### 6. Refactor Trigger
+
+
+
+If score < 90%:
+
+→ MUST propose refactor PLAN
+
+
+
+---
+
+
+
+\## 12. Architecture Decision Tracking (ADR)
+
+
+
+For each significant change:
+
+
+
+Claude must generate:
+
+
+
+\* Decision ID (ADR-XXX)
+
+\* Context
+
+\* Decision
+
+\* Alternatives considered
+
+\* Impact
+
+
+
+---
+
+
+
+\## Storage
+
+
+
+Append to:
+
+→ `CLAUDE.memory.md`
+
+
+
+---
+
+
+
+\## Trigger
+
+
+
+Auto when:
+
+
+
+\* New module
+
+\* Architecture change
+
+\* Performance decision
+
+
+
+---
+
+
+
+\## Goal
+
+
+
+\* Full traceability
+
+\* Long-term consistency
+
+\* Knowledge persistence
+
+
+
+---
+
+
+
+\## ⚙️ 13. FEATURE FLAGS SYSTEM
+
+
+
+Claude must dynamically enable features:
+
+
+
+---
+
+
+
+\### Flags
+
+
+
+ENABLE\_WPF
+
+ENABLE\_PLUGINS
+
+ENABLE\_PERF
+
+ENABLE\_DOC
+
+ENABLE\_GUARDIAN
+
+
+
+---
+
+
+
+\### Auto-Activation Rules
+
+
+
+\* `.xaml` detected → ENABLE\_WPF
+
+\* Plugin/module keywords → ENABLE\_PLUGINS
+
+\* Large data / hex → ENABLE\_PERF
+
+\* DOC/README → ENABLE\_DOC
+
+\* Structural change → ENABLE\_GUARDIAN
+
+
+
+---
+
+
+
+\### Behavior
+
+
+
+\* Only active flags influence decisions
+
+\* Disabled features MUST NOT add constraints
+
+
+
+---
+
+
+
+\### Goal
+
+
+
+Minimize token usage + maximize relevance
+
+
+
+---
+
+
+
+\## 🧠 14. REFACTOR AI ENGINE
+
+
+
+Claude must proactively improve the system.
+
+
+
+---
+
+
+
+\### 1. Refactor Triggers
+
+
+
+\* Code duplication
+
+\* Large classes (>300 lines)
+
+\* Tight coupling
+
+\* Performance bottlenecks
+
+
+
+---
+
+
+
+\### 2. Refactor Strategy
+
+
+
+Claude must propose:
+
+
+
+\* Minimal impact refactor
+
+\* Step-by-step PLAN
+
+\* Backward compatibility
+
+
+
+---
+
+
+
+\### 3. Safe Refactor Mode
+
+
+
+Refactors must:
+
+
+
+\* Not break plugins
+
+\* Not break UI
+
+\* Preserve behavior
+
+
+
+---
+
+
+
+\### 4. Refactor Types
+
+
+
+\* Extract service
+
+\* Split module
+
+\* Introduce interface
+
+\* Optimize data flow
+
+
+
+---
+
+
+
+\### 5. Priority
+
+
+
+\* Performance > Cleanliness
+
+\* Stability > Refactor
+
+
+
+---
+
+
+
+\## 🧠 15. MULTI-AGENT SYSTEM (MODULAR)
+
+
+
+Claude must load agents dynamically.
+
+
+
+---
+
+
+
+\### Agents (external files)
+
+
+
+\* ARCHITECT → claude.agent.architect.md
+
+\* PERFORMANCE → claude.agent.performance.md
+
+\* REVIEWER → claude.agent.reviewer.md
+
+\* PLUGIN GUARDIAN → claude.agent.plugin.md
+
+
+
+---
+
+
+
+\### Activation Rules
+
+
+
+\* Architecture change → ARCHITECT
+
+\* Large data / hex → PERFORMANCE
+
+\* Code quality → REVIEWER
+
+\* Plugin/module → PLUGIN GUARDIAN
+
+
+
+---
+
+
+
+\### Workflow
+
+
+
+1\. Detect required agents
+
+2\. Load only needed agents
+
+3\. Aggregate analysis
+
+4\. Produce unified PLAN
+
+
+
+---
+
+
+
+\### Priority
+
+
+
+1\. Stability
+
+2\. Performance
+
+3\. Architecture
+
+
+
+---
+
+
+
+\## 🧠 16. AUTONOMOUS IMPROVEMENT MODE
+
+
+
+Claude may propose improvements even if not requested:
+
+
+
+\* Refactor suggestions
+
+\* Performance optimizations
+
+\* Architecture improvements
+
+
+
+---
+
+
+
+Trigger:
+
+
+
+\* Detected inefficiency
+
+\* Repeated pattern issues
+
+\* Growing complexity
+
+
+
+---
+
+
+
+Rule:
+
+
+
+Must NOT modify without PLAN + GO
+
