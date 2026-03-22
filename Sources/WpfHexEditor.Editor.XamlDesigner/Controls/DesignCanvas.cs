@@ -306,9 +306,22 @@ public sealed class DesignCanvas : Border
         UpdateGridGuideAdorner(nearestGrid);
 
         // Grid insert adorner: keep alive on the same Grid after selection changes.
-        // If the new selection still resolves to the same Grid, the adorner stays.
-        if (nearestGrid is null || !ReferenceEquals(nearestGrid, _insertAdornerGrid))
+        // Update _insertAdornerGrid to the new instance (after re-render, objects are replaced).
+        // If the new selection resolves to a different Grid (by UID), hide and recreate.
+        if (nearestGrid is null)
+        {
             HideGridInsertAdorner();
+        }
+        else if (_insertAdornerGrid is not null && !ReferenceEquals(_insertAdornerGrid, nearestGrid))
+        {
+            // Same Grid by UID? → retarget adorner to new instance without hiding.
+            var oldUid = _mapper.GetUid(_insertAdornerGrid);
+            var newUid = _mapper.GetUid(nearestGrid);
+            if (oldUid >= 0 && oldUid == newUid)
+                _insertAdornerGrid = nearestGrid; // retarget: same logical grid, new WPF object
+            else
+                HideGridInsertAdorner();
+        }
 
         // WPF fires a spurious MouseLeave on the canvas after PlaceSelectionAdorner adds the
         // ResizeAdorner to the AdornerLayer — even though the mouse is still inside the canvas.
@@ -852,9 +865,12 @@ public sealed class DesignCanvas : Border
             }
             catch { }
         }
+
         // Guide is only shown when the grid belongs to the active selection context.
         if (grid is null || !IsGridActiveForInsert(grid))
         {
+            System.Diagnostics.Debug.WriteLine(
+                $"[InsertAdorner] HIDE — grid={grid?.GetHashCode()}, active={grid is not null && IsGridActiveForInsert(grid)}, selected={SelectedElement?.GetType().Name}({SelectedElement?.GetHashCode()})");
             HideGridInsertAdorner();
             return;
         }
@@ -872,6 +888,9 @@ public sealed class DesignCanvas : Border
 
         var localPos = PresenterToGridLocal(mouseInPresenter, grid);
         var info     = _gridService.GetGridInfo(grid);
+
+        System.Diagnostics.Debug.WriteLine(
+            $"[InsertAdorner] UPDATE — localPos={localPos:F1}, grid={grid.ActualWidth:F0}x{grid.ActualHeight:F0}");
 
         // Auto-determine mode from edge band proximity:
         //   Left / right 18px  →  Row    (H guide follows mouse Y)
@@ -1030,7 +1049,20 @@ public sealed class DesignCanvas : Border
     /// of the Grid, making a plain <see cref="ReferenceEquals"/> against SelectedElement fail.
     /// </summary>
     private bool IsGridActiveForInsert(System.Windows.Controls.Grid grid)
-        => ReferenceEquals(FindNearestGridAncestor(SelectedElement), grid);
+    {
+        // Fast path: same instance.
+        if (ReferenceEquals(FindNearestGridAncestor(SelectedElement), grid)) return true;
+
+        // After a re-render WPF creates new object instances for the whole visual tree.
+        // SelectedElement and grid are new objects; _insertAdornerGrid is the old one.
+        // Compare by UID (injected Tag) so the guide survives re-renders.
+        var selectedGrid = FindNearestGridAncestor(SelectedElement);
+        if (selectedGrid is null) return false;
+
+        var uidA = _mapper.GetUid(selectedGrid);
+        var uidB = _mapper.GetUid(grid);
+        return uidA >= 0 && uidA == uidB;
+    }
 
     /// <summary>
     /// Returns the 0-based index after which a new definition should be inserted
