@@ -145,6 +145,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Per-document format tracking: ContentId → last logged format name
     private readonly Dictionary<string, string> _loggedFormats = new();
 
+    // Last file path synced to the Solution Explorer (used to re-reveal after a solution reload)
+    private string? _lastSyncFilePath;
+
     // QuickSearchBar instances for CodeEditor documents (CodeEditor has no embedded Canvas)
     private readonly Dictionary<CodeEditorControl, QuickSearchBar> _codeEditorBars = new();
 
@@ -664,6 +667,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+
+        // After a solution reload the tree is collapsed; re-reveal the last active document.
+        if (_lastSyncFilePath is not null)
+            _solutionExplorerPanel?.SyncWithFile(_lastSyncFilePath);
+
         RefreshStartupProjectList();
         RebuildTblItemList();
         RefreshAllChangesetNodes();
@@ -3656,7 +3664,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrEmpty(syncPath) && item.Metadata.TryGetValue("FilePath", out var fp))
             syncPath = fp;
         if (!string.IsNullOrEmpty(syncPath))
+        {
+            _lastSyncFilePath = syncPath;
             _solutionExplorerPanel?.SyncWithFile(syncPath);
+        }
 
         // Sync Properties panel provider (M5: cached per editor instance)
         if (content is IPropertyProviderSource providerSource)

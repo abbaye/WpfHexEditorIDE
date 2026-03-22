@@ -354,6 +354,9 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     public void Rebuild()
     {
+        // Track whether this is a fresh load (no previously-remembered expansion state).
+        bool isFreshLoad = _expandedState.Count == 0;
+
         // Capture current IsExpanded state before clearing the tree
         CaptureExpandedState(Roots);
 
@@ -390,6 +393,12 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         // Restore remembered IsExpanded state (first Rebuild after loading will use defaults)
         RestoreExpandedState(Roots);
+
+        // On a fresh load (no prior expanded state) collapse the entire tree so the user
+        // starts from a clean slate — VS-like behaviour.  The active document's ancestors
+        // will be expanded automatically via SyncWithFile once a document is focused.
+        if (isFreshLoad)
+            CollapseAllExceptRoot(Roots);
 
         // Cancel any in-flight search — the cache is about to be replaced.
         CancelSearch();
@@ -1115,6 +1124,30 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             if (flat.Node.IsExpanded != shouldExpand)
                 flat.Node.IsExpanded = shouldExpand;
         }
+    }
+
+    // -- Collapse helpers ------------------------------------------------------
+
+    /// <summary>
+    /// Collapses every node in the tree except the solution root(s), which stay expanded
+    /// so the user can see the top-level structure.  Called on a fresh solution load to
+    /// replicate VS behaviour (start collapsed; reveal nodes as documents are opened).
+    /// </summary>
+    private static void CollapseAllExceptRoot(IEnumerable<SolutionExplorerNodeVm> roots)
+    {
+        foreach (var root in roots)
+        {
+            root.IsExpanded = true;
+            foreach (var child in root.Children)
+                CollapseNodeRecursive(child);
+        }
+    }
+
+    private static void CollapseNodeRecursive(SolutionExplorerNodeVm node)
+    {
+        node.IsExpanded = false;
+        foreach (var child in node.Children)
+            CollapseNodeRecursive(child);
     }
 
     // -- Search reset ----------------------------------------------------------
