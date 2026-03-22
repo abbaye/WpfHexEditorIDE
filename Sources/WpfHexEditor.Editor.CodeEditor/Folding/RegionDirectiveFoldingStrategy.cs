@@ -47,7 +47,7 @@ public sealed class RegionDirectiveFoldingStrategy : IFoldingStrategy
                      && stack.Count > 0)
             {
                 var (startLine, name) = stack.Pop();
-                if (i > startLine)
+                if (i > startLine + 1)
                 {
                     var label = string.IsNullOrEmpty(name)
                         ? "#region \u2026"

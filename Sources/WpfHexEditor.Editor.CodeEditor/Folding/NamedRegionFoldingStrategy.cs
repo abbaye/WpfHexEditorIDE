@@ -56,7 +56,7 @@ internal sealed class NamedRegionFoldingStrategy : IFoldingStrategy
             if (_end.IsMatch(text) && stack.Count > 0)
             {
                 var (startLine, regionName) = stack.Pop();
-                if (i > startLine)
+                if (i > startLine + 1)
                 {
                     var label = string.IsNullOrEmpty(regionName)
                         ? "#region \u2026"

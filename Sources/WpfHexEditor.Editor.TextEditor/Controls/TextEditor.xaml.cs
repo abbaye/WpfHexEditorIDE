@@ -223,6 +223,22 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         remove => Viewport.ZoomLevelChanged -= value;
     }
 
+    /// <summary>
+    /// When true, lines wrap visually at the viewport edge instead of scrolling horizontally.
+    /// Forwarded to <see cref="TextViewport.IsWordWrapEnabled"/>. (ADR-049)
+    /// </summary>
+    public bool IsWordWrapEnabled
+    {
+        get => Viewport.IsWordWrapEnabled;
+        set
+        {
+            Viewport.IsWordWrapEnabled = value;
+            ScrollView.HorizontalScrollBarVisibility = value
+                ? ScrollBarVisibility.Disabled
+                : ScrollBarVisibility.Auto;
+        }
+    }
+
     // -----------------------------------------------------------------------
     // IDocumentEditor — Commands
     // -----------------------------------------------------------------------
@@ -638,8 +654,11 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
         Viewport.FirstVisibleLine   = firstLine;
         Viewport.HorizontalOffset   = e.HorizontalOffset;
 
-        // Adjust the viewport height to fill the scroll area
-        Viewport.Width  = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
+        // Adjust the viewport dimensions to fill the scroll area.
+        // Word wrap: clamp width to viewport (no horizontal extent needed).
+        Viewport.Width  = Viewport.IsWordWrapEnabled
+            ? ScrollView.ViewportWidth
+            : Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
         Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
 
         ViewportScrollChanged?.Invoke(this, e);
@@ -672,6 +691,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                     CaretText.Text = _vm.CaretStatus;
                     StatusMessage?.Invoke(this, _vm.CaretStatus);
                     RefreshTextStatusBarItems();
+                    EnsureCaretHorizontallyVisible();
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);
@@ -682,6 +702,22 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
                     break;
             }
         });
+    }
+
+    /// <summary>
+    /// Scrolls the viewport horizontally so the caret column is always visible.
+    /// Called whenever <see cref="TextEditorViewModel.CaretStatus"/> changes.
+    /// </summary>
+    private void EnsureCaretHorizontallyVisible()
+    {
+        if (_vm is null || Viewport.CharWidth <= 0 || Viewport.IsWordWrapEnabled) return;
+        double caretAbsX = Viewport.GetCaretAbsoluteX(_vm.CaretColumn);
+        double visLeft   = ScrollView.HorizontalOffset;
+        double visRight  = visLeft + ScrollView.ViewportWidth;
+        if (caretAbsX < visLeft)
+            ScrollView.ScrollToHorizontalOffset(Math.Max(0, caretAbsX - Viewport.CharWidth));
+        else if (caretAbsX + Viewport.CharWidth > visRight)
+            ScrollView.ScrollToHorizontalOffset(caretAbsX + Viewport.CharWidth - ScrollView.ViewportWidth + Viewport.CharWidth);
     }
 
     private void RefreshCommands()

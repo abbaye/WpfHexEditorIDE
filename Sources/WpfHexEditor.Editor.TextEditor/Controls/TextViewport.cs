@@ -63,6 +63,14 @@ internal sealed class TextViewport : FrameworkElement
     private Typeface? _cachedTypeface;
     private DpiScale _dpi;
 
+    // Word wrap (ADR-049)
+    private bool _isWordWrapEnabled;
+    private int  _charsPerRow;
+    private int[] _wrapHeights = Array.Empty<int>(); // visual rows per logical line
+    private int[] _wrapOffsets = Array.Empty<int>(); // first visual row of logical line i (prefix sum)
+    private int  _totalVisualRows;
+    private double _lastArrangedWidth = -1;
+
     // Mouse drag selection
     private bool _isDragging;
 
@@ -213,19 +221,59 @@ internal sealed class TextViewport : FrameworkElement
         }
     }
 
+    /// <summary>
+    /// When true, long lines wrap at the viewport edge instead of scrolling horizontally.
+    /// Rebuilds the visual-row wrap map on change. (ADR-049)
+    /// </summary>
+    public bool IsWordWrapEnabled
+    {
+        get => _isWordWrapEnabled;
+        set
+        {
+            if (_isWordWrapEnabled == value) return;
+            _isWordWrapEnabled = value;
+            _horizontalOffset  = 0;
+            RebuildWrapMap();
+            InvalidateMeasure();
+            QueueFullRender();
+        }
+    }
+
     /// <summary>Total document height in device-independent units.</summary>
-    public double TotalHeight => (_vm?.LineCount ?? 0) * LineHeight;
+    public double TotalHeight => _isWordWrapEnabled
+        ? _totalVisualRows * LineHeight
+        : (_vm?.LineCount ?? 0) * LineHeight;
 
     /// <summary>Estimated max line width (for horizontal scrollbar). O(1) — reads ViewModel incremental cache.</summary>
-    public double EstimatedMaxWidth => (_vm?.MaxLineLength ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
+    public double EstimatedMaxWidth => _isWordWrapEnabled
+        ? Math.Max(1, ActualWidth)
+        : (_vm?.MaxLineLength ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
 
     public double LineHeight            => _lineHeight > 0 ? _lineHeight : 18;
     public double CharWidth             => _charWidth  > 0 ? _charWidth  : 7.2;
     public double LineNumberColumnWidth => _lineNumberWidth + LineNumberPadding * 2;
 
+    /// <summary>
+    /// Returns the absolute X position of the caret at <paramref name="col"/>
+    /// (before horizontal offset is subtracted). Word-wrap-aware.
+    /// </summary>
+    public double GetCaretAbsoluteX(int col) => _isWordWrapEnabled && _charsPerRow > 0
+        ? LineNumberColumnWidth + LeftMargin + (col % _charsPerRow) * CharWidth
+        : LineNumberColumnWidth + LeftMargin + col * CharWidth;
+
     public void ScrollIntoView(int lineIndex)
     {
         if (_visibleLineCount == 0) return;
+        if (_isWordWrapEnabled && lineIndex < _wrapOffsets.Length)
+        {
+            int visFirst = _wrapOffsets[lineIndex];
+            int visLast  = visFirst + _wrapHeights[lineIndex] - 1;
+            if (visFirst < _firstVisibleLine)
+                FirstVisibleLine = visFirst;
+            else if (visLast >= _firstVisibleLine + _visibleLineCount)
+                FirstVisibleLine = Math.Max(0, visLast - _visibleLineCount + 1);
+            return;
+        }
         if (lineIndex < _firstVisibleLine)
             FirstVisibleLine = lineIndex;
         else if (lineIndex >= _firstVisibleLine + _visibleLineCount)
@@ -254,9 +302,12 @@ internal sealed class TextViewport : FrameworkElement
     {
         EnsureFontMetrics();
 
-        double desiredWidth = double.IsInfinity(availableSize.Width)
-            ? EstimatedMaxWidth
-            : availableSize.Width;
+        double desiredWidth;
+        if (_isWordWrapEnabled)
+            // Word wrap: fill available width exactly — no horizontal extent needed.
+            desiredWidth = double.IsInfinity(availableSize.Width) ? Math.Max(1, ActualWidth) : availableSize.Width;
+        else
+            desiredWidth = double.IsInfinity(availableSize.Width) ? EstimatedMaxWidth : availableSize.Width;
 
         double desiredHeight = double.IsInfinity(availableSize.Height)
             ? TotalHeight
@@ -267,8 +318,89 @@ internal sealed class TextViewport : FrameworkElement
 
     protected override Size ArrangeOverride(Size finalSize)
     {
+        // Word wrap: rebuild map when the available width changes (window resize).
+        if (_isWordWrapEnabled && Math.Abs(finalSize.Width - _lastArrangedWidth) > 0.5)
+        {
+            _lastArrangedWidth = finalSize.Width;
+            RebuildWrapMap();
+        }
         _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(finalSize.Height / _lineHeight) + 1 : 0;
         return finalSize;
+    }
+
+    // -----------------------------------------------------------------------
+    // Word wrap helpers (ADR-049)
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Rebuilds the per-line visual-row arrays used when <see cref="IsWordWrapEnabled"/> is true.
+    /// O(n) over logical line count. Safe to call multiple times — always produces a consistent map.
+    /// </summary>
+    private void RebuildWrapMap()
+    {
+        if (!_isWordWrapEnabled || _vm is null || _charWidth <= 0)
+        {
+            _wrapHeights     = Array.Empty<int>();
+            _wrapOffsets     = Array.Empty<int>();
+            _totalVisualRows = 0;
+            return;
+        }
+
+        double availW = ActualWidth - LineNumberColumnWidth - LeftMargin;
+        _charsPerRow  = Math.Max(1, (int)(availW / _charWidth));
+
+        var lines = _vm.Lines;
+        int n     = lines.Count;
+        _wrapHeights = new int[n];
+        _wrapOffsets = new int[n];
+        int total = 0;
+        for (int i = 0; i < n; i++)
+        {
+            _wrapOffsets[i] = total;
+            int len          = lines[i].Length;
+            int h            = len == 0 ? 1 : (int)Math.Ceiling((double)len / _charsPerRow);
+            _wrapHeights[i]  = h;
+            total           += h;
+        }
+        _totalVisualRows = total;
+    }
+
+    /// <summary>
+    /// Binary-searches <see cref="_wrapOffsets"/> to find the logical line that owns
+    /// <paramref name="visualRow"/>. Returns (logLine, subRow) where subRow is the
+    /// 0-based index within that logical line's visual rows.
+    /// </summary>
+    private (int logLine, int subRow) VisualRowToLogical(int visualRow)
+    {
+        if (_wrapOffsets.Length == 0) return (Math.Max(0, visualRow), 0);
+        int lo = 0, hi = _wrapOffsets.Length - 1;
+        while (lo < hi)
+        {
+            int mid = (lo + hi + 1) / 2;
+            if (_wrapOffsets[mid] <= visualRow) lo = mid;
+            else hi = mid - 1;
+        }
+        return (lo, visualRow - _wrapOffsets[lo]);
+    }
+
+    /// <summary>
+    /// Converts a pixel position inside the viewport to a logical (line, col) pair.
+    /// Handles both normal and word-wrap modes.
+    /// </summary>
+    private (int line, int col) HitTestPosition(System.Windows.Point pos)
+    {
+        if (!_isWordWrapEnabled || _wrapOffsets.Length == 0 || _vm is null)
+        {
+            int ln = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, (_vm?.LineCount ?? 1) - 1);
+            int cl = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm?.GetLine(ln).Length ?? 0);
+            return (ln, cl);
+        }
+        int visRow         = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, _totalVisualRows - 1);
+        var (logLine, sub) = VisualRowToLogical(visRow);
+        logLine            = Math.Clamp(logLine, 0, _vm.LineCount - 1);
+        int visualCol      = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin) / _charWidth), 0, _charsPerRow);
+        int logCol         = Math.Clamp(sub * _charsPerRow + visualCol, 0, _vm.GetLine(logLine).Length);
+        return (logLine, logCol);
     }
 
     // -----------------------------------------------------------------------
@@ -317,27 +449,56 @@ internal sealed class TextViewport : FrameworkElement
         dc.DrawRectangle(GetBrush("TE_LineNumberForeground"), null,
             new Rect(LineNumberColumnWidth - 1, 0, 1, ActualHeight));
 
-        int firstLine = Math.Max(0, _firstVisibleLine);
-        int lastLine  = Math.Min(_vm.Lines.Count - 1, firstLine + _visibleLineCount);
-        double codeX  = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
-
-        // Current-line highlight (drawn before text so text renders on top)
-        if (_vm.CaretLine >= firstLine && _vm.CaretLine <= lastLine)
+        if (_isWordWrapEnabled && _wrapOffsets.Length > 0)
         {
-            double y = (_vm.CaretLine - firstLine) * _lineHeight;
-            dc.DrawRectangle(GetBrush("TE_CurrentLineBrush"), null,
-                new Rect(0, y, ActualWidth, _lineHeight));
+            // ---- Word-wrap rendering path ----
+            int firstVisRow = _firstVisibleLine;
+            double codeX    = LineNumberColumnWidth + LeftMargin;
+
+            // Current-line highlight: cover all visual rows of the caret's logical line.
+            int caretLogLine = _vm.CaretLine;
+            if (caretLogLine >= 0 && caretLogLine < _wrapOffsets.Length)
+            {
+                int rowStart = _wrapOffsets[caretLogLine];
+                int rowEnd   = rowStart + _wrapHeights[caretLogLine] - 1;
+                for (int vr = Math.Max(rowStart, firstVisRow);
+                     vr <= Math.Min(rowEnd, firstVisRow + _visibleLineCount); vr++)
+                {
+                    double y = (vr - firstVisRow) * _lineHeight;
+                    dc.DrawRectangle(GetBrush("TE_CurrentLineBrush"), null,
+                        new Rect(0, y, ActualWidth, _lineHeight));
+                }
+            }
+
+            // Selection rectangles (word-wrap path).
+            if (_vm.HasSelection)
+                DrawSelectionRectsWrapped(dc, firstVisRow, codeX);
         }
+        else
+        {
+            // ---- Normal (no-wrap) rendering path ----
+            int firstLine = Math.Max(0, _firstVisibleLine);
+            int lastLine  = Math.Min(_vm.Lines.Count - 1, firstLine + _visibleLineCount);
+            double codeX  = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
 
-        // Selection rectangles
-        if (_vm.HasSelection)
-            DrawSelectionRects(dc, firstLine, lastLine, codeX);
+            // Current-line highlight (drawn before text so text renders on top)
+            if (_vm.CaretLine >= firstLine && _vm.CaretLine <= lastLine)
+            {
+                double y = (_vm.CaretLine - firstLine) * _lineHeight;
+                dc.DrawRectangle(GetBrush("TE_CurrentLineBrush"), null,
+                    new Rect(0, y, ActualWidth, _lineHeight));
+            }
 
-        // Feature A: rectangular (block) selection overlay.
-        DrawRectSelectionRects(dc, firstLine, lastLine, codeX);
+            // Selection rectangles
+            if (_vm.HasSelection)
+                DrawSelectionRects(dc, firstLine, lastLine, codeX);
 
-        // Feature B: drag-to-move insertion caret.
-        DrawDragDropCaret(dc, firstLine, codeX);
+            // Feature A: rectangular (block) selection overlay.
+            DrawRectSelectionRects(dc, firstLine, lastLine, codeX);
+
+            // Feature B: drag-to-move insertion caret.
+            DrawDragDropCaret(dc, firstLine, codeX);
+        }
     }
 
     private void DrawSelectionRects(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
@@ -407,6 +568,51 @@ internal sealed class TextViewport : FrameworkElement
     }
 
     /// <summary>
+    /// Word-wrap path: draws selection highlights mapped to visual rows.
+    /// Each logical line's selected character range is split across its visual sub-rows.
+    /// </summary>
+    private void DrawSelectionRectsWrapped(DrawingContext dc, int firstVisRow, double codeX)
+    {
+        if (_vm is null || !_vm.HasSelection || _wrapOffsets.Length == 0) return;
+
+        _vm.NormalizeSelection(out int startLine, out int startCol, out int endLine, out int endCol);
+
+        var selBrush = GetBrush("TE_SelectionBackground");
+        int lastVisRow = firstVisRow + _visibleLineCount;
+
+        for (int li = startLine; li <= endLine; li++)
+        {
+            if (li >= _wrapOffsets.Length) break;
+            int lineLen  = _vm.GetLine(li).Length;
+            int selStart = li == startLine ? startCol : 0;
+            int selEnd   = li == endLine   ? endCol   : lineLen;
+            if (selStart >= selEnd && li < endLine) { selEnd = Math.Max(selStart + 1, lineLen); }
+
+            int rowBase   = _wrapOffsets[li];
+            int rowHeight = _wrapHeights[li];
+            for (int sr = 0; sr < rowHeight; sr++)
+            {
+                int vr        = rowBase + sr;
+                if (vr > lastVisRow) break;
+                if (vr < firstVisRow) continue;
+
+                int rowStartCol = sr * _charsPerRow;
+                int rowEndCol   = Math.Min(rowStartCol + _charsPerRow, Math.Max(lineLen, rowStartCol + 1));
+                int visSelStart = Math.Max(selStart, rowStartCol) - rowStartCol;
+                int visSelEnd   = Math.Min(selEnd,   rowEndCol)   - rowStartCol;
+                if (visSelStart >= visSelEnd) continue;
+
+                double y  = (vr - firstVisRow) * _lineHeight;
+                double x1 = codeX + visSelStart * _charWidth;
+                double x2 = codeX + visSelEnd   * _charWidth;
+                dc.DrawRoundedRectangle(selBrush, null,
+                    new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight),
+                    SelectionCornerRadius, SelectionCornerRadius);
+            }
+        }
+    }
+
+    /// <summary>
     /// Draws the rectangular (block/column) selection overlay as a single seamless rectangle
     /// spanning the full vertical extent of the visible selection. One draw call eliminates
     /// the anti-aliasing seams produced by per-line independent rasterization.
@@ -467,28 +673,135 @@ internal sealed class TextViewport : FrameworkElement
 
         if (_vm is null || _lineHeight <= 0) return;
 
-        var lines     = _vm.Lines;
-        int firstLine = Math.Max(0, _firstVisibleLine);
-        int lastLine  = Math.Min(lines.Count - 1, firstLine + _visibleLineCount);
-        double codeX  = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
+        var lines = _vm.Lines;
 
-        for (int li = firstLine; li <= lastLine; li++)
+        if (_isWordWrapEnabled && _wrapOffsets.Length > 0)
         {
-            double y    = (li - firstLine) * _lineHeight;
-            var    line = lines[li];
+            // ---- Word-wrap rendering path ----
+            int firstVisRow = _firstVisibleLine;
+            int lastVisRow  = firstVisRow + _visibleLineCount;
+            double codeX    = LineNumberColumnWidth + LeftMargin;
 
-            // Line number label
-            var lnText = BuildFormattedText((li + 1).ToString(), GetBrush("TE_LineNumberForeground"));
-            double lnX = LineNumberColumnWidth - lnText.Width - LineNumberPadding;
-            dc.DrawText(lnText, new Point(lnX, y + (_lineHeight - lnText.Height) / 2));
+            var (firstLogLine, _) = VisualRowToLogical(Math.Max(0, firstVisRow));
+            int currentVisRow = _wrapOffsets[firstLogLine];
 
-            if (string.IsNullOrEmpty(line)) continue;
+            for (int li = firstLogLine; li < lines.Count && currentVisRow <= lastVisRow; li++)
+            {
+                var line     = lines[li];
+                int rowCount = li < _wrapHeights.Length ? _wrapHeights[li] : 1;
+                var spans    = _vm.GetHighlightedSpans(li);
 
-            var spans = _vm.GetHighlightedSpans(li);
-            if (spans.Count > 0)
-                RenderHighlightedLineCached(dc, li, line, spans, codeX, y);
-            else
-                RenderPlainLineCached(dc, li, line, codeX, y);
+                for (int sr = 0; sr < rowCount; sr++, currentVisRow++)
+                {
+                    if (currentVisRow > lastVisRow) break;
+                    if (currentVisRow < firstVisRow) continue;
+
+                    double y = (currentVisRow - firstVisRow) * _lineHeight;
+
+                    // Line number label on the first sub-row only
+                    if (sr == 0)
+                    {
+                        var lnText = BuildFormattedText((li + 1).ToString(), GetBrush("TE_LineNumberForeground"));
+                        double lnX = LineNumberColumnWidth - lnText.Width - LineNumberPadding;
+                        dc.DrawText(lnText, new Point(lnX, y + (_lineHeight - lnText.Height) / 2));
+                    }
+
+                    if (string.IsNullOrEmpty(line)) continue;
+
+                    int startCol = sr * _charsPerRow;
+                    if (startCol >= line.Length) continue;
+                    int endCol  = Math.Min(startCol + _charsPerRow, line.Length);
+                    var subLine = line.Substring(startCol, endCol - startCol);
+
+                    if (spans.Count > 0)
+                        RenderSubLineHighlighted(dc, spans, subLine, startCol, endCol, codeX, y);
+                    else
+                    {
+                        var ft = BuildFormattedText(subLine, GetBrush("TE_Foreground"));
+                        dc.DrawText(ft, new Point(codeX, y));
+                    }
+                }
+            }
+            return;
+        }
+
+        // ---- Normal (no-wrap) rendering path ----
+        {
+            int firstLine = Math.Max(0, _firstVisibleLine);
+            int lastLine  = Math.Min(lines.Count - 1, firstLine + _visibleLineCount);
+            double codeX  = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
+
+            for (int li = firstLine; li <= lastLine; li++)
+            {
+                double y    = (li - firstLine) * _lineHeight;
+                var    line = lines[li];
+
+                // Line number label
+                var lnText = BuildFormattedText((li + 1).ToString(), GetBrush("TE_LineNumberForeground"));
+                double lnX = LineNumberColumnWidth - lnText.Width - LineNumberPadding;
+                dc.DrawText(lnText, new Point(lnX, y + (_lineHeight - lnText.Height) / 2));
+
+                if (string.IsNullOrEmpty(line)) continue;
+
+                var spans = _vm.GetHighlightedSpans(li);
+                if (spans.Count > 0)
+                    RenderHighlightedLineCached(dc, li, line, spans, codeX, y);
+                else
+                    RenderPlainLineCached(dc, li, line, codeX, y);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Renders a sub-line segment (one visual wrap row) with syntax highlighting.
+    /// Clips each span to [<paramref name="startCol"/>, <paramref name="endCol"/>)
+    /// and adjusts X positions relative to the start of the sub-line.
+    /// </summary>
+    private void RenderSubLineHighlighted(DrawingContext dc, IReadOnlyList<ColoredSpan> spans,
+        string subLine, int startCol, int endCol, double codeX, double y)
+    {
+        var defaultBrush = GetBrush("TE_Foreground");
+        int pos = startCol; // tracks progress along the original logical line
+
+        foreach (var span in spans)
+        {
+            int spanEnd = span.Start + span.Length;
+            if (spanEnd <= startCol) continue; // before sub-line
+            if (span.Start >= endCol) break;    // after sub-line
+
+            // Unstyled gap before this span (clipped to sub-line range)
+            int rawStart = Math.Max(pos, startCol);
+            int rawEnd   = Math.Min(span.Start, endCol);
+            if (rawEnd > rawStart)
+            {
+                var raw = subLine.Substring(rawStart - startCol, rawEnd - rawStart);
+                var ft  = BuildFormattedText(raw, defaultBrush);
+                dc.DrawText(ft, new Point(codeX + (rawStart - startCol) * _charWidth, y));
+            }
+
+            // Styled portion (clipped)
+            int styledStart = Math.Max(span.Start, startCol);
+            int styledEnd   = Math.Min(spanEnd, endCol);
+            if (styledEnd > styledStart)
+            {
+                var text = subLine.Substring(styledStart - startCol, styledEnd - styledStart);
+                var ft   = BuildFormattedText(text, GetBrush(span.ColorKey, defaultBrush));
+                dc.DrawText(ft, new Point(codeX + (styledStart - startCol) * _charWidth, y));
+            }
+
+            pos = Math.Max(pos, spanEnd);
+        }
+
+        // Remaining unstyled tail
+        int tailStart = Math.Max(pos, startCol);
+        if (tailStart < endCol)
+        {
+            var tail = subLine.Substring(tailStart - startCol);
+            if (!string.IsNullOrEmpty(tail))
+            {
+                var ft = BuildFormattedText(tail, defaultBrush);
+                dc.DrawText(ft, new Point(codeX + (tailStart - startCol) * _charWidth, y));
+            }
         }
     }
 
@@ -596,12 +909,25 @@ internal sealed class TextViewport : FrameworkElement
         int caretLine = _vm.CaretLine;
         int caretCol  = _vm.CaretColumn;
 
-        if (caretLine < _firstVisibleLine || caretLine > _firstVisibleLine + _visibleLineCount)
-            return;
+        double x, y;
+        if (_isWordWrapEnabled && _wrapOffsets.Length > caretLine && _charsPerRow > 0)
+        {
+            int caretVisRow = _wrapOffsets[caretLine] + caretCol / _charsPerRow;
+            int caretVisCol = caretCol % _charsPerRow;
+            if (caretVisRow < _firstVisibleLine || caretVisRow > _firstVisibleLine + _visibleLineCount)
+                return;
+            y = (caretVisRow - _firstVisibleLine) * _lineHeight;
+            x = LineNumberColumnWidth + LeftMargin + caretVisCol * _charWidth;
+        }
+        else
+        {
+            if (caretLine < _firstVisibleLine || caretLine > _firstVisibleLine + _visibleLineCount)
+                return;
+            y = (caretLine - _firstVisibleLine) * _lineHeight;
+            x = LineNumberColumnWidth + LeftMargin + caretCol * _charWidth - _horizontalOffset;
+        }
 
-        double y   = (caretLine - _firstVisibleLine) * _lineHeight;
-        double x   = LineNumberColumnWidth + LeftMargin + caretCol * _charWidth - _horizontalOffset;
-        var    pen = new Pen(GetBrush("TE_Foreground"), 1.5);
+        var pen = new Pen(GetBrush("TE_Foreground"), 1.5);
         dc.DrawLine(pen, new Point(x, y + 1), new Point(x, y + _lineHeight - 1));
     }
 
@@ -643,11 +969,20 @@ internal sealed class TextViewport : FrameworkElement
         _backgroundRenderPending = false;
         EnsureFontMetrics();
         EnsureDpi();
+        // Word wrap: keep map in sync with content changes before rendering.
+        if (_isWordWrapEnabled) RebuildWrapMap();
         UpdateBackground();
         UpdateTextContent();
         DrawCursor();
         // Schedule background highlighting for visible + buffer range (P1-TE-06)
-        _vm?.ScheduleHighlightAsync(_firstVisibleLine, _firstVisibleLine + _visibleLineCount);
+        int hlFirst = _firstVisibleLine;
+        int hlLast  = hlFirst + _visibleLineCount;
+        if (_isWordWrapEnabled && _wrapOffsets.Length > 0)
+        {
+            hlFirst = VisualRowToLogical(Math.Max(0, hlFirst)).logLine;
+            hlLast  = VisualRowToLogical(Math.Min(_totalVisualRows - 1, hlLast)).logLine;
+        }
+        _vm?.ScheduleHighlightAsync(hlFirst, hlLast);
     }
 
     /// <summary>
@@ -898,9 +1233,8 @@ internal sealed class TextViewport : FrameworkElement
         int oldLine = _vm.CaretLine;
         int oldCol  = _vm.CaretColumn;
 
-        var pos  = e.GetPosition(this);
-        int line = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
-        int col  = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(line).Length);
+        var pos         = e.GetPosition(this);
+        var (line, col) = HitTestPosition(pos);
 
         // Double-click: select word
         if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
@@ -1019,9 +1353,8 @@ internal sealed class TextViewport : FrameworkElement
         // Feature A: extend rectangular selection.
         if (_isRectSelecting && e.LeftButton == MouseButtonState.Pressed)
         {
-            var rectPos  = e.GetPosition(this);
-            int mLine = Math.Clamp((int)(rectPos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
-            int mCol  = Math.Clamp((int)((rectPos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(mLine).Length);
+            var rectPos          = e.GetPosition(this);
+            var (mLine, mCol)    = HitTestPosition(rectPos);
             _rectSelection.Extend(mLine, mCol);
 
             long rectNow = System.Diagnostics.Stopwatch.GetTimestamp();
@@ -1036,9 +1369,8 @@ internal sealed class TextViewport : FrameworkElement
         // Feature B: handle drag-pending or drag-in-progress.
         if (_textDragDrop.Phase != DragPhase.None && e.LeftButton == MouseButtonState.Pressed)
         {
-            var ddPos  = e.GetPosition(this);
-            int dLine = Math.Clamp((int)(ddPos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
-            int dCol  = Math.Clamp((int)((ddPos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(dLine).Length);
+            var ddPos        = e.GetPosition(this);
+            var (dLine, dCol) = HitTestPosition(ddPos);
 
             if (_textDragDrop.Phase == DragPhase.Pending && _textDragDrop.HasMovedBeyondThreshold(ddPos))
             {
@@ -1076,9 +1408,8 @@ internal sealed class TextViewport : FrameworkElement
             _vm.SelectionAnchorColumn = _vm.CaretColumn;
         }
 
-        var pos  = e.GetPosition(this);
-        int line = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
-        int col  = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(line).Length);
+        var pos          = e.GetPosition(this);
+        var (line, col)  = HitTestPosition(pos);
 
         // Guard: skip if caret cell is unchanged (mouse within same character).
         if (line == _vm.CaretLine && col == _vm.CaretColumn) return;

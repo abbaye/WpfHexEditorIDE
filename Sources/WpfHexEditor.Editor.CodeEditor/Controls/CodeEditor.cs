@@ -184,6 +184,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private          int                                                                                                                   _visibleHintsCount = 0;
         private readonly List<(Rect Zone, int LineIndex, string Symbol)>                                                                       _hintsHitZones     = new();
         private readonly List<(int LineIndex, double Y)>                                                                                       _visLinePositions = new();
+        private readonly List<int>                                                                                                              _visLineSubRows   = new(); // parallel to _visLinePositions — sub-row index within the logical line (word wrap)
         private readonly Dictionary<int, double>                                                                                               _lineYLookup      = new();
         private          int                                                                                                                   _hoveredHintsLine  = -1;
 
@@ -284,6 +285,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private double _verticalScrollOffset = 0;
         private double _horizontalScrollOffset = 0;
         private double _maxContentWidth = 0;
+
+        #endregion
+
+        #region Fields - Word Wrap (ADR-049)
+
+        private int   _charsPerVisualLine;
+        private int[] _wrapHeights  = Array.Empty<int>(); // visual rows per logical line
+        private int[] _wrapOffsets  = Array.Empty<int>(); // first visual row of logical line i (prefix sum)
+        private int   _totalVisualRows;
+        private double _lastWrapArrangedWidth = -1;
 
         #endregion
 
@@ -419,6 +430,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             get => (bool)GetValue(ShowLineNumbersProperty);
             set => SetValue(ShowLineNumbersProperty, value);
+        }
+
+        public static readonly DependencyProperty IsWordWrapEnabledProperty =
+            DependencyProperty.Register(nameof(IsWordWrapEnabled), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(false, OnIsWordWrapEnabledChanged));
+
+        private static void OnIsWordWrapEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ed) return;
+            ed._horizontalScrollOffset = 0;
+            ed.RebuildWrapMap();
+            ed.InvalidateMeasure();
+            ed.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// When true, lines wrap visually at the viewport edge instead of scrolling horizontally.
+        /// Disables the horizontal scrollbar. (ADR-049)
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Word Wrap")]
+        [Description("Wrap long lines at the viewport edge instead of scrolling horizontally")]
+        public bool IsWordWrapEnabled
+        {
+            get => (bool)GetValue(IsWordWrapEnabledProperty);
+            set => SetValue(IsWordWrapEnabledProperty, value);
         }
 
         public static readonly DependencyProperty IsFoldingEnabledProperty =
@@ -2784,6 +2821,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _virtualizationEngine.ViewportHeight = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
                 _virtualizationEngine.CalculateVisibleRange();
             }
+            // Word wrap: rebuild map when size changes (viewport width affects wrap width).
+            if (IsWordWrapEnabled) RebuildWrapMap();
             // Scrollbar ranges depend on viewport size — trigger layout pass
             InvalidateArrange();
         }
@@ -2800,6 +2839,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _virtualizationEngine.LineHeight = _lineHeight;
             _virtualizationEngine.RenderBuffer = RenderBuffer;
             _virtualizationEngine.CalculateVisibleRange();
+
+            // Word wrap: rebuild map after document content changes.
+            if (IsWordWrapEnabled) RebuildWrapMap();
         }
 
         /// <summary>
@@ -2845,8 +2887,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void EnsureCursorVisible()
         {
-            if (_virtualizationEngine == null || !EnableVirtualScrolling)
+            // Horizontal scroll must always run, regardless of virtual scrolling mode.
+            EnsureCursorColumnVisible();
+
+            // Word wrap: scroll to the visual row of the caret rather than the logical line.
+            if (IsWordWrapEnabled && _wrapOffsets.Length > _cursorLine && _charsPerVisualLine > 0)
+            {
+                int caretVisRow = _wrapOffsets[_cursorLine] + _cursorColumn / _charsPerVisualLine;
+                double caretY   = caretVisRow * _lineHeight;
+                bool hasHBar    = _hScrollBar?.Visibility == Visibility.Visible;
+                double viewportH = ActualHeight - TopMargin - (hasHBar ? ScrollBarThickness : 0);
+                if (caretY < _verticalScrollOffset)
+                {
+                    _verticalScrollOffset = Math.Max(0, caretY);
+                    SyncVScrollBar();
+                    InvalidateVisual();
+                }
+                else if (caretY + _lineHeight > _verticalScrollOffset + viewportH)
+                {
+                    _verticalScrollOffset = caretY + _lineHeight - viewportH;
+                    SyncVScrollBar();
+                    InvalidateVisual();
+                }
+                NotifyCaretMovedIfChanged();
                 return;
+            }
+
+            if (_virtualizationEngine == null || !EnableVirtualScrolling)
+            {
+                NotifyCaretMovedIfChanged();
+                return;
+            }
 
             double newOffset = _virtualizationEngine.EnsureLineVisible(_cursorLine);
             if (Math.Abs(newOffset - _verticalScrollOffset) > 0.1)
@@ -2857,8 +2928,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 SyncVScrollBar();
                 InvalidateVisual();
             }
-
-            EnsureCursorColumnVisible();
 
             NotifyCaretMovedIfChanged();
         }
@@ -3107,6 +3176,59 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private double GetLensZoneY(int visIdx) => GetFoldAwareLineY(visIdx) - HintLineHeight;
 
         /// <summary>
+        /// Rebuilds the per-line visual-row arrays used when <see cref="IsWordWrapEnabled"/> is true.
+        /// O(n) over logical line count. (ADR-049)
+        /// </summary>
+        private void RebuildWrapMap()
+        {
+            if (!IsWordWrapEnabled || _document is null || _charWidth <= 0)
+            {
+                _wrapHeights      = Array.Empty<int>();
+                _wrapOffsets      = Array.Empty<int>();
+                _totalVisualRows  = 0;
+                _charsPerVisualLine = 0;
+                return;
+            }
+
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double vBarW    = _vScrollBar?.Visibility == Visibility.Visible ? ScrollBarThickness : 0;
+            double availW   = ActualWidth - textLeft - vBarW;
+            _charsPerVisualLine = Math.Max(1, (int)(availW / _charWidth));
+
+            var lines = _document.Lines;
+            int n     = lines.Count;
+            _wrapHeights = new int[n];
+            _wrapOffsets = new int[n];
+            int total = 0;
+            for (int i = 0; i < n; i++)
+            {
+                _wrapOffsets[i] = total;
+                int len          = lines[i].Text?.Length ?? 0;
+                int h            = len == 0 ? 1 : (int)Math.Ceiling((double)len / _charsPerVisualLine);
+                _wrapHeights[i]  = h;
+                total           += h;
+            }
+            _totalVisualRows = total;
+        }
+
+        /// <summary>
+        /// Binary-searches <see cref="_wrapOffsets"/> to find the logical line that owns
+        /// <paramref name="visualRow"/>. Returns (logLine, subRow). (ADR-049)
+        /// </summary>
+        private (int logLine, int subRow) WrapVisualRowToLogical(int visualRow)
+        {
+            if (_wrapOffsets.Length == 0) return (Math.Max(0, visualRow), 0);
+            int lo = 0, hi = _wrapOffsets.Length - 1;
+            while (lo < hi)
+            {
+                int mid = (lo + hi + 1) / 2;
+                if (_wrapOffsets[mid] <= visualRow) lo = mid;
+                else hi = mid - 1;
+            }
+            return (lo, visualRow - _wrapOffsets[lo]);
+        }
+
+        /// <summary>
         /// Precomputes per-visible-line Y positions, adding <see cref="HintLineHeight"/>
         /// only for lines that have a InlineHints entry.  Must be called in OnRender immediately
         /// after <see cref="CalculateVisibleLines"/>.
@@ -3114,30 +3236,59 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void ComputeVisibleLinePositions()
         {
             _visLinePositions.Clear();
+            _visLineSubRows.Clear();
             _lineYLookup.Clear();
 
+            if (IsWordWrapEnabled && _wrapOffsets.Length > 0)
+            {
+                // ---- Word-wrap path ----
+                // _verticalScrollOffset is in pixels; convert to first visual row.
+                int firstVisRow = Math.Max(0, (int)(_verticalScrollOffset / _lineHeight));
+                double y        = TopMargin + firstVisRow * _lineHeight - _verticalScrollOffset;
+                bool hasHBar    = _hScrollBar?.Visibility == Visibility.Visible;
+                double viewportH = ActualHeight - TopMargin - (hasHBar ? ScrollBarThickness : 0);
+                int lastVisRow  = Math.Min(_totalVisualRows - 1,
+                    firstVisRow + (int)(viewportH / _lineHeight) + 1);
+
+                int vr = firstVisRow;
+                while (vr <= lastVisRow)
+                {
+                    var (logLine, subRow) = WrapVisualRowToLogical(vr);
+                    if (logLine >= _document!.Lines.Count) break;
+                    _visLinePositions.Add((logLine, y));
+                    _visLineSubRows.Add(subRow);
+                    if (subRow == 0) _lineYLookup[logLine] = y;
+                    y += _lineHeight;
+                    vr++;
+                }
+                return;
+            }
+
+            // ---- Normal path ----
             double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
                 ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
                 : 0.0;
-            double y = TopMargin + scrollFraction;
-
-            for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
             {
-                if (_foldingEngine?.IsLineHidden(i) == true) continue;
+                double y = TopMargin + scrollFraction;
+                for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
+                {
+                    if (_foldingEngine?.IsLineHidden(i) == true) continue;
 
-                if (ShowInlineHints && IsHintEntryVisible(i))
-                {
-                    // Code text sits below the hint zone.
-                    double codeY = y + HintLineHeight;
-                    _visLinePositions.Add((i, codeY));
-                    _lineYLookup[i] = codeY;
-                    y += _lineHeight + HintLineHeight;
-                }
-                else
-                {
-                    _visLinePositions.Add((i, y));
-                    _lineYLookup[i] = y;
-                    y += _lineHeight;
+                    if (ShowInlineHints && IsHintEntryVisible(i))
+                    {
+                        double codeY = y + HintLineHeight;
+                        _visLinePositions.Add((i, codeY));
+                        _visLineSubRows.Add(0);
+                        _lineYLookup[i] = codeY;
+                        y += _lineHeight + HintLineHeight;
+                    }
+                    else
+                    {
+                        _visLinePositions.Add((i, y));
+                        _visLineSubRows.Add(0);
+                        _lineYLookup[i] = y;
+                        y += _lineHeight;
+                    }
                 }
             }
         }
@@ -3467,8 +3618,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double w = double.IsInfinity(availableSize.Width)
                 ? Math.Max(400, textLeft + _maxContentWidth + ScrollBarThickness)
                 : availableSize.Width;
+            int logicalOrVisualRows = IsWordWrapEnabled ? _totalVisualRows : (_document?.Lines.Count ?? 0);
             double h = double.IsInfinity(availableSize.Height)
-                ? Math.Max(300, TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight + ScrollBarThickness)
+                ? Math.Max(300, TopMargin + logicalOrVisualRows * _lineHeight + ScrollBarThickness)
                 : availableSize.Height;
             return new Size(w, h);
         }
@@ -3492,6 +3644,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double contentW = needsV ? finalSize.Width  - ScrollBarThickness : finalSize.Width;
             double contentH = needsH ? finalSize.Height - ScrollBarThickness : finalSize.Height;
+
+            // Word wrap: always hide horizontal scrollbar and rebuild map when width changes.
+            if (IsWordWrapEnabled)
+            {
+                needsH = false;
+                if (Math.Abs(finalSize.Width - _lastWrapArrangedWidth) > 0.5)
+                {
+                    _lastWrapArrangedWidth = finalSize.Width;
+                    RebuildWrapMap();
+                }
+            }
 
             _vScrollBar.Visibility = needsV ? Visibility.Visible : Visibility.Hidden;
             _hScrollBar.Visibility = needsH ? Visibility.Visible : Visibility.Hidden;
@@ -3533,11 +3696,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
                 // -- Vertical --------------------------------------------
-                // Subtract collapsed fold lines so the scrollbar range matches actual rendered content.
-                int    foldHidden = _foldingEngine?.TotalHiddenLineCount ?? 0;
-                double totalH     = TopMargin + ((_document?.Lines.Count ?? 0) - foldHidden) * _lineHeight
-                    + (ShowInlineHints ? _visibleHintsCount * HintLineHeight : 0);
-                double maxV       = Math.Max(0, totalH - contentH);
+                double totalH;
+                if (IsWordWrapEnabled)
+                    totalH = TopMargin + _totalVisualRows * _lineHeight;
+                else
+                {
+                    int foldHidden = _foldingEngine?.TotalHiddenLineCount ?? 0;
+                    totalH = TopMargin + ((_document?.Lines.Count ?? 0) - foldHidden) * _lineHeight
+                        + (ShowInlineHints ? _visibleHintsCount * HintLineHeight : 0);
+                }
+                double maxV = Math.Max(0, totalH - contentH);
 
                 // Clamp internal offset (e.g. file got shorter after edit)
                 _verticalScrollOffset = Math.Min(_verticalScrollOffset, maxV);
@@ -3554,10 +3722,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _vScrollBar.Value       = _verticalScrollOffset;
 
                 // -- Horizontal ------------------------------------------
-                double totalTW = textLeft + _maxContentWidth;
-                double maxH    = Math.Max(0, totalTW - contentW);
-
-                _horizontalScrollOffset = Math.Min(_horizontalScrollOffset, maxH);
+                double maxH;
+                if (IsWordWrapEnabled)
+                {
+                    maxH = 0;
+                    _horizontalScrollOffset = 0;
+                }
+                else
+                {
+                    double totalTW = textLeft + _maxContentWidth;
+                    maxH = Math.Max(0, totalTW - contentW);
+                    _horizontalScrollOffset = Math.Min(_horizontalScrollOffset, maxH);
+                }
 
                 _hScrollBar.Minimum      = 0;
                 _hScrollBar.Maximum      = maxH;
@@ -3614,7 +3790,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void EnsureCursorColumnVisible()
         {
-            if (_hScrollBar == null) return;
+            if (_hScrollBar == null || IsWordWrapEnabled) return;
             double textLeft  = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
             double contentW  = ActualWidth - (_vScrollBar?.Visibility == Visibility.Visible ? ScrollBarThickness : 0);
             double textAreaW = Math.Max(0, contentW - textLeft);
@@ -3647,6 +3823,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
             double viewportH = ActualHeight - TopMargin - (hasHBar ? ScrollBarThickness : 0);
+
+            if (IsWordWrapEnabled && _wrapOffsets.Length > 0)
+            {
+                // Word wrap: compute first/last visible logical lines from wrap map.
+                int firstVisRow  = Math.Max(0, (int)(_verticalScrollOffset / _lineHeight));
+                int lastVisRow   = Math.Min(_totalVisualRows - 1,
+                    firstVisRow + (int)(viewportH / _lineHeight) + RenderBuffer + 1);
+                _firstVisibleLine = WrapVisualRowToLogical(firstVisRow).logLine;
+                _lastVisibleLine  = WrapVisualRowToLogical(lastVisRow).logLine;
+                _firstVisibleLine = Math.Max(0, Math.Min(_firstVisibleLine, _document.Lines.Count - 1));
+                _lastVisibleLine  = Math.Max(0, Math.Min(_lastVisibleLine,  _document.Lines.Count - 1));
+                _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
+                                       TopMargin, 0.0, _lineYLookup);
+                return;
+            }
 
             // Phase 11: Use VirtualizationEngine if enabled
             if (EnableVirtualScrolling && _virtualizationEngine != null)
@@ -3713,6 +3904,35 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             double dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
+            // Word-wrap path: iterate _visLinePositions; show line number only for sub-row 0.
+            if (IsWordWrapEnabled && _visLinePositions.Count > 0)
+            {
+                for (int visPos = 0; visPos < _visLinePositions.Count; visPos++)
+                {
+                    int subRow = visPos < _visLineSubRows.Count ? _visLineSubRows[visPos] : 0;
+                    if (subRow != 0) continue; // only draw number on first visual row of each logical line
+
+                    var (i, y) = _visLinePositions[visPos];
+                    if (i >= _document.Lines.Count) break;
+
+                    if (!_lineNumberCache.TryGetValue(i + 1, out var ft))
+                    {
+                        ft = new FormattedText((i + 1).ToString(),
+                            CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                            _lineNumberTypeface, LineNumberFontSize, LineNumberForeground, dpi);
+                        _lineNumberCache[i + 1] = ft;
+                    }
+                    double lnX   = LineNumberWidth - ft.Width - LineNumberMargin;
+                    double lineY = _glyphRenderer != null
+                        ? y + _glyphRenderer.Baseline - ft.Baseline
+                        : y + (_lineHeight - ft.Height) / 2;
+                    dc.DrawText(ft, new Point(lnX, lineY));
+                    RenderValidationGlyph(dc, i, y);
+                }
+                dc.DrawLine(s_lineNumberSeparatorPen, new Point(LineNumberWidth, 0), new Point(LineNumberWidth, ActualHeight));
+                return;
+            }
 
             int visIdx = 0;
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
@@ -3808,12 +4028,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_foldingEngine != null && _foldingEngine.IsLineHidden(_cursorLine))
                 return;
 
-            // Count non-hidden lines before _cursorLine to compute the correct visual Y.
-            int visIdx = 0;
-            for (int i = _firstVisibleLine; i < _cursorLine; i++)
-                if (_foldingEngine == null || !_foldingEngine.IsLineHidden(i)) visIdx++;
+            double y;
+            double highlightH;
 
-            double y = GetFoldAwareLineY(visIdx);
+            if (IsWordWrapEnabled)
+            {
+                // Word wrap: Y = first visual row of logical line; height covers all visual sub-rows.
+                y = _lineYLookup.TryGetValue(_cursorLine, out double wy) ? wy : TopMargin;
+                int wrapRows = (_wrapHeights.Length > _cursorLine) ? _wrapHeights[_cursorLine] : 1;
+                highlightH = wrapRows * _lineHeight;
+            }
+            else
+            {
+                // Count non-hidden lines before _cursorLine to compute the correct visual Y.
+                int visIdx = 0;
+                for (int i = _firstVisibleLine; i < _cursorLine; i++)
+                    if (_foldingEngine == null || !_foldingEngine.IsLineHidden(i)) visIdx++;
+                y = GetFoldAwareLineY(visIdx);
+                highlightH = _lineHeight;
+            }
 
             double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
@@ -3821,7 +4054,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (ShowCurrentLineHighlight)
             {
                 dc.DrawRectangle(CurrentLineBackground, null,
-                    new Rect(x, y, contentW - x, _lineHeight));
+                    new Rect(x, y, contentW - x, highlightH));
             }
 
             // Draw border if enabled
@@ -3832,7 +4065,53 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 var borderPen = new Pen(borderBrush, 1);
                 borderPen.Freeze();
                 dc.DrawRectangle(null, borderPen,
-                    new Rect(x, y, contentW - x, _lineHeight));
+                    new Rect(x, y, contentW - x, highlightH));
+            }
+        }
+
+        /// <summary>
+        /// Render text selection overlay — word wrap path: each logical line is split into
+        /// visual sub-rows; only the portion of the selected column range that falls within
+        /// each sub-row is highlighted. (ADR-049)
+        /// </summary>
+        private void RenderSelectionWrapped(DrawingContext dc, Brush selectionBrush)
+        {
+            var start = _selection.NormalizedStart;
+            var end   = _selection.NormalizedEnd;
+            double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            int cpr = Math.Max(1, _charsPerVisualLine);
+
+            int firstLine = Math.Max(start.Line, _firstVisibleLine);
+            int lastLine  = Math.Min(end.Line,   _lastVisibleLine);
+
+            for (int line = firstLine; line <= lastLine; line++)
+            {
+                if (!_lineYLookup.TryGetValue(line, out double lineFirstRowY)) continue;
+
+                int lineLen     = (line < _document.Lines.Count) ? _document.Lines[line].Length : 0;
+                int selStartCol = (line == start.Line) ? start.Column : 0;
+                int selEndCol   = (line == end.Line)   ? end.Column   : lineLen;
+                if (selEndCol <= selStartCol) continue;
+
+                int wrapRows = (_wrapHeights.Length > line) ? _wrapHeights[line] : 1;
+
+                for (int s = 0; s < wrapRows; s++)
+                {
+                    int subStart  = s * cpr;
+                    int subEnd    = subStart + cpr;
+                    int bandStart = Math.Max(selStartCol, subStart);
+                    int bandEnd   = Math.Min(selEndCol,   subEnd);
+                    if (bandEnd <= bandStart) continue;
+
+                    double y  = lineFirstRowY + s * _lineHeight;
+                    double x1 = leftEdge + (bandStart - subStart) * _charWidth;
+                    double x2 = leftEdge + (bandEnd   - subStart) * _charWidth;
+                    if (x2 <= x1) x2 = x1 + _charWidth;
+
+                    dc.DrawRoundedRectangle(selectionBrush, null,
+                        new Rect(x1, y, x2 - x1, _lineHeight),
+                        SelectionCornerRadius, SelectionCornerRadius);
+                }
             }
         }
 
@@ -3848,6 +4127,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // IsKeyboardFocusWithin is used rather than IsFocused so that interacting with
             // the scrollbars (child visuals) does not incorrectly dim the selection.
             Brush selectionBrush = IsKeyboardFocusWithin ? SelectionBackground : InactiveSelectionBackground;
+
+            if (IsWordWrapEnabled)
+            {
+                RenderSelectionWrapped(dc, selectionBrush);
+                return;
+            }
 
             var start = _selection.NormalizedStart;
             var end = _selection.NormalizedEnd;
@@ -4211,6 +4496,84 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>
         /// Render text content with syntax highlighting (Phase 2)
         /// </summary>
+        /// <summary>
+        /// Word-wrap path for <see cref="RenderTextContent"/>. Iterates <see cref="_visLinePositions"/>
+        /// (which has one entry per visible sub-row) and renders each sub-line segment. (ADR-049)
+        /// </summary>
+        private void RenderTextContentWrapped(DrawingContext dc, double x)
+        {
+            if (_document is null) return;
+            double dpi             = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            var    defaultFg       = (Brush?)TryFindResource("CE_Foreground") ?? Brushes.White;
+
+            ExternalHighlighter?.Reset();
+
+            for (int visPos = 0; visPos < _visLinePositions.Count; visPos++)
+            {
+                var (logLine, y) = _visLinePositions[visPos];
+                int subRow       = visPos < _visLineSubRows.Count ? _visLineSubRows[visPos] : 0;
+                if (logLine >= _document.Lines.Count) break;
+
+                var lineText = _document.Lines[logLine].Text ?? string.Empty;
+                int startCol = subRow * _charsPerVisualLine;
+                int endCol   = Math.Min(startCol + _charsPerVisualLine, lineText.Length);
+                if (startCol > 0 && startCol >= lineText.Length) continue;
+                if (string.IsNullOrEmpty(lineText)) continue;
+
+                // Advance external highlighter state for every sub-row==0 (logical line boundary).
+                if (subRow == 0 && ExternalHighlighter is not null && startCol > 0)
+                    ExternalHighlighter.Highlight(lineText, logLine);
+
+                // Collect tokens for this logical line.
+                IEnumerable<Helpers.SyntaxHighlightToken> rawTokens = [];
+                if (ExternalHighlighter is { } ext)
+                    rawTokens = subRow == 0
+                        ? ext.Highlight(lineText, logLine).Select(t => t with { Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground })
+                        : _document.Lines[logLine].TokensCache?.Select(t => t with { Foreground = ResolveBrushForKind(t.Kind) ?? t.Foreground })
+                            ?? rawTokens;
+
+                var subLine = lineText.Substring(startCol, endCol - startCol);
+                int pos     = startCol;
+
+                foreach (var token in rawTokens.OrderBy(t => t.StartColumn))
+                {
+                    int tokenEnd = token.StartColumn + token.Length;
+                    if (tokenEnd <= startCol) continue;
+                    if (token.StartColumn >= endCol) break;
+
+                    int gapEnd = Math.Min(Math.Max(pos, token.StartColumn), endCol);
+                    if (gapEnd > pos)
+                    {
+                        var gap = lineText.Substring(pos, gapEnd - pos);
+                        var ft  = new FormattedText(gap, System.Globalization.CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi);
+                        dc.DrawText(ft, new Point(x + (pos - startCol) * _charWidth, y));
+                    }
+
+                    int ss = Math.Max(token.StartColumn, startCol);
+                    int se = Math.Min(tokenEnd, endCol);
+                    if (se > ss)
+                    {
+                        var span   = lineText.Substring(ss, se - ss);
+                        var brush  = token.Foreground ?? defaultFg;
+                        var ft     = new FormattedText(span, System.Globalization.CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight, _typeface, _fontSize, brush, dpi);
+                        dc.DrawText(ft, new Point(x + (ss - startCol) * _charWidth, y));
+                    }
+                    pos = Math.Max(pos, tokenEnd);
+                }
+
+                int tail = pos;
+                if (tail < endCol)
+                {
+                    var t2 = lineText.Substring(tail, endCol - tail);
+                    var ft2 = new FormattedText(t2, System.Globalization.CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight, _typeface, _fontSize, defaultFg, dpi);
+                    dc.DrawText(ft2, new Point(x + (tail - startCol) * _charWidth, y));
+                }
+            }
+        }
+
         private void RenderTextContent(DrawingContext dc)
         {
             double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
@@ -4228,6 +4591,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Reset external highlighter state before a full render pass.
             ExternalHighlighter?.Reset();
+
+            // Word wrap: delegate to dedicated method that iterates visual sub-rows.
+            if (IsWordWrapEnabled && _charsPerVisualLine > 0 && _visLinePositions.Count > 0)
+            {
+                RenderTextContentWrapped(dc, x);
+                return;
+            }
 
             int visIdx = 0;
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
@@ -4508,13 +4878,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_cursorLine < _firstVisibleLine || _cursorLine > _lastVisibleLine)
                 return;
 
-            // Use per-line Y lookup so the caret sits at the code-text Y on InlineHints lines.
-            double y = _lineYLookup.TryGetValue(_cursorLine, out double cy) ? cy
-                : (EnableVirtualScrolling && _virtualizationEngine != null
-                    ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
-                    : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight);
+            double x, y;
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-            double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (_cursorColumn * _charWidth);
+            if (IsWordWrapEnabled && _wrapOffsets.Length > _cursorLine && _charsPerVisualLine > 0)
+            {
+                int caretVisRow = _wrapOffsets[_cursorLine] + _cursorColumn / _charsPerVisualLine;
+                int caretVisCol = _cursorColumn % _charsPerVisualLine;
+                // Use the Y stored in _lineYLookup for the first visual row of the logical line,
+                // then add the sub-row offset.
+                double firstRowY = _lineYLookup.TryGetValue(_cursorLine, out double lky)
+                    ? lky
+                    : TopMargin + (_wrapOffsets[_cursorLine] - (int)(_verticalScrollOffset / _lineHeight)) * _lineHeight;
+                int subRow = _cursorColumn / _charsPerVisualLine;
+                y = firstRowY + subRow * _lineHeight;
+                x = textLeft + caretVisCol * _charWidth;
+            }
+            else
+            {
+                // Use per-line Y lookup so the caret sits at the code-text Y on InlineHints lines.
+                y = _lineYLookup.TryGetValue(_cursorLine, out double cy) ? cy
+                    : (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
+                        : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight);
+                x = textLeft + (_cursorColumn * _charWidth);
+            }
 
             // Draw cursor as vertical line using DPs for color and width
             // When not focused, use 50% opacity to show inactive cursor
@@ -6236,6 +6624,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Calculate column (account for horizontal scroll offset)
             int column = (int)((pixel.X - leftEdge + _horizontalScrollOffset) / _charWidth);
+
+            // Word wrap: the click may be on a sub-row — add the sub-row column offset.
+            if (IsWordWrapEnabled && _charsPerVisualLine > 0)
+            {
+                // Find which sub-row was clicked by scanning _visLinePositions.
+                int subRow = 0;
+                for (int k = 0; k < _visLinePositions.Count; k++)
+                {
+                    if (_visLinePositions[k].LineIndex != line) continue;
+                    double codeY = _visLinePositions[k].Y;
+                    if (pixel.Y >= codeY && pixel.Y < codeY + _lineHeight)
+                    {
+                        subRow = k < _visLineSubRows.Count ? _visLineSubRows[k] : 0;
+                        break;
+                    }
+                }
+                column = subRow * _charsPerVisualLine + column;
+            }
+
             column = Math.Max(0, Math.Min(_document.Lines[line].Length, column));
 
             return new TextPosition(line, column);

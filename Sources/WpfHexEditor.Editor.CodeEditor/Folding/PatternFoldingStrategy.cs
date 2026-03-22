@@ -49,7 +49,17 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
             bool isEnd   = _ends.Any(r => r.IsMatch(text));
 
             if (isStart)
-                stack.Push(i);
+            {
+                // Allman-style: when the entire trimmed line IS the start-pattern match
+                // (e.g. a lone '{'), attach the fold to the previous line (the declaration).
+                // Mirrors BraceFoldingStrategy's braceAlone logic, generalized for any pattern.
+                bool isAlone = _starts.Any(r =>
+                {
+                    var m = r.Match(text);
+                    return m.Success && text.Trim() == m.Value.Trim();
+                });
+                stack.Push(isAlone && i > 0 ? i - 1 : i);
+            }
 
             if (isEnd && stack.Count > 0)
             {
