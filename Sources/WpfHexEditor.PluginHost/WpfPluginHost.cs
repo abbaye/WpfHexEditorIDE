@@ -1048,6 +1048,12 @@ public sealed class WpfPluginHost : IAsyncDisposable
                 return null;
             }
 
+            foreach (var w in result.Warnings)
+                _log($"[PluginSystem] Warning '{manifest.Name}': {w}");
+
+            var sigStatus = manifest.Signature?.IsSigned == true ? "SIGNED" : "unsigned";
+            _log($"[PluginSystem] '{manifest.Name}' manifest OK ({sigStatus}).");
+
             return manifest;
         }
         catch (Exception ex)

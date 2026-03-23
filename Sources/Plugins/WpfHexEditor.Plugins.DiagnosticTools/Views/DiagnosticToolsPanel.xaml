@@ -10,6 +10,54 @@
     FontSize="12">
 
     <UserControl.Resources>
+
+        <!-- Implicit styles: reference DT_* theme tokens only — no hard-coded colors -->
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground"  Value="{DynamicResource DT_PanelForeground}" />
+            <Setter Property="Background"  Value="{DynamicResource DT_ToolbarBackground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DT_GraphBorder}" />
+            <Setter Property="Padding"     Value="8,3" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1,1,1,0"
+                                CornerRadius="2,2,0,0"
+                                Margin="0,0,2,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{DynamicResource DT_PanelBackground}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{DynamicResource DT_GraphBackground}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground"  Value="{DynamicResource DT_PanelForeground}" />
+            <Setter Property="Background"  Value="{DynamicResource DT_GraphBackground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DT_GraphBorder}" />
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground"  Value="{DynamicResource DT_PanelForeground}" />
+            <Setter Property="Background"  Value="{DynamicResource DT_GraphBackground}" />
+        </Style>
+
         <Style x:Key="SectionLabel" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource DT_SectionHeader}" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -31,18 +79,42 @@
         </Style>
 
         <Style x:Key="ToolbarBtn" TargetType="Button">
-            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
-            <Setter Property="FontSize"   Value="14" />
-            <Setter Property="Padding"    Value="6,2" />
-            <Setter Property="Margin"     Value="0,0,2,0" />
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize"        Value="14" />
+            <Setter Property="Padding"         Value="6,2" />
+            <Setter Property="Margin"          Value="0,0,2,0" />
+            <Setter Property="Background"      Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="{DynamicResource DT_PanelForeground}" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource DT_GraphGridLine}" />
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Foreground"      Value="{DynamicResource DT_PanelForeground}" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{DynamicResource DT_GraphGridLine}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{DynamicResource DT_GraphBorder}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
 

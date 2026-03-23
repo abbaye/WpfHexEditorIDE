@@ -19,6 +19,7 @@ using System.IO;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
+using WpfHexEditor.LSP.Client.Services;
 using WpfHexEditor.LSP.Client.Transport;
 
 namespace WpfHexEditor.LSP.Client.Transport;
@@ -33,6 +34,9 @@ internal sealed class LspProcess : IAsyncDisposable
 
     internal LspJsonRpcChannel Channel
         => _channel ?? throw new InvalidOperationException("LspProcess not started.");
+
+    /// <summary>Server capability flags parsed from the <c>initialize</c> response.</summary>
+    internal ServerCapabilities Capabilities { get; private set; } = ServerCapabilities.Parse(null);
 
     // ── Lifecycle ──────────────────────────────────────────────────────────────
 
@@ -95,7 +99,8 @@ internal sealed class LspProcess : IAsyncDisposable
             },
         };
 
-        await Channel.CallAsync("initialize", initParams, ct).ConfigureAwait(false);
+        var initResult = await Channel.CallAsync("initialize", initParams, ct).ConfigureAwait(false);
+        Capabilities   = ServerCapabilities.Parse(initResult);
         await Channel.NotifyAsync("initialized", new { }, ct).ConfigureAwait(false);
     }
 

@@ -60,6 +60,10 @@ public sealed class DockingAdapter : IDockingAdapter
         _dockHost = dockHost ?? throw new ArgumentNullException(nameof(dockHost));
         _storeContent = storeContent ?? throw new ArgumentNullException(nameof(storeContent));
         _isRestoredFromFile = isRestoredFromFile;
+
+        // Re-defer known panels when they are removed from the layout (e.g. user clicks X).
+        // This allows ShowDockablePanel / ToggleDockablePanel to re-dock them on the next call.
+        _engine.LayoutChanged += ReSyncDeferredOnClose;
     }
 
     /// <summary>
@@ -233,7 +237,50 @@ public sealed class DockingAdapter : IDockingAdapter
         }
 
         var item = _layout.FindItemByContentId(uiId);
-        if (item is not null) _engine.Show(item);
+        if (item is null) return;
+
+        // AutoHide or Hidden: restore to the panel's last known side rather than the default
+        // (MainDocumentHost), which would incorrectly place the panel as a document tab.
+        if (item.State is DockItemState.AutoHide or DockItemState.Hidden)
+        {
+            var direction = item.LastDockSide switch
+            {
+                DockSide.Left   => DockDirection.Left,
+                DockSide.Right  => DockDirection.Right,
+                DockSide.Top    => DockDirection.Top,
+                DockSide.Bottom => DockDirection.Bottom,
+                _               => DockDirection.Right   // default for tool panels
+            };
+
+            // Use _sideAnchorIds (explicit, authoritative) instead of FindExistingToolPanelGroup,
+            // which can return false positives when LastDockSide values are stale (e.g. the Error
+            // List group at bottom has items whose LastDockSide defaults to DockSide.Bottom and
+            // can match a DockDirection.Right query incorrectly).
+            DockGroupNode? toolGroup = null;
+            if (_sideAnchorIds.TryGetValue(direction, out var anchorId))
+                toolGroup = _layout.FindItemByContentId(anchorId)?.Owner;
+
+            if (item.State == DockItemState.AutoHide)
+            {
+                if (toolGroup is not null)
+                    _engine.RestoreFromAutoHide(item, toolGroup, DockDirection.Center);
+                else
+                    _engine.RestoreFromAutoHide(item, _layout.MainDocumentHost, direction);
+            }
+            else // Hidden (user explicitly closed the panel)
+            {
+                if (toolGroup is not null)
+                    _engine.Show(item, toolGroup, DockDirection.Center);
+                else
+                    _engine.Show(item, _layout.MainDocumentHost, direction);
+            }
+
+            if (!_rebuildSuspended) _dockHost.RebuildVisualTree();
+        }
+        else
+        {
+            _engine.Show(item);
+        }
     }
 
     public void HideDockablePanel(string uiId)
@@ -253,7 +300,13 @@ public sealed class DockingAdapter : IDockingAdapter
 
         var item = _layout.FindItemByContentId(uiId);
         if (item is null) return;
-        if (item.State != DockItemState.Hidden) _engine.Hide(item); else _engine.Show(item);
+
+        // Visible (Docked or Floating) → hide.
+        // Collapsed (AutoHide or Hidden) → show, routed to LastDockSide via ShowDockablePanel.
+        if (item.State is DockItemState.Docked or DockItemState.Float)
+            _engine.Hide(item);
+        else
+            ShowDockablePanel(uiId);
     }
 
     public void FocusDockablePanel(string uiId)
@@ -288,8 +341,10 @@ public sealed class DockingAdapter : IDockingAdapter
     /// </summary>
     public void RebindLayout(DockEngine engine, DockLayoutRoot layout)
     {
+        _engine.LayoutChanged -= ReSyncDeferredOnClose;
         _engine = engine;
         _layout = layout;
+        _engine.LayoutChanged += ReSyncDeferredOnClose;
         _sideAnchorIds.Clear();
 
         // Re-defer panels absent from the new layout so ToggleDockablePanel can re-dock them.
@@ -299,6 +354,18 @@ public sealed class DockingAdapter : IDockingAdapter
                 _deferredPanels[uiId] = panelEntry;
             else
                 _deferredPanels.Remove(uiId);
+        }
+    }
+
+    // Called after every layout change. Re-defers known panels whose DockItems were
+    // completely removed from the layout (e.g. user clicked X on the panel tab).
+    // This allows ShowDockablePanel / ToggleDockablePanel to re-dock them on next call.
+    private void ReSyncDeferredOnClose()
+    {
+        foreach (var (uiId, panelEntry) in _allKnownPanels)
+        {
+            if (_layout.FindItemByContentId(uiId) is null && !_deferredPanels.ContainsKey(uiId))
+                _deferredPanels[uiId] = panelEntry;
         }
     }
 

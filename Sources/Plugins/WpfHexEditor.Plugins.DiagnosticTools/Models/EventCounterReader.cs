@@ -79,6 +79,13 @@ internal sealed class EventCounterReader : IDisposable
                     {
                         ["EventCounterIntervalSec"] = "1"
                     }),
+
+                // GC keyword (0x1) captures GCStart (ID=1) and GCStop (ID=2) events,
+                // giving real-time per-collection entries in the Events tab.
+                new EventPipeProvider(
+                    "Microsoft-Windows-DotNETRuntime",
+                    System.Diagnostics.Tracing.EventLevel.Informational,
+                    keywords: 0x1L),
             };
 
             _session = client.StartEventPipeSession(providers, requestRundown: false);
@@ -104,8 +111,27 @@ internal sealed class EventCounterReader : IDisposable
         }
     }
 
+    private static string GcReasonText(int reason) => reason switch
+    {
+        0 => "alloc-small",
+        1 => "induced",
+        4 => "alloc-large",
+        _ => $"r={reason}",
+    };
+
     private void OnEvent(TraceEvent evt)
     {
+        // Real-time GC Start events from the CLR runtime provider (GC keyword = 0x1).
+        // Event ID 1 = GCStart. Payload: Depth (gen), Count (collection #), Reason.
+        if (evt.ProviderName == "Microsoft-Windows-DotNETRuntime" && (int)evt.ID == 1)
+        {
+            var gen    = Convert.ToInt32(evt.PayloadByName("Depth")  ?? 0);
+            var count  = Convert.ToInt32(evt.PayloadByName("Count")  ?? 0);
+            var reason = Convert.ToInt32(evt.PayloadByName("Reason") ?? 0);
+            _vm.AddEvent($"[GC] Gen{gen} #{count} — {GcReasonText(reason)}");
+            return;
+        }
+
         if (evt.EventName != "EventCounters") return;
 
         // EventCounterPayload arrives as a IDictionary<string, object> in Payload[0].
@@ -126,9 +152,9 @@ internal sealed class EventCounterReader : IDisposable
                 _vm.GcHeapMb = value;
                 break;
 
-            case "gen-0-gc-count" when ctype == "Sum":
-            case "gen-1-gc-count" when ctype == "Sum":
-            case "gen-2-gc-count" when ctype == "Sum":
+            case "gen-0-gc-count" when ctype == "Sum" && value > 0:
+            case "gen-1-gc-count" when ctype == "Sum" && value > 0:
+            case "gen-2-gc-count" when ctype == "Sum" && value > 0:
                 _vm.AddGcEvent(name, value);
                 break;
 

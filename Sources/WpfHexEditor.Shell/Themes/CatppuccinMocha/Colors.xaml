@@ -560,6 +560,7 @@
     <SolidColorBrush x:Key="CP_TextBrush"            Color="#CDD6F4" />
     <SolidColorBrush x:Key="CP_SecondaryTextBrush"   Color="#6C7086" />
     <SolidColorBrush x:Key="CP_BorderBrush"          Color="#313244" />
+    <SolidColorBrush x:Key="CP_HoverBrush"           Color="#252535" />
 
     <!-- ── Keyboard Shortcuts Page (KSP_*) ──────────────────────────────── -->
     <SolidColorBrush x:Key="KSP_DataGridBackground"  Color="#1E1E2E" />

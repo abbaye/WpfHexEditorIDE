@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.LSP.Client.Providers;
+using WpfHexEditor.LSP.Client.Services;
 using WpfHexEditor.LSP.Client.Transport;
 
 namespace WpfHexEditor.LSP.Client;
@@ -46,6 +47,9 @@ public sealed class LspClientImpl : ILspClient
     // ── ILspClient: lifecycle ──────────────────────────────────────────────────
 
     public bool IsInitialized { get; private set; }
+
+    /// <summary>Server capability flags — valid after <see cref="InitializeAsync"/> completes.</summary>
+    internal ServerCapabilities Capabilities { get; private set; } = ServerCapabilities.Parse(null);
 
     internal LspClientImpl(
         string  executablePath,
@@ -74,6 +78,7 @@ public sealed class LspClientImpl : ILspClient
         // Subscribe to push diagnostics.
         channel.NotificationReceived += OnNotificationReceived;
 
+        Capabilities  = _process.Capabilities;
         IsInitialized = true;
     }
 
@@ -93,7 +98,7 @@ public sealed class LspClientImpl : ILspClient
     public Task<IReadOnlyList<LspCompletionItem>> CompletionAsync(
         string filePath, int line, int column, CancellationToken ct = default)
     {
-        if (_completion is null)
+        if (_completion is null || !Capabilities.HasCompletionProvider)
             return Task.FromResult<IReadOnlyList<LspCompletionItem>>(Array.Empty<LspCompletionItem>());
         return _completion.GetAsync(filePath, line, column, ct);
     }
@@ -103,7 +108,8 @@ public sealed class LspClientImpl : ILspClient
     public Task<LspHoverResult?> HoverAsync(
         string filePath, int line, int column, CancellationToken ct = default)
     {
-        if (_hover is null) return Task.FromResult<LspHoverResult?>(null);
+        if (_hover is null || !Capabilities.HasHoverProvider)
+            return Task.FromResult<LspHoverResult?>(null);
         return _hover.GetAsync(filePath, line, column, ct);
     }
 
@@ -112,7 +118,7 @@ public sealed class LspClientImpl : ILspClient
     public Task<IReadOnlyList<LspLocation>> DefinitionAsync(
         string filePath, int line, int column, CancellationToken ct = default)
     {
-        if (_definition is null)
+        if (_definition is null || !Capabilities.HasDefinitionProvider)
             return Task.FromResult<IReadOnlyList<LspLocation>>(Array.Empty<LspLocation>());
         return _definition.GetDefinitionAsync(filePath, line, column, ct);
     }
@@ -120,7 +126,7 @@ public sealed class LspClientImpl : ILspClient
     public Task<IReadOnlyList<LspLocation>> ReferencesAsync(
         string filePath, int line, int column, CancellationToken ct = default)
     {
-        if (_definition is null)
+        if (_definition is null || !Capabilities.HasReferencesProvider)
             return Task.FromResult<IReadOnlyList<LspLocation>>(Array.Empty<LspLocation>());
         return _definition.GetReferencesAsync(filePath, line, column, ct);
     }
@@ -130,7 +136,7 @@ public sealed class LspClientImpl : ILspClient
     public async Task<string?> SignatureHelpAsync(
         string filePath, int line, int column, CancellationToken ct = default)
     {
-        if (_process is null) return null;
+        if (_process is null || !Capabilities.HasSignatureHelpProvider) return null;
 
         var uri    = LspDocumentSync.ToUri(filePath);
         var @params = new { textDocument = new { uri }, position = new { line, character = column } };

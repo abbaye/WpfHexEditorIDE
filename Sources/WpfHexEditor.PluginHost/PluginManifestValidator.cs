@@ -45,6 +45,7 @@ internal sealed class PluginManifestValidator
         ValidateRequiredFields(manifest, result);
         ValidateVersionConstraints(manifest, result);
         ValidateAssemblyHash(manifest, pluginDirectory, result);
+        ValidateSignature(manifest, pluginDirectory, result);
 
         return result;
     }
@@ -119,7 +120,37 @@ internal sealed class PluginManifestValidator
 
         string actualHash = ComputeSha256(dllPath);
         if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
-            result.Errors.Add($"Assembly hash mismatch for '{dllFileName}'. Expected: {expectedHash}. Actual: {actualHash}.");
+        {
+            string prefix = manifest.Signature?.IsSigned == true ? "[SECURITY] " : string.Empty;
+            result.Errors.Add($"{prefix}Assembly hash mismatch for '{dllFileName}'. Expected: {expectedHash}. Actual: {actualHash}.");
+        }
+    }
+
+    /// <summary>
+    /// Validates the structural presence of the signature file when a plugin declares itself as signed.
+    /// Full cryptographic RSA verification is deferred pending key-distribution strategy (ADR-SB-02).
+    /// </summary>
+    private static void ValidateSignature(PluginManifest manifest, string pluginDirectory, ValidationResult result)
+    {
+        var sig = manifest.Signature;
+        if (sig is null || !sig.IsSigned) return;
+
+        if (string.IsNullOrWhiteSpace(sig.SignatureFile))
+        {
+            result.Warnings.Add("Plugin declares IsSigned=true but 'signatureFile' is empty.");
+            return;
+        }
+
+        var sigPath = Path.Combine(pluginDirectory, sig.SignatureFile);
+        if (!File.Exists(sigPath))
+        {
+            result.Errors.Add($"Signature file not found: '{sigPath}'.");
+            return;
+        }
+
+        var bytes = File.ReadAllBytes(sigPath);
+        if (bytes.Length < 8)
+            result.Errors.Add($"Signature file '{sig.SignatureFile}' is malformed (too small).");
     }
 
     private static string ComputeSha256(string filePath)

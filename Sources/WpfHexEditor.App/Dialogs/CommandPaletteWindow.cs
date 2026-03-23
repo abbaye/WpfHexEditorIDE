@@ -129,10 +129,15 @@ public sealed class CommandPaletteWindow : Window
         // Item container style — highlight selected row
         var itemStyle = new Style(typeof(ListBoxItem));
         itemStyle.Setters.Add(new Setter(ListBoxItem.PaddingProperty, new Thickness(12, 5, 12, 5)));
-        var trigger = new Trigger { Property = ListBoxItem.IsSelectedProperty, Value = true };
-        trigger.Setters.Add(new Setter(ListBoxItem.BackgroundProperty,
+        itemStyle.Setters.Add(new Setter(ListBoxItem.BackgroundProperty, Brushes.Transparent));
+        var hoverTrigger = new Trigger { Property = ListBoxItem.IsMouseOverProperty, Value = true };
+        hoverTrigger.Setters.Add(new Setter(ListBoxItem.BackgroundProperty,
+            new DynamicResourceExtension("CP_HoverBrush")));
+        itemStyle.Triggers.Add(hoverTrigger);
+        var selectTrigger = new Trigger { Property = ListBoxItem.IsSelectedProperty, Value = true };
+        selectTrigger.Setters.Add(new Setter(ListBoxItem.BackgroundProperty,
             new DynamicResourceExtension("CP_HighlightBrush")));
-        itemStyle.Triggers.Add(trigger);
+        itemStyle.Triggers.Add(selectTrigger);
         _resultsList.ItemContainerStyle = itemStyle;
 
         Grid.SetRow(_resultsList, 1);
