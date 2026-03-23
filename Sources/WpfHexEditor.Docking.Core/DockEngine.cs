@@ -39,6 +39,18 @@ public class DockEngine
     public event Action? LayoutChanged;
 
     /// <summary>
+    /// Fired when an item is added to an existing group (Center-dock, outside transaction).
+    /// Enables incremental tab-strip updates without a full visual-tree rebuild.
+    /// </summary>
+    public event Action<DockItem, DockGroupNode>? ItemAddedToGroup;
+
+    /// <summary>
+    /// Fired when an item is removed from a group that still has remaining items
+    /// (Close/Hide path, outside transaction). Enables incremental tab-strip removal.
+    /// </summary>
+    public event Action<DockItem, DockGroupNode>? ItemRemovedFromGroup;
+
+    /// <summary>
     /// Begins a transaction. NormalizeTree() calls are deferred until CommitTransaction().
     /// </summary>
     public void BeginTransaction() => _transactionDepth++;
@@ -113,6 +125,12 @@ public class DockEngine
 
         AutoNormalize();
         ItemDocked?.Invoke(item);
+
+        // Fire granular event when adding to an existing group outside a transaction —
+        // allows DockControl to do an incremental tab-strip update instead of a full rebuild.
+        if (direction == DockDirection.Center && !IsInTransaction)
+            ItemAddedToGroup?.Invoke(item, target);
+
         if (!IsInTransaction) LayoutChanged?.Invoke();
     }
 
@@ -206,11 +224,16 @@ public class DockEngine
         if (!item.CanClose)
             throw new InvalidOperationException("This item cannot be closed.");
 
+        var previousOwner = item.Owner;
         item.Owner?.RemoveItem(item);
         Layout.FloatingItems.Remove(item);
         Layout.AutoHideItems.Remove(item);
 
         item.State = DockItemState.Hidden;
+
+        // Granular event: group still has members → incremental tab remove possible.
+        if (!IsInTransaction && previousOwner is { Items.Count: > 0 })
+            ItemRemovedFromGroup?.Invoke(item, previousOwner);
 
         AutoNormalize();
         ItemClosed?.Invoke(item);
@@ -225,6 +248,7 @@ public class DockEngine
     {
         ArgumentNullException.ThrowIfNull(item);
 
+        var previousOwner = item.Owner;
         item.Owner?.RemoveItem(item);
         Layout.FloatingItems.Remove(item);
         Layout.AutoHideItems.Remove(item);
@@ -232,6 +256,10 @@ public class DockEngine
         item.State = DockItemState.Hidden;
         if (!Layout.HiddenItems.Contains(item))
             Layout.HiddenItems.Add(item);
+
+        // Granular event: group still has members → incremental tab remove possible.
+        if (!IsInTransaction && previousOwner is { Items.Count: > 0 })
+            ItemRemovedFromGroup?.Invoke(item, previousOwner);
 
         AutoNormalize();
         ItemHidden?.Invoke(item);

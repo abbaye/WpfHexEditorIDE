@@ -200,4 +200,14 @@ public class DocumentTabHost : DockTabControl
             IsEnabled = false
         });
     }
+
+    /// <summary>
+    /// Removes the "Start" placeholder before the first real document is added (M2.1 incremental path).
+    /// No-op if no placeholder is currently shown.
+    /// </summary>
+    public void ClearEmptyPlaceholder()
+    {
+        if (Items.Count == 1 && Items[0] is TabItem { Header: "Start", IsEnabled: false })
+            Items.Clear();
+    }
 }

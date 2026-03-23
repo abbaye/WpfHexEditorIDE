@@ -53,4 +53,15 @@ public class LayoutSnapshotCommand : IDockCommand
         var restored = DockLayoutSerializer.Deserialize(_beforeSnapshot);
         _setLayout(restored);
     }
+
+    /// <summary>
+    /// Restores the post-execute snapshot. Uses the captured <see cref="_afterSnapshot"/>
+    /// instead of re-running <see cref="_execute"/> to avoid operating on stale DockItem refs.
+    /// </summary>
+    public void Redo()
+    {
+        if (_afterSnapshot is null) return;
+        var restored = DockLayoutSerializer.Deserialize(_afterSnapshot);
+        _setLayout(restored);
+    }
 }

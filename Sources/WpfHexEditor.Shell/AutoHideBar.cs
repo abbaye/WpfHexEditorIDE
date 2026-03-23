@@ -145,6 +145,22 @@ public class AutoHideBar : StackPanel
         Visibility = Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         ItemsUpdated?.Invoke();
     }
+
+    /// <summary>
+    /// Highlights the bar button(s) whose group contains any of the given items (SemiBold font weight).
+    /// Pass <c>null</c> to clear all highlights.
+    /// </summary>
+    public void SetActiveGroup(IReadOnlyList<DockItem>? items)
+    {
+        foreach (UIElement child in Children)
+        {
+            if (child is not Button btn) continue;
+            var isActive = items is not null
+                && btn.Tag is IReadOnlyList<DockItem> group
+                && group.Any(i => items.Contains(i));
+            btn.FontWeight = isActive ? FontWeights.SemiBold : FontWeights.Normal;
+        }
+    }
 }
 
 /// <summary>
@@ -392,12 +408,12 @@ public class AutoHideFlyout : Grid
     /// Shows the flyout for a group of items (one or more). When multiple items are present,
     /// a tab strip is rendered below the title bar so the user can switch between them.
     /// </summary>
-    public void ShowForItems(IReadOnlyList<DockItem> items, Func<DockItem, object>? contentFactory = null, DockSide side = DockSide.Bottom)
+    public void ShowForItems(IReadOnlyList<DockItem> items, Func<DockItem, object>? contentFactory = null, DockSide side = DockSide.Bottom, Thickness contentInsets = default)
     {
         if (items.Count == 0) return;
         _currentGroup   = items;
         _contentFactory = contentFactory;
-        ShowForItem(items[0], contentFactory, side);
+        ShowForItem(items[0], contentFactory, side, contentInsets);
 
         // Build tab strip when there are multiple items in the group
         if (_tabStrip is null) return;
@@ -452,11 +468,21 @@ public class AutoHideFlyout : Grid
     /// <summary>
     /// Shows the flyout with content for the given item on the specified side.
     /// </summary>
-    public void ShowForItem(DockItem item, Func<DockItem, object>? contentFactory = null, DockSide side = DockSide.Bottom)
+    public void ShowForItem(DockItem item, Func<DockItem, object>? contentFactory = null, DockSide side = DockSide.Bottom, Thickness contentInsets = default)
     {
+        // Cancel BOTH axis animations before touching Width/Height.
+        // If an animation holds NaN as the local value, BeginAnimation(prop, null) reverts to
+        // that NaN → the next animation's origin becomes NaN → InvalidOperationException.
+        _panelContainer.BeginAnimation(WidthProperty,  null);
+        _panelContainer.BeginAnimation(HeightProperty, null);
+
         CurrentItem  = item;
         _currentSide = side;
         _titleBlock.Text = item.Title;
+
+        // Apply bar-inset margins so the flyout doesn't overlap sibling auto-hide bars.
+        _panelContainer.Margin = contentInsets;
+        _clickCatcher.Margin   = contentInsets;
 
         // Position the container against the correct edge
         _panelContainer.HorizontalAlignment = side switch
@@ -475,8 +501,8 @@ public class AutoHideFlyout : Grid
 
         if (side is DockSide.Left or DockSide.Right)
         {
-            _panelContainer.Width  = DefaultSideSize;
-            _panelContainer.Height = double.NaN;
+            _panelContainer.Width  = 0;          // animation starts from 0; NaN was cancelled above
+            _panelContainer.Height = double.NaN; // safe: HeightProperty animation already cancelled
 
             // Resize handle: thin strip on the inner edge (right for Left panel, left for Right panel)
             _resizeHandle.Width             = ResizeThickness;
@@ -489,8 +515,8 @@ public class AutoHideFlyout : Grid
         }
         else
         {
-            _panelContainer.Height = DefaultTopBottomSize;
-            _panelContainer.Width  = double.NaN;
+            _panelContainer.Height = 0;          // animation starts from 0; NaN was cancelled above
+            _panelContainer.Width  = double.NaN; // safe: WidthProperty animation already cancelled
 
             // Resize handle: thin strip on the inner edge (bottom for Top panel, top for Bottom panel)
             _resizeHandle.Height            = ResizeThickness;
@@ -509,26 +535,13 @@ public class AutoHideFlyout : Grid
             Margin     = new Thickness(8)
         };
 
-        // Animate slide-in from the edge.
         bool isHorizontal = side is DockSide.Left or DockSide.Right;
         double targetSize  = isHorizontal ? DefaultSideSize : DefaultTopBottomSize;
-
-        // Stop any ongoing close animation on the container.
-        if (isHorizontal)
-            _panelContainer.BeginAnimation(WidthProperty, null);
-        else
-            _panelContainer.BeginAnimation(HeightProperty, null);
-
-        // Start with size 0 then expand to target.
-        if (isHorizontal)
-            _panelContainer.Width  = 0;
-        else
-            _panelContainer.Height = 0;
 
         _isOpen = true;
         Visibility = Visibility.Visible;
 
-        var showAnim = new DoubleAnimation(targetSize,
+        var showAnim = new DoubleAnimation(0, targetSize,
             new Duration(TimeSpan.FromMilliseconds(120)))
         {
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
@@ -563,6 +576,7 @@ public class AutoHideFlyout : Grid
             new Duration(TimeSpan.FromMilliseconds(100)));
         hideAnim.Completed += (_, _) =>
         {
+            if (_isOpen) return;  // ShowForItem was called before hide animation completed
             Visibility           = Visibility.Collapsed;
             _contentHost.Content = null;
             CurrentItem          = null;

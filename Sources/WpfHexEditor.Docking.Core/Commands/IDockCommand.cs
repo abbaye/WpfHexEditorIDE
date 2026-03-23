@@ -14,4 +14,10 @@ public interface IDockCommand
     string Description { get; }
     void Execute();
     void Undo();
+
+    /// <summary>
+    /// Re-applies the command. Default implementations may delegate to <see cref="Execute"/>,
+    /// but snapshot-based commands should restore the post-execute snapshot to avoid stale refs.
+    /// </summary>
+    void Redo() => Execute();
 }

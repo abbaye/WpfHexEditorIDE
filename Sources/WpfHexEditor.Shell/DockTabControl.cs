@@ -95,6 +95,33 @@ public class DockTabControl : TabControl
     }
 
     /// <summary>
+    /// Incrementally adds a tab for the given item without a full Bind rebuild.
+    /// Called by DockControl when an item is added to an existing group (M2.1).
+    /// </summary>
+    public void AddTab(DockItem item)
+    {
+        var tabItem = CreateTabItem(item, _contentFactory, isActive: true);
+        Items.Add(tabItem);
+        SelectedItem = tabItem;
+    }
+
+    /// <summary>
+    /// Incrementally removes the tab for the given item without a full Bind rebuild.
+    /// Called by DockControl when an item is removed from an existing group (M2.1).
+    /// </summary>
+    public void RemoveTab(DockItem item)
+    {
+        for (var i = 0; i < Items.Count; i++)
+        {
+            if (Items[i] is TabItem ti && ti.Tag is DockItem d && d == item)
+            {
+                Items.RemoveAt(i);
+                return;
+            }
+        }
+    }
+
+    /// <summary>
     /// Materializes lazy content when a tab is first selected.
     /// </summary>
     protected override void OnSelectionChanged(SelectionChangedEventArgs e)

@@ -24,6 +24,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
+using WpfHexEditor.Docking.Core.Commands;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Commands;
 using WpfHexEditor.Shell.Controls;
@@ -48,6 +49,23 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     // Batch-close support: suppresses intermediate rebuilds during multi-item close operations.
     private bool _suppressRebuild;
     private bool _rebuildPending;
+
+    // M2.1 — incremental visual tree: tab controls cached by group node.
+    private readonly Dictionary<DockGroupNode, DockTabControl> _tabControlCache = new();
+    private bool _pendingIncrementalHandled;
+
+    // M2.4 — WeakEvent fields: stored so DetachEngine can unsubscribe.
+    private Action? _weLayoutChanged;
+    private Action<DockItem>? _weItemFloated;
+    private Action<DockItem>? _weItemDocked;
+    private Action<DockItem>? _weItemClosed;
+    private Action<DockItem>? _weItemHidden;
+    private Action<DockGroupNode>? _weGroupFloated;
+    private Action<DockItem, DockGroupNode>? _weItemAddedToGroup;
+    private Action<DockItem, DockGroupNode>? _weItemRemovedFromGroup;
+
+    // M3.3 — undo/redo layout.
+    public DockCommandStack CommandStack { get; } = new();
     internal readonly List<DockItem> ActivationHistory = [];
 
     private readonly Grid _rootGrid;
@@ -364,6 +382,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideFlyout = new AutoHideFlyout();
         _autoHideFlyout.SnapshotReady    += CaptureAutoHideSnapshot;  // primary: full-size, fully-painted panel
         _autoHideFlyout.Dismissing       += CaptureAutoHideSnapshot;  // fallback: covers quick dismiss before animation ends
+        _autoHideFlyout.Dismissing       += () => ClearAllAutoHideBarHighlights();
         _autoHideFlyout.RestoreRequested += OnAutoHideRestoreRequested;
         _autoHideFlyout.CloseRequested   += OnAutoHideCloseRequested;
         _autoHideFlyout.FloatRequested   += OnAutoHideFloatRequested;
@@ -384,12 +403,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideTop.GroupCloseRequested    += OnAutoHideGroupCloseRequested;
         _autoHideBottom.GroupCloseRequested += OnAutoHideGroupCloseRequested;
 
-        // Attach hover-preview to all four auto-hide bars.
-        // The bitmap provider returns the last-captured snapshot for a given item.
-        AutoHideBarHoverPreview.Attach(_autoHideLeft,   item => _autoHideBitmapCache.GetValueOrDefault(item));
-        AutoHideBarHoverPreview.Attach(_autoHideRight,  item => _autoHideBitmapCache.GetValueOrDefault(item));
-        AutoHideBarHoverPreview.Attach(_autoHideTop,    item => _autoHideBitmapCache.GetValueOrDefault(item));
-        AutoHideBarHoverPreview.Attach(_autoHideBottom, item => _autoHideBitmapCache.GetValueOrDefault(item));
+        // Thumbnail hover previews intentionally disabled (flash/activation issues).
+        // AutoHideBarHoverPreview class and _autoHideBitmapCache kept for future re-enable.
 
         // Build the root structure: DockPanel with bars + center, then flyout overlay
         _rootPanel = new DockPanel { LastChildFill = true };
@@ -465,13 +480,45 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         CommandBindings.Add(new CommandBinding(
             DockCommands.AutoHideAll,
-            (_, _) => { _engine?.AutoHideAll(); RebuildVisualTree(); },
+            (_, _) => ExecuteUndoable("Auto Hide All", () => { _engine?.AutoHideAll(); RebuildVisualTree(); }),
             (_, e) => e.CanExecute = _engine is not null));
 
         CommandBindings.Add(new CommandBinding(
             DockCommands.RestoreAll,
-            (_, _) => { _engine?.RestoreAllFromAutoHide(); RebuildVisualTree(); },
+            (_, _) => ExecuteUndoable("Restore All", () => { _engine?.RestoreAllFromAutoHide(); RebuildVisualTree(); }),
             (_, e) => e.CanExecute = _engine is not null && Layout?.AutoHideItems.Any() == true));
+
+        // M3.3 — Undo/Redo layout via Ctrl+Shift+Z / Ctrl+Shift+Y
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.UndoLayout,
+            (_, _) => { CommandStack.Undo(); RebuildVisualTree(); },
+            (_, e) => e.CanExecute = CommandStack.CanUndo));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.RedoLayout,
+            (_, _) => { CommandStack.Redo(); RebuildVisualTree(); },
+            (_, e) => e.CanExecute = CommandStack.CanRedo));
+    }
+
+    /// <summary>
+    /// Wraps an action in a <see cref="LayoutSnapshotCommand"/> and executes it through
+    /// <see cref="CommandStack"/> so the operation is undoable via Ctrl+Shift+Z.
+    /// </summary>
+    private void ExecuteUndoable(string description, Action action)
+    {
+        if (Layout is null)
+        {
+            action();
+            return;
+        }
+
+        var cmd = new LayoutSnapshotCommand(
+            description,
+            () => Layout,
+            newLayout => { Layout = newLayout; RebuildVisualTree(); },
+            action);
+
+        CommandStack.Execute(cmd);
     }
 
     private void CloseAllClosableItems()
@@ -556,14 +603,29 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private void AttachEngine()
     {
         if (_engine is null) return;
-        // Detach first to avoid double-subscription
         DetachEngine();
-        _engine.LayoutChanged += OnLayoutTreeChanged;
-        _engine.ItemFloated   += OnItemFloated;
-        _engine.ItemDocked    += OnItemDocked;
-        _engine.ItemClosed    += OnItemClosed;
-        _engine.ItemHidden    += OnItemHidden;
-        _engine.GroupFloated  += OnGroupFloated;
+
+        // M2.4 — WeakEvent: lambdas capture WeakReference<DockControl> so the engine
+        // cannot prevent GC of this control. Stored in fields for later unsubscription.
+        var weak = new WeakReference<DockControl>(this);
+
+        _weLayoutChanged        = () => { if (weak.TryGetTarget(out var t)) t.OnLayoutTreeChanged(); };
+        _weItemFloated          = i  => { if (weak.TryGetTarget(out var t)) t.OnItemFloated(i); };
+        _weItemDocked           = i  => { if (weak.TryGetTarget(out var t)) t.OnItemDocked(i); };
+        _weItemClosed           = i  => { if (weak.TryGetTarget(out var t)) t.OnItemClosed(i); };
+        _weItemHidden           = i  => { if (weak.TryGetTarget(out var t)) t.OnItemHidden(i); };
+        _weGroupFloated         = g  => { if (weak.TryGetTarget(out var t)) t.OnGroupFloated(g); };
+        _weItemAddedToGroup     = (i, g) => { if (weak.TryGetTarget(out var t)) t.OnItemAddedToGroup(i, g); };
+        _weItemRemovedFromGroup = (i, g) => { if (weak.TryGetTarget(out var t)) t.OnItemRemovedFromGroup(i, g); };
+
+        _engine.LayoutChanged        += _weLayoutChanged;
+        _engine.ItemFloated          += _weItemFloated;
+        _engine.ItemDocked           += _weItemDocked;
+        _engine.ItemClosed           += _weItemClosed;
+        _engine.ItemHidden           += _weItemHidden;
+        _engine.GroupFloated         += _weGroupFloated;
+        _engine.ItemAddedToGroup     += _weItemAddedToGroup;
+        _engine.ItemRemovedFromGroup += _weItemRemovedFromGroup;
     }
 
     /// <summary>
@@ -572,12 +634,19 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private void DetachEngine()
     {
         if (_engine is null) return;
-        _engine.LayoutChanged -= OnLayoutTreeChanged;
-        _engine.ItemFloated   -= OnItemFloated;
-        _engine.ItemDocked    -= OnItemDocked;
-        _engine.ItemClosed    -= OnItemClosed;
-        _engine.ItemHidden    -= OnItemHidden;
-        _engine.GroupFloated  -= OnGroupFloated;
+        _engine.LayoutChanged        -= _weLayoutChanged;
+        _engine.ItemFloated          -= _weItemFloated;
+        _engine.ItemDocked           -= _weItemDocked;
+        _engine.ItemClosed           -= _weItemClosed;
+        _engine.ItemHidden           -= _weItemHidden;
+        _engine.GroupFloated         -= _weGroupFloated;
+        _engine.ItemAddedToGroup     -= _weItemAddedToGroup;
+        _engine.ItemRemovedFromGroup -= _weItemRemovedFromGroup;
+
+        _weLayoutChanged = null;
+        _weItemFloated = _weItemDocked = _weItemClosed = _weItemHidden = null;
+        _weGroupFloated = null;
+        _weItemAddedToGroup = _weItemRemovedFromGroup = null;
     }
 
     /// <summary>
@@ -607,7 +676,44 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private void OnLayoutTreeChanged()
     {
-        Dispatcher.Invoke(RebuildVisualTree);
+        Dispatcher.Invoke(() =>
+        {
+            if (_pendingIncrementalHandled)
+            {
+                // M2.1: incremental handler already updated the tab strip — only refresh auto-hide bars.
+                _pendingIncrementalHandled = false;
+                UpdateAutoHideBars();
+                return;
+            }
+            RebuildVisualTree();
+        });
+    }
+
+    // M2.1 — incremental add: find cached DockTabControl, add one tab, no full rebuild.
+    private void OnItemAddedToGroup(DockItem item, DockGroupNode group)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            if (!_tabControlCache.TryGetValue(group, out var tabControl)) return;
+
+            // Clear start placeholder in DocumentTabHost on first real document.
+            if (tabControl is DocumentTabHost docHost)
+                docHost.ClearEmptyPlaceholder();
+
+            tabControl.AddTab(item);
+            _pendingIncrementalHandled = true;
+        });
+    }
+
+    // M2.1 — incremental remove: find cached DockTabControl, remove one tab, no full rebuild.
+    private void OnItemRemovedFromGroup(DockItem item, DockGroupNode group)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            if (!_tabControlCache.TryGetValue(group, out var tabControl)) return;
+            tabControl.RemoveTab(item);
+            _pendingIncrementalHandled = true;
+        });
     }
 
     // --- Layout size sync -------------------------------------------
@@ -667,11 +773,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (item.Owner is not { } group) return;
         var size = GetRenderedSizeForGroup(group);
-        if (size is { Width: > 0, Height: > 0 })
-        {
-            item.FloatWidth = size.Value.Width;
-            item.FloatHeight = size.Value.Height;
-        }
+        if (size.HasValue) ApplySizeToFloatDimensions(item, size.Value);
     }
 
     /// <summary>
@@ -683,10 +785,30 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         var activeItem = group.ActiveItem ?? group.Items.FirstOrDefault();
         if (activeItem is null) return;
         var size = GetRenderedSizeForGroup(group);
-        if (size is { Width: > 0, Height: > 0 })
+        if (size.HasValue) ApplySizeToFloatDimensions(activeItem, size.Value);
+    }
+
+    /// <summary>
+    /// Applies only the panel's "compact" dimension to FloatWidth/FloatHeight.
+    /// Left/Right panels span the full window height — only Width is meaningful.
+    /// Top/Bottom panels span the full window width — only Height is meaningful.
+    /// </summary>
+    private static void ApplySizeToFloatDimensions(DockItem item, Size size)
+    {
+        switch (item.LastDockSide)
         {
-            activeItem.FloatWidth = size.Value.Width;
-            activeItem.FloatHeight = size.Value.Height;
+            case Core.DockSide.Left:
+            case Core.DockSide.Right:
+                if (size.Width  > 0) item.FloatWidth  = size.Width;
+                break;
+            case Core.DockSide.Top:
+            case Core.DockSide.Bottom:
+                if (size.Height > 0) item.FloatHeight = size.Height;
+                break;
+            default:
+                if (size.Width  > 0) item.FloatWidth  = size.Width;
+                if (size.Height > 0) item.FloatHeight = size.Height;
+                break;
         }
     }
 
@@ -740,6 +862,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
+        _tabControlCache.Clear();  // M2.1: clear stale group→tab mappings
         _activePanel = null;
 
         if (Layout is null)
@@ -817,6 +940,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         WireTabControlEvents(host);
         TabHoverPreview.Attach(host);
+        _tabControlCache[docHost] = host;  // M2.1: register for incremental updates
         return CreatePanelBorder(host);
     }
 
@@ -844,6 +968,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         tabControl.Bind(group, CachedContentFactory);
         WireTabControlEvents(tabControl);
         TabHoverPreview.Attach(tabControl);
+        _tabControlCache[group] = tabControl;  // M2.1: register for incremental updates
         return tabControl;
     }
 
@@ -1194,6 +1319,14 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideBottom.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == Core.DockSide.Bottom));
     }
 
+    private void ClearAllAutoHideBarHighlights()
+    {
+        _autoHideLeft.SetActiveGroup(null);
+        _autoHideRight.SetActiveGroup(null);
+        _autoHideTop.SetActiveGroup(null);
+        _autoHideBottom.SetActiveGroup(null);
+    }
+
     private void OnAutoHideGroupClicked(IReadOnlyList<DockItem> items)
     {
         if (items.Count == 0) return;
@@ -1210,7 +1343,24 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             return;
         }
 
-        _autoHideFlyout.ShowForItems(items, CachedContentFactory, representative.LastDockSide);
+        // Inset the flyout so it doesn't overlap sibling auto-hide bars.
+        var insets = new Thickness(
+            _autoHideLeft.ActualWidth,
+            _autoHideTop.ActualHeight,
+            _autoHideRight.ActualWidth,
+            _autoHideBottom.ActualHeight);
+
+        // Highlight the active bar button and show the flyout.
+        var activeBar = representative.LastDockSide switch
+        {
+            Core.DockSide.Left   => _autoHideLeft,
+            Core.DockSide.Right  => _autoHideRight,
+            Core.DockSide.Top    => _autoHideTop,
+            _                    => _autoHideBottom
+        };
+        activeBar.SetActiveGroup(items);
+
+        _autoHideFlyout.ShowForItems(items, CachedContentFactory, representative.LastDockSide, insets);
     }
 
     private void OnAutoHideRestoreRequested(DockItem item)

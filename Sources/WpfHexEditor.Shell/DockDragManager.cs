@@ -254,8 +254,9 @@ public class DockDragManager
         window.Left = mouseDip.X - 50;
         window.Top  = mouseDip.Y - 10;
 
-        // Hand off to floating drag: the window follows the cursor and overlays appear on hover
-        BeginFloatingDrag(item, window);
+        // Hand off to floating drag — pass the pre-captured cursor so BeginFloatingDrag doesn't
+        // call Mouse.GetPosition on the new HWND (which hasn't received WM_MOUSEMOVE yet).
+        BeginFloatingDrag(item, window, mouseDip);
     }
 
     /// <summary>
@@ -286,15 +287,21 @@ public class DockDragManager
         window.Left = mouseDip.X - 50;
         window.Top  = mouseDip.Y - 10;
 
-        // Hand off to floating drag: window follows cursor, overlays appear on hover
-        BeginFloatingDrag(activeItem, window);
+        // Hand off to floating drag — pass the pre-captured cursor.
+        BeginFloatingDrag(activeItem, window, mouseDip);
     }
 
     /// <summary>
     /// Starts a drag operation for a floating window. The window follows the cursor
     /// and overlays appear when over the dock area.
     /// </summary>
-    public void BeginFloatingDrag(DockItem item, FloatingWindow sourceWindow)
+    /// <param name="cursorDip">
+    /// Pre-captured cursor position in DIPs. When provided (undock path), avoids calling
+    /// <see cref="Mouse.GetPosition"/> on the newly-created HWND which hasn't yet received
+    /// a <c>WM_MOUSEMOVE</c> and would return a stale/incorrect position.
+    /// When <c>null</c> (already-floating window drag), position is read from the window directly.
+    /// </param>
+    public void BeginFloatingDrag(DockItem item, FloatingWindow sourceWindow, Point? cursorDip = null)
     {
         if (_isDragging) return;
         if (_dockControl.Engine is null || _dockControl.Layout is null) return;
@@ -307,10 +314,19 @@ public class DockDragManager
         _targetElement = null;
         _sourceFloatingWindow = sourceWindow;
 
-        // Record offset from cursor to window corner using per-monitor DIPs for smooth cross-monitor drag
-        var cursorScreen = sourceWindow.PointToScreen(Mouse.GetPosition(sourceWindow));
-        var cursorDip = DpiHelper.ScreenToDipForPoint(cursorScreen);
-        _dragOffset = new Point(cursorDip.X - sourceWindow.Left, cursorDip.Y - sourceWindow.Top);
+        // Record offset from cursor to window corner using per-monitor DIPs for smooth cross-monitor drag.
+        // Use the pre-captured cursor when available (undock path) to avoid stale Mouse.GetPosition.
+        Point cursor;
+        if (cursorDip.HasValue)
+        {
+            cursor = cursorDip.Value;
+        }
+        else
+        {
+            var cs = sourceWindow.PointToScreen(Mouse.GetPosition(sourceWindow));
+            cursor = DpiHelper.ScreenToDipForPoint(cs);
+        }
+        _dragOffset = new Point(cursor.X - sourceWindow.Left, cursor.Y - sourceWindow.Top);
         _originalWindowPos = new Point(sourceWindow.Left, sourceWindow.Top);
 
         _panelOverlay ??= new DockOverlayWindow();

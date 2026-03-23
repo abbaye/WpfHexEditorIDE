@@ -56,7 +56,7 @@ public class DockCommandStack
     {
         if (!CanRedo) return;
         var command = _redoStack.Pop();
-        command.Execute();
+        command.Redo();
         _undoStack.Push(command);
         StackChanged?.Invoke();
     }
