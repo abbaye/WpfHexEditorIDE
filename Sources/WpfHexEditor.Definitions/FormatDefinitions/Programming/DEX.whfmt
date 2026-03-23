@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Android DEX File
+   Category:  Programming
+   Ext:       .dex
+   Editor:    hex-editor
+   Desc:      Dalvik Executable - Android bytecode
+   Variables: currentOffset, version, checksum, sha1, fileSize, headerSize, stringIds, typeIds, methodIds, classIds, dexMagic, sha1Signature, formattedSize
+   Detection: signature=6465780A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Android DEX File",
   "version": "1.12",
   "extensions": [

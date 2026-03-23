@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    .NET MSIL Assembly
+   Category:  Programming
+   Ext:       .dll, .exe
+   Editor:    hex-editor
+   Desc:      .NET Microsoft Intermediate Language (MSIL/CIL) assembly format using PE/COFF structure
+   Variables: machineType, sectionCount, entryPoint, dosSignature
+   Detection: signature=4D5A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": ".NET MSIL Assembly",
   "version": "1.11",
   "extensions": [

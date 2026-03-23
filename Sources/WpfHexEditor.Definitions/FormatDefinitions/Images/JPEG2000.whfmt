@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    JPEG 2000 Image
+   Category:  Images
+   Ext:       .jp2, .j2k, .jpf, .jpx, .jpm
+   Editor:    image-viewer
+   Desc:      JPEG 2000 - Advanced wavelet-based image compression
+   Variables: width, height, totalPixels, bitsPerPixel, jpeg2000Signature, fileTypeBox, brand
+   Detection: signature=0000000C6A5020200D0A870A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "JPEG 2000 Image",
   "version": "1.12",
   "extensions": [

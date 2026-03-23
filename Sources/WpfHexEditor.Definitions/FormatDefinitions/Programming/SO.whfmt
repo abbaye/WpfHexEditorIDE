@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Linux Shared Object
+   Category:  Programming
+   Ext:       .so
+   Editor:    hex-editor
+   Desc:      Linux Shared Object library file using ELF (Executable and Linkable Format) structure
+   Variables: vertexCount, faceCount, materialCount, fileSize, elfMagic, formattedSize
+   Detection: signature=7F454C46 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Linux Shared Object",
   "version": "1.13",
   "extensions": [

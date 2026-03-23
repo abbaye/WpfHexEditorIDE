@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Configuration File
+   Category:  Programming
+   Ext:       .ini, .cfg, .conf, .config, .properties, .env, .inf
+   Editor:    code-editor
+   Desc:      Generic configuration and settings files in key-value or INI-style format.
+   Updated:   2026-03-07
+   ============================================================ */
+
 {
   "formatName": "Configuration File",
   "version": "1.0",

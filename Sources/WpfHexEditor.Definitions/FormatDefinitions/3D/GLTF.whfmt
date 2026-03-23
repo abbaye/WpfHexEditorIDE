@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    GL Transmission Format
+   Category:  3D
+   Ext:       .gltf
+   Editor:    hex-editor
+   Desc:      Khronos glTF 3D model (JSON format)
+   Variables: currentOffset, dimensions, dataType, arrayCount, jsonStart
+   Detection: signature=7B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "GL Transmission Format",
   "version": "2.3",
   "extensions": [

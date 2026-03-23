@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ARJ Archive
+   Category:  Archives
+   Ext:       .arj
+   Editor:    hex-editor
+   Desc:      ARJ compressed archive format
+   Variables: currentOffset, headerID, arjSignature, headerId
+   Detection: signature=60EA @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ARJ Archive",
   "version": "1.10",
   "extensions": [

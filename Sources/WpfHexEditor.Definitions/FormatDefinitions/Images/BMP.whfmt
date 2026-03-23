@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    BMP Image
+   Category:  Images
+   Ext:       .bmp, .dib
+   Editor:    image-viewer
+   Desc:      Windows Bitmap (BMP) is an uncompressed or minimally compressed raster image format. The file consists of a 14-byte BITMAPFILEHEADER followed by a DIB (Device Independent Bitmap) header (commonly the 40-byte BITMAPINFOHEADER), an optional color table, and pixel data. All multi-byte values are stored in little-endian byte order.
+   Variables: currentOffset, bmpSignature, fileSize, reserved1, reserved2, pixelDataOffset, dibHeaderSize, bmpWidth, bmpHeight, colorPlanes, bitsPerPixel, compressionMethod, imageDataSize, xPixelsPerMeter, yPixelsPerMeter, colorsUsed, importantColors, totalPixels, compressionName, dibHeaderName, formattedSize, rowSizeBytes, isTopDown, xDPI, yDPI
+   Detection: signature=424D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "BMP Image",
   "version": "2.0",

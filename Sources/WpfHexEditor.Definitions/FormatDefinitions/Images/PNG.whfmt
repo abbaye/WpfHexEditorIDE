@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    PNG Image
+   Category:  Images
+   Ext:       .png
+   Editor:    image-viewer
+   Desc:      Portable Network Graphics (PNG) is a lossless raster image format that uses DEFLATE compression. The file begins with an 8-byte signature followed by a series of typed chunks. The first chunk must be IHDR, which contains the image dimensions, bit depth, color type, and rendering methods.
+   Variables: currentOffset, pngSignature, ihdrChunkLength, ihdrChunkType, imageWidth, imageHeight, bitDepth, colorType, compressionMethod, filterMethod, interlaceMethod, ihdrCrc, calculatedCRC32, crc32Valid, totalPixels, colorTypeName, bitsPerPixel, hasAlphaChannel, isIndexedColor, samplesPerPixel, formattedSize
+   Detection: signature=89504E470D0A1A0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "PNG Image",
   "version": "2.0",

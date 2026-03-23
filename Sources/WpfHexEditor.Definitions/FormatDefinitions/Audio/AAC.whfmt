@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AAC Audio
+   Category:  Audio
+   Ext:       .aac
+   Editor:    audio-viewer
+   Desc:      Advanced Audio Coding with ADTS (Audio Data Transport Stream) framing - high-quality lossy audio codec standardized in ISO/IEC 13818-7 (MPEG-2) and ISO/IEC 14496-3 (MPEG-4). Each ADTS frame begins with a 7-byte header (or 9 bytes with CRC) containing a 12-bit sync word, MPEG version, profile, sample rate, channel configuration, and frame length. AAC achieves better sound quality than MP3 at similar bitrates.
+   Variables: currentOffset, adtsSyncWord, adtsId, adtsLayer, adtsProtection, adtsHeader2, adtsProfile, adtsSamplingIndex, adtsPrivate, adtsChannelHigh, adtsHeader3, adtsChannelLow, adtsOriginal, adtsHome, adtsCopyrightId, adtsCopyrightStart, adtsHeader4, adtsFrameLenHigh, adtsHeader5, adtsFrameLenMid, adtsHeader6, adtsBufferFullnessLow, rawDataBlocks, crcCheck, channelConfig, sampleRate, channels, frameLength, samplesPerSecond, estimatedBitrate, estimatedDuration, formattedSize
+   Detection: signature=FFF1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AAC Audio",
   "version": "3.0",
   "extensions": [

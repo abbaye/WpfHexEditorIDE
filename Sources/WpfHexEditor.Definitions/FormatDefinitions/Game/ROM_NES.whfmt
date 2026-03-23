@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    NES ROM
+   Category:  Game
+   Ext:       .nes
+   Editor:    hex-editor
+   Desc:      Nintendo Entertainment System ROM (iNES format)
+   Variables: currentOffset, nesMagic, prgRomSize, chrRomSize, flags6, flags7, prgRamSize, tvSystemChrRam, tvSystemFlags, prgRomBytes, chrRomBytes, totalRomSize, mapperNumber, formattedSize, formattedPrgSize, formattedChrSize
+   Detection: signature=4E45531A @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "NES ROM",
   "version": "2.2",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    BREP Format
+   Category:  CAD
+   Ext:       .brep
+   Editor:    hex-editor
+   Desc:      Boundary Representation CAD format
+   Variables: currentOffset, dimensions, dataType, arrayCount, brepHeader
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "BREP Format",
   "version": "2.3",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Comic Book RAR
+   Category:  Documents
+   Ext:       .cbr
+   Editor:    hex-editor
+   Desc:      Comic Book RAR archive format, a RAR file containing sequential images for digital comics
+   Variables: fileCount, totalSize, compressionMethod, headerCRC, rarSignature, formattedSize
+   Detection: signature=526172211A07 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Comic Book RAR",
   "version": "1.12",
   "extensions": [

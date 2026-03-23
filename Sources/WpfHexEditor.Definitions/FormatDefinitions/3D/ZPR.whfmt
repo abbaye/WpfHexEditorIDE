@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ZBrush Project
+   Category:  3D
+   Ext:       .zpr
+   Editor:    hex-editor
+   Desc:      Pixologic ZBrush project file
+   Variables: currentOffset, vertexCount, faceCount, totalElements, zbrushProjectSignature, version
+   Detection: signature=5A50524F4A454354 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ZBrush Project",
   "version": "1.12",
   "extensions": [

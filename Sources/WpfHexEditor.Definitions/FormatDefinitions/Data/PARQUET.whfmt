@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Apache Parquet
+   Category:  Data
+   Ext:       .parquet
+   Editor:    hex-editor
+   Desc:      Apache Parquet columnar storage format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, parquetMagic
+   Detection: signature=504152 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Apache Parquet",
   "version": "1.11",
   "extensions": [

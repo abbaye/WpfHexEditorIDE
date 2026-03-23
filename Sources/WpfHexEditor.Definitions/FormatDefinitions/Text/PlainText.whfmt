@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    Plain Text
+   Category:  Text Documents
+   Ext:       .txt, .text
+   Editor:    text-editor
+   Desc:      Plain text document with character encoding support (ASCII, UTF-8, UTF-16)
+   Variables: encoding, bomDetected, lineCount, characterCount, lineEnding, textRatio
+   Updated:   2026-02-23
+   ============================================================ */
+{
   "formatName": "Plain Text",
   "version": "1.5",
   "extensions": [

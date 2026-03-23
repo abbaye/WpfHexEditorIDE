@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Raw H.265/HEVC
+   Category:  Video
+   Ext:       .h265, .265, .hevc
+   Editor:    hex-editor
+   Desc:      Raw H.265/HEVC (High Efficiency Video Coding) elementary stream
+   Variables: width, height, frameRate, duration, nalUnitStartCode, totalPixels
+   Detection: signature=00000001 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Raw H.265/HEVC",
   "version": "1.13",
   "extensions": [

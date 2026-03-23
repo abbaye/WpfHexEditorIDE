@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Microsoft Access Compiled Database
+   Category:  Database
+   Ext:       .accde
+   Editor:    hex-editor
+   Desc:      Microsoft Access compiled executable-only database format
+   Variables: currentOffset, pageSize, pageCount, tableCount, version, accdeSignature
+   Detection: signature=5374616E64617264204143452044617461626173 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Microsoft Access Compiled Database",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Apple Disk Image
+   Category:  Archives
+   Ext:       .dmg
+   Editor:    hex-editor
+   Desc:      Apple macOS disk image format
+   Variables: currentOffset, compressionType, compressedHeader
+   Detection: signature=7801730D626260 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Apple Disk Image",
   "version": "1.11",
   "extensions": [

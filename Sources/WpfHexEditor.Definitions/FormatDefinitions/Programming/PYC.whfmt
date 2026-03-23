@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Python Compiled Bytecode
+   Category:  Programming
+   Ext:       .pyc, .pyo
+   Editor:    hex-editor
+   Desc:      Python compiled bytecode file
+   Variables: currentOffset, magicNumber, pythonVersion, timestamp, sourceFileSize, sourceFile, codeObjects, fileSize, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Python Compiled Bytecode",
   "version": "2.3",
   "extensions": [

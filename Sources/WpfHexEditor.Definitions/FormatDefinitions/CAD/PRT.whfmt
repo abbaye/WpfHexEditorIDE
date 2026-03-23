@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Pro/ENGINEER Part
+   Category:  CAD
+   Ext:       .prt
+   Editor:    hex-editor
+   Desc:      Pro/ENGINEER (Creo) part file
+   Variables: currentOffset, machineType, sectionCount, entryPoint, fileHeader
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Pro/ENGINEER Part",
   "version": "2.3",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    LZO Compression
+   Category:  Archives
+   Ext:       .lzo, .lzop
+   Editor:    hex-editor
+   Desc:      LZO compressed file format using Lempel-Ziv-Oberhumer algorithm, optimized for decompression speed
+   Variables: calculatedCRC32, crc32Valid, originalSize, compressedSize, compressionRatio, lzoMagic, formattedSize
+   Detection: signature=894C5A4F @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "LZO Compression",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Crystallographic Information File
+   Category:  Science
+   Ext:       .cif
+   Editor:    hex-editor
+   Desc:      Crystallographic Information File for crystal structures
+   Variables: currentOffset, timestamp, size, version, type, cifDataBlock
+   Detection: signature=646174615F @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Crystallographic Information File",
   "version": "1.11",
   "extensions": [

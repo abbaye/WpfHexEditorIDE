@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    miniSEED Seismic Data
+   Category:  Science
+   Ext:       .mseed, .miniseed
+   Editor:    hex-editor
+   Desc:      Mini-SEED seismic data format (subset of SEED)
+   Variables: currentOffset, dimensions, dataType, arrayCount, sequenceNumber, recordIndicator
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "miniSEED Seismic Data",
   "version": "1.12",
   "extensions": [

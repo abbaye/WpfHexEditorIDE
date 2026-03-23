@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Gaussian Cube File
+   Category:  Science
+   Ext:       .cube, .cub
+   Editor:    hex-editor
+   Desc:      Gaussian volumetric data cube format
+   Variables: currentOffset, commentLine1, commentLine2
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Gaussian Cube File",
   "version": "1.13",
   "extensions": [

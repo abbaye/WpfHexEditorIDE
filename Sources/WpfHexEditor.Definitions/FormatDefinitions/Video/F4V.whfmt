@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Flash MP4 Video
+   Category:  Video
+   Ext:       .f4v, .f4p, .f4a, .f4b
+   Editor:    hex-editor
+   Desc:      Adobe Flash MP4-based video container format
+   Variables: currentOffset, majorBrand, width, height, duration, videoCodec, audioCodec, fileTypeBox, totalPixels
+   Detection: signature=66747970663476 @ offset 4
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Flash MP4 Video",
   "version": "1.12",
   "extensions": [

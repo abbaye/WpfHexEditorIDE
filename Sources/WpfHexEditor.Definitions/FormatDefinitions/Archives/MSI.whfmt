@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Installer Package
+   Category:  Archives
+   Ext:       .msi
+   Editor:    hex-editor
+   Desc:      Microsoft Windows Installer package (OLE2)
+   Variables: currentOffset, minorVersion, ole2Signature
+   Detection: signature=D0CF11E0A1B11AE1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Installer Package",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    NIfTI Medical Image
+   Category:  Medical
+   Ext:       .nii
+   Editor:    hex-editor
+   Desc:      Neuroimaging Informatics Technology Initiative
+   Variables: currentOffset, width, height, slices, bitDepth, headerSize, totalPixels
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "NIfTI Medical Image",
   "version": "2.4",
   "extensions": [

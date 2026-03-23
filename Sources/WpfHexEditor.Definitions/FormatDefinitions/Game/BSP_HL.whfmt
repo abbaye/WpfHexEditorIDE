@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Half-Life BSP
+   Category:  Game
+   Ext:       .bsp
+   Editor:    hex-editor
+   Desc:      Half-Life/GoldSrc engine BSP map format
+   Variables: currentOffset, fileCount, version, indexOffset, bspVersion, entitiesLumpOffset, entitiesLumpSize
+   Detection: signature=1E000000 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Half-Life BSP",
   "version": "1.12",
   "extensions": [

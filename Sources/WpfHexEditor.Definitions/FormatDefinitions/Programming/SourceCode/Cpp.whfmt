@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    C++ Source File
+   Category:  Programming
+   Ext:       .cpp, .cc, .cxx, .hpp, .hxx, .inl
+   Editor:    code-editor
+   Desc:      C++ programming language source and header files.
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "C++ Source File",
   "version": "2.0",

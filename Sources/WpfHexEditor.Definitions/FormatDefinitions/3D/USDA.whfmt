@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    USD ASCII
+   Category:  3D
+   Ext:       .usda
+   Editor:    hex-editor
+   Desc:      Pixar USD ASCII text format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, usdaHeader
+   Detection: signature=23757364612031 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "USD ASCII",
   "version": "1.12",
   "extensions": [

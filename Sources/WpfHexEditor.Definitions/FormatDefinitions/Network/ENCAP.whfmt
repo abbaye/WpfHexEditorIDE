@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Encapsulated Packet
+   Category:  Network
+   Ext:       .encap
+   Editor:    hex-editor
+   Desc:      Generic encapsulated packet format for tunneling protocols
+   Variables: currentOffset, packetCount, snaplen, linkType, version, encapsulationType, flags, totalLength, headerLength, protocolId, sequenceNumber, tunnelId
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Encapsulated Packet",
   "version": "1.12",
   "extensions": [

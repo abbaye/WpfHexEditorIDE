@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    μ-law Audio
+   Category:  Audio
+   Ext:       .ulaw, .ul, .mu
+   Editor:    audio-viewer
+   Desc:      μ-law (mu-law) algorithm compressed audio format used in telephony
+   Variables: sampleRate, channels, bitDepth, duration, auSndHeader, byteRate, samplesPerSecond
+   Detection: signature=2E736E64 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "μ-law Audio",
   "version": "1.13",
   "extensions": [

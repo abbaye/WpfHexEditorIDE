@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ZFS Filesystem
+   Category:  Disk
+   Ext:       .zfs
+   Editor:    hex-editor
+   Desc:      Zettabyte File System
+   Variables: currentOffset, fileSize, version, format, formattedSize
+   Detection: signature=00000000000000000CBAD1BA @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ZFS Filesystem",
   "version": "1.11",
   "extensions": [

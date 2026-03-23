@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    IPS Patch
+   Category:  RomHacking
+   Ext:       .ips
+   Editor:    hex-editor
+   Desc:      IPS (International Patching System) binary patch format — used for ROM hacking. Contains offset/data records with optional RLE encoding and truncation extension. Limited to 16 MB files.
+   Detection: signature=5041544348 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "IPS Patch",
   "version": "1.0",
   "extensions": [

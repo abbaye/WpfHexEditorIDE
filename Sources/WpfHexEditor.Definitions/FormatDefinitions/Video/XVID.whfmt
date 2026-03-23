@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Xvid Video
+   Category:  Video
+   Ext:       .xvid
+   Editor:    hex-editor
+   Desc:      Xvid MPEG-4 video codec, typically stored in AVI container
+   Variables: width, height, frameRate, duration, riffHeader, totalPixels
+   Detection: signature=52494646 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Xvid Video",
   "version": "1.13",
   "extensions": [

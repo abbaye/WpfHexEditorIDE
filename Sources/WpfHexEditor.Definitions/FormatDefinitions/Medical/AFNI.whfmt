@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AFNI BRIK/HEAD
+   Category:  Medical
+   Ext:       .head, .brik
+   Editor:    hex-editor
+   Desc:      AFNI medical imaging format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, afniMagic
+   Detection: signature=7479706520 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AFNI BRIK/HEAD",
   "version": "1.11",
   "extensions": [

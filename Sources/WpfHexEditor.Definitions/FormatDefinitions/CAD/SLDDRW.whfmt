@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SolidWorks Drawing
+   Category:  CAD
+   Ext:       .slddrw
+   Editor:    hex-editor
+   Desc:      SolidWorks drawing file (OLE2 Compound Document)
+   Variables: currentOffset, version, entityCount, layerCount, ole2Signature, minorVersion, majorVersion
+   Detection: signature=D0CF11E0A1B11AE1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SolidWorks Drawing",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Unix Compress
+   Category:  Archives
+   Ext:       .z
+   Editor:    hex-editor
+   Desc:      Unix compress (.Z) format - LZW compression
+   Variables: currentOffset, calculatedCRC32, crc32Valid, originalSize, compressedSize, compressionRatio, compressMagic, compressionMode, formattedSize
+   Detection: signature=1F9D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unix Compress",
   "version": "1.12",
   "extensions": [

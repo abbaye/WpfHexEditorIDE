@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SEG-Y Seismic Data
+   Category:  Science
+   Ext:       .sgy, .segy
+   Editor:    hex-editor
+   Desc:      Society of Exploration Geophysicists Y format for seismic data
+   Variables: currentOffset, dimensions, dataType, arrayCount, textHeader, binaryHeader
+   Detection: signature=C0C0C0C0 @ offset 3200
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SEG-Y Seismic Data",
   "version": "1.11",
   "extensions": [

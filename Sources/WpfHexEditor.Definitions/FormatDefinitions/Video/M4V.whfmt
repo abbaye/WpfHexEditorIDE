@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    iTunes Video
+   Category:  Video
+   Ext:       .m4v
+   Editor:    hex-editor
+   Desc:      MPEG-4 video container developed by Apple for iTunes Store
+   Variables: width, height, frameRate, duration, fileTypeBox, totalPixels
+   Detection: signature=66747970 @ offset 4
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "iTunes Video",
   "version": "1.13",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SQLite Database
+   Category:  Database
+   Ext:       .sqlite, .db, .sqlite3, .db3
+   Editor:    hex-editor
+   Desc:      SQLite database file format. SQLite is a self-contained, serverless, zero-configuration, transactional SQL database engine. The file begins with a 100-byte header containing the magic string, page size, format versions, and database configuration parameters.
+   Variables: currentOffset, sqliteHeader, pageSize, fileFormatWriteVersion, fileFormatReadVersion, reservedSpace, maxEmbeddedPayloadFraction, minEmbeddedPayloadFraction, leafPayloadFraction, fileChangeCounter, databaseSizeInPages, firstFreelistTrunkPage, totalFreelistPages, schemaCookie, schemaFormatNumber, defaultPageCacheSize, largestRootBTreePage, textEncoding, userVersion, incrementalVacuumMode, applicationId, sqliteVersionNumber, databaseSizeBytes, isWALMode, sqlitePageSize, sqlitePageCount, sqliteEncoding, sqliteVersionName, sqliteVersion
+   Detection: signature=53514C69746520666F726D6174203300 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SQLite Database",
   "version": "2.0",
   "extensions": [

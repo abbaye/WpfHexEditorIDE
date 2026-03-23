@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    IPFIX
+   Category:  Network
+   Ext:       .ipfix
+   Editor:    hex-editor
+   Desc:      IP Flow Information Export - Network flow monitoring protocol
+   Variables: currentOffset, version, messageLength, exportTime, sequenceNumber, ipfixVersion, observationDomainId, setId, setLength
+   Detection: signature=000A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "IPFIX",
   "version": "1.12",
   "extensions": [

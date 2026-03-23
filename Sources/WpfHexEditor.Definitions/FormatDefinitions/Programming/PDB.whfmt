@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Program Database
+   Category:  Programming
+   Ext:       .pdb
+   Editor:    hex-editor
+   Desc:      Microsoft Program Database file containing debug symbols and debugging information for binaries
+   Variables: pageSize, pageCount, tableCount, version, pdbSignature
+   Detection: signature=4D6963726F736F667420432F43 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Program Database",
   "version": "1.12",
   "extensions": [

@@ -31,7 +31,7 @@ internal static class LanguageFoldingStrategyBuilder
     /// Returns <see langword="null"/> when <paramref name="rules"/> is null —
     /// the caller should retain its built-in default strategy.
     /// </summary>
-    public static IFoldingStrategy? Build(FoldingRules? rules)
+    public static IFoldingStrategy? Build(FoldingRules? rules, string? lineCommentPrefix = null)
     {
         if (rules is null) return null;
 
@@ -47,7 +47,7 @@ internal static class LanguageFoldingStrategyBuilder
             strategies.Add(new HeadingFoldingStrategy(rules.MinHeadingLevel));
 
         if (rules.StartPatterns.Count > 0)
-            strategies.Add(new PatternFoldingStrategy(rules.StartPatterns, rules.EndPatterns));
+            strategies.Add(new PatternFoldingStrategy(rules.StartPatterns, rules.EndPatterns, lineCommentPrefix));
 
         if (rules.NamedRegionStartPattern is not null)
             strategies.Add(new NamedRegionFoldingStrategy(

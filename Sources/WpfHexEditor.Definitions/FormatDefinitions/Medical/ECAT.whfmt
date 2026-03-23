@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ECAT PET Image
+   Category:  Medical
+   Ext:       .v, .i
+   Editor:    hex-editor
+   Desc:      ECAT PET medical imaging format
+   Variables: currentOffset, width, height, totalPixels, bitsPerPixel, ecatMagic, version
+   Detection: signature=4D41545249 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ECAT PET Image",
   "version": "1.12",
   "extensions": [

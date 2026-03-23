@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Tag-Length-Value
+   Category:  Data
+   Ext:       .tlv
+   Editor:    hex-editor
+   Desc:      Generic Tag-Length-Value encoding format
+   Variables: currentOffset, machineType, sectionCount, entryPoint
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Tag-Length-Value",
   "version": "1.11",
   "extensions": [

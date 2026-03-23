@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Creative Voice File
+   Category:  Audio
+   Ext:       .voc
+   Editor:    audio-viewer
+   Desc:      Creative Labs Sound Blaster audio file format
+   Variables: currentOffset, version, dataBlockOffset, blockType, sampleRate, channels, codec, vocHeader, samplesPerSecond
+   Detection: signature=437265617469766520566F6963652046696C65 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Creative Voice File",
   "version": "1.12",
   "extensions": [

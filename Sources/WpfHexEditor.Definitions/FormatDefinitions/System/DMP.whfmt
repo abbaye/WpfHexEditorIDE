@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Memory Dump
+   Category:  System
+   Ext:       .dmp
+   Editor:    hex-editor
+   Desc:      Windows crash dump/minidump file
+   Variables: currentOffset, timestamp, size, version, type, dumpSignature, validDump
+   Detection: signature=504147454455 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Memory Dump",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows System Driver
+   Category:  Executables
+   Ext:       .sys
+   Editor:    hex-editor
+   Desc:      Windows device driver file
+   Variables: currentOffset, machineType, sectionCount, timestamp, dosSignature, peHeaderOffset
+   Detection: signature=4D5A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows System Driver",
   "version": "1.12",
   "extensions": [

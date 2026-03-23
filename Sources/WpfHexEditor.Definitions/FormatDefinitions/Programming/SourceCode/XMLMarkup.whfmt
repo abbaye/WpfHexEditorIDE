@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    XML Markup Source File
+   Category:  Programming
+   Ext:       .xsl, .xslt, .xhtml, .resx, .svg
+   Editor:    code-editor
+   Desc:      XML-derived markup source files: XSLT stylesheets, XHTML documents, .NET resource files, and SVG vector graphics.
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "XML Markup Source File",
   "version": "2.0",

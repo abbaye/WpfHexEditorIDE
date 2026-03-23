@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    VMware Virtual Disk
+   Category:  Disk
+   Ext:       .vmdk
+   Editor:    hex-editor
+   Desc:      VMware virtual disk format
+   Variables: currentOffset, sectorSize, sectorCount, capacity, format, vmdkSignature, version
+   Detection: signature=4B444D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "VMware Virtual Disk",
   "version": "1.11",
   "extensions": [

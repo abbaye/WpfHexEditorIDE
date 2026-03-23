@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SPIR-V Binary
+   Category:  Programming
+   Ext:       .spv, .spirv
+   Editor:    hex-editor
+   Desc:      SPIR-V (Standard Portable Intermediate Representation - Vulkan) binary format for GPU shaders
+   Variables: machineType, sectionCount, timestamp, entryPoint, spirVMagic
+   Detection: signature=07230203 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SPIR-V Binary",
   "version": "1.11",
   "extensions": [

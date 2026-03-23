@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    QuickTime Movie
+   Category:  Video
+   Ext:       .mov, .qt
+   Editor:    hex-editor
+   Desc:      Apple QuickTime Movie format based on the atom/box container structure that became the ancestor of ISO Base Media File Format (ISOBMFF). Files typically begin with a File Type Box (ftyp) with major brand 'qt  ', though legacy MOV files may start with 'moov', 'wide', or 'mdat' atoms. All data is organized in nested atoms, each prefixed by a 32-bit size and 4-byte type code.
+   Variables: currentOffset, firstAtomSize, firstAtomType, ftypBrand, brandName, ftypMinorVer, compatBrand1, compatBrand2, compatBrand3, compatBrand4, nextAtomSize, nextAtomType, nextAtomTypeName, payloadSize, totalFileSize, formattedFileSize, isLegacyFormat, hasExtendedSize
+   Detection: signature=6674797071742020 @ offset 4
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "QuickTime Movie",
   "version": "2.0",
   "extensions": [

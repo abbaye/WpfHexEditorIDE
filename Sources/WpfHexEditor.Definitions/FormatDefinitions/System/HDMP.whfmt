@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Heap Dump
+   Category:  System
+   Ext:       .hdmp
+   Editor:    hex-editor
+   Desc:      Windows heap dump file - Heap memory analysis
+   Variables: currentOffset, timestamp, size, version, type, heapDumpSignature, heapCount, processId, flags
+   Detection: signature=4D444D50 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Heap Dump",
   "version": "1.12",
   "extensions": [

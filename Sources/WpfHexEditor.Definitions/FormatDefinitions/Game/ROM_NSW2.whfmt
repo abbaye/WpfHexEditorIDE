@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Nintendo Switch 2 Package
+   Category:  Game
+   Ext:       .nsp, .xci, .nca
+   Editor:    hex-editor
+   Desc:      Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)
+   Variables: currentOffset, formatVersion, fileCount, crc32Valid, originalSize, compressionRatio, pfsMagic, stringTableSize, compressionType, encryptionFlags, titleId, sdkVersion, contentType, fileEntryTable
+   Detection: signature=504653 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Nintendo Switch 2 Package",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Adobe Flash SWF
+   Category:  Programming
+   Ext:       .swf
+   Editor:    hex-editor
+   Desc:      Adobe Flash/Shockwave Flash file
+   Variables: currentOffset, machineType, sectionCount, entryPoint, swfSignature, version, fileLength
+   Detection: signature=465753 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Adobe Flash SWF",
   "version": "1.11",
   "extensions": [

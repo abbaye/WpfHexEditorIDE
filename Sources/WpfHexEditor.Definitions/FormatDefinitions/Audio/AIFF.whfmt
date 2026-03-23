@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AIFF Audio
+   Category:  Audio
+   Ext:       .aiff, .aif, .aifc
+   Editor:    audio-viewer
+   Desc:      Audio Interchange File Format - Apple audio format
+   Variables: currentOffset, formSize, fileType, channels, sampleFrames, bitDepth, sampleRate, formChunk, chunkSize, aiffType, byteRate, samplesPerSecond
+   Detection: signature=464F524D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AIFF Audio",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Game Boy ROM
+   Category:  Game
+   Ext:       .gb, .gbc
+   Editor:    hex-editor
+   Desc:      Game Boy/Game Boy Color ROM cartridge format
+   Variables: currentOffset, cgbFlag, cartType, headerChecksum, gameTitle, fileCount, version, indexOffset, entryPoint, nintendoLogo, newLicenseeCode, sgbFlag, romSizeCode, ramSizeCode, destinationCode, oldLicenseeCode, maskRomVersion, globalChecksum
+   Detection: signature=CEED6666CC0D000B03730083000C000D0008 @ offset 260
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Game Boy ROM",
   "version": "1.13",
   "extensions": [

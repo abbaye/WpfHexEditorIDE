@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    BPS Patch
+   Category:  Game
+   Ext:       .bps
+   Editor:    hex-editor
+   Desc:      Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal compression
+   Variables: currentOffset, srcSizeByte, machineType, sectionCount, entryPoint, bpsMagic, patchHeaderData, patchCommandsRegion
+   Detection: signature=42505331 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "BPS Patch",
   "version": "1.11",
   "extensions": [

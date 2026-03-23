@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AutoCAD Drawing
+   Category:  CAD
+   Ext:       .dwg
+   Editor:    hex-editor
+   Desc:      AutoCAD native drawing format
+   Variables: currentOffset, version, entityCount, layerCount, dwgVersion
+   Detection: signature=41433130 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AutoCAD Drawing",
   "version": "1.12",
   "extensions": [

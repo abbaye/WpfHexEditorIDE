@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    YAML (Binary)
+   Category:  Data
+   Ext:       .yaml, .yml
+   Editor:    hex-editor
+   Desc:      YAML Ain't Markup Language data serialization
+   Variables: currentOffset, machineType, sectionCount, timestamp, entryPoint
+   Detection: signature=00 @ offset 0
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "YAML (Binary)",
   "version": "2.0",

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MDL Molfile
+   Category:  Science
+   Ext:       .mol
+   Editor:    hex-editor
+   Desc:      MDL Molfile chemical structure format
+   Variables: currentOffset, fileSize, version, format, moleculeName, headerLine2, comment, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MDL Molfile",
   "version": "1.13",
   "extensions": [

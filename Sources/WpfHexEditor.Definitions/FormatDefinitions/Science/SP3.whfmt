@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SP3 Orbit Data
+   Category:  Science
+   Ext:       .sp3, .eph
+   Editor:    hex-editor
+   Desc:      Standard Product 3 GPS precise orbit format
+   Variables: currentOffset, dimensions, dataType, arrayCount, sp3Magic, version
+   Detection: signature=2373 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SP3 Orbit Data",
   "version": "1.11",
   "extensions": [

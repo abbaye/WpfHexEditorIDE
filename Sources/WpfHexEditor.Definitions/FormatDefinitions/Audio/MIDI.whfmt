@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MIDI Audio
+   Category:  Audio
+   Ext:       .mid, .midi
+   Editor:    audio-viewer
+   Desc:      Musical Instrument Digital Interface file
+   Variables: currentOffset, headerLength, format, tracks, division, timeDivision, midiHeader
+   Detection: signature=4D546864 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MIDI Audio",
   "version": "1.10",
   "extensions": [

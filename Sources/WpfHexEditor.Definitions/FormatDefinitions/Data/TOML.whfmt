@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    TOML Configuration
+   Category:  Data
+   Ext:       .toml
+   Editor:    hex-editor
+   Desc:      Tom's Obvious, Minimal Language configuration format
+   Variables: currentOffset, machineType, sectionCount, entryPoint
+   Detection: signature=00 @ offset 0
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "TOML Configuration",
   "version": "2.0",

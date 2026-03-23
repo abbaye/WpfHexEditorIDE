@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    GIMP Image
+   Category:  Images
+   Ext:       .xcf
+   Editor:    image-viewer
+   Desc:      GIMP native image format (eXperimental Computing Facility)
+   Variables: currentOffset, version, xcfSignature
+   Detection: signature=67696D702078636620 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "GIMP Image",
   "version": "1.10",
   "extensions": [

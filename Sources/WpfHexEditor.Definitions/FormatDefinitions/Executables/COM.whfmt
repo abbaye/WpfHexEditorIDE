@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DOS COM Executable
+   Category:  Executables
+   Ext:       .com
+   Editor:    hex-editor
+   Desc:      DOS Command file - Simple executable
+   Variables: currentOffset, machineType, sectionCount, timestamp, entryPoint, codeStart
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DOS COM Executable",
   "version": "2.3",
   "extensions": [

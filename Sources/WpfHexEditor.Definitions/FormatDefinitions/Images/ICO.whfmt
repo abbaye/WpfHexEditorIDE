@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ICO Icon
+   Category:  Images
+   Ext:       .ico
+   Editor:    image-viewer
+   Desc:      Windows Icon format
+   Variables: currentOffset, imageCount, type
+   Detection: signature=00000100 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ICO Icon",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SolidWorks Part
+   Category:  CAD
+   Ext:       .sldprt
+   Editor:    hex-editor
+   Desc:      SolidWorks part file
+   Variables: currentOffset, version, entityCount, layerCount, ole2Header
+   Detection: signature=D0CF11E0A1B11AE1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SolidWorks Part",
   "version": "1.11",
   "extensions": [

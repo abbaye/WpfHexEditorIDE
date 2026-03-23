@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Minidump
+   Category:  System
+   Ext:       .dmp, .mdmp
+   Editor:    hex-editor
+   Desc:      Windows minidump crash file - Compact crash information
+   Variables: currentOffset, timestamp, size, version, type, minidumpSignature, numberOfStreams, streamDirectoryRva, checksum, flags
+   Detection: signature=4D444D5093A7 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Minidump",
   "version": "1.12",
   "extensions": [

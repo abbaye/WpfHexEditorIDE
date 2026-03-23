@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Comic Book ZIP
+   Category:  Documents
+   Ext:       .cbz
+   Editor:    hex-editor
+   Desc:      Comic Book ZIP archive - a ZIP container holding sequential images (JPG/PNG/GIF) for digital comics reading. The file begins with a ZIP Local File Header. CBZ files contain ordered image files that comic readers display in sequence.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Comic Book ZIP",
   "version": "2.0",
   "extensions": [

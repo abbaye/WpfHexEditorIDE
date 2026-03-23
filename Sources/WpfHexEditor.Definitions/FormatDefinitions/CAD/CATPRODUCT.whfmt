@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    CATIA Product
+   Category:  CAD
+   Ext:       .catproduct
+   Editor:    hex-editor
+   Desc:      CATIA V5 product assembly file (OLE2 Compound Document)
+   Variables: currentOffset, machineType, sectionCount, entryPoint, ole2Signature, minorVersion
+   Detection: signature=D0CF11E0A1B11AE1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "CATIA Product",
   "version": "1.12",
   "extensions": [

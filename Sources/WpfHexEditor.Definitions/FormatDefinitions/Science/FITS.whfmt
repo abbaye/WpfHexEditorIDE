@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    FITS Astronomical Data
+   Category:  Science
+   Ext:       .fits, .fit
+   Editor:    hex-editor
+   Desc:      Flexible Image Transport System - Astronomy
+   Variables: currentOffset, dimensions, dataType, arrayCount, fitsHeader
+   Detection: signature=53494D504C4520203D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "FITS Astronomical Data",
   "version": "1.12",
   "extensions": [

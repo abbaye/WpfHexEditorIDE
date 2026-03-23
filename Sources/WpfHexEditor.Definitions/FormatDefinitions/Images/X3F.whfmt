@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Sigma X3F RAW
+   Category:  Images
+   Ext:       .x3f
+   Editor:    image-viewer
+   Desc:      Sigma Foveon X3 RAW format
+   Variables: machineType, sectionCount, entryPoint, x3fMagic, version
+   Detection: signature=464F5678 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Sigma X3F RAW",
   "version": "1.12",
   "extensions": [

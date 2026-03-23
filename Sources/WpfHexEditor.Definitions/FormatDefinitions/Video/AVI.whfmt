@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AVI Video
+   Category:  Video
+   Ext:       .avi
+   Editor:    hex-editor
+   Desc:      Audio Video Interleave (AVI) is a RIFF-based multimedia container format developed by Microsoft. The file starts with a RIFF header containing an 'AVI ' form type, followed by a LIST 'hdrl' chunk with the main AVI header (avih) that stores frame rate, dimensions, stream count, and flags. The avih structure is 56 bytes and provides all essential playback parameters.
+   Variables: currentOffset, riffSignature, riffFileSize, aviFormType, listChunkId, listChunkSize, hdrlType, avihChunkId, avihChunkSize, microsecondsPerFrame, maxBytesPerSec, paddingGranularity, aviFlags, totalFrames, initialFrames, numberOfStreams, suggestedBufferSize, width, height, durationSeconds, framesPerSecond, formattedFileSize, formattedDuration, totalPixels
+   Detection: signature=52494646 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AVI Video",
   "version": "2.0",
   "extensions": [

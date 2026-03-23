@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DLL Library
+   Category:  Executables
+   Ext:       .dll
+   Editor:    hex-editor
+   Desc:      Dynamic Link Library - Windows library file
+   Variables: currentOffset, fileCount, totalSize, compressionMethod, headerCRC, dosSignature, bytesOnLastPage, pagesInFile, peHeaderOffset, formattedSize
+   Detection: signature=4D5A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DLL Library",
   "version": "1.12",
   "extensions": [

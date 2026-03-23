@@ -30,6 +30,13 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     private static EmbeddedFormatCatalog? _instance;
 
+    // JSONC support: .whfmt files contain // comment headers — skip them during parse.
+    private static readonly JsonDocumentOptions s_jsonOptions = new()
+    {
+        CommentHandling    = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true
+    };
+
     /// <summary>
     /// The singleton instance.
     /// </summary>
@@ -121,7 +128,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
         if (stream is null) return null;
 
-        using var doc  = JsonDocument.Parse(stream);
+        using var doc  = JsonDocument.Parse(stream, s_jsonOptions);
         var root = doc.RootElement;
 
         if (!root.TryGetProperty("syntaxDefinition", out var syntaxBlock)) return null;
@@ -136,7 +143,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
         if (stream is null) return null;
 
-        using var doc = JsonDocument.Parse(stream);
+        using var doc = JsonDocument.Parse(stream, s_jsonOptions);
         var root = doc.RootElement;
 
         var name        = GetString(root, "formatName") ?? ExtractNameFromKey(resourceKey);

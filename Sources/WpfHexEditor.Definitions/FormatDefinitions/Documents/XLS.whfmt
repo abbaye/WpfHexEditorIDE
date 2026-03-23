@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Excel Workbook (Legacy)
+   Category:  Documents
+   Ext:       .xls
+   Editor:    hex-editor
+   Desc:      Microsoft Excel 97-2003 workbook (OLE2)
+   Variables: currentOffset, machineType, sectionCount, entryPoint, ole2Signature, minorVersion
+   Detection: signature=D0CF11E0A1B11AE1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Excel Workbook (Legacy)",
   "version": "1.11",
   "extensions": [

@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    JSON Data
+   Category:  Data
+   Ext:       .json
+   Editor:    hex-editor
+   Desc:      JavaScript Object Notation - a lightweight text-based data interchange format. JSON files begin with either an opening brace { for objects or an opening bracket [ for arrays. Optionally preceded by a UTF-8 BOM.
+   Variables: currentOffset, openingCharacter, firstContentCharacter
+   Detection: signature=7B @ offset 0
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "JSON Data",
   "version": "2.1",

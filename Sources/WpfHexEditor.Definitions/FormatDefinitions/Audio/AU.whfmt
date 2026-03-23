@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AU Audio
+   Category:  Audio
+   Ext:       .au, .snd
+   Editor:    audio-viewer
+   Desc:      Sun/NeXT audio file format
+   Variables: currentOffset, dataOffset, dataSize, encoding, sampleRate, channels, auMagic, samplesPerSecond, formattedSize
+   Detection: signature=2E736E64 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AU Audio",
   "version": "1.11",
   "extensions": [

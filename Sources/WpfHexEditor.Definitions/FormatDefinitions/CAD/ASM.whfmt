@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Pro/ENGINEER Assembly
+   Category:  CAD
+   Ext:       .asm
+   Editor:    hex-editor
+   Desc:      Pro/ENGINEER (Creo) assembly file
+   Variables: currentOffset, machineType, sectionCount, entryPoint, assemblyHeader
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Pro/ENGINEER Assembly",
   "version": "2.3",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Atari 7800 ROM
+   Category:  Game
+   Ext:       .a78
+   Editor:    hex-editor
+   Desc:      Atari 7800 ROM format with A78 header (ProSystem standard)
+   Variables: currentOffset, gameTitle, romLength, fileCount, totalSize, format, headerVersion, atari7800Magic, specialByte, controller1, controller2, tvType, saveDataType, romDataStart, formattedSize
+   Detection: signature=415441524937383030 @ offset 1
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Atari 7800 ROM",
   "version": "1.13",
   "extensions": [

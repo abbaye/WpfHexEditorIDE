@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    BUFR Weather Data
+   Category:  Science
+   Ext:       .bufr, .bfr
+   Editor:    hex-editor
+   Desc:      Binary Universal Form for Representation of meteorological data
+   Variables: currentOffset, dimensions, dataType, arrayCount, bufrMagic, totalLength, edition
+   Detection: signature=42554652 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "BUFR Weather Data",
   "version": "1.11",
   "extensions": [

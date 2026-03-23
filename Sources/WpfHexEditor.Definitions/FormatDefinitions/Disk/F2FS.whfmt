@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    F2FS (Flash-Friendly File System)
+   Category:  Disk
+   Ext:       .f2fs
+   Editor:    hex-editor
+   Desc:      Flash-Friendly File System for NAND flash devices
+   Variables: currentOffset, machineType, sectionCount, entryPoint
+   Detection: signature=F2F52010 @ offset 1024
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "F2FS (Flash-Friendly File System)",
   "version": "1.10",
   "extensions": [

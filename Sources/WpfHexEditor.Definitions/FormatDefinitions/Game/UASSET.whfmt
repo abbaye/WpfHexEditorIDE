@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Unreal Engine Asset
+   Category:  Game
+   Ext:       .uasset
+   Editor:    hex-editor
+   Desc:      Unreal Engine 4/5 asset file format
+   Variables: currentOffset, fileCount, version, indexOffset, packageTag, legacyUe3Version, ue4Version, fileVersion
+   Detection: signature=C1832A9E @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unreal Engine Asset",
   "version": "1.12",
   "extensions": [

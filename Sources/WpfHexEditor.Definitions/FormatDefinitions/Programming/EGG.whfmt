@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Python Egg Package
+   Category:  Programming
+   Ext:       .egg
+   Editor:    hex-editor
+   Desc:      Python Egg - a ZIP-based distribution format for Python packages (legacy, superseded by wheel). The file begins with a ZIP Local File Header containing the first entry of the egg package.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Python Egg Package",
   "version": "2.0",
   "extensions": [

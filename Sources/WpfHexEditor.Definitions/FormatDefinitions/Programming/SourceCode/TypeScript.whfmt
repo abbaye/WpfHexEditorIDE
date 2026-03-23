@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    TypeScript Source File
+   Category:  Programming
+   Ext:       .ts, .tsx, .mts, .cts
+   Editor:    code-editor
+   Desc:      TypeScript programming language source file (typed superset of JavaScript).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "TypeScript Source File",
   "version": "2.0",

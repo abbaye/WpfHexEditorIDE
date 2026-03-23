@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    TLS Session Ticket
+   Category:  Crypto
+   Ext:       .ticket, .session
+   Editor:    hex-editor
+   Desc:      TLS Session Ticket - Encrypted session resumption data
+   Variables: currentOffset, version, serialNumber, subject, ticketLifetimeHint, ticketLength, ticketKeyName, initializationVector, stateLength, encryptedState, hmac, tlsVersion, cipherSuite
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "TLS Session Ticket",
   "version": "1.12",
   "extensions": [

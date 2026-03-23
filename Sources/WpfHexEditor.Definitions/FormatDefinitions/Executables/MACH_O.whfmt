@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    Mach-O Executable
+   Category:  Executables
+   Editor:    hex-editor
+   Desc:      Mach Object - macOS/iOS executable format
+   Variables: currentOffset, magic, cpuType, cpuSubtype, fileType, loadCommands, is64Bit, entryPoint, machOMagic32Bit
+   Detection: signature=FEEDFACE @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Mach-O Executable",
   "version": "1.11",
   "extensions": [

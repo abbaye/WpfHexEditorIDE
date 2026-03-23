@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Apple Pages
+   Category:  Documents
+   Ext:       .pages
+   Editor:    hex-editor
+   Desc:      Apple Pages word processing document - a ZIP-based iWork package containing protobuf (.iwa) files and embedded resources. The file begins with a ZIP Local File Header. Pages packages contain Document.iwa, embedded images, and metadata in the iWork archive structure.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Apple Pages",
   "version": "2.0",
   "extensions": [

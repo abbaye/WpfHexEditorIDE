@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Android Package
+   Category:  Programming
+   Ext:       .apk
+   Editor:    hex-editor
+   Desc:      Android Application Package - a ZIP-based container for Android apps containing compiled code (classes.dex), resources, assets, and AndroidManifest.xml. The file begins with a ZIP Local File Header. APK files are signed ZIP archives that the Android runtime installs and executes.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Android Package",
   "version": "2.0",
   "extensions": [

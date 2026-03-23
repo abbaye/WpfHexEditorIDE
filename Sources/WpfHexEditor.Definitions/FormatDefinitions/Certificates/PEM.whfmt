@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PEM Certificate
+   Category:  Certificates
+   Ext:       .pem, .crt, .cer
+   Editor:    hex-editor
+   Desc:      PEM-encoded X.509 certificate - Base64 encoded certificate
+   Variables: currentOffset, version, serialNumber, issuer, subject, pemHeader, newline, base64Line1, newline93, base64Data
+   Detection: signature=2D2D2D2D2D424547494E20434552544946494341544544 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PEM Certificate",
   "version": "1.11",
   "extensions": [

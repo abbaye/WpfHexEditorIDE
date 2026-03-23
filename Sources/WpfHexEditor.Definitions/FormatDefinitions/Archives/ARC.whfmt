@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ARC Archive
+   Category:  Archives
+   Ext:       .arc
+   Editor:    hex-editor
+   Desc:      ARC archive format, one of the earliest archive formats for MS-DOS, created by System Enhancement Associates
+   Variables: compressionMethod, fileName, compressedSize, archiveMarker, formattedSize
+   Detection: signature=1A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ARC Archive",
   "version": "1.11",
   "extensions": [

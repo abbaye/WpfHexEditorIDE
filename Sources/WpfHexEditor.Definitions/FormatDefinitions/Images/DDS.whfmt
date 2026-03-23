@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DirectDraw Surface
+   Category:  Images
+   Ext:       .dds
+   Editor:    image-viewer
+   Desc:      DirectX texture format
+   Variables: currentOffset, imageWidth, imageHeight, totalPixels, ddsSignature, headerSize, flags, height, width
+   Detection: signature=44445320 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DirectDraw Surface",
   "version": "1.12",
   "extensions": [

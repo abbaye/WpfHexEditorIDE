@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    RealMedia
+   Category:  Video
+   Ext:       .rm, .ra
+   Editor:    hex-editor
+   Desc:      RealMedia multimedia container format developed by RealNetworks
+   Variables: machineType, sectionCount, entryPoint, rmfHeader
+   Detection: signature=2E524D46 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "RealMedia",
   "version": "1.12",
   "extensions": [

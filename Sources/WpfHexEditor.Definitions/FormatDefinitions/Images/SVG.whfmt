@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SVG Vector Image
+   Category:  Images
+   Ext:       .svg, .svgz
+   Editor:    image-viewer
+   Desc:      Scalable Vector Graphics (SVG) is an XML-based vector image format for two-dimensional graphics defined by the W3C. SVG files are text-based and may begin with an optional UTF-8 BOM (EF BB BF), followed by an XML declaration (<?xml version=\
+   Variables: currentOffset, bomBytes, hasBOM, bomEncoding, xmlDeclStart, xmlDeclSpace, xmlVersionAttr, xmlEncodingRegion, xmlDeclClose, svgTagOpen, svgNamespaceRegion, svgAttributeRegion, detectedEncoding, lineCount, lineEnding, fileSize, isCompressed, formattedSize
+   Detection: signature=3C3F786D6C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SVG Vector Image",
   "version": "2.0",
   "extensions": [

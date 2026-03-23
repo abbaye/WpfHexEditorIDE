@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    FLAC Audio
+   Category:  Audio
+   Ext:       .flac
+   Editor:    audio-viewer
+   Desc:      Free Lossless Audio Codec - An open-source lossless audio compression format. The file begins with a 4-byte 'fLaC' signature followed by one or more metadata blocks. The first metadata block must be STREAMINFO (type 0), which contains the audio stream parameters: sample rate, channel count, bit depth, total samples, and MD5 signature of the uncompressed audio data.
+   Variables: currentOffset, flacSignature, metadataBlockHeader, isLastBlock, blockType, blockLength, minBlockSize, maxBlockSize, minFrameSize, maxFrameSize, sampleRateChannelsBps, totalSamplesHigh, totalSamplesLow, sampleRate, channels, bitsPerSample, totalSamples, md5High, md5Low, flacDuration, formattedDuration, formattedSize, byteRate, compressionRatio
+   Detection: signature=664C6143 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "FLAC Audio",
   "version": "2.0",
   "extensions": [

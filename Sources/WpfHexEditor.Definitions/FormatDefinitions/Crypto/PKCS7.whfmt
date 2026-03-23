@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PKCS#7 Certificate
+   Category:  Crypto
+   Ext:       .p7b, .p7c, .p7m, .p7s
+   Editor:    hex-editor
+   Desc:      PKCS#7 Cryptographic Message Syntax - Certificate chain format
+   Variables: currentOffset, version, serialNumber, issuer, subject, asn1Sequence, totalLength, contentTypeOidTag, oidLength, pkcs7Oid, contentTag, contentLength, signeddataSequence, versionTag, formattedSize
+   Detection: signature=3082 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PKCS#7 Certificate",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    3ds Max
+   Category:  3D
+   Ext:       .max
+   Editor:    hex-editor
+   Desc:      Autodesk 3ds Max scene file (OLE2 Compound Document)
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, ole2Signature, minorVersion, majorVersion, formattedSize
+   Detection: signature=D0CF11E0A1B11AE1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "3ds Max",
   "version": "1.13",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    FictionBook 2.0
+   Category:  Documents
+   Ext:       .fb2
+   Editor:    hex-editor
+   Desc:      FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books
+   Variables: currentOffset, title, author, preferredEditor, publisher, language, genre, date, xmlDeclaration
+   Detection: signature=3C3F786D6C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "FictionBook 2.0",
   "version": "1.10",
   "extensions": [

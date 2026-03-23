@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MPEG Video
+   Category:  Video
+   Ext:       .mpg, .mpeg, .m2v
+   Editor:    hex-editor
+   Desc:      MPEG-1/2 video stream
+   Variables: currentOffset, width, height, aspectRatio, frameRate, bitrate, vbvBufferSize, mpegSequenceHeader, pictureSize, totalPixels
+   Detection: signature=000001B3 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MPEG Video",
   "version": "1.11",
   "extensions": [

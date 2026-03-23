@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MATLAB Data File
+   Category:  Science
+   Ext:       .mat
+   Editor:    hex-editor
+   Desc:      MATLAB workspace data
+   Variables: currentOffset, dimensions, dataType, arrayCount, matlabHeader
+   Detection: signature=4D41544C4142 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MATLAB Data File",
   "version": "1.11",
   "extensions": [

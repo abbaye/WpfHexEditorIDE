@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Registry Hive
+   Category:  System
+   Ext:       , .hiv
+   Editor:    hex-editor
+   Desc:      Windows Registry hive file - Binary registry database
+   Variables: currentOffset, timestamp, size, version, type, registrySignature, primarySequence, secondarySequence, lastWritten, majorVersion, minorVersion, fileType, rootCellOffset, hiveLength, checksum
+   Detection: signature=72656766 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Registry Hive",
   "version": "1.11",
   "extensions": [

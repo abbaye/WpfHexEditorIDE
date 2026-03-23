@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Maya ASCII
+   Category:  3D
+   Ext:       .ma
+   Editor:    hex-editor
+   Desc:      Autodesk Maya ASCII scene file
+   Variables: currentOffset, machineType, sectionCount, entryPoint, mayaAsciiHeader
+   Detection: signature=2F2F4D61796120415343 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Maya ASCII",
   "version": "1.12",
   "extensions": [

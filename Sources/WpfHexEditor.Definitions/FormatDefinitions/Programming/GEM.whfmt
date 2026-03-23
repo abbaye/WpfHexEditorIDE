@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Ruby Gem Package
+   Category:  Programming
+   Ext:       .gem
+   Editor:    hex-editor
+   Desc:      Ruby package format
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, gzipHeader
+   Detection: signature=1F8B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Ruby Gem Package",
   "version": "1.11",
   "extensions": [

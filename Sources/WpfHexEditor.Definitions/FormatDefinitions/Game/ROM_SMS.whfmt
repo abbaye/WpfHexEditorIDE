@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Sega Master System ROM
+   Category:  Game
+   Ext:       .sms, .gg
+   Editor:    hex-editor
+   Desc:      Sega Master System / Game Gear ROM format (TMR SEGA header)
+   Variables: currentOffset, productCode, regionSize, machineType, sectionCount, entryPoint, tmrSegaHeader, checksum, version
+   Detection: signature=544D522053454741 @ offset 32752
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Sega Master System ROM",
   "version": "1.11",
   "extensions": [

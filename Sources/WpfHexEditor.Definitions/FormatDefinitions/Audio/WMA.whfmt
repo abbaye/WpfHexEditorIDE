@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Media Audio
+   Category:  Audio
+   Ext:       .wma
+   Editor:    audio-viewer
+   Desc:      Microsoft Windows Media Audio lossy audio codec
+   Variables: currentOffset, objectSize, headerObjects, sampleRate, channels, bitrate, duration, asfHeaderGuid, samplesPerSecond
+   Detection: signature=3026B2758E66CF11A6D900AA0062CE6C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Media Audio",
   "version": "1.12",
   "extensions": [

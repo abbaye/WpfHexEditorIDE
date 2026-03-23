@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    RAR Archive
+   Category:  Archives
+   Ext:       .rar
+   Editor:    hex-editor
+   Desc:      RAR archive format created by Eugene Roshal. Supports high compression ratios, solid archives, multi-volume spanning, recovery records, and AES encryption. RAR4 uses a 7-byte signature (52 61 72 21 1A 07 00) followed by a structured header block starting with a CRC, type byte, flags, and size fields. RAR5 uses an 8-byte signature (52 61 72 21 1A 07 01 00) with variable-length integer encoding.
+   Variables: currentOffset, rarSignature, rarVersionByte, isRar5, headerCrc, headerType, headerFlags, headerSize, reservedWord1, reservedDword1, isVolume, hasComment, isLocked, isSolid, hasNewNames, hasAuthInfo, hasRecoveryRecord, isFirstVolume, archiveTypeName, totalHeaderBytes, flagsSummary
+   Detection: signature=526172211A07 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "RAR Archive",
   "version": "2.0",

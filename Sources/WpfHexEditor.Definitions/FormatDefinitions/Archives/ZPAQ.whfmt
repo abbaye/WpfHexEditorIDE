@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ZPAQ Archive
+   Category:  Archives
+   Ext:       .zpaq
+   Editor:    hex-editor
+   Desc:      ZPAQ incremental archiver format
+   Variables: currentOffset, fileCount, totalSize, compressionMethod, headerCRC, zpaqMagic, formattedSize
+   Detection: signature=7A5041517E @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ZPAQ Archive",
   "version": "1.12",
   "extensions": [

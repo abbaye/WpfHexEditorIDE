@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    XZ Compressed File
+   Category:  Archives
+   Ext:       .xz
+   Editor:    hex-editor
+   Desc:      XZ/LZMA2 compression format
+   Variables: currentOffset, streamFlags, headerCRC, crcValid, xzMagic
+   Detection: signature=FD377A585A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "XZ Compressed File",
   "version": "1.10",
   "extensions": [

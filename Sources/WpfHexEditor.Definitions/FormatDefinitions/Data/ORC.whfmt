@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Apache ORC
+   Category:  Data
+   Ext:       .orc
+   Editor:    hex-editor
+   Desc:      Apache Optimized Row Columnar file format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, orcMagic
+   Detection: signature=4F5243 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Apache ORC",
   "version": "1.12",
   "extensions": [

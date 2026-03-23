@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DSD Stream File
+   Category:  Audio
+   Ext:       .dsf
+   Editor:    audio-viewer
+   Desc:      Sony DSD Stream File format for Direct Stream Digital audio
+   Variables: currentOffset, chunkSize, formatVersion, formatID, channelType, channels, sampleRate, bitDepth, dsfHeader, byteRate, samplesPerSecond
+   Detection: signature=44534420 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DSD Stream File",
   "version": "1.12",
   "extensions": [

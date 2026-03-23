@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Minecraft DAT
+   Category:  Game
+   Ext:       .dat
+   Editor:    hex-editor
+   Desc:      Minecraft data file (NBT format)
+   Variables: currentOffset, machineType, sectionCount, entryPoint, nbtCompoundTag
+   Detection: signature=0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Minecraft DAT",
   "version": "1.12",
   "extensions": [

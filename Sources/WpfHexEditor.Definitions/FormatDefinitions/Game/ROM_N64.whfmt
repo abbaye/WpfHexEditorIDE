@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Nintendo 64 ROM
+   Category:  Game
+   Ext:       .n64, .z64, .v64
+   Editor:    hex-editor
+   Desc:      Nintendo 64 ROM image (z64 big-endian format)
+   Variables: currentOffset, bootAddress, crc1, crc2, gameTitle, gameCode, fileCount, version, indexOffset, piBsdRegister, clockRate, releaseOffset, romVersion, bootCode
+   Detection: signature=80371240 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Nintendo 64 ROM",
   "version": "1.13",
   "extensions": [

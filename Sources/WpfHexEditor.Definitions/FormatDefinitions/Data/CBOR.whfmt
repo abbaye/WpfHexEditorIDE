@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    CBOR (Concise Binary Object Representation)
+   Category:  Data
+   Ext:       .cbor
+   Editor:    hex-editor
+   Desc:      CBOR binary data format (RFC 7049)
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "CBOR (Concise Binary Object Representation)",
   "version": "1.12",
   "extensions": [

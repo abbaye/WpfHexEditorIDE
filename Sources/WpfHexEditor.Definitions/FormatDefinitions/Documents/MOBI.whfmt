@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Mobipocket eBook
+   Category:  Documents
+   Ext:       .mobi, .prc
+   Editor:    hex-editor
+   Desc:      Mobipocket eBook format
+   Variables: currentOffset, databaseName, title, author, preferredEditor, recordCount, mobiType, encoding, pdbName
+   Detection: signature=424F4F4B4D4F4249 @ offset 60
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Mobipocket eBook",
   "version": "1.11",
   "extensions": [

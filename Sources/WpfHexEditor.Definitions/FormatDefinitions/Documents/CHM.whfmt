@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Compiled HTML Help
+   Category:  Documents
+   Ext:       .chm
+   Editor:    hex-editor
+   Desc:      Microsoft Compiled HTML Help file
+   Variables: currentOffset, version, headerLength, totalLength, languageID, title, files, itsfSignature
+   Detection: signature=49545346 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Compiled HTML Help",
   "version": "1.11",
   "extensions": [

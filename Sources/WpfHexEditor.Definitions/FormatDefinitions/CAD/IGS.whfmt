@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    IGES
+   Category:  CAD
+   Ext:       .igs, .iges
+   Editor:    hex-editor
+   Desc:      Initial Graphics Exchange Specification (ASCII format)
+   Variables: currentOffset, version, entityCount, layerCount, startSection
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "IGES",
   "version": "2.3",
   "extensions": [

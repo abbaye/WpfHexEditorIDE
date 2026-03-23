@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Advanced Systems Format
+   Category:  Video
+   Ext:       .asf
+   Editor:    hex-editor
+   Desc:      Microsoft Advanced Systems Format multimedia container
+   Variables: currentOffset, objectSize, headerObjects, width, height, duration, bitrate, asfHeaderGuid, totalPixels
+   Detection: signature=3026B2758E66CF11A6D900AA0062CE6C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Advanced Systems Format",
   "version": "1.12",
   "extensions": [

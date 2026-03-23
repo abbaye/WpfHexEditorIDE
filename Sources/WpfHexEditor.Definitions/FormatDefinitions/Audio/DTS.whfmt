@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DTS Audio
+   Category:  Audio
+   Ext:       .dts, .dtshd
+   Editor:    audio-viewer
+   Desc:      DTS (Digital Theater Systems) multi-channel audio codec
+   Variables: currentOffset, frameType, sampleRate, bitrate, channels, lfePresent, dtsSyncWord, samplesPerSecond
+   Detection: signature=7FFE8001 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DTS Audio",
   "version": "1.12",
   "extensions": [

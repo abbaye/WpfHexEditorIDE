@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Extensible 3D
+   Category:  3D
+   Ext:       .x3d
+   Editor:    hex-editor
+   Desc:      Web3D X3D format (XML based)
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, xmlDeclaration, formattedSize
+   Detection: signature=3C3F786D6C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Extensible 3D",
   "version": "1.13",
   "extensions": [

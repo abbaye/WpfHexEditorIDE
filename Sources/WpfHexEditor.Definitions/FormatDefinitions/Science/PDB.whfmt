@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Protein Data Bank
+   Category:  Science
+   Ext:       .pdb, .ent
+   Editor:    hex-editor
+   Desc:      Protein Data Bank format for 3D molecular structures
+   Variables: currentOffset, dimensions, dataType, arrayCount, pdbHeader
+   Detection: signature=484541444552 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Protein Data Bank",
   "version": "1.11",
   "extensions": [

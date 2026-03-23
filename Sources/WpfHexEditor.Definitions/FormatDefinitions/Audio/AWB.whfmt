@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AMR-WB Audio
+   Category:  Audio
+   Ext:       .awb
+   Editor:    audio-viewer
+   Desc:      Adaptive Multi-Rate Wideband audio codec for improved speech quality
+   Variables: sampleRate, channels, bitDepth, duration, amrWbHeader, byteRate, samplesPerSecond
+   Detection: signature=2321414D522D57420A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AMR-WB Audio",
   "version": "1.13",
   "extensions": [

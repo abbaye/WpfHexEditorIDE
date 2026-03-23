@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Flash Video
+   Category:  Video
+   Ext:       .flv
+   Editor:    hex-editor
+   Desc:      Adobe Flash Video format
+   Variables: currentOffset, version, hasVideo, hasAudio, dataOffset, width, height, videoCodec, audioCodec, flvSignature, typeFlags, totalPixels
+   Detection: signature=464C56 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Flash Video",
   "version": "1.12",
   "extensions": [

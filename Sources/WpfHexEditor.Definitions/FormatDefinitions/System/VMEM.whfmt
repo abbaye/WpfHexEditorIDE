@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Virtual Memory Dump
+   Category:  System
+   Ext:       .vmem, .vmsn
+   Editor:    hex-editor
+   Desc:      VMware virtual machine memory snapshot
+   Variables: currentOffset, sectorSize, sectorCount, capacity, format, vmemSignature, version, memorySize, guestOsType, snapshotTime, flags
+   Detection: signature=D053564D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Virtual Memory Dump",
   "version": "1.12",
   "extensions": [

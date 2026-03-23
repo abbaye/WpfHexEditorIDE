@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PlayStation Portable ISO
+   Category:  Game
+   Ext:       .iso, .cso
+   Editor:    hex-editor
+   Desc:      PlayStation Portable UMD disc image (ISO or compressed CSO)
+   Variables: currentOffset, sectorSize, sectorCount, capacity, format, csoMagic, headerSize, uncompressedSize, blockSize, version, formattedSize
+   Detection: signature=4349534F @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "PlayStation Portable ISO",
   "version": "2.5",
   "extensions": [

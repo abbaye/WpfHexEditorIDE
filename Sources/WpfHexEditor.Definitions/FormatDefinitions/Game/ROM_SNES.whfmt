@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Super Nintendo ROM
+   Category:  Game
+   Ext:       .smc, .sfc
+   Editor:    hex-editor
+   Desc:      Super Nintendo Entertainment System ROM (HiROM internal header at $FFB0-$FFFF)
+   Variables: currentOffset, gameTitle, romLayout, romType, romSize, ramSize, regionCode, developerId, version, checksumComplement, checksum, nativeModeVectors, emulationModeVectors, checksumTotal, formattedSize
+   Detection: signature=33 @ offset 65498
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Super Nintendo ROM",
   "version": "3.2",
   "extensions": [

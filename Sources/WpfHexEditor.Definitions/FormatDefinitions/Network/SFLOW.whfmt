@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    sFlow
+   Category:  Network
+   Ext:       .sflow
+   Editor:    hex-editor
+   Desc:      sFlow network monitoring - Sampled flow data
+   Variables: currentOffset, version, agentAddress, sampleCount, uptime, sflowVersion, agentAddressType, subAgentId, sequenceNumber, systemUptime, numberOfSamples
+   Detection: signature=00000005 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "sFlow",
   "version": "1.12",
   "extensions": [

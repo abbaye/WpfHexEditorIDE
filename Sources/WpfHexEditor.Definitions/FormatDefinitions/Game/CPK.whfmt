@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    CriWare CPK
+   Category:  Game
+   Ext:       .cpk
+   Editor:    hex-editor
+   Desc:      CRI Middleware CPK archive
+   Variables: currentOffset, zipFileCount, zipCentralDirSize, zipComment, eocdOffset, isZip64, cpkSignature, headerSize, fileCount
+   Detection: signature=43504B20 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "CriWare CPK",
   "version": "1.12",
   "extensions": [

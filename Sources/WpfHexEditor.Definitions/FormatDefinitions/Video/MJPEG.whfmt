@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Motion JPEG
+   Category:  Video
+   Ext:       .mjpeg, .mjpg
+   Editor:    hex-editor
+   Desc:      Motion JPEG video format where each frame is a separate JPEG image
+   Variables: jpegWidth, jpegHeight, jpegComponents, frameRate, jpegSoiMarker, totalPixels
+   Detection: signature=FFD8FF @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Motion JPEG",
   "version": "1.13",
   "extensions": [

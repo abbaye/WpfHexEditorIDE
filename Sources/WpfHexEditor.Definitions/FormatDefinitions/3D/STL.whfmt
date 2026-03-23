@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    STL 3D Model
+   Category:  3D
+   Ext:       .stl
+   Editor:    hex-editor
+   Desc:      Stereolithography CAD format - 3D model file
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, asciiStlHeader, formattedSize
+   Detection: signature=736F6C6964 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "STL 3D Model",
   "version": "1.12",
   "extensions": [

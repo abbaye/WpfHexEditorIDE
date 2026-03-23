@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    GRIB Weather Data
+   Category:  Science
+   Ext:       .grib, .grb
+   Editor:    hex-editor
+   Desc:      Gridded Binary meteorological data format
+   Variables: currentOffset, dimensions, dataType, arrayCount, gribMagic, totalLength, edition
+   Detection: signature=47524942 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "GRIB Weather Data",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    GZIP Compressed File
+   Category:  Archives
+   Ext:       .gz, .gzip
+   Editor:    hex-editor
+   Desc:      GZIP compression format defined by RFC 1952. Wraps a single DEFLATE-compressed stream with a 10-byte header containing magic bytes, compression method, flags, modification time, extra flags, and OS identifier. Optional fields (extra data, original filename, comment, header CRC) follow the fixed header when corresponding flag bits are set. An 8-byte trailer contains the CRC-32 and original file size.
+   Variables: currentOffset, gzipMagic, compressionMethod, flags, modificationTime, extraFlags, operatingSystem, isFTEXT, isFHCRC, isFEXTRA, isFNAME, isFCOMMENT, hasOptionalFields, compressionLevel, osName, methodName, headerSize, formattedModTime
+   Detection: signature=1F8B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "GZIP Compressed File",
   "version": "2.0",
   "extensions": [

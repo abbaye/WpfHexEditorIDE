@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    ZIP Archive
+   Category:  Archives
+   Ext:       .zip
+   Editor:    hex-editor
+   Desc:      ZIP archive format (PKZIP) - Used by many file types including Office documents
+   Variables: currentOffset, fileCount, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, formattedSize
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "ZIP Archive",
   "version": "1.12",

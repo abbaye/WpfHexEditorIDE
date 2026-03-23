@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    RINEX GNSS Data
+   Category:  Science
+   Ext:       .rnx, .obs, .nav
+   Editor:    hex-editor
+   Desc:      Receiver Independent Exchange Format for GNSS data
+   Variables: currentOffset, dimensions, dataType, arrayCount, header, version
+   Detection: signature=2020202020 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "RINEX GNSS Data",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    WAV Audio
+   Category:  Audio
+   Ext:       .wav, .wave
+   Editor:    audio-viewer
+   Desc:      Waveform Audio File Format - A RIFF-based container for uncompressed (PCM) and compressed audio. The file begins with a 12-byte RIFF header followed by a mandatory 'fmt ' chunk describing the audio encoding parameters and a 'data' chunk containing the sample payload.
+   Variables: currentOffset, riffSignature, fileSize, waveType, fmtChunkId, fmtChunkSize, audioFormat, numChannels, sampleRate, byteRate, blockAlign, bitsPerSample, wavDuration, totalSamples, formattedDuration, formattedSize, audioFormatName, channelDescription
+   Detection: signature=52494646 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "WAV Audio",
   "version": "2.0",
   "extensions": [

@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Swift Source File
+   Category:  Programming
+   Ext:       .swift
+   Editor:    code-editor
+   Desc:      Swift programming language source file (Apple platforms).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Swift Source File",
   "version": "2.0",

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    XYZ Chemical Format
+   Category:  Science
+   Ext:       .xyz
+   Editor:    hex-editor
+   Desc:      XYZ chemical file format with atom coordinates
+   Variables: currentOffset, dimensions, dataType, arrayCount, atomCount
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "XYZ Chemical Format",
   "version": "1.12",
   "extensions": [
