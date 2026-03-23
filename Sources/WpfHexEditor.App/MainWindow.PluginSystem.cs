@@ -918,6 +918,11 @@ public partial class MainWindow
 
         // --- Terminal ---
         reg.Register(typeof(TerminalCommandExecutedEvent),  "Terminal Command Executed",  "TerminalPanel");
+
+        // --- Solution Explorer ---
+        reg.Register(typeof(ProjectItemAddedEvent),   "Project Item Added",   "SolutionManager");
+        reg.Register(typeof(ProjectItemRemovedEvent), "Project Item Removed", "SolutionManager");
+        reg.Register(typeof(ProjectItemRenamedEvent), "Project Item Renamed", "SolutionManager");
     }
 
     // --- Minimal helpers ------------------------------------------------

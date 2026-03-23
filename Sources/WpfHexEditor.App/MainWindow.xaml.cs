@@ -159,9 +159,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // QuickSearchBar instances for CodeEditor documents (CodeEditor has no embedded Canvas)
     private readonly Dictionary<CodeEditorControl, QuickSearchBar> _codeEditorBars = new();
 
-    // EditorEventAdapter bridges per-tab code-editor events to IIDEEventBus.
+    // EditorEventAdapter (CodeEditor) and GenericDocumentAdapter (all other editors)
+    // both bridge per-tab editor events to IIDEEventBus.
     // Keyed by DockItem ContentId so adapters can be disposed on tab close.
-    private readonly Dictionary<string, WpfHexEditor.Editor.CodeEditor.Services.EditorEventAdapter> _editorEventAdapters = new();
+    private readonly Dictionary<string, IDisposable> _editorEventAdapters = new();
 
     // M5: PropertyProvider cache — avoids recreating the provider on every tab switch
     private readonly Dictionary<UIElement, IPropertyProvider?> _propertyProviderCache = new();
@@ -487,9 +488,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         InitDocumentManager();
 
         // Wire SolutionManager events before restoring layout
-        _solutionManager.SolutionChanged      += OnSolutionChanged;
-        _solutionManager.ProjectChanged       += OnProjectChanged;
-        _solutionManager.ItemAdded            += OnProjectItemAdded;
+        _solutionManager.SolutionChanged       += OnSolutionChanged;
+        _solutionManager.ProjectChanged        += OnProjectChanged;
+        _solutionManager.ItemAdded             += OnProjectItemAdded;
+        _solutionManager.ItemRemoved           += OnProjectItemRemoved;
         _solutionManager.FormatUpgradeRequired += OnFormatUpgradeRequired;
 
         // Populate LanguageRegistry with all embedded .whlang syntax definitions.
@@ -810,10 +812,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
 
+        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemAddedEvent
+        {
+            Source    = "SolutionManager",
+            FilePath  = e.Item.AbsolutePath,
+            ProjectId = e.Project.Id,
+            ItemType  = e.Item.ItemType.ToString(),
+        });
+
         // When a FormatDefinition is added, inject it into all open HexEditors
         // that belong to the same project so ParsedFields auto-detects the new format.
         if (e.Item.ItemType == ProjectItemType.FormatDefinition)
             InjectFormatDefinitionToOpenEditors(e.Project, e.Item.AbsolutePath);
+    }
+
+    private void OnProjectItemRemoved(object? sender, ProjectItemEventArgs e)
+    {
+        _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+
+        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemRemovedEvent
+        {
+            Source    = "SolutionManager",
+            FilePath  = e.Item.AbsolutePath,
+            ProjectId = e.Project.Id,
+            ItemType  = e.Item.ItemType.ToString(),
+        });
     }
 
     /// <summary>
@@ -2024,7 +2047,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 if (editor is IDiagnosticSource diagSrc)
                     EnsureErrorPanelInstance().AddSource(diagSrc);
 
-                // Bridge code-editor events to IIDEEventBus (diagnostics, save, open/close).
+                // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
+                if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
+                    _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileOpenedEvent
+                    {
+                        Source        = "MainWindow",
+                        FilePath      = filePath,
+                        FileExtension = Path.GetExtension(filePath),
+                        FileSize      = File.Exists(filePath) ? new FileInfo(filePath).Length : 0L,
+                    });
+
+                // Bridge editor lifecycle events to IIDEEventBus.
+                // EditorEventAdapter handles all IDocumentEditor types; it adds richer
+                // caret/folding payloads only when the editor is a CodeEditorControl.
                 if (_ideEventBus != null && !string.IsNullOrEmpty(item.ContentId))
                 {
                     var adapter = new WpfHexEditor.Editor.CodeEditor.Services.EditorEventAdapter(
@@ -2182,6 +2217,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 splitHost.ReferenceNavigationRequested   += OnCodeEditorReferenceNavigation;
                 splitHost.FindAllReferencesDockRequested += OnFindAllReferencesDockRequested;
                 splitHost.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
+            }
+
+            // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
+            if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
+                _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileOpenedEvent
+                {
+                    Source        = "MainWindow",
+                    FilePath      = filePath,
+                    FileExtension = Path.GetExtension(filePath),
+                    FileSize      = File.Exists(filePath) ? new FileInfo(filePath).Length : 0L,
+                });
+
+            // Bridge editor lifecycle events to IIDEEventBus.
+            // CodeEditor gets the rich EditorEventAdapter; all other IDocumentEditor types
+            // get the lightweight GenericDocumentAdapter (save signal only).
+            if (_ideEventBus is not null && !string.IsNullOrEmpty(item.ContentId))
+            {
+                IDisposable adapter = editor is CodeEditorControl or CodeEditorSplitHost
+                    ? new WpfHexEditor.Editor.CodeEditor.Services.EditorEventAdapter(editor, _ideEventBus, filePath)
+                    : new Services.GenericDocumentAdapter(editor, _ideEventBus, filePath);
+                _editorEventAdapters[item.ContentId] = adapter;
             }
 
             return display;
@@ -3234,6 +3290,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_contentCache.TryGetValue(contentId, out var ctrl) && ctrl is HexEditorControl hex)
             hex.OpenFile(e.Item.AbsolutePath);
 
+        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemRenamedEvent
+        {
+            Source    = "SolutionManager",
+            OldPath   = e.OldAbsolutePath,
+            NewPath   = e.Item.AbsolutePath,
+            ProjectId = e.Project.Id,
+        });
+
         OutputLogger.Info($"Renamed '{e.OldName}' → '{e.Item.Name}'");
     }
 
@@ -3755,6 +3819,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             _lastSyncFilePath = syncPath;
             _solutionExplorerPanel?.SyncWithFile(syncPath);
+        }
+
+        // Sync Error Panel scope context — CurrentDocument uses syncPath; CurrentProject resolved from solution.
+        if (_errorPanel is not null)
+        {
+            _errorPanel.CurrentDocumentPath = syncPath ?? string.Empty;
+            _errorPanel.CurrentProjectName  = _solutionManager.CurrentSolution?
+                .Projects.FirstOrDefault(p => p.FindItemByPath(syncPath ?? string.Empty) is not null)?.Name
+                ?? string.Empty;
+            _errorPanel.RefreshFilter();
         }
 
         // Sync Properties panel provider (M5: cached per editor instance)
