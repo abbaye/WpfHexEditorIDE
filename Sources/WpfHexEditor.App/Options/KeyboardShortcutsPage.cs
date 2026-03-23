@@ -113,6 +113,13 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
         _grid.SetResourceReference(DataGrid.StyleProperty,     "KSP_DataGridStyle");
         _grid.SetResourceReference(DataGrid.RowStyleProperty,  "KSP_DataGridRowStyle");
 
+        // Set as local values (precedence 3) so DataGrid reliably propagates them to containers.
+        // RowBackground = Transparent → no colour transferred to rows; cells own the selection.
+        // CellStyle set via Style Setter is unreliable for generated-container propagation.
+        _grid.RowBackground            = Brushes.Transparent;
+        _grid.AlternatingRowBackground = Brushes.Transparent;
+        _grid.CellStyle                = BuildCellStyle();
+
         // Category column
         var catCol = new DataGridTextColumn
         {
@@ -181,20 +188,6 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
 
     public void Load(AppSettings _)
     {
-        // Shadow SystemColors highlight brushes inside the DataGrid's own resource scope.
-        // WPF DataGrid's default row/cell ControlTemplates use
-        //   {DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}
-        // for the "selected but not focused" state, which resolves to system-white.
-        // Overriding the key in _grid.Resources makes the lookup find our accent
-        // brush first — without touching Application.Resources or template internals.
-        if (Application.Current.Resources["DockAccentBrush"] is Brush accentBrush)
-        {
-            _grid.Resources[SystemColors.HighlightBrushKey]                   = accentBrush;
-            _grid.Resources[SystemColors.HighlightTextBrushKey]               = Brushes.White;
-            _grid.Resources[SystemColors.InactiveSelectionHighlightBrushKey]  = accentBrush;
-            _grid.Resources[SystemColors.InactiveSelectionHighlightTextBrushKey] = Brushes.White;
-        }
-
         _rows.Clear();
         foreach (var cmd in _registry.GetAll())
         {
@@ -256,6 +249,44 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
     // -----------------------------------------------------------------------
     // Template helpers
     // -----------------------------------------------------------------------
+
+    private static Style BuildCellStyle()
+    {
+        // Minimal template — Border uses TemplateBinding Background exclusively.
+        // No InactiveSelectionHighlight trigger: IsSelected=True fires for both
+        // focused and unfocused states, keeping the accent brush in both cases.
+        var border = new FrameworkElementFactory(typeof(Border));
+        border.SetBinding(Border.BackgroundProperty,
+            new Binding { RelativeSource = RelativeSource.TemplatedParent,
+                          Path = new PropertyPath(Control.BackgroundProperty) });
+        border.SetBinding(Border.BorderBrushProperty,
+            new Binding { RelativeSource = RelativeSource.TemplatedParent,
+                          Path = new PropertyPath(Control.BorderBrushProperty) });
+        border.SetBinding(Border.BorderThicknessProperty,
+            new Binding { RelativeSource = RelativeSource.TemplatedParent,
+                          Path = new PropertyPath(Control.BorderThicknessProperty) });
+        border.SetValue(UIElement.SnapsToDevicePixelsProperty, true);
+
+        var cp = new FrameworkElementFactory(typeof(ContentPresenter));
+        cp.SetBinding(UIElement.SnapsToDevicePixelsProperty,
+            new Binding { RelativeSource = RelativeSource.TemplatedParent,
+                          Path = new PropertyPath(UIElement.SnapsToDevicePixelsProperty) });
+        border.AppendChild(cp);
+
+        var template = new ControlTemplate(typeof(DataGridCell)) { VisualTree = border };
+
+        var style = new Style(typeof(DataGridCell));
+        style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0)));
+        style.Setters.Add(new Setter(Control.TemplateProperty, template));
+
+        var trigger = new Trigger { Property = DataGridCell.IsSelectedProperty, Value = true };
+        trigger.Setters.Add(new Setter(Control.BackgroundProperty,
+            new DynamicResourceExtension("DockAccentBrush")));
+        trigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+        style.Triggers.Add(trigger);
+
+        return style;
+    }
 
     private GroupStyle BuildGroupStyle()
     {

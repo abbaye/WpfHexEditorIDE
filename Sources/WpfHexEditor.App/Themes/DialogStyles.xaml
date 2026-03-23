@@ -385,8 +385,6 @@
         <Setter Property="Background"               Value="{DynamicResource KSP_DataGridBackground}" />
         <Setter Property="Foreground"               Value="{DynamicResource KSP_CellForeground}" />
         <Setter Property="BorderThickness"          Value="0" />
-        <Setter Property="RowBackground"            Value="{DynamicResource KSP_DataGridBackground}" />
-        <Setter Property="AlternatingRowBackground" Value="{DynamicResource KSP_DataGridBackground}" />
         <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DockBorderBrush}" />
         <Setter Property="VerticalGridLinesBrush"   Value="Transparent" />
         <Setter Property="GridLinesVisibility"      Value="Horizontal" />
@@ -401,35 +399,6 @@
                     <Setter Property="BorderThickness" Value="0,0,1,1" />
                     <Setter Property="Padding"         Value="6,4" />
                     <Setter Property="SeparatorBrush"  Value="{DynamicResource DockBorderBrush}" />
-                </Style>
-            </Setter.Value>
-        </Setter>
-        <!-- Explicit CellStyle so WPF DataGrid honours it (implicit DataGridCell
-             styles in the resource tree are NOT picked up by DataGrid cells).
-             Minimal Template uses TemplateBinding Background — eliminates the
-             InactiveSelectionHighlight white border on focus loss. -->
-        <Setter Property="CellStyle">
-            <Setter.Value>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="DataGridCell">
-                                <Border Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        SnapsToDevicePixels="True">
-                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource DockAccentBrush}"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </Style.Triggers>
                 </Style>
             </Setter.Value>
         </Setter>

@@ -133,16 +133,28 @@ public sealed class StartupProjectRunner
             return false;
         }
 
-        // Liveness check in background — catches immediate startup crashes without blocking Ctrl+F5.
+        // Monitor in background — catches crashes at any point during the first 15s of startup
+        // (covers plugin loading, theme init, etc.) without blocking Ctrl+F5.
         _ = Task.Run(async () =>
         {
-            await Task.Delay(1500).ConfigureAwait(false);
-            if (proc.HasExited)
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            try
+            {
+                await proc.WaitForExitAsync(cts.Token).ConfigureAwait(false);
+                // Process exited within 15s — unexpected for a normal app.
                 _eventBus.Publish(new BuildOutputLineEvent
                 {
-                    Line = $"-- Process exited immediately (code {proc.ExitCode}). Check startup errors. --"
+                    Line = $"-- Process exited unexpectedly (code {proc.ExitCode}). Check startup errors. --"
                 });
-            proc.Dispose();
+            }
+            catch (OperationCanceledException)
+            {
+                // Normal: process still running after 15s — all good.
+            }
+            finally
+            {
+                proc.Dispose();
+            }
         }, CancellationToken.None);
 
         return true;
