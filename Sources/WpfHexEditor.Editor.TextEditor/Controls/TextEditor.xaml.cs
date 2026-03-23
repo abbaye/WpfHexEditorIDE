@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.Models;
 using WpfHexEditor.Editor.TextEditor.Services;
@@ -28,7 +29,7 @@ namespace WpfHexEditor.Editor.TextEditor.Controls;
 /// <see cref="IEditorPersistable"/>, and <see cref="INavigableDocument"/> so the project system
 /// can save/restore per-file state and the Error List can navigate to a specific line.
 /// </summary>
-public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor, ISearchTarget
+public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor, ISearchTarget
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -41,6 +42,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     // -- Context menu dynamic headers ---
     private MenuItem? _undoMenuItem;
     private MenuItem? _redoMenuItem;
+
+    // -- IBufferAwareEditor --------------------------------------------------
+    private IDocumentBuffer? _buffer;
+    private bool             _suppressBufferSync;
 
     // -- ISearchTarget -------------------------------------------------------
     private readonly List<(int Line, int Col)> _searchMatches = new();
@@ -492,6 +497,50 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     /// the current selection if any. Participates in undo/redo.
     /// </summary>
     public void InsertText(string text) => _vm.InsertText(text);
+
+    // -----------------------------------------------------------------------
+    // IBufferAwareEditor
+    // -----------------------------------------------------------------------
+
+    /// <inheritdoc/>
+    public void AttachBuffer(IDocumentBuffer buffer)
+    {
+        if (_buffer is not null) DetachBuffer();
+        _buffer = buffer;
+
+        _suppressBufferSync = true;
+        try   { buffer.SetText(GetText(), source: this); }
+        finally { _suppressBufferSync = false; }
+
+        buffer.Changed      += OnBufferChanged;
+        _vm.PropertyChanged += OnVmTextChanged;
+    }
+
+    /// <inheritdoc/>
+    public void DetachBuffer()
+    {
+        if (_buffer is null) return;
+        _vm.PropertyChanged -= OnVmTextChanged;
+        _buffer.Changed     -= OnBufferChanged;
+        _buffer = null;
+    }
+
+    private void OnBufferChanged(object? sender, DocumentBufferChangedEventArgs e)
+    {
+        if (_suppressBufferSync || ReferenceEquals(e.Source, this)) return;
+        _suppressBufferSync = true;
+        try   { SetText(e.NewText); }
+        finally { _suppressBufferSync = false; }
+    }
+
+    private void OnVmTextChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(TextEditorViewModel.Lines)) return;
+        if (_buffer is null || _suppressBufferSync) return;
+        _suppressBufferSync = true;
+        try   { _buffer.SetText(GetText(), source: this); }
+        finally { _suppressBufferSync = false; }
+    }
 
     /// <summary>
     /// Returns the currently selected text, or an empty string when nothing is selected.

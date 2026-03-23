@@ -56,6 +56,7 @@ using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.Editor.XamlDesigner.ViewModels;
@@ -74,6 +75,7 @@ namespace WpfHexEditor.Editor.XamlDesigner.Controls;
 /// </summary>
 public sealed class XamlDesignerSplitHost : Grid,
     IDocumentEditor,
+    IBufferAwareEditor,
     IOpenableDocument,
     IEditorPersistable,
     IStatusBarContributor,
@@ -858,6 +860,14 @@ public sealed class XamlDesignerSplitHost : Grid,
         if (_autoPreviewEnabled)
             TriggerPreview();
     }
+
+    // ── IBufferAwareEditor (proxy to _codeHost) ──────────────────────────────
+
+    /// <inheritdoc/>
+    public void AttachBuffer(IDocumentBuffer buffer) => (_codeHost as IBufferAwareEditor)?.AttachBuffer(buffer);
+
+    /// <inheritdoc/>
+    public void DetachBuffer() => (_codeHost as IBufferAwareEditor)?.DetachBuffer();
 
     // ── IDocumentEditor (proxy to _codeHost) ─────────────────────────────────
 

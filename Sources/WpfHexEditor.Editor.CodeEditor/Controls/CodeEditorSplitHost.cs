@@ -33,6 +33,7 @@ using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.Views;
 using EditorStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
 using WpfHexEditor.ProjectSystem.Languages;
@@ -44,7 +45,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IDiagnosticSource
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IDiagnosticSource
 {
     #region Child controls
 
@@ -511,4 +512,14 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         add    => ((IDiagnosticSource)_primaryEditor).DiagnosticsChanged += value;
         remove => ((IDiagnosticSource)_primaryEditor).DiagnosticsChanged -= value;
     }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // IBufferAwareEditor — delegates to _primaryEditor (CodeEditor)
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// <inheritdoc/>
+    public void AttachBuffer(IDocumentBuffer buffer) => _primaryEditor.AttachBuffer(buffer);
+
+    /// <inheritdoc/>
+    public void DetachBuffer() => _primaryEditor.DetachBuffer();
 }

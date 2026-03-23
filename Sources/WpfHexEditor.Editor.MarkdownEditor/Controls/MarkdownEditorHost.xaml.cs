@@ -38,6 +38,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.MarkdownEditor.Core.Services;
 using TextEditorControl = WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
 
@@ -58,6 +59,7 @@ public enum MdSplitLayout { PreviewRight, PreviewLeft, PreviewBottom, PreviewTop
 /// </summary>
 public sealed partial class MarkdownEditorHost : UserControl,
     IDocumentEditor,
+    IBufferAwareEditor,
     IOpenableDocument,
     IEditorPersistable,
     INavigableDocument,
@@ -279,6 +281,16 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
     /// <summary>Raised by ModifiedChanged — re-exposed so the outline panel can subscribe.</summary>
     public event EventHandler? ContentChanged;
+
+    // --- IBufferAwareEditor -----------------------------------------------
+
+    /// <inheritdoc/>
+    public void AttachBuffer(IDocumentBuffer buffer)
+        => (_editor as IBufferAwareEditor)?.AttachBuffer(buffer);
+
+    /// <inheritdoc/>
+    public void DetachBuffer()
+        => (_editor as IBufferAwareEditor)?.DetachBuffer();
 
     // --- IOpenableDocument ------------------------------------------------
 

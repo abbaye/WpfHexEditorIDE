@@ -43,6 +43,8 @@ public sealed class LspClientImpl : ILspClient
     private LspCompletionProvider?    _completion;
     private LspHoverProvider?         _hover;
     private LspDefinitionProvider?    _definition;
+    private LspCodeActionProvider?    _codeAction;
+    private LspRenameProvider?        _rename;
 
     // ── ILspClient: lifecycle ──────────────────────────────────────────────────
 
@@ -70,10 +72,12 @@ public sealed class LspClientImpl : ILspClient
                        .ConfigureAwait(false);
 
         var channel = _process.Channel;
-        _sync       = new LspDocumentSync(channel);
-        _completion = new LspCompletionProvider(channel);
-        _hover      = new LspHoverProvider(channel);
-        _definition = new LspDefinitionProvider(channel);
+        _sync        = new LspDocumentSync(channel);
+        _completion  = new LspCompletionProvider(channel);
+        _hover       = new LspHoverProvider(channel);
+        _definition  = new LspDefinitionProvider(channel);
+        _codeAction  = new LspCodeActionProvider(channel);
+        _rename      = new LspRenameProvider(channel);
 
         // Subscribe to push diagnostics.
         channel.NotificationReceived += OnNotificationReceived;
@@ -147,6 +151,27 @@ public sealed class LspClientImpl : ILspClient
 
         // Return the label of the first active signature, or null.
         return result?["signatures"]?[0]?["label"]?.GetValue<string>();
+    }
+
+    // ── ILspClient: code actions ──────────────────────────────────────────────
+
+    public Task<IReadOnlyList<LspCodeAction>> CodeActionAsync(
+        string filePath, int startLine, int startColumn, int endLine, int endColumn,
+        CancellationToken ct = default)
+    {
+        if (_codeAction is null || !Capabilities.HasCodeActionProvider)
+            return Task.FromResult<IReadOnlyList<LspCodeAction>>(Array.Empty<LspCodeAction>());
+        return _codeAction.GetAsync(filePath, startLine, startColumn, endLine, endColumn, ct);
+    }
+
+    // ── ILspClient: rename ────────────────────────────────────────────────────
+
+    public Task<LspWorkspaceEdit?> RenameAsync(
+        string filePath, int line, int column, string newName, CancellationToken ct = default)
+    {
+        if (_rename is null || !Capabilities.HasRenameProvider)
+            return Task.FromResult<LspWorkspaceEdit?>(null);
+        return _rename.GetAsync(filePath, line, column, newName, ct);
     }
 
     // ── ILspClient: diagnostics push ──────────────────────────────────────────
