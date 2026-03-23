@@ -6422,7 +6422,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
                 else
                 {
-                    Cursor = Cursors.IBeam;
+                    Cursor = mousePixel.X < TextAreaLeftOffset ? Cursors.Arrow : Cursors.IBeam;
                     HideUrlTooltip();
                 }
 
@@ -6440,7 +6440,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     HandleCtrlHover(hoverPos);
                     if (!overLens && !urlZone.HasValue)
-                        Cursor = _hoveredSymbolZone.HasValue ? Cursors.Hand : Cursors.IBeam;
+                        Cursor = _hoveredSymbolZone.HasValue ? Cursors.Hand
+                        : mousePixel.X < TextAreaLeftOffset ? Cursors.Arrow
+                        : Cursors.IBeam;
                 }
             }
 

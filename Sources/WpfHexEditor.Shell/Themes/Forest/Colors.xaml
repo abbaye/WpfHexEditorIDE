@@ -269,7 +269,7 @@
     <SolidColorBrush x:Key="TE_Foreground"             Color="#D4D9C8"/>
     <Color           x:Key="TE_CaretColor"                   >#D4D9C8</Color>
     <SolidColorBrush x:Key="TE_LineNumberBackground"   Color="#181E14"/>
-    <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#374530"/>
+    <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#7AAE62"/>
     <SolidColorBrush x:Key="TE_CurrentLineBrush"       Color="#232C1E"/>
     <SolidColorBrush x:Key="TE_SelectionBackground"    Color="#2A3C24"/>
     <SolidColorBrush x:Key="TE_Keyword"                Color="#6A9F5B"/>
@@ -304,7 +304,7 @@
     <SolidColorBrush x:Key="CE_LineNumBg"     Color="#181E14"/>
     <SolidColorBrush x:Key="CE_NavBarBg"      Color="#181E14"/>
     <SolidColorBrush x:Key="CE_NavBarBorder"  Color="#3A5030"/>
-    <SolidColorBrush x:Key="CE_LineNumFg"     Color="#374530"/>
+    <SolidColorBrush x:Key="CE_LineNumFg"     Color="#7AAE62"/>
     <SolidColorBrush x:Key="CE_CurrentLine"   Color="#232C1E"/>
     <SolidColorBrush x:Key="CE_Selection"         Color="#2A3C24"/>
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#222E1C"/>

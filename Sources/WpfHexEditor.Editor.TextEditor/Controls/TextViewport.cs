@@ -1394,6 +1394,9 @@ internal sealed class TextViewport : FrameworkElement
             return;
         }
 
+        // Update cursor: Arrow over line-number gutter, IBeam over text area.
+        Cursor = e.GetPosition(this).X < LineNumberColumnWidth ? Cursors.Arrow : Cursors.IBeam;
+
         if (!_isDragging || e.LeftButton != MouseButtonState.Pressed) return;
 
         // 60 Hz gate: skip if last drag-render was < 16.7 ms ago (P1-TE-02)
