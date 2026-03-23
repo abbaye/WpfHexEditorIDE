@@ -881,11 +881,73 @@
                     </MenuItem>
                 </Menu>
 
-                <!-- Title (center, fills remaining space) -->
-                <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           FontSize="12" IsHitTestVisible="False" />
+                <!-- Title Bar Command Palette Launcher (VS Code-style centered button) -->
+                <Button x:Name="TitleBarSearchButton"
+                        Command="{x:Static local:MainWindow.ShowCommandPaletteCommand}"
+                        WindowChrome.IsHitTestVisibleInChrome="True"
+                        ToolTip="Command Palette (Ctrl+Shift+P)"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        Width="380"
+                        Cursor="Hand"
+                        Padding="8,0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background"       Value="{DynamicResource TB_SearchBackgroundBrush}"/>
+                            <Setter Property="BorderBrush"      Value="{DynamicResource TB_SearchBorderBrush}"/>
+                            <Setter Property="BorderThickness"  Value="1"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="4"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background"
+                                                        Value="{DynamicResource TB_SearchHoverBackgroundBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="Bd" Property="Background"
+                                                        Value="{DynamicResource TB_SearchActiveBackgroundBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Search icon -->
+                        <TextBlock Text="&#xE721;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TB_SearchHintBrush}"
+                                   Margin="0,0,6,0"/>
+                        <!-- Solution name or IDE name (updated from code-behind) -->
+                        <TextBlock x:Name="TitleBarSearchLabel"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Text="&lt;Wpf:HexEditor Studio /&gt;"
+                                   FontStyle="Italic"
+                                   Foreground="{DynamicResource TB_SearchHintBrush}"
+                                   Margin="0,0,8,0"/>
+                        <!-- Shortcut hint -->
+                        <TextBlock Text="Ctrl+Shift+P"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"
+                                   Opacity="0.55"
+                                   Foreground="{DynamicResource TB_SearchHintBrush}"/>
+                    </StackPanel>
+                </Button>
             </DockPanel>
         </Border>
 

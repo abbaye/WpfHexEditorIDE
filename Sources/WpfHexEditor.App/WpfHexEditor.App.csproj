@@ -114,6 +114,7 @@
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.XamlDesigner\WpfHexEditor.Plugins.XamlDesigner.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\WpfHexEditor.Commands\WpfHexEditor.Commands.csproj" />
   </ItemGroup>
 
 </Project>

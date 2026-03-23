@@ -559,4 +559,20 @@
     <SolidColorBrush x:Key="CP_TextBrush"            Color="#1E1E1E" />
     <SolidColorBrush x:Key="CP_SecondaryTextBrush"   Color="#717171" />
     <SolidColorBrush x:Key="CP_BorderBrush"          Color="#C5C5C5" />
+
+    <!-- ── Keyboard Shortcuts Page (KSP_*) ──────────────────────────────── -->
+    <SolidColorBrush x:Key="KSP_DataGridBackground"  Color="#1E1E1E" />
+    <SolidColorBrush x:Key="KSP_CellForeground"      Color="#D4D4D4" />
+    <SolidColorBrush x:Key="KSP_HintForeground"      Color="#808080" />
+    <SolidColorBrush x:Key="KSP_RowHoverBackground"  Color="#2A2D2E" />
+    <SolidColorBrush x:Key="KSP_EditBackground"      Color="#1E1E1E" />
+    <SolidColorBrush x:Key="KSP_EditBorder"          Color="#3F3F46" />
+
+    <!-- ── Title Bar Search Launcher (TB_Search*) ───────────────────────── -->
+    <SolidColorBrush x:Key="TB_SearchBackgroundBrush"       Color="#2D2D30" />
+    <SolidColorBrush x:Key="TB_SearchBorderBrush"           Color="#555555" />
+    <SolidColorBrush x:Key="TB_SearchTextBrush"             Color="#CCCCCC" />
+    <SolidColorBrush x:Key="TB_SearchHintBrush"             Color="#888888" />
+    <SolidColorBrush x:Key="TB_SearchHoverBackgroundBrush"  Color="#3E3E42" />
+    <SolidColorBrush x:Key="TB_SearchActiveBackgroundBrush" Color="#007ACC" />
 </ResourceDictionary>

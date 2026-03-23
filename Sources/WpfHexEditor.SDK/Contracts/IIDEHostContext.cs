@@ -7,6 +7,7 @@
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Events;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.SDK.Contracts;
@@ -114,6 +115,16 @@ public interface IIDEHostContext
     /// for a given extension point without knowing which plugins provided them.
     /// </summary>
     IExtensionRegistry ExtensionRegistry { get; }
+
+    // -- Command System -------------------------------------------------------
+
+    /// <summary>
+    /// Plugin-facing command registry. Register commands on plugin load;
+    /// unregister on unload. Registered commands appear in the Command Palette
+    /// and the Keyboard Shortcuts options page.
+    /// Returns null when the host does not support the command system (e.g. sandboxed plugins).
+    /// </summary>
+    ICommandRegistry? CommandRegistry => null;
 
     // -- LSP (Language Server Protocol) ---------------------------------------
 

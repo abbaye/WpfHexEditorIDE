@@ -65,6 +65,7 @@ using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.SDK.Descriptors;
+using WpfHexEditor.Commands;
 using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
 using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
@@ -424,6 +425,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public MainWindow()
     {
         InitializeComponent();
+        InitCommands();          // Command pipeline (CommandRegistry + KeyBindingService)
         Closing      += OnWindowClosing;
         Loaded       += OnLoaded;
         StateChanged += OnStateChanged;
@@ -513,6 +515,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Load user settings then apply persisted theme before layout loads
         AppSettingsService.Instance.Load();
+        LoadKeyBindingOverrides();   // populate gesture overrides from settings
         ApplyThemeFromSettings();
         InitAutoSerializeTimer();
 
@@ -525,6 +528,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Deferred theme sync: catches editors that the docking system creates lazily
         // (ContentFactory called on first render pass) or via async session restore.
         Dispatcher.InvokeAsync(SyncAllHexEditorThemes, System.Windows.Threading.DispatcherPriority.Background);
+
+        // Title bar launcher: initial state (no solution open yet)
+        UpdateTitleBarSearchLabel();
+
+        // Register Keyboard Shortcuts options page (needs runtime instances)
+        WpfHexEditor.Options.OptionsPageRegistry.RegisterDynamic(
+            "IDE", "Keyboard Shortcuts",
+            () => new WpfHexEditor.App.Options.KeyboardShortcutsPage(_commandRegistry, _keyBindingService),
+            "⌨");
 
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
@@ -713,6 +725,33 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // SolutionText.Text = _solutionManager.CurrentSolution is { } s
         //     ? $"Solution: {s.Name}"
         //     : "";
+
+        UpdateTitleBarSearchLabel();
+    }
+
+    /// <summary>
+    /// Updates the title bar launcher label to show the active solution name,
+    /// or the IDE name tag when no solution is open.
+    /// </summary>
+    private void UpdateTitleBarSearchLabel()
+    {
+        if (TitleBarSearchLabel is null) return;
+
+        var name = _solutionManager.CurrentSolution?.Name;
+        if (name is not null)
+        {
+            TitleBarSearchLabel.Text       = name;
+            TitleBarSearchLabel.FontWeight = FontWeights.SemiBold;
+            TitleBarSearchLabel.FontStyle  = FontStyles.Normal;
+            TitleBarSearchLabel.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TB_SearchTextBrush");
+        }
+        else
+        {
+            TitleBarSearchLabel.Text       = "<Wpf:HexEditor Studio />";
+            TitleBarSearchLabel.FontWeight = FontWeights.Normal;
+            TitleBarSearchLabel.FontStyle  = FontStyles.Italic;
+            TitleBarSearchLabel.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TB_SearchHintBrush");
+        }
     }
 
     private void OnFormatUpgradeRequired(object? sender, FormatUpgradeRequiredEventArgs e)

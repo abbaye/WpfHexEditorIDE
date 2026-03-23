@@ -532,4 +532,13 @@ public sealed class PluginDevSettings
 
     /// <summary>Show "Plugin Dev Mode" indicator in the main window status bar.</summary>
     public bool ShowStatusBarIndicator { get; set; } = true;
+
+    // -- IDE > Keyboard Shortcuts ----------------------------------------
+
+    /// <summary>
+    /// User-overridden keyboard gestures keyed by command ID (e.g. "File.Save" → "Ctrl+Alt+S").
+    /// When a command ID is absent, the built-in default gesture applies.
+    /// An empty-string value means the user explicitly unbound the gesture.
+    /// </summary>
+    public Dictionary<string, string> KeyBindingOverrides { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }
