@@ -5797,7 +5797,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
     private void OnDarkTheme(object sender, RoutedEventArgs e)             => ApplyTheme("DarkTheme.xaml",             "Dark");
-    private void OnLightTheme(object sender, RoutedEventArgs e)            => ApplyTheme("Generic.xaml",               "Light");
+    private void OnLightTheme(object sender, RoutedEventArgs e)            => ApplyTheme("LightTheme.xaml",            "Light");
     private void OnVS2022DarkTheme(object sender, RoutedEventArgs e)       => ApplyTheme("VS2022DarkTheme.xaml",       "VS2022 Dark");
     private void OnDarkGlassTheme(object sender, RoutedEventArgs e)        => ApplyTheme("DarkGlassTheme.xaml",        "Dark Glass");
     private void OnVisualStudioTheme(object sender, RoutedEventArgs e)     => ApplyTheme("VisualStudioTheme.xaml",     "Visual Studio");
