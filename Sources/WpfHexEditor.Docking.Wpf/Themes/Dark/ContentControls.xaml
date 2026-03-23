@@ -140,8 +140,9 @@
         </Style.Triggers>
     </Style>
 
-    <!-- ═══ Themed ScrollViewer — fixes white corner square between scrollbars ════ -->
-    <Style TargetType="{x:Type ScrollViewer}">
+    <!-- ═══ Themed ScrollViewer — fixes white corner square between scrollbars ════
+         Use x:Key to avoid global override that causes StackOverflow via control template recursion. -->
+    <Style x:Key="ThemedScrollViewerStyle" TargetType="{x:Type ScrollViewer}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
