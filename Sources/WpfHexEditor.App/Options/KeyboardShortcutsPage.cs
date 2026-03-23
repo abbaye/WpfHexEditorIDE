@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using WpfHexEditor.Commands;
 using WpfHexEditor.Options;
 
@@ -58,6 +59,14 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
     {
         _registry = registry;
         _bindings = bindings;
+
+        // Merge DialogStyles locally so KSP_* keys survive ApplyTheme() clearing App resources.
+        // DynamicResource references in those styles resolve upward to Application.Resources (theme brushes).
+        Resources.MergedDictionaries.Add(new ResourceDictionary
+        {
+            Source = new Uri(
+                "pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml")
+        });
 
         // Root layout
         var root = new Grid();
@@ -168,12 +177,29 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
 
     private void OnGridLoaded(object sender, RoutedEventArgs e)
     {
-        if (_grid.Template?.FindName("DG_ScrollViewer", _grid) is ScrollViewer sv)
-            _grid.PreviewMouseWheel += (_, we) =>
-            {
-                sv.ScrollToVerticalOffset(sv.VerticalOffset - we.Delta / 3.0);
-                we.Handled = true;
-            };
+        _grid.ApplyTemplate();
+
+        var sv = _grid.Template?.FindName("DG_ScrollViewer", _grid) as ScrollViewer
+                 ?? FindScrollViewer(_grid);
+
+        if (sv is null) return;
+
+        _grid.PreviewMouseWheel += (_, we) =>
+        {
+            sv.ScrollToVerticalOffset(sv.VerticalOffset - we.Delta / 3.0);
+            we.Handled = true;
+        };
+    }
+
+    private static ScrollViewer? FindScrollViewer(DependencyObject element)
+    {
+        if (element is ScrollViewer sv) return sv;
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+        {
+            var result = FindScrollViewer(VisualTreeHelper.GetChild(element, i));
+            if (result is not null) return result;
+        }
+        return null;
     }
 
     // -----------------------------------------------------------------------
