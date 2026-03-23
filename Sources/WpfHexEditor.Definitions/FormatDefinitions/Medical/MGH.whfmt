@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MGH/MGZ Medical Image
+   Category:  Medical
+   Ext:       .mgh, .mgz
+   Editor:    hex-editor
+   Desc:      MGH/MGZ FreeSurfer medical image format
+   Variables: currentOffset, width, height, slices, bitDepth, version, depth, totalPixels
+   Detection: signature=00000001 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MGH/MGZ Medical Image",
   "version": "1.12",
   "extensions": [

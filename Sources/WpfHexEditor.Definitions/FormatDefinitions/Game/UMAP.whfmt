@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Unreal Map
+   Category:  Game
+   Ext:       .umap
+   Editor:    hex-editor
+   Desc:      Unreal Engine map/level file
+   Variables: currentOffset, fileCount, version, indexOffset, packageTag, legacyVersion, engineVersion
+   Detection: signature=C1832A9E @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unreal Map",
   "version": "1.12",
   "extensions": [

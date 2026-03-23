@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Python Wheel Package
+   Category:  Programming
+   Ext:       .whl
+   Editor:    hex-editor
+   Desc:      Python Wheel - a ZIP-based built distribution format for Python packages, designed to replace eggs. The file begins with a ZIP Local File Header containing the first entry of the wheel package.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Python Wheel Package",
   "version": "2.0",
   "extensions": [

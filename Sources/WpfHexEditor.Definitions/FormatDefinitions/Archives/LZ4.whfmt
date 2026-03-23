@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    LZ4 Compressed
+   Category:  Archives
+   Ext:       .lz4
+   Editor:    hex-editor
+   Desc:      LZ4 compression format - Extremely fast
+   Variables: currentOffset, frameFlags, blockDescriptor, lz4Magic, flgByte, bdByte
+   Detection: signature=04224D18 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "LZ4 Compressed",
   "version": "1.10",
   "extensions": [

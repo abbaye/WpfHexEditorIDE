@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    dBASE III Database
+   Category:  Database
+   Ext:       .dbf
+   Editor:    hex-editor
+   Desc:      dBASE III database table format
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=03 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "dBASE III Database",
   "version": "1.10",
   "extensions": [

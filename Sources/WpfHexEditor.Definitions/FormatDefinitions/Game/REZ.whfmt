@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Game Resource Archive
+   Category:  Game
+   Ext:       .rez
+   Editor:    hex-editor
+   Desc:      LithTech/various game resource archive
+   Variables: currentOffset, fileCount, totalSize, compressionMethod, headerCRC, header, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Game Resource Archive",
   "version": "1.13",
   "extensions": [

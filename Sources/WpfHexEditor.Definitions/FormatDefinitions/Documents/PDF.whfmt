@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    PDF Document
+   Category:  Documents
+   Ext:       .pdf
+   Editor:    hex-editor
+   Desc:      Portable Document Format by Adobe - A page-description language for representing documents independently of software, hardware, and operating system. The file begins with a '%PDF-' header followed by a version number. The body contains a sequence of indirect objects, followed by a cross-reference table and trailer dictionary that enable random access to any object in the file.
+   Variables: currentOffset, pdfSignature, dashSeparator, versionMajor, versionDot, versionMinor, pdfVersion, lineEnding, binaryMarkerComment, binaryByte1, binaryByte2, binaryByte3, binaryByte4, pdfPageCount, pdfEncrypted, pdfLinearized, pdfProducer, pdfCreator, pdfTitle, xrefOffset, objectCount, fileSize, formattedSize, hasBinaryMarker
+   Detection: signature=25504446 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "PDF Document",
   "version": "2.0",

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Musepack Audio
+   Category:  Audio
+   Ext:       .mpc, .mp+, .mpp
+   Editor:    audio-viewer
+   Desc:      Musepack lossy audio compression format optimized for transparency
+   Variables: currentOffset, streamVersion, sampleRate, channels, samples, profile, musepackHeader, samplesPerSecond
+   Detection: signature=4D502B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Musepack Audio",
   "version": "1.12",
   "extensions": [

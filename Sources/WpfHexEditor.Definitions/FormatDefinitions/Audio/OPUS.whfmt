@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Opus Audio
+   Category:  Audio
+   Ext:       .opus
+   Editor:    audio-viewer
+   Desc:      Opus lossy audio codec designed for interactive speech and audio transmission
+   Variables: currentOffset, opusVersion, channels, preSkip, sampleRate, outputGain, channelMappingFamily, oggContainer, samplesPerSecond
+   Detection: signature=4F676753 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Opus Audio",
   "version": "2.3",
   "extensions": [

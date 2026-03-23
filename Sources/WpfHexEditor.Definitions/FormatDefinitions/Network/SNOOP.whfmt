@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Snoop Capture
+   Category:  Network
+   Ext:       .snoop, .cap
+   Editor:    hex-editor
+   Desc:      Solaris snoop packet capture format
+   Variables: currentOffset, packetCount, snaplen, linkType, version, snoopMagic, datalinkType
+   Detection: signature=736E6F6F70 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Snoop Capture",
   "version": "2.3",
   "extensions": [

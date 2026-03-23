@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Samsung SRW RAW
+   Category:  Images
+   Ext:       .srw
+   Editor:    image-viewer
+   Desc:      Samsung RAW format
+   Variables: machineType, sectionCount, entryPoint, tiffHeader, ifdOffset
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Samsung SRW RAW",
   "version": "1.12",
   "extensions": [

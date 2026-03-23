@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PlayStation 4 Package
+   Category:  Game
+   Ext:       .pkg
+   Editor:    hex-editor
+   Desc:      PlayStation 4 PKG package format (encrypted game/update packages)
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, cntMagic, packageType, packageFlags, fileOffset, fileCount, packageSize, contentId
+   Detection: signature=7F434E54 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "PlayStation 4 Package",
   "version": "2.4",
   "extensions": [

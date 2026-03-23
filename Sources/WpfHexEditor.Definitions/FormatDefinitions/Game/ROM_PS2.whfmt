@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PlayStation 2 Disc Image
+   Category:  Game
+   Ext:       .iso, .bin
+   Editor:    hex-editor
+   Desc:      PlayStation 2 DVD-ROM disc image (ISO 9660 + PS2 extensions)
+   Variables: currentOffset, width, height, totalPixels, bitsPerPixel, volumeId, iso9660Descriptor, systemIdentifier, volumeIdentifier
+   Detection: signature=50534449 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "PlayStation 2 Disc Image",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    EA BIG Archive
+   Category:  Game
+   Ext:       .big
+   Editor:    hex-editor
+   Desc:      Electronic Arts BIG archive format
+   Variables: currentOffset, fileCount, totalSize, compressionMethod, headerCRC, bigSignature, archiveSize, numberOfFiles, firstFileOffset, formattedSize
+   Detection: signature=42494746 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "EA BIG Archive",
   "version": "1.13",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MessagePack
+   Category:  Data
+   Ext:       .msgpack, .mp
+   Editor:    hex-editor
+   Desc:      MessagePack binary serialization format
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MessagePack",
   "version": "2.3",
   "extensions": [

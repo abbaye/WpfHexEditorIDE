@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Shortcut
+   Category:  System
+   Ext:       .lnk
+   Editor:    hex-editor
+   Desc:      Windows shell link (shortcut)
+   Variables: currentOffset, flags, attributes, targetSize, iconIndex, headerSize, linkClsid, linkFlags
+   Detection: signature=4C0000000114020000000000C0000000 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Shortcut",
   "version": "1.12",
   "extensions": [

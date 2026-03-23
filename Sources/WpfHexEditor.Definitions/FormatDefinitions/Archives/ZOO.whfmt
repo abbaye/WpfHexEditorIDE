@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ZOO Archive
+   Category:  Archives
+   Ext:       .zoo
+   Editor:    hex-editor
+   Desc:      ZOO compressed archive format
+   Variables: currentOffset, archiveStart, zooMagic
+   Detection: signature=5A4F4F20 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ZOO Archive",
   "version": "1.10",
   "extensions": [

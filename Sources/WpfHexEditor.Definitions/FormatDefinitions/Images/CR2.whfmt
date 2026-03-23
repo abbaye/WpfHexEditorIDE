@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Canon Raw Image
+   Category:  Images
+   Ext:       .cr2
+   Editor:    image-viewer
+   Desc:      Canon RAW v2 camera image
+   Variables: currentOffset, width, height, totalPixels, bitsPerPixel, tiffHeader
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Canon Raw Image",
   "version": "1.12",
   "extensions": [

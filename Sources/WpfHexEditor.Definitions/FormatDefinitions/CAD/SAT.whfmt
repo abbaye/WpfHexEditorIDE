@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ACIS SAT
+   Category:  CAD
+   Ext:       .sat
+   Editor:    hex-editor
+   Desc:      ACIS text format (Standard ACIS Text)
+   Variables: currentOffset, machineType, sectionCount, entryPoint, versionNumber, spaceDelimiter
+   Detection: signature=343030 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ACIS SAT",
   "version": "1.12",
   "extensions": [

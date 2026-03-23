@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Sony SR2 RAW
+   Category:  Images
+   Ext:       .sr2
+   Editor:    image-viewer
+   Desc:      Sony RAW format (DSLR cameras)
+   Variables: machineType, sectionCount, entryPoint, tiffHeader, ifdOffset
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Sony SR2 RAW",
   "version": "1.12",
   "extensions": [

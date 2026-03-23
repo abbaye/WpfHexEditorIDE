@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Half-Life WAD
+   Category:  Game
+   Ext:       .wad
+   Editor:    hex-editor
+   Desc:      Half-Life WAD3 texture archive
+   Variables: currentOffset, fileCount, version, indexOffset, wad3Signature, numberOfLumps, directoryOffset
+   Detection: signature=57414433 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Half-Life WAD",
   "version": "1.12",
   "extensions": [

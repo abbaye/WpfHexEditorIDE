@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Unity Prefab
+   Category:  Game
+   Ext:       .prefab
+   Editor:    hex-editor
+   Desc:      Unity prefab object file
+   Variables: currentOffset, fileCount, version, indexOffset, yamlHeader
+   Detection: signature=2559414D4C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unity Prefab",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    STEP 3D Model
+   Category:  CAD
+   Ext:       .step, .stp
+   Editor:    hex-editor
+   Desc:      ISO 10303 STEP CAD format
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, stepHeader, formattedSize
+   Detection: signature=49534F2D3130333033 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "STEP 3D Model",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Parasolid Text
+   Category:  CAD
+   Ext:       .x_t
+   Editor:    hex-editor
+   Desc:      Parasolid transmit text format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, headerMarker, schemaVersion
+   Detection: signature=2A2A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Parasolid Text",
   "version": "1.12",
   "extensions": [

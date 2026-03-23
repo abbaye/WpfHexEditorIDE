@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    IPS Patch
+   Category:  Game
+   Ext:       .ips
+   Editor:    hex-editor
+   Desc:      International Patching System (IPS) format - Classic ROM patching format
+   Variables: currentOffset, firstRecordSize, machineType, sectionCount, entryPoint, ipsHeader, firstRecordOffset, firstRecordData
+   Detection: signature=5041544348 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "IPS Patch",
   "version": "1.10",
   "extensions": [

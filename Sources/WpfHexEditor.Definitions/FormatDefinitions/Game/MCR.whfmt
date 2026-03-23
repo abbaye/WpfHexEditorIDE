@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Minecraft Region
+   Category:  Game
+   Ext:       .mcr
+   Editor:    hex-editor
+   Desc:      Minecraft legacy region format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, locationTable, timestampTable
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Minecraft Region",
   "version": "1.12",
   "extensions": [

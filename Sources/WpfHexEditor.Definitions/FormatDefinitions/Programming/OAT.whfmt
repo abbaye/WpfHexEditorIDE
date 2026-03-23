@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Android OAT
+   Category:  Programming
+   Ext:       .oat
+   Editor:    hex-editor
+   Desc:      Android OAT (Ahead-of-Time compiled) file format, contains native code compiled from DEX
+   Variables: zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, oatMagic
+   Detection: signature=6F61740A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Android OAT",
   "version": "1.11",
   "extensions": [

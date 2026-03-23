@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    dBASE IV Database
+   Category:  Database
+   Ext:       .dbf
+   Editor:    hex-editor
+   Desc:      dBASE IV database table format with memo support
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=04 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "dBASE IV Database",
   "version": "1.10",
   "extensions": [

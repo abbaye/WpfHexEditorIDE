@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PGP Message
+   Category:  Crypto
+   Ext:       .pgp, .asc
+   Editor:    hex-editor
+   Desc:      Pretty Good Privacy encrypted/signed message
+   Variables: currentOffset, machineType, sectionCount, entryPoint, pgpAsciiArmor
+   Detection: signature=2D2D2D2D2D424547494E20504750 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PGP Message",
   "version": "1.11",
   "extensions": [

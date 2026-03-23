@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Ruby Source File
+   Category:  Programming
+   Ext:       .rb, .rbw, .rake, .gemspec
+   Editor:    code-editor
+   Desc:      Ruby programming language source files and Rake build scripts.
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Ruby Source File",
   "version": "2.0",

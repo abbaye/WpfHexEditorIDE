@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    X BitMap
+   Category:  Images
+   Ext:       .xbm
+   Editor:    image-viewer
+   Desc:      X Window System Bitmap (ASCII C source)
+   Variables: imageWidth, imageHeight, totalPixels, bitsPerPixel, xbmHeader
+   Detection: signature=23646566696E65 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "X BitMap",
   "version": "1.13",
   "extensions": [

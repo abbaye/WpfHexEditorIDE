@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    LZH Archive
+   Category:  Archives
+   Ext:       .lzh, .lha
+   Editor:    hex-editor
+   Desc:      LHA/LZH compressed archive
+   Variables: currentOffset, headerSize, headerChecksum, methodID, methodId
+   Detection: signature=2D6C68 @ offset 2
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "LZH Archive",
   "version": "1.11",
   "extensions": [

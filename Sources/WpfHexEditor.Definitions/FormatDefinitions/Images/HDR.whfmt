@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Radiance HDR Image
+   Category:  Images
+   Ext:       .hdr, .pic
+   Editor:    image-viewer
+   Desc:      Radiance RGBE High Dynamic Range image
+   Variables: width, height, totalPixels, bitsPerPixel, hdrMagic, headerInfo
+   Detection: signature=233F52414449414E4345 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Radiance HDR Image",
   "version": "1.12",
   "extensions": [

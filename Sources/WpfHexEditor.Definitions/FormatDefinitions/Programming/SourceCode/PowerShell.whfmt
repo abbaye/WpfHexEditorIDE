@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    PowerShell Script
+   Category:  Programming
+   Ext:       .ps1, .psm1, .psd1
+   Editor:    code-editor
+   Desc:      PowerShell script and module files (Windows/cross-platform scripting).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "PowerShell Script",
   "version": "2.0",

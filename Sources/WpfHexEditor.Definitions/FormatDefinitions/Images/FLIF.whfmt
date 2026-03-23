@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Free Lossless Image Format
+   Category:  Images
+   Ext:       .flif
+   Editor:    image-viewer
+   Desc:      FLIF - Free Lossless Image Format
+   Variables: dimensions, dataType, arrayCount, flifMagic, headerByte
+   Detection: signature=464C4946 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Free Lossless Image Format",
   "version": "1.12",
   "extensions": [

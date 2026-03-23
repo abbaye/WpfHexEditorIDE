@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Microsoft Access Project
+   Category:  Database
+   Ext:       .adp
+   Editor:    hex-editor
+   Desc:      Microsoft Access project file for SQL Server
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Microsoft Access Project",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Blood RFF
+   Category:  Game
+   Ext:       .rff
+   Editor:    hex-editor
+   Desc:      Blood game RFF resource archive
+   Variables: currentOffset, resourceCount, directoryOffset, version, rffSignature
+   Detection: signature=52464618 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Blood RFF",
   "version": "1.12",
   "extensions": [

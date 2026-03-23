@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PlayStation Vita Package
+   Category:  Game
+   Ext:       .vpk, .pkg
+   Editor:    hex-editor
+   Desc:      PlayStation Vita VPK/PKG package format
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, pkgMagic, packageType, pkgInfoOffset, contentSize, titleId
+   Detection: signature=7F504B47 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "PlayStation Vita Package",
   "version": "2.4",
   "extensions": [

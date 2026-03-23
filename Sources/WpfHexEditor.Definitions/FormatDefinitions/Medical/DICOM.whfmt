@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DICOM Medical Image
+   Category:  Medical
+   Ext:       .dcm, .dicom
+   Editor:    hex-editor
+   Desc:      Digital Imaging and Communications in Medicine
+   Variables: currentOffset, imageWidth, imageHeight, totalPixels, bitsPerPixel, preamble, dicmMagic
+   Detection: signature=4449434D @ offset 128
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DICOM Medical Image",
   "version": "1.13",
   "extensions": [

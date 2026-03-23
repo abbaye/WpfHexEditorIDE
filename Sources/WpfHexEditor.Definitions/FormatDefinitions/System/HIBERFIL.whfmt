@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Hibernation File
+   Category:  System
+   Ext:       .sys
+   Editor:    hex-editor
+   Desc:      Windows hibernation file (hiberfil.sys) - Suspended system state
+   Variables: currentOffset, machineType, sectionCount, entryPoint, hibernationSignature, version, compression, systemTime, pageCount, pageSize, featureFlags
+   Detection: signature=68696265 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Hibernation File",
   "version": "1.12",
   "extensions": [

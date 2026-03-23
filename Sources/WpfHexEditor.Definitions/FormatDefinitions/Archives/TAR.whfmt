@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    TAR Archive
+   Category:  Archives
+   Ext:       .tar
+   Editor:    hex-editor
+   Desc:      POSIX TAR (Tape Archive) format stores files sequentially in 512-byte blocks without compression. Each file entry consists of a 512-byte header followed by the file data padded to 512-byte boundaries. The USTAR (Unix Standard TAR) extension adds a magic string at offset 257, owner/group names, and device number fields. TAR is commonly combined with GZIP (.tar.gz) or BZIP2 (.tar.bz2) for compression.
+   Variables: currentOffset, fileName, fileMode, ownerUID, groupGID, fileSize, lastModTime, headerChecksum, typeFlag, linkName, ustarMagic, ustarVersion, ownerUserName, ownerGroupName, devMajor, devMinor, filenamePrefix, isUstarFormat, typeFlagName, formattedSize, headerBlockSize
+   Detection: signature=7573746172 @ offset 257
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "TAR Archive",
   "version": "2.0",
   "extensions": [

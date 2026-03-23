@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PCAP Network Capture
+   Category:  Network
+   Ext:       .pcap, .cap
+   Editor:    hex-editor
+   Desc:      Packet Capture file - Network traffic recording
+   Variables: currentOffset, packetCount, snaplen, linkType, version, pcapMagicLittleEndian, versionMajor, versionMinor, timeZoneOffset, timestampAccuracy, snapshotLength, linkLayerType
+   Detection: signature=D4C3B2A1 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PCAP Network Capture",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Adaptive Multi-Rate
+   Category:  Audio
+   Ext:       .amr
+   Editor:    audio-viewer
+   Desc:      AMR audio codec optimized for speech coding, used in GSM and 3G mobile networks
+   Variables: currentOffset, frameType, mode, bitrate, channels, sampleRate, amrHeader, samplesPerSecond
+   Detection: signature=2321414D520A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Adaptive Multi-Rate",
   "version": "1.12",
   "extensions": [

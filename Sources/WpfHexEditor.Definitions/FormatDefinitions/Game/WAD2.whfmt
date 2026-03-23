@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Quake II WAD
+   Category:  Game
+   Ext:       .wad
+   Editor:    hex-editor
+   Desc:      Quake II WAD texture archive
+   Variables: currentOffset, fileCount, version, indexOffset, wad2Signature, numberOfLumps, directoryOffset
+   Detection: signature=57414432 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Quake II WAD",
   "version": "1.12",
   "extensions": [

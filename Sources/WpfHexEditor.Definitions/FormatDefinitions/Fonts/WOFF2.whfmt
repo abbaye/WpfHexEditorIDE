@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Web Open Font Format 2
+   Category:  Fonts
+   Ext:       .woff2
+   Editor:    hex-editor
+   Desc:      WOFF2 - Improved web font format
+   Variables: currentOffset, numGlyphs, unitsPerEm, fontName, tableCount, woff2Signature, flavor, length
+   Detection: signature=774F4632 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Web Open Font Format 2",
   "version": "1.11",
   "extensions": [

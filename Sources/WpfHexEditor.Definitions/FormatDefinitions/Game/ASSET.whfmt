@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Unity Asset
+   Category:  Game
+   Ext:       .asset
+   Editor:    hex-editor
+   Desc:      Unity asset/scene file
+   Variables: currentOffset, fileCount, version, indexOffset, yamlHeader
+   Detection: signature=2559414D4C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unity Asset",
   "version": "1.12",
   "extensions": [

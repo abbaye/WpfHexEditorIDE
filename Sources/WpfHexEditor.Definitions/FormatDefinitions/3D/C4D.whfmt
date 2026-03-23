@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Cinema 4D
+   Category:  3D
+   Ext:       .c4d
+   Editor:    hex-editor
+   Desc:      Maxon Cinema 4D scene file
+   Variables: currentOffset, machineType, sectionCount, entryPoint, c4dSignature, version
+   Detection: signature=433444 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Cinema 4D",
   "version": "1.12",
   "extensions": [

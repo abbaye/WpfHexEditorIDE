@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    GAMESS Output
+   Category:  Science
+   Ext:       .log, .out
+   Editor:    hex-editor
+   Desc:      GAMESS quantum chemistry program output
+   Variables: currentOffset, fileCount, version, indexOffset, headerBanner
+   Detection: signature=2A2A2A2A2A2A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "GAMESS Output",
   "version": "1.11",
   "extensions": [

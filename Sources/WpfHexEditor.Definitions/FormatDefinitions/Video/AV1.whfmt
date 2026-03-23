@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AV1 Video
+   Category:  Video
+   Ext:       .av1, .ivf
+   Editor:    hex-editor
+   Desc:      AOMedia Video 1 (AV1) open, royalty-free video coding format
+   Variables: width, height, frameRate, duration, ivfHeader, totalPixels
+   Detection: signature=444B4946 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AV1 Video",
   "version": "1.13",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Cloud Point File
+   Category:  CAD
+   Ext:       .cxf
+   Editor:    hex-editor
+   Desc:      3D point cloud exchange format
+   Variables: currentOffset, fileSize, version, format, pointCloudHeader, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Cloud Point File",
   "version": "2.4",
   "extensions": [

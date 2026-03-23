@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Nikon Raw Image
+   Category:  Images
+   Ext:       .nef
+   Editor:    image-viewer
+   Desc:      Nikon Electronic Format RAW
+   Variables: currentOffset, width, height, totalPixels, bitsPerPixel, tiffHeader
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Nikon Raw Image",
   "version": "1.12",
   "extensions": [

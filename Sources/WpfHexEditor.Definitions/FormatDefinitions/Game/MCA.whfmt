@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Minecraft Anvil Region
+   Category:  Game
+   Ext:       .mca
+   Editor:    hex-editor
+   Desc:      Minecraft Anvil world region format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, locationTable, timestampTable
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Minecraft Anvil Region",
   "version": "1.12",
   "extensions": [

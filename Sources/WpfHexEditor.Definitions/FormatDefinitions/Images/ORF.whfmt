@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Olympus Raw Image
+   Category:  Images
+   Ext:       .orf
+   Editor:    image-viewer
+   Desc:      Olympus RAW Format camera image
+   Variables: currentOffset, width, height, totalPixels, bitsPerPixel, tiffHeader
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Olympus Raw Image",
   "version": "1.12",
   "extensions": [

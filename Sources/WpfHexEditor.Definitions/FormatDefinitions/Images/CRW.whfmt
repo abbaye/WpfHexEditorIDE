@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Canon RAW (CRW)
+   Category:  Images
+   Ext:       .crw
+   Editor:    image-viewer
+   Desc:      Canon RAW format (older cameras)
+   Variables: machineType, sectionCount, entryPoint, crwHeader
+   Detection: signature=49491A000000484541 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Canon RAW (CRW)",
   "version": "1.11",
   "extensions": [

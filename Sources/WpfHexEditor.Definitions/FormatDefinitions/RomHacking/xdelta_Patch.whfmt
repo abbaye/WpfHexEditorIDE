@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    xdelta / VCDIFF Patch
+   Category:  RomHacking
+   Ext:       .xdelta, .xdiff, .vcdiff
+   Editor:    hex-editor
+   Desc:      VCDIFF delta encoding (RFC 3284) used by xdelta3. Encodes differences as ADD, COPY and RUN instructions across one or more windows. Supports source and target COPY with NEAR/SAME address cache. No file size limit, optional secondary compression.
+   Detection: signature=D6C3C4 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "xdelta / VCDIFF Patch",
   "version": "1.0",
   "extensions": [

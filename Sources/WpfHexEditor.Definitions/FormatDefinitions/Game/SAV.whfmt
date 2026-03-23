@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Game Save File
+   Category:  Game
+   Ext:       .sav
+   Editor:    hex-editor
+   Desc:      Generic game save file
+   Variables: currentOffset, fileCount, version, indexOffset, saveData
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Game Save File",
   "version": "2.3",
   "extensions": [

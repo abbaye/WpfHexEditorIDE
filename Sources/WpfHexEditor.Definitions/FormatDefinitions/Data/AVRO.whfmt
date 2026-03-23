@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Apache Avro
+   Category:  Data
+   Ext:       .avro
+   Editor:    hex-editor
+   Desc:      Apache Avro binary data format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, avroMagic
+   Detection: signature=4F626A01 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Apache Avro",
   "version": "1.11",
   "extensions": [

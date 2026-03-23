@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    True Audio
+   Category:  Audio
+   Ext:       .tta
+   Editor:    audio-viewer
+   Desc:      True Audio lossless audio compression format
+   Variables: currentOffset, formatVersion, channels, bitDepth, sampleRate, dataLength, crc32, ttaHeader, byteRate, samplesPerSecond
+   Detection: signature=54544131 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "True Audio",
   "version": "2.3",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    TrueType Font
+   Category:  Fonts
+   Ext:       .ttf
+   Editor:    hex-editor
+   Desc:      TrueType Font format - a scalable outline font standard originally developed by Apple and later adopted by Microsoft. The file begins with an Offset Table header containing a scaler type identifier, the number of font tables, and binary search optimization values. Following the header is a Table Directory with 16-byte entries for each table (tag, checksum, offset, length). Common tables include 'cmap' (character mapping), 'glyf' (glyph outlines), 'head' (font header), 'hhea' (horizontal metrics header), 'hmtx' (horizontal metrics), 'loca' (glyph locations), 'maxp' (maximum profile), 'name' (naming), and 'post' (PostScript).
+   Variables: currentOffset, scalerType, numberOfTables, searchRange, entrySelector, rangeShift, table1Tag, table1Checksum, table1Offset, table1Length, table2Tag, table2Checksum, table2Offset, table2Length, table3Tag, table3Checksum, table3Offset, table3Length, numGlyphs, unitsPerEm, fontName, tableCount, totalTableSize, formattedTotalSize
+   Detection: signature=00010000 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "TrueType Font",
   "version": "2.0",
   "extensions": [

@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    JPEG Image
+   Category:  Images
+   Ext:       .jpg, .jpeg, .jpe, .jfif
+   Editor:    image-viewer
+   Desc:      JPEG (Joint Photographic Experts Group) image using JFIF (JPEG File Interchange Format) container. The file begins with an SOI marker (0xFFD8) followed by APP0/JFIF segment containing version, density, and thumbnail information. Image dimensions and encoding parameters are found in the SOF (Start of Frame) marker located later in the stream.
+   Variables: currentOffset, jpegSoiMarker, app0Marker, app0Length, jfifIdentifier, jfifMajorVersion, jfifMinorVersion, densityUnits, xDensity, yDensity, thumbnailWidth, thumbnailHeight, thumbnailPixels, hasThumbnail, jpegWidth, jpegHeight, jpegComponents, jpegPrecision, jpegProgressive, sofOffset, totalPixels, densityUnitName, jfifVersionString, formattedSize
+   Detection: signature=FFD8FF @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "JPEG Image",
   "version": "2.0",

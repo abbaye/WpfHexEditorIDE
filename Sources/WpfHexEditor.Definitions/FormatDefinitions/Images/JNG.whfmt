@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    JPEG Network Graphics
+   Category:  Images
+   Ext:       .jng
+   Editor:    image-viewer
+   Desc:      JNG format (JPEG with alpha channel)
+   Variables: packetCount, snaplen, linkType, version, jngSignature, jhdrChunkLength
+   Detection: signature=8B4A4E470D0A1A0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "JPEG Network Graphics",
   "version": "1.12",
   "extensions": [

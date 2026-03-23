@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Batch Script
+   Category:  Programming
+   Ext:       .bat, .cmd
+   Editor:    code-editor
+   Desc:      Windows batch script files for command-line automation.
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Batch Script",
   "version": "2.0",

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Blu-ray MPEG-2 Transport Stream
+   Category:  Video
+   Ext:       .m2ts
+   Editor:    hex-editor
+   Desc:      Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container
+   Variables: currentOffset, syncByte, timestampPrefix, packetPID, width, height, videoCodec, totalPixels
+   Detection: signature=47 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Blu-ray MPEG-2 Transport Stream",
   "version": "1.11",
   "extensions": [

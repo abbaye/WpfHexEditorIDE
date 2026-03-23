@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Microsoft Access Form
+   Category:  Database
+   Ext:       .maf
+   Editor:    hex-editor
+   Desc:      Microsoft Access form module file
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Microsoft Access Form",
   "version": "1.11",
   "extensions": [

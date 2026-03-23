@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Cabinet Archive
+   Category:  Archives
+   Ext:       .cab
+   Editor:    hex-editor
+   Desc:      Microsoft Cabinet archive format
+   Variables: currentOffset, cabinetSize, filesOffset, cabSignature
+   Detection: signature=4D534346 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Cabinet Archive",
   "version": "1.10",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Portable Arbitrary Map
+   Category:  Images
+   Ext:       .pam
+   Editor:    image-viewer
+   Desc:      Netpbm Portable Arbitrary Map (any format)
+   Variables: fileCount, totalSize, compressionMethod, headerCRC, pamMagic, header, formattedSize
+   Detection: signature=5037 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Portable Arbitrary Map",
   "version": "1.13",
   "extensions": [

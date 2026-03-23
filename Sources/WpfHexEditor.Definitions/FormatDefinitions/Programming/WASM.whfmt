@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    WebAssembly Binary
+   Category:  Programming
+   Ext:       .wasm
+   Editor:    hex-editor
+   Desc:      WebAssembly binary format
+   Variables: currentOffset, version, sections, functions, imports, exports, memory, tables, wasmMagic
+   Detection: signature=0061736D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "WebAssembly Binary",
   "version": "1.11",
   "extensions": [

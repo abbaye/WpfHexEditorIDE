@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Atari 2600 ROM
+   Category:  Game
+   Ext:       .a26, .bin
+   Editor:    hex-editor
+   Desc:      Atari 2600 ROM cartridge format (raw binary, no header)
+   Variables: currentOffset, fileCount, totalSize, format, romData, resetVector, irqVector, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Atari 2600 ROM",
   "version": "1.13",
   "extensions": [

@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Dart Source File
+   Category:  Programming
+   Ext:       .dart
+   Editor:    code-editor
+   Desc:      Dart programming language source file (Flutter, web, server).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Dart Source File",
   "version": "2.0",

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    XML Paper Specification
+   Category:  Documents
+   Ext:       .xps, .oxps
+   Editor:    hex-editor
+   Desc:      Microsoft XPS (XML Paper Specification) document format, a ZIP-based fixed-layout document format. The file begins with a ZIP Local File Header containing the first entry of the OOXML package.
+   Variables: currentOffset, fileCount, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "XML Paper Specification",
   "version": "2.0",
   "extensions": [

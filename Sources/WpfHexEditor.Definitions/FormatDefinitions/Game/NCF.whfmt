@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    No Cache File
+   Category:  Game
+   Ext:       .ncf
+   Editor:    hex-editor
+   Desc:      Steam No Cache File format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, ncfHeader, version
+   Detection: signature=0100000001000000 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "No Cache File",
   "version": "1.12",
   "extensions": [

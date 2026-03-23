@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Doom WAD Resource
+   Category:  Game
+   Ext:       .wad
+   Editor:    hex-editor
+   Desc:      Doom/Doom II WAD resource file
+   Variables: currentOffset, fileCount, version, indexOffset, wadType, numberOfLumps, directoryOffset
+   Detection: signature=49574144 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Doom WAD Resource",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    BZIP2 Compressed File
+   Category:  Archives
+   Ext:       .bz2, .bzip2
+   Editor:    hex-editor
+   Desc:      BZIP2 compression format
+   Variables: currentOffset, blockSize, dataCRC, bzip2Signature
+   Detection: signature=425A68 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "BZIP2 Compressed File",
   "version": "1.10",
   "extensions": [

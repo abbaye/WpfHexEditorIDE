@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    WebM Video
+   Category:  Video
+   Ext:       .webm
+   Editor:    hex-editor
+   Desc:      WebM video format - Based on Matroska, optimized for web
+   Variables: currentOffset, ebmlVersion, docType, width, height, duration, videoCodec, audioCodec, ebmlHeader, headerSize, mkvDocType, mkvDocTypeVersion, mkvEBMLVersion, totalPixels
+   Detection: signature=1A45DFA3 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "WebM Video",
   "version": "1.13",
   "extensions": [

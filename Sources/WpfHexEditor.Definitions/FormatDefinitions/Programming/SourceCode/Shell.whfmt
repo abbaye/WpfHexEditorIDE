@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Shell Script
+   Category:  Programming
+   Ext:       .sh, .bash, .zsh, .fish
+   Editor:    code-editor
+   Desc:      Unix/Linux shell script files (Bash, Zsh, Fish).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Shell Script",
   "version": "2.0",

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    GIF Image
+   Category:  Images
+   Ext:       .gif
+   Editor:    image-viewer
+   Desc:      Graphics Interchange Format (GIF) is an indexed-color raster image format supporting up to 256 colors per frame, lossless LZW compression, animation, and simple transparency. The file begins with a 6-byte header (signature + version), followed by a 7-byte Logical Screen Descriptor containing canvas dimensions, a packed byte with Global Color Table parameters, background color index, and pixel aspect ratio.
+   Variables: currentOffset, gifSignature, gifVersion, logicalScreenWidth, logicalScreenHeight, packedFields, backgroundColorIndex, pixelAspectRatio, globalColorTableFlag, colorResolution, sortFlag, sizeOfGCT, globalColorTableEntries, globalColorTableBytes, hasGlobalColorTable, totalPixels, actualAspectRatio, gifWidth, gifHeight, gifColorTableSize, formattedSize
+   Detection: signature=474946 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "GIF Image",
   "version": "2.0",
   "extensions": [

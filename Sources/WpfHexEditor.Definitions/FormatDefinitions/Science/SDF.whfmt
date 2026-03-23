@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Structure Data File
+   Category:  Science
+   Ext:       .sdf, .sd
+   Editor:    hex-editor
+   Desc:      Structure Data File format (multiple MOL files)
+   Variables: currentOffset, dimensions, dataType, arrayCount, firstMolecule
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Structure Data File",
   "version": "1.12",
   "extensions": [

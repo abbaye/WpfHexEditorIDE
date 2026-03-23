@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Syslog Binary Format
+   Category:  System
+   Ext:       .syslog, .log
+   Editor:    hex-editor
+   Desc:      Unix syslog binary format - System logging
+   Variables: currentOffset, machineType, sectionCount, timestamp, entryPoint, priority, hostnameLength, hostname, appNameLength, appName, processId, messageLength
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Syslog Binary Format",
   "version": "1.12",
   "extensions": [

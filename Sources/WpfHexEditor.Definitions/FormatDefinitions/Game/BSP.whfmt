@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Quake BSP Map
+   Category:  Game
+   Ext:       .bsp
+   Editor:    hex-editor
+   Desc:      Binary Space Partition game map
+   Variables: currentOffset, fileCount, version, indexOffset
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Quake BSP Map",
   "version": "1.12",
   "extensions": [

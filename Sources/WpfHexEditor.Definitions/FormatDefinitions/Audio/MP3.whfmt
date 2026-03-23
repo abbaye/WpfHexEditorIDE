@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MP3 Audio
+   Category:  Audio
+   Ext:       .mp3
+   Editor:    audio-viewer
+   Desc:      MPEG-1/2 Audio Layer III - A lossy audio compression format. Most MP3 files begin with an ID3v2 tag containing metadata, followed by a sequence of MPEG audio frames. Each frame has a 4-byte header encoding the MPEG version, layer, bitrate, sample rate, channel mode, and other parameters.
+   Variables: currentOffset, id3Signature, id3MajorVersion, id3MinorVersion, id3Flags, id3Size, frameSync, mpegVersionBits, layerBits, protectionBit, bitrateBits, sampleRateBits, paddingBit, privateBit, channelModeBits, modeExtBits, copyrightBit, originalBit, emphasisBits, mp3Version, mp3Layer, bitrate, sampleRate, channelMode, frameOffset, mp3Duration, formattedDuration, formattedSize, frameHeaderWord
+   Detection: signature=494433 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MP3 Audio",
   "version": "2.0",
   "extensions": [

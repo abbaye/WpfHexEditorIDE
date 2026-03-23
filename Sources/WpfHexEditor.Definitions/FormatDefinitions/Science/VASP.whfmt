@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    VASP POSCAR
+   Category:  Science
+   Ext:       .vasp, .poscar, .contcar
+   Editor:    hex-editor
+   Desc:      Vienna Ab-initio Simulation Package structure file
+   Variables: currentOffset, machineType, sectionCount, entryPoint, comment
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "VASP POSCAR",
   "version": "1.12",
   "extensions": [

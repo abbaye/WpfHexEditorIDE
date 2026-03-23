@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Microsoft Network Monitor
+   Category:  Network
+   Ext:       .cap
+   Editor:    hex-editor
+   Desc:      Microsoft Network Monitor capture format
+   Variables: currentOffset, packetCount, snaplen, linkType, version, netmonSignature, versionMinor, versionMajor, networkType, timeDelta, frameTableOffset, frameTableLength
+   Detection: signature=474D4255 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Microsoft Network Monitor",
   "version": "1.12",
   "extensions": [

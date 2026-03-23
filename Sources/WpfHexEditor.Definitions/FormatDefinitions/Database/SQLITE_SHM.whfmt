@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    SQLite Shared Memory
+   Category:  Database
+   Ext:       .shm, -shm
+   Editor:    hex-editor
+   Desc:      SQLite shared-memory file for WAL mode coordination
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "SQLite Shared Memory",
   "version": "1.11",
   "extensions": [

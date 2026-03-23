@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AIX iptrace
+   Category:  Network
+   Ext:       .iptrace
+   Editor:    hex-editor
+   Desc:      AIX iptrace network capture format
+   Variables: currentOffset, fileCount, totalSize, compressionMethod, headerCRC, iptraceSignature, version, endianFlag, packetLength, packetType, interfaceType, formattedSize
+   Detection: signature=69707472616365 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AIX iptrace",
   "version": "1.13",
   "extensions": [

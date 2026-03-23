@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Nintendo Switch Package
+   Category:  Game
+   Ext:       .nsp, .xci, .nca
+   Editor:    hex-editor
+   Desc:      Nintendo Switch package formats (NSP/XCI/NCA)
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, pfsMagic, fileCount, stringTableSize, fileEntryTable
+   Detection: signature=504653 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Nintendo Switch Package",
   "version": "1.13",
   "extensions": [

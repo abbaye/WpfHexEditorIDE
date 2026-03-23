@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    M4A Audio
+   Category:  Audio
+   Ext:       .m4a, .m4b, .m4p
+   Editor:    audio-viewer
+   Desc:      MPEG-4 Audio - AAC audio container
+   Variables: currentOffset, majorBrand, minorVersion, sampleRate, channels, bitDepth, duration, boxSize, boxType, byteRate, samplesPerSecond
+   Detection: signature=667479704D344120 @ offset 4
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "M4A Audio",
   "version": "1.12",
   "extensions": [

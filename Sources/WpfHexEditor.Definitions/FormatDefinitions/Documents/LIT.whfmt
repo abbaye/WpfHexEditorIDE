@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Microsoft Reader
+   Category:  Documents
+   Ext:       .lit
+   Editor:    hex-editor
+   Desc:      Microsoft Reader e-book format with DRM support, based on Microsoft's LIT (Literature) format
+   Variables: currentOffset, version, headerLength, title, author, preferredEditor, hasDRM, encoding, itsfSignature
+   Detection: signature=4954534603000000 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Microsoft Reader",
   "version": "1.10",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    NetCDF Data File
+   Category:  Science
+   Ext:       .nc, .netcdf
+   Editor:    hex-editor
+   Desc:      Network Common Data Form - Scientific data
+   Variables: currentOffset, dimensions, dataType, arrayCount, netcdfMagic
+   Detection: signature=43444601 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "NetCDF Data File",
   "version": "1.12",
   "extensions": [

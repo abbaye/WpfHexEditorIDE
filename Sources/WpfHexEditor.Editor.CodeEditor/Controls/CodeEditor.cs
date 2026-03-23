@@ -725,7 +725,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 editor._inlineHintsService.Detach();
 
             // Rebuild folding strategy from language-specific FoldingRules.
-            var foldingStrategy = Folding.LanguageFoldingStrategyBuilder.Build(newLang?.FoldingRules);
+            var foldingStrategy = Folding.LanguageFoldingStrategyBuilder.Build(newLang?.FoldingRules, newLang?.LineCommentPrefix);
             if (foldingStrategy is not null && editor._foldingEngine is not null)
             {
                 editor._foldingEngine.ReplaceStrategy(foldingStrategy);

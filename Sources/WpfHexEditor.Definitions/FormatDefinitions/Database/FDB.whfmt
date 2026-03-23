@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Firebird Database
+   Category:  Database
+   Ext:       .fdb
+   Editor:    hex-editor
+   Desc:      Firebird SQL database format
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Firebird Database",
   "version": "1.11",
   "extensions": [

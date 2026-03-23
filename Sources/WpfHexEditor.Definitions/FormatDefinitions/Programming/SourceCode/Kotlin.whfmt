@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Kotlin Source File
+   Category:  Programming
+   Ext:       .kt, .kts
+   Editor:    code-editor
+   Desc:      Kotlin programming language source files (JVM and Android).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Kotlin Source File",
   "version": "2.0",

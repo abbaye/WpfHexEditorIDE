@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ISO Disk Image
+   Category:  Disk
+   Ext:       .iso
+   Editor:    hex-editor
+   Desc:      ISO 9660 CD/DVD image format
+   Variables: currentOffset, volumeIdentifier, systemIdentifier, publisher, volumeSize, blockSize, pathTableSize, hasJoliet, hasRockRidge, primaryVolumeDescriptor, volumeDescriptorType
+   Detection: signature=4344303031 @ offset 32769
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ISO Disk Image",
   "version": "1.11",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    HP-UX nettl
+   Category:  Network
+   Ext:       .trc0, .trc1
+   Editor:    hex-editor
+   Desc:      HP-UX network tracing and logging format
+   Variables: currentOffset, subsystem, packetCount, captureLength, fileMagic, fileType, startTime, hostnameLength, hostname, timeZone
+   Detection: signature=00000001 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "HP-UX nettl",
   "version": "1.11",
   "extensions": [

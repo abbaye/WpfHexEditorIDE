@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Open XML Paper Specification
+   Category:  Documents
+   Ext:       .oxps
+   Editor:    hex-editor
+   Desc:      Microsoft OXPS (Open XML Paper Specification) document - a ZIP-based fixed-layout document format, successor to XPS. The file begins with a ZIP Local File Header. OXPS packages contain fixed-layout pages, fonts, images, and metadata conforming to ECMA-388.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Open XML Paper Specification",
   "version": "2.0",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Ext4 Filesystem
+   Category:  Disk
+   Ext:       .ext4
+   Editor:    hex-editor
+   Desc:      Fourth Extended Filesystem for Linux
+   Variables: currentOffset, fileSize, version, format, formattedSize
+   Detection: signature=53EF @ offset 1080
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Ext4 Filesystem",
   "version": "1.11",
   "extensions": [

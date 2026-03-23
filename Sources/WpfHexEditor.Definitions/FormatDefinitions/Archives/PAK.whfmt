@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PAK Archive
+   Category:  Archives
+   Ext:       .pak
+   Editor:    hex-editor
+   Desc:      PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resources
+   Variables: directoryOffset, directorySize, pakSignature
+   Detection: signature=5041434B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PAK Archive",
   "version": "1.10",
   "extensions": [

@@ -1,3 +1,14 @@
+/* ============================================================
+   Format:    Windows Executable (PE)
+   Category:  Executables
+   Ext:       .exe, .scr
+   Editor:    hex-editor
+   Desc:      Windows Portable Executable format. The PE format is the standard executable file format on Windows, consisting of a DOS MZ stub header followed by a PE signature, COFF file header, and Optional Header with data directories and section tables.
+   Variables: currentOffset, dosMzSignature, bytesOnLastPage, pagesInFile, relocations, headerParagraphs, minExtraParagraphs, maxExtraParagraphs, initialSs, initialSp, dosChecksum, initialIp, initialCs, relocTableOffset, overlayNumber, peHeaderOffset, peSignature, coffMachine, coffNumberOfSections, coffTimeDateStamp, coffPointerToSymbolTable, coffNumberOfSymbols, coffSizeOfOptionalHeader, coffCharacteristics, optionalMagic, majorLinkerVersion, minorLinkerVersion, sizeOfCode, sizeOfInitializedData, addressOfEntryPoint, headerSizeBytes, isDLL, is64Bit, machineName, linkerVersionString, peOffset, peMachineName, peSubsystemName, peIs64Bit, peEntryPoint, peImageBase, peSectionCount, peMachine
+   Detection: signature=4D5A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+
 {
   "formatName": "Windows Executable (PE)",
   "version": "2.0",

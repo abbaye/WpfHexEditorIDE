@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    QOI Image
+   Category:  Images
+   Ext:       .qoi
+   Editor:    image-viewer
+   Desc:      Quite OK Image Format - Fast lossless compression
+   Variables: width, height, totalPixels, bitsPerPixel, qoiMagic, channels, colorspace
+   Detection: signature=716F6966 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "QOI Image",
   "version": "1.13",
   "extensions": [

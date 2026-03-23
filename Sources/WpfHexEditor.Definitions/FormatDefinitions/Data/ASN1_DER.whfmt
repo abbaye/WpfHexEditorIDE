@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ASN.1 DER Encoding
+   Category:  Data
+   Ext:       .der, .cer
+   Editor:    hex-editor
+   Desc:      Abstract Syntax Notation One Distinguished Encoding Rules
+   Variables: currentOffset, version, serialNumber, issuer, subject
+   Detection: signature=30 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ASN.1 DER Encoding",
   "version": "1.10",
   "extensions": [

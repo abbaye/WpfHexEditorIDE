@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Quake 3 BSP
+   Category:  Game
+   Ext:       .bsp
+   Editor:    hex-editor
+   Desc:      Quake 3 engine BSP map format
+   Variables: currentOffset, fileCount, version, indexOffset, bspSignature, entitiesLumpOffset
+   Detection: signature=49425350 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Quake 3 BSP",
   "version": "1.12",
   "extensions": [

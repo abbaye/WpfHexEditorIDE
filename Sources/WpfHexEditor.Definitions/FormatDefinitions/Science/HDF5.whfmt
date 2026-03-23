@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    HDF5 Data File
+   Category:  Science
+   Ext:       .h5, .hdf5
+   Editor:    hex-editor
+   Desc:      Hierarchical Data Format v5
+   Variables: currentOffset, dimensions, dataType, arrayCount, hdf5Signature
+   Detection: signature=894844460D0A1A0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "HDF5 Data File",
   "version": "1.12",
   "extensions": [

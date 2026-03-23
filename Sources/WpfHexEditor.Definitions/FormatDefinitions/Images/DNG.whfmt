@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Digital Negative
+   Category:  Images
+   Ext:       .dng
+   Editor:    image-viewer
+   Desc:      Adobe Digital Negative RAW format
+   Variables: currentOffset, tiffHeader
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Digital Negative",
   "version": "1.12",
   "extensions": [

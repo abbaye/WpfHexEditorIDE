@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Valve Package
+   Category:  Game
+   Ext:       .vpk
+   Editor:    hex-editor
+   Desc:      Valve Pak file for Source engine
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, signature
+   Detection: signature=55AA1234 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Valve Package",
   "version": "1.11",
   "extensions": [

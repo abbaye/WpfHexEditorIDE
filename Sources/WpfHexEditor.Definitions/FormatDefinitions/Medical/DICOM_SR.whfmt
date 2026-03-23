@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DICOM Structured Report
+   Category:  Medical
+   Ext:       .dcm, .sr
+   Editor:    hex-editor
+   Desc:      DICOM Structured Report for medical data
+   Variables: currentOffset, imageWidth, imageHeight, totalPixels, bitsPerPixel, preamble, dicmMagic
+   Detection: signature=4449434D @ offset 128
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DICOM Structured Report",
   "version": "1.13",
   "extensions": [

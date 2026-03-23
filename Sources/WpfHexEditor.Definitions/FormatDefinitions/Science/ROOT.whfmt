@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ROOT Data File
+   Category:  Science
+   Ext:       .root
+   Editor:    hex-editor
+   Desc:      ROOT data analysis framework file format (CERN)
+   Variables: currentOffset, dimensions, dataType, arrayCount, rootMagic, version
+   Detection: signature=726F6F7400 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ROOT Data File",
   "version": "1.11",
   "extensions": [

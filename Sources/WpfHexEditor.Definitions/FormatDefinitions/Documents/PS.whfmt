@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PostScript Document
+   Category:  Documents
+   Ext:       .ps, .eps
+   Editor:    hex-editor
+   Desc:      PostScript document format
+   Variables: currentOffset, width, height, frameRate, duration, postscriptHeader, totalPixels
+   Detection: signature=25215053 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PostScript Document",
   "version": "1.12",
   "extensions": [

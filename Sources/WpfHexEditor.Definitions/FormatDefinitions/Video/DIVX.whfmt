@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DivX Video
+   Category:  Video
+   Ext:       .divx
+   Editor:    hex-editor
+   Desc:      DivX MPEG-4 Part 2 video codec container format
+   Variables: width, height, frameRate, duration, riffHeader, totalPixels
+   Detection: signature=52494646 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DivX Video",
   "version": "2.4",
   "extensions": [

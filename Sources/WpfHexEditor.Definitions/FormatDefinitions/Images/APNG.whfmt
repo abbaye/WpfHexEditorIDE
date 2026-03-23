@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    APNG Animated Image
+   Category:  Images
+   Ext:       .apng, .png
+   Editor:    image-viewer
+   Desc:      Animated Portable Network Graphics
+   Variables: currentOffset, imageWidth, imageHeight, totalPixels, calculatedCRC32, ihdrCRC, crc32Valid, pngSignature, ihdrChunkLength, ihdrType
+   Detection: signature=89504E470D0A1A0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "APNG Animated Image",
   "version": "2.3",
   "extensions": [

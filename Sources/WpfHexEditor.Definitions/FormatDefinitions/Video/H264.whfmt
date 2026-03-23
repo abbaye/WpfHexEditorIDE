@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Raw H.264/AVC
+   Category:  Video
+   Ext:       .h264, .264, .avc
+   Editor:    hex-editor
+   Desc:      Raw H.264/MPEG-4 AVC elementary stream video format
+   Variables: width, height, frameRate, duration, nalUnitStartCode, totalPixels
+   Detection: signature=00000001 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Raw H.264/AVC",
   "version": "1.13",
   "extensions": [

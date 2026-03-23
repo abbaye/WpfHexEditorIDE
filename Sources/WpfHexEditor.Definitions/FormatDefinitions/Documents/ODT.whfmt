@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    OpenDocument Text
+   Category:  Documents
+   Ext:       .odt
+   Editor:    hex-editor
+   Desc:      OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOffice. The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.text'.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "OpenDocument Text",
   "version": "2.0",
   "extensions": [

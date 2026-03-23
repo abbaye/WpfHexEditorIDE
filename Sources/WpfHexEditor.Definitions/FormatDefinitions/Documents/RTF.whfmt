@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Rich Text Format
+   Category:  Documents
+   Ext:       .rtf
+   Editor:    hex-editor
+   Desc:      Rich Text Format document
+   Variables: currentOffset, version, title, author, preferredEditor, subject, pages, defaultFont, rtfHeader
+   Detection: signature=7B5C727466 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Rich Text Format",
   "version": "1.11",
   "extensions": [

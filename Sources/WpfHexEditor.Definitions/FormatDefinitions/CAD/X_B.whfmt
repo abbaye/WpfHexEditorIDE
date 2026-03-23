@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Parasolid Binary
+   Category:  CAD
+   Ext:       .x_b
+   Editor:    hex-editor
+   Desc:      Parasolid transmit binary format
+   Variables: currentOffset, machineType, sectionCount, timestamp, entryPoint, binaryHeader
+   Detection: signature=D0CF11E0 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Parasolid Binary",
   "version": "1.12",
   "extensions": [

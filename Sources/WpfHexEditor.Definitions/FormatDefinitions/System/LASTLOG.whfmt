@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    Unix lastlog
+   Category:  System
+   Editor:    hex-editor
+   Desc:      Unix lastlog file - Last login information per user
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, timestamp, line, host, formattedSize
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unix lastlog",
   "version": "2.4",
   "extensions": [

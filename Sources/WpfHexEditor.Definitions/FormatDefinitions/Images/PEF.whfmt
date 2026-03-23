@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Pentax PEF RAW
+   Category:  Images
+   Ext:       .pef
+   Editor:    image-viewer
+   Desc:      Pentax Electronic File (RAW)
+   Variables: machineType, sectionCount, entryPoint, tiffHeader, ifdOffset
+   Detection: signature=49492A00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Pentax PEF RAW",
   "version": "1.12",
   "extensions": [

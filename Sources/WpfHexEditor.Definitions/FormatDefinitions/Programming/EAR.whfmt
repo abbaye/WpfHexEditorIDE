@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Enterprise Archive
+   Category:  Programming
+   Ext:       .ear
+   Editor:    hex-editor
+   Desc:      Java Enterprise Archive - a ZIP container for deploying enterprise Java applications with multiple modules (WARs, JARs, EJBs). The file begins with a ZIP Local File Header containing the first entry of the EAR package.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Enterprise Archive",
   "version": "2.0",
   "extensions": [

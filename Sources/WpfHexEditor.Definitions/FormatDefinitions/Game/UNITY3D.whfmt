@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Unity Asset Bundle
+   Category:  Game
+   Ext:       .unity3d
+   Editor:    hex-editor
+   Desc:      Unity Engine asset bundle file
+   Variables: currentOffset, fileCount, version, indexOffset, unityfsSignature, formatVersion, unityVersion
+   Detection: signature=556E697479465300 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unity Asset Bundle",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    LLVM Bitcode
+   Category:  Programming
+   Ext:       .bc
+   Editor:    hex-editor
+   Desc:      LLVM Bitcode binary format, intermediate representation used by LLVM compiler infrastructure
+   Variables: llvmBitcodeMagic
+   Detection: signature=4243C0DE @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "LLVM Bitcode",
   "version": "1.12",
   "extensions": [

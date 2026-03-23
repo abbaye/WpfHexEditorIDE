@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    OGG Audio
+   Category:  Audio
+   Ext:       .ogg, .oga, .ogv
+   Editor:    audio-viewer
+   Desc:      Ogg is a free, open container format maintained by the Xiph.Org Foundation. The file is composed of pages, each beginning with the 'OggS' capture pattern. Each page has a 27-byte fixed header followed by a variable-length segment table. Pages carry codec data (typically Vorbis, Opus, or FLAC for audio, Theora for video) multiplexed by serial number.
+   Variables: currentOffset, oggSignature, streamVersion, headerTypeFlag, isContinuationPage, isBeginningOfStream, isEndOfStream, granulePositionLow, granulePositionHigh, granulePosition, serialNumber, pageSequenceNumber, crcChecksum, numPageSegments, segmentTableFirstByte, totalSegmentSize, pageHeaderSize, estimatedBitrate, codecIdentified, formattedSize
+   Detection: signature=4F676753 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "OGG Audio",
   "version": "2.0",
   "extensions": [

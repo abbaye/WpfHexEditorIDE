@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Embedded OpenType Font
+   Category:  Fonts
+   Ext:       .eot
+   Editor:    hex-editor
+   Desc:      Microsoft Embedded OpenType font format for web
+   Variables: currentOffset, numGlyphs, unitsPerEm, fontName, tableCount
+   Detection: signature=00 @ offset 34
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Embedded OpenType Font",
   "version": "2.2",
   "extensions": [

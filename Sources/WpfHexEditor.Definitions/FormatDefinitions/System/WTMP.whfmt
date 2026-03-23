@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    Unix WTMP
+   Category:  System
+   Editor:    hex-editor
+   Desc:      Unix WTMP file - Historical user login records
+   Variables: currentOffset, timestamp, size, type, pid, line, id, user, host, exitStatus, sessionId, address
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Unix WTMP",
   "version": "1.12",
   "extensions": [

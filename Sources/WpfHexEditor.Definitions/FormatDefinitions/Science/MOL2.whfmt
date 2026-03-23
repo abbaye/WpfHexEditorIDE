@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Tripos Mol2
+   Category:  Science
+   Ext:       .mol2
+   Editor:    hex-editor
+   Desc:      Tripos Mol2 molecular structure format
+   Variables: currentOffset, atomCount, bondCount, moleculeName, mol2Magic
+   Detection: signature=4054524950 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Tripos Mol2",
   "version": "1.11",
   "extensions": [

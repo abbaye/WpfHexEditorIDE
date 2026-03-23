@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    BLF Event Log
+   Category:  System
+   Ext:       .blf
+   Editor:    hex-editor
+   Desc:      Windows Binary Log File - System event logging
+   Variables: currentOffset, timestamp, size, version, type, blfSignature, majorVersion, minorVersion, fileFlags, oldestRecord, newestRecord, checksum
+   Detection: signature=454C46 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "BLF Event Log",
   "version": "1.12",
   "extensions": [

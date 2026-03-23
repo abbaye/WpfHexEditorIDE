@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    HTML Source File
+   Category:  Programming
+   Ext:       .html, .htm
+   Editor:    code-editor
+   Desc:      HyperText Markup Language source file for web pages.
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "HTML Source File",
   "version": "2.3",

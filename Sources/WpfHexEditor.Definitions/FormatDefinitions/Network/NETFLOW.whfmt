@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    NetFlow v5
+   Category:  Network
+   Ext:       .nf, .nfcap
+   Editor:    hex-editor
+   Desc:      Cisco NetFlow v5 - Network flow data format
+   Variables: currentOffset, version, flowCount, sysUptime, unixSecs, netflowVersion, systemUptime, unixSeconds, unixNanoseconds, flowSequence, engineType, engineId, samplingInterval
+   Detection: signature=0005 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "NetFlow v5",
   "version": "1.11",
   "extensions": [

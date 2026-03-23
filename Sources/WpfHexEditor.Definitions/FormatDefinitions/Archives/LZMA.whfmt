@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    LZMA Compression
+   Category:  Archives
+   Ext:       .lzma
+   Editor:    hex-editor
+   Desc:      LZMA (Lempel-Ziv-Markov chain Algorithm) compressed file format, used in 7-Zip and XZ Utils
+   Variables: dictionarySize, uncompressedSize, lzmaProperties, formattedSize
+   Detection: signature=5D00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "LZMA Compression",
   "version": "1.11",
   "extensions": [

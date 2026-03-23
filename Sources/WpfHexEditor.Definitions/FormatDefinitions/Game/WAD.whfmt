@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Doom WAD File
+   Category:  Game
+   Ext:       .wad
+   Editor:    hex-editor
+   Desc:      Doom/Quake WAD archive
+   Variables: currentOffset, fileCount, version, indexOffset, wadType
+   Detection: signature=49574144 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Doom WAD File",
   "version": "1.11",
   "extensions": [

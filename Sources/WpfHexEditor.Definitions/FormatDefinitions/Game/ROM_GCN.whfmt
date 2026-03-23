@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Nintendo GameCube Disc
+   Category:  Game
+   Ext:       .gcm, .iso
+   Editor:    hex-editor
+   Desc:      Nintendo GameCube disc image format
+   Variables: currentOffset, gameCode, makerCode, gameName, fileCount, version, indexOffset, discId, regionCode, discId6, audioStreaming, streamBufferSize, magicWord
+   Detection: signature=C2339F3D @ offset 28
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Nintendo GameCube Disc",
   "version": "2.5",
   "extensions": [

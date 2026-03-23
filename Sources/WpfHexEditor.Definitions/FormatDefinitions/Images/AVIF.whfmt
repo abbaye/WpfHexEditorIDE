@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AVIF Image
+   Category:  Images
+   Ext:       .avif
+   Editor:    image-viewer
+   Desc:      AV1 Image File Format - Modern image format
+   Variables: currentOffset, boxSize, majorBrand, boxType
+   Detection: signature=66747970 @ offset 4
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AVIF Image",
   "version": "1.10",
   "extensions": [

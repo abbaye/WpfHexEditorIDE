@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    ZBrush Tool
+   Category:  3D
+   Ext:       .ztl
+   Editor:    hex-editor
+   Desc:      Pixologic ZBrush tool file
+   Variables: currentOffset, polyCount, pointCount, version, zbrushToolSignature
+   Detection: signature=5A544F4F4C @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "ZBrush Tool",
   "version": "1.12",
   "extensions": [

@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Markdown Document
+   Category:  Programming
+   Ext:       .md, .markdown, .mkd, .mdx
+   Editor:    markdown-editor
+   Desc:      Markdown lightweight markup language document.
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Markdown Document",
   "version": "2.1",

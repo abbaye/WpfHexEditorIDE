@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Common Data Format
+   Category:  Science
+   Ext:       .cdf
+   Editor:    hex-editor
+   Desc:      NASA Common Data Format for scientific data
+   Variables: currentOffset, dimensions, dataType, arrayCount, cdfMagic, version
+   Detection: signature=CDF30001 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Common Data Format",
   "version": "1.11",
   "extensions": [

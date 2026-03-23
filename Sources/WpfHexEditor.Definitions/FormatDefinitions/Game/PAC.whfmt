@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Game Package
+   Category:  Game
+   Ext:       .pac, .pack
+   Editor:    hex-editor
+   Desc:      Generic game package/archive format
+   Variables: currentOffset, fileCount, version, indexOffset, packageHeader
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Game Package",
   "version": "2.3",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Prefetch File
+   Category:  System
+   Ext:       .pf
+   Editor:    hex-editor
+   Desc:      Windows Prefetch file for application optimization
+   Variables: currentOffset, timestamp, size, version, type, signature
+   Detection: signature=11000000534346 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Prefetch File",
   "version": "1.11",
   "extensions": [

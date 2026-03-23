@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    XNA Game Studio
+   Category:  Game
+   Ext:       .xnb
+   Editor:    hex-editor
+   Desc:      Microsoft XNA compiled content file
+   Variables: currentOffset, fileCount, version, indexOffset, xnbSignature, targetPlatform, formatVersion, flags
+   Detection: signature=584E42 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "XNA Game Studio",
   "version": "1.12",
   "extensions": [

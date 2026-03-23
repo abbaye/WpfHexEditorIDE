@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Blizzard MPQ Archive
+   Category:  Game
+   Ext:       .mpq
+   Editor:    hex-editor
+   Desc:      Blizzard MoPaQ archive format
+   Variables: currentOffset, fileCount, totalSize, compressionMethod, headerCRC, mpqSignature, headerSize, archiveSize, formatVersion, formattedSize
+   Detection: signature=4D50511A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Blizzard MPQ Archive",
   "version": "1.13",
   "extensions": [

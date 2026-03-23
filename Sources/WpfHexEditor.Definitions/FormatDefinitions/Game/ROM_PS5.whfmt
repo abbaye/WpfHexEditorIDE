@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PlayStation 5 Package
+   Category:  Game
+   Ext:       .pkg
+   Editor:    hex-editor
+   Desc:      PlayStation 5 PKG package format (next-gen encrypted packages)
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, cntMagic, packageVersion, packageFlags, headerSize, itemCount, packageSize, contentId
+   Detection: signature=7F434E54 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "PlayStation 5 Package",
   "version": "1.11",
   "extensions": [

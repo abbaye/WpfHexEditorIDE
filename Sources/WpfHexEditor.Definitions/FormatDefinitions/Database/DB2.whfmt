@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    IBM DB2 Database
+   Category:  Database
+   Ext:       .db2
+   Editor:    hex-editor
+   Desc:      IBM DB2 database file format
+   Variables: currentOffset, pageSize, pageCount, tableCount, version
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "IBM DB2 Database",
   "version": "2.3",
   "extensions": [

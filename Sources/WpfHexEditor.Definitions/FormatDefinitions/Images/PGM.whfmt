@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Portable Graymap
+   Category:  Images
+   Ext:       .pgm
+   Editor:    image-viewer
+   Desc:      Netpbm Portable Graymap (grayscale)
+   Variables: magicNumber, pgmMagic, header
+   Detection: signature=5032 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Portable Graymap",
   "version": "1.11",
   "extensions": [

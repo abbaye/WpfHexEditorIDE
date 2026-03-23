@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Java Archive
+   Category:  Programming
+   Ext:       .jar
+   Editor:    hex-editor
+   Desc:      Java Archive - a ZIP container for distributing Java classes, metadata, and resources. First entry is typically META-INF/MANIFEST.MF. The file begins with a ZIP Local File Header. JAR files contain compiled .class files, configuration, and resources packaged for the Java Runtime Environment.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Java Archive",
   "version": "2.0",
   "extensions": [

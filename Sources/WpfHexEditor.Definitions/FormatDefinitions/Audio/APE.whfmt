@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Monkey's Audio
+   Category:  Audio
+   Ext:       .ape
+   Editor:    audio-viewer
+   Desc:      Monkey's Audio lossless compression
+   Variables: currentOffset, version, compressionLevel, channels, sampleRate, bitDepth, totalFrames, apeMagic, byteRate, samplesPerSecond
+   Detection: signature=4D414320 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Monkey's Audio",
   "version": "1.12",
   "extensions": [

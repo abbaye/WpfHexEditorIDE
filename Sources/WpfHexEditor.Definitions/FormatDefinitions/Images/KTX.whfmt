@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Khronos Texture
+   Category:  Images
+   Ext:       .ktx
+   Editor:    image-viewer
+   Desc:      Khronos Texture format for OpenGL/Vulkan
+   Variables: endianness, ktxIdentifier, glType
+   Detection: signature=AB4B54582030310D0A1A0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Khronos Texture",
   "version": "1.11",
   "extensions": [

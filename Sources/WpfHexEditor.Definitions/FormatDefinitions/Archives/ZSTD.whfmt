@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Zstandard Compressed
+   Category:  Archives
+   Ext:       .zst, .zstd
+   Editor:    hex-editor
+   Desc:      Zstandard compression format by Facebook
+   Variables: currentOffset, frameMagic, zstandardMagic
+   Detection: signature=28B52FFD @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Zstandard Compressed",
   "version": "1.10",
   "extensions": [

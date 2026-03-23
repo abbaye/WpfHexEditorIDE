@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Xbox One Package
+   Category:  Game
+   Ext:       .xvd, .msixvc
+   Editor:    hex-editor
+   Desc:      Xbox One XVD (Xbox Virtual Disk) format
+   Variables: currentOffset, crc32Valid, originalSize, compressionRatio, xvdSignature, formatVersion, flags, contentSize, contentId
+   Detection: signature=6D737863 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Xbox One Package",
   "version": "2.4",
   "extensions": [

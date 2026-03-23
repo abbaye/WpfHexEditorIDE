@@ -1,4 +1,13 @@
-﻿{
+/* ============================================================
+   Format:    BPS Patch
+   Category:  RomHacking
+   Ext:       .bps
+   Editor:    hex-editor
+   Desc:      BPS (Beat Patch System) binary patch format by Near/byuu. Uses variable-length quantities (VLQ), four action types (SourceRead, TargetRead, SourceCopy, TargetCopy), and three CRC-32 checksums for integrity verification. No file size limit.
+   Detection: signature=42505331 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "BPS Patch",
   "version": "1.0",
   "extensions": [

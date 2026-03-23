@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Portable Bitmap
+   Category:  Images
+   Ext:       .pbm
+   Editor:    image-viewer
+   Desc:      Netpbm Portable Bitmap (monochrome)
+   Variables: magicNumber, pbmMagic, header
+   Detection: signature=5031 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Portable Bitmap",
   "version": "1.11",
   "extensions": [

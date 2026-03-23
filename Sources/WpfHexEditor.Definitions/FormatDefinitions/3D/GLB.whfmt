@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Binary glTF
+   Category:  3D
+   Ext:       .glb
+   Editor:    hex-editor
+   Desc:      Khronos glTF binary format
+   Variables: currentOffset, vertexCount, faceCount, materialCount, fileSize, gltfSignature, version, length, formattedSize
+   Detection: signature=676C5446 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Binary glTF",
   "version": "1.13",
   "extensions": [

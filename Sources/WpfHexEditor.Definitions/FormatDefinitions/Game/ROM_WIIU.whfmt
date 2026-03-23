@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Nintendo Wii U Image
+   Category:  Game
+   Ext:       .wud, .wux
+   Editor:    hex-editor
+   Desc:      Nintendo Wii U disc image format (WUD/WUX compressed)
+   Variables: currentOffset, width, height, totalPixels, bitsPerPixel, wuxMagic, formatVersion, uncompressedSize, sectorSize, sectorTable, formattedSize
+   Detection: signature=57555800 @ offset 0
+   Updated:   2026-03-01
+   ============================================================ */
+{
   "formatName": "Nintendo Wii U Image",
   "version": "1.14",
   "extensions": [

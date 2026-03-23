@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Protocol Buffers
+   Category:  Data
+   Ext:       .pb, .protobuf
+   Editor:    hex-editor
+   Desc:      Google Protocol Buffers binary serialization format
+   Variables: currentOffset, tagCount, messageDepth, wireType
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Protocol Buffers",
   "version": "1.11",
   "extensions": [

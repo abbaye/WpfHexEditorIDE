@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Multiple-image Network Graphics
+   Category:  Images
+   Ext:       .mng
+   Editor:    image-viewer
+   Desc:      MNG animation format (PNG-based)
+   Variables: packetCount, snaplen, linkType, version, mngSignature, mhdrChunkLength
+   Detection: signature=8A4D4E470D0A1A0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Multiple-image Network Graphics",
   "version": "1.12",
   "extensions": [

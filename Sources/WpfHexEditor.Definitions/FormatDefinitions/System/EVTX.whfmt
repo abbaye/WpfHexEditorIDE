@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Event Log XML
+   Category:  System
+   Ext:       .evtx
+   Editor:    hex-editor
+   Desc:      Windows Event Log file (modern XML format)
+   Variables: currentOffset, timestamp, size, version, type, evtxMagic, oldestChunk
+   Detection: signature=456C6646696C6500 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Event Log XML",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    UHA Archive
+   Category:  Archives
+   Ext:       .uha
+   Editor:    hex-editor
+   Desc:      UHARC archive format with high compression ratio, developed by Uwe Herklotz
+   Variables: fileCount, totalSize, compressionMethod, headerCRC, uhaSignature, formattedSize
+   Detection: signature=55484152435300 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "UHA Archive",
   "version": "1.12",
   "extensions": [

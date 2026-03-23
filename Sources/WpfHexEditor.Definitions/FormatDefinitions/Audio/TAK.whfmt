@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Tom's Audio Kompressor
+   Category:  Audio
+   Ext:       .tak
+   Editor:    audio-viewer
+   Desc:      TAK lossless audio compression format with high compression ratios
+   Variables: sampleRate, channels, bitDepth, duration, takHeader, byteRate, samplesPerSecond
+   Detection: signature=7442614B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Tom's Audio Kompressor",
   "version": "1.13",
   "extensions": [

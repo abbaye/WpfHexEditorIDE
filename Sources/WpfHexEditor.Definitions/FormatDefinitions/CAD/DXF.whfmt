@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    AutoCAD DXF
+   Category:  CAD
+   Ext:       .dxf
+   Editor:    hex-editor
+   Desc:      Drawing Exchange Format - CAD interchange
+   Variables: currentOffset, version, entityCount, layerCount, sectionCode
+   Detection: signature=3020 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "AutoCAD DXF",
   "version": "1.12",
   "extensions": [

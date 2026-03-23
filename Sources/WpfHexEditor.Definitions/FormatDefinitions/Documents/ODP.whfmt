@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    OpenDocument Presentation
+   Category:  Documents
+   Ext:       .odp
+   Editor:    hex-editor
+   Desc:      OpenDocument Presentation - a ZIP-based open standard presentation format used by LibreOffice and OpenOffice. The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.presentation'.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "OpenDocument Presentation",
   "version": "2.0",
   "extensions": [

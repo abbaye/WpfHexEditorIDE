@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    PCX Image
+   Category:  Images
+   Ext:       .pcx
+   Editor:    image-viewer
+   Desc:      ZSoft PC Paintbrush image format
+   Variables: currentOffset, version, bitsPerPixel, pcxManufacturer, encoding
+   Detection: signature=0A @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "PCX Image",
   "version": "1.10",
   "extensions": [

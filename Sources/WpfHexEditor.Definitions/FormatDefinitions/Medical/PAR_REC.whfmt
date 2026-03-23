@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Philips PAR/REC
+   Category:  Medical
+   Ext:       .par, .rec
+   Editor:    hex-editor
+   Desc:      Philips PAR/REC medical imaging format
+   Variables: currentOffset, machineType, sectionCount, entryPoint, parMagic
+   Detection: signature=2320205041 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Philips PAR/REC",
   "version": "1.11",
   "extensions": [

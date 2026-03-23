@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    XFS Filesystem
+   Category:  Disk
+   Ext:       .xfs
+   Editor:    hex-editor
+   Desc:      XFS high-performance journaling filesystem
+   Variables: currentOffset, fileSize, version, format, formattedSize
+   Detection: signature=58465342 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "XFS Filesystem",
   "version": "1.11",
   "extensions": [

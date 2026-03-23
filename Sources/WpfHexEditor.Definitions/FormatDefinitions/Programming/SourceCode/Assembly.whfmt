@@ -1,3 +1,12 @@
+/* ============================================================
+   Format:    Assembly Source File
+   Category:  Programming
+   Ext:       .asm, .s, .z80, .arm, .mips, .65s, .6502
+   Editor:    code-editor
+   Desc:      Assembly language source files for various architectures (x86, ARM, Z80, 6502, MIPS).
+   Updated:   2026-03-22
+   ============================================================ */
+
 {
   "formatName": "Assembly Source File",
   "version": "2.0",

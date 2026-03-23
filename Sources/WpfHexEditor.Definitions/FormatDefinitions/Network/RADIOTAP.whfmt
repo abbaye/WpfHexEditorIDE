@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Radiotap 802.11
+   Category:  Network
+   Ext:       .pcap, .pcapng
+   Editor:    hex-editor
+   Desc:      Radiotap header for 802.11 wireless captures
+   Variables: currentOffset, machineType, sectionCount, entryPoint, headerRevision, headerPad, headerLength, presentFlags, macTimestamp, flags, dataRate, channelFrequency, channelFlags, antennaSignal
+   Detection: signature=00 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Radiotap 802.11",
   "version": "1.11",
   "extensions": [

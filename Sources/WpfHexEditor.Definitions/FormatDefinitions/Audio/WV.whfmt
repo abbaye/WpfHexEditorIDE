@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    WavPack Audio
+   Category:  Audio
+   Ext:       .wv
+   Editor:    audio-viewer
+   Desc:      WavPack hybrid lossless audio compression format
+   Variables: currentOffset, version, blockSamples, totalSamples, sampleRate, channels, bitDepth, wavpackHeader, byteRate, samplesPerSecond
+   Detection: signature=7776706B @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "WavPack Audio",
   "version": "1.12",
   "extensions": [

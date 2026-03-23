@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    JFIF Image
+   Category:  Images
+   Ext:       .jfif, .jpg, .jpeg
+   Editor:    image-viewer
+   Desc:      JPEG File Interchange Format
+   Variables: width, height, totalPixels, bitsPerPixel, jpegSoiApp0, app0Length, jfifIdentifier
+   Detection: signature=FFD8FFE0 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "JFIF Image",
   "version": "1.13",
   "extensions": [

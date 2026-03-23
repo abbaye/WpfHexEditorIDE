@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    NTFS Filesystem
+   Category:  Disk
+   Ext:       .ntfs
+   Editor:    hex-editor
+   Desc:      Windows NT File System
+   Variables: currentOffset, fileSize, version, format, formattedSize
+   Detection: signature=4E54465320202020 @ offset 3
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "NTFS Filesystem",
   "version": "1.11",
   "extensions": [

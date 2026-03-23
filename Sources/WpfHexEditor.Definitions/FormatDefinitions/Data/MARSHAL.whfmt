@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Ruby Marshal
+   Category:  Data
+   Ext:       .marshal
+   Editor:    hex-editor
+   Desc:      Ruby object serialization format
+   Variables: currentOffset, machineType, sectionCount, entryPoint
+   Detection: signature=0408 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Ruby Marshal",
   "version": "1.10",
   "extensions": [

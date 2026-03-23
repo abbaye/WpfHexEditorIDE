@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Virtual Hard Disk
+   Category:  Disk
+   Ext:       .vhd
+   Editor:    hex-editor
+   Desc:      Microsoft Virtual Hard Disk format
+   Variables: currentOffset, sectorSize, sectorCount, capacity, format, vhdCookie, features, formatVersion
+   Detection: signature=636F6E6563746978 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Virtual Hard Disk",
   "version": "1.11",
   "extensions": [

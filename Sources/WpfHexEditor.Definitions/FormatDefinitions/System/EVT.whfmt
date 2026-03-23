@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Windows Event Log
+   Category:  System
+   Ext:       .evt
+   Editor:    hex-editor
+   Desc:      Windows Event Log file (legacy)
+   Variables: currentOffset, timestamp, size, version, type, headerSize, magic
+   Detection: signature=300000004C664C65 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Windows Event Log",
   "version": "1.11",
   "extensions": [

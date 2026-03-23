@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    JPEG-LS Lossless
+   Category:  Images
+   Ext:       .jls
+   Editor:    image-viewer
+   Desc:      JPEG-LS Lossless/Near-lossless compression
+   Variables: version, jpegLsSoiSof55, sof55Length
+   Detection: signature=FFD8FFF7 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "JPEG-LS Lossless",
   "version": "1.12",
   "extensions": [

@@ -29,12 +29,15 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
 {
     private readonly Regex[] _starts;
     private readonly Regex[] _ends;
+    private readonly string? _lineCommentPrefix;
 
     public PatternFoldingStrategy(IReadOnlyList<string> startPatterns,
-                                   IReadOnlyList<string> endPatterns)
+                                   IReadOnlyList<string> endPatterns,
+                                   string? lineCommentPrefix = null)
     {
         _starts = [.. startPatterns.Select(p => new Regex(p, RegexOptions.Compiled))];
         _ends   = [.. endPatterns.Select(p => new Regex(p, RegexOptions.Compiled))];
+        _lineCommentPrefix = lineCommentPrefix;
     }
 
     public IReadOnlyList<FoldingRegion> Analyze(IReadOnlyList<CodeLine> lines)
@@ -44,9 +47,12 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
 
         for (int i = 0; i < lines.Count; i++)
         {
-            var text    = lines[i].Text ?? string.Empty;
-            bool isStart = _starts.Any(r => r.IsMatch(text));
-            bool isEnd   = _ends.Any(r => r.IsMatch(text));
+            var text          = lines[i].Text ?? string.Empty;
+            var effectiveText = _lineCommentPrefix is not null
+                ? StripLineComment(text, _lineCommentPrefix)
+                : text;
+            bool isStart = _starts.Any(r => r.IsMatch(effectiveText));
+            bool isEnd   = _ends.Any(r => r.IsMatch(effectiveText));
 
             if (isStart)
             {
@@ -55,8 +61,8 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
                 // Mirrors BraceFoldingStrategy's braceAlone logic, generalized for any pattern.
                 bool isAlone = _starts.Any(r =>
                 {
-                    var m = r.Match(text);
-                    return m.Success && text.Trim() == m.Value.Trim();
+                    var m = r.Match(effectiveText);
+                    return m.Success && effectiveText.Trim() == m.Value.Trim();
                 });
                 stack.Push(isAlone && i > 0 ? i - 1 : i);
             }
@@ -70,5 +76,11 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
         }
 
         return regions;
+    }
+
+    private static string StripLineComment(string line, string prefix)
+    {
+        var idx = line.IndexOf(prefix, StringComparison.Ordinal);
+        return idx >= 0 ? line[..idx] : line;
     }
 }

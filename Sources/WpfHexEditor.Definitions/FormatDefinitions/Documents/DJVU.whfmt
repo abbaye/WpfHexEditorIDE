@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    DjVu Document
+   Category:  Documents
+   Ext:       .djvu, .djv
+   Editor:    hex-editor
+   Desc:      DjVu scanned document format
+   Variables: currentOffset, pageCount, title, author, preferredEditor, atTForm, fileSize, djvuType, formattedSize
+   Detection: signature=41542654464F524D @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "DjVu Document",
   "version": "1.12",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    MINC Medical Image
+   Category:  Medical
+   Ext:       .mnc, .minc
+   Editor:    hex-editor
+   Desc:      Medical Image NetCDF format
+   Variables: currentOffset, width, height, slices, bitDepth, netcdfMagic, totalPixels
+   Detection: signature=43444601 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "MINC Medical Image",
   "version": "1.13",
   "extensions": [

@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    NuGet Package
+   Category:  Programming
+   Ext:       .nupkg
+   Editor:    hex-editor
+   Desc:      NuGet Package - a ZIP container for distributing .NET libraries and tools via the NuGet package manager. The file begins with a ZIP Local File Header containing the first entry of the NuGet package.
+   Variables: currentOffset, zipSignature, versionNeeded, generalPurposeFlags, compressionMethod, lastModTime, lastModDate, crc32, compressedSize, uncompressedSize, filenameLength, extraFieldLength, compressionRatio, zipFileCount, zipCentralDirSize, zipCommentLength, zipComment, eocdOffset, isZip64, formattedSize, zipFirstEntryName, zipEntryList, zipTotalUncompressedSize, zipEntryCount
+   Detection: signature=504B0304 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "NuGet Package",
   "version": "2.0",
   "extensions": [

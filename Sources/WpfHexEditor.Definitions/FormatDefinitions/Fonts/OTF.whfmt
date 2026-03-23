@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    OpenType Font
+   Category:  Fonts
+   Ext:       .otf
+   Editor:    hex-editor
+   Desc:      OpenType Font format with CFF (Compact Font Format) outlines - a cross-platform font standard jointly developed by Microsoft and Adobe. Identified by the 'OTTO' signature (0x4F54544F), indicating PostScript/CFF-based outlines (cubic Bezier curves) rather than TrueType quadratic outlines. The file structure mirrors TrueType with an Offset Table header followed by a Table Directory containing 16-byte entries per table. OpenType CFF fonts typically include CFF/CFF2 (outline data), GPOS (glyph positioning for kerning, mark attachment), GSUB (glyph substitution for ligatures, alternates), and GDEF (glyph class definitions) tables for advanced typographic features.
+   Variables: currentOffset, otfSignature, numberOfTables, searchRange, entrySelector, rangeShift, table1Tag, table1Checksum, table1Offset, table1Length, table2Tag, table2Checksum, table2Offset, table2Length, table3Tag, table3Checksum, table3Offset, table3Length, numGlyphs, unitsPerEm, fontName, tableCount, hasCFF, hasGPOS, hasGSUB, totalTableSize, formattedTotalSize
+   Detection: signature=4F54544F @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "OpenType Font",
   "version": "2.0",
   "extensions": [

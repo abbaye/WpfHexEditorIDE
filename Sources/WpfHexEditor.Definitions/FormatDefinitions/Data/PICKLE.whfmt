@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    Python Pickle
+   Category:  Data
+   Ext:       .pkl, .pickle
+   Editor:    hex-editor
+   Desc:      Python object serialization format
+   Variables: currentOffset, version, classCount, methodCount
+   Detection: signature=80 @ offset 0
+   Updated:   2026-02-24
+   ============================================================ */
+{
   "formatName": "Python Pickle",
   "version": "1.10",
   "extensions": [

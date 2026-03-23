@@ -1,4 +1,14 @@
-﻿{
+/* ============================================================
+   Format:    XML Document
+   Category:  Documents
+   Ext:       .xml
+   Editor:    hex-editor
+   Desc:      Extensible Markup Language (XML) is a text-based markup language that defines rules for encoding documents in a format readable by both humans and machines. Files typically begin with an optional Byte Order Mark (BOM), followed by the XML declaration '<?xml version=\
+   Variables: currentOffset, bomBytes, hasBOM, bomEncoding, xmlDeclOpen, xmlDeclSpace, versionKeyword, versionValue, encodingKeyword, encodingValue, standaloneRegion, xmlDeclClose, rootElementRegion, detectedEncoding, xmlVersion, lineCount, lineEnding, formattedSize, isStandalone
+   Detection: signature=EFBBBF3C3F786D6C @ offset 0
+   Updated:   2026-03-22
+   ============================================================ */
+{
   "formatName": "XML Document",
   "version": "2.2",
   "extensions": [
