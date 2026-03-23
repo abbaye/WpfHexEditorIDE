@@ -1,4 +1,4 @@
-﻿<!-- ==========================================================
+<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Synthwave84/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -318,6 +318,12 @@
     <SolidColorBrush x:Key="DT_ToolbarBackground"   Color="#2D2D30" />
     <SolidColorBrush x:Key="DT_EventListBackground" Color="#1E1E1E" />
     <SolidColorBrush x:Key="DT_StatusForeground"    Color="#9CDCFE" />
+    <SolidColorBrush x:Key="DT_CpuLineColor"    Color="#569CD6" />
+    <SolidColorBrush x:Key="DT_CpuFillColor"    Color="#1A3A5C" />
+    <SolidColorBrush x:Key="DT_MemoryLineColor" Color="#4EC94E" />
+    <SolidColorBrush x:Key="DT_MemoryFillColor" Color="#1A3D1A" />
+    <SolidColorBrush x:Key="DT_GraphGridLine"   Color="#2D2D2D" />
+    <SolidColorBrush x:Key="DT_GraphLabelFg"    Color="#858585" />
 
     <!-- CE_QuickInfo_* -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#1E1B2E"/>

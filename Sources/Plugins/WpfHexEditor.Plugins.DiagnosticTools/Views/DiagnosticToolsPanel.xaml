@@ -19,25 +19,37 @@
 
         <Style x:Key="MetricLabel" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource DT_PanelForeground}" />
-            <Setter Property="Margin"     Value="4,0,8,0" />
+            <Setter Property="Margin"     Value="4,0,4,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
         <Style x:Key="MetricValue" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource DT_StatusForeground}" />
             <Setter Property="FontFamily" Value="Consolas" />
-            <Setter Property="Margin"     Value="0,0,12,0" />
+            <Setter Property="Margin"     Value="0,0,10,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="ToolbarBtn" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize"   Value="14" />
+            <Setter Property="Padding"    Value="6,2" />
+            <Setter Property="Margin"     Value="0,0,2,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource DT_PanelForeground}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource DT_GraphGridLine}" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Toolbar -->
             <RowDefinition Height="28" />
-            <!-- Status bar -->
             <RowDefinition Height="22" />
-            <!-- Content tabs -->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -48,35 +60,43 @@
                 BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
 
-                <Button x:Name="BtnSnapshot"
-                        Content="&#xE9F9;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        ToolTip="Capture heap snapshot"
-                        Padding="6,2"
-                        Margin="0,0,2,0"
+                <!-- Pause / Resume -->
+                <Button Content="{Binding PauseResumeGlyph}"
+                        Style="{StaticResource ToolbarBtn}"
+                        ToolTip="Pause / Resume collection"
+                        Click="OnPauseResumeClick" />
+
+                <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
+
+                <!-- Heap snapshot -->
+                <Button Content="&#xE9F9;"
+                        Style="{StaticResource ToolbarBtn}"
+                        ToolTip="Capture heap snapshot (.gcdump)"
                         Click="OnSnapshotClick" />
 
-                <Button x:Name="BtnClearEvents"
-                        Content="&#xE894;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
+                <!-- Clear events -->
+                <Button Content="&#xE894;"
+                        Style="{StaticResource ToolbarBtn}"
                         ToolTip="Clear event log"
-                        Padding="6,2"
-                        Margin="0,0,2,0"
                         Click="OnClearEventsClick" />
 
-                <Separator Width="1" Margin="4,2" />
+                <!-- Export CSV -->
+                <Button Content="&#xE74E;"
+                        Style="{StaticResource ToolbarBtn}"
+                        ToolTip="Export metrics to CSV"
+                        Click="OnExportClick" />
+
+                <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
 
                 <TextBlock Text="CPU:"  Style="{StaticResource MetricLabel}" />
                 <TextBlock Text="{Binding CurrentCpu}"    Style="{StaticResource MetricValue}" />
                 <TextBlock Text="Mem:"  Style="{StaticResource MetricLabel}" />
                 <TextBlock Text="{Binding CurrentMemory}" Style="{StaticResource MetricValue}" />
-                <TextBlock Text="GC Heap:" Style="{StaticResource MetricLabel}" />
+                <TextBlock Text="GC:"   Style="{StaticResource MetricLabel}" />
                 <TextBlock Text="{Binding GcHeapMbText}"  Style="{StaticResource MetricValue}" />
-                <TextBlock Text="TP Queue:" Style="{StaticResource MetricLabel}" />
+                <TextBlock Text="TP:"   Style="{StaticResource MetricLabel}" />
                 <TextBlock Text="{Binding ThreadPoolQueue}"   Style="{StaticResource MetricValue}" />
-                <TextBlock Text="TP Threads:" Style="{StaticResource MetricLabel}" />
+                <TextBlock Text="threads:"  Style="{StaticResource MetricLabel}" />
                 <TextBlock Text="{Binding ThreadPoolThreads}" Style="{StaticResource MetricValue}" />
 
             </StackPanel>
@@ -110,12 +130,11 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="120" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="120" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <!-- CPU graph -->
                     <TextBlock Grid.Row="0" Grid.Column="0"
-                               Text="CPU Usage (%)"
+                               Text="CPU Usage"
                                Style="{StaticResource SectionLabel}" />
                     <Border Grid.Row="1" Grid.Column="0"
                             BorderBrush="{DynamicResource DT_GraphBorder}"
@@ -123,9 +142,8 @@
                         <ctrl:CpuGraphControl Samples="{Binding CpuSamples}" />
                     </Border>
 
-                    <!-- Memory graph -->
                     <TextBlock Grid.Row="0" Grid.Column="1"
-                               Text="Working Set (MB)"
+                               Text="Working Set"
                                Style="{StaticResource SectionLabel}" />
                     <Border Grid.Row="1" Grid.Column="1"
                             BorderBrush="{DynamicResource DT_GraphBorder}"
@@ -133,43 +151,70 @@
                         <ctrl:MemoryGraphControl Samples="{Binding MemorySamples}" />
                     </Border>
 
-                    <!-- Runtime counters row -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                Text=".NET Runtime"
                                Style="{StaticResource SectionLabel}" />
-                    <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                               Margin="4,2">
-                        <TextBlock Text="GC Heap:"       Style="{StaticResource MetricLabel}" />
-                        <TextBlock Text="{Binding GcHeapMbText}"    Style="{StaticResource MetricValue}" />
-                        <TextBlock Text="ThreadPool queue:" Style="{StaticResource MetricLabel}" />
-                        <TextBlock Text="{Binding ThreadPoolQueue}"  Style="{StaticResource MetricValue}" />
-                        <TextBlock Text="Threads:"       Style="{StaticResource MetricLabel}" />
+                    <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,2">
+                        <TextBlock Text="GC Heap:"        Style="{StaticResource MetricLabel}" />
+                        <TextBlock Text="{Binding GcHeapMbText}"     Style="{StaticResource MetricValue}" />
+                        <TextBlock Text="TP queue:"        Style="{StaticResource MetricLabel}" />
+                        <TextBlock Text="{Binding ThreadPoolQueue}"   Style="{StaticResource MetricValue}" />
+                        <TextBlock Text="Threads:"         Style="{StaticResource MetricLabel}" />
                         <TextBlock Text="{Binding ThreadPoolThreads}" Style="{StaticResource MetricValue}" />
                     </WrapPanel>
                 </Grid>
             </TabItem>
 
-            <!-- Events tab -->
+            <!-- Events tab with filter -->
             <TabItem Header="Events">
-                <ListView x:Name="EventsList"
-                          ItemsSource="{Binding Events}"
-                          Background="{DynamicResource DT_EventListBackground}"
-                          Foreground="{DynamicResource DT_PanelForeground}"
-                          BorderThickness="0"
-                          VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingPanel.VirtualizationMode="Recycling">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Time"    Width="90"
-                                            DisplayMemberBinding="{Binding TimeText}" />
-                            <GridViewColumn Header="Message" Width="600"
-                                            DisplayMemberBinding="{Binding Text}" />
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Filter bar -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource DT_ToolbarBackground}"
+                            BorderBrush="{DynamicResource DT_GraphBorder}"
+                            BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="6,0">
+                            <TextBlock Text="Filter:" Margin="0,0,6,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource DT_PanelForeground}" />
+                            <ComboBox SelectedValue="{Binding EventFilter}"
+                                      SelectedValuePath="Tag"
+                                      Width="120"
+                                      Background="{DynamicResource DT_GraphBackground}"
+                                      Foreground="{DynamicResource DT_PanelForeground}">
+                                <ComboBoxItem Content="All"        Tag="{x:Static vm:EventFilter.All}"        IsSelected="True" />
+                                <ComboBoxItem Content="GC"         Tag="{x:Static vm:EventFilter.GC}" />
+                                <ComboBoxItem Content="Exceptions" Tag="{x:Static vm:EventFilter.Exceptions}" />
+                                <ComboBoxItem Content="ThreadPool" Tag="{x:Static vm:EventFilter.ThreadPool}" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Virtualized event list -->
+                    <ListView Grid.Row="1"
+                              ItemsSource="{Binding FilteredEvents}"
+                              Background="{DynamicResource DT_EventListBackground}"
+                              Foreground="{DynamicResource DT_PanelForeground}"
+                              BorderThickness="0"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Time"    Width="90"
+                                                DisplayMemberBinding="{Binding TimeText}" />
+                                <GridViewColumn Header="Message" Width="600"
+                                                DisplayMemberBinding="{Binding Text}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
             </TabItem>
 
-            <!-- CPU tab (full-height graph) -->
+            <!-- CPU full-height -->
             <TabItem Header="CPU">
                 <Border BorderBrush="{DynamicResource DT_GraphBorder}"
                         BorderThickness="1" Margin="4">
@@ -177,7 +222,7 @@
                 </Border>
             </TabItem>
 
-            <!-- Memory tab (full-height graph) -->
+            <!-- Memory full-height -->
             <TabItem Header="Memory">
                 <Border BorderBrush="{DynamicResource DT_GraphBorder}"
                         BorderThickness="1" Margin="4">

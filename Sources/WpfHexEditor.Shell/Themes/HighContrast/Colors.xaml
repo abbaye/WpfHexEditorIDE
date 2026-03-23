@@ -320,6 +320,12 @@
     <SolidColorBrush x:Key="DT_ToolbarBackground"   Color="#000000" />
     <SolidColorBrush x:Key="DT_EventListBackground" Color="#000000" />
     <SolidColorBrush x:Key="DT_StatusForeground"    Color="#00FF00" />
+    <SolidColorBrush x:Key="DT_CpuLineColor"    Color="#FFFF00" />
+    <SolidColorBrush x:Key="DT_CpuFillColor"    Color="#003300" />
+    <SolidColorBrush x:Key="DT_MemoryLineColor" Color="#00FF00" />
+    <SolidColorBrush x:Key="DT_MemoryFillColor" Color="#003300" />
+    <SolidColorBrush x:Key="DT_GraphGridLine"   Color="#444444" />
+    <SolidColorBrush x:Key="DT_GraphLabelFg"    Color="#FFFFFF" />
 
     <!-- CE_QuickInfo_* -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#000000"/>

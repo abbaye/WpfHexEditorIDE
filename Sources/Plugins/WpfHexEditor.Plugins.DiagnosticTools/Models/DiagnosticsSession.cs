@@ -68,6 +68,12 @@ internal sealed class DiagnosticsSession : IDisposable
         }
     }
 
+    /// <summary>Suspends data collection (graphs freeze). Polling task remains alive.</summary>
+    public void Pause()  => _processMonitor?.Pause();
+
+    /// <summary>Resumes data collection after a <see cref="Pause"/>.</summary>
+    public void Resume() => _processMonitor?.Resume();
+
     /// <summary>
     /// Signals the session to stop streaming. Called when <c>ProcessExitedEvent</c>
     /// arrives or when the plugin shuts down.

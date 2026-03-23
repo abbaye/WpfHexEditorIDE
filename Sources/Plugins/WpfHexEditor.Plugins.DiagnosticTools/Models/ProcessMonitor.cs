@@ -6,12 +6,8 @@
 // Created: 2026-03-23
 // Description:
 //     Polls a target process every 500 ms for WorkingSet64 and CPU %.
-//     Pushes samples to DiagnosticToolsPanelViewModel's ring-buffer queues.
-//
-// Architecture Notes:
-//     Polling runs on a Task.Run background thread — never blocks the UI.
-//     Calculates CPU delta against a previous TotalProcessorTime snapshot.
-//     Stops automatically when the process exits or the CT is cancelled.
+//     Supports Pause() / Resume() via ManualResetEventSlim.
+//     Pushes samples to DiagnosticToolsPanelViewModel.
 // ==========================================================
 
 using System.Diagnostics;
@@ -30,6 +26,7 @@ internal sealed class ProcessMonitor : IDisposable
     private readonly int                           _pid;
     private readonly DiagnosticToolsPanelViewModel _vm;
     private readonly CancellationToken             _ct;
+    private readonly ManualResetEventSlim          _gate = new(initialState: true);
 
     private Task? _pollTask;
     private bool  _disposed;
@@ -51,11 +48,18 @@ internal sealed class ProcessMonitor : IDisposable
         _pollTask = Task.Run(PollLoopAsync, CancellationToken.None);
     }
 
+    /// <summary>Suspends sample collection without stopping the background task.</summary>
+    public void Pause()  => _gate.Reset();
+
+    /// <summary>Resumes sample collection after a <see cref="Pause"/>.</summary>
+    public void Resume() => _gate.Set();
+
     public void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
-        // _ct cancellation signals the loop to exit; Task finishes on its own.
+        _gate.Set();   // unblock if paused so the loop can exit
+        _gate.Dispose();
     }
 
     // -----------------------------------------------------------------------
@@ -74,7 +78,6 @@ internal sealed class ProcessMonitor : IDisposable
         }
         catch
         {
-            // Process already gone before the first poll.
             return;
         }
 
@@ -84,15 +87,16 @@ internal sealed class ProcessMonitor : IDisposable
             {
                 await Task.Delay(PollIntervalMs, _ct).ConfigureAwait(false);
 
+                // Block here if paused (without burning CPU).
+                _gate.Wait(_ct);
+
                 try
                 {
                     proc.Refresh();
                     if (proc.HasExited) break;
 
-                    // Working Set (MB)
                     double memMb = proc.WorkingSet64 / (1024.0 * 1024.0);
 
-                    // CPU % = delta CPU time / (wall time × core count)
                     var now        = DateTime.UtcNow;
                     var cpuTime    = proc.TotalProcessorTime;
                     var wallMs     = (now - prevSampleAt).TotalMilliseconds;
@@ -109,10 +113,10 @@ internal sealed class ProcessMonitor : IDisposable
                     _vm.PushCpuSample(cpuPct);
                 }
                 catch (InvalidOperationException) { break; }
-                catch (Exception) { /* transient — continue */ }
+                catch (Exception) { /* transient */ }
             }
         }
-        catch (OperationCanceledException) { /* normal exit */ }
+        catch (OperationCanceledException) { }
         finally
         {
             proc?.Dispose();

@@ -47,7 +47,7 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin
     private DiagnosticToolsPanelViewModel? _vm;
     private DiagnosticToolsPanel?       _panel;
     private DiagnosticsSession?         _session;
-    private int                         _attachedPid;
+    private volatile int                _attachedPid;
 
     private IDisposable? _subLaunched;
     private IDisposable? _subExited;
@@ -76,7 +76,9 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin
         _vm      = new DiagnosticToolsPanelViewModel();
         _panel   = new DiagnosticToolsPanel(_vm);
 
-        _panel.SnapshotRequested += OnSnapshotRequested;
+        _panel.SnapshotRequested    += OnSnapshotRequested;
+        _panel.PauseResumeRequested += OnPauseResumeRequested;
+        _panel.ExportRequested      += OnExportRequested;
 
         // Register the dockable panel.
         context.UIRegistry.RegisterPanel(
@@ -120,7 +122,11 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin
         StopCurrentSession(exitCode: null);
 
         if (_panel is not null)
-            _panel.SnapshotRequested -= OnSnapshotRequested;
+        {
+            _panel.SnapshotRequested    -= OnSnapshotRequested;
+            _panel.PauseResumeRequested -= OnPauseResumeRequested;
+            _panel.ExportRequested      -= OnExportRequested;
+        }
 
         return Task.CompletedTask;
     }
@@ -161,6 +167,49 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin
             _attachedPid,
             status => _vm.SessionStatus = status,
             cts.Token).ConfigureAwait(false);
+    }
+
+    private void OnPauseResumeRequested(object? sender, EventArgs e)
+    {
+        if (_vm is null || _session is null) return;
+
+        if (_vm.IsPaused)
+        {
+            _session.Resume();
+            _vm.IsPaused = false;
+            _vm.SessionStatus = $"Resumed — PID {_attachedPid}";
+        }
+        else
+        {
+            _session.Pause();
+            _vm.IsPaused = true;
+            _vm.SessionStatus = "Paused";
+        }
+    }
+
+    private async void OnExportRequested(object? sender, EventArgs e)
+    {
+        if (_vm is null) return;
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title      = "Export Diagnostic Metrics",
+            Filter     = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+            FileName   = $"DiagMetrics_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+            DefaultExt = ".csv",
+        };
+
+        if (dlg.ShowDialog() != true) return;
+
+        try
+        {
+            int rows = await _vm.ExportCsvAsync(dlg.FileName).ConfigureAwait(false);
+            _vm.SessionStatus = $"Exported {rows} rows → {System.IO.Path.GetFileName(dlg.FileName)}";
+        }
+        catch (Exception ex)
+        {
+            _vm.SessionStatus = $"Export failed: {ex.Message}";
+        }
     }
 
     // -----------------------------------------------------------------------
