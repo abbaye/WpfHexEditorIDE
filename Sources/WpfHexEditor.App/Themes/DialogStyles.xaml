@@ -379,32 +379,6 @@
         <Setter Property="SeparatorBrush"   Value="{DynamicResource DockBorderBrush}" />
     </Style>
 
-    <Style TargetType="DataGridCell">
-        <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
-        <Setter Property="BorderThickness" Value="0" />
-        <!-- Minimal template so TemplateBinding Background is always used —
-             removes the default InactiveSelectionHighlight white border that
-             appears when the DataGrid loses keyboard focus. -->
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            SnapsToDevicePixels="True">
-                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
-                <Setter Property="Foreground" Value="White" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
     <!-- ── Keyboard Shortcuts Page (KSP_*) ───────────────────────────────────── -->
 
     <Style x:Key="KSP_DataGridStyle" TargetType="DataGrid">
@@ -427,6 +401,35 @@
                     <Setter Property="BorderThickness" Value="0,0,1,1" />
                     <Setter Property="Padding"         Value="6,4" />
                     <Setter Property="SeparatorBrush"  Value="{DynamicResource DockBorderBrush}" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <!-- Explicit CellStyle so WPF DataGrid honours it (implicit DataGridCell
+             styles in the resource tree are NOT picked up by DataGrid cells).
+             Minimal Template uses TemplateBinding Background — eliminates the
+             InactiveSelectionHighlight white border on focus loss. -->
+        <Setter Property="CellStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridCell">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="True">
+                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DockAccentBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </Setter.Value>
         </Setter>
