@@ -435,6 +435,23 @@
     <Style x:Key="KSP_DataGridRowStyle" TargetType="DataGridRow">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource KSP_CellForeground}" />
+        <!-- Minimal template — DGR_Border uses TemplateBinding Background so our
+             IsSelected trigger (DockAccentBrush) is authoritative at all focus states.
+             Omits row header / details / grippers (not used in KSP DataGrid). -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridRow">
+                    <Border x:Name="DGR_Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">
+                        <DataGridCellsPresenter ItemsPanel="{TemplateBinding ItemsPanel}"
+                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource KSP_RowHoverBackground}" />
