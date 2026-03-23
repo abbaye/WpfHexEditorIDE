@@ -1074,6 +1074,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 PruneStaleDocumentItems(layout);
                 ApplyLayout(layout);
                 EnsureErrorPanel();
+                _layoutWasRestoredFromFile = true; // treat embedded default like a restored layout — defer plugin panels absent from it
                 OutputLogger.Debug("Default layout applied from embedded resource.");
                 return;
             }
