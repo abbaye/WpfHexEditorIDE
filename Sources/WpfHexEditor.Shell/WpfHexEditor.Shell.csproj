@@ -11,8 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <!--
+      Shell is now a XAML-only theme distributor.
+      Docking.Wpf is pulled in here so that all existing consumers (App, Options, Terminal, Samples)
+      that reference only WpfHexEditor.Shell continue to get DockControl etc. transitively.
+    -->
+    <ProjectReference Include="..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
   </ItemGroup>
 
 </Project>

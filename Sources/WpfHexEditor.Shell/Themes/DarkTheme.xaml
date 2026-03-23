@@ -21,11 +21,11 @@
     <!-- Dark Theme for WpfHexEditor.Docking (VS2022 Dark inspired) -->
     <!-- Split into composable sub-files for maintainability -->
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Dark/Colors.xaml" />
-        <ResourceDictionary Source="Dark/Menu.xaml" />
-        <ResourceDictionary Source="Dark/TabControl.xaml" />
-        <ResourceDictionary Source="Dark/ContentControls.xaml" />
-        <ResourceDictionary Source="PanelCommon.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Dark/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Dark/Menu.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Dark/TabControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Dark/ContentControls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/PanelCommon.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

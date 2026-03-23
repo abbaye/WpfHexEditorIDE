@@ -20,10 +20,10 @@
     <!-- Office Theme — Microsoft Office 2021/365 light, reuses Light templates -->
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Office/Colors.xaml" />
-        <ResourceDictionary Source="Light/Menu.xaml" />
-        <ResourceDictionary Source="Light/TabControl.xaml" />
-        <ResourceDictionary Source="Light/ContentControls.xaml" />
-        <ResourceDictionary Source="PanelCommon.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Light/Menu.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Light/TabControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Light/ContentControls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/PanelCommon.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

@@ -20,7 +20,7 @@
         x:Name="ThisWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dock="clr-namespace:WpfHexEditor.Shell;assembly=WpfHexEditor.Shell"
+        xmlns:dock="clr-namespace:WpfHexEditor.Shell;assembly=WpfHexEditor.Docking.Wpf"
         Title="WpfHexEditor — Docking Sample"
         Width="1100" Height="700"
         MinWidth="600" MinHeight="400"

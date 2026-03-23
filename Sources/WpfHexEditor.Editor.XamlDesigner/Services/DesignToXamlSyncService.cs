@@ -455,6 +455,10 @@ public sealed class DesignToXamlSyncService
         if (localName.StartsWith("DataGrid", StringComparison.Ordinal) &&
             localName.EndsWith("Column",     StringComparison.Ordinal)) return false;
 
+        // Value converters (IValueConverter / IMultiValueConverter implementations).
+        // BooleanToVisibilityConverter, NullToVisibilityConverter, … — none inherit FrameworkElement.
+        if (localName.EndsWith("Converter", StringComparison.Ordinal)) return false;
+
         // WPF value-type / struct elements that appear in resource dictionaries.
         // These are NOT FrameworkElements — they have no Tag dependency property.
         if (localName == "Color")                                       return false;

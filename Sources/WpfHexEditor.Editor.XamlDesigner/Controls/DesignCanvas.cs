@@ -175,8 +175,6 @@ public sealed class DesignCanvas : Border
         // the dark XD_CanvasBackground, which was visually covering transparent XAML roots
         // (Grid, UserControl, StackPanel) and making them appear "hidden behind" a dark layer.
         Background = Brushes.Transparent;
-        SetResourceReference(BorderBrushProperty, "XD_CanvasBorderBrush");
-        BorderThickness = new Thickness(1);
 
         // Explicit natural size so ZoomPanCanvas formulas (ClampOffsets, FitToContent,
         // zoom-toward-mouse) see the real design dimensions rather than the viewport size.
