@@ -24,13 +24,15 @@ public sealed class CommandPaletteWindow : Window
 {
     private readonly CommandPaletteService _service;
     private readonly Window _owner;
+    private readonly Point? _anchor;
     private readonly TextBox _searchBox;
     private readonly ListBox _resultsList;
 
-    public CommandPaletteWindow(CommandPaletteService service, Window owner)
+    public CommandPaletteWindow(CommandPaletteService service, Window owner, Point? anchor = null)
     {
         _service = service;
         _owner   = owner;
+        _anchor  = anchor;
 
         // Window chrome
         WindowStyle          = WindowStyle.None;
@@ -144,9 +146,18 @@ public sealed class CommandPaletteWindow : Window
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        // Position centred, ~18% from top of owner.
-        Left = _owner.Left + (_owner.Width - ActualWidth) / 2;
-        Top  = _owner.Top  + _owner.Height * 0.18;
+        if (_anchor.HasValue)
+        {
+            // Flush below the launcher button, centered on it
+            Left = _anchor.Value.X - ActualWidth / 2;
+            Top  = _anchor.Value.Y;
+        }
+        else
+        {
+            // Fallback (keyboard shortcut path): centered, ~18% from top of owner
+            Left = _owner.Left + (_owner.Width - ActualWidth) / 2;
+            Top  = _owner.Top  + _owner.Height * 0.18;
+        }
 
         RefreshResults(string.Empty);
         _searchBox.Focus();

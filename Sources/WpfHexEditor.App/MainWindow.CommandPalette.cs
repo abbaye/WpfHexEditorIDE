@@ -56,6 +56,15 @@ public partial class MainWindow
         }
 
         var service = new CommandPaletteService(entries);
-        new CommandPaletteWindow(service, this).Show();
+
+        // Anchor palette flush below the title bar launcher button (if available)
+        System.Windows.Point? anchor = null;
+        if (TitleBarSearchButton is { IsLoaded: true })
+            anchor = TitleBarSearchButton.PointToScreen(
+                new System.Windows.Point(
+                    TitleBarSearchButton.ActualWidth  / 2,
+                    TitleBarSearchButton.ActualHeight));
+
+        new CommandPaletteWindow(service, this, anchor).Show();
     }
 }

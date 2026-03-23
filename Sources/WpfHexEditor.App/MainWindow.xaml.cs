@@ -736,22 +736,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void UpdateTitleBarSearchLabel()
     {
         if (TitleBarSearchLabel is null) return;
-
-        var name = _solutionManager.CurrentSolution?.Name;
-        if (name is not null)
-        {
-            TitleBarSearchLabel.Text       = name;
-            TitleBarSearchLabel.FontWeight = FontWeights.SemiBold;
-            TitleBarSearchLabel.FontStyle  = FontStyles.Normal;
-            TitleBarSearchLabel.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TB_SearchTextBrush");
-        }
-        else
-        {
-            TitleBarSearchLabel.Text       = "<Wpf:HexEditor Studio />";
-            TitleBarSearchLabel.FontWeight = FontWeights.Normal;
-            TitleBarSearchLabel.FontStyle  = FontStyles.Italic;
-            TitleBarSearchLabel.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TB_SearchHintBrush");
-        }
+        TitleBarSearchLabel.Text       = "<Wpf:HexEditor Studio />";
+        TitleBarSearchLabel.FontWeight = FontWeights.Normal;
+        TitleBarSearchLabel.FontStyle  = FontStyles.Italic;
+        TitleBarSearchLabel.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TB_SearchHintBrush");
     }
 
     private void OnFormatUpgradeRequired(object? sender, FormatUpgradeRequiredEventArgs e)
