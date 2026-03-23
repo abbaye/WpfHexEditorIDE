@@ -49,12 +49,16 @@ internal sealed class CodeScrollMarkerPanel : FrameworkElement
     private static readonly Brush s_wordHighlightTick = MakeFrozenBrush(Color.FromArgb(220, 86, 156, 214));
     private static readonly Brush s_caretTick         = MakeFrozenBrush(Color.FromArgb(220, 255, 255, 100)); // bright yellow
     private static readonly Brush s_selectionBlock    = MakeFrozenBrush(Color.FromArgb(70,   86, 156, 214)); // semi-transparent blue
+    private static readonly Brush s_errorTick         = MakeFrozenBrush(Color.FromArgb(200, 244, 71,  71));  // red — diagnostic errors
+    private static readonly Brush s_warningTick       = MakeFrozenBrush(Color.FromArgb(200, 255, 168,  0));  // amber — diagnostic warnings
 
     #endregion
 
     #region Fields
 
     private IReadOnlyList<int> _wordHighlightLines = [];
+    private IReadOnlyList<int> _errorLines         = [];
+    private IReadOnlyList<int> _warningLines       = [];
     private int                _totalLines         = 1;
     private int                _caretLine          = -1;
     private int                _selectionStart     = -1;
@@ -83,6 +87,28 @@ internal sealed class CodeScrollMarkerPanel : FrameworkElement
     {
         _wordHighlightLines = lines;
         _totalLines         = Math.Max(1, totalLines);
+        InvalidateVisual();
+    }
+
+    /// <summary>
+    /// Updates the diagnostic error and warning tick marks.
+    /// </summary>
+    /// <param name="errorLines">0-based line indices that have at least one error.</param>
+    /// <param name="warningLines">0-based line indices that have at least one warning (and no error).</param>
+    /// <param name="totalLines">Total line count of the document.</param>
+    public void UpdateDiagnosticMarkers(IReadOnlyList<int> errorLines, IReadOnlyList<int> warningLines, int totalLines)
+    {
+        _errorLines   = errorLines;
+        _warningLines = warningLines;
+        _totalLines   = Math.Max(1, totalLines);
+        InvalidateVisual();
+    }
+
+    /// <summary>Removes all diagnostic tick marks.</summary>
+    public void ClearDiagnosticMarkers()
+    {
+        _errorLines   = [];
+        _warningLines = [];
         InvalidateVisual();
     }
 
@@ -131,6 +157,22 @@ internal sealed class CodeScrollMarkerPanel : FrameworkElement
             double yBot = TopMargin + (_selectionEnd   / (double)_totalLines) * drawableH;
             double h    = Math.Max(2, yBot - yTop);
             dc.DrawRectangle(s_selectionBlock, null, new Rect(tickX, yTop, TickWidth, h));
+        }
+
+        // Warning ticks — rendered before error ticks so errors always sit on top.
+        foreach (int line in _warningLines)
+        {
+            double y = TopMargin + (line / (double)_totalLines) * drawableH;
+            dc.DrawRectangle(s_warningTick, null,
+                new Rect(tickX, y, TickWidth, TickHeight));
+        }
+
+        // Error ticks.
+        foreach (int line in _errorLines)
+        {
+            double y = TopMargin + (line / (double)_totalLines) * drawableH;
+            dc.DrawRectangle(s_errorTick, null,
+                new Rect(tickX, y, TickWidth, TickHeight));
         }
 
         // Word-highlight ticks.

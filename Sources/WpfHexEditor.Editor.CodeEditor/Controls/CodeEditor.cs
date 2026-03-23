@@ -33,6 +33,7 @@ using WpfHexEditor.Editor.CodeEditor.Options;
 using WpfHexEditor.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
+using WpfHexEditor.Editor.CodeEditor.MultiCaret;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -51,6 +52,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int _cursorColumn = 0;      // Current cursor column (0-based)
         private TextSelection _selection;   // Current text selection
         private int _lastNotifiedCursorLine = -1; // Tracks last CaretMoved notification line
+
+        // Multi-caret manager — index 0 is always the primary caret.
+        private readonly CaretManager _caretManager = new();
 
         #endregion
 
@@ -209,6 +213,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             "FindAllReferences",
             typeof(CodeEditor),
             new InputGestureCollection { new KeyGesture(Key.F12, ModifierKeys.Shift) });
+
+        /// <summary>
+        /// Routed command for "Select Next Occurrence" — Ctrl+D (VS Code behaviour).
+        /// Adds the next occurrence of the word/selection as a secondary caret selection.
+        /// </summary>
+        public static readonly RoutedUICommand SelectNextOccurrenceCommand = new(
+            "Select Next Occurrence",
+            "SelectNextOccurrence",
+            typeof(CodeEditor),
+            new InputGestureCollection { new KeyGesture(Key.D, ModifierKeys.Control) });
 
         #endregion
 
@@ -1774,6 +1788,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _caretTimer.Tick += CaretTimer_Tick;
             UpdateCaretBlinkTimer();
 
+            // Multi-caret: any change → redraw so secondary carets appear immediately.
+            _caretManager.CaretsChanged += (_, _) => InvalidateVisual();
+
+            // Diagnostics → refresh scroll-marker panel tick marks whenever validation runs.
+            DiagnosticsChanged += (_, _) => UpdateDiagnosticScrollMarkers();
+
             // Initialize smooth scroll timer
             _smoothScrollTimer = new System.Windows.Threading.DispatcherTimer();
             _smoothScrollTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
@@ -2590,6 +2610,63 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 async (_, _) => await FindAllReferencesAsync(),
                 (_, e) => e.CanExecute = EnableFindAllReferences
                                          && _document is not null));
+
+            // Select Next Occurrence (Ctrl+D) — multi-caret word selection.
+            CommandBindings.Add(new CommandBinding(
+                SelectNextOccurrenceCommand,
+                (_, _) => SelectNextOccurrence(),
+                (_, e) => e.CanExecute = _document is not null));
+        }
+
+        /// <summary>
+        /// Selects the next occurrence of the word at the caret (or the current selection text)
+        /// and adds a secondary caret at that position. VS Code Ctrl+D behaviour.
+        /// </summary>
+        private void SelectNextOccurrence()
+        {
+            if (_document == null) return;
+
+            string word = _selection.IsEmpty
+                ? GetWordAtCursor()
+                : _document.GetText(_selection.NormalizedStart, _selection.NormalizedEnd);
+
+            if (string.IsNullOrEmpty(word)) return;
+
+            // Start search from the current caret position (or end of the last caret).
+            int startLine = _caretManager.IsMultiCaret
+                ? _caretManager.Carets[^1].Line
+                : _cursorLine;
+            int startCol  = _caretManager.IsMultiCaret
+                ? _caretManager.Carets[^1].Column + 1
+                : _cursorColumn + 1;
+
+            int totalLines = _document.Lines.Count;
+            for (int pass = 0; pass < 2; pass++) // allow wrap-around once
+            {
+                for (int li = (pass == 0 ? startLine : 0);
+                     li < totalLines;
+                     li++)
+                {
+                    string lineText = _document.Lines[li].Text;
+                    int searchFrom  = (pass == 0 && li == startLine) ? Math.Min(startCol, lineText.Length) : 0;
+                    int idx         = lineText.IndexOf(word, searchFrom, StringComparison.Ordinal);
+
+                    if (idx >= 0)
+                    {
+                        _caretManager.AddCaret(li, idx + word.Length);
+                        // Also update primary caret to the new position.
+                        _cursorLine   = li;
+                        _cursorColumn = idx + word.Length;
+                        EnsureCursorVisible();
+                        NotifyCaretMovedIfChanged();
+                        InvalidateVisual();
+                        return;
+                    }
+                }
+                // Wrap: restart from top on second pass.
+                startLine = 0;
+                startCol  = 0;
+            }
         }
 
         private void FormatJsonMenuItem_Click(object sender, RoutedEventArgs e)
@@ -4018,9 +4095,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (worstSeverity == ValidationSeverity.Info) return; // No glyph for Info
 
+            // Use themed CE_GutterError / CE_GutterWarning when available; fall back to static pens.
             Brush glyphBrush = worstSeverity == ValidationSeverity.Error
-                ? s_squigglyError.Brush
-                : s_squigglyWarning.Brush;
+                ? (TryFindResource("CE_GutterError")   as Brush ?? s_squigglyError.Brush)
+                : (TryFindResource("CE_GutterWarning") as Brush ?? s_squigglyWarning.Brush);
 
             double glyphSize = Math.Min(_lineHeight * 0.6, 12);
             double glyphX    = 5;
@@ -4963,6 +5041,29 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             dc.DrawLine(cursorPen,
                 new Point(x, y),
                 new Point(x, y + _lineHeight - 2));
+
+            // Secondary carets (multi-caret editing) — drawn at 60% opacity.
+            if (_caretManager.IsMultiCaret)
+            {
+                var carets    = _caretManager.Carets;
+                var secondaryColor = Color.FromArgb(
+                    (byte)(caretColor.A * 0.6),
+                    caretColor.R, caretColor.G, caretColor.B);
+                var secondaryPen = new Pen(new SolidColorBrush(secondaryColor), CaretWidth);
+                secondaryPen.Freeze();
+                double textLeftSec = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+                for (int ci = 1; ci < carets.Count; ci++)
+                {
+                    var c = carets[ci];
+                    if (c.Line < _firstVisibleLine || c.Line > _lastVisibleLine) continue;
+
+                    double sx = textLeftSec + c.Column * _charWidth;
+                    double sy = _lineYLookup.TryGetValue(c.Line, out double scy) ? scy
+                        : TopMargin + (c.Line - _firstVisibleLine) * _lineHeight;
+                    dc.DrawLine(secondaryPen, new Point(sx, sy), new Point(sx, sy + _lineHeight - 2));
+                }
+            }
         }
 
         /// <summary>
@@ -6245,6 +6346,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 && _lineYLookup.TryGetValue(textPos.Line, out double codeTextY)
                 && pos.Y < codeTextY)
             {
+                e.Handled = true;
+                return;
+            }
+
+            // Ctrl+Alt+Click → add a secondary caret at the clicked position.
+            bool ctrlAltDown = (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt))
+                                == (ModifierKeys.Control | ModifierKeys.Alt);
+            if (ctrlAltDown && e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 1)
+            {
+                _caretManager.AddCaret(textPos.Line, textPos.Column);
                 e.Handled = true;
                 return;
             }
@@ -8540,6 +8651,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Line:        ve.Line + 1,
                 Column:      ve.Column + 1
             )).ToList();
+        }
+
+        /// <summary>
+        /// Pushes error and warning line indices from the current validation state to
+        /// <see cref="_codeScrollMarkerPanel"/> so red/amber ticks appear on the scrollbar.
+        /// Called automatically whenever <see cref="DiagnosticsChanged"/> fires.
+        /// </summary>
+        private void UpdateDiagnosticScrollMarkers()
+        {
+            if (_codeScrollMarkerPanel == null) return;
+
+            var errorLines   = new List<int>();
+            var warningLines = new List<int>();
+
+            foreach (var (line, errors) in _validationByLine)
+            {
+                bool hasError = errors.Any(e => e.Severity == Models.ValidationSeverity.Error);
+                if (hasError)
+                    errorLines.Add(line);
+                else
+                    warningLines.Add(line);
+            }
+
+            _codeScrollMarkerPanel.UpdateDiagnosticMarkers(errorLines, warningLines,
+                _document?.Lines.Count ?? 1);
         }
 
         // ═══════════════════════════════════════════════════════════════════════

@@ -44,7 +44,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IDiagnosticSource
 {
     #region Child controls
 
@@ -493,4 +493,22 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     /// <inheritdoc />
     public void RefreshStatusBarItems() => _activeEditor.RefreshJsonStatusBarItems();
+
+    // ═══════════════════════════════════════════════════════════════════
+    // IDiagnosticSource — forwards to _primaryEditor
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// <inheritdoc />
+    public string SourceLabel => ((IDiagnosticSource)_primaryEditor).SourceLabel;
+
+    /// <inheritdoc />
+    public System.Collections.Generic.IReadOnlyList<DiagnosticEntry> GetDiagnostics()
+        => ((IDiagnosticSource)_primaryEditor).GetDiagnostics();
+
+    /// <inheritdoc />
+    public event EventHandler? DiagnosticsChanged
+    {
+        add    => ((IDiagnosticSource)_primaryEditor).DiagnosticsChanged += value;
+        remove => ((IDiagnosticSource)_primaryEditor).DiagnosticsChanged -= value;
+    }
 }

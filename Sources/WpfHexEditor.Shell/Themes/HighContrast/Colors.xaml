@@ -309,6 +309,17 @@
     <SolidColorBrush x:Key="CE_CurrentLine"   Color="#1A1A1A"/>
     <SolidColorBrush x:Key="CE_Selection"         Color="#1A1A1A"/>
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#111111"/>
+    <SolidColorBrush x:Key="CE_GutterError"       Color="#FF0000"/>
+    <SolidColorBrush x:Key="CE_GutterWarning"     Color="#FFFF00"/>
+
+    <SolidColorBrush x:Key="DT_PanelBackground"     Color="#000000" />
+    <SolidColorBrush x:Key="DT_PanelForeground"     Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DT_SectionHeader"       Color="#FFFF00" />
+    <SolidColorBrush x:Key="DT_GraphBackground"     Color="#000000" />
+    <SolidColorBrush x:Key="DT_GraphBorder"         Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DT_ToolbarBackground"   Color="#000000" />
+    <SolidColorBrush x:Key="DT_EventListBackground" Color="#000000" />
+    <SolidColorBrush x:Key="DT_StatusForeground"    Color="#00FF00" />
 
     <!-- CE_QuickInfo_* -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#000000"/>

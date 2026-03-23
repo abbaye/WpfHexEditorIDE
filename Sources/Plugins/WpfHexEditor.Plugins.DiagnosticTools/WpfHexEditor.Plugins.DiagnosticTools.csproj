@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WpfHexEditor.Plugins.DiagnosticTools</RootNamespace>
+    <AssemblyName>WpfHexEditor.Plugins.DiagnosticTools</AssemblyName>
+    <!-- Plugin metadata — auto-generates manifest.json via WpfHexEditor.SDK.targets -->
+    <PluginId>WpfHexEditor.Plugins.DiagnosticTools</PluginId>
+    <PluginName>Diagnostic Tools</PluginName>
+    <PluginVersion>0.1.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.DiagnosticTools.DiagnosticToolsPlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>VS-style diagnostic panel: CPU, memory, GC events and heap snapshots for the process launched by the build system.</PluginDescription>
+    <PluginIsolationMode>Auto</PluginIsolationMode>
+    <PluginLoadPriority>45</PluginLoadPriority>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
+    <PluginPermAccessHexEditor>false</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem>true</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>true</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>true</PluginPermWriteOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.510501" />
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.7" />
+  </ItemGroup>
+
+  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
+  <!-- Copy compiled plugin + NuGet deps to App Plugins directory after build -->
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true" />
+    <!-- Copy DiagnosticsClient and TraceEvent deps into the plugin folder -->
+    <Copy SourceFiles="$(OutputPath)Microsoft.Diagnostics.NETCore.Client.dll"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(OutputPath)Microsoft.Diagnostics.NETCore.Client.dll')" />
+    <Copy SourceFiles="$(OutputPath)Microsoft.Diagnostics.Tracing.TraceEvent.dll"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(OutputPath)Microsoft.Diagnostics.Tracing.TraceEvent.dll')" />
+  </Target>
+
+</Project>
