@@ -390,6 +390,93 @@
         </Style.Triggers>
     </Style>
 
+    <!-- ── Keyboard Shortcuts Page (KSP_*) ───────────────────────────────────── -->
+
+    <Style x:Key="KSP_DataGridStyle" TargetType="DataGrid">
+        <Setter Property="Background"               Value="{DynamicResource KSP_DataGridBackground}" />
+        <Setter Property="Foreground"               Value="{DynamicResource KSP_CellForeground}" />
+        <Setter Property="BorderThickness"          Value="0" />
+        <Setter Property="RowBackground"            Value="{DynamicResource KSP_DataGridBackground}" />
+        <Setter Property="AlternatingRowBackground" Value="{DynamicResource KSP_DataGridBackground}" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="VerticalGridLinesBrush"   Value="Transparent" />
+        <Setter Property="GridLinesVisibility"      Value="Horizontal" />
+        <Setter Property="SelectionMode"            Value="Single" />
+        <Setter Property="CanUserResizeRows"        Value="False" />
+        <Setter Property="ColumnHeaderStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background"      Value="{DynamicResource DockMenuBackgroundBrush}" />
+                    <Setter Property="Foreground"      Value="{DynamicResource KSP_CellForeground}" />
+                    <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}" />
+                    <Setter Property="BorderThickness" Value="0,0,1,1" />
+                    <Setter Property="Padding"         Value="6,4" />
+                    <Setter Property="SeparatorBrush"  Value="{DynamicResource DockBorderBrush}" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="KSP_DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource KSP_CellForeground}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource KSP_RowHoverBackground}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource DockAccentBrush}" />
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="KSP_SearchBoxStyle" TargetType="TextBox">
+        <Setter Property="Background"       Value="{DynamicResource KSP_EditBackground}" />
+        <Setter Property="Foreground"       Value="{DynamicResource KSP_CellForeground}" />
+        <Setter Property="CaretBrush"       Value="{DynamicResource KSP_CellForeground}" />
+        <Setter Property="BorderBrush"      Value="{DynamicResource KSP_EditBorder}" />
+        <Setter Property="BorderThickness"  Value="1" />
+        <Setter Property="Padding"          Value="6,3" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="KSP_ResetButtonStyle" TargetType="Button">
+        <Setter Property="Padding"          Value="6,3" />
+        <Setter Property="MinWidth"         Value="36" />
+        <Setter Property="Cursor"           Value="Hand" />
+        <Setter Property="Foreground"       Value="{DynamicResource KSP_CellForeground}" />
+        <Setter Property="Background"       Value="{DynamicResource KSP_EditBackground}" />
+        <Setter Property="BorderBrush"      Value="{DynamicResource KSP_EditBorder}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                        <Border x:Name="Overlay" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Overlay" Property="Background"  Value="#20FFFFFF" />
+                            <Setter TargetName="Root"    Property="BorderBrush" Value="{DynamicResource DockAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Overlay" Property="Background" Value="#40FFFFFF" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- ── Button — VS2026-style overlay template ──────────────────────────── -->
     <!--
         FocusVisualStyle="{x:Null}" prevents the OS-native blue focus rectangle.

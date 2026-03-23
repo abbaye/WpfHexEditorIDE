@@ -158,9 +158,22 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
 
         Grid.SetRow(_grid, 1);
 
+        // Mouse-wheel scroll — wire after template is applied so DG_ScrollViewer exists
+        _grid.Loaded += OnGridLoaded;
+
         root.Children.Add(toolbar);
         root.Children.Add(_grid);
         Content = root;
+    }
+
+    private void OnGridLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_grid.Template?.FindName("DG_ScrollViewer", _grid) is ScrollViewer sv)
+            _grid.PreviewMouseWheel += (_, we) =>
+            {
+                sv.ScrollToVerticalOffset(sv.VerticalOffset - we.Delta / 3.0);
+                we.Handled = true;
+            };
     }
 
     // -----------------------------------------------------------------------
