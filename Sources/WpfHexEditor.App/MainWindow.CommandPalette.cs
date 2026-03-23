@@ -57,13 +57,22 @@ public partial class MainWindow
 
         var service = new CommandPaletteService(entries);
 
-        // Anchor palette flush below the title bar launcher button (if available)
+        // Anchor palette flush below the title bar launcher button (if available).
+        // PointToScreen returns physical pixels; Window.Left/Top are in DIPs.
+        // Divide by the DPI scale factor so positioning is correct on all DPI settings.
         System.Windows.Point? anchor = null;
         if (TitleBarSearchButton is { IsLoaded: true })
-            anchor = TitleBarSearchButton.PointToScreen(
+        {
+            var physPt = TitleBarSearchButton.PointToScreen(
                 new System.Windows.Point(
                     TitleBarSearchButton.ActualWidth  / 2,
                     TitleBarSearchButton.ActualHeight));
+
+            var src = System.Windows.PresentationSource.FromVisual(this);
+            var dpiX = src?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+            var dpiY = src?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            anchor = new System.Windows.Point(physPt.X / dpiX, physPt.Y / dpiY);
+        }
 
         new CommandPaletteWindow(service, this, anchor).Show();
     }
