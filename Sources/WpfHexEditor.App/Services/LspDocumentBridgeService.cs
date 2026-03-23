@@ -24,6 +24,22 @@ using WpfHexEditor.LSP.Client.Services;
 
 namespace WpfHexEditor.App.Services;
 
+// ── LSP server state ─────────────────────────────────────────────────────────
+
+/// <summary>Lifecycle states of a Language Server Process.</summary>
+public enum LspServerState { Idle, Connecting, Ready, Error }
+
+/// <summary>Event args published when an LSP server changes state.</summary>
+public sealed class LspServerStateChangedEventArgs : EventArgs
+{
+    public required string        LanguageId { get; init; }
+    public required LspServerState State      { get; init; }
+    /// <summary>Human-readable server name (e.g. "OmniSharp"). Null when Idle.</summary>
+    public          string?       ServerName { get; init; }
+    /// <summary>Error message when State == Error.</summary>
+    public          string?       ErrorMessage { get; init; }
+}
+
 /// <summary>
 /// Coordinates <see cref="LspBufferBridge"/> creation/disposal in response to
 /// <see cref="IDocumentManager"/> document lifecycle events.
@@ -41,6 +57,22 @@ internal sealed class LspDocumentBridgeService : IDisposable
     private readonly Dictionary<string, LspBufferBridge>  _bridges = new(StringComparer.OrdinalIgnoreCase);
 
     private bool _disposed;
+
+    // ── Public API ────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// The most recently initialized LSP client, or null when no server is active.
+    /// Used by the workspace-symbols popup (Ctrl+T) to issue workspace/symbol requests.
+    /// </summary>
+    public ILspClient? ActiveClient => _clients.Values.FirstOrDefault(c => c.IsInitialized);
+
+    // ── Public events ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Raised on the WPF dispatcher thread when a language server's connection state changes.
+    /// Consumers (e.g. <c>LspStatusBarAdapter</c>) can subscribe to update UI indicators.
+    /// </summary>
+    public event EventHandler<LspServerStateChangedEventArgs>? ServerStateChanged;
 
     // ── Construction ──────────────────────────────────────────────────────────
 
@@ -86,10 +118,12 @@ internal sealed class LspDocumentBridgeService : IDisposable
         {
             if (!_clients.TryGetValue(entry.LanguageId, out var client))
             {
+                RaiseState(entry, LspServerState.Connecting);
                 client = _registry.CreateClient(entry);
                 await client.InitializeAsync().ConfigureAwait(true);  // true = resume on UI thread
                 _clients[entry.LanguageId] = client;
                 _log($"[LSP] Server initialized for '{entry.LanguageId}'.");
+                RaiseState(entry, LspServerState.Ready);
             }
 
             if (_disposed || _bridges.ContainsKey(buffer.FilePath)) return;
@@ -110,7 +144,20 @@ internal sealed class LspDocumentBridgeService : IDisposable
         catch (Exception ex)
         {
             _log($"[LSP] Bridge init failed for '{buffer.FilePath}': {ex.Message}");
+            RaiseState(entry, LspServerState.Error, ex.Message);
         }
+    }
+
+    private void RaiseState(LspServerEntry entry, LspServerState state, string? error = null)
+    {
+        var args = new LspServerStateChangedEventArgs
+        {
+            LanguageId   = entry.LanguageId,
+            State        = state,
+            ServerName   = entry.LanguageId,   // use language ID as display name
+            ErrorMessage = error,
+        };
+        ServerStateChanged?.Invoke(this, args);
     }
 
     private void OnDocumentUnregistered(object? sender, DocumentModel doc)

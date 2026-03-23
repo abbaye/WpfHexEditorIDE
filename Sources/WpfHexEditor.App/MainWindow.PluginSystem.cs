@@ -54,6 +54,7 @@ public partial class MainWindow
     private IDEEventBus? _ideEventBus;
     private DocumentHostService? _documentHostService;
     private WpfHexEditor.App.Services.LspDocumentBridgeService? _lspBridgeService;
+    private WpfHexEditor.App.Services.LspStatusBarAdapter?      _lspStatusBarAdapter;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -156,6 +157,11 @@ public partial class MainWindow
                     _documentManager,
                     lspRegistry,
                     msg => OutputLogger.PluginInfo(msg));
+
+                // LSP-02-D: Status bar indicator for LSP server state.
+                _lspStatusBarAdapter = new WpfHexEditor.App.Services.LspStatusBarAdapter(
+                    _lspBridgeService,
+                    onErrorClick: () => OpenSettingsAt("Language Server Protocol", "Servers"));
             }
 
             var hostContext = new IDEHostContext(
@@ -715,6 +721,35 @@ public partial class MainWindow
         OutputLogger.PluginInfo($"[DevWatch] Watching '{pluginId}' → {dir}");
     }
 
+    // --- New Plugin Wizard (Ctrl+Alt+N) ----------------------------------
+
+    private void OnNewPluginWizard(object sender, RoutedEventArgs e)
+    {
+        var wizard = new WpfHexEditor.PluginDev.UI.NewPluginWizardWindow
+        {
+            Owner = this,
+        };
+        wizard.ShowDialog();
+    }
+
+    // --- Plugin Hot-Reload (Ctrl+Shift+R) --------------------------------
+
+    private void OnPluginHotReload(object sender, RoutedEventArgs e)
+    {
+        if (_pluginDevLoader is null)
+        {
+            OutputLogger.PluginWarn("[HotReload] No active plugin dev session — use Plugin Dev Watch first.");
+            return;
+        }
+
+        // The PluginDevLoader in PluginHost does not expose a direct hot-reload
+        // by project path from the App layer; we log a helpful hint instead.
+        // Full hot-reload is triggered automatically when AutoRebuildOnSave is on
+        // and a source file changes, or manually via the PluginDevToolbar.
+        OutputLogger.PluginInfo("[HotReload] Hot-reload is managed by the Plugin Dev toolbar. " +
+            "Ensure the Plugin Dev Watch is active and AutoRebuildOnSave is enabled in Options.");
+    }
+
     // --- Content factories for panels that may be restored from layout --
 
     /// <summary>
@@ -838,6 +873,8 @@ public partial class MainWindow
             _hexEditorService.SelectionChanged -= OnHexEditorSelectionChanged;
         await _pluginHost.DisposeAsync().ConfigureAwait(false);
         _pluginHost = null;
+        _lspStatusBarAdapter?.Dispose();
+        _lspStatusBarAdapter = null;
         _lspBridgeService?.Dispose();
         _lspBridgeService = null;
         _ideEventBus?.Dispose();

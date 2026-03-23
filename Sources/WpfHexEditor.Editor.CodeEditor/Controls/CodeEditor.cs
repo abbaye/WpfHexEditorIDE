@@ -7552,6 +7552,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!_enableSmartComplete || _smartCompletePopup == null)
                 return;
 
+            _smartCompletePopup.CaretScreenPoint = ComputeCaretScreenPoint(belowCaret: true);
             _smartCompletePopup.TriggerImmediate();
         }
 
@@ -7563,7 +7564,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!_enableSmartComplete || _smartCompletePopup == null)
                 return;
 
+            _smartCompletePopup.CaretScreenPoint = ComputeCaretScreenPoint(belowCaret: true);
             _smartCompletePopup.TriggerWithDelay(SmartCompleteDelay);
+        }
+
+        /// <summary>
+        /// Computes the screen coordinates of the current caret position.
+        /// When <paramref name="belowCaret"/> is true the Y coordinate is shifted one line down
+        /// so popups appear beneath the caret line rather than overlapping it.
+        /// </summary>
+        private Point ComputeCaretScreenPoint(bool belowCaret = false)
+        {
+            var textLeft = ShowLineNumbers ? 70.0 : 4.0;
+            var localX   = textLeft + _cursorColumn * _charWidth - _horizontalScrollOffset;
+            var localY   = (_cursorLine - _firstVisibleLine + (belowCaret ? 1 : 0)) * _lineHeight;
+            return PointToScreen(new Point(localX, localY));
         }
 
         /// <summary>
@@ -7859,6 +7874,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _currentFilePath = filePath;
+            if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             _undoEngine.MarkSaved();  // Stamp save-point so Undo can detect "back to clean".
             _isDirty = false;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
@@ -7879,6 +7895,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var text = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
             LoadText(text);
             _currentFilePath = filePath;
+            if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             TitleChanged?.Invoke(this, BuildTitle());
             StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
             RefreshJsonStatusBarItems();
@@ -7939,6 +7956,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _lineNumberCache.Clear();
             InvalidateMeasure();
             _currentFilePath = filePath;
+            if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
 
             // Re-attach InlineHints with the resolved file path so workspace-wide
             // counting uses the correct extension filter.
@@ -7988,6 +8006,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _lspClient = client;
             _hoverQuickInfoService?.SetLspClient(client);
             _ctrlClickService?.SetLspClient(client);
+            if (_smartCompletePopup is not null)
+            {
+                _smartCompletePopup.SetLspClient(client);
+                _smartCompletePopup.CurrentFilePath = _currentFilePath;
+            }
             _signatureHelpPopup!.IsOpen = false;
             _lspDocVersion = 0;
 
@@ -8054,11 +8077,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (sig is null) return;
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    var textLeft = ShowLineNumbers ? 70.0 : 4.0;  // TextAreaLeftOffset or LeftMargin
-                    var localX   = textLeft + _cursorColumn * _charWidth - _horizontalScrollOffset;
-                    var localY   = (_cursorLine - _firstVisibleLine) * _lineHeight;
-                    var screenPt = PointToScreen(new Point(localX, localY));
-                    _signatureHelpPopup?.Show(sig, screenPt);
+                    _signatureHelpPopup?.Show(sig, ComputeCaretScreenPoint(belowCaret: false));
                 });
             }
             catch (Exception ex)
@@ -8087,10 +8106,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 if (actions.Count == 0) return;
 
-                var textLeft = ShowLineNumbers ? 70.0 : 4.0;
-                var localX   = textLeft + _cursorColumn * _charWidth - _horizontalScrollOffset;
-                var localY   = (_cursorLine - _firstVisibleLine + 1) * _lineHeight;
-                var screenPt = PointToScreen(new Point(localX, localY));
+                var screenPt = ComputeCaretScreenPoint(belowCaret: true);
 
                 var selected = await _lspCodeActionPopup!
                     .ShowAsync(actions, screenPt.X, screenPt.Y).ConfigureAwait(true);
@@ -8117,10 +8133,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 var currentWord = GetWordAtCaret();
 
-                var textLeft = ShowLineNumbers ? 70.0 : 4.0;
-                var localX   = textLeft + _cursorColumn * _charWidth - _horizontalScrollOffset;
-                var localY   = (_cursorLine - _firstVisibleLine) * _lineHeight;
-                var screenPt = PointToScreen(new Point(localX, localY));
+                var screenPt = ComputeCaretScreenPoint(belowCaret: false);
 
                 var newName = await _lspRenamePopup!
                     .ShowAsync(currentWord, screenPt.X, screenPt.Y).ConfigureAwait(true);
@@ -8677,6 +8690,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _document = new Models.CodeDocument();
             _currentFilePath = null;
+            if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = null;
             _isDirty = false;
             _cursorLine = 0;
             _cursorColumn = 0;

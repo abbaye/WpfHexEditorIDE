@@ -113,6 +113,8 @@ public partial class MainWindow
         // ── View ────────────────────────────────────────────────────────────
         Reg(CommandIds.View.CommandPalette,  "Command Palette",      "View",    "Ctrl+Shift+P",   "\uE721",
             () => ShowCommandPaletteCommand.Execute(null, this));
+        Reg(CommandIds.View.WorkspaceSymbols,"Go to Symbol…",        "View",    "Ctrl+T",         "\uE8EF",
+            () => ShowWorkspaceSymbolsPopup());
         Reg(CommandIds.View.SolutionExplorer,"Solution Explorer",    "View",    "Ctrl+Alt+L",     "\uE8B7",
             () => OnShowSolutionExplorer(this, null!));
         Reg(CommandIds.View.Properties,    "Properties",             "View",    "F4",             "\uE713",
@@ -183,6 +185,10 @@ public partial class MainWindow
             () => OnRefreshAllPlugins(this, null!));
         Reg(CommandIds.Plugins.DevWatch,      "Plugin Dev Watch…",  "Plugins",  null,             "\uE8F4",
             () => OnOpenPluginDevWatch(this, null!));
+        Reg(CommandIds.Plugins.NewPluginWizard, "New Plugin Project…","Plugins", "Ctrl+Alt+N",     "\uE8A5",
+            () => OnNewPluginWizard(this, null!));
+        Reg(CommandIds.Plugins.PluginHotReload, "Hot-Reload Plugin",  "Plugins", "Ctrl+Shift+R",   "\uE72C",
+            () => OnPluginHotReload(this, null!));
     }
 
     // -----------------------------------------------------------------------

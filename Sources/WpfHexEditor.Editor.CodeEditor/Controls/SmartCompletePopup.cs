@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -16,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Models;
+using WpfHexEditor.Editor.Core.LSP;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -37,6 +39,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private DispatcherTimer _delayTimer;
         private string _filterText = string.Empty;
         private List<SmartCompleteSuggestion> _allSuggestions;
+
+        // LSP integration
+        private ILspClient? _lspClient;
+
+        /// <summary>
+        /// Screen position of the caret. Must be set by <c>CodeEditor</c> before
+        /// calling <see cref="TriggerImmediate"/> or <see cref="TriggerWithDelay"/>.
+        /// </summary>
+        public Point CaretScreenPoint { get; set; }
+
+        /// <summary>Current file path, kept in sync by CodeEditor.SetLspClient wiring.</summary>
+        internal string? CurrentFilePath { get; set; }
 
         #endregion
 
@@ -285,6 +299,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Injects (or clears) the LSP client used for server-side completions.
+        /// Called by CodeEditor.SetLspClient so both hover and completion share the same client.
+        /// </summary>
+        internal void SetLspClient(ILspClient? client) => _lspClient = client;
+
+        /// <summary>
         /// Hide SmartComplete popup
         /// </summary>
         public void Hide()
@@ -298,42 +318,49 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Private Methods
 
         /// <summary>
-        /// Show suggestions based on current editor context
+        /// Show suggestions based on current editor context.
+        /// Tries LSP server first (1 s timeout); falls back to local CodeSmartCompleteProvider.
         /// </summary>
-        private void ShowSuggestions()
+        private async void ShowSuggestions()
         {
             if (_editor == null || _editor.Document == null)
                 return;
 
             try
             {
-                // Get suggestions from provider
+                var cursorPos = _editor.CursorPosition;
+
+                // ── LSP path ─────────────────────────────────────────────────
+                if (_lspClient?.IsInitialized == true && CurrentFilePath is not null)
+                {
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+                    try
+                    {
+                        var lspItems = await _lspClient.CompletionAsync(
+                            CurrentFilePath, cursorPos.Line, cursorPos.Column, cts.Token)
+                            .ConfigureAwait(true);   // resume on UI thread
+
+                        if (lspItems is { Count: > 0 })
+                        {
+                            _allSuggestions = lspItems.Select(MapLspItem).ToList();
+                            ShowWithCurrentSuggestions();
+                            return;
+                        }
+                    }
+                    catch (OperationCanceledException) { /* timeout — fall through */ }
+                    catch { /* LSP error — fall through */ }
+                }
+
+                // ── Local fallback ────────────────────────────────────────────
                 var context = new SmartCompleteContext
                 {
                     DocumentText = _editor.GetText(),
-                    CursorPosition = _editor.CursorPosition,
-                    CurrentLine = _editor.Document.Lines[_editor.CursorPosition.Line].Text
+                    CursorPosition = cursorPos,
+                    CurrentLine = _editor.Document.Lines[cursorPos.Line].Text
                 };
 
                 _allSuggestions = _provider.GetSuggestions(context);
-
-                if (_allSuggestions == null || _allSuggestions.Count == 0)
-                {
-                    Hide();
-                    return;
-                }
-
-                // Apply filter
-                FilterSuggestions();
-
-                // Position popup near cursor
-                PositionPopup();
-
-                // Show popup
-                IsOpen = true;
-
-                // Focus list for keyboard navigation
-                _suggestionList.Focus();
+                ShowWithCurrentSuggestions();
             }
             catch (Exception)
             {
@@ -341,6 +368,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Hide();
             }
         }
+
+        private void ShowWithCurrentSuggestions()
+        {
+            if (_allSuggestions == null || _allSuggestions.Count == 0)
+            {
+                Hide();
+                return;
+            }
+
+            FilterSuggestions();
+            PositionPopup();
+            IsOpen = true;
+            _suggestionList.Focus();
+        }
+
+        /// <summary>Maps an LSP completion item to a SmartCompleteSuggestion for the popup.</summary>
+        private static SmartCompleteSuggestion MapLspItem(LspCompletionItem item) =>
+            new SmartCompleteSuggestion
+            {
+                DisplayText   = item.Label,
+                InsertText    = item.InsertText ?? item.Label,
+                Icon          = LspKindToGlyph(item.Kind),
+                TypeHint      = item.Detail ?? string.Empty,
+                Documentation = item.Documentation ?? string.Empty,
+                SortPriority  = 100,
+            };
+
+        /// <summary>Maps LSP CompletionItemKind strings to Segoe MDL2 Assets glyphs.</summary>
+        private static string LspKindToGlyph(string? kind) => kind?.ToLowerInvariant() switch
+        {
+            "method" or "function" or "constructor" => "\uE8A7",  // Calculator
+            "class"  or "interface" or "struct"     => "\uE8D7",  // People
+            "field"  or "variable"                  => "\uE734",  // Tag
+            "property"                              => "\uE90F",  // Settings
+            "keyword"                               => "\uE8C1",  // Bookmarks
+            "snippet"                               => "\uE70F",  // Page
+            "enum"   or "enummember"                => "\uE762",  // List
+            "module" or "namespace"                 => "\uE8B7",  // Package
+            _                                       => "\uE8A5",  // Code
+        };
 
         /// <summary>
         /// Filter suggestions based on current filter text
@@ -385,23 +452,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Position popup near cursor in editor
+        /// Positions the popup at the screen coordinates previously set via <see cref="CaretScreenPoint"/>.
+        /// Uses PlacementMode.Absolute so the popup appears directly below the caret regardless of
+        /// where the CodeEditor control is on screen or how far it has scrolled.
         /// </summary>
         private void PositionPopup()
         {
-            PlacementTarget = _editor;
-            Placement = PlacementMode.Custom;
-            CustomPopupPlacementCallback = CalculatePopupPlacement;
-        }
-
-        /// <summary>
-        /// Calculate popup placement near cursor
-        /// </summary>
-        private CustomPopupPlacement[] CalculatePopupPlacement(Size popupSize, Size targetSize, Point offset)
-        {
-            // Position below cursor with small offset
-            var placement = new CustomPopupPlacement(new Point(10, 20), PopupPrimaryAxis.Horizontal);
-            return new[] { placement };
+            PlacementTarget  = _editor;
+            Placement        = PlacementMode.Absolute;
+            HorizontalOffset = CaretScreenPoint.X;
+            VerticalOffset   = CaretScreenPoint.Y;
         }
 
         /// <summary>

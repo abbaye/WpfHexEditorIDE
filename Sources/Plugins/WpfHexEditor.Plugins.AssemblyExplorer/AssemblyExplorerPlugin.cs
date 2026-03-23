@@ -28,6 +28,7 @@ using System.IO;
 using System.Windows;
 using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using WpfHexEditor.Events.IDEEvents;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
 using WpfHexEditor.Plugins.AssemblyExplorer.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
@@ -68,6 +69,11 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     private const string PanelUiId        = "WpfHexEditor.Plugins.AssemblyExplorer.Panel.Main";
     private const string SearchPanelUiId  = "WpfHexEditor.Plugins.AssemblyExplorer.Panel.Search";
     private const string DiffPanelUiId    = "WpfHexEditor.Plugins.AssemblyExplorer.Panel.Diff";
+    private static readonly HashSet<string> ManagedExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".dll", ".exe", ".winmd", ".netmodule"
+    };
+
     // ── State ─────────────────────────────────────────────────────────────────
 
     private AssemblyExplorerPanel? _panel;
@@ -76,6 +82,8 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     private IIDEHostContext?       _context;
     private IAssemblyAnalysisEngine? _analysisEngine;
     private AssemblyExplorerOptionsPage? _optionsPage;
+    private AssemblyHexSyncService?      _hexSyncService;
+    private IDisposable?                 _subProjectItemAdded;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -165,18 +173,24 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         _panel.ViewModel.AssemblyCleared       += OnAssemblyCleared;
         _panel.ViewModel.WorkspaceStatsChanged += OnWorkspaceStatsChanged;
 
+        // Wire reverse Hex→Tree navigation service (ASM-02-A).
+        _hexSyncService = new AssemblyHexSyncService(context.HexEditor, _panel.ViewModel);
+
         // Subscribe to cross-plugin "open assembly" requests (safe immediately).
         context.EventBus.Subscribe<OpenAssemblyInExplorerEvent>(OnOpenAssemblyRequested);
 
         // Restore the previous session as a background task so that
         // InitializeAsync returns before the watchdog timeout fires.
-        // HexEditor auto-analysis events are wired AFTER restoration completes
+        // All auto-analysis subscriptions are wired AFTER restoration completes
         // to guarantee the IDE's document-tab restoration cannot inject
         // unintended assemblies into the workspace during the restore window.
         _ = RestoreLastSessionAsync().ContinueWith(_ =>
         {
             context.HexEditor.FileOpened          += OnFileOpened;
             context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
+
+            // Also react to assemblies added via Solution Explorer (project system).
+            _subProjectItemAdded = context.IDEEvents.Subscribe<ProjectItemAddedEvent>(OnProjectItemAdded);
         }, TaskScheduler.Default);
 
         return Task.CompletedTask;
@@ -200,6 +214,12 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             _panel.ViewModel.AssemblyCleared       -= OnAssemblyCleared;
             _panel.ViewModel.WorkspaceStatsChanged -= OnWorkspaceStatsChanged;
         }
+
+        _subProjectItemAdded?.Dispose();
+        _subProjectItemAdded = null;
+
+        _hexSyncService?.Dispose();
+        _hexSyncService = null;
 
         _panel          = null;
         _searchPanel    = null;
@@ -262,6 +282,19 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         _ = _panel?.ViewModel.LoadAssemblyAsync(evt.FilePath);
         if (evt.BringToFront)
             _context?.UIRegistry.ShowPanel(PanelUiId);
+    }
+
+    // ── IDEEventBus handler: ProjectItemAddedEvent ────────────────────────────
+
+    private void OnProjectItemAdded(ProjectItemAddedEvent evt)
+    {
+        if (string.IsNullOrEmpty(evt.FilePath)) return;
+        if (!ManagedExtensions.Contains(Path.GetExtension(evt.FilePath))) return;
+        if (!AssemblyExplorerOptions.Instance.AutoAnalyzeOnFileOpen) return;
+        if (_panel?.ViewModel.IsAssemblyLoaded(evt.FilePath) ?? false) return;
+        if (!(_analysisEngine?.HasManagedMetadata(evt.FilePath) ?? false)) return;
+
+        _ = _panel?.ViewModel.LoadAssemblyAsync(evt.FilePath);
     }
 
     // ── HexEditor event handlers ──────────────────────────────────────────────

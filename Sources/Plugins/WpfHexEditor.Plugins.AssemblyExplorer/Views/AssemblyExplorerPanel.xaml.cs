@@ -77,6 +77,7 @@ public partial class AssemblyExplorerPanel : UserControl
         MainTreeView.ExtractToProjectRequested     += OnExtractToProject;
         MainTreeView.CollapseAllRequested          += (_, _) => ViewModel.CollapseAllCommand.Execute(null);
         MainTreeView.CloseAllAssembliesRequested   += (_, _) => ViewModel.CloseAllCommand.Execute(null);
+        MainTreeView.ExportProjectRequested        += OnExportProject;
 
         // Wire detail pane Extract button
         DetailPane.ExtractRequested += (_, node) => _ = ExecuteExtractToProjectAsync(node);
@@ -143,17 +144,31 @@ public partial class AssemblyExplorerPanel : UserControl
             DispatcherPriority.Loaded);
     }
 
-    // ── Open Assembly dialog + panel-level Ctrl+V ─────────────────────────────
+    // ── Open Assembly dialog + panel-level keyboard shortcuts ─────────────────
 
     private void OnOpenAssemblyClick(object sender, RoutedEventArgs e)
         => OpenAssemblyViaDialog();
 
     /// <summary>
-    /// Panel-level Ctrl+V: if the clipboard holds a valid .dll/.exe path, load it
-    /// directly without opening the dialog. Otherwise open the dialog pre-filled.
+    /// Panel-level keyboard shortcuts:
+    ///   Ctrl+V       — load assembly from clipboard path.
+    ///   Ctrl+Shift+M — open Go-To-Metadata-Token dialog (ASM-02-C).
     /// </summary>
     private void OnPanelKeyDown(object sender, KeyEventArgs e)
     {
+        // Ctrl+Shift+M → Go To Metadata Token
+        if (e.Key == Key.M
+            && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+        {
+            e.Handled = true;
+            var dialog = new GoToMetadataTokenDialog(ViewModel)
+            {
+                Owner = Window.GetWindow(this)
+            };
+            dialog.ShowDialog();
+            return;
+        }
+
         if (e.Key != Key.V || Keyboard.Modifiers != ModifierKeys.Control) return;
 
         var path = TryGetPathFromClipboard();
@@ -347,6 +362,23 @@ public partial class AssemblyExplorerPanel : UserControl
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
+    }
+
+    // ── Export as C# Project (ASM-02-F) ──────────────────────────────────────
+
+    private void OnExportProject(object? sender, ViewModels.AssemblyNodeViewModel node)
+    {
+        if (node is not ViewModels.AssemblyRootNodeViewModel root) return;
+        var entry = ViewModel.GetLoadedAssemblyModels()
+            .FirstOrDefault(m => string.Equals(m.FilePath, root.OwnerFilePath,
+                StringComparison.OrdinalIgnoreCase));
+        if (entry is null) return;
+
+        var dialog = new ExportProjectDialog(entry, ViewModel.Backend)
+        {
+            Owner = Window.GetWindow(this)
+        };
+        dialog.ShowDialog();
     }
 
     // ── Diff panel reference (set by plugin entry point) ─────────────────────

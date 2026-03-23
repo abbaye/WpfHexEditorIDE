@@ -50,6 +50,7 @@ public static class CommandIds
     public static class View
     {
         public const string CommandPalette    = "View.CommandPalette";
+        public const string WorkspaceSymbols  = "View.WorkspaceSymbols";
         public const string SolutionExplorer  = "View.SolutionExplorer";
         public const string Properties        = "View.Properties";
         public const string Output            = "View.Output";
@@ -97,5 +98,7 @@ public static class CommandIds
         public const string InstallFromFile  = "Plugins.InstallFromFile";
         public const string RefreshAll       = "Plugins.RefreshAll";
         public const string DevWatch         = "Plugins.DevWatch";
+        public const string NewPluginWizard  = "Plugins.NewPluginWizard";
+        public const string PluginHotReload  = "Plugins.PluginHotReload";
     }
 }

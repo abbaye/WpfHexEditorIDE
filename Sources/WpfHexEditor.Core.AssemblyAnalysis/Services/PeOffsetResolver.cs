@@ -226,6 +226,98 @@ public sealed class PeOffsetResolver
         return 0L;
     }
 
+    // ── Reverse map: file offset → MetadataToken ──────────────────────────────
+
+    /// <summary>
+    /// Lazily-built reverse map: raw PE file byte offset → ECMA-335 metadata token (int).
+    /// Built once on first call to <see cref="ResolveToken"/>.
+    /// </summary>
+    private Dictionary<long, int>? _reverseMap;
+    private readonly object         _reverseMapLock = new();
+
+    /// <summary>
+    /// Resolves a raw PE file byte offset to an ECMA-335 metadata token.
+    /// Builds a reverse map on first call (scans all TypeDef, MethodDef, and FieldDef rows).
+    /// Returns null when the offset does not correspond to any known token.
+    /// Thread-safe: uses double-checked locking for map construction.
+    /// </summary>
+    public int? ResolveToken(long fileOffset, PEReader peReader, MetadataReader mdReader)
+    {
+        if (fileOffset <= 0) return null;
+
+        var map = GetOrBuildReverseMap(peReader, mdReader);
+        return map.TryGetValue(fileOffset, out var token) ? token : null;
+    }
+
+    /// <summary>
+    /// Builds (or returns the cached) reverse offset → token map by scanning all
+    /// TypeDef, MethodDef, and FieldDef rows.  Method offsets use the IL body RVA
+    /// (same as the forward Resolve call); type/field offsets use the metadata row byte.
+    /// </summary>
+    private Dictionary<long, int> GetOrBuildReverseMap(PEReader peReader, MetadataReader mdReader)
+    {
+        if (_reverseMap is not null) return _reverseMap;
+
+        lock (_reverseMapLock)
+        {
+            if (_reverseMap is not null) return _reverseMap;
+
+            var map = new Dictionary<long, int>(1024);
+
+            try
+            {
+                // MethodDef → IL body offset (most useful for navigation)
+                foreach (var handle in mdReader.MethodDefinitions)
+                {
+                    try
+                    {
+                        var offset = Resolve(handle, peReader, mdReader);
+                        if (offset > 0)
+                        {
+                            var token = MetadataTokens.GetToken(handle);
+                            map.TryAdd(offset, token);
+                        }
+                    }
+                    catch { /* Skip individual failures */ }
+                }
+
+                // TypeDef → metadata row offset
+                foreach (var handle in mdReader.TypeDefinitions)
+                {
+                    try
+                    {
+                        var offset = Resolve(handle, peReader, mdReader);
+                        if (offset > 0)
+                        {
+                            var token = MetadataTokens.GetToken(handle);
+                            map.TryAdd(offset, token);
+                        }
+                    }
+                    catch { /* Skip individual failures */ }
+                }
+
+                // FieldDef → metadata row offset
+                foreach (var handle in mdReader.FieldDefinitions)
+                {
+                    try
+                    {
+                        var offset = Resolve(handle, peReader, mdReader);
+                        if (offset > 0)
+                        {
+                            var token = MetadataTokens.GetToken(handle);
+                            map.TryAdd(offset, token);
+                        }
+                    }
+                    catch { /* Skip individual failures */ }
+                }
+            }
+            catch { /* Return partial map on unexpected failure */ }
+
+            _reverseMap = map;
+            return map;
+        }
+    }
+
     // ── RVA → file offset ─────────────────────────────────────────────────────
 
     /// <summary>

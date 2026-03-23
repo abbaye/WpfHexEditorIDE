@@ -68,6 +68,74 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
     /// <summary>View-model for the Source (PDB/SourceLink) tab.</summary>
     public SourceViewModel SourceViewModel { get; } = new();
 
+    // ── Synchronized Scrolling — Decompiler ↔ Hex (ASM-02-E) ─────────────────
+
+    /// <summary>
+    /// When true, scrolling the decompiler pane maps IL offsets to hex positions,
+    /// and vice versa.  Controlled by a toolbar toggle button in the detail pane.
+    /// </summary>
+    private bool _isSyncScrollEnabled;
+    public bool IsSyncScrollEnabled
+    {
+        get => _isSyncScrollEnabled;
+        set => SetField(ref _isSyncScrollEnabled, value);
+    }
+
+    /// <summary>
+    /// Raised by the detail pane when the decompiler scroll position changes and
+    /// <see cref="IsSyncScrollEnabled"/> is true.
+    /// The caller (AssemblyExplorerPanel) should forward the IL line offset to
+    /// <see cref="IHexEditorService.NavigateTo"/> after resolving via PeOffset.
+    /// </summary>
+    public event EventHandler<long>? SyncScrollToHexRequested;
+
+    /// <summary>
+    /// Raised by the detail pane when the hex selection changes and
+    /// <see cref="IsSyncScrollEnabled"/> is true.
+    /// The caller (AssemblyExplorerPanel) should scroll the decompiler to the
+    /// corresponding IL line.
+    /// </summary>
+    public event EventHandler<long>? SyncScrollToDecompilerRequested;
+
+    /// <summary>
+    /// Called by the detail pane view code-behind when the decompiler's visible
+    /// line changes and <see cref="IsSyncScrollEnabled"/> is true.
+    /// Converts a 0-based decompiler line index to a PE file offset using the
+    /// currently displayed node's <see cref="AssemblyNodeViewModel.PeOffset"/>.
+    /// </summary>
+    public void NotifyDecompilerScrollChanged(int visibleLine)
+    {
+        if (!IsSyncScrollEnabled) return;
+        if (CurrentNode is null) return;
+
+        // Map: decompiler line → PE byte offset.
+        // Approximation: each line of IL/C# maps to ~4 bytes of code.
+        // The PeOffset is the method body start; we advance by the line index.
+        var baseOffset = CurrentNode.PeOffset;
+        if (baseOffset <= 0) return;
+
+        const int bytesPerLine = 4;
+        var estimatedOffset = baseOffset + (long)visibleLine * bytesPerLine;
+        SyncScrollToHexRequested?.Invoke(this, estimatedOffset);
+    }
+
+    /// <summary>
+    /// Called by the hex editor selection-changed handler (in AssemblyExplorerPanel)
+    /// when <see cref="IsSyncScrollEnabled"/> is true.
+    /// Raises <see cref="SyncScrollToDecompilerRequested"/> so the view can scroll
+    /// the decompiler editor to the corresponding IL line.
+    /// </summary>
+    public void NotifyHexSelectionChanged(long hexOffset)
+    {
+        if (!IsSyncScrollEnabled) return;
+        if (CurrentNode is null) return;
+
+        var baseOffset = CurrentNode.PeOffset;
+        if (baseOffset <= 0 || hexOffset < baseOffset) return;
+
+        SyncScrollToDecompilerRequested?.Invoke(this, hexOffset - baseOffset);
+    }
+
     /// <summary>
     /// Callback wired by the hosting panel to navigate the tree when an XRef entry is clicked.
     /// </summary>

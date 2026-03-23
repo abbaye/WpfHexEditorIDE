@@ -39,6 +39,21 @@ public partial class FileComparisonPanel : UserControl
         InitializeComponent();
     }
 
+    // -- Public API -----------------------------------------------------------
+
+    /// <summary>
+    /// Pre-loads <paramref name="filePath"/> as File 1 if no file is already loaded.
+    /// Called automatically by the plugin when a hex file is opened.
+    /// </summary>
+    public void SuggestFile1(string filePath)
+    {
+        if (_file1Path is not null || !File.Exists(filePath)) return;
+        _file1Path = filePath;
+        File1NameText.Text = $"File 1: {Path.GetFileName(_file1Path)}";
+        LoadFieldsFromFile(_file1Path, out _file1Fields);
+        UpdateComparison();
+    }
+
     // -- Toolbar handlers -----------------------------------------------------
 
     private void LoadFile1_Click(object sender, RoutedEventArgs e)

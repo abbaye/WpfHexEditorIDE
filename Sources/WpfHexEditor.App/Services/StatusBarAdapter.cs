@@ -8,6 +8,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using WpfStatusBar = System.Windows.Controls.Primitives.StatusBar;
 using WpfHexEditor.PluginHost.Adapters;
 using WpfHexEditor.SDK.Descriptors;
 
@@ -19,10 +20,10 @@ namespace WpfHexEditor.App.Services;
 /// </summary>
 public sealed class StatusBarAdapter : IStatusBarAdapter
 {
-    private readonly StatusBar _statusBar;
+    private readonly WpfStatusBar _statusBar;
     private readonly Dictionary<string, StatusBarItem> _addedItems = new(StringComparer.OrdinalIgnoreCase);
 
-    public StatusBarAdapter(StatusBar statusBar)
+    public StatusBarAdapter(WpfStatusBar statusBar)
     {
         _statusBar = statusBar ?? throw new ArgumentNullException(nameof(statusBar));
     }

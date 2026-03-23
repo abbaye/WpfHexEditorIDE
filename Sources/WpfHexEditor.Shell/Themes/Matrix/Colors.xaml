@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Matrix/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -571,4 +571,36 @@
     <SolidColorBrush x:Key="TB_SearchHintBrush"             Color="#005517" />
     <SolidColorBrush x:Key="TB_SearchHoverBackgroundBrush"  Color="#001C00" />
     <SolidColorBrush x:Key="TB_SearchActiveBackgroundBrush" Color="#00FF41" />
+
+    <!-- __ LSP OVERKILL-TRIO Tokens _________________________________________________ -->
+    <SolidColorBrush x:Key="SC_KindIconForeground"      Color="#00CC00" />
+    <SolidColorBrush x:Key="BC_Background"              Color="#001100" />
+    <SolidColorBrush x:Key="BC_Foreground"              Color="#00CC00" />
+    <SolidColorBrush x:Key="BC_SeparatorForeground"     Color="#00AA00" />
+    <SolidColorBrush x:Key="BC_HoverBackground"         Color="#001A00" />
+    <SolidColorBrush x:Key="LSP_ReadyDot"               Color="#57A64A" />
+    <SolidColorBrush x:Key="LSP_ConnectingDot"          Color="#AAAAAA" />
+    <SolidColorBrush x:Key="LSP_ErrorDot"               Color="#F14C4C" />
+    <SolidColorBrush x:Key="CE_InlayHintForeground"     Color="#006600" />
+    <SolidColorBrush x:Key="CE_InlayHintBackground"     Color="#001100" />
+    <SolidColorBrush x:Key="CE_CodeLensForeground"      Color="#006600" />
+    <SolidColorBrush x:Key="CE_CodeLensHoverBackground" Color="#001A00" />
+    <SolidColorBrush x:Key="SE_TypeColor"               Color="#30264F78" />
+    <SolidColorBrush x:Key="SE_MethodColor"             Color="#30DCDC00" />
+    <SolidColorBrush x:Key="SE_VariableColor"           Color="#209CDCFE" />
+    <SolidColorBrush x:Key="SE_ParameterColor"          Color="#209CDCFE" />
+    <SolidColorBrush x:Key="SE_NamespaceColor"          Color="#20808080" />
+    <SolidColorBrush x:Key="SE_KeywordColor"            Color="#30569CD6" />
+    <SolidColorBrush x:Key="SE_StringColor"             Color="#30CE9178" />
+    <SolidColorBrush x:Key="SE_NumberColor"             Color="#30B5CEA8" />
+    <SolidColorBrush x:Key="PE_ReverseHighlightBorder"  Color="#FF9800" />
+    <SolidColorBrush x:Key="PD_StatusReady"             Color="#57A64A" />
+    <SolidColorBrush x:Key="PD_StatusBuilding"          Color="#D68910" />
+    <SolidColorBrush x:Key="PD_StatusError"             Color="#F14C4C" />
+    <SolidColorBrush x:Key="MKT_CardBackground"         Color="#001100" />
+    <SolidColorBrush x:Key="MKT_CardBorder"             Color="#00AA00" />
+    <SolidColorBrush x:Key="MKT_InstallBtn"             Color="#00FF00" />
+    <SolidColorBrush x:Key="MKT_InstalledBadge"         Color="#57A64A" />
+    <SolidColorBrush x:Key="MKT_StarFilled"             Color="#FFD700" />
+    <SolidColorBrush x:Key="MKT_StarEmpty"              Color="#00AA00" />
 </ResourceDictionary>

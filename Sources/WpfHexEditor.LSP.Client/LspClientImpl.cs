@@ -174,6 +174,30 @@ public sealed class LspClientImpl : ILspClient
         return _rename.GetAsync(filePath, line, column, newName, ct);
     }
 
+    // ── ILspClient: document symbols ─────────────────────────────────────────
+
+    public Task<IReadOnlyList<LspDocumentSymbol>> DocumentSymbolsAsync(
+        string filePath, CancellationToken ct = default)
+        => Task.FromResult<IReadOnlyList<LspDocumentSymbol>>(Array.Empty<LspDocumentSymbol>());
+
+    // ── ILspClient: workspace symbols ────────────────────────────────────────
+
+    public Task<IReadOnlyList<LspWorkspaceSymbol>> WorkspaceSymbolsAsync(
+        string query, CancellationToken ct = default)
+        => Task.FromResult<IReadOnlyList<LspWorkspaceSymbol>>(Array.Empty<LspWorkspaceSymbol>());
+
+    // ── ILspClient: inlay hints ───────────────────────────────────────────────
+
+    public Task<IReadOnlyList<LspInlayHint>> InlayHintsAsync(
+        string filePath, int startLine, int endLine, CancellationToken ct = default)
+        => Task.FromResult<IReadOnlyList<LspInlayHint>>(Array.Empty<LspInlayHint>());
+
+    // ── ILspClient: semantic tokens ───────────────────────────────────────────
+
+    public Task<LspSemanticTokensResult?> SemanticTokensAsync(
+        string filePath, CancellationToken ct = default)
+        => Task.FromResult<LspSemanticTokensResult?>(null);
+
     // ── ILspClient: diagnostics push ──────────────────────────────────────────
 
     public event EventHandler<LspDiagnosticsReceivedEventArgs>? DiagnosticsReceived;

@@ -497,21 +497,58 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
         foreach (var group in byNs)
         {
-            var nsNode = new NamespaceNodeViewModel(group.Key);
-            var types  = _sortAlphabetical
-                ? group.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
-                : group.OrderBy(t => t.PeOffset);
+            // Capture locals for the lambda closure.
+            var capturedTypes    = group.ToList();
+            var sortAlphabetical = _sortAlphabetical;
 
-            foreach (var type in types)
-                nsNode.Children.Add(BuildTypeNode(type));
+            // Large namespaces (>50 types): use async lazy load to keep first-paint fast.
+            if (capturedTypes.Count > 50)
+            {
+                var nsNode = new NamespaceNodeViewModel(group.Key, async () =>
+                {
+                    var ordered = sortAlphabetical
+                        ? capturedTypes.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
+                        : (IEnumerable<TypeModel>)capturedTypes.OrderBy(t => t.PeOffset);
+                    await Task.Yield(); // yield to avoid blocking UI thread
+                    return ordered.Select(BuildTypeNode).ToList<AssemblyNodeViewModel>();
+                });
+                root.Children.Add(nsNode);
+            }
+            else
+            {
+                // Small namespace: build eagerly (simpler, avoids flicker).
+                var nsNode = new NamespaceNodeViewModel(group.Key);
+                var types  = sortAlphabetical
+                    ? capturedTypes.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
+                    : (IEnumerable<TypeModel>)capturedTypes.OrderBy(t => t.PeOffset);
 
-            root.Children.Add(nsNode);
+                foreach (var type in types)
+                    nsNode.Children.Add(BuildTypeNode(type));
+
+                root.Children.Add(nsNode);
+            }
         }
     }
 
     private static TypeNodeViewModel BuildTypeNode(TypeModel type)
     {
+        // Types with >30 members: defer child group construction to first expand (ASM-02-D).
+        var memberCount = type.Methods.Count + type.Fields.Count
+                        + type.Properties.Count + type.Events.Count;
+
+        if (memberCount > 30)
+            return new TypeNodeViewModel(type, () => BuildMemberGroups(type));
+
+        // Small type: eagerly build children.
         var typeNode = new TypeNodeViewModel(type);
+        foreach (var group in BuildMemberGroups(type))
+            typeNode.Children.Add(group);
+        return typeNode;
+    }
+
+    private static IReadOnlyList<AssemblyNodeViewModel> BuildMemberGroups(TypeModel type)
+    {
+        var groups = new List<AssemblyNodeViewModel>(5);
 
         // "Inherits From" group — base type + interfaces
         var hasBase       = !string.IsNullOrEmpty(type.BaseTypeName) && type.BaseTypeName != "System.Object";
@@ -523,7 +560,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
                 inheritsGroup.Children.Add(new MetadataTableNodeViewModel($"\u21B3 {type.BaseTypeName}", 0));
             foreach (var iface in type.InterfaceNames)
                 inheritsGroup.Children.Add(new MetadataTableNodeViewModel($"\u21AA {iface}", 0));
-            typeNode.Children.Add(inheritsGroup);
+            groups.Add(inheritsGroup);
         }
 
         if (type.Methods.Count > 0)
@@ -531,7 +568,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             var methodsGroup = new NamespaceNodeViewModel("Methods");
             foreach (var m in type.Methods)
                 methodsGroup.Children.Add(new MethodNodeViewModel(m));
-            typeNode.Children.Add(methodsGroup);
+            groups.Add(methodsGroup);
         }
 
         if (type.Fields.Count > 0)
@@ -539,7 +576,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             var fieldsGroup = new NamespaceNodeViewModel("Fields");
             foreach (var f in type.Fields)
                 fieldsGroup.Children.Add(new FieldNodeViewModel(f));
-            typeNode.Children.Add(fieldsGroup);
+            groups.Add(fieldsGroup);
         }
 
         if (type.Properties.Count > 0)
@@ -547,7 +584,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             var propsGroup = new NamespaceNodeViewModel("Properties");
             foreach (var p in type.Properties)
                 propsGroup.Children.Add(new PropertyNodeViewModel(p));
-            typeNode.Children.Add(propsGroup);
+            groups.Add(propsGroup);
         }
 
         if (type.Events.Count > 0)
@@ -555,10 +592,10 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             var eventsGroup = new NamespaceNodeViewModel("Events");
             foreach (var e in type.Events)
                 eventsGroup.Children.Add(new EventNodeViewModel(e));
-            typeNode.Children.Add(eventsGroup);
+            groups.Add(eventsGroup);
         }
 
-        return typeNode;
+        return groups;
     }
 
     private static void AddTypeForwardersGroup(AssemblyRootNodeViewModel root, AssemblyModel model)
@@ -1091,6 +1128,85 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             MethodNodeViewModel       meth => (true,  _decompilerBackend.DecompileMethod(meth.Model, filePath)),
             _                              => (false, _decompiler.GetStubText(node.DisplayName))
         };
+    }
+
+    // ── Reverse Hex → Tree navigation (ASM-02-A) ──────────────────────────────
+
+    /// <summary>
+    /// Selects the tree node whose <see cref="AssemblyNodeViewModel.MetadataToken"/> matches
+    /// <paramref name="token"/> and sets <see cref="AssemblyNodeViewModel.IsReverseHighlighted"/>.
+    /// No-op when <paramref name="token"/> is null or no matching node is found.
+    /// Must be called on the UI thread.
+    /// </summary>
+    public void SelectNode(int? token)
+    {
+        if (token is null) return;
+        var tokenValue = token.Value;
+        if (tokenValue == 0) return;
+
+        // Clear previous reverse-highlight across all roots.
+        ClearReverseHighlight(RootNodes);
+
+        foreach (var root in RootNodes)
+        {
+            var found = FindNodeByTokenRecursive(root.Children, tokenValue);
+            if (found is null) continue;
+
+            found.IsReverseHighlighted = true;
+            found.IsSelected           = true;
+
+            // Ensure path to the found node is expanded so it is visible.
+            EnsureAncestorsExpanded(root, found);
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Navigates the hex editor to the PE byte offset corresponding to
+    /// the given <paramref name="token"/> in the currently active assembly.
+    /// No-op when no matching node is found or the offset is 0.
+    /// </summary>
+    public void NavigateToOffset(int? token)
+    {
+        if (token is null) return;
+        foreach (var root in RootNodes)
+        {
+            var node = FindNodeByTokenRecursive(root.Children, token.Value);
+            if (node is not null && node.PeOffset > 0)
+            {
+                NavigateHexEditorToNode(node, force: true);
+                return;
+            }
+        }
+    }
+
+    private static void ClearReverseHighlight(IEnumerable<AssemblyNodeViewModel> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            if (node.IsReverseHighlighted) node.IsReverseHighlighted = false;
+            ClearReverseHighlight(node.Children);
+        }
+    }
+
+    /// <summary>
+    /// Expands all ancestors of <paramref name="target"/> within the subtree rooted at
+    /// <paramref name="current"/>. Returns true when target is found in the subtree.
+    /// </summary>
+    private static bool EnsureAncestorsExpanded(AssemblyNodeViewModel current, AssemblyNodeViewModel target)
+    {
+        if (ReferenceEquals(current, target)) return true;
+
+        foreach (var child in current.Children)
+        {
+            if (EnsureAncestorsExpanded(child, target))
+            {
+                current.IsExpanded = true;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // ── Search / Diff support ─────────────────────────────────────────────────

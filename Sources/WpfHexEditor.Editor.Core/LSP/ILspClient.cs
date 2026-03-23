@@ -115,6 +115,60 @@ public sealed class LspCodeAction
     public LspWorkspaceEdit? Edit        { get; init; }
 }
 
+/// <summary>A symbol within a document (used for breadcrumb / outline).</summary>
+public sealed class LspDocumentSymbol
+{
+    public required string Name       { get; init; }
+    /// <summary>Kind string e.g. "class", "method", "namespace".</summary>
+    public required string Kind       { get; init; }
+    public required int    StartLine  { get; init; }
+    public required int    StartColumn{ get; init; }
+    public          string? ContainerName { get; init; }
+}
+
+/// <summary>A workspace-level symbol returned by workspace/symbol.</summary>
+public sealed class LspWorkspaceSymbol
+{
+    public required string Name       { get; init; }
+    public required string Kind       { get; init; }
+    public required string Uri        { get; init; }
+    public required int    StartLine  { get; init; }
+    public required int    StartColumn{ get; init; }
+    public          string? ContainerName { get; init; }
+}
+
+/// <summary>A single inlay hint (parameter name label) from textDocument/inlayHint.</summary>
+public sealed class LspInlayHint
+{
+    public required int    Line       { get; init; }   // 0-based
+    public required int    Column     { get; init; }   // 0-based
+    public required string Label      { get; init; }
+    /// <summary>"type" or "parameter".</summary>
+    public required string Kind       { get; init; }
+}
+
+/// <summary>Decoded semantic tokens for a document.</summary>
+public sealed class LspSemanticTokensResult
+{
+    /// <summary>
+    /// Flat list of decoded tokens. Each token gives the line, column, length,
+    /// token-type string, and optional modifiers.
+    /// </summary>
+    public required IReadOnlyList<LspSemanticToken> Tokens { get; init; }
+}
+
+/// <summary>A single decoded semantic token.</summary>
+public sealed class LspSemanticToken
+{
+    public required int    Line       { get; init; }   // 0-based
+    public required int    Column     { get; init; }
+    public required int    Length     { get; init; }
+    /// <summary>e.g. "type", "method", "variable", "parameter", "namespace", "keyword", "string", "number".</summary>
+    public required string TokenType  { get; init; }
+    /// <summary>Modifier flags e.g. "static", "readonly", "deprecated".</summary>
+    public required IReadOnlyList<string> Modifiers { get; init; }
+}
+
 // ── ILspClient interface ───────────────────────────────────────────────────────
 
 /// <summary>
@@ -213,6 +267,43 @@ public interface ILspClient : IAsyncDisposable
     Task<LspWorkspaceEdit?> RenameAsync(
         string filePath, int line, int column, string newName,
         CancellationToken ct = default);
+
+    // ── Document Symbols (breadcrumb / outline) ───────────────────────────────
+
+    /// <summary>
+    /// Requests textDocument/documentSymbol to get the symbol tree for the document.
+    /// Returns a flat list ordered by appearance. Empty list when not supported.
+    /// </summary>
+    Task<IReadOnlyList<LspDocumentSymbol>> DocumentSymbolsAsync(
+        string filePath, CancellationToken ct = default);
+
+    // ── Workspace Symbols (Ctrl+T) ────────────────────────────────────────────
+
+    /// <summary>
+    /// Requests workspace/symbol. Returns an empty list when not supported.
+    /// </summary>
+    Task<IReadOnlyList<LspWorkspaceSymbol>> WorkspaceSymbolsAsync(
+        string query, CancellationToken ct = default);
+
+    // ── Inlay Hints ───────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Requests textDocument/inlayHint for a visible line range (0-based).
+    /// Returns empty when the server does not support inlay hints (LSP 3.17+).
+    /// </summary>
+    Task<IReadOnlyList<LspInlayHint>> InlayHintsAsync(
+        string filePath,
+        int startLine, int endLine,
+        CancellationToken ct = default);
+
+    // ── Semantic Tokens ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Requests textDocument/semanticTokens/full.
+    /// Returns null when the server does not support semantic tokens.
+    /// </summary>
+    Task<LspSemanticTokensResult?> SemanticTokensAsync(
+        string filePath, CancellationToken ct = default);
 
     // ── Push Notifications ────────────────────────────────────────────────────
 

@@ -38,6 +38,7 @@ public partial class AssemblyTreeView : UserControl
     public event EventHandler<AssemblyNodeViewModel>?  PinAssemblyRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CompareWithRequested;
     public event EventHandler<AssemblyNodeViewModel>?  ExtractToProjectRequested;
+    public event EventHandler<AssemblyNodeViewModel>?  ExportProjectRequested;
 
     // ── ItemsSource passthrough ───────────────────────────────────────────────
 
@@ -104,6 +105,9 @@ public partial class AssemblyTreeView : UserControl
 
         if (FindMenuItemByName(menu, "MenuCloseAssembly") is MenuItem menuCloseAssembly)
             menuCloseAssembly.IsEnabled = node is not null;
+
+        // "Export as C# Project…" — root nodes only (ASM-02-F).
+        EnsureExportProjectMenuItem(menu, isRoot);
     }
 
     private static MenuItem? FindMenuItemByName(ContextMenu menu, string name)
@@ -181,4 +185,37 @@ public partial class AssemblyTreeView : UserControl
 
     private void OnCloseAllAssemblies(object sender, RoutedEventArgs e)
         => CloseAllAssembliesRequested?.Invoke(this, EventArgs.Empty);
+
+    private void OnExportProject(object sender, RoutedEventArgs e)
+    {
+        if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
+            ExportProjectRequested?.Invoke(this, node);
+    }
+
+    /// <summary>
+    /// Adds the "Export as C# Project…" item to the context menu at runtime
+    /// if it is not already present. Called from <see cref="OnContextMenuOpened"/>.
+    /// </summary>
+    private void EnsureExportProjectMenuItem(ContextMenu menu, bool isRoot)
+    {
+        const string exportMenuName = "MenuExportProject";
+        if (FindMenuItemByName(menu, exportMenuName) is MenuItem existing)
+        {
+            existing.IsEnabled = isRoot;
+            return;
+        }
+
+        // Dynamically add the menu item after the separator.
+        var sep = new Separator();
+        menu.Items.Add(sep);
+
+        var item = new MenuItem
+        {
+            Name      = exportMenuName,
+            Header    = "Export as C# Project…",
+            IsEnabled = isRoot
+        };
+        item.Click += OnExportProject;
+        menu.Items.Add(item);
+    }
 }

@@ -34,6 +34,7 @@ using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
+using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.Core.Views;
 using EditorStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
 using WpfHexEditor.ProjectSystem.Languages;
@@ -45,7 +46,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IDiagnosticSource
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IDiagnosticSource, ILspAwareEditor
 {
     #region Child controls
 
@@ -55,10 +56,12 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
     private readonly ToggleButton            _splitToggle;
     private readonly CodeEditorNavigationBar _navBar;
 
-    private readonly RowDefinition _navBarRow;
-    private readonly RowDefinition _primaryRow;
-    private readonly RowDefinition _splitterRow;
-    private readonly RowDefinition _secondaryRow;
+    private readonly RowDefinition     _navBarRow;
+    private readonly RowDefinition     _breadcrumbRow;
+    private readonly RowDefinition     _primaryRow;
+    private readonly RowDefinition     _splitterRow;
+    private readonly RowDefinition     _secondaryRow;
+    private readonly LspBreadcrumbBar  _breadcrumbBar;
 
     // The editor that most recently received focus — commands delegate to this one.
     private CodeEditor _activeEditor;
@@ -75,22 +78,30 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
     {
         // -- Row layout ------------------------------------------------------
         // Row 0 = navigation bar (fixed 22 px)
-        // Row 1 = primary editor  (star)
-        // Row 2 = GridSplitter    (auto, hidden when not split)
-        // Row 3 = secondary editor (0 → star when split)
-        _navBarRow    = new RowDefinition { Height = new GridLength(22) };
-        _primaryRow   = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
-        _splitterRow  = new RowDefinition { Height = GridLength.Auto };
-        _secondaryRow = new RowDefinition { Height = new GridLength(0) };
+        // Row 1 = LSP breadcrumb bar (0 px when LSP inactive, 22 px when active)
+        // Row 2 = primary editor  (star)
+        // Row 3 = GridSplitter    (auto, hidden when not split)
+        // Row 4 = secondary editor (0 → star when split)
+        _navBarRow      = new RowDefinition { Height = new GridLength(22) };
+        _breadcrumbRow  = new RowDefinition { Height = new GridLength(0) };   // hidden until LSP active
+        _primaryRow     = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
+        _splitterRow    = new RowDefinition { Height = GridLength.Auto };
+        _secondaryRow   = new RowDefinition { Height = new GridLength(0) };
 
         RowDefinitions.Add(_navBarRow);
+        RowDefinitions.Add(_breadcrumbRow);
         RowDefinitions.Add(_primaryRow);
         RowDefinitions.Add(_splitterRow);
         RowDefinitions.Add(_secondaryRow);
 
+        // -- LSP breadcrumb bar (Row 1, collapsed until LSP is set) ------------
+        _breadcrumbBar = new LspBreadcrumbBar();
+        SetRow(_breadcrumbBar, 1);
+        Children.Add(_breadcrumbBar);
+
         // -- Primary editor --------------------------------------------------
         _primaryEditor = new CodeEditor();
-        SetRow(_primaryEditor, 1);
+        SetRow(_primaryEditor, 2);
         Children.Add(_primaryEditor);
 
         // -- Splitter (hidden while not split) -------------------------------
@@ -101,12 +112,12 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
             Visibility          = Visibility.Collapsed,
             Background          = SystemColors.ControlDarkBrush,
         };
-        SetRow(_splitter, 2);
+        SetRow(_splitter, 3);
         Children.Add(_splitter);
 
         // -- Secondary editor (shares the same document) ---------------------
         _secondaryEditor = new CodeEditor();
-        SetRow(_secondaryEditor, 3);
+        SetRow(_secondaryEditor, 4);
         Children.Add(_secondaryEditor);
 
         // -- Split toggle (flat VS2022-style) --------------------------------
@@ -160,13 +171,16 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
         _secondaryEditor.FindAllReferencesDockRequested   += (s, e) => FindAllReferencesDockRequested?.Invoke(this, e);
         _secondaryEditor.GoToExternalDefinitionRequested  += (s, e) => GoToExternalDefinitionRequested?.Invoke(this, e);
 
+        // Attach breadcrumb bar to primary editor so it tracks caret position.
+        _breadcrumbBar.Attach(_primaryEditor, filePath: null);
+
         // Connect the secondary editor to the same document after primary is loaded.
         Loaded += OnHostLoaded;
 
         // -- QuickSearch overlay (Canvas floats above all rows) ---------------
         _searchBarCanvas = new Canvas();
         SetRow(_searchBarCanvas, 0);
-        SetRowSpan(_searchBarCanvas, 4);        // navBar + primary + splitter + secondary
+        SetRowSpan(_searchBarCanvas, 5);        // navBar + breadcrumb + primary + splitter + secondary
         Panel.SetZIndex(_searchBarCanvas, 10);
         _searchBarOverlay = new QuickSearchBar { Width = 520, Visibility = Visibility.Collapsed };
         _searchBarOverlay.OnCloseRequested += (_, _) => HideSearch();
@@ -269,6 +283,31 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
             HideSearch();
             e.Handled = true;
         }
+    }
+
+    #endregion
+
+    #region ILspAwareEditor
+
+    /// <inheritdoc/>
+    public void SetLspClient(ILspClient? client)
+    {
+        // Forward to both code editors so hover, code actions, rename all work in split view.
+        _primaryEditor.SetLspClient(client);
+        _secondaryEditor.SetLspClient(client);
+
+        // Show/hide the breadcrumb bar and update its client.
+        _breadcrumbBar.SetLspClient(client);
+        _breadcrumbRow.Height = client is not null
+            ? new GridLength(22)
+            : new GridLength(0);
+    }
+
+    /// <inheritdoc/>
+    public void SetDocumentManager(WpfHexEditor.Editor.Core.Documents.IDocumentManager manager)
+    {
+        // Forward to primary editor; secondary shares the same document so only one call needed.
+        (_primaryEditor as ILspAwareEditor)?.SetDocumentManager(manager);
     }
 
     #endregion
@@ -416,6 +455,9 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
         // Delegate to the primary editor's async open (file I/O runs off the UI thread).
         // Both editors share the same CodeDocument, so the secondary view updates automatically.
         await ((IOpenableDocument)_primaryEditor).OpenAsync(filePath, ct);
+
+        // Sync breadcrumb bar file path so DocumentSymbolsAsync uses the correct URI.
+        _breadcrumbBar.SetFilePath(filePath);
     }
 
     #endregion

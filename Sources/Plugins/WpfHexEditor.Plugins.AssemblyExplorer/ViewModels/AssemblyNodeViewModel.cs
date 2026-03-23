@@ -157,4 +157,53 @@ public abstract class AssemblyNodeViewModel : INotifyPropertyChanged
         get => _isMatch;
         set => SetField(ref _isMatch, value);
     }
+
+    /// <summary>
+    /// True when this node was selected via reverse Hex → Tree navigation
+    /// (i.e. the user moved the hex editor caret to the byte range of this member).
+    /// The tree view uses this for a distinct highlight color (ASM-02-A).
+    /// </summary>
+    private bool _isReverseHighlighted;
+    public bool IsReverseHighlighted
+    {
+        get => _isReverseHighlighted;
+        set => SetField(ref _isReverseHighlighted, value);
+    }
+
+    // ── Lazy loading (ASM-02-D) ───────────────────────────────────────────────
+
+    /// <summary>
+    /// True while this node is loading its children asynchronously.
+    /// A spinner DataTrigger in the TreeView uses this flag.
+    /// </summary>
+    private bool _isLoadingChildren;
+    public bool IsLoadingChildren
+    {
+        get => _isLoadingChildren;
+        set => SetField(ref _isLoadingChildren, value);
+    }
+
+    /// <summary>
+    /// True when a dummy child placeholder has been inserted so the expand arrow
+    /// is visible before the real children are loaded (virtual tree pattern).
+    /// </summary>
+    public bool HasDummyChild =>
+        Children.Count == 1 && Children[0] is DummyChildNode;
+
+    /// <summary>
+    /// Inserts a <see cref="DummyChildNode"/> placeholder so the TreeView shows
+    /// an expand arrow. Call <see cref="RemoveDummyChild"/> before inserting real children.
+    /// </summary>
+    protected void InsertDummyChild()
+    {
+        if (!HasDummyChild)
+            Children.Add(new DummyChildNode());
+    }
+
+    /// <summary>Removes the dummy placeholder inserted by <see cref="InsertDummyChild"/>.</summary>
+    protected void RemoveDummyChild()
+    {
+        if (HasDummyChild)
+            Children.RemoveAt(0);
+    }
 }
