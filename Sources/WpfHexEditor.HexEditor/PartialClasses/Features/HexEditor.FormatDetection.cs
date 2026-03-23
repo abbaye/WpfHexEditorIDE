@@ -37,6 +37,13 @@ namespace WpfHexEditor.HexEditor
 
         private readonly FormatDetectionService _formatDetectionService = new FormatDetectionService();
 
+        // ── Static one-time cache for embedded format definitions ──────────────
+        // FormatDefinition objects are parsed from JSON once (on first HexEditor instance)
+        // and reused across all subsequent instances to avoid repeated stream I/O
+        // and JSON deserialization on the UI thread.
+        private static (FormatDefinition Format, string Category)[]? s_parsedEmbeddedFormats;
+        private static readonly object s_parsedFormatsLock = new object();
+
         #endregion
 
         #region Dependency Properties
@@ -326,49 +333,66 @@ namespace WpfHexEditor.HexEditor
         /// <summary>
         /// Load embedded format definitions from <see cref="EmbeddedFormatCatalog"/>.
         /// Called automatically during initialization to load built-in formats.
+        /// <para>
+        /// Performance: JSON parsing and stream I/O are performed at most once per
+        /// process lifetime (cached in <c>s_parsedEmbeddedFormats</c>). Subsequent
+        /// HexEditor instances register the already-parsed definitions instantly.
+        /// </para>
         /// </summary>
         /// <returns>Number of formats loaded from embedded resources.</returns>
         public int LoadEmbeddedFormatDefinitions()
         {
-            int count = 0;
+            // ── Step 1: ensure the static parsed cache is populated ──────────
+            (FormatDefinition Format, string Category)[] parsed;
+            lock (s_parsedFormatsLock)
+            {
+                if (s_parsedEmbeddedFormats is null)
+                {
+                    var list = new System.Collections.Generic.List<(FormatDefinition, string)>();
+                    foreach (var entry in EmbeddedFormatCatalog.Instance.GetAll())
+                    {
+                        try
+                        {
+                            // GetJson() is itself cached — no stream I/O after first call.
+                            var json   = EmbeddedFormatCatalog.Instance.GetJson(entry.ResourceKey);
+                            var format = _formatDetectionService.ImportFromJson(json);
+                            if (format is not null)
+                            {
+                                if (string.IsNullOrWhiteSpace(format.Category))
+                                    format.Category = entry.Category;
+                                list.Add((format, entry.Category));
+                            }
+                            else
+                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {entry.ResourceKey}: {ex.Message}");
+                        }
+                    }
+                    s_parsedEmbeddedFormats = list.ToArray();
+                }
+                parsed = s_parsedEmbeddedFormats;
+            }
 
+            // ── Step 2: register cached definitions in this instance's service ─
+            // No JSON I/O or parsing — just AddFormatDefinition calls.
+            int count = 0;
             try
             {
-                foreach (var entry in EmbeddedFormatCatalog.Instance.GetAll())
+                foreach (var (format, _) in parsed)
                 {
-                    try
-                    {
-                        var json   = EmbeddedFormatCatalog.Instance.GetJson(entry.ResourceKey);
-                        var format = _formatDetectionService.ImportFromJson(json);
-
-                        if (format != null)
-                        {
-                            if (string.IsNullOrWhiteSpace(format.Category))
-                                format.Category = entry.Category;
-
-                            if (_formatDetectionService.AddFormatDefinition(format))
-                                count++;
-                            else
-                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (invalid): {entry.ResourceKey} - {format.FormatName}");
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {entry.ResourceKey}: {ex.Message}");
-                    }
+                    if (_formatDetectionService.AddFormatDefinition(format))
+                        count++;
                 }
 
                 var finalCount = _formatDetectionService.GetFormatCount();
                 LoadedFormatCount = finalCount;
-                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Successfully loaded {count} formats, total in service: {finalCount}");
+                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Registered {count} formats (total: {finalCount})");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Critical error in LoadEmbeddedFormatDefinitions: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Critical error registering formats: {ex.Message}");
                 LoadedFormatCount = _formatDetectionService.GetFormatCount();
             }
 

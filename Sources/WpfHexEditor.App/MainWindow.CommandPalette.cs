@@ -1,29 +1,48 @@
-//////////////////////////////////////////////
-// Project      : WpfHexEditor.App
-// File         : MainWindow.CommandPalette.cs
-// Description  : Command Palette handler (Ctrl+Shift+P).
-//                Builds the command catalog from the central CommandRegistry
-//                (all built-in IDE commands) + plugin-contributed menu items,
-//                then opens the CommandPaletteWindow overlay.
-// Architecture : Partial class of MainWindow. Depends on _commandRegistry and
-//                _keyBindingService (initialised by InitCommands in MainWindow.Commands.cs).
-//////////////////////////////////////////////
+// ==========================================================
+// Project: WpfHexEditor.App
+// File: MainWindow.CommandPalette.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+// Description:
+//     Command Palette handler (Ctrl+Shift+P) and Options page registration.
+//     Builds the command catalog from the central CommandRegistry
+//     (all built-in IDE commands) + plugin-contributed menu items,
+//     then opens the CommandPaletteWindow overlay with settings and context.
+//
+// Architecture Notes:
+//     Partial class of MainWindow. Depends on _commandRegistry and
+//     _keyBindingService (initialised by InitCommands in MainWindow.Commands.cs).
+// ==========================================================
 
 using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Models;
+using WpfHexEditor.App.Options;
 using WpfHexEditor.App.Services;
+using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Options;
 
 namespace WpfHexEditor.App;
 
 public partial class MainWindow
 {
-    // -----------------------------------------------------------------------
-    // Handler wired in MainWindow.xaml CommandBindings
-    // -----------------------------------------------------------------------
+    // ── Initialization ────────────────────────────────────────────────────────
+
+    private void InitCommandPaletteOptions()
+    {
+        OptionsPageRegistry.RegisterDynamic(
+            category:     "Command Palette",
+            pageName:     "Général",
+            factory:      () => new CommandPaletteOptionsPage(),
+            categoryIcon: "🔍");
+    }
+
+    // ── Handler wired in MainWindow.xaml CommandBindings ──────────────────────
 
     private void OnShowCommandPalette(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
     {
-        // 1. All built-in IDE commands from the central registry — gesture from KeyBindingService.
+        var cpSettings = AppSettingsService.Instance.Current.CommandPalette;
+
+        // 1. All built-in IDE commands from the central registry
         var entries = _commandRegistry
             .GetAll()
             .Select(cmd => new CommandPaletteEntry(
@@ -34,7 +53,7 @@ public partial class MainWindow
                 Command:     cmd.Command))
             .ToList();
 
-        // 2. Plugin-contributed menu items (registered via IMenuAdapter — not yet in CommandRegistry).
+        // 2. Plugin-contributed menu items
         if (_menuAdapter is not null)
         {
             foreach (var (uiId, descriptor) in _menuAdapter.GetAllMenuItems())
@@ -55,11 +74,27 @@ public partial class MainWindow
             }
         }
 
+        // 3. Build service and inject active editor category for context boost
         var service = new CommandPaletteService(entries);
+        if (_documentManager?.ActiveDocument?.AssociatedEditor is { } activeEditor)
+        {
+            // Infer editor category from document type
+            var category = InferEditorCategory(activeEditor);
+            service.SetActiveCategory(category);
+        }
 
-        // Anchor palette flush below the title bar launcher button (if available).
-        // PointToScreen returns physical pixels; Window.Left/Top are in DIPs.
-        // Divide by the DPI scale factor so positioning is correct on all DPI settings.
+        // 4. Resolve active LSP client (best-effort: use active document's language)
+        WpfHexEditor.Editor.Core.LSP.ILspClient? lspClient = null;
+        if (_lspBridgeService is not null && _documentManager?.ActiveDocument?.Buffer is { } buf
+            && !string.IsNullOrEmpty(buf.LanguageId))
+            lspClient = _lspBridgeService.TryGetClient(buf.LanguageId);
+
+        // 5. GoToLine callback: navigate active INavigableDocument
+        System.Action<int>? goToLine = null;
+        if (_documentManager?.ActiveDocument?.AssociatedEditor is INavigableDocument nav)
+            goToLine = line => nav.NavigateTo(line - 1, 0);   // INavigableDocument is 0-based
+
+        // 6. Anchor palette below title bar launcher button
         System.Windows.Point? anchor = null;
         if (TitleBarSearchButton is { IsLoaded: true })
         {
@@ -68,12 +103,28 @@ public partial class MainWindow
                     TitleBarSearchButton.ActualWidth  / 2,
                     TitleBarSearchButton.ActualHeight));
 
-            var src = System.Windows.PresentationSource.FromVisual(this);
+            var src  = System.Windows.PresentationSource.FromVisual(this);
             var dpiX = src?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
             var dpiY = src?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
-            anchor = new System.Windows.Point(physPt.X / dpiX, physPt.Y / dpiY);
+            anchor   = new System.Windows.Point(physPt.X / dpiX, physPt.Y / dpiY);
         }
 
-        new CommandPaletteWindow(service, this, anchor).Show();
+        new CommandPaletteWindow(
+            service:        service,
+            settings:       cpSettings,
+            owner:          this,
+            anchor:         anchor,
+            lspClient:      lspClient,
+            documentManager: _documentManager,
+            goToLine:       goToLine).Show();
     }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private static string? InferEditorCategory(IDocumentEditor editor) => editor switch
+    {
+        WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost  => "Build",
+        WpfHexEditor.Editor.MarkdownEditor.Controls.MarkdownEditorHost => "View",
+        _                                                              => null
+    };
 }

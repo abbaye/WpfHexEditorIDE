@@ -534,6 +534,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         TryRestoreSession();
         HandleStartupFile();
 
+        // Pre-warm the embedded format JSON cache on a background thread so that the first
+        // "Open Assembly File in Hex Editor" never blocks the UI thread on stream I/O.
+        _ = Task.Run(() => WpfHexEditor.Definitions.EmbeddedFormatCatalog.Instance.PreWarm());
+
         // Deferred theme sync: catches editors that the docking system creates lazily
         // (ContentFactory called on first render pass) or via async session restore.
         Dispatcher.InvokeAsync(SyncAllHexEditorThemes, System.Windows.Threading.DispatcherPriority.Background);
@@ -546,6 +550,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "IDE", "Keyboard Shortcuts",
             () => new WpfHexEditor.App.Options.KeyboardShortcutsPage(_commandRegistry, _keyBindingService),
             "⌨");
+
+        // Register Command Palette options page
+        InitCommandPaletteOptions();
 
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();

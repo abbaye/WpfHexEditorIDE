@@ -174,6 +174,12 @@ internal sealed class LspDocumentBridgeService : IDisposable
             lspEditor.SetLspClient(null);
     }
 
+    // ── Public helpers ────────────────────────────────────────────────────────
+
+    /// <summary>Returns the active LSP client for the given language ID, or null if none.</summary>
+    public ILspClient? TryGetClient(string languageId)
+        => _clients.TryGetValue(languageId, out var client) ? client : null;
+
     // ── IDisposable ───────────────────────────────────────────────────────────
 
     public void Dispose()

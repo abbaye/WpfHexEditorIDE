@@ -50,6 +50,15 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     private IReadOnlyList<EmbeddedFormatEntry>? _entries;
     private IReadOnlyList<string>?              _categories;
 
+    /// <summary>
+    /// Thread-safe cache: embedded resource key → raw JSON text.
+    /// Populated on first <see cref="GetJson"/> call per key; all subsequent
+    /// calls return the cached string without re-opening the assembly stream.
+    /// </summary>
+    private readonly Dictionary<string, string> _jsonCache
+        = new(StringComparer.OrdinalIgnoreCase);
+    private readonly object _jsonCacheLock = new();
+
     private static readonly Assembly DefinitionsAssembly =
         typeof(EmbeddedFormatCatalog).Assembly;
 
@@ -105,10 +114,38 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     /// <inheritdoc/>
     public string GetJson(string resourceKey)
     {
+        lock (_jsonCacheLock)
+        {
+            if (_jsonCache.TryGetValue(resourceKey, out var cached))
+                return cached;
+        }
+
+        // Read outside the lock — stream is independent per call.
         using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey)
             ?? throw new InvalidOperationException($"Resource not found: {resourceKey}");
         using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
+        var json = reader.ReadToEnd();
+
+        lock (_jsonCacheLock)
+            _jsonCache.TryAdd(resourceKey, json);
+
+        return json;
+    }
+
+    /// <summary>
+    /// Pre-warms the JSON cache for all embedded format entries by reading
+    /// every resource key into <see cref="_jsonCache"/>.
+    /// Safe to call from a background thread at application startup so that
+    /// the first <see cref="HexEditor"/> creation never blocks the UI thread
+    /// on stream I/O.
+    /// </summary>
+    public void PreWarm()
+    {
+        foreach (var entry in GetAll())
+        {
+            try { GetJson(entry.ResourceKey); }
+            catch { /* skip malformed entries */ }
+        }
     }
 
     // -- Public API (syntaxDefinition) ----------------------------------------

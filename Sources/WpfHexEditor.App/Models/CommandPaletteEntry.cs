@@ -19,10 +19,18 @@ namespace WpfHexEditor.App.Models;
 /// <param name="IconGlyph">Optional Segoe MDL2 Assets character (e.g. "\uE74E").</param>
 /// <param name="Command">Command to execute; null entries are display-only.</param>
 /// <param name="CommandParameter">Optional parameter forwarded to <see cref="Command"/>.</param>
+/// <param name="Description">Optional human-readable description shown as tooltip or in the bottom panel.</param>
+/// <param name="MatchIndices">Indices within <see cref="Name"/> that matched the search query (for highlight rendering).</param>
+/// <param name="IsGroupHeader">When true this entry is a visual category separator, not an executable command.</param>
+/// <param name="IsRecent">When true this entry was placed at the top because it was recently executed.</param>
 public sealed record CommandPaletteEntry(
-    string Name,
-    string Category,
-    string? GestureText,
-    string? IconGlyph,
+    string    Name,
+    string    Category,
+    string?   GestureText,
+    string?   IconGlyph,
     ICommand? Command,
-    object? CommandParameter = null);
+    object?   CommandParameter = null,
+    string?   Description      = null,
+    int[]?    MatchIndices      = null,
+    bool      IsGroupHeader     = false,
+    bool      IsRecent          = false);

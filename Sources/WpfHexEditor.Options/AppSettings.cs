@@ -114,6 +114,77 @@ public sealed class AppSettings
     /// An empty-string value means the user explicitly unbound the gesture.
     /// </summary>
     public Dictionary<string, string> KeyBindingOverrides { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    // -- Command Palette ----------------------------------------------------------
+
+    /// <summary>Command Palette ("Fuzzy Bar") appearance and behaviour settings.</summary>
+    public CommandPaletteSettings CommandPalette { get; set; } = new();
+}
+
+// ─── Command Palette ──────────────────────────────────────────────────────────
+
+/// <summary>How the command description is shown next to results.</summary>
+public enum CpDescriptionMode
+{
+    /// <summary>No description shown.</summary>
+    None,
+    /// <summary>Description shown as a tooltip on hover.</summary>
+    Tooltip,
+    /// <summary>Description shown in a fixed panel below the results list.</summary>
+    BottomPanel,
+}
+
+/// <summary>Command Palette ("Fuzzy Bar") configurable options.</summary>
+public sealed class CommandPaletteSettings
+{
+    // Apparence
+    /// <summary>Window width in pixels (400–900). Default: 680.</summary>
+    public int  WindowWidth         { get; set; } = 680;
+    /// <summary>Show Segoe MDL2 icon glyph next to each entry.</summary>
+    public bool ShowIconGlyphs      { get; set; } = true;
+    /// <summary>Show category group headers when query is empty or short.</summary>
+    public bool ShowCategoryHeaders { get; set; } = true;
+    /// <summary>Show keyboard shortcut hint on the right of each entry.</summary>
+    public bool ShowGestureHints    { get; set; } = true;
+
+    // Description
+    /// <summary>How the description for the selected command is surfaced.</summary>
+    public CpDescriptionMode DescriptionMode { get; set; } = CpDescriptionMode.Tooltip;
+
+    // Recherche
+    /// <summary>Bold + colour the matched characters inside entry names.</summary>
+    public bool HighlightMatchChars  { get; set; } = true;
+    /// <summary>Maximum number of results to display. Default: 50.</summary>
+    public int  MaxResults           { get; set; } = 50;
+    /// <summary>Milliseconds to wait before firing a search after a keystroke (0 = immediate).</summary>
+    public int  SearchDebounceMs     { get; set; } = 0;
+
+    // Modes
+    /// <summary>Prefix inserted into the search box when the palette opens ("" / ">" / "@" / ":" / "#").</summary>
+    public string DefaultMode        { get; set; } = "";
+
+    // Récents + fréquence
+    /// <summary>Show recently used commands at the top when the query is empty.</summary>
+    public bool ShowRecentCommands   { get; set; } = true;
+    /// <summary>Number of recent commands to display (3–10). Default: 5.</summary>
+    public int  RecentCommandsCount  { get; set; } = 5;
+    /// <summary>Boost score for frequently / recently executed commands.</summary>
+    public bool FrequencyBoostEnabled { get; set; } = true;
+
+    // Context-aware
+    /// <summary>Boost commands that belong to the same category as the active editor.</summary>
+    public bool ContextBoostEnabled  { get; set; } = true;
+
+    // Historique (non exposé dans la page Options — interne)
+    /// <summary>Per-entry execution history: Name → (count, lastUtc). Not shown in options UI.</summary>
+    public Dictionary<string, CommandExecutionRecord> CommandHistory { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+}
+
+/// <summary>Single entry in the command execution history.</summary>
+public sealed class CommandExecutionRecord
+{
+    public int      Count   { get; set; }
+    public DateTime LastUtc { get; set; }
 }
 
 /// <summary>Build &amp; Run general options.</summary>

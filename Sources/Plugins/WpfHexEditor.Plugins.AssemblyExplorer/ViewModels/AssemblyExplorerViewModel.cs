@@ -943,15 +943,26 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             BorderThickness = new Thickness(0)
         };
 
-        if (installLinks && assembly is not null)
-        {
-            var links = BuildTextLinks(text, assembly);
-            editor.SetContentWithLinks(text, links, readOnly: true, languageName: editorLanguageName);
-        }
-        else
-        {
-            editor.SetContentDirect(text, readOnly: true, languageName: editorLanguageName);
-        }
+        // Show a lightweight placeholder immediately so the tab appears without delay.
+        // The real content is set at ApplicationIdle priority, after the docking system
+        // has finished rendering the new tab — this prevents UI thread starvation on
+        // large decompiled outputs (tens of thousands of lines).
+        editor.SetContentDirect(string.Empty, readOnly: true, languageName: editorLanguageName);
+
+        editor.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+            (System.Action)(() =>
+            {
+                if (installLinks && assembly is not null)
+                {
+                    var links = BuildTextLinks(text, assembly);
+                    editor.SetContentWithLinks(text, links, readOnly: true, languageName: editorLanguageName);
+                }
+                else
+                {
+                    editor.SetContentDirect(text, readOnly: true, languageName: editorLanguageName);
+                }
+            }));
 
         return editor;
     }
