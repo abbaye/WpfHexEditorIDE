@@ -16,7 +16,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using WpfHexEditor.Commands;
 using WpfHexEditor.Options;
 
@@ -165,41 +164,14 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
         resetCol.CellTemplate = BuildResetButtonTemplate();
         _grid.Columns.Add(resetCol);
 
-        Grid.SetRow(_grid, 1);
+        // Group header rows (category separators)
+        _grid.GroupStyle.Add(BuildGroupStyle());
 
-        // Mouse-wheel scroll — wire after template is applied so DG_ScrollViewer exists
-        _grid.Loaded += OnGridLoaded;
+        Grid.SetRow(_grid, 1);
 
         root.Children.Add(toolbar);
         root.Children.Add(_grid);
         Content = root;
-    }
-
-    private void OnGridLoaded(object sender, RoutedEventArgs e)
-    {
-        _grid.ApplyTemplate();
-
-        var sv = _grid.Template?.FindName("DG_ScrollViewer", _grid) as ScrollViewer
-                 ?? FindScrollViewer(_grid);
-
-        if (sv is null) return;
-
-        _grid.PreviewMouseWheel += (_, we) =>
-        {
-            sv.ScrollToVerticalOffset(sv.VerticalOffset - we.Delta / 3.0);
-            we.Handled = true;
-        };
-    }
-
-    private static ScrollViewer? FindScrollViewer(DependencyObject element)
-    {
-        if (element is ScrollViewer sv) return sv;
-        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-        {
-            var result = FindScrollViewer(VisualTreeHelper.GetChild(element, i));
-            if (result is not null) return result;
-        }
-        return null;
     }
 
     // -----------------------------------------------------------------------
@@ -269,6 +241,35 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
     // -----------------------------------------------------------------------
     // Template helpers
     // -----------------------------------------------------------------------
+
+    private GroupStyle BuildGroupStyle()
+    {
+        // Category label — DataContext of GroupItem is CollectionViewGroup,
+        // so Binding("Name") resolves to the category string (e.g. "Build").
+        var labelFactory = new FrameworkElementFactory(typeof(TextBlock));
+        labelFactory.SetBinding(TextBlock.TextProperty, new Binding("Name"));
+        labelFactory.SetValue(TextBlock.FontWeightProperty, FontWeights.SemiBold);
+        labelFactory.SetValue(TextBlock.FontSizeProperty, 11.0);
+        labelFactory.SetValue(TextBlock.PaddingProperty, new Thickness(8, 5, 4, 5));
+        labelFactory.SetResourceReference(TextBlock.ForegroundProperty, "KSP_CellForeground");
+
+        var headerBorder = new FrameworkElementFactory(typeof(Border));
+        headerBorder.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
+        headerBorder.AppendChild(labelFactory);
+
+        var itemsPresenter = new FrameworkElementFactory(typeof(ItemsPresenter));
+
+        var rootPanel = new FrameworkElementFactory(typeof(StackPanel));
+        rootPanel.AppendChild(headerBorder);
+        rootPanel.AppendChild(itemsPresenter);
+
+        var template = new ControlTemplate(typeof(GroupItem)) { VisualTree = rootPanel };
+
+        var containerStyle = new Style(typeof(GroupItem));
+        containerStyle.Setters.Add(new Setter(Control.TemplateProperty, template));
+
+        return new GroupStyle { ContainerStyle = containerStyle };
+    }
 
     private DataTemplate BuildGestureDisplayTemplate()
     {

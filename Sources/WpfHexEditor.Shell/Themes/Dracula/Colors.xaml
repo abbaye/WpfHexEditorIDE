@@ -550,7 +550,7 @@
     <!-- ── Keyboard Shortcuts Page (KSP_*) ──────────────────────────────── -->
     <SolidColorBrush x:Key="KSP_DataGridBackground"  Color="#21222C" />
     <SolidColorBrush x:Key="KSP_CellForeground"      Color="#F8F8F2" />
-    <SolidColorBrush x:Key="KSP_HintForeground"      Color="#6272A4" />
+    <SolidColorBrush x:Key="KSP_HintForeground"      Color="#9898AE" />
     <SolidColorBrush x:Key="KSP_RowHoverBackground"  Color="#282A36" />
     <SolidColorBrush x:Key="KSP_EditBackground"      Color="#21222C" />
     <SolidColorBrush x:Key="KSP_EditBorder"          Color="#44475A" />
