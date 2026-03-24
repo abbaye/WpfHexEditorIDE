@@ -490,8 +490,8 @@ public sealed class CommandPaletteWindow : Window
                      or ProjectItemType.Audio or ProjectItemType.Tile);
 
         var items = _solutionManager?.CurrentSolution?.Projects
-            .SelectMany(p => p.Items.Select(i => (Item: i)))
-            .Where(x => x.Item.AbsolutePath != null && IsTextItem(x.Item.ItemType))
+            .SelectMany(p => p.Items)
+            .Where(i => i.AbsolutePath != null && IsTextItem(i.ItemType))
             .ToList() ?? [];
 
         _spinnerText.Visibility = Visibility.Visible;
@@ -499,7 +499,7 @@ public sealed class CommandPaletteWindow : Window
 
         try
         {
-            foreach (var (item) in items)
+            foreach (var item in items)
             {
                 ct.ThrowIfCancellationRequested();
                 var path = item.AbsolutePath;
