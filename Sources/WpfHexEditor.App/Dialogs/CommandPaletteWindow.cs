@@ -28,8 +28,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
+using System.IO;
 using WpfHexEditor.App.Models;
 using WpfHexEditor.App.Services;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Options;
@@ -41,6 +43,11 @@ namespace WpfHexEditor.App.Dialogs;
 /// </summary>
 public sealed class CommandPaletteWindow : Window
 {
+    // ── Private types ─────────────────────────────────────────────────────────
+
+    /// <summary>Carries file + line info for a content-grep (% mode) result.</summary>
+    private sealed record GrepMatch(string FilePath, int LineNumber, int MatchStart, int MatchLength);
+
     // ── Dependencies ─────────────────────────────────────────────────────────
 
     private readonly CommandPaletteService  _service;
@@ -50,6 +57,8 @@ public sealed class CommandPaletteWindow : Window
     private readonly ILspClient?            _lspClient;
     private readonly IDocumentManager?      _documentManager;
     private readonly Action<int>?           _goToLine;          // callback: jump to 1-based line in active editor
+    private readonly ISolutionManager?      _solutionManager;
+    private readonly Action<string, int>?   _openAndNavigate;   // (filePath, lineNumber 0-based)
 
     // ── Child controls ───────────────────────────────────────────────────────
 
@@ -68,7 +77,7 @@ public sealed class CommandPaletteWindow : Window
     private CancellationTokenSource _searchCts  = new();
 
     // Mode cycle order (Tab key)
-    private static readonly string[] ModeCycle = { "", "@", "#", ":", ">" };
+    private static readonly string[] ModeCycle = { "", "@", "#", "%", ":", ">" };
 
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -79,15 +88,19 @@ public sealed class CommandPaletteWindow : Window
         Point?                  anchor           = null,
         ILspClient?             lspClient        = null,
         IDocumentManager?       documentManager  = null,
-        Action<int>?            goToLine         = null)
+        Action<int>?            goToLine         = null,
+        ISolutionManager?       solutionManager  = null,
+        Action<string, int>?    openAndNavigate  = null)
     {
-        _service         = service;
-        _settings        = settings;
-        _owner           = owner;
-        _anchor          = anchor;
-        _lspClient       = lspClient;
-        _documentManager = documentManager;
-        _goToLine        = goToLine;
+        _service          = service;
+        _settings         = settings;
+        _owner            = owner;
+        _anchor           = anchor;
+        _lspClient        = lspClient;
+        _documentManager  = documentManager;
+        _goToLine         = goToLine;
+        _solutionManager  = solutionManager;
+        _openAndNavigate  = openAndNavigate;
 
         // Window chrome
         WindowStyle        = WindowStyle.None;
@@ -316,6 +329,9 @@ public sealed class CommandPaletteWindow : Window
             case "#":
                 RefreshFilesMode(query);
                 break;
+            case "%":
+                await RefreshContentSearchAsync(query, ct);
+                break;
             case "?":
                 RefreshHelpMode();
                 break;
@@ -389,28 +405,188 @@ public sealed class CommandPaletteWindow : Window
 
     private void RefreshFilesMode(string query)
     {
-        var docs = _documentManager?.OpenDocuments ?? Array.Empty<DocumentModel>();
-        var entries = docs
-            .Where(d => d.FilePath is not null)
-            .Select(d => new CommandPaletteEntry(
-                Name:             System.IO.Path.GetFileName(d.FilePath!) ?? d.FilePath!,
-                Category:         "Open Files",
-                GestureText:      null,
-                IconGlyph:        "\uE8A5",
-                Command:          null,
-                Description:      d.FilePath,
-                CommandParameter: d.ContentId))   // contentId stored for SetActive()
-            .ToList();
+        // Build set of already-open file paths for badge
+        var openPaths = _documentManager?.OpenDocuments
+            .Where(d => d.FilePath != null)
+            .Select(d => d.FilePath!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? [];
 
-        if (!string.IsNullOrWhiteSpace(query))
+        // Enumerate all solution items; fall back to open tabs if no solution
+        var allItems = _solutionManager?.CurrentSolution?.Projects
+            .SelectMany(p => p.Items.Select(i => (ProjectName: p.Name, Item: i)))
+            .Where(x => x.Item.AbsolutePath != null)
+            .ToList() ?? [];
+
+        if (allItems.Count == 0)
         {
-            var q = query.Trim();
-            entries = entries
-                .Where(e => e.Name.Contains(q, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            // Fallback: open documents only (no solution loaded)
+            var docs = _documentManager?.OpenDocuments ?? Array.Empty<DocumentModel>();
+            BindResults(docs
+                .Where(d => d.FilePath != null)
+                .Select(d => new CommandPaletteEntry(
+                    Name:             Path.GetFileName(d.FilePath!),
+                    Category:         "Open Files",
+                    GestureText:      null,
+                    IconGlyph:        "\uE8A5",
+                    Command:          null,
+                    Description:      d.FilePath,
+                    CommandParameter: d.FilePath))   // use path for _openAndNavigate
+                .ToList());
+            return;
         }
 
-        BindResults(entries);
+        var q      = query.Trim();
+        var scored = new List<(CommandPaletteEntry E, int Score, bool IsOpen)>();
+
+        foreach (var (projectName, item) in allItems)
+        {
+            var filename = Path.GetFileName(item.AbsolutePath);
+            var isOpen   = openPaths.Contains(item.AbsolutePath);
+            int score; int[] indices;
+
+            if (string.IsNullOrEmpty(q))
+            {
+                score   = isOpen ? 1 : 0;
+                indices = Array.Empty<int>();
+            }
+            else
+            {
+                (score, indices) = ScoreFilename(filename, q);
+                if (score < 0) continue;
+            }
+
+            scored.Add((new CommandPaletteEntry(
+                Name:             filename,
+                Category:         projectName,
+                GestureText:      isOpen ? "● Open" : null,
+                IconGlyph:        "\uE8A5",
+                Command:          null,
+                Description:      item.AbsolutePath,
+                MatchIndices:     indices,
+                CommandParameter: item.AbsolutePath),   // full path for _openAndNavigate
+                score, isOpen));
+        }
+
+        var results = scored
+            .OrderByDescending(x => x.IsOpen ? 10_000 : 0)
+            .ThenByDescending(x => x.Score)
+            .Take(_settings.MaxResults)
+            .Select(x => x.E)
+            .ToList();
+
+        BindResults(results);
+    }
+
+    private async Task RefreshContentSearchAsync(string query, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+        {
+            BindResults(new List<CommandPaletteEntry>());
+            return;
+        }
+
+        static bool IsTextItem(ProjectItemType t) =>
+            t is not (ProjectItemType.Binary or ProjectItemType.Image
+                     or ProjectItemType.Audio or ProjectItemType.Tile);
+
+        var items = _solutionManager?.CurrentSolution?.Projects
+            .SelectMany(p => p.Items.Select(i => (Item: i)))
+            .Where(x => x.Item.AbsolutePath != null && IsTextItem(x.Item.ItemType))
+            .ToList() ?? [];
+
+        _spinnerText.Visibility = Visibility.Visible;
+        var results = new List<CommandPaletteEntry>();
+
+        try
+        {
+            foreach (var (item) in items)
+            {
+                ct.ThrowIfCancellationRequested();
+                var path = item.AbsolutePath;
+                if (!File.Exists(path)) continue;
+                if (new FileInfo(path).Length > _settings.MaxGrepFileSizeBytes) continue;
+
+                string[] lines;
+                try { lines = await File.ReadAllLinesAsync(path, ct); }
+                catch { continue; }  // unreadable or binary garbage
+
+                var filename = Path.GetFileName(path);
+                for (int i = 0; i < lines.Length && results.Count < _settings.MaxGrepResults; i++)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    var matchIdx = lines[i].IndexOf(query, StringComparison.OrdinalIgnoreCase);
+                    if (matchIdx < 0) continue;
+
+                    var (snippet, adjIdx) = TrimSnippet(lines[i], matchIdx, 72);
+                    results.Add(new CommandPaletteEntry(
+                        Name:             snippet,
+                        Category:         $"{filename}:{i + 1}",
+                        GestureText:      null,
+                        IconGlyph:        "\uE721",
+                        Command:          null,
+                        Description:      path,
+                        MatchIndices:     Enumerable.Range(adjIdx, Math.Min(query.Length, snippet.Length - adjIdx)).ToArray(),
+                        CommandParameter: new GrepMatch(path, i, matchIdx, query.Length)));
+                }
+
+                if (results.Count >= _settings.MaxGrepResults) break;
+            }
+        }
+        catch (OperationCanceledException) { return; }
+        finally { _spinnerText.Visibility = Visibility.Collapsed; }
+
+        BindResults(results);
+    }
+
+    /// <summary>
+    /// 3-tier fuzzy scoring on a filename (same tiers as CommandPaletteService.ScoreEntry).
+    /// Returns (score, matchIndices); score &lt; 0 means no match.
+    /// </summary>
+    private static (int Score, int[] Indices) ScoreFilename(string name, string needle)
+    {
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(needle))
+            return (-1, Array.Empty<int>());
+
+        // Tier 1: prefix
+        if (name.StartsWith(needle, StringComparison.OrdinalIgnoreCase))
+            return (1000 - name.Length, Enumerable.Range(0, needle.Length).ToArray());
+
+        // Tier 2: substring
+        var idx = name.IndexOf(needle, StringComparison.OrdinalIgnoreCase);
+        if (idx >= 0)
+            return (500 - idx, Enumerable.Range(idx, needle.Length).ToArray());
+
+        // Tier 3: subsequence
+        var positions = new int[needle.Length];
+        var hi = 0; var ni = 0; var gaps = 0; var last = -1;
+        while (ni < needle.Length && hi < name.Length)
+        {
+            if (char.ToUpperInvariant(name[hi]) == char.ToUpperInvariant(needle[ni]))
+            {
+                if (last >= 0) gaps += hi - last - 1;
+                positions[ni] = hi;
+                last = hi; ni++;
+            }
+            hi++;
+        }
+        return ni == needle.Length ? (100 - gaps, positions) : (-1, Array.Empty<int>());
+    }
+
+    /// <summary>
+    /// Trims a source line to at most <paramref name="maxLen"/> chars centered
+    /// around the match, prefixing "…" when the start is truncated.
+    /// Returns the trimmed text and the adjusted match-start index within that text.
+    /// </summary>
+    private static (string Text, int AdjIdx) TrimSnippet(string line, int matchIdx, int maxLen)
+    {
+        var trimmed  = line.TrimStart();
+        var trimDiff = line.Length - trimmed.Length;
+        matchIdx     = Math.Max(0, matchIdx - trimDiff);
+        if (trimmed.Length <= maxLen) return (trimmed, matchIdx);
+        var start  = Math.Max(0, matchIdx - maxLen / 3);
+        var prefix = start > 0 ? "…" : "";
+        var text   = prefix + trimmed.Substring(start, Math.Min(maxLen, trimmed.Length - start));
+        return (text, matchIdx - start + prefix.Length);
     }
 
     private void RefreshHelpMode()
@@ -420,7 +596,8 @@ public sealed class CommandPaletteWindow : Window
             new("(vide) ou >", "Modes",  null, "\uE721", null, Description: "Recherche dans toutes les commandes"),
             new("@",           "Modes",  null, "\uE8D2", null, Description: "Go to Symbol — recherche LSP workspace symbols"),
             new(":",           "Modes",  null, "\uE700", null, Description: "Go to Line — saisir un numéro de ligne"),
-            new("#",           "Modes",  null, "\uE8A5", null, Description: "Fichiers ouverts — fuzzy search sur nom de fichier"),
+            new("#",           "Modes",  null, "\uE8A5", null, Description: "Fichiers solution — fuzzy search sur nom de fichier"),
+            new("%",           "Modes",  null, "\uE721", null, Description: "Grep — recherche dans le contenu des fichiers solution"),
             new("?",           "Modes",  null, "\uE897", null, Description: "Aide — affiche cette liste de modes"),
         };
         BindResults(help);
@@ -560,6 +737,7 @@ public sealed class CommandPaletteWindow : Window
             '@' => ("@",  raw.Length > 1 ? raw[1..].TrimStart() : ""),
             ':' => (":",  raw.Length > 1 ? raw[1..].TrimStart() : ""),
             '#' => ("#",  raw.Length > 1 ? raw[1..].TrimStart() : ""),
+            '%' => ("%",  raw.Length > 1 ? raw[1..].TrimStart() : ""),
             '?' => ("?",  ""),
             _   => ("",   raw),
         };
@@ -615,6 +793,7 @@ public sealed class CommandPaletteWindow : Window
             "@" => "@ Symbols",
             ":" => ": Line",
             "#" => "# Files",
+            "%" => "% Grep",
             "?" => "? Help",
             _   => mode
         };
@@ -638,11 +817,18 @@ public sealed class CommandPaletteWindow : Window
             return;
         }
 
-        // Mode `#` — activate open document (CommandParameter holds ContentId)
-        if (_currentMode == "#" && _documentManager is not null
-            && entry.CommandParameter is string contentId)
+        // Mode `#` — open or activate project file (CommandParameter holds full path)
+        if (_currentMode == "#" && entry.CommandParameter is string filePath)
         {
-            _documentManager.SetActive(contentId);
+            _openAndNavigate?.Invoke(filePath, 0);
+            if (closeAfter) { _closingStarted = true; Close(); }
+            return;
+        }
+
+        // Mode `%` — open file and navigate to matched line (CommandParameter holds GrepMatch)
+        if (entry.CommandParameter is GrepMatch gm)
+        {
+            _openAndNavigate?.Invoke(gm.FilePath, gm.LineNumber);
             if (closeAfter) { _closingStarted = true; Close(); }
             return;
         }

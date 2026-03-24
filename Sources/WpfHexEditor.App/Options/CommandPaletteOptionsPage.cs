@@ -47,6 +47,8 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
     private readonly CheckBox     _contextBoost;
     private readonly TextBox      _maxResults;
     private readonly TextBox      _debounce;
+    private readonly TextBox      _maxGrepResults;
+    private readonly TextBox      _maxGrepFileMb;
 
     private readonly CheckBox     _showRecents;
     private readonly CheckBox     _freqBoost;
@@ -59,6 +61,14 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
     public CommandPaletteOptionsPage()
     {
         Padding = new Thickness(16);
+
+        // Merge DialogStyles locally so implicit TextBox/Button/CheckBox/RadioButton styles
+        // survive ApplyTheme() clearing Application.Resources.
+        Resources.MergedDictionaries.Add(new ResourceDictionary
+        {
+            Source = new Uri(
+                "pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml")
+        });
 
         var scroll = new ScrollViewer
         {
@@ -123,6 +133,16 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         debounceRow.Children.Add(_debounce);
         stack.Children.Add(debounceRow);
 
+        var grepResultsRow = MakeLabeledRow("Max grep results (% mode)");
+        _maxGrepResults = MakeIntBox(OnAnyChanged);
+        grepResultsRow.Children.Add(_maxGrepResults);
+        stack.Children.Add(grepResultsRow);
+
+        var grepFileSizeRow = MakeLabeledRow("Max file size for grep (MB)");
+        _maxGrepFileMb = MakeIntBox(OnAnyChanged);
+        grepFileSizeRow.Children.Add(_maxGrepFileMb);
+        stack.Children.Add(grepFileSizeRow);
+
         // ── Section: RECENT COMMANDS ────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("RECENT COMMANDS"));
 
@@ -145,12 +165,13 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         _defaultMode.Items.Add(new ComboBoxItem { Content = "> Commands",          Tag = ">" });
         _defaultMode.Items.Add(new ComboBoxItem { Content = "@ Symbols (LSP)",    Tag = "@" });
         _defaultMode.Items.Add(new ComboBoxItem { Content = ": Go to line",        Tag = ":" });
-        _defaultMode.Items.Add(new ComboBoxItem { Content = "# Open files",        Tag = "#" });
+        _defaultMode.Items.Add(new ComboBoxItem { Content = "# Files (solution)",  Tag = "#" });
+        _defaultMode.Items.Add(new ComboBoxItem { Content = "% Grep (content)",   Tag = "%" });
         _defaultMode.SelectionChanged += OnAnyChanged;
         modeRow.Children.Add(_defaultMode);
         stack.Children.Add(modeRow);
 
-        stack.Children.Add(MakeInfoText("Tip  @=Symbols   :=Line   #=Files   ?=Help   Tab=Cycle mode"));
+        stack.Children.Add(MakeInfoText("Tip  @=Symbols   :=Line   #=Files   %=Grep   ?=Help   Tab=Cycle"));
 
         // ── Reset button ────────────────────────────────────────────────────
         stack.Children.Add(new Separator { Margin = new Thickness(0, 12, 0, 8) });
@@ -188,6 +209,8 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         _contextBoost.IsChecked = cp.ContextBoostEnabled;
         _maxResults.Text        = cp.MaxResults.ToString();
         _debounce.Text          = cp.SearchDebounceMs.ToString();
+        _maxGrepResults.Text    = cp.MaxGrepResults.ToString();
+        _maxGrepFileMb.Text     = (cp.MaxGrepFileSizeBytes / 1_000_000).ToString();
 
         _showRecents.IsChecked = cp.ShowRecentCommands;
         _freqBoost.IsChecked   = cp.FrequencyBoostEnabled;
@@ -211,10 +234,12 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
                            : _descNone.IsChecked    == true ? CpDescriptionMode.None
                            : CpDescriptionMode.Tooltip;
 
-        cp.HighlightMatchChars  = _highlight.IsChecked    == true;
-        cp.ContextBoostEnabled  = _contextBoost.IsChecked == true;
-        cp.MaxResults           = ParseInt(_maxResults.Text, 50);
-        cp.SearchDebounceMs     = ParseInt(_debounce.Text,    0);
+        cp.HighlightMatchChars   = _highlight.IsChecked    == true;
+        cp.ContextBoostEnabled   = _contextBoost.IsChecked == true;
+        cp.MaxResults            = ParseInt(_maxResults.Text, 50);
+        cp.SearchDebounceMs      = ParseInt(_debounce.Text,    0);
+        cp.MaxGrepResults        = ParseInt(_maxGrepResults.Text, 100);
+        cp.MaxGrepFileSizeBytes  = (long)ParseInt(_maxGrepFileMb.Text, 2) * 1_000_000L;
 
         cp.ShowRecentCommands   = _showRecents.IsChecked == true;
         cp.FrequencyBoostEnabled= _freqBoost.IsChecked   == true;
@@ -261,14 +286,18 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         Margin     = new Thickness(0, 0, 0, 12),
     };
 
-    private static TextBlock MakeSectionHeader(string text) => new()
+    private TextBlock MakeSectionHeader(string text)
     {
-        Text       = text,
-        FontSize   = 10,
-        FontWeight = FontWeights.Bold,
-        Foreground = SystemColors.GrayTextBrush,
-        Margin     = new Thickness(0, 14, 0, 4),
-    };
+        var tb = new TextBlock
+        {
+            Text       = text,
+            FontSize   = 10,
+            FontWeight = FontWeights.Bold,
+            Margin     = new Thickness(0, 14, 0, 4),
+        };
+        tb.SetResourceReference(TextBlock.ForegroundProperty, "CP_SecondaryTextBrush");
+        return tb;
+    }
 
     private static CheckBox MakeCheckBox(string label, EventHandler handler)
     {
@@ -304,12 +333,16 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         return tb;
     }
 
-    private static TextBlock MakeInfoText(string text) => new()
+    private TextBlock MakeInfoText(string text)
     {
-        Text       = text,
-        FontStyle  = FontStyles.Italic,
-        Foreground = SystemColors.GrayTextBrush,
-        Margin     = new Thickness(0, 4, 0, 0),
-        FontSize   = 11,
-    };
+        var tb = new TextBlock
+        {
+            Text      = text,
+            FontStyle = FontStyles.Italic,
+            Margin    = new Thickness(0, 4, 0, 0),
+            FontSize  = 11,
+        };
+        tb.SetResourceReference(TextBlock.ForegroundProperty, "CP_SecondaryTextBrush");
+        return tb;
+    }
 }

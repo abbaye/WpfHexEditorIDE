@@ -175,6 +175,12 @@ public sealed class CommandPaletteSettings
     /// <summary>Boost commands that belong to the same category as the active editor.</summary>
     public bool ContextBoostEnabled  { get; set; } = true;
 
+    // Grep (% mode)
+    /// <summary>Maximum number of content-grep results to collect before stopping the file scan.</summary>
+    public int  MaxGrepResults       { get; set; } = 100;
+    /// <summary>Files larger than this value (bytes) are skipped during content grep. Default 2 MB.</summary>
+    public long MaxGrepFileSizeBytes { get; set; } = 2_000_000;
+
     // Historique (non exposé dans la page Options — interne)
     /// <summary>Per-entry execution history: Name → (count, lastUtc). Not shown in options UI.</summary>
     public Dictionary<string, CommandExecutionRecord> CommandHistory { get; set; } = new(StringComparer.OrdinalIgnoreCase);

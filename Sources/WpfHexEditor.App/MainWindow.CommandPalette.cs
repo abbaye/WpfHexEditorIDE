@@ -94,7 +94,42 @@ public partial class MainWindow
         if (_documentManager?.ActiveDocument?.AssociatedEditor is INavigableDocument nav)
             goToLine = line => nav.NavigateTo(line - 1, 0);   // INavigableDocument is 0-based
 
-        // 6. Anchor palette below title bar launcher button
+        // 6. Open-and-navigate callback for # (files) and % (grep) modes
+        System.Action<string, int> openAndNavigate = (path, line) =>
+        {
+            // Already open in a tab? Activate it and optionally jump to line
+            var existing = _documentManager?.OpenDocuments
+                .FirstOrDefault(d => string.Equals(d.FilePath, path, StringComparison.OrdinalIgnoreCase));
+            if (existing is not null)
+            {
+                _documentManager!.SetActive(existing.ContentId);
+                if (line > 0 && existing.AssociatedEditor is INavigableDocument navExisting)
+                    navExisting.NavigateTo(line, 0);
+                return;
+            }
+
+            // Try to find as a project item for proper tab metadata
+            if (_solutionManager.CurrentSolution is { } sol)
+            {
+                foreach (var proj in sol.Projects)
+                {
+                    var item = proj.Items.FirstOrDefault(i =>
+                        string.Equals(i.AbsolutePath, path, StringComparison.OrdinalIgnoreCase));
+                    if (item is not null)
+                    {
+                        OpenProjectItem(item, proj);
+                        if (line > 0) NavigateAfterOpen(path, line);
+                        return;
+                    }
+                }
+            }
+
+            // Standalone file fallback
+            OpenFileDirectly(path);
+            if (line > 0) NavigateAfterOpen(path, line);
+        };
+
+        // 7. Anchor palette below title bar launcher button
         System.Windows.Point? anchor = null;
         if (TitleBarSearchButton is { IsLoaded: true })
         {
@@ -110,14 +145,31 @@ public partial class MainWindow
         }
 
         new CommandPaletteWindow(
-            service:        service,
-            settings:       cpSettings,
-            owner:          this,
-            anchor:         anchor,
-            lspClient:      lspClient,
-            documentManager: _documentManager,
-            goToLine:       goToLine).Show();
+            service:          service,
+            settings:         cpSettings,
+            owner:            this,
+            anchor:           anchor,
+            lspClient:        lspClient,
+            documentManager:  _documentManager,
+            goToLine:         goToLine,
+            solutionManager:  _solutionManager,
+            openAndNavigate:  openAndNavigate).Show();
     }
+
+    // ── Navigation helper ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Defers navigation to <paramref name="line"/> in the editor that will be
+    /// associated with <paramref name="path"/> after the tab finishes loading.
+    /// </summary>
+    private void NavigateAfterOpen(string path, int line)
+        => Dispatcher.InvokeAsync(() =>
+        {
+            var doc = _documentManager?.OpenDocuments
+                .FirstOrDefault(d => string.Equals(d.FilePath, path, StringComparison.OrdinalIgnoreCase));
+            if (doc?.AssociatedEditor is INavigableDocument nav)
+                nav.NavigateTo(line, 0);
+        }, System.Windows.Threading.DispatcherPriority.Background);
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
