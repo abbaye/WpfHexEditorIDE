@@ -15,7 +15,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Templates;
+using WpfHexEditor.Core.ProjectSystem.Templates;
 
 namespace WpfHexEditor.Plugins.SolutionLoader.VS.Templates;
 

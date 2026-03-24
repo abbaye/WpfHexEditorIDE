@@ -141,8 +141,8 @@ public sealed class CompareFilePickerWindow : Window
             BorderThickness   = new Thickness(0),
             Margin            = new Thickness(4, 0, 4, 0),
             FontSize          = 12,
-            ScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
         };
+        ScrollViewer.SetHorizontalScrollBarVisibility(_resultsList, ScrollBarVisibility.Disabled);
         _resultsList.SetResourceReference(BackgroundProperty, "DF_PickerBackground");
         _resultsList.SetResourceReference(ForegroundProperty, "DockForegroundBrush");
         _resultsList.MouseDoubleClick += (_, _) => CommitSelectedItem();

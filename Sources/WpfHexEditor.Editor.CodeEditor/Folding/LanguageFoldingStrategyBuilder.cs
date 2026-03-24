@@ -15,7 +15,7 @@
 // ==========================================================
 
 using System.Collections.Generic;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Folding;
 

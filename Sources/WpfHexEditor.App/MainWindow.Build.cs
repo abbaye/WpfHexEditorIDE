@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WpfHexEditor.App.Build;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Events.IDEEvents;
@@ -34,7 +34,7 @@ public partial class MainWindow
     // Build infrastructure (lazy-initialized after plugin system is ready)
     // -----------------------------------------------------------------------
 
-    private BuildSystem.BuildSystem?      _buildSystem;
+    private BuildSystem?                  _buildSystem;
     private ConfigurationManager?         _configManager;
     private BuildOutputAdapter?           _buildOutputAdapter;
     private BuildErrorListAdapter?        _buildErrorListAdapter;
@@ -133,7 +133,7 @@ public partial class MainWindow
         _configManager       = new ConfigurationManager();
         _incrementalTracker  = new IncrementalBuildTracker(_ideEventBus);
         _buildFileWatcher    = new BuildFileWatcher(_incrementalTracker);
-        _buildSystem         = new BuildSystem.BuildSystem(_solutionManager, _ideEventBus, _configManager, _incrementalTracker)
+        _buildSystem         = new BuildSystem(_solutionManager, _ideEventBus, _configManager, _incrementalTracker)
         {
             MaxParallelProjects = AppSettingsService.Instance.Current.BuildRun.MaxParallelProjects,
         };

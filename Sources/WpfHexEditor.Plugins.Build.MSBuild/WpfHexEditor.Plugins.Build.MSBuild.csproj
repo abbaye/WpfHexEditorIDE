@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.BuildSystem\WpfHexEditor.BuildSystem.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 

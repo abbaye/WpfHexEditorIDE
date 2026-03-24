@@ -59,9 +59,12 @@
     <!-- TextEditor: still referenced for SetContentWithLinks / TextLink types used in helpers. -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
     <!-- CodeEditor: provides CodeEditorSplitHost for decompiled code tabs. DLL (and its
-         transitive deps: WpfHexEditor.ProjectSystem, WpfHexEditor.Definitions, etc.) are
+         transitive deps: WpfHexEditor.Core.ProjectSystem, WpfHexEditor.Definitions, etc.) are
          resolved via the host AssemblyLoadContext fallback at runtime — no copy required. -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <!-- Core.ProjectSystem: compile-only reference for LanguageRegistry (language definitions).
+         DLL resolved at runtime via host ALC fallback — no copy to plugin dir required. -->
+    <ProjectReference Include="..\..\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />

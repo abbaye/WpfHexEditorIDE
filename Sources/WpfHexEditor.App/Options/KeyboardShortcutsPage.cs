@@ -17,7 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using WpfHexEditor.Commands;
+using WpfHexEditor.Core.Commands;
 using WpfHexEditor.Options;
 
 namespace WpfHexEditor.App.Options;

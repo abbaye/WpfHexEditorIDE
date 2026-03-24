@@ -52,13 +52,13 @@ using WpfHexEditor.Editor.ResxEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.IDE.Services;
-using WpfHexEditor.Definitions;
-using WpfHexEditor.ProjectSystem;
-using WpfHexEditor.ProjectSystem.Dialogs;
-using WpfHexEditor.ProjectSystem.Serialization;
-using WpfHexEditor.ProjectSystem.Services;
-using WpfHexEditor.ProjectSystem.Templates;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.ProjectSystem;
+using WpfHexEditor.Core.ProjectSystem.Dialogs;
+using WpfHexEditor.Core.ProjectSystem.Serialization;
+using WpfHexEditor.Core.ProjectSystem.Services;
+using WpfHexEditor.Core.ProjectSystem.Templates;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Options;
@@ -66,7 +66,7 @@ using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.SDK.Descriptors;
-using WpfHexEditor.Commands;
+using WpfHexEditor.Core.Commands;
 using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
 using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
@@ -545,7 +545,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Pre-warm the embedded format JSON cache on a background thread so that the first
         // "Open Assembly File in Hex Editor" never blocks the UI thread on stream I/O.
-        _ = Task.Run(() => WpfHexEditor.Definitions.EmbeddedFormatCatalog.Instance.PreWarm());
+        _ = Task.Run(() => WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.PreWarm());
 
         // Deferred theme sync: catches editors that the docking system creates lazily
         // (ContentFactory called on first render pass) or via async session restore.
@@ -1772,7 +1772,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var ce        = new CodeEditorControl();
             ce.LoadText(source);
             ce.IsReadOnly = true;
-            ce.Language   = WpfHexEditor.ProjectSystem.Languages.LanguageRegistry.Instance
+            ce.Language   = WpfHexEditor.Core.ProjectSystem.Languages.LanguageRegistry.Instance
                                .FindById("csharp");
 
             _dockingAdapter!.AddDocumentTab(uiId, ce,
@@ -2313,6 +2313,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 splitHost.FindAllReferencesDockRequested += OnFindAllReferencesDockRequested;
                 splitHost.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
             }
+
+            // Wire breakpoint gutter adapter so the gutter can render breakpoints immediately.
+            WireBreakpointSourceToEditor(editor);
 
             // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
             if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
@@ -2987,7 +2990,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var entry in WpfHexEditor.Definitions.EmbeddedFormatCatalog.Instance.GetAll())
+            foreach (var entry in WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetAll())
             {
                 if (string.IsNullOrWhiteSpace(entry.Platform)) continue;
 
@@ -5389,7 +5392,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _projectPropertiesMap[item.ContentId] = project;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.ProjectPropertiesViewModel(
             project, _solutionManager);
 
         // Update the tab title with a '*' prefix whenever unsaved changes exist.
@@ -5411,7 +5414,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Open NuGet Manager when the user clicks "+ NuGet…" inside Project Properties.
         vm.ManageNuGetRequested += (_, e) => OpenNuGetManagerDocument(e.Project);
 
-        return new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.ProjectPropertiesDocument
         {
             DataContext = vm
         };
@@ -5474,9 +5477,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _nugetManagerMap[item.ContentId] = project;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetManagerViewModel(
             project,
-            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+            new WpfHexEditor.Core.ProjectSystem.Services.NuGet.NuGetV3Client());
 
         // Reload project after any .csproj write-back to keep the Solution Explorer in sync.
         vm.ProjectModified += (_, _) =>
@@ -5486,7 +5489,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _solutionExplorerPanel?.SetSolution(sol);
         };
 
-        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetManagerDocument
         {
             DataContext = vm
         };
@@ -5546,9 +5549,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _nugetSolutionManagerMap[item.ContentId] = solution;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetSolutionManagerViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetSolutionManagerViewModel(
             solution,
-            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+            new WpfHexEditor.Core.ProjectSystem.Services.NuGet.NuGetV3Client());
 
         // Reload solution tree after any .csproj write-back to keep the Solution Explorer in sync.
         vm.SolutionModified += (_, _) =>
@@ -5558,7 +5561,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _solutionExplorerPanel?.SetSolution(sol);
         };
 
-        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument
         {
             DataContext = vm
         };
@@ -5614,7 +5617,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     /// <summary>
     /// Content factory for "doc-refs-*" items.
-    /// Creates the <see cref="WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerDocument"/>
+    /// Creates the <see cref="WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerDocument"/>
     /// backed by its ViewModel.
     /// </summary>
     private UIElement CreateReferenceManagerContent(DockItem item)
@@ -5631,7 +5634,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _refManagerMap[item.ContentId] = project;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerViewModel(
             project,
             _solutionManager.CurrentSolution);
 
@@ -5642,7 +5645,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _solutionExplorerPanel?.SetSolution(sol);
         };
 
-        return new WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerDocument
         {
             DataContext = vm
         };

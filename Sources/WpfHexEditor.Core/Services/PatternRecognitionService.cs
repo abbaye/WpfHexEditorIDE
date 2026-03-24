@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using WpfHexEditor.BinaryAnalysis.Models.Patterns;
+using WpfHexEditor.Core.BinaryAnalysis.Models.Patterns;
 
 namespace WpfHexEditor.Core.Services
 {

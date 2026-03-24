@@ -156,7 +156,10 @@ public class DockTabControl : TabControl
 
     private TabItem CreateTabItem(DockItem item, Func<DockItem, object>? contentFactory, bool isActive)
     {
-        var header = new DockTabHeader(item);
+        var header = new DockTabHeader(item)
+        {
+            ExtraMenuItemsFactory = ExtraMenuItemsFactory,
+        };
         header.CloseClicked             += () => TabCloseRequested?.Invoke(item);
         header.DragStarted              += () => TabDragStarted?.Invoke(item);
         header.FloatRequested           += () => TabFloatRequested?.Invoke(item);
@@ -463,6 +466,12 @@ public class DockTabHeader : StackPanel
     public event Action? PinToggleRequested;
     public event Action? StickyToggleRequested;
     public event Action? CloseAllButPinnedRequested;
+
+    /// <summary>
+    /// Set by <see cref="DockTabControl.CreateTabItem"/> so the context menu can include
+    /// application-injected items (e.g. "Compare with…").
+    /// </summary>
+    public Func<DockItem, IReadOnlyList<MenuItem>>? ExtraMenuItemsFactory { get; set; }
 
     public DockTabHeader(DockItem item)
     {

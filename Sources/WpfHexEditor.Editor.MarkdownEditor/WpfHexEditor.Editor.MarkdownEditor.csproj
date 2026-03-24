@@ -30,7 +30,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.MarkdownEditor.Core\WpfHexEditor.Editor.MarkdownEditor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
   </ItemGroup>
 
   <!-- JS/CSS assets and rendering services moved to WpfHexEditor.Editor.MarkdownEditor.Core -->

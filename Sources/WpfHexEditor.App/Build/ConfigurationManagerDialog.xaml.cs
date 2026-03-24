@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App.Build;

@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Services;
+using WpfHexEditor.Core.ProjectSystem.Services;
 
 namespace WpfHexEditor.Editor.CodeEditor.Services;
 

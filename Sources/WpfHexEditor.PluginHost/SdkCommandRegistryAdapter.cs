@@ -8,7 +8,7 @@
 // Architecture : Adapter pattern. PluginHost owns both sides of the boundary.
 //////////////////////////////////////////////
 
-using WpfHexEditor.Commands;
+using WpfHexEditor.Core.Commands;
 using SdkCmd = WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.PluginHost;

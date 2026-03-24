@@ -37,7 +37,7 @@ using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.Core.Views;
 using EditorStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 

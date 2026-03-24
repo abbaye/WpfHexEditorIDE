@@ -82,7 +82,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfHexEditor.BinaryAnalysis\WpfHexEditor.BinaryAnalysis.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.BinaryAnalysis\WpfHexEditor.Core.BinaryAnalysis.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
   </ItemGroup>
 

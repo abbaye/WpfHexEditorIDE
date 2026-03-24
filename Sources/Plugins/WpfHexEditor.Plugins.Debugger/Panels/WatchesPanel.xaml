@@ -1,0 +1,52 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.WatchesPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ToolBar Grid.Row="0" Background="{DynamicResource DB_ToolbarBackgroundBrush}">
+            <Button Command="{Binding AddCommand}" Content="&#xE710;" FontFamily="Segoe MDL2 Assets" ToolTip="Add Watch" />
+        </ToolBar>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Rows}"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  GridLinesVisibility="Horizontal"
+                  BorderThickness="0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Expression" Width="*"
+                                    Binding="{Binding Expression, UpdateSourceTrigger=LostFocus}" />
+                <DataGridTextColumn Header="Value" Width="200"
+                                    Binding="{Binding Value}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasError}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource DB_WatchErrorBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Type" Width="120"
+                                    Binding="{Binding Type}" IsReadOnly="True" />
+                <DataGridTemplateColumn Width="28">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                    Background="Transparent" BorderThickness="0"
+                                    Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

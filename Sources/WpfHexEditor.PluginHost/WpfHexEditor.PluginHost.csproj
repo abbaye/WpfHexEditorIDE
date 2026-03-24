@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfHexEditor.Commands\WpfHexEditor.Commands.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />

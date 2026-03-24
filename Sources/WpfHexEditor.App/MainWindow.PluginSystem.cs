@@ -38,7 +38,7 @@ using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.PluginHost.UI.Options;
 using WpfHexEditor.Options;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.Terminal;
@@ -55,6 +55,7 @@ public partial class MainWindow
     private DocumentHostService? _documentHostService;
     private WpfHexEditor.App.Services.LspDocumentBridgeService? _lspBridgeService;
     private WpfHexEditor.App.Services.LspStatusBarAdapter?      _lspStatusBarAdapter;
+    private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -164,6 +165,11 @@ public partial class MainWindow
                     onErrorClick: () => OpenSettingsAt("Language Server Protocol", "Servers"));
             }
 
+            // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.
+            _debuggerService = new WpfHexEditor.App.Services.DebuggerServiceImpl(
+                _ideEventBus,
+                WpfHexEditor.Options.AppSettingsService.Instance.Current);
+
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
                 solutionExplorer:    solutionService,
@@ -182,13 +188,15 @@ public partial class MainWindow
                 capabilityRegistry:  capabilityAdapter,
                 extensionRegistry:   extensionRegistry,
                 solutionManager:     _solutionManager,
-                commandRegistry:     new WpfHexEditor.PluginHost.SdkCommandRegistryAdapter(_commandRegistry))
+                commandRegistry:     new WpfHexEditor.PluginHost.SdkCommandRegistryAdapter(_commandRegistry),
+                debuggerService:     _debuggerService)
             {
                 LspServers = lspRegistry
             };
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;
+            InitDebugIntegration();
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher,
                 logger:      msg => OutputLogger.PluginInfo(msg),
                 errorLogger: msg => OutputLogger.PluginError(msg));
@@ -875,8 +883,14 @@ public partial class MainWindow
         _pluginHost = null;
         _lspStatusBarAdapter?.Dispose();
         _lspStatusBarAdapter = null;
+        ShutdownDebugIntegration();
         _lspBridgeService?.Dispose();
         _lspBridgeService = null;
+        if (_debuggerService is not null)
+        {
+            await _debuggerService.DisposeAsync().ConfigureAwait(false);
+            _debuggerService = null;
+        }
         _ideEventBus?.Dispose();
         _ideEventBus = null;
         if (_serviceProvider is IAsyncDisposable asyncDisposable)
@@ -969,6 +983,16 @@ public partial class MainWindow
         reg.Register(typeof(ProjectItemAddedEvent),   "Project Item Added",   "SolutionManager");
         reg.Register(typeof(ProjectItemRemovedEvent), "Project Item Removed", "SolutionManager");
         reg.Register(typeof(ProjectItemRenamedEvent), "Project Item Renamed", "SolutionManager");
+
+        // --- Debugger ---
+        reg.Register(typeof(DebugSessionStartedEvent),   "Debug Session Started",   "Debugger");
+        reg.Register(typeof(DebugSessionEndedEvent),     "Debug Session Ended",     "Debugger");
+        reg.Register(typeof(DebugSessionPausedEvent),    "Debug Session Paused",    "Debugger");
+        reg.Register(typeof(DebugSessionResumedEvent),   "Debug Session Resumed",   "Debugger");
+        reg.Register(typeof(BreakpointHitEvent),         "Breakpoint Hit",          "Debugger");
+        reg.Register(typeof(StepCompletedEvent),         "Step Completed",          "Debugger");
+        reg.Register(typeof(DebugOutputReceivedEvent),   "Debug Output Received",   "Debugger");
+        reg.Register(typeof(ExceptionHitEvent),          "Exception Hit",           "Debugger");
     }
 
     // --- Minimal helpers ------------------------------------------------

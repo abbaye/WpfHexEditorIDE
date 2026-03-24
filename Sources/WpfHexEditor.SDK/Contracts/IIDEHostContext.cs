@@ -135,4 +135,13 @@ public interface IIDEHostContext
     /// Null when the LSP.Client assembly is not loaded.
     /// </summary>
     ILspServerRegistry? LspServers { get; }
+
+    // -- Debugger -------------------------------------------------------------
+
+    /// <summary>
+    /// Integrated debugger service. Use to query session state, toggle breakpoints,
+    /// and subscribe to debug lifecycle events.
+    /// Null when the debugger assembly is not loaded or the host does not support debugging.
+    /// </summary>
+    IDebuggerService? Debugger => null;
 }

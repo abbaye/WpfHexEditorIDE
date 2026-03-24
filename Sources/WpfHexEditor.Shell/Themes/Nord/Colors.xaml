@@ -672,4 +672,20 @@
     <SolidColorBrush x:Key="DF_PatchedBrush"          Color="#0E2828" />
     <SolidColorBrush x:Key="DF_PickerBackground"      Color="#3B4252" />
     <SolidColorBrush x:Key="DF_PickerHighlightBrush"  Color="#4C566A" />
+
+    <!-- Debugger tokens (DB_*) â€” inserted by Add-DbgTokens.ps1 -->
+    <SolidColorBrush x:Key="DB_BreakpointActiveBrush"        Color="#BF616A" />
+    <SolidColorBrush x:Key="DB_BreakpointDisabledBrush"      Color="#4C566A" />
+    <SolidColorBrush x:Key="DB_BreakpointConditionalBrush"   Color="#D08770" />
+    <SolidColorBrush x:Key="DB_ExecutionLineBrush"           Color="#EBCB8B" />
+    <SolidColorBrush x:Key="DB_ExecutionLineBackgroundBrush" Color="#30EBCB8B" />
+    <SolidColorBrush x:Key="DB_ExceptionLineBrush"           Color="#BF616A" />
+    <SolidColorBrush x:Key="DB_CallStackActiveBrush"         Color="#A3BE8C" />
+    <SolidColorBrush x:Key="DB_WatchErrorBrush"              Color="#BF616A" />
+    <SolidColorBrush x:Key="DB_LocalChangedBrush"            Color="#B48EAD" />
+    <SolidColorBrush x:Key="DB_ConsoleStdoutBrush"           Color="#ECEFF4" />
+    <SolidColorBrush x:Key="DB_ConsoleStderrBrush"           Color="#BF616A" />
+    <SolidColorBrush x:Key="DB_ConsoleDebugBrush"            Color="#4C566A" />
+    <SolidColorBrush x:Key="DB_ToolbarBackgroundBrush"       Color="#3B4252" />
+    <SolidColorBrush x:Key="DB_StatusActiveBrush"            Color="#BF616A" />
 </ResourceDictionary>

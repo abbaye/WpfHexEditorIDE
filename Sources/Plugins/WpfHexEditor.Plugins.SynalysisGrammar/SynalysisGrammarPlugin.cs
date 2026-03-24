@@ -192,7 +192,7 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         // Use a direct type reference to force-load the assembly rather than relying on
         // AppDomain.CurrentDomain.GetAssemblies(), which only returns already-loaded assemblies.
         // WpfHexEditor.Definitions embeds all .grammar files under FormatDefinitions/Synalysis/.
-        var definitionsAssembly = typeof(WpfHexEditor.Definitions.EmbeddedFormatCatalog).Assembly;
+        var definitionsAssembly = typeof(WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog).Assembly;
 
         foreach (var key in definitionsAssembly.GetManifestResourceNames())
         {

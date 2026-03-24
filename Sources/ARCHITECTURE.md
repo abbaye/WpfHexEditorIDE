@@ -107,7 +107,7 @@ graph TB
 | `WpfHexEditor.BinaryAnalysis` | Core | 400+ format detection engine, DataInspector, byte-frequency service |
 | `WpfHexEditor.Definitions` | Core | 427 `.whfmt` format definitions, `EmbeddedFormatCatalog` |
 | `WpfHexEditor.ProjectSystem` | Core | `.whsln`/`.whproj`, `SolutionManager`, virtual folders, format versioning |
-| `WpfHexEditor.Decompiler.Core` | Core | Decompiler foundation (in progress) |
+| `WpfHexEditor.Core.Decompiler` | Core | Decompiler foundation (in progress) |
 | `WpfHexEditor.Docking.Core` | Core | Docking data model / layout contracts (shared by Docking.Wpf) |
 | `WpfHexEditor.Tests` | Tests | MSTest / xUnit — ByteProvider, services, format detection |
 | `WpfHexEditor.BinaryAnalysis.Tests` | Tests | Format detection test suite |

@@ -1,0 +1,172 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<ec:ThemedDialog x:Class="WpfHexEditor.Core.ProjectSystem.Dialogs.NewProjectDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
+        Title="New Project"
+        Width="720" Height="520"
+        MinWidth="580" MinHeight="420"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ListBoxItem">
+                <Setter Property="Padding"    Value="6,3" />
+                <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Template picker -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Category filter -->
+            <ListBox x:Name="CategoryList" Grid.Column="0"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Background="{DynamicResource DockBackgroundBrush}"
+                     SelectionChanged="OnCategoryChanged" />
+
+            <!-- Right pane: search + template list + description -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+
+                <!-- Search box -->
+                <TextBox x:Name="SearchBox" Grid.Row="0"
+                         Text=""
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         Padding="4,3"
+                         TextChanged="OnSearchChanged">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="Search templates…"
+                                                               Foreground="{DynamicResource DockTabTextBrush}"
+                                                               FontStyle="Italic"
+                                                               Margin="6,0,0,0" />
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <!-- Template list -->
+                <ListBox x:Name="TemplateList" Grid.Row="2"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         SelectionChanged="OnTemplateSelected">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       FontWeight="SemiBold"
+                                       Margin="4,3" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Description panel -->
+                <Border Grid.Row="4"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1"
+                        Background="{DynamicResource DockBackgroundBrush}"
+                        Padding="6,4">
+                    <TextBlock x:Name="DescriptionText"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               TextWrapping="Wrap"
+                               FontSize="11"
+                               VerticalAlignment="Top" />
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Name -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="_Name:" Target="{Binding ElementName=NameBox}" />
+            <TextBox x:Name="NameBox" Grid.Column="1" TextChanged="OnNameOrLocationChanged" />
+        </Grid>
+
+        <!-- Location -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="_Location:" Target="{Binding ElementName=LocationBox}" />
+            <TextBox x:Name="LocationBox" Grid.Column="1" TextChanged="OnNameOrLocationChanged" />
+            <Button Grid.Column="3" Content="..." Width="30" Padding="0"
+                    Click="OnBrowseLocation" ToolTip="Browse for folder" />
+        </Grid>
+
+        <!-- Preview path -->
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Will create:" />
+            <TextBlock x:Name="PreviewText" Grid.Column="1"
+                       Foreground="{DynamicResource DockTabTextBrush}"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       FontStyle="Italic" />
+        </Grid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="OkButton" Content="OK" IsDefault="True"
+                    IsEnabled="False" Click="OnOk" Margin="0,0,8,0" />
+            <Button Content="Cancel" IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</ec:ThemedDialog>

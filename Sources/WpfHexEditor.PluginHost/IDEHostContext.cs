@@ -84,6 +84,9 @@ public sealed class IDEHostContext : IIDEHostContext
     /// <inheritdoc />
     public WpfHexEditor.SDK.Commands.ICommandRegistry? CommandRegistry { get; }
 
+    /// <inheritdoc />
+    public WpfHexEditor.SDK.Contracts.Services.IDebuggerService? Debugger { get; }
+
     public IDEHostContext(
         IDocumentHostService documentHost,
         ISolutionExplorerService solutionExplorer,
@@ -102,7 +105,8 @@ public sealed class IDEHostContext : IIDEHostContext
         IPluginCapabilityRegistry capabilityRegistry,
         IExtensionRegistry extensionRegistry,
         ISolutionManager? solutionManager = null,
-        WpfHexEditor.SDK.Commands.ICommandRegistry? commandRegistry = null)
+        WpfHexEditor.SDK.Commands.ICommandRegistry? commandRegistry = null,
+        WpfHexEditor.SDK.Contracts.Services.IDebuggerService? debuggerService = null)
     {
         DocumentHost        = documentHost        ?? throw new ArgumentNullException(nameof(documentHost));
         SolutionExplorer    = solutionExplorer    ?? throw new ArgumentNullException(nameof(solutionExplorer));
@@ -122,5 +126,6 @@ public sealed class IDEHostContext : IIDEHostContext
         ExtensionRegistry   = extensionRegistry   ?? throw new ArgumentNullException(nameof(extensionRegistry));
         SolutionManager     = solutionManager;
         CommandRegistry     = commandRegistry;
+        Debugger            = debuggerService;
     }
 }

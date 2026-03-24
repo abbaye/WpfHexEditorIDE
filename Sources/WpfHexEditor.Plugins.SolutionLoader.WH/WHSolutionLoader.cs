@@ -16,7 +16,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Services;
+using WpfHexEditor.Core.ProjectSystem.Services;
 
 namespace WpfHexEditor.Plugins.SolutionLoader.WH;
 

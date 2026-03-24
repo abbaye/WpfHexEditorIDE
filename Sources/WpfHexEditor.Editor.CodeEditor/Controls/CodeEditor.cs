@@ -32,7 +32,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.CodeEditor.Options;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
@@ -386,6 +386,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Folding support (Phase B3).
         private FoldingEngine?  _foldingEngine;
         private GutterControl?  _gutterControl;
+
+        // Breakpoint gutter (ADR-DBG-01).
+        private BreakpointGutterControl? _breakpointGutterControl;
 
         // True between the first Ctrl+M press and the second chord key (outlining commands).
         private bool _outlineChordPending;
@@ -1869,6 +1872,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Gutter re-renders internally via its own RegionsChanged handler.
             _foldingEngine.RegionsChanged += (_, _) => { _linePositionsDirty = true; InvalidateMeasure(); InvalidateVisual(); };
             _scrollBarChildren.Add(_gutterControl);
+
+            // Breakpoint gutter (ADR-DBG-01): positioned to the left of fold markers.
+            _breakpointGutterControl = new BreakpointGutterControl();
+            _scrollBarChildren.Add(_breakpointGutterControl);
 
             // Initialize word-highlight scroll marker overlay.
             _codeScrollMarkerPanel = new CodeScrollMarkerPanel();
@@ -3865,6 +3872,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     : new Rect(0, 0, 0, 0));
             }
 
+            // Breakpoint gutter: sits at x=0 (same strip, z-ordered on top of fold gutter).
+            if (_breakpointGutterControl != null)
+            {
+                bool showBp = ShowLineNumbers;
+                _breakpointGutterControl.Visibility = showBp ? Visibility.Visible : Visibility.Collapsed;
+                _breakpointGutterControl.Arrange(showBp
+                    ? new Rect(0, 0, BreakpointGutterControl.GutterWidth, contentH)
+                    : new Rect(0, 0, 0, 0));
+            }
+
             UpdateScrollBars(contentW, contentH);
             return finalSize;
         }
@@ -4076,6 +4093,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 : 0.0;
             _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
                                    TopMargin, gutterScrollFraction, _lineYLookup);
+
+            // Sync breakpoint gutter with same visible range + gutter background brush.
+            var bpBg = TryFindResource("LineNumberBackground") as System.Windows.Media.Brush
+                    ?? System.Windows.Media.Brushes.Transparent;
+            _breakpointGutterControl?.Update(
+                _lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin, _lineYLookup, bpBg);
         }
 
         /// <summary>
@@ -8084,6 +8107,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// The method subscribes to <see cref="ILspClient.DiagnosticsReceived"/> and
         /// sends textDocument/didOpen when the editor already has a file loaded.
         /// </summary>
+        // ── Debugger integration (ADR-DBG-01) ─────────────────────────────────────
+
+        /// <summary>
+        /// Wire the breakpoint gutter to a data source (injected by DebuggerService).
+        /// Pass null to disconnect (session ended).
+        /// </summary>
+        public void SetBreakpointSource(IBreakpointSource? source)
+        {
+            _breakpointGutterControl?.SetBreakpointSource(source);
+            _breakpointGutterControl?.SetFilePath(_currentFilePath);
+        }
+
+        /// <summary>
+        /// Highlight the current execution line (1-based).
+        /// Pass null to clear the highlight (session not paused).
+        /// </summary>
+        public void SetExecutionLine(int? oneBased)
+        {
+            _breakpointGutterControl?.SetExecutionLine(oneBased);
+            InvalidateVisual(); // redraw execution line highlight in content area
+        }
+
+        // ─────────────────────────────────────────────────────────────────────────
+
         public void SetLspClient(WpfHexEditor.Editor.Core.LSP.ILspClient? client)
         {
             if (_lspClient is not null)

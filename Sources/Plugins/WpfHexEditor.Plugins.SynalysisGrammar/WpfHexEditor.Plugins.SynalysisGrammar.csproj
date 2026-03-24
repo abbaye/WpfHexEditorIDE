@@ -31,7 +31,7 @@
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />

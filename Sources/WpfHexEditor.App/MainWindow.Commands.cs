@@ -9,7 +9,7 @@
 //////////////////////////////////////////////
 
 using System.Windows.Input;
-using WpfHexEditor.Commands;
+using WpfHexEditor.Core.Commands;
 
 namespace WpfHexEditor.App;
 
@@ -206,6 +206,28 @@ public partial class MainWindow
             () => OnNewPluginWizard(this, null!));
         Reg(CommandIds.Plugins.PluginHotReload, "Hot-Reload Plugin",  "Plugins", "Ctrl+Shift+R",   "\uE72C",
             () => OnPluginHotReload(this, null!));
+
+        // ── Debug ────────────────────────────────────────────────────────────
+        Reg(CommandIds.Debug.StartDebugging,       "Start Debugging",          "Debug", "F5",            "\uE768",
+            () => OnDebugStartOrContinue());
+        Reg(CommandIds.Debug.StopDebugging,        "Stop Debugging",           "Debug", "Shift+F5",      "\uE71A",
+            () => _ = _debuggerService?.StopSessionAsync());
+        Reg(CommandIds.Debug.RestartDebugging,     "Restart Debugging",        "Debug", "Ctrl+Shift+F5", "\uE72C",
+            () => OnDebugRestart());
+        Reg(CommandIds.Debug.Continue,             "Continue",                 "Debug", null,            "\uE768",
+            () => _ = _debuggerService?.ContinueAsync());
+        Reg(CommandIds.Debug.StepOver,             "Step Over",                "Debug", "F10",           "\uE7EE",
+            () => _ = _debuggerService?.StepOverAsync());
+        Reg(CommandIds.Debug.StepInto,             "Step Into",                "Debug", "F11",           "\uE70D",
+            () => _ = _debuggerService?.StepIntoAsync());
+        Reg(CommandIds.Debug.StepOut,              "Step Out",                 "Debug", "Shift+F11",     "\uE70E",
+            () => _ = _debuggerService?.StepOutAsync());
+        Reg(CommandIds.Debug.ToggleBreakpoint,     "Toggle Breakpoint",        "Debug", "F9",            "\uE7C1",
+            () => OnToggleBreakpoint());
+        Reg(CommandIds.Debug.DeleteAllBreakpoints, "Delete All Breakpoints",   "Debug", "Ctrl+Shift+F9", null,
+            () => _ = _debuggerService?.ClearAllBreakpointsAsync());
+        Reg(CommandIds.Debug.AttachToProcess,      "Attach to Process…",       "Debug", "Ctrl+Alt+P",    null,
+            () => OnAttachToProcess());
     }
 
     // -----------------------------------------------------------------------

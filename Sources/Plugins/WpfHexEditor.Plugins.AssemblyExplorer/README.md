@@ -67,7 +67,7 @@ The Assembly Explorer plugin provides a Visual Studio-like tree panel for browsi
 ### Phase 2 TODO
 
 - `PeOffsetResolver`: full ECMA-335 §II.24 metadata table offset resolution.
-- `DecompilerService`: ILSpy decompiler backend via `WpfHexEditor.Decompiler.Core` (no `ProjectReference` yet).
+- `DecompilerService`: ILSpy decompiler backend via `WpfHexEditor.Core.Decompiler` (no `ProjectReference` yet).
 
 ### Architecture notes
 

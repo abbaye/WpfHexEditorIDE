@@ -113,7 +113,7 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 | **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | 🔧 Active | ~70% | Side-by-side binary comparison and changeset replay |
 | **[Audio Viewer](Sources/WpfHexEditor.Editor.AudioViewer/README.md)** | 🔧 Stub | ~5% | Audio binary viewer — waveform display (#174) |
 | **[Disassembly Viewer](Sources/WpfHexEditor.Editor.DisassemblyViewer/README.md)** | 🔧 Active | ~30% | x86/x64/ARM binary disassembler — decompiler integration stub (#178) |
-| **[Decompiled Source Viewer](Sources/WpfHexEditor.Decompiler.Core/README.md)** | 🔜 Planned | ~0% | C# skeleton + full IL view via ILSpy backend; "Go to Metadata Token" navigation (#106) |
+| **[Decompiled Source Viewer](Sources/WpfHexEditor.Core.Decompiler/README.md)** | 🔜 Planned | ~0% | C# skeleton + full IL view via ILSpy backend; "Go to Metadata Token" navigation (#106) |
 | **Memory Snapshot Viewer** | 🔜 Planned | ~0% | Load Windows mini-dump `.dmp` / Linux core-dump; display memory regions, thread stacks, modules (#117) |
 | **PCAP / Network Capture Viewer** | 🔜 Planned | ~0% | Load `.pcap` / `.pcapng`; packet list, layer breakdown (Ethernet/IP/TCP/UDP/TLS), raw payload (#136) |
 
@@ -151,7 +151,7 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 | **[Core.Terminal](Sources/WpfHexEditor.Core.Terminal/README.md)** | net8.0-windows | Command engine — 31+ built-in commands, `HxScriptEngine`, `CommandHistory`, `WriteTable` output helper |
 | **[Terminal](Sources/WpfHexEditor.Terminal/README.md)** | net8.0-windows | WPF terminal panel layer — `TerminalPanel`, `TerminalPanelViewModel`, multi-tab shell session management |
 | **[Core.AssemblyAnalysis](Sources/WpfHexEditor.Core.AssemblyAnalysis/README.md)** | net8.0 | BCL-only .NET PE analysis pipeline — PEReader + assembly model, foundation for Assembly Explorer plugin |
-| **[Decompiler.Core](Sources/WpfHexEditor.Decompiler.Core/README.md)** | net8.0-windows | `IDecompiler` contract + stub backend for ILSpy/dnSpy integration (#106) |
+| **[Core.Decompiler](Sources/WpfHexEditor.Core.Decompiler/README.md)** | net8.0-windows | `IDecompiler` contract + stub backend for ILSpy/dnSpy integration (#106) |
 | **[ProjectSystem](Sources/WpfHexEditor.ProjectSystem/README.md)** | net8.0-windows | `.whsln` / `.whproj` workspace and project model — serialization, project-to-project references, dialogs |
 | **[Options](Sources/WpfHexEditor.Options/README.md)** | net8.0-windows | `AppSettingsService`, `OptionsEditorControl` — IDE settings persistence and options page infrastructure |
 

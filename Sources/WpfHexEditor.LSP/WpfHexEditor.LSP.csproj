@@ -29,7 +29,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
   </ItemGroup>
 

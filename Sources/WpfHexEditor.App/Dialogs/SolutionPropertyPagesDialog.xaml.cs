@@ -19,7 +19,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.App.Dialogs.SolutionPropertyPages;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App.Dialogs;

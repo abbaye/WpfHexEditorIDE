@@ -35,6 +35,29 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
     public string PageTitle    => "Compare Files";
     public string CategoryName => "Editor";
 
+    public event EventHandler? Changed;
+
+    public void Load(AppSettings settings)
+    {
+        var s = settings.Comparison;
+        _viewModeCombo.SelectedItem      = s.DefaultViewMode;
+        _minimapCheck.IsChecked          = s.ShowMinimap;
+        _charLevelCheck.IsChecked        = s.ShowCharLevelDiff;
+        _foldCheck.IsChecked             = s.FoldIdenticalRegions;
+        _foldThresholdSlider.Value       = s.FoldThreshold;
+        _historyCountLabel.Text          = $"{s.RecentComparisons.Count} saved comparisons";
+    }
+
+    public void Flush(AppSettings settings)
+    {
+        var s = settings.Comparison;
+        s.DefaultViewMode      = _viewModeCombo.SelectedItem as string ?? "SideBySide";
+        s.ShowMinimap          = _minimapCheck.IsChecked == true;
+        s.ShowCharLevelDiff    = _charLevelCheck.IsChecked == true;
+        s.FoldIdenticalRegions = _foldCheck.IsChecked == true;
+        s.FoldThreshold        = (int)_foldThresholdSlider.Value;
+    }
+
     public ComparisonOptionsPage(ComparisonSettings settings, AppSettingsService settingsService)
     {
         _settings        = settings;
@@ -157,12 +180,9 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
 
     private void OnSave(object sender, RoutedEventArgs e)
     {
-        _settings.DefaultViewMode     = _viewModeCombo.SelectedItem as string ?? "SideBySide";
-        _settings.ShowMinimap         = _minimapCheck.IsChecked == true;
-        _settings.ShowCharLevelDiff   = _charLevelCheck.IsChecked == true;
-        _settings.FoldIdenticalRegions = _foldCheck.IsChecked == true;
-        _settings.FoldThreshold       = (int)_foldThresholdSlider.Value;
+        Flush(AppSettingsService.Instance.Current);
         _settingsService.Save();
+        Changed?.Invoke(this, EventArgs.Empty);
     }
 
     // ── Builder helpers ───────────────────────────────────────────────────────

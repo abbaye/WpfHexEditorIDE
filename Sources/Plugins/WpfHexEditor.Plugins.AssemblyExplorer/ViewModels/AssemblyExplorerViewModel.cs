@@ -37,7 +37,7 @@ using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.TextEditor.Controls;
 using WpfHexEditor.Editor.TextEditor.Models;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;

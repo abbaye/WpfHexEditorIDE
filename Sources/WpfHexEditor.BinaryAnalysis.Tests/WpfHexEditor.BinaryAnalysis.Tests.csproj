@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfHexEditor.BinaryAnalysis\WpfHexEditor.BinaryAnalysis.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.BinaryAnalysis\WpfHexEditor.Core.BinaryAnalysis.csproj" />
   </ItemGroup>
 
 </Project>

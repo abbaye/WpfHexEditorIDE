@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Options;
 

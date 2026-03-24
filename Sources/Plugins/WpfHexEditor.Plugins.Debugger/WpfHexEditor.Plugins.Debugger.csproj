@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WpfHexEditor.Plugins.Debugger</RootNamespace>
+    <AssemblyName>WpfHexEditor.Plugins.Debugger</AssemblyName>
+    <!-- Plugin metadata -->
+    <PluginId>WpfHexEditor.Plugins.Debugger</PluginId>
+    <PluginName>Integrated Debugger</PluginName>
+    <PluginVersion>1.0.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.Debugger.DebuggerPlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>VS-style integrated debugger: breakpoints, call stack, locals, watches, and debug console via DAP (netcoredbg/vsdbg).</PluginDescription>
+    <PluginIsolationMode>Auto</PluginIsolationMode>
+    <PluginLoadPriority>55</PluginLoadPriority>
+    <PluginSdkVersion>1.2.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
+    <PluginPermAccessHexEditor>false</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>true</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>true</PluginPermWriteOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
