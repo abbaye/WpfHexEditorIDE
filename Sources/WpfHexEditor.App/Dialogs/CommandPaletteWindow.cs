@@ -270,13 +270,15 @@ public sealed class CommandPaletteWindow : Window
             ApplyModePrefix(settings.DefaultMode);
     }
 
-    // ── Closed ───────────────────────────────────────────────────────────────
+    // ── Closing ──────────────────────────────────────────────────────────────
+    // OnClosing fires BEFORE Deactivated — set the flag here so the Deactivated
+    // handler sees it and skips the redundant Close() call.
 
-    protected override void OnClosed(EventArgs e)
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
         _closingStarted = true;
         _searchCts.Cancel();
-        base.OnClosed(e);
+        base.OnClosing(e);
     }
 
     // ── Loaded ───────────────────────────────────────────────────────────────
@@ -540,7 +542,7 @@ public sealed class CommandPaletteWindow : Window
                     var filename = Path.GetFileName(path);
                     try
                     {
-                        await using var sr = new StreamReader(path, detectEncodingFromByteOrderMarks: true);
+                        using var sr = new StreamReader(path, detectEncodingFromByteOrderMarks: true);
                         string? rawLine; int lineIdx = 0;
                         while ((rawLine = await sr.ReadLineAsync(innerCt)) is not null
                                && bag.Count < _settings.MaxGrepResults)
