@@ -4,9 +4,9 @@
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-23
-// Updated: 2026-03-24 (ADR-UT-04 — IPluginWithOptions + AutoRunOnBuild + auto-expand)
+// Updated: 2026-03-24 (ADR-UT-07 — VS-style TreeView + toolbar pills)
 // Description:
-//     Plugin entry point for the Unit Testing Panel (ADR-UT-01 → ADR-UT-04).
+//     Plugin entry point for the Unit Testing Panel (ADR-UT-01 → ADR-UT-07).
 //
 //     Flow:
 //       1. InitializeAsync — registers dockable panel, View menu item,
@@ -51,9 +51,11 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     private UnitTestingOptionsPage? _optionsPage;
     private IDisposable? _subBuildSucceeded;
+    private IDisposable? _subWorkspaceChanged;
 
     private CancellationTokenSource? _runCts;
-    private readonly DotnetTestRunner _runner = new();
+    private readonly DotnetTestRunner     _runner     = new();
+    private readonly DotnetTestDiscoverer _discoverer = new();
 
     // ── IWpfHexEditorPlugin ─────────────────────────────────────────────────
 
@@ -115,12 +117,26 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 Application.Current?.Dispatcher.InvokeAsync(() => { _ = RunAllAsync(); });
         });
 
+        // Auto-discover projects when solution changes.
+        _subWorkspaceChanged = context.IDEEvents.Subscribe<WorkspaceChangedEvent>(_ev =>
+        {
+            _ = DiscoverProjectsAsync();
+        });
+
+        // Wire Refresh button → re-discover only (no test run).
+        _panel.RefreshProjectsRequested += (_, _) => _ = DiscoverProjectsAsync();
+
+        // Discover immediately if a solution is already loaded.
+        if (_context?.SolutionManager?.CurrentSolution is not null)
+            _ = DiscoverProjectsAsync();
+
         return Task.CompletedTask;
     }
 
     public Task ShutdownAsync(CancellationToken ct = default)
     {
         _subBuildSucceeded?.Dispose();
+        _subWorkspaceChanged?.Dispose();
         StopRun();
         _panel       = null;
         _vm          = null;
@@ -183,13 +199,9 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 var projName    = Path.GetFileNameWithoutExtension(proj);
                 _vm.StatusText  = $"Running {projName}… ({projectsDone + 1}/{testProjects.Count})";
 
-                // Show placeholder row while this project runs.
-                TestResultRow? placeholder = null;
+                // Mark project node as running while tests are in progress.
                 await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    _vm.AddRunningPlaceholder(projName);
-                    placeholder = _vm.RunningRow;
-                });
+                    _vm.AddRunningPlaceholder(projName));
 
                 var progress = new Progress<string>(line =>
                     _context?.Output.Write("Unit Testing", line));
@@ -201,13 +213,13 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
-                        _vm.RemoveRunningPlaceholder(placeholder);
+                        _vm.RemoveRunningPlaceholder();
                         _vm.AddResults(results);
 
                         if (UnitTestingOptions.Instance.AutoExpandDetailOnFailure
                             && _vm.SelectedResult is null)
                         {
-                            _vm.SelectedResult = _vm.Results
+                            _vm.SelectedResult = _vm.AllLeafResults
                                 .FirstOrDefault(r => r.Outcome == TestOutcome.Failed);
                         }
                     });
@@ -216,7 +228,7 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 {
                     _context?.Output.Write("Unit Testing", $"[Error] {projName}: {ex.Message}");
                     await Application.Current.Dispatcher.InvokeAsync(() =>
-                        _vm.RemoveRunningPlaceholder(placeholder));
+                        _vm.RemoveRunningPlaceholder());
                 }
 
                 projectsDone++;
@@ -242,7 +254,7 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         if (_vm is null) return Task.CompletedTask;
 
-        var failedFilter = string.Join("|", _vm.Results
+        var failedFilter = string.Join("|", _vm.AllLeafResults
             .Where(r => r.Outcome == Models.TestOutcome.Failed)
             .Select(r => $"FullyQualifiedName~{r.ClassName}.{r.Display}"));
 
@@ -253,7 +265,7 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     private Task RunThisTestAsync(TestResultRow? row)
     {
-        if (row is null || row.IsPlaceholder) return Task.CompletedTask;
+        if (row is null) return Task.CompletedTask;
         var filter = $"FullyQualifiedName~{row.ClassName}.{row.Display}";
         return RunAllAsync(filter);
     }
@@ -261,6 +273,34 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private void StopRun()
     {
         _runCts?.Cancel();
+    }
+
+    // ── Discovery ────────────────────────────────────────────────────────────
+
+    private async Task DiscoverProjectsAsync()
+    {
+        if (_vm is null) return;
+        var projects = FindTestProjects();
+
+        // Add project nodes immediately (synchronous, fast).
+        var names = projects.Select(p => Path.GetFileNameWithoutExtension(p)!);
+        await Application.Current.Dispatcher.InvokeAsync(() => _vm.DiscoverProjects(names));
+
+        // Discover individual tests per project in the background.
+        foreach (var proj in projects)
+        {
+            try
+            {
+                var discovered = await _discoverer.DiscoverAsync(proj).ConfigureAwait(false);
+                if (discovered.Count == 0) continue;
+                await Application.Current.Dispatcher.InvokeAsync(
+                    () => _vm.AddDiscoveredTests(discovered));
+            }
+            catch
+            {
+                // Non-fatal — project might not be built yet; user can still run tests.
+            }
+        }
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

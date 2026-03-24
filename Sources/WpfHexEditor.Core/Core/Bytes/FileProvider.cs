@@ -90,10 +90,10 @@ namespace WpfHexEditor.Core.Bytes
             {
                 _stream = new FileStream(filePath, FileMode.Open, fileAccess, fileShare, CACHE_SIZE, FileOptions.RandomAccess);
             }
-            catch (UnauthorizedAccessException) when (!readOnly)
+            catch (Exception ex) when (!readOnly && (ex is UnauthorizedAccessException || ex is IOException))
             {
-                // File is write-protected (system DLL, read-only FS, ACL restriction).
-                // Fall back to read-only silently — the hex editor remains fully usable.
+                // File is write-protected (ACL restriction) OR locked by another process (sharing violation).
+                // Fall back to read-only silently — the hex editor remains fully usable in view mode.
                 IsReadOnly = true;
                 _stream    = new FileStream(filePath, FileMode.Open, FileAccess.Read,
                                             FileShare.ReadWrite, CACHE_SIZE, FileOptions.RandomAccess);

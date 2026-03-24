@@ -4,11 +4,11 @@
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-23
-// Updated: 2026-03-24 (ADR-UT-03 — overkill upgrade)
+// Updated: 2026-03-24 (ADR-UT-07 — VS-style TreeView hierarchy)
 // Description:
-//     ViewModel for the Unit Testing Panel. Holds the test result list,
-//     counters, status text, filter state, running indicator,
-//     selection detail, and commands (Run, Run Failed, Stop, Clear).
+//     ViewModel for the Unit Testing Panel.
+//     Hierarchical test tree: TestProjectNode → TestClassNode → TestResultRow.
+//     Filtering via IsVisible property on each node (DataTrigger in XAML).
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -16,26 +16,23 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Data;
 using WpfHexEditor.Plugins.UnitTesting.Models;
 using WpfHexEditor.Plugins.UnitTesting.Options;
+using System.Linq;
 
 namespace WpfHexEditor.Plugins.UnitTesting.ViewModels;
 
 /// <summary>
 /// MVVM ViewModel for the UnitTestingPanel.
+/// Test results are organized as a 3-level tree: Project → Class → TestMethod.
 /// </summary>
 public sealed class UnitTestingViewModel : INotifyPropertyChanged
 {
-    // ── Observable results ───────────────────────────────────────────────────
+    // ── Tree ─────────────────────────────────────────────────────────────────
 
-    private readonly ObservableCollection<TestResultRow> _results = [];
+    public ObservableCollection<TestProjectNode> ProjectNodes { get; } = [];
 
-    /// <summary>All (unfiltered) results.</summary>
-    public IReadOnlyList<TestResultRow> Results => _results;
-
-    /// <summary>Filtered + searched view — bind ListView.ItemsSource to this.</summary>
-    public ICollectionView FilteredResults { get; }
+    private TestProjectNode? _runningProject;
 
     // ── Status ───────────────────────────────────────────────────────────────
 
@@ -54,37 +51,29 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     public bool IsRunning
     {
         get => _isRunning;
-        set => Set(ref _isRunning, value);
+        set
+        {
+            Set(ref _isRunning, value);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanRunFailed)));
+        }
     }
 
     public int PassCount
     {
         get => _passCount;
-        set
-        {
-            Set(ref _passCount, value);
-            RaiseCounters();
-        }
+        set { Set(ref _passCount, value); RaiseCounters(); }
     }
 
     public int FailCount
     {
         get => _failCount;
-        set
-        {
-            Set(ref _failCount, value);
-            RaiseCounters();
-        }
+        set { Set(ref _failCount, value); RaiseCounters(); }
     }
 
     public int SkipCount
     {
         get => _skipCount;
-        set
-        {
-            Set(ref _skipCount, value);
-            RaiseCounters();
-        }
+        set { Set(ref _skipCount, value); RaiseCounters(); }
     }
 
     public int TotalCount => PassCount + FailCount + SkipCount;
@@ -95,22 +84,24 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanRunFailed)));
     }
 
-    // ── Currently running row ────────────────────────────────────────────────
+    // ── Selection + detail ───────────────────────────────────────────────────
 
-    private TestResultRow? _runningRow;
+    private object? _selectedNode;
 
-    public TestResultRow? RunningRow
+    /// <summary>
+    /// Currently selected tree node — can be <see cref="TestProjectNode"/>,
+    /// <see cref="TestClassNode"/>, or <see cref="TestResultRow"/>.
+    /// Drives the context-sensitive detail pane (ADR-UT-12).
+    /// </summary>
+    public object? SelectedNode
     {
-        get => _runningRow;
+        get => _selectedNode;
         set
         {
-            if (_runningRow is not null) _runningRow.IsRunning = false;
-            Set(ref _runningRow, value);
-            if (value is not null) value.IsRunning = true;
+            Set(ref _selectedNode, value);
+            SelectedResult = value as TestResultRow;
         }
     }
-
-    // ── Selection + detail ───────────────────────────────────────────────────
 
     private TestResultRow? _selectedResult;
 
@@ -122,8 +113,8 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     // ── Filter / Search ──────────────────────────────────────────────────────
 
-    private string _filterMode  = "All";
-    private string _searchText  = string.Empty;
+    private string _filterMode = "All";
+    private string _searchText = string.Empty;
 
     public string FilterMode
     {
@@ -131,19 +122,15 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         set
         {
             Set(ref _filterMode, value);
-            FilteredResults.Refresh();
-            // Raise CanRun* for filter buttons
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterAll)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterPassed)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterFailed)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSkipped)));
+            RaiseFilterFlags();
+            ApplyFilter();
         }
     }
 
     public string SearchText
     {
         get => _searchText;
-        set { Set(ref _searchText, value); FilteredResults.Refresh(); }
+        set { Set(ref _searchText, value); ApplyFilter(); }
     }
 
     public bool FilterAll     => _filterMode == "All";
@@ -151,7 +138,15 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     public bool FilterFailed  => _filterMode == "Failed";
     public bool FilterSkipped => _filterMode == "Skipped";
 
-    public bool CanRunFailed  => FailCount > 0 && !IsRunning;
+    public bool CanRunFailed => FailCount > 0 && !IsRunning;
+
+    private void RaiseFilterFlags()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterAll)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterPassed)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterFailed)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSkipped)));
+    }
 
     // ── Layout options ───────────────────────────────────────────────────────
 
@@ -165,50 +160,12 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
-    public UnitTestingViewModel()
-    {
-        FilteredResults = CollectionViewSource.GetDefaultView(_results);
-        FilteredResults.Filter = FilterRow;
-        ApplyOptions();
-    }
+    public UnitTestingViewModel() => ApplyOptions();
 
-    /// <summary>Re-reads <see cref="UnitTestingOptions"/> and applies grouping/sorting/visibility.</summary>
+    /// <summary>Re-reads options and applies ShowRatioBar.</summary>
     public void ApplyOptions()
     {
-        var opts = UnitTestingOptions.Instance;
-
-        ShowRatioBar = opts.ShowRatioBar;
-
-        // Grouping
-        FilteredResults.GroupDescriptions.Clear();
-        if (opts.GroupByClass)
-            FilteredResults.GroupDescriptions.Add(new PropertyGroupDescription(nameof(TestResultRow.ClassName)));
-
-        // Sorting
-        FilteredResults.SortDescriptions.Clear();
-        switch (opts.SortBy)
-        {
-            case SortOrder.Outcome:
-                FilteredResults.SortDescriptions.Add(new SortDescription(nameof(TestResultRow.Outcome), ListSortDirection.Ascending));
-                break;
-            case SortOrder.Duration:
-                FilteredResults.SortDescriptions.Add(new SortDescription(nameof(TestResultRow.DurationMs), ListSortDirection.Descending));
-                break;
-            default: // Name
-                FilteredResults.SortDescriptions.Add(new SortDescription(nameof(TestResultRow.Display), ListSortDirection.Ascending));
-                break;
-        }
-    }
-
-    private bool FilterRow(object obj)
-    {
-        if (obj is not TestResultRow r) return true;
-        if (_filterMode != "All" && r.Outcome.ToString() != _filterMode) return false;
-        if (!string.IsNullOrWhiteSpace(_searchText) &&
-            !r.Display.Contains(_searchText, StringComparison.OrdinalIgnoreCase) &&
-            !r.ClassName.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
-            return false;
-        return true;
+        ShowRatioBar = UnitTestingOptions.Instance.ShowRatioBar;
     }
 
     // ── Mutation helpers ─────────────────────────────────────────────────────
@@ -216,42 +173,171 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     /// <summary>Clears all results and resets counters.</summary>
     public void Reset()
     {
-        RunningRow  = null;
-        _results.Clear();
-        PassCount   = FailCount = SkipCount = 0;
-        StatusText  = "Ready";
-        IsRunning   = false;
-        SelectedResult = null;
+        _runningProject = null;
+        ProjectNodes.Clear();
+        PassCount      = FailCount = SkipCount = 0;
+        StatusText     = "Ready";
+        IsRunning      = false;
+        SelectedNode   = null;
     }
 
-    /// <summary>Inserts a placeholder row for the currently running project.</summary>
+    /// <summary>Marks the project node as running (creates it if not present).</summary>
     public void AddRunningPlaceholder(string projectName)
     {
-        var row = new TestResultRow(projectName);
-        _results.Add(row);
-        RunningRow = row;
+        var node = ProjectNodes.FirstOrDefault(p => p.ProjectName == projectName)
+                ?? CreateAndAddProject(projectName);
+        node.IsRunning  = true;
+        _runningProject = node;
     }
 
-    /// <summary>Removes placeholder row once results are available.</summary>
-    public void RemoveRunningPlaceholder(TestResultRow? placeholder)
+    /// <summary>Clears the running state on the current project node.</summary>
+    public void RemoveRunningPlaceholder()
     {
-        if (placeholder is not null)
-            _results.Remove(placeholder);
-        RunningRow = null;
+        if (_runningProject is not null) _runningProject.IsRunning = false;
+        _runningProject = null;
     }
 
-    /// <summary>Appends a batch of results and updates counters.</summary>
+    /// <summary>
+    /// Adds discovered (not-yet-run) tests to the tree without affecting counters.
+    /// Idempotent — skips tests already present by display name.
+    /// </summary>
+    public void AddDiscoveredTests(IEnumerable<DiscoveredTest> tests)
+    {
+        foreach (var dt in tests)
+        {
+            var proj = ProjectNodes.FirstOrDefault(p => p.ProjectName == dt.ProjectName)
+                    ?? CreateAndAddProject(dt.ProjectName);
+            var cls  = proj.Classes.FirstOrDefault(c => c.FullClassName == dt.ClassName)
+                    ?? CreateAndAddClass(proj, dt.ClassName);
+
+            if (!cls.Tests.Any(t => t.Display == dt.TestName))
+            {
+                cls.Tests.Add(new TestResultRow(dt));
+                cls.NotRunCount++;
+                proj.NotRunCount++;
+            }
+        }
+        ApplyFilter();
+    }
+
+    /// <summary>Groups results into the tree by ProjectName → ClassName → TestName.
+    /// Merges into existing NotRun rows (discovered tests) when possible.</summary>
     public void AddResults(IEnumerable<TestResult> results)
     {
         foreach (var r in results)
         {
-            _results.Add(new TestResultRow(r));
+            var proj = ProjectNodes.FirstOrDefault(p => p.ProjectName == r.ProjectName)
+                    ?? CreateAndAddProject(r.ProjectName);
+            var cls  = proj.Classes.FirstOrDefault(c => c.FullClassName == r.ClassName)
+                    ?? CreateAndAddClass(proj, r.ClassName);
+
+            // Update existing discovered row in-place, or add a new one.
+            var existing = cls.Tests.FirstOrDefault(
+                t => t.Display == r.TestName && t.Outcome == TestOutcome.NotRun);
+            if (existing is not null)
+            {
+                existing.Update(r);
+                cls.NotRunCount--;
+                proj.NotRunCount--;
+            }
+            else
+            {
+                cls.Tests.Add(new TestResultRow(r));
+            }
+
             switch (r.Outcome)
             {
-                case TestOutcome.Passed:  PassCount++; break;
-                case TestOutcome.Failed:  FailCount++; break;
-                default:                  SkipCount++; break;
+                case TestOutcome.Passed:  cls.PassCount++; proj.PassCount++; PassCount++; break;
+                case TestOutcome.Failed:  cls.FailCount++; proj.FailCount++; FailCount++; break;
+                default:                  cls.SkipCount++; proj.SkipCount++; SkipCount++; break;
             }
+
+            var dMs = (int)r.Duration.TotalMilliseconds;
+            cls.TotalDurationMs  += dMs;
+            proj.TotalDurationMs += dMs;
+        }
+        ApplyFilter();
+    }
+
+    /// <summary>All leaf <see cref="TestResultRow"/> instances (for Run Failed filter building).</summary>
+    public IEnumerable<TestResultRow> AllLeafResults =>
+        ProjectNodes.SelectMany(p => p.Classes.SelectMany(c => c.Tests));
+
+    /// <summary>
+    /// Adds newly-discovered project nodes; removes empty stale nodes no longer in the solution.
+    /// Does NOT clear results of projects that have already been run.
+    /// First <paramref name="autoExpandCount"/> projects are expanded; the rest are collapsed.
+    /// </summary>
+    public void DiscoverProjects(IEnumerable<string> projectNames, int autoExpandCount = 2)
+    {
+        var names = projectNames.ToList();
+        int i = 0;
+        foreach (var name in names)
+        {
+            if (!ProjectNodes.Any(p => p.ProjectName == name))
+                ProjectNodes.Add(new TestProjectNode(name) { IsExpanded = i < autoExpandCount });
+            i++;
+        }
+
+        // Remove stale nodes that have no results (user never ran them).
+        var stale = ProjectNodes
+            .Where(p => !names.Contains(p.ProjectName) && p.TotalCount == 0 && !p.IsRunning)
+            .ToList();
+        foreach (var node in stale)
+            ProjectNodes.Remove(node);
+    }
+
+    /// <summary>Expands or collapses all project and class nodes.</summary>
+    public void SetAllExpanded(bool expanded)
+    {
+        foreach (var proj in ProjectNodes)
+        {
+            proj.IsExpanded = expanded;
+            foreach (var cls in proj.Classes)
+                cls.IsExpanded = expanded;
+        }
+    }
+
+    // ── Private helpers ──────────────────────────────────────────────────────
+
+    private TestProjectNode CreateAndAddProject(string name)
+    {
+        var node = new TestProjectNode(name);
+        ProjectNodes.Add(node);
+        return node;
+    }
+
+    private static TestClassNode CreateAndAddClass(TestProjectNode proj, string fullName)
+    {
+        var node = new TestClassNode(fullName);
+        proj.Classes.Add(node);
+        return node;
+    }
+
+    /// <summary>Walks the tree and sets IsVisible on every node based on current filter/search.</summary>
+    private void ApplyFilter()
+    {
+        foreach (var proj in ProjectNodes)
+        {
+            bool anyProjVisible = false;
+            foreach (var cls in proj.Classes)
+            {
+                bool anyClsVisible = false;
+                foreach (var test in cls.Tests)
+                {
+                    bool matchOutcome = _filterMode == "All"
+                        || test.Outcome == TestOutcome.NotRun
+                        || test.Outcome.ToString() == _filterMode;
+                    bool matchSearch  = string.IsNullOrWhiteSpace(_searchText)
+                        || test.Display.Contains(_searchText, StringComparison.OrdinalIgnoreCase)
+                        || cls.FullClassName.Contains(_searchText, StringComparison.OrdinalIgnoreCase);
+                    test.IsVisible = matchOutcome && matchSearch;
+                    if (test.IsVisible) anyClsVisible = true;
+                }
+                cls.IsVisible = anyClsVisible;
+                if (anyClsVisible) anyProjVisible = true;
+            }
+            proj.IsVisible = anyProjVisible || proj.IsRunning;
         }
     }
 
@@ -267,47 +353,166 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Tree node view-models
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// <summary>Project-level node in the test tree.</summary>
+public sealed class TestProjectNode : INotifyPropertyChanged
+{
+    public string ProjectName { get; }
+    public ObservableCollection<TestClassNode> Classes { get; } = [];
+
+    private bool _isExpanded = true;
+    private bool _isRunning;
+    private int  _passCount, _failCount, _skipCount, _notRunCount, _totalDurationMs;
+    private bool _isVisible = true;
+
+    public bool IsExpanded      { get => _isExpanded;      set => Set(ref _isExpanded,      value); }
+    public bool IsRunning       { get => _isRunning;       set { Set(ref _isRunning,       value); Raise(nameof(OutcomeGlyph)); } }
+    public int  PassCount       { get => _passCount;       set { Set(ref _passCount,       value); Raise(nameof(TotalCount)); Raise(nameof(OutcomeGlyph)); } }
+    public int  FailCount       { get => _failCount;       set { Set(ref _failCount,       value); Raise(nameof(TotalCount)); Raise(nameof(OutcomeGlyph)); Raise(nameof(HasFailures)); } }
+    public int  SkipCount       { get => _skipCount;       set { Set(ref _skipCount,       value); Raise(nameof(TotalCount)); } }
+    public int  NotRunCount     { get => _notRunCount;     set { Set(ref _notRunCount,     value); Raise(nameof(TotalCount)); Raise(nameof(OutcomeGlyph)); } }
+    public int  TotalDurationMs { get => _totalDurationMs; set { Set(ref _totalDurationMs, value); Raise(nameof(TotalDurationText)); } }
+    public int  TotalCount   => PassCount + FailCount + SkipCount + NotRunCount;
+    public bool HasFailures  => FailCount > 0;
+    public bool IsVisible    { get => _isVisible;    set => Set(ref _isVisible,   value); }
+
+    public string TotalDurationText => TotalDurationMs >= 1000
+        ? $"{TotalDurationMs / 1000.0:F1} s"
+        : $"{TotalDurationMs} ms";
+
+    public string OutcomeGlyph =>
+        IsRunning                    ? "\uE8A2"   // spinner
+        : FailCount > 0              ? "\uEB90"   // red ✗
+        : PassCount + SkipCount > 0  ? "\uE930"   // green ✓
+        : "\uE73E";                               // hollow circle = not yet run
+
+    public TestProjectNode(string name) => ProjectName = name;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
+    { if (EqualityComparer<T>.Default.Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+    private void Raise(string n) => PropertyChanged?.Invoke(this, new(n));
+}
+
+/// <summary>Class-level node in the test tree.</summary>
+public sealed class TestClassNode : INotifyPropertyChanged
+{
+    public string FullClassName  { get; }
+    public string ShortClassName { get; }
+    public ObservableCollection<TestResultRow> Tests { get; } = [];
+
+    private bool _isExpanded = true;
+    private int  _passCount, _failCount, _skipCount, _notRunCount, _totalDurationMs;
+    private bool _isVisible = true;
+
+    public bool IsExpanded      { get => _isExpanded;      set => Set(ref _isExpanded,      value); }
+    public int  PassCount       { get => _passCount;       set { Set(ref _passCount,       value); Raise(nameof(TotalCount)); Raise(nameof(OutcomeGlyph)); } }
+    public int  FailCount       { get => _failCount;       set { Set(ref _failCount,       value); Raise(nameof(TotalCount)); Raise(nameof(OutcomeGlyph)); Raise(nameof(HasFailures)); } }
+    public int  SkipCount       { get => _skipCount;       set { Set(ref _skipCount,       value); Raise(nameof(TotalCount)); } }
+    public int  NotRunCount     { get => _notRunCount;     set { Set(ref _notRunCount,     value); Raise(nameof(TotalCount)); Raise(nameof(OutcomeGlyph)); } }
+    public int  TotalDurationMs { get => _totalDurationMs; set { Set(ref _totalDurationMs, value); Raise(nameof(TotalDurationText)); } }
+    public int  TotalCount   => PassCount + FailCount + SkipCount + NotRunCount;
+    public bool HasFailures  => FailCount > 0;
+    public bool IsVisible    { get => _isVisible;    set => Set(ref _isVisible,   value); }
+
+    public string TotalDurationText => TotalDurationMs >= 1000
+        ? $"{TotalDurationMs / 1000.0:F1} s"
+        : $"{TotalDurationMs} ms";
+
+    public string OutcomeGlyph =>
+        FailCount > 0               ? "\uEB90"   // red ✗
+        : PassCount + SkipCount > 0 ? "\uE930"   // green ✓
+        : "\uE73E";                              // hollow circle = not yet run
+
+    public TestClassNode(string fullName)
+    {
+        FullClassName = fullName;
+        var dot = fullName.LastIndexOf('.');
+        ShortClassName = dot >= 0 ? fullName[(dot + 1)..] : fullName;
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
+    { if (EqualityComparer<T>.Default.Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+    private void Raise(string n) => PropertyChanged?.Invoke(this, new(n));
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Leaf row view-model (reused for detail pane)
+// ═══════════════════════════════════════════════════════════════════════════
+
 /// <summary>
-/// Row view-model for a single test result (or a running placeholder).
-/// Implements INotifyPropertyChanged so IsRunning can animate the row in real time.
+/// Leaf view-model for a single test result.
+/// Can be in "discovered" state (NotRun) before a run, then upgraded in-place via Update().
 /// </summary>
 public sealed class TestResultRow : INotifyPropertyChanged
 {
-    private bool _isRunning;
+    private TestResult? _result;
+    private TestOutcome _outcome;
+    private int         _durationMs;
+    private bool        _isRunning;
+    private bool        _isVisible = true;
 
-    /// <summary>Constructs from a parsed <see cref="TestResult"/>.</summary>
+    /// <summary>Creates a discovered (not-yet-run) row from <see cref="DiscoveredTest"/>.</summary>
+    public TestResultRow(DiscoveredTest discovered)
+    {
+        Display   = discovered.TestName;
+        ClassName = discovered.ClassName;
+        _outcome  = TestOutcome.NotRun;
+    }
+
+    /// <summary>Creates a row directly from a run result.</summary>
     public TestResultRow(TestResult result)
     {
-        Result     = result;
-        Display    = result.TestName;
-        Outcome    = result.Outcome;
-        DurationMs = (int)result.Duration.TotalMilliseconds;
-        IsPlaceholder = false;
+        _result     = result;
+        Display     = result.TestName;
+        ClassName   = result.ClassName;
+        _outcome    = result.Outcome;
+        _durationMs = (int)result.Duration.TotalMilliseconds;
     }
 
-    /// <summary>Constructs a running-placeholder row (no result yet).</summary>
-    public TestResultRow(string projectName)
+    /// <summary>Upgrades a discovered row in-place when a run result arrives.</summary>
+    public void Update(TestResult result)
     {
-        Result        = null;
-        Display       = projectName;
-        Outcome       = TestOutcome.Skipped; // neutral glyph until real result arrives
-        DurationMs    = 0;
-        IsPlaceholder = true;
+        _result     = result;
+        _outcome    = result.Outcome;
+        _durationMs = (int)result.Duration.TotalMilliseconds;
+        Notify(nameof(Outcome));
+        Notify(nameof(DurationMs));
+        Notify(nameof(OutcomeGlyph));
+        Notify(nameof(ErrorMessage));
+        Notify(nameof(StackTrace));
+        Notify(nameof(HasDetail));
+        Notify(nameof(AssemblyName));
     }
 
-    public TestResult?  Result        { get; }
-    public string       Display       { get; }
-    public TestOutcome  Outcome       { get; }
-    public int          DurationMs    { get; }
-    public bool         IsPlaceholder { get; }
-    public bool         IsOutput      => false;
+    public string      Display    { get; }
+    public string      ClassName  { get; }
+    public TestOutcome Outcome    => _outcome;
+    public int         DurationMs => _durationMs;
+    public bool        IsOutput   => false;
 
-    // Detail fields
-    public string? ErrorMessage  => Result?.ErrorMessage;
-    public string? StackTrace    => Result?.StackTrace;
-    public string  ClassName     => Result?.ClassName ?? string.Empty;
-    public string  AssemblyName  => Result?.AssemblyName ?? string.Empty;
-    public bool    HasDetail     => ErrorMessage is not null || StackTrace is not null;
+    public string? ErrorMessage => _result?.ErrorMessage;
+    public string? StackTrace   => _result?.StackTrace;
+    public string  AssemblyName => _result?.AssemblyName ?? string.Empty;
+    public bool    HasDetail    => ErrorMessage is not null || StackTrace is not null;
+
+    /// <summary>Short class name (last dot-segment) shown in the Caractéristiques column.</summary>
+    public string ShortClassName
+    {
+        get
+        {
+            var dot = ClassName.LastIndexOf('.');
+            return dot >= 0 ? ClassName[(dot + 1)..] : ClassName;
+        }
+    }
+
+    /// <summary>Truncated error message for the inline column (max 120 chars).</summary>
+    public string ShortErrorMessage => ErrorMessage is null ? string.Empty
+        : ErrorMessage.Length > 120 ? ErrorMessage[..120] + "…" : ErrorMessage;
 
     public bool IsRunning
     {
@@ -316,45 +521,57 @@ public sealed class TestResultRow : INotifyPropertyChanged
         {
             if (_isRunning == value) return;
             _isRunning = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
+            Notify(nameof(IsRunning));
+            Notify(nameof(OutcomeGlyph));
         }
     }
 
-    public string OutcomeGlyph => IsRunning ? "\uE8A2"  // Sync (spinner)
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set
+        {
+            if (_isVisible == value) return;
+            _isVisible = value;
+            Notify(nameof(IsVisible));
+        }
+    }
+
+    public string OutcomeGlyph => IsRunning ? "\uE8A2"
         : Outcome switch
         {
-            TestOutcome.Passed  => "\uE930", // CheckMark circle
-            TestOutcome.Failed  => "\uEB90", // Error badge
-            _                   => "\uE89A", // Info
+            TestOutcome.Passed  => "\uE930",
+            TestOutcome.Failed  => "\uEB90",
+            TestOutcome.NotRun  => "\uE73E",
+            _                   => "\uE89A",
         };
 
     public event PropertyChangedEventHandler? PropertyChanged;
+    private void Notify(string name)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
-/// <summary>
-/// Converts an int count to a star-sized GridLength (e.g. 3 → "3*").
-/// Returns "1*" for zero so columns never collapse completely.
-/// </summary>
-public sealed class IntToStarGridLengthConverter : IValueConverter
+// ═══════════════════════════════════════════════════════════════════════════
+// Value converters
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// <summary>Converts an int count to a star-sized GridLength. Returns "1*" for zero.</summary>
+public sealed class IntToStarGridLengthConverter : System.Windows.Data.IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var count = value is int i ? i : 0;
-        return new GridLength(Math.Max(1, count), GridUnitType.Star);
+        return new System.Windows.GridLength(Math.Max(1, count), System.Windows.GridUnitType.Star);
     }
-
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
 
-/// <summary>
-/// Converts null → Collapsed, non-null → Visible.
-/// </summary>
-public sealed class NullToVisibilityConverter : IValueConverter
+/// <summary>Converts null → Collapsed, non-null → Visible.</summary>
+public sealed class NullToVisibilityConverter : System.Windows.Data.IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         => value is null ? Visibility.Collapsed : Visibility.Visible;
-
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }

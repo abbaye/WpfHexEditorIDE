@@ -11,7 +11,7 @@
 namespace WpfHexEditor.Plugins.UnitTesting.Models;
 
 /// <summary>Outcome of a single test case.</summary>
-public enum TestOutcome { Passed, Failed, Skipped }
+public enum TestOutcome { Passed, Failed, Skipped, NotRun }
 
 /// <summary>
 /// Immutable result for one test case as parsed from a TRX report.
@@ -23,4 +23,5 @@ public sealed record TestResult(
     TestOutcome Outcome,
     TimeSpan    Duration,
     string?     ErrorMessage,
-    string?     StackTrace);
+    string?     StackTrace,
+    string      ProjectName = "");

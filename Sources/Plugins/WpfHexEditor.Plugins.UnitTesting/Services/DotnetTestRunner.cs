@@ -16,6 +16,7 @@
 
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using WpfHexEditor.Plugins.UnitTesting.Models;
 
 namespace WpfHexEditor.Plugins.UnitTesting.Services;
@@ -76,7 +77,10 @@ public sealed class DotnetTestRunner
                 throw;
             }
 
-            return TrxParser.Parse(trxFile);
+            var projectName = Path.GetFileNameWithoutExtension(projectFilePath);
+            return TrxParser.Parse(trxFile)
+                            .Select(r => r with { ProjectName = projectName })
+                            .ToList();
         }
         finally
         {

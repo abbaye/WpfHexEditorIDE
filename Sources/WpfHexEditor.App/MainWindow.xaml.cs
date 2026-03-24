@@ -1972,39 +1972,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     hexEditor.LoadFormatDefinition(fmtItem.AbsolutePath);
             }
 
-            try
-            {
-                hexEditor.OpenFile(filePath);
-                ApplyDefaultTbl(hexEditor, project);
+            // OpenFile is fire-and-forget async — exceptions surface via StatusText inside OpenFileCoreAsync.
+            hexEditor.OpenFile(filePath);
+            ApplyDefaultTbl(hexEditor, project);
 
-                // Apply theme eagerly before the editor enters the visual tree.
-                // The Loaded event fires asynchronously (next dispatcher pass), so without
-                // this call the docking system may render one frame with default light colors.
-                hexEditor.ApplyThemeFromResources();
+            // Apply theme eagerly before the editor enters the visual tree.
+            // The Loaded event fires asynchronously (next dispatcher pass), so without
+            // this call the docking system may render one frame with default light colors.
+            hexEditor.ApplyThemeFromResources();
 
-                OutputLogger.Info($"Opened: {filePath}");
-                return hexEditor;
-            }
-            catch (IOException ex)
-            {
-                var msg = $"Cannot open '{Path.GetFileName(filePath)}': {ex.Message}";
-                OutputLogger.Error(msg);
-                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-                if (ownerItem is not null)
-                    Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
-                                           System.Windows.Threading.DispatcherPriority.Background);
-                return MakeErrorBlock(msg);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                var msg = $"Access denied '{Path.GetFileName(filePath)}': {ex.Message}";
-                OutputLogger.Error(msg);
-                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-                if (ownerItem is not null)
-                    Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
-                                           System.Windows.Threading.DispatcherPriority.Background);
-                return MakeErrorBlock(msg);
-            }
+            OutputLogger.Info($"Opened: {filePath}");
+            return hexEditor;
         }
 
         OutputLogger.Error($"File not found: {filePath}");
