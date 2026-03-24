@@ -4,17 +4,22 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.UnitTesting.ViewModels">
 
     <UserControl.Resources>
-        <!-- Pass / Fail / Skip colors -->
-        <SolidColorBrush x:Key="TP_PassBrush"    Color="#4EC9B0"/>
-        <SolidColorBrush x:Key="TP_FailBrush"    Color="#F14C4C"/>
-        <SolidColorBrush x:Key="TP_SkipBrush"    Color="#9CDCFE"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <!-- Outcome → foreground selector -->
+        <!-- Outcome glyph base style -->
         <Style x:Key="OutcomeGlyphStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily"  Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize"    Value="11"/>
+            <Setter Property="FontFamily"        Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"          Value="11"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin"      Value="4,0,6,0"/>
+            <Setter Property="Margin"            Value="4,0,6,0"/>
+        </Style>
+
+        <!-- Counter label style (small, bold) -->
+        <Style x:Key="CounterValueStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize"          Value="11"/>
+            <Setter Property="FontWeight"        Value="SemiBold"/>
+            <Setter Property="Margin"            Value="1,0,8,0"/>
         </Style>
 
         <DataTemplate x:Key="TestResultTemplate" DataType="{x:Type vm:TestResultRow}">
@@ -26,24 +31,23 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Outcome glyph -->
-                <TextBlock Grid.Column="0"
-                           Text="{Binding OutcomeGlyph}">
+                <TextBlock Grid.Column="0" Text="{Binding OutcomeGlyph}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource OutcomeGlyphStyle}">
-                            <Setter Property="Foreground" Value="{StaticResource TP_SkipBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Outcome}" Value="Passed">
-                                    <Setter Property="Foreground" Value="{StaticResource TP_PassBrush}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Outcome}" Value="Failed">
-                                    <Setter Property="Foreground" Value="{StaticResource TP_FailBrush}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
 
-                <!-- Test name or output line -->
+                <!-- Test name -->
                 <TextBlock Grid.Column="1" Text="{Binding Display}"
                            VerticalAlignment="Center"
                            TextTrimming="CharacterEllipsis"
@@ -54,14 +58,14 @@
                             <Setter Property="Foreground" Value="{DynamicResource DockWindowForegroundBrush}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Outcome}" Value="Failed">
-                                    <Setter Property="Foreground" Value="{StaticResource TP_FailBrush}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
 
-                <!-- Duration (ms) — only for real test results -->
+                <!-- Duration (ms) — only for real test results, not output lines -->
                 <TextBlock Grid.Column="2" VerticalAlignment="Center"
                            HorizontalAlignment="Right"
                            Margin="0,0,6,0"
@@ -86,7 +90,9 @@
     <DockPanel Background="{DynamicResource DockWindowBackgroundBrush}">
 
         <!-- Toolbar -->
-        <ToolBar DockPanel.Dock="Top" Background="Transparent">
+        <ToolBar DockPanel.Dock="Top"
+                 Background="{DynamicResource UT_ToolbarBackgroundBrush}"
+                 ToolBarTray.IsLocked="True">
             <Button x:Name="RunButton" ToolTip="Run All Tests (Ctrl+R)"
                     Padding="8,3" Margin="0,0,3,0"
                     Click="OnRunAllClicked">
@@ -115,31 +121,50 @@
                            FontSize="13" VerticalAlignment="Center"/>
             </Button>
             <Separator/>
-            <!-- Counters -->
-            <TextBlock Margin="6,0,3,0" VerticalAlignment="Center"
-                       FontFamily="Segoe MDL2 Assets" FontSize="13" Text="&#xE930;"
-                       Foreground="{StaticResource TP_PassBrush}"/>
-            <TextBlock x:Name="PassCountText" VerticalAlignment="Center" Margin="0,0,6,0"
-                       Foreground="{StaticResource TP_PassBrush}" FontSize="12"
-                       Text="{Binding PassCount}"/>
-            <TextBlock VerticalAlignment="Center"
-                       FontFamily="Segoe MDL2 Assets" FontSize="13" Text="&#xEB90;"
-                       Foreground="{StaticResource TP_FailBrush}"/>
-            <TextBlock x:Name="FailCountText" VerticalAlignment="Center" Margin="0,0,6,0"
-                       Foreground="{StaticResource TP_FailBrush}" FontSize="12"
-                       Text="{Binding FailCount}"/>
-            <TextBlock VerticalAlignment="Center"
-                       FontFamily="Segoe MDL2 Assets" FontSize="13" Text="&#xE89A;"
-                       Foreground="{StaticResource TP_SkipBrush}"/>
-            <TextBlock x:Name="SkipCountText" VerticalAlignment="Center"
-                       Foreground="{StaticResource TP_SkipBrush}" FontSize="12"
-                       Text="{Binding SkipCount}"/>
+            <!-- Pass counter -->
+            <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
+                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE930;"
+                           VerticalAlignment="Center" Margin="0,0,2,0"
+                           Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                <TextBlock Style="{StaticResource CounterValueStyle}"
+                           Foreground="{DynamicResource UT_PassForegroundBrush}"
+                           Text="{Binding PassCount}"/>
+            </StackPanel>
+            <!-- Fail counter -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xEB90;"
+                           VerticalAlignment="Center" Margin="0,0,2,0"
+                           Foreground="{DynamicResource UT_FailForegroundBrush}"/>
+                <TextBlock Style="{StaticResource CounterValueStyle}"
+                           Foreground="{DynamicResource UT_FailForegroundBrush}"
+                           Text="{Binding FailCount}"/>
+            </StackPanel>
+            <!-- Skip counter -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE89A;"
+                           VerticalAlignment="Center" Margin="0,0,2,0"
+                           Foreground="{DynamicResource UT_SkipForegroundBrush}"/>
+                <TextBlock Style="{StaticResource CounterValueStyle}"
+                           Foreground="{DynamicResource UT_SkipForegroundBrush}"
+                           Text="{Binding SkipCount}"/>
+            </StackPanel>
         </ToolBar>
+
+        <!-- Progress indicator (2px, visible only while running) -->
+        <ProgressBar DockPanel.Dock="Top"
+                     Height="2"
+                     IsIndeterminate="True"
+                     Foreground="{DynamicResource UT_PassForegroundBrush}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
 
         <!-- Status bar -->
         <Border DockPanel.Dock="Bottom"
-                Background="{DynamicResource DockWindowBackgroundBrush}"
-                Padding="6,2">
+                Background="{DynamicResource UT_StatusBarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockSplitterBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="6,3">
             <TextBlock Text="{Binding StatusText}"
                        Foreground="{DynamicResource DockWindowForegroundBrush}"
                        FontSize="11" Opacity="0.75"
@@ -159,16 +184,19 @@
                   SelectionChanged="OnResultSelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="Padding"           Value="2,1"/>
-                    <Setter Property="Background"        Value="Transparent"/>
-                    <Setter Property="BorderThickness"   Value="0"/>
+                    <Setter Property="Padding"                    Value="2,1"/>
+                    <Setter Property="Background"                 Value="Transparent"/>
+                    <Setter Property="BorderThickness"            Value="0"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding Outcome}" Value="Failed">
+                            <Setter Property="Background" Value="{DynamicResource UT_FailRowBackgroundBrush}"/>
+                        </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource DockDocumentHighlightedBrush}"/>
+                            <Setter Property="Background" Value="{DynamicResource UT_HoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource DockDocumentHighlightedBrush}"/>
+                            <Setter Property="Background" Value="{DynamicResource UT_SelectionBrush}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>

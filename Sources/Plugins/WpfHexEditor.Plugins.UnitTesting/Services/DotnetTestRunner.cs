@@ -29,10 +29,12 @@ public sealed class DotnetTestRunner
     /// Runs tests for <paramref name="projectFilePath"/> and returns all results.
     /// </summary>
     /// <param name="projectFilePath">Absolute path to the .csproj file.</param>
+    /// <param name="testFilter">Optional dotnet test --filter expression (e.g. "FullyQualifiedName~MyClass").</param>
     /// <param name="progress">Receives stdout/stderr lines during the run.</param>
     /// <param name="ct">Cancellation token.</param>
     public async Task<IReadOnlyList<TestResult>> RunAsync(
         string            projectFilePath,
+        string?           testFilter = null,
         IProgress<string>? progress = null,
         CancellationToken  ct       = default)
     {
@@ -42,8 +44,9 @@ public sealed class DotnetTestRunner
         Directory.CreateDirectory(resultsDir);
         try
         {
-            var trxFile = Path.Combine(resultsDir, "results.trx");
-            var args    = $"test \"{projectFilePath}\" --logger \"trx;LogFileName=results.trx\" --results-directory \"{resultsDir}\" --no-build";
+            var trxFile    = Path.Combine(resultsDir, "results.trx");
+            var filterPart = string.IsNullOrWhiteSpace(testFilter) ? string.Empty : $" --filter \"{testFilter}\"";
+            var args       = $"test \"{projectFilePath}\"{filterPart} --logger \"trx;LogFileName=results.trx\" --results-directory \"{resultsDir}\" --no-build";
 
             var psi = new ProcessStartInfo("dotnet", args)
             {

@@ -279,7 +279,9 @@ public sealed class DockingAdapter : IDockingAdapter
         }
         else
         {
-            _engine.Show(item);
+            // Item is already Docked or Float — already visible in the layout.
+            // Calling _engine.Show(item) with no args defaults to MainDocumentHost,
+            // which would incorrectly move the panel into the document tab area.
         }
     }
 

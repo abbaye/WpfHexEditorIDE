@@ -9478,38 +9478,52 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 3b. Workspace-wide declaration scan — searches all solution files of the same
             //     extension using CodeStructureParser.  Handles cross-file navigation when
             //     no LSP is running (e.g. Ctrl+Click on a type defined in another project file).
+            //     Runs on a background thread to avoid blocking the UI with large solutions.
             {
                 var ext = Path.GetExtension(_currentFilePath ?? string.Empty);
                 if (!string.IsNullOrEmpty(ext))
                 {
+                    var symbolName     = zone.SymbolName;
+                    var currentPath    = _currentFilePath;
                     var workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
-                    foreach (var path in workspacePaths)
+
+                    var workspaceResult = await System.Threading.Tasks.Task.Run(() =>
                     {
-                        if (path.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
-                            continue;
-
-                        var fileLines = WorkspaceFileCache.GetLines(path);
-                        if (fileLines is null) continue;
-
-                        // Wrap string[] as CodeLine list so CodeStructureParser can consume it.
-                        var codeLines = fileLines
-                            .Select((t, i) => new CodeLine(t, i))
-                            .ToList();
-
-                        var snap  = CodeStructureParser.Parse(codeLines);
-                        var found = snap.Types.Concat(snap.Members).FirstOrDefault(item =>
-                            string.Equals(item.Name, zone.SymbolName, StringComparison.Ordinal));
-
-                        if (found is not null)
+                        foreach (var path in workspacePaths)
                         {
-                            ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                            if (path.Equals(currentPath, StringComparison.OrdinalIgnoreCase))
+                                continue;
+
+                            var fileLines = WorkspaceFileCache.GetLines(path);
+                            if (fileLines is null) continue;
+
+                            try
                             {
-                                FilePath = path,
-                                Line     = found.Line + 1,
-                                Column   = 1
-                            });
-                            return;
+                                var codeLines = fileLines
+                                    .Select((t, i) => new CodeLine(t, i))
+                                    .ToList();
+
+                                var snap  = CodeStructureParser.Parse(codeLines);
+                                var found = snap.Types.Concat(snap.Members).FirstOrDefault(item =>
+                                    string.Equals(item.Name, symbolName, StringComparison.Ordinal));
+
+                                if (found is not null)
+                                    return (path, found.Line);
+                            }
+                            catch { /* skip files that fail to parse */ }
                         }
+                        return ((string?)null, 0);
+                    }).ConfigureAwait(true);
+
+                    if (workspaceResult.Item1 is not null)
+                    {
+                        ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                        {
+                            FilePath = workspaceResult.Item1,
+                            Line     = workspaceResult.Item2 + 1,
+                            Column   = 1
+                        });
+                        return;
                     }
                 }
             }

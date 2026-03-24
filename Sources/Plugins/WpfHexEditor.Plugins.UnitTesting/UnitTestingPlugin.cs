@@ -140,7 +140,6 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin
         _vm.Reset();
         _vm.IsRunning  = true;
         _vm.StatusText = $"Running {testProjects.Count} test project(s)…";
-        _context.UIRegistry.ShowPanel(PanelUiId);
 
         try
         {

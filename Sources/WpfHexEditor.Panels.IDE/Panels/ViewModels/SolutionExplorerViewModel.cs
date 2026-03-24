@@ -701,7 +701,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             refs.AnalyzerReferences.Count == 0)
             return null;
 
-        var container = new ReferencesContainerNodeVm { IsExpanded = false };
+        var container = new ReferencesContainerNodeVm { IsExpanded = false, Project = refs as IProject };
 
         // 1. Analyzers sub-folder (top, like VS).
         if (refs.AnalyzerReferences.Count > 0)

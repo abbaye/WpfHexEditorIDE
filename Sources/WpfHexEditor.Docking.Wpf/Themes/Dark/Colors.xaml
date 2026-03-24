@@ -652,4 +652,14 @@
     <SolidColorBrush x:Key="RES_LocaleMatchBrush"         Color="#1B3A1B" />
     <SolidColorBrush x:Key="RES_LocaleMissingBrush"       Color="#3A1B1B" />
     <SolidColorBrush x:Key="RES_ToolbarBackgroundBrush"   Color="#2D2D30" />
+
+    <!-- Unit Testing tokens (UT_*) â€” inserted by Add-UtTokens.ps1 -->
+    <SolidColorBrush x:Key="UT_PassForegroundBrush"       Color="#4EC9B0" />
+    <SolidColorBrush x:Key="UT_FailForegroundBrush"       Color="#F14C4C" />
+    <SolidColorBrush x:Key="UT_SkipForegroundBrush"       Color="#9CDCFE" />
+    <SolidColorBrush x:Key="UT_FailRowBackgroundBrush"    Color="#2A1515" />
+    <SolidColorBrush x:Key="UT_ToolbarBackgroundBrush"    Color="#2D2D30" />
+    <SolidColorBrush x:Key="UT_StatusBarBackgroundBrush"  Color="#1E1E1E" />
+    <SolidColorBrush x:Key="UT_HoverBrush"                Color="#2A2D2E" />
+    <SolidColorBrush x:Key="UT_SelectionBrush"            Color="#094771" />
 </ResourceDictionary>

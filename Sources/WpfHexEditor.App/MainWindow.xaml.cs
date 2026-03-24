@@ -140,6 +140,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Solution-level NuGet manager map: doc-nuget-solution-{name} → ISolution
     private readonly Dictionary<string, ISolution> _nugetSolutionManagerMap = new();
 
+    // Reference manager map: doc-refs-{name} → IProject (for deferred content creation)
+    private readonly Dictionary<string, IProject> _refManagerMap = new();
+
     // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
     // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
     private readonly HashSet<string> _pendingProjectPropertiesContentIds = new();
@@ -1329,6 +1332,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
             _ when item.ContentId.StartsWith("doc-nuget-solution-") => CreateNuGetSolutionManagerContent(item),
             _ when item.ContentId.StartsWith("doc-nuget-")          => CreateNuGetManagerContent(item),
+            _ when item.ContentId.StartsWith("doc-refs-")           => CreateReferenceManagerContent(item),
             _ when item.ContentId.StartsWith("doc-proj-")      => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
@@ -1372,6 +1376,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.PropertiesRequested              += OnSEPropertiesRequested;
         panel.ManageNuGetPackagesRequested         += OnSEManageNuGetPackages;
         panel.ManageSolutionNuGetPackagesRequested += OnSEManageSolutionNuGetPackages;
+        panel.AddReferenceRequested               += OnSEAddReference;
+        panel.RemoveUnusedReferencesRequested      += OnSERemoveUnusedReferences;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         panel.SolutionFolderCreateRequested    += OnSESolutionFolderCreateRequested;
