@@ -6,7 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
-## [0.7.0] — 2026-03-23 — LSP Engine, Command Palette, Diagnostic Tools & Major IDE Expansion
+## [0.6.3.6] — 2026-03-23 — LSP Engine, Command Palette, Diagnostic Tools & Major IDE Expansion
 
 This release is the largest since v0.6.0, delivering a production-grade LSP client engine, a VS Code-style Command Palette with 9 search modes, a Diagnostic Tools plugin, a fully dockable Search Panel, a centralized Command System, IDE-wide EventBus full coverage, Document Model Phase 1, incremental builds with dirty tracking, Class Diagram 10-phase overkill, XAML Designer Phase 3, Markdown Editor IDE integration, Code Editor multi-caret + word wrap + data-driven folding, DI infrastructure, and dozens of theme/stability fixes across all 18 themes.
 

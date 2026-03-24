@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.7.0-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.3.6-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -372,16 +372,16 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 
 | Feature | Status | Feature # |
 |---------|--------|-----------|
-| **IDE EventBus** — 39 typed events, IPC bridge, Phase 1–3 coverage | ✅ Done v0.7.0 | #80 |
-| **Command Palette** — `Ctrl+Shift+P`, 9 modes (commands/symbols/line/files/grep/…), frequency boost, content grep | ✅ Done v0.7.0 | #133 |
-| **Command System Central** — `CommandRegistry`, `KeyBindingService`, `KeyboardShortcutsPage`, TitleBar launcher | ✅ Done v0.7.0 | #78 |
-| **LSP Engine** — full JSON-RPC client; 10 providers; completion, sig-help, code actions, rename, inlay hints, code lens, semantic tokens | ✅ Done v0.7.0 | #85–86 |
-| **Code Editor — full feature set** — word wrap, multi-caret, gutter diagnostics, data-driven folding, LSP breadcrumb bar | ✅ Done v0.7.0 | #84 |
-| **Document Model Phase 1** — `IDocumentBuffer`, `LspBufferBridge`, `IBufferAwareEditor` for all editors | ✅ Done v0.7.0 | #107 |
-| **Diagnostic Tools Plugin** — EventPipe CPU/mem graphs, heap snapshot, 4-tab panel | ✅ Done v0.7.0 | — |
-| **Dockable Search Panel** — `Ctrl+Shift+F`; hex/text/regex/TBL modes; HexEditor + CodeEditor + TblEditor | ✅ Done v0.7.0 | — |
-| **Incremental Build** — dirty tracking FSW, `BuildDirtyAsync()`, `Ctrl+Alt+F7`, orange dot in Solution Explorer | ✅ Done v0.7.0 | #103 |
-| **DI Infrastructure** — `AppServiceCollection` (`Microsoft.Extensions.DependencyInjection`) | ✅ Done v0.7.0 | #36 |
+| **IDE EventBus** — 39 typed events, IPC bridge, Phase 1–3 coverage | ✅ Done v0.6.3.6 | #80 |
+| **Command Palette** — `Ctrl+Shift+P`, 9 modes (commands/symbols/line/files/grep/…), frequency boost, content grep | ✅ Done v0.6.3.6 | #133 |
+| **Command System Central** — `CommandRegistry`, `KeyBindingService`, `KeyboardShortcutsPage`, TitleBar launcher | ✅ Done v0.6.3.6 | #78 |
+| **LSP Engine** — full JSON-RPC client; 10 providers; completion, sig-help, code actions, rename, inlay hints, code lens, semantic tokens | ✅ Done v0.6.3.6 | #85–86 |
+| **Code Editor — full feature set** — word wrap, multi-caret, gutter diagnostics, data-driven folding, LSP breadcrumb bar | ✅ Done v0.6.3.6 | #84 |
+| **Document Model Phase 1** — `IDocumentBuffer`, `LspBufferBridge`, `IBufferAwareEditor` for all editors | ✅ Done v0.6.3.6 | #107 |
+| **Diagnostic Tools Plugin** — EventPipe CPU/mem graphs, heap snapshot, 4-tab panel | ✅ Done v0.6.3.6 | — |
+| **Dockable Search Panel** — `Ctrl+Shift+F`; hex/text/regex/TBL modes; HexEditor + CodeEditor + TblEditor | ✅ Done v0.6.3.6 | — |
+| **Incremental Build** — dirty tracking FSW, `BuildDirtyAsync()`, `Ctrl+Alt+F7`, orange dot in Solution Explorer | ✅ Done v0.6.3.6 | #103 |
+| **DI Infrastructure** — `AppServiceCollection` (`Microsoft.Extensions.DependencyInjection`) | ✅ Done v0.6.3.6 | #36 |
 | **Plugin Lazy Loading** — file-extension & command triggers, `Dormant` state | ✅ Done v0.4.0 | #77 |
 | **VS `.sln` / `.csproj` support + MSBuild build** | ✅ Done v0.5.0 | #101–103 |
 | **Assembly Explorer — ILSpy backend, VB.NET, CFG, Diff, Search, XRef, Ctrl+Click decompile** | 🔧 In Progress ~70% | #104–106 |
