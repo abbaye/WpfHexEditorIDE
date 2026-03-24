@@ -662,4 +662,7 @@
     <SolidColorBrush x:Key="UT_StatusBarBackgroundBrush"  Color="#1E1E1E" />
     <SolidColorBrush x:Key="UT_HoverBrush"                Color="#2A2D2E" />
     <SolidColorBrush x:Key="UT_SelectionBrush"            Color="#094771" />
+
+    <SolidColorBrush x:Key="UT_RunningRowBrush"           Color="#1E2A1E" />
+    <SolidColorBrush x:Key="UT_SearchBoxBrush"            Color="#1E1E1E" />
 </ResourceDictionary>

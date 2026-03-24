@@ -5520,6 +5520,90 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
     }
 
+    // ── Reference Manager ────────────────────────────────────────────────────
+
+    private void OnSEAddReference(object? sender, AddReferenceRequestedEventArgs e)
+    {
+        if (e.Project is null) return;
+        OpenReferenceManagerDocument(e.Project);
+    }
+
+    private void OnSERemoveUnusedReferences(object? sender, RemoveUnusedReferencesRequestedEventArgs e)
+    {
+        if (e.Project is null) return;
+        OpenReferenceManagerDocument(e.Project);
+    }
+
+    /// <summary>
+    /// Opens (or activates) the Reference Manager document tab for the given project.
+    /// Uses contentId "doc-refs-{Name}" for deduplication.
+    /// </summary>
+    private void OpenReferenceManagerDocument(IProject project)
+    {
+        var contentId = $"doc-refs-{project.Name}";
+
+        // Dedup: activate existing tab if already open.
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        _refManagerMap[contentId] = project;
+
+        var item = new DockItem
+        {
+            Title     = $"References — {project.Name}",
+            ContentId = contentId,
+            Metadata  = { ["ProjectName"] = project.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-refs-*" items.
+    /// Creates the <see cref="WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerDocument"/>
+    /// backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateReferenceManagerContent(DockItem item)
+    {
+        if (!_refManagerMap.TryGetValue(item.ContentId, out var project))
+        {
+            var name = item.ContentId["doc-refs-".Length..];
+            project = _solutionManager.CurrentSolution?.Projects
+                          .FirstOrDefault(p => p.Name == name);
+
+            if (project is null)
+                return new System.Windows.Controls.TextBlock { Text = "Project not found." };
+
+            _refManagerMap[item.ContentId] = project;
+        }
+
+        var vm = new WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerViewModel(
+            project,
+            _solutionManager.CurrentSolution);
+
+        vm.ProjectModified += (_, _) =>
+        {
+            var sol = _solutionManager.CurrentSolution;
+            if (sol is not null)
+                _solutionExplorerPanel?.SetSolution(sol);
+        };
+
+        return new WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerDocument
+        {
+            DataContext = vm
+        };
+    }
+
     // --- MRU menus (Recent Solutions / Recent Files) -------------------
 
     private void PopulateRecentMenus()

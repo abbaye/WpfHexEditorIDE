@@ -23,6 +23,7 @@
 using System.IO;
 using System.Windows;
 using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Plugins.UnitTesting.Models;
 using WpfHexEditor.Plugins.UnitTesting.Services;
 using WpfHexEditor.Plugins.UnitTesting.ViewModels;
 using WpfHexEditor.Plugins.UnitTesting.Views;
@@ -72,8 +73,10 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin
 
         // Must create UI on UI thread — InitializeAsync is called there.
         _panel = new UnitTestingPanel(_vm);
-        _panel.RunAllRequested += (_, _) => _ = RunAllAsync();
-        _panel.StopRequested   += (_, _) => StopRun();
+        _panel.RunAllRequested     += (_, _)    => _ = RunAllAsync();
+        _panel.StopRequested       += (_, _)    => StopRun();
+        _panel.RunFailedRequested  += (_, _)    => _ = RunFailedAsync();
+        _panel.RunThisTestRequested += (_, row) => _ = RunThisTestAsync(row);
 
         // Register dockable panel.
         context.UIRegistry.RegisterPanel(
@@ -122,10 +125,10 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin
 
     // ── Test execution ───────────────────────────────────────────────────────
 
-    private async Task RunAllAsync()
+    private async Task RunAllAsync(string? testFilter = null)
     {
         if (_vm is null || _context is null) return;
-        if (_vm.IsRunning) return; // already running
+        if (_vm.IsRunning) return;
 
         var testProjects = FindTestProjects();
         if (testProjects.Count == 0)
@@ -148,26 +151,36 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin
             {
                 if (ct.IsCancellationRequested) break;
 
-                var projName = Path.GetFileNameWithoutExtension(proj);
-                _vm.StatusText = $"Running {projName}… ({projectsDone + 1}/{testProjects.Count})";
+                var projName    = Path.GetFileNameWithoutExtension(proj);
+                _vm.StatusText  = $"Running {projName}… ({projectsDone + 1}/{testProjects.Count})";
+
+                // Show placeholder row while this project runs.
+                TestResultRow? placeholder = null;
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    _vm.AddRunningPlaceholder(projName);
+                    placeholder = _vm.RunningRow;
+                });
 
                 var progress = new Progress<string>(line =>
-                {
-                    // Route live output to the Output panel; don't push to results list.
-                    _context?.Output.Write("Unit Testing", line);
-                });
+                    _context?.Output.Write("Unit Testing", line));
 
                 try
                 {
-                    var results = await _runner.RunAsync(proj, progress, ct)
+                    var results = await _runner.RunAsync(proj, testFilter, progress, ct)
                                                .ConfigureAwait(false);
 
                     await Application.Current.Dispatcher.InvokeAsync(() =>
-                        _vm.AddResults(results));
+                    {
+                        _vm.RemoveRunningPlaceholder(placeholder);
+                        _vm.AddResults(results);
+                    });
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
                     _context?.Output.Write("Unit Testing", $"[Error] {projName}: {ex.Message}");
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                        _vm.RemoveRunningPlaceholder(placeholder));
                 }
 
                 projectsDone++;
@@ -187,6 +200,26 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin
             _runCts?.Dispose();
             _runCts = null;
         }
+    }
+
+    private Task RunFailedAsync()
+    {
+        if (_vm is null) return Task.CompletedTask;
+
+        var failedFilter = string.Join("|", _vm.Results
+            .Where(r => r.Outcome == Models.TestOutcome.Failed)
+            .Select(r => $"FullyQualifiedName~{r.ClassName}.{r.Display}"));
+
+        return string.IsNullOrEmpty(failedFilter)
+            ? Task.CompletedTask
+            : RunAllAsync(failedFilter);
+    }
+
+    private Task RunThisTestAsync(TestResultRow? row)
+    {
+        if (row is null || row.IsPlaceholder) return Task.CompletedTask;
+        var filter = $"FullyQualifiedName~{row.ClassName}.{row.Display}";
+        return RunAllAsync(filter);
     }
 
     private void StopRun()

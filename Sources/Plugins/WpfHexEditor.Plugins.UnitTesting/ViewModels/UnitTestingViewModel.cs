@@ -13,7 +13,9 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Data;
 using WpfHexEditor.Plugins.UnitTesting.Models;
 
@@ -287,4 +289,32 @@ public sealed class TestResultRow : INotifyPropertyChanged
         };
 
     public event PropertyChangedEventHandler? PropertyChanged;
+}
+
+/// <summary>
+/// Converts an int count to a star-sized GridLength (e.g. 3 → "3*").
+/// Returns "1*" for zero so columns never collapse completely.
+/// </summary>
+public sealed class IntToStarGridLengthConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var count = value is int i ? i : 0;
+        return new GridLength(Math.Max(1, count), GridUnitType.Star);
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+/// <summary>
+/// Converts null → Collapsed, non-null → Visible.
+/// </summary>
+public sealed class NullToVisibilityConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is null ? Visibility.Collapsed : Visibility.Visible;
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
 }

@@ -16,25 +16,25 @@ $dock  = Join-Path $root 'WpfHexEditor.Docking.Wpf\Themes'
 # Keys: Pass, Fail, Skip, FailRowBg, Toolbar, StatusBar, Hover, Selection
 # ---------------------------------------------------------------------------
 $themes = @{
-    'VS2022Dark'      = @{ Pass='#4EC9B0'; Fail='#F14C4C'; Skip='#9CDCFE'; FailRowBg='#2A1515'; Toolbar='#2D2D30'; StatusBar='#1E1E1E'; Hover='#2A2D2E'; Selection='#094771' }
-    'VisualStudio'    = @{ Pass='#1E8A6E'; Fail='#C0392B'; Skip='#2980B9'; FailRowBg='#FFEEEE'; Toolbar='#F0F0F0'; StatusBar='#E8E8E8'; Hover='#E8F0FE'; Selection='#CCE5FF' }
-    'CatppuccinMocha' = @{ Pass='#94E2D5'; Fail='#F38BA8'; Skip='#89B4FA'; FailRowBg='#2A1520'; Toolbar='#313244'; StatusBar='#1E1E2E'; Hover='#313244'; Selection='#45475A' }
-    'CatppuccinLatte' = @{ Pass='#179299'; Fail='#D20F39'; Skip='#1E66F5'; FailRowBg='#FFE0E6'; Toolbar='#CCD0DA'; StatusBar='#BCC0CC'; Hover='#DCE0E8'; Selection='#1E66F5' }
-    'Cyberpunk'       = @{ Pass='#00FF9F'; Fail='#FF003C'; Skip='#00FFFF'; FailRowBg='#1A0008'; Toolbar='#1A1A33'; StatusBar='#0D0D1A'; Hover='#1A1A40'; Selection='#003333' }
-    'DarkGlass'       = @{ Pass='#5ABFA0'; Fail='#E05555'; Skip='#7AB8E0'; FailRowBg='#261515'; Toolbar='#28283A'; StatusBar='#1C1C24'; Hover='#26263A'; Selection='#2A4A7A' }
-    'Dracula'         = @{ Pass='#50FA7B'; Fail='#FF5555'; Skip='#8BE9FD'; FailRowBg='#2A1515'; Toolbar='#383A4A'; StatusBar='#282A36'; Hover='#383A4A'; Selection='#44475A' }
-    'Forest'          = @{ Pass='#6AAA5A'; Fail='#D05050'; Skip='#6AB0C8'; FailRowBg='#2A1515'; Toolbar='#243020'; StatusBar='#1A2216'; Hover='#1E2C1A'; Selection='#2E5A22' }
-    'GruvboxDark'     = @{ Pass='#8EC07C'; Fail='#FB4934'; Skip='#83A598'; FailRowBg='#2A1208'; Toolbar='#3C3836'; StatusBar='#282828'; Hover='#3C3836'; Selection='#458588' }
-    'HighContrast'    = @{ Pass='#00FF00'; Fail='#FF0000'; Skip='#1AEBFF'; FailRowBg='#330000'; Toolbar='#000000'; StatusBar='#000000'; Hover='#001A00'; Selection='#1AEBFF' }
-    'Matrix'          = @{ Pass='#00FF41'; Fail='#FF2200'; Skip='#00CC99'; FailRowBg='#1A0000'; Toolbar='#001400'; StatusBar='#010A01'; Hover='#001400'; Selection='#003300' }
-    'Minimal'         = @{ Pass='#1E8A6E'; Fail='#C0392B'; Skip='#2980B9'; FailRowBg='#FFF0F0'; Toolbar='#EBEBEB'; StatusBar='#E0E0E0'; Hover='#E8E8E8'; Selection='#D0E4F7' }
-    'Nord'            = @{ Pass='#A3BE8C'; Fail='#BF616A'; Skip='#81A1C1'; FailRowBg='#261A1A'; Toolbar='#3B4252'; StatusBar='#2E3440'; Hover='#3B4252'; Selection='#4C566A' }
-    'Office'          = @{ Pass='#107C41'; Fail='#C0392B'; Skip='#0078D4'; FailRowBg='#FFF0F0'; Toolbar='#F0F0F0'; StatusBar='#E8E8E8'; Hover='#E8F0FE'; Selection='#0078D4' }
-    'Synthwave84'     = @{ Pass='#72F1B8'; Fail='#FF2A6D'; Skip='#36F9F6'; FailRowBg='#2A0A18'; Toolbar='#34294F'; StatusBar='#2B213A'; Hover='#34294F'; Selection='#FF2A6D' }
-    'TokyoNight'      = @{ Pass='#9ECE6A'; Fail='#F7768E'; Skip='#7AA2F7'; FailRowBg='#261520'; Toolbar='#24283B'; StatusBar='#1A1B26'; Hover='#24283B'; Selection='#3D59A1' }
+    'VS2022Dark'      = @{ Pass='#4EC9B0'; Fail='#F14C4C'; Skip='#9CDCFE'; FailRowBg='#2A1515'; Toolbar='#2D2D30'; StatusBar='#1E1E1E'; Hover='#2A2D2E'; Selection='#094771'; RunningRow='#1E2A1E'; SearchBox='#1E1E1E' }
+    'VisualStudio'    = @{ Pass='#1E8A6E'; Fail='#C0392B'; Skip='#2980B9'; FailRowBg='#FFEEEE'; Toolbar='#F0F0F0'; StatusBar='#E8E8E8'; Hover='#E8F0FE'; Selection='#CCE5FF'; RunningRow='#EEF8EE'; SearchBox='#FFFFFF' }
+    'CatppuccinMocha' = @{ Pass='#94E2D5'; Fail='#F38BA8'; Skip='#89B4FA'; FailRowBg='#2A1520'; Toolbar='#313244'; StatusBar='#1E1E2E'; Hover='#313244'; Selection='#45475A'; RunningRow='#1E2A28'; SearchBox='#181825' }
+    'CatppuccinLatte' = @{ Pass='#179299'; Fail='#D20F39'; Skip='#1E66F5'; FailRowBg='#FFE0E6'; Toolbar='#CCD0DA'; StatusBar='#BCC0CC'; Hover='#DCE0E8'; Selection='#1E66F5'; RunningRow='#DDF5EE'; SearchBox='#EFF1F5' }
+    'Cyberpunk'       = @{ Pass='#00FF9F'; Fail='#FF003C'; Skip='#00FFFF'; FailRowBg='#1A0008'; Toolbar='#1A1A33'; StatusBar='#0D0D1A'; Hover='#1A1A40'; Selection='#003333'; RunningRow='#001A08'; SearchBox='#0D0D1A' }
+    'DarkGlass'       = @{ Pass='#5ABFA0'; Fail='#E05555'; Skip='#7AB8E0'; FailRowBg='#261515'; Toolbar='#28283A'; StatusBar='#1C1C24'; Hover='#26263A'; Selection='#2A4A7A'; RunningRow='#1A2820'; SearchBox='#1C1C24' }
+    'Dracula'         = @{ Pass='#50FA7B'; Fail='#FF5555'; Skip='#8BE9FD'; FailRowBg='#2A1515'; Toolbar='#383A4A'; StatusBar='#282A36'; Hover='#383A4A'; Selection='#44475A'; RunningRow='#1A2A1A'; SearchBox='#21222C' }
+    'Forest'          = @{ Pass='#6AAA5A'; Fail='#D05050'; Skip='#6AB0C8'; FailRowBg='#2A1515'; Toolbar='#243020'; StatusBar='#1A2216'; Hover='#1E2C1A'; Selection='#2E5A22'; RunningRow='#1A2A14'; SearchBox='#1A2216' }
+    'GruvboxDark'     = @{ Pass='#8EC07C'; Fail='#FB4934'; Skip='#83A598'; FailRowBg='#2A1208'; Toolbar='#3C3836'; StatusBar='#282828'; Hover='#3C3836'; Selection='#458588'; RunningRow='#1A2816'; SearchBox='#1D2021' }
+    'HighContrast'    = @{ Pass='#00FF00'; Fail='#FF0000'; Skip='#1AEBFF'; FailRowBg='#330000'; Toolbar='#000000'; StatusBar='#000000'; Hover='#001A00'; Selection='#1AEBFF'; RunningRow='#003300'; SearchBox='#000000' }
+    'Matrix'          = @{ Pass='#00FF41'; Fail='#FF2200'; Skip='#00CC99'; FailRowBg='#1A0000'; Toolbar='#001400'; StatusBar='#010A01'; Hover='#001400'; Selection='#003300'; RunningRow='#001A08'; SearchBox='#000800' }
+    'Minimal'         = @{ Pass='#1E8A6E'; Fail='#C0392B'; Skip='#2980B9'; FailRowBg='#FFF0F0'; Toolbar='#EBEBEB'; StatusBar='#E0E0E0'; Hover='#E8E8E8'; Selection='#D0E4F7'; RunningRow='#EEF8EE'; SearchBox='#FFFFFF' }
+    'Nord'            = @{ Pass='#A3BE8C'; Fail='#BF616A'; Skip='#81A1C1'; FailRowBg='#261A1A'; Toolbar='#3B4252'; StatusBar='#2E3440'; Hover='#3B4252'; Selection='#4C566A'; RunningRow='#1E2C20'; SearchBox='#2E3440' }
+    'Office'          = @{ Pass='#107C41'; Fail='#C0392B'; Skip='#0078D4'; FailRowBg='#FFF0F0'; Toolbar='#F0F0F0'; StatusBar='#E8E8E8'; Hover='#E8F0FE'; Selection='#0078D4'; RunningRow='#EEF8EE'; SearchBox='#FFFFFF' }
+    'Synthwave84'     = @{ Pass='#72F1B8'; Fail='#FF2A6D'; Skip='#36F9F6'; FailRowBg='#2A0A18'; Toolbar='#34294F'; StatusBar='#2B213A'; Hover='#34294F'; Selection='#FF2A6D'; RunningRow='#1A2A20'; SearchBox='#231B31' }
+    'TokyoNight'      = @{ Pass='#9ECE6A'; Fail='#F7768E'; Skip='#7AA2F7'; FailRowBg='#261520'; Toolbar='#24283B'; StatusBar='#1A1B26'; Hover='#24283B'; Selection='#3D59A1'; RunningRow='#1A2818'; SearchBox='#1A1B26' }
     # Docking.Wpf dark/light
-    'DockDark'        = @{ Pass='#4EC9B0'; Fail='#F14C4C'; Skip='#9CDCFE'; FailRowBg='#2A1515'; Toolbar='#2D2D30'; StatusBar='#1E1E1E'; Hover='#2A2D2E'; Selection='#094771' }
-    'DockLight'       = @{ Pass='#1E8A6E'; Fail='#C0392B'; Skip='#2980B9'; FailRowBg='#FFEEEE'; Toolbar='#F0F0F0'; StatusBar='#E8E8E8'; Hover='#E8F0FE'; Selection='#CCE5FF' }
+    'DockDark'        = @{ Pass='#4EC9B0'; Fail='#F14C4C'; Skip='#9CDCFE'; FailRowBg='#2A1515'; Toolbar='#2D2D30'; StatusBar='#1E1E1E'; Hover='#2A2D2E'; Selection='#094771'; RunningRow='#1E2A1E'; SearchBox='#1E1E1E' }
+    'DockLight'       = @{ Pass='#1E8A6E'; Fail='#C0392B'; Skip='#2980B9'; FailRowBg='#FFEEEE'; Toolbar='#F0F0F0'; StatusBar='#E8E8E8'; Hover='#E8F0FE'; Selection='#CCE5FF'; RunningRow='#EEF8EE'; SearchBox='#FFFFFF' }
 }
 
 function Get-UtTokenBlock {
@@ -51,6 +51,8 @@ function Get-UtTokenBlock {
     <SolidColorBrush x:Key="UT_StatusBarBackgroundBrush"  Color="$($t.StatusBar)" />
     <SolidColorBrush x:Key="UT_HoverBrush"                Color="$($t.Hover)" />
     <SolidColorBrush x:Key="UT_SelectionBrush"            Color="$($t.Selection)" />
+    <SolidColorBrush x:Key="UT_RunningRowBrush"           Color="$($t.RunningRow)" />
+    <SolidColorBrush x:Key="UT_SearchBoxBrush"            Color="$($t.SearchBox)" />
 "@
 }
 
@@ -59,11 +61,27 @@ function Inject-Tokens {
 
     $content = Get-Content $filePath -Raw -Encoding UTF8
 
-    if ($content -match 'UT_PassForegroundBrush') {
-        Write-Host "  SKIP (already has UT_ tokens): $filePath"
+    # If the 2 new tokens are already present, skip entirely.
+    if ($content -match 'UT_RunningRowBrush') {
+        Write-Host "  SKIP (already up-to-date): $filePath"
         return
     }
 
+    # If earlier 8 tokens already present, just append the 2 new ones before </ResourceDictionary>.
+    if ($content -match 'UT_PassForegroundBrush') {
+        $newTokens = @"
+
+    <SolidColorBrush x:Key="UT_RunningRowBrush"           Color="$($themeColors.RunningRow)" />
+    <SolidColorBrush x:Key="UT_SearchBoxBrush"            Color="$($themeColors.SearchBox)" />
+"@
+        $marker     = '</ResourceDictionary>'
+        $newContent = $content.TrimEnd() -replace [regex]::Escape($marker), "$newTokens`n$marker"
+        Set-Content $filePath $newContent -Encoding UTF8 -NoNewline
+        Write-Host "  PATCHED (+2 tokens): $filePath"
+        return
+    }
+
+    # Fresh inject — all 10 tokens.
     $block      = Get-UtTokenBlock -t $themeColors
     $marker     = '</ResourceDictionary>'
     $newContent = $content.TrimEnd() -replace [regex]::Escape($marker), "$block`n$marker"

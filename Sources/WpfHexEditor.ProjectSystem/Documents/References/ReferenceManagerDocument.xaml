@@ -1,0 +1,349 @@
+<UserControl x:Class="WpfHexEditor.ProjectSystem.Documents.References.ReferenceManagerDocument"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.ProjectSystem.Documents.References"
+             Background="{DynamicResource DockMenuBackgroundBrush}"
+             Foreground="{DynamicResource DockMenuForegroundBrush}"
+             FontFamily="Segoe UI"
+             FontSize="13">
+
+    <!--
+        Reference Manager Document — VS-like Reference Manager document tab.
+        Theme:        DockMenuBackgroundBrush / DockMenuForegroundBrush / DockBorderBrush /
+                      DockWindowBackgroundBrush / DockTabActiveBrush / DockTabHoverBrush
+        Architecture: MVVM — DataContext = ReferenceManagerViewModel
+    -->
+
+    <UserControl.Resources>
+
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <!-- ── Toolbar button ──────────────────────────────────────────────── -->
+        <Style x:Key="RM_ToolbarButton" TargetType="Button">
+            <Setter Property="Background"   Value="Transparent"/>
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"      Value="10,5"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Search box ──────────────────────────────────────────────────── -->
+        <Style x:Key="RM_SearchBox" TargetType="TextBox">
+            <Setter Property="Background"   Value="{DynamicResource DockWindowBackgroundBrush}"/>
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"      Value="6,4"/>
+            <Setter Property="MinHeight"    Value="26"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- ── Remove button (per row) ─────────────────────────────────────── -->
+        <Style x:Key="RM_RemoveButton" TargetType="Button">
+            <Setter Property="Background"    Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor"        Value="Hand"/>
+            <Setter Property="Opacity"       Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Padding="4,2">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Group header ────────────────────────────────────────────────── -->
+        <Style x:Key="RM_GroupHeader" TargetType="TextBlock">
+            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="FontWeight"  Value="SemiBold"/>
+            <Setter Property="FontSize"    Value="12"/>
+            <Setter Property="Margin"      Value="0,0,0,2"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44"/>    <!-- Toolbar -->
+            <RowDefinition Height="Auto"/>  <!-- Search -->
+            <RowDefinition Height="*"/>     <!-- List -->
+            <RowDefinition Height="26"/>    <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Row 0: Toolbar ──────────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource DockWindowBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
+
+                <Button Style="{StaticResource RM_ToolbarButton}"
+                        Command="{Binding AddProjectReferenceCommand}"
+                        ToolTip="Add a project-to-project reference"
+                        Margin="0,0,6,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEA3C;" FontSize="13"
+                                   Foreground="#6CA8C4" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBlock Text="Add Project Reference…" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource RM_ToolbarButton}"
+                        Command="{Binding AddAssemblyReferenceCommand}"
+                        ToolTip="Browse for a DLL to reference"
+                        Margin="0,0,6,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7EE;" FontSize="13"
+                                   Foreground="#9AABB5" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBlock Text="Add Assembly Reference…" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Separator Width="1" Background="{DynamicResource DockBorderBrush}" Margin="4,6"/>
+
+                <Button Style="{StaticResource RM_ToolbarButton}"
+                        Command="{Binding RemoveSelectedCommand}"
+                        ToolTip="Remove selected references"
+                        Margin="0,0,6,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" FontSize="13"
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBlock Text="Remove" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource RM_ToolbarButton}"
+                        Command="{Binding RemoveUnusedCommand}"
+                        ToolTip="Scan source files and remove assembly references that are not used">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72F;" FontSize="13"
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBlock Text="Remove Unused…" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ── Row 1: Search ───────────────────────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource DockWindowBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="8,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Style="{StaticResource RM_SearchBox}"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         x:Name="SearchBox">
+                    <TextBox.Resources>
+                        <!-- Placeholder -->
+                        <Style TargetType="TextBox" BasedOn="{StaticResource RM_SearchBox}">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Center">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="&#xE71E;  Search references…"
+                                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                               Opacity="0.4"
+                                                               FontFamily="Segoe MDL2 Assets, Segoe UI"
+                                                               Margin="6,0,0,0"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Resources>
+                </TextBox>
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding ProjectName}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.55"
+                           FontStyle="Italic"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"/>
+            </Grid>
+        </Border>
+
+        <!-- ── Row 2: Reference groups ─────────────────────────────────────── -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Groups}" Margin="8,8,8,4">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:ReferenceGroupVm}">
+                        <Expander IsExpanded="{Binding IsExpanded}"
+                                  Margin="0,0,0,8">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                               Text="{Binding Icon}"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Style="{StaticResource RM_GroupHeader}"
+                                               Text="{Binding Header}"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               Opacity="0.5"
+                                               FontSize="11"
+                                               VerticalAlignment="Center">
+                                        <Run Text="("/>
+                                        <Run Text="{Binding Items.Count, Mode=OneWay}"/>
+                                        <Run Text=")"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Expander.Header>
+
+                            <ItemsControl ItemsSource="{Binding Items}" Margin="4,2,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type local:ReferenceEntryVm}">
+                                        <Border x:Name="RowBorder"
+                                                Background="Transparent"
+                                                Padding="6,3"
+                                                CornerRadius="2"
+                                                Margin="0,1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>  <!-- Checkbox -->
+                                                    <ColumnDefinition Width="Auto"/>  <!-- Kind icon -->
+                                                    <ColumnDefinition Width="*"/>     <!-- Name -->
+                                                    <ColumnDefinition Width="Auto"/>  <!-- Detail -->
+                                                    <ColumnDefinition Width="Auto"/>  <!-- Remove -->
+                                                </Grid.ColumnDefinitions>
+
+                                                <CheckBox Grid.Column="0"
+                                                          IsChecked="{Binding IsSelected}"
+                                                          IsEnabled="{Binding IsRemovable}"
+                                                          VerticalAlignment="Center"
+                                                          Margin="0,0,6,0"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           FontFamily="Segoe MDL2 Assets"
+                                                           Text="{Binding KindIcon}"
+                                                           Foreground="{Binding KindColor}"
+                                                           FontSize="13"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,6,0"/>
+
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding Name}"
+                                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+
+                                                <TextBlock Grid.Column="3"
+                                                           Text="{Binding Detail}"
+                                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                           Opacity="0.50"
+                                                           FontSize="11"
+                                                           VerticalAlignment="Center"
+                                                           Margin="12,0,8,0"
+                                                           MaxWidth="280"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding Detail}"/>
+
+                                                <Button Grid.Column="4"
+                                                        x:Name="RemoveBtn"
+                                                        Style="{StaticResource RM_RemoveButton}"
+                                                        Visibility="{Binding IsRemovable, Converter={StaticResource BoolToVisibility}}"
+                                                        ToolTip="Remove this reference"
+                                                        Command="{Binding DataContext.RemoveEntryCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                               Text="&#xE74D;"
+                                                               FontSize="11"
+                                                               Foreground="#E07070"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background"
+                                                                    Value="{DynamicResource DockTabHoverBrush}"/>
+                                                        </Trigger>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background"
+                                                                    Value="{DynamicResource DockTabActiveBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+
+                                        <DataTemplate.Triggers>
+                                            <Trigger SourceName="RowBorder" Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="RemoveBtn" Property="Opacity" Value="1"/>
+                                            </Trigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- ── Row 3: Status bar ───────────────────────────────────────────── -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource DockWindowBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0">
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Opacity="0.65"
+                       FontSize="11"
+                       VerticalAlignment="Center"
+                       Margin="8,0"/>
+        </Border>
+
+    </Grid>
+
+</UserControl>
