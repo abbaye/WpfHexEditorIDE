@@ -256,12 +256,27 @@ public sealed class CommandPaletteWindow : Window
         outerGrid.Children.Add(_descPanel);
 
         // ─── Window events ────────────────────────────────────────────────────
-        Deactivated += (_, _) => { if (!_closingStarted) Close(); };
+        Deactivated += (_, _) =>
+        {
+            if (_closingStarted) return;
+            _closingStarted = true;
+            _searchCts.Cancel();   // stop async ops before UI tears down
+            Close();
+        };
         Loaded      += OnLoaded;
 
         // Apply default mode prefix from settings
         if (!string.IsNullOrEmpty(settings.DefaultMode))
             ApplyModePrefix(settings.DefaultMode);
+    }
+
+    // ── Closed ───────────────────────────────────────────────────────────────
+
+    protected override void OnClosed(EventArgs e)
+    {
+        _closingStarted = true;
+        _searchCts.Cancel();
+        base.OnClosed(e);
     }
 
     // ── Loaded ───────────────────────────────────────────────────────────────
@@ -360,7 +375,7 @@ public sealed class CommandPaletteWindow : Window
             return;
         }
 
-        _spinnerText.Visibility = Visibility.Visible;
+        if (!_closingStarted) _spinnerText.Visibility = Visibility.Visible;
         try
         {
             var symbols = await _lspClient.WorkspaceSymbolsAsync(query, ct);
@@ -379,7 +394,7 @@ public sealed class CommandPaletteWindow : Window
         catch (OperationCanceledException) { }
         finally
         {
-            _spinnerText.Visibility = Visibility.Collapsed;
+            if (!_closingStarted) _spinnerText.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -477,6 +492,17 @@ public sealed class CommandPaletteWindow : Window
         BindResults(results);
     }
 
+    // Known binary extensions — skip without reading
+    private static readonly HashSet<string> BinaryExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".exe", ".dll", ".pdb", ".obj", ".lib", ".a",
+        ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico", ".tiff", ".webp",
+        ".mp3", ".wav", ".ogg", ".flac",
+        ".zip", ".7z", ".tar", ".gz", ".rar",
+        ".bin", ".dat", ".db", ".sqlite", ".nupkg",
+        ".pdf", ".doc", ".docx", ".xls", ".xlsx",
+    };
+
     private async Task RefreshContentSearchAsync(string query, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
@@ -494,48 +520,57 @@ public sealed class CommandPaletteWindow : Window
             .Where(i => i.AbsolutePath != null && IsTextItem(i.ItemType))
             .ToList() ?? [];
 
-        _spinnerText.Visibility = Visibility.Visible;
-        var results = new List<CommandPaletteEntry>();
+        if (!_closingStarted) _spinnerText.Visibility = Visibility.Visible;
+        var bag = new System.Collections.Concurrent.ConcurrentBag<CommandPaletteEntry>();
 
         try
         {
-            foreach (var item in items)
-            {
-                ct.ThrowIfCancellationRequested();
-                var path = item.AbsolutePath;
-                if (!File.Exists(path)) continue;
-                if (new FileInfo(path).Length > _settings.MaxGrepFileSizeBytes) continue;
-
-                string[] lines;
-                try { lines = await File.ReadAllLinesAsync(path, ct); }
-                catch { continue; }  // unreadable or binary garbage
-
-                var filename = Path.GetFileName(path);
-                for (int i = 0; i < lines.Length && results.Count < _settings.MaxGrepResults; i++)
+            await Parallel.ForEachAsync(
+                items,
+                new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = ct },
+                async (item, innerCt) =>
                 {
-                    ct.ThrowIfCancellationRequested();
-                    var matchIdx = lines[i].IndexOf(query, StringComparison.OrdinalIgnoreCase);
-                    if (matchIdx < 0) continue;
+                    if (_closingStarted || bag.Count >= _settings.MaxGrepResults) return;
+                    var path = item.AbsolutePath!;
+                    var ext  = Path.GetExtension(path) ?? "";
+                    if (!File.Exists(path)) return;
+                    if (BinaryExtensions.Contains(ext)) return;
+                    if (new FileInfo(path).Length > _settings.MaxGrepFileSizeBytes) return;
 
-                    var (snippet, adjIdx) = TrimSnippet(lines[i], matchIdx, 72);
-                    results.Add(new CommandPaletteEntry(
-                        Name:             snippet,
-                        Category:         $"{filename}:{i + 1}",
-                        GestureText:      null,
-                        IconGlyph:        "\uE721",
-                        Command:          null,
-                        Description:      path,
-                        MatchIndices:     Enumerable.Range(adjIdx, Math.Min(query.Length, snippet.Length - adjIdx)).ToArray(),
-                        CommandParameter: new GrepMatch(path, i, matchIdx, query.Length)));
-                }
-
-                if (results.Count >= _settings.MaxGrepResults) break;
-            }
+                    var filename = Path.GetFileName(path);
+                    try
+                    {
+                        await using var sr = new StreamReader(path, detectEncodingFromByteOrderMarks: true);
+                        string? rawLine; int lineIdx = 0;
+                        while ((rawLine = await sr.ReadLineAsync(innerCt)) is not null
+                               && bag.Count < _settings.MaxGrepResults)
+                        {
+                            innerCt.ThrowIfCancellationRequested();
+                            var matchIdx = rawLine.IndexOf(query, StringComparison.OrdinalIgnoreCase);
+                            if (matchIdx >= 0)
+                            {
+                                var (snippet, adjIdx) = TrimSnippet(rawLine, matchIdx, 72);
+                                bag.Add(new CommandPaletteEntry(
+                                    Name:             snippet,
+                                    Category:         $"{filename}:{lineIdx + 1}",
+                                    GestureText:      null,
+                                    IconGlyph:        "\uE721",
+                                    Command:          null,
+                                    Description:      path,
+                                    MatchIndices:     Enumerable.Range(adjIdx, Math.Min(query.Length, snippet.Length - adjIdx)).ToArray(),
+                                    CommandParameter: new GrepMatch(path, lineIdx, matchIdx, query.Length)));
+                            }
+                            lineIdx++;
+                        }
+                    }
+                    catch { /* skip unreadable / binary-detected-at-runtime */ }
+                });
         }
         catch (OperationCanceledException) { return; }
-        finally { _spinnerText.Visibility = Visibility.Collapsed; }
+        finally { if (!_closingStarted) _spinnerText.Visibility = Visibility.Collapsed; }
 
-        BindResults(results);
+        if (!_closingStarted)
+            BindResults(bag.OrderBy(e => e.Category).Take(_settings.MaxGrepResults).ToList());
     }
 
     /// <summary>
@@ -605,6 +640,7 @@ public sealed class CommandPaletteWindow : Window
 
     private void BindResults(List<CommandPaletteEntry> results)
     {
+        if (_closingStarted) return;
         _resultsList.ItemsSource = results;
         // Skip group headers when selecting first item
         var first = results.FirstOrDefault(e => !e.IsGroupHeader);
