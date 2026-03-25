@@ -82,6 +82,15 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     // keyed by DockItem so AutoHideBarHoverPreview can display them.
     private readonly Dictionary<DockItem, System.Windows.Media.Imaging.BitmapSource> _autoHideBitmapCache = new();
 
+    // Tab hover-preview settings shared across all TabHoverPreview instances.
+    private readonly List<TabHoverPreview> _tabPreviews = [];
+
+    /// <summary>
+    /// Live settings for the tab hover-preview thumbnail popup.
+    /// Mutate properties then call <see cref="RefreshTabPreviewSettings"/> to apply.
+    /// </summary>
+    public TabPreviewSettings TabPreviewSettings { get; } = new();
+
     public static readonly DependencyProperty LayoutProperty =
         DependencyProperty.Register(
             nameof(Layout),
@@ -843,6 +852,16 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         => _contentCache.Remove(contentId);
 
     /// <summary>
+    /// Pushes the current <see cref="TabPreviewSettings"/> values to all active
+    /// <see cref="TabHoverPreview"/> instances. Call after mutating <see cref="TabPreviewSettings"/>.
+    /// </summary>
+    public void RefreshTabPreviewSettings()
+    {
+        foreach (var p in _tabPreviews)
+            p.ApplySettings();
+    }
+
+    /// <summary>
     /// Enters batch-close mode: subsequent <see cref="RebuildVisualTree"/> calls are deferred
     /// until <see cref="EndBatchClose"/> is called, preventing mid-iteration wirer disposal.
     /// </summary>
@@ -946,7 +965,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         }
 
         WireTabControlEvents(host);
-        TabHoverPreview.Attach(host);
+        _tabPreviews.Add(TabHoverPreview.Attach(host, TabPreviewSettings));
         _tabControlCache[docHost] = host;  // M2.1: register for incremental updates
         return CreatePanelBorder(host);
     }
@@ -975,7 +994,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         tabControl.ExtraMenuItemsFactory = TabExtraMenuItemsFactory;
         tabControl.Bind(group, CachedContentFactory);
         WireTabControlEvents(tabControl);
-        TabHoverPreview.Attach(tabControl);
+        _tabPreviews.Add(TabHoverPreview.Attach(tabControl, TabPreviewSettings));
         _tabControlCache[group] = tabControl;  // M2.1: register for incremental updates
         return tabControl;
     }

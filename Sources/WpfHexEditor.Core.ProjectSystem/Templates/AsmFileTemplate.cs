@@ -18,6 +18,8 @@ public sealed class AsmFileTemplate : IFileTemplate
     public string Name             => "Assembly File";
     public string Description      => "Creates a new Assembly source file (.asm) with a minimal stub.";
     public string DefaultExtension => ".asm";
+    public string Category         => "Script";
+    public string IconGlyph        => "\uE943";
 
     public byte[] CreateContent()
     {

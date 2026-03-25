@@ -16,6 +16,8 @@ public sealed class TblFileTemplate : IFileTemplate
     public string Name             => "TBL File";
     public string Description      => "Creates a new TBL character-table file (.tbl).";
     public string DefaultExtension => ".tbl";
+    public string Category         => "Data";
+    public string IconGlyph        => "\uE9D2";
 
     public byte[] CreateContent()
     {

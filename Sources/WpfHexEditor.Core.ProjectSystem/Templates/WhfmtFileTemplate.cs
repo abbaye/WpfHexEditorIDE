@@ -18,6 +18,8 @@ public sealed class WhfmtFileTemplate : IFileTemplate
     public string Name             => "Format Definition";
     public string Description      => "Creates a new WpfHexEditor format-definition file (.whfmt).";
     public string DefaultExtension => ".whfmt";
+    public string Category         => "General";
+    public string IconGlyph        => "\uE8F4";
 
     public byte[] CreateContent()
     {

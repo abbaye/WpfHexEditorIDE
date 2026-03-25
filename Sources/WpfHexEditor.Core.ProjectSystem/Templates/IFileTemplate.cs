@@ -32,4 +32,15 @@ public interface IFileTemplate
     /// Returns a new array on every call.
     /// </summary>
     byte[] CreateContent();
+
+    /// <summary>
+    /// Category shown in the left sidebar of the New File dialog
+    /// (e.g. "General", "C# / .NET", "Data", "Script", "Web").
+    /// </summary>
+    string Category => "General";
+
+    /// <summary>
+    /// Segoe MDL2 Assets glyph character used as the template icon tile.
+    /// </summary>
+    string IconGlyph => "\uE8A5";
 }

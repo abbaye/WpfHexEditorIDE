@@ -4,7 +4,7 @@
     Contributors: Claude Sonnet 4.6
 
     Theme: DockWindowBackgroundBrush (global theme — ThemedDialog base)
-    ResourceDictionaries: /WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml
+    ResourceDictionaries: /WpfHexEditor.Core.ProjectSystem;component/Themes/DialogStyles.xaml
 -->
 
 <ec:ThemedDialog x:Class="WpfHexEditor.Core.ProjectSystem.Dialogs.AddExistingItemDialog"
@@ -22,7 +22,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+                <ResourceDictionary Source="/WpfHexEditor.Core.ProjectSystem;component/Themes/DialogStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

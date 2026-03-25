@@ -16,6 +16,8 @@ public sealed class JsonFileTemplate : IFileTemplate
     public string Name             => "JSON File";
     public string Description      => "Creates a new empty JSON file (.json).";
     public string DefaultExtension => ".json";
+    public string Category         => "Data";
+    public string IconGlyph        => "\uE943";
 
     public byte[] CreateContent()
         => Encoding.UTF8.GetBytes("{\n}\n");

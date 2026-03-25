@@ -15,7 +15,7 @@
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
     <Window.Resources>
-        <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+        <ResourceDictionary Source="/WpfHexEditor.Core.ProjectSystem;component/Themes/DialogStyles.xaml" />
     </Window.Resources>
 
     <Grid Margin="16">

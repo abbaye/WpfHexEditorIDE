@@ -16,12 +16,38 @@ public static class FileTemplateRegistry
 {
     private static readonly List<IFileTemplate> _templates =
     [
+        // General (3)
         new BinaryFileTemplate(),
-        new TblFileTemplate(),
-        new JsonFileTemplate(),
-        new WhfmtFileTemplate(),
         new TextFileTemplate(),
+        new WhfmtFileTemplate(),
+
+        // C# / .NET (7)
+        new CSharpClassTemplate(),
+        new CSharpInterfaceTemplate(),
+        new CSharpEnumTemplate(),
+        new CSharpRecordTemplate(),
+        new CSharpStructTemplate(),
+        new VbNetClassTemplate(),
+        new CsxScriptTemplate(),
+
+        // Script (4)
         new AsmFileTemplate(),
+        new PowerShellFileTemplate(),
+        new PythonFileTemplate(),
+        new LuaFileTemplate(),
+
+        // Data (5)
+        new JsonFileTemplate(),
+        new TblFileTemplate(),
+        new XmlFileTemplate(),
+        new YamlFileTemplate(),
+        new CsvFileTemplate(),
+
+        // Web (4)
+        new HtmlFileTemplate(),
+        new CssFileTemplate(),
+        new JavaScriptFileTemplate(),
+        new TypeScriptFileTemplate(),
     ];
 
     /// <summary>

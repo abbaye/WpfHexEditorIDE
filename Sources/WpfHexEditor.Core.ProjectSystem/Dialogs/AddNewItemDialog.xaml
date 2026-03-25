@@ -17,7 +17,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+                <ResourceDictionary Source="/WpfHexEditor.Core.ProjectSystem;component/Themes/DialogStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="ListBoxItem">
                 <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />

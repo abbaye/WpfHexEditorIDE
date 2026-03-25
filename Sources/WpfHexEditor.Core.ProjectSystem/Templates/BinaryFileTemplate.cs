@@ -14,5 +14,7 @@ public sealed class BinaryFileTemplate : IFileTemplate
     public string Name             => "Binary File";
     public string Description      => "Creates a new empty binary file (.bin).";
     public string DefaultExtension => ".bin";
+    public string Category         => "General";
+    public string IconGlyph        => "\uE8A5";
     public byte[] CreateContent()  => [];
 }

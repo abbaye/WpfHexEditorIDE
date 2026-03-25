@@ -16,6 +16,8 @@ public sealed class TextFileTemplate : IFileTemplate
     public string Name             => "Text File";
     public string Description      => "Creates a new empty text file (.txt).";
     public string DefaultExtension => ".txt";
+    public string Category         => "General";
+    public string IconGlyph        => "\uE8A5";
 
     public byte[] CreateContent()
         => Encoding.UTF8.GetBytes("");
