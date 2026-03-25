@@ -56,8 +56,8 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
 
     // -- Process state (external shells) -----------------------------------------
 
-    private CancellationTokenSource? _cts;
-    private StreamWriter? _shellInput;
+    private CancellationTokenSource?    _cts;
+    private ExternalShellProcessManager? _shellManager;
 
     // -- Pause buffer -------------------------------------------------------------
 
@@ -265,7 +265,10 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
 
         // Start external shell immediately if not HxTerminal.
         if (session.ShellType != TerminalShellType.HxTerminal)
-            _ = StartExternalShellAsync();
+        {
+            _shellManager = new ExternalShellProcessManager(Session, AppendLine);
+            _ = _shellManager.StartAsync(SelectedEncoding);
+        }
         else
         {
             WriteInfo("WpfHexEditor HxTerminal  —  type 'help' for a list of built-in commands.");
@@ -315,141 +318,6 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
     public void WriteInfo(string text)   => AppendLine(text, TerminalOutputKind.Info);
     public void Clear() => Application.Current?.Dispatcher.InvokeAsync(ClearOutput);
 
-    // -- External shell process ---------------------------------------------------
-
-    private async Task StartExternalShellAsync()
-    {
-        var (exe, args) = ResolveShell(Session.ShellType);
-        if (exe is null)
-        {
-            WriteError($"Shell not found for {Session.ShellType}. Falling back to HxTerminal input.");
-            return;
-        }
-
-        var encoding = ParseEncoding(SelectedEncoding);
-        var psi = new ProcessStartInfo(exe)
-        {
-            Arguments              = args,
-            UseShellExecute        = false,
-            CreateNoWindow         = true,
-            RedirectStandardInput  = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError  = true,
-            StandardOutputEncoding = encoding,
-            StandardErrorEncoding  = encoding,
-            WorkingDirectory       = Session.WorkingDirectory,
-        };
-
-        var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
-        process.Exited += OnProcessExited;
-
-        try
-        {
-            process.Start();
-        }
-        catch (Exception ex)
-        {
-            WriteError($"Failed to start {Session.ShellType}: {ex.Message}");
-            process.Dispose();
-            return;
-        }
-
-        Session.ShellProcess = process;
-        Session.ShellInput   = process.StandardInput;
-        _shellInput          = process.StandardInput;
-
-        _ = PipeReaderAsync(process.StandardOutput, TerminalOutputKind.Standard);
-        _ = PipeReaderAsync(process.StandardError,  TerminalOutputKind.Error);
-
-        WriteInfo($"[{Session.ShellType} started: {exe}]");
-        await Task.CompletedTask;
-    }
-
-    private void OnProcessExited(object? sender, EventArgs e)
-    {
-        CleanupProcess();
-        AppendLine($"[{Session.ShellType} process exited]", TerminalOutputKind.Warning);
-    }
-
-    private void CleanupProcess()
-    {
-        if (Session.ShellProcess is not null)
-        {
-            Session.ShellProcess.Exited -= OnProcessExited;
-            Session.ShellProcess.Dispose();
-            Session.ShellProcess = null;
-        }
-        _shellInput?.Dispose();
-        _shellInput = null;
-        Session.ShellInput = null;
-    }
-
-    private async Task PipeReaderAsync(StreamReader reader, TerminalOutputKind kind)
-    {
-        const int BufSize       = 4096;
-        const int PromptTimeout = 150; // ms — flush incomplete lines (prompts) after this silence
-
-        var charBuf = new char[BufSize];
-        var lineBuf = new StringBuilder();
-
-        try
-        {
-            while (true)
-            {
-                int read;
-
-                if (lineBuf.Length > 0)
-                {
-                    // Partial content in buffer: use a timeout so shell prompts
-                    // (which have no trailing '\n') are flushed after a brief silence.
-                    using var cts = new CancellationTokenSource(PromptTimeout);
-                    try
-                    {
-                        read = await reader.ReadAsync(charBuf.AsMemory(0, BufSize), cts.Token)
-                                           .ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Timeout: emit the accumulated prompt text as a partial line.
-                        AppendLine(lineBuf.ToString(), kind);
-                        lineBuf.Clear();
-                        continue;
-                    }
-                }
-                else
-                {
-                    // No pending partial content — wait indefinitely (no CTS overhead).
-                    read = await reader.ReadAsync(charBuf.AsMemory(0, BufSize))
-                                       .ConfigureAwait(false);
-                }
-
-                if (read == 0) break; // EOF / process exited
-
-                for (int i = 0; i < read; i++)
-                {
-                    char c = charBuf[i];
-                    if (c == '\n')
-                    {
-                        // Strip trailing '\r' for Windows CRLF sequences.
-                        if (lineBuf.Length > 0 && lineBuf[^1] == '\r')
-                            lineBuf.Length--;
-                        AppendLine(lineBuf.ToString(), kind);
-                        lineBuf.Clear();
-                    }
-                    else if (c != '\r')
-                    {
-                        lineBuf.Append(c);
-                    }
-                }
-            }
-        }
-        catch { /* stream closed when process exits */ }
-
-        // Flush any remaining partial content.
-        if (lineBuf.Length > 0)
-            AppendLine(lineBuf.ToString(), kind);
-    }
-
     // -- Command execution --------------------------------------------------------
 
     private async Task ExecuteInputAsync()
@@ -470,12 +338,12 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
         });
 
         // External shell: forward to process stdin.
-        if (Session.ShellType != TerminalShellType.HxTerminal && _shellInput is not null)
+        if (Session.ShellType != TerminalShellType.HxTerminal && _shellManager?.Input is { } shellInput)
         {
             try
             {
-                await _shellInput.WriteLineAsync(input).ConfigureAwait(false);
-                await _shellInput.FlushAsync().ConfigureAwait(false);
+                await shellInput.WriteLineAsync(input).ConfigureAwait(false);
+                await shellInput.FlushAsync().ConfigureAwait(false);
             }
             catch (Exception ex) { WriteError($"Shell I/O error: {ex.Message}"); }
             return;
@@ -583,37 +451,6 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
 
     // -- Static helpers -----------------------------------------------------------
 
-    private static (string? exe, string args) ResolveShell(TerminalShellType shellType) =>
-        shellType switch
-        {
-            TerminalShellType.PowerShell =>
-                (SearchInPath("pwsh.exe") ?? SearchInPath("powershell.exe"), "-NoLogo -NoExit"),
-            TerminalShellType.Bash =>
-                (SearchInPath("bash.exe") ?? SearchInPath("wsl.exe"), string.Empty),
-            TerminalShellType.Cmd =>
-                (SearchInPath("cmd.exe") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "cmd.exe"), "/k"),
-            _ => (null, string.Empty)
-        };
-
-    private static string? SearchInPath(string fileName)
-    {
-        if (File.Exists(fileName)) return Path.GetFullPath(fileName);
-        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) ?? [];
-        foreach (var dir in paths)
-        {
-            var full = Path.Combine(dir.Trim(), fileName);
-            if (File.Exists(full)) return full;
-        }
-        return null;
-    }
-
-    private static Encoding ParseEncoding(string name) => name switch
-    {
-        "Windows-1252" => Encoding.GetEncoding(1252),
-        "ASCII"        => Encoding.ASCII,
-        _              => new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)
-    };
-
     private static string[] Tokenize(string input)
     {
         var args = new List<string>();
@@ -646,7 +483,7 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
     {
         _cts?.Cancel();
         _cts?.Dispose();
-        CleanupProcess();
+        _shellManager?.Dispose();
         Session.Dispose();
     }
 

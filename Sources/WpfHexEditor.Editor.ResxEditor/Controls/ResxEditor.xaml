@@ -215,13 +215,13 @@
 
                 <!-- Value column — type-aware template -->
                 <DataGridTemplateColumn Header="Value"
-                                        Width="*" MinWidth="120"
+                                        Width="2*" MinWidth="120"
                                         CellTemplateSelector="{StaticResource CellSelector}">
                 </DataGridTemplateColumn>
 
                 <!-- Comment column — inline editable -->
                 <DataGridTemplateColumn Header="Comment"
-                                        Width="*" MinWidth="120">
+                                        Width="*" MinWidth="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"

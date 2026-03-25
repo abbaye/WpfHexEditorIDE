@@ -10,6 +10,7 @@
 
 using System.Windows.Input;
 using WpfHexEditor.Core.Commands;
+using WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.App;
 

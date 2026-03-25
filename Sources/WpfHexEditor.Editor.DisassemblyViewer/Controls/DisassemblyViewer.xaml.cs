@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Core.Decompiler;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Editor.DisassemblyViewer.Controls;
@@ -234,16 +235,3 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     private enum ViewerState { Empty, Busy, Output, NoDecompiler }
 }
 
-// -- Minimal RelayCommand (no external dep) -----------------------------------
-
-internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
-{
-    public event EventHandler? CanExecuteChanged
-    {
-        add    => CommandManager.RequerySuggested += value;
-        remove => CommandManager.RequerySuggested -= value;
-    }
-
-    public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
-    public void Execute(object? parameter)    => execute();
-}

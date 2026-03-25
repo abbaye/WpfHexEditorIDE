@@ -31,10 +31,7 @@ public partial class MainWindow
     private BreakpointSourceAdapter? _bpSourceAdapter;
 
     // IDisposable subscriptions for debug events (disposed on shutdown).
-    private IDisposable? _debugStartedSub;
-    private IDisposable? _debugPausedSub;
-    private IDisposable? _debugResumedSub;
-    private IDisposable? _debugEndedSub;
+    private IDisposable[]? _debugSubs;
 
     // ── Initialisation ────────────────────────────────────────────────────────
 
@@ -52,31 +49,34 @@ public partial class MainWindow
         _debuggerService.BreakpointsChanged += (_, _) =>
             Dispatcher.InvokeAsync(RefreshAllBreakpointGutters);
 
-        // Pause → highlight execution line in matching CodeEditor + update status bar + toolbar.
-        _debugPausedSub = _ideEventBus.Subscribe<DebugSessionPausedEvent>(e =>
-            Dispatcher.InvokeAsync(() => OnDebugSessionPaused(e)));
+        _debugSubs =
+        [
+            // Pause → highlight execution line in matching CodeEditor + update status bar + toolbar.
+            _ideEventBus.Subscribe<DebugSessionPausedEvent>(e =>
+                Dispatcher.InvokeAsync(() => OnDebugSessionPaused(e))),
 
-        // Session started → show debug toolbar.
-        _debugStartedSub = _ideEventBus.Subscribe<DebugSessionStartedEvent>(_ =>
-            Dispatcher.InvokeAsync(() => UpdateDebugToolbarState(isActive: true, isPaused: false)));
+            // Session started → show debug toolbar.
+            _ideEventBus.Subscribe<DebugSessionStartedEvent>(_ =>
+                Dispatcher.InvokeAsync(() => UpdateDebugToolbarState(isActive: true, isPaused: false))),
 
-        // Resume → update toolbar state + clear status / execution line.
-        _debugResumedSub = _ideEventBus.Subscribe<DebugSessionResumedEvent>(_ =>
-            Dispatcher.InvokeAsync(() =>
-            {
-                UpdateDebugToolbarState(isActive: true, isPaused: false);
-                ClearAllExecutionLines();
-                UpdateDbgStatusBar(null);
-            }));
+            // Resume → update toolbar state + clear status / execution line.
+            _ideEventBus.Subscribe<DebugSessionResumedEvent>(_ =>
+                Dispatcher.InvokeAsync(() =>
+                {
+                    UpdateDebugToolbarState(isActive: true, isPaused: false);
+                    ClearAllExecutionLines();
+                    UpdateDbgStatusBar(null);
+                })),
 
-        // End → hide toolbar + clear everything.
-        _debugEndedSub = _ideEventBus.Subscribe<DebugSessionEndedEvent>(_ =>
-            Dispatcher.InvokeAsync(() =>
-            {
-                UpdateDebugToolbarState(isActive: false, isPaused: false);
-                ClearAllExecutionLines();
-                UpdateDbgStatusBar(null);
-            }));
+            // End → hide toolbar + clear everything.
+            _ideEventBus.Subscribe<DebugSessionEndedEvent>(_ =>
+                Dispatcher.InvokeAsync(() =>
+                {
+                    UpdateDebugToolbarState(isActive: false, isPaused: false);
+                    ClearAllExecutionLines();
+                    UpdateDbgStatusBar(null);
+                })),
+        ];
 
         // Wire any editors that were already open from layout restore.
         // WireBreakpointSourceToEditor() is a no-op when _bpSourceAdapter is null (it runs before
@@ -341,14 +341,9 @@ public partial class MainWindow
     /// <summary>Unsubscribes debug event subscriptions. Called from ShutdownPluginSystemAsync.</summary>
     private void ShutdownDebugIntegration()
     {
-        _debugStartedSub?.Dispose();
-        _debugPausedSub?.Dispose();
-        _debugResumedSub?.Dispose();
-        _debugEndedSub?.Dispose();
-        _debugStartedSub = null;
-        _debugPausedSub  = null;
-        _debugResumedSub = null;
-        _debugEndedSub   = null;
+        if (_debugSubs is not null)
+            foreach (var s in _debugSubs) s.Dispose();
+        _debugSubs       = null;
         _bpSourceAdapter = null;
     }
 

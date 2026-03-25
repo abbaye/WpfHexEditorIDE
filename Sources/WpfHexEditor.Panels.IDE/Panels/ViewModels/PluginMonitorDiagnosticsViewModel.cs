@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.PluginHost;
+using WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.Panels.IDE.Panels.ViewModels;
 

@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.Editor.ScriptEditor.Controls;
@@ -265,16 +266,3 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
     }
 }
 
-// ── Minimal RelayCommand ──────────────────────────────────────────────────────
-
-internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
-{
-    public event EventHandler? CanExecuteChanged
-    {
-        add    => CommandManager.RequerySuggested += value;
-        remove => CommandManager.RequerySuggested -= value;
-    }
-
-    public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
-    public void Execute(object? parameter)    => execute();
-}

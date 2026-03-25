@@ -25,6 +25,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Panels.IDE.Panels;
+using WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.App;
 
@@ -282,69 +283,90 @@ public partial class MainWindow
         finally{ RefreshBuildProperties(); }
     }
 
-    private async Task RunBuildSolutionAsync()
+    // -----------------------------------------------------------------------
+    // Build operation runner helpers
+    // Shared setup: show Output panel, clear log, clear/set diagnostics,
+    // and bracket the operation with RefreshBuildProperties() calls so the
+    // toolbar correctly reflects HasActiveBuild before the first await.
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Runs a build/rebuild operation that produces a <see cref="BuildResult"/>.
+    /// Caller is responsible for any pre-validation (null checks, solution guards, etc.).
+    /// </summary>
+    private async Task ExecuteBuildOperationAsync(Func<Task<BuildResult>> operation)
     {
-        if (_buildSystem is null) return;
         ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
         OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        if (_solutionManager.CurrentSolution is null
-            || _solutionManager.CurrentSolution.Projects.Count == 0)
-        {
-            OutputLogger.BuildWarn("No solution or projects loaded — nothing to build.");
-            return;
-        }
         _buildErrorListAdapter?.ClearDiagnostics();
-        // BuildSolutionAsync sets _activeCts synchronously before its first await,
-        // so calling RefreshBuildProperties() after starting the task (but before
-        // awaiting it) correctly reflects HasActiveBuild=true in the toolbar.
-        var buildTask = _buildSystem.BuildSolutionAsync();
+        var task = operation();
         RefreshBuildProperties();
         try
         {
-            var result = await buildTask;
+            var result = await task;
             _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
         }
         finally { RefreshBuildProperties(); }
     }
+
+    /// <summary>
+    /// Runs a clean operation that returns a plain <see cref="Task"/> (no diagnostics).
+    /// Caller is responsible for any pre-validation (null checks, solution guards, etc.).
+    /// </summary>
+    private async Task ExecuteCleanOperationAsync(Func<Task> operation)
+    {
+        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
+        var task = operation();
+        RefreshBuildProperties();
+        try   { await task; }
+        finally { RefreshBuildProperties(); }
+    }
+
+    // -- Solution-level runners --------------------------------------------
+
+    private async Task RunBuildSolutionAsync()
+    {
+        if (_buildSystem is null) return;
+        if (_solutionManager.CurrentSolution is null
+            || _solutionManager.CurrentSolution.Projects.Count == 0)
+        {
+            ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+            OutputLogger.ClearChannel(OutputLogger.SourceBuild);
+            OutputLogger.BuildWarn("No solution or projects loaded — nothing to build.");
+            return;
+        }
+        await ExecuteBuildOperationAsync(() => _buildSystem.BuildSolutionAsync());
+    }
+
+    private async Task RunRebuildSolutionAsync()
+    {
+        if (_buildSystem is null) return;
+        if (_solutionManager.CurrentSolution is null
+            || _solutionManager.CurrentSolution.Projects.Count == 0)
+        {
+            ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+            OutputLogger.ClearChannel(OutputLogger.SourceBuild);
+            OutputLogger.BuildWarn("No solution or projects loaded — nothing to rebuild.");
+            return;
+        }
+        await ExecuteBuildOperationAsync(() => _buildSystem.RebuildSolutionAsync());
+    }
+
+    private async Task RunCleanSolutionAsync()
+    {
+        if (_buildSystem is null) return;
+        await ExecuteCleanOperationAsync(() => _buildSystem.CleanSolutionAsync());
+    }
+
+    // -- Startup-project runners -------------------------------------------
 
     private async Task RunBuildProjectAsync()
     {
         if (_buildSystem is null || _solutionManager.CurrentSolution is null) return;
         var startup = _solutionManager.CurrentSolution.StartupProject;
         if (startup is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        _buildErrorListAdapter?.ClearDiagnostics();
-        var buildTask = _buildSystem.BuildProjectAsync(startup.Id);
-        RefreshBuildProperties();
-        try
-        {
-            var result = await buildTask;
-            _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
-        }
-        finally { RefreshBuildProperties(); }
-    }
-
-    private async Task RunRebuildSolutionAsync()
-    {
-        if (_buildSystem is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        if (_solutionManager.CurrentSolution is null
-            || _solutionManager.CurrentSolution.Projects.Count == 0)
-        {
-            OutputLogger.BuildWarn("No solution or projects loaded — nothing to rebuild.");
-            return;
-        }
-        _buildErrorListAdapter?.ClearDiagnostics();
-        var rebuildTask = _buildSystem.RebuildSolutionAsync();
-        RefreshBuildProperties();
-        try
-        {
-            var result = await rebuildTask;
-            _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
-        }
-        finally { RefreshBuildProperties(); }
+        await ExecuteBuildOperationAsync(() => _buildSystem.BuildProjectAsync(startup.Id));
     }
 
     private async Task RunRebuildProjectAsync()
@@ -352,29 +374,7 @@ public partial class MainWindow
         if (_buildSystem is null || _solutionManager.CurrentSolution is null) return;
         var startup = _solutionManager.CurrentSolution.StartupProject;
         if (startup is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        _buildErrorListAdapter?.ClearDiagnostics();
-        var rebuildTask = _buildSystem.RebuildProjectAsync(startup.Id);
-        RefreshBuildProperties();
-        try
-        {
-            var result = await rebuildTask;
-            _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
-        }
-        finally { RefreshBuildProperties(); }
-    }
-
-    private async Task RunCleanSolutionAsync()
-    {
-        if (_buildSystem is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        // Start clean synchronously so _activeCts is set before RefreshBuildProperties().
-        var cleanTask = _buildSystem.CleanSolutionAsync();
-        RefreshBuildProperties();
-        await cleanTask;
-        RefreshBuildProperties();
+        await ExecuteBuildOperationAsync(() => _buildSystem.RebuildProjectAsync(startup.Id));
     }
 
     private async Task RunCleanProjectAsync()
@@ -382,57 +382,27 @@ public partial class MainWindow
         if (_buildSystem is null || _solutionManager.CurrentSolution is null) return;
         var startup = _solutionManager.CurrentSolution.StartupProject;
         if (startup is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        var cleanTask = _buildSystem.CleanProjectAsync(startup.Id);
-        RefreshBuildProperties();
-        await cleanTask;
-        RefreshBuildProperties();
+        await ExecuteCleanOperationAsync(() => _buildSystem.CleanProjectAsync(startup.Id));
     }
 
-    // -- Project-specific runners (from SolutionExplorer context menu) -----
+    // -- Project-by-ID runners (SolutionExplorer context menu) -------------
 
     private async Task RunBuildProjectByIdAsync(string projectId)
     {
         if (_buildSystem is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        _buildErrorListAdapter?.ClearDiagnostics();
-        var buildTask = _buildSystem.BuildProjectAsync(projectId);
-        RefreshBuildProperties();
-        try
-        {
-            var result = await buildTask;
-            _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
-        }
-        finally { RefreshBuildProperties(); }
+        await ExecuteBuildOperationAsync(() => _buildSystem.BuildProjectAsync(projectId));
     }
 
     private async Task RunRebuildProjectByIdAsync(string projectId)
     {
         if (_buildSystem is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        _buildErrorListAdapter?.ClearDiagnostics();
-        var rebuildTask = _buildSystem.RebuildProjectAsync(projectId);
-        RefreshBuildProperties();
-        try
-        {
-            var result = await rebuildTask;
-            _buildErrorListAdapter?.SetDiagnostics(result.Errors.Concat(result.Warnings));
-        }
-        finally { RefreshBuildProperties(); }
+        await ExecuteBuildOperationAsync(() => _buildSystem.RebuildProjectAsync(projectId));
     }
 
     private async Task RunCleanProjectByIdAsync(string projectId)
     {
         if (_buildSystem is null) return;
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-        OutputLogger.ClearChannel(OutputLogger.SourceBuild);
-        var cleanTask = _buildSystem.CleanProjectAsync(projectId);
-        RefreshBuildProperties();
-        await cleanTask;
-        RefreshBuildProperties();
+        await ExecuteCleanOperationAsync(() => _buildSystem.CleanProjectAsync(projectId));
     }
 
     private void SetStartupProject(string projectId)
@@ -577,18 +547,4 @@ public partial class MainWindow
             || vp.OutputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase);
     }
 
-    /// <summary>Minimal inline ICommand used for ad-hoc bindings (Build, Command Palette, etc.).</summary>
-    private sealed class RelayCommand(
-        Action<object?> execute,
-        Func<object?, bool>? canExecute = null) : ICommand
-    {
-        public event EventHandler? CanExecuteChanged
-        {
-            add    => System.Windows.Input.CommandManager.RequerySuggested += value;
-            remove => System.Windows.Input.CommandManager.RequerySuggested -= value;
-        }
-
-        public bool CanExecute(object? parameter) => canExecute?.Invoke(parameter) ?? true;
-        public void Execute(object? parameter)    => execute(parameter);
-    }
 }

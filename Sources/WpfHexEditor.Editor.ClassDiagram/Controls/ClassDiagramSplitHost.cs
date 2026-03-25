@@ -35,6 +35,7 @@ using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
 using WpfHexEditor.Editor.ClassDiagram.Services;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.Commands;
 using EditorStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
@@ -1031,27 +1032,3 @@ public sealed class ClassDiagramSplitHost : Grid,
     }
 }
 
-// ---------------------------------------------------------------------------
-// Internal RelayCommand — avoids cross-project dependency
-// ---------------------------------------------------------------------------
-
-file sealed class RelayCommand : ICommand
-{
-    private readonly Action _execute;
-    private readonly Func<bool>? _canExecute;
-
-    public RelayCommand(Action execute, Func<bool>? canExecute = null)
-    {
-        _execute    = execute;
-        _canExecute = canExecute;
-    }
-
-    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
-    public void Execute(object? parameter)    => _execute();
-
-    public event EventHandler? CanExecuteChanged
-    {
-        add    => CommandManager.RequerySuggested += value;
-        remove => CommandManager.RequerySuggested -= value;
-    }
-}

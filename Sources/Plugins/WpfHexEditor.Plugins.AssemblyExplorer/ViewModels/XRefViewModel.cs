@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WpfHexEditor.Core.AssemblyAnalysis.Models; // XRefEntry, XRefResult, MemberModel
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -60,14 +61,6 @@ public sealed class XRefGroupViewModel
     public bool                                    IsEmpty => Entries.Count == 0;
 }
 
-// ── Relay command (lightweight) ───────────────────────────────────────────────
-
-file sealed class RelayCommand(Action execute) : ICommand
-{
-    public event EventHandler? CanExecuteChanged { add { } remove { } }
-    public bool CanExecute(object? _) => true;
-    public void Execute(object? _)    => execute();
-}
 
 // ── XRef tab root VM ─────────────────────────────────────────────────────────
 

@@ -38,7 +38,8 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     private DebugSession     _session = DebugSession.Empty;
 
     // Breakpoint list (IDE-managed, synced to adapter per file)
-    private readonly List<BreakpointLocation> _breakpoints = [];
+    private readonly List<BreakpointLocation>    _breakpoints = [];
+    private readonly BreakpointPersistenceManager _persistence;
 
     // ── IDebuggerService properties ───────────────────────────────────────────
 
@@ -58,9 +59,10 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
 
     public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings)
     {
-        _eventBus = eventBus;
-        _settings = settings;
-        LoadPersistedBreakpoints();
+        _eventBus    = eventBus;
+        _settings    = settings;
+        _persistence = new BreakpointPersistenceManager(settings);
+        lock (_lock) { _breakpoints.AddRange(_persistence.Load()); }
     }
 
     // ── Launch / Attach ───────────────────────────────────────────────────────
@@ -241,7 +243,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             }
         }
 
-        SavePersistedBreakpoints();
+        _persistence.Save(_breakpoints);
         BreakpointsChanged?.Invoke(this, EventArgs.Empty);
 
         if (_client is not null && _session.IsActive)
@@ -266,7 +268,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             };
         }
 
-        SavePersistedBreakpoints();
+        _persistence.Save(_breakpoints);
         BreakpointsChanged?.Invoke(this, EventArgs.Empty);
 
         if (_client is not null && _session.IsActive)
@@ -283,7 +285,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             _breakpoints.Remove(bp);
         }
 
-        SavePersistedBreakpoints();
+        _persistence.Save(_breakpoints);
         BreakpointsChanged?.Invoke(this, EventArgs.Empty);
 
         if (_client is not null && _session.IsActive)
@@ -299,7 +301,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             _breakpoints.Clear();
         }
 
-        SavePersistedBreakpoints();
+        _persistence.Save(_breakpoints);
         BreakpointsChanged?.Invoke(this, EventArgs.Empty);
 
         if (_client is not null && _session.IsActive)
@@ -481,39 +483,6 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         _client.Terminated -= OnAdapterTerminated;
         await _client.DisposeAsync();
         _client = null;
-    }
-
-    // ── Breakpoint persistence ─────────────────────────────────────────────────
-
-    private void LoadPersistedBreakpoints()
-    {
-        lock (_lock)
-        {
-            _breakpoints.Clear();
-            foreach (var pb in _settings.Debugger.Breakpoints)
-                _breakpoints.Add(new BreakpointLocation
-                {
-                    FilePath  = pb.FilePath,
-                    Line      = pb.Line,
-                    Condition = pb.Condition,
-                    IsEnabled = pb.IsEnabled,
-                });
-        }
-    }
-
-    private void SavePersistedBreakpoints()
-    {
-        lock (_lock)
-        {
-            _settings.Debugger.Breakpoints.Clear();
-            _settings.Debugger.Breakpoints.AddRange(_breakpoints.Select(b => new PersistedBreakpoint
-            {
-                FilePath  = b.FilePath,
-                Line      = b.Line,
-                Condition = b.Condition,
-                IsEnabled = b.IsEnabled,
-            }));
-        }
     }
 
     // ── State mapping ─────────────────────────────────────────────────────────

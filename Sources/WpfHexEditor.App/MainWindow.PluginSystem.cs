@@ -627,34 +627,61 @@ public partial class MainWindow
     internal void OnOpenPluginSettings(object sender, RoutedEventArgs e)
         => OpenSettingsAt("Plugin System", "General");
 
+    // -----------------------------------------------------------------------
+    // Docking panel helpers
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Finds an existing panel by content ID and activates it.
+    /// Returns <c>true</c> if the panel was found (caller should return early).
+    /// </summary>
+    private bool ActivateExistingDockPanel(string contentId)
+    {
+        var existing = _layout?.FindItemByContentId(contentId);
+        if (existing is null) return false;
+        if (existing.Owner is { } owner) owner.ActiveItem = existing;
+        DockHost.RebuildVisualTree();
+        return true;
+    }
+
+    /// <summary>
+    /// Stores content and docks the item at the center of the main document host.
+    /// </summary>
+    private void DockPanelToCenter(string contentId, DockItem item, UIElement control)
+    {
+        StoreContent(contentId, control);
+        _engine.Dock(item, _layout!.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Stores content and docks the item in the bottom panel group (Error/Output area),
+    /// or opens a new bottom split when no bottom group exists.
+    /// </summary>
+    private void DockPanelToBottom(string contentId, DockItem item, UIElement control)
+    {
+        StoreContent(contentId, control);
+        var bottomGroup = _layout!.FindItemByContentId(ErrorPanelContentId)?.Owner
+                       ?? _layout.FindItemByContentId("panel-output")?.Owner;
+        if (bottomGroup is not null)
+            _engine.Dock(item, bottomGroup, DockDirection.Center);
+        else
+            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
+        DockHost.RebuildVisualTree();
+    }
+
     // --- Plugin Manager document tab ------------------------------------
 
     private void OnOpenPluginManager(object sender, RoutedEventArgs e)
     {
         if (_pluginHost is null) return;
+        if (ActivateExistingDockPanel(PluginManagerContentId)) return;
 
-        // Reuse existing tab
-        var existing = _layout?.FindItemByContentId(PluginManagerContentId);
-        if (existing is not null)
-        {
-            if (existing.Owner is { } owner) owner.ActiveItem = existing;
-            DockHost.RebuildVisualTree();
-            return;
-        }
-
-        var vm = new PluginManagerViewModel(_pluginHost, Dispatcher);
+        var vm      = new PluginManagerViewModel(_pluginHost, Dispatcher);
         var control = new PluginManagerControl(vm);
+        var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Plugin Manager", CanClose = true };
 
-        var item = new DockItem
-        {
-            ContentId = PluginManagerContentId,
-            Title = "Plugin Manager",
-            CanClose = true
-        };
-
-        StoreContent(PluginManagerContentId, control);
-        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-        DockHost.RebuildVisualTree();
+        DockPanelToCenter(PluginManagerContentId, item, control);
     }
 
     /// <summary>
@@ -681,73 +708,28 @@ public partial class MainWindow
     private void OnOpenPluginMonitor(object sender, RoutedEventArgs e)
     {
         if (_pluginHost is null) return;
-
-        var existing = _layout?.FindItemByContentId(PluginMonitorContentId);
-        if (existing is not null)
-        {
-            if (existing.Owner is { } owner) owner.ActiveItem = existing;
-            DockHost.RebuildVisualTree();
-            return;
-        }
+        if (ActivateExistingDockPanel(PluginMonitorContentId)) return;
 
         var vm      = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
         var control = new WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel { DataContext = vm };
+        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = "Plugin Monitor", CanClose = true };
 
-        var item = new DockItem
-        {
-            ContentId = PluginMonitorContentId,
-            Title     = "Plugin Monitor",
-            CanClose  = true
-        };
-
-        StoreContent(PluginMonitorContentId, control);
-
-        // Dock in the existing bottom panel group (Error List / Output area) if available,
-        // otherwise split a new bottom panel from the main document host.
-        var bottomGroup = _layout.FindItemByContentId(ErrorPanelContentId)?.Owner
-                       ?? _layout.FindItemByContentId("panel-output")?.Owner;
-        if (bottomGroup is not null)
-            _engine.Dock(item, bottomGroup, DockDirection.Center);
-        else
-            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
-
-        DockHost.RebuildVisualTree();
+        DockPanelToBottom(PluginMonitorContentId, item, control);
     }
 
     // --- Marketplace panel -----------------------------------------------
 
     private void OnOpenMarketplace(object sender, RoutedEventArgs e)
     {
-        var existing = _layout?.FindItemByContentId(MarketplaceContentId);
-        if (existing is not null)
-        {
-            if (existing.Owner is { } owner) owner.ActiveItem = existing;
-            DockHost.RebuildVisualTree();
-            return;
-        }
+        if (ActivateExistingDockPanel(MarketplaceContentId)) return;
 
         var svc   = new MarketplaceServiceImpl();
         var vm    = new MarketplacePanelViewModel(_pluginHost!, svc, msg => OutputLogger.PluginInfo(msg));
         var panel = new MarketplacePanel();
         panel.Initialize(vm);
+        var item  = new DockItem { ContentId = MarketplaceContentId, Title = "Plugin Marketplace", CanClose = true };
 
-        var item = new DockItem
-        {
-            ContentId = MarketplaceContentId,
-            Title     = "Plugin Marketplace",
-            CanClose  = true
-        };
-
-        StoreContent(MarketplaceContentId, panel);
-
-        var bottomGroup = _layout.FindItemByContentId(ErrorPanelContentId)?.Owner
-                       ?? _layout.FindItemByContentId("panel-output")?.Owner;
-        if (bottomGroup is not null)
-            _engine.Dock(item, bottomGroup, DockDirection.Center);
-        else
-            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
-
-        DockHost.RebuildVisualTree();
+        DockPanelToBottom(MarketplaceContentId, item, panel);
     }
 
     // --- Plugin Dev Watch ------------------------------------------------
@@ -880,41 +862,16 @@ public partial class MainWindow
 
     private void OnOpenTerminal(object sender, RoutedEventArgs e)
     {
-        // Reuse existing panel
-        var existing = _layout?.FindItemByContentId(TerminalPanelContentId);
-        if (existing is not null)
-        {
-            if (existing.Owner is { } owner) owner.ActiveItem = existing;
-            DockHost.RebuildVisualTree();
-            return;
-        }
-
+        if (ActivateExistingDockPanel(TerminalPanelContentId)) return;
         if (_ideHostContext is null) { OutputLogger.Error("[Terminal] Host context unavailable."); return; }
 
         var vm      = new TerminalPanelViewModel(_ideHostContext);
         _terminalService?.SetOutput(vm.GetActiveOutput());
         _terminalService?.SetSessionManager(vm.SessionManager);
         var control = new TerminalPanel { DataContext = vm };
+        var item    = new DockItem { ContentId = TerminalPanelContentId, Title = "Terminal", CanClose = true };
 
-        var item = new DockItem
-        {
-            ContentId = TerminalPanelContentId,
-            Title     = "Terminal",
-            CanClose  = true
-        };
-
-        StoreContent(TerminalPanelContentId, control);
-
-        // Dock in the existing bottom panel group (Error List / Output area) if available,
-        // otherwise split a new bottom panel from the main document host.
-        var bottomGroup = _layout.FindItemByContentId(ErrorPanelContentId)?.Owner
-                       ?? _layout.FindItemByContentId("panel-output")?.Owner;
-        if (bottomGroup is not null)
-            _engine.Dock(item, bottomGroup, DockDirection.Center);
-        else
-            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
-
-        DockHost.RebuildVisualTree();
+        DockPanelToBottom(TerminalPanelContentId, item, control);
     }
 
     // --- Plugin system shutdown ------------------------------------------

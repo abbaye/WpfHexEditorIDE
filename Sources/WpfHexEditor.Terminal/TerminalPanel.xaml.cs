@@ -62,9 +62,9 @@ public sealed partial class TerminalPanel : UserControl
     /// </summary>
     private bool _suppressAutoScrollPause;
 
-    // -- Current search position --------------------------------------------------
+    // -- Find service -------------------------------------------------------------
 
-    private TextPointer? _lastFindPointer;
+    private RichTextBoxFindService _findService = null!;
 
     // -- Session output subscription ----------------------------------------------
 
@@ -85,6 +85,7 @@ public sealed partial class TerminalPanel : UserControl
     public TerminalPanel()
     {
         InitializeComponent();
+        _findService = new RichTextBoxFindService(OutputDoc, OutputRtb);
         SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
 
         DataContextChanged += OnDataContextChanged;
@@ -230,7 +231,7 @@ public sealed partial class TerminalPanel : UserControl
 
             case NotifyCollectionChangedAction.Reset:
                 OutputDoc.Blocks.Clear();
-                _lastFindPointer = null;
+                _findService.Reset();
                 break;
         }
     }
@@ -345,7 +346,7 @@ public sealed partial class TerminalPanel : UserControl
     private void RebuildOutput()
     {
         OutputDoc.Blocks.Clear();
-        _lastFindPointer = null;
+        _findService.Reset();
         if (_vm is null) return;
 
         foreach (var line in _vm.OutputLines)
@@ -604,111 +605,16 @@ public sealed partial class TerminalPanel : UserControl
     {
         var term = _vm?.FindText;
         if (string.IsNullOrEmpty(term)) return;
-
-        var start = _lastFindPointer ?? OutputDoc.ContentStart;
-        var found = FindTextForward(start, term);
-
-        if (found is null)
-        {
-            // Wrap around from document start.
-            found = FindTextForward(OutputDoc.ContentStart, term);
-        }
-
-        if (found is not null)
-        {
-            HighlightFound(found, term.Length);
-            if (_vm is not null) _vm.FindStatusLabel = string.Empty;
-        }
-        else
-        {
-            if (_vm is not null) _vm.FindStatusLabel = "Not found";
-        }
+        if (_vm is not null)
+            _vm.FindStatusLabel = _findService.FindNext(term) ? string.Empty : "Not found";
     }
 
     private void FindPrev()
     {
         var term = _vm?.FindText;
         if (string.IsNullOrEmpty(term)) return;
-
-        var end = _lastFindPointer ?? OutputDoc.ContentEnd;
-        var found = FindTextBackward(end, term);
-
-        if (found is null)
-        {
-            // Wrap around from document end.
-            found = FindTextBackward(OutputDoc.ContentEnd, term);
-        }
-
-        if (found is not null)
-        {
-            HighlightFound(found, term.Length);
-            if (_vm is not null) _vm.FindStatusLabel = string.Empty;
-        }
-        else
-        {
-            if (_vm is not null) _vm.FindStatusLabel = "Not found";
-        }
-    }
-
-    private TextPointer? FindTextForward(TextPointer start, string term)
-    {
-        var pointer = start;
-        while (pointer is not null)
-        {
-            if (pointer.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
-            {
-                var text = pointer.GetTextInRun(LogicalDirection.Forward);
-                var idx  = text.IndexOf(term, StringComparison.OrdinalIgnoreCase);
-                if (idx >= 0)
-                {
-                    _lastFindPointer = pointer.GetPositionAtOffset(idx + term.Length);
-                    return pointer.GetPositionAtOffset(idx);
-                }
-            }
-            pointer = pointer.GetNextContextPosition(LogicalDirection.Forward);
-        }
-        return null;
-    }
-
-    private TextPointer? FindTextBackward(TextPointer end, string term)
-    {
-        // Collect all text runs and their start pointers, then search backwards.
-        var runs = new List<(TextPointer start, string text)>();
-        var ptr  = OutputDoc.ContentStart;
-
-        while (ptr is not null && ptr.CompareTo(end) < 0)
-        {
-            if (ptr.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
-            {
-                var text = ptr.GetTextInRun(LogicalDirection.Forward);
-                if (!string.IsNullOrEmpty(text))
-                    runs.Add((ptr, text));
-            }
-            ptr = ptr.GetNextContextPosition(LogicalDirection.Forward);
-        }
-
-        for (int r = runs.Count - 1; r >= 0; r--)
-        {
-            var (runStart, runText) = runs[r];
-            var idx = runText.LastIndexOf(term, StringComparison.OrdinalIgnoreCase);
-            if (idx >= 0)
-            {
-                var found = runStart.GetPositionAtOffset(idx);
-                _lastFindPointer = found;
-                return found;
-            }
-        }
-
-        return null;
-    }
-
-    private void HighlightFound(TextPointer start, int length)
-    {
-        var end = start.GetPositionAtOffset(length);
-        if (end is null) return;
-
-        OutputRtb.Selection.Select(start, end);
-        start.Paragraph?.BringIntoView();
+        if (_vm is not null)
+            _vm.FindStatusLabel = _findService.FindPrev(term) ? string.Empty : "Not found";
     }
 
     // ── Toolbar overflow ─────────────────────────────────────────────────────
