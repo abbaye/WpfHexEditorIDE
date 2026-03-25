@@ -15,6 +15,7 @@
 
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
@@ -30,6 +31,7 @@ public partial class MainWindow
     private BreakpointSourceAdapter? _bpSourceAdapter;
 
     // IDisposable subscriptions for debug events (disposed on shutdown).
+    private IDisposable? _debugStartedSub;
     private IDisposable? _debugPausedSub;
     private IDisposable? _debugResumedSub;
     private IDisposable? _debugEndedSub;
@@ -50,15 +52,31 @@ public partial class MainWindow
         _debuggerService.BreakpointsChanged += (_, _) =>
             Dispatcher.InvokeAsync(RefreshAllBreakpointGutters);
 
-        // Pause → highlight execution line in matching CodeEditor.
+        // Pause → highlight execution line in matching CodeEditor + update status bar + toolbar.
         _debugPausedSub = _ideEventBus.Subscribe<DebugSessionPausedEvent>(e =>
             Dispatcher.InvokeAsync(() => OnDebugSessionPaused(e)));
 
-        // Resume / End → clear execution lines everywhere.
+        // Session started → show debug toolbar.
+        _debugStartedSub = _ideEventBus.Subscribe<DebugSessionStartedEvent>(_ =>
+            Dispatcher.InvokeAsync(() => UpdateDebugToolbarState(isActive: true, isPaused: false)));
+
+        // Resume → update toolbar state + clear status / execution line.
         _debugResumedSub = _ideEventBus.Subscribe<DebugSessionResumedEvent>(_ =>
-            Dispatcher.InvokeAsync(ClearAllExecutionLines));
+            Dispatcher.InvokeAsync(() =>
+            {
+                UpdateDebugToolbarState(isActive: true, isPaused: false);
+                ClearAllExecutionLines();
+                UpdateDbgStatusBar(null);
+            }));
+
+        // End → hide toolbar + clear everything.
         _debugEndedSub = _ideEventBus.Subscribe<DebugSessionEndedEvent>(_ =>
-            Dispatcher.InvokeAsync(ClearAllExecutionLines));
+            Dispatcher.InvokeAsync(() =>
+            {
+                UpdateDebugToolbarState(isActive: false, isPaused: false);
+                ClearAllExecutionLines();
+                UpdateDbgStatusBar(null);
+            }));
     }
 
     // ── Gutter wiring ─────────────────────────────────────────────────────────
@@ -101,6 +119,9 @@ public partial class MainWindow
                     ?.NavigateTo(e.Line - 1, 0);                      // 0-based
             }
         }
+
+        UpdateDebugToolbarState(isActive: true, isPaused: true);
+        UpdateDbgStatusBar(e);
     }
 
     private void ClearAllExecutionLines()
@@ -156,7 +177,7 @@ public partial class MainWindow
     }
 
     /// <summary>Ctrl+Alt+P — Attach to process dialog.</summary>
-    internal void OnAttachToProcess()
+    internal void OnAttachToProcess(object? sender = null, RoutedEventArgs? e = null)
     {
         if (_debuggerService is null)
         {
@@ -260,14 +281,66 @@ public partial class MainWindow
         return false;
     }
 
+    // ── Debug toolbar + status bar ────────────────────────────────────────────
+
+    /// <summary>Shows/hides the debug toolbar and enables/disables its buttons appropriately.</summary>
+    private void UpdateDebugToolbarState(bool isActive, bool isPaused)
+    {
+        if (DebugToolBar is null) return;
+        DebugToolBar.Visibility = isActive ? Visibility.Visible : Visibility.Collapsed;
+        if (!isActive) return;
+
+        if (BtnDbgContinue is not null)  BtnDbgContinue.IsEnabled  = isPaused;
+        if (BtnDbgPause    is not null)  BtnDbgPause.IsEnabled     = !isPaused;
+        if (BtnDbgStepOver is not null)  BtnDbgStepOver.IsEnabled  = isPaused;
+        if (BtnDbgStepInto is not null)  BtnDbgStepInto.IsEnabled  = isPaused;
+        if (BtnDbgStepOut  is not null)  BtnDbgStepOut.IsEnabled   = isPaused;
+    }
+
+    private void UpdateDbgStatusBar(DebugSessionPausedEvent? e)
+    {
+        if (DbgStatusItem is null) return;
+        if (e is null)
+        {
+            DbgStatusItem.Visibility = Visibility.Collapsed;
+            return;
+        }
+        DbgStatusItem.Visibility = Visibility.Visible;
+        if (DbgStatusText is not null)
+        {
+            var fileName = System.IO.Path.GetFileName(e.FilePath);
+            DbgStatusText.Text = $"Paused at {fileName}:{e.Line}";
+        }
+    }
+
+    // ── Menu click handlers (thin wrappers — real logic in existing methods) ──
+
+    private void OnDebugStart(object sender, RoutedEventArgs e)        => OnDebugStartOrContinue();
+    private void OnDebugStop(object sender, RoutedEventArgs e)         => _ = _debuggerService?.StopSessionAsync();
+    private void OnDebugRestart(object sender, RoutedEventArgs e)      => OnDebugRestart();
+    private void OnDebugStepOver(object sender, RoutedEventArgs e)     => _ = _debuggerService?.StepOverAsync();
+    private void OnDebugStepInto(object sender, RoutedEventArgs e)     => _ = _debuggerService?.StepIntoAsync();
+    private void OnDebugStepOut(object sender, RoutedEventArgs e)      => _ = _debuggerService?.StepOutAsync();
+    private void OnDebugToggleBp(object sender, RoutedEventArgs e)     => OnToggleBreakpoint();
+    private void OnDebugDeleteAllBps(object sender, RoutedEventArgs e) => _ = _debuggerService?.ClearAllBreakpointsAsync();
+    private void OnDebugContinue(object sender, RoutedEventArgs e)     => _ = _debuggerService?.ContinueAsync();
+    private void OnDebugPause(object sender, RoutedEventArgs e)        { /* DAP Pause not yet in IDebuggerService — no-op */ }
+
+    private void OnShowDebugBreakpoints(object sender, RoutedEventArgs e)  => ShowOrCreatePanel("Breakpoints",  "panel-dbg-breakpoints", DockDirection.Bottom);
+    private void OnShowDebugCallStack(object sender, RoutedEventArgs e)    => ShowOrCreatePanel("Call Stack",   "panel-dbg-callstack",   DockDirection.Bottom);
+    private void OnShowDebugLocals(object sender, RoutedEventArgs e)       => ShowOrCreatePanel("Locals",       "panel-dbg-locals",      DockDirection.Bottom);
+    private void OnShowDebugWatch(object sender, RoutedEventArgs e)        => ShowOrCreatePanel("Watch",        "panel-dbg-watch",       DockDirection.Bottom);
+
     // ── Shutdown ──────────────────────────────────────────────────────────────
 
     /// <summary>Unsubscribes debug event subscriptions. Called from ShutdownPluginSystemAsync.</summary>
     private void ShutdownDebugIntegration()
     {
+        _debugStartedSub?.Dispose();
         _debugPausedSub?.Dispose();
         _debugResumedSub?.Dispose();
         _debugEndedSub?.Dispose();
+        _debugStartedSub = null;
         _debugPausedSub  = null;
         _debugResumedSub = null;
         _debugEndedSub   = null;

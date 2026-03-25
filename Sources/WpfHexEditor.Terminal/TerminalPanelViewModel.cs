@@ -457,6 +457,32 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _registry.Register(new ReplayHistoryCommand(
             _macroService,
             () => _activeSession?.Session.History.GetAll() ?? []));
+
+        // Build system commands
+        _registry.Register(new BuildCommand());
+        _registry.Register(new RebuildCommand());
+        _registry.Register(new CleanCommand());
+        _registry.Register(new BuildDirtyCommand());
+        _registry.Register(new BuildCancelCommand());
+        _registry.Register(new BuildStatusCommand());
+
+        // Unit test commands
+        _registry.Register(new TestRunCommand());
+        _registry.Register(new TestRunProjectCommand());
+        _registry.Register(new TestRunFilterCommand());
+        _registry.Register(new TestStatusCommand());
+
+        // C# scripting
+        _registry.Register(new RunCsharpCommand());
+
+        // Diff commands
+        _registry.Register(new DiffCommand());
+        _registry.Register(new DiffOpenCommand());
+
+        // Debugger commands
+        _registry.Register(new DebugStatusCommand());
+        _registry.Register(new DebugContinueCommand());
+        _registry.Register(new DebugBreakpointCommand());
     }
 
     // -- INotifyPropertyChanged ---------------------------------------------------

@@ -5,8 +5,9 @@
 //                shown only when the file belongs to a git repository.
 // Architecture : ISolutionExplorerContextMenuContributor — GetContextMenuItems() is synchronous
 //                and O(1); git detection uses a cached repo-root lookup.
-//                Command execution delegates to registered IDE commands via ICommandRegistry
-//                so that the CompareFileLaunchService (MainWindow) handles all UI/docking.
+//                Action delegates injected at construction time (same pattern as
+//                ClassDiagramContextMenuContributor) — avoids IIDEHostContext.CommandRegistry
+//                DIM null issue when called from a plugin ALC.
 
 using WpfHexEditor.Core.Diff.Services;
 using WpfHexEditor.SDK.Commands;
@@ -16,18 +17,37 @@ namespace WpfHexEditor.Plugins.FileComparison.Services;
 
 /// <summary>
 /// Injects "Compare with…" items into the Solution Explorer right-click context menu for files.
+/// Action callbacks are injected by <see cref="FileComparisonPlugin"/> so execution never goes
+/// through the command registry (which may return null from a plugin ALC via the DIM default).
 /// </summary>
 internal sealed class SolutionExplorerCompareContributor : ISolutionExplorerContextMenuContributor
 {
-    private readonly IIDEHostContext _context;
-    private readonly GitDiffService  _git = new();
+    private readonly IIDEHostContext        _context;
+    private readonly GitDiffService         _git = new();
+    private readonly Action<string, string?> _compareWithFile;
+    private readonly Action<string>          _compareWithActiveEditor;
 
     // Cache: nodePath → (repoRoot or null), so IsGitRepository() doesn't walk FS on every click
     private readonly Dictionary<string, string?> _gitRootCache =
         new(StringComparer.OrdinalIgnoreCase);
 
-    public SolutionExplorerCompareContributor(IIDEHostContext context)
-        => _context = context;
+    /// <param name="context">Host context (used for git-root caching only).</param>
+    /// <param name="compareWithFile">
+    ///   Called with (leftPath, rightPath?). When rightPath is null the panel pre-fills File 1
+    ///   only and the user picks File 2 in the panel.
+    /// </param>
+    /// <param name="compareWithActiveEditor">
+    ///   Called with leftPath; the delegate resolves the active document as right side.
+    /// </param>
+    public SolutionExplorerCompareContributor(
+        IIDEHostContext          context,
+        Action<string, string?>  compareWithFile,
+        Action<string>           compareWithActiveEditor)
+    {
+        _context                 = context;
+        _compareWithFile         = compareWithFile;
+        _compareWithActiveEditor = compareWithActiveEditor;
+    }
 
     // ── ISolutionExplorerContextMenuContributor ────────────────────────────────
 
@@ -41,13 +61,13 @@ internal sealed class SolutionExplorerCompareContributor : ISolutionExplorerCont
             // Always-visible: compare with the currently active editor
             SolutionContextMenuItem.Item(
                 header:    "Compare with Active Editor",
-                command:   new RelayCommand(_ => InvokeCompareLeft(nodePath)),
+                command:   new RelayCommand(_ => _compareWithActiveEditor(nodePath)),
                 iconGlyph: "\uE8A5"),
 
-            // Always-visible: nodePath as left, picker for right
+            // Always-visible: nodePath as left, picker for right (user selects in panel)
             SolutionContextMenuItem.Item(
                 header:    "Compare with Another File…",
-                command:   new RelayCommand(_ => InvokeCommand(CmdCompareFiles, nodePath)),
+                command:   new RelayCommand(_ => _compareWithFile(nodePath, null)),
                 iconGlyph: "\uE8B7"),
         };
 
@@ -60,47 +80,31 @@ internal sealed class SolutionExplorerCompareContributor : ISolutionExplorerCont
             items.Add(SolutionContextMenuItem.Item(
                 header:    "Compare with HEAD (Git)",
                 command:   new RelayCommand(_ => _ = InvokeCompareWithHeadAsync(nodePath, repoRoot)),
-                iconGlyph: "\uE8B5"));  // BranchMerge-like
+                iconGlyph: "\uE8B5"));
 
             items.Add(SolutionContextMenuItem.Item(
                 header:    "Compare with Branch…",
                 command:   new RelayCommand(_ => _ = InvokeCompareWithRefAsync(nodePath, repoRoot,
                     GitRefPickerMode.Branches)),
-                iconGlyph: "\uE71B"));  // Source
+                iconGlyph: "\uE71B"));
 
             items.Add(SolutionContextMenuItem.Item(
                 header:    "Compare with Commit…",
                 command:   new RelayCommand(_ => _ = InvokeCompareWithRefAsync(nodePath, repoRoot,
                     GitRefPickerMode.Commits)),
-                iconGlyph: "\uE81C"));  // Tag
+                iconGlyph: "\uE81C"));
         }
 
         return items;
     }
 
-    // ── Command ID constants (mirrors CommandIds in WpfHexEditor.Commands) ────
-    // Duplicated as string literals to avoid a dependency on WpfHexEditor.Commands.
-    private const string CmdCompareWithActiveEditor = "View.Compare.WithActiveEditor";
-    private const string CmdCompareWithHead         = "View.Compare.WithHead";
-    private const string CmdCompareFiles            = "View.CompareFiles";
-
     // ── Private helpers ───────────────────────────────────────────────────────
-
-    /// <summary>Invokes an IDE command that was pre-registered by MainWindow.Commands.cs.</summary>
-    private void InvokeCommand(string commandId, object? parameter = null)
-    {
-        var cmd = _context.CommandRegistry?.Find(commandId)?.Command;
-        cmd?.Execute(parameter);
-    }
-
-    private void InvokeCompareLeft(string leftPath)
-        => InvokeCommand(CmdCompareWithActiveEditor, leftPath);
 
     private async Task InvokeCompareWithHeadAsync(string filePath, string repoRoot)
     {
         var tempPath = await _git.ExtractRefVersionAsync(repoRoot, "HEAD", filePath);
         if (tempPath is null) return;
-        InvokeCommand(CmdCompareFiles, new[] { tempPath, filePath });
+        _compareWithFile(tempPath, filePath);
     }
 
     private async Task InvokeCompareWithRefAsync(string filePath, string repoRoot, GitRefPickerMode mode)
@@ -116,13 +120,10 @@ internal sealed class SolutionExplorerCompareContributor : ISolutionExplorerCont
 
         if (refs.Count == 0) return;
 
-        // Extract the first ref (oldest HEAD is a meaningful default);
-        // branch/commit picker UI requires a WPF Window, so the App shell handles the picker
-        // for the full "Compare with HEAD" command — this path is for direct git ref picks.
         var tempPath = await _git.ExtractRefVersionAsync(repoRoot, refs[0], filePath);
         if (tempPath is null) return;
 
-        InvokeCommand(CmdCompareFiles, new[] { tempPath, filePath });
+        _compareWithFile(tempPath, filePath);
     }
 
     private string? GetCachedRepoRoot(string filePath)

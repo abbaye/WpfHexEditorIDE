@@ -518,7 +518,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new StructureEditorFactory());
         _editorRegistry.Register(new TileEditorFactory());
         _editorRegistry.Register(new AudioViewerFactory());
-        _editorRegistry.Register(new ScriptEditorFactory());
+        _editorRegistry.Register(new ScriptEditorFactory(() => _scriptingService));
         _editorRegistry.Register(new ChangesetEditorFactory());
         _editorRegistry.Register(new ClassDiagramFactory());
         _editorRegistry.Register(new XamlDesignerFactory());
@@ -535,6 +535,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         LoadKeyBindingOverrides();   // populate gesture overrides from settings
         InitCompareFileLaunchService();
         ApplyThemeFromSettings();
+        ApplyTabPreviewSettings();   // push persisted thumbnail settings to DockHost
+        WpfHexEditor.Core.Options.TabPreviewAppSettings.Changed += ApplyTabPreviewSettings;
         InitAutoSerializeTimer();
 
         RebuildTblItemList();   // must be before LoadSavedLayoutOrDefault so SyncTblDropdown finds items
@@ -571,6 +573,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 AppSettingsService.Instance),
             "\uE8A5");
 
+        // Register Workspace options page
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Environment", "Workspace",
+            () => new WpfHexEditor.App.Options.WorkspaceOptionsPage(),
+            "\uF16A");
+
+        // Register Tab Preview options page
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Environment", "Tab Preview",
+            () => new WpfHexEditor.App.Options.TabPreviewOptionsPage(),
+            "\uE7C4");
+
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
     }
@@ -579,11 +593,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var settings = AppSettingsService.Instance.Current.Comparison;
         _compareFileLaunchService = new WpfHexEditor.App.Services.CompareFileLaunchService(
-            ownerWindow    : this,
-            documentManager: _documentManager,
-            settings       : settings,
-            settingsService: AppSettingsService.Instance,
-            openDiffViewer : OpenDiffViewerTab);
+            ownerWindow      : this,
+            documentManager  : _documentManager,
+            settings         : settings,
+            settingsService  : AppSettingsService.Instance,
+            openDiffViewer   : OpenDiffViewerTab,
+            getSolutionFiles : () =>
+                _solutionManager.CurrentSolution?.Projects
+                    .SelectMany(p => p.Items)
+                    .Select(i => i.AbsolutePath)
+                    .Where(p => !string.IsNullOrEmpty(p) && System.IO.File.Exists(p))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList()
+                ?? (IReadOnlyList<string>)Array.Empty<string>());
     }
 
     /// <summary>Creates and docks a DiffViewer tab for two file paths.</summary>
@@ -752,6 +774,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 _displayContent.Remove(contentId);
                 _contentCache.Remove(contentId);
+                DockHost.InvalidateContent(contentId);
             }
             _pendingProjectPropertiesContentIds.Clear();
             DockHost.RebuildVisualTree();
@@ -5173,6 +5196,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var stem = AppSettingsService.Instance.Current.ActiveThemeName;
         if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
         ApplyTheme($"{stem}.xaml", stem);
+    }
+
+    /// <summary>
+    /// Copies <see cref="TabPreviewAppSettings"/> values from <see cref="AppSettings"/> into
+    /// <see cref="WpfHexEditor.Shell.Controls.TabPreviewSettings"/> on <see cref="DockHost"/>
+    /// and triggers a live refresh of all open tab-hover popups.
+    /// </summary>
+    private void ApplyTabPreviewSettings()
+    {
+        var s = AppSettingsService.Instance.Current.TabPreview;
+        DockHost.TabPreviewSettings.Enabled       = s.Enabled;
+        DockHost.TabPreviewSettings.ShowFileName  = s.ShowFileName;
+        DockHost.TabPreviewSettings.PreviewWidth  = s.PreviewWidth;
+        DockHost.TabPreviewSettings.PreviewHeight = s.PreviewHeight;
+        DockHost.TabPreviewSettings.OpenDelayMs   = s.OpenDelayMs;
+        DockHost.TabPreviewSettings.CloseDelayMs  = s.CloseDelayMs;
+        DockHost.RefreshTabPreviewSettings();
     }
 
     /// <summary>

@@ -62,17 +62,23 @@ public sealed class DocumentHostService : IDocumentHostService
     {
         if (string.IsNullOrEmpty(filePath)) return;
 
-        // Check if a tab is already open for this path (any editor type).
+        // When a specific editor is requested, delegate immediately so MainWindow can apply
+        // per-editor deduplication (same file can be open in multiple editors simultaneously).
+        if (preferredEditorId is not null)
+        {
+            _ = _openFileHandler(filePath, preferredEditorId);
+            return;
+        }
+
+        // No editor preference — activate the existing tab if the file is already open.
         var existing = FindDocumentModelByPath(filePath);
         if (existing is not null)
         {
-            // Activate via the document manager; the docking host listens to ActiveDocumentChanged.
             _documentManager.SetActive(existing.ContentId);
             return;
         }
 
-        // Delegate to the MainWindow-provided handler (runs on UI thread via Dispatcher).
-        _ = _openFileHandler(filePath, preferredEditorId);
+        _ = _openFileHandler(filePath, null);
     }
 
     /// <inheritdoc/>

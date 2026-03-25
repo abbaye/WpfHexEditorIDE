@@ -144,4 +144,44 @@ public interface IIDEHostContext
     /// Null when the debugger assembly is not loaded or the host does not support debugging.
     /// </summary>
     IDebuggerService? Debugger => null;
+
+    // -- Scripting ------------------------------------------------------------
+
+    /// <summary>
+    /// C# scripting engine. Use to run or validate scripts on behalf of the user.
+    /// Null when the scripting assembly is not loaded.
+    /// </summary>
+    IScriptingService? Scripting => null;
+
+    // -- Build System ---------------------------------------------------------
+
+    /// <summary>
+    /// Orchestrates compilation of solutions and individual projects.
+    /// Null when no build system is configured (e.g. no solution loaded).
+    /// </summary>
+    IBuildSystem? BuildSystem => null;
+
+    // -- Unit Test Runner -----------------------------------------------------
+
+    /// <summary>
+    /// Service for running unit tests inside the IDE.
+    /// Null when the UnitTesting plugin is not loaded.
+    /// </summary>
+    ITestRunnerService? TestRunner => null;
+
+    // -- Diff Service ---------------------------------------------------------
+
+    /// <summary>
+    /// Service for comparing files (diff) and opening the DiffHub viewer.
+    /// Null when the FileComparison plugin is not loaded.
+    /// </summary>
+    IDiffService? DiffService => null;
+
+    // -- Workspace System -----------------------------------------------------
+
+    /// <summary>
+    /// Read-only view of the active workspace (.whidews) state and lifecycle events.
+    /// Null when no workspace support is configured.
+    /// </summary>
+    IWorkspaceService? Workspace => null;
 }

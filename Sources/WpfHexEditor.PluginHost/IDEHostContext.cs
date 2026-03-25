@@ -19,6 +19,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
+using System.Linq;
 
 namespace WpfHexEditor.PluginHost;
 
@@ -87,6 +88,25 @@ public sealed class IDEHostContext : IIDEHostContext
     /// <inheritdoc />
     public WpfHexEditor.SDK.Contracts.Services.IDebuggerService? Debugger { get; }
 
+    /// <inheritdoc />
+    public WpfHexEditor.SDK.Contracts.Services.IScriptingService? Scripting { get; }
+
+    /// <inheritdoc />
+    public IBuildSystem? BuildSystem { get; }
+
+    /// <inheritdoc />
+    public WpfHexEditor.SDK.Contracts.Services.IWorkspaceService? Workspace { get; }
+
+    /// <inheritdoc />
+    /// Resolved lazily from <see cref="ExtensionRegistry"/> — set by UnitTesting plugin on init.
+    public ITestRunnerService? TestRunner
+        => ExtensionRegistry.GetExtensions<ITestRunnerService>().FirstOrDefault();
+
+    /// <inheritdoc />
+    /// Resolved lazily from <see cref="ExtensionRegistry"/> — set by FileComparison plugin on init.
+    public IDiffService? DiffService
+        => ExtensionRegistry.GetExtensions<IDiffService>().FirstOrDefault();
+
     public IDEHostContext(
         IDocumentHostService documentHost,
         ISolutionExplorerService solutionExplorer,
@@ -106,7 +126,10 @@ public sealed class IDEHostContext : IIDEHostContext
         IExtensionRegistry extensionRegistry,
         ISolutionManager? solutionManager = null,
         WpfHexEditor.SDK.Commands.ICommandRegistry? commandRegistry = null,
-        WpfHexEditor.SDK.Contracts.Services.IDebuggerService? debuggerService = null)
+        WpfHexEditor.SDK.Contracts.Services.IDebuggerService? debuggerService = null,
+        WpfHexEditor.SDK.Contracts.Services.IScriptingService? scriptingService = null,
+        IBuildSystem? buildSystem = null,
+        WpfHexEditor.SDK.Contracts.Services.IWorkspaceService? workspaceService = null)
     {
         DocumentHost        = documentHost        ?? throw new ArgumentNullException(nameof(documentHost));
         SolutionExplorer    = solutionExplorer    ?? throw new ArgumentNullException(nameof(solutionExplorer));
@@ -127,5 +150,8 @@ public sealed class IDEHostContext : IIDEHostContext
         SolutionManager     = solutionManager;
         CommandRegistry     = commandRegistry;
         Debugger            = debuggerService;
+        Scripting           = scriptingService;
+        BuildSystem         = buildSystem;
+        Workspace           = workspaceService;
     }
 }

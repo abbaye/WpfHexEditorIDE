@@ -84,6 +84,18 @@ public partial class MainWindow
         Reg(CommandIds.File.Exit,          "Exit",                   "File",    "Alt+F4",         "\uE7E8",
             () => OnExit(this, null!));
 
+        // ── Workspace ────────────────────────────────────────────────────────
+        Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",
+            () => _ = OnNewWorkspaceAsync());
+        Reg(CommandIds.Workspace.Open,   "Open Workspace…",        "Workspace", null,            "\uE8B5",
+            () => _ = OnOpenWorkspaceAsync());
+        Reg(CommandIds.Workspace.Save,   "Save Workspace",         "Workspace", null,            "\uE74E",
+            () => _ = OnSaveWorkspaceAsync());
+        Reg(CommandIds.Workspace.SaveAs, "Save Workspace As…",     "Workspace", null,            "\uE74E",
+            () => _ = OnSaveWorkspaceAsAsync());
+        Reg(CommandIds.Workspace.Close,  "Close Workspace",        "Workspace", null,            "\uE711",
+            () => _ = OnCloseWorkspaceAsync());
+
         // ── Edit ────────────────────────────────────────────────────────────
         Reg(CommandIds.Edit.Undo,          "Undo",                   "Edit",    "Ctrl+Z",         "\uE7A7",
             () => ActiveDocumentEditor?.UndoCommand?.Execute(null));

@@ -1,11 +1,13 @@
 // Project      : WpfHexEditorControl
 // File         : ViewModels/DiffHubViewModel.cs
-// Description  : ViewModel for DiffHubPanel — tracks both file paths, comparison results,
-//                filter state, history, and provides Compare/Swap commands.
+// Description  : ViewModel for DiffHubPanel (launcher panel) — tracks both file paths,
+//                runs comparisons, fires CompareCompleted so the plugin can open a
+//                DiffViewerDocument tab, and records comparison history.
 // Architecture : INPC, no WPF dependency.  Uses DiffEngine from WpfHexEditor.Core.Diff.
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.Core.Diff.Models;
@@ -19,10 +21,8 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
     // ── Backing fields ────────────────────────────────────────────────────────
     private string  _file1Path   = string.Empty;
     private string  _file2Path   = string.Empty;
-    private string  _statusText  = "Select two files to compare";
+    private string  _statusText  = "Select two files and click Compare";
     private bool    _isComparing;
-    private string  _filterMode  = "All";   // All | Modified | Added | Removed
-    private string  _searchText  = string.Empty;
     private DiffEngineResult? _lastResult;
 
     // ── Services ──────────────────────────────────────────────────────────────
@@ -34,13 +34,13 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
     public string File1Path
     {
         get => _file1Path;
-        set => SetField(ref _file1Path, value);
+        set { SetField(ref _file1Path, value); NotifyOf(nameof(File1Name)); }
     }
 
     public string File2Path
     {
         get => _file2Path;
-        set => SetField(ref _file2Path, value);
+        set { SetField(ref _file2Path, value); NotifyOf(nameof(File2Name)); }
     }
 
     public string StatusText
@@ -55,18 +55,6 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
         set => SetField(ref _isComparing, value);
     }
 
-    public string FilterMode
-    {
-        get => _filterMode;
-        set { SetField(ref _filterMode, value); ApplyFilter(); }
-    }
-
-    public string SearchText
-    {
-        get => _searchText;
-        set { SetField(ref _searchText, value); ApplyFilter(); }
-    }
-
     public DiffEngineResult? LastResult
     {
         get => _lastResult;
@@ -75,12 +63,19 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
 
     public int SimilarityPercent => (int)((_lastResult?.Similarity ?? 0) * 100);
 
-    // ── Flat result rows for the ListView ────────────────────────────────────
-    public ObservableCollection<DiffResultRow> AllRows    { get; } = [];
-    public ObservableCollection<DiffResultRow> FilteredRows { get; } = [];
+    // ── Computed file names (displayed in history) ─────────────────────────────
+    public string File1Name => string.IsNullOrEmpty(_file1Path) ? string.Empty : Path.GetFileName(_file1Path);
+    public string File2Name => string.IsNullOrEmpty(_file2Path) ? string.Empty : Path.GetFileName(_file2Path);
 
     // ── History (from ComparisonSettings) ─────────────────────────────────────
     public ObservableCollection<ComparisonHistoryEntry> History { get; } = [];
+
+    // ── CompareCompleted event ─────────────────────────────────────────────────
+    /// <summary>
+    /// Raised when a comparison finishes successfully.
+    /// The plugin subscribes to open a DiffViewerDocument tab.
+    /// </summary>
+    public event EventHandler<DiffEngineResult>? CompareCompleted;
 
     // ── Commands ──────────────────────────────────────────────────────────────
     public ICommand CompareCommand    { get; }
@@ -126,8 +121,6 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
 
         IsComparing = true;
         StatusText  = "Comparing…";
-        AllRows.Clear();
-        FilteredRows.Clear();
         LastResult  = null;
 
         try
@@ -135,10 +128,9 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
             var result = await _engine.CompareAsync(_file1Path, _file2Path, ct: ct);
             LastResult = result;
 
-            BuildRows(result);
-            ApplyFilter();
             BuildStatusText(result);
             RecordHistory(result);
+            CompareCompleted?.Invoke(this, result);
         }
         catch (OperationCanceledException)
         {
@@ -155,67 +147,6 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
-
-    private void BuildRows(DiffEngineResult result)
-    {
-        AllRows.Clear();
-
-        if (result.TextResult is { } text)
-        {
-            int rowIdx = 0;
-            foreach (var line in text.Lines)
-            {
-                AllRows.Add(new DiffResultRow
-                {
-                    Index       = rowIdx++,
-                    Kind        = line.Kind.ToString(),
-                    LeftLine    = line.LeftLineNumber?.ToString() ?? "-",
-                    RightLine   = line.RightLineNumber?.ToString() ?? "-",
-                    Content     = line.Content
-                });
-            }
-        }
-        else if (result.BinaryResult is { } bin)
-        {
-            int rowIdx = 0;
-            foreach (var region in bin.Regions)
-            {
-                AllRows.Add(new DiffResultRow
-                {
-                    Index    = rowIdx++,
-                    Kind     = region.Kind.ToString(),
-                    LeftLine = $"0x{region.LeftOffset:X8}",
-                    RightLine = $"0x{region.RightOffset:X8}",
-                    Content  = $"{region.Length} bytes"
-                });
-            }
-        }
-    }
-
-    private void ApplyFilter()
-    {
-        FilteredRows.Clear();
-        foreach (var row in AllRows)
-        {
-            if (!MatchesFilter(row)) continue;
-            FilteredRows.Add(row);
-        }
-    }
-
-    private bool MatchesFilter(DiffResultRow row)
-    {
-        if (!string.IsNullOrEmpty(_searchText) &&
-            !row.Content.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        return _filterMode switch
-        {
-            "Modified" => row.Kind is "Modified" or "Modified ",
-            "Added"    => row.Kind is "InsertedRight" or "InsertedInRight",
-            "Removed"  => row.Kind is "DeletedLeft"  or "DeletedInRight",
-            _          => true
-        };
-    }
 
     private void BuildStatusText(DiffEngineResult result)
     {
@@ -259,9 +190,7 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
     private void Clear()
     {
         File1Path  = File2Path = string.Empty;
-        StatusText = "Select two files to compare";
-        AllRows.Clear();
-        FilteredRows.Clear();
+        StatusText = "Select two files and click Compare";
         LastResult = null;
     }
 
@@ -278,21 +207,14 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
     }
 }
 
-/// <summary>A single row in the diff result list.</summary>
-public sealed class DiffResultRow
-{
-    public int    Index     { get; init; }
-    public string Kind      { get; init; } = string.Empty;
-    public string LeftLine  { get; init; } = string.Empty;
-    public string RightLine { get; init; } = string.Empty;
-    public string Content   { get; init; } = string.Empty;
-}
-
 /// <summary>One entry in the comparison history list.</summary>
 public sealed class ComparisonHistoryEntry
 {
-    public string   LeftPath  { get; set; } = string.Empty;
-    public string   RightPath { get; set; } = string.Empty;
-    public string   Mode      { get; set; } = string.Empty;
-    public DateTime LastUsed  { get; set; }
+    public string   LeftPath     { get; set; } = string.Empty;
+    public string   RightPath    { get; set; } = string.Empty;
+    public string   Mode         { get; set; } = string.Empty;
+    public DateTime LastUsed     { get; set; }
+
+    public string LeftFileName  => string.IsNullOrEmpty(LeftPath)  ? string.Empty : Path.GetFileName(LeftPath);
+    public string RightFileName => string.IsNullOrEmpty(RightPath) ? string.Empty : Path.GetFileName(RightPath);
 }

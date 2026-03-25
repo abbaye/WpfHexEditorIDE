@@ -112,6 +112,15 @@ public static class CommandIds
         public const string ShowWatch            = "Debug.ShowWatch";
     }
 
+    public static class Workspace
+    {
+        public const string New     = "Workspace.New";
+        public const string Open    = "Workspace.Open";
+        public const string Save    = "Workspace.Save";
+        public const string SaveAs  = "Workspace.SaveAs";
+        public const string Close   = "Workspace.Close";
+    }
+
     public static class Plugins
     {
         public const string OpenManager      = "Plugins.OpenManager";

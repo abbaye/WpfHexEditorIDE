@@ -22,6 +22,7 @@
 // ==========================================================
 
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Plugins.UnitTesting.Models;
@@ -31,6 +32,7 @@ using WpfHexEditor.Plugins.UnitTesting.ViewModels;
 using WpfHexEditor.Plugins.UnitTesting.Views;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
+using static WpfHexEditor.SDK.Contracts.WellKnownEditorIds;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
@@ -82,7 +84,8 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _panel.StopRequested        += (_, _)    => StopRun();
         _panel.RunFailedRequested   += (_, _)    => _ = RunFailedAsync();
         _panel.RunThisTestRequested += async (_, row)  => await RunSingleTestAsync(row);
-        _panel.GoToSourceRequested  += (_, row)  => NavigateToSource(row);
+        _panel.GoToSourceRequested          += (_, row)        => NavigateToSource(row);
+        _panel.OpenSourceWithEditorRequested += (_, args)      => OpenSourceWith(args.Row, args.EditorId);
 
         // Register dockable panel.
         context.UIRegistry.RegisterPanel(
@@ -130,6 +133,11 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Discover immediately if a solution is already loaded.
         if (_context?.SolutionManager?.CurrentSolution is not null)
             _ = DiscoverProjectsAsync();
+
+        // Expose test runner to terminal commands and other plugins via ExtensionRegistry.
+        context.ExtensionRegistry.Register<ITestRunnerService>(
+            Id,
+            new TestRunnerServiceAdapter(_runner, context.SolutionManager));
 
         return Task.CompletedTask;
     }
@@ -435,6 +443,12 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _context?.DocumentHost.OpenDocument(path);
     }
 
+    private void OpenSourceWith(TestResultRow? row, string editorId)
+    {
+        if (row?.SourceFile is not string path) return;
+        _context?.DocumentHost.OpenDocument(path, editorId);
+    }
+
     /// <summary>
     /// For tests whose <see cref="TestResult.SourceFile"/> is null (e.g. passing tests with no
     /// stack trace), searches the project directory for a <c>.cs</c> file matching the class name.
@@ -464,7 +478,15 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 fileCache[shortClass] = found;
             }
 
-            enriched.Add(found is not null ? r with { SourceFile = found } : r);
+            if (found is not null)
+            {
+                var line = r.SourceLine == 0 ? FindMethodLine(found, r.TestName) : r.SourceLine;
+                enriched.Add(r with { SourceFile = found, SourceLine = line });
+            }
+            else
+            {
+                enriched.Add(r);
+            }
         }
 
         return enriched;
@@ -474,11 +496,46 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         try
         {
-            return Directory
+            // Pass 1 — fast: exact filename match
+            var byName = Directory
                 .EnumerateFiles(dir, $"{className}.cs", SearchOption.AllDirectories)
                 .FirstOrDefault();
+            if (byName is not null) return byName;
+
+            // Pass 2 — scan: look for type declaration in any .cs file
+            foreach (var file in Directory.EnumerateFiles(dir, "*.cs", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    var content = File.ReadAllText(file);
+                    if (Regex.IsMatch(content,
+                        $@"\b(?:class|record|struct)\s+{Regex.Escape(className)}\b"))
+                        return file;
+                }
+                catch { /* skip unreadable files */ }
+            }
         }
-        catch { return null; }
+        catch { /* ignore access errors */ }
+        return null;
+    }
+
+    /// <summary>
+    /// Finds the 1-based line number of a method declaration in a .cs file.
+    /// Returns 0 if the method is not found.
+    /// </summary>
+    private static int FindMethodLine(string filePath, string methodName)
+    {
+        try
+        {
+            var lines = File.ReadAllLines(filePath);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (Regex.IsMatch(lines[i], $@"\b{Regex.Escape(methodName)}\s*[(<]"))
+                    return i + 1;
+            }
+        }
+        catch { /* ignore */ }
+        return 0;
     }
 
     private static string BuildSummary(int pass, int fail, int skip)

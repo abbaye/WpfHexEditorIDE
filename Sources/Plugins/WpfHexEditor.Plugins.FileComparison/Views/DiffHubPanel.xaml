@@ -5,93 +5,57 @@
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters">
 
     <UserControl.Resources>
-        <!-- Converters -->
-        <conv:IntToStarConverter     x:Key="IntToStarConverter"/>
-        <conv:IntToAntiStarConverter x:Key="IntToAntiStarConverter"/>
-        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:KindToGlyphConverter      x:Key="KindToGlyph"/>
 
-        <!-- Kind → background colour for result rows -->
-        <Style x:Key="DiffRowStyle" TargetType="ListViewItem">
-            <Setter Property="Padding"    Value="4,2,4,2"/>
-            <Setter Property="FontSize"   Value="11"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Kind}" Value="Modified">
-                    <Setter Property="Background" Value="{DynamicResource DF_ModifiedLineBrush}"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Kind}" Value="InsertedRight">
-                    <Setter Property="Background" Value="{DynamicResource DF_InsertedLineBrush}"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Kind}" Value="InsertedInRight">
-                    <Setter Property="Background" Value="{DynamicResource DF_InsertedLineBrush}"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Kind}" Value="DeletedLeft">
-                    <Setter Property="Background" Value="{DynamicResource DF_DeletedLineBrush}"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Kind}" Value="DeletedInRight">
-                    <Setter Property="Background" Value="{DynamicResource DF_DeletedLineBrush}"/>
-                </DataTrigger>
-            </Style.Triggers>
+        <!-- History row style -->
+        <Style x:Key="HistoryRowStyle" TargetType="ListViewItem">
+            <Setter Property="Padding"  Value="6,3,6,3"/>
+            <Setter Property="FontSize" Value="11"/>
         </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>  <!-- Toolbar: Swap / Open in Viewer -->
-            <RowDefinition Height="Auto"/>  <!-- File path inputs -->
-            <RowDefinition Height="Auto"/>  <!-- Similarity ratio bar -->
-            <RowDefinition Height="Auto"/>  <!-- Filter bar -->
-            <RowDefinition Height="*"/>     <!-- Result list / Tabs -->
-            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+            <RowDefinition Height="Auto"/>  <!-- Row 0: Toolbar   -->
+            <RowDefinition Height="Auto"/>  <!-- Row 1: File inputs -->
+            <RowDefinition Height="*"/>     <!-- Row 2: History   -->
         </Grid.RowDefinitions>
 
         <!-- ── Row 0: Toolbar ── -->
         <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" Band="0" BandIndex="0"
                  Background="{DynamicResource DockTabBackgroundBrush}">
 
-            <Button x:Name="SwapBtn" Command="{Binding SwapCommand}"
+            <Button Command="{Binding SwapCommand}"
                     ToolTip="Swap files" Padding="6,2,6,2">
                 <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
             </Button>
 
             <Separator/>
 
-            <ComboBox x:Name="ModeCombo" Width="90" Margin="2,0"
-                      SelectedItem="{Binding FilterMode, Mode=TwoWay}"
-                      ToolTip="Filter diff results">
-                <ComboBoxItem>All</ComboBoxItem>
-                <ComboBoxItem>Modified</ComboBoxItem>
-                <ComboBoxItem>Added</ComboBoxItem>
-                <ComboBoxItem>Removed</ComboBoxItem>
-            </ComboBox>
-
-            <Separator/>
-
-            <Button x:Name="CompareBtn" Command="{Binding CompareCommand}"
+            <Button Command="{Binding CompareCommand}"
                     Padding="8,2,8,2" ToolTip="Run comparison (Ctrl+Enter)">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0"/>
+                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets"
+                               FontSize="12" Margin="0,0,4,0"/>
                     <TextBlock Text="Compare"/>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="OpenViewerBtn" Click="OnOpenInViewer_Click"
-                    Padding="8,2,8,2" ToolTip="Open full DiffViewer">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0"/>
-                    <TextBlock Text="Open in Viewer"/>
-                </StackPanel>
-            </Button>
-
             <Separator/>
 
-            <Button x:Name="ClearBtn" Command="{Binding ClearCommand}"
-                    ToolTip="Clear" Padding="6,2,6,2">
+            <Button Command="{Binding ClearCommand}"
+                    ToolTip="Clear inputs" Padding="6,2,6,2">
                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
             </Button>
+
+            <!-- Busy indicator -->
+            <ProgressBar IsIndeterminate="True" Width="60" Height="3" Margin="4,0"
+                         Visibility="{Binding IsComparing, Converter={StaticResource BoolToVis}}"/>
         </ToolBar>
 
         <!-- ── Row 1: File path inputs ── -->
-        <Grid Grid.Row="1" Margin="6,4,6,2">
+        <Grid Grid.Row="1" Margin="6,4,6,4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -110,7 +74,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Text="{Binding File1Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Grid.Column="0"
+                             Text="{Binding File1Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Height="24" FontSize="11" Padding="4,2"
                              AllowDrop="True" Drop="OnFile1Drop" DragOver="OnDragOver"
                              VerticalContentAlignment="Center"/>
@@ -121,9 +86,9 @@
                 </Grid>
             </Grid>
 
-            <!-- Swap arrow -->
+            <!-- Swap indicator -->
             <TextBlock Grid.Column="1" Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets"
-                       FontSize="16" Margin="8,12,8,0" VerticalAlignment="Center" Opacity="0.5"/>
+                       FontSize="14" Margin="6,12,6,0" VerticalAlignment="Center" Opacity="0.4"/>
 
             <!-- File 2 -->
             <Grid Grid.Column="2">
@@ -137,7 +102,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Text="{Binding File2Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Grid.Column="0"
+                             Text="{Binding File2Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Height="24" FontSize="11" Padding="4,2"
                              AllowDrop="True" Drop="OnFile2Drop" DragOver="OnDragOver"
                              VerticalContentAlignment="Center"/>
@@ -149,108 +115,78 @@
             </Grid>
         </Grid>
 
-        <!-- ── Row 2: Similarity ratio bar ── -->
-        <Border Grid.Row="2" Height="6" Margin="6,2,6,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding SimilarityPercent, Converter={StaticResource IntToStarConverter}}"
-                                      x:Name="SimilarCol"/>
-                    <ColumnDefinition Width="{Binding SimilarityPercent, Converter={StaticResource IntToAntiStarConverter}}"/>
-                </Grid.ColumnDefinitions>
-                <Rectangle Grid.Column="0" Fill="{DynamicResource DF_IdenticalLineBrush}"
-                           RadiusX="2" RadiusY="2"/>
-                <Rectangle Grid.Column="1" Fill="{DynamicResource DF_ModifiedLineBrush}"
-                           RadiusX="2" RadiusY="2"/>
-            </Grid>
-        </Border>
+        <!-- ── Row 2: History list ── -->
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <!-- ── Row 3: Search bar ── -->
-        <Grid Grid.Row="3" Margin="6,4,6,2">
-            <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     Height="24" FontSize="11" Padding="4,2"
-                     VerticalContentAlignment="Center">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
+            <!-- Section header -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource DockTabBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="0,1,0,1"
+                    Padding="6,2">
+                <TextBlock Text="Recent Comparisons"
+                           FontSize="10" FontWeight="SemiBold" Opacity="0.7"/>
+            </Border>
+
+            <ListView x:Name="HistoryList" Grid.Row="1"
+                      ItemsSource="{Binding History}"
+                      ItemContainerStyle="{StaticResource HistoryRowStyle}"
+                      MouseDoubleClick="OnHistoryDoubleClick"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Left" Width="140">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding LeftFileName}"
+                                               FontSize="11"
+                                               ToolTip="{Binding LeftPath}"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Right" Width="140">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding RightFileName}"
+                                               FontSize="11"
+                                               ToolTip="{Binding RightPath}"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Mode" Width="56"
+                                        DisplayMemberBinding="{Binding Mode}"/>
+                        <GridViewColumn Header="Last Used" Width="110"
+                                        DisplayMemberBinding="{Binding LastUsed, StringFormat='{}{0:MM-dd HH:mm}'}"/>
+                    </GridView>
+                </ListView.View>
+
+                <!-- Empty state -->
+                <ListView.Style>
+                    <Style TargetType="ListView">
                         <Style.Triggers>
-                            <Trigger Property="Text" Value="">
-                                <Setter Property="Background">
+                            <DataTrigger Binding="{Binding History.Count}" Value="0">
+                                <Setter Property="Template">
                                     <Setter.Value>
-                                        <VisualBrush Stretch="None">
-                                            <VisualBrush.Visual>
-                                                <TextBlock Text="Filter results…" Foreground="Gray"
-                                                           Margin="4,2" FontSize="11"/>
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
+                                        <ControlTemplate>
+                                            <Border Padding="16">
+                                                <TextBlock Text="No recent comparisons.&#xA;Compare two files to build history."
+                                                           TextAlignment="Center" Opacity="0.4"
+                                                           FontSize="11" TextWrapping="Wrap"/>
+                                            </Border>
+                                        </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
-                            </Trigger>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>
-            </TextBox>
-        </Grid>
-
-        <!-- ── Row 4: Results + History tabs ── -->
-        <TabControl Grid.Row="4" Margin="4,0,4,0">
-
-            <!-- Results tab -->
-            <TabItem Header="Results">
-                <ListView ItemsSource="{Binding FilteredRows}"
-                          VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingPanel.VirtualizationMode="Recycling"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ItemContainerStyle="{StaticResource DiffRowStyle}"
-                          MouseDoubleClick="OnResultDoubleClick">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="#"     Width="44"  DisplayMemberBinding="{Binding Index}"/>
-                            <GridViewColumn Header="Kind"  Width="90"  DisplayMemberBinding="{Binding Kind}"/>
-                            <GridViewColumn Header="Left"  Width="70"  DisplayMemberBinding="{Binding LeftLine}"/>
-                            <GridViewColumn Header="Right" Width="70"  DisplayMemberBinding="{Binding RightLine}"/>
-                            <GridViewColumn Header="Content" Width="320" DisplayMemberBinding="{Binding Content}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </TabItem>
-
-            <!-- History tab -->
-            <TabItem Header="History">
-                <ListView x:Name="HistoryList" ItemsSource="{Binding History}"
-                          MouseDoubleClick="OnHistoryDoubleClick">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Left File"  Width="200"
-                                            DisplayMemberBinding="{Binding LeftPath}"/>
-                            <GridViewColumn Header="Right File" Width="200"
-                                            DisplayMemberBinding="{Binding RightPath}"/>
-                            <GridViewColumn Header="Mode"       Width="70"
-                                            DisplayMemberBinding="{Binding Mode}"/>
-                            <GridViewColumn Header="Last Used"  Width="130"
-                                            DisplayMemberBinding="{Binding LastUsed, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </TabItem>
-
-        </TabControl>
-
-        <!-- ── Row 5: Status bar ── -->
-        <Border Grid.Row="5" BorderThickness="0,1,0,0"
-                BorderBrush="{DynamicResource DockSplitterBrush}"
-                Padding="6,3">
-            <TextBlock Text="{Binding StatusText}" FontSize="11" Opacity="0.8"
-                       TextTrimming="CharacterEllipsis"/>
-        </Border>
-
-        <!-- Busy overlay -->
-        <Grid Grid.Row="0" Grid.RowSpan="6"
-              Visibility="{Binding IsComparing, Converter={StaticResource BoolToVisibilityConverter}}"
-              Background="#40000000">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ProgressBar IsIndeterminate="True" Width="160" Height="4"/>
-                <TextBlock Text="Comparing…" Margin="0,6,0,0" HorizontalAlignment="Center"
-                           FontSize="12" Foreground="White"/>
-            </StackPanel>
+                </ListView.Style>
+            </ListView>
         </Grid>
 
     </Grid>

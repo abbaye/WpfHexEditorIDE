@@ -43,6 +43,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.DiffViewer\WpfHexEditor.Editor.DiffViewer.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Scripting\WpfHexEditor.Core.Scripting.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.DisassemblyViewer\WpfHexEditor.Editor.DisassemblyViewer.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.StructureEditor\WpfHexEditor.Editor.StructureEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj" />
@@ -63,6 +64,7 @@
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
     <ProjectReference Include="..\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj" />
   </ItemGroup>
 
   <!-- Sandbox host process: build-only reference so the exe is always up to date,
@@ -127,6 +129,8 @@
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.UnitTesting\WpfHexEditor.Plugins.UnitTesting.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ResxLocalization\WpfHexEditor.Plugins.ResxLocalization.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ScriptRunner\WpfHexEditor.Plugins.ScriptRunner.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
   </ItemGroup>
