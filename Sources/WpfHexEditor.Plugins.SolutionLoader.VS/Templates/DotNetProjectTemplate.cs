@@ -25,13 +25,26 @@ namespace WpfHexEditor.Plugins.SolutionLoader.VS.Templates;
 /// </summary>
 internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
 {
-    // C# project type GUID — used in .sln format
-    private const string CSharpProjectTypeGuid = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+    // Project type GUIDs — used in .sln format
+    protected const string CSharpProjectTypeGuid = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+    protected const string FSharpProjectTypeGuid  = "{F2A71F9B-5D33-465A-A702-920D77279786}";
+    protected const string VbNetProjectTypeGuid   = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}";
+
+    /// <summary>
+    /// Project type GUID embedded in the .sln file.
+    /// Subclasses can override to use F# or VB.NET type GUIDs.
+    /// </summary>
+    protected virtual string SolutionProjectTypeGuid => CSharpProjectTypeGuid;
+
+    /// <summary>
+    /// Extension of the project file (e.g. ".csproj", ".fsproj", ".vbproj").
+    /// </summary>
+    protected virtual string ProjectFileExtension => ".csproj";
 
     public abstract string Id          { get; }
     public abstract string DisplayName { get; }
     public abstract string Description { get; }
-    public string          Category    => "Development";
+    public virtual string  Category    => "Development";
 
     // ScaffoldAsync is not used for self-contained templates (CreateAsync is the entry point).
     public Task<ProjectScaffold> ScaffoldAsync(string projectDirectory, string projectName,
@@ -67,9 +80,9 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
         await WriteCsprojAsync(projectDir, projectName, ct);
         await WriteSourceFilesAsync(projectDir, projectName, ct);
 
-        // Compute .csproj path relative to the .sln file (VS requirement).
+        // Compute project file path relative to the .sln file (VS requirement).
         var slnDir      = Path.GetDirectoryName(existingSlnPath) ?? "";
-        var csprojAbs   = Path.Combine(projectDir, $"{projectName}.csproj");
+        var csprojAbs   = Path.Combine(projectDir, $"{projectName}{ProjectFileExtension}");
         var csprojRel   = Path.GetRelativePath(slnDir, csprojAbs).Replace('/', '\\');
 
         await PatchSlnAsync(existingSlnPath, projectName, projectGuid, csprojRel, ct);
@@ -78,7 +91,7 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
     }
 
     // Appends a project entry to an existing .sln file and registers build configurations.
-    private static async Task PatchSlnAsync(string slnPath, string projectName,
+    private async Task PatchSlnAsync(string slnPath, string projectName,
                                              string projectGuid, string csprojRelPath,
                                              CancellationToken ct)
     {
@@ -86,7 +99,7 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
 
         // Insert Project(...)...EndProject block just before "Global".
         var projectBlock =
-            $"Project(\"{CSharpProjectTypeGuid}\") = \"{projectName}\", \"{csprojRelPath}\", \"{projectGuid}\"\r\n" +
+            $"Project(\"{SolutionProjectTypeGuid}\") = \"{projectName}\", \"{csprojRelPath}\", \"{projectGuid}\"\r\n" +
             $"EndProject\r\n";
 
         content = content.Replace("\r\nGlobal\r\n", $"\r\n{projectBlock}Global\r\n");
@@ -132,7 +145,7 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
         # Visual Studio Version 17
         VisualStudioVersion = 17.0.31903.59
         MinimumVisualStudioVersion = 10.0.40219.1
-        Project("{CSharpProjectTypeGuid}") = "{projectName}", "{projectName}\{projectName}.csproj", "{projectGuid}"
+        Project("{SolutionProjectTypeGuid}") = "{projectName}", "{projectName}\{projectName}{ProjectFileExtension}", "{projectGuid}"
         EndProject
         Global
         	GlobalSection(SolutionConfigurationPlatforms) = preSolution

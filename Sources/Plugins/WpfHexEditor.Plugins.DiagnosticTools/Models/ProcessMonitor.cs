@@ -11,6 +11,7 @@
 // ==========================================================
 
 using System.Diagnostics;
+using WpfHexEditor.Plugins.DiagnosticTools.Options;
 using WpfHexEditor.Plugins.DiagnosticTools.ViewModels;
 
 namespace WpfHexEditor.Plugins.DiagnosticTools.Models;
@@ -21,7 +22,7 @@ namespace WpfHexEditor.Plugins.DiagnosticTools.Models;
 /// </summary>
 internal sealed class ProcessMonitor : IDisposable
 {
-    private const int PollIntervalMs = 500;
+    private static int PollIntervalMs => DiagnosticToolsOptions.Instance.PollIntervalMs;
 
     private readonly int                           _pid;
     private readonly DiagnosticToolsPanelViewModel _vm;

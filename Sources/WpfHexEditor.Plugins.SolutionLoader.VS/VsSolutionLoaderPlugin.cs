@@ -45,11 +45,17 @@ public sealed class VsSolutionLoaderPlugin : IWpfHexEditorPlugin
     {
         context.ExtensionRegistry.Register<ISolutionLoader>(Id, new VsSolutionLoader());
 
-        // Register .NET/C# project templates — only available when this plugin is loaded.
+        // Register .NET project templates — only available when this plugin is loaded.
+        // C# / .NET
         ProjectTemplateRegistry.Register(new ConsoleAppTemplate());
         ProjectTemplateRegistry.Register(new ClassLibraryTemplate());
         ProjectTemplateRegistry.Register(new WpfAppTemplate());
         ProjectTemplateRegistry.Register(new AspNetApiTemplate());
+        // F#
+        ProjectTemplateRegistry.Register(new FSharpConsoleAppTemplate());
+        ProjectTemplateRegistry.Register(new FSharpClassLibraryTemplate());
+        // VB.NET
+        ProjectTemplateRegistry.Register(new VbNetConsoleAppTemplate());
 
         return Task.CompletedTask;
     }

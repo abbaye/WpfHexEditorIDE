@@ -75,6 +75,7 @@ public sealed class CommandPaletteWindow : Window
     private string _currentMode   = "";         // "" | ">" | "@" | ":" | "#" | "?"
     private bool   _closingStarted;
     private CancellationTokenSource _searchCts  = new();
+    private readonly string? _initialQuery;
 
     // Mode cycle order (Tab key)
     private static readonly string[] ModeCycle = { "", "@", "#", "%", ":", ">" };
@@ -90,7 +91,8 @@ public sealed class CommandPaletteWindow : Window
         IDocumentManager?       documentManager  = null,
         Action<int>?            goToLine         = null,
         ISolutionManager?       solutionManager  = null,
-        Action<string, int>?    openAndNavigate  = null)
+        Action<string, int>?    openAndNavigate  = null,
+        string?                 initialQuery     = null)
     {
         _service          = service;
         _settings         = settings;
@@ -101,6 +103,7 @@ public sealed class CommandPaletteWindow : Window
         _goToLine         = goToLine;
         _solutionManager  = solutionManager;
         _openAndNavigate  = openAndNavigate;
+        _initialQuery     = initialQuery;
 
         // Window chrome
         WindowStyle        = WindowStyle.None;
@@ -296,6 +299,11 @@ public sealed class CommandPaletteWindow : Window
             Top  = _owner.Top  + _owner.Height * 0.18;
         }
 
+        if (!string.IsNullOrEmpty(_initialQuery))
+        {
+            _searchBox.Text = _initialQuery;
+            _searchBox.CaretIndex = _initialQuery.Length;
+        }
         _ = RefreshAsync(_searchBox.Text);
         _searchBox.Focus();
     }

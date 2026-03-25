@@ -22,8 +22,10 @@
 //     ADR-DT-01.
 // ==========================================================
 
+using System.Windows;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Plugins.DiagnosticTools.Models;
+using WpfHexEditor.Plugins.DiagnosticTools.Options;
 using WpfHexEditor.Plugins.DiagnosticTools.ViewModels;
 using WpfHexEditor.Plugins.DiagnosticTools.Views;
 using WpfHexEditor.SDK.Commands;
@@ -39,7 +41,7 @@ namespace WpfHexEditor.Plugins.DiagnosticTools;
 /// Attaches to the process launched by "Start Without Debugging" (Ctrl+F5)
 /// and displays real-time CPU, memory, GC, and exception data.
 /// </summary>
-public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin
+public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 {
     private const string PanelUiId = "WpfHexEditor.Plugins.DiagnosticTools.Panel";
 
@@ -213,6 +215,23 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin
     }
 
     // -----------------------------------------------------------------------
+
+    // ── IPluginWithOptions ────────────────────────────────────────────────────
+
+    private DiagnosticToolsOptionsPage? _optionsPage;
+
+    public FrameworkElement CreateOptionsPage()
+    {
+        _optionsPage = new DiagnosticToolsOptionsPage();
+        _optionsPage.Load();
+        return _optionsPage;
+    }
+
+    public void SaveOptions() => _optionsPage?.Save();
+
+    public void LoadOptions() => _optionsPage?.Load();
+
+    // ── Private helpers ───────────────────────────────────────────────────────
 
     private void StopCurrentSession(int? exitCode)
     {

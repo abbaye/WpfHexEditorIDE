@@ -56,6 +56,16 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
 
     private readonly ComboBox     _defaultMode;
 
+    // Quick Open (Ctrl+P)
+    private readonly CheckBox     _qoGitignore;
+    private readonly CheckBox     _qoHiddenFiles;
+    private readonly TextBox      _qoMaxResults;
+    private readonly CheckBox     _qoPreview;
+    private readonly CheckBox     _qoFullPath;
+    private readonly Slider       _qoRecentCount;
+    private readonly TextBlock    _qoRecentLabel;
+    private readonly CheckBox     _qoAtLine;
+
     // ── Construction ────────────────────────────────────────────────────────
 
     public CommandPaletteOptionsPage()
@@ -173,6 +183,46 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
 
         stack.Children.Add(MakeInfoText("Tip  @=Symbols   :=Line   #=Files   %=Grep   ?=Help   Tab=Cycle"));
 
+        // ── Section: QUICK FILE OPEN (Ctrl+P) ──────────────────────────────
+        stack.Children.Add(MakeSectionHeader("QUICK FILE OPEN (Ctrl+P)"));
+
+        _qoGitignore   = MakeCheckBox("Respect .gitignore (exclude bin/, obj/, …)",      OnAnyChanged);
+        _qoHiddenFiles = MakeCheckBox("Show hidden files and folders",                    OnAnyChanged);
+        stack.Children.Add(_qoGitignore);
+        stack.Children.Add(_qoHiddenFiles);
+
+        var qoMaxRow = MakeLabeledRow("Max file results");
+        _qoMaxResults = MakeIntBox(OnAnyChanged);
+        qoMaxRow.Children.Add(_qoMaxResults);
+        stack.Children.Add(qoMaxRow);
+
+        _qoPreview  = MakeCheckBox("Preview file content on hover",          OnAnyChanged);
+        _qoFullPath = MakeCheckBox("Search in full path (not just file name)", OnAnyChanged);
+        stack.Children.Add(_qoPreview);
+        stack.Children.Add(_qoFullPath);
+
+        var qoRecentRow = MakeLabeledRow("Recent files shown (0–20)");
+        _qoRecentCount = new Slider
+        {
+            Minimum = 0, Maximum = 20, TickFrequency = 1,
+            IsSnapToTickEnabled = true, Width = 140,
+            VerticalAlignment   = VerticalAlignment.Center,
+        };
+        _qoRecentCount.ValueChanged += OnAnyChanged;
+        _qoRecentLabel = new TextBlock
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(8, 0, 0, 0),
+            Width             = 24
+        };
+        _qoRecentCount.ValueChanged += (_, e) => _qoRecentLabel.Text = $"{(int)e.NewValue}";
+        qoRecentRow.Children.Add(_qoRecentCount);
+        qoRecentRow.Children.Add(_qoRecentLabel);
+        stack.Children.Add(qoRecentRow);
+
+        _qoAtLine = MakeCheckBox("Support filename:42 syntax (open at specific line)", OnAnyChanged);
+        stack.Children.Add(_qoAtLine);
+
         // ── Reset button ────────────────────────────────────────────────────
         stack.Children.Add(new Separator { Margin = new Thickness(0, 12, 0, 8) });
 
@@ -217,6 +267,16 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         _recentCount.Text      = cp.RecentCommandsCount.ToString();
 
         SelectModeCombo(cp.DefaultMode);
+
+        var qo = cp.QuickOpen;
+        _qoGitignore.IsChecked    = qo.RespectGitignore;
+        _qoHiddenFiles.IsChecked  = qo.ShowHiddenFiles;
+        _qoMaxResults.Text        = qo.MaxResults.ToString();
+        _qoPreview.IsChecked      = qo.PreviewOnHover;
+        _qoFullPath.IsChecked     = qo.SearchInFullPath;
+        _qoRecentCount.Value      = Math.Clamp(qo.RecentFilesCount, 0, 20);
+        _qoRecentLabel.Text       = _qoRecentCount.Value.ToString("F0");
+        _qoAtLine.IsChecked       = qo.OpenAtLineEnabled;
     }
 
     // ── IOptionsPage.Flush ──────────────────────────────────────────────────
@@ -246,6 +306,15 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
         cp.RecentCommandsCount  = ParseInt(_recentCount.Text, 5);
 
         cp.DefaultMode = (_defaultMode.SelectedItem as ComboBoxItem)?.Tag as string ?? "";
+
+        var qo = cp.QuickOpen;
+        qo.RespectGitignore  = _qoGitignore.IsChecked   == true;
+        qo.ShowHiddenFiles   = _qoHiddenFiles.IsChecked == true;
+        qo.MaxResults        = ParseInt(_qoMaxResults.Text, 50);
+        qo.PreviewOnHover    = _qoPreview.IsChecked     == true;
+        qo.SearchInFullPath  = _qoFullPath.IsChecked    == true;
+        qo.RecentFilesCount  = (int)_qoRecentCount.Value;
+        qo.OpenAtLineEnabled = _qoAtLine.IsChecked      == true;
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────

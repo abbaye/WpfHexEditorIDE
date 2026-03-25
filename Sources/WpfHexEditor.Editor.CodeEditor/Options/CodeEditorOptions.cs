@@ -195,6 +195,39 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _endOfBlockHintDelayMs = Math.Clamp(value, 100, 2000); Notify(); }
     }
 
+    private bool _autoClosingBrackets   = true;
+    private bool _autoClosingQuotes     = true;
+    private bool _skipOverClosingChar   = true;
+    private bool _wrapSelectionInPairs  = true;
+
+    /// <summary>Automatically insert matching closing bracket/brace/paren when typing the opening one.</summary>
+    public bool AutoClosingBrackets
+    {
+        get => _autoClosingBrackets;
+        set { _autoClosingBrackets = value; Notify(); }
+    }
+
+    /// <summary>Automatically insert matching closing quote when typing an opening quote.</summary>
+    public bool AutoClosingQuotes
+    {
+        get => _autoClosingQuotes;
+        set { _autoClosingQuotes = value; Notify(); }
+    }
+
+    /// <summary>Skip over an existing closing bracket/quote instead of inserting a duplicate.</summary>
+    public bool SkipOverClosingChar
+    {
+        get => _skipOverClosingChar;
+        set { _skipOverClosingChar = value; Notify(); }
+    }
+
+    /// <summary>When text is selected and an opening char is typed, wrap the selection in the pair.</summary>
+    public bool WrapSelectionInPairs
+    {
+        get => _wrapSelectionInPairs;
+        set { _wrapSelectionInPairs = value; Notify(); }
+    }
+
     private bool _enableWordHighlight = true;
 
     /// <summary>
@@ -205,6 +238,57 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _enableWordHighlight;
         set { _enableWordHighlight = value; Notify(); }
+    }
+
+    // -- Sticky Scroll (#160) -------------------------------------------------
+
+    private bool   _stickyScrollEnabled          = true;
+    private int    _stickyScrollMaxLines         = 4;
+    private bool   _stickyScrollSyntaxHighlight  = true;
+    private bool   _stickyScrollClickToNavigate  = true;
+    private double _stickyScrollOpacity          = 0.95;
+    private int    _stickyScrollMinScopeLines    = 5;
+
+    /// <summary>Show sticky scope headers pinned at the top of the editor while scrolling.</summary>
+    public bool StickyScrollEnabled
+    {
+        get => _stickyScrollEnabled;
+        set { _stickyScrollEnabled = value; Notify(); }
+    }
+
+    /// <summary>Maximum number of scope signature lines to display (1–10). Default: 4.</summary>
+    public int StickyScrollMaxLines
+    {
+        get => _stickyScrollMaxLines;
+        set { _stickyScrollMaxLines = Math.Clamp(value, 1, 10); Notify(); }
+    }
+
+    /// <summary>Apply syntax highlighting to sticky header rows. Default: true.</summary>
+    public bool StickyScrollSyntaxHighlight
+    {
+        get => _stickyScrollSyntaxHighlight;
+        set { _stickyScrollSyntaxHighlight = value; Notify(); }
+    }
+
+    /// <summary>Clicking a sticky header row scrolls to that scope's start. Default: true.</summary>
+    public bool StickyScrollClickToNavigate
+    {
+        get => _stickyScrollClickToNavigate;
+        set { _stickyScrollClickToNavigate = value; Notify(); }
+    }
+
+    /// <summary>Opacity of the sticky header panel (0.5–1.0). Default: 0.95.</summary>
+    public double StickyScrollOpacity
+    {
+        get => _stickyScrollOpacity;
+        set { _stickyScrollOpacity = Math.Clamp(value, 0.5, 1.0); Notify(); }
+    }
+
+    /// <summary>Scopes spanning fewer than this many lines are excluded from the header. Default: 5.</summary>
+    public int StickyScrollMinScopeLines
+    {
+        get => _stickyScrollMinScopeLines;
+        set { _stickyScrollMinScopeLines = Math.Clamp(value, 2, 20); Notify(); }
     }
 
     /// <summary>

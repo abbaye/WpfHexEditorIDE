@@ -558,7 +558,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Keyboard Shortcuts options page (needs runtime instances)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "IDE", "Keyboard Shortcuts",
+            "Environment", "Keyboard Shortcuts",
             () => new WpfHexEditor.App.Options.KeyboardShortcutsPage(_commandRegistry, _keyBindingService),
             "⌨");
 
@@ -567,7 +567,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Comparison options page
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Editor", "Compare Files",
+            "Tools", "Compare Files",
             () => new WpfHexEditor.App.Options.ComparisonOptionsPage(
                 AppSettingsService.Instance.Current.Comparison,
                 AppSettingsService.Instance),
@@ -579,11 +579,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             () => new WpfHexEditor.App.Options.WorkspaceOptionsPage(),
             "\uF16A");
 
-        // Register Tab Preview options page
+        // Register Tabs options page (Tab Bar + Tab Preview merged)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Tab Preview",
-            () => new WpfHexEditor.App.Options.TabPreviewOptionsPage(),
+            "Environment", "Tabs",
+            () => new WpfHexEditor.App.Options.TabsOptionsPage(DockHost.TabBarSettings),
             "\uE7C4");
+
+        // Register Debugger options page
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Debugger", "General",
+            () => new WpfHexEditor.App.Options.DebuggerOptionsPage(),
+            "\uEBE8");
 
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
@@ -5242,6 +5248,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     : (WpfHexEditor.Editor.Core.InlineHintsSymbolKinds)settings.CodeEditorDefaults.InlineHintsVisibleKinds;
                 ce.ShowEndOfBlockHint    = settings.CodeEditorDefaults.EndOfBlockHintEnabled;
                 ce.EndOfBlockHintDelayMs = settings.CodeEditorDefaults.EndOfBlockHintDelayMs;
+                ce.EnableAutoClosingBrackets = settings.CodeEditorDefaults.AutoClosingBrackets;
+                ce.EnableAutoClosingQuotes   = settings.CodeEditorDefaults.AutoClosingQuotes;
+                ce.SkipOverClosingChar       = settings.CodeEditorDefaults.SkipOverClosingChar;
+                ce.WrapSelectionInPairs      = settings.CodeEditorDefaults.WrapSelectionInPairs;
+                var ss = settings.CodeEditorDefaults.StickyScroll;
+                ce.ApplyStickyScrollSettings(
+                    ss.Enabled, ss.MaxLines, ss.SyntaxHighlight,
+                    ss.ClickToNavigate, ss.Opacity, ss.MinScopeLines);
                 ApplySyntaxColorOverrides(ce, settings.CodeEditorDefaults);
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:

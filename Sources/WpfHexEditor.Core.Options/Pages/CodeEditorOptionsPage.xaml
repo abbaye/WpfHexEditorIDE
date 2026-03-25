@@ -180,6 +180,40 @@
                      LostFocus="OnTextLostFocus"/>
         </Grid>
 
+        <!-- ── Smart editing ─────────────────────────────────────────────── -->
+        <TextBlock Text="Smart editing"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,12,0,10"/>
+
+        <CheckBox x:Name="CheckAutoBrackets"
+                  Content="Auto-close brackets, braces and parentheses"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckAutoQuotes"
+                  Content="Auto-close quotes"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckSkipOverClose"
+                  Content="Skip over closing character (avoids duplicate closing bracket/quote)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckWrapSelection"
+                  Content="Wrap selection in pairs (type opening bracket/quote over a selection)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
 

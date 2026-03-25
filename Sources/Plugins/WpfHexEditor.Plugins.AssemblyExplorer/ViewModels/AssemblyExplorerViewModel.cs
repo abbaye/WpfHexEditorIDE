@@ -1032,7 +1032,8 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         var langId = editorLanguageName switch
         {
             "C#"     => "csharp",
-            "VB.NET" => "vb",
+            "VB.NET" => "vbnet",
+            "F#"     => "fsharp",
             { } s    => s,
             null     => "csharp"
         };

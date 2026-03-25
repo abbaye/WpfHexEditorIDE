@@ -1,0 +1,72 @@
+/* ============================================================
+   Format:    F# Source File
+   Category:  Programming
+   Ext:       .fs | .fsx | .fsi
+   Editor:    code-editor
+   Desc:      F# functional-first language for .NET (Microsoft).
+   Updated:   2026-03-25
+   ============================================================ */
+{
+  "formatName": "F# Source File",
+  "version": "1.0",
+  "extensions": [".fs", ".fsx", ".fsi"],
+  "description": "F# functional-first .NET language source file.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-25",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/x-fsharp"],
+  "Software": ["Visual Studio", "Rider", "VS Code", "WpfHexEditor"],
+  "UseCases": ["F# source code development", ".NET functional programming"],
+  "syntaxDefinition": {
+    "id": "fsharp",
+    "name": "F#",
+    "extensions": [".fs", ".fsx", ".fsi"],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "(*",
+    "blockCommentEnd": "*)",
+    "enableInlineHints": true,
+    "enableCtrlClickNavigation": true,
+    "rules": [
+      { "type": "BlockComment",    "colorKey": "CE_Comment",     "pattern": "\\(\\*[\\s\\S]*?\\*\\)" },
+      { "type": "String",          "colorKey": "CE_String",      "pattern": "(\"\"\"[\\s\\S]*?\"\"\"|@\"(?:[^\"]|\"\")*\"|\"(?:[^\"\\\\]|\\\\.)*\")" },
+      { "type": "Char",            "colorKey": "CE_String",      "pattern": "'(?:[^'\\\\]|\\\\.)*'" },
+      { "type": "XmlDoc",          "colorKey": "CE_Comment",     "pattern": "///.*$" },
+      { "type": "Comment",         "colorKey": "CE_Comment",     "pattern": "//.*$" },
+      { "type": "Preprocessor",    "colorKey": "CE_Keyword",     "pattern": "^\\s*#(?:if|else|endif|light|nowarn|load|r|I|time|line)\\b[^\\n]*" },
+      { "type": "ComputationExpr", "colorKey": "CE_ControlFlow", "pattern": "\\b(async|seq|task|query|gen|observe|cloud|actor|state|cont|workflow|maybe|result|option|list|array|set|map|parser|reader|writer)\\s*\\{" },
+      { "type": "ControlFlow",     "colorKey": "CE_ControlFlow", "pattern": "\\b(if|then|else|elif|match|with|when|for|while|do|done|try|finally|raise|reraise|return|yield|return!|yield!)\\b" },
+      { "type": "Keyword",         "colorKey": "CE_Keyword",     "pattern": "\\b(abstract|and|as|assert|base|begin|class|default|delegate|end|exception|extern|false|fun|function|global|in|inherit|inline|interface|internal|lazy|let|let!|member|module|mutable|namespace|new|not|null|of|open|or|override|private|public|rec|select|static|struct|to|true|type|upcast|use|use!|val|void|when|with|atomic|break|checked|component|const|constraint|constructor|continue|eager|event|external|fixed|functor|include|method|mixin|object|parallel|process|protected|pure|sealed|tailcall|trait|virtual|volatile)\\b" },
+      { "type": "Type",            "colorKey": "CE_Type",        "pattern": "\\b(unit|bool|int|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|float32|double|single|char|string|byte|sbyte|nativeint|unativeint|decimal|bigint|obj|exn|option|voption|Result|Choice|list|array|seq|Map|Set|Dictionary|HashSet|Queue|Stack|Async|Task|CancellationToken|IDisposable|IEnumerable|IList|DateTime|DateOnly|TimeOnly|TimeSpan|Guid|Uri|Regex|StringBuilder|Exception|Type|Assembly|MethodInfo|PropertyInfo)\\b" },
+      { "type": "Attribute",       "colorKey": "CE_Attribute",   "pattern": "\\[<[A-Za-z][A-Za-z0-9,\\s=\\(\\)\"'_\\.]*>\\]" },
+      { "type": "Number",          "colorKey": "CE_Number",      "pattern": "\\b(0x[0-9A-Fa-f_]+[uUlLysnIf]*|0b[01_]+[uUlLysnIf]*|0o[0-7_]+[uUlLysnIf]*|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[uUlLysnIfdDmMfF]?)\\b" },
+      { "type": "Operator",        "colorKey": "CE_ControlFlow", "pattern": "(->|<-|\\|>|<\\||>>|<<|:>|:?>|::\\s|\\.\\.|\\.\\.\\.)" },
+      { "type": "ActivePattern",   "colorKey": "CE_Attribute",   "pattern": "\\|[A-Za-z][A-Za-z0-9_]*(?:\\|[A-Za-z][A-Za-z0-9_]*)*\\|" },
+      { "type": "DiscUnion",       "colorKey": "CE_Type",        "pattern": "(?<=^\\s*\\|\\s*)[A-Z][A-Za-z0-9_]*" },
+      { "type": "LetBinding",      "colorKey": "CE_Identifier",  "pattern": "(?<=\\blet(?:\\s+rec)?\\s+)[a-z_][A-Za-z0-9_']*" },
+      { "type": "TypeDecl",        "colorKey": "CE_Type",        "pattern": "(?<=\\btype\\s+)[A-Za-z][A-Za-z0-9_'<>]*" },
+      { "type": "ModuleDecl",      "colorKey": "CE_Identifier",  "pattern": "(?<=\\bmodule\\s+)[A-Za-z][A-Za-z0-9._]*" },
+      { "type": "OpenRef",         "colorKey": "CE_Identifier",  "pattern": "(?<=\\bopen\\s+)[A-Za-z][A-Za-z0-9._]*" },
+      { "type": "UserType",        "colorKey": "CE_Type",        "pattern": "(?<!\\.)\\b[A-Z][a-z][A-Za-z0-9_']*\\b(?!\\.)" }
+    ],
+    "foldingRules": {
+      "startPatterns": ["\\bbegin\\b", "\\bdo\\b", "\\bthen\\b", "\\bwith\\b", "\\{"],
+      "endPatterns":   ["\\bend\\b", "\\bdone\\b", "\\}"],
+      "namedRegionStart": "^\\s*//#region\\b(.*)$",
+      "namedRegionEnd":   "^\\s*//#endregion\\b",
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+    }
+  }
+}

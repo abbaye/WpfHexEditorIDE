@@ -160,8 +160,10 @@ public sealed class LspServerRegistry : ILspServerRegistry
 
     private void AddBuiltInEntriesIfMissing()
     {
-        TryAddBuiltIn("json", new[] { ".json", ".jsonc" }, "vscode-json-languageserver", "--stdio");
-        TryAddBuiltIn("xml",  new[] { ".xml", ".xaml" },  "lemminx",                    string.Empty);
+        TryAddBuiltIn("json",   new[] { ".json", ".jsonc" },     "vscode-json-languageserver", "--stdio");
+        TryAddBuiltIn("xml",    new[] { ".xml", ".xaml" },       "lemminx",                    string.Empty);
+        TryAddBuiltIn("fsharp", new[] { ".fs", ".fsx", ".fsi" }, "fsautocomplete",             "--stdio");
+        TryAddBuiltIn("vbnet",  new[] { ".vb" },                 "OmniSharp",                  "--languageserver");
     }
 
     private void TryAddBuiltIn(string langId, string[] exts, string execName, string? args)

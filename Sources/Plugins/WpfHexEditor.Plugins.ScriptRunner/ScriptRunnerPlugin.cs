@@ -15,6 +15,7 @@
 // ==========================================================
 
 using System.Windows;
+using WpfHexEditor.Plugins.ScriptRunner.Options;
 using WpfHexEditor.Plugins.ScriptRunner.Panels;
 using WpfHexEditor.Plugins.ScriptRunner.ViewModels;
 using WpfHexEditor.SDK.Commands;
@@ -27,7 +28,7 @@ namespace WpfHexEditor.Plugins.ScriptRunner;
 /// <summary>
 /// Script Runner plugin — provides a C# scripting panel backed by Roslyn.
 /// </summary>
-public sealed class ScriptRunnerPlugin : IWpfHexEditorPlugin
+public sealed class ScriptRunnerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 {
     private const string PanelUiId = "WpfHexEditor.Plugins.ScriptRunner.Panel";
 
@@ -99,4 +100,19 @@ public sealed class ScriptRunnerPlugin : IWpfHexEditorPlugin
         _context = null;
         return Task.CompletedTask;
     }
+
+    // ── IPluginWithOptions ────────────────────────────────────────────────────
+
+    private ScriptRunnerOptionsPage? _optionsPage;
+
+    public FrameworkElement CreateOptionsPage()
+    {
+        _optionsPage = new ScriptRunnerOptionsPage();
+        _optionsPage.Load();
+        return _optionsPage;
+    }
+
+    public void SaveOptions() => _optionsPage?.Save();
+
+    public void LoadOptions() => _optionsPage?.Load();
 }

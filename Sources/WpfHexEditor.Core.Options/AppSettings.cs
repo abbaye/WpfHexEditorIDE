@@ -204,6 +204,11 @@ public sealed class CommandPaletteSettings
     // Historique (non exposé dans la page Options — interne)
     /// <summary>Per-entry execution history: Name → (count, lastUtc). Not shown in options UI.</summary>
     public Dictionary<string, CommandExecutionRecord> CommandHistory { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    // -- Quick File Open Ctrl+P (#179) -----------------------------------------
+
+    /// <summary>Settings for the Quick File Open (Ctrl+P) feature.</summary>
+    public QuickOpenSettings QuickOpen { get; set; } = new();
 }
 
 /// <summary>Single entry in the command execution history.</summary>
@@ -211,6 +216,103 @@ public sealed class CommandExecutionRecord
 {
     public int      Count   { get; set; }
     public DateTime LastUtc { get; set; }
+}
+
+// ----------------------------------------------------------------------------
+// Quick File Open settings (#179)
+// ----------------------------------------------------------------------------
+
+/// <summary>Settings for the Quick File Open (Ctrl+P) feature.</summary>
+public sealed class QuickOpenSettings
+{
+    /// <summary>Exclude files matching patterns in .gitignore when searching. Default: true.</summary>
+    public bool RespectGitignore { get; set; } = true;
+
+    /// <summary>Include hidden files (dot-files) in search results. Default: false.</summary>
+    public bool ShowHiddenFiles { get; set; } = false;
+
+    /// <summary>Maximum number of file results to display. Default: 50.</summary>
+    public int MaxResults { get; set; } = 50;
+
+    /// <summary>Show a read-only preview of the file when hovering a result. Default: true.</summary>
+    public bool PreviewOnHover { get; set; } = true;
+
+    /// <summary>
+    /// When true, search matches against the full relative path; when false, matches file name only.
+    /// Default: false (file name only).
+    /// </summary>
+    public bool SearchInFullPath { get; set; } = false;
+
+    /// <summary>Number of recently opened files shown at the top when the query is empty. Default: 10.</summary>
+    public int RecentFilesCount { get; set; } = 10;
+
+    /// <summary>Support "filename:42" syntax to open a file at a specific line. Default: true.</summary>
+    public bool OpenAtLineEnabled { get; set; } = true;
+}
+
+// ----------------------------------------------------------------------------
+// Find All References settings (#157)
+// ----------------------------------------------------------------------------
+
+/// <summary>Describes where Find All References results are displayed.</summary>
+public enum ReferencesResultsMode
+{
+    /// <summary>Show results in a docked panel (default).</summary>
+    DockedPanel,
+
+    /// <summary>Show results in a compact inline popup.</summary>
+    InlinePopup,
+}
+
+/// <summary>Settings for the Find All References (Shift+F12) feature.</summary>
+public sealed class ReferencesSettings
+{
+    /// <summary>Where results are displayed. Default: DockedPanel.</summary>
+    public ReferencesResultsMode ResultsMode { get; set; } = ReferencesResultsMode.DockedPanel;
+
+    /// <summary>Group results by source file in the results panel. Default: true.</summary>
+    public bool GroupByFile { get; set; } = true;
+
+    /// <summary>Include matches found inside comments. Default: true.</summary>
+    public bool IncludeInComments { get; set; } = true;
+
+    /// <summary>Include matches found inside string literals. Default: false.</summary>
+    public bool IncludeInStrings { get; set; } = false;
+
+    /// <summary>Maximum number of reference results to collect before stopping. Default: 500.</summary>
+    public int MaxResults { get; set; } = 500;
+
+    /// <summary>Show a preview of the matching line when hovering a result in the panel. Default: true.</summary>
+    public bool PreviewOnHover { get; set; } = true;
+}
+
+// ----------------------------------------------------------------------------
+// Sticky Scroll settings (#160)
+// ----------------------------------------------------------------------------
+
+/// <summary>Settings for the Sticky Scroll feature in the Code Editor.</summary>
+public sealed class StickyScrollSettings
+{
+    /// <summary>Show sticky scope headers at the top of the editor while scrolling. Default: true.</summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>Maximum number of scope headers to display simultaneously (1–10). Default: 4.</summary>
+    public int MaxLines { get; set; } = 4;
+
+    /// <summary>Apply the same syntax highlighting to sticky headers as to the code body. Default: true.</summary>
+    public bool SyntaxHighlight { get; set; } = true;
+
+    /// <summary>Click a sticky header to scroll to the start of that scope. Default: true.</summary>
+    public bool ClickToNavigate { get; set; } = true;
+
+    /// <summary>Opacity of the sticky header panel (0.5–1.0). Default: 0.95.</summary>
+    public double Opacity { get; set; } = 0.95;
+
+    /// <summary>
+    /// Scopes shorter than this many lines are not shown in the sticky header.
+    /// Avoids cluttering the header with trivial one-liner blocks. Default: 5.
+    /// </summary>
+    public int MinScopeLines { get; set; } = 5;
 }
 
 /// <summary>Build &amp; Run general options.</summary>
@@ -424,6 +526,36 @@ public sealed class CodeEditorDefaultSettings
 
     /// <summary>Attribute token colour override (CE_Attribute). Empty = use theme.</summary>
     public string AttributeColor { get; set; } = string.Empty;
+
+    // -- Auto-close brackets & quotes (#163) ------------------------------------
+
+    /// <summary>Auto-insert matching closing bracket when an opening bracket is typed.</summary>
+    public bool AutoClosingBrackets { get; set; } = true;
+
+    /// <summary>Auto-insert matching closing quote when an opening quote is typed.</summary>
+    public bool AutoClosingQuotes { get; set; } = true;
+
+    /// <summary>
+    /// When typing a closing character that already follows the cursor, advance the cursor
+    /// instead of inserting a duplicate.
+    /// </summary>
+    public bool SkipOverClosingChar { get; set; } = true;
+
+    /// <summary>
+    /// When text is selected and an opening bracket or quote is typed, wrap the selection
+    /// with the matching pair instead of replacing it.
+    /// </summary>
+    public bool WrapSelectionInPairs { get; set; } = true;
+
+    // -- Find All References (#157) ----------------------------------------------
+
+    /// <summary>Settings for the Find All References (Shift+F12) feature.</summary>
+    public ReferencesSettings References { get; set; } = new();
+
+    // -- Sticky Scroll (#160) ---------------------------------------------------
+
+    /// <summary>Settings for the Sticky Scroll feature.</summary>
+    public StickyScrollSettings StickyScroll { get; set; } = new();
 }
 
 // ----------------------------------------------------------------------------

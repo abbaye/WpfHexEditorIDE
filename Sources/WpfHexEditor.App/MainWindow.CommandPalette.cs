@@ -36,6 +36,102 @@ public partial class MainWindow
             categoryIcon: "🔍");
     }
 
+    // ── Quick File Open (Ctrl+P) ──────────────────────────────────────────────
+
+    /// <summary>
+    /// Opens the Command Palette pre-populated with the <c>#</c> file-search prefix.
+    /// Registered as the Ctrl+P gesture (CommandIds.File.QuickOpen).
+    /// </summary>
+    private void OnQuickOpen() => OpenCommandPaletteWithPrefix("# ");
+
+    /// <summary>
+    /// Opens a fresh Command Palette window with <paramref name="initialQuery"/> pre-filled.
+    /// Shares all palette infrastructure (service, LSP client, navigation callbacks).
+    /// </summary>
+    private void OpenCommandPaletteWithPrefix(string initialQuery)
+    {
+        var cpSettings = AppSettingsService.Instance.Current.CommandPalette;
+
+        var entries = _commandRegistry
+            .GetAll()
+            .Select(cmd => new CommandPaletteEntry(
+                Name:        cmd.Name,
+                Category:    cmd.Category,
+                GestureText: _keyBindingService.ResolveGesture(cmd.Id),
+                IconGlyph:   cmd.IconGlyph,
+                Command:     cmd.Command))
+            .ToList();
+
+        if (_menuAdapter is not null)
+        {
+            foreach (var (uiId, descriptor) in _menuAdapter.GetAllMenuItems())
+            {
+                if (descriptor.Command is null) continue;
+                var category = string.IsNullOrWhiteSpace(descriptor.ParentPath)
+                    ? "Plugins"
+                    : descriptor.ParentPath.TrimStart('_');
+                entries.Add(new CommandPaletteEntry(
+                    Name:             descriptor.Header?.ToString() ?? uiId,
+                    Category:         category,
+                    GestureText:      descriptor.GestureText,
+                    IconGlyph:        descriptor.IconGlyph,
+                    Command:          descriptor.Command,
+                    CommandParameter: descriptor.CommandParameter));
+            }
+        }
+
+        var service = new CommandPaletteService(entries);
+
+        WpfHexEditor.Editor.Core.LSP.ILspClient? lspClient = null;
+        if (_lspBridgeService is not null && _documentManager?.ActiveDocument?.Buffer is { } buf
+            && !string.IsNullOrEmpty(buf.LanguageId))
+            lspClient = _lspBridgeService.TryGetClient(buf.LanguageId);
+
+        System.Action<int>? goToLine = null;
+        if (_documentManager?.ActiveDocument?.AssociatedEditor is INavigableDocument nav)
+            goToLine = line => nav.NavigateTo(line - 1, 0);
+
+        System.Action<string, int> openAndNavigate = (path, line) =>
+        {
+            var existing = _documentManager?.OpenDocuments
+                .FirstOrDefault(d => string.Equals(d.FilePath, path, StringComparison.OrdinalIgnoreCase));
+            if (existing is not null)
+            {
+                _documentManager!.SetActive(existing.ContentId);
+                if (line > 0 && existing.AssociatedEditor is INavigableDocument navExisting)
+                    navExisting.NavigateTo(line, 0);
+                return;
+            }
+            OpenFileDirectly(path);
+            if (line > 0) NavigateAfterOpen(path, line);
+        };
+
+        System.Windows.Point? anchor = null;
+        if (TitleBarSearchButton is { IsLoaded: true })
+        {
+            var physPt = TitleBarSearchButton.PointToScreen(
+                new System.Windows.Point(
+                    TitleBarSearchButton.ActualWidth  / 2,
+                    TitleBarSearchButton.ActualHeight));
+            var src  = System.Windows.PresentationSource.FromVisual(this);
+            var dpiX = src?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+            var dpiY = src?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            anchor   = new System.Windows.Point(physPt.X / dpiX, physPt.Y / dpiY);
+        }
+
+        new CommandPaletteWindow(
+            service:         service,
+            settings:        cpSettings,
+            owner:           this,
+            anchor:          anchor,
+            lspClient:       lspClient,
+            documentManager: _documentManager,
+            goToLine:        goToLine,
+            solutionManager: _solutionManager,
+            openAndNavigate: openAndNavigate,
+            initialQuery:    initialQuery).Show();
+    }
+
     // ── Handler wired in MainWindow.xaml CommandBindings ──────────────────────
 
     private void OnShowCommandPalette(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)

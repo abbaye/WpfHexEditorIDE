@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using WpfHexEditor.Plugins.ScriptRunner.Options;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -97,7 +98,8 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
 
         IsRunning  = true;
         StatusText = "Running…";
-        Output     = string.Empty;
+        if (ScriptRunnerOptions.Instance.AutoClearOnNewSession)
+            Output = string.Empty;
 
         _runCts = new CancellationTokenSource();
         try
@@ -154,10 +156,10 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
 
     private void AddToHistory(string code)
     {
-        const int MaxHistory = 20;
+        int maxHistory = ScriptRunnerOptions.Instance.MaxHistoryEntries;
         if (History.Contains(code)) History.Remove(code);
         History.Insert(0, code);
-        while (History.Count > MaxHistory)
+        while (History.Count > maxHistory)
             History.RemoveAt(History.Count - 1);
     }
 

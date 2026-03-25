@@ -35,8 +35,9 @@ public static class OptionsPageRegistry
         new("Solution Explorer",  "General",          () => new SolutionExplorerOptionsPage(), "📁"),
 
         // Code Editor
-        new("Code Editor",        "General",          () => new CodeEditorOptionsPage(),      "💻"),
-        new("Code Editor",        "Inline Hints",     () => new CodeEditorInlineHintsPage(),  "💻"),
+        new("Code Editor",        "General",          () => new CodeEditorOptionsPage(),         "💻"),
+        new("Code Editor",        "Inline Hints",     () => new CodeEditorInlineHintsPage(),    "💻"),
+        new("Code Editor",        "Navigation",       () => new CodeEditorNavigationPage(),     "💻"),
 
         // Text Editor
         new("Text Editor",        "General",          () => new TextEditorOptionsPage(),      "📝"),

@@ -46,7 +46,10 @@ public sealed class DocumentManager : IDocumentManager
         = new(StringComparer.OrdinalIgnoreCase)
     {
         { ".cs",   "csharp"     },
-        { ".vb",   "vb"         },
+        { ".vb",   "vbnet"      },
+        { ".fs",   "fsharp"     },
+        { ".fsx",  "fsharp"     },
+        { ".fsi",  "fsharp"     },
         { ".py",   "python"     },
         { ".js",   "javascript" },
         { ".ts",   "typescript" },

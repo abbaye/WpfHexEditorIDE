@@ -41,6 +41,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
     public partial class CodeEditor
     {
+        // ── Public LSP command API (called by host / MainWindow) ─────────────────
+
+        /// <summary>Triggers Find All References at the current caret position.</summary>
+        public Task FindAllReferencesAsync() => FindAllReferencesAsync(null, null);
+
+        /// <summary>Triggers Go to Definition at the current caret position.</summary>
+        public Task GoToDefinitionAsync() => GoToDefinitionAtCaretAsync();
+
+        /// <summary>Triggers Go to Implementation at the current caret position.</summary>
+        public Task GoToImplementationAsync() => GoToImplementationAtCaretAsync();
+
         // -- LSP Client Wiring (Phase 4) ──────────────────────────────────
 
         /// <summary>
@@ -148,6 +159,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 ".xml"              => "xml",
                 ".xaml"             => "xaml",
                 ".cs"               => "csharp",
+                ".vb"               => "vbnet",
+                ".fs" or ".fsx" or ".fsi" => "fsharp",
                 ".ts"               => "typescript",
                 ".js"               => "javascript",
                 ".py"               => "python",

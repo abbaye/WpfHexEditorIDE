@@ -149,8 +149,8 @@ public partial class MainWindow
             {
                 var capturedLsp = lspRegistry;
                 OptionsPageRegistry.RegisterDynamic(
-                    "Language Server Protocol",
-                    "Servers",
+                    "Editor",
+                    "Language Servers",
                     () => new WpfHexEditor.App.Options.LspServersOptionsPage(capturedLsp),
                     categoryIcon: "🔌");
 
@@ -163,7 +163,7 @@ public partial class MainWindow
                 // LSP-02-D: Status bar indicator for LSP server state.
                 _lspStatusBarAdapter = new WpfHexEditor.App.Services.LspStatusBarAdapter(
                     _lspBridgeService,
-                    onErrorClick: () => OpenSettingsAt("Language Server Protocol", "Servers"));
+                    onErrorClick: () => OpenSettingsAt("Editor", "Language Servers"));
             }
 
             // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.

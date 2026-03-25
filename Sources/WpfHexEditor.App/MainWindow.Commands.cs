@@ -84,6 +84,8 @@ public partial class MainWindow
             () => WriteToDiskCommand.Execute(null, this));
         Reg(CommandIds.File.Exit,          "Exit",                   "File",    "Alt+F4",         "\uE7E8",
             () => OnExit(this, null!));
+        Reg(CommandIds.File.QuickOpen,     "Quick File Open",        "File",    "Ctrl+P",         "\uE721",
+            () => OnQuickOpen());
 
         // ── Workspace ────────────────────────────────────────────────────────
         Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",
@@ -238,6 +240,14 @@ public partial class MainWindow
         Reg(CommandIds.Plugins.PluginHotReload, "Hot-Reload Plugin",  "Plugins", "Ctrl+Shift+R",   "\uE72C",
             () => OnPluginHotReload(this, null!));
 
+        // ── Editor ───────────────────────────────────────────────────────────
+        Reg(CommandIds.Editor.FindAllReferences,  "Find All References",   "Editor", "Shift+F12", "\uE721",
+            () => ExecuteFindAllReferencesOnActiveEditor());
+        Reg(CommandIds.Editor.GoToDefinition,     "Go to Definition",      "Editor", "F12",       "\uE8AD",
+            () => ExecuteGoToDefinitionOnActiveEditor());
+        Reg(CommandIds.Editor.GoToImplementation, "Go to Implementation",  "Editor", "Ctrl+F12",  "\uE8AD",
+            () => ExecuteGoToImplementationOnActiveEditor());
+
         // ── Debug ────────────────────────────────────────────────────────────
         Reg(CommandIds.Debug.StartDebugging,       "Start Debugging",          "Debug", "F5",            "\uE768",
             () => OnDebugStartOrContinue());
@@ -259,6 +269,31 @@ public partial class MainWindow
             () => _ = _debuggerService?.ClearAllBreakpointsAsync());
         Reg(CommandIds.Debug.AttachToProcess,      "Attach to Process…",       "Debug", "Ctrl+Alt+P",    null,
             () => OnAttachToProcess());
+    }
+
+    // -----------------------------------------------------------------------
+    // Editor command handlers (forward to the active CodeEditor)
+    // -----------------------------------------------------------------------
+
+    private void ExecuteFindAllReferencesOnActiveEditor()
+    {
+        if (_documentManager?.ActiveDocument?.AssociatedEditor
+                is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost host)
+            _ = host.PrimaryEditor.FindAllReferencesAsync();
+    }
+
+    private void ExecuteGoToDefinitionOnActiveEditor()
+    {
+        if (_documentManager?.ActiveDocument?.AssociatedEditor
+                is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost host)
+            _ = host.PrimaryEditor.GoToDefinitionAsync();
+    }
+
+    private void ExecuteGoToImplementationOnActiveEditor()
+    {
+        if (_documentManager?.ActiveDocument?.AssociatedEditor
+                is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost host)
+            _ = host.PrimaryEditor.GoToImplementationAsync();
     }
 
     // -----------------------------------------------------------------------

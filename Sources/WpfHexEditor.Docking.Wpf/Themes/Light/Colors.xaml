@@ -728,4 +728,8 @@
     <SolidColorBrush x:Key="ET_LineNumberPillBg"   Color="#E0E0E0" />
     <SolidColorBrush x:Key="ET_LineCountPillBg"    Color="#D4D4D4" />
     <SolidColorBrush x:Key="ET_AccentBrush"        Color="#007ACC" />
+    <!-- CE_StickyScroll tokens for sticky scroll header feature (#160) -->
+    <SolidColorBrush x:Key="CE_StickyScrollBackground" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="CE_StickyScrollForeground" Color="#202020" />
+    <SolidColorBrush x:Key="CE_StickyScrollBorder"     Color="#CCCCCC" />
 </ResourceDictionary>

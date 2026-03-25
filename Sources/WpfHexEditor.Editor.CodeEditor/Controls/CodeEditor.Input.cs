@@ -119,6 +119,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
+            // Shift+F12 — Find All References
+            if (e.Key == Key.F12 && shiftPressed && !ctrlPressed && !altPressed)
+            {
+                e.Handled = true;
+                _ = FindAllReferencesAsync();
+                return;
+            }
+
             // Alt+Left — Navigate Back
             if (e.Key == Key.Left && altPressed && !ctrlPressed && !shiftPressed)
             {
@@ -393,6 +401,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     // Skip control characters
                     if (char.IsControl(ch))
                         continue;
+
+                    // Wrap-selection: if a selection is active and ch is an opening char,
+                    // surround the selection with the matching pair.
+                    if (WrapSelectionInPairs && !_selection.IsEmpty && IsOpeningChar(ch))
+                    {
+                        WrapSelectionWith(ch, GetClosingChar(ch));
+                        continue;
+                    }
+
+                    // Skip-over: if ch is a closing char and the char already at the cursor
+                    // position is the same closing char, just advance the cursor.
+                    if (SkipOverClosingChar && IsClosingChar(ch) && CharAtCursor() == ch)
+                    {
+                        _cursorColumn++;
+                        EnsureCursorVisible();
+                        InvalidateVisual();
+                        continue;
+                    }
 
                     InsertChar(ch);
 
@@ -815,6 +841,42 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 case '\'': return '\'';
                 default: return ch;
             }
+        }
+
+        private static bool IsOpeningChar(char ch)
+            => ch is '{' or '[' or '(' or '"' or '\'';
+
+        private static bool IsClosingChar(char ch)
+            => ch is '}' or ']' or ')' or '"' or '\'';
+
+        private char CharAtCursor()
+        {
+            if (_cursorLine >= _document.Lines.Count) return '\0';
+            var line = _document.Lines[_cursorLine];
+            if (_cursorColumn >= line.Length) return '\0';
+            return line.Text[_cursorColumn];
+        }
+
+        private void WrapSelectionWith(char open, char close)
+        {
+            var start = _selection.NormalizedStart;
+            var end   = _selection.NormalizedEnd;
+
+            // Insert closing char first (at end, so start offsets stay valid).
+            _document.InsertChar(end.Line, end.Column, close);
+            // Insert opening char before the selection.
+            _document.InsertChar(start.Line, start.Column, open);
+
+            // Restore selection to wrap the text (shift both positions by 1 col on same line or not).
+            _selection.Start = new TextPosition(start.Line, start.Column + 1);
+            _selection.End   = end.Line == start.Line
+                ? new TextPosition(end.Line, end.Column + 1)   // same line: shifted by the opening char
+                : new TextPosition(end.Line, end.Column);       // different line: unaffected
+
+            _cursorLine   = _selection.End.Line;
+            _cursorColumn = _selection.End.Column;
+            EnsureCursorVisible();
+            InvalidateVisual();
         }
 
         private void DeleteCharBefore()

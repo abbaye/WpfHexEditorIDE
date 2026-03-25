@@ -70,6 +70,10 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
             CheckEndBlockHint.IsChecked  = ce.EndOfBlockHintEnabled;
             TxtEndBlockDelay.Text        = ce.EndOfBlockHintDelayMs.ToString();
+            CheckAutoBrackets.IsChecked  = ce.AutoClosingBrackets;
+            CheckAutoQuotes.IsChecked    = ce.AutoClosingQuotes;
+            CheckSkipOverClose.IsChecked = ce.SkipOverClosingChar;
+            CheckWrapSelection.IsChecked = ce.WrapSelectionInPairs;
 
             LoadColorPicker(ChkBg,      CpBg,      ce.BackgroundColor,  "TE_Background");
             LoadColorPicker(ChkFg,      CpFg,      ce.ForegroundColor,  "TE_Foreground");
@@ -105,6 +109,10 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.ChangesetEnabled        = CheckChangeset.IsChecked     == true;
         ce.EndOfBlockHintEnabled   = CheckEndBlockHint.IsChecked  == true;
         ce.EndOfBlockHintDelayMs   = Math.Clamp(ParseInt(TxtEndBlockDelay.Text, 400), 100, 2000);
+        ce.AutoClosingBrackets     = CheckAutoBrackets.IsChecked  == true;
+        ce.AutoClosingQuotes       = CheckAutoQuotes.IsChecked    == true;
+        ce.SkipOverClosingChar     = CheckSkipOverClose.IsChecked == true;
+        ce.WrapSelectionInPairs    = CheckWrapSelection.IsChecked == true;
         ce.BackgroundColor   = FlushColorPicker(ChkBg,      CpBg);
         ce.ForegroundColor   = FlushColorPicker(ChkFg,      CpFg);
         ce.KeywordColor      = FlushColorPicker(ChkKw,      CpKw);

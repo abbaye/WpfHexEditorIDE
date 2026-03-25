@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
+using WpfHexEditor.Plugins.DiagnosticTools.Options;
 
 namespace WpfHexEditor.Plugins.DiagnosticTools.ViewModels;
 
@@ -47,9 +48,9 @@ public sealed record DiagnosticEventEntry(DateTime Time, string Text)
 /// </summary>
 public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
 {
-    private const int RingCapacity   = 120;
-    private const int EventMaxCount  = 500;
-    private const int MetricMaxCount = 10_000; // ~83 min @ 500ms
+    private static int RingCapacity   => DiagnosticToolsOptions.Instance.RingCapacity;
+    private static int EventMaxCount  => DiagnosticToolsOptions.Instance.EventMaxCount;
+    private static int MetricMaxCount => DiagnosticToolsOptions.Instance.MetricMaxCount;
 
     // -----------------------------------------------------------------------
     // Ring-buffer collections

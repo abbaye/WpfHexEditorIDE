@@ -438,6 +438,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // 1-based execution line (null when no debug session is paused).
         private int? _executionLineOneBased;
 
+        // Sticky scroll header (#160).
+        private StickyScrollHeader? _stickyScrollHeader;
+        private bool   _stickyScrollEnabled         = true;
+        private int    _stickyScrollMaxLines        = 4;
+        private bool   _stickyScrollSyntaxHighlight = true;
+        private bool   _stickyScrollClickToNavigate = true;
+        private double _stickyScrollOpacity         = 0.95;
+        private int    _stickyScrollMinScopeLines   = 5;
+
         // Breakpoint placement validation + info popup (ADR-DBG-BP-01).
         private IBreakpointSource?      _bpSource;
         private BreakpointInfoPopup?    _bpInfoPopup;
@@ -1377,6 +1386,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(EnableAutoClosingQuotesProperty, value);
         }
 
+        public static readonly DependencyProperty SkipOverClosingCharProperty =
+            DependencyProperty.Register(nameof(SkipOverClosingChar), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true));
+
+        [Category("Behavior.Advanced")]
+        [DisplayName("Skip Over Closing Char")]
+        [Description("When a closing bracket/quote already exists at cursor, advance over it instead of inserting a duplicate.")]
+        public bool SkipOverClosingChar
+        {
+            get => (bool)GetValue(SkipOverClosingCharProperty);
+            set => SetValue(SkipOverClosingCharProperty, value);
+        }
+
+        public static readonly DependencyProperty WrapSelectionInPairsProperty =
+            DependencyProperty.Register(nameof(WrapSelectionInPairs), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true));
+
+        [Category("Behavior.Advanced")]
+        [DisplayName("Wrap Selection In Pairs")]
+        [Description("When text is selected and an opening bracket/quote is typed, surround the selection with the matching pair.")]
+        public bool WrapSelectionInPairs
+        {
+            get => (bool)GetValue(WrapSelectionInPairsProperty);
+            set => SetValue(WrapSelectionInPairsProperty, value);
+        }
+
         // ===== BEHAVIOR - SCROLLING & PERFORMANCE =====
 
         public static readonly DependencyProperty EnableVirtualScrollingProperty =
@@ -2004,6 +2039,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _codeScrollMarkerPanel = new CodeScrollMarkerPanel();
             _scrollBarChildren.Add(_codeScrollMarkerPanel); // renders on top of _vScrollBar
 
+            // Sticky scroll header (#160) — floats above the text area.
+            _stickyScrollHeader          = new StickyScrollHeader();
+            _stickyScrollHeader.Opacity  = _stickyScrollOpacity;
+            _stickyScrollHeader.ScopeClicked += OnStickyScrollScopeClicked;
+            _scrollBarChildren.Add(_stickyScrollHeader);
+
             // Debounce timer: update word highlights 250 ms after the caret stops moving.
             _wordHighlightTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
             _wordHighlightTimer.Tick += (_, _) => { _wordHighlightTimer.Stop(); UpdateWordHighlights(); };
@@ -2135,6 +2176,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             EnableWordHighlight      = options.EnableWordHighlight;
             ShowEndOfBlockHint      = options.ShowEndOfBlockHint;
             EndOfBlockHintDelayMs   = options.EndOfBlockHintDelayMs;
+
+            // Auto-close / smart editing
+            EnableAutoClosingBrackets = options.AutoClosingBrackets;
+            EnableAutoClosingQuotes   = options.AutoClosingQuotes;
+            SkipOverClosingChar       = options.SkipOverClosingChar;
+            WrapSelectionInPairs      = options.WrapSelectionInPairs;
+
+            // Sticky scroll (#160)
+            _stickyScrollEnabled         = options.StickyScrollEnabled;
+            _stickyScrollMaxLines        = options.StickyScrollMaxLines;
+            _stickyScrollSyntaxHighlight = options.StickyScrollSyntaxHighlight;
+            _stickyScrollClickToNavigate = options.StickyScrollClickToNavigate;
+            _stickyScrollOpacity         = options.StickyScrollOpacity;
+            _stickyScrollMinScopeLines   = options.StickyScrollMinScopeLines;
+            if (_stickyScrollHeader != null)
+            {
+                _stickyScrollHeader.Opacity = _stickyScrollOpacity;
+                UpdateStickyScrollHeader();
+                InvalidateMeasure();
+            }
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
             // A null override clears the local value so DynamicResource (CE_*) takes effect again.
@@ -3292,6 +3353,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         #endregion
+
+        // ── Sticky Scroll public API ───────────────────────────────────────────
+
+        /// <summary>
+        /// Applies sticky-scroll settings from the host (MainWindow/options page).
+        /// </summary>
+        public void ApplyStickyScrollSettings(
+            bool enabled, int maxLines, bool syntaxHighlight,
+            bool clickToNavigate, double opacity, int minScopeLines)
+        {
+            _stickyScrollEnabled         = enabled;
+            _stickyScrollMaxLines        = Math.Clamp(maxLines, 1, 10);
+            _stickyScrollSyntaxHighlight = syntaxHighlight;
+            _stickyScrollClickToNavigate = clickToNavigate;
+            _stickyScrollOpacity         = Math.Clamp(opacity, 0.5, 1.0);
+            _stickyScrollMinScopeLines   = Math.Clamp(minScopeLines, 2, 20);
+
+            if (_stickyScrollHeader != null)
+            {
+                _stickyScrollHeader.Opacity = _stickyScrollOpacity;
+                UpdateStickyScrollHeader();
+                InvalidateMeasure();
+            }
+        }
+
+        private void OnStickyScrollScopeClicked(object? sender, int startLine)
+            => NavigateToLine(startLine);
 
     }
 }

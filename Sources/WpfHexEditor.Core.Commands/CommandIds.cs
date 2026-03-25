@@ -29,6 +29,7 @@ public static class CommandIds
         public const string SaveAll          = "File.SaveAll";
         public const string WriteToDisk      = "File.WriteToDisk";
         public const string Exit             = "File.Exit";
+        public const string QuickOpen        = "File.QuickOpen";
     }
 
     public static class Edit
@@ -119,6 +120,13 @@ public static class CommandIds
         public const string Save    = "Workspace.Save";
         public const string SaveAs  = "Workspace.SaveAs";
         public const string Close   = "Workspace.Close";
+    }
+
+    public static class Editor
+    {
+        public const string FindAllReferences  = "Editor.FindAllReferences";
+        public const string GoToDefinition     = "Editor.GoToDefinition";
+        public const string GoToImplementation = "Editor.GoToImplementation";
     }
 
     public static class Plugins
