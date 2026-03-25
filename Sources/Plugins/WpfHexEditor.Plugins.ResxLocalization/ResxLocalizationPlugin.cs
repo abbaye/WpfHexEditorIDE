@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfHexEditor.Editor.ResxEditor.Models;
 using WpfHexEditor.Editor.ResxEditor.Services;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Plugins.ResxLocalization.Panels;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;

@@ -45,7 +45,7 @@ public partial class ResizeImageDialog : ThemedDialog
             ? (double)currentWidth / currentHeight
             : 1.0;
 
-        CurrentSizeHint.Text = $"Current size: {currentWidth} × {currentHeight} px";
+        CurrentSizeHint.Text = $"Current size: {currentWidth} Ã— {currentHeight} px";
         WidthBox.Text        = currentWidth.ToString();
         HeightBox.Text       = currentHeight.ToString();
 

@@ -38,7 +38,7 @@ public sealed class ResizeImageTransform : IImageTransform
         Algorithm    = algorithm;
     }
 
-    public string Name => $"Resize {TargetWidth}×{TargetHeight}";
+    public string Name => $"Resize {TargetWidth}Ã—{TargetHeight}";
 
     public BitmapSource Apply(BitmapSource source)
     {

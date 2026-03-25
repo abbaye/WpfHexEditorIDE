@@ -52,7 +52,7 @@ public sealed class PluginOptionsRegistry : IPluginOptionsRegistry
         // This triggers OptionsEditorControl to refresh its TreeView automatically
         try
         {
-            WpfHexEditor.Options.OptionsPageRegistry.RegisterDynamic(
+            WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
                 category: category,
                 pageName: pluginName,
                 factory: () =>
@@ -96,7 +96,7 @@ public sealed class PluginOptionsRegistry : IPluginOptionsRegistry
         {
             try
             {
-                WpfHexEditor.Options.OptionsPageRegistry.UnregisterDynamic(category, pluginName);
+                WpfHexEditor.Core.Options.OptionsPageRegistry.UnregisterDynamic(category, pluginName);
             }
             catch (Exception ex)
             {

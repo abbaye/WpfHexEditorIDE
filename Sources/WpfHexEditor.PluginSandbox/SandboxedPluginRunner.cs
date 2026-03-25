@@ -30,7 +30,7 @@ using System.Text.Json;
 using System.Windows.Interop;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -345,7 +345,7 @@ internal sealed class SandboxedPluginRunner : IAsyncDisposable
 
         // Resolve the concrete event type from the Events assembly.
         var eventType = Type.GetType(
-            $"WpfHexEditor.Events.IDEEvents.{payload.EventTypeName}, WpfHexEditor.Events");
+            $"WpfHexEditor.Core.Events.IDEEvents.{payload.EventTypeName}, WpfHexEditor.Core.Events");
         if (eventType is null)
         {
             _log($"[Runner] Unknown IDE event type: {payload.EventTypeName}");

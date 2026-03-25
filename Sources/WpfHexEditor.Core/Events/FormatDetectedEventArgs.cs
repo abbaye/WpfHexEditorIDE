@@ -116,10 +116,10 @@ namespace WpfHexEditor.Core.Events
             {
                 var confidence = Confidence > 0 ? $", {Confidence:P0} confidence" : "";
                 var ambiguous = RequiresUserSelection ? " [AMBIGUOUS]" : "";
-                return $"✓ {Format?.FormatName}: {Blocks.Count} blocks ({DetectionTimeMs:F2}ms{confidence}){ambiguous}";
+                return $"âœ“ {Format?.FormatName}: {Blocks.Count} blocks ({DetectionTimeMs:F2}ms{confidence}){ambiguous}";
             }
             else
-                return $"✗ Failed: {ErrorMessage}";
+                return $"âœ— Failed: {ErrorMessage}";
         }
     }
 }

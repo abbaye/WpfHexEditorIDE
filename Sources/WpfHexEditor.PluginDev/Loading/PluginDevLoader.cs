@@ -179,7 +179,7 @@ public sealed class PluginDevLoader : IDisposable
     private void ScheduleAutoRebuild()
     {
         // Check settings before scheduling — avoids creating timers when feature is off.
-        if (WpfHexEditor.Options.AppSettingsService.Instance.Current.PluginDev.AutoRebuildOnSave == false)
+        if (WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.PluginDev.AutoRebuildOnSave == false)
             return;
 
         if (_debounceTimer is null)

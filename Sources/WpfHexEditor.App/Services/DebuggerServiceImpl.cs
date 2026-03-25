@@ -17,9 +17,9 @@ using WpfHexEditor.Core.Debugger.Adapters;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Core.Debugger.Protocol;
 using WpfHexEditor.Core.Debugger.Services;
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Services;

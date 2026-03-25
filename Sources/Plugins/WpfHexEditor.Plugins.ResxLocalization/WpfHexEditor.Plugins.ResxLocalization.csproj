@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
     <!-- ResxEditor referenced for ResxLocaleDiscovery + ResxDocumentParser (no UI coupling) -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj" />
   </ItemGroup>

@@ -30,7 +30,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.Terminal.Macros;
 using WpfHexEditor.Core.Terminal.ShellSession;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 

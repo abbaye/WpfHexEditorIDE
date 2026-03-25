@@ -72,15 +72,15 @@ namespace WpfHexEditor.Tests
 
             if (improvement > 1.0)
             {
-                Console.WriteLine($"✅ V2 is {improvement:F2}x faster");
+                Console.WriteLine($"âœ… V2 is {improvement:F2}x faster");
             }
             else if (improvement > 0.9)
             {
-                Console.WriteLine($"✅ V2 has similar performance ({1 / improvement:F2}x)");
+                Console.WriteLine($"âœ… V2 has similar performance ({1 / improvement:F2}x)");
             }
             else
             {
-                Console.WriteLine($"⚠️ V2 is slower ({1 / improvement:F2}x)");
+                Console.WriteLine($"âš ï¸ V2 is slower ({1 / improvement:F2}x)");
             }
         }
 
@@ -568,7 +568,7 @@ namespace WpfHexEditor.Tests
 
             foreach (var (test, v1, v2, improvement) in results)
             {
-                var status = improvement >= 1.0 ? "✅ Faster" : improvement >= 0.9 ? "✅ Similar" : "⚠️ Slower";
+                var status = improvement >= 1.0 ? "âœ… Faster" : improvement >= 0.9 ? "âœ… Similar" : "âš ï¸ Slower";
                 Console.WriteLine($"{test,-30} | {v1,10:F2} | {v2,10:F2} | {improvement,9:F2}x | {status,10}");
             }
 
@@ -585,15 +585,15 @@ namespace WpfHexEditor.Tests
             Console.WriteLine("\nCONCLUSION:");
             if (avgImprovement >= 1.1)
             {
-                Console.WriteLine($"  ✅ V2 shows significant performance improvement ({avgImprovement:F2}x average)");
+                Console.WriteLine($"  âœ… V2 shows significant performance improvement ({avgImprovement:F2}x average)");
             }
             else if (avgImprovement >= 0.9)
             {
-                Console.WriteLine($"  ✅ V2 maintains V1 performance levels (within 10%)");
+                Console.WriteLine($"  âœ… V2 maintains V1 performance levels (within 10%)");
             }
             else
             {
-                Console.WriteLine($"  ⚠️ V2 shows performance regression ({1 / avgImprovement:F2}x slower)");
+                Console.WriteLine($"  âš ï¸ V2 shows performance regression ({1 / avgImprovement:F2}x slower)");
             }
 
             Console.WriteLine(new string('=', 60));

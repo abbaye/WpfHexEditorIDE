@@ -11,7 +11,7 @@ using System.IO;
 using System.Windows;
 using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.Editor.Core.Documents;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Services;
 

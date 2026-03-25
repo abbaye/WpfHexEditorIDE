@@ -64,7 +64,7 @@ public sealed class EventListenerPluginTemplate : IPluginTemplate
 // Description: Event-listener plugin — subscribes to IIDEEventBus events.
 // ==========================================================
 
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
 

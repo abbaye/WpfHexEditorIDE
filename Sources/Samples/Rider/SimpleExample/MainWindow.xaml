@@ -26,7 +26,7 @@
         <!-- Toolbar -->
         <Border Grid.Row="0" Background="#2D2D30" Padding="10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="📂 Open File"
+                <Button Content="ðŸ“‚ Open File"
                         Click="OpenFileButton_Click"
                         Padding="15,8"
                         Margin="5"
@@ -37,7 +37,7 @@
                         FontWeight="SemiBold"
                         Cursor="Hand"/>
 
-                <Button Content="💾 Save"
+                <Button Content="ðŸ’¾ Save"
                         Click="SaveButton_Click"
                         Padding="15,8"
                         Margin="5"
@@ -48,7 +48,7 @@
                         FontWeight="SemiBold"
                         Cursor="Hand"/>
 
-                <Button Content="📋 Load TBL"
+                <Button Content="ðŸ“‹ Load TBL"
                         Click="LoadTblButton_Click"
                         Padding="15,8"
                         Margin="5"
@@ -61,7 +61,7 @@
                         ToolTip="Load a TBL (Character Table) file for custom encoding"/>
 
                 <Button x:Name="CloseTblButton"
-                        Content="❌ Close TBL"
+                        Content="âŒ Close TBL"
                         Click="CloseTblButton_Click"
                         Padding="15,8"
                         Margin="5"
@@ -74,14 +74,14 @@
                         IsEnabled="False"
                         ToolTip="Close the current TBL file and return to ASCII"/>
 
-                <CheckBox Content="🔒 Read-Only Mode"
+                <CheckBox Content="ðŸ”’ Read-Only Mode"
                           IsChecked="{Binding ElementName=HexEditor, Path=ReadOnlyMode}"
                           VerticalAlignment="Center"
                           Margin="20,0,0,0"
                           Foreground="White"
                           FontSize="14"/>
 
-                <TextBlock Text="Made with Rider ❤️"
+                <TextBlock Text="Made with Rider â¤ï¸"
                            VerticalAlignment="Center"
                            Margin="30,0,0,0"
                            Foreground="#9CDCFE"
@@ -92,7 +92,7 @@
 
         <!-- HexEditor Control -->
         <!--
-            💡 Rider Tip: Start typing <hex: and SmartComplete shows all properties!
+            ðŸ’¡ Rider Tip: Start typing <hex: and SmartComplete shows all properties!
             Press Ctrl+Space on any property to see available values.
         -->
         <hex:HexEditor x:Name="HexEditor"
@@ -114,7 +114,7 @@
 
                 <TextBlock x:Name="StatusText"
                            Grid.Column="0"
-                           Text="👋 Welcome! Click 'Open File' to start editing a binary file."
+                           Text="ðŸ‘‹ Welcome! Click 'Open File' to start editing a binary file."
                            Foreground="White"
                            FontSize="13"
                            VerticalAlignment="Center"/>

@@ -7,7 +7,7 @@
     =======================
     In-IDE plugin development support: hot-reload, build orchestration,
     diagnostics panel, packaging, and per-session dev sandbox.
-    Requires WpfHexEditor.Core.BuildSystem + WpfHexEditor.WorkspaceTemplates.
+    Requires WpfHexEditor.Core.BuildSystem + WpfHexEditor.Core.WorkspaceTemplates.
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
@@ -27,10 +27,10 @@
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Options\WpfHexEditor.Options.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
     <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.WorkspaceTemplates\WpfHexEditor.WorkspaceTemplates.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.WorkspaceTemplates\WpfHexEditor.Core.WorkspaceTemplates.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
   </ItemGroup>
 

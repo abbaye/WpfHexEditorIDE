@@ -31,7 +31,7 @@ public partial class MainWindow
         // Overrides are loaded from settings in OnLoaded (after AppSettingsService.Load()).
         _keyBindingService.OverridesChanged += () =>
         {
-            var s = WpfHexEditor.Options.AppSettingsService.Instance;
+            var s = WpfHexEditor.Core.Options.AppSettingsService.Instance;
             s.Current.KeyBindingOverrides =
                 new Dictionary<string, string>(
                     _keyBindingService.GetOverrides(),
@@ -49,7 +49,7 @@ public partial class MainWindow
     internal void LoadKeyBindingOverrides()
     {
         _keyBindingService.LoadOverrides(
-            WpfHexEditor.Options.AppSettingsService.Instance.Current.KeyBindingOverrides);
+            WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.KeyBindingOverrides);
     }
 
     // -----------------------------------------------------------------------

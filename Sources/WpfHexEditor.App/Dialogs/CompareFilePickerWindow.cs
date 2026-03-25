@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using WpfHexEditor.Editor.Core.Documents;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Dialogs;
 

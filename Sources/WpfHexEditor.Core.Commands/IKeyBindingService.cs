@@ -23,7 +23,7 @@ public interface IKeyBindingService
     /// <summary>
     /// Sets or clears the user override gesture for <paramref name="commandId"/>.
     /// Pass null to remove the override (revert to default).
-    /// Persists immediately via <see cref="WpfHexEditor.Options.AppSettingsService"/>.
+    /// Persists immediately via <see cref="WpfHexEditor.Core.Options.AppSettingsService"/>.
     /// </summary>
     void SetOverride(string commandId, string? gesture);
 

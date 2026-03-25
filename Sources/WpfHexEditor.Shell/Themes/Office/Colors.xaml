@@ -1,4 +1,4 @@
-﻿<!-- ==========================================================
+<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Office/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -581,7 +581,7 @@
     <SolidColorBrush x:Key="CP_GroupHeaderBrush"     Color="#E9E9E9" />
     <SolidColorBrush x:Key="CP_DescPanelBrush"       Color="#F0F0F0" />
 
-    <!-- ── Keyboard Shortcuts Page (KSP_*) ──────────────────────────────── -->
+    <!-- Keyboard Shortcuts Page (KSP_*) -->
     <SolidColorBrush x:Key="KSP_DataGridBackground"  Color="#F0F0F0" />
     <SolidColorBrush x:Key="KSP_CellForeground"      Color="#1A1A1A" />
     <SolidColorBrush x:Key="KSP_HintForeground"      Color="#888888" />
@@ -589,7 +589,7 @@
     <SolidColorBrush x:Key="KSP_EditBackground"      Color="#F0F0F0" />
     <SolidColorBrush x:Key="KSP_EditBorder"          Color="#C8C8C8" />
 
-    <!-- ── Title Bar Search Launcher (TB_Search*) ───────────────────────── -->
+    <!-- Title Bar Search Launcher (TB_Search*) -->
     <SolidColorBrush x:Key="TB_SearchBackgroundBrush"       Color="#E8E8E8" />
     <SolidColorBrush x:Key="TB_SearchBorderBrush"           Color="#B8B8B8" />
     <SolidColorBrush x:Key="TB_SearchTextBrush"             Color="#222222" />
@@ -635,7 +635,7 @@
     <SolidColorBrush x:Key="GD_PeekTitleForeground"  Color="#1E1E1E" />
     <SolidColorBrush x:Key="GD_PeekNavLinkForeground" Color="#0066CC" />
 
-    <!-- RESX Editor tokens (RES_*) â€” inserted by Add-ResxTokens.ps1 -->
+    <!-- RESX Editor tokens (RES_*) — inserted by Add-ResxTokens.ps1 -->
     <SolidColorBrush x:Key="RES_BackgroundBrush"          Color="#FFFFFF" />
     <SolidColorBrush x:Key="RES_ForegroundBrush"          Color="#1E1E1E" />
     <SolidColorBrush x:Key="RES_HeaderBackgroundBrush"    Color="#F0F0F0" />
@@ -657,7 +657,7 @@
     <SolidColorBrush x:Key="RES_LocaleMissingBrush"       Color="#FFD4D4" />
     <SolidColorBrush x:Key="RES_ToolbarBackgroundBrush"   Color="#F0F0F0" />
 
-    <!-- Unit Testing tokens (UT_*) â€” inserted by Add-UtTokens.ps1 -->
+    <!-- Unit Testing tokens (UT_*) — inserted by Add-UtTokens.ps1 -->
     <SolidColorBrush x:Key="UT_PassForegroundBrush"       Color="#107C41" />
     <SolidColorBrush x:Key="UT_FailForegroundBrush"       Color="#C0392B" />
     <SolidColorBrush x:Key="UT_SkipForegroundBrush"       Color="#0078D4" />
@@ -669,6 +669,7 @@
 
     <SolidColorBrush x:Key="UT_RunningRowBrush"           Color="#EEF8EE" />
     <SolidColorBrush x:Key="UT_SearchBoxBrush"            Color="#FFFFFF" />
+    <SolidColorBrush x:Key="UT_LinkForegroundBrush"       Color="#0066CC" />
 
     <!-- Diff tokens (DF_*) - inserted by Add-DiffTokens.ps1 -->
     <SolidColorBrush x:Key="DF_ModifiedLineBrush"     Color="#FFF8D6" />
@@ -686,7 +687,7 @@
     <SolidColorBrush x:Key="DF_PickerBackground"      Color="#F8F8F8" />
     <SolidColorBrush x:Key="DF_PickerHighlightBrush"  Color="#0078D4" />
 
-    <!-- Debugger tokens (DB_*) â€” inserted by Add-DbgTokens.ps1 -->
+    <!-- Debugger tokens (DB_*) — inserted by Add-DbgTokens.ps1 -->
     <SolidColorBrush x:Key="DB_BreakpointActiveBrush"        Color="#C0392B" />
     <SolidColorBrush x:Key="DB_BreakpointDisabledBrush"      Color="#999999" />
     <SolidColorBrush x:Key="DB_BreakpointConditionalBrush"   Color="#D05000" />

@@ -22,7 +22,7 @@
 //     ADR-DT-01.
 // ==========================================================
 
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Plugins.DiagnosticTools.Models;
 using WpfHexEditor.Plugins.DiagnosticTools.ViewModels;
 using WpfHexEditor.Plugins.DiagnosticTools.Views;

@@ -280,9 +280,9 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Services
         public override string ToString()
         {
             if (Success)
-                return $"✓ Imported {Data?.Length ?? 0} bytes from {RecordCount} records (base: 0x{BaseAddress:X})";
+                return $"âœ“ Imported {Data?.Length ?? 0} bytes from {RecordCount} records (base: 0x{BaseAddress:X})";
             else
-                return $"✗ Failed: {ErrorMessage}";
+                return $"âœ— Failed: {ErrorMessage}";
         }
     }
 }

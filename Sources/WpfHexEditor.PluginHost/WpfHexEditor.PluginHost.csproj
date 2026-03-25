@@ -20,12 +20,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Options\WpfHexEditor.Options.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
   </ItemGroup>
 
 </Project>

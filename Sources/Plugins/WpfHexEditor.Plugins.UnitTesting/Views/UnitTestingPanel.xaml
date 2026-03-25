@@ -40,7 +40,7 @@
                                    Text="{TemplateBinding Content}"
                                    TextTrimming="CharacterEllipsis"
                                    TextDecorations="Underline"
-                                   Foreground="{DynamicResource UT_SelectionBrush}"/>
+                                   Foreground="{DynamicResource UT_LinkForegroundBrush}"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Tb" Property="Opacity" Value="0.75"/>

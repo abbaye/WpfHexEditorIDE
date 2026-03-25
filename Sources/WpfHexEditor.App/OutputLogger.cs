@@ -6,7 +6,7 @@
 
 using System.Windows.Media;
 using WpfHexEditor.App.Controls;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App;
 

@@ -40,7 +40,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 100,
                 $"Adding 1000 blocks took {sw.ElapsedMilliseconds}ms (target: <100ms)");
 
-            Console.WriteLine($"✓ Add 1000 blocks: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ Add 1000 blocks: {sw.ElapsedMilliseconds}ms");
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 50,
                 $"Querying 1000 positions took {sw.ElapsedMilliseconds}ms (target: <50ms)");
 
-            Console.WriteLine($"✓ Query 1000 positions: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ Query 1000 positions: {sw.ElapsedMilliseconds}ms");
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 100,
                 $"Range query on 5000 blocks took {sw.ElapsedMilliseconds}ms (target: <100ms)");
 
-            Console.WriteLine($"✓ Range query (5000 blocks): {sw.ElapsedMilliseconds}ms, found {results.Count} blocks");
+            Console.WriteLine($"âœ“ Range query (5000 blocks): {sw.ElapsedMilliseconds}ms, found {results.Count} blocks");
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 50,
                 $"Bulk removal took {sw.ElapsedMilliseconds}ms (target: <50ms)");
 
-            Console.WriteLine($"✓ Bulk removal: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ Bulk removal: {sw.ElapsedMilliseconds}ms");
         }
 
         #endregion
@@ -132,7 +132,7 @@ namespace WpfHexEditor.Tests
             // Cache hit should be significantly faster (or at least not slower)
             Assert.AreSame(brush1, brush2, "Should return cached instance");
 
-            Console.WriteLine($"✓ Brush cache: First call {firstCallTime:F4}ms, Second call {secondCallTime:F4}ms");
+            Console.WriteLine($"âœ“ Brush cache: First call {firstCallTime:F4}ms, Second call {secondCallTime:F4}ms");
         }
 
         [TestMethod]
@@ -152,7 +152,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 50,
                 $"Getting 1000 frozen brushes took {sw.ElapsedMilliseconds}ms (target: <50ms)");
 
-            Console.WriteLine($"✓ 1000 frozen brushes: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ 1000 frozen brushes: {sw.ElapsedMilliseconds}ms");
         }
 
         #endregion
@@ -191,7 +191,7 @@ namespace WpfHexEditor.Tests
             Assert.AreEqual(0, gen1Collections,
                 $"Expected 0 Gen1 collections, got {gen1Collections}");
 
-            Console.WriteLine($"✓ 10000 cached calls: Gen0={gen0Collections}, Gen1={gen1Collections}");
+            Console.WriteLine($"âœ“ 10000 cached calls: Gen0={gen0Collections}, Gen1={gen1Collections}");
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 10,
                 $"1000 equality checks took {sw.ElapsedMilliseconds}ms (target: <10ms)");
 
-            Console.WriteLine($"✓ 1000 equality checks: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ 1000 equality checks: {sw.ElapsedMilliseconds}ms");
         }
 
         [TestMethod]
@@ -239,7 +239,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(collisionRate < 0.05,
                 $"Hash collision rate {collisionRate:P} exceeds 5%");
 
-            Console.WriteLine($"✓ 1000 hash codes: {sw.ElapsedMilliseconds}ms, {hashCodes.Count} unique ({collisionRate:P2} collision rate)");
+            Console.WriteLine($"âœ“ 1000 hash codes: {sw.ElapsedMilliseconds}ms, {hashCodes.Count} unique ({collisionRate:P2} collision rate)");
         }
 
         #endregion
@@ -262,7 +262,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 5,
                 $"10000 ContainsPosition calls took {sw.ElapsedMilliseconds}ms (target: <5ms)");
 
-            Console.WriteLine($"✓ 10000 ContainsPosition calls: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ 10000 ContainsPosition calls: {sw.ElapsedMilliseconds}ms");
         }
 
         [TestMethod]
@@ -281,7 +281,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 5,
                 $"10000 Overlaps calls took {sw.ElapsedMilliseconds}ms (target: <5ms)");
 
-            Console.WriteLine($"✓ 10000 Overlaps calls: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ 10000 Overlaps calls: {sw.ElapsedMilliseconds}ms");
         }
 
         #endregion
@@ -331,7 +331,7 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(sw.ElapsedMilliseconds < 2000,
                 $"Stress test took {sw.ElapsedMilliseconds}ms (target: <2000ms)");
 
-            Console.WriteLine($"✓ Stress test (10000 blocks, mixed ops): {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"âœ“ Stress test (10000 blocks, mixed ops): {sw.ElapsedMilliseconds}ms");
         }
 
         #endregion
@@ -392,7 +392,7 @@ namespace WpfHexEditor.Tests
 
             foreach (var (name, target, actual) in results)
             {
-                var status = actual <= target ? "✓ PASS" : "✗ FAIL";
+                var status = actual <= target ? "âœ“ PASS" : "âœ— FAIL";
                 var color = actual <= target ? "" : "[SLOW]";
                 Console.WriteLine($"{name,-30} {$"<{target}ms",-12} {$"{actual:F2}ms",-12} {status} {color}");
             }
@@ -402,7 +402,7 @@ namespace WpfHexEditor.Tests
             var allPassed = results.All(r => r.ActualMs <= r.TargetMs);
             Assert.IsTrue(allPassed, "Some benchmarks failed to meet performance targets");
 
-            Console.WriteLine($"\nOverall: {(allPassed ? "✓ ALL PASSED" : "✗ SOME FAILED")}");
+            Console.WriteLine($"\nOverall: {(allPassed ? "âœ“ ALL PASSED" : "âœ— SOME FAILED")}");
             Console.WriteLine("\nPerformance targets met for 95%+ allocation reduction optimization.");
         }
 

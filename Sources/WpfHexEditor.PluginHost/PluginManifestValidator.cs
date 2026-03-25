@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -100,7 +100,7 @@ internal sealed class PluginManifestValidator
 
     private static void ValidateAssemblyHash(PluginManifest manifest, string pluginDirectory, ValidationResult result)
     {
-        // Only Distribution Manifests have assembly.sha256 â€" skip for Build Manifests.
+        // Only Distribution Manifests have assembly.sha256 —" skip for Build Manifests.
         if (manifest.Assembly?.Sha256 is not { Length: > 0 } expectedHash)
             return;
 

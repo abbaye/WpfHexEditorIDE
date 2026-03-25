@@ -61,7 +61,7 @@ using WpfHexEditor.Core.ProjectSystem.Templates;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using System.Windows.Shell;
 using System.Windows.Threading;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
@@ -555,7 +555,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         UpdateTitleBarSearchLabel();
 
         // Register Keyboard Shortcuts options page (needs runtime instances)
-        WpfHexEditor.Options.OptionsPageRegistry.RegisterDynamic(
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "IDE", "Keyboard Shortcuts",
             () => new WpfHexEditor.App.Options.KeyboardShortcutsPage(_commandRegistry, _keyBindingService),
             "⌨");
@@ -564,7 +564,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         InitCommandPaletteOptions();
 
         // Register Comparison options page
-        WpfHexEditor.Options.OptionsPageRegistry.RegisterDynamic(
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "Editor", "Compare Files",
             () => new WpfHexEditor.App.Options.ComparisonOptionsPage(
                 AppSettingsService.Instance.Current.Comparison,
@@ -735,7 +735,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_ideEventBus is not null)
         {
             var newPath = e.Solution?.FilePath;
-            _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.WorkspaceChangedEvent
+            _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.WorkspaceChangedEvent
             {
                 Source               = "MainWindow",
                 WorkspacePath        = newPath,
@@ -862,7 +862,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
 
-        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemAddedEvent
+        _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.ProjectItemAddedEvent
         {
             Source    = "SolutionManager",
             FilePath  = e.Item.AbsolutePath,
@@ -880,7 +880,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
 
-        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemRemovedEvent
+        _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.ProjectItemRemovedEvent
         {
             Source    = "SolutionManager",
             FilePath  = e.Item.AbsolutePath,
@@ -2144,7 +2144,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
                 // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
                 if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
-                    _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileOpenedEvent
+                    _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.FileOpenedEvent
                     {
                         Source        = "MainWindow",
                         FilePath      = filePath,
@@ -2319,7 +2319,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
             if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
-                _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileOpenedEvent
+                _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.FileOpenedEvent
                 {
                     Source        = "MainWindow",
                     FilePath      = filePath,
@@ -3388,7 +3388,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_contentCache.TryGetValue(contentId, out var ctrl) && ctrl is HexEditorControl hex)
             hex.OpenFile(e.Item.AbsolutePath);
 
-        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemRenamedEvent
+        _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.ProjectItemRenamedEvent
         {
             Source    = "SolutionManager",
             OldPath   = e.OldAbsolutePath,
@@ -4321,7 +4321,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 item.Metadata.TryGetValue("FilePath", out var closedFilePath) &&
                 !string.IsNullOrEmpty(closedFilePath))
             {
-                _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileClosedEvent
+                _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.FileClosedEvent
                 {
                     Source   = "MainWindow",
                     FilePath = closedFilePath,

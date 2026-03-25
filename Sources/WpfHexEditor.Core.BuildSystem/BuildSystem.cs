@@ -21,8 +21,8 @@
 
 using System.Collections.Concurrent;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 
 namespace WpfHexEditor.Core.BuildSystem;
 

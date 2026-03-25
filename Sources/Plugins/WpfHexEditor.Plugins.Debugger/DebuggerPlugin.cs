@@ -10,8 +10,8 @@
 //     All UI marshalled to dispatcher thread.
 // ==========================================================
 
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Plugins.Debugger.Panels;
 using WpfHexEditor.Plugins.Debugger.ViewModels;
 using WpfHexEditor.SDK.Commands;

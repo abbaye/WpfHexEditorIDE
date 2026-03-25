@@ -19,8 +19,8 @@ using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor;
-using WpfHexEditor.Events.IDEEvents;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Events.IDEEvents;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App;
 

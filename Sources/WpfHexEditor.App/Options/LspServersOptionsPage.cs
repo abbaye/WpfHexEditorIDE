@@ -18,7 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core.LSP;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
 

@@ -23,7 +23,7 @@
 
 using System.IO;
 using System.Windows;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Plugins.UnitTesting.Models;
 using WpfHexEditor.Plugins.UnitTesting.Options;
 using WpfHexEditor.Plugins.UnitTesting.Services;
@@ -81,7 +81,7 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _panel.RunAllRequested      += (_, _)    => _ = RunAllAsync();
         _panel.StopRequested        += (_, _)    => StopRun();
         _panel.RunFailedRequested   += (_, _)    => _ = RunFailedAsync();
-        _panel.RunThisTestRequested += (_, row)  => _ = RunThisTestAsync(row);
+        _panel.RunThisTestRequested += async (_, row)  => await RunSingleTestAsync(row);
         _panel.GoToSourceRequested  += (_, row)  => NavigateToSource(row);
 
         // Register dockable panel.
@@ -278,11 +278,78 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             : RunAllAsync(failedFilter);
     }
 
-    private Task RunThisTestAsync(TestResultRow? row)
+    private async Task RunSingleTestAsync(TestResultRow? row)
     {
-        if (row is null) return Task.CompletedTask;
-        var filter = $"FullyQualifiedName~{row.ClassName}.{row.Display}";
-        return RunAllAsync(filter);
+        if (row is null || _vm is null || _context is null) return;
+        if (_vm.IsRunning) return;
+
+        // Find which csproj owns this test row.
+        var testProjects = FindTestProjects();
+        string? projPath = null;
+        foreach (var proj in _vm.ProjectNodes)
+        {
+            if (proj.Classes.Any(c => c.Tests.Contains(row)))
+            {
+                projPath = testProjects.FirstOrDefault(p =>
+                    string.Equals(Path.GetFileNameWithoutExtension(p), proj.ProjectName,
+                                  StringComparison.OrdinalIgnoreCase));
+                break;
+            }
+        }
+        if (projPath is null) return;
+
+        _runCts = new CancellationTokenSource();
+        var ct   = _runCts.Token;
+
+        _vm.IsRunning  = true;
+        _vm.StatusText = $"Running {row.Display}…";
+
+        await Application.Current.Dispatcher.InvokeAsync(() => row.IsRunning = true);
+
+        try
+        {
+            var filter   = $"FullyQualifiedName~{row.ClassName}.{row.Display}";
+            var progress = new Progress<string>(line =>
+                _context?.Output.Write("Unit Testing", line));
+
+            var rawResults = await _runner.RunAsync(projPath, filter, progress, ct)
+                                          .ConfigureAwait(false);
+            var results = EnrichWithSourcePaths(projPath, rawResults);
+
+            var match = results.FirstOrDefault(r => r.TestName == row.Display);
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                row.IsRunning = false;
+                if (match is not null)
+                    _vm.ReplaceResult(row, match);
+            });
+
+            _vm.StatusText = ct.IsCancellationRequested
+                ? "Run cancelled."
+                : BuildSummary(_vm.PassCount, _vm.FailCount, _vm.SkipCount);
+        }
+        catch (OperationCanceledException)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() => row.IsRunning = false);
+            _vm.StatusText = "Run cancelled.";
+        }
+        catch (Exception ex)
+        {
+            _context?.Output.Write("Unit Testing", $"[Error] {ex.Message}");
+            await Application.Current.Dispatcher.InvokeAsync(() => row.IsRunning = false);
+            _vm.StatusText = "Run failed — see Output panel.";
+        }
+        finally
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                if (_vm is not null)
+                    _vm.IsRunning = false;
+            });
+            _runCts?.Dispose();
+            _runCts = null;
+        }
     }
 
     private void StopRun()
@@ -300,6 +367,9 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Add project nodes immediately (synchronous, fast).
         var names = projects.Select(p => Path.GetFileNameWithoutExtension(p)!);
         await Application.Current.Dispatcher.InvokeAsync(() => _vm.DiscoverProjects(names));
+
+        // Remove stale NotRun rows so Refresh always reflects current source.
+        await Application.Current.Dispatcher.InvokeAsync(() => _vm.ClearNotRunTests());
 
         // Discover individual tests per project in the background.
         foreach (var proj in projects)

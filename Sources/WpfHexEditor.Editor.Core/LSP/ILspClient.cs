@@ -11,7 +11,7 @@
 //
 // Architecture Notes:
 //     Interface Segregation — only the methods/events relevant to editor integration
-//     are exposed. The concrete WpfHexEditor.LSP.Client implementation handles
+//     are exposed. The concrete WpfHexEditor.Core.LSP.Client implementation handles
 //     process lifecycle, JSON-RPC framing, and capability negotiation internally.
 //
 //     All async methods accept a CancellationToken so callers can cancel inflight

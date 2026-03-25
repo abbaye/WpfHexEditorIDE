@@ -171,7 +171,7 @@ public partial class MainWindow
     /// </summary>
     private static bool IsChangesetEnabledForEditor(
         System.Windows.UIElement ctrl,
-        WpfHexEditor.Options.AppSettings settings)
+        WpfHexEditor.Core.Options.AppSettings settings)
         => ctrl switch
         {
             WpfHexEditor.HexEditor.HexEditor                        => true,
@@ -189,6 +189,6 @@ public partial class MainWindow
     {
         if (!IsTrackedProjectItem(item)) return false;
         if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return false;
-        return IsChangesetEnabledForEditor(ctrl, WpfHexEditor.Options.AppSettingsService.Instance.Current);
+        return IsChangesetEnabledForEditor(ctrl, WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
     }
 }

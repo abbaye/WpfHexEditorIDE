@@ -37,7 +37,7 @@
                                     DisplayMemberBinding="{Binding DisplayName}" />
                     <GridViewColumn Header="Condition" Width="150"
                                     DisplayMemberBinding="{Binding Condition}" />
-                    <GridViewColumn Header="✓" Width="24">
+                    <GridViewColumn Header="âœ“" Width="24">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding IsVerified, Converter={StaticResource BoolToVerifiedConverter}}"

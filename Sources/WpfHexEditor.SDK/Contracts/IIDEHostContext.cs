@@ -6,7 +6,7 @@
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.LSP;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -68,7 +68,7 @@ public interface IIDEHostContext
     /// <summary>
     /// IDE-level event bus for subscribing to and publishing typed IDE events
     /// (FileOpenedEvent, EditorSelectionChangedEvent, PluginLoadedEvent, etc.).
-    /// Backed by WpfHexEditor.Events.IDEEventBus; bridged to sandbox plugins via IPC.
+    /// Backed by WpfHexEditor.Core.Events.IDEEventBus; bridged to sandbox plugins via IPC.
     /// </summary>
     IIDEEventBus IDEEvents { get; }
 

@@ -28,7 +28,7 @@ using System.IO;
 using System.Windows;
 using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
 using WpfHexEditor.Plugins.AssemblyExplorer.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;

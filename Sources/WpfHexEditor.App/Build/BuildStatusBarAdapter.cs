@@ -15,8 +15,8 @@
 //     provided Action<> callbacks (setter injected by MainWindow).
 // ==========================================================
 
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 
 namespace WpfHexEditor.App.Build;
 

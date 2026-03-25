@@ -466,7 +466,7 @@ namespace WpfHexEditor.Core.Tools
 
         public override string ToString()
         {
-            string status = IsValid ? "✓ VALID" : "✗ INVALID";
+            string status = IsValid ? "âœ“ VALID" : "âœ— INVALID";
             string details = "";
 
             if (Errors.Count > 0)

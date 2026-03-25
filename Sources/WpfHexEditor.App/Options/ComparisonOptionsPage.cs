@@ -8,7 +8,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
 

@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,7 +23,7 @@ using System.Linq;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.ResxEditor.Models;
 using WpfHexEditor.Editor.ResxEditor.Controls;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using ResxEditorControl = WpfHexEditor.Editor.ResxEditor.Controls.ResxEditor;
 
 namespace WpfHexEditor.Editor.ResxEditor;

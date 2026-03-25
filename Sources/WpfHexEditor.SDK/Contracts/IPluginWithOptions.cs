@@ -40,8 +40,8 @@ public interface IPluginWithOptions
 
     /// <summary>
     /// Optional: Returns an emoji/icon for the options category.
-    /// Default: "🔌"
-    /// Example: "📊" for data plugins, "✏️" for editors, "🐛" for debuggers
+    /// Default: "ðŸ”Œ"
+    /// Example: "ðŸ“Š" for data plugins, "âœï¸" for editors, "ðŸ›" for debuggers
     /// </summary>
-    string GetOptionsCategoryIcon() => "🔌";
+    string GetOptionsCategoryIcon() => "ðŸ”Œ";
 }

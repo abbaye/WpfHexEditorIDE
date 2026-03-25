@@ -406,7 +406,7 @@ namespace WpfHexEditor.Core.Services
 
                     var patternType = isRepeatingPattern ? PatternType.RepeatingPattern : PatternType.RepeatedSequence;
                     var description = isRepeatingPattern
-                        ? $"Repeating pattern ({sequence.Length} bytes × {kvp.Value.Count})"
+                        ? $"Repeating pattern ({sequence.Length} bytes Ã— {kvp.Value.Count})"
                         : $"Repeated sequence ({sequence.Length} bytes, {kvp.Value.Count} occurrences)";
 
                     var pattern = new DetectedPattern(patternType, baseOffset + firstOffset, sequence.Length)

@@ -29,15 +29,15 @@ using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.PluginHost;
 using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.PluginHost.UI.Options;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -140,7 +140,7 @@ public partial class MainWindow
 
             // LSP server registry — best-effort: failures must not block IDE startup.
             WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? lspRegistry = null;
-            try { lspRegistry = new WpfHexEditor.LSP.Client.Services.LspServerRegistry(Dispatcher); }
+            try { lspRegistry = new WpfHexEditor.Core.LSP.Client.Services.LspServerRegistry(Dispatcher); }
             catch (Exception ex) { OutputLogger.PluginError($"[LSP] Registry init failed: {ex.Message}"); }
 
             // LSP-4: Options page for LSP server configuration.
@@ -168,7 +168,7 @@ public partial class MainWindow
             // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.
             _debuggerService = new WpfHexEditor.App.Services.DebuggerServiceImpl(
                 _ideEventBus,
-                WpfHexEditor.Options.AppSettingsService.Instance.Current);
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
 
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,

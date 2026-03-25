@@ -182,6 +182,83 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         SelectedNode   = null;
     }
 
+    /// <summary>
+    /// Removes all NotRun rows from the tree (stale discovered tests).
+    /// Preserves Passed/Failed/Skipped rows and their counters.
+    /// Removes empty class nodes and empty/not-running project nodes.
+    /// Called before re-discovering tests so Refresh always reflects current source.
+    /// </summary>
+    public void ClearNotRunTests()
+    {
+        foreach (var proj in ProjectNodes.ToList())
+        {
+            // Remember whether this node already had discovered content.
+            // Freshly-added empty nodes (no classes yet) must NOT be pruned —
+            // AddDiscoveredTests will populate them right after this call.
+            bool hadClasses = proj.Classes.Count > 0;
+
+            foreach (var cls in proj.Classes.ToList())
+            {
+                var stale = cls.Tests.Where(t => t.Outcome == TestOutcome.NotRun).ToList();
+                foreach (var t in stale)
+                {
+                    cls.Tests.Remove(t);
+                    cls.NotRunCount--;
+                    proj.NotRunCount--;
+                }
+                if (cls.Tests.Count == 0)
+                    proj.Classes.Remove(cls);
+            }
+
+            // Only remove project nodes that previously had classes and are now fully empty.
+            if (hadClasses && proj.Classes.Count == 0 && !proj.IsRunning)
+                ProjectNodes.Remove(proj);
+        }
+    }
+
+    /// <summary>
+    /// Updates a single test row in-place: adjusts counters for the old outcome,
+    /// calls <see cref="TestResultRow.Update"/>, adjusts counters for the new outcome,
+    /// and re-applies the current filter. Used by Run-This-Test so the tree is not reset.
+    /// </summary>
+    public void ReplaceResult(TestResultRow row, TestResult result)
+    {
+        foreach (var proj in ProjectNodes)
+        {
+            foreach (var cls in proj.Classes)
+            {
+                if (!cls.Tests.Contains(row)) continue;
+
+                // Decrement counters for previous outcome.
+                switch (row.Outcome)
+                {
+                    case TestOutcome.Passed:  cls.PassCount--;  proj.PassCount--;  PassCount--;  break;
+                    case TestOutcome.Failed:  cls.FailCount--;  proj.FailCount--;  FailCount--;  break;
+                    case TestOutcome.Skipped: cls.SkipCount--;  proj.SkipCount--;  SkipCount--;  break;
+                    case TestOutcome.NotRun:  cls.NotRunCount--; proj.NotRunCount--; break;
+                }
+
+                var oldDurationMs = row.DurationMs;
+                row.Update(result);
+
+                // Increment counters for new outcome.
+                switch (result.Outcome)
+                {
+                    case TestOutcome.Passed:  cls.PassCount++;  proj.PassCount++;  PassCount++;  break;
+                    case TestOutcome.Failed:  cls.FailCount++;  proj.FailCount++;  FailCount++;  break;
+                    default:                  cls.SkipCount++;  proj.SkipCount++;  SkipCount++;  break;
+                }
+
+                var newDurationMs = (int)result.Duration.TotalMilliseconds;
+                cls.TotalDurationMs  += newDurationMs - oldDurationMs;
+                proj.TotalDurationMs += newDurationMs - oldDurationMs;
+
+                ApplyFilter();
+                return;
+            }
+        }
+    }
+
     /// <summary>Marks the project node as running (creates it if not present).</summary>
     public void AddRunningPlaceholder(string projectName)
     {

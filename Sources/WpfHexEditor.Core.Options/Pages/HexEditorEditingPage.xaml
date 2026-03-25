@@ -1,0 +1,125 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Contributors: Claude Sonnet 4.6
+-->
+<UserControl x:Class="WpfHexEditor.Core.Options.Pages.HexEditorEditingPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <StackPanel Margin="0,0,0,16">
+
+        <TextBlock Text="Editing Behavior"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,16"/>
+
+        <!-- Mode édition par défaut -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Default edit mode:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="EditModeCombo"
+                      Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+        <!-- Vitesse molette -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Mouse wheel speed:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="MouseWheelCombo"
+                      Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+        <Separator Margin="0,8,0,16"
+                   Background="{DynamicResource DockBorderBrush}"/>
+
+        <!-- Zoom -->
+        <CheckBox x:Name="CheckAllowZoom"
+                  Content="Allow zoom (Ctrl + wheel)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <!-- File drop -->
+        <CheckBox x:Name="CheckAllowFileDrop"
+                  Content="Allow file drop"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,0"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <Separator Margin="0,16,0,16"
+                   Background="{DynamicResource DockBorderBrush}"/>
+
+        <TextBlock Text="Data"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,16"/>
+
+        <!-- Byte size -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Byte size:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="ByteSizeCombo" Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+        <!-- Byte order -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Byte order:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="ByteOrderCombo" Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+        <!-- Copy to clipboard format -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Default copy format:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="CopyModeCombo" Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+        <!-- Byte spacer visual style -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Spacer visual style:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="SpacerVisualCombo" Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+    </StackPanel>
+</UserControl>

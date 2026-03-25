@@ -54,12 +54,12 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Options\WpfHexEditor.Options.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
     <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Events\WpfHexEditor.Events.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.LSP.Client\WpfHexEditor.LSP.Client.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.LSP.Client\WpfHexEditor.Core.LSP.Client.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
     <ProjectReference Include="..\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />

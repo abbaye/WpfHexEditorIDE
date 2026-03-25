@@ -110,7 +110,7 @@ namespace WpfHexEditor.HexEditor.Converters
     }
 
     /// <summary>
-    /// Converts bool (isValid) to icon text (✓ when valid, empty when invalid)
+    /// Converts bool (isValid) to icon text (âœ“ when valid, empty when invalid)
     /// </summary>
     public class BoolToValidationIconConverter : IValueConverter
     {
@@ -118,7 +118,7 @@ namespace WpfHexEditor.HexEditor.Converters
         {
             if (value is bool isValid)
             {
-                return isValid ? "✓" : "";
+                return isValid ? "âœ“" : "";
             }
             return "";
         }
