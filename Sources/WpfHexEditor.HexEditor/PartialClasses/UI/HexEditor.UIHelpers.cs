@@ -819,6 +819,28 @@ namespace WpfHexEditor.HexEditor
             SelectAll();
         }
 
+        private void CompareFileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CompareFileRequested?.Invoke(this, new CompareFileRequestedEventArgs(FileName));
+        }
+
+        private void CompareSelectionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectionLength <= 0 || string.IsNullOrEmpty(FileName)) return;
+
+            // Write selected bytes to a temp file and raise the event with that path as "left"
+            var selBytes = GetSelectionByteArray();
+            if (selBytes is null or { Length: 0 }) return;
+
+            var tmp = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(), "WpfHexEditor",
+                $"sel_{System.IO.Path.GetFileNameWithoutExtension(FileName)}_{DateTime.UtcNow:HHmmss}.bin");
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(tmp)!);
+            System.IO.File.WriteAllBytes(tmp, selBytes);
+
+            CompareSelectionRequested?.Invoke(this, new CompareFileRequestedEventArgs(tmp) { IsTempFile = true });
+        }
+
         #endregion
 
         #region Scroll Markers Management

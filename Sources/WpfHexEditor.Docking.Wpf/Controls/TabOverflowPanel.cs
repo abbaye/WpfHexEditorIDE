@@ -14,6 +14,19 @@
 //     OverflowItems is populated during measure pass so the dropdown button
 //     always reflects the current overflow state without extra wiring.
 //
+//     ADR-TAB-OVF-01 (v2): Uses a _windowStart "scroll position" (index of the
+//     leftmost visible non-sticky tab) and a _naturalWidths cache (last known
+//     real width per tab, populated while the tab is Visible).
+//
+//     When the selected tab is outside the current window the panel shifts
+//     _windowStart the minimum distance needed to reveal it at the near edge —
+//     exactly like VS Code / Visual Studio tab bars. Previously-visible tabs on
+//     the opposite side stay visible; only the far-edge tabs shift into overflow.
+//
+//     The SetVisibility guard (only writes when value actually changes) prevents
+//     spurious InvalidateMeasure() calls, breaking the layout cycle that the
+//     original two-phase approach (classify + EnsureSelectedTabVisible) caused.
+//
 // ==========================================================
 
 using System.Windows;
@@ -47,103 +60,178 @@ public class TabOverflowPanel : Panel
     /// </summary>
     public List<UIElement> OverflowItems { get; } = [];
 
-    // Set by EnsureSelectedTabVisible — tab to place at front (after stickies) in ArrangeOverride.
-    private UIElement? _forceFrontTab;
+    // Cache: last known real width of each non-sticky tab (populated while Visible).
+    // WPF returns DesiredSize=(0,0) for Collapsed elements, making it impossible to
+    // use DesiredSize directly for layout decisions on overflow tabs.
+    private readonly Dictionary<UIElement, double> _naturalWidths = new();
+
+    // The index of the first visible non-sticky tab ("scroll position").
+    // Shifts when the selected tab is outside the visible window.
+    private int _windowStart = 0;
 
     protected override Size MeasureOverride(Size availableSize)
     {
         OverflowItems.Clear();
-        _forceFrontTab = null;
-        var usedWidth = 0.0;
-        var maxHeight = 0.0;
+        double usedWidth = 0.0;
+        double maxHeight = 0.0;
 
-        // Measure all children first so DesiredSize is available.
+        // 1. Measure only currently-Visible children.
+        //    Collapsed children → DesiredSize=(0,0) — we use _naturalWidths instead.
         foreach (UIElement child in InternalChildren)
-            child.Measure(new Size(double.PositiveInfinity, availableSize.Height));
+        {
+            if (child.Visibility == Visibility.Visible)
+                child.Measure(new Size(double.PositiveInfinity, availableSize.Height));
+            maxHeight = Math.Max(maxHeight, child.DesiredSize.Height);
+        }
 
-        // Reserve width for sticky tabs — they are always visible regardless of overflow.
+        // 2. Update natural-width cache for visible children with valid widths.
+        foreach (UIElement child in InternalChildren)
+            if (!IsSticky(child) && child.Visibility == Visibility.Visible && child.DesiredSize.Width > 0)
+                _naturalWidths[child] = child.DesiredSize.Width;
+
+        // 3. Sticky tabs are always visible.
         double stickyWidth = 0;
         foreach (UIElement child in InternalChildren)
         {
-            if (IsSticky(child))
-                stickyWidth += child.DesiredSize.Width;
+            if (!IsSticky(child)) continue;
+            SetVisibility(child, Visibility.Visible);
+            stickyWidth += child.DesiredSize.Width;
+            usedWidth   += child.DesiredSize.Width;
         }
 
-        // Remaining space is distributed to non-sticky tabs in order.
-        double remainingWidth = availableSize.Width - stickyWidth;
+        double available = availableSize.Width - stickyWidth;
 
+        // 4. Build ordered list of non-sticky children.
+        var ns = new List<UIElement>(InternalChildren.Count);
         foreach (UIElement child in InternalChildren)
-        {
-            maxHeight = Math.Max(maxHeight, child.DesiredSize.Height);
+            if (!IsSticky(child)) ns.Add(child);
 
-            if (IsSticky(child))
+        if (ns.Count == 0)
+        {
+            HasOverflow = false;
+            return new Size(usedWidth, maxHeight);
+        }
+
+        // 5. Find the currently selected tab index.
+        int selIdx = -1;
+        for (int i = 0; i < ns.Count; i++)
+            if (ns[i] is TabItem { IsSelected: true }) { selIdx = i; break; }
+
+        // 6. Clamp _windowStart in case tabs were added/removed since last pass.
+        _windowStart = Math.Max(0, Math.Min(_windowStart, ns.Count - 1));
+
+        // 7. Adjust _windowStart to reveal the selected tab if it is outside the window.
+        //    Only acts when the tab has a cached natural width (i.e. was Visible at least once).
+        if (selIdx >= 0 && _naturalWidths.ContainsKey(ns[selIdx]))
+        {
+            int tempLast = ComputeLastFrom(ns, _windowStart, available);
+
+            if (selIdx < _windowStart)
             {
-                // Sticky tabs are always visible — they consume their reserved space.
-                child.Visibility = Visibility.Visible;
-                usedWidth += child.DesiredSize.Width;
+                // Selected tab is to the LEFT of the window — shift window left.
+                _windowStart = selIdx;
             }
-            else if (remainingWidth >= child.DesiredSize.Width)
+            else if (selIdx > tempLast)
             {
-                remainingWidth -= child.DesiredSize.Width;
-                usedWidth      += child.DesiredSize.Width;
-                child.Visibility = Visibility.Visible;
+                // Selected tab is to the RIGHT of the window — shift window right
+                // so the selected tab appears as the last visible tab.
+                _windowStart = ComputeFirstForLast(ns, selIdx, available);
             }
+            // else: already in window — no change to _windowStart.
+        }
+
+        // 8. Compute actual [first..last] from current _windowStart.
+        int first = _windowStart;
+        int last  = ComputeLastFrom(ns, first, available);
+
+        // 9. Extend the window left if there is unused space (e.g. after a tab is closed).
+        //    This prevents a gap on the right when space opens up.
+        {
+            double used = 0;
+            for (int i = first; i <= last; i++)
+                used += _naturalWidths.TryGetValue(ns[i], out double w) ? w : 0;
+            double leftover = available - used;
+            while (first > 0
+                   && _naturalWidths.TryGetValue(ns[first - 1], out double prevW)
+                   && leftover >= prevW)
+            {
+                first--;
+                leftover -= prevW;
+            }
+            _windowStart = first; // persist the adjusted start for stability
+        }
+
+        // 10. Apply visibility — only write when the value actually changes.
+        //     This suppresses spurious InvalidateMeasure() calls and prevents layout cycles.
+        for (int i = 0; i < ns.Count; i++)
+        {
+            bool show   = i >= first && i <= last;
+            var  target = show ? Visibility.Visible : Visibility.Collapsed;
+            SetVisibility(ns[i], target);
+
+            if (show)
+                usedWidth += _naturalWidths.TryGetValue(ns[i], out double w) ? w : ns[i].DesiredSize.Width;
             else
-            {
-                child.Visibility = Visibility.Collapsed;
-                OverflowItems.Add(child);
-            }
+                OverflowItems.Add(ns[i]);
         }
 
         HasOverflow = OverflowItems.Count > 0;
-
-        // C2: Ensure the selected tab is always visible — mirrors VS behavior.
-        // If the selected tab ended up in overflow, evict the rightmost non-sticky visible tab
-        // to make room for it.
-        EnsureSelectedTabVisible();
-
         return new Size(usedWidth, maxHeight);
     }
 
+    // -------------------------------------------------------------------------
+    // Window helpers
+    // -------------------------------------------------------------------------
+
     /// <summary>
-    /// If the currently selected TabItem is in the overflow list, swap it with the
-    /// rightmost visible non-sticky tab so it is always shown in the strip.
+    /// Returns the index of the last tab (inclusive) that fits when the window
+    /// starts at <paramref name="start"/> and has <paramref name="available"/> px.
+    /// Tabs with unknown cached width are included provisionally (they get cached
+    /// on the next pass once they are Visible and measured).
     /// </summary>
-    private void EnsureSelectedTabVisible()
+    private int ComputeLastFrom(List<UIElement> ns, int start, double available)
     {
-        // Find the selected tab that overflowed.
-        TabItem? selectedOverflow = null;
-        foreach (var item in OverflowItems)
+        double rem  = available;
+        int    last = start - 1;
+        for (int i = start; i < ns.Count; i++)
         {
-            if (item is TabItem { IsSelected: true } ti)
-            {
-                selectedOverflow = ti;
-                break;
-            }
+            double w = _naturalWidths.TryGetValue(ns[i], out double cw) ? cw : 0;
+            if (w > 0 && rem < w) break;
+            rem -= w;
+            last = i;
         }
+        return last;
+    }
 
-        if (selectedOverflow is null) return;
-
-        // Find the rightmost visible non-sticky tab to evict.
-        UIElement? candidate = null;
-        foreach (UIElement child in InternalChildren)
+    /// <summary>
+    /// Returns the first index such that the contiguous range
+    /// [first .. <paramref name="targetLast"/>] fits within <paramref name="available"/> px.
+    /// Used to shift the window right so that <paramref name="targetLast"/> is the
+    /// last (rightmost) visible tab.
+    /// </summary>
+    private int ComputeFirstForLast(List<UIElement> ns, int targetLast, double available)
+    {
+        double rem   = available;
+        int    first = targetLast;
+        for (int i = targetLast; i >= 0; i--)
         {
-            if (child.Visibility == Visibility.Visible && !IsSticky(child))
-                candidate = child; // keep updating — last one wins (rightmost)
+            double w = _naturalWidths.TryGetValue(ns[i], out double cw) ? cw : 0;
+            if (w > 0 && rem < w) break;
+            rem  -= w;
+            first = i;
         }
+        return Math.Min(first, targetLast);
+    }
 
-        if (candidate is null) return; // no evictable tab, can't help
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
 
-        // Swap: hide the candidate, show the selected overflow tab.
-        candidate.Visibility = Visibility.Collapsed;
-        OverflowItems.Remove(selectedOverflow);
-        OverflowItems.Insert(0, candidate); // push evicted tab to front of overflow list
-        selectedOverflow.Visibility = Visibility.Visible;
-        HasOverflow = OverflowItems.Count > 0;
-
-        // Mark the selected tab to be placed at the leftmost non-sticky position in ArrangeOverride,
-        // mimicking VS scroll-into-view-from-left behavior.
-        _forceFrontTab = selectedOverflow;
+    /// <summary>Only assigns Visibility when it differs from the current value.</summary>
+    private static void SetVisibility(UIElement element, Visibility target)
+    {
+        if (element.Visibility != target)
+            element.Visibility = target;
     }
 
     /// <summary>Returns true when the child is a TabItem whose DockItem has IsSticky set.</summary>
@@ -153,44 +241,12 @@ public class TabOverflowPanel : Panel
     protected override Size ArrangeOverride(Size finalSize)
     {
         var x = 0.0;
-
-        if (_forceFrontTab is null)
+        foreach (UIElement child in InternalChildren)
         {
-            // Normal case: single left-to-right pass in children order.
-            foreach (UIElement child in InternalChildren)
-            {
-                if (child.Visibility == Visibility.Collapsed) continue;
-                child.Arrange(new Rect(x, 0, child.DesiredSize.Width, finalSize.Height));
-                x += child.DesiredSize.Width;
-            }
+            if (child.Visibility == Visibility.Collapsed) continue;
+            child.Arrange(new Rect(x, 0, child.DesiredSize.Width, finalSize.Height));
+            x += child.DesiredSize.Width;
         }
-        else
-        {
-            // Force-front case: sticky tabs → forced tab → remaining non-sticky tabs.
-            // Sticky tabs keep their natural order and always appear at the left edge.
-            foreach (UIElement child in InternalChildren)
-            {
-                if (child.Visibility == Visibility.Collapsed || !IsSticky(child)) continue;
-                child.Arrange(new Rect(x, 0, child.DesiredSize.Width, finalSize.Height));
-                x += child.DesiredSize.Width;
-            }
-
-            // Place the forced tab immediately after stickies (leftmost non-sticky position).
-            if (_forceFrontTab.Visibility == Visibility.Visible)
-            {
-                _forceFrontTab.Arrange(new Rect(x, 0, _forceFrontTab.DesiredSize.Width, finalSize.Height));
-                x += _forceFrontTab.DesiredSize.Width;
-            }
-
-            // Remaining visible non-sticky tabs follow in their natural order.
-            foreach (UIElement child in InternalChildren)
-            {
-                if (child.Visibility == Visibility.Collapsed || IsSticky(child) || child == _forceFrontTab) continue;
-                child.Arrange(new Rect(x, 0, child.DesiredSize.Width, finalSize.Height));
-                x += child.DesiredSize.Width;
-            }
-        }
-
         return finalSize;
     }
 }

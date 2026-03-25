@@ -1,0 +1,25 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.LocalsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <TreeView ItemsSource="{Binding Variables}"
+              Background="{DynamicResource PanelBackground}"
+              Foreground="{DynamicResource PanelForeground}">
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type vm:VariableNode}"
+                                      ItemsSource="{Binding Children}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Name}"  FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="1" Text="{Binding Value}"  Foreground="{DynamicResource DB_LocalChangedBrush}" />
+                    <TextBlock Grid.Column="2" Text="{Binding Type}"   Foreground="{DynamicResource PanelForeground}" Opacity="0.6" />
+                </Grid>
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+    </TreeView>
+</UserControl>

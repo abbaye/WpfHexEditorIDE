@@ -11,4 +11,9 @@
          inbox assemblies in net8.0 — no NuGet PackageReference required. -->
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- ILSpy managed-assembly decompiler: used by IlSpyTypeDecompiler for full C# method bodies. -->
+    <PackageReference Include="ICSharpCode.Decompiler" Version="9.*" />
+  </ItemGroup>
+
 </Project>

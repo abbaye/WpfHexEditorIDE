@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using WpfHexEditor.BinaryAnalysis.Services;
+using WpfHexEditor.Core.BinaryAnalysis.Services;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Editor.EntropyViewer.Controls;

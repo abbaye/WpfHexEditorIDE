@@ -1,4 +1,4 @@
-﻿// ==========================================================
+// ==========================================================
 // Project: WpfHexEditor.Editor.XamlDesigner
 // File: Controls/GridGuideAdorner.cs
 // Author: Derek Tremblay

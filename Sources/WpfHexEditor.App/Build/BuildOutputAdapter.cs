@@ -17,8 +17,8 @@
 // ==========================================================
 
 using System.Windows.Media;
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Build;

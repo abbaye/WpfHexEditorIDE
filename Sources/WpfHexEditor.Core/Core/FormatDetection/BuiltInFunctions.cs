@@ -266,7 +266,7 @@ namespace WpfHexEditor.Core.FormatDetection
         }
 
         /// <summary>
-        /// Multiplies two numbers (for calculations like width × height).
+        /// Multiplies two numbers (for calculations like width Ã— height).
         /// Sets variable: calculatedSize
         /// </summary>
         /// <param name="a">First number</param>
@@ -1166,7 +1166,7 @@ namespace WpfHexEditor.Core.FormatDetection
                     1 => "PCM",
                     3 => "IEEE Float",
                     6 => "A-law",
-                    7 => "μ-law",
+                    7 => "Î¼-law",
                     65534 => "Extensible",
                     _ => $"Format {audioFormat}"
                 };

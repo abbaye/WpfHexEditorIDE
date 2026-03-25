@@ -18,7 +18,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.PluginHost.Services;
 
 namespace WpfHexEditor.PluginHost.UI.Options;

@@ -37,6 +37,7 @@ public sealed class VbNetDecompilationLanguage : IDecompilationLanguage
     public string  DisplayName        => "VB.NET";
     public string  FileExtension      => ".vb";
     public string? EditorLanguageName => "VB.NET";
+    public string  GlyphCode          => "\uE8C9"; // Segoe MDL2 "Tag"
 
     /// <inheritdoc/>
     /// <remarks>
@@ -74,9 +75,22 @@ public sealed class VbNetDecompilationLanguage : IDecompilationLanguage
         }
         catch (Exception ex)
         {
-            var header = $"' VB.NET conversion failed: {ex.GetType().Name}: {ex.Message}\n" +
-                         "' Showing original C# source instead.\n\n";
-            return (header + csharpCode, false);
+            // Unwrap the full exception chain so the diagnostic comment reveals the root cause
+            // (e.g. TargetInvocationException wraps the real FileNotFoundException / TypeLoadException).
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("' VB.NET conversion failed:");
+            var current = ex;
+            var depth = 0;
+            while (current != null && depth < 6)
+            {
+                var indent = depth == 0 ? "'   " : "'   " + new string(' ', depth * 2);
+                sb.AppendLine($"{indent}{current.GetType().Name}: {current.Message}");
+                current = current.InnerException;
+                depth++;
+            }
+            sb.AppendLine("' Showing original C# source instead.");
+            sb.AppendLine();
+            return (sb.ToString() + csharpCode, false);
         }
     }
 

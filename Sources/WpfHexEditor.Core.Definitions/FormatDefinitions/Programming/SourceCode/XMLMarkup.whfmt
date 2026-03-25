@@ -1,0 +1,140 @@
+/* ============================================================
+   Format:    XML Markup Source File
+   Category:  Programming
+   Ext:       .xsl, .xslt, .xhtml, .resx, .svg
+   Editor:    code-editor
+   Desc:      XML-derived markup source files: XSLT stylesheets, XHTML documents, .NET resource files, and SVG vector graphics.
+   Updated:   2026-03-22
+   ============================================================ */
+
+{
+  "formatName": "XML Markup Source File",
+  "version": "2.0",
+  "extensions": [
+    ".xsl",
+    ".xslt",
+    ".xhtml",
+    ".svg"
+  ],
+  "description": "XML-derived markup source files: XSLT stylesheets, XHTML documents, and SVG vector graphics.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-22",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "text/xml",
+    "image/svg+xml",
+    "text/html",
+    "text/x-xslt"
+  ],
+  "Software": [
+    "Visual Studio",
+    "VS Code",
+    "Altova XMLSpy"
+  ],
+  "UseCases": [
+    "XSLT transformations",
+    ".NET resource files",
+    "SVG vector graphics",
+    "XHTML web pages"
+  ],
+  "syntaxDefinition": {
+    "id": "xml_markup",
+    "name": "XML Markup",
+    "extensions": [
+      ".xml",
+      ".xsd",
+      ".xsl",
+      ".xslt",
+      ".rss",
+      ".atom",
+      ".svg",
+      ".nfo",
+      ".config",
+      ".csproj",
+      ".vbproj",
+      ".fsproj"
+    ],
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "ProcInstr",
+        "pattern": "<\\?[\\s\\S]*?\\?>",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "CData",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "DocType",
+        "pattern": "<!DOCTYPE[^>]*>",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "XmlNsDecl",
+        "pattern": "xmlns(?::[A-Za-z_][A-Za-z0-9_-]*)?\\s*=\\s*\"[^\"]*\"",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "TagOpenName",
+        "pattern": "(?<=<)[A-Za-z_][A-Za-z0-9_:.-]*",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "TagCloseName",
+        "pattern": "(?<=</)[A-Za-z_][A-Za-z0-9_:.-]*",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "AttrName",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_:-]*(?=\\s*=)",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "AttrValue",
+        "pattern": "\"[^\"]*\"",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Entity",
+        "pattern": "&(?:[A-Za-z]+|#[0-9]+|#x[0-9A-Fa-f]+);",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "TagBracket",
+        "pattern": "</?|/?>",
+        "colorKey": "TE_Operator"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!.*/>)[a-zA-Z]"
+      ],
+      "endPatterns": [
+        "</[a-zA-Z]",
+        "/>"
+      ],
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+    }
+  }
+}

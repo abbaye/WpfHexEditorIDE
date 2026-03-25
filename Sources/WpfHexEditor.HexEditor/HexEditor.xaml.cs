@@ -671,6 +671,19 @@ namespace WpfHexEditor.HexEditor
         public event EventHandler DataCopied;
 
         /// <summary>
+        /// Raised when the user requests to compare the current file with another file.
+        /// <c>null</c> FilePath means no file is open. Subscribe in the application shell
+        /// to delegate to <c>CompareFileLaunchService</c>.
+        /// </summary>
+        public event EventHandler<CompareFileRequestedEventArgs>? CompareFileRequested;
+
+        /// <summary>
+        /// Raised when the user requests to use the current byte selection as the LEFT side
+        /// of a comparison (writes selection to a temp file first).
+        /// </summary>
+        public event EventHandler<CompareFileRequestedEventArgs>? CompareSelectionRequested;
+
+        /// <summary>
         /// Raised when character table type changes
         /// </summary>
         public event EventHandler TypeOfCharacterTableChanged;
@@ -2331,28 +2344,31 @@ namespace WpfHexEditor.HexEditor
         {
             if (d is HexEditor editor && e.NewValue is string path && !string.IsNullOrEmpty(path))
             {
-                // CRITICAL: Prevent infinite recursion
-                // OpenFile sets FileName, which triggers this callback, which would call OpenFile again
-                if (editor._isOpeningFile)
-                    return;
-
-                // Auto-load file when FileName is set
-                // This enables the pattern: HexEdit.FileName = "file.bin" to automatically open the file
-                try
+                // CRITICAL: Prevent infinite recursion — only guard the OpenFile call,
+                // NOT the title notification below (which must always fire so the tab
+                // header reflects the correct name after an async open completes).
+                if (!editor._isOpeningFile)
                 {
-                    // Only open if different from current file and file exists
-                    if (path != e.OldValue?.ToString() && System.IO.File.Exists(path))
+                    // Auto-load file when FileName is set
+                    // This enables the pattern: HexEdit.FileName = "file.bin" to automatically open the file
+                    try
                     {
-                        editor.OpenFile(path);
+                        // Only open if different from current file and file exists
+                        if (path != e.OldValue?.ToString() && System.IO.File.Exists(path))
+                        {
+                            editor.OpenFile(path);
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    editor.StatusText.Text = $"Failed to open file: {ex.Message}";
+                    catch (Exception ex)
+                    {
+                        editor.StatusText.Text = $"Failed to open file: {ex.Message}";
+                    }
                 }
             }
 
-            // Notify IDocumentEditor subscribers that the title may have changed
+            // Notify IDocumentEditor subscribers that the title may have changed.
+            // Always fires — including when OpenFileCoreAsync sets FileName after async I/O
+            // completes — so the tab header is updated from "Untitled" to the real file name.
             if (d is HexEditor ed)
                 ed.RaiseDocumentEditorTitleChanged();
         }

@@ -16,7 +16,7 @@
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Plugins.SolutionLoader.VS.Templates;
-using WpfHexEditor.ProjectSystem.Templates;
+using WpfHexEditor.Core.ProjectSystem.Templates;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
 

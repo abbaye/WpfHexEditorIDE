@@ -23,9 +23,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfHexEditor.Definitions;
+using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Sample.CodeEditor.ViewModels;
 
 namespace WpfHexEditor.Sample.CodeEditor;

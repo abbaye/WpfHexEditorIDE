@@ -34,7 +34,7 @@
                 </Grid.ColumnDefinitions>
                 <local:TextViewport x:Name="Viewport"
                                     HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"/>
+                                    VerticalAlignment="Top"/>
             </Grid>
         </ScrollViewer>
 

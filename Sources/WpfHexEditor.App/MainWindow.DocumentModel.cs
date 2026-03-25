@@ -22,6 +22,7 @@
 //       ActiveDocumentEditor setter (host-routing concerns, not doc state).
 // ==========================================================
 
+using System.Linq;
 using System.Windows.Input;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Editor.Core;
@@ -86,6 +87,7 @@ public partial class MainWindow
 
         _documentManager.Register(item.ContentId, filePath, editorId, itemId);
         _documentManager.AttachEditor(item.ContentId, editor);
+        PushOpenDocumentsToErrorPanel();
     }
 
     /// <summary>
@@ -132,6 +134,18 @@ public partial class MainWindow
         }
 
         CommandManager.InvalidateRequerySuggested();
+        PushChangedDocumentsToErrorPanel();
+    }
+
+    private void PushChangedDocumentsToErrorPanel()
+    {
+        if (_errorPanel is null) return;
+        var paths = _documentManager.GetDirty()
+            .Select(d => d.FilePath)
+            .Where(p => !string.IsNullOrEmpty(p))
+            .Cast<string>()
+            .ToList();
+        _errorPanel.SetChangedDocuments(paths);
     }
 
     /// <summary>
@@ -157,7 +171,7 @@ public partial class MainWindow
     /// </summary>
     private static bool IsChangesetEnabledForEditor(
         System.Windows.UIElement ctrl,
-        WpfHexEditor.Options.AppSettings settings)
+        WpfHexEditor.Core.Options.AppSettings settings)
         => ctrl switch
         {
             WpfHexEditor.HexEditor.HexEditor                        => true,
@@ -175,6 +189,6 @@ public partial class MainWindow
     {
         if (!IsTrackedProjectItem(item)) return false;
         if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return false;
-        return IsChangesetEnabledForEditor(ctrl, WpfHexEditor.Options.AppSettingsService.Instance.Current);
+        return IsChangesetEnabledForEditor(ctrl, WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
     }
 }

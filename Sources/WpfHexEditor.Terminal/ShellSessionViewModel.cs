@@ -30,7 +30,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.Terminal.Macros;
 using WpfHexEditor.Core.Terminal.ShellSession;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 
@@ -266,6 +266,11 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
         // Start external shell immediately if not HxTerminal.
         if (session.ShellType != TerminalShellType.HxTerminal)
             _ = StartExternalShellAsync();
+        else
+        {
+            WriteInfo("WpfHexEditor HxTerminal  —  type 'help' for a list of built-in commands.");
+            WriteInfo($"Working directory: {_workingDirectory}");
+        }
     }
 
     // -- Public API ---------------------------------------------------------------
@@ -332,6 +337,7 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
             RedirectStandardError  = true,
             StandardOutputEncoding = encoding,
             StandardErrorEncoding  = encoding,
+            WorkingDirectory       = Session.WorkingDirectory,
         };
 
         var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
@@ -380,12 +386,68 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
 
     private async Task PipeReaderAsync(StreamReader reader, TerminalOutputKind kind)
     {
+        const int BufSize       = 4096;
+        const int PromptTimeout = 150; // ms — flush incomplete lines (prompts) after this silence
+
+        var charBuf = new char[BufSize];
+        var lineBuf = new StringBuilder();
+
         try
         {
-            while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line)
-                AppendLine(line, kind);
+            while (true)
+            {
+                int read;
+
+                if (lineBuf.Length > 0)
+                {
+                    // Partial content in buffer: use a timeout so shell prompts
+                    // (which have no trailing '\n') are flushed after a brief silence.
+                    using var cts = new CancellationTokenSource(PromptTimeout);
+                    try
+                    {
+                        read = await reader.ReadAsync(charBuf.AsMemory(0, BufSize), cts.Token)
+                                           .ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Timeout: emit the accumulated prompt text as a partial line.
+                        AppendLine(lineBuf.ToString(), kind);
+                        lineBuf.Clear();
+                        continue;
+                    }
+                }
+                else
+                {
+                    // No pending partial content — wait indefinitely (no CTS overhead).
+                    read = await reader.ReadAsync(charBuf.AsMemory(0, BufSize))
+                                       .ConfigureAwait(false);
+                }
+
+                if (read == 0) break; // EOF / process exited
+
+                for (int i = 0; i < read; i++)
+                {
+                    char c = charBuf[i];
+                    if (c == '\n')
+                    {
+                        // Strip trailing '\r' for Windows CRLF sequences.
+                        if (lineBuf.Length > 0 && lineBuf[^1] == '\r')
+                            lineBuf.Length--;
+                        AppendLine(lineBuf.ToString(), kind);
+                        lineBuf.Clear();
+                    }
+                    else if (c != '\r')
+                    {
+                        lineBuf.Append(c);
+                    }
+                }
+            }
         }
         catch { /* stream closed when process exits */ }
+
+        // Flush any remaining partial content.
+        if (lineBuf.Length > 0)
+            AppendLine(lineBuf.ToString(), kind);
     }
 
     // -- Command execution --------------------------------------------------------
@@ -592,7 +654,11 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
 
     private sealed class RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand
     {
-        public event EventHandler? CanExecuteChanged { add { } remove { } }
+        public event EventHandler? CanExecuteChanged
+        {
+            add    => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
         public bool CanExecute(object? parameter) => canExecute?.Invoke(parameter) ?? true;
         public void Execute(object? parameter) => execute(parameter);
     }

@@ -7,8 +7,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using WpfHexEditor.BinaryAnalysis.Models.Patterns;
-using WpfHexEditor.BinaryAnalysis.Services;
+using WpfHexEditor.Core.BinaryAnalysis.Models.Patterns;
+using WpfHexEditor.Core.BinaryAnalysis.Services;
 
 namespace WpfHexEditor.BinaryAnalysis.Tests.Services
 {

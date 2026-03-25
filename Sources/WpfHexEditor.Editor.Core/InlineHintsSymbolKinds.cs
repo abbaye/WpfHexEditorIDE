@@ -8,7 +8,7 @@
 //     Flags enum for filtering which symbol kinds display
 //     inline reference-count hints in the CodeEditor.
 //     Shared between WpfHexEditor.Editor.CodeEditor (rendering)
-//     and WpfHexEditor.Options (settings page).
+//     and WpfHexEditor.Core.Options (settings page).
 //
 // Architecture Notes:
 //     Pattern: Value Object / Flags Enum.

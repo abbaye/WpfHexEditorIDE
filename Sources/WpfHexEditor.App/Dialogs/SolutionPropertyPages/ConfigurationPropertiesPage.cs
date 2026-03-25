@@ -17,7 +17,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App.Dialogs.SolutionPropertyPages;

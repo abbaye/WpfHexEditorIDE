@@ -101,9 +101,10 @@ public sealed class DecompilerService
             var methodDef = mdReader.GetMethodDefinition(handle);
 
             var ilText = _il.EmitMethod(methodDef, mdReader, pe);
-            return string.IsNullOrEmpty(ilText)
-                ? "// No IL body — abstract, extern, or interface method."
-                : ilText;
+            // RVA=0 has multiple legitimate causes: abstract/extern/interface, CLR-
+            // generated delegate stubs (Invoke/BeginInvoke/EndInvoke), or reference
+            // assemblies that ship signatures only (no implementation).
+            return string.IsNullOrEmpty(ilText) ? string.Empty : ilText;
         }
         catch (Exception ex)
         {

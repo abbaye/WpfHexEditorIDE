@@ -154,22 +154,22 @@ namespace WpfHexEditor.Panels.FileOps
             set { _isExpanded = value; OnPropertyChanged(); }
         }
 
-        public string Icon => IsFolder ? "📁" : GetFileIcon();
+        public string Icon => IsFolder ? "ðŸ“" : GetFileIcon();
         public string SizeInfo => IsFolder ? "" : $"({FormatSize(Size)})";
-        public string StatusIcon => Crc != null && Crc.Contains("FAIL") ? "⚠️" : "";
+        public string StatusIcon => Crc != null && Crc.Contains("FAIL") ? "âš ï¸" : "";
 
         private string GetFileIcon()
         {
             var ext = System.IO.Path.GetExtension(Name)?.ToLowerInvariant();
             return ext switch
             {
-                ".txt" or ".md" => "📄",
-                ".jpg" or ".png" or ".gif" => "🖼️",
-                ".zip" or ".rar" or ".7z" => "📦",
-                ".exe" or ".dll" => "⚙️",
-                ".mp3" or ".wav" => "🎵",
-                ".mp4" or ".avi" => "🎬",
-                _ => "📄"
+                ".txt" or ".md" => "ðŸ“„",
+                ".jpg" or ".png" or ".gif" => "ðŸ–¼ï¸",
+                ".zip" or ".rar" or ".7z" => "ðŸ“¦",
+                ".exe" or ".dll" => "âš™ï¸",
+                ".mp3" or ".wav" => "ðŸŽµ",
+                ".mp4" or ".avi" => "ðŸŽ¬",
+                _ => "ðŸ“„"
             };
         }
 

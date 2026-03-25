@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -33,7 +33,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     private RegexSyntaxHighlighter? _highlighter;
     private IContextualHighlighter? _contextualHighlighter;
 
-    // Incremental max-width tracking (P1-TE-01) â€” O(1) on growth, O(n) only on shrink
+    // Incremental max-width tracking (P1-TE-01) — O(1) on growth, O(n) only on shrink
     private int _cachedMaxLineLength;
 
     // Background highlight pipeline (P1-TE-06)
@@ -163,13 +163,13 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
     // Per-line highlight cache: null means "needs recompute".
-    // List<T> uses doubling strategy â†’ O(n) total copy work vs O(nÂ²) for chunk-64 Array.Resize.
-    // List element assignment is atomic for reference types â†’ safe for concurrent background writes.
+    // List<T> uses doubling strategy → O(n) total copy work vs O(nÂ²) for chunk-64 Array.Resize.
+    // List element assignment is atomic for reference types → safe for concurrent background writes.
     private readonly List<IReadOnlyList<ColoredSpan>?> _highlightCache = new(256);
 
     /// <summary>
     /// Returns cached highlight spans for <paramref name="lineIndex"/>.
-    /// Returns empty immediately if not yet computed â€” caller should invoke
+    /// Returns empty immediately if not yet computed — caller should invoke
     /// <see cref="ScheduleHighlightAsync"/> to populate in the background.
     /// </summary>
     public IReadOnlyList<ColoredSpan> GetHighlightedSpans(int lineIndex)
@@ -179,7 +179,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
         GrowHighlightCacheIfNeeded(lineIndex);
 
-        // Return cached result (may be null â†’ render plain, background will fill later).
+        // Return cached result (may be null → render plain, background will fill later).
         return _highlightCache[lineIndex] ?? [];
     }
 
@@ -216,7 +216,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _highlightCts = new CancellationTokenSource();
         var token = _highlightCts.Token;
 
-        // Extend buffer â€” pre-warm nearby lines for smooth scrolling
+        // Extend buffer — pre-warm nearby lines for smooth scrolling
         int bufStart = Math.Max(0, firstVisible - 20);
         int bufEnd   = Math.Min(_lines.Count - 1, lastVisible + 20);
         if (bufEnd < bufStart) return;
@@ -254,6 +254,12 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 ? contextualHighlighter.BuildContext(linesSnapshot)
                 : null;
 
+            // Track whether any line was actually (re-)highlighted this run.
+            // When all lines are cache-hits (needed[i]=false for every i), there is no new
+            // highlight data and posting HighlightsComputed would trigger an unnecessary
+            // full re-render — creating an infinite DoFullRender ↔ HighlightsComputed loop.
+            bool anyHighlighted = false;
+
             // Pass 1 — visible range first (lowest latency)
             for (int i = 0; i < count && !token.IsCancellationRequested; i++)
             {
@@ -263,7 +269,10 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                     ? contextualHighlighter!.Highlight(texts[i], indices[i], ctx)
                     : highlighter!.Highlight(texts[i]);
                 if (li < cache.Count && !token.IsCancellationRequested)
-                    cache[li] = result;
+                {
+                    cache[li]      = result;
+                    anyHighlighted = true;
+                }
             }
 
             // Pass 2 — buffer lines (smoother pre-fetch for upcoming scroll)
@@ -275,10 +284,17 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                     ? contextualHighlighter!.Highlight(texts[i], indices[i], ctx)
                     : highlighter!.Highlight(texts[i]);
                 if (li < cache.Count && !token.IsCancellationRequested)
-                    cache[li] = result;
+                {
+                    cache[li]      = result;
+                    anyHighlighted = true;
+                }
             }
 
-            if (!token.IsCancellationRequested && syncCtx is not null)
+            // Only notify the viewport when there is actually new highlight data.
+            // Skipping the notification when anyHighlighted=false breaks the infinite
+            // render loop: DoFullRender → ScheduleHighlightAsync (cache-hit, no work)
+            // → HighlightsComputed → QueueFullRender → DoFullRender → …
+            if (!token.IsCancellationRequested && syncCtx is not null && anyHighlighted)
             {
                 int completedFirst = firstVisible;
                 int completedLast  = Math.Min(lastVisible, bufEnd);
@@ -304,7 +320,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _caretLine = 0;
         _caretColumn = 0;
         _selAnchorLine = -1;
-        // Single O(n) scan at load time â€” acceptable cost
+        // Single O(n) scan at load time — acceptable cost
         RebuildMaxLineLength();
         InvalidateHighlightCache();
         OnPropertyChanged(nameof(Lines));
@@ -355,7 +371,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _undoEngine.Push(edit);
             _caretLine++;
             _caretColumn = 0;
-            // Newline splits line â€” both halves are shorter; max may have decreased
+            // Newline splits line — both halves are shorter; max may have decreased
             OnLineLengthMayHaveShrunk();
             InvalidateHighlightCache(splitLine);
         }
@@ -392,7 +408,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         }
         else if (_caretLine > 0)
         {
-            // Merge with previous line â€” merged line can be longer than either half
+            // Merge with previous line — merged line can be longer than either half
             var prevLine  = _lines[_caretLine - 1];
             var curLine   = _lines[_caretLine];
             var merged    = prevLine + curLine;
@@ -520,7 +536,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 break;
             case TextEditType.NewLine:
                 // OldText = "before" (prefix up to col), NewText = "after" (suffix from col).
-                // Restore both halves explicitly â€” OldText[col..] would always be "" and is wrong.
+                // Restore both halves explicitly — OldText[col..] would always be "" and is wrong.
                 _lines[edit.Line] = edit.OldText ?? string.Empty;
                 _lines.Insert(edit.Line + 1, edit.NewText ?? string.Empty);
                 _caretLine++;
@@ -537,7 +553,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             case TextEditType.Replace:
             {
                 // Redo a multi-line selection delete.
-                // edit.Text    = selected text (\n-separated) â€” tells us how many lines to remove.
+                // edit.Text    = selected text (\n-separated) — tells us how many lines to remove.
                 // At redo time the lines have been restored by the undo, so we re-merge them.
                 var parts   = edit.Text.Split('\n');
                 int endLine = edit.Line + parts.Length - 1;
@@ -748,13 +764,16 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     public async Task LoadFileAsync(string filePath, Encoding? encoding = null, CancellationToken ct = default)
     {
         encoding ??= Encoding.UTF8;
-        var text = await File.ReadAllTextAsync(filePath, encoding, ct);
+        string text;
+        using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (var sr = new StreamReader(fs, encoding))
+            text = await sr.ReadToEndAsync(ct).ConfigureAwait(false);
 
-        // SplitLines is pure computation (no WPF access) â€” safe on background thread.
+        // SplitLines is pure computation (no WPF access) — safe on background thread.
         // This prevents the UI thread from being blocked on large file parsing.
         var splitLines = await Task.Run(() => SplitLines(text).ToList(), ct);
 
-        // UI-thread section: minimal work â€” only a List<string> swap
+        // UI-thread section: minimal work — only a List<string> swap
         FilePath = filePath;
         Encoding = encoding;
         _lines.Clear();
@@ -788,7 +807,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
     // -- Max-width incremental tracking (P1-TE-01) -------------------------
 
-    /// <summary>O(1) â€” called when a line grows (insert, merge).</summary>
+    /// <summary>O(1) — called when a line grows (insert, merge).</summary>
     private void OnLineLengthGrew(int lineIndex)
     {
         if (lineIndex >= 0 && lineIndex < _lines.Count)
@@ -802,7 +821,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         }
     }
 
-    /// <summary>O(n) â€” called only when a line may have shrunk (delete, split, paste-delete).</summary>
+    /// <summary>O(n) — called only when a line may have shrunk (delete, split, paste-delete).</summary>
     private void OnLineLengthMayHaveShrunk()
     {
         var prev = _cachedMaxLineLength;
@@ -811,7 +830,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(MaxLineLength));
     }
 
-    /// <summary>Full O(n) rebuild â€” used at initial load only.</summary>
+    /// <summary>Full O(n) rebuild — used at initial load only.</summary>
     private void RebuildMaxLineLength()
     {
         _cachedMaxLineLength = _lines.Count > 0 ? _lines.Max(l => l.Length) : 0;

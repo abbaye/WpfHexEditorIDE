@@ -31,6 +31,7 @@ namespace WpfHexEditor.Core
         #region Private Fields
 
         private SolidColorBrush _color = Brushes.Transparent;
+        private System.Windows.Media.Color _colorValue = Colors.Transparent;
         private SolidColorBrush _cachedTransparentBrush;
         private bool _brushCacheValid = false;
         private double _opacity = 0.3;
@@ -117,6 +118,7 @@ namespace WpfHexEditor.Core
             set
             {
                 _color = value;
+                _colorValue = value?.Color ?? Colors.Transparent;
                 InvalidateBrushCache();
             }
         }
@@ -214,8 +216,8 @@ namespace WpfHexEditor.Core
             // Create new brush with opacity
             if (Color != null)
             {
-                _cachedTransparentBrush = Color.Clone();
-                _cachedTransparentBrush.Opacity = Opacity;
+                // Use the cached Color struct (value type) to avoid cross-thread DependencyObject access
+                _cachedTransparentBrush = new SolidColorBrush(_colorValue) { Opacity = Opacity };
 
                 // Freeze for performance (WPF pattern from HexViewport)
                 if (_cachedTransparentBrush.CanFreeze)

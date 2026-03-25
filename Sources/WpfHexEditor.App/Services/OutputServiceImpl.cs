@@ -55,6 +55,13 @@ public sealed class OutputServiceImpl : IOutputService
                     OutputLogger.BuildInfo(message);
                 break;
 
+            case OutputLogger.SourceUnitTesting:
+                if (message.StartsWith("[Error]", StringComparison.OrdinalIgnoreCase))
+                    OutputLogger.TestError(message);
+                else
+                    OutputLogger.TestRaw(message);
+                break;
+
             default:
                 OutputLogger.Info($"[{category}] {message}");
                 break;

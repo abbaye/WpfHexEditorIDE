@@ -17,7 +17,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Threading;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;

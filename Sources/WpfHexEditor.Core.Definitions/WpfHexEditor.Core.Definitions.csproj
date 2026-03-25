@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>WpfHexEditor.Core.Definitions</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core.Definitions</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Embedded definition files (.whfmt format definitions) and their catalog services.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- Embedded definition resources -->
+  <ItemGroup>
+    <EmbeddedResource Include="FormatDefinitions\**\*.whfmt" />
+    <EmbeddedResource Include="FormatDefinitions\**\*.grammar" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+  </ItemGroup>
+
+</Project>

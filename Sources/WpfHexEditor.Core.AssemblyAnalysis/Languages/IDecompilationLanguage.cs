@@ -54,6 +54,12 @@ public interface IDecompilationLanguage
     string? EditorLanguageName { get; }
 
     /// <summary>
+    /// Segoe MDL2 Assets glyph code used for menu icons and toolbar buttons.
+    /// Examples: "\uE943" (Code), "\uE8C9" (Tag), "\uE72E" (List).
+    /// </summary>
+    string GlyphCode { get; }
+
+    /// <summary>
     /// Transforms ILSpy C# output into this language.
     /// The C# passthrough implementation returns the input unchanged.
     /// <para>

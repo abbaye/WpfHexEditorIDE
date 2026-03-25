@@ -19,7 +19,7 @@ using WpfHexEditor.App.Models;
 using WpfHexEditor.App.Options;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App;
 

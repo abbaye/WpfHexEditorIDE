@@ -32,7 +32,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.CodeEditor.Options;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
@@ -78,6 +78,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private FoldPeekPopup?   _foldPeekPopup;
         private System.Windows.Threading.DispatcherTimer? _foldPeekTimer;
         private int              _foldPeekTargetLine = -1;
+
+        // End-of-block hint popup — shown on hover over }, #endregion, </Tag> etc.
+        private EndBlockHintPopup? _endBlockHintPopup;
+        private System.Windows.Threading.DispatcherTimer? _endBlockHintTimer;
+        private int                _endBlockHintHoveredLine = -1;
+        private FoldingRegion?     _endBlockHintActiveRegion;
 
         // The URL zone currently under the mouse pointer (null = none).
         // Drives hover underline; changing it triggers InvalidateVisual().
@@ -386,6 +392,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Folding support (Phase B3).
         private FoldingEngine?  _foldingEngine;
         private GutterControl?  _gutterControl;
+
+        // Breakpoint gutter (ADR-DBG-01).
+        private BreakpointGutterControl? _breakpointGutterControl;
+        // 1-based execution line (null when no debug session is paused).
+        private int? _executionLineOneBased;
+
+        // Breakpoint placement validation + info popup (ADR-DBG-BP-01).
+        private IBreakpointSource?      _bpSource;
+        private BreakpointInfoPopup?    _bpInfoPopup;
+        private IReadOnlyList<Regex>    _bpNonExecutableRegexes = Array.Empty<Regex>();
 
         // True between the first Ctrl+M press and the second chord key (outlining commands).
         private bool _outlineChordPending;
@@ -728,6 +744,47 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 TimeSpan.FromMilliseconds(Math.Max(200, (int)e.NewValue)));
         }
 
+        // ── End-of-Block Hint DPs ─────────────────────────────────────────────
+
+        public static readonly DependencyProperty ShowEndOfBlockHintProperty =
+            DependencyProperty.Register(nameof(ShowEndOfBlockHint), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnShowEndOfBlockHintChanged));
+
+        [Category("Features")]
+        [DisplayName("Show End-of-Block Hint")]
+        [Description("When true, hovering over }, #endregion, </Tag> shows the matching opening line(s).")]
+        public bool ShowEndOfBlockHint
+        {
+            get => (bool)GetValue(ShowEndOfBlockHintProperty);
+            set => SetValue(ShowEndOfBlockHintProperty, value);
+        }
+
+        private static void OnShowEndOfBlockHintChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || (bool)e.NewValue) return;
+            ce.DismissEndBlockHint();
+        }
+
+        public static readonly DependencyProperty EndOfBlockHintDelayMsProperty =
+            DependencyProperty.Register(nameof(EndOfBlockHintDelayMs), typeof(int), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(600, OnEndOfBlockHintDelayChanged));
+
+        [Category("Features")]
+        [DisplayName("End-of-Block Hint Delay (ms)")]
+        [Description("Hover dwell time in milliseconds before the end-of-block hint popup appears (100–2000 ms).")]
+        public int EndOfBlockHintDelayMs
+        {
+            get => (int)GetValue(EndOfBlockHintDelayMsProperty);
+            set => SetValue(EndOfBlockHintDelayMsProperty, value);
+        }
+
+        private static void OnEndOfBlockHintDelayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || ce._endBlockHintTimer is null) return;
+            ce._endBlockHintTimer.Interval = TimeSpan.FromMilliseconds(
+                Math.Clamp((int)e.NewValue, 100, 2000));
+        }
+
         // ── Language Definition DP ─────────────────────────────────────────────
 
         public static readonly DependencyProperty LanguageProperty =
@@ -764,6 +821,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 editor._foldingEngine.Analyze(editor._document.Lines);
                 editor.InvalidateVisual();
             }
+
+            // Compile breakpoint placement validation regexes from BreakpointRules.
+            editor.RebuildBreakpointValidation(newLang);
+        }
+
+        private void RebuildBreakpointValidation(LanguageDefinition? lang)
+        {
+            var patterns = lang?.BreakpointRules?.NonExecutablePatterns ?? Array.Empty<string>();
+            var compiled = new List<Regex>(patterns.Count);
+            foreach (var p in patterns)
+            {
+                try   { compiled.Add(new Regex(p, RegexOptions.Compiled)); }
+                catch { /* malformed pattern — skip silently */              }
+            }
+            _bpNonExecutableRegexes = compiled;
+
+            if (_breakpointGutterControl is null) return;
+            _breakpointGutterControl.ValidateLine = compiled.Count == 0
+                ? (Func<int, bool>?)null
+                : line =>
+                {
+                    string text = (line >= 1 && line <= _document?.Lines.Count)
+                        ? (_document.Lines[line - 1].Text ?? string.Empty)
+                        : string.Empty;
+                    foreach (var r in _bpNonExecutableRegexes)
+                        if (r.IsMatch(text)) return false;
+                    return true;
+                };
         }
 
         public static readonly DependencyProperty EnableValidationProperty =
@@ -1870,6 +1955,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldingEngine.RegionsChanged += (_, _) => { _linePositionsDirty = true; InvalidateMeasure(); InvalidateVisual(); };
             _scrollBarChildren.Add(_gutterControl);
 
+            // Breakpoint gutter (ADR-DBG-01): positioned to the left of fold markers.
+            _breakpointGutterControl = new BreakpointGutterControl();
+            _breakpointGutterControl.RightClickRequested += OnBreakpointRightClick;
+            _scrollBarChildren.Add(_breakpointGutterControl);
+
             // Initialize word-highlight scroll marker overlay.
             _codeScrollMarkerPanel = new CodeScrollMarkerPanel();
             _scrollBarChildren.Add(_codeScrollMarkerPanel); // renders on top of _vScrollBar
@@ -1892,6 +1982,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldPeekTimer          = new System.Windows.Threading.DispatcherTimer
                                       { Interval = TimeSpan.FromMilliseconds(600) };
             _foldPeekTimer.Tick    += OnFoldPeekTimerTick;
+
+            // End-of-block hint timer — fires after hover dwell on a closing token.
+            _endBlockHintTimer       = new System.Windows.Threading.DispatcherTimer
+                                       { Interval = TimeSpan.FromMilliseconds(600) }; // default; updated via EndOfBlockHintDelayMs DP
+            _endBlockHintTimer.Tick += OnEndBlockHintTimerTick;
 
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
@@ -1998,6 +2093,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ShowInlineHints             = options.ShowInlineHints;
             InlineHintsVisibleKinds     = options.InlineHintsVisibleKinds;
             EnableWordHighlight      = options.EnableWordHighlight;
+            ShowEndOfBlockHint      = options.ShowEndOfBlockHint;
+            EndOfBlockHintDelayMs   = options.EndOfBlockHintDelayMs;
 
             // Syntax color overrides — set local value to override the DynamicResource binding.
             // A null override clears the local value so DynamicResource (CE_*) takes effect again.
@@ -2503,12 +2600,45 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             renameMenuItem.Click += (_, _) => _ = StartRenameAsync();
             contextMenu.Items.Add(renameMenuItem);
 
+            // Go to Definition (F12)
+            var goToDefMenuItem = new MenuItem
+            {
+                Header           = "_Go to Definition",
+                InputGestureText = "F12",
+                Icon             = MakeMenuIcon("\uE8A9"),
+            };
+            goToDefMenuItem.Click += (_, _) => _ = GoToDefinitionAtCaretAsync();
+            contextMenu.Items.Add(goToDefMenuItem);
+
+            // Go to Implementation (Ctrl+F12)
+            var goToImplMenuItem = new MenuItem
+            {
+                Header           = "Go to _Implementation",
+                InputGestureText = "Ctrl+F12",
+                Icon             = MakeMenuIcon("\uE8A9"),
+            };
+            goToImplMenuItem.Click += (_, _) => _ = GoToImplementationAtCaretAsync();
+            contextMenu.Items.Add(goToImplMenuItem);
+
+            // Peek Definition (Alt+F12)
+            var peekDefMenuItem = new MenuItem
+            {
+                Header           = "_Peek Definition",
+                InputGestureText = "Alt+F12",
+                Icon             = MakeMenuIcon("\uE7C3"),
+            };
+            peekDefMenuItem.Click += (_, _) => _ = ShowPeekDefinitionAsync();
+            contextMenu.Items.Add(peekDefMenuItem);
+
             // Enable/disable LSP items based on whether a client is active.
             contextMenu.Opened += (_, _) =>
             {
                 var lspActive = _lspClient is not null;
-                quickFixMenuItem.IsEnabled = lspActive;
-                renameMenuItem.IsEnabled   = lspActive;
+                quickFixMenuItem.IsEnabled  = lspActive;
+                renameMenuItem.IsEnabled    = lspActive;
+                goToDefMenuItem.IsEnabled   = lspActive;
+                goToImplMenuItem.IsEnabled  = lspActive;
+                peekDefMenuItem.IsEnabled   = lspActive;
             };
 
             // Separator
@@ -3661,6 +3791,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 3. Current line highlight (spans visible text area, no H offset)
             RenderCurrentLineHighlight(dc, contentW, contentH);
 
+            // 3a. Execution line highlight — yellow tint across the full text area when debugger is paused.
+            if (_executionLineOneBased.HasValue)
+            {
+                int execLine0 = _executionLineOneBased.Value - 1;
+                if (_lineYLookup.TryGetValue(execLine0, out double execY))
+                {
+                    var execBrush = TryFindResource("DB_ExecutionLineBackgroundBrush") as System.Windows.Media.Brush
+                                    ?? new System.Windows.Media.SolidColorBrush(
+                                           System.Windows.Media.Color.FromArgb(0x40, 0xFF, 0xDD, 0x00));
+                    dc.DrawRectangle(execBrush, null,
+                        new Rect(textLeft, execY, Math.Max(0, contentW - textLeft), _lineHeight));
+                }
+            }
+
             // -- Text area clip + horizontal translate -------------------
             dc.PushClip(new RectangleGeometry(new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
 
@@ -3822,13 +3966,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Overlay scroll marker panel on top of the vertical scrollbar (click-through).
             _codeScrollMarkerPanel?.Arrange(vScrollRect);
 
-            // Arrange the folding gutter flush against the left edge (inside the line-number strip).
+            // Breakpoint gutter: leftmost strip at x=0.
+            if (_breakpointGutterControl != null)
+            {
+                bool showBp = ShowLineNumbers;
+                _breakpointGutterControl.Visibility = showBp ? Visibility.Visible : Visibility.Collapsed;
+                _breakpointGutterControl.Arrange(showBp
+                    ? new Rect(0, 0, BreakpointGutterControl.GutterWidth, contentH)
+                    : new Rect(0, 0, 0, 0));
+            }
+
+            // Arrange the folding gutter immediately right of the breakpoint gutter (no overlap).
             if (_gutterControl != null)
             {
                 bool showGutter = IsFoldingEnabled && ShowLineNumbers;
                 _gutterControl.Visibility = showGutter ? Visibility.Visible : Visibility.Collapsed;
                 _gutterControl.Arrange(showGutter
-                    ? new Rect(0, 0, _gutterControl.Width, contentH)
+                    ? new Rect(BreakpointGutterControl.GutterWidth, 0, _gutterControl.Width, contentH)
                     : new Rect(0, 0, 0, 0));
             }
 
@@ -4043,6 +4197,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 : 0.0;
             _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
                                    TopMargin, gutterScrollFraction, _lineYLookup);
+
+            // Sync breakpoint gutter with same visible range + gutter background brush.
+            var bpBg = TryFindResource("LineNumberBackground") as System.Windows.Media.Brush
+                    ?? System.Windows.Media.Brushes.Transparent;
+            _breakpointGutterControl?.Update(
+                _lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin, _lineYLookup, bpBg);
         }
 
         /// <summary>
@@ -5470,6 +5630,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
+            // F12 — Go to Definition
+            if (e.Key == Key.F12 && !ctrlPressed && !shiftPressed && !altPressed)
+            {
+                e.Handled = true;
+                _ = GoToDefinitionAtCaretAsync();
+                return;
+            }
+
+            // Alt+F12 — Peek Definition (inline popup)
+            if (e.Key == Key.F12 && altPressed && !ctrlPressed && !shiftPressed)
+            {
+                e.Handled = true;
+                _ = ShowPeekDefinitionAsync();
+                return;
+            }
+
+            // Ctrl+F12 — Go to Implementation
+            if (e.Key == Key.F12 && ctrlPressed && !shiftPressed && !altPressed)
+            {
+                e.Handled = true;
+                _ = GoToImplementationAtCaretAsync();
+                return;
+            }
+
+            // Alt+Left — Navigate Back
+            if (e.Key == Key.Left && altPressed && !ctrlPressed && !shiftPressed)
+            {
+                e.Handled = true;
+                NavigateBack();
+                return;
+            }
+
+            // Alt+Right — Navigate Forward
+            if (e.Key == Key.Right && altPressed && !ctrlPressed && !shiftPressed)
+            {
+                e.Handled = true;
+                NavigateForward();
+                return;
+            }
+
             // Cancel any pending outline chord on any key press without Ctrl held.
             if (!ctrlPressed) _outlineChordPending = false;
 
@@ -5705,7 +5905,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     // Dismiss Quick Info popup on Escape.
                     _quickInfoPopup?.Hide();
                     _hoverQuickInfoService?.Cancel();
-                    e.Handled = _quickInfoPopup?.IsShowing == true;
+                    // Dismiss end-of-block hint on Escape.
+                    DismissEndBlockHint();
+                    e.Handled = _quickInfoPopup?.IsShowing == true || _endBlockHintPopup?.IsOpen == true;
                     break;
             }
 
@@ -5852,6 +6054,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldPeekTargetLine = -1;
             _foldPeekTimer?.Stop();
             _foldPeekPopup?.Hide();
+
+            // Start end-block hint grace timer — popup stays open 200 ms so mouse can enter it.
+            _endBlockHintTimer?.Stop();
+            _endBlockHintHoveredLine  = -1;
+            _endBlockHintActiveRegion = null;
+            _endBlockHintPopup?.OnEditorMouseLeft();
 
             // Start Quick Info grace timer — popup stays open for 200 ms so mouse can enter it.
             _quickInfoPopup?.OnEditorMouseLeft();
@@ -6260,6 +6468,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _quickInfoPopup?.Hide();
+            DismissEndBlockHint();
 
             // Ctrl + wheel → zoom in / out (B6).
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -6613,6 +6822,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Quick Info hover — dispatch after cursor state is settled
                 if (ShowQuickInfo && _hoverQuickInfoService is not null && !_isSelecting)
                     HandleQuickInfoHover(hoverPos, e.GetPosition(this));
+
+                // End-of-block hint — show popup when cursor is on a region's closing line.
+                HandleEndBlockHintHover(hoverPos.Line);
 
                 // Ctrl+hover symbol underline.
                 // Enabled when: (a) no LanguageDefinition is registered for this file type
@@ -7459,6 +7671,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Dismiss Quick Info when the document changes — content is stale.
             _quickInfoPopup?.Hide();
             _hoverQuickInfoService?.Cancel();
+            DismissEndBlockHint();
 
             // Record in undo engine (unless replaying an undo/redo operation).
             if (!_isInternalEdit)
@@ -7903,7 +8116,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            var text = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+            string text;
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var sr = new StreamReader(fs, System.Text.Encoding.UTF8))
+                text = sr.ReadToEnd();
             LoadText(text);
             _currentFilePath = filePath;
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
@@ -7930,7 +8146,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 (text, lines) = await Task.Run(() =>
                 {
-                    var raw   = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+                    string raw;
+                    using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var sr = new StreamReader(fs, System.Text.Encoding.UTF8))
+                        raw = sr.ReadToEnd();
                     var parts = raw.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
                     var arr   = new CodeLine[parts.Length == 0 ? 1 : parts.Length];
                     for (int i = 0; i < parts.Length; i++)
@@ -8005,6 +8224,44 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// The method subscribes to <see cref="ILspClient.DiagnosticsReceived"/> and
         /// sends textDocument/didOpen when the editor already has a file loaded.
         /// </summary>
+        // ── Debugger integration (ADR-DBG-01) ─────────────────────────────────────
+
+        /// <summary>
+        /// Wire the breakpoint gutter to a data source (injected by DebuggerService).
+        /// Pass null to disconnect (session ended).
+        /// </summary>
+        public void SetBreakpointSource(IBreakpointSource? source)
+        {
+            _bpSource = source;
+            _breakpointGutterControl?.SetBreakpointSource(source);
+            _breakpointGutterControl?.SetFilePath(_currentFilePath);
+        }
+
+        /// <summary>
+        /// Highlight the current execution line (1-based).
+        /// Pass null to clear the highlight (session not paused).
+        /// </summary>
+        public void SetExecutionLine(int? oneBased)
+        {
+            _executionLineOneBased = oneBased;
+            _breakpointGutterControl?.SetExecutionLine(oneBased);
+            InvalidateVisual(); // redraw execution line highlight in content area
+        }
+
+        private void OnBreakpointRightClick(string filePath, int line1)
+        {
+            if (_bpSource is null || _breakpointGutterControl is null) return;
+
+            _bpInfoPopup ??= new BreakpointInfoPopup();
+
+            // Position the popup at the top-left of the gutter so WPF can
+            // keep it visible relative to the PlacementTarget.
+            var offset = _breakpointGutterControl.TranslatePoint(new Point(0, 0), this);
+            _bpInfoPopup.Show(_breakpointGutterControl, _bpSource, filePath, line1, offset);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────────
+
         public void SetLspClient(WpfHexEditor.Editor.Core.LSP.ILspClient? client)
         {
             if (_lspClient is not null)
@@ -8230,6 +8487,119 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 end++;
 
             return line[start..end];
+        }
+
+        // ── Navigation History (Alt+Left / Alt+Right) ────────────────────────────
+
+        private readonly record struct NavEntry(string? FilePath, int Line, int Column);
+        private readonly List<NavEntry> _navHistory = new(64);
+        private int _navIndex = -1;
+
+        private void PushNavigation(string? filePath, int line, int col)
+        {
+            // Truncate any forward history on new navigation.
+            if (_navIndex < _navHistory.Count - 1)
+                _navHistory.RemoveRange(_navIndex + 1, _navHistory.Count - _navIndex - 1);
+            _navHistory.Add(new NavEntry(filePath, line, col));
+            if (_navHistory.Count > 50) _navHistory.RemoveAt(0);
+            _navIndex = _navHistory.Count - 1;
+        }
+
+        private void NavigateBack()
+        {
+            if (_navIndex <= 0) return;
+            _navIndex--;
+            ApplyNavEntry(_navHistory[_navIndex]);
+        }
+
+        private void NavigateForward()
+        {
+            if (_navIndex >= _navHistory.Count - 1) return;
+            _navIndex++;
+            ApplyNavEntry(_navHistory[_navIndex]);
+        }
+
+        private void ApplyNavEntry(NavEntry entry)
+        {
+            if (entry.FilePath is null
+                || entry.FilePath.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
+            {
+                NavigateToLine(entry.Line);
+            }
+            else
+            {
+                ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                {
+                    FilePath = entry.FilePath,
+                    Line     = entry.Line   + 1,
+                    Column   = entry.Column + 1
+                });
+            }
+        }
+
+        // ── Keyboard-shortcut definition navigation helpers ───────────────────────
+
+        /// <summary>
+        /// Invoked by F12 — resolves definition at the caret and navigates.
+        /// </summary>
+        private async Task GoToDefinitionAtCaretAsync()
+        {
+            var word = GetWordAtCaret();
+            if (string.IsNullOrEmpty(word)) return;
+            var zone = new SymbolHitZone(_cursorLine, _cursorColumn,
+                _cursorColumn + word.Length, word, string.Empty, 0, 0, false);
+            await NavigateToDefinitionAsync(zone).ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Invoked by Alt+F12 — shows a Peek Definition popup below the caret.
+        /// </summary>
+        private async Task ShowPeekDefinitionAsync()
+        {
+            _foldPeekPopup ??= new FoldPeekPopup();
+            _foldPeekPopup.GoToDefinitionRequested = () => _ = GoToDefinitionAtCaretAsync();
+
+            var word = _hoveredSymbolZone?.SymbolName ?? GetWordAtCaret();
+
+            await _foldPeekPopup.ShowDefinitionAsync(this, word, async () =>
+            {
+                if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+                {
+                    using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+                    var locs = await _lspClient.DefinitionAsync(
+                        _currentFilePath, _cursorLine, _cursorColumn, cts.Token).ConfigureAwait(true);
+                    if (locs.Count > 0)
+                    {
+                        var loc  = locs[0];
+                        bool isMeta = loc.Uri.Contains("metadata:", StringComparison.OrdinalIgnoreCase);
+                        if (!isMeta && Uri.TryCreate(loc.Uri, UriKind.Absolute, out var u)
+                            && System.IO.File.Exists(u.LocalPath))
+                        {
+                            var text = await System.IO.File.ReadAllTextAsync(u.LocalPath).ConfigureAwait(true);
+                            return (text, loc.StartLine + 1);
+                        }
+                    }
+                }
+                return (string.Empty, 0);
+            }).ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Invoked by Ctrl+F12 — go to all implementations of the symbol at caret.
+        /// </summary>
+        private async Task GoToImplementationAtCaretAsync()
+        {
+            if (_lspClient?.IsInitialized != true || _currentFilePath is null) return;
+            PushNavigation(_currentFilePath, _cursorLine, _cursorColumn);
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            try
+            {
+                var locs = await _lspClient.ImplementationAsync(
+                    _currentFilePath, _cursorLine, _cursorColumn, cts.Token).ConfigureAwait(true);
+                if (locs.Count > 0)
+                    await HandleDefinitionLocationsAsync(locs, GetWordAtCaret()).ConfigureAwait(true);
+            }
+            catch { /* LSP unavailable — silently ignore */ }
         }
 
         /// Feeds LSP push diagnostics into the editor's validation error list.
@@ -8696,6 +9066,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _quickInfoPopup?.Hide();
             _hoverQuickInfoService?.Dispose();
             _hoverQuickInfoService = null;
+            DismissEndBlockHint();
+            _endBlockHintPopup?.Dispose();
+            _endBlockHintPopup = null;
             _ctrlClickService?.Dispose();
             _ctrlClickService = null;
 
@@ -9061,6 +9434,98 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _currentFilePath, hoverPos.Line, hoverPos.Column, word, lineSnapshot);
         }
 
+        // ── End-of-Block Hint ─────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Called on every mouse move. Starts/stops the end-of-block hint timer based on
+        /// whether the hovered line is the EndLine of a folding region.
+        /// </summary>
+        private void HandleEndBlockHintHover(int hoverLine0)
+        {
+            if (!IsEndBlockHintEnabled()) return;
+            if (hoverLine0 == _endBlockHintHoveredLine) return;
+
+            _endBlockHintHoveredLine = hoverLine0;
+            _endBlockHintTimer?.Stop();
+
+            var region = FindRegionEndingAt(hoverLine0);
+            if (region is not null && IsRegionKindAllowed(region))
+            {
+                _endBlockHintActiveRegion = region;
+                _endBlockHintTimer?.Start();
+            }
+            else
+            {
+                DismissEndBlockHint();
+            }
+        }
+
+        private bool IsEndBlockHintEnabled()
+        {
+            if (_foldingEngine is null || _document is null) return false;
+            if (!ShowEndOfBlockHint) return false;
+            return Language?.FoldingRules?.EndOfBlockHint?.IsEnabled ?? true;
+        }
+
+        private bool IsRegionKindAllowed(FoldingRegion r)
+        {
+            var hint = Language?.FoldingRules?.EndOfBlockHint;
+            if (hint is null) return true;
+            return r.Kind switch
+            {
+                WpfHexEditor.Editor.CodeEditor.Folding.FoldingRegionKind.Directive => hint.TriggerDirective,
+                _                                                                   => hint.TriggerBrace,
+            };
+        }
+
+        /// <summary>
+        /// Returns the innermost (largest StartLine) non-collapsed region whose EndLine == line0.
+        /// </summary>
+        private FoldingRegion? FindRegionEndingAt(int line0)
+        {
+            if (_foldingEngine is null) return null;
+            FoldingRegion? best = null;
+            foreach (var r in _foldingEngine.Regions)
+            {
+                if (r.IsCollapsed) continue;
+                if (r.EndLine != line0) continue;
+                if (best is null || r.StartLine > best.StartLine) best = r;
+            }
+            return best;
+        }
+
+        private void DismissEndBlockHint()
+        {
+            _endBlockHintTimer?.Stop();
+            _endBlockHintActiveRegion = null;
+            _endBlockHintPopup?.Hide();
+        }
+
+        private void OnEndBlockHintTimerTick(object? sender, EventArgs e)
+        {
+            _endBlockHintTimer!.Stop();
+            if (_endBlockHintActiveRegion is null || _foldingEngine is null || _document is null) return;
+
+            var r = _endBlockHintActiveRegion;
+            if (!_lineYLookup.TryGetValue(r.EndLine, out double closeY)) return;
+
+            _endBlockHintPopup ??= new EndBlockHintPopup();
+            _endBlockHintPopup.NavigationRequested -= OnEndBlockHintNavigate;
+            _endBlockHintPopup.NavigationRequested += OnEndBlockHintNavigate;
+
+            int maxCtx = Language?.FoldingRules?.EndOfBlockHint?.MaxContextLines ?? 3;
+            _endBlockHintPopup.Show(
+                this, r, _document.Lines, _typeface, _fontSize,
+                new Rect(TextAreaLeftOffset, closeY, Math.Max(1, ActualWidth - TextAreaLeftOffset), _lineHeight),
+                ExternalHighlighter,
+                maxCtx);
+        }
+
+        private void OnEndBlockHintNavigate(int startLine0)
+        {
+            NavigateToLine(startLine0);
+        }
+
         /// <summary>
         /// Called when <see cref="Services.HoverQuickInfoService"/> fires
         /// <see cref="Services.HoverQuickInfoService.QuickInfoResolved"/>.
@@ -9234,6 +9699,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private async Task NavigateToDefinitionAsync(SymbolHitZone zone)
         {
             _quickInfoPopup?.Hide();
+            PushNavigation(_currentFilePath, _cursorLine, _cursorColumn);
 
             // 1. Already resolved to an in-project file — navigate directly.
             if (!string.IsNullOrEmpty(zone.TargetFilePath) && !zone.IsExternal)
@@ -9291,38 +9757,52 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 3b. Workspace-wide declaration scan — searches all solution files of the same
             //     extension using CodeStructureParser.  Handles cross-file navigation when
             //     no LSP is running (e.g. Ctrl+Click on a type defined in another project file).
+            //     Runs on a background thread to avoid blocking the UI with large solutions.
             {
                 var ext = Path.GetExtension(_currentFilePath ?? string.Empty);
                 if (!string.IsNullOrEmpty(ext))
                 {
+                    var symbolName     = zone.SymbolName;
+                    var currentPath    = _currentFilePath;
                     var workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
-                    foreach (var path in workspacePaths)
+
+                    var workspaceResult = await System.Threading.Tasks.Task.Run(() =>
                     {
-                        if (path.Equals(_currentFilePath, StringComparison.OrdinalIgnoreCase))
-                            continue;
-
-                        var fileLines = WorkspaceFileCache.GetLines(path);
-                        if (fileLines is null) continue;
-
-                        // Wrap string[] as CodeLine list so CodeStructureParser can consume it.
-                        var codeLines = fileLines
-                            .Select((t, i) => new CodeLine(t, i))
-                            .ToList();
-
-                        var snap  = CodeStructureParser.Parse(codeLines);
-                        var found = snap.Types.Concat(snap.Members).FirstOrDefault(item =>
-                            string.Equals(item.Name, zone.SymbolName, StringComparison.Ordinal));
-
-                        if (found is not null)
+                        foreach (var path in workspacePaths)
                         {
-                            ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                            if (path.Equals(currentPath, StringComparison.OrdinalIgnoreCase))
+                                continue;
+
+                            var fileLines = WorkspaceFileCache.GetLines(path);
+                            if (fileLines is null) continue;
+
+                            try
                             {
-                                FilePath = path,
-                                Line     = found.Line + 1,
-                                Column   = 1
-                            });
-                            return;
+                                var codeLines = fileLines
+                                    .Select((t, i) => new CodeLine(t, i))
+                                    .ToList();
+
+                                var snap  = CodeStructureParser.Parse(codeLines);
+                                var found = snap.Types.Concat(snap.Members).FirstOrDefault(item =>
+                                    string.Equals(item.Name, symbolName, StringComparison.Ordinal));
+
+                                if (found is not null)
+                                    return (path, found.Line);
+                            }
+                            catch { /* skip files that fail to parse */ }
                         }
+                        return ((string?)null, 0);
+                    }).ConfigureAwait(true);
+
+                    if (workspaceResult.Item1 is not null)
+                    {
+                        ReferenceNavigationRequested?.Invoke(this, new ReferencesNavigationEventArgs
+                        {
+                            FilePath = workspaceResult.Item1,
+                            Line     = workspaceResult.Item2 + 1,
+                            Column   = 1
+                        });
+                        return;
                     }
                 }
             }
@@ -9350,13 +9830,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             var loc = locations[0];
-            bool isMetadata = loc.Uri.StartsWith("metadata:", StringComparison.OrdinalIgnoreCase)
-                           || loc.Uri.StartsWith("omnisharp-metadata:", StringComparison.OrdinalIgnoreCase);
+            bool isMetadata = loc.Uri.StartsWith("metadata:",            StringComparison.OrdinalIgnoreCase)
+                           || loc.Uri.StartsWith("omnisharp-metadata:",  StringComparison.OrdinalIgnoreCase)
+                           || loc.Uri.StartsWith("csharp-metadata:",     StringComparison.OrdinalIgnoreCase)
+                           || loc.Uri.StartsWith("dotnet://metadata",    StringComparison.OrdinalIgnoreCase)
+                           || loc.Uri.Contains("?assembly=",             StringComparison.OrdinalIgnoreCase);
 
             if (isMetadata)
             {
-                // Pass the raw URI so the host can parse assembly/type from the query string.
-                HandleExternalDefinitionAsync(symbolName, loc.Uri);
+                // Pass the raw URI + target line so the host can parse assembly/type and
+                // scroll directly to the declaration after decompilation.
+                HandleExternalDefinitionAsync(symbolName, loc.Uri,
+                    targetLine:   loc.StartLine + 1,
+                    targetColumn: loc.StartColumn + 1);
                 return;
             }
 
@@ -9388,10 +9874,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Fires <see cref="GoToExternalDefinitionRequested"/> so the IDE host can route
         /// to AssemblyExplorer or open a decompiled-source tab.
         /// </summary>
-        private void HandleExternalDefinitionAsync(string symbolName, string? metadataUri = null)
+        private void HandleExternalDefinitionAsync(
+            string symbolName,
+            string? metadataUri  = null,
+            int     targetLine   = 0,
+            int     targetColumn = 0)
         {
             GoToExternalDefinitionRequested?.Invoke(this,
-                new GoToExternalDefinitionEventArgs(symbolName, _currentFilePath, metadataUri));
+                new GoToExternalDefinitionEventArgs(
+                    symbolName, _currentFilePath, metadataUri, targetLine, targetColumn));
         }
 
         // ═══════════════════════════════════════════════════════════════════════
@@ -9481,14 +9972,27 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         public string? MetadataUri { get; }
 
+        /// <summary>
+        /// 1-based line number within the decompiled source to navigate to after opening.
+        /// 0 means unknown — host should call <c>FindSymbolLineInSource</c> as fallback.
+        /// </summary>
+        public int TargetLine { get; }
+
+        /// <summary>1-based column within <see cref="TargetLine"/>. 0 means unknown.</summary>
+        public int TargetColumn { get; }
+
         internal GoToExternalDefinitionEventArgs(
             string  symbolName,
             string? sourceFilePath,
-            string? metadataUri = null)
+            string? metadataUri  = null,
+            int     targetLine   = 0,
+            int     targetColumn = 0)
         {
             SymbolName     = symbolName;
             SourceFilePath = sourceFilePath;
             MetadataUri    = metadataUri;
+            TargetLine     = targetLine;
+            TargetColumn   = targetColumn;
         }
     }
 

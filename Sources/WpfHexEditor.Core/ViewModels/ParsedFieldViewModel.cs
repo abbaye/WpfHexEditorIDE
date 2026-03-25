@@ -215,8 +215,8 @@ namespace WpfHexEditor.Core.ViewModels
         /// Validation status icon
         /// </summary>
         public string ValidationIcon =>
-            !IsValid && !string.IsNullOrEmpty(ValidationMessage) ? "⚠️" :
-            IsValid ? "✅" : "";
+            !IsValid && !string.IsNullOrEmpty(ValidationMessage) ? "âš ï¸" :
+            IsValid ? "âœ…" : "";
 
         /// <summary>
         /// Validation status color
@@ -470,7 +470,7 @@ namespace WpfHexEditor.Core.ViewModels
                 if (!IsValid && !string.IsNullOrEmpty(ValidationMessage))
                 {
                     tooltip.AppendLine();
-                    tooltip.AppendLine($"⚠ {ValidationMessage}");
+                    tooltip.AppendLine($"âš  {ValidationMessage}");
                 }
 
                 return tooltip.ToString().TrimEnd();
@@ -542,12 +542,12 @@ namespace WpfHexEditor.Core.ViewModels
             {
                 return blockType.ToLowerInvariant() switch
                 {
-                    "signature" => "🔖",
+                    "signature" => "ðŸ”–",
                     "field" => GetIconForValueType(valueType),
-                    "conditional" => "🔀",
-                    "loop" => "🔁",
-                    "action" => "⚡",
-                    _ => "📄"
+                    "conditional" => "ðŸ”€",
+                    "loop" => "ðŸ”",
+                    "action" => "âš¡",
+                    _ => "ðŸ“„"
                 };
             }
 
@@ -560,18 +560,18 @@ namespace WpfHexEditor.Core.ViewModels
         private static string GetIconForValueType(string valueType)
         {
             if (string.IsNullOrEmpty(valueType))
-                return "📄";
+                return "ðŸ“„";
 
             return valueType.ToLowerInvariant() switch
             {
-                "string" or "ascii" or "utf8" or "utf16" => "📝",
-                "uint8" or "byte" or "int8" or "sbyte" => "🔢",
-                "uint16" or "ushort" or "int16" or "short" => "🔢",
-                "uint32" or "uint" or "int32" or "int" => "🔢",
-                "uint64" or "ulong" or "int64" or "long" => "🔢",
-                "float" or "double" => "📊",
-                "bytes" => "📦",
-                _ => "📄"
+                "string" or "ascii" or "utf8" or "utf16" => "ðŸ“",
+                "uint8" or "byte" or "int8" or "sbyte" => "ðŸ”¢",
+                "uint16" or "ushort" or "int16" or "short" => "ðŸ”¢",
+                "uint32" or "uint" or "int32" or "int" => "ðŸ”¢",
+                "uint64" or "ulong" or "int64" or "long" => "ðŸ”¢",
+                "float" or "double" => "ðŸ“Š",
+                "bytes" => "ðŸ“¦",
+                _ => "ðŸ“„"
             };
         }
 

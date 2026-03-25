@@ -19,7 +19,7 @@
 
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Plugins.Build.MSBuild;

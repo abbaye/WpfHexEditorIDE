@@ -115,10 +115,10 @@ namespace WpfHexEditor.ColorPicker.Controls
 
         #endregion
 
-        #region HSV Properties (H: 0-360°, S/V: 0-1)
+        #region HSV Properties (H: 0-360Â°, S/V: 0-1)
 
         /// <summary>
-        /// Hue (0-360°)
+        /// Hue (0-360Â°)
         /// </summary>
         public double Hue
         {
@@ -212,9 +212,9 @@ namespace WpfHexEditor.ColorPicker.Controls
         }
 
         /// <summary>
-        /// Validation icon (✓ or ✗)
+        /// Validation icon (âœ“ or âœ—)
         /// </summary>
-        public string ValidationIcon => IsHexValid ? "✓" : "✗";
+        public string ValidationIcon => IsHexValid ? "âœ“" : "âœ—";
 
         /// <summary>
         /// Validation color (Green or Red)

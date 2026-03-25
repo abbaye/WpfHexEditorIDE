@@ -60,7 +60,7 @@ using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.Editor.XamlDesigner.ViewModels;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 // Resolve ambiguity: StatusBarItem and DiagnosticSeverity exist in both Core and SDK.Contracts.Services

@@ -1,0 +1,47 @@
+/* ============================================================
+   Format:    .NET XML Resource File
+   Category:  Programming/SourceCode
+   Ext:       .resx
+   Editor:    resx-editor
+   Desc:      Standard .NET XML-based resource file containing string tables, images, binary blobs, and file references.
+   Updated:   2026-03-23
+   ============================================================ */
+
+{
+  "formatName": ".NET XML Resource File",
+  "version": "1.0",
+  "extensions": [".resx"],
+  "description": "Standard .NET XML-based resource file containing string tables, images, binary blobs, and file references.",
+  "category": "Programming/SourceCode",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "resx-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 95,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-23",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "text/xml",
+    "application/xml"
+  ],
+  "Software": [
+    "Visual Studio",
+    "Rider",
+    "dotnet CLI",
+    "MSBuild"
+  ],
+  "UseCases": [
+    ".NET application localization",
+    "String resource management",
+    "Image and binary resource embedding",
+    "Multi-language support"
+  ]
+}

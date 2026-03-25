@@ -166,7 +166,7 @@ namespace WpfHexEditor.Tests
         [TestMethod]
         public void ReadValue_String_UTF16_ReturnsCorrectString()
         {
-            var text = "Hello世界";
+            var text = "Helloä¸–ç•Œ";
             var data = Encoding.Unicode.GetBytes(text);
             var result = _reader.ReadValue(data, 0, data.Length, "utf16");
 

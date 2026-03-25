@@ -27,7 +27,8 @@
             <Setter Property="Height"              Value="20"/>
             <Setter Property="Padding"             Value="3,0"/>
             <Setter Property="Margin"              Value="1,0"/>
-            <Setter Property="BorderThickness"     Value="0"/>
+            <Setter Property="BorderThickness"     Value="1"/>
+            <Setter Property="BorderBrush"         Value="Transparent"/>
             <Setter Property="Background"          Value="Transparent"/>
             <Setter Property="Foreground"          Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
             <Setter Property="FontFamily"          Value="Segoe UI"/>
@@ -42,7 +43,9 @@
                     <ControlTemplate TargetType="ToggleButton">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="2"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="4"
                                 Padding="{TemplateBinding Padding}"
                                 SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -52,10 +55,6 @@
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
                             </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
-                            </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsChecked"   Value="True"/>
@@ -63,7 +62,15 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
                             </MultiTrigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.4"/>
                             </Trigger>

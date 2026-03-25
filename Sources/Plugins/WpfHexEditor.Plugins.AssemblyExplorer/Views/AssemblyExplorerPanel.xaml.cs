@@ -77,7 +77,18 @@ public partial class AssemblyExplorerPanel : UserControl
         MainTreeView.ExtractToProjectRequested     += OnExtractToProject;
         MainTreeView.CollapseAllRequested          += (_, _) => ViewModel.CollapseAllCommand.Execute(null);
         MainTreeView.CloseAllAssembliesRequested   += (_, _) => ViewModel.CloseAllCommand.Execute(null);
-        MainTreeView.ExportProjectRequested        += OnExportProject;
+        MainTreeView.ExportProjectRequested           += OnExportProject;
+        MainTreeView.ShowInMetadataTablesRequested    += OnShowInMetadataTables;
+        MainTreeView.ExportILRequested                += OnExportIL;
+        MainTreeView.ExportCSharpRequested            += OnExportCSharp;
+
+        // Wire cascading "Decompile to…" submenu (ADR-ASM-03).
+        // Uses code-behind because the event's tuple argument cannot be wired via XAML.
+        MainTreeView.DecompileWithLanguageRequested += OnDecompileWithLanguage;
+
+        // Sync tree checkmark with the current backend language on first open.
+        MainTreeView.SetActiveLanguageId(
+            ViewModel.Backend.Options.TargetLanguageId ?? "CSharp");
 
         // Wire detail pane Extract button
         DetailPane.ExtractRequested += (_, node) => _ = ExecuteExtractToProjectAsync(node);
@@ -257,10 +268,18 @@ public partial class AssemblyExplorerPanel : UserControl
 
     private void OnDecompile(object? sender, AssemblyNodeViewModel node)
     {
-        // Ensure SelectedNode is current so OpenInEditorCommand reads the right node,
-        // even when the right-click did not trigger a selection-change event.
-        ViewModel.SelectedNode = node;
-        ViewModel.OpenInEditorCommand.Execute(null);
+        // Backward-compat / Go to Definition path — always opens in C# without
+        // changing the user's current default language (ADR-ASM-03, overkill E2).
+        ViewModel.OpenNodeInEditorWithLanguageWithoutChangingDefault(node, "CSharp");
+    }
+
+    private void OnDecompileWithLanguage(
+        object? sender,
+        (AssemblyNodeViewModel Node, string LanguageId) args)
+    {
+        ViewModel.OpenNodeInEditorWithLanguage(args.Node, args.LanguageId);
+        // Keep submenu checkmark in sync for the next context-menu open.
+        MainTreeView.SetActiveLanguageId(args.LanguageId);
     }
 
     private void OnCopyName(object? sender, AssemblyNodeViewModel node)
@@ -379,6 +398,70 @@ public partial class AssemblyExplorerPanel : UserControl
             Owner = Window.GetWindow(this)
         };
         dialog.ShowDialog();
+    }
+
+    // ── Show in Metadata Tables / Export IL / Export C# (ASM-02-WIRE) ───────
+
+    private void OnShowInMetadataTables(object? sender, ViewModels.AssemblyNodeViewModel node)
+    {
+        var tableName = node switch
+        {
+            ViewModels.TypeNodeViewModel   => "TypeDef",
+            ViewModels.MethodNodeViewModel => "MethodDef",
+            ViewModels.FieldNodeViewModel  => "FieldDef",
+            _                              => null
+        };
+        if (tableName is null) return;
+        ViewModel.NavigateToMetadataTable(tableName, node.OwnerFilePath ?? string.Empty);
+    }
+
+    private void OnExportIL(object? sender, ViewModels.AssemblyNodeViewModel node)
+    {
+        var filePath = node.OwnerFilePath ?? string.Empty;
+        string ilText;
+        string suggestedName;
+
+        switch (node)
+        {
+            case ViewModels.MethodNodeViewModel method:
+                ilText        = ViewModel.Decompiler.GetIlText(method.Model, filePath);
+                suggestedName = $"{method.Model.Name}.il";
+                break;
+            case ViewModels.TypeNodeViewModel type:
+                ilText = string.Join(
+                    Environment.NewLine + Environment.NewLine,
+                    type.Model.Methods.Select(m => ViewModel.Decompiler.GetIlText(m, filePath)));
+                suggestedName = $"{type.Model.Name}.il";
+                break;
+            default: return;
+        }
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter   = "IL Assembly|*.il|Text Files|*.txt",
+            FileName = suggestedName
+        };
+        if (dlg.ShowDialog() != true) return;
+        File.WriteAllText(dlg.FileName, ilText);
+    }
+
+    private void OnExportCSharp(object? sender, ViewModels.AssemblyNodeViewModel node)
+    {
+        var (_, csText) = ViewModel.GetDecompiledText(node);
+        var suggestedName = node switch
+        {
+            ViewModels.TypeNodeViewModel   t => $"{t.Model.Name}.cs",
+            ViewModels.MethodNodeViewModel m => $"{m.Model.Name}.cs",
+            _                                => $"{node.DisplayName}.cs"
+        };
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter   = "C# Source|*.cs",
+            FileName = suggestedName
+        };
+        if (dlg.ShowDialog() != true) return;
+        File.WriteAllText(dlg.FileName, csText);
     }
 
     // ── Diff panel reference (set by plugin entry point) ─────────────────────

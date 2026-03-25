@@ -20,7 +20,7 @@
 
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
-using WpfHexEditor.LSP.Client.Services;
+using WpfHexEditor.Core.LSP.Client.Services;
 
 namespace WpfHexEditor.App.Services;
 

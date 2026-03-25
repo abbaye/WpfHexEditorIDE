@@ -1,0 +1,60 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Contributors: Claude Sonnet 4.6
+-->
+<UserControl x:Class="WpfHexEditor.Core.Options.Pages.HexEditorStatusBarPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <StackPanel Margin="0,0,0,16">
+
+        <TextBlock Text="Status Bar Visibility"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,16"/>
+
+        <CheckBox x:Name="CheckShowStatusMessage"
+                  Content="Show status message"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowFileSize"
+                  Content="Show file size"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowSelection"
+                  Content="Show selection info"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowPosition"
+                  Content="Show current position"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowEditMode"
+                  Content="Show edit mode"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowBytesPerLine"
+                  Content="Show bytes per line"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,0"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+    </StackPanel>
+</UserControl>

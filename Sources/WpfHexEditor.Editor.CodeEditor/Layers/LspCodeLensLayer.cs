@@ -145,7 +145,7 @@ public sealed class LspCodeLensLayer : FrameworkElement
             var symbols = await _lspClient.DocumentSymbolsAsync(_filePath, _cts.Token)
                 .ConfigureAwait(true);
 
-            _lensItems = BuildLensItems(symbols);
+            _lensItems = await BuildLensItemsAsync(symbols).ConfigureAwait(true);
             RenderLens();
         }
         catch (OperationCanceledException) { }
@@ -159,41 +159,46 @@ public sealed class LspCodeLensLayer : FrameworkElement
     private IReadOnlyList<LensItem> _lensItems = Array.Empty<LensItem>();
 
     /// <summary>
-    /// Builds a flat list of lens items from document symbols.
-    /// Each method/class/struct/interface symbol gets a "N references" label.
-    /// Methods whose preceding line contains a [Test] attribute get an additional
-    /// "[Test] Run | Debug" label.
+    /// Builds lens items with real reference counts fetched from the LSP server.
+    /// Caps at 20 visible symbols per viewport to avoid hammering the server.
+    /// Each reference count is fetched in parallel via <c>Task.WhenAll</c>.
     /// </summary>
-    private IReadOnlyList<LensItem> BuildLensItems(IReadOnlyList<LspDocumentSymbol> symbols)
+    private async Task<IReadOnlyList<LensItem>> BuildLensItemsAsync(
+        IReadOnlyList<LspDocumentSymbol> symbols)
     {
         if (symbols.Count == 0) return Array.Empty<LensItem>();
 
-        var items = new List<LensItem>(symbols.Count);
-
-        // Build a fast lookup set of lines that have a [Test] attribute above them.
         var testLines = BuildTestAttributeLines();
 
-        foreach (var sym in symbols)
+        // Filter to visible symbols of relevant kinds (capped at 20).
+        var visible = symbols
+            .Where(s => s.StartLine >= _firstVisibleLine && s.StartLine <= _lastVisibleLine)
+            .Where(s => s.Kind?.ToLowerInvariant() is "method" or "constructor" or "function"
+                                                   or "class"  or "struct"      or "interface" or "enum")
+            .Take(20)
+            .ToList();
+
+        if (visible.Count == 0) return Array.Empty<LensItem>();
+
+        // Fetch reference counts in parallel (3 s timeout shared across all requests).
+        using var cts     = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+        var refTasks = visible.Select(sym =>
+            _lspClient!.ReferencesAsync(_filePath!, sym.StartLine, sym.StartColumn, cts.Token)
+                       .ContinueWith(t => t.IsCompletedSuccessfully ? t.Result.Count : 0,
+                                     TaskScheduler.Default));
+        int[] counts = await Task.WhenAll(refTasks).ConfigureAwait(true);
+
+        var items = new List<LensItem>(visible.Count * 2);
+        for (int i = 0; i < visible.Count; i++)
         {
-            if (sym.StartLine < _firstVisibleLine || sym.StartLine > _lastVisibleLine) continue;
-
-            var kind = sym.Kind?.ToLowerInvariant() ?? string.Empty;
-            if (kind is not ("method" or "constructor" or "function"
-                         or "class" or "struct" or "interface" or "enum")) continue;
-
-            // Ref-count label — stub value; a real implementation would call
-            // ILspClient.ReferencesAsync but that would make lens too heavy.
-            // The label intentionally says "references" as a placeholder.
-            var refLabel = sym.Kind?.ToLowerInvariant() is "class" or "struct"
-                or "interface" or "enum" ? "0 references" : "0 references";
-
+            var sym      = visible[i];
+            var refLabel = counts[i] == 1 ? "1 reference" : $"{counts[i]} references";
             items.Add(new LensItem(sym.StartLine, sym.StartColumn, refLabel));
 
-            // Test runner hint when a [Test]/[Fact] attribute precedes this line.
+            // Test runner hint when a [Test]/[Fact] attribute precedes this declaration line.
             if (testLines.Contains(sym.StartLine))
-                items.Add(new LensItem(sym.StartLine, sym.StartColumn, "[Test] Run | Debug"));
+                items.Add(new LensItem(sym.StartLine, sym.StartColumn, "\u25B6 Run | Debug"));
         }
-
         return items;
     }
 

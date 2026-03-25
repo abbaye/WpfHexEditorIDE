@@ -19,11 +19,11 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WpfHexEditor.App.Build;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.Events.IDEEvents;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Events.IDEEvents;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.Panels.IDE.Panels;
 
 namespace WpfHexEditor.App;
@@ -34,7 +34,7 @@ public partial class MainWindow
     // Build infrastructure (lazy-initialized after plugin system is ready)
     // -----------------------------------------------------------------------
 
-    private BuildSystem.BuildSystem?      _buildSystem;
+    private BuildSystem?                  _buildSystem;
     private ConfigurationManager?         _configManager;
     private BuildOutputAdapter?           _buildOutputAdapter;
     private BuildErrorListAdapter?        _buildErrorListAdapter;
@@ -133,7 +133,10 @@ public partial class MainWindow
         _configManager       = new ConfigurationManager();
         _incrementalTracker  = new IncrementalBuildTracker(_ideEventBus);
         _buildFileWatcher    = new BuildFileWatcher(_incrementalTracker);
-        _buildSystem         = new BuildSystem.BuildSystem(_solutionManager, _ideEventBus, _configManager, _incrementalTracker);
+        _buildSystem         = new BuildSystem(_solutionManager, _ideEventBus, _configManager, _incrementalTracker)
+        {
+            MaxParallelProjects = AppSettingsService.Instance.Current.BuildRun.MaxParallelProjects,
+        };
         _startupRunner   = new StartupProjectRunner(_solutionManager, _buildSystem, _ideEventBus, _configManager,
             abortOnBuildError: () => AppSettingsService.Instance.Current.BuildRun.OnRunWhenBuildError == RunOnBuildError.DoNotLaunch);
 
@@ -165,9 +168,10 @@ public partial class MainWindow
         // is already null and HasActiveBuild correctly returns false.
         _buildStateRefreshSubs =
         [
-            _ideEventBus.Subscribe<BuildSucceededEvent>(_ => Dispatcher.InvokeAsync(RefreshBuildProperties)),
-            _ideEventBus.Subscribe<BuildFailedEvent>   (_ => Dispatcher.InvokeAsync(RefreshBuildProperties)),
-            _ideEventBus.Subscribe<BuildCancelledEvent>(_ => Dispatcher.InvokeAsync(RefreshBuildProperties)),
+            _ideEventBus.Subscribe<BuildStartedEvent>   (OnProjectBuildStarted),
+            _ideEventBus.Subscribe<BuildSucceededEvent> (e => { OnProjectBuildEnded(e.ProjectPath); Dispatcher.InvokeAsync(RefreshBuildProperties); }),
+            _ideEventBus.Subscribe<BuildFailedEvent>    (e => { OnProjectBuildEnded(e.ProjectPath); Dispatcher.InvokeAsync(RefreshBuildProperties); }),
+            _ideEventBus.Subscribe<BuildCancelledEvent> (_ => { Dispatcher.InvokeAsync(() => _solutionExplorerPanel?.ClearAllBuilding()); Dispatcher.InvokeAsync(RefreshBuildProperties); }),
         ];
 
         // Register Ctrl+Shift+B → Build Solution.
@@ -438,17 +442,29 @@ public partial class MainWindow
     // StatusBar update (dispatched to WPF thread)
     // -----------------------------------------------------------------------
 
-    private void UpdateBuildStatusBar(string text, string icon, bool visible)
+    private void UpdateBuildStatusBar(string text, string icon, bool visible, int progressPercent)
     {
         Dispatcher.InvokeAsync(() =>
         {
             if (BuildStatusItem  is null) return;
             if (BuildStatusText  is null) return;
             if (BuildStatusIcon  is null) return;
+            if (BuildProgressBar is null) return;
 
-            BuildStatusText.Text     = text;
-            BuildStatusIcon.Text     = icon;
+            BuildStatusText.Text       = text;
+            BuildStatusIcon.Text       = icon;
             BuildStatusItem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+
+            // progressPercent 0–100 → show bar; -1 → hide (build done/failed/cancelled)
+            if (progressPercent >= 0)
+            {
+                BuildProgressBar.Value      = progressPercent;
+                BuildProgressBar.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BuildProgressBar.Visibility = Visibility.Collapsed;
+            }
         });
     }
 
@@ -527,6 +543,12 @@ public partial class MainWindow
     {
         Dispatcher.InvokeAsync(() => _solutionExplorerPanel?.SetProjectDirty(e.ProjectId, e.IsDirty));
     }
+
+    private void OnProjectBuildStarted(BuildStartedEvent e)
+        => Dispatcher.InvokeAsync(() => _solutionExplorerPanel?.SetProjectBuilding(e.ProjectPath, true));
+
+    private void OnProjectBuildEnded(string projectPath)
+        => Dispatcher.InvokeAsync(() => _solutionExplorerPanel?.SetProjectBuilding(projectPath, false));
 
     private async Task RunBuildDirtyAsync()
     {

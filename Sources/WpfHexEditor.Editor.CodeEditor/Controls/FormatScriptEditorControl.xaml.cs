@@ -15,7 +15,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using WpfHexEditor.Definitions;
+using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.CodeEditor.Models;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls

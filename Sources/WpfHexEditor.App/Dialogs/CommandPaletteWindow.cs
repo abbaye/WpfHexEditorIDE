@@ -34,7 +34,7 @@ using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Dialogs;
 

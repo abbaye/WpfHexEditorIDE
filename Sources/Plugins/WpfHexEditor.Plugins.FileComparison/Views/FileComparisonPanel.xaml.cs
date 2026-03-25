@@ -85,7 +85,15 @@ public partial class FileComparisonPanel : UserControl
         fields = new List<ParsedField>();
         try
         {
-            var fileBytes        = File.ReadAllBytes(filePath);
+            // Use FileShare.ReadWrite so this read succeeds even while the HexEditor
+            // holds the file open with FileAccess.ReadWrite + FileShare.Read.
+            byte[] fileBytes;
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                fileBytes = new byte[fs.Length];
+                _ = fs.Read(fileBytes, 0, fileBytes.Length);
+            }
+
             var detectionService = new FormatDetectionService();
 
             var formatDefsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FormatDefinitions");
@@ -142,8 +150,8 @@ public partial class FileComparisonPanel : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error loading file: {ex.Message}", "Error",
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            System.Diagnostics.Debug.WriteLine($"[FileComparisonPanel] Error loading '{filePath}': {ex.Message}");
+            fields = new List<ParsedField>();
         }
     }
 

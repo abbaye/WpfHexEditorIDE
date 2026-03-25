@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using WpfHexEditor.Decompiler.Core;
+using WpfHexEditor.Core.Decompiler;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.UI;
 

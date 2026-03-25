@@ -1,0 +1,62 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.BreakpointsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <ToolBar Grid.Row="0" Background="{DynamicResource DB_ToolbarBackgroundBrush}">
+            <Button Command="{Binding ClearAllCommand}"  ToolTip="Delete All Breakpoints" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" />
+            <Button Command="{Binding EnableAllCommand}"  ToolTip="Enable All"  Content="&#xE73E;" FontFamily="Segoe MDL2 Assets" />
+            <Button Command="{Binding DisableAllCommand}" ToolTip="Disable All" Content="&#xECC9;" FontFamily="Segoe MDL2 Assets" />
+        </ToolBar>
+
+        <!-- Breakpoint list -->
+        <ListView Grid.Row="1" ItemsSource="{Binding Rows}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="24">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="10" Height="10"
+                                         Fill="{DynamicResource DB_BreakpointActiveBrush}"
+                                         Opacity="{Binding IsEnabled, Converter={StaticResource BoolToOpacityConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Location" Width="220"
+                                    DisplayMemberBinding="{Binding DisplayName}" />
+                    <GridViewColumn Header="Condition" Width="150"
+                                    DisplayMemberBinding="{Binding Condition}" />
+                    <GridViewColumn Header="âœ“" Width="24">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding IsVerified, Converter={StaticResource BoolToVerifiedConverter}}"
+                                           Foreground="{DynamicResource DB_BreakpointActiveBrush}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="28">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                        Background="Transparent" BorderThickness="0"
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

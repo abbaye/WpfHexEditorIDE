@@ -1,0 +1,108 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Project: WpfHexEditor.Plugins.ResxLocalization
+    File: Panels/MissingTranslationsPanel.xaml
+    Description:
+        Dockable panel showing a matrix of resource keys vs. locale
+        cultures.  Missing cells are highlighted in RES_LocaleMissingBrush.
+        Provides "Copy base value" button to pre-fill selected empty cells.
+-->
+
+<UserControl x:Class="WpfHexEditor.Plugins.ResxLocalization.Panels.MissingTranslationsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ResxLocalization.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="350" d:DesignWidth="500"
+             Background="{DynamicResource RES_BackgroundBrush}"
+             Foreground="{DynamicResource RES_ForegroundBrush}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Cell style: red background for missing cells -->
+        <Style x:Key="MissingCellStyle" TargetType="DataGridCell">
+            <Setter Property="Background"  Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"  Value="{DynamicResource RES_ForegroundBrush}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMissing}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource RES_LocaleMissingBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource RES_ToolbarBackgroundBrush}"
+                BorderBrush="{DynamicResource RES_SeparatorBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="4,3">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left"
+                           Text="Missing Translations"
+                           Foreground="{DynamicResource RES_HeaderForegroundBrush}"
+                           FontSize="11" FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Margin="2,0,8,0"/>
+                <Button x:Name="CopyBaseButton"
+                        Content="Copy base value"
+                        Padding="8,2"
+                        FontSize="10"
+                        Click="CopyBaseButton_Click"
+                        DockPanel.Dock="Right"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Matrix DataGrid — columns are generated dynamically in code-behind -->
+        <DataGrid Grid.Row="1"
+                  x:Name="MatrixGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserSortColumns="True"
+                  SelectionMode="Extended"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  Background="{DynamicResource RES_BackgroundBrush}"
+                  Foreground="{DynamicResource RES_ForegroundBrush}"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="{DynamicResource RES_SeparatorBrush}"
+                  BorderThickness="0"
+                  RowHeight="22"
+                  FontSize="11">
+        </DataGrid>
+
+        <!-- Status bar -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource RES_HeaderBackgroundBrush}"
+                BorderBrush="{DynamicResource RES_SeparatorBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="6,3">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding StatusText}"
+                           FontSize="10"
+                           Foreground="{DynamicResource RES_CommentForegroundBrush}"/>
+                <TextBlock Margin="10,0,0,0"
+                           FontSize="10"
+                           Foreground="{DynamicResource RES_DuplicateKeyBrush}"
+                           Visibility="{Binding HasMissing, Converter={StaticResource BoolToVis}}">
+                    <TextBlock.Text>
+                        <Binding Path="MissingCount" StringFormat="{}{0} missing"/>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

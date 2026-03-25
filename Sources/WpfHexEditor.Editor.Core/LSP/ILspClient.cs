@@ -11,7 +11,7 @@
 //
 // Architecture Notes:
 //     Interface Segregation — only the methods/events relevant to editor integration
-//     are exposed. The concrete WpfHexEditor.LSP.Client implementation handles
+//     are exposed. The concrete WpfHexEditor.Core.LSP.Client implementation handles
 //     process lifecycle, JSON-RPC framing, and capability negotiation internally.
 //
 //     All async methods accept a CancellationToken so callers can cancel inflight
@@ -236,6 +236,20 @@ public interface ILspClient : IAsyncDisposable
     /// Requests textDocument/references.
     /// </summary>
     Task<IReadOnlyList<LspLocation>> ReferencesAsync(
+        string filePath, int line, int column, CancellationToken ct = default);
+
+    /// <summary>
+    /// Requests textDocument/implementation. Returns an empty list when the server
+    /// does not support it or no implementations are found.
+    /// </summary>
+    Task<IReadOnlyList<LspLocation>> ImplementationAsync(
+        string filePath, int line, int column, CancellationToken ct = default);
+
+    /// <summary>
+    /// Requests textDocument/typeDefinition. Returns an empty list when the server
+    /// does not support it or no type definition is found.
+    /// </summary>
+    Task<IReadOnlyList<LspLocation>> TypeDefinitionAsync(
         string filePath, int line, int column, CancellationToken ct = default);
 
     // ── Signature Help ────────────────────────────────────────────────────────

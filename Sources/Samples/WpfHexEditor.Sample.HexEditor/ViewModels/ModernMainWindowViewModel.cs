@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // GNU Affero General Public License v3.0  2026
 // HexEditor V2 - Modern Main Window ViewModel
 // Author : Derek Tremblay (derektremblay666@gmail.com)

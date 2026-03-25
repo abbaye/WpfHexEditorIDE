@@ -1,0 +1,425 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<ec:ThemedDialog x:Class="WpfHexEditor.Core.ProjectSystem.Dialogs.NewFileDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
+        xmlns:tpl="clr-namespace:WpfHexEditor.Core.ProjectSystem.Templates"
+        Title="New File"
+        Width="860" Height="540"
+        MinWidth="700" MinHeight="440"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WpfHexEditor.Core.ProjectSystem;component/Themes/DialogStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+            <!-- Category sidebar item style -->
+            <Style x:Key="CategoryItemStyle" TargetType="ListBoxItem">
+                <Setter Property="Padding"    Value="12,7"/>
+                <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor"     Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockAccentBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- View toggle button style — themed checked/hover states -->
+            <Style x:Key="ViewToggleStyle" TargetType="ToggleButton">
+                <Setter Property="Foreground"     Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Background"     Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="BorderBrush"    Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Cursor"         Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="3"
+                                    Width="{TemplateBinding Width}"
+                                    Height="{TemplateBinding Height}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockAccentBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Grid-view tile DataTemplate -->
+            <DataTemplate x:Key="TileTemplate" DataType="{x:Type tpl:IFileTemplate}">
+                <Border Width="90" Height="90" Margin="6"
+                        Background="{DynamicResource DockBackgroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1" CornerRadius="4"
+                        Cursor="Hand">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding IconGlyph}"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="32"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource DockAccentBrush}"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding Name}"
+                                   FontSize="10" TextWrapping="Wrap"
+                                   TextAlignment="Center" MaxWidth="80"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+
+            <!-- List-view row DataTemplate -->
+            <DataTemplate x:Key="ListRowTemplate" DataType="{x:Type tpl:IFileTemplate}">
+                <StackPanel Orientation="Horizontal" Margin="4,3" Cursor="Hand">
+                    <TextBlock Text="{Binding IconGlyph}"
+                               FontFamily="Segoe MDL2 Assets" FontSize="22"
+                               Width="32" VerticalAlignment="Center"
+                               Foreground="{DynamicResource DockAccentBrush}"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}"
+                                   FontWeight="SemiBold" FontSize="12"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <TextBlock Text="{Binding Category}"
+                                   FontSize="10" Opacity="0.6"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+
+            <!-- ListView item style (hover + selected) -->
+            <Style x:Key="TemplateItemStyle" TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="Background"    Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                    BorderThickness="0">
+                                <ContentPresenter/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockAccentBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- ════════════════════════════════════════════════════════
+         Root layout: 3 rows (panels | separator | bottom bar)
+         ════════════════════════════════════════════════════════ -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Three-panel area ── -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="190" MinWidth="130" MaxWidth="280"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="220" MinWidth="160" MaxWidth="320"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT: Category sidebar -->
+            <ListBox x:Name="CategoryList"
+                     Grid.Column="0"
+                     Background="{DynamicResource DockPanelBackgroundBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     BorderThickness="0,0,1,0"
+                     ItemContainerStyle="{StaticResource CategoryItemStyle}"
+                     SelectionChanged="OnCategoryChanged"/>
+
+            <GridSplitter Grid.Column="1"
+                          Width="4" HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockSplitterBrush}"
+                          ResizeBehavior="PreviousAndNext"/>
+
+            <!-- CENTER: Toolbar + template list -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Toolbar -->
+                <Border Grid.Row="0"
+                        Background="{DynamicResource DockToolbarBackgroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Padding="6,4">
+                    <DockPanel LastChildFill="False">
+                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                            <TextBlock Text="Sort:" VerticalAlignment="Center"
+                                       Margin="0,0,6,0" FontSize="11"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            <ComboBox x:Name="SortCombo" Width="110" FontSize="11"
+                                      Background="{DynamicResource DockBackgroundBrush}"
+                                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                      BorderBrush="{DynamicResource DockBorderBrush}"
+                                      SelectionChanged="OnSortChanged">
+                                <ComboBoxItem Content="Name"      IsSelected="True"/>
+                                <ComboBoxItem Content="Category"/>
+                                <ComboBoxItem Content="Extension"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="4,0,0,0">
+                            <ToggleButton x:Name="ViewGridBtn" Width="26" Height="26"
+                                          ToolTip="Grid view"
+                                          Style="{StaticResource ViewToggleStyle}"
+                                          Checked="OnViewGrid">
+                                <TextBlock Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                            </ToggleButton>
+                            <ToggleButton x:Name="ViewListBtn" Width="26" Height="26"
+                                          ToolTip="List view" Margin="2,0,0,0"
+                                          Style="{StaticResource ViewToggleStyle}"
+                                          Checked="OnViewList">
+                                <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                            </ToggleButton>
+                        </StackPanel>
+
+                        <!-- Search box with watermark -->
+                        <Grid DockPanel.Dock="Right" Width="180" Margin="8,0,4,0" VerticalAlignment="Center">
+                            <TextBox x:Name="SearchBox" FontSize="11"
+                                     Background="{DynamicResource DockBackgroundBrush}"
+                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                     BorderBrush="{DynamicResource DockBorderBrush}"
+                                     Padding="4,2"
+                                     TextChanged="OnSearchChanged"/>
+                            <TextBlock IsHitTestVisible="False" Text="Search templates…"
+                                       FontSize="11" Padding="6,2" Opacity="0.4"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </DockPanel>
+                </Border>
+
+                <!-- Grid view -->
+                <ListView x:Name="TemplateGridView"
+                          Grid.Row="1"
+                          Background="{DynamicResource DockWindowBackgroundBrush}"
+                          BorderThickness="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ItemTemplate="{StaticResource TileTemplate}"
+                          ItemContainerStyle="{StaticResource TemplateItemStyle}"
+                          SelectionChanged="OnTemplateSelectionChanged">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+
+                <!-- List view (hidden by default) -->
+                <ListView x:Name="TemplateListView"
+                          Grid.Row="1"
+                          Visibility="Collapsed"
+                          Background="{DynamicResource DockWindowBackgroundBrush}"
+                          BorderThickness="0"
+                          ItemTemplate="{StaticResource ListRowTemplate}"
+                          ItemContainerStyle="{StaticResource TemplateItemStyle}"
+                          SelectionChanged="OnTemplateSelectionChanged"/>
+            </Grid>
+
+            <GridSplitter Grid.Column="3"
+                          Width="4" HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockSplitterBrush}"
+                          ResizeBehavior="PreviousAndNext"/>
+
+            <!-- RIGHT: Description panel -->
+            <Border Grid.Column="4"
+                    Background="{DynamicResource DockPanelBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="1,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="12,0" VerticalAlignment="Top">
+                        <TextBlock x:Name="DescIconText"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="52"
+                                   HorizontalAlignment="Center" Margin="0,20,0,8"
+                                   Foreground="{DynamicResource DockAccentBrush}"/>
+                        <TextBlock x:Name="DescNameText"
+                                   FontWeight="SemiBold" FontSize="13"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   HorizontalAlignment="Center" Margin="0,0,0,8"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <Border x:Name="DescExtBadge"
+                                Background="{DynamicResource DockAccentBrush}"
+                                CornerRadius="3" HorizontalAlignment="Center"
+                                Padding="8,2" Margin="0,0,0,14">
+                            <TextBlock x:Name="DescExtText"
+                                       FontSize="10" Foreground="White"
+                                       FontFamily="Consolas"/>
+                        </Border>
+                        <TextBlock x:Name="DescText"
+                                   TextWrapping="Wrap" FontSize="11" Opacity="0.80"
+                                   LineHeight="16"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <TextBlock x:Name="DescCategoryText"
+                                   FontSize="10" Opacity="0.45" Margin="0,10,0,0"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- ── Horizontal separator ── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource DockSplitterBrush}"/>
+
+        <!-- ── Bottom bar ── -->
+        <Grid Grid.Row="2" Margin="12,8,12,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- 0: Name -->
+                <RowDefinition Height="6"/>
+                <RowDefinition Height="Auto"/>  <!-- 2: Location -->
+                <RowDefinition Height="6"/>
+                <RowDefinition Height="Auto"/>  <!-- 4: Add to project -->
+                <RowDefinition Height="6"/>
+                <RowDefinition Height="Auto"/>  <!-- 6: Folder (hidden unless from SE) -->
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>  <!-- 8: OK / Cancel -->
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="80"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- File name -->
+            <Label Grid.Row="0" Grid.Column="0" Content="_Name:"
+                   Target="{Binding ElementName=NameBox}"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   VerticalAlignment="Center" Padding="0,0,8,0"/>
+            <TextBox x:Name="NameBox" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+                     Background="{DynamicResource DockBackgroundBrush}"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     TextChanged="OnInputChanged"/>
+
+            <!-- Location -->
+            <CheckBox x:Name="SaveLaterCheck"
+                      Grid.Row="2" Grid.Column="0"
+                      Content="_Save later"
+                      ToolTip="Create document in memory; choose location on first Ctrl+S"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      VerticalAlignment="Center"
+                      Checked="OnSaveLaterChanged"
+                      Unchecked="OnSaveLaterChanged"/>
+            <TextBox x:Name="LocationBox" Grid.Row="2" Grid.Column="1"
+                     Background="{DynamicResource DockBackgroundBrush}"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     TextChanged="OnInputChanged"/>
+            <Button x:Name="BrowseButton" Grid.Row="2" Grid.Column="3"
+                    Content="…" Width="30" Padding="0"
+                    Click="OnBrowseLocation" ToolTip="Browse for folder"/>
+
+            <!-- Add to project -->
+            <CheckBox x:Name="AddToProjectCheck"
+                      Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                      Content="Add to _project:"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      VerticalAlignment="Center"
+                      Checked="OnAddToProjectChanged"
+                      Unchecked="OnAddToProjectChanged"/>
+            <ComboBox x:Name="ProjectCombo"
+                      Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2"
+                      IsEnabled="False"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Background="{DynamicResource DockBackgroundBrush}"
+                      BorderBrush="{DynamicResource DockBorderBrush}"/>
+
+            <!-- Folder (visible only when launched from Solution Explorer) -->
+            <Label x:Name="FolderLabel"
+                   Grid.Row="6" Grid.Column="0"
+                   Content="_Folder:"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   VerticalAlignment="Center" Padding="0,0,8,0"
+                   Visibility="Collapsed"/>
+            <ComboBox x:Name="FolderCombo"
+                      Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Background="{DynamicResource DockBackgroundBrush}"
+                      BorderBrush="{DynamicResource DockBorderBrush}"
+                      Visibility="Collapsed"/>
+
+            <!-- OK / Cancel -->
+            <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="4"
+                        Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="OkButton" Content="OK" IsDefault="True"
+                        IsEnabled="False" Click="OnOk" Margin="0,0,8,0"/>
+                <Button Content="Cancel" IsCancel="True"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ec:ThemedDialog>

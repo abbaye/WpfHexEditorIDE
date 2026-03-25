@@ -5,168 +5,267 @@
 //////////////////////////////////////////////
 
 using System.IO;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.Editor.ScriptEditor.Controls;
 
 /// <summary>
-/// Stub script editor — planned for a future sprint (extends TextEditor with TBL encoding support).
-/// Implements <see cref="IDocumentEditor"/> and <see cref="IOpenableDocument"/>.
+/// Script editor — opens C# script files (.csx, .cs) and provides F5 / Ctrl+F5
+/// shortcuts to run or validate the script via <see cref="IScriptingService"/>.
+/// Also supports game script formats (.scr, .msg, .evt, .script, .dec) in read/edit mode.
 /// </summary>
 public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenableDocument
 {
-    private string _filePath = string.Empty;
+    private string            _filePath      = string.Empty;
+    private IScriptingService? _scripting;
+    private CancellationTokenSource? _runCts;
 
-    /// <summary>
-    /// Creates a new <see cref="ScriptEditor"/>.
-    /// </summary>
+    // ── Construction ──────────────────────────────────────────────────────────
+
     public ScriptEditor()
     {
         InitializeComponent();
 
-        UndoCommand      = new RelayCommand(() => { }, () => false);
-        RedoCommand      = new RelayCommand(() => { }, () => false);
-        SaveCommand      = new RelayCommand(() => { }, () => false);
-        CopyCommand      = new RelayCommand(() => { }, () => false);
-        CutCommand       = new RelayCommand(() => { }, () => false);
-        PasteCommand     = new RelayCommand(() => { }, () => false);
-        DeleteCommand    = new RelayCommand(() => { }, () => false);
-        SelectAllCommand = new RelayCommand(() => { }, () => false);
+        UndoCommand      = new RelayCommand(() => CodeBox.Undo(),  () => CodeBox.CanUndo);
+        RedoCommand      = new RelayCommand(() => CodeBox.Redo(),  () => CodeBox.CanRedo);
+        SaveCommand      = new RelayCommand(() => SaveFile(),      () => IsDirty);
+        CopyCommand      = new RelayCommand(() => CodeBox.Copy(),  () => CodeBox.SelectionLength > 0);
+        CutCommand       = new RelayCommand(() => CodeBox.Cut(),   () => CodeBox.SelectionLength > 0);
+        PasteCommand     = new RelayCommand(() => CodeBox.Paste(), () => Clipboard.ContainsText());
+        DeleteCommand    = new RelayCommand(() => CodeBox.SelectedText = string.Empty, () => CodeBox.SelectionLength > 0);
+        SelectAllCommand = new RelayCommand(() => CodeBox.SelectAll());
+
+        CodeBox.TextChanged += (_, _) => ModifiedChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    // -- IDocumentEditor — State ------------------------------------------
+    // ── Scripting injection ───────────────────────────────────────────────────
 
-    /// <inheritdoc/>
-    public bool IsDirty    => false;
+    /// <summary>
+    /// Injects the scripting service. Called by the App layer after document creation.
+    /// </summary>
+    public void SetScriptingService(IScriptingService? service)
+    {
+        _scripting = service;
+        UpdateHint();
+    }
 
-    /// <inheritdoc/>
-    public bool CanUndo    => false;
+    // ── IDocumentEditor — State ───────────────────────────────────────────────
 
-    /// <inheritdoc/>
-    public bool CanRedo    => false;
-
-    /// <inheritdoc/>
-    public bool IsReadOnly { get => true; set { } }
-
-    /// <inheritdoc/>
+    public bool IsDirty    => CodeBox.CanUndo;
+    public bool CanUndo    => CodeBox.CanUndo;
+    public bool CanRedo    => CodeBox.CanRedo;
+    public bool IsReadOnly { get => !CodeBox.IsEnabled; set => CodeBox.IsEnabled = !value; }
     public string Title { get; private set; } = "";
-
-    /// <inheritdoc/>
     public bool IsBusy { get; private set; }
 
-    // -- IDocumentEditor — Commands ---------------------------------------
+    // ── IDocumentEditor — Commands ────────────────────────────────────────────
 
-    /// <inheritdoc/>
     public ICommand UndoCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand RedoCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand SaveCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand CopyCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand CutCommand       { get; }
-
-    /// <inheritdoc/>
     public ICommand PasteCommand     { get; }
-
-    /// <inheritdoc/>
     public ICommand DeleteCommand    { get; }
-
-    /// <inheritdoc/>
     public ICommand SelectAllCommand { get; }
 
-    // -- IDocumentEditor — Events -----------------------------------------
+    // ── IDocumentEditor — Events ──────────────────────────────────────────────
 
 #pragma warning disable CS0067
-    /// <inheritdoc/>
     public event EventHandler?         ModifiedChanged;
-
-    /// <inheritdoc/>
     public event EventHandler?         CanUndoChanged;
-
-    /// <inheritdoc/>
     public event EventHandler?         CanRedoChanged;
-
-    /// <inheritdoc/>
     public event EventHandler<string>? TitleChanged;
-
-    /// <inheritdoc/>
     public event EventHandler<string>? StatusMessage;
-    /// <inheritdoc/>
     public event EventHandler<string>? OutputMessage;
-
-    /// <inheritdoc/>
     public event EventHandler?         SelectionChanged;
-
-    /// <inheritdoc/>
     public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
-
-    /// <inheritdoc/>
     public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
-
-    /// <inheritdoc/>
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 #pragma warning restore CS0067
 
-    // -- IDocumentEditor — Methods (no-ops for stub) ----------------------
+    // ── IDocumentEditor — Methods ─────────────────────────────────────────────
 
-    /// <inheritdoc/>
-    public void Undo() { }
+    public void Undo() => CodeBox.Undo();
+    public void Redo() => CodeBox.Redo();
 
-    /// <inheritdoc/>
-    public void Redo() { }
+    public void Save()
+    {
+        if (!string.IsNullOrEmpty(_filePath))
+            SaveFile();
+    }
 
-    /// <inheritdoc/>
-    public void Save() { }
+    public async Task SaveAsync(CancellationToken ct = default)
+    {
+        if (!string.IsNullOrEmpty(_filePath))
+            await Task.Run(() => File.WriteAllText(_filePath, CodeBox.Text, Encoding.UTF8), ct)
+                      .ConfigureAwait(false);
+    }
 
-    /// <inheritdoc/>
-    public Task SaveAsync(CancellationToken ct = default) => Task.CompletedTask;
+    public async Task SaveAsAsync(string filePath, CancellationToken ct = default)
+    {
+        _filePath = filePath;
+        await SaveAsync(ct).ConfigureAwait(false);
+        Title = Path.GetFileName(filePath);
+        TitleChanged?.Invoke(this, Title);
+    }
 
-    /// <inheritdoc/>
-    public Task SaveAsAsync(string filePath, CancellationToken ct = default) => Task.CompletedTask;
+    public void Copy()       => CodeBox.Copy();
+    public void Cut()        => CodeBox.Cut();
+    public void Paste()      => CodeBox.Paste();
+    public void Delete()     => CodeBox.SelectedText = string.Empty;
+    public void SelectAll()  => CodeBox.SelectAll();
+    public void Close()      { _runCts?.Cancel(); }
+    public void CancelOperation() { _runCts?.Cancel(); }
 
-    /// <inheritdoc/>
-    public void Copy() { }
+    // ── IOpenableDocument ─────────────────────────────────────────────────────
 
-    /// <inheritdoc/>
-    public void Cut() { }
-
-    /// <inheritdoc/>
-    public void Paste() { }
-
-    /// <inheritdoc/>
-    public void Delete() { }
-
-    /// <inheritdoc/>
-    public void SelectAll() { }
-
-    /// <inheritdoc/>
-    public void Close() { }
-
-    /// <inheritdoc/>
-    public void CancelOperation() { }
-
-    // -- IOpenableDocument ------------------------------------------------
-
-    /// <inheritdoc/>
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
         _filePath = filePath;
         Title = Path.GetFileName(filePath);
         TitleChanged?.Invoke(this, Title);
+
+        try
+        {
+            var text = await Task.Run(() => File.ReadAllText(filePath, Encoding.UTF8), ct)
+                                 .ConfigureAwait(false);
+            Dispatcher.Invoke(() =>
+            {
+                CodeBox.Text = text;
+                CodeBox.ScrollToHome();
+            });
+        }
+        catch (Exception ex)
+        {
+            Dispatcher.Invoke(() => OutputBox.Text = $"[Error loading file] {ex.Message}");
+        }
+
         OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs { Success = true });
-        await Task.CompletedTask;
+    }
+
+    // ── Keyboard shortcuts ────────────────────────────────────────────────────
+
+    private void OnCodeBoxKeyDown(object sender, KeyEventArgs e)
+    {
+        // F5 — Run script
+        if (e.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            _ = RunScriptAsync(validate: false);
+            e.Handled = true;
+        }
+        // Ctrl+F5 — Validate only
+        else if (e.Key == Key.F5 && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            _ = RunScriptAsync(validate: true);
+            e.Handled = true;
+        }
+        // Escape — Cancel running script
+        else if (e.Key == Key.Escape)
+        {
+            _runCts?.Cancel();
+            e.Handled = true;
+        }
+    }
+
+    // ── Script execution ──────────────────────────────────────────────────────
+
+    private async Task RunScriptAsync(bool validate)
+    {
+        if (_scripting is null)
+        {
+            OutputBox.Text = "Scripting engine not available. Ensure WpfHexEditor.Core.Scripting is loaded.";
+            return;
+        }
+
+        if (IsBusy) return;
+
+        var code = CodeBox.Text;
+        if (string.IsNullOrWhiteSpace(code)) return;
+
+        IsBusy = true;
+        _runCts = new CancellationTokenSource();
+        var label = validate ? "Validating" : "Running";
+        StatusBar.Text  = $"{label}…";
+        OutputBox.Text  = string.Empty;
+
+        try
+        {
+            var result = validate
+                ? await _scripting.ValidateAsync(code, _runCts.Token).ConfigureAwait(false)
+                : await _scripting.RunAsync(code, _runCts.Token).ConfigureAwait(false);
+
+            await Dispatcher.InvokeAsync(() =>
+            {
+                var sb = new StringBuilder();
+
+                if (!string.IsNullOrEmpty(result.Output))
+                    sb.AppendLine(result.Output);
+
+                foreach (var d in result.Diagnostics)
+                {
+                    var prefix = d.IsWarning ? "⚠" : "✗";
+                    sb.AppendLine($"{prefix} ({d.Line},{d.Column}): {d.Message}");
+                }
+
+                OutputBox.Text = sb.ToString().TrimEnd();
+                OutputBox.ScrollToEnd();
+
+                StatusBar.Text = result.Success
+                    ? $"{(validate ? "Valid" : "Done")} — {result.Duration.TotalMilliseconds:F0} ms"
+                    : $"Failed — {result.Diagnostics.Count(x => !x.IsWarning)} error(s)";
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            await Dispatcher.InvokeAsync(() => StatusBar.Text = "Cancelled.");
+        }
+        catch (Exception ex)
+        {
+            await Dispatcher.InvokeAsync(() =>
+            {
+                OutputBox.Text = $"✗ Unexpected error: {ex.Message}";
+                StatusBar.Text = "Error.";
+            });
+        }
+        finally
+        {
+            _runCts?.Dispose();
+            _runCts = null;
+            IsBusy  = false;
+        }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private void SaveFile()
+    {
+        try
+        {
+            File.WriteAllText(_filePath, CodeBox.Text, Encoding.UTF8);
+            StatusBar.Text = "Saved.";
+        }
+        catch (Exception ex)
+        {
+            StatusBar.Text = $"Save failed: {ex.Message}";
+        }
+    }
+
+    private void UpdateHint()
+    {
+        if (ScriptLabel is null) return;
+        ScriptLabel.Text = _scripting is not null
+            ? "Press F5 to run · Ctrl+F5 to validate"
+            : "Scripting engine not available";
     }
 }
 
-// -- Minimal RelayCommand (no external dep) -----------------------------------
+// ── Minimal RelayCommand ──────────────────────────────────────────────────────
 
 internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
 {

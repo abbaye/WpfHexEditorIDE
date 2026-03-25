@@ -6,7 +6,7 @@
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.LSP;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -68,7 +68,7 @@ public interface IIDEHostContext
     /// <summary>
     /// IDE-level event bus for subscribing to and publishing typed IDE events
     /// (FileOpenedEvent, EditorSelectionChangedEvent, PluginLoadedEvent, etc.).
-    /// Backed by WpfHexEditor.Events.IDEEventBus; bridged to sandbox plugins via IPC.
+    /// Backed by WpfHexEditor.Core.Events.IDEEventBus; bridged to sandbox plugins via IPC.
     /// </summary>
     IIDEEventBus IDEEvents { get; }
 
@@ -135,4 +135,53 @@ public interface IIDEHostContext
     /// Null when the LSP.Client assembly is not loaded.
     /// </summary>
     ILspServerRegistry? LspServers { get; }
+
+    // -- Debugger -------------------------------------------------------------
+
+    /// <summary>
+    /// Integrated debugger service. Use to query session state, toggle breakpoints,
+    /// and subscribe to debug lifecycle events.
+    /// Null when the debugger assembly is not loaded or the host does not support debugging.
+    /// </summary>
+    IDebuggerService? Debugger => null;
+
+    // -- Scripting ------------------------------------------------------------
+
+    /// <summary>
+    /// C# scripting engine. Use to run or validate scripts on behalf of the user.
+    /// Null when the scripting assembly is not loaded.
+    /// </summary>
+    IScriptingService? Scripting => null;
+
+    // -- Build System ---------------------------------------------------------
+
+    /// <summary>
+    /// Orchestrates compilation of solutions and individual projects.
+    /// Null when no build system is configured (e.g. no solution loaded).
+    /// </summary>
+    IBuildSystem? BuildSystem => null;
+
+    // -- Unit Test Runner -----------------------------------------------------
+
+    /// <summary>
+    /// Service for running unit tests inside the IDE.
+    /// Null when the UnitTesting plugin is not loaded.
+    /// </summary>
+    ITestRunnerService? TestRunner => null;
+
+    // -- Diff Service ---------------------------------------------------------
+
+    /// <summary>
+    /// Service for comparing files (diff) and opening the DiffHub viewer.
+    /// Null when the FileComparison plugin is not loaded.
+    /// </summary>
+    IDiffService? DiffService => null;
+
+    // -- Workspace System -----------------------------------------------------
+
+    /// <summary>
+    /// Read-only view of the active workspace (.whidews) state and lifecycle events.
+    /// Null when no workspace support is configured.
+    /// </summary>
+    IWorkspaceService? Workspace => null;
 }

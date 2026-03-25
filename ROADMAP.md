@@ -12,10 +12,10 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 | Feature # | Title | Description | Progress |
 |-----------|-------|-------------|----------|
 | #81 | **Plugin Sandbox** | Out-of-process isolation via HWND embedding + full IPC bridge (menus, toolbar, events). HWND parenting, Job Object resource control, IPC HexEditor event bridge done. Auto-isolation engine done. IDE EventBus IPC bridge done. Plugin signing + signature validation done (ADR-SB-01). Remaining: gRPC migration, hot-reload from sandbox. | ~75% |
-| #84 | **Code Editor — VS-Like Advanced** | Full feature set shipped: navigation bar, 55+ language definitions, URL hover/click, find/replace, split view, `IEditorPersistable`, Ctrl+Click cross-file nav, LSP multi-location popup, Alt+Click rect selection, drag-to-move, `#region` colorization, shared `UndoEngine`, data-driven folding (4 strategies), comment-aware brace matching, 454 `.whfmt` definitions, gutter diagnostics, multi-caret (`Ctrl+Alt+Click`, `Ctrl+D`), diagnostics integration, LSP breadcrumb bar, inlay hints, code lens, semantic tokens layer, code actions (`Ctrl+.`), rename symbol (`F2`), word wrap. | ~100% ✅ |
-| #101–103 | **MSBuild & VS Solution Support** | Open `.sln` files; build/rebuild/clean via MSBuild API; output routed to Build channel; severity coloring; auto-focus; project templates; error list navigation; incremental build with dirty tracking (`IIncrementalBuildTracker`, FSW per project, `BuildDirtyAsync()`); orange dirty dot in Solution Explorer (`Ctrl+Alt+F7`). Remaining: parallel project builds, VB.NET write support. | ~80% |
+| #84 | **Code Editor — VS-Like Advanced** | Full feature set shipped: navigation bar, 55+ language definitions, URL hover/click, find/replace, split view, `IEditorPersistable`, Ctrl+Click cross-file nav, LSP multi-location popup, Alt+Click rect selection, drag-to-move, `#region` colorization, shared `UndoEngine`, data-driven folding (4 strategies), comment-aware brace matching, 454 `.whfmt` definitions, gutter diagnostics, multi-caret (`Ctrl+Alt+Click`, `Ctrl+D`), diagnostics integration, LSP breadcrumb bar, inlay hints, code lens, semantic tokens layer, code actions (`Ctrl+.`), rename symbol (`F2`), word wrap. Remaining: go-to-references (#157), peek definition (#158), code formatting / format-on-save (#159), sticky scroll (#160), code minimap (#161), bracket pair colorization (#162), auto-close brackets & quotes (#163), smart indentation (#164), column ruler guides (#165), inline gutter change markers (#166), expand/collapse all folds `Ctrl+M Ctrl+L/O` (#167), color swatch inline preview (#168). | ~75% |
+| #101–103 | **MSBuild & VS Solution Support** | Open `.sln` files; build/rebuild/clean via MSBuild API; output routed to Build channel; severity coloring; auto-focus; project templates; error list navigation; incremental build with dirty tracking (`IIncrementalBuildTracker`, FSW per project, `BuildDirtyAsync()`); orange dirty dot in Solution Explorer (`Ctrl+Alt+F7`); **parallel project builds** (`SemaphoreSlim`-gated `Task.WhenAll`, `MaxParallelProjects` from `AppSettings`, `Interlocked`-safe counters). Remaining: VB.NET write support. | ~90% |
 | #104–106 | **Assembly Explorer + Decompilation** | .NET PE tree, C# decompilation, ILSpy backend, VB.NET, CFG Canvas, Assembly Diff, Assembly Search, XRef View, Decompile Cache, Ctrl+Click external symbol decompilation via `FindAssemblyPath` (AppDomain + runtime + NuGet) + `CSharpSkeletonEmitter` pipeline. Remaining: full ECMA-335 token→offset resolution, hex sync, plugin panel improvements. | ~70% |
-| #107 | **Document Model** | `IDocumentBuffer` / `DocumentBuffer` (thread-safe, Dispatcher-marshalled); `IBufferAwareEditor` implemented by `CodeEditor`, `TextEditor`, `MarkdownEditorHost`, `CodeEditorSplitHost`, `XamlDesignerSplitHost`; `DocumentManager` buffer lifecycle; `LspBufferBridge` (300 ms debounce → `DidChange`); `LspDocumentBridgeService`. Remaining: multi-editor collaboration, undo/redo unification across editors, hex editor buffer. | ~40% |
+| #107 | **Document Model** | `IDocumentBuffer` / `DocumentBuffer` (thread-safe, Dispatcher-marshalled); `IBufferAwareEditor` implemented by `CodeEditor`, `TextEditor`, `MarkdownEditorHost`, `CodeEditorSplitHost`, `XamlDesignerSplitHost`, **`HexEditor`** (`HexEditor.BufferAware.cs` partial — `ByteModified` debounce 300ms, `OpenStream(MemoryStream)` reload, 10MB cap); `DocumentManager` buffer lifecycle; `LspBufferBridge` (300 ms debounce → `DidChange`); `LspDocumentBridgeService`. Remaining: multi-editor collaboration, undo/redo unification across editors. | ~60% |
 | #85–86 | **LSP Engine / SmartComplete** | Full JSON-RPC LSP client (`LspClientImpl`); `ServerCapabilities` parse; 10 LSP providers: completion (LSP-first + local fallback), hover, signature help, code actions (`Ctrl+.`), rename (`F2`), inlay hints, code lens, semantic tokens, breadcrumb bar, workspace symbols (`Ctrl+T`); `LspDocumentSync` (DidOpen/DidChange/DidClose); `LspStatusBarAdapter`; `LspServersOptionsPage`; 30 new tokens × 18 themes. Remaining: real OmniSharp/Pylsp/clangd integration testing, go-to-references, find-all-references. | ~80% |
 
 ---
@@ -57,14 +57,36 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature # | Title | Description |
 |-----------|-------|-------------|
-| #84 | **Code Editor — VS-Like Advanced** | *(In Progress ~70% — see above)* Remaining: syntax folding, gutter indicators, multi-caret, diagnostics integration. |
-| #85 | **LSP Engine** | *(In Progress ~20% — see above)* Infrastructure done. Remaining: real parsing backend, go-to-definition, find-references. |
+| #84 | **Code Editor — VS-Like Advanced** | *(In Progress ~75% — see above)* |
+| #85 | **LSP Engine** | *(In Progress ~92% — see above)* Remaining: call hierarchy (#190), linked editing, inline value hints, LSP 3.18 pull-diagnostics. |
 | #86 | **SmartComplete v4 (LSP)** | Advanced autocomplete, signature help, quick-info, multi-caret editing, virtual scroll for >1 GB files. |
 | #88 | **Dynamic Snippets** | `SnippetsManager` with context-aware snippets, dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); user/plugin/language-scoped. |
 | #89 | **AI-Assisted Code Suggestions** | `AICompletionEngine` and `AIRefactoringAssistant`; contextual completions, auto-refactoring, plugin-extensible AI rules. |
 | #94 | **Advanced Refactoring** | Rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions. |
 | #96 | **Code Analysis & Metrics** | Cyclomatic complexity, code duplication detection, dependency graphs; dedicated panel with filter/sort. |
 | #106 | **.NET Decompilation via ILSpy** | C# skeleton view + full IL disassembly per method; "Go to Metadata Token" navigation; decompiled source in Code Editor tab. |
+| #157 | **Go-to-References / Find All References** | `Shift+F12`; LSP `textDocument/references`; dockable results panel with file / line / preview grouping; navigation with `F8` / `Shift+F8`. |
+| #158 | **Peek Definition** | `Alt+F12`; inline overlay showing the declaration without leaving the current file; keyboard-navigable, Esc to close. |
+| #159 | **Code Formatting** | `Ctrl+K Ctrl+D` (document) / `Ctrl+K Ctrl+F` (selection); LSP `textDocument/formatting` + `rangeFormatting`; format-on-save toggle in options. |
+| #160 | **Sticky Scroll** | Current function / class / namespace scope header pinned at the top of the editor while scrolling (VS 2022 / VS Code style). |
+| #161 | **Code Minimap** | Right-edge glyph-scale code overview panel; click-to-scroll; viewport highlight; diagnostic marker overlay. |
+| #162 | **Bracket Pair Colorization** | Multi-level color assignment for nested `()` `[]` `{}`; configurable palette; depth tokens per theme. |
+| #163 | **Auto-close Brackets & Quotes** | Auto-insert matching `)` `]` `}` `"` `'` on type; skip-over on duplicate type; language-scoped opt-out. |
+| #164 | **Smart Indentation** | Language-aware auto-indent on Enter; dedent on `}` / `end` / `elif`; indent continuation lines; respects `.whfmt` indent rules. |
+| #165 | **Column Ruler Guides** | Configurable vertical ruler lines at user-defined columns (e.g. 80 / 120); per-language defaults via `.whfmt`; `CE_RulerBrush` token. |
+| #166 | **Inline Gutter Change Markers** | Added / modified / deleted line indicators in the gutter; requires Document Model Phase 2 buffer diff; `CE_GutterAdded` / `CE_GutterModified` / `CE_GutterDeleted` tokens. |
+| #167 | **Expand / Collapse All Folds** | `Ctrl+M Ctrl+L` = expand all; `Ctrl+M Ctrl+O` = collapse all to definitions; `Ctrl+M Ctrl+M` = toggle current region. |
+| #168 | **Color Swatch Inline Preview** | Detect CSS / XAML / WPF color literals; show 12 px inline swatch next to the value; click opens the IDE color picker (`#132`). |
+| #169 | **TextEditor Phase 2** | Multi-caret (`Ctrl+Alt+Click`, `Ctrl+D`); column/block select (Shift+Alt+drag); LSP integration (hover, completion); advanced encoding auto-detection; text statistics panel. |
+| #170 | **ImageViewer Phase 2** | Inline color picker (click pixel); histogram panel (R/G/B/A channels); batch export (resize/convert/reformat); pixel inspector overlay; animated GIF frame viewer. |
+| #171 | **DiffViewer Phase 2** | 3-way merge UI; chunk-level accept/reject staging; word-level diff mode; unified diff view; export as `.patch` file; integrated ChangesetEditor bridge. |
+| #172 | **StructureEditor Phase 2** | Live binary preview sync (change field → hex view updates); complex type support (arrays, unions, conditionals, bitfields); template validation engine; import/export template packages. |
+| #173 | **EntropyViewer Phase 2** | Named section labels (overlay on chart); chart export (PNG/SVG); multi-file overlay comparison; zoom/pan on entropy graph; region selection → jump to hex offset. |
+| #174 | **AudioViewer — Full Implementation** | Waveform rendering (DrawingVisual); playback controls (play/pause/stop/seek); spectrogram view; audio metadata panel (sample rate, channels, bitrate, duration); format-aware (WAV/MP3/FLAC/OGG). |
+| #175 | **TileEditor — Full Implementation** | Tile grid picker; palette editor (256-color + alpha); sprite sheet layout (N×M grid); pixel-level editing; export as PNG/BMP; zoom 1×–16×; ROM-format import (2bpp/4bpp/8bpp). |
+| #176 | **JsonEditor — Full Implementation** | Dedicated JSON editor (not CodeEditor fallback); collapsible tree view with virtual scroll; JSON Schema validation + inline error markers; JSON path navigator (`$.foo.bar`); format/minify/sort-keys; side-by-side JSON diff. |
+| #177 | **ScriptEditor Phase 2** | Step-debugger for `.hxscript` (breakpoints, watch, call stack); REPL panel (interactive HxScript console); snippet templates; syntax error underline + gutter marker; HxScript language server (LSP). |
+| #178 | **DisassemblyViewer Phase 2** | x86/x64/ARM/WASM instruction decoding; jump arrows between branch targets; symbol table overlay (resolved function names); address navigation bar; cross-reference to hex view; export as `.asm`. |
 | #155 | **Visual XAML Editor — Phase 2** | Core designer shipped in v0.6.0; overkill 10-phase improvement (constraint adorner, gradient editor, binding path picker, perf overlay, responsive breakpoint bar) shipped in v0.6.3. Remaining: trigger & animation timeline editor (beyond stub), data-binding wizard, "Go to Definition" for resource keys, multi-resolution DPI preview, export as standalone `.xaml`. |
 | #156 | **Class Diagram Plugin** | Full-featured class diagram editor shipped in v0.6.3: regex-based C#/VB.NET source analysis, canvas with 6 docking panels, 36 CD_* theme tokens, Solution Explorer context menus ("View Class Diagram", "Generate for Project/Solution"), plugin menu registration fix (View menu grouping) and double-separator fix. Remaining: live Roslyn-backed analysis, export to SVG/PNG. |
 
@@ -90,7 +112,7 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 | #90 | **Debugger — Multi-Project** | Multi-project debug sessions via EventBus; supports scripts, plugins, and workspace projects. |
 | #91 | **Git Integration** | `GitManager`, `GitPanel` (commit/push/pull/branch); inline gutter diff; `GitEventAdapter` for file-change notifications. |
 | #93 | **Plugin Installer / Marketplace UI** | Plugin search UI, download/update manager, sandbox enforcement at install time. |
-| #95 | **Unit Testing Panel** | `TestManager`, `TestRunner`, `TestResultPanel`; auto-detect NUnit/JUnit/MSTest; run by file/project/workspace. |
+| #95 | **Unit Testing Panel** | ✅ `WpfHexEditor.Plugins.UnitTesting` plugin — `DotnetTestRunner` (`dotnet test --logger trx --no-build`), `TrxParser` (ECMA TRX XML), `UnitTestingViewModel` (pass/fail/skip counters, `ObservableCollection<TestResultRow>`), dockable `UnitTestingPanel` (Run/Stop/Clear toolbar, color-coded outcome glyphs, duration ms, virtualized ListView); auto-run on `BuildSucceededEvent`; test project auto-detection (xunit/nunit/mstest/Microsoft.NET.Test.Sdk keywords in .csproj). | ✅ Done |
 | #98 | **Multi-User Collaboration** | Multi-cursor real-time editing, document sync, contextual chat/comments per line. |
 
 ---
@@ -193,6 +215,42 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 |-----------|-------|-------------|
 | #136 | **PCAP / Network Capture Viewer** | Load `.pcap` and `.pcapng` files; display packet list, layer breakdown (Ethernet/IP/TCP/UDP/TLS), and raw payload bytes in the hex view. |
 | #137 | **Protocol Dissector Plugin API** | Plugin contract allowing third parties to register custom protocol dissectors; dissected fields appear in the ParsedFields panel and hex view overlays. |
+
+---
+
+## 🔜 Planned — IDE Infrastructure Phase 2
+
+| Feature # | Title | Description |
+|-----------|-------|-------------|
+| #179 | **Quick File Open (Ctrl+P)** | VS Code-style fuzzy file picker across entire solution; recent files first; preview on hover; open at line (`filename:42`); filter by extension; excludes `.gitignore` patterns. |
+| #180 | **Terminal Phase 2** | Full ANSI / Xterm-compatible emulation (256-color, SGR codes, mouse events); terminal split panes (horizontal/vertical); SSH / WSL session integration; persistent command history across restarts; REPL hosting (Python/Node/Ruby); macro recording & playback. |
+| #181 | **Build System Phase 2** | Parallel project builds (MSBuild `-m` flag); build cancel button (kills MSBuild process); per-project build duration profiling in Output panel; pre/post-build event steps UI; distributed build cache (optional); cross-platform build (dotnet CLI fallback). |
+| #182 | **Docking Phase 2** | Persistent floating window positions (saved on close, restored on next session); keyboard panel switcher (`Ctrl+Tab`-like cycle across all panels); multi-item tabbed float windows (group panels in a single float). |
+| #183 | **EventBus Phase 2** | Async event delivery (non-blocking handlers via `Task`); per-event filtering / routing rules; cross-process plugin events via IPC; plugin-publishable custom events via SDK; event delivery metrics (latency, queue depth) in Monitoring panel. |
+| #184 | **Project System Phase 2** | Lazy project loading (defer heavy projects until first open); solution-wide find & replace (`Ctrl+Shift+H`); project dependency graph view; `.gitignore` support in folder loader; bulk rename/move items; nested project groups (>1 level). |
+| #185 | **Settings Phase 2** | Per-workspace settings override (`.whsettings` in project root); named settings profiles (switch between Debug/Release/Presentation modes); settings import/export UI; settings keyword search; keyboard shortcut conflict detection + resolution dialog. |
+
+---
+
+## 🔜 Planned — Plugins Phase 2
+
+| Feature # | Title | Description |
+|-----------|-------|-------------|
+| #186 | **AssemblyExplorer Phase 2** | Full IlSpy backend wiring (replaces Skeleton fallback); PDB symbol + source-link matching UI; live source↔decompiled assembly sync; ECMA-335 metadata token→hex offset navigation. |
+| #187 | **ArchiveStructure Phase 2** | In-place archive editing (add/remove/rename entries without re-pack); multi-format packer (TAR/GZ/XZ/BR); compression ratio analysis per entry; drag-and-drop files into archive panel. |
+| #188 | **FileComparison Phase 2** | Diff algorithm choice (LCS / Myers / Histogram — selectable in toolbar); binary patch export (`.bdiff` / `xdelta` format); unified diff view mode; 3-way merge (base + mine + theirs). |
+| #189 | **DiagnosticTools Phase 2** | Memory leak heuristic (detect growing gen2 objects across GC cycles); GC pressure analyzer (alert on LOH allocations); thread deadlock detector (wait graph); flame graph for CPU samples. |
+
+---
+
+## 🔜 Planned — LSP & Language Intelligence Phase 3
+
+| Feature # | Title | Description |
+|-----------|-------|-------------|
+| #190 | **LSP Phase 3** | Call hierarchy panel (`Shift+Alt+H`); linked editing ranges (rename-all-references live as you type); inline value hints (expression evaluation in debug scope); LSP 3.18 features: pull-diagnostic model (`textDocument/diagnostic`), type hierarchy (`Ctrl+F12`). |
+| #191 | **Core Source Analysis (Roslyn)** | C# incremental Roslyn parser replacing regex-based `SourceOutlineEngine`; VB.NET / F# parser support; cross-language symbol resolution; semantic model for LSP providers; `#if` / `#pragma` conditional compilation region handling. |
+| #192 | **F# Full Language Support** | `FSharp.whfmt` syntax definition (keywords, computation expressions `async { }` / `seq { }` / `task { }`, active patterns, discriminated union arms, F# operators `\|>` / `>>` / `<-`); `LanguageRegistry` registration for `.fs` / `.fsx` / `.fsi`; `LspServerRegistry` auto-detect `fsautocomplete` (Ionide) with PATH check + install hint; Assembly Explorer F# decompilation language mapping; `DocumentManager` extension map update. See **DevPlan #9**. |
+| #193 | **VB.NET Full Language Support** | `VBNet.whfmt` syntax definition (VB.NET keywords, `End Class` / `End Sub` / `End Function` block detection, `#Region` / `#End Region` named folding, `'` line comments, `'''` XML-doc comments, `&H` / `&B` / `&O` number literals, attribute `<…>` patterns); `LanguageRegistry` registration for `.vb`; OmniSharp `vbnet` language ID registration; Assembly Explorer VB.NET language mapping. See **DevPlan #9**. |
 
 ---
 

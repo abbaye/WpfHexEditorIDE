@@ -18,7 +18,7 @@
 
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 

@@ -1,0 +1,118 @@
+/* ============================================================
+   Format:    PHP Source File
+   Category:  Programming
+   Ext:       .php, .phtml
+   Editor:    code-editor
+   Desc:      PHP programming language source files and templates.
+   Updated:   2026-03-22
+   ============================================================ */
+
+{
+  "formatName": "PHP Source File",
+  "version": "2.0",
+  "extensions": [
+    ".php",
+    ".phtml"
+  ],
+  "description": "PHP programming language source files and templates.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-22",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "application/x-php"
+  ],
+  "Software": [
+    "PhpStorm",
+    "VS Code"
+  ],
+  "UseCases": [
+    "Web backend development",
+    "CMS development",
+    "Server-side scripting"
+  ],
+  "syntaxDefinition": {
+    "id": "php",
+    "name": "PHP",
+    "extensions": [
+      ".php",
+      ".phtml",
+      ".php3",
+      ".php4",
+      ".php5",
+      ".php7",
+      ".phps"
+    ],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "String",
+        "pattern": "(L?R?\"(?:[^\"\\\\]|\\\\.)*\"|L?'(?:[^'\\\\]|\\\\.)*')",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "//.*$|#.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(abstract|and|array|as|break|callable|case|catch|class|clone|const|continue|declare|default|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|final|finally|fn|for|foreach|function|global|goto|if|implements|include|include_once|instanceof|insteadof|interface|isset|list|match|namespace|new|or|print|private|protected|public|readonly|require|require_once|return|static|switch|throw|trait|try|unset|use|var|while|xor|yield|true|false|null|True|False|NULL)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\$[a-zA-Z_][a-zA-Z0-9_]*",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(int|float|string|bool|array|object|callable|iterable|void|null|mixed|never|self|static|parent)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f]+[uUlLfF]*|0b[01]+|0[0-7]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "Tag",
+        "pattern": "<\\?php|<\\?=|\\?>",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ],
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+    }
+  }
+}

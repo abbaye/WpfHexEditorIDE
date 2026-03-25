@@ -39,7 +39,8 @@
             <Setter Property="Width"           Value="22"/>
             <Setter Property="Height"          Value="22"/>
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush"     Value="Transparent"/>
             <Setter Property="FontFamily"      Value="Segoe MDL2 Assets"/>
             <Setter Property="FontSize"        Value="13"/>
             <Setter Property="Cursor"          Value="Hand"/>
@@ -50,18 +51,22 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" Padding="3">
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="4" Padding="3">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource DockTabActiveBrush}"/>
-                                <Setter Property="Foreground" Value="Gold"/>
-                            </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                                <Setter Property="Foreground" Value="Gold"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

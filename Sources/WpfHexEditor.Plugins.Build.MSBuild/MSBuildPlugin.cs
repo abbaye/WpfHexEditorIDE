@@ -14,7 +14,7 @@
 //     Registration via IExtensionRegistry (no direct MainWindow coupling).
 // ==========================================================
 
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
 

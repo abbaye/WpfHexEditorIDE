@@ -19,7 +19,7 @@
 // ==========================================================
 
 using System.Threading;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 
 namespace WpfHexEditor.PluginHost.Services;
 

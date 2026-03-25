@@ -42,3 +42,21 @@ public sealed class ManageSolutionNuGetRequestedEventArgs : EventArgs
     /// </summary>
     public ISolution Solution { get; init; } = null!;
 }
+
+/// <summary>
+/// Event args for "Add Reference…" requests raised from the References container context menu.
+/// </summary>
+public sealed class AddReferenceRequestedEventArgs : EventArgs
+{
+    /// <summary>The project to which a reference should be added.</summary>
+    public IProject? Project { get; init; }
+}
+
+/// <summary>
+/// Event args for "Remove Unused References…" requests raised from the References container context menu.
+/// </summary>
+public sealed class RemoveUnusedReferencesRequestedEventArgs : EventArgs
+{
+    /// <summary>The project from which unused references should be cleaned up.</summary>
+    public IProject? Project { get; init; }
+}

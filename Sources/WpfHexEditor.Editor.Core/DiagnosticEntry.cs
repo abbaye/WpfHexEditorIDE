@@ -23,7 +23,9 @@ public enum ErrorPanelScope
 {
     Solution,
     CurrentProject,
-    CurrentDocument
+    CurrentDocument,
+    OpenDocuments,    // diagnostics for files currently open as tabs
+    ChangedDocuments  // diagnostics for files with unsaved changes
 }
 
 /// <summary>

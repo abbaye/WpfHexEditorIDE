@@ -109,6 +109,14 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public void SetProjectDirty(string projectId, bool isDirty)
         => _vm.SetProjectDirty(projectId, isDirty);
 
+    /// <summary>Marks the project as actively building. Must be called on the UI thread.</summary>
+    public void SetProjectBuilding(string projectFilePath, bool isBuilding)
+        => _vm.SetProjectBuilding(projectFilePath, isBuilding);
+
+    /// <summary>Clears the building state on all project nodes (build cancelled).</summary>
+    public void ClearAllBuilding()
+        => _vm.ClearAllBuilding();
+
     /// <summary>
     /// Sets the delegate that resolves plugin-contributed context menu items.
     /// Called by MainWindow after the UIRegistry is ready.
@@ -124,8 +132,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ProjectItemEventArgs>?               ItemDeleteFromDiskRequested;
     public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
     public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
-    public event EventHandler<ManageNuGetRequestedEventArgs>?         ManageNuGetPackagesRequested;
-    public event EventHandler<ManageSolutionNuGetRequestedEventArgs>? ManageSolutionNuGetPackagesRequested;
+    public event EventHandler<ManageNuGetRequestedEventArgs>?              ManageNuGetPackagesRequested;
+    public event EventHandler<ManageSolutionNuGetRequestedEventArgs>?      ManageSolutionNuGetPackagesRequested;
+    public event EventHandler<AddReferenceRequestedEventArgs>?             AddReferenceRequested;
+    public event EventHandler<RemoveUnusedReferencesRequestedEventArgs>?   RemoveUnusedReferencesRequested;
 
     // -- Tree events -----------------------------------------------------------
 
@@ -424,7 +434,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         PasteMenuItem     .Visibility = canClipPaste ? Visibility.Visible : Visibility.Collapsed;
 
         // Rename / Remove / Delete / Exclude
-        RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isFolder || isProject || isDep) ? Visibility.Visible : Visibility.Collapsed;
+        // Properties folder is not renameable (system-reserved, like VS behaviour)
+        bool isRenameableFolder = isFolder && !((node as FolderNodeVm)?.IsPropertiesFolder == true);
+        RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isRenameableFolder || isProject || isDep) ? Visibility.Visible : Visibility.Collapsed;
         RemoveMenuItem            .Visibility = (isFile || isDep || isFolder || isSolutionFolder)                    ? Visibility.Visible : Visibility.Collapsed;
         DeleteMenuItem            .Visibility = (isFile || isDep)                                                    ? Visibility.Visible : Visibility.Collapsed;
         ExcludeFromProjectMenuItem.Visibility = isPhysIn                                                              ? Visibility.Visible : Visibility.Collapsed;
@@ -452,8 +464,17 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SetStartupSeparator      .Visibility = isProject   ? Visibility.Visible : Visibility.Collapsed;
         SetStartupProjectMenuItem.Visibility = isProject   ? Visibility.Visible : Visibility.Collapsed;
 
-        NuGetSeparator       .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
-        ManageNuGetMenuItem  .Visibility = isVsProject ? Visibility.Visible : Visibility.Collapsed;
+        bool isRefsContainer = node is ReferencesContainerNodeVm;
+        bool showNuGet = isVsProject ||
+            (isRefsContainer && IsVsProject((node as ReferencesContainerNodeVm)!.Project));
+
+        // Refs items first (no leading separator when context menu opens on the refs container)
+        AddReferenceMenuItem    .Visibility = isRefsContainer ? Visibility.Visible : Visibility.Collapsed;
+        RemoveUnusedRefsMenuItem.Visibility = isRefsContainer ? Visibility.Visible : Visibility.Collapsed;
+
+        // NuGetSeparator acts as divider between refs items and NuGet, or between build items and NuGet
+        NuGetSeparator     .Visibility = showNuGet ? Visibility.Visible : Visibility.Collapsed;
+        ManageNuGetMenuItem.Visibility = showNuGet ? Visibility.Visible : Visibility.Collapsed;
 
         // Properties
         PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
@@ -479,8 +500,15 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         RebuildPluginMenuItems(node);
 
         return canOpen || canAdd || isPhysNotIn || isTbl || hasExplorer
-            || isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn || isChangeset || isExternal || isDep;
+            || isSolution || isSolutionFolder || isProject || isFolder || isFile || isPhysIn || isChangeset || isExternal || isDep
+            || isRefsContainer;
     }
+
+    private static bool IsVsProject(IProject? p) =>
+        p?.ProjectType is string pt &&
+        (pt.Contains("csproj", StringComparison.OrdinalIgnoreCase) ||
+         pt.Contains("vbproj", StringComparison.OrdinalIgnoreCase) ||
+         string.Equals(pt, "VS", StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// Removes previously-injected plugin menu items and re-inserts fresh ones
@@ -949,7 +977,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         if      (_contextMenuTarget is SolutionNodeVm       sv)  StartInlineSolutionEdit(sv);
         else if (_contextMenuTarget is SolutionFolderNodeVm sfv) StartInlineSolutionFolderEdit(sfv);
         else if (_contextMenuTarget is FileNodeVm            fn)  StartInlineEdit(fn);
-        else if (_contextMenuTarget is FolderNodeVm          fv)  StartInlineFolderEdit(fv);
+        else if (_contextMenuTarget is FolderNodeVm          fv && !fv.IsPropertiesFolder)  StartInlineFolderEdit(fv);
         else if (_contextMenuTarget is ProjectNodeVm         pv)  StartInlineProjectEdit(pv);
         else if (_contextMenuTarget is DependentFileNodeVm   dep) StartInlineDependentEdit(dep);
     }
@@ -1040,8 +1068,14 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnManageNuGetPackages(object sender, RoutedEventArgs e)
     {
-        if (_contextMenuTarget is ProjectNodeVm pv)
-            ManageNuGetPackagesRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = pv.Source });
+        IProject? proj = _contextMenuTarget switch
+        {
+            ProjectNodeVm           pv => pv.Source,
+            ReferencesContainerNodeVm r => r.Project,
+            _                          => null
+        };
+        if (proj is not null)
+            ManageNuGetPackagesRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = proj });
     }
 
     private void OnManageSolutionNuGetPackages(object sender, RoutedEventArgs e)
@@ -1049,6 +1083,18 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         if (_contextMenuTarget is SolutionNodeVm sv)
             ManageSolutionNuGetPackagesRequested?.Invoke(this,
                 new ManageSolutionNuGetRequestedEventArgs { Solution = sv.Source });
+    }
+
+    private void OnAddReference(object sender, RoutedEventArgs e)
+    {
+        var proj = (_contextMenuTarget as ReferencesContainerNodeVm)?.Project;
+        AddReferenceRequested?.Invoke(this, new AddReferenceRequestedEventArgs { Project = proj });
+    }
+
+    private void OnRemoveUnusedReferences(object sender, RoutedEventArgs e)
+    {
+        var proj = (_contextMenuTarget as ReferencesContainerNodeVm)?.Project;
+        RemoveUnusedReferencesRequested?.Invoke(this, new RemoveUnusedReferencesRequestedEventArgs { Project = proj });
     }
 
     // -- Go To Definition (context menu for source nodes) ----------------------
@@ -1886,7 +1932,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             if      (candidate is SolutionNodeVm       sv  && sv.IsSelected  && !sv.IsEditing)  StartInlineSolutionEdit(sv);
             else if (candidate is SolutionFolderNodeVm sfv && sfv.IsSelected && !sfv.IsEditing) StartInlineSolutionFolderEdit(sfv);
             else if (candidate is FileNodeVm            fn  && fn.IsSelected  && !fn.IsEditing)  StartInlineEdit(fn);
-            else if (candidate is FolderNodeVm          fv  && fv.IsSelected  && !fv.IsEditing)  StartInlineFolderEdit(fv);
+            else if (candidate is FolderNodeVm          fv  && fv.IsSelected  && !fv.IsEditing && !fv.IsPropertiesFolder)  StartInlineFolderEdit(fv);
             else if (candidate is ProjectNodeVm         pv  && pv.IsSelected  && !pv.IsEditing)  StartInlineProjectEdit(pv);
         };
         _slowClickTimer.Start();

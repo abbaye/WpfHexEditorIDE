@@ -34,8 +34,10 @@ using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAss
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.TextEditor.Controls;
 using WpfHexEditor.Editor.TextEditor.Models;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
@@ -162,6 +164,48 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     /// <summary>The active decompiler backend — exposed for language-aware Extract operations.</summary>
     public IDecompilerBackend Backend => _decompilerBackend;
+
+    /// <summary>The BCL-only decompiler service — exposed for IL and C# single-item export.</summary>
+    public DecompilerService Decompiler => _decompiler;
+
+    // ── Language management ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Sets <paramref name="languageId"/> as the new default decompilation language,
+    /// then opens the node in a new editor tab.
+    /// </summary>
+    public void OpenNodeInEditorWithLanguage(AssemblyNodeViewModel node, string languageId)
+    {
+        SetDefaultLanguage(languageId);
+        SelectedNode = node;
+        _ = OpenSelectedNodeInEditorAsync();
+    }
+
+    /// <summary>
+    /// Opens the node in a new editor tab using <paramref name="languageId"/>
+    /// without changing the persistent default language.
+    /// Used by "Go to Definition" which must always show C# regardless of the current default.
+    /// </summary>
+    public void OpenNodeInEditorWithLanguageWithoutChangingDefault(
+        AssemblyNodeViewModel node, string languageId)
+    {
+        var savedId = _decompilerBackend.Options.TargetLanguageId;
+        SetDefaultLanguage(languageId);
+        SelectedNode = node;
+        _ = OpenSelectedNodeInEditorAsync();
+        // Restore the previous default so the persistent setting is unaffected.
+        SetDefaultLanguage(savedId ?? "CSharp");
+    }
+
+    /// <summary>
+    /// Persists <paramref name="languageId"/> as the target decompilation language.
+    /// Subsequent calls to <see cref="OpenSelectedNodeInEditorAsync"/> will use it.
+    /// </summary>
+    public void SetDefaultLanguage(string languageId)
+    {
+        var opts = _decompilerBackend.Options with { TargetLanguageId = languageId };
+        _decompilerBackend.Options = opts;
+    }
 
     // ── Loading state ─────────────────────────────────────────────────────────
 
@@ -869,30 +913,71 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
         if (_uiRegistry.Exists(uiId))
         {
-            _output.Write("Plugin System", $"[Assembly Explorer] '{node.DisplayName}' is already open in the editor.");
-            return;
+            // Close the existing tab so we can re-open it with fresh content.
+            // Silently re-using the old tab is problematic when it was registered with
+            // empty/stale content (e.g. the ApplicationIdle callback was never fired).
+            _uiRegistry.UnregisterDocumentTab(uiId);
         }
+
+        // IL Disassembly — produced directly by GetIlText; no C#→IL transform.
+        bool isIlOutput = string.Equals(language.Id, "IL", StringComparison.OrdinalIgnoreCase);
 
         // Decompile on a background thread.
         string rawText;
         try
         {
-            rawText = await Task.Run(() => node switch
+            if (isIlOutput)
             {
-                AssemblyRootNodeViewModel root => _decompilerBackend.DecompileAssembly(root.Model, filePath),
-                TypeNodeViewModel         type => _decompilerBackend.DecompileType(type.Model, filePath),
-                MethodNodeViewModel       meth => _decompilerBackend.DecompileMethod(meth.Model, filePath),
-                _                              => _decompiler.GetStubText(node.DisplayName)
-            });
+                rawText = await Task.Run(() =>
+                {
+                    switch (node)
+                    {
+                        case MethodNodeViewModel meth:
+                            var single = _decompiler.GetIlText(meth.Model, filePath);
+                            return string.IsNullOrEmpty(single)
+                                ? "// No IL body.\n// Possible causes: abstract, extern, interface, " +
+                                  "delegate stub, or reference assembly."
+                                : single;
+
+                        case TypeNodeViewModel type:
+                            // Filter out methods with no IL body (delegates, abstract, reference asm).
+                            var parts = type.Model.Methods
+                                .Select(m => _decompiler.GetIlText(m, filePath))
+                                .Where(s => !string.IsNullOrEmpty(s))
+                                .ToList();
+                            return parts.Count > 0
+                                ? string.Join(Environment.NewLine + Environment.NewLine, parts)
+                                : "// No IL disassembly available for this type.\n" +
+                                  "// Possible causes:\n" +
+                                  "//   1. Reference assembly — load the runtime .dll instead.\n" +
+                                  "//   2. Delegate type — Invoke/BeginInvoke/EndInvoke are CLR stubs.\n" +
+                                  "//   3. All methods are abstract, extern, or interface declarations.";
+
+                        default:
+                            return _decompiler.GetStubText(node.DisplayName);
+                    }
+                });
+            }
+            else
+            {
+                rawText = await Task.Run(() => node switch
+                {
+                    AssemblyRootNodeViewModel root => _decompilerBackend.DecompileAssembly(root.Model, filePath),
+                    TypeNodeViewModel         type => _decompilerBackend.DecompileType(type.Model, filePath),
+                    MethodNodeViewModel       meth => _decompilerBackend.DecompileMethod(meth.Model, filePath),
+                    _                              => _decompiler.GetStubText(node.DisplayName)
+                });
+            }
         }
         catch (Exception ex)
         {
             rawText = $"// Decompilation failed: {ex.Message}";
         }
 
-        // Apply language transform when backend output is C#-only and target is not C#.
+        // Apply language transform when backend output is C#-only and target is not C# or IL.
+        // IL text was already produced directly — skip the transform entirely.
         string text;
-        if (_decompilerBackend.OutputIsCSharpOnly && language.Id != "CSharp")
+        if (!isIlOutput && _decompilerBackend.OutputIsCSharpOnly && language.Id != "CSharp")
         {
             try
             {
@@ -909,8 +994,8 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             text = rawText;
         }
 
-        // TextLinks (goto-def) are only meaningful for C# output.
-        var isCSharpOutput = language.Id == "CSharp";
+        // TextLinks (goto-def) are only meaningful for C# output; IL has no links.
+        var isCSharpOutput = language.Id == "CSharp" && !isIlOutput;
         var assemblyModel  = string.IsNullOrEmpty(filePath)
             ? null
             : _workspace.TryGetValue(filePath, out var entry) ? entry.Model : null;
@@ -927,44 +1012,36 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Builds a syntax-highlighted TextEditor for the decompiled code document tab.
-    /// When <paramref name="installLinks"/> is true and <paramref name="assembly"/> is provided,
-    /// installs goto-definition links for PascalCase type names found in the decompiled text.
+    /// Builds a full <see cref="CodeEditorSplitHost"/> tab for the decompiled code.
+    /// Syntax highlighting, folding, and search are provided by the host code editor.
+    /// The <paramref name="installLinks"/> and <paramref name="assembly"/> parameters are
+    /// retained for signature compatibility but are no longer needed — the CodeEditor
+    /// handles navigation natively via its LSP/symbol infrastructure.
     /// </summary>
     private UIElement BuildDecompiledCodeEditor(
-        string        text,
-        bool          installLinks,
-        string?       editorLanguageName,
+        string         text,
+        bool           installLinks,
+        string?        editorLanguageName,
         AssemblyModel? assembly = null)
     {
-        var editor = new TextEditor
+        var host = new CodeEditorSplitHost();
+
+        // Map decompilation display names → LanguageRegistry IDs.
+        // Decompilation is already complete at this point (called after await Task.Run),
+        // so we load the text synchronously on the UI thread.
+        var langId = editorLanguageName switch
         {
-            IsReadOnly      = true,
-            BorderThickness = new Thickness(0)
+            "C#"     => "csharp",
+            "VB.NET" => "vb",
+            { } s    => s,
+            null     => "csharp"
         };
+        var lang = LanguageRegistry.Instance.FindById(langId);
+        if (lang is not null) host.SetLanguage(lang);
+        host.IsReadOnly = true;
+        host.PrimaryEditor.LoadText(text);
 
-        // Show a lightweight placeholder immediately so the tab appears without delay.
-        // The real content is set at ApplicationIdle priority, after the docking system
-        // has finished rendering the new tab — this prevents UI thread starvation on
-        // large decompiled outputs (tens of thousands of lines).
-        editor.SetContentDirect(string.Empty, readOnly: true, languageName: editorLanguageName);
-
-        editor.Dispatcher.BeginInvoke(
-            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
-            (System.Action)(() =>
-            {
-                if (installLinks && assembly is not null)
-                {
-                    var links = BuildTextLinks(text, assembly);
-                    editor.SetContentWithLinks(text, links, readOnly: true, languageName: editorLanguageName);
-                }
-                else
-                {
-                    editor.SetContentDirect(text, readOnly: true, languageName: editorLanguageName);
-                }
-            }));
-
-        return editor;
+        return host;
     }
 
     /// <summary>
@@ -1139,6 +1216,34 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             MethodNodeViewModel       meth => (true,  _decompilerBackend.DecompileMethod(meth.Model, filePath)),
             _                              => (false, _decompiler.GetStubText(node.DisplayName))
         };
+    }
+
+    // ── Metadata table navigation (ASM-02-WIRE) ───────────────────────────────
+
+    /// <summary>
+    /// Navigates the tree to the <see cref="MetadataTableNodeViewModel"/> with
+    /// the given <paramref name="tableName"/> inside the assembly that owns
+    /// <paramref name="ownerFilePath"/>. Expands the "Metadata Tables" group and
+    /// sets <see cref="SelectedNode"/>. No-op when the node cannot be found.
+    /// </summary>
+    public void NavigateToMetadataTable(string tableName, string ownerFilePath)
+    {
+        var root = RootNodes.OfType<AssemblyRootNodeViewModel>()
+                            .FirstOrDefault(r => r.OwnerFilePath == ownerFilePath
+                                             || r.Model.FilePath == ownerFilePath);
+        if (root is null) return;
+
+        var metaGroup = root.Children.OfType<NamespaceNodeViewModel>()
+                            .FirstOrDefault(n => n.DisplayName == "Metadata Tables");
+        if (metaGroup is null) return;
+
+        metaGroup.IsExpanded = true;
+
+        var tableNode = metaGroup.Children.OfType<MetadataTableNodeViewModel>()
+                                 .FirstOrDefault(t => t.TableName == tableName);
+        if (tableNode is null) return;
+
+        SelectedNode = tableNode;
     }
 
     // ── Reverse Hex → Tree navigation (ASM-02-A) ──────────────────────────────

@@ -48,8 +48,25 @@ public partial class ErrorPanel : UserControl, IErrorPanel
     /// <summary>Absolute path of the currently active document; used for <see cref="ErrorPanelScope.CurrentDocument"/> filtering.</summary>
     public string CurrentDocumentPath { get; set; } = string.Empty;
 
+    private readonly HashSet<string> _openDocumentPaths    = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _changedDocumentPaths = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>Re-applies the current filter. Call when <see cref="CurrentProjectName"/> or <see cref="CurrentDocumentPath"/> change.</summary>
     public void RefreshFilter() => ApplyFilter();
+
+    public void SetOpenDocuments(IReadOnlyCollection<string> paths)
+    {
+        _openDocumentPaths.Clear();
+        foreach (var p in paths) _openDocumentPaths.Add(p);
+        ApplyFilter();
+    }
+
+    public void SetChangedDocuments(IReadOnlyCollection<string> paths)
+    {
+        _changedDocumentPaths.Clear();
+        foreach (var p in paths) _changedDocumentPaths.Add(p);
+        ApplyFilter();
+    }
 
     public event EventHandler<DiagnosticEntry>? EntryNavigationRequested;
 
@@ -186,8 +203,28 @@ public partial class ErrorPanel : UserControl, IErrorPanel
                             string.Equals(entry.FileName, System.IO.Path.GetFileName(CurrentDocumentPath), StringComparison.OrdinalIgnoreCase);
             if (!matchPath && !matchName) { e.Accepted = false; return; }
         }
+        else if (_scope == ErrorPanelScope.OpenDocuments)
+        {
+            if (!MatchesPathSet(entry, _openDocumentPaths)) { e.Accepted = false; return; }
+        }
+        else if (_scope == ErrorPanelScope.ChangedDocuments)
+        {
+            if (!MatchesPathSet(entry, _changedDocumentPaths)) { e.Accepted = false; return; }
+        }
 
         e.Accepted = true;
+    }
+
+    private static bool MatchesPathSet(DiagnosticEntry entry, HashSet<string> paths)
+    {
+        if (paths.Count == 0) return false;
+        if (!string.IsNullOrEmpty(entry.FilePath) && paths.Contains(entry.FilePath))
+            return true;
+        if (!string.IsNullOrEmpty(entry.FileName))
+            return paths.Any(p => string.Equals(
+                System.IO.Path.GetFileName(p), entry.FileName,
+                StringComparison.OrdinalIgnoreCase));
+        return false;
     }
 
     private void ApplyFilter() => _viewSource.View?.Refresh();
@@ -223,6 +260,8 @@ public partial class ErrorPanel : UserControl, IErrorPanel
             {
                 "CurrentProject"  => ErrorPanelScope.CurrentProject,
                 "CurrentDocument" => ErrorPanelScope.CurrentDocument,
+                "OpenDocuments"   => ErrorPanelScope.OpenDocuments,
+                "ChangedDocuments"=> ErrorPanelScope.ChangedDocuments,
                 _                 => ErrorPanelScope.Solution
             };
         }
@@ -337,6 +376,8 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         {
             ErrorPanelScope.CurrentProject  => 1,
             ErrorPanelScope.CurrentDocument => 2,
+            ErrorPanelScope.OpenDocuments   => 3,
+            ErrorPanelScope.ChangedDocuments=> 4,
             _                               => 0
         };
         if (ScopeCombo.SelectedIndex != idx)

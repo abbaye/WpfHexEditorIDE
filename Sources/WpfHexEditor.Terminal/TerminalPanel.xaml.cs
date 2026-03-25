@@ -116,15 +116,26 @@ public sealed partial class TerminalPanel : UserControl
         };
 
         Unloaded += OnUnloaded;
+        Loaded   += OnLoaded;
     }
 
     // -- Lifecycle ----------------------------------------------------------------
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        // Only detach event subscriptions — do NOT dispose and do NOT remove this handler.
+        // The docking system fires Unloaded on every visual-tree rebuild, not only on permanent close.
+        // Disposal is handled by OnDataContextChanged when the DataContext is replaced.
         DetachViewModel(_vm);
-        if (DataContext is IDisposable d) d.Dispose();
-        Unloaded -= OnUnloaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        // Re-attach after a dock visual-tree rebuild (Unloaded fired but ViewModel was NOT disposed).
+        if (_vm is null) return;
+        AttachViewModel(_vm);
+        SubscribeToActiveSessionOutput();
+        RebuildOutput();
     }
 
     // -- DataContext wiring -------------------------------------------------------
@@ -132,6 +143,7 @@ public sealed partial class TerminalPanel : UserControl
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         DetachViewModel(_vm);
+        if (e.OldValue is IDisposable old) old.Dispose(); // Dispose old VM when DC is replaced (permanent close)
         _vm = e.NewValue as TerminalPanelViewModel;
         AttachViewModel(_vm);
         SubscribeToActiveSessionOutput();
@@ -141,6 +153,7 @@ public sealed partial class TerminalPanel : UserControl
     private void AttachViewModel(TerminalPanelViewModel? vm)
     {
         if (vm is null) return;
+        vm.PropertyChanged -= OnViewModelPropertyChanged; // guard: prevent duplicate on repeated Loaded
         vm.PropertyChanged += OnViewModelPropertyChanged;
     }
 

@@ -16,7 +16,7 @@
 // ==========================================================
 
 using WpfHexEditor.App.Models;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Services;
 

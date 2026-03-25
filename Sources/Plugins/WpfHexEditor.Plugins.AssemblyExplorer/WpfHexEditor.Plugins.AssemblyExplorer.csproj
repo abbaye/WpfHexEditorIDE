@@ -56,9 +56,15 @@
          App output directory and is resolved via the host AssemblyLoadContext fallback
          at runtime — no copy to Plugins dir required. -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <!-- TextEditor: provides syntax-highlighted decompiled code tabs. DLL resolved via
-         host AssemblyLoadContext fallback at runtime — no copy to Plugins dir required. -->
+    <!-- TextEditor: still referenced for SetContentWithLinks / TextLink types used in helpers. -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
+    <!-- CodeEditor: provides CodeEditorSplitHost for decompiled code tabs. DLL (and its
+         transitive deps: WpfHexEditor.Core.ProjectSystem, WpfHexEditor.Definitions, etc.) are
+         resolved via the host AssemblyLoadContext fallback at runtime — no copy required. -->
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <!-- Core.ProjectSystem: compile-only reference for LanguageRegistry (language definitions).
+         DLL resolved at runtime via host ALC fallback — no copy to plugin dir required. -->
+    <ProjectReference Include="..\..\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
@@ -69,7 +75,35 @@
       <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
+    <!-- Core plugin DLLs -->
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll;$(OutputPath)ICSharpCode.Decompiler.dll;$(OutputPath)ICSharpCode.CodeConverter.dll" DestinationFolder="$(PluginDestDir)" SkipUnchangedFiles="true" />
+    <!-- Roslyn transitive deps needed by ICSharpCode.CodeConverter (VB.NET conversion).
+         The host ALC does not always expose these; copy them alongside the plugin so
+         the plugin's isolated ALC can resolve them. Uses an ItemGroup inside the Target
+         so the glob expands at execution time (after NuGet restore).
+         Covers: Microsoft.CodeAnalysis.dll, .CSharp.dll, .VisualBasic.dll, .Workspaces.* -->
+    <ItemGroup>
+      <_RoslynDlls Include="$(OutputPath)Microsoft.CodeAnalysis*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_RoslynDlls)" DestinationFolder="$(PluginDestDir)" SkipUnchangedFiles="true" />
+    <!-- VS Threading transitive deps needed by ICSharpCode.CodeConverter (VB.NET conversion).
+         Covers: Microsoft.VisualStudio.Threading.dll, .Validation.dll, .Composition.dll, etc. -->
+    <ItemGroup>
+      <_VsThreadingDlls Include="$(OutputPath)Microsoft.VisualStudio.*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_VsThreadingDlls)" DestinationFolder="$(PluginDestDir)" SkipUnchangedFiles="true" />
+    <!-- System.Composition MEF assemblies (version 9.0.0) required by ICSharpCode.CodeConverter
+         via Microsoft.VisualStudio.Composition. The .NET 8 SDK suppresses copy-local for these
+         because System.Composition.* also ships as inbox assemblies at version 8.0.0.0 with the
+         shared framework — so CopyLocalLockFileAssemblies=true does NOT place them in $(OutputPath).
+         CodeConverter 10.x requires 9.0.0.0; to avoid the version mismatch we copy the 9.0.0
+         DLLs directly from the global NuGet package cache, bypassing the SDK suppression.
+         Note: $(NuGetPackageRoot) = C:\Users\<user>\.nuget\packages\ (trailing backslash).
+               Backslash separators used throughout to avoid MSBuild glob issues on Windows. -->
+    <ItemGroup>
+      <_SystemCompositionDlls Include="$(NuGetPackageRoot)system.composition.*\9.0.0\lib\net8.0\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_SystemCompositionDlls)" DestinationFolder="$(PluginDestDir)" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

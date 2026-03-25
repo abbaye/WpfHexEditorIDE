@@ -21,10 +21,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Folding;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
@@ -44,8 +46,16 @@ internal sealed class FoldPeekPopup : Popup
     private const double MaxPopupWidth   = 900;
 
     private readonly Border       _border;
+    private readonly Border       _headerStrip;
+    private readonly TextBlock    _headerText;
     private readonly ScrollViewer _scrollViewer;
     private readonly TextBlock    _textBlock;
+
+    /// <summary>
+    /// Invoked when the user clicks the "Go to Definition →" link in the peek header.
+    /// Wired by CodeEditor when it opens a definition peek.
+    /// </summary>
+    public Action? GoToDefinitionRequested { get; set; }
 
     public FoldPeekPopup()
     {
@@ -63,8 +73,6 @@ internal sealed class FoldPeekPopup : Popup
         _textBlock.SetResourceReference(TextBlock.ForegroundProperty, "CE_QuickInfo_Text");
 
         // ScrollViewer — clips content to MaxPopupWidth/Height.
-        // Horizontal scroll is disabled; long lines fade out via OpacityMask instead.
-        // Vertical scroll is hidden (mouse-wheel works but no bar chrome shown).
         _scrollViewer = new ScrollViewer
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -73,15 +81,61 @@ internal sealed class FoldPeekPopup : Popup
             MaxWidth  = MaxPopupWidth,
             Content   = _textBlock,
         };
-        // Recompute the 20 px right-edge fade whenever the popup is sized/resized.
         _scrollViewer.SizeChanged += (_, _) => UpdateOpacityMask();
+
+        // ── Header strip — visible only in Peek Definition mode ─────────────────
+        _headerText = new TextBlock
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            FontWeight        = FontWeights.SemiBold,
+            Margin            = new Thickness(10, 0, 8, 0),
+        };
+        _headerText.SetResourceReference(TextBlock.ForegroundProperty, "GD_PeekTitleForeground");
+
+        var navLink = new TextBlock
+        {
+            Text              = "Go to Definition →",
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(0, 0, 10, 0),
+            Cursor            = Cursors.Hand,
+        };
+        navLink.SetResourceReference(TextBlock.ForegroundProperty, "GD_PeekNavLinkForeground");
+        navLink.MouseLeftButtonUp += (_, _) =>
+        {
+            IsOpen = false;
+            GoToDefinitionRequested?.Invoke();
+        };
+
+        var headerPanel = new DockPanel { LastChildFill = false };
+        headerPanel.Children.Add(_headerText);
+        DockPanel.SetDock(_headerText, Dock.Left);
+        headerPanel.Children.Add(navLink);
+        DockPanel.SetDock(navLink, Dock.Right);
+
+        // Bottom separator line.
+        var separator = new Border { Height = 1, VerticalAlignment = VerticalAlignment.Bottom };
+        separator.SetResourceReference(Border.BackgroundProperty, "GD_PeekBorder");
+
+        _headerStrip = new Border
+        {
+            Height     = 22,
+            Padding    = new Thickness(0),
+            Visibility = Visibility.Collapsed,
+            Child      = headerPanel,
+        };
+        _headerStrip.SetResourceReference(Border.BackgroundProperty, "GD_PeekTitleBar");
+
+        // ── Outer stack: header (optional) + scroll viewer ───────────────────────
+        var outerStack = new StackPanel { Orientation = Orientation.Vertical };
+        outerStack.Children.Add(_headerStrip);
+        outerStack.Children.Add(_scrollViewer);
 
         // Border — themed background + rounded corners + drop shadow.
         _border = new Border
         {
             CornerRadius    = new CornerRadius(4),
             BorderThickness = new Thickness(1),
-            Child           = _scrollViewer,
+            Child           = outerStack,
             Effect          = new System.Windows.Media.Effects.DropShadowEffect
             {
                 BlurRadius  = 8,
@@ -249,9 +303,99 @@ internal sealed class FoldPeekPopup : Popup
         _scrollViewer.OpacityMask = mask;
     }
 
+    // ── Peek Definition (Alt+F12) ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Shows a definition preview loaded asynchronously (Alt+F12 / Peek Definition).
+    /// Reuses the existing syntax-coloured text rendering pipeline and adds a header strip.
+    /// The existing <see cref="Show"/> fold-peek path is unchanged — header stays collapsed.
+    /// </summary>
+    /// <param name="anchor">The CodeEditor that owns the popup (placement target).</param>
+    /// <param name="symbolName">Symbol name shown in the header bar.</param>
+    /// <param name="contentLoader">
+    /// Async factory that returns (source code, 1-based target line).
+    /// Called after the popup is shown with a "Loading…" placeholder.
+    /// </param>
+    internal async Task ShowDefinitionAsync(
+        FrameworkElement                  anchor,
+        string                            symbolName,
+        Func<Task<(string source, int line)>> contentLoader)
+    {
+        // Show header with symbol name.
+        _headerText.Text       = symbolName;
+        _headerStrip.Visibility = Visibility.Visible;
+
+        // Show "Loading…" placeholder immediately.
+        _textBlock.Inlines.Clear();
+        _textBlock.Inlines.Add(new Run("Loading\u2026")
+            { Foreground = Brushes.Gray });
+
+        // Anchor below the caret using element-local coordinates.
+        PlacementTarget    = anchor;
+        PlacementRectangle = (anchor as CodeEditor)?.GetCaretDisplayRect() ?? Rect.Empty;
+        Placement          = PlacementMode.Bottom;
+        HorizontalOffset   = 0;
+        VerticalOffset     = 4;
+        IsOpen             = true;
+
+        try
+        {
+            var (source, targetLine) = await contentLoader().ConfigureAwait(true);
+            PopulateBody(source, targetLine);
+        }
+        catch
+        {
+            _textBlock.Inlines.Clear();
+            _textBlock.Inlines.Add(new Run("Definition not found.")
+                { Foreground = Brushes.Gray });
+        }
+    }
+
+    /// <summary>
+    /// Fills the body TextBlock with the first <see cref="MaxPreviewLines"/> lines
+    /// of <paramref name="source"/>, optionally scrolled to <paramref name="targetLine"/>
+    /// (1-based). Used by <see cref="ShowDefinitionAsync"/>.
+    /// </summary>
+    private void PopulateBody(string source, int targetLine)
+    {
+        _textBlock.Inlines.Clear();
+        if (string.IsNullOrEmpty(source))
+        {
+            _textBlock.Inlines.Add(new Run("Definition not found.") { Foreground = Brushes.Gray });
+            return;
+        }
+
+        var allLines  = source.Split('\n');
+        // Centre the view on the target line: show MaxPreviewLines/2 lines before it.
+        int startIdx  = targetLine > 0
+            ? Math.Max(0, targetLine - 1 - MaxPreviewLines / 2)
+            : 0;
+        int endIdx    = Math.Min(allLines.Length - 1, startIdx + MaxPreviewLines - 1);
+
+        for (int i = startIdx; i <= endIdx; i++)
+        {
+            if (i > startIdx) _textBlock.Inlines.Add(new LineBreak());
+            string text = allLines[i].TrimEnd('\r');
+            bool   isTarget = targetLine > 0 && i == targetLine - 1;
+            var    run  = new Run(text);
+            if (isTarget) run.FontWeight = FontWeights.Bold;
+            _textBlock.Inlines.Add(run);
+        }
+
+        if (endIdx < allLines.Length - 1)
+        {
+            _textBlock.Inlines.Add(new LineBreak());
+            _textBlock.Inlines.Add(new Run("\u2026") { Foreground = Brushes.Gray });
+        }
+
+        _scrollViewer.ScrollToTop();
+    }
+
     /// <summary>Hides the popup immediately.</summary>
     internal void Hide()
     {
+        // Reset header back to collapsed for fold-peek usage.
+        _headerStrip.Visibility = Visibility.Collapsed;
         IsOpen = false;
     }
 }

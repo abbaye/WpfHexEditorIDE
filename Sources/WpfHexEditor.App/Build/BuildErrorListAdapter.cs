@@ -17,7 +17,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 
 namespace WpfHexEditor.App.Build;
 

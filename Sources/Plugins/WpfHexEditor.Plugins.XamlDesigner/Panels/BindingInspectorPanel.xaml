@@ -59,7 +59,8 @@
         <!-- ToggleButton style matching XD_BindIconButton -->
         <Style x:Key="XD_BindIconToggleButton" TargetType="ToggleButton">
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush"     Value="Transparent"/>
             <Setter Property="Width"           Value="22"/>
             <Setter Property="Height"          Value="22"/>
             <Setter Property="Padding"         Value="3"/>
@@ -71,15 +72,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="4" SnapsToDevicePixels="True"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource XD_ToolbarViewToggleActiveBrush}"/>
-                            </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource DockTabHoverBrush}"/>
@@ -87,6 +86,12 @@
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource XD_ToolbarViewToggleActiveBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource XD_ToolbarViewToggleActiveBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

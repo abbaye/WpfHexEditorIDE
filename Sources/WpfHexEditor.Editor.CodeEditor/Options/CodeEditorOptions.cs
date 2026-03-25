@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Options;
 
@@ -172,6 +172,27 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _maxUndoHistory;
         set { _maxUndoHistory = Math.Clamp(value, 10, 5000); Notify(); }
+    }
+
+    private bool _showEndOfBlockHint    = true;
+    private int  _endOfBlockHintDelayMs = 600;
+
+    /// <summary>
+    /// When true, hovering over }, #endregion, &lt;/Tag&gt; shows the matching opening line(s).
+    /// </summary>
+    public bool ShowEndOfBlockHint
+    {
+        get => _showEndOfBlockHint;
+        set { _showEndOfBlockHint = value; Notify(); }
+    }
+
+    /// <summary>
+    /// Hover dwell time in milliseconds before the end-of-block hint popup appears. Clamped to [100, 2000].
+    /// </summary>
+    public int EndOfBlockHintDelayMs
+    {
+        get => _endOfBlockHintDelayMs;
+        set { _endOfBlockHintDelayMs = Math.Clamp(value, 100, 2000); Notify(); }
     }
 
     private bool _enableWordHighlight = true;

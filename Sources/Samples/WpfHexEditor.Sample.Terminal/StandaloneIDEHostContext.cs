@@ -20,7 +20,7 @@
 using System.Windows;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Editor.Core.Documents;
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;

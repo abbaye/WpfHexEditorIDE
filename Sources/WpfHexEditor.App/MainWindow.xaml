@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -224,6 +224,54 @@
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- Workspace ► -->
+                        <MenuItem Header="_Workspace">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xF16A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                            <MenuItem Header="_New Workspace…" Click="OnNewWorkspace">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_Open Workspace…" Click="OnOpenWorkspace">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="_Save Workspace" Click="OnSaveWorkspace">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Save Workspace _As…" Click="OnSaveWorkspaceAs">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="C_lose Workspace" Click="OnCloseWorkspace">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
 
                         <Separator />
@@ -528,6 +576,32 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+                    </MenuItem>
+
+                    <!-- ═══════════ Debug ═══════════ -->
+                    <MenuItem Header="_Debug" IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
+                        <!-- Start / Stop -->
+                        <MenuItem Header="Start _Debugging"          Click="OnDebugStart"          InputGestureText="F5"            />
+                        <MenuItem Header="Start _Without Debugging"  Click="OnRunStartupProject"   InputGestureText="Ctrl+F5"       />
+                        <MenuItem Header="S_top Debugging"           Click="OnDebugStop"           InputGestureText="Shift+F5"      />
+                        <MenuItem Header="_Restart"                  Click="OnDebugRestart"        InputGestureText="Ctrl+Shift+F5" />
+                        <Separator/>
+                        <!-- Stepping -->
+                        <MenuItem Header="Step _Over"                Click="OnDebugStepOver"       InputGestureText="F10"           />
+                        <MenuItem Header="Step _Into"                Click="OnDebugStepInto"       InputGestureText="F11"           />
+                        <MenuItem Header="Step O_ut"                 Click="OnDebugStepOut"        InputGestureText="Shift+F11"     />
+                        <Separator/>
+                        <!-- Breakpoints -->
+                        <MenuItem Header="Toggle _Breakpoint"        Click="OnDebugToggleBp"       InputGestureText="F9"            />
+                        <MenuItem Header="_Delete All Breakpoints"   Click="OnDebugDeleteAllBps"   InputGestureText="Ctrl+Shift+F9" />
+                        <Separator/>
+                        <!-- Panels -->
+                        <MenuItem Header="Show _Breakpoints"         Click="OnShowDebugBreakpoints"/>
+                        <MenuItem Header="Show _Call Stack"          Click="OnShowDebugCallStack"  />
+                        <MenuItem Header="Show _Locals"              Click="OnShowDebugLocals"     />
+                        <MenuItem Header="Show _Watch"               Click="OnShowDebugWatch"      />
+                        <Separator/>
+                        <MenuItem Header="_Attach to Process…"       Click="OnAttachToProcess"     InputGestureText="Ctrl+Alt+P"    />
                     </MenuItem>
 
                     <!-- ═══════════ Layout ═══════════ -->
@@ -1572,6 +1646,60 @@
                 </StackPanel>
             </Border>
 
+            <!-- ══ Debug Session Toolbar (visible only when a debug session is active) ══ -->
+            <Border x:Name="DebugToolBar"
+                    Visibility="Collapsed"
+                    Style="{DynamicResource DockToolBarPodStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Continue / Pause -->
+                    <Button x:Name="BtnDbgContinue"
+                            Click="OnDebugContinue"
+                            ToolTip="Continue (F5)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                   Foreground="#3CB371" VerticalAlignment="Center"/>
+                    </Button>
+                    <Button x:Name="BtnDbgPause"
+                            Click="OnDebugPause"
+                            ToolTip="Pause"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <!-- Stop -->
+                    <Button x:Name="BtnDbgStop"
+                            Click="OnDebugStop"
+                            ToolTip="Stop Debugging (Shift+F5)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   Foreground="#E06060" VerticalAlignment="Center"/>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <!-- Step Over / Into / Out -->
+                    <Button x:Name="BtnDbgStepOver"
+                            Click="OnDebugStepOver"
+                            ToolTip="Step Over (F10)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE7EE;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Button x:Name="BtnDbgStepInto"
+                            Click="OnDebugStepInto"
+                            ToolTip="Step Into (F11)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Button x:Name="BtnDbgStepOut"
+                            Click="OnDebugStepOut"
+                            ToolTip="Step Out (Shift+F11)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+
         </WrapPanel>
         </Border>
 
@@ -1747,12 +1875,45 @@
                 </StackPanel>
             </StatusBarItem>
 
+            <!-- Workspace indicator -->
+            <StatusBarItem x:Name="WorkspaceStatusItem" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xF16A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"
+                               VerticalAlignment="Center" Margin="4,0,4,0"/>
+                    <TextBlock x:Name="WorkspaceStatusText"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"
+                               FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                </StackPanel>
+            </StatusBarItem>
+
+            <!-- Debug session status indicator -->
+            <StatusBarItem x:Name="DbgStatusItem" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                               Foreground="#FFDD00"
+                               VerticalAlignment="Center" Margin="4,0,4,0"/>
+                    <TextBlock x:Name="DbgStatusText"
+                               Foreground="#FFDD00"
+                               FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                </StackPanel>
+            </StatusBarItem>
+
             <!-- Build status indicator -->
             <StatusBarItem x:Name="BuildStatusItem" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="BuildStatusIcon" Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                VerticalAlignment="Center" Margin="4,0,4,0"/>
+                    <ProgressBar x:Name="BuildProgressBar"
+                                 Width="80" Height="6"
+                                 Minimum="0" Maximum="100" Value="0"
+                                 Visibility="Collapsed"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,6,0"
+                                 Foreground="{DynamicResource DockTabActiveTextBrush}"
+                                 Background="{DynamicResource DockBorderBrush}"
+                                 BorderThickness="0"/>
                     <TextBlock x:Name="BuildStatusText"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>

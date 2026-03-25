@@ -74,7 +74,15 @@ namespace WpfHexEditor.Panels.FileOps
 
             try
             {
-                var fileBytes = File.ReadAllBytes(filePath);
+                // Use FileShare.ReadWrite so this read succeeds even while the HexEditor
+                // holds the file open with FileAccess.ReadWrite + FileShare.Read.
+                byte[] fileBytes;
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fileBytes = new byte[fs.Length];
+                    _ = fs.Read(fileBytes, 0, fileBytes.Length);
+                }
+
                 var detectionService = new FormatDetectionService();
 
                 // Load format definitions (you may want to cache this)
@@ -181,8 +189,8 @@ namespace WpfHexEditor.Panels.FileOps
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading file: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"[FileComparisonPanel] Error loading file '{filePath}': {ex.Message}");
+                fields = new List<ParsedField>();
             }
         }
 

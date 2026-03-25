@@ -8,12 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using WpfHexEditor.Definitions;
+using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor;
 

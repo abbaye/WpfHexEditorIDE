@@ -101,19 +101,19 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 | Editor | Status | Progress | Description |
 |--------|--------|----------|-------------|
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ✅ Active | ~75% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL, status bar contributor |
-| **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~100% | Multi-language code editor — VS-like navigation bar, 55+ language definitions, URL hover/click, find/replace, split view; **Ctrl+Click** cross-file nav + external symbol decompilation; Alt+Click rect selection; drag-to-move; shared `UndoEngine`; `#region` colorization; data-driven folding (4 strategies); **word wrap**; **multi-caret** (`Ctrl+Alt+Click`, `Ctrl+D`); gutter diagnostics + scrollbar markers; **LSP** breadcrumb bar, inlay hints, code lens, semantic tokens, code actions (`Ctrl+.`), rename (`F2`), signature help, workspace symbols |
+| **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ✅ Active | ~80% | Character table editor for custom encodings and ROM hacking |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ✅ Active | ~75% | Multi-language code editor — VS-like navigation bar, 55+ language definitions, URL hover/click, find/replace, split view; **Ctrl+Click** cross-file nav + external symbol decompilation; Alt+Click rect selection; drag-to-move; shared `UndoEngine`; `#region` colorization; data-driven folding (4 strategies); **word wrap**; **multi-caret** (`Ctrl+Alt+Click`, `Ctrl+D`); gutter diagnostics + scrollbar markers; **LSP** breadcrumb bar, inlay hints, code lens, semantic tokens, code actions (`Ctrl+.`), rename (`F2`), signature help, workspace symbols |
 | **[XAML Designer](Sources/WpfHexEditor.Editor.XamlDesigner/README.md)** | ✅ Active | ~70% | Full split-pane XAML designer — live WPF rendering canvas with **bidirectional sync** (canvas↔code, ~95%); move/resize/rotate handles; property inspector (F4); multi-select + alignment guides; snap grid; `#region` colorization; error card overlay; **4 split layouts** (`Ctrl+Shift+L`); zoom/pan; VS-like `Ctrl+Z/Y` undo/redo with `DesignHistoryPanel`; Toolbox, Resource Browser, Design Data and Animation panels; right-click context menu; `Ctrl+1/2/3` view modes |
 | **[Text Editor](Sources/WpfHexEditor.Editor.TextEditor/README.md)** | ✅ Active | ~50% | Text editing with 26 embedded language definitions, auto-detection by extension, encoding support |
-| **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ✅ Active | ~45% | `.hxscript` editor with syntax highlighting, run-in-terminal integration, `HxScriptEngine` backend |
-| **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | 🔧 Active | ~30% | Binary image viewer — zoom/pan, transform pipeline (rotate/flip/crop/resize), `FileShare.ReadWrite` for concurrent open |
-| **[Tile Editor](Sources/WpfHexEditor.Editor.TileEditor/README.md)** | 🔧 Active | ~30% | Tile-based graphic editor for ROM/binary assets — palette, zoom, pixel grid |
-| **[Structure Editor](Sources/WpfHexEditor.Editor.StructureEditor/README.md)** | 🔧 Active | ~30% | `.whfmt` binary template editor — block DataGrid, type/offset/length editing, live save |
-| **[Entropy Viewer](Sources/WpfHexEditor.Editor.EntropyViewer/README.md)** | 🔧 Active | ~25% | Visual entropy graph of binary sections — detect encryption, compression, and packed regions |
-| **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | 🔧 Active | ~35% | Side-by-side binary comparison and changeset replay |
-| **[Audio Viewer](Sources/WpfHexEditor.Editor.AudioViewer/README.md)** | 🔧 Stub | ~5% | Audio binary viewer — waveform display (planned) |
-| **[Disassembly Viewer](Sources/WpfHexEditor.Editor.DisassemblyViewer/README.md)** | 🔧 Stub | ~5% | x86/x64/ARM binary disassembler (planned) |
-| **[Decompiled Source Viewer](Sources/WpfHexEditor.Decompiler.Core/README.md)** | 🔜 Planned | ~0% | C# skeleton + full IL view via ILSpy backend; "Go to Metadata Token" navigation (#106) |
+| **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | 🔧 Active | ~10% | `.hxscript` editor with syntax highlighting, run-in-terminal integration, `HxScriptEngine` backend (#177) |
+| **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | 🔧 Active | ~50% | Binary image viewer — zoom/pan, transform pipeline (rotate/flip/crop/resize), `FileShare.ReadWrite` for concurrent open |
+| **[Tile Editor](Sources/WpfHexEditor.Editor.TileEditor/README.md)** | 🔧 Stub | ~5% | Tile-based graphic editor for ROM/binary assets — palette, zoom, pixel grid (#175) |
+| **[Structure Editor](Sources/WpfHexEditor.Editor.StructureEditor/README.md)** | 🔧 Active | ~40% | `.whfmt` binary template editor — block DataGrid, type/offset/length editing, live save |
+| **[Entropy Viewer](Sources/WpfHexEditor.Editor.EntropyViewer/README.md)** | 🔧 Active | ~45% | Visual entropy graph of binary sections — detect encryption, compression, and packed regions |
+| **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | 🔧 Active | ~70% | Side-by-side binary comparison and changeset replay |
+| **[Audio Viewer](Sources/WpfHexEditor.Editor.AudioViewer/README.md)** | 🔧 Stub | ~5% | Audio binary viewer — waveform display (#174) |
+| **[Disassembly Viewer](Sources/WpfHexEditor.Editor.DisassemblyViewer/README.md)** | 🔧 Active | ~30% | x86/x64/ARM binary disassembler — decompiler integration stub (#178) |
+| **[Decompiled Source Viewer](Sources/WpfHexEditor.Core.Decompiler/README.md)** | 🔜 Planned | ~0% | C# skeleton + full IL view via ILSpy backend; "Go to Metadata Token" navigation (#106) |
 | **Memory Snapshot Viewer** | 🔜 Planned | ~0% | Load Windows mini-dump `.dmp` / Linux core-dump; display memory regions, thread stacks, modules (#117) |
 | **PCAP / Network Capture Viewer** | 🔜 Planned | ~0% | Load `.pcap` / `.pcapng`; packet list, layer breakdown (Ethernet/IP/TCP/UDP/TLS), raw payload (#136) |
 
@@ -151,7 +151,7 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 | **[Core.Terminal](Sources/WpfHexEditor.Core.Terminal/README.md)** | net8.0-windows | Command engine — 31+ built-in commands, `HxScriptEngine`, `CommandHistory`, `WriteTable` output helper |
 | **[Terminal](Sources/WpfHexEditor.Terminal/README.md)** | net8.0-windows | WPF terminal panel layer — `TerminalPanel`, `TerminalPanelViewModel`, multi-tab shell session management |
 | **[Core.AssemblyAnalysis](Sources/WpfHexEditor.Core.AssemblyAnalysis/README.md)** | net8.0 | BCL-only .NET PE analysis pipeline — PEReader + assembly model, foundation for Assembly Explorer plugin |
-| **[Decompiler.Core](Sources/WpfHexEditor.Decompiler.Core/README.md)** | net8.0-windows | `IDecompiler` contract + stub backend for ILSpy/dnSpy integration (#106) |
+| **[Core.Decompiler](Sources/WpfHexEditor.Core.Decompiler/README.md)** | net8.0-windows | `IDecompiler` contract + stub backend for ILSpy/dnSpy integration (#106) |
 | **[ProjectSystem](Sources/WpfHexEditor.ProjectSystem/README.md)** | net8.0-windows | `.whsln` / `.whproj` workspace and project model — serialization, project-to-project references, dialogs |
 | **[Options](Sources/WpfHexEditor.Options/README.md)** | net8.0-windows | `AppSettingsService`, `OptionsEditorControl` — IDE settings persistence and options page infrastructure |
 
@@ -376,7 +376,11 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, and
 | **Command Palette** — `Ctrl+Shift+P`, 9 modes (commands/symbols/line/files/grep/…), frequency boost, content grep | ✅ Done v0.6.3.6 | #133 |
 | **Command System Central** — `CommandRegistry`, `KeyBindingService`, `KeyboardShortcutsPage`, TitleBar launcher | ✅ Done v0.6.3.6 | #78 |
 | **LSP Engine** — full JSON-RPC client; 10 providers; completion, sig-help, code actions, rename, inlay hints, code lens, semantic tokens | ✅ Done v0.6.3.6 | #85–86 |
-| **Code Editor — full feature set** — word wrap, multi-caret, gutter diagnostics, data-driven folding, LSP breadcrumb bar | ✅ Done v0.6.3.6 | #84 |
+| **Code Editor — Phase 2** — go-to-references, peek definition, code formatting, sticky scroll, minimap, bracket pair colorization, auto-close brackets, smart indentation, column rulers, gutter change markers, expand/collapse all folds, color swatch preview | 🔧 In Progress ~75% | #157–168 |
+| **Editors Phase 2** — TextEditor multi-caret/LSP, ImageViewer histogram/batch-export, DiffViewer 3-way merge, StructureEditor live sync, EntropyViewer export, AudioViewer full impl, TileEditor full impl, JsonEditor full impl, ScriptEditor debugger/REPL, DisassemblyViewer x86/ARM decoding | 🔜 Planned | #169–178 |
+| **IDE Infrastructure Phase 2** — Quick File Open (`Ctrl+P`), Terminal ANSI/SSH/REPL/macros, Build parallel/cancel/cache, Docking float persistence, EventBus async, Project lazy-load/workspace-search, Settings profiles/workspaces | 🔜 Planned | #179–185 |
+| **Plugins Phase 2** — AssemblyExplorer IlSpy backend, ArchiveStructure in-place edit, FileComparison diff algorithm + patch export, DiagnosticTools flame graph + leak heuristics | 🔜 Planned | #186–189 |
+| **LSP Phase 3 + Roslyn** — call hierarchy, linked editing, inline value hints, LSP 3.18 pull-diagnostics, Roslyn-based C#/VB.NET/F# parser | 🔜 Planned | #190–191 |
 | **Document Model Phase 1** — `IDocumentBuffer`, `LspBufferBridge`, `IBufferAwareEditor` for all editors | ✅ Done v0.6.3.6 | #107 |
 | **Diagnostic Tools Plugin** — EventPipe CPU/mem graphs, heap snapshot, 4-tab panel | ✅ Done v0.6.3.6 | — |
 | **Dockable Search Panel** — `Ctrl+Shift+F`; hex/text/regex/TBL modes; HexEditor + CodeEditor + TblEditor | ✅ Done v0.6.3.6 | — |

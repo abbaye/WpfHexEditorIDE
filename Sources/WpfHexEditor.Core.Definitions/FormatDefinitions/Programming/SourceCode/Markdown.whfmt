@@ -1,0 +1,177 @@
+/* ============================================================
+   Format:    Markdown Document
+   Category:  Programming
+   Ext:       .md, .markdown, .mkd, .mdx
+   Editor:    markdown-editor
+   Desc:      Markdown lightweight markup language document.
+   Updated:   2026-03-22
+   ============================================================ */
+
+{
+  "formatName": "Markdown Document",
+  "version": "2.1",
+  "extensions": [
+    ".md",
+    ".markdown",
+    ".mkd",
+    ".mdx"
+  ],
+  "description": "Markdown lightweight markup language document.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "markdown-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-22",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "text/markdown"
+  ],
+  "Software": [
+    "VS Code",
+    "Typora",
+    "Obsidian"
+  ],
+  "UseCases": [
+    "Documentation",
+    "README files",
+    "Static site content"
+  ],
+  "syntaxDefinition": {
+    "id": "markdown",
+    "name": "Markdown",
+    "extensions": [
+      ".md",
+      ".markdown",
+      ".mkd",
+      ".mdx"
+    ],
+    "rules": [
+      {
+        "type": "Heading",
+        "pattern": "^#{1,6}\\s+.+$",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Bold",
+        "pattern": "(\\*\\*[^*]+\\*\\*|__[^_]+__)",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Italic",
+        "pattern": "(\\*[^*]+\\*|_[^_]+_)",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "InlineCode",
+        "pattern": "`[^`]+`",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "CodeBlock",
+        "pattern": "```[\\s\\S]*?```|~~~[\\s\\S]*?~~~",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Link",
+        "pattern": "(!?\\[(?:[^\\]\\\\]|\\\\.)*\\]\\((?:[^)\\\\]|\\\\.)*\\)|!?\\[(?:[^\\]\\\\]|\\\\.)*\\]\\[(?:[^\\]\\\\]|\\\\.)*\\])",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "Image",
+        "pattern": "!\\[(?:[^\\]\\\\]|\\\\.)*\\]\\((?:[^)\\\\]|\\\\.)*\\)",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "ListItem",
+        "pattern": "^\\s*(?:[*+-]|[0-9]+\\.)\\s",
+        "colorKey": "TE_Operator"
+      },
+      {
+        "type": "BlockQuote",
+        "pattern": "^\\s*>.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "HRule",
+        "pattern": "^\\s*(?:---+|\\*\\*\\*+|___+)\\s*$",
+        "colorKey": "TE_Operator"
+      },
+      {
+        "type": "Table",
+        "pattern": "^\\|.+\\|\\s*$",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "FrontMatter",
+        "pattern": "^---[\\s\\S]*?^---",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "MermaidFence",
+        "pattern": "^```mermaid",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "EmojiShortcode",
+        "pattern": ":[a-zA-Z0-9_+\\-]+:",
+        "colorKey": "TE_Literal"
+      },
+      {
+        "type": "HtmlTag",
+        "pattern": "</?[a-zA-Z][a-zA-Z0-9]*(?:\\s[^>]*)?>",
+        "colorKey": "TE_Punctuation"
+      },
+      {
+        "type": "TaskListItem",
+        "pattern": "^\\s*[-*+]\\s+\\[[ xX]\\]\\s",
+        "colorKey": "TE_Operator"
+      }
+    ],
+    "foldingRules": {
+      "headingBased": true,
+      "minHeadingLevel": 2,
+      "endOfBlockHint": { "enabled": false }
+    },
+    "embeddedLanguages": [
+      { "id": "csharp",     "extension": ".cs"     },
+      { "id": "cs",         "extension": ".cs"     },
+      { "id": "javascript", "extension": ".js"     },
+      { "id": "js",         "extension": ".js"     },
+      { "id": "typescript", "extension": ".ts"     },
+      { "id": "ts",         "extension": ".ts"     },
+      { "id": "python",     "extension": ".py"     },
+      { "id": "py",         "extension": ".py"     },
+      { "id": "json",       "extension": ".json"   },
+      { "id": "xml",        "extension": ".xml"    },
+      { "id": "xaml",       "extension": ".xaml"   },
+      { "id": "html",       "extension": ".html"   },
+      { "id": "sql",        "extension": ".sql"    },
+      { "id": "rust",       "extension": ".rs"     },
+      { "id": "go",         "extension": ".go"     },
+      { "id": "java",       "extension": ".java"   },
+      { "id": "kotlin",     "extension": ".kt"     },
+      { "id": "swift",      "extension": ".swift"  },
+      { "id": "ruby",       "extension": ".rb"     },
+      { "id": "php",        "extension": ".php"    },
+      { "id": "shell",      "extension": ".sh"     },
+      { "id": "bash",       "extension": ".sh"     },
+      { "id": "sh",         "extension": ".sh"     },
+      { "id": "powershell", "extension": ".ps1"    },
+      { "id": "ps1",        "extension": ".ps1"    },
+      { "id": "lua",        "extension": ".lua"    },
+      { "id": "dart",       "extension": ".dart"   },
+      { "id": "cpp",        "extension": ".cpp"    },
+      { "id": "c",          "extension": ".c"      }
+    ]
+  }
+}

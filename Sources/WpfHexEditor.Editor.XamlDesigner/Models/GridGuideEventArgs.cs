@@ -26,7 +26,7 @@ public sealed class GridGuideAddedEventArgs : EventArgs
     public required string Definition  { get; init; }  // default "*"
 }
 
-/// <summary>Raised when the user clicks the "×" button on a handle chip to remove a column or row.</summary>
+/// <summary>Raised when the user clicks the "Ã—" button on a handle chip to remove a column or row.</summary>
 public sealed class GridGuideRemovedEventArgs : EventArgs
 {
     public required bool IsColumn { get; init; }

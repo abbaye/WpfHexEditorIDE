@@ -10,7 +10,7 @@
 
 using System;
 using System.Windows.Controls;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.PluginDev.Options;
 

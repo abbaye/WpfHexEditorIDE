@@ -373,7 +373,13 @@ namespace WpfHexEditor.HexEditor.ViewModels
         {
             var provider = new WpfHexEditor.Core.Bytes.ByteProvider();
             provider.OpenFile(filePath);
-            return new HexEditorViewModel(provider);
+            var vm = new HexEditorViewModel(provider);
+            // Sync ReadOnlyMode from the actual provider state.
+            // FileProvider may have silently fallen back to read-only
+            // (e.g. system DLLs, ACL-protected files) — reflect that in the VM.
+            if (provider.IsReadOnly)
+                vm.ReadOnlyMode = true;
+            return vm;
         }
 
         /// <summary>

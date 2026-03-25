@@ -72,7 +72,8 @@
         <!-- Toggle button style (auto-refresh / logical-tree / pick-mode / track-selection toggles) -->
         <Style x:Key="XD_LiveTreeToggleButton" TargetType="ToggleButton">
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush"     Value="Transparent"/>
             <Setter Property="Width"           Value="22"/>
             <Setter Property="Height"          Value="22"/>
             <Setter Property="Padding"         Value="3"/>
@@ -84,7 +85,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="4" SnapsToDevicePixels="True"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -95,6 +98,8 @@
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
                                         Value="{DynamicResource DockTabActiveBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

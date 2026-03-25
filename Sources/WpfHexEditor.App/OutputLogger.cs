@@ -6,7 +6,7 @@
 
 using System.Windows.Media;
 using WpfHexEditor.App.Controls;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App;
 
@@ -89,6 +89,7 @@ internal static class OutputLogger
     public const string SourcePluginSystem = "Plugin System";
     public const string SourceBuild        = "Build";
     public const string SourceDebug        = "Debug";
+    public const string SourceUnitTesting  = "Unit Testing";
 
     // --- Public API — General channel ----------------------------------
 
@@ -123,6 +124,13 @@ internal static class OutputLogger
     /// </summary>
     public static void BuildRaw(string message, Brush? color = null)
         => Append(message, color, SourceBuild);
+
+    // --- Public API — Unit Testing channel ----------------------------
+
+    public static void TestRaw(string message)   => Append(message, null,          SourceUnitTesting);
+    public static void TestInfo(string message)  => Log("INFO ", message, null,         SourceUnitTesting);
+    public static void TestWarn(string message)  => Log("WARN ", message, _warnBrush,  SourceUnitTesting);
+    public static void TestError(string message) => Log("ERROR", message, _errorBrush, SourceUnitTesting);
 
     /// <summary>
     /// Switches the Output panel to the specified source channel on the UI thread.

@@ -23,7 +23,7 @@ using System.Windows;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Services;
-using WpfHexEditor.Definitions;
+using WpfHexEditor.Core.Definitions;
 
 namespace WpfHexEditor.HexEditor
 {

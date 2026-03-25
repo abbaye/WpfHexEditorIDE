@@ -20,8 +20,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using WpfHexEditor.BinaryAnalysis.Models.DataInspector;
-using WpfHexEditor.BinaryAnalysis.Services;
+using WpfHexEditor.Core.BinaryAnalysis.Models.DataInspector;
+using WpfHexEditor.Core.BinaryAnalysis.Services;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {

@@ -55,7 +55,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         public SmartCompleteSuggestion()
         {
-            Icon = "📄"; // Default icon
+            Icon = "ðŸ“„"; // Default icon
             CursorOffset = 0;
             SortPriority = 100;
             Type = SuggestionType.Property;
@@ -66,7 +66,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             DisplayText = displayText;
             InsertText = displayText;
             Documentation = documentation;
-            Icon = "📄";
+            Icon = "ðŸ“„";
             CursorOffset = 0;
             SortPriority = 100;
             Type = SuggestionType.Property;

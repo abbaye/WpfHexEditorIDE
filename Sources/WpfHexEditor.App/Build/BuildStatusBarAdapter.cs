@@ -15,8 +15,8 @@
 //     provided Action<> callbacks (setter injected by MainWindow).
 // ==========================================================
 
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 
 namespace WpfHexEditor.App.Build;
 
@@ -25,8 +25,8 @@ namespace WpfHexEditor.App.Build;
 /// </summary>
 internal sealed class BuildStatusBarAdapter : IDisposable
 {
-    private readonly IDisposable[]               _subscriptions;
-    private readonly Action<string, string, bool> _update;  // (text, icon, visible)
+    private readonly IDisposable[]                    _subscriptions;
+    private readonly Action<string, string, bool, int> _update;  // (text, icon, visible, progressPercent: 0–100 | -1=hide)
 
     // -----------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ internal sealed class BuildStatusBarAdapter : IDisposable
     /// Callback invoked (on any thread) with (statusText, mdl2Icon, isVisible).
     /// The implementation must marshal to the WPF thread internally.
     /// </param>
-    public BuildStatusBarAdapter(IIDEEventBus eventBus, Action<string, string, bool> updateStatusBar)
+    public BuildStatusBarAdapter(IIDEEventBus eventBus, Action<string, string, bool, int> updateStatusBar)
     {
         if (eventBus is null) throw new ArgumentNullException(nameof(eventBus));
         _update = updateStatusBar ?? throw new ArgumentNullException(nameof(updateStatusBar));
@@ -58,19 +58,19 @@ internal sealed class BuildStatusBarAdapter : IDisposable
     // -----------------------------------------------------------------------
 
     private void OnBuildStarted(BuildStartedEvent _)
-        => _update("Building...", "\uE8B1", true);
+        => _update("Building...", "\uE8B1", true, 0);
 
     private void OnProgress(BuildProgressUpdatedEvent e)
-        => _update($"Building... {e.StatusText}", "\uE8B1", true);
+        => _update($"Building... {e.StatusText}", "\uE8B1", true, e.ProgressPercent);
 
     private void OnBuildSucceeded(BuildSucceededEvent e)
-        => _update($"Build succeeded  ({e.WarningCount} warning(s))  {e.Duration.TotalSeconds:F1}s", "\uE930", true);
+        => _update($"Build succeeded  ({e.WarningCount} warning(s))  {e.Duration.TotalSeconds:F1}s", "\uE930", true, -1);
 
     private void OnBuildFailed(BuildFailedEvent e)
-        => _update($"Build failed  ({e.ErrorCount} error(s))  {e.Duration.TotalSeconds:F1}s", "\xEA39", true);
+        => _update($"Build failed  ({e.ErrorCount} error(s))  {e.Duration.TotalSeconds:F1}s", "\xEA39", true, -1);
 
     private void OnBuildCancelled(BuildCancelledEvent _)
-        => _update("Build cancelled", "\uE711", true);
+        => _update("Build cancelled", "\uE711", true, -1);
 
     // -----------------------------------------------------------------------
 

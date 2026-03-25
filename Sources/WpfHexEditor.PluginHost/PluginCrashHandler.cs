@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -27,13 +27,13 @@ public sealed class PluginFaultedEventArgs : EventArgs
 }
 
 /// <summary>
-/// Handles plugin crash events â€” marks Faulted state and raises notifications.
+/// Handles plugin crash events — marks Faulted state and raises notifications.
 /// </summary>
 internal sealed class PluginCrashHandler
 {
     /// <summary>
     /// Raised when a plugin is marked Faulted.
-    /// Raised on the calling thread â€” MainWindow subscribes to show InfoBar.
+    /// Raised on the calling thread — MainWindow subscribes to show InfoBar.
     /// </summary>
     public event EventHandler<PluginFaultedEventArgs>? PluginFaulted;
 

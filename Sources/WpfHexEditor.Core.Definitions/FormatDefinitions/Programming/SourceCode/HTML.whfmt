@@ -1,0 +1,111 @@
+/* ============================================================
+   Format:    HTML Source File
+   Category:  Programming
+   Ext:       .html, .htm
+   Editor:    code-editor
+   Desc:      HyperText Markup Language source file for web pages.
+   Updated:   2026-03-22
+   ============================================================ */
+
+{
+  "formatName": "HTML Source File",
+  "version": "2.3",
+  "extensions": [
+    ".html",
+    ".htm"
+  ],
+  "description": "HyperText Markup Language source file for web pages.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-22",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "text/html"
+  ],
+  "Software": [
+    "VS Code",
+    "Sublime Text",
+    "WebStorm"
+  ],
+  "UseCases": [
+    "Web pages",
+    "Email templates",
+    "Static site generation"
+  ],
+  "syntaxDefinition": {
+    "id": "html",
+    "name": "HTML",
+    "extensions": [
+      ".html",
+      ".htm",
+      ".xhtml"
+    ],
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "DocType",
+        "pattern": "<!DOCTYPE[^>]*>",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "CData",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "HtmlTag",
+        "pattern": "(?i)<(?:script|style)[\\s>][\\s\\S]*?</(?:script|style)>",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Tag",
+        "pattern": "(?<=</?)[A-Za-z][A-Za-z0-9-]*",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "AttrName",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9-]*(?=\\s*=)",
+        "colorKey": "TE_Register"
+      },
+      {
+        "type": "AttrValue",
+        "pattern": "(=\"[^\"]*\"|='[^']*'|=[^\\s>]+)",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Entity",
+        "pattern": "&(?:[A-Za-z]+|#[0-9]+|#x[0-9A-Fa-f]+);",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "TagBracket",
+        "pattern": "</?|/?>",
+        "colorKey": "TE_Operator"
+      }
+    ],
+    "foldingRules": {
+      "tagBased": true,
+      "multilineTagSupport": true,
+      "selfClosingTags": ["br", "hr", "img", "input", "link", "meta", "area", "base", "col", "embed", "param", "source", "track", "wbr"],
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+    }
+  }
+}

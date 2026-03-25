@@ -1,0 +1,44 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.DebugConsolePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Output log -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      Background="{DynamicResource PanelBackground}">
+            <TextBox Text="{Binding OutputText, Mode=OneWay}"
+                     IsReadOnly="True" TextWrapping="NoWrap"
+                     FontFamily="Consolas" FontSize="12"
+                     Background="Transparent"
+                     Foreground="{DynamicResource DB_ConsoleStdoutBrush}"
+                     BorderThickness="0"
+                     VerticalAlignment="Stretch" />
+        </ScrollViewer>
+
+        <!-- REPL input -->
+        <Border Grid.Row="1" BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource DockSplitterBrush}"
+                Background="{DynamicResource PanelBackground}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="&gt; " FontFamily="Consolas" FontSize="12"
+                           Foreground="{DynamicResource DB_ConsoleDebugBrush}"
+                           VerticalAlignment="Center" Margin="4,0" />
+                <TextBox Grid.Column="1" x:Name="ReplInput"
+                         FontFamily="Consolas" FontSize="12"
+                         Background="Transparent" BorderThickness="0"
+                         Foreground="{DynamicResource PanelForeground}"
+                         KeyDown="OnReplKeyDown" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -10,7 +10,7 @@
 //     Used by IDEEventBusOptionsPage to display the event log.
 // ==========================================================
 
-using WpfHexEditor.Events;
+using WpfHexEditor.Core.Events;
 
 namespace WpfHexEditor.PluginHost.Services;
 

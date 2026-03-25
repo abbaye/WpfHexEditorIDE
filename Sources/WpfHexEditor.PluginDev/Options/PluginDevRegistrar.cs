@@ -9,7 +9,7 @@
 //     to wire PluginDev services into the IDE.
 // ==========================================================
 
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.PluginDev.Options;
 

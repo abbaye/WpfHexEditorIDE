@@ -92,6 +92,16 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
             OnPropertyChanged(nameof(AvailableEncodings));
             OnPropertyChanged(nameof(SelectedEncoding));
             OnPropertyChanged(nameof(HasActiveSession));
+            // Refresh per-session command proxies so bound toolbar buttons re-target the new session.
+            OnPropertyChanged(nameof(RunCommand));
+            OnPropertyChanged(nameof(CancelCommand));
+            OnPropertyChanged(nameof(ClearOutputCommand));
+            OnPropertyChanged(nameof(ToggleWordWrapCommand));
+            OnPropertyChanged(nameof(IncreaseFontCommand));
+            OnPropertyChanged(nameof(DecreaseFontCommand));
+            OnPropertyChanged(nameof(ToggleTimestampsCommand));
+            OnPropertyChanged(nameof(TogglePauseCommand));
+            OnPropertyChanged(nameof(ToggleFindCommand));
         }
     }
 
@@ -457,6 +467,32 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _registry.Register(new ReplayHistoryCommand(
             _macroService,
             () => _activeSession?.Session.History.GetAll() ?? []));
+
+        // Build system commands
+        _registry.Register(new BuildCommand());
+        _registry.Register(new RebuildCommand());
+        _registry.Register(new CleanCommand());
+        _registry.Register(new BuildDirtyCommand());
+        _registry.Register(new BuildCancelCommand());
+        _registry.Register(new BuildStatusCommand());
+
+        // Unit test commands
+        _registry.Register(new TestRunCommand());
+        _registry.Register(new TestRunProjectCommand());
+        _registry.Register(new TestRunFilterCommand());
+        _registry.Register(new TestStatusCommand());
+
+        // C# scripting
+        _registry.Register(new RunCsharpCommand());
+
+        // Diff commands
+        _registry.Register(new DiffCommand());
+        _registry.Register(new DiffOpenCommand());
+
+        // Debugger commands
+        _registry.Register(new DebugStatusCommand());
+        _registry.Register(new DebugContinueCommand());
+        _registry.Register(new DebugBreakpointCommand());
     }
 
     // -- INotifyPropertyChanged ---------------------------------------------------
@@ -487,7 +523,11 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
 
     private sealed class RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand
     {
-        public event EventHandler? CanExecuteChanged { add { } remove { } }
+        public event EventHandler? CanExecuteChanged
+        {
+            add    => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
         public bool CanExecute(object? parameter) => canExecute?.Invoke(parameter) ?? true;
         public void Execute(object? parameter) => execute(parameter);
     }

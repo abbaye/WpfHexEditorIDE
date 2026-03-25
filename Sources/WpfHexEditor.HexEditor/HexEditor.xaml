@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -352,6 +352,24 @@
             <MenuItem x:Name="SelectAllMenuItem" Header="{DynamicResource SelectAllString}" Click="SelectAllMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="▦" FontSize="14"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator/>
+
+            <!-- Compare File with… (always enabled when a file is open) -->
+            <MenuItem x:Name="CompareFileMenuItem" Header="Compare File with…"
+                      Click="CompareFileMenuItem_Click">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!-- Compare Selection as Left… (enabled only when selection is active) -->
+            <MenuItem x:Name="CompareSelectionMenuItem" Header="Compare Selection as Left…"
+                      Click="CompareSelectionMenuItem_Click">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>

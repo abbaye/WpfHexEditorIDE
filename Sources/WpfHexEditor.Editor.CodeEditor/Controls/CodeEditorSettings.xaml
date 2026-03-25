@@ -28,13 +28,13 @@
                 Padding="8"
                 TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="ResetButton" Content="🔄 Reset to Defaults" Padding="8,4" Margin="0,0,5,0"
+                <Button x:Name="ResetButton" Content="ðŸ”„ Reset to Defaults" Padding="8,4" Margin="0,0,5,0"
                         ToolTip="Reset all settings to default values"
                         Click="ResetButton_Click"/>
-                <Button x:Name="ExportButton" Content="💾 Export Settings" Padding="8,4" Margin="0,0,5,0"
+                <Button x:Name="ExportButton" Content="ðŸ’¾ Export Settings" Padding="8,4" Margin="0,0,5,0"
                         ToolTip="Export settings to JSON file"
                         Click="ExportButton_Click"/>
-                <Button x:Name="ImportButton" Content="📂 Import Settings" Padding="8,4"
+                <Button x:Name="ImportButton" Content="ðŸ“‚ Import Settings" Padding="8,4"
                         ToolTip="Import settings from JSON file"
                         Click="ImportButton_Click"/>
             </StackPanel>
@@ -72,7 +72,7 @@
                             BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8">
-                        <TextBlock Text="📝 Live Preview"
+                        <TextBlock Text="ðŸ“ Live Preview"
                                    FontWeight="Bold"
                                    FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>

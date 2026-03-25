@@ -419,15 +419,16 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         // Solution Folders come first; collect which project names are inside a folder.
         var folderedNames = CollectFolderedProjectNames(_solution.RootFolders);
 
-        foreach (var folder in _solution.RootFolders)
+        foreach (var folder in _solution.RootFolders
+                     .OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
             solutionNode.Children.Add(BuildSolutionFolderNode(folder, _solution));
 
-        // Unfoldered projects follow directly under the solution node.
+        // Unfoldered projects follow directly under the solution node — alphabetical.
         var startupId = _solution.StartupProject?.Id;
-        foreach (var project in _solution.Projects)
+        foreach (var project in _solution.Projects
+                     .Where(p => !folderedNames.Contains(p.Name))
+                     .OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase))
         {
-            if (folderedNames.Contains(project.Name)) continue;
-
             var projNode = _showAllFiles
                 ? BuildProjectNodePhysical(project)
                 : BuildProjectNode(project);
@@ -630,12 +631,12 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         var node      = new SolutionFolderNodeVm(folder, solution) { IsExpanded = true };
         var startupId = solution.StartupProject?.Id;
 
-        // Nested solution folders first (recursive).
-        foreach (var child in folder.Children)
+        // Nested solution folders first (recursive) — alphabetical.
+        foreach (var child in folder.Children.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
             node.Children.Add(BuildSolutionFolderNode(child, solution));
 
-        // Projects inside this folder.
-        foreach (var projectName in folder.ProjectIds)
+        // Projects inside this folder — alphabetical.
+        foreach (var projectName in folder.ProjectIds.OrderBy(n => n, StringComparer.OrdinalIgnoreCase))
         {
             var project = solution.Projects.FirstOrDefault(p => p.Name == projectName);
             if (project is null) continue;
@@ -701,7 +702,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             refs.AnalyzerReferences.Count == 0)
             return null;
 
-        var container = new ReferencesContainerNodeVm { IsExpanded = false };
+        var container = new ReferencesContainerNodeVm { IsExpanded = false, Project = refs as IProject };
 
         // 1. Analyzers sub-folder (top, like VS).
         if (refs.AnalyzerReferences.Count > 0)
@@ -1348,6 +1349,38 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// Sets <see cref="ProjectNodeVm.IsBuilding"/> for the project whose file path matches
+    /// <paramref name="projectFilePath"/>. Must be called on the UI thread.
+    /// </summary>
+    public void SetProjectBuilding(string projectFilePath, bool isBuilding)
+    {
+        if (string.IsNullOrEmpty(projectFilePath)) return;
+        var normalizedPath = Path.GetFullPath(projectFilePath);
+        foreach (var node in Roots.OfType<SolutionNodeVm>()
+                                   .SelectMany(s => s.Children)
+                                   .OfType<ProjectNodeVm>())
+        {
+            var nodePath = node.Source.ProjectFilePath;
+            if (!string.IsNullOrEmpty(nodePath) &&
+                string.Equals(Path.GetFullPath(nodePath), normalizedPath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                node.IsBuilding = isBuilding;
+                return;
+            }
+        }
+    }
+
+    /// <summary>Clears <see cref="ProjectNodeVm.IsBuilding"/> on all project nodes (build cancelled).</summary>
+    public void ClearAllBuilding()
+    {
+        foreach (var node in Roots.OfType<SolutionNodeVm>()
+                                   .SelectMany(s => s.Children)
+                                   .OfType<ProjectNodeVm>())
+            node.IsBuilding = false;
     }
 
     // -- INPC -----------------------------------------------------------------

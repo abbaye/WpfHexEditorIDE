@@ -162,6 +162,15 @@ public sealed class ProjectNodeVm : SolutionExplorerNodeVm
         set { if (_isBuildDirty == value) return; _isBuildDirty = value; OnPropertyChanged(); }
     }
 
+    private bool _isBuilding;
+
+    /// <summary>True while this project is actively being compiled. Drives the spinner animation.</summary>
+    public bool IsBuilding
+    {
+        get => _isBuilding;
+        set { if (_isBuilding == value) return; _isBuilding = value; OnPropertyChanged(); }
+    }
+
     private bool _isStartup;
 
     /// <summary>
@@ -226,6 +235,10 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     /// The project that owns this virtual folder.
     /// </summary>
     public IProject?      Project  { get; init; }
+
+    /// <summary>True when the folder is the conventional "Properties" folder (case-insensitive).</summary>
+    public bool IsPropertiesFolder =>
+        Folder.Name.Equals("Properties", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Relative path of this folder within the project tree (computed at build time,
@@ -513,6 +526,11 @@ public sealed class PhysicalFolderNodeVm : SolutionExplorerNodeVm
     public IProject? Project      { get; init; }
     public override string DisplayName => System.IO.Path.GetFileName(PhysicalPath);
     public override string Icon        => "\uE8D5";
+
+    /// <summary>True when the physical folder is named "Properties" (case-insensitive).</summary>
+    public bool IsPropertiesFolder =>
+        System.IO.Path.GetFileName(PhysicalPath)
+            .Equals("Properties", StringComparison.OrdinalIgnoreCase);
 }
 
 // -- Physical file node (Show All Files mode) ---------------------------------
@@ -675,6 +693,9 @@ public sealed class SourceMemberNodeVm : SolutionExplorerNodeVm
 /// </summary>
 public sealed class ReferencesContainerNodeVm : SolutionExplorerNodeVm
 {
+    /// <summary>The project that owns this References container.</summary>
+    public IProject? Project { get; init; }
+
     public override string DisplayName => "References";
     /// <summary>Segoe MDL2 "Link" glyph — matches VS References folder.</summary>
     public override string Icon        => "\uE71D";

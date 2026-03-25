@@ -1,0 +1,1051 @@
+<UserControl x:Class="WpfHexEditor.Plugins.UnitTesting.Views.UnitTestingPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.UnitTesting.ViewModels">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <vm:NullToVisibilityConverter  x:Key="NullToVis"/>
+        <vm:IntToStarGridLengthConverter x:Key="StarGL"/>
+
+        <!-- Spinner rotation storyboard -->
+        <Storyboard x:Key="SpinStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                             From="0" To="360" Duration="0:0:1.2"/>
+        </Storyboard>
+
+        <!-- Shared TreeViewItem style: theme colours + IsExpanded TwoWay + IsVisible filter -->
+        <Style x:Key="UT_TreeItemStyle" TargetType="TreeViewItem"
+               BasedOn="{StaticResource PanelTreeViewItemStyle}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, FallbackValue=True}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Source hyperlink button style — underlined when enabled, plain text when disabled -->
+        <Style x:Key="UT_SourceLinkStyle" TargetType="Button">
+            <Setter Property="Background"       Value="Transparent"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="Padding"          Value="0"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="FontSize"         Value="11"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock x:Name="Tb"
+                                   Text="{TemplateBinding Content}"
+                                   TextTrimming="CharacterEllipsis"
+                                   TextDecorations="Underline"
+                                   Foreground="{DynamicResource UT_LinkForegroundBrush}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Tb" Property="Opacity" Value="0.75"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Cursor"          Value="Arrow"/>
+                                <Setter TargetName="Tb" Property="TextDecorations" Value="{x:Null}"/>
+                                <Setter TargetName="Tb" Property="Foreground"
+                                        Value="{DynamicResource PFP_TextBrush}"/>
+                                <Setter TargetName="Tb" Property="Opacity" Value="0.75"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Filter toggle button style (pill shape, no WPF chrome) -->
+        <Style x:Key="FilterToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Padding"          Value="5,2"/>
+            <Setter Property="Margin"           Value="0,0,2,0"/>
+            <Setter Property="FontSize"         Value="11"/>
+            <Setter Property="Background"       Value="Transparent"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="BorderBrush"      Value="Transparent"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource UT_HoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource UT_SelectionBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource UT_SelectionBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Search box style (no Aero2 blue focus chrome) -->
+        <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+            <Setter Property="Background"               Value="{DynamicResource UT_SearchBoxBrush}"/>
+            <Setter Property="Foreground"               Value="{DynamicResource PFP_TextBrush}"/>
+            <Setter Property="BorderBrush"              Value="{DynamicResource DockSplitterBrush}"/>
+            <Setter Property="BorderThickness"          Value="1"/>
+            <Setter Property="Padding"                  Value="4,2,22,2"/>
+            <Setter Property="FontSize"                 Value="11"/>
+            <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
+            <Setter Property="CaretBrush"               Value="{DynamicResource PFP_TextBrush}"/>
+            <Setter Property="SelectionBrush"           Value="{DynamicResource UT_SelectionBrush}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          Focusable="False"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource UT_SelectionBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Search filter chip style (pill buttons in the suggestions popup) -->
+        <Style x:Key="SearchChipStyle" TargetType="Button">
+            <Setter Property="Padding"          Value="7,3"/>
+            <Setter Property="Margin"           Value="3,3,0,0"/>
+            <Setter Property="FontSize"         Value="11"/>
+            <Setter Property="Background"       Value="{DynamicResource UT_SearchBoxBrush}"/>
+            <Setter Property="Foreground"       Value="{DynamicResource PFP_TextBrush}"/>
+            <Setter Property="BorderBrush"      Value="{DynamicResource DockSplitterBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource UT_HoverBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource UT_SelectionBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource UT_SelectionBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Outcome glyph base style (shared by all levels) -->
+        <Style x:Key="OutcomeGlyphStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily"            Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"              Value="11"/>
+            <Setter Property="VerticalAlignment"     Value="Center"/>
+            <Setter Property="Margin"                Value="0,0,5,0"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value><RotateTransform/></Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Leaf (TestResultRow) data template — 5 columns matching header ── -->
+        <DataTemplate x:Key="LeafTemplate" DataType="{x:Type vm:TestResultRow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="18"/>    <!-- outcome glyph -->
+                    <ColumnDefinition Width="*"/>     <!-- test name -->
+                    <ColumnDefinition Width="60"/>    <!-- Durée -->
+                    <ColumnDefinition Width="90"/>    <!-- Caractéristiques -->
+                    <ColumnDefinition Width="170"/>   <!-- Message d'erreur -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Col 0: Outcome glyph with spinner animation when running -->
+                <TextBlock Grid.Column="0" Text="{Binding OutcomeGlyph}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource OutcomeGlyphStyle}">
+                            <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Passed">
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Failed">
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="SpinBegin" Storyboard="{StaticResource SpinStoryboard}"/>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="SpinBegin"/>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Col 1: Test name -->
+                <TextBlock Grid.Column="1" Text="{Binding Display}"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           FontFamily="Cascadia Mono, Consolas, monospace"
+                           FontSize="12">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Failed">
+                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                    <Setter Property="FontStyle" Value="Italic"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Col 2: Durée (hidden for NotRun) -->
+                <TextBlock Grid.Column="2" VerticalAlignment="Center"
+                           HorizontalAlignment="Right" Margin="0,0,4,0"
+                           FontSize="11" Opacity="0.6"
+                           Foreground="{DynamicResource PFP_TextBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text"       Value=""/>
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Outcome}" Value="NotRun">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsOutput}" Value="False">
+                                    <Setter Property="Text" Value="{Binding DurationMs, StringFormat='{}{0} ms'}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Col 3: Caractéristiques — short class name, shown only after run -->
+                <TextBlock Grid.Column="3" Text="{Binding ShortClassName}"
+                           Margin="4,0,0,0" VerticalAlignment="Center"
+                           FontSize="11" Opacity="0.55"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource PFP_TextBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Passed">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Failed">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Skipped">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Col 4: Message d'erreur — truncated, Failed only -->
+                <TextBlock Grid.Column="4" Text="{Binding ShortErrorMessage}"
+                           Margin="4,0,2,0" VerticalAlignment="Center"
+                           FontSize="11" Opacity="0.85"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource UT_FailForegroundBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Outcome}" Value="Failed">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource DockWindowBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- 0: Toolbar -->
+            <RowDefinition Height="2"/>      <!-- 1: Progress bar -->
+            <RowDefinition Height="*"/>      <!-- 2: ContentArea -->
+            <RowDefinition Height="Auto"/>   <!-- 3: Ratio bar -->
+            <RowDefinition Height="Auto"/>   <!-- 4: Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ─── Row 0: Toolbar ───────────────────────────────────── -->
+        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="True">
+
+                <!-- LEFT: action buttons -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="2,0">
+                    <Button x:Name="RunButton"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            Width="Auto" Padding="6,0"
+                            ToolTip="Run All Tests"
+                            Click="OnRunAllClicked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Run All" FontSize="11" VerticalAlignment="Center"
+                                       FontFamily="Segoe UI"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="RunFailedButton"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            Width="Auto" Padding="6,0"
+                            IsEnabled="{Binding CanRunFailed}"
+                            ToolTip="Run Failed Tests"
+                            Click="OnRunFailedClicked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="11" Margin="0,0,4,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource UT_FailForegroundBrush}"/>
+                            <TextBlock Text="Run Failed" FontSize="11" VerticalAlignment="Center"
+                                       FontFamily="Segoe UI"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Refresh (re-run all)"
+                            Click="OnRefreshClicked">
+                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                    </Button>
+                    <Button x:Name="StopButton"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            IsEnabled="False"
+                            ToolTip="Stop Tests"
+                            Click="OnStopClicked">
+                        <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                    </Button>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Clear Results"
+                            Click="OnClearClicked">
+                        <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- Separator -->
+                <Rectangle DockPanel.Dock="Left" Width="1" Margin="4,4"
+                           Fill="{DynamicResource Panel_ToolbarBorderBrush}"
+                           VerticalAlignment="Stretch"/>
+
+                <!-- LEFT-CENTER: pill filter toggles (VS-style) -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal"
+                            VerticalAlignment="Center" Margin="2,0">
+                    <!-- Total / All -->
+                    <ToggleButton Style="{StaticResource FilterToggleStyle}"
+                                  IsChecked="{Binding FilterAll, Mode=OneWay}"
+                                  Click="OnFilterAll"
+                                  ToolTip="Show all tests">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE9E6;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       Margin="0,0,3,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource PFP_TextBrush}"/>
+                            <TextBlock FontSize="11" Foreground="{DynamicResource PFP_TextBrush}"
+                                       Text="{Binding TotalCount}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <!-- Passed -->
+                    <ToggleButton Style="{StaticResource FilterToggleStyle}"
+                                  IsChecked="{Binding FilterPassed, Mode=OneWay}"
+                                  Click="OnFilterPassed"
+                                  ToolTip="Show passed tests">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       Margin="0,0,3,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                            <TextBlock FontSize="11" Foreground="{DynamicResource UT_PassForegroundBrush}"
+                                       Text="{Binding PassCount}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <!-- Failed -->
+                    <ToggleButton Style="{StaticResource FilterToggleStyle}"
+                                  IsChecked="{Binding FilterFailed, Mode=OneWay}"
+                                  Click="OnFilterFailed"
+                                  ToolTip="Show failed tests">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       Margin="0,0,3,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource UT_FailForegroundBrush}"/>
+                            <TextBlock FontSize="11" Foreground="{DynamicResource UT_FailForegroundBrush}"
+                                       Text="{Binding FailCount}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <!-- Skipped -->
+                    <ToggleButton Style="{StaticResource FilterToggleStyle}"
+                                  IsChecked="{Binding FilterSkipped, Mode=OneWay}"
+                                  Click="OnFilterSkipped"
+                                  ToolTip="Show skipped tests">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE89A;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       Margin="0,0,3,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource UT_SkipForegroundBrush}"/>
+                            <TextBlock FontSize="11" Foreground="{DynamicResource UT_SkipForegroundBrush}"
+                                       Text="{Binding SkipCount}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+
+                <!-- RIGHT: tree actions + settings gear -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Collapse All"
+                            Click="OnCollapseAllClicked">
+                        <TextBlock Text="&#xE96D;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                    </Button>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Expand All"
+                            Click="OnExpandAllClicked">
+                        <TextBlock Text="&#xE96E;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                    </Button>
+                    <Button x:Name="LayoutButton"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Detail pane layout"
+                            Click="OnLayoutButtonClicked">
+                        <TextBlock x:Name="LayoutGlyph" Text="&#xE8BC;"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                        <Button.ContextMenu>
+                            <ContextMenu Background="{DynamicResource DockMenuBackgroundBrush}"
+                                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                         BorderBrush="{DynamicResource DockBorderBrush}">
+                                <MenuItem x:Name="MiLayoutTopBottom"
+                                          Header="Top / Bottom"
+                                          IsCheckable="True" IsChecked="True"
+                                          Click="OnLayoutChanged"/>
+                                <MenuItem x:Name="MiLayoutLeftRight"
+                                          Header="Left / Right"
+                                          IsCheckable="True"
+                                          Click="OnLayoutChanged"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                    <Button x:Name="SettingsButton"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Unit Testing Settings"
+                            Click="OnSettingsClicked">
+                        <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                        <Button.ContextMenu>
+                            <ContextMenu Background="{DynamicResource DockMenuBackgroundBrush}"
+                                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                         BorderBrush="{DynamicResource DockBorderBrush}">
+                                <MenuItem x:Name="MiAutoRun"
+                                          Header="Auto-run on build"
+                                          IsCheckable="True"
+                                          Click="OnOptionChanged"/>
+                                <MenuItem x:Name="MiAutoExpand"
+                                          Header="Auto-expand detail on failure"
+                                          IsCheckable="True"
+                                          Click="OnOptionChanged"/>
+                                <Separator/>
+                                <MenuItem x:Name="MiRatioBar"
+                                          Header="Show ratio bar"
+                                          IsCheckable="True"
+                                          Click="OnOptionChanged"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                </StackPanel>
+
+                <!-- CENTER: search box with filter-chip suggestions popup -->
+                <Grid x:Name="SearchBoxGrid" VerticalAlignment="Center" Margin="6,0">
+
+                    <TextBox x:Name="SearchBox"
+                             Style="{StaticResource SearchBoxStyle}"
+                             TextChanged="OnSearchTextChanged"
+                             GotFocus="OnSearchBoxGotFocus"
+                             KeyDown="OnSearchBoxKeyDown"/>
+
+                    <!-- Placeholder text -->
+                    <TextBlock IsHitTestVisible="False" Text="Search (Ctrl+I)…"
+                               FontSize="11" Opacity="0.40"
+                               VerticalAlignment="Center" Margin="6,0,0,0"
+                               Foreground="{DynamicResource PFP_TextBrush}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Clear button — default Visible, collapsed only when empty (bug fix) -->
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Center"
+                            Width="18" Height="18" Margin="0,0,2,0"
+                            Background="Transparent" BorderThickness="0"
+                            Cursor="Hand" Click="OnClearSearch" ToolTip="Clear search">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text.Length, ElementName=SearchBox, FallbackValue=0}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="9" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                    </Button>
+
+                    <!-- Filter chips popup — opens on focus when search box is empty -->
+                    <Popup x:Name="SearchSuggestionsPopup"
+                           PlacementTarget="{Binding ElementName=SearchBoxGrid}"
+                           Placement="Bottom"
+                           StaysOpen="True"
+                           AllowsTransparency="True"
+                           HorizontalOffset="0">
+                        <Border Background="{DynamicResource UT_SearchBoxBrush}"
+                                BorderBrush="{DynamicResource UT_SelectionBrush}"
+                                BorderThickness="1" CornerRadius="4" Padding="8,6">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="3" BlurRadius="8"
+                                                  Opacity="0.35" Direction="270"/>
+                            </Border.Effect>
+                            <StackPanel>
+                                <TextBlock Text="Ajouter un filtre de recherche"
+                                           FontSize="10" Opacity="0.55" Margin="3,0,0,6"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                                <WrapPanel>
+                                    <Button Content="État"             Tag="état:"   Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="Nom complet"      Tag="nom:"    Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="Classe"           Tag="classe:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="Projet"           Tag="projet:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="Message d'erreur" Tag="erreur:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="Espace de noms"   Tag="espace:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+
+                </Grid>
+
+            </DockPanel>
+        </Border>
+
+        <!-- ─── Row 1: Progress bar (2px, running only) ──────────── -->
+        <ProgressBar Grid.Row="1"
+                     Height="2"
+                     IsIndeterminate="True"
+                     Foreground="{DynamicResource UT_PassForegroundBrush}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
+
+        <!-- ─── Row 2: ContentArea (tree + splitter + detail) ─────── -->
+        <Grid x:Name="ContentArea" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto" MinHeight="0"/>
+            </Grid.RowDefinitions>
+
+            <!-- Tree area: column header + hierarchy tree (moves as unit in ApplyDetailLayout) -->
+            <Grid x:Name="TreeArea" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>  <!-- column header bar -->
+                    <RowDefinition Height="*"/>     <!-- tree -->
+                </Grid.RowDefinitions>
+
+                <!-- Column header bar -->
+                <Border Grid.Row="0"
+                        Background="{DynamicResource UT_ToolbarBackgroundBrush}"
+                        BorderBrush="{DynamicResource DockSplitterBrush}"
+                        BorderThickness="0,0,0,1"
+                        Padding="4,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="170"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Test"
+                                   FontSize="11" FontWeight="SemiBold" Opacity="0.75"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                        <TextBlock Grid.Column="1" Text="Durée"
+                                   FontSize="11" FontWeight="SemiBold" Opacity="0.75"
+                                   HorizontalAlignment="Right" Margin="0,0,4,0"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                        <TextBlock Grid.Column="2" Text="Caractéristiques"
+                                   FontSize="11" FontWeight="SemiBold" Opacity="0.75"
+                                   Margin="4,0,0,0" TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                        <TextBlock Grid.Column="3" Text="Message d'erreur"
+                                   FontSize="11" FontWeight="SemiBold" Opacity="0.75"
+                                   Margin="4,0,0,0" TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                    </Grid>
+                </Border>
+
+                <!-- Test hierarchy tree: Project → Class → TestMethod -->
+                <TreeView x:Name="TestTree"
+                          Grid.Row="1"
+                          ItemsSource="{Binding ProjectNodes}"
+                          ItemContainerStyle="{StaticResource UT_TreeItemStyle}"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.VirtualizationMode="Recycling"
+                          SelectedItemChanged="OnTreeSelectedItemChanged">
+
+                <TreeView.Resources>
+                    <!-- Project node -->
+                    <HierarchicalDataTemplate DataType="{x:Type vm:TestProjectNode}"
+                                              ItemsSource="{Binding Classes}"
+                                              ItemContainerStyle="{StaticResource UT_TreeItemStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="170"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="{Binding OutcomeGlyph}"
+                                           FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                           VerticalAlignment="Center" Margin="0,0,5,0"
+                                           RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform><RotateTransform/></TextBlock.RenderTransform>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <!-- Default: neutral dim colour (not-yet-run) -->
+                                            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                                            <Setter Property="Opacity"    Value="0.45"/>
+                                            <Style.Triggers>
+                                                <!-- Project has results: green pass -->
+                                                <DataTrigger Binding="{Binding HasRun}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                                <!-- Any failure overrides green -->
+                                                <DataTrigger Binding="{Binding HasFailures}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard x:Name="ProjSpinBegin" Storyboard="{StaticResource SpinStoryboard}"/>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <StopStoryboard BeginStoryboardName="ProjSpinBegin"/>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding ProjectName}"
+                                           FontWeight="SemiBold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                                <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"
+                                           FontSize="11" Opacity="0.55" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TotalDurationText}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Margin="0,0,4,0" FontSize="11" Opacity="0.6"
+                                       Foreground="{DynamicResource PFP_TextBrush}"
+                                       Visibility="{Binding HasRun, Converter={StaticResource BoolToVis}}"/>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+
+                    <!-- Class node -->
+                    <HierarchicalDataTemplate DataType="{x:Type vm:TestClassNode}"
+                                              ItemsSource="{Binding Tests}"
+                                              ItemContainerStyle="{StaticResource UT_TreeItemStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="170"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="{Binding OutcomeGlyph}"
+                                           FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                           VerticalAlignment="Center" Margin="0,0,4,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <!-- Default: neutral dim colour (not-yet-run) -->
+                                            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                                            <Setter Property="Opacity"    Value="0.45"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasRun}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HasFailures}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding ShortClassName}"
+                                           FontSize="11" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                                <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"
+                                           FontSize="11" Opacity="0.5" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TotalDurationText}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Margin="0,0,4,0" FontSize="11" Opacity="0.6"
+                                       Foreground="{DynamicResource PFP_TextBrush}"
+                                       Visibility="{Binding HasRun, Converter={StaticResource BoolToVis}}"/>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+
+                    <!-- Leaf (TestResultRow) — reuses shared template -->
+                    <DataTemplate DataType="{x:Type vm:TestResultRow}">
+                        <ContentPresenter Content="{Binding}"
+                                          ContentTemplate="{StaticResource LeafTemplate}"/>
+                    </DataTemplate>
+                </TreeView.Resources>
+
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Run This Test"    Click="OnRunThisTestClicked"/>
+                        <Separator/>
+                        <MenuItem Header="Copy Test Name"   Click="OnCopyTestNameClicked"/>
+                        <MenuItem Header="Copy Stack Trace" Click="OnCopyStackTraceClicked"/>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+
+                <!-- Leaf item container: fail row tint + hover + selection -->
+                <!-- Note: ItemContainerStyle on leaf level comes from UT_TreeItemStyle on class template -->
+                </TreeView>
+
+            </Grid> <!-- /TreeArea -->
+
+            <!-- GridSplitter (only when a node is selected) -->
+            <GridSplitter x:Name="ContentSplitter"
+                          Grid.Row="1"
+                          Height="4"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockSplitterBrush}"
+                          Visibility="{Binding SelectedNode, Converter={StaticResource NullToVis}}"/>
+
+            <!-- Detail pane — context-sensitive via ContentControl + implicit DataTemplates (ADR-UT-12) -->
+            <Border x:Name="DetailPane"
+                    Grid.Row="2"
+                    Background="{DynamicResource UT_StatusBarBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockSplitterBrush}"
+                    BorderThickness="0,1,0,0"
+                    MinHeight="100" MaxHeight="260"
+                    Visibility="{Binding SelectedNode, Converter={StaticResource NullToVis}}">
+
+                <ContentControl Content="{Binding SelectedNode}" Focusable="False">
+                    <ContentControl.Resources>
+
+                        <!-- ── Project group summary ── -->
+                        <DataTemplate DataType="{x:Type vm:TestProjectNode}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <DockPanel Margin="8,6" LastChildFill="False">
+                                    <!-- Action buttons -->
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                                        <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2"
+                                                Click="OnDetailRunClicked">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                                           Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                                                <TextBlock Text="Run" FontSize="11" FontFamily="Segoe UI"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <TextBlock DockPanel.Dock="Top" Text="Group summary"
+                                               FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <TextBlock DockPanel.Dock="Top" Text="{Binding ProjectName}"
+                                               FontSize="12" Margin="8,0,0,2"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,2">
+                                        <TextBlock Text="Tests in group: " FontSize="11" Opacity="0.75"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                        <TextBlock Text="{Binding TotalCount}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,6">
+                                        <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
+                                        <TextBlock Text="Total duration: " FontSize="11" Opacity="0.75"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                        <TextBlock Text="{Binding TotalDurationText}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    </StackPanel>
+                                    <TextBlock DockPanel.Dock="Top" Text="Results"
+                                               FontSize="11" FontWeight="SemiBold" Margin="0,0,0,2"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1">
+                                        <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   Margin="0,0,6,0" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource UT_PassForegroundBrush}">
+                                            <Run Text="{Binding PassCount, Mode=OneWay}"/>
+                                            <Run Text=" Passed"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1"
+                                                Visibility="{Binding HasFailures, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   Margin="0,0,6,0" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource UT_FailForegroundBrush}"/>
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource UT_FailForegroundBrush}">
+                                            <Run Text="{Binding FailCount, Mode=OneWay}"/>
+                                            <Run Text=" Failed"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
+                            </ScrollViewer>
+                        </DataTemplate>
+
+                        <!-- ── Class group summary ── -->
+                        <DataTemplate DataType="{x:Type vm:TestClassNode}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <DockPanel Margin="8,6" LastChildFill="False">
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                                        <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2"
+                                                Click="OnDetailRunClicked">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                                           Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                                                <TextBlock Text="Run" FontSize="11" FontFamily="Segoe UI"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                    <TextBlock DockPanel.Dock="Top" Text="Group summary"
+                                               FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <TextBlock DockPanel.Dock="Top" Text="{Binding ShortClassName}"
+                                               FontSize="12" Margin="8,0,0,2"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,2">
+                                        <TextBlock Text="Tests in group: " FontSize="11" Opacity="0.75"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                        <TextBlock Text="{Binding TotalCount}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,6">
+                                        <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
+                                        <TextBlock Text="Total duration: " FontSize="11" Opacity="0.75"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                        <TextBlock Text="{Binding TotalDurationText}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    </StackPanel>
+                                    <TextBlock DockPanel.Dock="Top" Text="Results"
+                                               FontSize="11" FontWeight="SemiBold" Margin="0,0,0,2"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1">
+                                        <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   Margin="0,0,6,0" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource UT_PassForegroundBrush}">
+                                            <Run Text="{Binding PassCount, Mode=OneWay}"/>
+                                            <Run Text=" Passed"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1"
+                                                Visibility="{Binding HasFailures, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   Margin="0,0,6,0" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource UT_FailForegroundBrush}"/>
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource UT_FailForegroundBrush}">
+                                            <Run Text="{Binding FailCount, Mode=OneWay}"/>
+                                            <Run Text=" Failed"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
+                            </ScrollViewer>
+                        </DataTemplate>
+
+                        <!-- ── Test detail ── -->
+                        <DataTemplate DataType="{x:Type vm:TestResultRow}">
+                            <DockPanel Margin="8,6">
+                                <!-- Action buttons -->
+                                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                                    <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2"
+                                            Click="OnDetailRunClicked">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource UT_PassForegroundBrush}"/>
+                                            <TextBlock Text="Run" FontSize="11" FontFamily="Segoe UI"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2" Margin="2,0,0,0"
+                                            Click="OnCopyStackTraceClicked" ToolTip="Copy Stack Trace">
+                                        <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="12" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    </Button>
+                                </StackPanel>
+
+                                <TextBlock DockPanel.Dock="Top" Text="Test detail"
+                                           FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+
+                                <!-- Test name with outcome glyph -->
+                                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,2">
+                                    <TextBlock Text="{Binding OutcomeGlyph}"
+                                               FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                               Margin="0,0,6,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Outcome}" Value="Passed">
+                                                        <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Outcome}" Value="Failed">
+                                                        <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Display}"
+                                               FontFamily="Cascadia Mono, Consolas, monospace"
+                                               FontSize="11" TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                </StackPanel>
+
+                                <!-- Source — clickable link when HasSource=true -->
+                                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="16,0,0,2">
+                                    <TextBlock Text="&#xE8F4;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
+                                    <TextBlock Text="Source: " FontSize="11" Opacity="0.75"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <Button Content="{Binding ShortClassName}"
+                                            Tag="{Binding}"
+                                            Style="{StaticResource UT_SourceLinkStyle}"
+                                            IsEnabled="{Binding HasSource}"
+                                            Click="OnGoToSourceClicked"/>
+                                </StackPanel>
+
+                                <!-- Duration -->
+                                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="16,0,0,6">
+                                    <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
+                                    <TextBlock Text="Duration: " FontSize="11" Opacity="0.75"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                    <TextBlock Text="{Binding DurationMs, StringFormat='{}{0} ms'}"
+                                               FontSize="11" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                                </StackPanel>
+
+                                <!-- Error + stack (only if failed) -->
+                                <TextBlock DockPanel.Dock="Top"
+                                           Text="{Binding ErrorMessage}"
+                                           FontSize="11" TextWrapping="Wrap" Margin="0,0,0,4"
+                                           Foreground="{DynamicResource PFP_TextBrush}"
+                                           Visibility="{Binding HasDetail, Converter={StaticResource BoolToVis}}"/>
+                                <ScrollViewer DockPanel.Dock="Top"
+                                              VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Auto"
+                                              Visibility="{Binding HasDetail, Converter={StaticResource BoolToVis}}">
+                                    <TextBox Text="{Binding StackTrace, Mode=OneWay}"
+                                             IsReadOnly="True"
+                                             Background="Transparent" BorderThickness="0"
+                                             FontFamily="Cascadia Mono, Consolas, monospace"
+                                             FontSize="11" TextWrapping="NoWrap"
+                                             Foreground="{DynamicResource PFP_TextBrush}"/>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </DataTemplate>
+
+                    </ContentControl.Resources>
+                </ContentControl>
+            </Border>
+        </Grid>
+
+        <!-- ─── Row 3: Pass/Fail ratio bar ────────────────────────── -->
+        <Grid Grid.Row="3" Height="6"
+              Visibility="{Binding ShowRatioBarNow, Converter={StaticResource BoolToVis}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding PassCount, Converter={StaticResource StarGL}}"/>
+                <ColumnDefinition Width="{Binding FailCount, Converter={StaticResource StarGL}}"/>
+                <ColumnDefinition Width="{Binding SkipCount, Converter={StaticResource StarGL}}"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Column="0" Fill="{DynamicResource UT_PassForegroundBrush}" Opacity="0.75"/>
+            <Rectangle Grid.Column="1" Fill="{DynamicResource UT_FailForegroundBrush}" Opacity="0.75"/>
+            <Rectangle Grid.Column="2" Fill="{DynamicResource UT_SkipForegroundBrush}" Opacity="0.5"/>
+        </Grid>
+
+        <!-- ─── Row 4: Status bar ─────────────────────────────────── -->
+        <Border Grid.Row="4"
+                Background="{DynamicResource UT_StatusBarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockSplitterBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="6,3">
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="{DynamicResource PFP_TextBrush}"
+                       FontSize="11" Opacity="0.75"
+                       TextTrimming="CharacterEllipsis"/>
+        </Border>
+    </Grid>
+</UserControl>

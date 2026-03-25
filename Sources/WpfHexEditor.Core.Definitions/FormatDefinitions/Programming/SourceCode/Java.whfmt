@@ -1,0 +1,106 @@
+/* ============================================================
+   Format:    Java Source File
+   Category:  Programming
+   Ext:       .java
+   Editor:    code-editor
+   Desc:      Java programming language source file.
+   Updated:   2026-03-22
+   ============================================================ */
+
+{
+  "formatName": "Java Source File",
+  "version": "2.0",
+  "extensions": [
+    ".java"
+  ],
+  "description": "Java programming language source file.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-22",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "text/x-java"
+  ],
+  "Software": [
+    "IntelliJ IDEA",
+    "Eclipse",
+    "Android Studio"
+  ],
+  "UseCases": [
+    "Java source code development",
+    "Android development"
+  ],
+  "syntaxDefinition": {
+    "id": "java",
+    "name": "Java",
+    "extensions": [
+      ".java"
+    ],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"\"\"[\\s\\S]*?\"\"\"|\"(?:[^\"\\]|\\.)*\"|\\'(?:[^\\'\\]|\\.)*\\')",
+        "colorKey": "TE_String"
+      },
+      {
+        "type": "Comment",
+        "pattern": "//.*$",
+        "colorKey": "TE_Comment"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|var|void|volatile|while|record|sealed|permits|yield|true|false|module|requires|exports|opens|uses|provides|with|to|open|transitive)\\b",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(String|Integer|Long|Double|Float|Boolean|Character|Byte|Short|Object|Class|Enum|Record|System|Math|Runtime|Thread|Runnable|Callable|Future|CompletableFuture|Optional|List|ArrayList|LinkedList|Map|HashMap|TreeMap|Set|HashSet|TreeSet|Queue|Deque|ArrayDeque|Collections|Arrays|Iterator|Iterable|Comparable|Comparator|Exception|RuntimeException|Error|Throwable|StringBuilder|StringBuffer|CharSequence|Number|Void|Cloneable|Serializable|Override|Deprecated|SuppressWarnings|FunctionalInterface|SafeVarargs|Nullable|NotNull)\\b",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "Annotation",
+        "pattern": "@[A-Za-z][A-Za-z0-9_]*",
+        "colorKey": "TE_Directive"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f_]+[lL]?|0b[01_]+[lL]?|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[lLfFdD]?)\\b",
+        "colorKey": "TE_Number"
+      },
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ],
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+    }
+  }
+}

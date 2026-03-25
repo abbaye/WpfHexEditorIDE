@@ -156,8 +156,9 @@ namespace WpfHexEditor.HexEditor
         #region Public Methods - File Operations
 
         /// <summary>
-        /// Open a file for editing
-        /// Automatically closes current file if one is already open
+        /// Open a file for editing.
+        /// Returns immediately — file I/O and initialization run asynchronously on a background thread.
+        /// The hex editor shows "Opening…" status until content is ready.
         /// </summary>
         public void OpenFile(string filePath)
         {
@@ -167,172 +168,185 @@ namespace WpfHexEditor.HexEditor
             // CRITICAL: Set flag to prevent infinite recursion in OnFileNamePropertyChanged
             _isOpeningFile = true;
 
+            // Show status immediately — the tab is not blank while the background FileStream open runs.
+            StatusText.Text = $"Opening: {System.IO.Path.GetFileName(filePath)}…";
+
+            // Fire-and-forget: returns to caller immediately, unblocking the UI thread.
+            _ = OpenFileCoreAsync(filePath);
+        }
+
+        /// <summary>
+        /// Async core for OpenFile.
+        /// ByteProvider/FileStream creation runs on a background thread (may block for seconds
+        /// on large assemblies due to OS I/O or antivirus scans).
+        /// All UI-thread work executes after the await continuation on the WPF dispatcher.
+        /// </summary>
+        private async Task OpenFileCoreAsync(string filePath)
+        {
             try
             {
-                // CRITICAL: Close previous file properly to reset all state
-                // This prevents crashes and memory leaks from stale state
+                // CRITICAL: Close previous file properly to reset all state.
+                // This is safe here because we are on the UI thread (before the first await).
                 if (_viewModel != null)
-                {
                     Close();
+
+                // ByteProvider.OpenFile → new FileStream() on a background thread.
+                var vm = await Task.Run(() => HexEditorViewModel.OpenFile(filePath));
+
+                // ── Continuation runs on the UI/dispatcher thread ─────────────────────────
+                _viewModel = vm;
+                HexViewport.LinesSource = _viewModel.Lines;
+
+                // Synchronize ViewModel with control's BytePerLine (which may have been set in XAML before file opened)
+                _viewModel.BytePerLine = BytePerLine;
+                HexViewport.BytesPerLine = BytePerLine;
+
+                // Synchronize ViewModel with control's EditMode (which may have been set before file opened, e.g., from settings)
+                _viewModel.EditMode = EditMode;
+                HexViewport.EditMode = EditMode; // Also sync to HexViewport for caret display
+
+                // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
+                // This ensures multi-byte mode settings are preserved across file open/close
+                _viewModel.ByteSize = ByteSize;
+                _viewModel.ByteOrder = ByteOrder;
+
+                // Synchronize ByteShiftLeft (V1 Legacy feature)
+                _viewModel.ByteShiftLeft = ByteShiftLeft;
+
+                // ByteProvider V2 always supports insertion anywhere - no need to set flag
+                if (EditMode == EditMode.Insert)
+                {
                 }
 
-                _viewModel = HexEditorViewModel.OpenFile(filePath);
-            HexViewport.LinesSource = _viewModel.Lines;
+                // Initialize byte spacer properties on viewport (V1 compatibility)
+                HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
+                HexViewport.ByteSpacerWidthTickness = ByteSpacerWidthTickness;
+                HexViewport.ByteGrouping = ByteGrouping;
+                HexViewport.ByteSpacerVisualStyle = ByteSpacerVisualStyle;
 
-            // Synchronize ViewModel with control's BytePerLine (which may have been set in XAML before file opened)
-            _viewModel.BytePerLine = BytePerLine;
-            HexViewport.BytesPerLine = BytePerLine;
+                // Initialize byte foreground colors
+                var normalBrush = Resources["ByteForegroundBrush"] as Brush;
+                var alternateBrush = Resources["AlternateByteForegroundBrush"] as Brush;
+                HexViewport.SetByteForegroundColors(normalBrush, alternateBrush);
 
-            // Synchronize ViewModel with control's EditMode (which may have been set before file opened, e.g., from settings)
-            _viewModel.EditMode = EditMode;
-            HexViewport.EditMode = EditMode; // Also sync to HexViewport for caret display
+                // Store file info
+                FileName = filePath;
+                IsModified = false;
+                IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
-            // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
-            // This ensures multi-byte mode settings are preserved across file open/close
-            _viewModel.ByteSize = ByteSize;
-            _viewModel.ByteOrder = ByteOrder;
+                // Subscribe to property changes
+                _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            // Synchronize ByteShiftLeft (V1 Legacy feature)
-            _viewModel.ByteShiftLeft = ByteShiftLeft;
-
-            // ByteProvider V2 always supports insertion anywhere - no need to set flag
-            if (EditMode == EditMode.Insert)
-            {
-            }
-
-            // Initialize byte spacer properties on viewport (V1 compatibility)
-            HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
-            HexViewport.ByteSpacerWidthTickness = ByteSpacerWidthTickness;
-            HexViewport.ByteGrouping = ByteGrouping;
-            HexViewport.ByteSpacerVisualStyle = ByteSpacerVisualStyle;
-
-            // Initialize byte foreground colors
-            var normalBrush = Resources["ByteForegroundBrush"] as Brush;
-            var alternateBrush = Resources["AlternateByteForegroundBrush"] as Brush;
-            HexViewport.SetByteForegroundColors(normalBrush, alternateBrush);
-
-            // Store file info
-            FileName = filePath;
-            IsModified = false;
-            IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
-
-            // Subscribe to property changes
-            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            // Calculate initial visible lines AFTER the control is fully loaded AND layout is complete
-            // Use ApplicationIdle priority to ensure BaseGrid.RowDefinitions[1].ActualHeight is set
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                UpdateVisibleLines();
-            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-
-            // Update scrollbar with initial values
-            VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
-            VerticalScroll.ViewportSize = _viewModel.VisibleLines;
-
-            // Raise FileOpened event
-            OnFileOpened(EventArgs.Empty);
-
-            // Start watching the file for external modifications.
-            StartFileWatcher(filePath);
-
-            // Update status bar
-            StatusText.Text = $"Loaded: {System.IO.Path.GetFileName(filePath)}";
-            UpdateFileSizeDisplay();
-            BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
-            EditModeText.Text = $"Mode: {_viewModel.EditMode}";
-            RaiseHexStatusChanged();
-
-            // STARTUP OPTIMIZATION: Defer expensive operations to background (low priority)
-            // These operations can be done after the control is loaded and visible
-
-            // Auto-detect format if enabled
-            // Run in background to avoid blocking UI
-            //System.Diagnostics.Debug.WriteLine($"[FileOperations] EnableAutoFormatDetection = {EnableAutoFormatDetection}");
-            if (EnableAutoFormatDetection && Stream != null && Stream.Length > 0)
-            {
-                // Snapshot bytes on UI thread — stream access is not thread-safe across threads.
-                var bytesToRead = (int)Math.Min(Stream.Length, 1024 * 1024);
-                var sample = new byte[bytesToRead];
-                var savedPos = Stream.Position;
-                Stream.Position = 0;
-                var bytesRead = Stream.Read(sample, 0, bytesToRead);
-                Stream.Position = savedPos;
-                if (bytesRead < bytesToRead) Array.Resize(ref sample, bytesRead);
-
-                // CPU-intensive detection on a thread-pool thread so the UI thread stays responsive.
-                var capturedPath = filePath;
-                _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        var result = _formatDetectionService.DetectFormat(sample, capturedPath, null);
-
-                        await Dispatcher.InvokeAsync(() =>
-                        {
-                            if (result.Success && result.Blocks?.Count > 0)
-                            {
-                                ClearCustomBackgroundBlock();
-                                foreach (var b in result.Blocks)
-                                    AddCustomBackgroundBlock(b);
-
-                                var fileLen = Length;
-                                if (fileLen > 0)
-                                    foreach (var b in _customBackgroundService.GetAllBlocks())
-                                        if (b.Length >= fileLen * 0.8) b.ShowInTooltip = false;
-
-                                _detectedFormat      = result.Format;
-                                _detectionVariables  = result.Variables;
-                                _detectionCandidates = result.Candidates;
-
-                                RefreshParsedFields();
-                                UpdateEnrichedFormatPanel(result.Format);
-
-                                FormatDetected?.Invoke(this, new FormatDetectedEventArgs
-                                {
-                                    Success         = true,
-                                    Format          = result.Format,
-                                    Blocks          = result.Blocks,
-                                    DetectionTimeMs = result.DetectionTimeMs,
-                                });
-                            }
-
-                            if (ShowFormatDetectionStatus)
-                                StatusText.Text = result.Success
-                                    ? $"Format detected: {result.Format?.FormatName ?? "Unknown"}"
-                                    : string.Empty;
-                            RaiseHexStatusChanged();
-
-                        }, System.Windows.Threading.DispatcherPriority.Background);
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[FormatDetection] Background error: {ex.Message}");
-                    }
-                });
-            }
-            else
-            {
-                //System.Diagnostics.Debug.WriteLine("[FileOperations] Format detection is disabled (EnableAutoFormatDetection = false)");
-            }
-
-            // Notify external byte distribution panel (e.g. BarChartPanel) in background
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                NotifyByteDistributionPanel();
-            }), System.Windows.Threading.DispatcherPriority.Background);
-
-            // Update scroll markers in background
-            // Scroll markers don't need to be ready immediately
-            if (_scrollMarkers != null)
-            {
-                // Use VirtualLength for correct marker positioning (includes insertions)
-                _scrollMarkers.FileLength = _viewModel.VirtualLength;
+                // Calculate initial visible lines AFTER the control is fully loaded AND layout is complete
+                // Use ApplicationIdle priority to ensure BaseGrid.RowDefinitions[1].ActualHeight is set
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    UpdateScrollMarkers();
+                    UpdateVisibleLines();
+                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+
+                // Update scrollbar with initial values
+                VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
+                VerticalScroll.ViewportSize = _viewModel.VisibleLines;
+
+                // Raise FileOpened event
+                OnFileOpened(EventArgs.Empty);
+
+                // Start watching the file for external modifications.
+                StartFileWatcher(filePath);
+
+                // Update status bar
+                StatusText.Text = $"Loaded: {System.IO.Path.GetFileName(filePath)}";
+                UpdateFileSizeDisplay();
+                BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
+                EditModeText.Text = $"Mode: {_viewModel.EditMode}";
+                RaiseHexStatusChanged();
+
+                // Auto-detect format: snapshot bytes on UI thread, then detect on Task.Run.
+                if (EnableAutoFormatDetection && Stream != null && Stream.Length > 0)
+                {
+                    // Snapshot bytes on UI thread — stream access is not thread-safe across threads.
+                    var bytesToRead = (int)Math.Min(Stream.Length, 1024 * 1024);
+                    var sample = new byte[bytesToRead];
+                    var savedPos = Stream.Position;
+                    Stream.Position = 0;
+                    var bytesRead = Stream.Read(sample, 0, bytesToRead);
+                    Stream.Position = savedPos;
+                    if (bytesRead < bytesToRead) Array.Resize(ref sample, bytesRead);
+
+                    // CPU-intensive detection on a thread-pool thread so the UI thread stays responsive.
+                    var capturedPath = filePath;
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var result = _formatDetectionService.DetectFormat(sample, capturedPath, null);
+
+                            await Dispatcher.InvokeAsync(() =>
+                            {
+                                if (result.Success && result.Blocks?.Count > 0)
+                                {
+                                    ClearCustomBackgroundBlock();
+                                    foreach (var b in result.Blocks)
+                                        AddCustomBackgroundBlock(b);
+
+                                    var fileLen = Length;
+                                    if (fileLen > 0)
+                                        foreach (var b in _customBackgroundService.GetAllBlocks())
+                                            if (b.Length >= fileLen * 0.8) b.ShowInTooltip = false;
+
+                                    _detectedFormat      = result.Format;
+                                    _detectionVariables  = result.Variables;
+                                    _detectionCandidates = result.Candidates;
+
+                                    RefreshParsedFields();
+                                    UpdateEnrichedFormatPanel(result.Format);
+
+                                    FormatDetected?.Invoke(this, new FormatDetectedEventArgs
+                                    {
+                                        Success         = true,
+                                        Format          = result.Format,
+                                        Blocks          = result.Blocks,
+                                        DetectionTimeMs = result.DetectionTimeMs,
+                                    });
+                                }
+
+                                if (ShowFormatDetectionStatus)
+                                    StatusText.Text = result.Success
+                                        ? $"Format detected: {result.Format?.FormatName ?? "Unknown"}"
+                                        : string.Empty;
+                                RaiseHexStatusChanged();
+
+                            }, System.Windows.Threading.DispatcherPriority.Background);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] Background error: {ex.Message}");
+                        }
+                    });
+                }
+
+                // Notify external byte distribution panel (e.g. BarChartPanel) in background
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    NotifyByteDistributionPanel();
                 }), System.Windows.Threading.DispatcherPriority.Background);
+
+                // Update scroll markers in background
+                // Scroll markers don't need to be ready immediately
+                if (_scrollMarkers != null)
+                {
+                    // Use VirtualLength for correct marker positioning (includes insertions)
+                    _scrollMarkers.FileLength = _viewModel.VirtualLength;
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        UpdateScrollMarkers();
+                    }), System.Windows.Threading.DispatcherPriority.Background);
+                }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[FileOperations] Error opening file '{filePath}': {ex.Message}");
+                StatusText.Text = $"Error opening file: {ex.Message}";
             }
             finally
             {

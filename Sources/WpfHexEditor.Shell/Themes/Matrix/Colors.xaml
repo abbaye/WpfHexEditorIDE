@@ -559,7 +559,7 @@
     <SolidColorBrush x:Key="CP_GroupHeaderBrush"     Color="#001500" />
     <SolidColorBrush x:Key="CP_DescPanelBrush"       Color="#000C00" />
 
-    <!-- ── Keyboard Shortcuts Page (KSP_*) ──────────────────────────────── -->
+    <!-- Keyboard Shortcuts Page (KSP_*) -->
     <SolidColorBrush x:Key="KSP_DataGridBackground"  Color="#001000" />
     <SolidColorBrush x:Key="KSP_CellForeground"      Color="#00EE38" />
     <SolidColorBrush x:Key="KSP_HintForeground"      Color="#007A1C" />
@@ -567,7 +567,7 @@
     <SolidColorBrush x:Key="KSP_EditBackground"      Color="#001000" />
     <SolidColorBrush x:Key="KSP_EditBorder"          Color="#00FF41" />
 
-    <!-- ── Title Bar Search Launcher (TB_Search*) ───────────────────────── -->
+    <!-- Title Bar Search Launcher (TB_Search*) -->
     <SolidColorBrush x:Key="TB_SearchBackgroundBrush"       Color="#001400" />
     <SolidColorBrush x:Key="TB_SearchBorderBrush"           Color="#009922" />
     <SolidColorBrush x:Key="TB_SearchTextBrush"             Color="#00EE38" />
@@ -606,4 +606,108 @@
     <SolidColorBrush x:Key="MKT_InstalledBadge"         Color="#57A64A" />
     <SolidColorBrush x:Key="MKT_StarFilled"             Color="#FFD700" />
     <SolidColorBrush x:Key="MKT_StarEmpty"              Color="#00AA00" />
+    <!-- Peek Definition popup tokens (GD_*) -->
+    <SolidColorBrush x:Key="GD_PeekBackground"       Color="#1E1E1E" />
+    <SolidColorBrush x:Key="GD_PeekBorder"           Color="#454545" />
+    <SolidColorBrush x:Key="GD_PeekTitleBar"         Color="#2D2D2D" />
+    <SolidColorBrush x:Key="GD_PeekTitleForeground"  Color="#D4D4D4" />
+    <SolidColorBrush x:Key="GD_PeekNavLinkForeground" Color="#569CD6" />
+
+    <!-- RESX Editor tokens (RES_*) — inserted by Add-ResxTokens.ps1 -->
+    <SolidColorBrush x:Key="RES_BackgroundBrush"          Color="#010A01" />
+    <SolidColorBrush x:Key="RES_ForegroundBrush"          Color="#00FF41" />
+    <SolidColorBrush x:Key="RES_HeaderBackgroundBrush"    Color="#001400" />
+    <SolidColorBrush x:Key="RES_HeaderForegroundBrush"    Color="#00CC33" />
+    <SolidColorBrush x:Key="RES_RowAlternateBrush"        Color="#000800" />
+    <SolidColorBrush x:Key="RES_SelectedRowBrush"         Color="#003300" />
+    <SolidColorBrush x:Key="RES_SelectedRowForegroundBrush" Color="#00FF41" />
+    <SolidColorBrush x:Key="RES_HoverRowBrush"            Color="#001400" />
+    <SolidColorBrush x:Key="RES_StringTypeBadgeBrush"     Color="#2E7D32" />
+    <SolidColorBrush x:Key="RES_ImageTypeBadgeBrush"      Color="#1565C0" />
+    <SolidColorBrush x:Key="RES_BinaryTypeBadgeBrush"     Color="#E65100" />
+    <SolidColorBrush x:Key="RES_FileRefTypeBadgeBrush"    Color="#6A1B9A" />
+    <SolidColorBrush x:Key="RES_DuplicateKeyBrush"        Color="#C62828" />
+    <SolidColorBrush x:Key="RES_MissingTranslationBrush"  Color="#F57F17" />
+    <SolidColorBrush x:Key="RES_CellEditorBackgroundBrush" Color="#010A01" />
+    <SolidColorBrush x:Key="RES_CommentForegroundBrush"   Color="#00AA22" />
+    <SolidColorBrush x:Key="RES_SeparatorBrush"           Color="#004400" />
+    <SolidColorBrush x:Key="RES_LocaleMatchBrush"         Color="#003300" />
+    <SolidColorBrush x:Key="RES_LocaleMissingBrush"       Color="#1A0000" />
+    <SolidColorBrush x:Key="RES_ToolbarBackgroundBrush"   Color="#001400" />
+
+    <!-- Unit Testing tokens (UT_*) — inserted by Add-UtTokens.ps1 -->
+    <SolidColorBrush x:Key="UT_PassForegroundBrush"       Color="#00FF41" />
+    <SolidColorBrush x:Key="UT_FailForegroundBrush"       Color="#FF2200" />
+    <SolidColorBrush x:Key="UT_SkipForegroundBrush"       Color="#00CC99" />
+    <SolidColorBrush x:Key="UT_FailRowBackgroundBrush"    Color="#1A0000" />
+    <SolidColorBrush x:Key="UT_ToolbarBackgroundBrush"    Color="#001400" />
+    <SolidColorBrush x:Key="UT_StatusBarBackgroundBrush"  Color="#010A01" />
+    <SolidColorBrush x:Key="UT_HoverBrush"                Color="#001400" />
+    <SolidColorBrush x:Key="UT_SelectionBrush"            Color="#003300" />
+
+    <SolidColorBrush x:Key="UT_RunningRowBrush"           Color="#001A08" />
+    <SolidColorBrush x:Key="UT_SearchBoxBrush"            Color="#000800" />
+    <SolidColorBrush x:Key="UT_LinkForegroundBrush"       Color="#4FC1FF" />
+
+    <!-- Diff tokens (DF_*) - inserted by Add-DiffTokens.ps1 -->
+    <SolidColorBrush x:Key="DF_ModifiedLineBrush"     Color="#1A1A00" />
+    <SolidColorBrush x:Key="DF_InsertedLineBrush"     Color="#001A08" />
+    <SolidColorBrush x:Key="DF_DeletedLineBrush"      Color="#1A0000" />
+    <SolidColorBrush x:Key="DF_IdenticalLineBrush"    Color="Transparent" />
+    <SolidColorBrush x:Key="DF_CharModifiedBrush"     Color="#88FF00" />
+    <SolidColorBrush x:Key="DF_FoldMarkerForeground"  Color="#00AA41" />
+    <SolidColorBrush x:Key="DF_FoldMarkerBackground"  Color="#001400" />
+    <SolidColorBrush x:Key="DF_MinimapModified"       Color="#88FF00" />
+    <SolidColorBrush x:Key="DF_MinimapInserted"       Color="#00FF41" />
+    <SolidColorBrush x:Key="DF_MinimapDeleted"        Color="#FF2200" />
+    <SolidColorBrush x:Key="DF_MinimapIdentical"      Color="#002800" />
+    <SolidColorBrush x:Key="DF_PatchedBrush"          Color="#002210" />
+    <SolidColorBrush x:Key="DF_PickerBackground"      Color="#001400" />
+    <SolidColorBrush x:Key="DF_PickerHighlightBrush"  Color="#00CC99" />
+
+    <!-- Debugger tokens (DB_*) — inserted by Add-DbgTokens.ps1 -->
+    <SolidColorBrush x:Key="DB_BreakpointActiveBrush"        Color="#FF2200" />
+    <SolidColorBrush x:Key="DB_BreakpointDisabledBrush"      Color="#336633" />
+    <SolidColorBrush x:Key="DB_BreakpointConditionalBrush"   Color="#FF8800" />
+    <SolidColorBrush x:Key="DB_ExecutionLineBrush"           Color="#00FF41" />
+    <SolidColorBrush x:Key="DB_ExecutionLineBackgroundBrush" Color="#3000FF41" />
+    <SolidColorBrush x:Key="DB_ExceptionLineBrush"           Color="#FF2200" />
+    <SolidColorBrush x:Key="DB_CallStackActiveBrush"         Color="#00FF41" />
+    <SolidColorBrush x:Key="DB_WatchErrorBrush"              Color="#FF2200" />
+    <SolidColorBrush x:Key="DB_LocalChangedBrush"            Color="#00CC99" />
+    <SolidColorBrush x:Key="DB_ConsoleStdoutBrush"           Color="#00FF41" />
+    <SolidColorBrush x:Key="DB_ConsoleStderrBrush"           Color="#FF2200" />
+    <SolidColorBrush x:Key="DB_ConsoleDebugBrush"            Color="#336633" />
+    <SolidColorBrush x:Key="DB_ToolbarBackgroundBrush"       Color="#001400" />
+    <SolidColorBrush x:Key="DB_StatusActiveBrush"            Color="#FF2200" />
+
+    <!-- Script Runner tokens (SR_*) â€” inserted by Add-ScriptTokens.ps1 -->
+    <SolidColorBrush x:Key="SR_ToolbarBackgroundBrush"   Color="#001400" />
+    <SolidColorBrush x:Key="SR_CodeBackgroundBrush"      Color="#010A01" />
+    <SolidColorBrush x:Key="SR_CodeForegroundBrush"      Color="#00FF41" />
+    <SolidColorBrush x:Key="SR_OutputBackgroundBrush"    Color="#000800" />
+    <SolidColorBrush x:Key="SR_OutputForegroundBrush"    Color="#00CC30" />
+    <SolidColorBrush x:Key="SR_StatusBarBackgroundBrush" Color="#010A01" />
+    <SolidColorBrush x:Key="SR_RunningForegroundBrush"   Color="#00CC99" />
+    <SolidColorBrush x:Key="SR_ErrorForegroundBrush"     Color="#FF2200" />
+
+    <!-- DiffV2 tokens (DF_*) â€” inserted by Add-DiffV2Tokens.ps1 -->
+    <SolidColorBrush x:Key="DF_GutterBackgroundBrush"        Color="#000A00" />
+    <SolidColorBrush x:Key="DF_LineNumberForegroundBrush"    Color="#00AA41" />
+    <SolidColorBrush x:Key="DF_WordModifiedBrush"            Color="#0A1400" />
+    <SolidColorBrush x:Key="DF_HeaderBackgroundBrush"        Color="#001400" />
+    <SolidColorBrush x:Key="DF_OverviewRulerBackgroundBrush" Color="#000800" />
+    <SolidColorBrush x:Key="DF_OverviewModifiedBrush"        Color="#88FF00" />
+    <SolidColorBrush x:Key="DF_OverviewAddedBrush"           Color="#00FF41" />
+    <SolidColorBrush x:Key="DF_OverviewRemovedBrush"         Color="#FF2200" />
+
+    <!-- End-of-Block Hint tokens (ET_*) â€” inserted by Add-EndBlockTokens.ps1 -->
+    <SolidColorBrush x:Key="ET_PopupBackground"    Color="#001200" />
+    <SolidColorBrush x:Key="ET_PopupBorderBrush"   Color="#005000" />
+    <SolidColorBrush x:Key="ET_HeaderBackground"   Color="#000E00" />
+    <SolidColorBrush x:Key="ET_HeaderForeground"   Color="#00FF41" />
+    <SolidColorBrush x:Key="ET_MetaForeground"     Color="#336633" />
+    <SolidColorBrush x:Key="ET_LineNumberPillBg"   Color="#001400" />
+    <SolidColorBrush x:Key="ET_LineCountPillBg"    Color="#003300" />
+    <SolidColorBrush x:Key="ET_AccentBrush"        Color="#00FF41" />
 </ResourceDictionary>

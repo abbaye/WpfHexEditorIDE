@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using WpfHexEditor.Editor.Core;
-using WpfHexEditor.ProjectSystem.Services;
+using WpfHexEditor.Core.ProjectSystem.Services;
 
 namespace WpfHexEditor.Editor.CodeEditor.Services;
 
@@ -30,7 +30,7 @@ internal static class WorkspaceFileCache
 {
     // ── Constants ─────────────────────────────────────────────────────────────
 
-    private const int  MaxFiles     = 500;
+    private const int  MaxFiles     = 5_000;
     private const long MaxFileBytes = 2L * 1024 * 1024; // 2 MB
 
     // ── State ─────────────────────────────────────────────────────────────────

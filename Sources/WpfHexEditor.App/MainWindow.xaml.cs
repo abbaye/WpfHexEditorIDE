@@ -48,24 +48,25 @@ using WpfHexEditor.Editor.ChangesetEditor;
 using WpfHexEditor.Editor.MarkdownEditor;
 using WpfHexEditor.Editor.ClassDiagram;
 using WpfHexEditor.Editor.XamlDesigner;
+using WpfHexEditor.Editor.ResxEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.IDE.Services;
-using WpfHexEditor.Definitions;
-using WpfHexEditor.ProjectSystem;
-using WpfHexEditor.ProjectSystem.Dialogs;
-using WpfHexEditor.ProjectSystem.Serialization;
-using WpfHexEditor.ProjectSystem.Services;
-using WpfHexEditor.ProjectSystem.Templates;
-using WpfHexEditor.ProjectSystem.Languages;
+using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.ProjectSystem;
+using WpfHexEditor.Core.ProjectSystem.Dialogs;
+using WpfHexEditor.Core.ProjectSystem.Serialization;
+using WpfHexEditor.Core.ProjectSystem.Services;
+using WpfHexEditor.Core.ProjectSystem.Templates;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using System.Windows.Shell;
 using System.Windows.Threading;
-using WpfHexEditor.Options;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.SDK.Descriptors;
-using WpfHexEditor.Commands;
+using WpfHexEditor.Core.Commands;
 using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
 using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
@@ -139,6 +140,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Solution-level NuGet manager map: doc-nuget-solution-{name} → ISolution
     private readonly Dictionary<string, ISolution> _nugetSolutionManagerMap = new();
 
+    // Reference manager map: doc-refs-{name} → IProject (for deferred content creation)
+    private readonly Dictionary<string, IProject> _refManagerMap = new();
+
     // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
     // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
     private readonly HashSet<string> _pendingProjectPropertiesContentIds = new();
@@ -204,6 +208,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // MenuAdapter — captured after plugin system initialises; used by CommandPalette
     private MenuAdapter? _menuAdapter;
+
+    // Compare Files launch service — orchestrates smart file picking + history
+    private CompareFileLaunchService? _compareFileLaunchService;
 
     // SolutionManager
     private readonly ISolutionManager _solutionManager = SolutionManager.Instance;
@@ -511,10 +518,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new StructureEditorFactory());
         _editorRegistry.Register(new TileEditorFactory());
         _editorRegistry.Register(new AudioViewerFactory());
-        _editorRegistry.Register(new ScriptEditorFactory());
+        _editorRegistry.Register(new ScriptEditorFactory(() => _scriptingService));
         _editorRegistry.Register(new ChangesetEditorFactory());
         _editorRegistry.Register(new ClassDiagramFactory());
         _editorRegistry.Register(new XamlDesignerFactory());
+        _editorRegistry.Register(new ResxEditorFactory());
 
         // Register VS-style project templates
         ProjectTemplateRegistry.RegisterDefaults();
@@ -525,7 +533,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Load user settings then apply persisted theme before layout loads
         AppSettingsService.Instance.Load();
         LoadKeyBindingOverrides();   // populate gesture overrides from settings
+        InitCompareFileLaunchService();
         ApplyThemeFromSettings();
+        ApplyTabPreviewSettings();   // push persisted thumbnail settings to DockHost
+        WpfHexEditor.Core.Options.TabPreviewAppSettings.Changed += ApplyTabPreviewSettings;
         InitAutoSerializeTimer();
 
         RebuildTblItemList();   // must be before LoadSavedLayoutOrDefault so SyncTblDropdown finds items
@@ -536,7 +547,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Pre-warm the embedded format JSON cache on a background thread so that the first
         // "Open Assembly File in Hex Editor" never blocks the UI thread on stream I/O.
-        _ = Task.Run(() => WpfHexEditor.Definitions.EmbeddedFormatCatalog.Instance.PreWarm());
+        _ = Task.Run(() => WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.PreWarm());
 
         // Deferred theme sync: catches editors that the docking system creates lazily
         // (ContentFactory called on first render pass) or via async session restore.
@@ -546,7 +557,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         UpdateTitleBarSearchLabel();
 
         // Register Keyboard Shortcuts options page (needs runtime instances)
-        WpfHexEditor.Options.OptionsPageRegistry.RegisterDynamic(
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "IDE", "Keyboard Shortcuts",
             () => new WpfHexEditor.App.Options.KeyboardShortcutsPage(_commandRegistry, _keyBindingService),
             "⌨");
@@ -554,8 +565,62 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Register Command Palette options page
         InitCommandPaletteOptions();
 
+        // Register Comparison options page
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Editor", "Compare Files",
+            () => new WpfHexEditor.App.Options.ComparisonOptionsPage(
+                AppSettingsService.Instance.Current.Comparison,
+                AppSettingsService.Instance),
+            "\uE8A5");
+
+        // Register Workspace options page
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Environment", "Workspace",
+            () => new WpfHexEditor.App.Options.WorkspaceOptionsPage(),
+            "\uF16A");
+
+        // Register Tab Preview options page
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Environment", "Tab Preview",
+            () => new WpfHexEditor.App.Options.TabPreviewOptionsPage(),
+            "\uE7C4");
+
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
+    }
+
+    private void InitCompareFileLaunchService()
+    {
+        var settings = AppSettingsService.Instance.Current.Comparison;
+        _compareFileLaunchService = new WpfHexEditor.App.Services.CompareFileLaunchService(
+            ownerWindow      : this,
+            documentManager  : _documentManager,
+            settings         : settings,
+            settingsService  : AppSettingsService.Instance,
+            openDiffViewer   : OpenDiffViewerTab,
+            getSolutionFiles : () =>
+                _solutionManager.CurrentSolution?.Projects
+                    .SelectMany(p => p.Items)
+                    .Select(i => i.AbsolutePath)
+                    .Where(p => !string.IsNullOrEmpty(p) && System.IO.File.Exists(p))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList()
+                ?? (IReadOnlyList<string>)Array.Empty<string>());
+    }
+
+    /// <summary>Creates and docks a DiffViewer tab for two file paths.</summary>
+    private void OpenDiffViewerTab(string leftPath, string rightPath)
+    {
+        _documentCounter++;
+        var contentId = $"doc-diff-{_documentCounter}";
+        var viewer    = new WpfHexEditor.Editor.DiffViewer.Controls.DiffViewer();
+        var title     = $"{System.IO.Path.GetFileName(leftPath)} ↔ {System.IO.Path.GetFileName(rightPath)}";
+
+        StoreContent(contentId, viewer);
+        var item = new DockItem { Title = title, ContentId = contentId };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+        _ = viewer.CompareAsync(leftPath, rightPath);
     }
 
     private void InitAutoSerializeTimer()
@@ -692,7 +757,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_ideEventBus is not null)
         {
             var newPath = e.Solution?.FilePath;
-            _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.WorkspaceChangedEvent
+            _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.WorkspaceChangedEvent
             {
                 Source               = "MainWindow",
                 WorkspacePath        = newPath,
@@ -709,6 +774,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 _displayContent.Remove(contentId);
                 _contentCache.Remove(contentId);
+                DockHost.InvalidateContent(contentId);
             }
             _pendingProjectPropertiesContentIds.Clear();
             DockHost.RebuildVisualTree();
@@ -819,7 +885,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
 
-        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemAddedEvent
+        _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.ProjectItemAddedEvent
         {
             Source    = "SolutionManager",
             FilePath  = e.Item.AbsolutePath,
@@ -837,7 +903,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
 
-        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemRemovedEvent
+        _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.ProjectItemRemovedEvent
         {
             Source    = "SolutionManager",
             FilePath  = e.Item.AbsolutePath,
@@ -1209,9 +1275,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _isLocked = false;
         LockMenuItem.IsChecked = false;
 
-        DockHost.ContentFactory    = CreateContentForItem;
-        DockHost.TabCloseRequested += OnTabCloseRequested;
-        DockHost.ActiveItemChanged += OnActiveDocumentChanged;
+        DockHost.ContentFactory             = CreateContentForItem;
+        DockHost.TabExtraMenuItemsFactory   = BuildTabCompareMenuItems;
+        DockHost.TabCloseRequested         += OnTabCloseRequested;
+        DockHost.ActiveItemChanged         += OnActiveDocumentChanged;
         DockHost.Layout = _layout;
 
         // DockHost.Layout creates its own DockEngine internally (OnLayoutChanged).
@@ -1327,6 +1394,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
             _ when item.ContentId.StartsWith("doc-nuget-solution-") => CreateNuGetSolutionManagerContent(item),
             _ when item.ContentId.StartsWith("doc-nuget-")          => CreateNuGetManagerContent(item),
+            _ when item.ContentId.StartsWith("doc-refs-")           => CreateReferenceManagerContent(item),
             _ when item.ContentId.StartsWith("doc-proj-")      => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
@@ -1370,6 +1438,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.PropertiesRequested              += OnSEPropertiesRequested;
         panel.ManageNuGetPackagesRequested         += OnSEManageNuGetPackages;
         panel.ManageSolutionNuGetPackagesRequested += OnSEManageSolutionNuGetPackages;
+        panel.AddReferenceRequested               += OnSEAddReference;
+        panel.RemoveUnusedReferencesRequested      += OnSERemoveUnusedReferences;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         panel.SolutionFolderCreateRequested    += OnSESolutionFolderCreateRequested;
@@ -1489,7 +1559,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // Background file monitor source (always registered — stays empty when no solution)
             _errorPanel.AddSource(_fileMonitorSource);
         }
+        PushOpenDocumentsToErrorPanel();
         return _errorPanel;
+    }
+
+    private void PushOpenDocumentsToErrorPanel()
+    {
+        if (_errorPanel is null) return;
+        var paths = _documentManager.OpenDocuments
+            .Select(d => d.FilePath)
+            .Where(p => !string.IsNullOrEmpty(p))
+            .Cast<string>()
+            .ToList();
+        _errorPanel.SetOpenDocuments(paths);
     }
 
     private void OnErrorEntryNavigation(object? sender, DiagnosticEntry e)
@@ -1656,9 +1738,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (assemblyName is null)
         {
-            OutputLogger.Info(
-                $"[Go to Definition] '{e.SymbolName}' is in an external assembly. " +
-                "Load the assembly in Assembly Explorer to navigate to its decompiled source.");
+            // No metadata URI — symbol is either in-project (workspace scan missed it)
+            // or LSP isn't active. "Load in Assembly Explorer" only applies when we have
+            // an actual external assembly reference.
+            var hint = e.MetadataUri is null
+                ? "Try opening the declaring file directly, or ensure the LSP server is running."
+                : "Load the assembly in Assembly Explorer to navigate to its decompiled source.";
+            OutputLogger.Info($"[Go to Definition] Definition of '{e.SymbolName}' not found. {hint}");
             return;
         }
 
@@ -1682,34 +1768,46 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         try
         {
-            // Analyze + decompile on a background thread.
-            var engine = new AssemblyAnalysisEngine();
-            var model  = await engine.AnalyzeAsync(dllPath).ConfigureAwait(true);
-
-            var emitter    = new CSharpSkeletonEmitter();
-            var targetType = model.Types.FirstOrDefault(t =>
-                string.Equals(t.Name,     typeName ?? e.SymbolName, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(t.FullName, typeName ?? e.SymbolName, StringComparison.OrdinalIgnoreCase));
-
-            var source = targetType is not null
-                ? emitter.EmitType(targetType)
-                : emitter.EmitAssemblyInfo(model);   // fallback: show assembly overview
-
-            // Create a read-only TextEditor tab with the decompiled C# skeleton.
-            var label = targetType?.Name ?? assemblyName;
-            var te    = new WpfHexEditor.Editor.TextEditor.Controls.TextEditor();
-            te.SetContentDirect(source, readOnly: true, languageName: "C#");
-
-            _dockingAdapter!.AddDocumentTab(uiId, te,
-                new DocumentDescriptor { Title = $"{label} (decompiled)", CanClose = true });
-
-            // Scroll to the line that declares the requested symbol.
-            if (targetType is not null)
+            // Try full ILSpy decompilation first (real method bodies).
+            // Fall back to the reflection-based skeleton emitter if ILSpy fails.
+            string source;
+            try
             {
-                int targetLine = FindSymbolLineInSource(source, e.SymbolName);
-                if (targetLine > 0)
-                    te.GoToLine(targetLine);
+                source = await IlSpyTypeDecompiler
+                    .DecompileTypeAsync(dllPath, typeName, System.Threading.CancellationToken.None)
+                    .ConfigureAwait(true);
             }
+            catch
+            {
+                var engine     = new AssemblyAnalysisEngine();
+                var model      = await engine.AnalyzeAsync(dllPath).ConfigureAwait(true);
+                var emitter    = new CSharpSkeletonEmitter();
+                var targetType = model.Types.FirstOrDefault(t =>
+                    string.Equals(t.Name,     typeName ?? e.SymbolName, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(t.FullName, typeName ?? e.SymbolName, StringComparison.OrdinalIgnoreCase));
+                source = targetType is not null
+                    ? emitter.EmitType(targetType)
+                    : emitter.EmitAssemblyInfo(model);
+            }
+
+            // Open a read-only CodeEditor tab (full C# syntax highlighting).
+            var shortType = (typeName ?? assemblyName).Split('.').Last().Split('`')[0];
+            var ce        = new CodeEditorControl();
+            ce.LoadText(source);
+            ce.IsReadOnly = true;
+            ce.Language   = WpfHexEditor.Core.ProjectSystem.Languages.LanguageRegistry.Instance
+                               .FindById("csharp");
+
+            _dockingAdapter!.AddDocumentTab(uiId, ce,
+                new DocumentDescriptor { Title = $"[decompiled] {shortType}", CanClose = true });
+
+            // Navigate to the target line: prefer LSP-supplied line, then symbol scan.
+            int targetLine = e.TargetLine > 0
+                ? e.TargetLine
+                : FindSymbolLineInSource(source, e.SymbolName);
+            if (targetLine > 0 && ce is INavigableDocument nav)
+                Dispatcher.InvokeAsync(() => nav.NavigateTo(targetLine - 1, 0),
+                    System.Windows.Threading.DispatcherPriority.Loaded);
         }
         catch (Exception ex)
         {
@@ -1719,8 +1817,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Parses the assembly name and type name from an OmniSharp / LSP metadata URI.
-    /// Format: omnisharp-metadata:?assembly=System.Console&amp;type=System.Console&amp;...
+    /// Parses the assembly name and type name from an OmniSharp / Roslyn LSP metadata URI.
+    /// Supports two formats:
+    ///   Format A (query-string): omnisharp-metadata:?assembly=System.Console&amp;type=System.Console
+    ///   Format B (path-based):   csharp-metadata://System.Collections.Concurrent/ConcurrentDictionary.cs
     /// Returns (null, null) when the URI is null or cannot be parsed.
     /// </summary>
     private static (string? AssemblyName, string? TypeName) ParseMetadataUri(string? uri)
@@ -1729,28 +1829,37 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         try
         {
+            // Format A: query-string  ?assembly=X&type=Y
             int q = uri.IndexOf('?');
-            if (q < 0) return (null, null);
-
-            string? assemblyName = null, typeName = null;
-
-            foreach (var part in uri.AsSpan(q + 1).ToString().Split('&'))
+            if (q >= 0)
             {
-                int idx = part.IndexOf('=');
-                if (idx < 0) continue;
-
-                var key   = part[..idx];
-                var value = Uri.UnescapeDataString(part[(idx + 1)..]);
-
-                if (key.Equals("assembly", StringComparison.OrdinalIgnoreCase))
-                    assemblyName = value;
-                else if (key.Equals("type", StringComparison.OrdinalIgnoreCase))
-                    typeName = value;
+                string? asm = null, type = null;
+                foreach (var part in uri[(q + 1)..].Split('&'))
+                {
+                    int eq = part.IndexOf('=');
+                    if (eq < 0) continue;
+                    var key = part[..eq];
+                    var val = Uri.UnescapeDataString(part[(eq + 1)..]);
+                    if (key.Equals("assembly", StringComparison.OrdinalIgnoreCase)) asm  = val;
+                    if (key.Equals("type",     StringComparison.OrdinalIgnoreCase)) type = val;
+                }
+                if (asm is not null) return (asm, type);
             }
 
-            return (assemblyName, typeName);
+            // Format B: path-based  csharp-metadata://AssemblyName/TypeName.cs
+            if (Uri.TryCreate(uri, UriKind.Absolute, out var parsed))
+            {
+                var asmFromHost = parsed.Host is { Length: > 0 } h ? Uri.UnescapeDataString(h) : null;
+                var segments    = parsed.AbsolutePath.Trim('/').Split('/');
+                var asmFromPath = segments.Length > 0 ? Uri.UnescapeDataString(segments[0]) : null;
+                var typeRaw     = segments.Length > 1 ? Uri.UnescapeDataString(segments[1]) : null;
+                var type        = typeRaw is not null ? Path.GetFileNameWithoutExtension(typeRaw) : null;
+                var asm         = asmFromHost ?? asmFromPath;
+                if (!string.IsNullOrEmpty(asm)) return (asm, type);
+            }
         }
-        catch { return (null, null); }
+        catch { /* fall through */ }
+        return (null, null);
     }
 
     /// <summary>
@@ -1773,7 +1882,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (File.Exists(runtimePath)) return runtimePath;
         }
 
-        // 3. NuGet package cache — first match under %USERPROFILE%\.nuget\packages.
+        // 3. .NET shared runtime (covers BCL facade assemblies not in the runtime dir).
+        var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT")
+            ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet");
+        foreach (var flavor in new[] { "Microsoft.NETCore.App", "Microsoft.WindowsDesktop.App" })
+        {
+            var shared = Path.Combine(dotnetRoot, "shared", flavor);
+            if (!Directory.Exists(shared)) continue;
+            var latest = Directory.EnumerateDirectories(shared)
+                .OrderByDescending(d => d, StringComparer.OrdinalIgnoreCase).FirstOrDefault();
+            if (latest is null) continue;
+            var candidate = Path.Combine(latest, assemblyName + ".dll");
+            if (File.Exists(candidate)) return candidate;
+        }
+
+        // 4. NuGet package cache — first match under %USERPROFILE%\.nuget\packages.
         var nugetCache = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             ".nuget", "packages");
@@ -1878,6 +2001,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         hexEditor.ShowStatusBar       = false;
         hexEditor.ShowProgressOverlay = false;  // App handles progress in its own status bar
 
+        // Wire Compare-file context menu events → CompareFileLaunchService
+        hexEditor.CompareFileRequested += (_, e) =>
+            _ = _compareFileLaunchService?.LaunchAsync(e.FilePath) ?? Task.CompletedTask;
+        hexEditor.CompareSelectionRequested += (_, e) =>
+        {
+            if (e.IsTempFile && e.FilePath is not null)
+                _compareFileLaunchService?.TrackTempFile(e.FilePath);
+            _ = _compareFileLaunchService?.LaunchAsync(e.FilePath) ?? Task.CompletedTask;
+        };
+
         // -- Phase 12: in-memory new document --------------------------
         if (isNewFile)
         {
@@ -1911,39 +2044,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     hexEditor.LoadFormatDefinition(fmtItem.AbsolutePath);
             }
 
-            try
-            {
-                hexEditor.OpenFile(filePath);
-                ApplyDefaultTbl(hexEditor, project);
+            // OpenFile is fire-and-forget async — exceptions surface via StatusText inside OpenFileCoreAsync.
+            hexEditor.OpenFile(filePath);
+            ApplyDefaultTbl(hexEditor, project);
 
-                // Apply theme eagerly before the editor enters the visual tree.
-                // The Loaded event fires asynchronously (next dispatcher pass), so without
-                // this call the docking system may render one frame with default light colors.
-                hexEditor.ApplyThemeFromResources();
+            // Apply theme eagerly before the editor enters the visual tree.
+            // The Loaded event fires asynchronously (next dispatcher pass), so without
+            // this call the docking system may render one frame with default light colors.
+            hexEditor.ApplyThemeFromResources();
 
-                OutputLogger.Info($"Opened: {filePath}");
-                return hexEditor;
-            }
-            catch (IOException ex)
-            {
-                var msg = $"Cannot open '{Path.GetFileName(filePath)}': {ex.Message}";
-                OutputLogger.Error(msg);
-                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-                if (ownerItem is not null)
-                    Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
-                                           System.Windows.Threading.DispatcherPriority.Background);
-                return MakeErrorBlock(msg);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                var msg = $"Access denied '{Path.GetFileName(filePath)}': {ex.Message}";
-                OutputLogger.Error(msg);
-                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-                if (ownerItem is not null)
-                    Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
-                                           System.Windows.Threading.DispatcherPriority.Background);
-                return MakeErrorBlock(msg);
-            }
+            OutputLogger.Info($"Opened: {filePath}");
+            return hexEditor;
         }
 
         OutputLogger.Error($"File not found: {filePath}");
@@ -2056,7 +2167,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
                 // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
                 if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
-                    _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileOpenedEvent
+                    _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.FileOpenedEvent
                     {
                         Source        = "MainWindow",
                         FilePath      = filePath,
@@ -2226,9 +2337,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 splitHost.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
             }
 
+            // Wire breakpoint gutter adapter so the gutter can render breakpoints immediately.
+            WireBreakpointSourceToEditor(editor);
+
             // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
             if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
-                _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileOpenedEvent
+                _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.FileOpenedEvent
                 {
                     Source        = "MainWindow",
                     FilePath      = filePath,
@@ -2609,11 +2723,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSEAddNewItem(object? sender, AddItemRequestedEventArgs e)
     {
-        var dlg = new AddNewItemDialog(e.Project) { Owner = this };
+        var defaultDir = System.IO.Path.GetDirectoryName(e.Project.ProjectFilePath);
+        var dlg = new NewFileDialog(
+            defaultDirectory:   defaultDir,
+            availableProjects:  _solutionManager.CurrentSolution?.Projects,
+            preSelectedProject: e.Project,
+            preSelectedFolder:  e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedTemplate is null) return;
 
         _ = _solutionManager.CreateItemAsync(
-            e.Project,
+            dlg.TargetProject ?? e.Project,
             dlg.FileName,
             ProjectItemTypeHelper.FromExtension(Path.GetExtension(dlg.FileName)),
             virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId,
@@ -2899,7 +3018,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var entry in WpfHexEditor.Definitions.EmbeddedFormatCatalog.Instance.GetAll())
+            foreach (var entry in WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetAll())
             {
                 if (string.IsNullOrWhiteSpace(entry.Platform)) continue;
 
@@ -3297,7 +3416,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_contentCache.TryGetValue(contentId, out var ctrl) && ctrl is HexEditorControl hex)
             hex.OpenFile(e.Item.AbsolutePath);
 
-        _ideEventBus?.Publish(new WpfHexEditor.Events.IDEEvents.ProjectItemRenamedEvent
+        _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.ProjectItemRenamedEvent
         {
             Source    = "SolutionManager",
             OldPath   = e.OldAbsolutePath,
@@ -4202,6 +4321,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     ActiveHexEditor      = null;
                     // RefreshText.Text  = ""; // Removed - handled via StatusBarContributor
                 }
+                // Unregister BEFORE Close() so that TitleChanged("Untitled") fired by
+                // FileName="" in Close() has no DocumentModel subscriber still active.
+                UnregisterDocument(item.ContentId);
                 hex.Close();   // Release the underlying FileStream immediately
             }
 
@@ -4227,7 +4349,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 item.Metadata.TryGetValue("FilePath", out var closedFilePath) &&
                 !string.IsNullOrEmpty(closedFilePath))
             {
-                _ideEventBus.Publish(new WpfHexEditor.Events.IDEEvents.FileClosedEvent
+                _ideEventBus.Publish(new WpfHexEditor.Core.Events.IDEEvents.FileClosedEvent
                 {
                     Source   = "MainWindow",
                     FilePath = closedFilePath,
@@ -4235,7 +4357,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
 
             _propertyProviderCache.Remove(ctrl);  // M5: evict cached provider
-            UnregisterDocument(item.ContentId);
+            if (ctrl is not HexEditorControl)
+                UnregisterDocument(item.ContentId);  // already called above for HexEditorControl
+            PushOpenDocumentsToErrorPanel();
             _contentCache.Remove(item.ContentId);
             _displayContent.Remove(item.ContentId);   // must clear both caches so reopen gets a fresh editor
         }
@@ -5080,6 +5204,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Copies <see cref="TabPreviewAppSettings"/> values from <see cref="AppSettings"/> into
+    /// <see cref="WpfHexEditor.Shell.Controls.TabPreviewSettings"/> on <see cref="DockHost"/>
+    /// and triggers a live refresh of all open tab-hover popups.
+    /// </summary>
+    private void ApplyTabPreviewSettings()
+    {
+        var s = AppSettingsService.Instance.Current.TabPreview;
+        DockHost.TabPreviewSettings.Enabled       = s.Enabled;
+        DockHost.TabPreviewSettings.ShowFileName  = s.ShowFileName;
+        DockHost.TabPreviewSettings.PreviewWidth  = s.PreviewWidth;
+        DockHost.TabPreviewSettings.PreviewHeight = s.PreviewHeight;
+        DockHost.TabPreviewSettings.OpenDelayMs   = s.OpenDelayMs;
+        DockHost.TabPreviewSettings.CloseDelayMs  = s.CloseDelayMs;
+        DockHost.RefreshTabPreviewSettings();
+    }
+
+    /// <summary>
     /// Applies per-editor-type user settings (scroll speed, etc.) to a newly created editor.
     /// Called once per editor instance from <see cref="CreateSmartFileEditorContent"/>.
     /// </summary>
@@ -5099,6 +5240,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 ce.InlineHintsVisibleKinds = settings.CodeEditorDefaults.InlineHintsVisibleKinds == 0
                     ? WpfHexEditor.Editor.Core.InlineHintsSymbolKinds.All
                     : (WpfHexEditor.Editor.Core.InlineHintsSymbolKinds)settings.CodeEditorDefaults.InlineHintsVisibleKinds;
+                ce.ShowEndOfBlockHint    = settings.CodeEditorDefaults.EndOfBlockHintEnabled;
+                ce.EndOfBlockHintDelayMs = settings.CodeEditorDefaults.EndOfBlockHintDelayMs;
                 ApplySyntaxColorOverrides(ce, settings.CodeEditorDefaults);
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
@@ -5203,11 +5346,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_solutionManager.CurrentSolution?.Projects.FirstOrDefault() is not { } project) return;
 
-        var dlg = new AddNewItemDialog(project) { Owner = this };
+        var defaultDir = System.IO.Path.GetDirectoryName(project.ProjectFilePath);
+        var dlg = new NewFileDialog(
+            defaultDirectory:  defaultDir,
+            availableProjects: _solutionManager.CurrentSolution?.Projects,
+            preSelectedProject: project) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedTemplate is null) return;
 
         _ = _solutionManager.CreateItemAsync(
-            project,
+            dlg.TargetProject ?? project,
             dlg.FileName,
             ProjectItemTypeHelper.FromExtension(Path.GetExtension(dlg.FileName)),
             virtualFolderId: dlg.TargetFolderId,
@@ -5296,7 +5443,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _projectPropertiesMap[item.ContentId] = project;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.ProjectPropertiesViewModel(
             project, _solutionManager);
 
         // Update the tab title with a '*' prefix whenever unsaved changes exist.
@@ -5318,7 +5465,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Open NuGet Manager when the user clicks "+ NuGet…" inside Project Properties.
         vm.ManageNuGetRequested += (_, e) => OpenNuGetManagerDocument(e.Project);
 
-        return new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.ProjectPropertiesDocument
         {
             DataContext = vm
         };
@@ -5381,9 +5528,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _nugetManagerMap[item.ContentId] = project;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetManagerViewModel(
             project,
-            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+            new WpfHexEditor.Core.ProjectSystem.Services.NuGet.NuGetV3Client());
 
         // Reload project after any .csproj write-back to keep the Solution Explorer in sync.
         vm.ProjectModified += (_, _) =>
@@ -5393,7 +5540,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _solutionExplorerPanel?.SetSolution(sol);
         };
 
-        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetManagerDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetManagerDocument
         {
             DataContext = vm
         };
@@ -5453,9 +5600,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _nugetSolutionManagerMap[item.ContentId] = solution;
         }
 
-        var vm = new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetSolutionManagerViewModel(
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetSolutionManagerViewModel(
             solution,
-            new WpfHexEditor.ProjectSystem.Services.NuGet.NuGetV3Client());
+            new WpfHexEditor.Core.ProjectSystem.Services.NuGet.NuGetV3Client());
 
         // Reload solution tree after any .csproj write-back to keep the Solution Explorer in sync.
         vm.SolutionModified += (_, _) =>
@@ -5465,7 +5612,91 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _solutionExplorerPanel?.SetSolution(sol);
         };
 
-        return new WpfHexEditor.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument
+        return new WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument
+        {
+            DataContext = vm
+        };
+    }
+
+    // ── Reference Manager ────────────────────────────────────────────────────
+
+    private void OnSEAddReference(object? sender, AddReferenceRequestedEventArgs e)
+    {
+        if (e.Project is null) return;
+        OpenReferenceManagerDocument(e.Project);
+    }
+
+    private void OnSERemoveUnusedReferences(object? sender, RemoveUnusedReferencesRequestedEventArgs e)
+    {
+        if (e.Project is null) return;
+        OpenReferenceManagerDocument(e.Project);
+    }
+
+    /// <summary>
+    /// Opens (or activates) the Reference Manager document tab for the given project.
+    /// Uses contentId "doc-refs-{Name}" for deduplication.
+    /// </summary>
+    private void OpenReferenceManagerDocument(IProject project)
+    {
+        var contentId = $"doc-refs-{project.Name}";
+
+        // Dedup: activate existing tab if already open.
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        _refManagerMap[contentId] = project;
+
+        var item = new DockItem
+        {
+            Title     = $"References — {project.Name}",
+            ContentId = contentId,
+            Metadata  = { ["ProjectName"] = project.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-refs-*" items.
+    /// Creates the <see cref="WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerDocument"/>
+    /// backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateReferenceManagerContent(DockItem item)
+    {
+        if (!_refManagerMap.TryGetValue(item.ContentId, out var project))
+        {
+            var name = item.ContentId["doc-refs-".Length..];
+            project = _solutionManager.CurrentSolution?.Projects
+                          .FirstOrDefault(p => p.Name == name);
+
+            if (project is null)
+                return new System.Windows.Controls.TextBlock { Text = "Project not found." };
+
+            _refManagerMap[item.ContentId] = project;
+        }
+
+        var vm = new WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerViewModel(
+            project,
+            _solutionManager.CurrentSolution);
+
+        vm.ProjectModified += (_, _) =>
+        {
+            var sol = _solutionManager.CurrentSolution;
+            if (sol is not null)
+                _solutionExplorerPanel?.SetSolution(sol);
+        };
+
+        return new WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerDocument
         {
             DataContext = vm
         };
@@ -5565,23 +5796,85 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         => ShowOrCreatePanel("Properties", "panel-properties", DockDirection.Right);
 
     private void OnCompareFiles(object sender, RoutedEventArgs e)
+        => _ = (_compareFileLaunchService?.LaunchAsync() ?? Task.CompletedTask);
+
+    /// <summary>
+    /// Builds the extra "Compare with…" context menu items injected into every document tab.
+    /// </summary>
+    private IReadOnlyList<System.Windows.Controls.MenuItem> BuildTabCompareMenuItems(DockItem item)
     {
-        var dlgLeft = new OpenFileDialog { Title = "Select LEFT file for comparison", Multiselect = false };
-        if (dlgLeft.ShowDialog() != true) return;
+        if (!item.Metadata.TryGetValue("FilePath", out var filePath) ||
+            string.IsNullOrEmpty(filePath))
+            return [];
 
-        var dlgRight = new OpenFileDialog { Title = "Select RIGHT file for comparison", Multiselect = false };
-        if (dlgRight.ShowDialog() != true) return;
+        var compareWithActive = new System.Windows.Controls.MenuItem
+        {
+            Header = "Compare with Active Editor",
+            Icon   = new System.Windows.Controls.TextBlock
+            {
+                Text       = "\uE8A5",
+                FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
+                FontSize   = 12
+            }
+        };
+        compareWithActive.Click += (_, _) => _ = (_compareFileLaunchService?.LaunchWithLeftAsync(filePath) ?? Task.CompletedTask);
 
-        _documentCounter++;
-        var contentId = $"doc-diff-{_documentCounter}";
-        var viewer    = new WpfHexEditor.Editor.DiffViewer.Controls.DiffViewer();
-        var title     = $"{Path.GetFileName(dlgLeft.FileName)} ↔ {Path.GetFileName(dlgRight.FileName)}";
+        var compareWithAnother = new System.Windows.Controls.MenuItem
+        {
+            Header = "Compare with Another File…",
+            Icon   = new System.Windows.Controls.TextBlock
+            {
+                Text       = "\uE8B7",
+                FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
+                FontSize   = 12
+            }
+        };
+        compareWithAnother.Click += (_, _) => _ = (_compareFileLaunchService?.LaunchAsync(filePath) ?? Task.CompletedTask);
 
-        StoreContent(contentId, viewer);
-        var item = new DockItem { Title = title, ContentId = contentId };
-        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-        DockHost.RebuildVisualTree();
-        _ = viewer.CompareAsync(dlgLeft.FileName, dlgRight.FileName);
+        return [compareWithActive, compareWithAnother];
+    }
+
+    private void LaunchCompareWithClipboard()
+    {
+        var clipText = Clipboard.GetText();
+        if (string.IsNullOrEmpty(clipText)) return;
+
+        // Write clipboard content to a temp file then launch
+        var tmp = System.IO.Path.Combine(
+            System.IO.Path.GetTempPath(), "WpfHexEditor",
+            $"clipboard_{DateTime.UtcNow:yyyyMMdd_HHmmss}.txt");
+        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(tmp)!);
+        System.IO.File.WriteAllText(tmp, clipText);
+        _compareFileLaunchService?.TrackTempFile(tmp);
+
+        var activePath = _documentManager.ActiveDocument?.FilePath;
+        _ = _compareFileLaunchService?.LaunchAsync(activePath, tmp);
+    }
+
+    private async Task LaunchCompareWithHeadAsync()
+    {
+        var activePath = _documentManager.ActiveDocument?.FilePath;
+        if (string.IsNullOrEmpty(activePath)) return;
+
+        var git = new WpfHexEditor.Core.Diff.Services.GitDiffService();
+        var repoRoot = git.GetRepoRoot(activePath);
+        if (repoRoot is null)
+        {
+            MessageBox.Show("No git repository found for this file.", "Compare with HEAD",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var tempPath = await git.ExtractRefVersionAsync(repoRoot, "HEAD", activePath);
+        if (tempPath is null)
+        {
+            MessageBox.Show("Could not extract HEAD version from git.", "Compare with HEAD",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        _compareFileLaunchService?.TrackTempFile(tempPath);
+        _ = _compareFileLaunchService?.LaunchAsync(tempPath, activePath);
     }
 
     private void OnEntropyAnalysis(object sender, RoutedEventArgs e)

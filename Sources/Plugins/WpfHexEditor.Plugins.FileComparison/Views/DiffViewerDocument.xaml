@@ -1,0 +1,243 @@
+<UserControl x:Class="WpfHexEditor.Plugins.FileComparison.Views.DiffViewerDocument"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.FileComparison.ViewModels"
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:KindToBrushConverter      x:Key="KindToBrush"/>
+
+        <!-- ── DiffLineRow row template (shared by both panes) ── -->
+        <DataTemplate x:Key="DiffRowTemplate" DataType="{x:Type vm:DiffLineRow}">
+            <Grid Height="18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="44"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Line number gutter -->
+                <Border Grid.Column="0"
+                        Background="{DynamicResource DF_GutterBackgroundBrush}">
+                    <TextBlock Text="{Binding LineNumber}"
+                               FontFamily="Consolas" FontSize="11"
+                               HorizontalAlignment="Right" Padding="0,1,4,0"
+                               Foreground="{DynamicResource DF_LineNumberForegroundBrush}"/>
+                </Border>
+
+                <!-- Content area — background tinted by Kind via converter -->
+                <Border Grid.Column="1"
+                        Background="{Binding Kind, Converter={StaticResource KindToBrush}}"
+                        Padding="4,0">
+                    <!-- Word-level segments -->
+                    <ItemsControl ItemsSource="{Binding Segments}" Focusable="False">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:DiffWordSegment}">
+                                <TextBlock Text="{Binding Text}"
+                                           FontFamily="Consolas" FontSize="11"
+                                           VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsChanged}" Value="True">
+                                                    <Setter Property="Background"
+                                                            Value="{DynamicResource DF_WordModifiedBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Row 0: Stats toolbar ── -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource DockTabBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel Margin="8,3">
+
+                <!-- Left: navigation + view toggle -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
+                            Width="Auto" Padding="6,2" Margin="0,0,2,0"
+                            Command="{Binding PrevDiffCommand}"
+                            ToolTip="Previous difference (Alt+Up)">
+                        <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                    </Button>
+                    <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
+                            Width="Auto" Padding="6,2" Margin="0,0,6,0"
+                            Command="{Binding NextDiffCommand}"
+                            ToolTip="Next difference (Alt+Down)">
+                        <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                    </Button>
+                    <TextBlock Text="{Binding DiffBlockCount, StringFormat='{}0/{0}'}"
+                               FontSize="11" Opacity="0.6" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Separator Width="1" Height="16"
+                               Background="{DynamicResource DockBorderBrush}" Margin="0,0,8,0"/>
+                    <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
+                                  Width="Auto" Padding="6,2"
+                                  IsChecked="{Binding IsSideBySide}"
+                                  ToolTip="Side by side / Unified">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="11" Margin="0,0,4,0"/>
+                            <TextBlock Text="Side by side" FontSize="11"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+
+                <!-- Right: stats pills -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                            VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <Border Background="{DynamicResource DF_ModifiedLineBrush}"
+                            CornerRadius="3" Padding="6,1" Margin="2,0">
+                        <TextBlock FontSize="11">
+                            <Run Text="&#x2260; "/><Run Text="{Binding ModifiedCount, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="{DynamicResource DF_InsertedLineBrush}"
+                            CornerRadius="3" Padding="6,1" Margin="2,0">
+                        <TextBlock FontSize="11">
+                            <Run Text="+ "/><Run Text="{Binding AddedCount, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="{DynamicResource DF_DeletedLineBrush}"
+                            CornerRadius="3" Padding="6,1" Margin="2,0">
+                        <TextBlock FontSize="11">
+                            <Run Text="&#x2212; "/><Run Text="{Binding RemovedCount, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                    <TextBlock Text="{Binding SimilarityText}"
+                               FontSize="11" Opacity="0.6"
+                               VerticalAlignment="Center" Margin="6,0,4,0"/>
+                    <Border Background="{DynamicResource DockAccentBrush}"
+                            CornerRadius="3" Padding="5,1" Margin="2,0,0,0">
+                        <TextBlock Text="{Binding EffectiveModeText}"
+                                   Foreground="White" FontSize="9"/>
+                    </Border>
+                </StackPanel>
+
+                <Grid/>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Row 1: File headers ── -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0"
+                    Background="{DynamicResource DF_HeaderBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,0,0,1"
+                    Padding="8,4">
+                <StackPanel>
+                    <TextBlock Text="{Binding LeftFileName}" FontWeight="SemiBold" FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    <TextBlock Text="{Binding LeftPath}" FontSize="10" Opacity="0.6"
+                               TextTrimming="CharacterEllipsis" ToolTip="{Binding LeftPath}"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2"
+                    Background="{DynamicResource DF_HeaderBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,0,0,1"
+                    Padding="8,4">
+                <StackPanel>
+                    <TextBlock Text="{Binding RightFileName}" FontWeight="SemiBold" FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    <TextBlock Text="{Binding RightPath}" FontSize="10" Opacity="0.6"
+                               TextTrimming="CharacterEllipsis" ToolTip="{Binding RightPath}"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ── Row 2: Content area ── -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left pane -->
+            <ScrollViewer x:Name="LeftScroll" Grid.Column="0"
+                          ScrollChanged="OnLeftScrollChanged"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Hidden">
+                <ItemsControl x:Name="LeftList"
+                              ItemsSource="{Binding LeftRows}"
+                              ItemTemplate="{StaticResource DiffRowTemplate}"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              Focusable="False">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><VirtualizingStackPanel/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="4"
+                          Background="{DynamicResource DockSplitterBrush}"
+                          HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
+
+            <!-- Right pane -->
+            <ScrollViewer x:Name="RightScroll" Grid.Column="2"
+                          ScrollChanged="OnRightScrollChanged"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="RightList"
+                              ItemsSource="{Binding RightRows}"
+                              ItemTemplate="{StaticResource DiffRowTemplate}"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              Focusable="False">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><VirtualizingStackPanel/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Overview ruler -->
+            <Canvas x:Name="OverviewRuler" Grid.Column="3"
+                    Background="{DynamicResource DF_OverviewRulerBackgroundBrush}"
+                    MouseLeftButtonDown="OnRulerClicked"
+                    Cursor="Hand"
+                    SizeChanged="OnRulerSizeChanged"/>
+        </Grid>
+
+        <!-- ── Row 3: Status bar ── -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource DockStatusBarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockSplitterBrush}" BorderThickness="0,1,0,0">
+            <TextBlock x:Name="StatusBar" Padding="8,2" FontSize="11"
+                       TextTrimming="CharacterEllipsis"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        </Border>
+
+    </Grid>
+</UserControl>

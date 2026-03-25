@@ -32,6 +32,7 @@ public sealed class CSharpDecompilationLanguage : IDecompilationLanguage
     public string  DisplayName        => "C#";
     public string  FileExtension      => ".cs";
     public string? EditorLanguageName => "C#";
+    public string  GlyphCode          => "\uE943"; // Segoe MDL2 "Code"
 
     /// <inheritdoc/>
     /// <remarks>Identity transform — returns the input unchanged, synchronously.</remarks>

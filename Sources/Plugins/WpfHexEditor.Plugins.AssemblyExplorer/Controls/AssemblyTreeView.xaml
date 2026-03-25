@@ -264,17 +264,19 @@
 
             <Separator/>
 
-            <MenuItem IsEnabled="False" Header="Go to Definition"
-                      ToolTip="Coming in a future release"
-                      Foreground="{DynamicResource DockMenuForegroundBrush}">
+            <MenuItem x:Name="MenuGoToDefinition"
+                      Header="Go to Definition"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Click="OnGoToDefinition">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuDecompile" Header="Decompile to C#"
-                      Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      Click="OnDecompile">
+            <!-- Submenu items are built dynamically in RebuildDecompileSubmenu (ADR-ASM-03) -->
+            <MenuItem x:Name="MenuDecompile"
+                      Header="Decompile to…"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
@@ -289,9 +291,10 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem IsEnabled="False" Header="Show in Metadata Tables"
-                      ToolTip="Coming in a future release"
-                      Foreground="{DynamicResource DockMenuForegroundBrush}">
+            <MenuItem x:Name="MenuShowInMetadata"
+                      Header="Show in Metadata Tables"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Click="OnShowInMetadataTables">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
@@ -299,17 +302,19 @@
 
             <Separator/>
 
-            <MenuItem IsEnabled="False" Header="Export IL"
-                      ToolTip="Coming in a future release"
-                      Foreground="{DynamicResource DockMenuForegroundBrush}">
+            <MenuItem x:Name="MenuExportIL"
+                      Header="Export IL"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Click="OnExportIL">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem IsEnabled="False" Header="Export C#"
-                      ToolTip="Coming in a future release"
-                      Foreground="{DynamicResource DockMenuForegroundBrush}">
+            <MenuItem x:Name="MenuExportCSharp"
+                      Header="Export C#"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Click="OnExportCSharp">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>

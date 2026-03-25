@@ -16,8 +16,8 @@
 //     failed activation cannot crash others.
 // ==========================================================
 
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 
 namespace WpfHexEditor.PluginHost.Services;
 

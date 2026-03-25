@@ -26,7 +26,7 @@ public sealed class CropImageTransform : IImageTransform
 
     public CropImageTransform(Int32Rect rect) => Rect = rect;
 
-    public string Name => $"Crop ({Rect.X},{Rect.Y}) {Rect.Width}×{Rect.Height}";
+    public string Name => $"Crop ({Rect.X},{Rect.Y}) {Rect.Width}Ã—{Rect.Height}";
 
     public BitmapSource Apply(BitmapSource source)
     {

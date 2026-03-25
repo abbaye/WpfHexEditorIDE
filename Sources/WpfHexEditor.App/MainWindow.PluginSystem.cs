@@ -29,16 +29,16 @@ using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
-using WpfHexEditor.Events;
-using WpfHexEditor.Events.IDEEvents;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.PluginHost;
 using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.PluginHost.UI.Options;
-using WpfHexEditor.Options;
-using WpfHexEditor.BuildSystem;
+using WpfHexEditor.Core.Options;
+using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.Terminal;
@@ -55,6 +55,8 @@ public partial class MainWindow
     private DocumentHostService? _documentHostService;
     private WpfHexEditor.App.Services.LspDocumentBridgeService? _lspBridgeService;
     private WpfHexEditor.App.Services.LspStatusBarAdapter?      _lspStatusBarAdapter;
+    private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
+    private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -139,7 +141,7 @@ public partial class MainWindow
 
             // LSP server registry — best-effort: failures must not block IDE startup.
             WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? lspRegistry = null;
-            try { lspRegistry = new WpfHexEditor.LSP.Client.Services.LspServerRegistry(Dispatcher); }
+            try { lspRegistry = new WpfHexEditor.Core.LSP.Client.Services.LspServerRegistry(Dispatcher); }
             catch (Exception ex) { OutputLogger.PluginError($"[LSP] Registry init failed: {ex.Message}"); }
 
             // LSP-4: Options page for LSP server configuration.
@@ -164,6 +166,31 @@ public partial class MainWindow
                     onErrorClick: () => OpenSettingsAt("Language Server Protocol", "Servers"));
             }
 
+            // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.
+            _debuggerService = new WpfHexEditor.App.Services.DebuggerServiceImpl(
+                _ideEventBus,
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
+
+            // Scripting service — best-effort: depends on Roslyn (Core.Scripting); must not block IDE startup.
+            // Pattern: same as LSP registry (lines above) — failure is logged, service stays null.
+            try
+            {
+                _scriptingService = new WpfHexEditor.App.Services.ScriptingServiceImpl(
+                    _hexEditorService,
+                    _documentHostService,
+                    _outputService);
+            }
+            catch (Exception ex)
+            {
+                OutputLogger.PluginError($"[Scripting] Service init failed: {ex.Message}");
+                // _scriptingService stays null → IDEHostContext.Scripting = null (declared nullable).
+            }
+
+            // Workspace system — must be initialised before IDEHostContext so
+            // _workspaceServiceImpl can be passed as the workspaceService argument.
+            try { InitializeWorkspaceSystem(); }
+            catch (Exception ex) { OutputLogger.PluginError($"[Workspace] Init failed: {ex.Message}"); }
+
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
                 solutionExplorer:    solutionService,
@@ -182,13 +209,52 @@ public partial class MainWindow
                 capabilityRegistry:  capabilityAdapter,
                 extensionRegistry:   extensionRegistry,
                 solutionManager:     _solutionManager,
-                commandRegistry:     new WpfHexEditor.PluginHost.SdkCommandRegistryAdapter(_commandRegistry))
+                commandRegistry:     new WpfHexEditor.PluginHost.SdkCommandRegistryAdapter(_commandRegistry),
+                debuggerService:     _debuggerService,
+                scriptingService:    _scriptingService,
+                buildSystem:         _buildSystem,
+                workspaceService:    _workspaceServiceImpl)
             {
                 LspServers = lspRegistry
             };
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;
+
+            // Wire the terminal panel DataContext NOW — before plugin loading begins.
+            // This MUST NOT be deferred to the end of InitializePluginSystemAsync because
+            // any plugin exception would skip the deferred block and leave the panel with
+            // null DataContext (no sessions visible, commands silently ignored).
+            if (_pendingTerminalPanel is not null)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    // Inner try/catch: if TerminalPanelViewModel throws (e.g. HxScriptEngine issue),
+                    // log and continue — do NOT propagate through the await to the outer catch at
+                    // line ~407 which would abort all remaining plugin loading.
+                    try
+                    {
+                        if (_pendingTerminalPanel is null) return;
+                        var termVm = new TerminalPanelViewModel(_ideHostContext);
+                        _terminalService?.SetOutput(termVm.GetActiveOutput());
+                        _terminalService?.SetSessionManager(termVm.SessionManager);
+                        // Keep terminal service in sync whenever the active tab changes.
+                        termVm.PropertyChanged += (_, e) =>
+                        {
+                            if (e.PropertyName == nameof(TerminalPanelViewModel.ActiveSession))
+                                _terminalService?.SetOutput(termVm.GetActiveOutput());
+                        };
+                        _pendingTerminalPanel.DataContext = termVm;
+                        _pendingTerminalPanel = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        OutputLogger.PluginError($"[Terminal] ViewModel init failed: {ex.Message}");
+                    }
+                });
+            }
+
+            InitDebugIntegration();
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher,
                 logger:      msg => OutputLogger.PluginInfo(msg),
                 errorLogger: msg => OutputLogger.PluginError(msg));
@@ -295,17 +361,10 @@ public partial class MainWindow
 
             // Wire up panels that were restored from a saved layout before the plugin
             // system was ready (DataContext was null at construction time).
+            // NOTE: _pendingTerminalPanel is already wired earlier (right after _ideHostContext
+            // is assigned) so that it survives any plugin-loading exception.
             await Dispatcher.InvokeAsync(() =>
             {
-                if (_pendingTerminalPanel is not null)
-                {
-                    var vm = new TerminalPanelViewModel(hostContext);
-                    _terminalService?.SetOutput(vm.GetActiveOutput());
-                    _terminalService?.SetSessionManager(vm.SessionManager);
-                    _pendingTerminalPanel.DataContext = vm;
-                    _pendingTerminalPanel = null;
-                }
-
                 if (_pendingPluginMonitorPanel is not null && _pluginHost is not null)
                 {
                     var vm = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
@@ -875,8 +934,14 @@ public partial class MainWindow
         _pluginHost = null;
         _lspStatusBarAdapter?.Dispose();
         _lspStatusBarAdapter = null;
+        ShutdownDebugIntegration();
         _lspBridgeService?.Dispose();
         _lspBridgeService = null;
+        if (_debuggerService is not null)
+        {
+            await _debuggerService.DisposeAsync().ConfigureAwait(false);
+            _debuggerService = null;
+        }
         _ideEventBus?.Dispose();
         _ideEventBus = null;
         if (_serviceProvider is IAsyncDisposable asyncDisposable)
@@ -969,6 +1034,16 @@ public partial class MainWindow
         reg.Register(typeof(ProjectItemAddedEvent),   "Project Item Added",   "SolutionManager");
         reg.Register(typeof(ProjectItemRemovedEvent), "Project Item Removed", "SolutionManager");
         reg.Register(typeof(ProjectItemRenamedEvent), "Project Item Renamed", "SolutionManager");
+
+        // --- Debugger ---
+        reg.Register(typeof(DebugSessionStartedEvent),   "Debug Session Started",   "Debugger");
+        reg.Register(typeof(DebugSessionEndedEvent),     "Debug Session Ended",     "Debugger");
+        reg.Register(typeof(DebugSessionPausedEvent),    "Debug Session Paused",    "Debugger");
+        reg.Register(typeof(DebugSessionResumedEvent),   "Debug Session Resumed",   "Debugger");
+        reg.Register(typeof(BreakpointHitEvent),         "Breakpoint Hit",          "Debugger");
+        reg.Register(typeof(StepCompletedEvent),         "Step Completed",          "Debugger");
+        reg.Register(typeof(DebugOutputReceivedEvent),   "Debug Output Received",   "Debugger");
+        reg.Register(typeof(ExceptionHitEvent),          "Exception Hit",           "Debugger");
     }
 
     // --- Minimal helpers ------------------------------------------------

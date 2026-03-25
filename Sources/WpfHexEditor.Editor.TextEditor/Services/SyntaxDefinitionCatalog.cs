@@ -5,7 +5,7 @@
 //////////////////////////////////////////////
 
 using System.IO;
-using WpfHexEditor.Definitions;
+using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 
 namespace WpfHexEditor.Editor.TextEditor.Services;

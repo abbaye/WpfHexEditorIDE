@@ -36,6 +36,7 @@
                     <ComboBoxItem Content="Plugin System" />
                     <ComboBoxItem Content="Build" />
                     <ComboBoxItem Content="Debug" />
+                    <ComboBoxItem Content="Unit Testing" />
                 </ComboBox>
                 <Button Content="&#xD7;"
                         ToolTip="Clear All"

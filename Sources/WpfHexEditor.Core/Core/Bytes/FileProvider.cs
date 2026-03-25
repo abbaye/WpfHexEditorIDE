@@ -84,9 +84,21 @@ namespace WpfHexEditor.Core.Bytes
             IsReadOnly = readOnly;
 
             var fileAccess = readOnly ? FileAccess.Read : FileAccess.ReadWrite;
-            var fileShare = readOnly ? FileShare.ReadWrite : FileShare.Read;
+            var fileShare  = readOnly ? FileShare.ReadWrite : FileShare.Read;
 
-            _stream = new FileStream(filePath, FileMode.Open, fileAccess, fileShare, CACHE_SIZE, FileOptions.RandomAccess);
+            try
+            {
+                _stream = new FileStream(filePath, FileMode.Open, fileAccess, fileShare, CACHE_SIZE, FileOptions.RandomAccess);
+            }
+            catch (Exception ex) when (!readOnly && (ex is UnauthorizedAccessException || ex is IOException))
+            {
+                // File is write-protected (ACL restriction) OR locked by another process (sharing violation).
+                // Fall back to read-only silently — the hex editor remains fully usable in view mode.
+                IsReadOnly = true;
+                _stream    = new FileStream(filePath, FileMode.Open, FileAccess.Read,
+                                            FileShare.ReadWrite, CACHE_SIZE, FileOptions.RandomAccess);
+            }
+
             InvalidateCache();
         }
 

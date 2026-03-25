@@ -1,0 +1,108 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Project: WpfHexEditor.Plugins.ResxLocalization
+    File: Panels/LocaleBrowserPanel.xaml
+    Description:
+        Dockable panel showing all locale variants for the active .resx
+        file.  Clicking a row opens that locale file in the RESX editor.
+-->
+
+<UserControl x:Class="WpfHexEditor.Plugins.ResxLocalization.Panels.LocaleBrowserPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ResxLocalization.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="280"
+             Background="{DynamicResource RES_BackgroundBrush}"
+             Foreground="{DynamicResource RES_ForegroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header bar -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource RES_HeaderBackgroundBrush}"
+                BorderBrush="{DynamicResource RES_SeparatorBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="6,4">
+            <TextBlock Text="Locale Browser"
+                       Foreground="{DynamicResource RES_HeaderForegroundBrush}"
+                       FontSize="11" FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- Locale list -->
+        <ListBox Grid.Row="1"
+                 x:Name="LocaleList"
+                 ItemsSource="{Binding Locales}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 SelectionChanged="LocaleList_SelectionChanged">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background"  Value="Transparent"/>
+                    <Setter Property="Padding"     Value="6,3"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource RES_HoverRowBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource RES_SelectedRowBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource RES_SelectedRowForegroundBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:LocaleRowViewModel}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Active indicator dot -->
+                        <Ellipse Width="6" Height="6" Margin="0,0,5,0"
+                                 VerticalAlignment="Center">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="Fill" Value="{DynamicResource RES_LocaleMatchBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{Binding DisplayName}"
+                                   FontWeight="{Binding IsBase, Converter={StaticResource BoolToWeight}}"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Status bar -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource RES_HeaderBackgroundBrush}"
+                BorderBrush="{DynamicResource RES_SeparatorBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="6,3">
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="10"
+                       Foreground="{DynamicResource RES_CommentForegroundBrush}"/>
+        </Border>
+    </Grid>
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <!-- Simple bool→FontWeight converter declared as a static resource below -->
+        <local:BoolToFontWeightConverter x:Key="BoolToWeight"
+            xmlns:local="clr-namespace:WpfHexEditor.Plugins.ResxLocalization.Panels"/>
+    </UserControl.Resources>
+</UserControl>

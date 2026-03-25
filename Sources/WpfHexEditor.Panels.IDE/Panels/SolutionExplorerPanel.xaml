@@ -207,6 +207,12 @@
             </Setter>
         </Style>
 
+        <!-- Build spinner storyboard — same pattern as Unit Testing panel -->
+        <Storyboard x:Key="SE_SpinStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                             From="0" To="360" Duration="0:0:1.2"/>
+        </Storyboard>
+
         <!-- DataTemplates -->
 
         <DataTemplate DataType="{x:Type vm:SolutionNodeVm}">
@@ -242,7 +248,20 @@
             <Grid>
                 <!-- Normal display (IsEditing = false) -->
                 <StackPanel x:Name="ProjectDisplayPanel" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource NodeIcon}" Text="{Binding Icon}" Foreground="{Binding LanguageColor}"/>
+                    <TextBlock x:Name="ProjectIcon"
+                               Style="{StaticResource NodeIcon}"
+                               Text="{Binding Icon}"
+                               Foreground="{Binding LanguageColor}"/>
+                    <TextBlock x:Name="BuildSpinner"
+                               Style="{StaticResource NodeIcon}"
+                               Text="&#xE8A2;"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"
+                               Visibility="Collapsed"
+                               RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <RotateTransform/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
                     <!-- x:Name required for DataTrigger Setter targeting -->
                     <TextBlock x:Name="ProjectNameLabel"
                                Style="{StaticResource NodeLabel}"
@@ -280,6 +299,18 @@
                 <!-- Build-dirty → show orange dot -->
                 <DataTrigger Binding="{Binding IsBuildDirty}" Value="True">
                     <Setter TargetName="DirtyDot" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+                <!-- Building → swap project icon for spinning glyph -->
+                <DataTrigger Binding="{Binding IsBuilding}" Value="True">
+                    <Setter TargetName="ProjectIcon"  Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="BuildSpinner" Property="Visibility" Value="Visible"/>
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard x:Name="SE_SpinBegin"
+                                         Storyboard="{StaticResource SE_SpinStoryboard}"/>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <StopStoryboard BeginStoryboardName="SE_SpinBegin"/>
+                    </DataTrigger.ExitActions>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsEditing}" Value="True">
                     <Setter TargetName="ProjectDisplayPanel"  Property="Visibility" Value="Collapsed"/>
@@ -320,6 +351,12 @@
                 <DataTrigger Binding="{Binding IsPhysicallyBacked}" Value="True">
                     <Setter TargetName="FolderIcon"          Property="Foreground" Value="#F5C518"/>
                     <Setter TargetName="FolderDisplayPanel"  Property="ToolTip"    Value="Physical folder"/>
+                </DataTrigger>
+                <!-- Properties folder: VS-like gear icon (declared after IsPhysicallyBacked so it takes precedence) -->
+                <DataTrigger Binding="{Binding IsPropertiesFolder}" Value="True">
+                    <Setter TargetName="FolderIcon"         Property="Text"       Value="&#xE713;"/>
+                    <Setter TargetName="FolderIcon"         Property="Foreground" Value="#9B9B9B"/>
+                    <Setter TargetName="FolderDisplayPanel" Property="ToolTip"    Value="Properties folder"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -429,9 +466,17 @@
 
         <DataTemplate DataType="{x:Type vm:PhysicalFolderNodeVm}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8D5;" Foreground="#F5C518" Opacity="0.75"/>
+                <TextBlock x:Name="PhysFolderIcon" Style="{StaticResource NodeIcon}" Text="&#xE8D5;" Foreground="#F5C518" Opacity="0.75"/>
                 <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}" Opacity="0.85"/>
             </StackPanel>
+            <DataTemplate.Triggers>
+                <!-- Properties folder: VS-like gear icon -->
+                <DataTrigger Binding="{Binding IsPropertiesFolder}" Value="True">
+                    <Setter TargetName="PhysFolderIcon" Property="Text"       Value="&#xE713;"/>
+                    <Setter TargetName="PhysFolderIcon" Property="Foreground" Value="#9B9B9B"/>
+                    <Setter TargetName="PhysFolderIcon" Property="Opacity"    Value="1.0"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:PhysicalFileNodeVm}">
@@ -1024,7 +1069,25 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
-                    <!-- Manage NuGet Packages (VS projects only) -->
+                    <!-- References container: Add / Remove Unused appear first (no leading separator) -->
+                    <MenuItem x:Name="AddReferenceMenuItem"
+                              Header="Add Reference…"
+                              Visibility="Collapsed"
+                              Click="OnAddReference">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE710;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="RemoveUnusedRefsMenuItem"
+                              Header="Remove Unused References…"
+                              Visibility="Collapsed"
+                              Click="OnRemoveUnusedReferences">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE74D;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!-- Separator + Manage NuGet (VS projects; also shown below refs items when refs container) -->
                     <Separator x:Name="NuGetSeparator" Visibility="Collapsed"/>
                     <MenuItem x:Name="ManageNuGetMenuItem"
                               Header="Manage NuGet Packages…"

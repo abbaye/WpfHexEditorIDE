@@ -39,7 +39,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="Transparent"
                                 BorderThickness="1"
-                                CornerRadius="3"
+                                CornerRadius="4"
                                 Padding="{TemplateBinding Padding}"
                                 SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -53,7 +53,7 @@
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource DockAccentBrush}"/>
                                 <Setter TargetName="Bd" Property="BorderBrush"
-                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                                        Value="{DynamicResource DockAccentBrush}"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -62,6 +62,8 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource DockTabHoverBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockAccentBrush}"/>
                             </MultiTrigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.4"/>

@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // GNU Affero General Public License v3.0  2026
 // HexEditor V2 - Settings Panel ViewModel
 // Author : Derek Tremblay (derektremblay666@gmail.com)
@@ -61,11 +61,11 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
         public List<LanguageOption> AvailableLanguages { get; } = new List<LanguageOption>
         {
             new LanguageOption { Code = "en-US", DisplayName = "English", NativeName = "English" },
-            new LanguageOption { Code = "fr-CA", DisplayName = "French (Canada)", NativeName = "Français (Canada)" },
+            new LanguageOption { Code = "fr-CA", DisplayName = "French (Canada)", NativeName = "FranÃ§ais (Canada)" },
             new LanguageOption { Code = "pl-PL", DisplayName = "Polish", NativeName = "Polski" },
-            new LanguageOption { Code = "pt-BR", DisplayName = "Portuguese (Brazil)", NativeName = "Português (Brasil)" },
-            new LanguageOption { Code = "ru-RU", DisplayName = "Russian", NativeName = "Русский" },
-            new LanguageOption { Code = "zh-CN", DisplayName = "Chinese", NativeName = "中文" }
+            new LanguageOption { Code = "pt-BR", DisplayName = "Portuguese (Brazil)", NativeName = "PortuguÃªs (Brasil)" },
+            new LanguageOption { Code = "ru-RU", DisplayName = "Russian", NativeName = "Ð ÑƒÑÑÐºÐ¸Ð¹" },
+            new LanguageOption { Code = "zh-CN", DisplayName = "Chinese", NativeName = "ä¸­æ–‡" }
         };
 
         /// <summary>

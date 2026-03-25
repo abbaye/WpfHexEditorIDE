@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 
 namespace WpfHexEditor.Editor.Core;
 
@@ -33,6 +34,18 @@ public interface IErrorPanel
     /// Controls which scope of diagnostics is displayed.
     /// </summary>
     ErrorPanelScope Scope { get; set; }
+
+    /// <summary>
+    /// Updates the list of currently open document paths.
+    /// Used for <see cref="ErrorPanelScope.OpenDocuments"/> filtering.
+    /// </summary>
+    void SetOpenDocuments(IReadOnlyCollection<string> paths);
+
+    /// <summary>
+    /// Updates the list of currently modified (dirty) document paths.
+    /// Used for <see cref="ErrorPanelScope.ChangedDocuments"/> filtering.
+    /// </summary>
+    void SetChangedDocuments(IReadOnlyCollection<string> paths);
 
     /// <summary>
     /// Raised when the user requests navigation to an entry (e.g. double-click).

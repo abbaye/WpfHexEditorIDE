@@ -9,7 +9,7 @@
 //////////////////////////////////////////////
 
 using System.Windows.Input;
-using WpfHexEditor.Commands;
+using WpfHexEditor.Core.Commands;
 
 namespace WpfHexEditor.App;
 
@@ -31,7 +31,7 @@ public partial class MainWindow
         // Overrides are loaded from settings in OnLoaded (after AppSettingsService.Load()).
         _keyBindingService.OverridesChanged += () =>
         {
-            var s = WpfHexEditor.Options.AppSettingsService.Instance;
+            var s = WpfHexEditor.Core.Options.AppSettingsService.Instance;
             s.Current.KeyBindingOverrides =
                 new Dictionary<string, string>(
                     _keyBindingService.GetOverrides(),
@@ -49,7 +49,7 @@ public partial class MainWindow
     internal void LoadKeyBindingOverrides()
     {
         _keyBindingService.LoadOverrides(
-            WpfHexEditor.Options.AppSettingsService.Instance.Current.KeyBindingOverrides);
+            WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.KeyBindingOverrides);
     }
 
     // -----------------------------------------------------------------------
@@ -83,6 +83,18 @@ public partial class MainWindow
             () => WriteToDiskCommand.Execute(null, this));
         Reg(CommandIds.File.Exit,          "Exit",                   "File",    "Alt+F4",         "\uE7E8",
             () => OnExit(this, null!));
+
+        // ── Workspace ────────────────────────────────────────────────────────
+        Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",
+            () => _ = OnNewWorkspaceAsync());
+        Reg(CommandIds.Workspace.Open,   "Open Workspace…",        "Workspace", null,            "\uE8B5",
+            () => _ = OnOpenWorkspaceAsync());
+        Reg(CommandIds.Workspace.Save,   "Save Workspace",         "Workspace", null,            "\uE74E",
+            () => _ = OnSaveWorkspaceAsync());
+        Reg(CommandIds.Workspace.SaveAs, "Save Workspace As…",     "Workspace", null,            "\uE74E",
+            () => _ = OnSaveWorkspaceAsAsync());
+        Reg(CommandIds.Workspace.Close,  "Close Workspace",        "Workspace", null,            "\uE711",
+            () => _ = OnCloseWorkspaceAsync());
 
         // ── Edit ────────────────────────────────────────────────────────────
         Reg(CommandIds.Edit.Undo,          "Undo",                   "Edit",    "Ctrl+Z",         "\uE7A7",
@@ -125,8 +137,43 @@ public partial class MainWindow
             () => OnShowErrorPanel(this, null!));
         Reg(CommandIds.View.MarkdownOutline,"Markdown Outline",      "View",    null,             null,
             () => OnShowMarkdownOutline(this, null!));
-        Reg(CommandIds.View.CompareFiles,  "Compare Files…",         "View",    "Ctrl+Alt+D",     null,
-            () => OnCompareFiles(this, null!));
+        RegP(CommandIds.View.CompareFiles, "Compare Files…", "View", "Ctrl+Alt+D", null,
+            param =>
+            {
+                if (param is string[] paths && paths.Length == 2)
+                    _ = _compareFileLaunchService?.LaunchAsync(paths[0], paths[1]);
+                else if (param is string left)
+                    _ = _compareFileLaunchService?.LaunchAsync(left, null);
+                else
+                    _ = (_compareFileLaunchService?.LaunchAsync() ?? Task.CompletedTask);
+            });
+        RegP(CommandIds.View.CompareWithActiveEditor, "Compare File with Active Editor", "View / Compare",
+            null, null,
+            param =>
+            {
+                if (param is string leftPath)
+                {
+                    // From Solution Explorer: left=clicked file, right=active document
+                    var rightPath = _documentManager.ActiveDocument?.FilePath;
+                    _ = _compareFileLaunchService?.LaunchAsync(leftPath, rightPath);
+                }
+                else
+                {
+                    // From Command Palette: left=active document, picker for right
+                    var path = _documentManager.ActiveDocument?.FilePath;
+                    if (!string.IsNullOrEmpty(path))
+                        _ = _compareFileLaunchService?.LaunchWithLeftAsync(path);
+                }
+            });
+        Reg(CommandIds.View.CompareWithClipboard, "Compare Active File with Clipboard", "View / Compare",
+            null, null,
+            () => LaunchCompareWithClipboard());
+        Reg(CommandIds.View.CompareWithHead, "Compare with HEAD (Git)", "View / Compare",
+            null, null,
+            () => _ = LaunchCompareWithHeadAsync());
+        Reg(CommandIds.View.CompareReopenLast, "Reopen Last Comparison", "View / Compare",
+            null, null,
+            () => _ = (_compareFileLaunchService?.ReopenLastAsync() ?? Task.CompletedTask));
         Reg(CommandIds.View.EntropyAnalysis,"Entropy Analysis…",     "View",    null,             null,
             () => OnEntropyAnalysis(this, null!));
         Reg(CommandIds.View.Terminal,      "Terminal",               "View",    null,             "\uE756",
@@ -189,6 +236,28 @@ public partial class MainWindow
             () => OnNewPluginWizard(this, null!));
         Reg(CommandIds.Plugins.PluginHotReload, "Hot-Reload Plugin",  "Plugins", "Ctrl+Shift+R",   "\uE72C",
             () => OnPluginHotReload(this, null!));
+
+        // ── Debug ────────────────────────────────────────────────────────────
+        Reg(CommandIds.Debug.StartDebugging,       "Start Debugging",          "Debug", "F5",            "\uE768",
+            () => OnDebugStartOrContinue());
+        Reg(CommandIds.Debug.StopDebugging,        "Stop Debugging",           "Debug", "Shift+F5",      "\uE71A",
+            () => _ = _debuggerService?.StopSessionAsync());
+        Reg(CommandIds.Debug.RestartDebugging,     "Restart Debugging",        "Debug", "Ctrl+Shift+F5", "\uE72C",
+            () => OnDebugRestart());
+        Reg(CommandIds.Debug.Continue,             "Continue",                 "Debug", null,            "\uE768",
+            () => _ = _debuggerService?.ContinueAsync());
+        Reg(CommandIds.Debug.StepOver,             "Step Over",                "Debug", "F10",           "\uE7EE",
+            () => _ = _debuggerService?.StepOverAsync());
+        Reg(CommandIds.Debug.StepInto,             "Step Into",                "Debug", "F11",           "\uE70D",
+            () => _ = _debuggerService?.StepIntoAsync());
+        Reg(CommandIds.Debug.StepOut,              "Step Out",                 "Debug", "Shift+F11",     "\uE70E",
+            () => _ = _debuggerService?.StepOutAsync());
+        Reg(CommandIds.Debug.ToggleBreakpoint,     "Toggle Breakpoint",        "Debug", "F9",            "\uE7C1",
+            () => OnToggleBreakpoint());
+        Reg(CommandIds.Debug.DeleteAllBreakpoints, "Delete All Breakpoints",   "Debug", "Ctrl+Shift+F9", null,
+            () => _ = _debuggerService?.ClearAllBreakpointsAsync());
+        Reg(CommandIds.Debug.AttachToProcess,      "Attach to Process…",       "Debug", "Ctrl+Alt+P",    null,
+            () => OnAttachToProcess());
     }
 
     // -----------------------------------------------------------------------
@@ -201,5 +270,14 @@ public partial class MainWindow
         _commandRegistry.Register(new CommandDefinition(
             id, name, category, defaultGesture, icon,
             new RelayCommand(_ => execute())));
+    }
+
+    /// <summary>Same as Reg but the execute action receives the command parameter.</summary>
+    private void RegP(string id, string name, string category,
+                      string? defaultGesture, string? icon, Action<object?> execute)
+    {
+        _commandRegistry.Register(new CommandDefinition(
+            id, name, category, defaultGesture, icon,
+            new RelayCommand(param => execute(param))));
     }
 }
