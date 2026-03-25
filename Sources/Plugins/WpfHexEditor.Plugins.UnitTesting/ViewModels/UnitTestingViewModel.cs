@@ -77,12 +77,14 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         set { Set(ref _skipCount, value); RaiseCounters(); }
     }
 
-    public int TotalCount => PassCount + FailCount + SkipCount;
+    public int  TotalCount      => PassCount + FailCount + SkipCount;
+    public bool ShowRatioBarNow => ShowRatioBar && (PassCount + FailCount + SkipCount > 0);
 
     private void RaiseCounters()
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalCount)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanRunFailed)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowRatioBarNow)));
     }
 
     // ── Selection + detail ───────────────────────────────────────────────────
@@ -156,7 +158,11 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     public bool ShowRatioBar
     {
         get => _showRatioBar;
-        set => Set(ref _showRatioBar, value);
+        set
+        {
+            Set(ref _showRatioBar, value);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowRatioBarNow)));
+        }
     }
 
     // ── Constructor ──────────────────────────────────────────────────────────
@@ -346,7 +352,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     /// Does NOT clear results of projects that have already been run.
     /// First <paramref name="autoExpandCount"/> projects are expanded; the rest are collapsed.
     /// </summary>
-    public void DiscoverProjects(IEnumerable<string> projectNames, int autoExpandCount = 2)
+    public void DiscoverProjects(IEnumerable<string> projectNames, int autoExpandCount = 0)
     {
         var names = projectNames.ToList();
         int i = 0;
@@ -431,7 +437,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
                 cls.IsVisible = anyClsVisible;
                 if (anyClsVisible) anyProjVisible = true;
             }
-            proj.IsVisible = anyProjVisible || proj.IsRunning;
+            proj.IsVisible = anyProjVisible || proj.IsRunning || proj.Classes.Count == 0;
         }
     }
 

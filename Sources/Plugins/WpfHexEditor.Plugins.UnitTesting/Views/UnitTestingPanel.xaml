@@ -644,85 +644,113 @@
                     <HierarchicalDataTemplate DataType="{x:Type vm:TestProjectNode}"
                                               ItemsSource="{Binding Classes}"
                                               ItemContainerStyle="{StaticResource UT_TreeItemStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding OutcomeGlyph}"
-                                       FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                       VerticalAlignment="Center" Margin="0,0,5,0"
-                                       RenderTransformOrigin="0.5,0.5">
-                                <TextBlock.RenderTransform><RotateTransform/></TextBlock.RenderTransform>
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <!-- Default: neutral dim colour (not-yet-run) -->
-                                        <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
-                                        <Setter Property="Opacity"    Value="0.45"/>
-                                        <Style.Triggers>
-                                            <!-- Project has results: green pass -->
-                                            <DataTrigger Binding="{Binding HasRun}" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
-                                                <Setter Property="Opacity"    Value="1"/>
-                                            </DataTrigger>
-                                            <!-- Any failure overrides green -->
-                                            <DataTrigger Binding="{Binding HasFailures}" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
-                                                <Setter Property="Opacity"    Value="1"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
-                                                <Setter Property="Opacity"    Value="1"/>
-                                                <DataTrigger.EnterActions>
-                                                    <BeginStoryboard x:Name="ProjSpinBegin" Storyboard="{StaticResource SpinStoryboard}"/>
-                                                </DataTrigger.EnterActions>
-                                                <DataTrigger.ExitActions>
-                                                    <StopStoryboard BeginStoryboardName="ProjSpinBegin"/>
-                                                </DataTrigger.ExitActions>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <TextBlock Text="{Binding ProjectName}"
-                                       FontWeight="SemiBold" FontSize="12"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource PFP_TextBrush}"/>
-                            <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"
-                                       FontSize="11" Opacity="0.55" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource PFP_TextBrush}"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="170"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="{Binding OutcomeGlyph}"
+                                           FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                           VerticalAlignment="Center" Margin="0,0,5,0"
+                                           RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform><RotateTransform/></TextBlock.RenderTransform>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <!-- Default: neutral dim colour (not-yet-run) -->
+                                            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                                            <Setter Property="Opacity"    Value="0.45"/>
+                                            <Style.Triggers>
+                                                <!-- Project has results: green pass -->
+                                                <DataTrigger Binding="{Binding HasRun}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                                <!-- Any failure overrides green -->
+                                                <DataTrigger Binding="{Binding HasFailures}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_SkipForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard x:Name="ProjSpinBegin" Storyboard="{StaticResource SpinStoryboard}"/>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <StopStoryboard BeginStoryboardName="ProjSpinBegin"/>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding ProjectName}"
+                                           FontWeight="SemiBold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                                <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"
+                                           FontSize="11" Opacity="0.55" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TotalDurationText}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Margin="0,0,4,0" FontSize="11" Opacity="0.6"
+                                       Foreground="{DynamicResource PFP_TextBrush}"
+                                       Visibility="{Binding HasRun, Converter={StaticResource BoolToVis}}"/>
+                        </Grid>
                     </HierarchicalDataTemplate>
 
                     <!-- Class node -->
                     <HierarchicalDataTemplate DataType="{x:Type vm:TestClassNode}"
                                               ItemsSource="{Binding Tests}"
                                               ItemContainerStyle="{StaticResource UT_TreeItemStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding OutcomeGlyph}"
-                                       FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                       VerticalAlignment="Center" Margin="0,0,4,0">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <!-- Default: neutral dim colour (not-yet-run) -->
-                                        <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
-                                        <Setter Property="Opacity"    Value="0.45"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasRun}" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
-                                                <Setter Property="Opacity"    Value="1"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding HasFailures}" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
-                                                <Setter Property="Opacity"    Value="1"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <TextBlock Text="{Binding ShortClassName}"
-                                       FontSize="11" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource PFP_TextBrush}"/>
-                            <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"
-                                       FontSize="11" Opacity="0.5" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource PFP_TextBrush}"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="170"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="{Binding OutcomeGlyph}"
+                                           FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                           VerticalAlignment="Center" Margin="0,0,4,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <!-- Default: neutral dim colour (not-yet-run) -->
+                                            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                                            <Setter Property="Opacity"    Value="0.45"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasRun}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_PassForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HasFailures}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource UT_FailForegroundBrush}"/>
+                                                    <Setter Property="Opacity"    Value="1"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding ShortClassName}"
+                                           FontSize="11" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                                <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"
+                                           FontSize="11" Opacity="0.5" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TotalDurationText}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Margin="0,0,4,0" FontSize="11" Opacity="0.6"
+                                       Foreground="{DynamicResource PFP_TextBrush}"
+                                       Visibility="{Binding HasRun, Converter={StaticResource BoolToVis}}"/>
+                        </Grid>
                     </HierarchicalDataTemplate>
 
                     <!-- Leaf (TestResultRow) — reuses shared template -->
@@ -770,7 +798,7 @@
                         <!-- ── Project group summary ── -->
                         <DataTemplate DataType="{x:Type vm:TestProjectNode}">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <DockPanel Margin="8,6">
+                                <DockPanel Margin="8,6" LastChildFill="False">
                                     <!-- Action buttons -->
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
                                         <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2"
@@ -834,7 +862,7 @@
                         <!-- ── Class group summary ── -->
                         <DataTemplate DataType="{x:Type vm:TestClassNode}">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <DockPanel Margin="8,6">
+                                <DockPanel Margin="8,6" LastChildFill="False">
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
                                         <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2"
                                                 Click="OnDetailRunClicked">
@@ -997,7 +1025,7 @@
 
         <!-- ─── Row 3: Pass/Fail ratio bar ────────────────────────── -->
         <Grid Grid.Row="3" Height="6"
-              Visibility="{Binding ShowRatioBar, Converter={StaticResource BoolToVis}}">
+              Visibility="{Binding ShowRatioBarNow, Converter={StaticResource BoolToVis}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{Binding PassCount, Converter={StaticResource StarGL}}"/>
                 <ColumnDefinition Width="{Binding FailCount, Converter={StaticResource StarGL}}"/>

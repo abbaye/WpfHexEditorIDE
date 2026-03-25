@@ -27,12 +27,13 @@ namespace WpfHexEditor.Plugins.UnitTesting.Views;
 /// </summary>
 public partial class UnitTestingPanel : UserControl
 {
-    public event EventHandler?                 RunAllRequested;
-    public event EventHandler?                 RefreshProjectsRequested;
-    public event EventHandler?                 StopRequested;
-    public event EventHandler<string?>?        RunFailedRequested;
-    public event EventHandler<TestResultRow?>? RunThisTestRequested;
-    public event EventHandler<TestResultRow?>? GoToSourceRequested;
+    public event EventHandler?                                       RunAllRequested;
+    public event EventHandler?                                       RefreshProjectsRequested;
+    public event EventHandler?                                       StopRequested;
+    public event EventHandler<string?>?                              RunFailedRequested;
+    public event EventHandler<TestResultRow?>?                       RunThisTestRequested;
+    public event EventHandler<TestResultRow?>?                       GoToSourceRequested;
+    public event EventHandler<(TestResultRow Row, string EditorId)>? OpenSourceWithEditorRequested;
 
     private UnitTestingViewModel Vm => (UnitTestingViewModel)DataContext;
 
@@ -109,8 +110,44 @@ public partial class UnitTestingPanel : UserControl
 
     private void OnGoToSourceClicked(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { Tag: TestResultRow row } && row.HasSource)
-            GoToSourceRequested?.Invoke(this, row);
+        if (sender is not FrameworkElement { Tag: TestResultRow row } || !row.HasSource) return;
+
+        var bg  = TryFindResource("DockMenuBackgroundBrush");
+        var fg  = TryFindResource("DockMenuForegroundBrush");
+        var bdr = TryFindResource("DockBorderBrush");
+
+        var menu = new ContextMenu
+        {
+            Background  = bg  as System.Windows.Media.Brush,
+            Foreground  = fg  as System.Windows.Media.Brush,
+            BorderBrush = bdr as System.Windows.Media.Brush,
+        };
+
+        // Navigate to the exact source line (default, code-editor)
+        var lineLabel = row.SourceLine > 0
+            ? $"Go to Line {row.SourceLine}  —  {row.ShortClassName}"
+            : $"Open  —  {row.ShortClassName}";
+        var miNavigate = new MenuItem { Header = lineLabel, FontWeight = FontWeights.SemiBold };
+        miNavigate.Click += (_, _) => GoToSourceRequested?.Invoke(this, row);
+        menu.Items.Add(miNavigate);
+
+        menu.Items.Add(new Separator());
+
+        // Open with specific editor
+        var miCode = new MenuItem { Header = "Open in Code Editor" };
+        miCode.Click += (_, _) => OpenSourceWithEditorRequested?.Invoke(this,
+            (row, WpfHexEditor.SDK.Contracts.WellKnownEditorIds.CodeEditor));
+        menu.Items.Add(miCode);
+
+        var miHex = new MenuItem { Header = "Open in Hex Editor" };
+        miHex.Click += (_, _) => OpenSourceWithEditorRequested?.Invoke(this,
+            (row, WpfHexEditor.SDK.Contracts.WellKnownEditorIds.HexEditor));
+        menu.Items.Add(miHex);
+
+        menu.PlacementTarget = (UIElement)sender;
+        menu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        menu.IsOpen          = true;
+        e.Handled            = true;
     }
 
     private void OnClearSearch(object sender, RoutedEventArgs e)
@@ -152,8 +189,16 @@ public partial class UnitTestingPanel : UserControl
 
     private void OnRunThisTestClicked(object sender, RoutedEventArgs e)
     {
-        if (TestTree.SelectedItem is TestResultRow row)
-            RunThisTestRequested?.Invoke(this, row);
+        switch (TestTree.SelectedItem)
+        {
+            case TestResultRow row:
+                RunThisTestRequested?.Invoke(this, row);
+                break;
+            case TestClassNode:
+            case TestProjectNode:
+                RunAllRequested?.Invoke(this, EventArgs.Empty);
+                break;
+        }
     }
 
     private void OnCopyTestNameClicked(object sender, RoutedEventArgs e)

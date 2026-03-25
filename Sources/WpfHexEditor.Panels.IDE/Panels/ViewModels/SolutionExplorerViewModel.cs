@@ -1357,6 +1357,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// </summary>
     public void SetProjectBuilding(string projectFilePath, bool isBuilding)
     {
+        if (string.IsNullOrEmpty(projectFilePath)) return;
         var normalizedPath = Path.GetFullPath(projectFilePath);
         foreach (var node in Roots.OfType<SolutionNodeVm>()
                                    .SelectMany(s => s.Children)

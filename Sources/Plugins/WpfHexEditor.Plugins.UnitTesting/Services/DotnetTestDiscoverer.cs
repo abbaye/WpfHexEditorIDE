@@ -45,8 +45,9 @@ public sealed class DotnetTestDiscoverer
         bool              noBuild,
         CancellationToken ct)
     {
-        var noBuildArg = noBuild ? " --no-build" : string.Empty;
-        var args       = $"test \"{projectFilePath}\" --list-tests{noBuildArg}";
+        var noBuildArg   = noBuild ? " --no-build" : string.Empty;
+        var verbosityArg = noBuild ? string.Empty  : " --verbosity quiet";
+        var args         = $"test \"{projectFilePath}\" --list-tests{noBuildArg}{verbosityArg}";
         var psi        = new ProcessStartInfo("dotnet", args)
         {
             RedirectStandardOutput = true,
@@ -76,12 +77,16 @@ public sealed class DotnetTestDiscoverer
                     continue;
                 }
 
-                // Locale fallback for --no-build pass: output contains NO build noise, so
-                // any 4-space-indented dotted line that appears IS a fully-qualified test name.
-                // This handles French/German/etc. locales where the header text differs.
-                if (noBuild
-                    && line.StartsWith("    ", StringComparison.Ordinal)
-                    && line.TrimStart().Contains('.'))
+                // Locale fallback: any 4-space-indented dotted line with no path separators
+                // or colons IS a fully-qualified test name.  Works on all locales (French,
+                // German, etc.) and on both passes — pass 2 uses --verbosity quiet to suppress
+                // build noise so path/error lines never appear here.
+                var trimmedFb = line.TrimStart();
+                if (line.StartsWith("    ", StringComparison.Ordinal)
+                    && trimmedFb.Contains('.')
+                    && !trimmedFb.Contains(':')
+                    && !trimmedFb.Contains('\\')
+                    && !trimmedFb.Contains('/'))
                 {
                     inList = true;
                     // fall through — first test name is on this line
