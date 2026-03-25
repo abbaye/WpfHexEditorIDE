@@ -148,6 +148,14 @@ public sealed class MyersDiffAlgorithm : IDiffAlgorithm
         int max = n + m;
         if (max == 0) return [];
 
+        // Pre-hash all lines for O(1) inequality fast-path — avoids O(line-length) string
+        // equality on every Myers diagonal step (OPT-PERF-02). Full Ordinal compare is still
+        // done on hash matches to handle collisions correctly.
+        var aHash = new int[n];
+        var bHash = new int[m];
+        for (int i = 0; i < n; i++) aHash[i] = a[i].GetHashCode();
+        for (int i = 0; i < m; i++) bHash[i] = b[i].GetHashCode();
+
         var vSnapshots = new List<int[]>();
         var v = new int[2 * max + 1];
 
@@ -165,7 +173,9 @@ public sealed class MyersDiffAlgorithm : IDiffAlgorithm
                     x = v[idx - 1] + 1;
 
                 int y = x - k;
-                while (x < n && y < m && string.Equals(a[x], b[y], StringComparison.Ordinal))
+                while (x < n && y < m
+                    && aHash[x] == bHash[y]
+                    && string.Equals(a[x], b[y], StringComparison.Ordinal))
                 { x++; y++; }
 
                 v[idx] = x;

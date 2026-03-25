@@ -67,14 +67,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Determine the innermost block containing the cursor for active-guide highlight.
             var activeRegion = FindInnermostContainingRegion(_cursorLine);
 
-            foreach (var region in _foldingEngine.Regions)
+            // OPT-PERF-03: iterate pre-filtered _visibleRegions (populated in CalculateVisibleLines)
+            // instead of all regions — avoids O(total-regions) scan every frame.
+            foreach (var region in _visibleRegions)
             {
-                if (region.IsCollapsed) continue; // body is hidden — no guide needed
-                if (region.Kind == FoldingRegionKind.Directive) continue; // no guide for #region/#endregion
-
-                // Skip regions entirely outside the visible range.
-                if (region.EndLine < _firstVisibleLine || region.StartLine + 1 > _lastVisibleLine) continue;
-
                 double guideX = ComputeScopeGuideX(textX, region);
                 if (guideX < textX) continue; // never draw before text area origin
 
@@ -383,7 +379,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var bgBrush     = (Brush?)TryFindResource("CE_Lens_Bg")    ?? Brushes.Transparent;
             double fontSize  = HintLineHeight * 0.72;   // ~11.5 px for a 16-px slot
             double baseX     = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
-            double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            double pixelsPerDip = _renderPixelsPerDip; // cached once per OnRender (OPT-PERF-03)
 
             for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
             {
@@ -467,8 +463,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 : null)
                 ?? TryFindResource("CE_FoldLabelBg") as Brush
                 ?? s_foldLabelBgBrush;
-            var textBrush   = TryFindResource("CE_FoldLabelFg")     as Brush ?? s_foldLabelTextBrush;
-            var pen         = new Pen(borderBrush, isHovered ? 1.5 : 1.0);
+            var textBrush = TryFindResource("CE_FoldLabelFg") as Brush ?? s_foldLabelTextBrush;
+
+            // Cache Pen against brush reference — rebuilt only on theme change (OPT-PERF-03).
+            Pen pen;
+            if (isHovered)
+            {
+                if (_cachedFoldLabelHoverPen == null || !ReferenceEquals(_cachedFoldLabelHoverBrush, borderBrush))
+                {
+                    _cachedFoldLabelHoverBrush = borderBrush;
+                    _cachedFoldLabelHoverPen = new Pen(borderBrush, 1.5);
+                }
+                pen = _cachedFoldLabelHoverPen;
+            }
+            else
+            {
+                if (_cachedFoldLabelPen == null || !ReferenceEquals(_cachedFoldLabelBorderBrush, borderBrush))
+                {
+                    _cachedFoldLabelBorderBrush = borderBrush;
+                    _cachedFoldLabelPen = new Pen(borderBrush, 1.0);
+                }
+                pen = _cachedFoldLabelPen;
+            }
 
             double labelX;
             string labelText;
@@ -531,6 +547,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (_document == null || _document.Lines.Count == 0)
                 return;
+
+            // Cache DPI once per render pass; used by RenderInlineHints and RenderLineNumbers (OPT-PERF-03).
+            _renderPixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
             // Cursor-change detection: covers every code path that moves the caret
             // (mouse click, keyboard, undo/redo, NavigateToLine, etc.) without requiring
@@ -978,6 +997,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _lastVisibleLine = Math.Min(_document.Lines.Count - 1, i);
             }
 
+            // Rebuild visible-region cache for RenderScopeGuides (OPT-PERF-03).
+            _visibleRegions.Clear();
+            if (_foldingEngine != null)
+            {
+                foreach (var r in _foldingEngine.Regions)
+                {
+                    if (r.IsCollapsed || r.Kind == FoldingRegionKind.Directive) continue;
+                    if (r.EndLine < _firstVisibleLine || r.StartLine + 1 > _lastVisibleLine) continue;
+                    _visibleRegions.Add(r);
+                }
+            }
+
             // Sync gutter layout with the newly computed visible range.
             // Pass scroll fraction so gutter markers follow smooth-scroll sub-pixel offset.
             double gutterScrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
@@ -1007,7 +1038,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _cachedLineNumberTypeface = _lineNumberTypeface;
             }
 
-            double dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            double dpi = _renderPixelsPerDip; // cached once per OnRender (OPT-PERF-03)
 
             // Word-wrap path: iterate _visLinePositions; show line number only for sub-row 0.
             if (IsWordWrapEnabled && _visLinePositions.Count > 0)
@@ -1165,11 +1196,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Draw border if enabled
             if (ShowCurrentLineBorder)
             {
-                var borderBrush = new SolidColorBrush(CurrentLineBorderColor);
-                borderBrush.Freeze();
-                var borderPen = new Pen(borderBrush, 1);
-                borderPen.Freeze();
-                dc.DrawRectangle(null, borderPen,
+                // Cache pen; rebuilt only when CurrentLineBorderColor DP changes (OPT-PERF-03).
+                if (_cachedCurrentLineBorderPen == null || _cachedCurrentLineBorderColor != CurrentLineBorderColor)
+                {
+                    _cachedCurrentLineBorderColor = CurrentLineBorderColor;
+                    _cachedCurrentLineBorderPen = new Pen(new SolidColorBrush(_cachedCurrentLineBorderColor), 1);
+                    _cachedCurrentLineBorderPen.Freeze();
+                }
+                dc.DrawRectangle(null, _cachedCurrentLineBorderPen,
                     new Rect(x, y, contentW - x, highlightH));
             }
         }
@@ -1306,11 +1340,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 if (segments.Count > 0)
                 {
-                    Geometry combined = segments[0];
-                    for (int i = 1; i < segments.Count; i++)
-                        combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
-                    combined.Freeze();
-                    dc.DrawGeometry(selectionBrush, null, combined);
+                    // Cache combined geometry — avoid O(n²) Geometry.Combine when selection is stable (OPT-PERF-04).
+                    if (_cachedSelectionGeometry == null
+                        || !_cachedSelGeomStart.Equals(start) || !_cachedSelGeomEnd.Equals(end)
+                        || _cachedSelGeomFirstLine != _firstVisibleLine || _cachedSelGeomLastLine != _lastVisibleLine)
+                    {
+                        Geometry combined = segments[0];
+                        for (int i = 1; i < segments.Count; i++)
+                            combined = Geometry.Combine(combined, segments[i], GeometryCombineMode.Union, null);
+                        combined.Freeze();
+                        _cachedSelectionGeometry = combined;
+                        _cachedSelGeomStart      = start;
+                        _cachedSelGeomEnd        = end;
+                        _cachedSelGeomFirstLine  = _firstVisibleLine;
+                        _cachedSelGeomLastLine   = _lastVisibleLine;
+                    }
+                    dc.DrawGeometry(selectionBrush, null, _cachedSelectionGeometry);
                 }
             }
         }
@@ -1708,10 +1753,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _urlHitZones.Clear();
             _foldLabelHitZones.Clear();
 
-            // Lazy-init the underline pen from the current SyntaxUrlColor DP.
-            // Re-created each render so theme changes are reflected immediately.
-            var urlPen = new Pen(SyntaxUrlColor, 1.0);
-            urlPen.Freeze();
+            // Cache URL pen; rebuilt only when SyntaxUrlColor DP reference changes (OPT-PERF-03).
+            if (_cachedUrlPen == null || !ReferenceEquals(_cachedUrlBrush, SyntaxUrlColor))
+            {
+                _cachedUrlBrush = SyntaxUrlColor;
+                _cachedUrlPen = new Pen(_cachedUrlBrush, 1.0);
+                _cachedUrlPen.Freeze();
+            }
+            var urlPen = _cachedUrlPen;
 
             // Reset external highlighter state before a full render pass.
             ExternalHighlighter?.Reset();
@@ -2032,26 +2081,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // When not focused, use 50% opacity to show inactive cursor
             Color caretColor = CaretColor;
             if (!hasFocus)
-            {
-                caretColor = Color.FromArgb(128, caretColor.R, caretColor.G, caretColor.B); // 50% opacity
-            }
+                caretColor = Color.FromArgb(128, caretColor.R, caretColor.G, caretColor.B);
 
-            var cursorPen = new Pen(new SolidColorBrush(caretColor), CaretWidth);
-            cursorPen.Freeze();
+            // Cache caret pens; rebuilt only when CaretColor or focus state changes (OPT-PERF-03).
+            if (_cachedCaretPen == null || _cachedCaretColor != caretColor)
+            {
+                _cachedCaretColor = caretColor;
+                _cachedCaretPen = new Pen(new SolidColorBrush(caretColor), CaretWidth);
+                _cachedCaretPen.Freeze();
+                var secondaryColor = Color.FromArgb((byte)(caretColor.A * 0.6),
+                    caretColor.R, caretColor.G, caretColor.B);
+                _cachedCaretSecondaryPen = new Pen(new SolidColorBrush(secondaryColor), CaretWidth);
+                _cachedCaretSecondaryPen.Freeze();
+            }
+            var cursorPen = _cachedCaretPen;
 
             dc.DrawLine(cursorPen,
                 new Point(x, y),
                 new Point(x, y + _lineHeight - 2));
 
-            // Secondary carets (multi-caret editing) — drawn at 60% opacity.
+            // Secondary carets (multi-caret editing) — drawn at 60% opacity (pen already cached above).
             if (_caretManager.IsMultiCaret)
             {
-                var carets    = _caretManager.Carets;
-                var secondaryColor = Color.FromArgb(
-                    (byte)(caretColor.A * 0.6),
-                    caretColor.R, caretColor.G, caretColor.B);
-                var secondaryPen = new Pen(new SolidColorBrush(secondaryColor), CaretWidth);
-                secondaryPen.Freeze();
+                var carets       = _caretManager.Carets;
+                var secondaryPen = _cachedCaretSecondaryPen!;
                 double textLeftSec = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
                 for (int ci = 1; ci < carets.Count; ci++)
@@ -2077,27 +2130,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-            foreach (var error in _validationErrors)
+            // OPT-PERF-03: use _validationByLine index — O(viewport) instead of O(all errors).
+            for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
             {
-                // Skip if not visible
-                if (error.Line < _firstVisibleLine || error.Line > _lastVisibleLine)
-                    continue;
-
-                double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
-                    ? _virtualizationEngine.GetLineYPosition(error.Line)
-                    : (error.Line - _firstVisibleLine) * _lineHeight) + _lineHeight - 3;
-                double x1 = leftEdge + (error.Column * _charWidth);
-                double x2 = x1 + (error.Length * _charWidth);
-
-                // OPT-PERF-02: use pre-cached frozen pens — no allocation per error.
-                Pen squigglyPen = error.Severity switch
+                if (!_validationByLine.TryGetValue(i, out var lineErrors)) continue;
+                foreach (var error in lineErrors)
                 {
-                    ValidationSeverity.Warning => s_squigglyWarning,
-                    ValidationSeverity.Info    => s_squigglyInfo,
-                    _                          => s_squigglyError,
-                };
+                    double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
+                        ? _virtualizationEngine.GetLineYPosition(error.Line)
+                        : (error.Line - _firstVisibleLine) * _lineHeight) + _lineHeight - 3;
+                    double x1 = leftEdge + (error.Column * _charWidth);
+                    double x2 = x1 + (error.Length * _charWidth);
 
-                DrawSquigglyLine(dc, x1, x2, y, squigglyPen);
+                    Pen squigglyPen = error.Severity switch
+                    {
+                        ValidationSeverity.Warning => s_squigglyWarning,
+                        ValidationSeverity.Info    => s_squigglyInfo,
+                        _                          => s_squigglyError,
+                    };
+                    DrawSquigglyLine(dc, x1, x2, y, squigglyPen);
+                }
             }
         }
 
@@ -2130,57 +2182,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_foldingEngine?.GetRegionAt(_cursorLine) is { IsCollapsed: true, Kind: FoldingRegionKind.Directive })
                 return;
 
-            var line = _document.Lines[_cursorLine];
+            // Cache FindMatchingBracket result — avoid O(distance) scan every frame (OPT-PERF-03).
+            TextPosition? matchPos  = null;
+            int           bracketColumn = -1;
 
-            // Check character before cursor
-            char? charBeforeCursor = null;
-            int charBeforePos = _cursorColumn - 1;
-            if (charBeforePos >= 0 && charBeforePos < line.Text.Length)
+            if (_cachedBracketCursorLine != _cursorLine || _cachedBracketCursorCol != _cursorColumn)
             {
-                charBeforeCursor = line.Text[charBeforePos];
+                var line = _document.Lines[_cursorLine];
+                char? charBeforeCursor = null;
+                int charBeforePos = _cursorColumn - 1;
+                if (charBeforePos >= 0 && charBeforePos < line.Text.Length)
+                    charBeforeCursor = line.Text[charBeforePos];
+                char? charAtCursor = _cursorColumn < line.Text.Length ? line.Text[_cursorColumn] : (char?)null;
+
+                if (charAtCursor.HasValue && IsBracket(charAtCursor.Value))
+                {
+                    bracketColumn = _cursorColumn;
+                    matchPos      = FindMatchingBracket(_cursorLine, _cursorColumn, charAtCursor.Value);
+                }
+                else if (charBeforeCursor.HasValue && IsBracket(charBeforeCursor.Value))
+                {
+                    bracketColumn = charBeforePos;
+                    matchPos      = FindMatchingBracket(_cursorLine, charBeforePos, charBeforeCursor.Value);
+                }
+
+                _cachedBracketCursorLine  = _cursorLine;
+                _cachedBracketCursorCol   = _cursorColumn;
+                _cachedBracketColumn      = bracketColumn;
+                _cachedBracketMatchResult = matchPos;
+            }
+            else
+            {
+                bracketColumn = _cachedBracketColumn;
+                matchPos      = _cachedBracketMatchResult;
             }
 
-            // Check character at cursor
-            char? charAtCursor = null;
-            if (_cursorColumn < line.Text.Length)
-            {
-                charAtCursor = line.Text[_cursorColumn];
-            }
-
-            // Try to find matching bracket
-            TextPosition? matchPos = null;
-            char? bracketChar = null;
-            int bracketColumn = -1;
-
-            // Check if cursor is ON a bracket
-            if (charAtCursor.HasValue && IsBracket(charAtCursor.Value))
-            {
-                bracketChar = charAtCursor.Value;
-                bracketColumn = _cursorColumn;
-                matchPos = FindMatchingBracket(_cursorLine, _cursorColumn, charAtCursor.Value);
-            }
-            // Check if cursor is AFTER a bracket (more common)
-            else if (charBeforeCursor.HasValue && IsBracket(charBeforeCursor.Value))
-            {
-                bracketChar = charBeforeCursor.Value;
-                bracketColumn = charBeforePos;
-                matchPos = FindMatchingBracket(_cursorLine, charBeforePos, charBeforeCursor.Value);
-            }
-
-            // Highlight both brackets if match found
+            // Highlight both brackets if match found — static cached pens, no allocation (OPT-PERF-03).
             if (matchPos.HasValue && bracketColumn >= 0)
             {
-                var highlightBrush = new SolidColorBrush(Color.FromArgb(80, 0, 120, 215)); // Semi-transparent blue
-                highlightBrush.Freeze();
-
-                var borderPen = new Pen(new SolidColorBrush(Color.FromRgb(0, 120, 215)), 1.5);
-                borderPen.Freeze();
-
-                // Highlight bracket at cursor
-                HighlightBracket(dc, _cursorLine, bracketColumn, highlightBrush, borderPen);
-
-                // Highlight matching bracket
-                HighlightBracket(dc, matchPos.Value.Line, matchPos.Value.Column, highlightBrush, borderPen);
+                HighlightBracket(dc, _cursorLine, bracketColumn, s_bracketHighlightBrush, s_bracketBorderPen);
+                HighlightBracket(dc, matchPos.Value.Line, matchPos.Value.Column, s_bracketHighlightBrush, s_bracketBorderPen);
             }
         }
 

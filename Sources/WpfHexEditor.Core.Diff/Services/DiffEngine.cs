@@ -24,80 +24,77 @@ public sealed class DiffEngine
 
     /// <summary>
     /// Compares two files asynchronously and returns a <see cref="DiffEngineResult"/>.
+    /// IO is performed asynchronously (frees the caller during disk reads).
+    /// The CPU-bound algorithm runs on the ThreadPool via Task.Run.
     /// </summary>
     /// <param name="leftPath">Path of the left (original) file.</param>
     /// <param name="rightPath">Path of the right (modified) file.</param>
     /// <param name="mode">Requested mode; <see cref="DiffMode.Auto"/> auto-detects.</param>
     /// <param name="ct">Cancellation token.</param>
-    public Task<DiffEngineResult> CompareAsync(string leftPath, string rightPath,
+    public async Task<DiffEngineResult> CompareAsync(string leftPath, string rightPath,
         DiffMode mode = DiffMode.Auto, CancellationToken ct = default)
-        => Task.Run(() => Compare(leftPath, rightPath, mode, ct), ct);
-
-    // -----------------------------------------------------------------------
-    // Private synchronous core
-    // -----------------------------------------------------------------------
-
-    private static DiffEngineResult Compare(string leftPath, string rightPath,
-        DiffMode requestedMode, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
 
-        var effectiveMode = requestedMode == DiffMode.Auto
+        var effectiveMode = mode == DiffMode.Auto
             ? DiffModeDetector.DetectForPair(leftPath, rightPath)
-            : requestedMode;
-
-        string? fallbackReason = null;
+            : mode;
 
         if (effectiveMode == DiffMode.Binary)
-            return CompareBinary(leftPath, rightPath, effectiveMode, ct);
+            return await Task.Run(() => CompareBinary(leftPath, rightPath, effectiveMode, ct), ct)
+                             .ConfigureAwait(false);
 
-        // Text or Semantic — read as lines
-        ct.ThrowIfCancellationRequested();
         var leftInfo  = new FileInfo(leftPath);
         var rightInfo = new FileInfo(rightPath);
 
-        // Files too large for Myers → force binary
         if (leftInfo.Length > MaxReadBytes || rightInfo.Length > MaxReadBytes)
         {
-            fallbackReason = $"File exceeds {MaxReadBytes / (1024 * 1024)} MB — using binary comparison";
-            return CompareBinary(leftPath, rightPath, DiffMode.Binary, ct, fallbackReason);
+            var reason = $"File exceeds {MaxReadBytes / (1024 * 1024)} MB — using binary comparison";
+            return await Task.Run(() => CompareBinary(leftPath, rightPath, DiffMode.Binary, ct, reason), ct)
+                             .ConfigureAwait(false);
         }
 
+        // Async IO — reads happen without holding a ThreadPool thread (OPT-PERF-01).
         string[] leftLines, rightLines;
         try
         {
-            leftLines  = File.ReadAllLines(leftPath);
-            rightLines = File.ReadAllLines(rightPath);
+            leftLines  = await File.ReadAllLinesAsync(leftPath,  ct).ConfigureAwait(false);
+            rightLines = await File.ReadAllLinesAsync(rightPath, ct).ConfigureAwait(false);
         }
         catch (IOException ex)
         {
-            fallbackReason = $"Could not read file as text ({ex.Message}) — using binary comparison";
-            return CompareBinary(leftPath, rightPath, DiffMode.Binary, ct, fallbackReason);
+            var reason = $"Could not read file as text ({ex.Message}) — using binary comparison";
+            return await Task.Run(() => CompareBinary(leftPath, rightPath, DiffMode.Binary, ct, reason), ct)
+                             .ConfigureAwait(false);
         }
 
-        ct.ThrowIfCancellationRequested();
-
-        IDiffAlgorithm algo = effectiveMode == DiffMode.Semantic ? _semantic : _myers;
-        TextDiffResult textResult;
-        try
+        // CPU-bound algorithm on ThreadPool.
+        var capturedMode = effectiveMode;
+        return await Task.Run(() =>
         {
-            textResult = algo.ComputeLines(leftLines, rightLines);
-        }
-        catch
-        {
-            fallbackReason = "Diff algorithm failed — falling back to Myers";
-            textResult = _myers.ComputeLines(leftLines, rightLines);
-            effectiveMode = DiffMode.Text;
-        }
-
-        return new DiffEngineResult
-        {
-            EffectiveMode  = effectiveMode,
-            TextResult     = textResult,
-            FallbackReason = fallbackReason ?? textResult.FallbackReason,
-            LeftPath       = leftPath,
-            RightPath      = rightPath
-        };
+            ct.ThrowIfCancellationRequested();
+            IDiffAlgorithm algo = capturedMode == DiffMode.Semantic ? _semantic : _myers;
+            TextDiffResult textResult;
+            string? fallbackReason = null;
+            try
+            {
+                textResult = algo.ComputeLines(leftLines, rightLines);
+            }
+            catch
+            {
+                fallbackReason = "Diff algorithm failed — falling back to Myers";
+                textResult     = _myers.ComputeLines(leftLines, rightLines);
+                capturedMode   = DiffMode.Text;
+            }
+            return new DiffEngineResult
+            {
+                EffectiveMode  = capturedMode,
+                TextResult     = textResult,
+                FallbackReason = fallbackReason ?? textResult.FallbackReason,
+                LeftPath       = leftPath,
+                RightPath      = rightPath
+            };
+        }, ct).ConfigureAwait(false);
     }
 
     private static DiffEngineResult CompareBinary(string leftPath, string rightPath,

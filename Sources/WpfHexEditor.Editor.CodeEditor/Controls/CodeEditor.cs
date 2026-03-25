@@ -283,6 +283,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static readonly Brush s_wordHighlightBg  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
         private static readonly Pen   s_wordHighlightPen = MakeFrozenPen(Color.FromArgb(180, 86, 156, 214), 1.0);
 
+        // Bracket matching highlight assets — fixed colors, safe as static frozen fields (OPT-PERF-03).
+        private static readonly Brush s_bracketHighlightBrush = MakeFrozenBrush(Color.FromArgb(80, 0, 120, 215));
+        private static readonly Pen   s_bracketBorderPen      = MakeFrozenPen(Color.FromRgb(0, 120, 215), 1.5);
+
         private static Pen MakeSquigglyPen(Color color) => MakeFrozenPen(color, 1.5);
 
         private static Pen MakeFrozenPen(Color color, double thickness)
@@ -388,6 +392,42 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // GlyphRun renderer — recreated whenever font or DPI changes.
         private GlyphRunRenderer? _glyphRenderer;
+
+        // Per-frame pen/brush caches — rebuilt only when the corresponding value changes (OPT-PERF-03).
+        private Pen?    _cachedCaretPen;
+        private Pen?    _cachedCaretSecondaryPen;
+        private Color   _cachedCaretColor;
+        private Pen?    _cachedCurrentLineBorderPen;
+        private Color   _cachedCurrentLineBorderColor;
+        private Pen?    _cachedUrlPen;
+        private Brush?  _cachedUrlBrush;
+        private Pen?    _cachedFoldLabelPen;
+        private Pen?    _cachedFoldLabelHoverPen;
+        private Brush?  _cachedFoldLabelBorderBrush;
+        private Brush?  _cachedFoldLabelHoverBrush;
+
+        // DPI value for the current render pass — set once at OnRender entry (OPT-PERF-03).
+        private double _renderPixelsPerDip = 1.0;
+
+        // Visible folding regions cache — populated in CalculateVisibleLines to avoid
+        // O(total-regions) iteration in RenderScopeGuides every frame (OPT-PERF-03).
+        private readonly List<FoldingRegion> _visibleRegions = new();
+
+        // Bracket match cache — avoids O(distance) search on every render frame (OPT-PERF-03).
+        private int          _cachedBracketCursorLine = -1;
+        private int          _cachedBracketCursorCol  = -1;
+        private int          _cachedBracketColumn     = -1;
+        private TextPosition? _cachedBracketMatchResult;
+
+        // Multi-line selection geometry cache — avoids O(n²) Geometry.Combine each frame (OPT-PERF-04).
+        private Geometry?    _cachedSelectionGeometry;
+        private TextPosition _cachedSelGeomStart;
+        private TextPosition _cachedSelGeomEnd;
+        private int          _cachedSelGeomFirstLine;
+        private int          _cachedSelGeomLastLine;
+
+        // LSP diagnostics render coalescing — avoids redundant InvalidateVisual() on rapid batches (OPT-PERF-05).
+        private bool _diagnosticsRenderPending;
 
         // Folding support (Phase B3).
         private FoldingEngine?  _foldingEngine;

@@ -235,10 +235,19 @@ namespace WpfHexEditor.HexEditor.Controls
         private Dictionary<string, FormattedText> _asciiTextCache = new();
         private double _asciiTextCacheDpi;
 
+        // FormattedText cache for TBL Bit8 mode (OPT-PERF-06)
+        // Key: (displayChar, brush) — brush varies by TBL token size (1/2/3/4+ bytes)
+        private Dictionary<(string, Brush), FormattedText> _tblTextCache = new();
+        private double _tblTextCacheDpi;
+
         // FormattedText cache for offset rendering (avoids ~30 allocations per frame)
         // Key: offset text string → cached FormattedText (all use same brush/font)
         private Dictionary<(string text, bool bold), FormattedText> _offsetTextCache = new();
         private double _offsetTextCacheDpi;
+
+        // String cache for FormatOffset (OPT-PERF-15) — avoids string allocation per visible line per frame
+        private Dictionary<long, string> _offsetStringCache = new();
+        private Core.DataVisualType _offsetStringCacheVisualType = (Core.DataVisualType)(-1);
 
         /// <summary>
         /// Get the last visible byte position in the viewport (matches Legacy behavior)
@@ -706,6 +715,36 @@ namespace WpfHexEditor.HexEditor.Controls
                 _dpi);
 
             _asciiTextCache[displayChar] = ft;
+            return ft;
+        }
+
+        /// <summary>
+        /// Get or create a cached FormattedText for TBL Bit8 rendering (OPT-PERF-06).
+        /// Brush is part of the cache key because TBL tokens use different colors by byte-size.
+        /// Eliminates ~640 FormattedText allocations/frame at 60 Hz in TBL mode.
+        /// </summary>
+        private FormattedText GetCachedTblText(string displayChar, Brush textBrush)
+        {
+            if (_tblTextCacheDpi != _dpi)
+            {
+                _tblTextCache.Clear();
+                _tblTextCacheDpi = _dpi;
+            }
+
+            var key = (displayChar, textBrush);
+            if (_tblTextCache.TryGetValue(key, out var cached))
+                return cached;
+
+            var ft = new FormattedText(
+                displayChar,
+                System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                _typeface,
+                13,
+                textBrush,
+                _dpi);
+
+            _tblTextCache[key] = ft;
             return ft;
         }
 
@@ -1617,6 +1656,7 @@ namespace WpfHexEditor.HexEditor.Controls
             // Invalidate text caches (font/DPI changed)
             _hexTextCache.Clear();
             _asciiTextCache.Clear();
+            _tblTextCache.Clear();
             _offsetTextCache.Clear();
 
             // Invalidate custom background renderer cache
@@ -2310,13 +2350,26 @@ namespace WpfHexEditor.HexEditor.Controls
         /// </summary>
         private string FormatOffset(long position, Core.DataVisualType visualType)
         {
-            return visualType switch
+            // Invalidate string cache when display format changes (OPT-PERF-15)
+            if (_offsetStringCacheVisualType != visualType)
+            {
+                _offsetStringCache.Clear();
+                _offsetStringCacheVisualType = visualType;
+            }
+
+            if (_offsetStringCache.TryGetValue(position, out var cached))
+                return cached;
+
+            var result = visualType switch
             {
                 Core.DataVisualType.Hexadecimal => $"0x{position:X8}",
                 Core.DataVisualType.Decimal => position.ToString("D10").PadLeft(10, ' '),
                 Core.DataVisualType.Binary => $"0b{Convert.ToString(position, 2).PadLeft(32, '0')}",
                 _ => $"0x{position:X8}"
             };
+
+            _offsetStringCache[position] = result;
+            return result;
         }
 
         private void DrawHexByte(DrawingContext dc, ByteData byteData, double x, double y)
@@ -2509,15 +2562,9 @@ namespace WpfHexEditor.HexEditor.Controls
             // TBL rendering only supported in Bit8 mode
             if (_tblStream != null && byteData.ByteSize == Core.ByteSizeType.Bit8)
             {
-                // TBL loaded in Bit8 mode: measure dynamic width
-                formattedText = new FormattedText(
-                    displayChar,
-                    System.Globalization.CultureInfo.CurrentCulture,
-                    FlowDirection.LeftToRight,
-                    _typeface,
-                    13,
-                    textBrush,
-                    _dpi);
+                // TBL loaded in Bit8 mode: use cached FormattedText (OPT-PERF-06)
+                // Previously: new FormattedText per byte → 640 allocs/frame @ 60 Hz
+                formattedText = GetCachedTblText(displayChar, textBrush);
 
                 cellWidth = formattedText.Width > AsciiCharWidth
                     ? formattedText.Width

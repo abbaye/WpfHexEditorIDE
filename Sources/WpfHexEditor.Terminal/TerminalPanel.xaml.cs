@@ -62,6 +62,14 @@ public sealed partial class TerminalPanel : UserControl
     /// </summary>
     private bool _suppressAutoScrollPause;
 
+    // -- Cached theme brushes — populated in OnLoaded; avoids FindResource() per line (OPT-PERF-04) --
+
+    private Brush? _cachedTimestampFg;
+    private Brush? _cachedErrorFg;
+    private Brush? _cachedWarningFg;
+    private Brush? _cachedInfoFg;
+    private Brush? _cachedStandardFg;
+
     // -- Find service -------------------------------------------------------------
 
     private RichTextBoxFindService _findService = null!;
@@ -132,11 +140,24 @@ public sealed partial class TerminalPanel : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        // Cache theme brushes here — WPF resources are available after Loaded (OPT-PERF-04).
+        CacheThemeBrushes();
+
         // Re-attach after a dock visual-tree rebuild (Unloaded fired but ViewModel was NOT disposed).
         if (_vm is null) return;
         AttachViewModel(_vm);
         SubscribeToActiveSessionOutput();
         RebuildOutput();
+    }
+
+    /// <summary>Caches frequently-used theme brushes so FindResource() is not called per output line.</summary>
+    private void CacheThemeBrushes()
+    {
+        _cachedTimestampFg = TryFindResource("Panel_ToolbarForegroundBrush") as Brush ?? Brushes.Gray;
+        _cachedErrorFg     = TryFindResource("ErrorForegroundBrush")         as Brush ?? new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44));
+        _cachedWarningFg   = TryFindResource("WarningForegroundBrush")       as Brush ?? new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B));
+        _cachedInfoFg      = TryFindResource("DockTabActiveTextBrush")       as Brush ?? new SolidColorBrush(Color.FromRgb(0x60, 0xA5, 0xFA));
+        _cachedStandardFg  = TryFindResource("DockMenuForegroundBrush")      as Brush ?? Brushes.White;
     }
 
     // -- DataContext wiring -------------------------------------------------------
@@ -275,12 +296,22 @@ public sealed partial class TerminalPanel : UserControl
         {
             para.Inlines.Add(new Run($"[{line.Timestamp:HH:mm:ss}] ")
             {
-                Foreground = (Brush)FindResource("Panel_ToolbarForegroundBrush"),
+                Foreground = _cachedTimestampFg ?? Brushes.Gray, // cached (OPT-PERF-04)
                 FontSize = _vm?.OutputFontSize ?? 12
             });
         }
 
         var text = line.Text;
+
+        // Short-circuit URL detection for the common case (no URLs) — avoids Regex.Matches alloc.
+        if (!UrlRegex.IsMatch(text))
+        {
+            para.Inlines.Add(string.IsNullOrEmpty(text)
+                ? new Run(string.Empty) { Foreground = fg }
+                : new Run(text) { Foreground = fg });
+            return para;
+        }
+
         var matches = UrlRegex.Matches(text);
         int cursor = 0;
 
@@ -371,6 +402,19 @@ public sealed partial class TerminalPanel : UserControl
 
     private Brush BrushForKind(TerminalOutputKind kind)
     {
+        // Use cached brushes (populated in CacheThemeBrushes/OnLoaded) — OPT-PERF-04.
+        if (_cachedStandardFg != null)
+        {
+            return kind switch
+            {
+                TerminalOutputKind.Error   => _cachedErrorFg   ?? Brushes.Red,
+                TerminalOutputKind.Warning => _cachedWarningFg ?? Brushes.Orange,
+                TerminalOutputKind.Info    => _cachedInfoFg    ?? Brushes.CornflowerBlue,
+                _                          => _cachedStandardFg
+            };
+        }
+
+        // Pre-Loaded fallback: walk resource tree (uncommon, only before first Loaded event).
         try
         {
             return kind switch
@@ -383,7 +427,6 @@ public sealed partial class TerminalPanel : UserControl
         }
         catch
         {
-            // Fallback colours when theme resource is not available.
             return kind switch
             {
                 TerminalOutputKind.Error   => new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44)),

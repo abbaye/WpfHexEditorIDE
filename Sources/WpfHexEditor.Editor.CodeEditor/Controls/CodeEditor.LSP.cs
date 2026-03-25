@@ -455,7 +455,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             RebuildValidationIndex();
             DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
-            InvalidateVisual();
+
+            // Coalesce rapid diagnostic batches into a single render pass (OPT-PERF-05).
+            if (!_diagnosticsRenderPending)
+            {
+                _diagnosticsRenderPending = true;
+                Dispatcher.InvokeAsync(() =>
+                {
+                    if (!_diagnosticsRenderPending) return;
+                    _diagnosticsRenderPending = false;
+                    InvalidateVisual();
+                }, System.Windows.Threading.DispatcherPriority.Render);
+            }
         }
 
         // -- Find All References (LSP) ------------------------------------
