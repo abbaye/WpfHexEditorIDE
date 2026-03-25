@@ -352,6 +352,20 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Wrap long lines visually at the viewport edge (hides horizontal scrollbar).</summary>
     public bool WordWrap { get; set; } = false;
 
+    // -- End-of-Block Hint ---------------------------------------------------
+
+    /// <summary>
+    /// When true, hovering over a closing token (}, #endregion, &lt;/Tag&gt;) shows
+    /// a compact popup with the matching opening line(s) and navigation link.
+    /// </summary>
+    public bool EndOfBlockHintEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Milliseconds the cursor must dwell over a closing token before the
+    /// end-of-block hint popup appears. Range: 100–2000. Default: 400.
+    /// </summary>
+    public int EndOfBlockHintDelayMs { get; set; } = 400;
+
     // -- InlineHints ---------------------------------------------------------
 
     /// <summary>

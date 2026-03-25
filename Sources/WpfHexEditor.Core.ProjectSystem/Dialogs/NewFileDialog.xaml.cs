@@ -38,6 +38,11 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     public IFileTemplate? SelectedTemplate { get; private set; }
     public IProject?      TargetProject    { get; private set; }
     /// <summary>
+    /// Id of the virtual folder in <see cref="TargetProject"/> to place the item in.
+    /// <c>null</c> means the project root (or not launched from Solution Explorer).
+    /// </summary>
+    public string?        TargetFolderId   { get; private set; }
+    /// <summary>
     /// When <c>true</c> the host opens the document in-memory via HexEditor.OpenNew();
     /// the save-file dialog appears on the first Ctrl+S.
     /// </summary>
@@ -46,31 +51,58 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     // ── Internal state ──────────────────────────────────────────────────────
 
     private readonly List<IFileTemplate> _allTemplates;
-    private string _selectedCategory = "All";
-    private string _searchText       = "";
-    private string _sortBy           = "Name";
-    private bool   _viewModeGrid     = true;
-    private bool   _suppressSync;
+    private string   _selectedCategory = "All";
+    private string   _searchText       = "";
+    private string   _sortBy           = "Name";
+    private bool     _viewModeGrid     = true;
+    private bool     _suppressSync;
+    private IProject? _preSelectedProject;
 
     // ── Constructor ─────────────────────────────────────────────────────────
 
     /// <param name="defaultDirectory">Initial location shown in the Location box.</param>
     /// <param name="availableProjects">Projects to offer in the "Add to project" combo.</param>
+    /// <param name="preSelectedProject">
+    /// When set (launched from Solution Explorer), the dialog pre-checks "Add to project",
+    /// pre-selects this project, and shows the folder picker.
+    /// </param>
+    /// <param name="preSelectedFolder">
+    /// Virtual folder id to pre-select in the folder combo.
+    /// Ignored when <paramref name="preSelectedProject"/> is <c>null</c>.
+    /// </param>
     public NewFileDialog(
-        string? defaultDirectory = null,
-        IReadOnlyList<IProject>? availableProjects = null)
+        string?                  defaultDirectory   = null,
+        IReadOnlyList<IProject>? availableProjects  = null,
+        IProject?                preSelectedProject = null,
+        string?                  preSelectedFolder  = null)
     {
         InitializeComponent();
 
         LocationBox.Text = defaultDirectory
             ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
+        _preSelectedProject = preSelectedProject;
         _allTemplates = FileTemplateRegistry.Templates.ToList();
         PopulateCategorySidebar();
-        PopulateProjectCombo(availableProjects);
+        PopulateProjectCombo(availableProjects, preSelectedProject);
+
+        if (preSelectedProject is not null)
+        {
+            AddToProjectCheck.IsChecked = true;
+            ProjectCombo.IsEnabled      = true;
+            PopulateFolderCombo(preSelectedProject, preSelectedFolder);
+            FolderLabel.Visibility      = Visibility.Visible;
+            FolderCombo.Visibility      = Visibility.Visible;
+        }
 
         CategoryList.SelectedIndex = 0;   // "All"
-        ViewGridBtn.IsChecked      = true;
+
+        // Default to list view — more readable for large template sets.
+        _viewModeGrid               = false;
+        ViewListBtn.IsChecked       = true;
+        TemplateGridView.Visibility = Visibility.Collapsed;
+        TemplateListView.Visibility = Visibility.Visible;
+
         ApplyFilter();
         NameBox.Focus();
     }
@@ -79,27 +111,58 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 
     private void PopulateCategorySidebar()
     {
-        CategoryList.Items.Add(new ListBoxItem { Content = "All", Tag = "All" });
+        // Add plain strings — WPF creates ListBoxItem containers and applies ItemContainerStyle.
+        // Adding ListBoxItem directly would bypass ItemContainerStyle (IsItemItsOwnContainer).
+        CategoryList.Items.Add("All");
 
-        var seen = new List<string>();
-        foreach (var tpl in _allTemplates)
-        {
-            if (seen.Contains(tpl.Category)) continue;
-            seen.Add(tpl.Category);
-            CategoryList.Items.Add(new ListBoxItem { Content = tpl.Category, Tag = tpl.Category });
-        }
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var cat in _allTemplates.SelectMany(t => t.Categories))
+            if (seen.Add(cat))
+                CategoryList.Items.Add(cat);
     }
 
-    private void PopulateProjectCombo(IReadOnlyList<IProject>? projects)
+    private void PopulateProjectCombo(IReadOnlyList<IProject>? projects, IProject? preSelected)
     {
         if (projects is null or { Count: 0 })
         {
             AddToProjectCheck.IsEnabled = false;
             return;
         }
-        foreach (var p in projects)
+        int preSelectedIndex = 0;
+        for (int i = 0; i < projects.Count; i++)
+        {
+            var p = projects[i];
             ProjectCombo.Items.Add(new ComboBoxItem { Content = p.Name, Tag = p });
-        ProjectCombo.SelectedIndex = 0;
+            if (preSelected is not null && p.Id == preSelected.Id)
+                preSelectedIndex = i;
+        }
+        ProjectCombo.SelectedIndex = preSelectedIndex;
+    }
+
+    private void PopulateFolderCombo(IProject project, string? preSelectedFolderId)
+    {
+        FolderCombo.Items.Clear();
+        FolderCombo.Items.Add(new ComboBoxItem { Content = "(project root)", Tag = (string?)null });
+
+        foreach (var folder in project.RootFolders)
+            AddFolderItem(folder, indent: 0, preSelectedFolderId);
+
+        FolderCombo.SelectedIndex = 0;
+    }
+
+    private void AddFolderItem(IVirtualFolder folder, int indent, string? preSelectedId)
+    {
+        var item = new ComboBoxItem
+        {
+            Content = new string(' ', indent * 2) + folder.Name,
+            Tag     = folder.Id,
+        };
+        FolderCombo.Items.Add(item);
+        if (folder.Id == preSelectedId)
+            FolderCombo.SelectedItem = item;
+
+        foreach (var child in folder.Children)
+            AddFolderItem(child, indent + 1, preSelectedId);
     }
 
     // ── Filter / sort / view ────────────────────────────────────────────────
@@ -111,7 +174,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
         var filtered = _allTemplates.AsEnumerable();
 
         if (_selectedCategory != "All")
-            filtered = filtered.Where(t => t.Category == _selectedCategory);
+            filtered = filtered.Where(t => t.Categories.Contains(_selectedCategory));
 
         if (_searchText.Length > 0)
             filtered = filtered.Where(t =>
@@ -137,7 +200,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 
     private void OnCategoryChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (CategoryList.SelectedItem is not ListBoxItem { Tag: string cat }) return;
+        if (CategoryList.SelectedItem is not string cat) return;
         _selectedCategory = cat;
         ApplyFilter();
     }
@@ -268,6 +331,10 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
         if (AddToProjectCheck.IsChecked == true
             && ProjectCombo.SelectedItem is ComboBoxItem { Tag: IProject proj })
             TargetProject = proj;
+
+        if (FolderCombo.Visibility == Visibility.Visible
+            && FolderCombo.SelectedItem is ComboBoxItem { Tag: string fid })
+            TargetFolderId = fid;
 
         DialogResult = true;
     }

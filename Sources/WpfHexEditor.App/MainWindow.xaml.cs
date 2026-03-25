@@ -2723,11 +2723,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSEAddNewItem(object? sender, AddItemRequestedEventArgs e)
     {
-        var dlg = new AddNewItemDialog(e.Project) { Owner = this };
+        var defaultDir = System.IO.Path.GetDirectoryName(e.Project.ProjectFilePath);
+        var dlg = new NewFileDialog(
+            defaultDirectory:   defaultDir,
+            availableProjects:  _solutionManager.CurrentSolution?.Projects,
+            preSelectedProject: e.Project,
+            preSelectedFolder:  e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedTemplate is null) return;
 
         _ = _solutionManager.CreateItemAsync(
-            e.Project,
+            dlg.TargetProject ?? e.Project,
             dlg.FileName,
             ProjectItemTypeHelper.FromExtension(Path.GetExtension(dlg.FileName)),
             virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId,
@@ -5339,11 +5344,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_solutionManager.CurrentSolution?.Projects.FirstOrDefault() is not { } project) return;
 
-        var dlg = new AddNewItemDialog(project) { Owner = this };
+        var defaultDir = System.IO.Path.GetDirectoryName(project.ProjectFilePath);
+        var dlg = new NewFileDialog(
+            defaultDirectory:  defaultDir,
+            availableProjects: _solutionManager.CurrentSolution?.Projects,
+            preSelectedProject: project) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedTemplate is null) return;
 
         _ = _solutionManager.CreateItemAsync(
-            project,
+            dlg.TargetProject ?? project,
             dlg.FileName,
             ProjectItemTypeHelper.FromExtension(Path.GetExtension(dlg.FileName)),
             virtualFolderId: dlg.TargetFolderId,

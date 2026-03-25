@@ -270,7 +270,20 @@ public static class LanguageDefinitionSerializer
             MultilineTagSupport     = dto.MultilineTagSupport,
             HeadingBased            = dto.HeadingBased,
             MinHeadingLevel         = dto.MinHeadingLevel,
+            EndOfBlockHint          = MapEndOfBlockHint(dto.EndOfBlockHint),
         };
+    }
+
+    private static EndOfBlockHintSettings? MapEndOfBlockHint(EndOfBlockHintDto? dto)
+    {
+        if (dto is null) return null;
+        return new EndOfBlockHintSettings(
+            IsEnabled        : dto.Enabled,
+            ShowLineNumber   : dto.ShowLineNumber,
+            ShowLineCount    : dto.ShowLineCount,
+            MaxContextLines  : dto.MaxContextLines,
+            TriggerBrace     : dto.TriggerBrace,
+            TriggerDirective : dto.TriggerDirective);
     }
 
     // -- Internal DTO ---------------------------------------------------------
@@ -360,5 +373,16 @@ public static class LanguageDefinitionSerializer
         [JsonPropertyName("multilineTagSupport")]  public bool          MultilineTagSupport  { get; set; }
         [JsonPropertyName("headingBased")]         public bool          HeadingBased         { get; set; }
         [JsonPropertyName("minHeadingLevel")]      public int           MinHeadingLevel      { get; set; } = 2;
+        [JsonPropertyName("endOfBlockHint")]       public EndOfBlockHintDto? EndOfBlockHint  { get; set; }
+    }
+
+    private sealed class EndOfBlockHintDto
+    {
+        [JsonPropertyName("enabled")]          public bool Enabled          { get; set; } = true;
+        [JsonPropertyName("showLineNumber")]   public bool ShowLineNumber   { get; set; } = true;
+        [JsonPropertyName("showLineCount")]    public bool ShowLineCount    { get; set; } = true;
+        [JsonPropertyName("maxContextLines")]  public int  MaxContextLines  { get; set; } = 3;
+        [JsonPropertyName("triggerBrace")]     public bool TriggerBrace     { get; set; } = true;
+        [JsonPropertyName("triggerDirective")] public bool TriggerDirective { get; set; } = true;
     }
 }

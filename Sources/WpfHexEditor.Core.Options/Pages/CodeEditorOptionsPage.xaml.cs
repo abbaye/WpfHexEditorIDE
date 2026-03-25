@@ -68,6 +68,8 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             TxtZoom.Text      = ((int)(ce.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = ce.MouseWheelSpeed;
             CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
+            CheckEndBlockHint.IsChecked  = ce.EndOfBlockHintEnabled;
+            TxtEndBlockDelay.Text        = ce.EndOfBlockHintDelayMs.ToString();
 
             LoadColorPicker(ChkBg,      CpBg,      ce.BackgroundColor,  "TE_Background");
             LoadColorPicker(ChkFg,      CpFg,      ce.ForegroundColor,  "TE_Foreground");
@@ -100,7 +102,9 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.DefaultZoom     = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
         if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)
             ce.MouseWheelSpeed = mws;
-        ce.ChangesetEnabled = CheckChangeset.IsChecked == true;
+        ce.ChangesetEnabled        = CheckChangeset.IsChecked     == true;
+        ce.EndOfBlockHintEnabled   = CheckEndBlockHint.IsChecked  == true;
+        ce.EndOfBlockHintDelayMs   = Math.Clamp(ParseInt(TxtEndBlockDelay.Text, 400), 100, 2000);
         ce.BackgroundColor   = FlushColorPicker(ChkBg,      CpBg);
         ce.ForegroundColor   = FlushColorPicker(ChkFg,      CpFg);
         ce.KeywordColor      = FlushColorPicker(ChkKw,      CpKw);

@@ -124,7 +124,8 @@
       ],
       "endPatterns": [
         "\\}"
-      ]
+      ],
+      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": true }
     }
   }
 }

@@ -185,4 +185,29 @@ public sealed record FoldingRules
     // ── Heading-based (Markdown) ───────────────────────────────────────────
     public bool HeadingBased    { get; init; }
     public int  MinHeadingLevel { get; init; } = 2;
+
+    // ── End-of-block hover hint ────────────────────────────────────────────
+    /// <summary>
+    /// Per-language configuration for the end-of-block hover hint popup.
+    /// Null means "use defaults" (hint enabled for all region kinds).
+    /// </summary>
+    public EndOfBlockHintSettings? EndOfBlockHint { get; init; }
 }
+
+// ==========================================================
+// Project: WpfHexEditor.ProjectSystem
+// File: EndOfBlockHintSettings.cs (embedded in LanguageDefinition.cs)
+// Description: Per-language configuration for the end-of-block hover hint.
+// ==========================================================
+
+/// <summary>
+/// Controls the end-of-block hover hint for a language.
+/// All booleans default to true (opt-in per language).
+/// </summary>
+public sealed record EndOfBlockHintSettings(
+    bool IsEnabled        = true,
+    bool ShowLineNumber   = true,
+    bool ShowLineCount    = true,
+    int  MaxContextLines  = 3,
+    bool TriggerBrace     = true,
+    bool TriggerDirective = true);

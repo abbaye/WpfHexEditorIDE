@@ -79,6 +79,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private System.Windows.Threading.DispatcherTimer? _foldPeekTimer;
         private int              _foldPeekTargetLine = -1;
 
+        // End-of-block hint popup — shown on hover over }, #endregion, </Tag> etc.
+        private EndBlockHintPopup? _endBlockHintPopup;
+        private System.Windows.Threading.DispatcherTimer? _endBlockHintTimer;
+        private int                _endBlockHintHoveredLine = -1;
+        private FoldingRegion?     _endBlockHintActiveRegion;
+
         // The URL zone currently under the mouse pointer (null = none).
         // Drives hover underline; changing it triggers InvalidateVisual().
         private UrlHitZone? _hoveredUrlZone;
@@ -731,6 +737,47 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (d is not CodeEditor ce || ce._hoverQuickInfoService is null) return;
             ce._hoverQuickInfoService.SetDebounceInterval(
                 TimeSpan.FromMilliseconds(Math.Max(200, (int)e.NewValue)));
+        }
+
+        // ── End-of-Block Hint DPs ─────────────────────────────────────────────
+
+        public static readonly DependencyProperty ShowEndOfBlockHintProperty =
+            DependencyProperty.Register(nameof(ShowEndOfBlockHint), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnShowEndOfBlockHintChanged));
+
+        [Category("Features")]
+        [DisplayName("Show End-of-Block Hint")]
+        [Description("When true, hovering over }, #endregion, </Tag> shows the matching opening line(s).")]
+        public bool ShowEndOfBlockHint
+        {
+            get => (bool)GetValue(ShowEndOfBlockHintProperty);
+            set => SetValue(ShowEndOfBlockHintProperty, value);
+        }
+
+        private static void OnShowEndOfBlockHintChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || (bool)e.NewValue) return;
+            ce.DismissEndBlockHint();
+        }
+
+        public static readonly DependencyProperty EndOfBlockHintDelayMsProperty =
+            DependencyProperty.Register(nameof(EndOfBlockHintDelayMs), typeof(int), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(400, OnEndOfBlockHintDelayChanged));
+
+        [Category("Features")]
+        [DisplayName("End-of-Block Hint Delay (ms)")]
+        [Description("Hover dwell time in milliseconds before the end-of-block hint popup appears (100–2000 ms).")]
+        public int EndOfBlockHintDelayMs
+        {
+            get => (int)GetValue(EndOfBlockHintDelayMsProperty);
+            set => SetValue(EndOfBlockHintDelayMsProperty, value);
+        }
+
+        private static void OnEndOfBlockHintDelayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || ce._endBlockHintTimer is null) return;
+            ce._endBlockHintTimer.Interval = TimeSpan.FromMilliseconds(
+                Math.Clamp((int)e.NewValue, 100, 2000));
         }
 
         // ── Language Definition DP ─────────────────────────────────────────────
@@ -1901,6 +1948,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldPeekTimer          = new System.Windows.Threading.DispatcherTimer
                                       { Interval = TimeSpan.FromMilliseconds(600) };
             _foldPeekTimer.Tick    += OnFoldPeekTimerTick;
+
+            // End-of-block hint timer — fires after hover dwell on a closing token.
+            _endBlockHintTimer       = new System.Windows.Threading.DispatcherTimer
+                                       { Interval = TimeSpan.FromMilliseconds(400) }; // default; updated via EndOfBlockHintDelayMs DP
+            _endBlockHintTimer.Tick += OnEndBlockHintTimerTick;
 
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
@@ -5817,7 +5869,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     // Dismiss Quick Info popup on Escape.
                     _quickInfoPopup?.Hide();
                     _hoverQuickInfoService?.Cancel();
-                    e.Handled = _quickInfoPopup?.IsShowing == true;
+                    // Dismiss end-of-block hint on Escape.
+                    DismissEndBlockHint();
+                    e.Handled = _quickInfoPopup?.IsShowing == true || _endBlockHintPopup?.IsOpen == true;
                     break;
             }
 
@@ -5964,6 +6018,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _foldPeekTargetLine = -1;
             _foldPeekTimer?.Stop();
             _foldPeekPopup?.Hide();
+
+            // Start end-block hint grace timer — popup stays open 200 ms so mouse can enter it.
+            _endBlockHintTimer?.Stop();
+            _endBlockHintHoveredLine  = -1;
+            _endBlockHintActiveRegion = null;
+            _endBlockHintPopup?.OnEditorMouseLeft();
 
             // Start Quick Info grace timer — popup stays open for 200 ms so mouse can enter it.
             _quickInfoPopup?.OnEditorMouseLeft();
@@ -6372,6 +6432,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _quickInfoPopup?.Hide();
+            DismissEndBlockHint();
 
             // Ctrl + wheel → zoom in / out (B6).
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -6725,6 +6786,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Quick Info hover — dispatch after cursor state is settled
                 if (ShowQuickInfo && _hoverQuickInfoService is not null && !_isSelecting)
                     HandleQuickInfoHover(hoverPos, e.GetPosition(this));
+
+                // End-of-block hint — show popup when cursor is on a region's closing line.
+                HandleEndBlockHintHover(hoverPos.Line);
 
                 // Ctrl+hover symbol underline.
                 // Enabled when: (a) no LanguageDefinition is registered for this file type
@@ -7571,6 +7635,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Dismiss Quick Info when the document changes — content is stale.
             _quickInfoPopup?.Hide();
             _hoverQuickInfoService?.Cancel();
+            DismissEndBlockHint();
 
             // Record in undo engine (unless replaying an undo/redo operation).
             if (!_isInternalEdit)
@@ -8952,6 +9017,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _quickInfoPopup?.Hide();
             _hoverQuickInfoService?.Dispose();
             _hoverQuickInfoService = null;
+            DismissEndBlockHint();
+            _endBlockHintPopup?.Dispose();
+            _endBlockHintPopup = null;
             _ctrlClickService?.Dispose();
             _ctrlClickService = null;
 
@@ -9315,6 +9383,99 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var lineSnapshot = _document.Lines.ToArray();
             _hoverQuickInfoService.RequestAsync(
                 _currentFilePath, hoverPos.Line, hoverPos.Column, word, lineSnapshot);
+        }
+
+        // ── End-of-Block Hint ─────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Called on every mouse move. Starts/stops the end-of-block hint timer based on
+        /// whether the hovered line is the EndLine of a folding region.
+        /// </summary>
+        private void HandleEndBlockHintHover(int hoverLine0)
+        {
+            if (!IsEndBlockHintEnabled()) return;
+            if (hoverLine0 == _endBlockHintHoveredLine) return;
+
+            _endBlockHintHoveredLine = hoverLine0;
+            _endBlockHintTimer?.Stop();
+
+            var region = FindRegionEndingAt(hoverLine0);
+            if (region is not null && IsRegionKindAllowed(region))
+            {
+                _endBlockHintActiveRegion = region;
+                _endBlockHintTimer?.Start();
+            }
+            else
+            {
+                DismissEndBlockHint();
+            }
+        }
+
+        private bool IsEndBlockHintEnabled()
+        {
+            if (_foldingEngine is null || _document is null) return false;
+            var s = WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.CodeEditorDefaults;
+            if (!s.EndOfBlockHintEnabled) return false;
+            return Language?.FoldingRules?.EndOfBlockHint?.IsEnabled ?? true;
+        }
+
+        private bool IsRegionKindAllowed(FoldingRegion r)
+        {
+            var hint = Language?.FoldingRules?.EndOfBlockHint;
+            if (hint is null) return true;
+            return r.Kind switch
+            {
+                WpfHexEditor.Editor.CodeEditor.Folding.FoldingRegionKind.Directive => hint.TriggerDirective,
+                _                                                                   => hint.TriggerBrace,
+            };
+        }
+
+        /// <summary>
+        /// Returns the innermost (largest StartLine) non-collapsed region whose EndLine == line0.
+        /// </summary>
+        private FoldingRegion? FindRegionEndingAt(int line0)
+        {
+            if (_foldingEngine is null) return null;
+            FoldingRegion? best = null;
+            foreach (var r in _foldingEngine.Regions)
+            {
+                if (r.IsCollapsed) continue;
+                if (r.EndLine != line0) continue;
+                if (best is null || r.StartLine > best.StartLine) best = r;
+            }
+            return best;
+        }
+
+        private void DismissEndBlockHint()
+        {
+            _endBlockHintTimer?.Stop();
+            _endBlockHintActiveRegion = null;
+            _endBlockHintPopup?.Hide();
+        }
+
+        private void OnEndBlockHintTimerTick(object? sender, EventArgs e)
+        {
+            _endBlockHintTimer!.Stop();
+            if (_endBlockHintActiveRegion is null || _foldingEngine is null || _document is null) return;
+
+            var r = _endBlockHintActiveRegion;
+            if (!_lineYLookup.TryGetValue(r.EndLine, out double closeY)) return;
+
+            _endBlockHintPopup ??= new EndBlockHintPopup();
+            _endBlockHintPopup.NavigationRequested -= OnEndBlockHintNavigate;
+            _endBlockHintPopup.NavigationRequested += OnEndBlockHintNavigate;
+
+            int maxCtx = Language?.FoldingRules?.EndOfBlockHint?.MaxContextLines ?? 3;
+            _endBlockHintPopup.Show(
+                this, r, _document.Lines, _typeface, _fontSize,
+                new Rect(TextAreaLeftOffset, closeY, Math.Max(1, ActualWidth - TextAreaLeftOffset), _lineHeight),
+                ExternalHighlighter,
+                maxCtx);
+        }
+
+        private void OnEndBlockHintNavigate(int startLine0)
+        {
+            NavigateTo(startLine0, 0);
         }
 
         /// <summary>

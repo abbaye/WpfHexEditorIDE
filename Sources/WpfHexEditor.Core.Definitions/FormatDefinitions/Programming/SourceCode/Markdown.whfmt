@@ -139,7 +139,8 @@
     ],
     "foldingRules": {
       "headingBased": true,
-      "minHeadingLevel": 2
+      "minHeadingLevel": 2,
+      "endOfBlockHint""endOfBlockHint": { "enabled": false }
     },
     "embeddedLanguages": [
       { "id": "csharp",     "extension": ".cs"     },

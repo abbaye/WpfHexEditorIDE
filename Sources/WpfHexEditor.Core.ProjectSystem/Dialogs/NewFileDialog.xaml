@@ -53,6 +53,42 @@
                 </Setter>
             </Style>
 
+            <!-- View toggle button style — themed checked/hover states -->
+            <Style x:Key="ViewToggleStyle" TargetType="ToggleButton">
+                <Setter Property="Foreground"     Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Background"     Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="BorderBrush"    Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Cursor"         Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="3"
+                                    Width="{TemplateBinding Width}"
+                                    Height="{TemplateBinding Height}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource DockAccentBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <!-- Grid-view tile DataTemplate -->
             <DataTemplate x:Key="TileTemplate" DataType="{x:Type tpl:IFileTemplate}">
                 <Border Width="90" Height="90" Margin="6"
@@ -187,17 +223,15 @@
 
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="4,0,0,0">
                             <ToggleButton x:Name="ViewGridBtn" Width="26" Height="26"
-                                          ToolTip="Grid view" IsChecked="True"
-                                          Checked="OnViewGrid"
-                                          Background="{DynamicResource DockBackgroundBrush}"
-                                          BorderBrush="{DynamicResource DockBorderBrush}">
+                                          ToolTip="Grid view"
+                                          Style="{StaticResource ViewToggleStyle}"
+                                          Checked="OnViewGrid">
                                 <TextBlock Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                             </ToggleButton>
                             <ToggleButton x:Name="ViewListBtn" Width="26" Height="26"
-                                          ToolTip="List view"
-                                          Checked="OnViewList"
-                                          Background="{DynamicResource DockBackgroundBrush}"
-                                          BorderBrush="{DynamicResource DockBorderBrush}">
+                                          ToolTip="List view" Margin="2,0,0,0"
+                                          Style="{StaticResource ViewToggleStyle}"
+                                          Checked="OnViewList">
                                 <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                             </ToggleButton>
                         </StackPanel>
@@ -304,13 +338,15 @@
         <!-- ── Bottom bar ── -->
         <Grid Grid.Row="2" Margin="12,8,12,12">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>  <!-- 0: Name -->
                 <RowDefinition Height="6"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>  <!-- 2: Location -->
                 <RowDefinition Height="6"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>  <!-- 4: Add to project -->
+                <RowDefinition Height="6"/>
+                <RowDefinition Height="Auto"/>  <!-- 6: Folder (hidden unless from SE) -->
                 <RowDefinition Height="10"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>  <!-- 8: OK / Cancel -->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="80"/>
@@ -363,8 +399,22 @@
                       Background="{DynamicResource DockBackgroundBrush}"
                       BorderBrush="{DynamicResource DockBorderBrush}"/>
 
+            <!-- Folder (visible only when launched from Solution Explorer) -->
+            <Label x:Name="FolderLabel"
+                   Grid.Row="6" Grid.Column="0"
+                   Content="_Folder:"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   VerticalAlignment="Center" Padding="0,0,8,0"
+                   Visibility="Collapsed"/>
+            <ComboBox x:Name="FolderCombo"
+                      Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Background="{DynamicResource DockBackgroundBrush}"
+                      BorderBrush="{DynamicResource DockBorderBrush}"
+                      Visibility="Collapsed"/>
+
             <!-- OK / Cancel -->
-            <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4"
+            <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="4"
                         Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="OkButton" Content="OK" IsDefault="True"
                         IsEnabled="False" Click="OnOk" Margin="0,0,8,0"/>

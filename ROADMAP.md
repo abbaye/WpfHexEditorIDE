@@ -249,6 +249,8 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 |-----------|-------|-------------|
 | #190 | **LSP Phase 3** | Call hierarchy panel (`Shift+Alt+H`); linked editing ranges (rename-all-references live as you type); inline value hints (expression evaluation in debug scope); LSP 3.18 features: pull-diagnostic model (`textDocument/diagnostic`), type hierarchy (`Ctrl+F12`). |
 | #191 | **Core Source Analysis (Roslyn)** | C# incremental Roslyn parser replacing regex-based `SourceOutlineEngine`; VB.NET / F# parser support; cross-language symbol resolution; semantic model for LSP providers; `#if` / `#pragma` conditional compilation region handling. |
+| #192 | **F# Full Language Support** | `FSharp.whfmt` syntax definition (keywords, computation expressions `async { }` / `seq { }` / `task { }`, active patterns, discriminated union arms, F# operators `\|>` / `>>` / `<-`); `LanguageRegistry` registration for `.fs` / `.fsx` / `.fsi`; `LspServerRegistry` auto-detect `fsautocomplete` (Ionide) with PATH check + install hint; Assembly Explorer F# decompilation language mapping; `DocumentManager` extension map update. See **DevPlan #9**. |
+| #193 | **VB.NET Full Language Support** | `VBNet.whfmt` syntax definition (VB.NET keywords, `End Class` / `End Sub` / `End Function` block detection, `#Region` / `#End Region` named folding, `'` line comments, `'''` XML-doc comments, `&H` / `&B` / `&O` number literals, attribute `<…>` patterns); `LanguageRegistry` registration for `.vb`; OmniSharp `vbnet` language ID registration; Assembly Explorer VB.NET language mapping. See **DevPlan #9**. |
 
 ---
 

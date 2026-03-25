@@ -16,34 +16,62 @@ public static class FileTemplateRegistry
 {
     private static readonly List<IFileTemplate> _templates =
     [
-        // General (3)
+        // General (5)
         new BinaryFileTemplate(),
         new TextFileTemplate(),
+        new MarkdownFileTemplate(),
+        new GitIgnoreTemplate(),
         new WhfmtFileTemplate(),
 
-        // C# / .NET (7)
+        // C# / .NET (12)
         new CSharpClassTemplate(),
         new CSharpInterfaceTemplate(),
         new CSharpEnumTemplate(),
         new CSharpRecordTemplate(),
         new CSharpStructTemplate(),
         new VbNetClassTemplate(),
+        new VbNetInterfaceTemplate(),
+        new VbNetEnumTemplate(),
+        new VbNetModuleTemplate(),
+        new VbNetStructureTemplate(),
+        new VbNetRecordTemplate(),
         new CsxScriptTemplate(),
+        new WpfUserControlTemplate(),
+        new WpfWindowTemplate(),
+        new FSharpScriptTemplate(),
+        new FSharpModuleTemplate(),
+        new RazorPageTemplate(),
 
-        // Script (4)
+        // Script (6)
         new AsmFileTemplate(),
         new PowerShellFileTemplate(),
         new PythonFileTemplate(),
         new LuaFileTemplate(),
+        new BashScriptTemplate(),
+        new BatchScriptTemplate(),
 
-        // Data (5)
+        // ROM Hacking (5) — also cross-listed under Script via Categories
+        new GameScriptTemplate(),
+        new GameMessageTemplate(),
+        new GameEventTemplate(),
+        new GenericGameScriptTemplate(),
+        new GameDecompiledScriptTemplate(),
+
+        // Data (8)
         new JsonFileTemplate(),
         new TblFileTemplate(),
         new XmlFileTemplate(),
         new YamlFileTemplate(),
         new CsvFileTemplate(),
+        new TomlFileTemplate(),
+        new IniFileTemplate(),
+        new SqlFileTemplate(),
 
-        // Web (4)
+        // Config (2)
+        new DockerfileTemplate(),
+        new EditorConfigFileTemplate(),
+
+        // Web (4) — RazorPageTemplate also cross-listed here via Categories
         new HtmlFileTemplate(),
         new CssFileTemplate(),
         new JavaScriptFileTemplate(),

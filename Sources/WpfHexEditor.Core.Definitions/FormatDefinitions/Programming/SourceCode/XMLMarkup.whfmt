@@ -133,7 +133,8 @@
       "endPatterns": [
         "</[a-zA-Z]",
         "/>"
-      ]
+      ],
+      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
     }
   }
 }

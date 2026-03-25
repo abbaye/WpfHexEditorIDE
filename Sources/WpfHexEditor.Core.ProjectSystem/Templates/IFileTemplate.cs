@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Collections.Generic;
+
 namespace WpfHexEditor.Core.ProjectSystem.Templates;
 
 /// <summary>
@@ -34,10 +36,18 @@ public interface IFileTemplate
     byte[] CreateContent();
 
     /// <summary>
-    /// Category shown in the left sidebar of the New File dialog
-    /// (e.g. "General", "C# / .NET", "Data", "Script", "Web").
+    /// Primary category shown in the left sidebar of the New File dialog
+    /// (e.g. "General", "C# / .NET", "Data", "Script", "Web", "ROM Hacking").
     /// </summary>
     string Category => "General";
+
+    /// <summary>
+    /// All sidebar categories this template appears under.
+    /// Override when a template should appear in multiple categories
+    /// (e.g. a game script is listed in both "Script" and "ROM Hacking").
+    /// Defaults to <c>[Category]</c>.
+    /// </summary>
+    IReadOnlyList<string> Categories => [Category];
 
     /// <summary>
     /// Segoe MDL2 Assets glyph character used as the template icon tile.

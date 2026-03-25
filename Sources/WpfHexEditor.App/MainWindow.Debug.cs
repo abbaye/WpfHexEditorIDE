@@ -77,6 +77,11 @@ public partial class MainWindow
                 ClearAllExecutionLines();
                 UpdateDbgStatusBar(null);
             }));
+
+        // Wire any editors that were already open from layout restore.
+        // WireBreakpointSourceToEditor() is a no-op when _bpSourceAdapter is null (it runs before
+        // this method), so we must explicitly push the adapter to all existing CodeEditors now.
+        RefreshAllBreakpointGutters();
     }
 
     // ── Gutter wiring ─────────────────────────────────────────────────────────

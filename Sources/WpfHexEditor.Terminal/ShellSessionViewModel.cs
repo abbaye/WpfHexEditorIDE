@@ -266,6 +266,11 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
         // Start external shell immediately if not HxTerminal.
         if (session.ShellType != TerminalShellType.HxTerminal)
             _ = StartExternalShellAsync();
+        else
+        {
+            WriteInfo("WpfHexEditor HxTerminal  —  type 'help' for a list of built-in commands.");
+            WriteInfo($"Working directory: {_workingDirectory}");
+        }
     }
 
     // -- Public API ---------------------------------------------------------------

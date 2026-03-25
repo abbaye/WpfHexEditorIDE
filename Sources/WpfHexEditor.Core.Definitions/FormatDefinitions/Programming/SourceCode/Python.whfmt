@@ -47,7 +47,8 @@
     "foldingRules": {
       "indentBased": true,
       "indentTabWidth": 4,
-      "blockStartPattern": "^\\s*(?:def|class|if|elif|else|for|while|with|try|except|finally|async\\s+def|async\\s+for|async\\s+with)\\b"
+      "blockStartPattern": "^\\s*(?:def|class|if|elif|else|for|while|with|try|except|finally|async\\s+def|async\\s+for|async\\s+with)\\b",
+      "endOfBlockHint""endOfBlockHint": { "enabled": false }
     }
   }
 }

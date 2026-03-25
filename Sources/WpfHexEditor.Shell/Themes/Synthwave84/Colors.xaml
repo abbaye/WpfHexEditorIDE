@@ -706,4 +706,14 @@
     <SolidColorBrush x:Key="DF_OverviewModifiedBrush"        Color="#FF8B39" />
     <SolidColorBrush x:Key="DF_OverviewAddedBrush"           Color="#72F1B8" />
     <SolidColorBrush x:Key="DF_OverviewRemovedBrush"         Color="#FF2A6D" />
+
+    <!-- End-of-Block Hint tokens (ET_*) â€” inserted by Add-EndBlockTokens.ps1 -->
+    <SolidColorBrush x:Key="ET_PopupBackground"    Color="#1A1135" />
+    <SolidColorBrush x:Key="ET_PopupBorderBrush"   Color="#4A3080" />
+    <SolidColorBrush x:Key="ET_HeaderBackground"   Color="#130D28" />
+    <SolidColorBrush x:Key="ET_HeaderForeground"   Color="#F8F8F2" />
+    <SolidColorBrush x:Key="ET_MetaForeground"     Color="#6644AA" />
+    <SolidColorBrush x:Key="ET_LineNumberPillBg"   Color="#241848" />
+    <SolidColorBrush x:Key="ET_LineCountPillBg"    Color="#3A2860" />
+    <SolidColorBrush x:Key="ET_AccentBrush"        Color="#72F1B8" />
 </ResourceDictionary>

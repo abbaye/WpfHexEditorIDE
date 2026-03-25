@@ -50,3 +50,29 @@ public sealed class LuaFileTemplate : IFileTemplate
     public byte[] CreateContent() => Encoding.UTF8.GetBytes(
         "-- Lua Script\n\n");
 }
+
+/// <summary>Template for a new Shell/Bash script file.</summary>
+public sealed class BashScriptTemplate : IFileTemplate
+{
+    public string Name             => "Shell Script";
+    public string Description      => "Creates a new Bash/Shell script file (.sh) with a shebang line.";
+    public string DefaultExtension => ".sh";
+    public string Category         => "Script";
+    public string IconGlyph        => "\uE756";
+
+    public byte[] CreateContent() => Encoding.UTF8.GetBytes(
+        "#!/usr/bin/env bash\nset -euo pipefail\n\n# Shell Script\n\n");
+}
+
+/// <summary>Template for a new Windows Batch script file.</summary>
+public sealed class BatchScriptTemplate : IFileTemplate
+{
+    public string Name             => "Batch Script";
+    public string Description      => "Creates a new Windows Batch script file (.bat).";
+    public string DefaultExtension => ".bat";
+    public string Category         => "Script";
+    public string IconGlyph        => "\uE756";
+
+    public byte[] CreateContent() => Encoding.UTF8.GetBytes(
+        "@echo off\nREM Batch Script\n\n");
+}

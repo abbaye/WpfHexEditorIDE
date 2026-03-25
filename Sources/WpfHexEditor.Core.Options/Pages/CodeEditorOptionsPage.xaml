@@ -158,6 +158,28 @@
                       SelectionChanged="OnComboChanged"/>
         </Grid>
 
+        <!-- ── End-of-Block Hint ─────────────────────────────────────────── -->
+        <CheckBox x:Name="CheckEndBlockHint"
+                  Content="Show end-of-block hint popup (hover over }, #endregion, &lt;/Tag&gt;)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="LblEndBlockDelay"
+                       Text="Hover delay (ms):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TxtEndBlockDelay" Grid.Column="1"
+                     VerticalContentAlignment="Center"
+                     LostFocus="OnTextLostFocus"/>
+        </Grid>
+
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
 

@@ -124,7 +124,8 @@
     "foldingRules": {
       "tagBased": true,
       "multilineTagSupport": true,
-      "selfClosingTags": []
+      "selfClosingTags": [],
+      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
     }
   }
 }
