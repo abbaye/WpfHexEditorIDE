@@ -716,7 +716,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // so the guard fires on every integer line boundary regardless of the render
             // buffer offset (ADR-IH-PERF-02, ADR-SS-FP-01).
             int stickyRawLine = _lineHeight > 0
-                ? Math.Max(0, (int)(_verticalScrollOffset / _lineHeight))
+                ? Math.Max(0, (int)(_verticalScrollOffset / _lineHeight + 1e-9))
                 : _firstVisibleLine;
             if (stickyRawLine != _lastStickyFirstLine)
             {

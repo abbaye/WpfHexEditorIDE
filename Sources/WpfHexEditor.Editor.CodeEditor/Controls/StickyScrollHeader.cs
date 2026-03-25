@@ -47,6 +47,7 @@ internal sealed class StickyScrollHeader : FrameworkElement
     private static readonly Brush s_defaultBorder;
     private static readonly Brush s_defaultFg     = Brushes.LightGray;
     private static readonly Brush s_sepBrush;
+    private static readonly Brush s_hoverBrush;
 
     static StickyScrollHeader()
     {
@@ -56,6 +57,8 @@ internal sealed class StickyScrollHeader : FrameworkElement
         s_defaultBorder.Freeze();
         s_sepBrush = new SolidColorBrush(Color.FromArgb(0x20, 0x80, 0x80, 0x80));
         s_sepBrush.Freeze();
+        s_hoverBrush = new SolidColorBrush(Color.FromArgb(0x28, 0xFF, 0xFF, 0xFF));
+        s_hoverBrush.Freeze();
     }
 
     // ── Render state (set once in Update, used many times in OnRender) ──────
@@ -67,8 +70,12 @@ internal sealed class StickyScrollHeader : FrameworkElement
     // Cached brushes/pens (resolved from theme in Update(), never in OnRender).
     private Brush?  _cachedBg;
     private Brush?  _cachedFg;
+    private Brush?  _cachedHoverBrush;
     private Pen?    _cachedBorderPen;
     private Pen?    _cachedSepPen;
+
+    // Hover state — tracked in OnMouseMove/OnMouseLeave.
+    private int     _hoverRowIndex = -1;
 
     // Cached FormattedText rows (built in Update(), drawn in OnRender).
     // Index = entry index; each item is a list of (x-offset, FormattedText) pairs.
@@ -108,9 +115,10 @@ internal sealed class StickyScrollHeader : FrameworkElement
         _clickToNavigate = clickToNavigate;
 
         // Resolve theme brushes once here; OnRender uses cached fields.
-        _cachedBg  = TryFindRes("CE_StickyScrollBackground") as Brush ?? s_defaultBg;
-        _cachedFg  = TryFindRes("CE_StickyScrollForeground") as Brush ?? s_defaultFg;
-        var border = TryFindRes("CE_StickyScrollBorder")     as Brush ?? s_defaultBorder;
+        _cachedBg         = TryFindRes("CE_StickyScrollBackground") as Brush ?? s_defaultBg;
+        _cachedFg         = TryFindRes("CE_StickyScrollForeground") as Brush ?? s_defaultFg;
+        _cachedHoverBrush = TryFindRes("CE_StickyScrollHover")      as Brush ?? s_hoverBrush;
+        var border        = TryFindRes("CE_StickyScrollBorder")      as Brush ?? s_defaultBorder;
 
         var borderPen = new Pen(border, 1.0);
         borderPen.Freeze();
@@ -195,6 +203,11 @@ internal sealed class StickyScrollHeader : FrameworkElement
         // Background panel — single rect, no allocation.
         dc.DrawRectangle(_cachedBg, null, new Rect(0, 0, w, h));
 
+        // Hover highlight — drawn after background, before text.
+        if (_hoverRowIndex >= 0 && _hoverRowIndex < _entries.Count && _cachedHoverBrush is not null)
+            dc.DrawRectangle(_cachedHoverBrush, null,
+                new Rect(0, _hoverRowIndex * _lineHeight, w, _lineHeight));
+
         // Bottom border line.
         dc.DrawLine(_cachedBorderPen, new Point(0, h), new Point(w, h));
 
@@ -229,6 +242,20 @@ internal sealed class StickyScrollHeader : FrameworkElement
     {
         base.OnMouseMove(e);
         Cursor = _clickToNavigate && _entries.Count > 0 ? Cursors.Hand : null;
+
+        if (_lineHeight <= 0 || _entries.Count == 0) return;
+        int idx = Math.Max(0, Math.Min((int)(e.GetPosition(this).Y / _lineHeight), _entries.Count - 1));
+        if (idx == _hoverRowIndex) return;
+        _hoverRowIndex = idx;
+        InvalidateVisual();
+    }
+
+    protected override void OnMouseLeave(MouseEventArgs e)
+    {
+        base.OnMouseLeave(e);
+        if (_hoverRowIndex == -1) return;
+        _hoverRowIndex = -1;
+        InvalidateVisual();
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────
