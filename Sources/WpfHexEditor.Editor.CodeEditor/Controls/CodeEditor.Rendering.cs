@@ -182,6 +182,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Counts the number of qualifying scopes that contain <paramref name="line"/>
+        /// without allocating a list.  Used by the fixed-point stickyLine resolver.
+        /// </summary>
+        private int CountScopeDepthAt(int line)
+        {
+            if (_foldingEngine is null) return 0;
+            int count = 0;
+            foreach (var r in _foldingEngine.Regions)
+            {
+                if (!r.IsCollapsed && r.StartLine < line && r.EndLine >= line
+                    && (r.EndLine - r.StartLine) >= _stickyScrollMinScopeLines)
+                    if (++count >= _stickyScrollMaxLines) break;
+            }
+            return count;
+        }
+
+        /// <summary>
         /// Recomputes the sticky header entries from the current viewport and pushes them
         /// to <see cref="_stickyScrollHeader"/>.  Called from <see cref="OnRender"/> and
         /// after scroll/option changes.
@@ -200,14 +217,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            // Compute the first visible CONTENT line — below the sticky header itself.
-            // The header occupies RequiredHeight px at the top of the viewport, so we must
-            // add that offset before dividing; otherwise FindScopeChainAt receives the line
-            // under pixel 0 (under the header) and the scope chain appears N lines too early.
-            double headerH = _stickyScrollHeader?.RequiredHeight ?? 0;
-            int stickyLine = (_lineHeight > 0)
-                ? Math.Max(0, (int)((_verticalScrollOffset + headerH) / _lineHeight))
+            // Fixed-point resolution: find the smallest stickyLine such that
+            // CountScopeDepthAt(stickyLine) == stickyLine - rawLine.
+            // This avoids the cross-frame feedback loop introduced by using the previous
+            // frame's RequiredHeight as an additive offset (ADR-SS-FP-01).
+            int rawLine = (_lineHeight > 0)
+                ? Math.Max(0, (int)(_verticalScrollOffset / _lineHeight))
                 : _firstVisibleLine;
+            int stickyLine = rawLine;
+            for (int pass = 0; pass < _stickyScrollMaxLines; pass++)
+            {
+                int next = rawLine + CountScopeDepthAt(stickyLine);
+                if (next == stickyLine) break;
+                stickyLine = next;
+            }
             var chain   = FindScopeChainAt(stickyLine);
             var entries = new List<StickyScrollEntry>(chain.Count);
             double ppdip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
