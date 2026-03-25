@@ -89,6 +89,21 @@ public sealed class DiagnosticToolsOptionsPage : UserControl
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             Content = root,
         };
+
+        // Drive slider widths from the page's actual width so they always fill
+        // the available space regardless of how the host container measures us.
+        SizeChanged += (_, e) => { if (e.WidthChanged) ApplySliderWidths(e.NewSize.Width); };
+        Loaded      += (_, _) => ApplySliderWidths(ActualWidth);
+    }
+
+    // Slider widths = pageWidth – StackPanel margins (12+12) – label col (160) – value col (60)
+    private void ApplySliderWidths(double pageWidth)
+    {
+        double w = Math.Max(pageWidth - 244, 80);
+        _pollIntervalSlider.Width = w;
+        _ringCapacitySlider.Width = w;
+        _eventMaxSlider.Width     = w;
+        _metricMaxSlider.Width    = w;
     }
 
     // ── Load / Save / Reset ───────────────────────────────────────────────────

@@ -149,6 +149,19 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             Content = root,
         };
+
+        SizeChanged += (_, e) => { if (e.WidthChanged) ApplySliderWidths(e.NewSize.Width); };
+        Loaded      += (_, _) => ApplySliderWidths(ActualWidth);
+    }
+
+    // Slider widths = pageWidth – StackPanel margins (12+12) – label col (140) – value col (44)
+    private void ApplySliderWidths(double pageWidth)
+    {
+        double w = Math.Max(pageWidth - 208, 80);
+        _widthSlider.Width      = w;
+        _heightSlider.Width     = w;
+        _openDelaySlider.Width  = w;
+        _closeDelaySlider.Width = w;
     }
 
     // ── IOptionsPage ─────────────────────────────────────────────────────────

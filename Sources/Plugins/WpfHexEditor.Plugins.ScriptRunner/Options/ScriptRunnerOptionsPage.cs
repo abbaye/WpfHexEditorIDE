@@ -79,6 +79,16 @@ public sealed class ScriptRunnerOptionsPage : UserControl
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             Content = root,
         };
+
+        SizeChanged += (_, e) => { if (e.WidthChanged) ApplySliderWidths(e.NewSize.Width); };
+        Loaded      += (_, _) => ApplySliderWidths(ActualWidth);
+    }
+
+    // Slider widths = pageWidth – StackPanel margins (12+12) – label col (120) – value col (44)
+    private void ApplySliderWidths(double pageWidth)
+    {
+        double w = Math.Max(pageWidth - 188, 80);
+        _maxHistorySlider.Width = w;
     }
 
     // ── Load / Save / Reset ───────────────────────────────────────────────────
