@@ -32,7 +32,8 @@ public sealed class CompareFileLaunchService
     /// Callback that creates and docks the DiffViewer for two file paths.
     /// The implementation lives in MainWindow and has access to the docking engine.
     /// </summary>
-    private readonly Action<string, string> _openDiffViewer;
+    private readonly Action<string, string>       _openDiffViewer;
+    private readonly Func<IReadOnlyList<string>>? _getSolutionFiles;
 
     // ── Temp file tracking ────────────────────────────────────────────────────
     // Maps temp paths to the git ref they were extracted from (for labelling).
@@ -41,17 +42,19 @@ public sealed class CompareFileLaunchService
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public CompareFileLaunchService(
-        Window              ownerWindow,
-        IDocumentManager?   documentManager,
-        ComparisonSettings  settings,
-        AppSettingsService  settingsService,
-        Action<string, string> openDiffViewer)
+        Window                       ownerWindow,
+        IDocumentManager?            documentManager,
+        ComparisonSettings           settings,
+        AppSettingsService           settingsService,
+        Action<string, string>       openDiffViewer,
+        Func<IReadOnlyList<string>>? getSolutionFiles = null)
     {
-        _ownerWindow     = ownerWindow;
-        _documentManager = documentManager;
-        _settings        = settings;
-        _settingsService = settingsService;
-        _openDiffViewer  = openDiffViewer;
+        _ownerWindow      = ownerWindow;
+        _documentManager  = documentManager;
+        _settings         = settings;
+        _settingsService  = settingsService;
+        _openDiffViewer   = openDiffViewer;
+        _getSolutionFiles = getSolutionFiles;
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -78,7 +81,8 @@ public sealed class CompareFileLaunchService
                 promptTitle     : "Select LEFT file to compare",
                 documentManager : _documentManager,
                 recentFiles     : recentLeftPaths,
-                activeEditorPath: GetActiveEditorPath());
+                activeEditorPath: GetActiveEditorPath(),
+                solutionFiles   : _getSolutionFiles?.Invoke());
 
             if (leftPath is null) return;   // user cancelled
         }
@@ -94,7 +98,8 @@ public sealed class CompareFileLaunchService
                 promptTitle     : $"Select RIGHT file — comparing with {Path.GetFileName(leftPath)}",
                 documentManager : _documentManager,
                 recentFiles     : recentRightPaths,
-                activeEditorPath: GetActiveEditorPathExcluding(leftPath));
+                activeEditorPath: GetActiveEditorPathExcluding(leftPath),
+                solutionFiles   : _getSolutionFiles?.Invoke());
 
             if (rightPath is null) return;   // user cancelled
         }

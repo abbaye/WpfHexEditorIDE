@@ -129,6 +129,16 @@ public sealed class AppSettings
 
     /// <summary>Integrated debugger preferences and persisted breakpoints.</summary>
     public DebuggerSettings Debugger { get; set; } = new();
+
+    // -- Workspace ----------------------------------------------------------------
+
+    /// <summary>Workspace system preferences.</summary>
+    public WorkspaceSettings Workspace { get; set; } = new();
+
+    // -- Tab Hover Preview --------------------------------------------------------
+
+    /// <summary>Docking tab thumbnail hover-preview options.</summary>
+    public TabPreviewAppSettings TabPreview { get; set; } = new();
 }
 
 // ─── Command Palette ──────────────────────────────────────────────────────────
@@ -646,4 +656,74 @@ public sealed class PluginDevSettings
     /// An empty-string value means the user explicitly unbound the gesture.
     /// </summary>
     public Dictionary<string, string> KeyBindingOverrides { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+}
+
+// ─── Workspace ────────────────────────────────────────────────────────────────
+
+// ─── Tab Hover Preview ────────────────────────────────────────────────────────
+
+/// <summary>
+/// Configurable options for the docking tab hover-preview thumbnail popup.
+/// Serialised as "tabPreview": { … } in settings.json.
+/// </summary>
+public sealed class TabPreviewAppSettings
+{
+    /// <summary>When false, no popup is shown on tab hover.</summary>
+    public bool Enabled       { get; set; } = true;
+
+    /// <summary>Show the filename footer below the screenshot thumbnail.</summary>
+    public bool ShowFileName  { get; set; } = true;
+
+    /// <summary>Thumbnail width in pixels (100–400). Default: 200.</summary>
+    public int  PreviewWidth  { get; set; } = 200;
+
+    /// <summary>Thumbnail height in pixels (80–300). Default: 150.</summary>
+    public int  PreviewHeight { get; set; } = 150;
+
+    /// <summary>Milliseconds the mouse must hover before the popup appears (100–1000). Default: 400.</summary>
+    public int  OpenDelayMs   { get; set; } = 400;
+
+    /// <summary>Milliseconds before the popup closes after mouse leave (50–500). Default: 150.</summary>
+    public int  CloseDelayMs  { get; set; } = 150;
+
+    /// <summary>Raised by <see cref="NotifyChanged"/> so MainWindow can push new values to DockHost.</summary>
+    public static event Action? Changed;
+
+    /// <summary>Signal that settings have been updated. Called by <c>TabPreviewOptionsPage.Flush()</c>.</summary>
+    public static void NotifyChanged() => Changed?.Invoke();
+}
+
+// ─── Workspace ────────────────────────────────────────────────────────────────
+
+/// <summary>Workspace system preferences.</summary>
+public sealed class WorkspaceSettings
+{
+    /// <summary>
+    /// When true, the IDE prompts to save the active workspace before exiting
+    /// or closing the workspace.
+    /// </summary>
+    public bool PromptSaveOnClose { get; set; } = true;
+
+    /// <summary>
+    /// When true, opening a workspace automatically restores the previously
+    /// open solution recorded inside it.
+    /// </summary>
+    public bool RestoreSolutionOnOpen { get; set; } = true;
+
+    /// <summary>
+    /// When true, opening a workspace restores the set of open editor tabs
+    /// recorded inside it.
+    /// </summary>
+    public bool RestoreOpenFilesOnOpen { get; set; } = true;
+
+    /// <summary>
+    /// When true, opening a workspace applies the theme stored inside it.
+    /// </summary>
+    public bool RestoreThemeOnOpen { get; set; } = true;
+
+    /// <summary>
+    /// Path of the most-recently used workspace file (.whidews).
+    /// Populated automatically; not shown in the options UI.
+    /// </summary>
+    public string RecentWorkspacePath { get; set; } = string.Empty;
 }

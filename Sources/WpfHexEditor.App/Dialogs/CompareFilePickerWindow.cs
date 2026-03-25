@@ -33,21 +33,24 @@ public sealed class CompareFilePickerWindow : Window
     private readonly TaskCompletionSource<string?> _tcs = new();
     private readonly IDocumentManager?             _documentManager;
     private readonly IReadOnlyList<string>         _recentFiles;
+    private readonly IReadOnlyList<string>         _solutionFiles;
     private readonly string?                       _activeEditorPath;
     private          bool                          _committed;
+    private          bool                          _hasBeenActivated;
 
     /// <summary>
     /// Opens the file picker and returns the selected path, or <c>null</c> if cancelled.
     /// </summary>
     public static Task<string?> ShowAsync(
-        Window                owner,
-        string                promptTitle,
-        IDocumentManager?     documentManager   = null,
+        Window                 owner,
+        string                 promptTitle,
+        IDocumentManager?      documentManager  = null,
         IReadOnlyList<string>? recentFiles      = null,
-        string?               activeEditorPath  = null)
+        string?                activeEditorPath = null,
+        IReadOnlyList<string>? solutionFiles    = null)
     {
         var popup = new CompareFilePickerWindow(owner, promptTitle, documentManager,
-            recentFiles ?? [], activeEditorPath);
+            recentFiles ?? [], activeEditorPath, solutionFiles ?? []);
         popup.Show();
         return popup._tcs.Task;
     }
@@ -59,10 +62,12 @@ public sealed class CompareFilePickerWindow : Window
         string                promptTitle,
         IDocumentManager?     documentManager,
         IReadOnlyList<string> recentFiles,
-        string?               activeEditorPath)
+        string?               activeEditorPath,
+        IReadOnlyList<string> solutionFiles)
     {
         _documentManager  = documentManager;
         _recentFiles      = recentFiles;
+        _solutionFiles    = solutionFiles;
         _activeEditorPath = activeEditorPath;
 
         Owner               = owner;
@@ -157,10 +162,13 @@ public sealed class CompareFilePickerWindow : Window
             var ownerCentre = owner.Left + owner.ActualWidth / 2;
             Left = ownerCentre - Width / 2;
             Top  = owner.Top   + 80;
-            _searchBox.Focus();
             PopulateList("");
         };
-        Deactivated += (_, _) => Cancel();
+        // Guard: only cancel on Deactivated AFTER the window has received focus at least once.
+        // Without this, WPF fires Deactivated immediately after Show() if another window holds
+        // focus (e.g., the Solution Explorer context menu), closing the picker before it's seen.
+        Activated   += (_, _) => { _hasBeenActivated = true; _searchBox.Focus(); };
+        Deactivated += (_, _) => { if (_hasBeenActivated) Cancel(); };
         KeyDown     += (_, e) => { if (e.Key == Key.Escape) Cancel(); };
     }
 
@@ -180,6 +188,13 @@ public sealed class CompareFilePickerWindow : Window
                 allPaths.Add((doc.FilePath, "Open Documents"));
         }
 
+        // Solution files (deduplicated against open docs)
+        var openDocPaths = new HashSet<string>(
+            allPaths.Select(x => x.Path), StringComparer.OrdinalIgnoreCase);
+        foreach (var path in _solutionFiles)
+            if (!string.IsNullOrEmpty(path) && !openDocPaths.Contains(path))
+                allPaths.Add((path, "Solution Files"));
+
         // Recent comparisons
         foreach (var recent in _recentFiles)
             if (!string.IsNullOrEmpty(recent))
@@ -196,7 +211,8 @@ public sealed class CompareFilePickerWindow : Window
                 _resultsList.Items.Add(BuildGroupHeader(group));
                 lastGroup = group;
             }
-            _resultsList.Items.Add(BuildFileItem(path));
+            var subtitle = group == "Solution Files" ? Path.GetDirectoryName(path) : null;
+            _resultsList.Items.Add(BuildFileItem(path, subtitle));
         }
     }
 
@@ -215,35 +231,51 @@ public sealed class CompareFilePickerWindow : Window
         };
     }
 
-    private ListBoxItem BuildFileItem(string filePath)
+    private ListBoxItem BuildFileItem(string filePath, string? subtitle = null)
     {
         var grid = new Grid();
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
         var icon = new TextBlock { Text = "\uE8A5", FontFamily = new FontFamily("Segoe MDL2 Assets"),
-            FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 6, 0), Opacity = 0.7 };
+            FontSize = 12, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 2, 6, 0), Opacity = 0.7 };
         icon.SetResourceReference(ForegroundProperty, "DockForegroundBrush");
         Grid.SetColumn(icon, 0);
         grid.Children.Add(icon);
 
+        var namePanel = new StackPanel { Orientation = Orientation.Vertical };
+
         var nameText = new TextBlock
         {
-            Text = Path.GetFileName(filePath),
-            FontSize = 12,
-            VerticalAlignment = VerticalAlignment.Center,
+            Text         = Path.GetFileName(filePath),
+            FontSize     = 12,
             TextTrimming = TextTrimming.CharacterEllipsis
         };
         nameText.SetResourceReference(ForegroundProperty, "DockForegroundBrush");
-        Grid.SetColumn(nameText, 1);
-        grid.Children.Add(nameText);
+        namePanel.Children.Add(nameText);
+
+        if (!string.IsNullOrEmpty(subtitle))
+        {
+            var subText = new TextBlock
+            {
+                Text         = subtitle,
+                FontSize     = 10,
+                Opacity      = 0.5,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
+            subText.SetResourceReference(ForegroundProperty, "DockForegroundBrush");
+            namePanel.Children.Add(subText);
+        }
+
+        Grid.SetColumn(namePanel, 1);
+        grid.Children.Add(namePanel);
 
         var item = new ListBoxItem
         {
-            Content    = grid,
-            Padding    = new Thickness(8, 3, 8, 3),
-            Tag        = filePath,
-            ToolTip    = filePath
+            Content = grid,
+            Padding = subtitle is null ? new Thickness(8, 3, 8, 3) : new Thickness(8, 2, 8, 2),
+            Tag     = filePath,
+            ToolTip = filePath
         };
 
         item.MouseEnter  += (_, _) => item.SetResourceReference(BackgroundProperty, "DF_PickerHighlightBrush");

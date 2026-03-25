@@ -389,6 +389,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // Breakpoint gutter (ADR-DBG-01).
         private BreakpointGutterControl? _breakpointGutterControl;
+        // 1-based execution line (null when no debug session is paused).
+        private int? _executionLineOneBased;
 
         // True between the first Ctrl+M press and the second chord key (outlining commands).
         private bool _outlineChordPending;
@@ -3701,6 +3703,20 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 3. Current line highlight (spans visible text area, no H offset)
             RenderCurrentLineHighlight(dc, contentW, contentH);
 
+            // 3a. Execution line highlight — yellow tint across the full text area when debugger is paused.
+            if (_executionLineOneBased.HasValue)
+            {
+                int execLine0 = _executionLineOneBased.Value - 1;
+                if (_lineYLookup.TryGetValue(execLine0, out double execY))
+                {
+                    var execBrush = TryFindResource("DB_ExecutionLineBackgroundBrush") as System.Windows.Media.Brush
+                                    ?? new System.Windows.Media.SolidColorBrush(
+                                           System.Windows.Media.Color.FromArgb(0x40, 0xFF, 0xDD, 0x00));
+                    dc.DrawRectangle(execBrush, null,
+                        new Rect(textLeft, execY, Math.Max(0, contentW - textLeft), _lineHeight));
+                }
+            }
+
             // -- Text area clip + horizontal translate -------------------
             dc.PushClip(new RectangleGeometry(new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
 
@@ -3862,23 +3878,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Overlay scroll marker panel on top of the vertical scrollbar (click-through).
             _codeScrollMarkerPanel?.Arrange(vScrollRect);
 
-            // Arrange the folding gutter flush against the left edge (inside the line-number strip).
-            if (_gutterControl != null)
-            {
-                bool showGutter = IsFoldingEnabled && ShowLineNumbers;
-                _gutterControl.Visibility = showGutter ? Visibility.Visible : Visibility.Collapsed;
-                _gutterControl.Arrange(showGutter
-                    ? new Rect(0, 0, _gutterControl.Width, contentH)
-                    : new Rect(0, 0, 0, 0));
-            }
-
-            // Breakpoint gutter: sits at x=0 (same strip, z-ordered on top of fold gutter).
+            // Breakpoint gutter: leftmost strip at x=0.
             if (_breakpointGutterControl != null)
             {
                 bool showBp = ShowLineNumbers;
                 _breakpointGutterControl.Visibility = showBp ? Visibility.Visible : Visibility.Collapsed;
                 _breakpointGutterControl.Arrange(showBp
                     ? new Rect(0, 0, BreakpointGutterControl.GutterWidth, contentH)
+                    : new Rect(0, 0, 0, 0));
+            }
+
+            // Arrange the folding gutter immediately right of the breakpoint gutter (no overlap).
+            if (_gutterControl != null)
+            {
+                bool showGutter = IsFoldingEnabled && ShowLineNumbers;
+                _gutterControl.Visibility = showGutter ? Visibility.Visible : Visibility.Collapsed;
+                _gutterControl.Arrange(showGutter
+                    ? new Rect(BreakpointGutterControl.GutterWidth, 0, _gutterControl.Width, contentH)
                     : new Rect(0, 0, 0, 0));
             }
 
@@ -8125,6 +8141,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         public void SetExecutionLine(int? oneBased)
         {
+            _executionLineOneBased = oneBased;
             _breakpointGutterControl?.SetExecutionLine(oneBased);
             InvalidateVisual(); // redraw execution line highlight in content area
         }

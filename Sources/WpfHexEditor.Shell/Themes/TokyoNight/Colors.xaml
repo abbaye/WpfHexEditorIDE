@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: TokyoNight/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -686,4 +686,24 @@
     <SolidColorBrush x:Key="DB_ConsoleDebugBrush"            Color="#414868" />
     <SolidColorBrush x:Key="DB_ToolbarBackgroundBrush"       Color="#24283B" />
     <SolidColorBrush x:Key="DB_StatusActiveBrush"            Color="#F7768E" />
+
+    <!-- Script Runner tokens (SR_*) â€” inserted by Add-ScriptTokens.ps1 -->
+    <SolidColorBrush x:Key="SR_ToolbarBackgroundBrush"   Color="#24283B" />
+    <SolidColorBrush x:Key="SR_CodeBackgroundBrush"      Color="#1A1B26" />
+    <SolidColorBrush x:Key="SR_CodeForegroundBrush"      Color="#A9B1D6" />
+    <SolidColorBrush x:Key="SR_OutputBackgroundBrush"    Color="#16161E" />
+    <SolidColorBrush x:Key="SR_OutputForegroundBrush"    Color="#787C99" />
+    <SolidColorBrush x:Key="SR_StatusBarBackgroundBrush" Color="#1A1B26" />
+    <SolidColorBrush x:Key="SR_RunningForegroundBrush"   Color="#7AA2F7" />
+    <SolidColorBrush x:Key="SR_ErrorForegroundBrush"     Color="#F7768E" />
+
+    <!-- DiffV2 tokens (DF_*) â€” inserted by Add-DiffV2Tokens.ps1 -->
+    <SolidColorBrush x:Key="DF_GutterBackgroundBrush"        Color="#16161E" />
+    <SolidColorBrush x:Key="DF_LineNumberForegroundBrush"    Color="#565F89" />
+    <SolidColorBrush x:Key="DF_WordModifiedBrush"            Color="#25240A" />
+    <SolidColorBrush x:Key="DF_HeaderBackgroundBrush"        Color="#1F2335" />
+    <SolidColorBrush x:Key="DF_OverviewRulerBackgroundBrush" Color="#13131D" />
+    <SolidColorBrush x:Key="DF_OverviewModifiedBrush"        Color="#E0AF68" />
+    <SolidColorBrush x:Key="DF_OverviewAddedBrush"           Color="#9ECE6A" />
+    <SolidColorBrush x:Key="DF_OverviewRemovedBrush"         Color="#F7768E" />
 </ResourceDictionary>

@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: VS2022Dark/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -695,4 +695,24 @@
     <SolidColorBrush x:Key="DB_ConsoleDebugBrush"            Color="#888888" />
     <SolidColorBrush x:Key="DB_ToolbarBackgroundBrush"       Color="#2D2D30" />
     <SolidColorBrush x:Key="DB_StatusActiveBrush"            Color="#C80000" />
+
+    <!-- Script Runner tokens (SR_*) â€” inserted by Add-ScriptTokens.ps1 -->
+    <SolidColorBrush x:Key="SR_ToolbarBackgroundBrush"   Color="#2D2D30" />
+    <SolidColorBrush x:Key="SR_CodeBackgroundBrush"      Color="#1E1E1E" />
+    <SolidColorBrush x:Key="SR_CodeForegroundBrush"      Color="#D4D4D4" />
+    <SolidColorBrush x:Key="SR_OutputBackgroundBrush"    Color="#252526" />
+    <SolidColorBrush x:Key="SR_OutputForegroundBrush"    Color="#CCCCCC" />
+    <SolidColorBrush x:Key="SR_StatusBarBackgroundBrush" Color="#1E1E1E" />
+    <SolidColorBrush x:Key="SR_RunningForegroundBrush"   Color="#9CDCFE" />
+    <SolidColorBrush x:Key="SR_ErrorForegroundBrush"     Color="#F14C4C" />
+
+    <!-- DiffV2 tokens (DF_*) â€” inserted by Add-DiffV2Tokens.ps1 -->
+    <SolidColorBrush x:Key="DF_GutterBackgroundBrush"        Color="#1E1E1E" />
+    <SolidColorBrush x:Key="DF_LineNumberForegroundBrush"    Color="#858585" />
+    <SolidColorBrush x:Key="DF_WordModifiedBrush"            Color="#6B4C00" />
+    <SolidColorBrush x:Key="DF_HeaderBackgroundBrush"        Color="#2D2D30" />
+    <SolidColorBrush x:Key="DF_OverviewRulerBackgroundBrush" Color="#252526" />
+    <SolidColorBrush x:Key="DF_OverviewModifiedBrush"        Color="#D4AC4E" />
+    <SolidColorBrush x:Key="DF_OverviewAddedBrush"           Color="#4EC94E" />
+    <SolidColorBrush x:Key="DF_OverviewRemovedBrush"         Color="#C94E4E" />
 </ResourceDictionary>

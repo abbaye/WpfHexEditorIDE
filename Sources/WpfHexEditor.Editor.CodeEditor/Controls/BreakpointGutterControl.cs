@@ -60,6 +60,7 @@ internal sealed class BreakpointGutterControl : FrameworkElement
     private double             _topMargin;
     private IReadOnlyDictionary<int, double> _lineYLookup = new Dictionary<int, double>();
     private Brush              _backgroundBrush = Brushes.Transparent;
+    private int                _hoverLine = -1;          // 1-based, -1 = no hover
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -73,10 +74,12 @@ internal sealed class BreakpointGutterControl : FrameworkElement
 
     public BreakpointGutterControl()
     {
-        Width              = GutterWidth;
-        Cursor             = Cursors.Hand;
+        Width               = GutterWidth;
+        Cursor              = Cursors.Hand;
         MouseLeftButtonDown += OnMouseLeftButtonDown;
-        ToolTip            = "Click to toggle breakpoint";
+        MouseMove           += OnMouseMove;
+        MouseLeave          += OnMouseLeave;
+        ToolTip             = "Click to toggle breakpoint";
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -147,6 +150,9 @@ internal sealed class BreakpointGutterControl : FrameworkElement
             // Breakpoint circle
             if (_source is not null && !string.IsNullOrEmpty(_filePath) && _source.HasBreakpoint(_filePath, line1))
                 dc.DrawEllipse(BpActiveBrush, null, new Point(cx, cy), CircleRadius, CircleRadius);
+            // Ghost circle on hover (no existing breakpoint)
+            else if (_hoverLine == line1)
+                dc.DrawEllipse(null, BpDisabledPen, new Point(cx, cy), CircleRadius, CircleRadius);
         }
     }
 
@@ -193,5 +199,20 @@ internal sealed class BreakpointGutterControl : FrameworkElement
             if (y >= lineY && y < lineY + _lineHeight) return i + 1;
         }
         return -1;
+    }
+
+    private void OnMouseMove(object sender, MouseEventArgs e)
+    {
+        int newHover = _lineHeight > 0 ? HitTestLine(e.GetPosition(this).Y) : -1;
+        if (newHover == _hoverLine) return;
+        _hoverLine = newHover;
+        InvalidateVisual();
+    }
+
+    private void OnMouseLeave(object sender, MouseEventArgs e)
+    {
+        if (_hoverLine == -1) return;
+        _hoverLine = -1;
+        InvalidateVisual();
     }
 }
