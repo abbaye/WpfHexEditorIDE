@@ -44,10 +44,10 @@ internal sealed class SolutionExplorerCompareContributor : ISolutionExplorerCont
                 command:   new RelayCommand(_ => InvokeCompareLeft(nodePath)),
                 iconGlyph: "\uE8A5"),
 
-            // Always-visible: pick both files via the smart picker
+            // Always-visible: nodePath as left, picker for right
             SolutionContextMenuItem.Item(
                 header:    "Compare with Another File…",
-                command:   new RelayCommand(_ => InvokeCompareLeft(nodePath)),
+                command:   new RelayCommand(_ => InvokeCommand(CmdCompareFiles, nodePath)),
                 iconGlyph: "\uE8B7"),
         };
 

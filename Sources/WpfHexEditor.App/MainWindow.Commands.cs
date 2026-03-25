@@ -125,15 +125,33 @@ public partial class MainWindow
             () => OnShowErrorPanel(this, null!));
         Reg(CommandIds.View.MarkdownOutline,"Markdown Outline",      "View",    null,             null,
             () => OnShowMarkdownOutline(this, null!));
-        Reg(CommandIds.View.CompareFiles,  "Compare Files…",         "View",    "Ctrl+Alt+D",     null,
-            () => OnCompareFiles(this, null!));
-        Reg(CommandIds.View.CompareWithActiveEditor, "Compare File with Active Editor", "View / Compare",
-            null, null,
-            () =>
+        RegP(CommandIds.View.CompareFiles, "Compare Files…", "View", "Ctrl+Alt+D", null,
+            param =>
             {
-                var path = _documentManager.ActiveDocument?.FilePath;
-                if (!string.IsNullOrEmpty(path))
-                    _ = _compareFileLaunchService?.LaunchWithLeftAsync(path);
+                if (param is string[] paths && paths.Length == 2)
+                    _ = _compareFileLaunchService?.LaunchAsync(paths[0], paths[1]);
+                else if (param is string left)
+                    _ = _compareFileLaunchService?.LaunchAsync(left, null);
+                else
+                    _ = (_compareFileLaunchService?.LaunchAsync() ?? Task.CompletedTask);
+            });
+        RegP(CommandIds.View.CompareWithActiveEditor, "Compare File with Active Editor", "View / Compare",
+            null, null,
+            param =>
+            {
+                if (param is string leftPath)
+                {
+                    // From Solution Explorer: left=clicked file, right=active document
+                    var rightPath = _documentManager.ActiveDocument?.FilePath;
+                    _ = _compareFileLaunchService?.LaunchAsync(leftPath, rightPath);
+                }
+                else
+                {
+                    // From Command Palette: left=active document, picker for right
+                    var path = _documentManager.ActiveDocument?.FilePath;
+                    if (!string.IsNullOrEmpty(path))
+                        _ = _compareFileLaunchService?.LaunchWithLeftAsync(path);
+                }
             });
         Reg(CommandIds.View.CompareWithClipboard, "Compare Active File with Clipboard", "View / Compare",
             null, null,
@@ -240,5 +258,14 @@ public partial class MainWindow
         _commandRegistry.Register(new CommandDefinition(
             id, name, category, defaultGesture, icon,
             new RelayCommand(_ => execute())));
+    }
+
+    /// <summary>Same as Reg but the execute action receives the command parameter.</summary>
+    private void RegP(string id, string name, string category,
+                      string? defaultGesture, string? icon, Action<object?> execute)
+    {
+        _commandRegistry.Register(new CommandDefinition(
+            id, name, category, defaultGesture, icon,
+            new RelayCommand(param => execute(param))));
     }
 }
