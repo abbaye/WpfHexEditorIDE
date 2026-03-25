@@ -100,7 +100,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="11" Margin="0,0,4,0"/>
-                            <TextBlock Text="Side by side" FontSize="11"/>
+                            <TextBlock Text="Side by side" FontSize="11" FontFamily="Segoe UI"/>
                         </StackPanel>
                     </ToggleButton>
                 </StackPanel>
