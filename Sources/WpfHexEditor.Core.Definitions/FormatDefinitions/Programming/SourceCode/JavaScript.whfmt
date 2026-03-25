@@ -50,7 +50,7 @@
     "foldingRules": {
       "startPatterns": ["\\{"],
       "endPatterns":   ["\\}"],
-      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
     }
   }
 }

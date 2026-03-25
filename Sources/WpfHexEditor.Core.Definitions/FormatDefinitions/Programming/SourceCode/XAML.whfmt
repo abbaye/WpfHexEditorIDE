@@ -125,7 +125,7 @@
       "tagBased": true,
       "multilineTagSupport": true,
       "selfClosingTags": [],
-      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
     }
   }
 }

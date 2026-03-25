@@ -105,7 +105,7 @@
       "tagBased": true,
       "multilineTagSupport": true,
       "selfClosingTags": ["br", "hr", "img", "input", "link", "meta", "area", "base", "col", "embed", "param", "source", "track", "wbr"],
-      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
     }
   }
 }

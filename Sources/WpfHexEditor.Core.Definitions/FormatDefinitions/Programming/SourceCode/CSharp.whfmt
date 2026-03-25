@@ -61,7 +61,7 @@
       "endPatterns":   ["\\}"],
       "namedRegionStart": "^\\s*#region\\b(.*)$",
       "namedRegionEnd":   "^\\s*#endregion\\b",
-      "endOfBlockHint""endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": true }
+      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": true }
     }
   }
 }
