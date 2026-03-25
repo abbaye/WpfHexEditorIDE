@@ -225,7 +225,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 ? Math.Max(0, (int)(_verticalScrollOffset / _lineHeight))
                 : _firstVisibleLine;
             int stickyLine = rawLine;
-            for (int pass = 0; pass < _stickyScrollMaxLines; pass++)
+            for (int pass = 0; pass <= _stickyScrollMaxLines; pass++)
             {
                 int next = rawLine + CountScopeDepthAt(stickyLine);
                 if (next == stickyLine) break;
@@ -670,6 +670,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document == null || _document.Lines.Count == 0)
                 return;
 
+            _refreshStopwatch.Restart();
+
             // Cache DPI once per render pass; used by RenderInlineHints and RenderLineNumbers (OPT-PERF-03).
             _renderPixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
@@ -707,13 +709,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _linePositionsDirty = false;
             }
 
-            // Sticky scroll header: refresh only when the first visible line changes.
+            // Sticky scroll header: refresh only when the true scroll-line changes.
             // Guard: never call InvalidateArrange() unconditionally inside OnRender —
             // it creates a WPF layout → render → layout cycle (infinite loop).
-            // Gate on _lastStickyFirstLine so caret-blink / word-highlight renders are free. (ADR-IH-PERF-02)
-            if (_firstVisibleLine != _lastStickyFirstLine)
+            // Use rawLine (_verticalScrollOffset / _lineHeight) instead of _firstVisibleLine
+            // so the guard fires on every integer line boundary regardless of the render
+            // buffer offset (ADR-IH-PERF-02, ADR-SS-FP-01).
+            int stickyRawLine = _lineHeight > 0
+                ? Math.Max(0, (int)(_verticalScrollOffset / _lineHeight))
+                : _firstVisibleLine;
+            if (stickyRawLine != _lastStickyFirstLine)
             {
-                _lastStickyFirstLine = _firstVisibleLine;
+                _lastStickyFirstLine = stickyRawLine;
                 UpdateStickyScrollHeader();
                 int newCount = _stickyScrollHeader?.RequiredHeight > 0
                     ? (int)(_stickyScrollHeader.RequiredHeight / _lineHeight) : 0;
@@ -813,6 +820,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_frameCount++ % 60 == 0)
                 _document.CleanupTokenCache(MaxCachedLines);
 
+            _refreshStopwatch.Stop();
+            _sbRefreshTime.Value = $"{_refreshStopwatch.ElapsedMilliseconds} ms";
+
             // Schedule background highlighting only when the visible range changed or dirty lines exist.
             // Never re-schedule from a render triggered by the pipeline itself (breaks render loop).
             bool rangeChanged = _firstVisibleLine != _lastHighlightFirst || _lastVisibleLine != _lastHighlightLast;
@@ -841,9 +851,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _highlighter,
                     ExternalHighlighter);
             }
+
+            // Pan mode indicator — drawn last (on top of all content, no clipping)
+            _panMode?.Render(dc);
         }
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
+        private readonly Stopwatch   _refreshStopwatch = new();
+        private readonly StatusBarItem _sbRefreshTime  = new() { Label = "Refresh", Tooltip = "Render frame time in milliseconds", Value = "—" };
 
         /// <summary>
         /// Measure: update cached max content width; scrollbars manage their own layout.
