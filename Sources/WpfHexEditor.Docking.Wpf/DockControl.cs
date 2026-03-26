@@ -1081,37 +1081,53 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             var menuBg     = TryFindResource("DockMenuBackgroundBrush") as Brush;
             var menuFg     = TryFindResource("DockMenuForegroundBrush") as Brush;
             var menuBorder = TryFindResource("DockMenuBorderBrush") as Brush;
+            var dimFg      = new SolidColorBrush(Color.FromArgb(0x80, 0xCC, 0xCC, 0xCC));
 
             var menu = new ContextMenu
             {
-                Background  = menuBg ?? Brushes.DarkGray,
+                Background  = menuBg     ?? Brushes.DarkGray,
                 BorderBrush = menuBorder ?? Brushes.Gray,
-                Foreground  = menuFg ?? Brushes.White
+                Foreground  = menuFg     ?? Brushes.White
             };
 
-            var floatMenuItem = new MenuItem { Header = "Float", Foreground = menuFg };
-            floatMenuItem.Click += (_, _) => { CaptureDockedSizeForFloat(item); _engine?.Float(item); RebuildVisualTree(); };
-            menu.Items.Add(floatMenuItem);
+            TextBlock MakeIcon(string glyph, bool enabled = true) => new()
+            {
+                Text       = glyph,
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize   = 12,
+                Foreground = enabled ? (menuFg ?? Brushes.White) : dimFg,
+                VerticalAlignment = VerticalAlignment.Center
+            };
 
-            var autoHideMenuItem = new MenuItem { Header = "Auto Hide", Foreground = menuFg };
-            autoHideMenuItem.Click += (_, _) => { _engine?.AutoHideGroup(group); RebuildVisualTree(); };
-            menu.Items.Add(autoHideMenuItem);
+            MenuItem MakeItem(string header, string glyph, Action action,
+                              bool enabled = true, string? gesture = null)
+            {
+                var mi = new MenuItem
+                {
+                    Header     = header,
+                    Icon       = MakeIcon(glyph, enabled),
+                    IsEnabled  = enabled,
+                    Foreground = enabled ? menuFg : dimFg
+                };
+                if (gesture is not null) mi.InputGestureText = gesture;
+                if (enabled) mi.Click += (_, _) => action();
+                return mi;
+            }
 
+            menu.Items.Add(MakeItem("Float",
+                "\uE8A7", () => { CaptureDockedSizeForFloat(item); _engine?.Float(item); RebuildVisualTree(); },
+                enabled: item.CanFloat));
+            menu.Items.Add(MakeItem("Dock as Tabbed Document",
+                "\uE8F4", () => { _engine?.Dock(item, Layout!.MainDocumentHost, DockDirection.Center); RebuildVisualTree(); }));
+            menu.Items.Add(MakeItem("Auto Hide",
+                "\uE77A", () => { _engine?.AutoHideGroup(group); RebuildVisualTree(); }));
             menu.Items.Add(new Separator());
-
-            var closeMenuItem = new MenuItem
-            {
-                Header = "Close",
-                Foreground = menuFg,
-                IsEnabled = item.CanClose
-            };
-            closeMenuItem.Click += (_, _) =>
-            {
-                RaiseTabCloseRequested(item);
-                _engine?.Close(item);
-                RebuildVisualTree();
-            };
-            menu.Items.Add(closeMenuItem);
+            menu.Items.Add(MakeItem("Move to New Window",
+                "\uE8A7", () => { }, enabled: false));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(MakeItem("Close",
+                "\uE8BB", () => { RaiseTabCloseRequested(item); _engine?.Close(item); RebuildVisualTree(); },
+                enabled: item.CanClose, gesture: "Shift+Esc"));
 
             menu.PlacementTarget = btn;
             menu.Placement = PlacementMode.Bottom;

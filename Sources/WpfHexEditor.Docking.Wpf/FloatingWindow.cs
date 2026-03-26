@@ -49,6 +49,11 @@ public class FloatingWindow : Window
     /// </summary>
     public DockItem? Item { get; private set; }
 
+    // ── Maximize / restore state ───────────────────────────────────────────
+    private bool   _isFloatingMaximized;
+    private double _savedLeft, _savedTop, _savedWidth, _savedHeight;
+    private Button _maximizeButton = null!;
+
     public event Action<DockItem>? TabCloseRequested;
     public event Action<DockItem>? TabDragStarted;
     public event Action<DockItem>? TabFloatRequested;
@@ -117,12 +122,9 @@ public class FloatingWindow : Window
             if (Item is not null) TabCloseRequested?.Invoke(Item);
         };
 
-        // Pin button (Pin MDL2 — dock)
-        var pinButton = MakeTitleButton("\uE141", "Dock");
-        pinButton.Click += (_, _) =>
-        {
-            if (Item is not null) ReDockRequested?.Invoke(Item);
-        };
+        // Maximize / restore toggle button (ChromeMaximize / ChromeRestore MDL2)
+        _maximizeButton = MakeTitleButton("\uE922", "Maximize");
+        _maximizeButton.Click += (_, _) => ToggleMaximize();
 
         // Chevron dropdown button (ChevronDown MDL2)
         var chevronButton = MakeTitleButton("\uE70D", "Options");
@@ -131,42 +133,52 @@ public class FloatingWindow : Window
             if (Item is null || sender is not Button btn) return;
             var item = Item;
 
-            var menuBg = TryFindResource("DockMenuBackgroundBrush") as Brush;
-            var menuFg = TryFindResource("DockMenuForegroundBrush") as Brush;
-            var menuBorder = TryFindResource("DockMenuBorderBrush") as Brush;
+            var menuBg     = TryFindResource("DockMenuBackgroundBrush") as Brush;
+            var menuFg     = TryFindResource("DockMenuForegroundBrush") as Brush;
+            var menuBorder = TryFindResource("DockMenuBorderBrush")     as Brush;
+            var dimFg      = new SolidColorBrush(Color.FromArgb(0x80, 0xCC, 0xCC, 0xCC));
 
             var menu = new ContextMenu
             {
-                Background = menuBg ?? Brushes.DarkGray,
+                Background  = menuBg     ?? Brushes.DarkGray,
                 BorderBrush = menuBorder ?? Brushes.Gray,
-                Foreground = menuFg ?? Brushes.White
+                Foreground  = menuFg     ?? Brushes.White
             };
 
-            var dockMenuItem = new MenuItem { Header = "Dock", Foreground = menuFg };
-            dockMenuItem.Click += (_, _) => ReDockRequested?.Invoke(item);
-            menu.Items.Add(dockMenuItem);
-
-            var autoHideMenuItem = new MenuItem { Header = "Auto Hide", Foreground = menuFg };
-            autoHideMenuItem.Click += (_, _) => TabAutoHideRequested?.Invoke(item);
-            menu.Items.Add(autoHideMenuItem);
-
-            var floatMenuItem = new MenuItem
+            MenuItem MakeItem(string header, string glyph, Action action,
+                              bool enabled = true, string? gesture = null)
             {
-                Header = "Float",
-                Foreground = Brushes.Gray,
-                IsEnabled = false
-            };
-            menu.Items.Add(floatMenuItem);
+                var icon = new TextBlock
+                {
+                    Text       = glyph,
+                    FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                    FontSize   = 12,
+                    Foreground = enabled ? (menuFg ?? Brushes.White) : dimFg,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                var mi = new MenuItem
+                {
+                    Header     = header,
+                    Icon       = icon,
+                    IsEnabled  = enabled,
+                    Foreground = enabled ? menuFg : dimFg
+                };
+                if (gesture is not null) mi.InputGestureText = gesture;
+                if (enabled) mi.Click += (_, _) => action();
+                return mi;
+            }
 
+            menu.Items.Add(MakeItem("Dock",                    "\uE8A5", () => ReDockRequested?.Invoke(item)));
+            menu.Items.Add(MakeItem("Dock as Tabbed Document", "\uE8F4", () => DockAsTabGroupRequested?.Invoke(item)));
+            menu.Items.Add(MakeItem("Auto Hide",               "\uE77A", () => TabAutoHideRequested?.Invoke(item)));
             menu.Items.Add(new Separator());
-
-            var closeMenuItem = new MenuItem { Header = "Close", Foreground = menuFg };
-            closeMenuItem.Click += (_, _) => TabCloseRequested?.Invoke(item);
-            menu.Items.Add(closeMenuItem);
+            menu.Items.Add(MakeItem("Move to New Window",      "\uE8A7", () => { }, enabled: false));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(MakeItem("Close",                   "\uE8BB", () => TabCloseRequested?.Invoke(item), gesture: "Shift+Esc"));
 
             menu.PlacementTarget = btn;
             menu.Placement = PlacementMode.Bottom;
-            menu.IsOpen = true;
+            menu.IsOpen    = true;
         };
 
         // Icon before title (updated in Bind)
@@ -180,11 +192,11 @@ public class FloatingWindow : Window
 
         // Title bar layout
         var titleContent = new DockPanel();
-        DockPanel.SetDock(closeButton, Dock.Right);
-        DockPanel.SetDock(pinButton, Dock.Right);
-        DockPanel.SetDock(chevronButton, Dock.Right);
+        DockPanel.SetDock(closeButton,       Dock.Right);
+        DockPanel.SetDock(_maximizeButton,   Dock.Right);
+        DockPanel.SetDock(chevronButton,     Dock.Right);
         titleContent.Children.Add(closeButton);
-        titleContent.Children.Add(pinButton);
+        titleContent.Children.Add(_maximizeButton);
         titleContent.Children.Add(chevronButton);
         titleContent.Children.Add(_titleIcon);
         titleContent.Children.Add(_titleBlock);
@@ -192,12 +204,13 @@ public class FloatingWindow : Window
         var titleBar = new Border { Child = titleContent };
         titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
 
-        // Title bar drag: raise WindowDragStarted instead of DragMove
+        // Title bar drag / double-click
         titleBar.MouseLeftButtonDown += (_, e) =>
         {
             if (e.ClickCount == 2)
             {
-                if (Item is not null) ReDockRequested?.Invoke(Item);
+                ToggleMaximize();
+                e.Handled = true;
             }
             else
             {
@@ -276,6 +289,42 @@ public class FloatingWindow : Window
                     _titleBlock.Text = capturedItem.Title;
                 }
             };
+        }
+    }
+
+    /// <summary>
+    /// Raised when the user selects "Ancrer dans le groupe d'onglets" in the context menu.
+    /// </summary>
+    public event Action<DockItem>? DockAsTabGroupRequested;
+
+    // ── Maximize / restore ────────────────────────────────────────────────
+
+    private void ToggleMaximize()
+    {
+        if (_isFloatingMaximized)
+        {
+            Left   = _savedLeft;
+            Top    = _savedTop;
+            Width  = _savedWidth;
+            Height = _savedHeight;
+            _isFloatingMaximized     = false;
+            _maximizeButton.Content  = "\uE922"; // ChromeMaximize
+            _maximizeButton.ToolTip  = "Maximize";
+        }
+        else
+        {
+            _savedLeft   = Left;
+            _savedTop    = Top;
+            _savedWidth  = Width;
+            _savedHeight = Height;
+            var area = SystemParameters.WorkArea;
+            Left   = area.Left;
+            Top    = area.Top;
+            Width  = area.Width;
+            Height = area.Height;
+            _isFloatingMaximized     = true;
+            _maximizeButton.Content  = "\uE923"; // ChromeRestore
+            _maximizeButton.ToolTip  = "Restore";
         }
     }
 

@@ -95,6 +95,9 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         if (context.HexEditor.IsActive)
             context.HexEditor.ConnectParsedFieldsPanel(_panel);
 
+        // Wire bookmark navigation: clicking a section chip scrolls the hex editor.
+        _panel.NavigateToOffsetRequested += OnNavigateToOffsetRequested;
+
         // Reconnect when the active tab changes.
         context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
         context.HexEditor.FileOpened          += OnFileOpened;
@@ -122,12 +125,25 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
             _context.HexEditor.DisconnectParsedFieldsPanel();
         }
 
+        if (_panel != null)
+            _panel.NavigateToOffsetRequested -= OnNavigateToOffsetRequested;
+
         _panel   = null;
         _context = null;
         return Task.CompletedTask;
     }
 
     // ── HexEditor event handlers ───────────────────────────────────────────
+
+    /// <summary>
+    /// Forwards a bookmark navigation request to the hex editor:
+    /// scrolls the viewport to <paramref name="e"/> and places the caret there.
+    /// </summary>
+    private void OnNavigateToOffsetRequested(object? sender, long e)
+    {
+        if (_context?.HexEditor.IsActive == true)
+            _context.HexEditor.NavigateTo(e);
+    }
 
     /// <summary>
     /// Reconnects the panel to the newly active editor after a tab switch.
