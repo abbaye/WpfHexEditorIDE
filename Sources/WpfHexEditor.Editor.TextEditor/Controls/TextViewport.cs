@@ -4,12 +4,14 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Core;
+using WpfHexEditor.Editor.Core.Helpers;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
 using WpfHexEditor.Editor.TextEditor.Selection;
@@ -76,6 +78,10 @@ internal sealed class TextViewport : FrameworkElement
 
     // 60 Hz throttle for drag selection redraws (P1-TE-02)
     private long _lastDragRenderTick;
+
+    // Render-time measurement — reported via RefreshTimeUpdated to TextEditor for status bar.
+    private readonly Stopwatch _refreshStopwatch = new();
+    internal event EventHandler<long>? RefreshTimeUpdated;
     private static readonly long DragThrottleTicks
         = (long)(System.Diagnostics.Stopwatch.Frequency / 60.0); // ~16.7 ms
 
@@ -117,8 +123,12 @@ internal sealed class TextViewport : FrameworkElement
     private readonly DrawingVisual _backgroundVisual  = new(); // layer 0
     private readonly DrawingVisual _textContentVisual = new(); // layer 1
     private readonly DrawingVisual _cursorOverlay     = new(); // layer 2
+    private readonly DrawingVisual _panOverlay        = new(); // layer 3 — pan mode indicator (topmost)
 
     private readonly VisualCollection _visuals;
+
+    // Middle-click auto-scroll (pan mode)
+    private PanModeController _panMode = null!;
 
     protected override int VisualChildrenCount => _visuals.Count;
     protected override Visual GetVisualChild(int index) => _visuals[index];
@@ -145,7 +155,15 @@ internal sealed class TextViewport : FrameworkElement
         _visuals = new VisualCollection(this);
         _visuals.Add(_backgroundVisual);   // z = 0 (bottom — below text)
         _visuals.Add(_textContentVisual);  // z = 1
-        _visuals.Add(_cursorOverlay);      // z = 2 (top)
+        _visuals.Add(_cursorOverlay);      // z = 2
+        _visuals.Add(_panOverlay);         // z = 3 (topmost — pan mode indicator)
+
+        _panMode = new PanModeController(this, (_, dy) =>
+        {
+            if (_lineHeight <= 0) return;
+            int delta = (int)Math.Round(dy / _lineHeight);
+            if (delta != 0) FirstVisibleLine = Math.Max(0, FirstVisibleLine + delta);
+        });
 
         _cursorBlinkTimer = new DispatcherTimer(DispatcherPriority.Render)
         {
@@ -410,6 +428,8 @@ internal sealed class TextViewport : FrameworkElement
 
     protected override void OnRender(DrawingContext dc)
     {
+        _refreshStopwatch.Restart();
+
         // Reserve hit-test area. Actual rendering is in DrawingVisual children.
         dc.DrawRectangle(Brushes.Transparent, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
@@ -423,6 +443,16 @@ internal sealed class TextViewport : FrameworkElement
         UpdateBackground();
         UpdateTextContent();
         DrawCursor();
+        DrawPanOverlay();
+
+        _refreshStopwatch.Stop();
+        RefreshTimeUpdated?.Invoke(this, _refreshStopwatch.ElapsedMilliseconds);
+    }
+
+    private void DrawPanOverlay()
+    {
+        using var dc = _panOverlay.RenderOpen();
+        _panMode.Render(dc);
     }
 
     // -----------------------------------------------------------------------
@@ -1020,12 +1050,16 @@ internal sealed class TextViewport : FrameworkElement
     protected override void OnLostFocus(RoutedEventArgs e)
     {
         base.OnLostFocus(e);
+        _panMode.HandleLostFocus();
         StopCursorBlink();
         UpdateBackground();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
+        // Pan mode: Escape exits before any other key handling
+        if (_panMode.HandleKeyDown(e)) return;
+
         if (_vm is null) return;
         base.OnKeyDown(e);
 
@@ -1217,6 +1251,9 @@ internal sealed class TextViewport : FrameworkElement
 
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
+        // Middle-click toggles pan mode; any other click while active exits it.
+        if (_panMode.HandleMouseDown(e)) return;
+
         // Right-click must never clear the selection — the context menu
         // should open with the current selection intact.
         if (e.ChangedButton == MouseButton.Right)
@@ -1347,6 +1384,9 @@ internal sealed class TextViewport : FrameworkElement
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
+
+        // In pan mode: update directional cursor; suppress normal hover logic.
+        if (_panMode.HandleMouseMove(e)) return;
 
         if (_vm is null) return;
 

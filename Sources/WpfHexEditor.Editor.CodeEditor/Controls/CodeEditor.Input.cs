@@ -47,6 +47,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnKeyDown(e);
 
+            // Pan mode: Escape exits without consuming other keys
+            if (_panMode.HandleKeyDown(e)) return;
+
             // Track Ctrl key to enable symbol underline + Ctrl+Click navigation.
             if ((e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) && !_ctrlDown)
             {
@@ -1049,6 +1052,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnMouseDown(e);
 
+            // Middle-click toggles pan mode; any other click while active exits it.
+            if (_panMode.HandleMouseDown(e)) return;
+
             // Dismiss any open references popup on any click in the editor,
             // but NOT when the click originated inside the popup itself.
             // Two complementary guards cover both WPF-routing and Win32 click-through paths:
@@ -1254,6 +1260,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            // In pan mode: update directional cursor; suppress normal hover logic.
+            if (_panMode.HandleMouseMove(e)) return;
 
             // URL hover: show Hand cursor + underline when the pointer is over a URL zone.
             if (!_isSelecting)
@@ -1530,6 +1539,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             base.OnLostFocus(e);
+
+            // Exit pan mode on focus loss (Alt-Tab, click elsewhere, etc.)
+            _panMode.HandleLostFocus();
 
             // Stop caret blinking when not focused
             if (_caretTimer != null)

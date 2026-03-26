@@ -864,6 +864,29 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// Handles middle-click pan scroll from HexViewport.
+        /// Converts a pixel delta to a line count and updates the view model scroll position.
+        /// </summary>
+        private void OnHexViewportPanScroll(double dy)
+        {
+            if (_viewModel == null || HexViewport == null) return;
+
+            double lineH = HexViewport.LineHeight;
+            if (lineH <= 0) return;
+
+            int delta = (int)Math.Round(dy / lineH);
+            if (delta == 0) return;
+
+            long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+            long newPos    = Math.Max(0, Math.Min(_viewModel.ScrollPosition + delta, maxScroll));
+
+            if (_viewModel.ScrollPosition == newPos) return;
+
+            _viewModel.ScrollPosition = newPos;
+            VerticalScroll.Value      = newPos;
+        }
+
+        /// <summary>
         /// Update visible lines based on BaseGrid Row 1 height (exact V1 approach)
         /// V1 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / (LineHeight * ZoomScale)) + 1
         /// V2 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / LineHeight) + 1 (no ZoomScale)

@@ -63,6 +63,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
             CheckSmartComplete.IsChecked  = ce.ShowSmartComplete;
             CheckLineNumbers.IsChecked   = ce.ShowLineNumbers;
             CheckHighlightLine.IsChecked   = ce.HighlightCurrentLine;
+            CheckShowRefreshRate.IsChecked = ce.ShowRefreshRateInStatusBar;
             CheckFoldDoubleClick.IsChecked = ce.FoldToggleOnDoubleClick;
             CheckWordWrap.IsChecked        = ce.WordWrap;
             TxtZoom.Text      = ((int)(ce.DefaultZoom * 100)).ToString();
@@ -100,8 +101,9 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.UseSpaces         = CheckUseSpaces.IsChecked    == true;
         ce.ShowSmartComplete  = CheckSmartComplete.IsChecked == true;
         ce.ShowLineNumbers   = CheckLineNumbers.IsChecked  == true;
-        ce.HighlightCurrentLine    = CheckHighlightLine.IsChecked   == true;
-        ce.FoldToggleOnDoubleClick = CheckFoldDoubleClick.IsChecked == true;
+        ce.HighlightCurrentLine        = CheckHighlightLine.IsChecked    == true;
+        ce.ShowRefreshRateInStatusBar  = CheckShowRefreshRate.IsChecked  == true;
+        ce.FoldToggleOnDoubleClick     = CheckFoldDoubleClick.IsChecked  == true;
         ce.WordWrap                = CheckWordWrap.IsChecked        == true;
         ce.DefaultZoom     = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
         if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)

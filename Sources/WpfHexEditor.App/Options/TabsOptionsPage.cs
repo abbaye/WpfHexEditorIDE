@@ -146,7 +146,8 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
 
         Content = new ScrollViewer
         {
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
             Content = root,
         };
 
@@ -293,7 +294,7 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
     {
         var grid = new Grid { Margin = new Thickness(0, 4, 0, 4) };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(44) });
 
         var label = new TextBlock { Text = labelText, VerticalAlignment = VerticalAlignment.Center };

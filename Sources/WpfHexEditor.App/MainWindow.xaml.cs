@@ -324,63 +324,66 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public IStatusBarContributor? ActiveStatusBarContributor
     {
         get => _activeStatusBarContributor;
-        private set 
-        { 
-            // Unsubscribe from previous HexEditor refresh time updates
-            if (_activeStatusBarContributor is HexEditor.HexEditor previousHex)
-            {
-                UnsubscribeFromRefreshTimeUpdates(previousHex);
-            }
+        private set
+        {
+            // Unsubscribe from previous editor's refresh time item
+            if (_activeStatusBarContributor is IRefreshTimeReporter previousReporter)
+                UnsubscribeFromRefreshTimeUpdates(previousReporter);
 
             _activeStatusBarContributor = value;
 
-            // Subscribe to new HexEditor refresh time updates
-            if (_activeStatusBarContributor is HexEditor.HexEditor currentHex)
-            {
-                SubscribeToRefreshTimeUpdates(currentHex);
-            }
-            else
-            {
-                // Hide refresh time for non-HexEditor documents
-                if (RefreshTimeStatusItem != null)
-                    RefreshTimeStatusItem.Visibility = Visibility.Collapsed;
-            }
+            // Subscribe to new editor's refresh time item
+            if (_activeStatusBarContributor is IRefreshTimeReporter currentReporter)
+                SubscribeToRefreshTimeUpdates(currentReporter);
+            else if (RefreshTimeStatusItem != null)
+                RefreshTimeStatusItem.Visibility = Visibility.Collapsed;
 
-            OnPropertyChanged(); 
+            OnPropertyChanged();
         }
     }
 
-    private void SubscribeToRefreshTimeUpdates(HexEditor.HexEditor hexEditor)
+    private void SubscribeToRefreshTimeUpdates(IRefreshTimeReporter reporter)
     {
         if (RefreshTimeStatusItem == null || RefreshTimeText == null) return;
 
-        // Access the RefreshTimeStatusBarItem to trigger lazy initialization
-        var refreshItem = hexEditor.RefreshTimeStatusBarItem;
-        if (refreshItem != null)
-        {
-            RefreshTimeStatusItem.Visibility = Visibility.Visible;
-            // Update immediately
-            UpdateRefreshTimeDisplay(refreshItem.Value);
-            // Subscribe to property changes
-            refreshItem.PropertyChanged += OnRefreshTimeItemPropertyChanged;
-        }
+        var item = reporter.RefreshTimeStatusBarItem;
+        if (item == null) return;
+
+        bool show = GetRefreshRateSetting(reporter);
+        item.IsVisible = show;
+        RefreshTimeStatusItem.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        UpdateRefreshTimeDisplay(item.Value);
+        item.PropertyChanged += OnRefreshTimeItemPropertyChanged;
     }
 
-    private void UnsubscribeFromRefreshTimeUpdates(HexEditor.HexEditor hexEditor)
+    private void UnsubscribeFromRefreshTimeUpdates(IRefreshTimeReporter reporter)
     {
-        var refreshItem = hexEditor.RefreshTimeStatusBarItem;
-        if (refreshItem != null)
+        var item = reporter.RefreshTimeStatusBarItem;
+        if (item != null)
+            item.PropertyChanged -= OnRefreshTimeItemPropertyChanged;
+    }
+
+    private bool GetRefreshRateSetting(IRefreshTimeReporter reporter)
+    {
+        var s = AppSettingsService.Instance.Current;
+        return reporter switch
         {
-            refreshItem.PropertyChanged -= OnRefreshTimeItemPropertyChanged;
-        }
+            HexEditor.HexEditor hex => hex.ShowRefreshTimeInStatusBar,
+            WpfHexEditor.Editor.TextEditor.Controls.TextEditor =>
+                s.TextEditorDefaults.ShowRefreshRateInStatusBar,
+            _ => s.CodeEditorDefaults.ShowRefreshRateInStatusBar,
+        };
     }
 
     private void OnRefreshTimeItemPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(Editor.Core.StatusBarItem.Value) && sender is Editor.Core.StatusBarItem item)
-        {
+        if (sender is not Editor.Core.StatusBarItem item) return;
+
+        if (e.PropertyName == nameof(Editor.Core.StatusBarItem.Value))
             Dispatcher.InvokeAsync(() => UpdateRefreshTimeDisplay(item.Value));
-        }
+        else if (e.PropertyName == nameof(Editor.Core.StatusBarItem.IsVisible))
+            Dispatcher.InvokeAsync(() =>
+                RefreshTimeStatusItem.Visibility = item.IsVisible ? Visibility.Visible : Visibility.Collapsed);
     }
 
     private void UpdateRefreshTimeDisplay(string? value)
@@ -3884,12 +3887,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Panel tabs: exit without altering status bar or toolbar contributions.
         // The status bar and toolbar always reflect the last active document editor,
         // even when a panel tab is focused (same behaviour as Visual Studio).
-        // Exception: non-editor documents (e.g. Plugin Manager) do NOT persist their
-        // toolbar when a panel gains focus — clear it so the pod disappears.
+        // Exception: non-editor documents (Options, Plugin Manager…) do NOT persist the
+        // toolbar or status bar — clear them so the pods reset to a clean state.
         if (item.ContentId.StartsWith("panel-"))
         {
-            if (ActiveDocumentEditor is null)
-                ActiveToolbarContributor = null;
+            if (ActiveDocumentEditor is null || item.ContentId == OptionsContentId)
+            {
+                ActiveToolbarContributor   = null;
+                ActiveStatusBarContributor = _defaultStatusBarContributor;
+                ActiveDocumentEditor       = null;
+            }
             return;
         }
 
@@ -5257,13 +5264,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     ss.Enabled, ss.MaxLines, ss.SyntaxHighlight,
                     ss.ClickToNavigate, ss.Opacity, ss.MinScopeLines);
                 ApplySyntaxColorOverrides(ce, settings.CodeEditorDefaults);
+                if (ce.RefreshTimeStatusBarItem is { } ceRt)
+                    ceRt.IsVisible = settings.CodeEditorDefaults.ShowRefreshRateInStatusBar;
                 break;
             case WpfHexEditor.Editor.TextEditor.Controls.TextEditor te:
                 te.MouseWheelSpeed  = settings.TextEditorDefaults.MouseWheelSpeed;
                 te.ZoomLevel        = settings.TextEditorDefaults.DefaultZoom;
                 te.IsWordWrapEnabled = settings.TextEditorDefaults.WordWrap;
+                if (te.RefreshTimeStatusBarItem is { } teRt)
+                    teRt.IsVisible = settings.TextEditorDefaults.ShowRefreshRateInStatusBar;
+                break;
+            case WpfHexEditor.HexEditor.HexEditor hexEd:
+                hexEd.ShowRefreshTimeInStatusBar = settings.HexEditorDefaults.ShowRefreshRateInStatusBar;
                 break;
         }
+
+        // Apply refresh rate visibility for CodeEditorSplitHost (wraps two CodeEditor instances)
+        if (editor is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost splitHost
+            && splitHost.RefreshTimeStatusBarItem is { } shRt)
+            shRt.IsVisible = settings.CodeEditorDefaults.ShowRefreshRateInStatusBar;
     }
 
     /// <summary>
@@ -5334,6 +5353,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         hex.ShowSearchResultMarkers = d.ShowSearchResultMarkers;
 
         // Status bar visibility
+        hex.ShowRefreshTimeInStatusBar = d.ShowRefreshRateInStatusBar;
         hex.ShowStatusMessage          = d.ShowStatusMessage;
         hex.ShowFileSizeInStatusBar    = d.ShowFileSizeInStatusBar;
         hex.ShowSelectionInStatusBar   = d.ShowSelectionInStatusBar;

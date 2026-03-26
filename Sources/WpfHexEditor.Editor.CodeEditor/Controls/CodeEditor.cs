@@ -29,6 +29,7 @@ using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Helpers;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.CodeEditor.Options;
@@ -45,7 +46,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     /// Phase 2: Syntax highlighting with CodeSyntaxHighlighter
     /// Future phases will add: SmartComplete, validation
     /// </summary>
-    public partial class CodeEditor : FrameworkElement, IDocumentEditor, IBufferAwareEditor, ILspAwareEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, INavigableDocument, IStatusBarContributor, ISearchTarget, IEditorPersistable
+    public partial class CodeEditor : FrameworkElement, IDocumentEditor, IBufferAwareEditor, ILspAwareEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, INavigableDocument, IStatusBarContributor, IRefreshTimeReporter, ISearchTarget, IEditorPersistable
     {
         #region Fields - Document Model
 
@@ -165,6 +166,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Feature B — Text drag-and-drop (move selection by dragging)
         private readonly DragDropState _dragDrop = new();
         private bool _isRectDrag; // true when the active drag originates from a rect selection block
+
+        // Middle-click auto-scroll (pan mode)
+        private PanModeController _panMode = null!;
 
         #endregion
 
@@ -1993,6 +1997,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _autoScrollTimer.Interval = TimeSpan.FromMilliseconds(50);
             _autoScrollTimer.Tick += AutoScrollTimer_Tick;
 
+            // Middle-click pan mode controller (shared with all scroll-capable editors)
+            _panMode = new PanModeController(this,
+                (dx, dy) => { ScrollVertical(dy); ScrollHorizontal(dx); });
+
             // Initialize ScrollBar visual children (vertical + horizontal)
             _scrollBarChildren = new VisualCollection(this);
             _vScrollBar = new System.Windows.Controls.Primitives.ScrollBar
@@ -3258,6 +3266,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 SyncVScrollBar();
                 InvalidateVisual();
             }
+        }
+
+        /// <summary>
+        /// Scroll viewport horizontally by pixel amount (used by pan mode and Shift+Wheel).
+        /// </summary>
+        private void ScrollHorizontal(double delta)
+        {
+            if (_hScrollBar == null || IsWordWrapEnabled) return;
+
+            double maxH = Math.Max(0, _maxContentWidth - (ActualWidth - TextAreaLeftOffset));
+            _horizontalScrollOffset = Math.Max(0, Math.Min(_horizontalScrollOffset + delta, maxH));
+            SyncHScrollBar();
+            InvalidateVisual();
         }
 
         /// <summary>

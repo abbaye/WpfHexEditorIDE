@@ -166,6 +166,7 @@ namespace WpfHexEditor.HexEditor
                 HexViewport.OffsetLineDragSelection += HexViewport_OffsetLineSelection;
                 HexViewport.KeyboardNavigation += HexViewport_KeyboardNavigation;
                 HexViewport.RefreshTimeUpdated += HexViewport_RefreshTimeUpdated;
+                HexViewport.PanVerticalScrollRequested += OnHexViewportPanScroll;
 
                 // Initialize selection brushes
                 HexViewport.SelectionActiveBrush = SelectionActiveBrush;
@@ -1544,7 +1545,11 @@ namespace WpfHexEditor.HexEditor
 
         public static readonly DependencyProperty ShowRefreshTimeInStatusBarProperty =
             DependencyProperty.Register(nameof(ShowRefreshTimeInStatusBar), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(true));
+                new PropertyMetadata(true, (d, e) =>
+                {
+                    if (d is HexEditor h && h._sbRefreshTime != null)
+                        h._sbRefreshTime.IsVisible = (bool)e.NewValue;
+                }));
 
         #endregion
 

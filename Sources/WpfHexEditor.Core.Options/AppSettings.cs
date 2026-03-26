@@ -434,6 +434,9 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Highlight the current line.</summary>
     public bool HighlightCurrentLine { get; set; } = true;
 
+    /// <summary>Show render frame time ("Refresh: N ms") in the IDE right-side status bar.</summary>
+    public bool ShowRefreshRateInStatusBar { get; set; } = true;
+
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
 
@@ -587,6 +590,9 @@ public sealed class TextEditorDefaultSettings
 
     /// <summary>Show line numbers in the gutter.</summary>
     public bool ShowLineNumbers { get; set; } = true;
+
+    /// <summary>Show render frame time ("Refresh: N ms") in the IDE right-side status bar.</summary>
+    public bool ShowRefreshRateInStatusBar { get; set; } = true;
 
     /// <summary>Wrap long lines visually at the viewport edge (hides horizontal scrollbar).</summary>
     public bool WordWrap { get; set; } = false;

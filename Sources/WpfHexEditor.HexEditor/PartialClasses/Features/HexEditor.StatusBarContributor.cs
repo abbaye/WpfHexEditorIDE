@@ -30,7 +30,7 @@ namespace WpfHexEditor.HexEditor
     /// Values are kept in sync via <see cref="RefreshStatusBarItemValues"/>,
     /// called by <see cref="RaiseHexStatusChanged"/> on every relevant state change.
     /// </summary>
-    public partial class HexEditor : IStatusBarContributor
+    public partial class HexEditor : IStatusBarContributor, IRefreshTimeReporter
     {
         // ═══════════════════════════════════════════════════════════════════
         // Fields

@@ -29,6 +29,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Editor.Core.Helpers;
 using WpfHexEditor.HexEditor.Rendering;
 
 namespace WpfHexEditor.HexEditor.Controls
@@ -67,6 +68,15 @@ namespace WpfHexEditor.HexEditor.Controls
     public class HexViewport : FrameworkElement
     {
         #region Fields
+
+        // Middle-click pan mode (vertical scroll only — byte-offset units handled by HexEditor)
+        private PanModeController _panMode = null!;
+
+        /// <summary>
+        /// Raised by the pan timer each tick. <c>dy</c> is a pixel delta the subscriber
+        /// must convert to a line/byte-offset delta and apply to the view model.
+        /// </summary>
+        internal event Action<double>? PanVerticalScrollRequested;
 
         private ObservableCollection<HexLine> _linesSource;
         private List<HexLine> _linesCached = new();
@@ -180,6 +190,7 @@ namespace WpfHexEditor.HexEditor.Controls
 
         // Cursor overlay visual (separate layer for performance - only redraws cursor, not entire viewport)
         private DrawingVisual _cursorOverlayVisual = null;
+        private DrawingVisual _panOverlayVisual;    // z=2 — pan mode indicator (topmost)
 
         // Hover overlay visual (separate layer - avoids full re-render on mouse move)
         private DrawingVisual _hoverOverlayVisual;
@@ -379,6 +390,15 @@ namespace WpfHexEditor.HexEditor.Controls
             AddVisualChild(_hoverOverlayVisual);
             AddLogicalChild(_hoverOverlayVisual);
 
+            // Pan mode indicator overlay (topmost layer)
+            _panOverlayVisual = new DrawingVisual();
+            AddVisualChild(_panOverlayVisual);
+            AddLogicalChild(_panOverlayVisual);
+
+            // Middle-click pan mode (scroll delegate raises event handled by HexEditor)
+            _panMode = new PanModeController(this,
+                (_, dy) => PanVerticalScrollRequested?.Invoke(dy));
+
             // Subscribe to window lifecycle to dismiss stale tooltips on focus loss
             Loaded   += OnViewportLoaded;
             Unloaded += OnViewportUnloaded;
@@ -399,15 +419,16 @@ namespace WpfHexEditor.HexEditor.Controls
         /// <summary>
         /// Two child visuals: cursor overlay (blink) and hover overlay (mouse preview)
         /// </summary>
-        protected override int VisualChildrenCount => 2;
+        protected override int VisualChildrenCount => 3;
 
         /// <summary>
-        /// Returns overlay visual children: 0 = cursor, 1 = hover
+        /// Returns overlay visual children: 0 = cursor, 1 = hover, 2 = pan indicator
         /// </summary>
         protected override Visual GetVisualChild(int index) => index switch
         {
             0 => _cursorOverlayVisual,
             1 => _hoverOverlayVisual,
+            2 => _panOverlayVisual,
             _ => throw new ArgumentOutOfRangeException(nameof(index))
         };
 
@@ -1850,6 +1871,13 @@ namespace WpfHexEditor.HexEditor.Controls
             // Update overlays after main render (keeps them in sync with scroll/changes)
             UpdateCursorOverlay();
             UpdateHoverOverlay();
+            UpdatePanOverlay();
+        }
+
+        private void UpdatePanOverlay()
+        {
+            using var dc = _panOverlayVisual.RenderOpen();
+            _panMode.Render(dc);
         }
 
         /// <summary>
@@ -3041,6 +3069,9 @@ namespace WpfHexEditor.HexEditor.Controls
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            // Middle-click toggles pan mode; any other click while active exits it.
+            if (_panMode.HandleMouseDown(e)) return;
+
             try
             {
                 base.OnMouseDown(e);
@@ -3167,6 +3198,9 @@ namespace WpfHexEditor.HexEditor.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            // In pan mode: update directional cursor; suppress normal hover logic.
+            if (_panMode.HandleMouseMove(e)) return;
 
             var mousePos = e.GetPosition(this);
             var hitTestResult = HitTestByteWithArea(mousePos);
@@ -3469,6 +3503,12 @@ namespace WpfHexEditor.HexEditor.Controls
             CloseTooltip();
         }
 
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            base.OnLostFocus(e);
+            _panMode.HandleLostFocus();
+        }
+
         #endregion
 
         #region Events
@@ -3484,6 +3524,9 @@ namespace WpfHexEditor.HexEditor.Controls
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            // Pan mode: Escape exits before any other key handling
+            if (_panMode.HandleKeyDown(e)) return;
+
             base.OnKeyDown(e);
 
             // Keyboard navigation - raise event for parent to handle

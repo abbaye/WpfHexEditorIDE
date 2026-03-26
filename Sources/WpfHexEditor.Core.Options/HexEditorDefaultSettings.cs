@@ -83,6 +83,9 @@ public sealed class HexEditorDefaultSettings
 
     // -- Status bar visibility ---------------------------------------------
 
+    /// <summary>Show render frame time ("Refresh: N ms") in the IDE right-side status bar.</summary>
+    public bool ShowRefreshRateInStatusBar { get; set; } = true;
+
     /// <summary>Show the status message row inside the HexEditor status bar.</summary>
     public bool ShowStatusMessage { get; set; } = true;
 

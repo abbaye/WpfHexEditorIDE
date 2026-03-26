@@ -30,6 +30,7 @@ public sealed partial class HexEditorStatusBarPage : UserControl, IOptionsPage
             CheckShowPosition.IsChecked      = s.HexEditorDefaults.ShowPositionInStatusBar;
             CheckShowEditMode.IsChecked      = s.HexEditorDefaults.ShowEditModeInStatusBar;
             CheckShowBytesPerLine.IsChecked  = s.HexEditorDefaults.ShowBytesPerLineInStatusBar;
+            CheckShowRefreshRate.IsChecked   = s.HexEditorDefaults.ShowRefreshRateInStatusBar;
         }
         finally { _loading = false; }
     }
@@ -42,6 +43,7 @@ public sealed partial class HexEditorStatusBarPage : UserControl, IOptionsPage
         s.HexEditorDefaults.ShowPositionInStatusBar  = CheckShowPosition.IsChecked      == true;
         s.HexEditorDefaults.ShowEditModeInStatusBar  = CheckShowEditMode.IsChecked      == true;
         s.HexEditorDefaults.ShowBytesPerLineInStatusBar = CheckShowBytesPerLine.IsChecked == true;
+        s.HexEditorDefaults.ShowRefreshRateInStatusBar  = CheckShowRefreshRate.IsChecked  == true;
     }
 
     // -- Control handlers -------------------------------------------------

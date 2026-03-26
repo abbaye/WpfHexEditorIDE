@@ -118,6 +118,13 @@
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
+        <CheckBox x:Name="CheckShowRefreshRate"
+                  Content="Show refresh rate in status bar (render frame time)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
         <CheckBox x:Name="CheckFoldDoubleClick"
                   Content="Toggle fold regions on double-click"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"

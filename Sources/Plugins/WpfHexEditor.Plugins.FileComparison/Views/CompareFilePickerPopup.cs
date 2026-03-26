@@ -178,9 +178,11 @@ internal sealed class CompareFilePickerPopup : Window
         itemStyle.Setters.Add(new Setter(ForegroundProperty,
             new DynamicResourceExtension("DockMenuForegroundBrush")));
 
+        // Hover → subtle theme row highlight (same token used by Solution Explorer).
+        // Selected → full accent brush, so the two states are visually distinct.
         var hoverTrigger    = new Trigger { Property = IsMouseOverProperty, Value = true };
         hoverTrigger.Setters.Add(new Setter(BackgroundProperty,
-            new DynamicResourceExtension("DF_PickerHighlightBrush")));
+            new DynamicResourceExtension("SE_HoverBrush")));
 
         var selectedTrigger = new Trigger { Property = ListBoxItem.IsSelectedProperty, Value = true };
         selectedTrigger.Setters.Add(new Setter(BackgroundProperty,
@@ -396,7 +398,7 @@ internal sealed class CompareFilePickerPopup : Window
         btnStyle.Setters.Add(new Setter(TemplateProperty,              btnTemplate));
         var hoverTrigger = new Trigger { Property = IsMouseOverProperty, Value = true };
         hoverTrigger.Setters.Add(new Setter(BackgroundProperty,
-            new DynamicResourceExtension("DF_PickerHighlightBrush")));
+            new DynamicResourceExtension("SE_HoverBrush")));
         btnStyle.Triggers.Add(hoverTrigger);
 
         var btn = new Button

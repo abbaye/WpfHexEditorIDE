@@ -1056,6 +1056,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             => _propertyProvider ??= new WpfHexEditor.Editor.CodeEditor.CodeEditorPropertyProvider(this);
 
         // ═══════════════════════════════════════════════════════════════════
+        // IRefreshTimeReporter
+        // ═══════════════════════════════════════════════════════════════════
+
+        /// <inheritdoc />
+        public StatusBarItem? RefreshTimeStatusBarItem => _sbRefreshTime;
+
+        // ═══════════════════════════════════════════════════════════════════
         // IStatusBarContributor
         // ═══════════════════════════════════════════════════════════════════
 

@@ -29,7 +29,7 @@ namespace WpfHexEditor.Editor.TextEditor.Controls;
 /// <see cref="IEditorPersistable"/>, and <see cref="INavigableDocument"/> so the project system
 /// can save/restore per-file state and the Error List can navigate to a specific line.
 /// </summary>
-public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor, ISearchTarget
+public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, IEditorPersistable, INavigableDocument, IStatusBarContributor, IRefreshTimeReporter, ISearchTarget
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -46,6 +46,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     // -- IBufferAwareEditor --------------------------------------------------
     private IDocumentBuffer? _buffer;
     private bool             _suppressBufferSync;
+
+    // -- IRefreshTimeReporter ------------------------------------------------
+    private readonly StatusBarItem _sbRefreshTime = new() { Label = "Refresh", Tooltip = "Render frame time in milliseconds", Value = "—" };
 
     // -- ISearchTarget -------------------------------------------------------
     private readonly List<(int Line, int Col)> _searchMatches = new();
@@ -67,6 +70,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         // Wire ViewModel
         Viewport.Attach(_vm);
         _vm.PropertyChanged += OnVmPropertyChanged;
+        Viewport.RefreshTimeUpdated += (_, ms) => _sbRefreshTime.Value = $"{ms} ms";
 
         // Commands
         UndoCommand      = new RelayCommand(() => Undo(),      () => CanUndo);
@@ -888,6 +892,13 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         foreach (var choice in _sbTeZoom.Choices)
             choice.IsActive = choice.DisplayName == zoomLabel;
     }
+
+    // -----------------------------------------------------------------------
+    // IRefreshTimeReporter — render-time metric for IDE status bar
+    // -----------------------------------------------------------------------
+
+    /// <inheritdoc />
+    public StatusBarItem? RefreshTimeStatusBarItem => _sbRefreshTime;
 
     // -----------------------------------------------------------------------
     // ISearchTarget — inline QuickSearchBar support
