@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    XAML Source File
    Category:  Programming
    Ext:       .xaml
@@ -6,7 +6,6 @@
    Desc:      XAML markup files for WPF, Silverlight, UWP, and WinUI user interfaces.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "semantic",
   "formatName": "XAML Source File",
@@ -126,7 +125,25 @@
       "tagBased": true,
       "multilineTagSupport": true,
       "selfClosingTags": [],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 1,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "XAML markup files for WPF, Silverlight, UWP, and WinUI user interfaces.",
+    "suggestedInspections": [
+      "Verify XAML Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

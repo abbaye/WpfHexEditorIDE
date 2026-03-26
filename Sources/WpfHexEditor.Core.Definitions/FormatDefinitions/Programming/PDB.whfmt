@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Program Database
    Category:  Programming
    Ext:       .pdb
@@ -149,5 +149,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Program Database file containing debug symbols and debugging information for binaries",
+    "suggestedInspections": [
+      "Verify Program Database magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

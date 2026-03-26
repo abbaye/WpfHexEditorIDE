@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    XML Document
    Category:  Documents
    Ext:       .xml
@@ -329,24 +329,87 @@
   "syntaxDefinition": {
     "id": "xml",
     "name": "XML / HTML / XAML",
-    "extensions": [".xml", ".xsl", ".xslt", ".svg", ".rss", ".atom", ".resx"],
+    "extensions": [
+      ".xml",
+      ".xsl",
+      ".xslt",
+      ".svg",
+      ".rss",
+      ".atom",
+      ".resx"
+    ],
     "blockCommentStart": "<!--",
     "blockCommentEnd": "-->",
     "rules": [
-      { "type": "DocType",    "pattern": "<!DOCTYPE[^>]*>" },
-      { "type": "ProcInstr",  "pattern": "<\\?[^?]*\\?>" },
-      { "type": "CData",      "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>" },
-      { "type": "Tag",        "pattern": "</?[A-Za-z][A-Za-z0-9_:.\\-]*" },
-      { "type": "AttrName",   "pattern": "\\b[A-Za-z][A-Za-z0-9_:.\\-]*(?=\\s*=)" },
-      { "type": "AttrValue",  "pattern": "(\"[^\"]*\"|'[^']*')" },
-      { "type": "Entity",     "pattern": "&(?:[A-Za-z][A-Za-z0-9]*|#(?:[0-9]+|x[0-9A-Fa-f]+));" },
-      { "type": "Comment",    "pattern": "<!--[\\s\\S]*?-->" },
-      { "type": "TagBracket", "pattern": "[<>]" }
+      {
+        "type": "DocType",
+        "pattern": "<!DOCTYPE[^>]*>"
+      },
+      {
+        "type": "ProcInstr",
+        "pattern": "<\\?[^?]*\\?>"
+      },
+      {
+        "type": "CData",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9_:.\\-]*"
+      },
+      {
+        "type": "AttrName",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9_:.\\-]*(?=\\s*=)"
+      },
+      {
+        "type": "AttrValue",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "Entity",
+        "pattern": "&(?:[A-Za-z][A-Za-z0-9]*|#(?:[0-9]+|x[0-9A-Fa-f]+));"
+      },
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "TagBracket",
+        "pattern": "[<>]"
+      }
     ],
     "foldingRules": {
       "tagBased": true,
       "multilineTagSupport": true,
-      "selfClosingTags": ["br", "hr", "img", "input", "link", "meta", "area", "base", "col", "embed", "param", "source", "track", "wbr"]
+      "selfClosingTags": [
+        "br",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "area",
+        "base",
+        "col",
+        "embed",
+        "param",
+        "source",
+        "track",
+        "wbr"
+      ]
     }
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Extensible Markup Language (XML) is a text-based markup language that defines rules for encoding documents i...",
+    "suggestedInspections": [
+      "Validate XML Document file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

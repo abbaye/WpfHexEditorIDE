@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Tag-Length-Value
    Category:  Data
    Ext:       .tlv
@@ -100,5 +100,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Generic Tag-Length-Value encoding format",
+    "suggestedInspections": [
+      "Validate Tag-Length-Value schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

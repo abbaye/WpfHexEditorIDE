@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DSD Stream File
    Category:  Audio
    Ext:       .dsf
@@ -124,5 +124,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Sony DSD Stream File format for Direct Stream Digital audio",
+    "suggestedInspections": [
+      "Validate DSD Stream File header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

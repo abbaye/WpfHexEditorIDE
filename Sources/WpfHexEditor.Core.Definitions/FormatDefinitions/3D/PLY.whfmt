@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Polygon File Format
    Category:  3D
    Ext:       .ply
@@ -126,5 +126,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Stanford PLY 3D mesh format",
+    "suggestedInspections": [
+      "Validate Polygon File Format header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

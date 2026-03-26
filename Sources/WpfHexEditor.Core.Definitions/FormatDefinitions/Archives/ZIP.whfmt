@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ZIP Archive
    Category:  Archives
    Ext:       .zip
@@ -8,7 +8,6 @@
    Detection: signature=504B0304 @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "ZIP Archive",
@@ -232,11 +231,42 @@
     }
   ],
   "assertions": [
-    { "name": "PK signature", "expression": "pkSignature == 1347093252", "severity": "error", "message": "Missing PK\\003\\004 signature — not a valid ZIP file" }
+    {
+      "name": "PK signature",
+      "expression": "pkSignature == 1347093252",
+      "severity": "error",
+      "message": "Missing PK\\003\\004 signature — not a valid ZIP file"
+    }
   ],
-  "navigation": { "bookmarks": [{ "name": "Local File Header", "offset": 0, "icon": "\uE8A5" }] },
-  "forensic": { "category": "archive", "riskLevel": "low", "suspiciousPatterns": [{ "name": "ZIP bomb potential", "condition": "uncompressedSize > 1073741824", "severity": "warning", "description": "Extremely large uncompressed size relative to compressed size" }] },
-  "aiHints": { "analysisContext": "ZIP archive — inspect local file headers, central directory, and EOCD record", "suggestedInspections": ["Check for ZIP64 end of central directory", "Inspect first entry filename for OOXML detection"] },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Local File Header",
+        "offset": 0,
+        "icon": ""
+      }
+    ]
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "ZIP bomb potential",
+        "condition": "uncompressedSize > 1073741824",
+        "severity": "warning",
+        "description": "Extremely large uncompressed size relative to compressed size"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ZIP archive format (PKZIP) - Used by many file types including Office documents",
+    "suggestedInspections": [
+      "Verify ZIP Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
+  },
   "software": [
     "WinZip",
     "7-Zip",

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ASTC Texture
    Category:  Images
    Ext:       .astc
@@ -137,5 +137,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Adaptive Scalable Texture Compression",
+    "suggestedInspections": [
+      "Validate ASTC Texture signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

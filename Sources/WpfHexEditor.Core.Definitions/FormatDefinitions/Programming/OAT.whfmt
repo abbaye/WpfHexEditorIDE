@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Android OAT
    Category:  Programming
    Ext:       .oat
@@ -147,5 +147,18 @@
   "TechnicalDetails": {},
   "functions": {
     "parseZIPArchive": "Parse ZIP archive metadata"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Android OAT (Ahead-of-Time compiled) file format, contains native code compiled from DEX",
+    "suggestedInspections": [
+      "Verify Android OAT magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

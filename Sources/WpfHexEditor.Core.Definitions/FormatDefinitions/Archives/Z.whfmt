@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Unix Compress
    Category:  Archives
    Ext:       .z
@@ -143,5 +143,18 @@
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size",
     "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unix compress (.Z) format - LZW compression",
+    "suggestedInspections": [
+      "Verify Unix Compress file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

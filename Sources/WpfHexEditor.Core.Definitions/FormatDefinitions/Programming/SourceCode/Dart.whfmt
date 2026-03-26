@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Dart Source File
    Category:  Programming
    Ext:       .dart
@@ -6,7 +6,6 @@
    Desc:      Dart programming language source file (Flutter, web, server).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Dart Source File",
@@ -101,7 +100,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Dart programming language source file (Flutter, web, server).",
+    "suggestedInspections": [
+      "Verify Dart Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

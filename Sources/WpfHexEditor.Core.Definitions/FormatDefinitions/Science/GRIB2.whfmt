@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    GRIB2 Weather Data
    Category:  Science
    Ext:       .grib2, .grb2
@@ -145,5 +145,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Gridded Binary version 2 meteorological data format",
+    "suggestedInspections": [
+      "Validate GRIB2 Weather Data file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

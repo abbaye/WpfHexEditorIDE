@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Radiotap 802.11
    Category:  Network
    Ext:       .pcap, .pcapng
@@ -216,5 +216,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Radiotap header for 802.11 wireless captures",
+    "suggestedInspections": [
+      "Validate Radiotap 802.11 file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

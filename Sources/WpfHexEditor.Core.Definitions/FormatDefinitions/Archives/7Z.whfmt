@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    7-Zip Archive
    Category:  Archives
    Ext:       .7z
@@ -275,24 +275,33 @@
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "7-Zip archives use a two-header layout: the Start Header at offset 0 (32 bytes) points via relative offset to the Next Header at the end of file, which encodes the complete file index. Inspect the CRC fields for corruption, verify nextHeaderAbsoluteOffset lands within file bounds, and check for non-zero nextHeaderOffsetHigh indicating >4 GiB data regions.",
-    "knownVulnerabilities": [],
+    "analysisContext": "7-Zip archive format designed by Igor Pavlov. Uses a 32-byte Start Header containing a 6-byte signature, ver...",
     "suggestedInspections": [
-      "Verify startHeaderCrc against bytes 12-31 to confirm the Start Header has not been tampered with",
-      "Confirm nextHeaderAbsoluteOffset (nextHeaderOffset + 32) is within the file size bounds",
-      "Check nextHeaderCrc to validate the integrity of the file index metadata block",
-      "Inspect majorVersion and minorVersion; values outside 0.x (x ≤ 4) indicate a non-standard or future format"
+      "Verify 7-Zip Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Start Header", "offsetVar": "currentOffset", "icon": "\uE8A9" },
-      { "name": "Next Header (metadata)", "offsetVar": "nextHeaderAbsoluteOffset", "icon": "\uE8A9" },
-      { "name": "Archive End", "offsetVar": "archiveEndOffset", "icon": "\uE8A9" }
+      {
+        "name": "Start Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      },
+      {
+        "name": "Next Header (metadata)",
+        "offsetVar": "nextHeaderAbsoluteOffset",
+        "icon": ""
+      },
+      {
+        "name": "Archive End",
+        "offsetVar": "archiveEndOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

@@ -709,6 +709,58 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             }
         }
 
+        /// <summary>
+        /// D5 — Handle export template button click.
+        /// Generates export output and saves to file via SaveFileDialog.
+        /// </summary>
+        private void ExportTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not System.Windows.Controls.Button btn ||
+                btn.Tag is not WpfHexEditor.Core.Interfaces.ExportTemplateItem template)
+                return;
+
+            var fields = ParsedFields;
+            if (fields == null || fields.Count == 0) return;
+
+            var sb = new System.Text.StringBuilder();
+            var extension = template.Format switch
+            {
+                "json" => "json", "csv" => "csv", "c-struct" => "h",
+                "python-bytes" => "py", "xml" => "xml", _ => "txt"
+            };
+
+            if (template.Format == "json")
+            {
+                sb.AppendLine("{");
+                for (int i = 0; i < fields.Count; i++)
+                {
+                    var f = fields[i];
+                    var comma = i < fields.Count - 1 ? "," : "";
+                    sb.AppendLine($"  \"{f.Name}\": \"{f.ActiveFormattedValue}\"{comma}");
+                }
+                sb.AppendLine("}");
+            }
+            else if (template.Format == "csv")
+            {
+                sb.AppendLine("Name,Offset,Length,Value");
+                foreach (var f in fields)
+                    sb.AppendLine($"\"{f.Name}\",{f.Offset},{f.Length},\"{f.ActiveFormattedValue}\"");
+            }
+            else
+            {
+                foreach (var f in fields)
+                    sb.AppendLine($"{f.Name}: {f.ActiveFormattedValue}");
+            }
+
+            var dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = $"{template.Format.ToUpper()} files (*.{extension})|*.{extension}|All files (*.*)|*.*",
+                FileName = $"Export_{FormatInfo?.Name?.Replace(" ", "_") ?? "Format"}.{extension}"
+            };
+            if (dlg.ShowDialog() == true)
+                System.IO.File.WriteAllText(dlg.FileName, sb.ToString());
+        }
+
         /// <summary>Expand all group nodes in the tree. (C1)</summary>
         private void ExpandAllGroups_Click(object sender, RoutedEventArgs e)
         {

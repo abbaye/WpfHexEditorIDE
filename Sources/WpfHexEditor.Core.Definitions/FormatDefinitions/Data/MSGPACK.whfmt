@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MessagePack
    Category:  Data
    Ext:       .msgpack, .mp
@@ -102,17 +102,14 @@
   "forensic": {
     "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MessagePack is a self-describing binary format where the first byte of each value encodes both type and (for small values) the value itself. Format families include fixint, fixmap, fixarray, fixstr, followed by typed multi-byte variants. Deeply nested maps and arrays with large count prefixes can cause stack exhaustion in recursive parsers; verify nesting depth before full deserialization.",
-    "knownVulnerabilities": [],
+    "analysisContext": "MessagePack binary serialization format",
     "suggestedInspections": [
-      "Decode the first byte to determine the top-level type (fixmap 0x80–0x8F, fixarray 0x90–0x9F, fixstr 0xA0–0xBF, etc.)",
-      "Count nesting depth of maps and arrays and flag structures exceeding 32 levels as potential parser DoS vectors",
-      "Check map32 and array32 count prefixes for values that would exceed the remaining file size",
-      "Scan for ext type bytes (0xC7–0xC9, 0xD4–0xD8) that carry application-defined binary payloads requiring further analysis"
+      "Validate MessagePack schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
     ]
   },
   "TechnicalDetails": {},

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NuGet Package
    Category:  Programming
    Ext:       .nupkg
@@ -305,5 +305,18 @@
     "Container": "ZIP",
     "Endianness": "little-endian",
     "HeaderSize": 30
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "NuGet Package - a ZIP container for distributing .NET libraries and tools via the NuGet package manager. The...",
+    "suggestedInspections": [
+      "Verify NuGet Package magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

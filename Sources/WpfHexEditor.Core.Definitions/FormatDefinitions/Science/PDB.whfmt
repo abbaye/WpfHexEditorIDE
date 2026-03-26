@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Protein Data Bank
    Category:  Science
    Ext:       .pdb, .ent
@@ -112,5 +112,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Protein Data Bank format for 3D molecular structures",
+    "suggestedInspections": [
+      "Validate Protein Data Bank file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

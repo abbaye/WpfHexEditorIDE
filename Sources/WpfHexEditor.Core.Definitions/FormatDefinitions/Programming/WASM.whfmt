@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    WebAssembly Binary
    Category:  Programming
    Ext:       .wasm
@@ -77,10 +77,26 @@
     }
   ],
   "assertions": [
-    { "name": "WASM magic", "expression": "wasmMagic == 1836278016", "severity": "error", "message": "Invalid WebAssembly magic — expected 0x6D736100" }
+    {
+      "name": "WASM magic",
+      "expression": "wasmMagic == 1836278016",
+      "severity": "error",
+      "message": "Invalid WebAssembly magic — expected 0x6D736100"
+    }
   ],
-  "forensic": { "category": "executable", "riskLevel": "medium" },
-  "aiHints": { "analysisContext": "WebAssembly binary module — check magic/version, then iterate sections (type/import/function/table/memory/global/export/code/data)", "suggestedInspections": ["Identify custom section names", "Count function imports vs defined functions"] },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "WebAssembly binary format",
+    "suggestedInspections": [
+      "Verify WebAssembly Binary magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
+  },
   "software": [
     "Web browsers",
     "Node.js",

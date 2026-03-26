@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Ruby Source File
    Category:  Programming
    Ext:       .rb, .rbw, .rake, .gemspec
@@ -6,7 +6,6 @@
    Desc:      Ruby programming language source files and Rake build scripts.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Ruby Source File",
@@ -96,5 +95,18 @@
     "foldingRules": {
       "type": "indent"
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Ruby programming language source files and Rake build scripts.",
+    "suggestedInspections": [
+      "Verify Ruby Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Digital Video
    Category:  Video
    Ext:       .dv, .dif
@@ -124,5 +124,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Digital Video format for storing digital video, commonly used in camcorders",
+    "suggestedInspections": [
+      "Validate Digital Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

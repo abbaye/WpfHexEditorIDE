@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Philips PAR/REC
    Category:  Medical
    Ext:       .par, .rec
@@ -105,5 +105,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Philips PAR/REC medical imaging format",
+    "suggestedInspections": [
+      "Verify Philips PAR/REC preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

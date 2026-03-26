@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TOML Configuration
    Category:  Data
    Ext:       .toml
@@ -8,7 +8,6 @@
    Detection: signature=00 @ offset 0
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "semantic",
   "formatName": "TOML Configuration",
@@ -150,5 +149,18 @@
       "indentBased": true,
       "indentTabWidth": 2
     }
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Tom's Obvious, Minimal Language configuration format",
+    "suggestedInspections": [
+      "Validate TOML Configuration schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

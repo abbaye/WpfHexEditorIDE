@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Cloud Point File
    Category:  CAD
    Ext:       .cxf
@@ -111,5 +111,18 @@
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "3D point cloud exchange format",
+    "suggestedInspections": [
+      "Validate Cloud Point File file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

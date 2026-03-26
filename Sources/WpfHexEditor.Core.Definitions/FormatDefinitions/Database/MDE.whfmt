@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Microsoft Access Compiled (Legacy)
    Category:  Database
    Ext:       .mde
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Access 97-2003 compiled database format",
+    "suggestedInspections": [
+      "Verify Microsoft Access Compiled (Legacy) file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
+    ]
   }
 }

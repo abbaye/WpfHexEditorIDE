@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Meridian Lossless Packing
    Category:  Audio
    Ext:       .mlp
@@ -113,5 +113,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Meridian Lossless Packing lossless audio compression for DVD-Audio",
+    "suggestedInspections": [
+      "Validate Meridian Lossless Packing header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    GZIP Compressed File
    Category:  Archives
    Ext:       .gz, .gzip
@@ -294,10 +294,26 @@
     }
   ],
   "assertions": [
-    { "name": "GZIP magic", "expression": "gzipMagic == 35615", "severity": "error", "message": "Invalid GZIP signature — expected 1F 8B" }
+    {
+      "name": "GZIP magic",
+      "expression": "gzipMagic == 35615",
+      "severity": "error",
+      "message": "Invalid GZIP signature — expected 1F 8B"
+    }
   ],
-  "forensic": { "category": "archive", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "GZIP compressed file — check ID1/ID2 magic, compression method (8=deflate), flags, mtime, and original filename in FLG.FNAME", "suggestedInspections": ["Check FLG byte for FNAME/FEXTRA/FCOMMENT/FHCRC flags", "Inspect OS field for origin platform"] },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "GZIP compression format defined by RFC 1952. Wraps a single DEFLATE-compressed stream with a 10-byte header ...",
+    "suggestedInspections": [
+      "Verify GZIP Compressed File file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
+  },
   "MimeTypes": [
     "application/gzip",
     "application/x-gzip"

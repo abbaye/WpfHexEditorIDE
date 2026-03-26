@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Portable Graymap
    Category:  Images
    Ext:       .pgm
@@ -124,11 +124,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Netpbm Portable Graymap; P2 (ASCII) or P5 (binary); plain-text header with width, height, and maxval (≤ 65535).",
+    "analysisContext": "Netpbm Portable Graymap (grayscale)",
     "suggestedInspections": [
-      "Confirm magic token is 'P2' or 'P5' and maxval is between 1 and 65535",
-      "For P5: verify binary data length matches width × height × (1 or 2) bytes per pixel",
-      "Scan header comments for embedded metadata or anomalous whitespace sequences"
+      "Validate Portable Graymap signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Cabinet Archive
    Category:  Archives
    Ext:       .cab
@@ -144,5 +144,18 @@
     "CompressionMethod": "LZX, Quantum",
     "ArchivesFormat": true,
     "Platform": "Windows"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Cabinet archive format",
+    "suggestedInspections": [
+      "Verify Cabinet Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

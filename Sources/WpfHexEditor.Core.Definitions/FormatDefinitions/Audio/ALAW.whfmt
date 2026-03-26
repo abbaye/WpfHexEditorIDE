@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    A-law Audio
    Category:  Audio
    Ext:       .alaw, .al
@@ -130,5 +130,18 @@
     "readUInt32BE": "Read audio header",
     "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
     "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "A-law algorithm compressed audio format used in telephony",
+    "suggestedInspections": [
+      "Validate A-law Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    RAR Archive
    Category:  Archives
    Ext:       .rar
@@ -8,7 +8,6 @@
    Detection: signature=526172211A07 @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "RAR Archive",
@@ -349,23 +348,28 @@
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "RAR archives come in two major variants (RAR4/RAR5) distinguished by the byte at offset 6. The archive flags field reveals stealth properties such as locked, solid, and encrypted archives. The totalHeaderBytes variable marks where file block records begin; anomalous reserved fields (non-zero reservedWord1 or reservedDword1) may indicate tampering.",
-    "knownVulnerabilities": [],
+    "analysisContext": "RAR archive format created by Eugene Roshal. Supports high compression ratios, solid archives, multi-volume ...",
     "suggestedInspections": [
-      "Read rarVersionByte at offset 6 (0x00=RAR4, 0x01=RAR5) to select the correct parsing path",
-      "Check headerFlags for the MHD_SOLID (bit 3) and MHD_PROTECT (bit 6) flags to characterise the archive",
-      "Flag non-zero reservedWord1 or reservedDword1 which should be zero in conforming RAR4 archives",
-      "For RAR5, verify the byte-order and variable-length integer encoding of the Section Header Block"
+      "Verify RAR Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Archive Header Start", "offsetVar": "currentOffset", "icon": "\uE8A9" },
-      { "name": "First File Block", "offsetVar": "totalHeaderBytes", "icon": "\uE8A9" }
+      {
+        "name": "Archive Header Start",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      },
+      {
+        "name": "First File Block",
+        "offsetVar": "totalHeaderBytes",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

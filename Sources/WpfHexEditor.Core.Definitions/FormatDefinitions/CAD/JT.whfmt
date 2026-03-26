@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Jupiter Tessellation
    Category:  CAD
    Ext:       .jt
@@ -98,5 +98,18 @@
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "functions": {}
+  "functions": {},
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Siemens JT 3D CAD format",
+    "suggestedInspections": [
+      "Validate Jupiter Tessellation file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
+  }
 }

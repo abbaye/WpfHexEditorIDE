@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Super Nintendo ROM
    Category:  Game
    Ext:       .smc, .sfc
@@ -264,5 +264,18 @@
     "BlocksDefined": 13,
     "ValidationRules": 3,
     "LastUpdated": "2026-03-01"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Super Nintendo Entertainment System ROM (HiROM internal header at $FFB0-$FFFF)",
+    "suggestedInspections": [
+      "Validate Super Nintendo ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

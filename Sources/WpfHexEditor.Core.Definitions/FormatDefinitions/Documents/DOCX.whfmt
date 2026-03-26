@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Word Document
    Category:  Documents
    Ext:       .docx
@@ -45,7 +45,7 @@
     "fileCount": 0,
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "subject": "Unknown",
     "pages": 0,
     "words": 0,
@@ -287,8 +287,19 @@
       "description": "Total uncompressed size of all entries in the package (bytes)"
     }
   ],
-  "forensic": { "category": "document", "riskLevel": "medium" },
-  "aiHints": { "analysisContext": "OOXML Word document (ZIP container) — contains word/document.xml, _rels/.rels, [Content_Types].xml", "suggestedInspections": ["Check word/document.xml for macro references", "Inspect _rels/ for external relationship targets"] },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Word Open XML document stored as a ZIP container. The file begins with a ZIP Local File Header con...",
+    "suggestedInspections": [
+      "Validate Word Document file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
+  },
   "MimeTypes": [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ],

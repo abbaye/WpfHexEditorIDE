@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Microsoft Access 2007+ Database
    Category:  Database
    Ext:       .accdb
@@ -126,11 +126,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Microsoft Access 2007+ ACCDB (ACE engine); supports VBA macros, linked tables, and encrypted pages.",
+    "analysisContext": "Microsoft Access 2007+ database file",
     "suggestedInspections": [
-      "Verify 'Standard ACE Database' signature and ACE engine version",
-      "Check for password-protected or encrypted database pages",
-      "Inspect embedded VBA project streams for macro content"
+      "Verify Microsoft Access 2007+ Database file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SEG-Y Seismic Data
    Category:  Science
    Ext:       .sgy, .segy
@@ -127,11 +127,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SEG-Y seismic data; 3200-byte EBCDIC text header + 400-byte binary header; followed by variable-length trace records.",
+    "analysisContext": "Society of Exploration Geophysicists Y format for seismic data",
     "suggestedInspections": [
-      "Decode 3200-byte EBCDIC text reel header to extract acquisition metadata",
-      "Parse binary header bytes 3225–3226 (data sample format code) to identify float/int encoding",
-      "Validate trace headers (each 240 bytes) for consistent sample interval and coordinate values"
+      "Validate SEG-Y Seismic Data file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
     ]
   },
   "functions": {

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Flash MP4 Video
    Category:  Video
    Ext:       .f4v, .f4p, .f4a, .f4b
@@ -117,5 +117,18 @@
   },
   "TechnicalDetails": {
     "VideoFormat": true
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Adobe Flash MP4-based video container format",
+    "suggestedInspections": [
+      "Validate Flash MP4 Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

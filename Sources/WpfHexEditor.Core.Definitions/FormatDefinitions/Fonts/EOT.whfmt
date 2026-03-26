@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Embedded OpenType Font
    Category:  Fonts
    Ext:       .eot
@@ -125,5 +125,18 @@
   "functions": {
     "readUInt32BE": "Read font tables",
     "extractASCIIString": "Read font name"
+  },
+  "forensic": {
+    "category": "font",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Embedded OpenType font format for web",
+    "suggestedInspections": [
+      "Validate Embedded OpenType Font offset table and required table tags (head, cmap, glyf)",
+      "Check glyph count, loca table offsets, and encoding records",
+      "Inspect name table entries and OS/2 metrics for consistency"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    UHA Archive
    Category:  Archives
    Ext:       .uha
@@ -156,5 +156,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "UHARC archive format with high compression ratio, developed by Uwe Herklotz",
+    "suggestedInspections": [
+      "Verify UHA Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

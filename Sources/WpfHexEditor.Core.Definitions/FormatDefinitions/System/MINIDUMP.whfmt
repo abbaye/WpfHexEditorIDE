@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Minidump
    Category:  System
    Ext:       .dmp, .mdmp
@@ -183,5 +183,18 @@
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows minidump crash file - Compact crash information",
+    "suggestedInspections": [
+      "Verify Windows Minidump file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

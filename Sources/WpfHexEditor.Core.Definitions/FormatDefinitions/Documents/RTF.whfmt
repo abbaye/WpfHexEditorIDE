@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Rich Text Format
    Category:  Documents
    Ext:       .rtf
@@ -46,7 +46,7 @@
     "version": 1,
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "subject": "Unknown",
     "pages": 0,
     "defaultFont": 0,
@@ -121,11 +121,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Rich Text Format document; text-based with control words; historically exploited for obfuscated shellcode via \\objdata and \\pict.",
+    "analysisContext": "Rich Text Format document",
     "suggestedInspections": [
-      "Verify '{\\rtf' (0x7B5C727466) signature at offset 0 and RTF version digit following",
-      "Scan for \\objdata, \\objocx, and \\pict control words that may embed OLE objects or shellcode",
-      "Inspect \\stylesheet and \\info groups for obfuscated control sequences or hex-encoded payloads"
+      "Validate Rich Text Format file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
     ]
   }
 }

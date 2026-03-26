@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    RealMedia Variable Bitrate
    Category:  Video
    Ext:       .rmvb
@@ -102,11 +102,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "RealMedia Variable Bitrate container; shares '.RMF' signature with RM but uses VBR encoding for better quality.",
+    "analysisContext": "RealMedia variable bitrate container developed by RealNetworks",
     "suggestedInspections": [
-      "Verify '.RMF' (0x2E524D46) signature at offset 0 identical to RM format",
-      "Inspect PROP chunk average and maximum bitrate fields to confirm VBR encoding",
-      "Check MDPR stream headers for RealVideo codec version and encoded dimensions"
+      "Validate RealMedia Variable Bitrate container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

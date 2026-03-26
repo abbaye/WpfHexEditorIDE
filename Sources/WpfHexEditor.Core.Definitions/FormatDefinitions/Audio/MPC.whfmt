@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Musepack Audio
    Category:  Audio
    Ext:       .mpc, .mp+, .mpp
@@ -117,5 +117,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Musepack lossy audio compression format optimized for transparency",
+    "suggestedInspections": [
+      "Validate Musepack Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

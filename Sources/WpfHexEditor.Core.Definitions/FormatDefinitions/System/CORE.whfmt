@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Unix Core Dump
    Category:  System
    Ext:       .core, .dump
@@ -207,5 +207,18 @@
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unix/Linux core dump file - Process memory snapshot",
+    "suggestedInspections": [
+      "Verify Unix Core Dump file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

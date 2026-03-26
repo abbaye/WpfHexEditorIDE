@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Syslog Binary Format
    Category:  System
    Ext:       .syslog, .log
@@ -196,5 +196,18 @@
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unix syslog binary format - System logging",
+    "suggestedInspections": [
+      "Verify Syslog Binary Format file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

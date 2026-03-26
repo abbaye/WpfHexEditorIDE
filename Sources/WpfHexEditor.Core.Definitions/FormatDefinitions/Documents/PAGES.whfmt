@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Apple Pages
    Category:  Documents
    Ext:       .pages
@@ -308,5 +308,18 @@
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header",
     "InternalFormat": "Protobuf (.iwa files)"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Apple Pages word processing document - a ZIP-based iWork package containing protobuf (.iwa) files and embedd...",
+    "suggestedInspections": [
+      "Validate Apple Pages file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

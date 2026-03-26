@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    VMware Virtual Disk
    Category:  Disk
    Ext:       .vmdk
@@ -136,22 +136,23 @@
   "forensic": {
     "category": "disk",
     "riskLevel": "medium",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "VMDK sparse extent files start with a SparseExtentHeader (magicNumber 'KDMV', version, flags, capacity in sectors, grain size, descriptor offset/size, and GT/GD offsets). Forensic analysis should mount the VMDK with write-blocking tools and parse the embedded grain directory to locate allocated vs unallocated sectors. Deleted file recovery is possible in unallocated grain space.",
-    "knownVulnerabilities": [],
+    "analysisContext": "VMware virtual disk format",
     "suggestedInspections": [
-      "Identify the VMDK type (sparse monolithic, split sparse, flat, or stream-optimized) from the descriptor text",
-      "Parse the embedded descriptor to extract disk geometry, adapter type, and parent reference for differencing disks",
-      "Mount with write-blocking tools and scan grain directory for unallocated grain entries containing recoverable data",
-      "Check for a parent VMDK reference indicating a differencing disk chain that must be fully assembled for complete analysis"
+      "Verify VMware Virtual Disk superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Sparse Extent Header", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "Sparse Extent Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {},

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    FLAC Audio
    Category:  Audio
    Ext:       .flac
@@ -339,10 +339,26 @@
     }
   ],
   "assertions": [
-    { "name": "fLaC marker", "expression": "flacSignature == 1716281667", "severity": "error", "message": "Missing fLaC stream marker" }
+    {
+      "name": "fLaC marker",
+      "expression": "flacSignature == 1716281667",
+      "severity": "error",
+      "message": "Missing fLaC stream marker"
+    }
   ],
-  "forensic": { "category": "audio", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "FLAC lossless audio — inspect STREAMINFO metadata block for sample rate, bit depth, and MD5 signature", "suggestedInspections": ["Verify STREAMINFO MD5 checksum", "Check for VORBIS_COMMENT metadata block"] },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Free Lossless Audio Codec - An open-source lossless audio compression format. The file begins with a 4-byte ...",
+    "suggestedInspections": [
+      "Validate FLAC Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
+  },
   "MimeTypes": [
     "audio/flac",
     "audio/x-flac"

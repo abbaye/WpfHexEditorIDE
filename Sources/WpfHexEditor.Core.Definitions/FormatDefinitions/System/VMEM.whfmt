@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Virtual Memory Dump
    Category:  System
    Ext:       .vmem, .vmsn
@@ -179,5 +179,18 @@
   "functions": {
     "readUInt32LE": "Read disk header",
     "multiply": "Calculate capacity"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "VMware virtual machine memory snapshot",
+    "suggestedInspections": [
+      "Verify Virtual Memory Dump file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

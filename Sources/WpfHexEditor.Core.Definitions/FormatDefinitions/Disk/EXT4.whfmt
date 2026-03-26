@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Ext4 Filesystem
    Category:  Disk
    Ext:       .ext4
@@ -116,5 +116,18 @@
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Fourth Extended Filesystem for Linux",
+    "suggestedInspections": [
+      "Verify Ext4 Filesystem superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
+    ]
   }
 }

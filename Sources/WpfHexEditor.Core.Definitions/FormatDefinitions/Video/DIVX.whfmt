@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DivX Video
    Category:  Video
    Ext:       .divx
@@ -121,5 +121,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "DivX MPEG-4 Part 2 video codec container format",
+    "suggestedInspections": [
+      "Validate DivX Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

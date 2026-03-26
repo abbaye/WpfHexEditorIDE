@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Adobe Flash SWF
    Category:  Programming
    Ext:       .swf
@@ -130,5 +130,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Adobe Flash/Shockwave Flash file",
+    "suggestedInspections": [
+      "Verify Adobe Flash SWF magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

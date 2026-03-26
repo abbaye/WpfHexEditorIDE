@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Event Log
    Category:  System
    Ext:       .evt
@@ -123,5 +123,18 @@
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows Event Log file (legacy)",
+    "suggestedInspections": [
+      "Verify Windows Event Log file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

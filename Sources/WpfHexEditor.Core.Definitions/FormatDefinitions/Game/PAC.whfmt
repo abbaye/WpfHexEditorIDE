@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Game Package
    Category:  Game
    Ext:       .pac, .pack
@@ -122,5 +122,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Generic game package/archive format",
+    "suggestedInspections": [
+      "Validate Game Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

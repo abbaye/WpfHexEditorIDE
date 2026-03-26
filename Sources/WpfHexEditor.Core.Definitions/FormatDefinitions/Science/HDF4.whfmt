@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    HDF4 Data File
    Category:  Science
    Ext:       .hdf, .hdf4
@@ -115,11 +115,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "HDF4 scientific data file; magic 0x0E031301; stores multi-dimensional arrays, annotations, and metadata in a tag-based structure.",
+    "analysisContext": "Hierarchical Data Format v4",
     "suggestedInspections": [
-      "Verify 4-byte HDF4 magic and locate the Data Descriptor Block (DDB) at offset 4",
-      "Enumerate tag/ref pairs in the DDL to identify datasets, SDS objects, and vdata records",
-      "Check for nested HDF groups and attribute annotations that carry scientific metadata"
+      "Validate HDF4 Data File file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
     ]
   },
   "functions": {

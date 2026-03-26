@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Ruby Gem Package
    Category:  Programming
    Ext:       .gem
@@ -107,5 +107,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Ruby Gem Package - programming artifact",
+    "suggestedInspections": [
+      "Verify Ruby Gem Package magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

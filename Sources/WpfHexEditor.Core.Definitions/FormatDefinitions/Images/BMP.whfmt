@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    BMP Image
    Category:  Images
    Ext:       .bmp, .dib
@@ -8,7 +8,6 @@
    Detection: signature=424D @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "BMP Image",
@@ -381,19 +380,33 @@
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "BMP files embed pixel data at a variable offset (pixelDataOffset) and may carry data steganographically in low-order bits or in the gap between the header and pixel data. Verify that pixelDataOffset matches the expected header + color-table size, and inspect non-zero reserved fields which indicate non-conforming writers.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "Windows Bitmap (BMP) is an uncompressed or minimally compressed raster image format. The file consists of a ...",
+    "suggestedInspections": [
+      "Validate BMP Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "BMP File Header", "offsetVar": "currentOffset", "icon": "\uE8A9" },
-      { "name": "DIB Header", "offsetVar": "dibHeaderSize", "icon": "\uE8A9" },
-      { "name": "Pixel Data", "offsetVar": "pixelDataOffset", "icon": "\uEB9F" }
+      {
+        "name": "BMP File Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      },
+      {
+        "name": "DIB Header",
+        "offsetVar": "dibHeaderSize",
+        "icon": ""
+      },
+      {
+        "name": "Pixel Data",
+        "offsetVar": "pixelDataOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

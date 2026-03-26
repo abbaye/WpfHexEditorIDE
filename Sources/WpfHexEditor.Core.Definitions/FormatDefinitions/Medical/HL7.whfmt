@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    HL7 Message
    Category:  Medical
    Ext:       .hl7, .txt
@@ -105,5 +105,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Health Level 7 medical messaging format",
+    "suggestedInspections": [
+      "Verify HL7 Message preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

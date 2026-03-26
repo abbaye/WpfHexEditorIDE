@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Java Source File
    Category:  Programming
    Ext:       .java
@@ -6,7 +6,6 @@
    Desc:      Java programming language source file.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Java Source File",
@@ -101,7 +100,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Java programming language source file.",
+    "suggestedInspections": [
+      "Verify Java Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

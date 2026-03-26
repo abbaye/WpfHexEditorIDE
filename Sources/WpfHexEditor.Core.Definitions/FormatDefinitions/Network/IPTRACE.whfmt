@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AIX iptrace
    Category:  Network
    Ext:       .iptrace
@@ -186,5 +186,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "AIX iptrace network capture format",
+    "suggestedInspections": [
+      "Validate AIX iptrace file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

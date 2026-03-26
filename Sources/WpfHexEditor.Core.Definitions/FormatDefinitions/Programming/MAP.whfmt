@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Linker MAP File
    Category:  Programming
    Ext:       .map
@@ -123,5 +123,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Linker MAP file containing memory map and symbol information from the linking process (text format)",
+    "suggestedInspections": [
+      "Verify Linker MAP File magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

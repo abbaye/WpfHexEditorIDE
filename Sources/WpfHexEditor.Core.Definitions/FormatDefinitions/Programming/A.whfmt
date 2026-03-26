@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Static Library Archive
    Category:  Programming
    Ext:       .a
@@ -177,5 +177,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unix static library archive (ar format) containing compiled object files for static linking",
+    "suggestedInspections": [
+      "Verify Static Library Archive magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

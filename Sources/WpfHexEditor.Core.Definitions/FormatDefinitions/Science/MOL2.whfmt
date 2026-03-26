@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Tripos Mol2
    Category:  Science
    Ext:       .mol2
@@ -104,5 +104,18 @@
   "functions": {
     "extractASCIIString": "Extract molecule data",
     "extractUTF8String": "Extract annotations"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Tripos Mol2 molecular structure format",
+    "suggestedInspections": [
+      "Validate Tripos Mol2 file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

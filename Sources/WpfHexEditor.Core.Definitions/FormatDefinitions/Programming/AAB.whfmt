@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Android App Bundle
    Category:  Programming
    Ext:       .aab
@@ -306,5 +306,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Android App Bundle - a ZIP-based publishing format for Android apps that defers APK generation and signing t...",
+    "suggestedInspections": [
+      "Verify Android App Bundle magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

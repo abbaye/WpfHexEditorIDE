@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AV1 Video
    Category:  Video
    Ext:       .av1, .ivf
@@ -133,11 +133,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AV1 open video codec in IVF container; 'DKIF' magic with codec FourCC 'AV01'; royalty-free successor to VP9.",
+    "analysisContext": "AOMedia Video 1 (AV1) open, royalty-free video coding format",
     "suggestedInspections": [
-      "Verify 'DKIF' (0x444B4946) IVF header signature at offset 0",
-      "Check codec FourCC at bytes 8-11 for 'AV01' identifying AV1 bitstream",
-      "Inspect AV1 sequence header OBU for profile, color config and operating points"
+      "Validate AV1 Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

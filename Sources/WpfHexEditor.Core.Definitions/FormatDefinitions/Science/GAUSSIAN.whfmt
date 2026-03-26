@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Gaussian Cube File
    Category:  Science
    Ext:       .cube, .cub
@@ -100,5 +100,18 @@
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "functions": {}
+  "functions": {},
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Gaussian volumetric data cube format",
+    "suggestedInspections": [
+      "Validate Gaussian Cube File file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
+  }
 }

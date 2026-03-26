@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Dolby Digital AC-3
    Category:  Audio
    Ext:       .ac3, .eac3
@@ -536,11 +536,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AC3/Dolby Digital surround audio; each sync frame starts with 0x0B77, followed by CRC1, sample rate and bitrate codes.",
+    "analysisContext": "Dolby Digital (AC-3) audio bitstream - standard surround sound codec for DVD, Blu-ray, HDTV (ATSC A/52). Eac...",
     "suggestedInspections": [
-      "Verify sync word 0x0B77 at offset 0 and CRC1 integrity at bytes 2-3",
-      "Check bsid value: 0-8 = standard AC-3, 16 = E-AC-3 (Dolby Digital Plus)",
-      "Validate acmod channel layout and lfeon subwoofer flag combination"
+      "Validate Dolby Digital AC-3 header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

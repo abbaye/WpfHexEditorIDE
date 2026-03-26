@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AutoCAD DXF
    Category:  CAD
    Ext:       .dxf
@@ -113,5 +113,18 @@
   "functions": {
     "readUInt32LE": "Read CAD header",
     "extractASCIIString": "Read metadata"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Drawing Exchange Format - CAD interchange",
+    "suggestedInspections": [
+      "Validate AutoCAD DXF file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

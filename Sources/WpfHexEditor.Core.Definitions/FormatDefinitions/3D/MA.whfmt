@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Maya ASCII
    Category:  3D
    Ext:       .ma
@@ -105,5 +105,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Autodesk Maya ASCII scene file",
+    "suggestedInspections": [
+      "Validate Maya ASCII header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Plain Text
    Category:  Text Documents
    Ext:       .txt, .text
@@ -158,5 +158,18 @@
     "BlocksDefined": 6,
     "ValidationRules": 0,
     "LastUpdated": "2026-02-24"
+  },
+  "forensic": {
+    "category": "text",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Plain text document with character encoding support (ASCII, UTF-8, UTF-16)",
+    "suggestedInspections": [
+      "Check Plain Text encoding BOM and character set consistency",
+      "Verify structural delimiters and nesting (if applicable)",
+      "Inspect line endings and whitespace normalization"
+    ]
   }
 }

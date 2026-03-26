@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Radiance HDR Image
    Category:  Images
    Ext:       .hdr, .pic
@@ -136,5 +136,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Radiance RGBE High Dynamic Range image",
+    "suggestedInspections": [
+      "Validate Radiance HDR Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

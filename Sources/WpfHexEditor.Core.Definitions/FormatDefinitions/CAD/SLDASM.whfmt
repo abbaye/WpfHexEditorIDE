@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SolidWorks Assembly
    Category:  CAD
    Ext:       .sldasm
@@ -127,5 +127,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read CAD header"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SolidWorks assembly file (OLE2 Compound Document)",
+    "suggestedInspections": [
+      "Validate SolidWorks Assembly file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

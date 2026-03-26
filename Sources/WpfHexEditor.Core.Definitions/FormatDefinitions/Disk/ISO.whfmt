@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ISO Disk Image
    Category:  Disk
    Ext:       .iso
@@ -130,23 +130,24 @@
   },
   "forensic": {
     "category": "disk",
-    "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "ISO 9660 images start with 16 empty 2048-byte sectors (the system area, bytes 0-32767) before the first Volume Descriptor at sector 16 (offset 32768). The system area can contain bootable code (El Torito) or hidden data. Multiple volume descriptor types may follow; the Volume Descriptor Set Terminator (type 255) signals the end of the VD set.",
-    "knownVulnerabilities": [],
+    "analysisContext": "ISO 9660 CD/DVD image format",
     "suggestedInspections": [
-      "Inspect the system area (bytes 0–32767) for bootable code or hidden content not part of the ISO 9660 structure",
-      "Check volumeDescriptorType: 0=Boot Record, 1=PVD, 2=Supplementary (Joliet), 255=Terminator",
-      "Verify the Volume Descriptor Set Terminator is present to confirm a well-formed VD sequence",
-      "Examine the path table and directory records for entries with unusual names or abnormal offsets"
+      "Verify ISO Disk Image superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Primary Volume Descriptor", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "Primary Volume Descriptor",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {}

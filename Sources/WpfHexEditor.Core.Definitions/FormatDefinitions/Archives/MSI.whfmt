@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Installer Package
    Category:  Archives
    Ext:       .msi
@@ -123,5 +123,18 @@
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Windows Installer package (OLE2)",
+    "suggestedInspections": [
+      "Verify Windows Installer Package file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

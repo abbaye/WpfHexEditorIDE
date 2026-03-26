@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Amazon Kindle eBook
    Category:  Documents
    Ext:       .azw, .azw3
@@ -47,7 +47,7 @@
     "databaseName": "Unknown",
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "recordCount": 0,
     "kindleFormat": "AZW",
     "hasdrm": false,
@@ -117,5 +117,18 @@
   },
   "TechnicalDetails": {
     "DocumentFormat": true
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Amazon Kindle format - Based on Mobipocket",
+    "suggestedInspections": [
+      "Validate Amazon Kindle eBook file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SPIR-V Binary
    Category:  Programming
    Ext:       .spv, .spirv
@@ -142,5 +142,18 @@
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SPIR-V (Standard Portable Intermediate Representation - Vulkan) binary format for GPU shaders",
+    "suggestedInspections": [
+      "Verify SPIR-V Binary magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

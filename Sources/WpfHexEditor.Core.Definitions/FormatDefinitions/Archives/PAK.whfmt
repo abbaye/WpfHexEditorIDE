@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PAK Archive
    Category:  Archives
    Ext:       .pak
@@ -131,5 +131,18 @@
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resour...",
+    "suggestedInspections": [
+      "Verify PAK Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

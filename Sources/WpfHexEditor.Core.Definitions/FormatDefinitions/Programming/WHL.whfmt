@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Python Wheel Package
    Category:  Programming
    Ext:       .whl
@@ -305,5 +305,18 @@
     "Container": "ZIP",
     "Endianness": "little-endian",
     "HeaderSize": 30
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Python Wheel - a ZIP-based built distribution format for Python packages, designed to replace eggs. The file...",
+    "suggestedInspections": [
+      "Verify Python Wheel Package magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

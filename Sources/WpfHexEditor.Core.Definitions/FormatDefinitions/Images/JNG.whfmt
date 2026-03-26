@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    JPEG Network Graphics
    Category:  Images
    Ext:       .jng
@@ -133,5 +133,18 @@
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "JNG format (JPEG with alpha channel)",
+    "suggestedInspections": [
+      "Validate JPEG Network Graphics signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

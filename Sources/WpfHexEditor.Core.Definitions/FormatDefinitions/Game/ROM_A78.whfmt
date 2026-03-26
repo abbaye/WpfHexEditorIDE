@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Atari 7800 ROM
    Category:  Game
    Ext:       .a78
@@ -255,5 +255,18 @@
     "extractASCIIString": "Read filenames",
     "readUInt32LE": "Read sizes",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Atari 7800 ROM format with A78 header (ProSystem standard)",
+    "suggestedInspections": [
+      "Validate Atari 7800 ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

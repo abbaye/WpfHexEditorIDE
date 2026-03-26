@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Structure Data File
    Category:  Science
    Ext:       .sdf, .sd
@@ -112,5 +112,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Structure Data File format (multiple MOL files)",
+    "suggestedInspections": [
+      "Validate Structure Data File file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

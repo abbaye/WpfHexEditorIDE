@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    macOS Dynamic Library
    Category:  Programming
    Ext:       .dylib
@@ -150,5 +150,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "macOS Dynamic Library using Mach-O (Mach Object) file format for dynamic linking",
+    "suggestedInspections": [
+      "Verify macOS Dynamic Library magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

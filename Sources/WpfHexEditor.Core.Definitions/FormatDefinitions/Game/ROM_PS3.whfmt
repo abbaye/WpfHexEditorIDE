@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PlayStation 3 Disc/Package
    Category:  Game
    Ext:       .iso, .pkg
@@ -184,5 +184,18 @@
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size",
     "formatFileSize(var:dataSize)": "Format dataSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PlayStation 3 Blu-ray disc image or PKG package format",
+    "suggestedInspections": [
+      "Validate PlayStation 3 Disc/Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

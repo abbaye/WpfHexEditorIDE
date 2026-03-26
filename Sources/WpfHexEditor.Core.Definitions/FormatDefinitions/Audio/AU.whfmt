@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AU Audio
    Category:  Audio
    Ext:       .au, .snd
@@ -160,5 +160,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Sun/NeXT audio file format",
+    "suggestedInspections": [
+      "Validate AU Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

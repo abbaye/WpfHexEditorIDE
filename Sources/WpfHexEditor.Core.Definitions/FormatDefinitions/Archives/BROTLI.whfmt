@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Brotli Compression
    Category:  Archives
    Ext:       .br
@@ -122,11 +122,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Brotli compressed stream (RFC 7932); no fixed file header — detection relies on context (HTTP Content-Encoding: br).",
+    "analysisContext": "Brotli compressed format developed by Google, used for web compression and file compression",
     "suggestedInspections": [
-      "Attempt decompression and verify output is a recognizable format",
-      "Check window-size bits in first byte to assess decompressor memory requirements",
-      "Correlate with HTTP response headers or transport context to confirm encoding"
+      "Verify Brotli Compression file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   }
 }

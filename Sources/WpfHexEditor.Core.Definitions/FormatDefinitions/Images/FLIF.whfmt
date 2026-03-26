@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Free Lossless Image Format
    Category:  Images
    Ext:       .flif
@@ -132,5 +132,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "FLIF - Free Lossless Image Format",
+    "suggestedInspections": [
+      "Validate Free Lossless Image Format signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SVG Vector Image
    Category:  Images
    Ext:       .svg, .svgz
@@ -302,5 +302,18 @@
     "SupportsScripting": true,
     "ResolutionIndependent": true,
     "CSSStylable": true
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Scalable Vector Graphics (SVG) is an XML-based vector image format for two-dimensional graphics defined by t...",
+    "suggestedInspections": [
+      "Validate SVG Vector Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

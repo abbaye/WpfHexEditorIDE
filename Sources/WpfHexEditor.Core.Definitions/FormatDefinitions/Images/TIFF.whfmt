@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TIFF Image
    Category:  Images
    Ext:       .tif, .tiff
@@ -39,7 +39,9 @@
     "validation": {
       "minFileSize": 8,
       "maxSignatureOffset": 0,
-      "alternateSignatures": ["4D4D002A"]
+      "alternateSignatures": [
+        "4D4D002A"
+      ]
     }
   },
   "variables": {
@@ -373,8 +375,19 @@
       "description": "Human-readable estimated uncompressed image data size"
     }
   ],
-  "forensic": { "category": "image", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "TIFF image — check byte-order mark (II=little-endian, MM=big-endian), magic 42, IFD offset, and image directory entries", "suggestedInspections": ["Check IFD entries for compression type (1=uncompressed, 6=JPEG, 5=LZW)", "Inspect photometric interpretation tag"] },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Tagged Image File Format (TIFF) is a flexible, adaptable file format for handling images and data within a s...",
+    "suggestedInspections": [
+      "Validate TIFF Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
+  },
   "MimeTypes": [
     "image/tiff"
   ],

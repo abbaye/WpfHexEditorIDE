@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SketchUp Model
    Category:  CAD
    Ext:       .skp
@@ -119,5 +119,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SketchUp 3D model file",
+    "suggestedInspections": [
+      "Validate SketchUp Model file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

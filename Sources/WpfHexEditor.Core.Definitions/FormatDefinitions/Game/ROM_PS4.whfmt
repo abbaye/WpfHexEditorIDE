@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PlayStation 4 Package
    Category:  Game
    Ext:       .pkg
@@ -186,5 +186,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PlayStation 4 PKG package format (encrypted game/update packages)",
+    "suggestedInspections": [
+      "Validate PlayStation 4 Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

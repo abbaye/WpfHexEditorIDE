@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Creative Voice File
    Category:  Audio
    Ext:       .voc
@@ -115,5 +115,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Creative Labs Sound Blaster audio file format",
+    "suggestedInspections": [
+      "Validate Creative Voice File header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

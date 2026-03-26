@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ELF Executable
    Category:  Executables
    Ext:       , .so, .o, .elf
@@ -8,7 +8,6 @@
    Detection: signature=7F454C46 @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "ELF Executable",
@@ -435,11 +434,52 @@
     }
   ],
   "assertions": [
-    { "name": "ELF magic", "expression": "elfMagic == 1179403647", "severity": "error", "message": "Invalid ELF magic — expected 0x7F454C46" }
+    {
+      "name": "ELF magic",
+      "expression": "elfMagic == 1179403647",
+      "severity": "error",
+      "message": "Invalid ELF magic — expected 0x7F454C46"
+    }
   ],
-  "navigation": { "bookmarks": [{ "name": "ELF Header", "offset": 0, "icon": "\uE8A5" }, { "name": "Program Headers", "offsetVar": "programHeaderOffset", "icon": "\uE768" }, { "name": "Section Headers", "offsetVar": "sectionHeaderOffset", "icon": "\uE8FD" }] },
-  "forensic": { "category": "executable", "riskLevel": "medium", "suspiciousPatterns": [{ "name": "Stripped binary", "condition": "sectionHeaderCount == 0", "severity": "warning", "description": "No section headers — binary has been stripped" }] },
-  "aiHints": { "analysisContext": "ELF executable/library — check e_ident (class/data/OS ABI), e_type (ET_EXEC/ET_DYN/ET_CORE), e_machine, program headers, and section headers", "suggestedInspections": ["Check e_type: ET_DYN may be PIE executable or shared library", "Inspect PT_INTERP segment for dynamic linker path", "Look for PT_NOTE segment with GNU build-id"] },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "ELF Header",
+        "offset": 0,
+        "icon": ""
+      },
+      {
+        "name": "Program Headers",
+        "offsetVar": "programHeaderOffset",
+        "icon": ""
+      },
+      {
+        "name": "Section Headers",
+        "offsetVar": "sectionHeaderOffset",
+        "icon": ""
+      }
+    ]
+  },
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Stripped binary",
+        "condition": "sectionHeaderCount == 0",
+        "severity": "warning",
+        "description": "No section headers — binary has been stripped"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Executable and Linkable Format (ELF) - the standard binary format for executables, object code, shared libra...",
+    "suggestedInspections": [
+      "Verify ELF Executable signature, section table, and entry point",
+      "Check import/export tables for suspicious library references",
+      "Inspect section entropy for packing, encryption, or hollowing"
+    ]
+  },
   "software": [
     "Linux OS",
     "GCC",

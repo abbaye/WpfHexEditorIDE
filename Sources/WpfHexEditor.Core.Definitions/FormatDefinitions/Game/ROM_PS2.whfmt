@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PlayStation 2 Disc Image
    Category:  Game
    Ext:       .iso, .bin
@@ -160,5 +160,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PlayStation 2 DVD-ROM disc image (ISO 9660 + PS2 extensions)",
+    "suggestedInspections": [
+      "Validate PlayStation 2 Disc Image container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

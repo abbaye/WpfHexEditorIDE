@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Tom's Audio Kompressor
    Category:  Audio
    Ext:       .tak
@@ -128,5 +128,18 @@
     "readUInt32BE": "Read audio header",
     "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
     "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "TAK lossless audio compression format with high compression ratios",
+    "suggestedInspections": [
+      "Validate Tom's Audio Kompressor header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

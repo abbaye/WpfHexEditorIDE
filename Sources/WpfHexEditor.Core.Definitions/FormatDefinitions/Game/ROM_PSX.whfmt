@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PlayStation EXE
    Category:  Game
    Ext:       .exe, .psx
@@ -260,5 +260,18 @@
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PlayStation 1 (PSX/PS1) executable format (PS-X EXE)",
+    "suggestedInspections": [
+      "Validate PlayStation EXE container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

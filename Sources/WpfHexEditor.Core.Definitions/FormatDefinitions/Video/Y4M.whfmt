@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    YUV4MPEG2
    Category:  Video
    Ext:       .y4m
@@ -126,5 +126,18 @@
   },
   "functions": {
     "readUInt32LE": "Read video metadata"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
+    "suggestedInspections": [
+      "Validate YUV4MPEG2 container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

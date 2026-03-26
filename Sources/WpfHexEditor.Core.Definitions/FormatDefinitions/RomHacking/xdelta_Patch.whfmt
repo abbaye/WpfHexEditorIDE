@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    xdelta / VCDIFF Patch
    Category:  RomHacking
    Ext:       .xdelta, .xdiff, .vcdiff
@@ -85,8 +85,26 @@
   },
   "TechnicalDetails": {
     "Standard": "RFC 3284",
-    "Instructions": [ "ADD", "COPY (source)", "COPY (target)", "RUN" ],
+    "Instructions": [
+      "ADD",
+      "COPY (source)",
+      "COPY (target)",
+      "RUN"
+    ],
     "WindowBased": true,
     "SupportsSecondaryCompression": true
+  },
+  "forensic": {
+    "category": "romhacking",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "VCDIFF delta encoding (RFC 3284) used by xdelta3. Encodes differences as ADD, COPY and RUN instructions acro...",
+    "suggestedInspections": [
+      "Validate xdelta / VCDIFF Patch patch header, format version, and source CRC",
+      "Check patch record offsets stay within target ROM bounds",
+      "Verify end-of-file marker and total patch data length"
+    ]
   }
 }

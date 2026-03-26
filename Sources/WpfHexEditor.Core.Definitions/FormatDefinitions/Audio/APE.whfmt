@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Monkey's Audio
    Category:  Audio
    Ext:       .ape
@@ -140,11 +140,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Monkey's Audio lossless codec; header starts with 'MAC ' magic and includes version, compression level and frame count.",
+    "analysisContext": "Monkey's Audio lossless compression",
     "suggestedInspections": [
-      "Verify 'MAC ' (0x4D414320) signature at offset 0",
-      "Check version field (offset 4) and compression level (0=Fast, 5000=Insane)",
-      "Inspect total frames count against file size for truncation detection"
+      "Validate Monkey's Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

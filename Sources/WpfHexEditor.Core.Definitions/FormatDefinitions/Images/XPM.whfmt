@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    X PixMap
    Category:  Images
    Ext:       .xpm
@@ -96,5 +96,18 @@
     "ImagesFormat": true,
     "BitDepth": 8
   },
-  "functions": {}
+  "functions": {},
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "X Window System Pixmap (ASCII C source)",
+    "suggestedInspections": [
+      "Validate X PixMap signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
+  }
 }

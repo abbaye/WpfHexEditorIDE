@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    WebP Image
    Category:  Images
    Ext:       .webp
@@ -317,8 +317,19 @@
       "description": "Total file size formatted as a human-readable string (KB/MB/GB)"
     }
   ],
-  "forensic": { "category": "image", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "WebP image (RIFF container) — check RIFF/WEBP header, then VP8/VP8L/VP8X chunk type for lossy/lossless/extended", "suggestedInspections": ["Check for VP8X extended features (animation, alpha, EXIF, XMP)", "Identify VP8 vs VP8L encoding"] },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "WebP is a modern image format developed by Google that provides both lossy and lossless compression. Built o...",
+    "suggestedInspections": [
+      "Validate WebP Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
+  },
   "MimeTypes": [
     "image/webp"
   ],

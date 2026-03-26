@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Flash Video
    Category:  Video
    Ext:       .flv
@@ -158,11 +158,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Flash Video container; 3-byte 'FLV' magic + version byte + type flags byte + 4-byte data offset to first tag.",
+    "analysisContext": "Adobe Flash Video format",
     "suggestedInspections": [
-      "Verify 'FLV' (0x464C56) signature at offset 0 and version byte at offset 3 (typically 1)",
-      "Check type flags byte (bit 0 = audio present, bit 2 = video present) at offset 4",
-      "Inspect first ScriptDataObject tag for onMetaData with duration, width, height and codec info"
+      "Validate Flash Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

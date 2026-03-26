@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SQLite Write-Ahead Log
    Category:  Database
    Ext:       .wal, -wal
@@ -125,15 +125,15 @@
   },
   "forensic": {
     "category": "database",
-    "riskLevel": "low",
+    "riskLevel": "medium",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SQLite WAL journal file; contains uncommitted or recently committed transactions not yet checkpointed to the main DB.",
+    "analysisContext": "SQLite Write-Ahead Logging file for database transactions",
     "suggestedInspections": [
-      "Verify WAL magic (0x377F0682 BE or 0x377F0683 LE) and salt values",
-      "Enumerate WAL frames to reconstruct transaction history",
-      "Compare page checksums against main database for consistency"
+      "Verify SQLite Write-Ahead Log file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
     ]
   }
 }

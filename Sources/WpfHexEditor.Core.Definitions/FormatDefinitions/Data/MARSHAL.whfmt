@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Ruby Marshal
    Category:  Data
    Ext:       .marshal
@@ -100,5 +100,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Ruby object serialization format",
+    "suggestedInspections": [
+      "Validate Ruby Marshal schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

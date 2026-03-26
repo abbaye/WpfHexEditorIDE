@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MDL Molfile
    Category:  Science
    Ext:       .mol
@@ -135,5 +135,18 @@
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MDL Molfile chemical structure format",
+    "suggestedInspections": [
+      "Validate MDL Molfile file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    HP-UX nettl
    Category:  Network
    Ext:       .trc0, .trc1
@@ -169,5 +169,18 @@
   "functions": {
     "readUInt32BE": "Read HP-UX nettl header",
     "readUInt16BE": "Read subsystem ID"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "HP-UX network tracing and logging format",
+    "suggestedInspections": [
+      "Validate HP-UX nettl file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

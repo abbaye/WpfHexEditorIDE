@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    BSON (Binary JSON)
    Category:  Data
    Ext:       .bson
@@ -107,17 +107,14 @@
   "forensic": {
     "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "BSON documents begin with a 4-byte little-endian document size followed by a sequence of element type-key-value tuples and a terminating 0x00 byte. MongoDB uses BSON for database storage and wire protocol, so BSON files may contain database credentials, connection strings, or serialized session tokens. Verify the declared document size matches the actual byte count.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Binary JSON format used by MongoDB",
     "suggestedInspections": [
-      "Verify the 4-byte little-endian document size equals the actual file size for top-level document validation",
-      "Enumerate element type codes and flag type 0x05 (Binary) subtype 0x00 payloads which may contain arbitrary data",
-      "Search string values (type 0x02) for connection strings, credentials, or API keys stored in MongoDB documents",
-      "Check for nested document or array elements (types 0x03/0x04) with recursive size overflows"
+      "Validate BSON (Binary JSON) schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
     ]
   },
   "TechnicalDetails": {},

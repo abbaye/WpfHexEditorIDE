@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PlayStation Vita Package
    Category:  Game
    Ext:       .vpk, .pkg
@@ -164,5 +164,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PlayStation Vita VPK/PKG package format",
+    "suggestedInspections": [
+      "Validate PlayStation Vita Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

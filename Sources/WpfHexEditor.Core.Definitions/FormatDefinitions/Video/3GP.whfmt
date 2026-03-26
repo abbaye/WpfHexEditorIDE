@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    3GPP Multimedia
    Category:  Video
    Ext:       .3gp, .3g2
@@ -142,5 +142,18 @@
   },
   "TechnicalDetails": {
     "VideoFormat": true
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "3rd Generation Partnership Project multimedia format",
+    "suggestedInspections": [
+      "Validate 3GPP Multimedia container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

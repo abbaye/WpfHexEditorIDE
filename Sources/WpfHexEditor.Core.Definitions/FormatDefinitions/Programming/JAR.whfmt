@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Java Archive
    Category:  Programming
    Ext:       .jar
@@ -308,5 +308,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Java Archive - a ZIP container for distributing Java classes, metadata, and resources. First entry is typica...",
+    "suggestedInspections": [
+      "Verify Java Archive magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

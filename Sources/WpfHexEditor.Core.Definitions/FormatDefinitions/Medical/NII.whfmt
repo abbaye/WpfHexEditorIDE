@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NIfTI Medical Image
    Category:  Medical
    Ext:       .nii
@@ -128,11 +128,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "NIfTI-1 neuroimaging file; 348-byte header at offset 0; voxel data follows immediately (single .nii) or in paired .img file.",
+    "analysisContext": "Neuroimaging Informatics Technology Initiative",
     "suggestedInspections": [
-      "Verify header size field equals 348 and check magic field ('n+1\\0' or 'ni1\\0')",
-      "Parse dim[] array to determine image dimensions, data type (datatype field), and voxel sizes",
-      "Inspect vox_offset to locate start of image data and validate against file length"
+      "Verify NIfTI Medical Image preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
     ]
   },
   "functions": {

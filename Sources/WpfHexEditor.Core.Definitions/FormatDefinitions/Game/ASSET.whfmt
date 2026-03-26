@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Unity Asset
    Category:  Game
    Ext:       .asset
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unity asset/scene file",
+    "suggestedInspections": [
+      "Validate Unity Asset container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

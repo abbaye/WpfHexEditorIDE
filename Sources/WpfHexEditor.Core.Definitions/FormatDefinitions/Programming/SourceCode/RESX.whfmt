@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    .NET XML Resource File
    Category:  Programming/SourceCode
    Ext:       .resx
@@ -6,12 +6,13 @@
    Desc:      Standard .NET XML-based resource file containing string tables, images, binary blobs, and file references.
    Updated:   2026-03-23
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": ".NET XML Resource File",
   "version": "1.0",
-  "extensions": [".resx"],
+  "extensions": [
+    ".resx"
+  ],
   "description": "Standard .NET XML-based resource file containing string tables, images, binary blobs, and file references.",
   "category": "Programming/SourceCode",
   "author": "WPFHexaEditor Team",
@@ -44,5 +45,18 @@
     "String resource management",
     "Image and binary resource embedding",
     "Multi-language support"
-  ]
+  ],
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Standard .NET XML-based resource file containing string tables, images, binary blobs, and file references.",
+    "suggestedInspections": [
+      "Verify .NET XML Resource File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
+  }
 }

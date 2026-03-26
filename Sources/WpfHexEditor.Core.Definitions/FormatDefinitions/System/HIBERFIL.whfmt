@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Hibernation File
    Category:  System
    Ext:       .sys
@@ -175,5 +175,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows hibernation file (hiberfil.sys) - Suspended system state",
+    "suggestedInspections": [
+      "Verify Windows Hibernation File file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

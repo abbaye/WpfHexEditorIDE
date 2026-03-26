@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AAC Audio
    Category:  Audio
    Ext:       .aac
@@ -492,11 +492,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AAC audio with ADTS framing; verify sync word 0xFFF1, profile index, channel config and frame length fields.",
+    "analysisContext": "Advanced Audio Coding with ADTS (Audio Data Transport Stream) framing - high-quality lossy audio codec stand...",
     "suggestedInspections": [
-      "Verify ADTS sync word (0xFFF) and MPEG version bit at offset 0",
-      "Check sampling frequency index (0-12) for valid rate and channel configuration",
-      "Validate frame length field spans header + raw data block size"
+      "Validate AAC Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

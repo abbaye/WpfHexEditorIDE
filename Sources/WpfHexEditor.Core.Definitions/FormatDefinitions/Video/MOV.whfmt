@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    QuickTime Movie
    Category:  Video
    Ext:       .mov, .qt
@@ -326,5 +326,18 @@
     "SupportsHEVC": true,
     "MaxFileSize": "Unlimited (64-bit extended sizes)",
     "primary_extension": ".mov"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Apple QuickTime Movie format based on the atom/box container structure that became the ancestor of ISO Base ...",
+    "suggestedInspections": [
+      "Validate QuickTime Movie container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

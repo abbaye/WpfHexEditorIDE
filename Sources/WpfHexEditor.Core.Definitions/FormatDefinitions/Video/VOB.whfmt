@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DVD Video Object
    Category:  Video
    Ext:       .vob
@@ -127,5 +127,18 @@
   },
   "TechnicalDetails": {
     "VideoFormat": true
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "DVD Video Object file - MPEG-2 container",
+    "suggestedInspections": [
+      "Validate DVD Video Object container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

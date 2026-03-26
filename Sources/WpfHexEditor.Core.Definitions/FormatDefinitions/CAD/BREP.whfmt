@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    BREP Format
    Category:  CAD
    Ext:       .brep
@@ -110,5 +110,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Boundary Representation CAD format",
+    "suggestedInspections": [
+      "Validate BREP Format file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

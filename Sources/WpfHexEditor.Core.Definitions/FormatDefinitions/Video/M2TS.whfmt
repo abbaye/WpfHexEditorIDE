@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Blu-ray MPEG-2 Transport Stream
    Category:  Video
    Ext:       .m2ts
@@ -122,11 +122,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Blu-ray BDAV transport stream; 192-byte packets with 4-byte timestamp prefix before each 188-byte MPEG-TS packet.",
+    "analysisContext": "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
     "suggestedInspections": [
-      "Verify sync byte 0x47 at byte offset 4 (after 4-byte timestamp prefix) and every 192 bytes",
-      "Check 4-byte Blu-ray timestamp prefix for arrival time clock (ATC) values",
-      "Inspect PAT and PMT tables in TS packets for stream PIDs and codec identification"
+      "Validate Blu-ray MPEG-2 Transport Stream container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

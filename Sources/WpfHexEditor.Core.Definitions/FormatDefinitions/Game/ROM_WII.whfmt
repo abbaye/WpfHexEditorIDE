@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Nintendo Wii Disc
    Category:  Game
    Ext:       .iso, .wbfs
@@ -256,5 +256,18 @@
   "functions": {
     "readUInt32BE": "Read Wii disc header (big-endian)",
     "extractASCIIString": "Extract game title"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo Wii disc image format (similar to GameCube with Wii extensions)",
+    "suggestedInspections": [
+      "Validate Nintendo Wii Disc container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    OpenDocument Spreadsheet
    Category:  Documents
    Ext:       .ods
@@ -307,5 +307,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "OpenDocument Spreadsheet - a ZIP-based open standard spreadsheet format used by LibreOffice and OpenOffice. ...",
+    "suggestedInspections": [
+      "Validate OpenDocument Spreadsheet file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

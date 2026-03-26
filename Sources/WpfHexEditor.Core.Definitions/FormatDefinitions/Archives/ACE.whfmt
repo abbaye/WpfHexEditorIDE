@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ACE Archive
    Category:  Archives
    Ext:       .ace
@@ -124,5 +124,18 @@
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "ACE compressed archive format",
+    "suggestedInspections": [
+      "Verify ACE Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

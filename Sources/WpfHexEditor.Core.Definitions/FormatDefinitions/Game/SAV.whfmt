@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Game Save File
    Category:  Game
    Ext:       .sav
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Generic game save file",
+    "suggestedInspections": [
+      "Validate Game Save File container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

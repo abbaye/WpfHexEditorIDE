@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Microsoft Network Monitor
    Category:  Network
    Ext:       .cap
@@ -186,5 +186,18 @@
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Network Monitor capture format",
+    "suggestedInspections": [
+      "Validate Microsoft Network Monitor file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

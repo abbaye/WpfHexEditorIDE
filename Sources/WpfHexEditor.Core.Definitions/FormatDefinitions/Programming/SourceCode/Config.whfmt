@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Configuration File
    Category:  Programming
    Ext:       .ini, .cfg, .conf, .config, .properties, .env, .inf
@@ -6,12 +6,19 @@
    Desc:      Generic configuration and settings files in key-value or INI-style format.
    Updated:   2026-03-07
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "Configuration File",
   "version": "1.0",
-  "extensions": [".ini", ".cfg", ".conf", ".config", ".properties", ".env", ".inf"],
+  "extensions": [
+    ".ini",
+    ".cfg",
+    ".conf",
+    ".config",
+    ".properties",
+    ".env",
+    ".inf"
+  ],
   "description": "Generic configuration and settings files in key-value or INI-style format.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -29,7 +36,29 @@
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/plain"],
-  "Software": ["Notepad", "VS Code"],
-  "UseCases": ["Application configuration", "Environment variables", "System settings"]
+  "MimeTypes": [
+    "text/plain"
+  ],
+  "Software": [
+    "Notepad",
+    "VS Code"
+  ],
+  "UseCases": [
+    "Application configuration",
+    "Environment variables",
+    "System settings"
+  ],
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Generic configuration and settings files in key-value or INI-style format.",
+    "suggestedInspections": [
+      "Verify Configuration File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
+  }
 }

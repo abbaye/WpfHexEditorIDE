@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Advanced Systems Format
    Category:  Video
    Ext:       .asf
@@ -115,5 +115,18 @@
   },
   "TechnicalDetails": {
     "VideoFormat": true
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Advanced Systems Format multimedia container",
+    "suggestedInspections": [
+      "Validate Advanced Systems Format container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

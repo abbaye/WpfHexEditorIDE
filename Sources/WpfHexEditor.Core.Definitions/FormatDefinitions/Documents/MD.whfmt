@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Markdown Document
    Category:  Documents
    Ext:       .md, .markdown, .mkd, .mdx
@@ -6,12 +6,16 @@
    Desc:      GitHub-Flavored Markdown document with support for tables, task lists, Mermaid diagrams, and code fences.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "Markdown Document",
   "version": "1.0",
-  "extensions": [".md", ".markdown", ".mkd", ".mdx"],
+  "extensions": [
+    ".md",
+    ".markdown",
+    ".mkd",
+    ".mdx"
+  ],
   "description": "GitHub-Flavored Markdown document with support for tables, task lists, Mermaid diagrams, and code fences.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
@@ -46,5 +50,18 @@
     "Technical writing",
     "Note taking",
     "Changelogs"
-  ]
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "GitHub-Flavored Markdown document with support for tables, task lists, Mermaid diagrams, and code fences.",
+    "suggestedInspections": [
+      "Validate Markdown Document file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
+  }
 }

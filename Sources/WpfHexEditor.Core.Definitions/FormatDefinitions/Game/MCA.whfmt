@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Minecraft Anvil Region
    Category:  Game
    Ext:       .mca
@@ -125,5 +125,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Minecraft Anvil world region format",
+    "suggestedInspections": [
+      "Validate Minecraft Anvil Region container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

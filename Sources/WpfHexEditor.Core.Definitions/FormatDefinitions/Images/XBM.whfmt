@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    X BitMap
    Category:  Images
    Ext:       .xbm
@@ -128,5 +128,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(imageWidth * imageHeight, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "X Window System Bitmap (ASCII C source)",
+    "suggestedInspections": [
+      "Validate X BitMap signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

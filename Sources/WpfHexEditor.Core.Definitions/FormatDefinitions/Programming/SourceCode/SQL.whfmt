@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SQL Source File
    Category:  Programming
    Ext:       .sql, .ddl, .dml
@@ -6,7 +6,6 @@
    Desc:      Structured Query Language source files for databases.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "SQL Source File",
@@ -102,5 +101,18 @@
         "\\bEND\\b"
       ]
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Structured Query Language source files for databases.",
+    "suggestedInspections": [
+      "Verify SQL Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

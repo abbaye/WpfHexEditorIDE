@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Encapsulated Packet
    Category:  Network
    Ext:       .encap
@@ -197,5 +197,18 @@
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Generic encapsulated packet format for tunneling protocols",
+    "suggestedInspections": [
+      "Validate Encapsulated Packet file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

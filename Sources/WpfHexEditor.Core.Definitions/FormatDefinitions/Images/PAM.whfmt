@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Portable Arbitrary Map
    Category:  Images
    Ext:       .pam
@@ -140,11 +140,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Netpbm Portable Arbitrary Map (P7); extensible header with TUPLTYPE; supports arbitrary channel counts including alpha.",
+    "analysisContext": "Netpbm Portable Arbitrary Map (any format)",
     "suggestedInspections": [
-      "Verify 'P7' magic and parse named header fields: WIDTH, HEIGHT, DEPTH, MAXVAL, TUPLTYPE, ENDHDR",
-      "Validate binary data length matches WIDTH × HEIGHT × DEPTH × bytes-per-sample",
-      "Check TUPLTYPE for non-standard values that may indicate unconventional channel usage"
+      "Validate Portable Arbitrary Map signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
     ]
   },
   "functions": {

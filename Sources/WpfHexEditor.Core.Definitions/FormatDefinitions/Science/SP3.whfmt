@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SP3 Orbit Data
    Category:  Science
    Ext:       .sp3, .eph
@@ -124,5 +124,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Standard Product 3 GPS precise orbit format",
+    "suggestedInspections": [
+      "Validate SP3 Orbit Data file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

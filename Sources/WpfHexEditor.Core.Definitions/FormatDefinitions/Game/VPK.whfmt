@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Valve Package
    Category:  Game
    Ext:       .vpk
@@ -114,5 +114,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Valve Pak file for Source engine",
+    "suggestedInspections": [
+      "Validate Valve Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

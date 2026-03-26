@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Parasolid Text
    Category:  CAD
    Ext:       .x_t
@@ -115,5 +115,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Parasolid transmit text format",
+    "suggestedInspections": [
+      "Validate Parasolid Text file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

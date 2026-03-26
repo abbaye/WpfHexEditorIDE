@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ASN.1 DER Encoding
    Category:  Data
    Ext:       .der, .cer
@@ -110,5 +110,18 @@
   "functions": {
     "readUInt32BE": "Read certificate",
     "extractASCIIString": "Read subject"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Abstract Syntax Notation One Distinguished Encoding Rules",
+    "suggestedInspections": [
+      "Validate ASN.1 DER Encoding schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

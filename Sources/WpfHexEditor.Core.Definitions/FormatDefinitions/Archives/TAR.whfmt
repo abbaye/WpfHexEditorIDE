@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TAR Archive
    Category:  Archives
    Ext:       .tar
@@ -349,17 +349,14 @@
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "TAR stores file entries sequentially as 512-byte header blocks followed by padded file data. Inspect the header checksum field (octal ASCII at offset 148) for validity, examine typeFlag for unexpected device or special file entries, and check ownerUID/ownerGroupName for privilege-escalation indicators when restoring on untrusted systems.",
-    "knownVulnerabilities": [],
+    "analysisContext": "POSIX TAR (Tape Archive) format stores files sequentially in 512-byte blocks without compression. Each file ...",
     "suggestedInspections": [
-      "Validate the header checksum (octal ASCII at offset 148) by computing the sum of all 512 header bytes with the checksum field treated as spaces",
-      "Scan typeFlag values for character device (3), block device (4), or contiguous file (7) entries which are unusual in user archives",
-      "Check ownerUID and ownerGroupName for root (0) ownership entries that would gain elevated permissions on extraction",
-      "Look for path traversal in fileName or filenamePrefix (entries containing '../') that could write outside the extraction directory"
+      "Verify TAR Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   },
   "assertions": [

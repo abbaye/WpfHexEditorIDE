@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    F2FS (Flash-Friendly File System)
    Category:  Disk
    Ext:       .f2fs
@@ -108,5 +108,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Flash-Friendly File System for NAND flash devices",
+    "suggestedInspections": [
+      "Verify F2FS (Flash-Friendly File System) superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
+    ]
   }
 }

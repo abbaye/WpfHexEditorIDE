@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Word Document (Legacy)
    Category:  Documents
    Ext:       .doc
@@ -140,11 +140,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Legacy Word OLE2 compound document; OLE2 header 0xD0CF11E0 at offset 0; may contain VBA macros and embedded objects.",
+    "analysisContext": "Microsoft Word 97-2003 document (OLE2)",
     "suggestedInspections": [
-      "Verify OLE2 signature D0CF11E0A1B11AE1 at offset 0 and major version (3 or 4) at bytes 26-27",
-      "Scan compound document directory entries for 'VBA' storage and macro stream presence",
-      "Inspect WordDocument stream for document properties and potential macro auto-execution indicators"
+      "Validate Word Document (Legacy) file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
     ]
   }
 }

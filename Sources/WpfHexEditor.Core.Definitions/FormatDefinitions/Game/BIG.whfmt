@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    EA BIG Archive
    Category:  Game
    Ext:       .big
@@ -165,5 +165,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Electronic Arts BIG archive format",
+    "suggestedInspections": [
+      "Validate EA BIG Archive container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

@@ -520,6 +520,67 @@ namespace WpfHexEditor.HexEditor
                         .Where(a => !a.Passed)
                         .ToList();
                     panel.FormatInfo.ForensicAlerts = forensicAlerts?.Count > 0 ? forensicAlerts : null;
+
+                    // D4 — Inspector groups: build from whfmt inspector.groups
+                    var inspDef = _detectedFormat.Inspector;
+                    if (inspDef?.Groups?.Count > 0)
+                    {
+                        var groups = new List<WpfHexEditor.Core.Interfaces.InspectorGroupItem>();
+                        foreach (var g in inspDef.Groups)
+                        {
+                            var item = new WpfHexEditor.Core.Interfaces.InspectorGroupItem
+                            {
+                                Title     = g.Title ?? "Group",
+                                Icon      = g.Icon,
+                                Highlight = g.Highlight,
+                                IsExpanded = !g.Collapsed
+                            };
+                            if (g.Fields != null)
+                            {
+                                foreach (var varName in g.Fields)
+                                {
+                                    string val = "—";
+                                    if (_variableContext != null && _variableContext.TryGet(varName, out var varVal))
+                                        val = varVal?.ToString() ?? "null";
+                                    item.Fields.Add(new WpfHexEditor.Core.Interfaces.InspectorFieldItem
+                                    {
+                                        Name         = varName,
+                                        DisplayValue = val
+                                    });
+                                }
+                            }
+                            groups.Add(item);
+                        }
+                        panel.FormatInfo.InspectorGroups = groups;
+
+                        // Inspector badge
+                        if (!string.IsNullOrEmpty(inspDef.Badge) && _variableContext != null
+                            && _variableContext.TryGet(inspDef.Badge, out var badgeVal))
+                            panel.FormatInfo.InspectorBadge = badgeVal?.ToString();
+                    }
+                    else
+                    {
+                        panel.FormatInfo.InspectorGroups = null;
+                        panel.FormatInfo.InspectorBadge = null;
+                    }
+
+                    // D5 — Export templates: expose from whfmt exportTemplates
+                    if (_detectedFormat.ExportTemplates?.Count > 0)
+                    {
+                        var templates = _detectedFormat.ExportTemplates
+                            .Select(t => new WpfHexEditor.Core.Interfaces.ExportTemplateItem
+                            {
+                                Name   = t.Name ?? "Export",
+                                Format = t.Format ?? "json",
+                                Source = t
+                            })
+                            .ToList();
+                        panel.FormatInfo.ExportTemplates = templates;
+                    }
+                    else
+                    {
+                        panel.FormatInfo.ExportTemplates = null;
+                    }
                 }, System.Windows.Threading.DispatcherPriority.Background);
             }
             catch (Exception ex)

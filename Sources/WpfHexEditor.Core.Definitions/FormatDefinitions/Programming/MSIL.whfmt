@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    .NET MSIL Assembly
    Category:  Programming
    Ext:       .dll, .exe
@@ -125,5 +125,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": ".NET Microsoft Intermediate Language (MSIL/CIL) assembly format using PE/COFF structure",
+    "suggestedInspections": [
+      "Verify .NET MSIL Assembly magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

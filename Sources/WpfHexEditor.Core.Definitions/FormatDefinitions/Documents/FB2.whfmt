@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    FictionBook 2.0
    Category:  Documents
    Ext:       .fb2
@@ -45,7 +45,7 @@
     "currentOffset": 0,
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "publisher": "Unknown",
     "language": "ru",
     "genre": "Unknown",
@@ -121,5 +121,18 @@
   },
   "TechnicalDetails": {
     "DocumentFormat": true
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books",
+    "suggestedInspections": [
+      "Validate FictionBook 2.0 file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

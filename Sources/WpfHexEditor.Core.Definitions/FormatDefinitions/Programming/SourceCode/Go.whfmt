@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Go Source File
    Category:  Programming
    Ext:       .go
@@ -6,7 +6,6 @@
    Desc:      Go (Golang) programming language source file.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Go Source File",
@@ -96,7 +95,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Go (Golang) programming language source file.",
+    "suggestedInspections": [
+      "Verify Go Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

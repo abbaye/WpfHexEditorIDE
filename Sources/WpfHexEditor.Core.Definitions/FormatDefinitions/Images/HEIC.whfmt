@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    HEIF/HEIC Image
    Category:  Images
    Ext:       .heic, .heif, .hif
@@ -290,17 +290,23 @@
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "HEIC/HEIF files are ISOBMFF containers; each box has a 4-byte size followed by a 4-byte type tag. Beyond the ftyp box, the 'meta' box contains item-property associations and Exif/XMP metadata that may carry GPS coordinates or device identifiers. The 'mdat' box holds the compressed HEVC bitstream. Verify that the major brand is consistent with declared compatible brands.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "High Efficiency Image Format (HEIF/HEIC) based on the ISO Base Media File Format (ISOBMFF/MP4). Files begin ...",
+    "suggestedInspections": [
+      "Validate HEIF/HEIC Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "ftyp Box", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "ftyp Box",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Material Exchange Format
    Category:  Video
    Ext:       .mxf
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SMPTE standard container format for professional digital video and audio media",
+    "suggestedInspections": [
+      "Validate Material Exchange Format container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

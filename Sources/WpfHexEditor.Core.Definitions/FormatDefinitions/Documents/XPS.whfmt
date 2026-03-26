@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    XML Paper Specification
    Category:  Documents
    Ext:       .xps, .oxps
@@ -322,5 +322,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft XPS (XML Paper Specification) document format, a ZIP-based fixed-layout document format. The file ...",
+    "suggestedInspections": [
+      "Validate XML Paper Specification file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

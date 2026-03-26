@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Zstandard Compressed
    Category:  Archives
    Ext:       .zst, .zstd
@@ -115,11 +115,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Zstandard compressed frame (RFC 8878); magic 0x28B52FFD; supports optional skippable frames and dictionary compression.",
+    "analysisContext": "Zstandard compression format by Facebook",
     "suggestedInspections": [
-      "Verify frame magic 0xFD2FB528 (LE) and Frame_Header_Descriptor byte",
-      "Check for skippable frames (magic 0x184D2A5X) that may carry metadata",
-      "Validate optional frame content checksum (xxHash64) if present"
+      "Verify Zstandard Compressed file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   }
 }

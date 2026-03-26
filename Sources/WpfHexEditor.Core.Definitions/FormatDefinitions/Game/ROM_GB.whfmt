@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Game Boy ROM
    Category:  Game
    Ext:       .gb, .gbc
@@ -291,5 +291,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Game Boy/Game Boy Color ROM cartridge format",
+    "suggestedInspections": [
+      "Validate Game Boy ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Matroska Video
    Category:  Video
    Ext:       .mkv, .mka, .mks, .mk3d
@@ -376,8 +376,19 @@
       "description": "Total size of the EBML header in bytes, after which the Segment element begins"
     }
   ],
-  "forensic": { "category": "video", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "Matroska video (EBML container) — decode EBML header then Segment, Info, Tracks, Clusters using variable-length EBML IDs and sizes", "suggestedInspections": ["Check EBML DocType for 'matroska' vs 'webm'", "Inspect track entries for codec IDs"] },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Matroska is an open-standard multimedia container format based on EBML (Extensible Binary Meta Language). Th...",
+    "suggestedInspections": [
+      "Validate Matroska Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
+  },
   "MimeTypes": [
     "video/x-matroska",
     "audio/x-matroska",

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Batch Script
    Category:  Programming
    Ext:       .bat, .cmd
@@ -6,7 +6,6 @@
    Desc:      Windows batch script files for command-line automation.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Batch Script",
@@ -89,6 +88,19 @@
         "pattern": "\\b[0-9]+\\b",
         "colorKey": "TE_Number"
       }
+    ]
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows batch script files for command-line automation.",
+    "suggestedInspections": [
+      "Verify Batch Script file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
     ]
   }
 }

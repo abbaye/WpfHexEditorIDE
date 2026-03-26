@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AVI Video
    Category:  Video
    Ext:       .avi
@@ -461,11 +461,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AVI RIFF container; 'RIFF' + 'AVI ' at offsets 0/8, followed by 'hdrl' LIST with avih 56-byte main header.",
+    "analysisContext": "Audio Video Interleave (AVI) is a RIFF-based multimedia container format developed by Microsoft. The file st...",
     "suggestedInspections": [
-      "Verify 'RIFF' signature at offset 0 and 'AVI ' form type at offset 8",
-      "Inspect avih flags for HASINDEX and ISINTERLEAVED bits and validate totalFrames against file size",
-      "Check microsecondsPerFrame for valid frame rate (33333=30fps, 40000=25fps) and width/height dimensions"
+      "Validate AVI Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

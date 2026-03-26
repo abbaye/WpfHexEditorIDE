@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AFNI BRIK/HEAD
    Category:  Medical
    Ext:       .head, .brik
@@ -105,5 +105,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "AFNI medical imaging format",
+    "suggestedInspections": [
+      "Verify AFNI BRIK/HEAD preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

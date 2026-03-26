@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TLS Session Ticket
    Category:  Crypto
    Ext:       .ticket, .session
@@ -206,5 +206,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32BE": "Read certificate"
+  },
+  "forensic": {
+    "category": "crypto",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "TLS Session Ticket - Encrypted session resumption data",
+    "suggestedInspections": [
+      "Validate TLS Session Ticket key/envelope format and algorithm identifiers",
+      "Check key length, IV/nonce fields, and padding scheme",
+      "Inspect version markers and recipient info structures"
+    ]
   }
 }

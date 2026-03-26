@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Android Package
    Category:  Programming
    Ext:       .apk
@@ -308,5 +308,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Android Application Package - a ZIP-based container for Android apps containing compiled code (classes.dex),...",
+    "suggestedInspections": [
+      "Verify Android Package magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    LLVM Bitcode
    Category:  Programming
    Ext:       .bc
@@ -106,5 +106,18 @@
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "functions": {}
+  "functions": {},
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "LLVM Bitcode binary format, intermediate representation used by LLVM compiler infrastructure",
+    "suggestedInspections": [
+      "Verify LLVM Bitcode magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
+  }
 }

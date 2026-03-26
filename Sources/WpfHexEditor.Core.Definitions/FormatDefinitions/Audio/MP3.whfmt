@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MP3 Audio
    Category:  Audio
    Ext:       .mp3
@@ -401,8 +401,19 @@
       "description": "Byte offset where the first valid MPEG audio frame was found (after ID3v2 tag)"
     }
   ],
-  "forensic": { "category": "audio", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "MP3 audio — check for ID3v2 tag, frame sync bytes, and VBR Xing header", "suggestedInspections": ["Detect ID3v2.3 vs ID3v2.4 tag version", "Check for embedded album art in APIC frame"] },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MPEG-1/2 Audio Layer III - A lossy audio compression format. Most MP3 files begin with an ID3v2 tag containi...",
+    "suggestedInspections": [
+      "Validate MP3 Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
+  },
   "MimeTypes": [
     "audio/mpeg",
     "audio/mp3"

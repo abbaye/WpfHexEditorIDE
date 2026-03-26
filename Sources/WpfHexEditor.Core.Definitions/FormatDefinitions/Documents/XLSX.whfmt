@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Excel Workbook
    Category:  Documents
    Ext:       .xlsx
@@ -45,7 +45,7 @@
     "fileCount": 0,
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "subject": "Unknown",
     "sheets": 0,
     "rows": 0,
@@ -287,8 +287,19 @@
       "description": "Total uncompressed size of all entries in the package (bytes)"
     }
   ],
-  "forensic": { "category": "document", "riskLevel": "medium" },
-  "aiHints": { "analysisContext": "OOXML Excel workbook (ZIP container) — contains xl/workbook.xml, xl/worksheets/sheet*.xml", "suggestedInspections": ["Check for xl/vbaProject.bin macro storage", "Inspect xl/externalLinks/ for DDE/external references"] },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Excel Open XML spreadsheet stored as a ZIP container. The file begins with a ZIP Local File Header...",
+    "suggestedInspections": [
+      "Validate Excel Workbook file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
+  },
   "MimeTypes": [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ],

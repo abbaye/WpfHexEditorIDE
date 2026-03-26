@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Khronos Texture
    Category:  Images
    Ext:       .ktx
@@ -128,5 +128,18 @@
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Khronos Texture format for OpenGL/Vulkan",
+    "suggestedInspections": [
+      "Validate Khronos Texture signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

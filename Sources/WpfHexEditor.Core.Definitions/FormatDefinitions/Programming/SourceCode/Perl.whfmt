@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Perl Script
    Category:  Programming
    Ext:       .pl, .pm, .pod
@@ -6,7 +6,6 @@
    Desc:      Perl scripting language source files and modules.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Perl Script",
@@ -95,5 +94,18 @@
         "\\}"
       ]
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Perl scripting language source files and modules.",
+    "suggestedInspections": [
+      "Verify Perl Script file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

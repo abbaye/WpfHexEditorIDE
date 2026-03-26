@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Nintendo Wii U Image
    Category:  Game
    Ext:       .wud, .wux
@@ -180,5 +180,18 @@
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels",
     "formatFileSize(var:uncompressedSize)": "Format uncompressedSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo Wii U disc image format (WUD/WUX compressed)",
+    "suggestedInspections": [
+      "Validate Nintendo Wii U Image container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    CATIA Product
    Category:  CAD
    Ext:       .catproduct
@@ -115,5 +115,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "CATIA V5 product assembly file (OLE2 Compound Document)",
+    "suggestedInspections": [
+      "Validate CATIA Product file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

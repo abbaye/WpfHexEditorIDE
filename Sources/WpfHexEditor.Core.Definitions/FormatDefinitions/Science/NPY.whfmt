@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NumPy Array
    Category:  Science
    Ext:       .npy
@@ -103,5 +103,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "NumPy array binary format",
+    "suggestedInspections": [
+      "Validate NumPy Array file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

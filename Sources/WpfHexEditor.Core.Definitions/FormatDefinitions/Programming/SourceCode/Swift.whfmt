@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Swift Source File
    Category:  Programming
    Ext:       .swift
@@ -6,7 +6,6 @@
    Desc:      Swift programming language source file (Apple platforms).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Swift Source File",
@@ -101,7 +100,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Swift programming language source file (Apple platforms).",
+    "suggestedInspections": [
+      "Verify Swift Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

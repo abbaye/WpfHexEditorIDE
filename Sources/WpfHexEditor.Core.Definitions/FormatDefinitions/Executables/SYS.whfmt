@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows System Driver
    Category:  Executables
    Ext:       .sys
@@ -133,11 +133,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Windows kernel-mode driver in PE format; loaded by SCM or boot loader; operates at ring 0 privilege level.",
+    "analysisContext": "Windows device driver file",
     "suggestedInspections": [
-      "Verify MZ/PE signature and section table integrity",
-      "Check import table for suspicious kernel API calls (e.g. ZwWriteVirtualMemory)",
-      "Inspect digital signature and compare timestamp against known driver versions"
+      "Verify Windows System Driver signature, section table, and entry point",
+      "Check import/export tables for suspicious library references",
+      "Inspect section entropy for packing, encryption, or hollowing"
     ]
   }
 }

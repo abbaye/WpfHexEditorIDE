@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PHP Source File
    Category:  Programming
    Ext:       .php, .phtml
@@ -6,7 +6,6 @@
    Desc:      PHP programming language source files and templates.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "PHP Source File",
@@ -113,7 +112,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PHP programming language source files and templates.",
+    "suggestedInspections": [
+      "Verify PHP Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

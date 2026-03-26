@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Common Data Format
    Category:  Science
    Ext:       .cdf
@@ -122,5 +122,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "NASA Common Data Format for scientific data",
+    "suggestedInspections": [
+      "Validate Common Data Format file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

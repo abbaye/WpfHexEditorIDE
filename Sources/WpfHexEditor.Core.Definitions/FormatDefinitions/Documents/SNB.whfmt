@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Shanda Bambook
    Category:  Documents
    Ext:       .snb
@@ -133,5 +133,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Shanda Bambook e-book format, used by Chinese e-reader devices from Shanda Interactive",
+    "suggestedInspections": [
+      "Validate Shanda Bambook file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

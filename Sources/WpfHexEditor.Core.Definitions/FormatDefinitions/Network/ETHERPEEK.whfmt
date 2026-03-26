@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    EtherPeek/OmniPeek
    Category:  Network
    Ext:       .pkt, .apc, .wpz
@@ -170,5 +170,18 @@
   "functions": {
     "readUInt32BE": "Read capture header (big-endian)",
     "readUInt64BE": "Read timestamps"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "WildPackets EtherPeek/OmniPeek capture format",
+    "suggestedInspections": [
+      "Validate EtherPeek/OmniPeek file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

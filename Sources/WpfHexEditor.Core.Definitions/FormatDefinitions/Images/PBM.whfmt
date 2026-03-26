@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Portable Bitmap
    Category:  Images
    Ext:       .pbm
@@ -124,11 +124,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Netpbm Portable Bitmap; P1 (ASCII) or P4 (binary); plain-text header declares width/height; 1-bit monochrome pixel data.",
+    "analysisContext": "Netpbm Portable Bitmap (monochrome)",
     "suggestedInspections": [
-      "Confirm magic token is 'P1' or 'P4' followed by whitespace-delimited dimensions",
-      "For P4: verify binary pixel data length matches ceil(width/8) × height bytes",
-      "Scan header comments (lines starting with '#') for embedded metadata or hidden text"
+      "Validate Portable Bitmap signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PKCS#12 Certificate
    Category:  Certificates
    Ext:       .p12, .pfx
@@ -118,5 +118,18 @@
   "functions": {
     "readUInt32BE": "Read certificate",
     "extractASCIIString": "Read subject"
+  },
+  "forensic": {
+    "category": "certificate",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Personal Information Exchange - Certificate bundle",
+    "suggestedInspections": [
+      "Verify PKCS#12 Certificate ASN.1 structure, tag-length-value encoding",
+      "Check certificate dates, issuer DN, and key algorithm OIDs",
+      "Inspect extensions (SAN, key usage) and signature algorithm"
+    ]
   }
 }

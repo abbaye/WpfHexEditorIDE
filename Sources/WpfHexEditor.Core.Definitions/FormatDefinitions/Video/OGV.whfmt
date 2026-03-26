@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Ogg Video
    Category:  Video
    Ext:       .ogv, .ogm
@@ -96,5 +96,18 @@
   "TechnicalDetails": {
     "VideoFormat": true
   },
-  "functions": {}
+  "functions": {},
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Ogg container format for video, part of the Xiph.Org Foundation's Ogg project",
+    "suggestedInspections": [
+      "Validate Ogg Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
+  }
 }

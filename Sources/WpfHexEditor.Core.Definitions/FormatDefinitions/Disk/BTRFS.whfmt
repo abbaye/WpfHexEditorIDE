@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Btrfs Filesystem
    Category:  Disk
    Ext:       .btrfs
@@ -116,5 +116,18 @@
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "B-tree Filesystem with copy-on-write",
+    "suggestedInspections": [
+      "Verify Btrfs Filesystem superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
+    ]
   }
 }

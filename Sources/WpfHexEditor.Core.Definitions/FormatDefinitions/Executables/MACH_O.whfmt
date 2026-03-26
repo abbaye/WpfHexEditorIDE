@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Mach-O Executable
    Category:  Executables
    Editor:    hex-editor
@@ -141,5 +141,18 @@
   },
   "TechnicalDetails": {
     "ExecutablesFormat": true
+  },
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "high",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Mach Object - macOS/iOS executable format",
+    "suggestedInspections": [
+      "Verify Mach-O Executable signature, section table, and entry point",
+      "Check import/export tables for suspicious library references",
+      "Inspect section entropy for packing, encryption, or hollowing"
+    ]
   }
 }

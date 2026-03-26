@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Apple Keynote
    Category:  Documents
    Ext:       .key, .keynote
@@ -309,5 +309,18 @@
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header",
     "InternalFormat": "Protobuf (.iwa files)"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Apple Keynote presentation format, a ZIP-based iWork package. The file begins with a ZIP Local File Header. ...",
+    "suggestedInspections": [
+      "Validate Apple Keynote file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

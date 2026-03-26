@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Store Resource File
    Category:  Programming/SourceCode
    Ext:       .resw
@@ -6,12 +6,13 @@
    Desc:      Windows Store app resource file using the same XML schema as .resx, used for UWP and WinUI 3 app localization.
    Updated:   2026-03-23
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "Windows Store Resource File",
   "version": "1.0",
-  "extensions": [".resw"],
+  "extensions": [
+    ".resw"
+  ],
   "description": "Windows Store app resource file using the same XML schema as .resx, used for UWP and WinUI 3 app localization.",
   "category": "Programming/SourceCode",
   "author": "WPFHexaEditor Team",
@@ -43,5 +44,18 @@
     "UWP app localization",
     "WinUI 3 resource management",
     "Windows Store app strings"
-  ]
+  ],
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows Store app resource file using the same XML schema as .resx, used for UWP and WinUI 3 app localizatio...",
+    "suggestedInspections": [
+      "Verify Windows Store Resource File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
+  }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Cinema 4D
    Category:  3D
    Ext:       .c4d
@@ -118,5 +118,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Maxon Cinema 4D scene file",
+    "suggestedInspections": [
+      "Validate Cinema 4D header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

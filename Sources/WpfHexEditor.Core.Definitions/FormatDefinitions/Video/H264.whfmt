@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Raw H.264/AVC
    Category:  Video
    Ext:       .h264, .264, .avc
@@ -126,5 +126,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Raw H.264/MPEG-4 AVC elementary stream video format",
+    "suggestedInspections": [
+      "Validate Raw H.264/AVC container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

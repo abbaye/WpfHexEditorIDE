@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SQLite Shared Memory
    Category:  Database
    Ext:       .shm, -shm
@@ -122,15 +122,15 @@
   },
   "forensic": {
     "category": "database",
-    "riskLevel": "low",
+    "riskLevel": "medium",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SQLite shared-memory index for WAL mode; ephemeral file mapping read/write lock state between concurrent readers.",
+    "analysisContext": "SQLite shared-memory file for WAL mode coordination",
     "suggestedInspections": [
-      "Confirm file is exactly 32 KB (8 shared-memory regions × 4 KB)",
-      "Inspect wal-index header for mxFrame and salt fields to assess WAL state",
-      "Cross-reference with companion .wal file to detect inconsistent lock state"
+      "Verify SQLite Shared Memory file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
     ]
   }
 }

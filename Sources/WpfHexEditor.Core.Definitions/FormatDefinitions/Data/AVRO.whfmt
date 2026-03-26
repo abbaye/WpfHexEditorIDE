@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Apache Avro
    Category:  Data
    Ext:       .avro
@@ -103,5 +103,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Apache Avro binary data format",
+    "suggestedInspections": [
+      "Validate Apache Avro schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

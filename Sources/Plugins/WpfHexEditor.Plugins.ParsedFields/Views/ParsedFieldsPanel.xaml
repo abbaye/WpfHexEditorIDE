@@ -21,6 +21,48 @@
         <!-- Collapses groups whose name matches the ConverterParameter (default: "Format Metadata") -->
         <local:GroupNameToExpandedConverter x:Key="GroupNameToExpandedConverter"/>
 
+        <!-- Override WPF inactive-selection system colors so ListBox and TreeView keep
+             the same selection highlight when the panel loses keyboard focus. -->
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                         Color="#1A3A5C"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                         Color="#9ECDF4"/>
+
+        <!-- Style for navigator bookmark buttons (section tabs like PE Header, COFF Header…) -->
+        <Style x:Key="PFP_NavBookmarkButtonStyle" TargetType="Button">
+            <Setter Property="Foreground"   Value="{DynamicResource PFP_TextBrush}"/>
+            <Setter Property="Background"   Value="{DynamicResource PFP_SectionBackgroundBrush}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource PFP_BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"      Value="6,2"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"  Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PFP_ItemSelectedBorderBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PFP_AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource PFP_ItemSelectedBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PFP_ItemSelectedForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Style for field items with improved colors -->
         <Style x:Key="FieldItemStyle" TargetType="ListBoxItem">
             <Setter Property="Padding" Value="10,6"/>
@@ -576,12 +618,12 @@
                                     Tag="{Binding}"
                                     Click="NavigatorBookmark_Click"
                                     ToolTip="{Binding Description}"
-                                    Cursor="Hand"
-                                    Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                                    Style="{DynamicResource PFP_NavBookmarkButtonStyle}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Icon}" FontSize="11" Margin="0,0,4,0"
                                                Visibility="{Binding Icon, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding Name}" FontSize="10"/>
+                                    <TextBlock Text="{Binding Name}" FontSize="10"
+                                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>
@@ -617,6 +659,95 @@
                         </ItemsControl>
                     </StackPanel>
                 </Border>
+
+                <!-- D4 — Inspector: grouped field accordion from whfmt inspector.groups -->
+                <StackPanel Margin="0,6,0,0"
+                            Visibility="{Binding FormatInfo.HasInspectorGroups, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <!-- Inspector badge -->
+                    <Border CornerRadius="4" Padding="6,2" Margin="0,0,0,4"
+                            Background="{DynamicResource DockAccentBrush}"
+                            HorizontalAlignment="Left"
+                            Visibility="{Binding FormatInfo.HasInspectorBadge, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="{Binding FormatInfo.InspectorBadge}"
+                                   FontSize="10" FontWeight="SemiBold" Foreground="White"/>
+                    </Border>
+                    <!-- Groups -->
+                    <ItemsControl ItemsSource="{Binding FormatInfo.InspectorGroups}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,3"
+                                        CornerRadius="3"
+                                        BorderThickness="1"
+                                        BorderBrush="{DynamicResource PFP_BorderBrush}">
+                                    <StackPanel>
+                                        <!-- Group header (click to expand/collapse) -->
+                                        <Border Padding="6,3" Background="{DynamicResource WF_InspectorGroupHeaderBrush}"
+                                                CornerRadius="3,3,0,0"
+                                                Cursor="Hand">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Icon}" FontSize="11" Margin="0,0,4,0"
+                                                           Visibility="{Binding Icon, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                <TextBlock Text="{Binding Title}" FontSize="11" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <!-- Fields (shown when expanded) -->
+                                        <ItemsControl ItemsSource="{Binding Fields}"
+                                                      Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Padding="8,2">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                                                   FontSize="10" Opacity="0.7"
+                                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding DisplayValue}"
+                                                                   FontSize="10" FontFamily="Consolas"
+                                                                   HorizontalAlignment="Right"
+                                                                   Foreground="{DynamicResource PFP_AccentBrush}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- D5 — Export templates from whfmt exportTemplates -->
+                <StackPanel Margin="0,6,0,0"
+                            Visibility="{Binding FormatInfo.HasExportTemplates, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="&#xE78C;  Export As"
+                               FontSize="10" FontWeight="SemiBold" Margin="0,0,0,4"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.7"/>
+                    <ItemsControl ItemsSource="{Binding FormatInfo.ExportTemplates}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Margin="0,0,5,3"
+                                        Padding="6,2"
+                                        Tag="{Binding}"
+                                        Click="ExportTemplate_Click"
+                                        ToolTip="{Binding Format}"
+                                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Icon}" FontSize="11" Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding Name}" FontSize="10"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
 
             </StackPanel>
         </Border>

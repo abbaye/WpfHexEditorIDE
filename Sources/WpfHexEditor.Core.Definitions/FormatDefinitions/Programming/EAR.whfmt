@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Enterprise Archive
    Category:  Programming
    Ext:       .ear
@@ -304,5 +304,18 @@
     "Container": "ZIP",
     "Endianness": "little-endian",
     "HeaderSize": 30
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Java Enterprise Archive - a ZIP container for deploying enterprise Java applications with multiple modules (...",
+    "suggestedInspections": [
+      "Verify Enterprise Archive magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

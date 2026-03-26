@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Sega Dreamcast Disc Image
    Category:  Game
    Ext:       .gdi, .cdi, .iso
@@ -246,5 +246,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
+    "suggestedInspections": [
+      "Validate Sega Dreamcast Disc Image container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

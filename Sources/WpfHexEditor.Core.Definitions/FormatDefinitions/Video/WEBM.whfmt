@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    WebM Video
    Category:  Video
    Ext:       .webm
@@ -145,5 +145,18 @@
   },
   "TechnicalDetails": {
     "VideoFormat": true
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "WebM video format - Based on Matroska, optimized for web",
+    "suggestedInspections": [
+      "Validate WebM Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

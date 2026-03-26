@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Universal 3D
    Category:  CAD
    Ext:       .u3d
@@ -143,5 +143,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Universal 3D ECMA-363 format",
+    "suggestedInspections": [
+      "Validate Universal 3D file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

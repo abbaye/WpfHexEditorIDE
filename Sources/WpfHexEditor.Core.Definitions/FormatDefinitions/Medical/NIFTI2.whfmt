@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NIfTI-2 Medical Image
    Category:  Medical
    Ext:       .nii, .hdr, .img
@@ -153,5 +153,18 @@
     "readUInt32LE": "Read medical header",
     "extractASCIIString": "Read patient",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Neuroimaging Informatics Technology Initiative v2 format",
+    "suggestedInspections": [
+      "Verify NIfTI-2 Medical Image preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

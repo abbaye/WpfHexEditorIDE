@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    IBM DB2 Database
    Category:  Database
    Ext:       .db2
@@ -117,5 +117,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "IBM DB2 database file format",
+    "suggestedInspections": [
+      "Verify IBM DB2 Database file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
+    ]
   }
 }

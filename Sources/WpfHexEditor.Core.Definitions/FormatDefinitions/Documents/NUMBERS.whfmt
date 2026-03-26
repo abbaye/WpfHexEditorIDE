@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Apple Numbers
    Category:  Documents
    Ext:       .numbers
@@ -308,5 +308,18 @@
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header",
     "InternalFormat": "Protobuf (.iwa files)"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Apple Numbers spreadsheet - a ZIP-based iWork package containing protobuf (.iwa) files and embedded resource...",
+    "suggestedInspections": [
+      "Validate Apple Numbers file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

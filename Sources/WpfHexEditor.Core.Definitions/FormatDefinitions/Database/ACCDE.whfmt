@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Microsoft Access Compiled Database
    Category:  Database
    Ext:       .accde
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Access compiled executable-only database format",
+    "suggestedInspections": [
+      "Verify Microsoft Access Compiled Database file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
+    ]
   }
 }

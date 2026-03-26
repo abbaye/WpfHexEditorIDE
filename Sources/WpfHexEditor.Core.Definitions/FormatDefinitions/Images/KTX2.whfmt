@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Khronos Texture 2
    Category:  Images
    Ext:       .ktx2
@@ -128,5 +128,18 @@
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Khronos Texture 2.0 format with Basis Universal",
+    "suggestedInspections": [
+      "Validate Khronos Texture 2 signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

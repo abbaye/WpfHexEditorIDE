@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PEM Certificate
    Category:  Certificates
    Ext:       .pem, .crt, .cer
@@ -168,5 +168,18 @@
   "functions": {
     "readUInt32BE": "Read certificate",
     "extractASCIIString": "Read subject"
+  },
+  "forensic": {
+    "category": "certificate",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PEM-encoded X.509 certificate - Base64 encoded certificate",
+    "suggestedInspections": [
+      "Verify PEM Certificate ASN.1 structure, tag-length-value encoding",
+      "Check certificate dates, issuer DN, and key algorithm OIDs",
+      "Inspect extensions (SAN, key usage) and signature algorithm"
+    ]
   }
 }

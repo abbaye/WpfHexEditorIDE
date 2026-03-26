@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Mobipocket eBook
    Category:  Documents
    Ext:       .mobi, .prc
@@ -47,7 +47,7 @@
     "databaseName": "Unknown",
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "recordCount": 0,
     "mobiType": "Unknown",
     "encoding": "UTF-8",
@@ -115,5 +115,18 @@
   },
   "TechnicalDetails": {
     "DocumentFormat": true
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Mobipocket eBook format",
+    "suggestedInspections": [
+      "Validate Mobipocket eBook file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

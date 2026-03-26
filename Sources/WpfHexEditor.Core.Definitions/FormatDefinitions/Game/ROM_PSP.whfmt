@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PlayStation Portable ISO
    Category:  Game
    Ext:       .iso, .cso
@@ -185,5 +185,18 @@
     "readUInt32LE": "Read disk header",
     "multiply": "Calculate capacity",
     "formatFileSize(var:uncompressedSize)": "Format uncompressedSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PlayStation Portable UMD disc image (ISO or compressed CSO)",
+    "suggestedInspections": [
+      "Validate PlayStation Portable ISO container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

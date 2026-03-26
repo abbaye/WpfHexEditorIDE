@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Snappy Compression
    Category:  Archives
    Ext:       .snappy, .sz
@@ -140,11 +140,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Snappy framing-format stream (Google); stream identifier chunk 0xFF followed by 'sNaPpY'; optimized for speed over ratio.",
+    "analysisContext": "Snappy compressed stream format developed by Google, optimized for speed rather than compression ratio",
     "suggestedInspections": [
-      "Verify stream identifier chunk header (0xFF 0x06 0x00 0x00 'sNaPpY')",
-      "Enumerate chunk types: 0x00=compressed, 0x01=uncompressed, 0xFE=padding",
-      "Validate per-chunk masked CRC-32C checksums for data integrity"
+      "Verify Snappy Compression file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   }
 }

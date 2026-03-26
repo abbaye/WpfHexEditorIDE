@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Python Egg Package
    Category:  Programming
    Ext:       .egg
@@ -302,5 +302,18 @@
     "Container": "ZIP",
     "Endianness": "little-endian",
     "HeaderSize": 30
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Python Egg - a ZIP-based distribution format for Python packages (legacy, superseded by wheel). The file beg...",
+    "suggestedInspections": [
+      "Verify Python Egg Package magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    UPS Patch
    Category:  Game
    Ext:       .ups
@@ -153,5 +153,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Universal Patching System (UPS) format - Enhanced ROM patching with CRC32 validation and bidirectional suppo...",
+    "suggestedInspections": [
+      "Validate UPS Patch container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

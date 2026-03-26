@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ICO Icon
    Category:  Images
    Ext:       .ico
@@ -128,17 +128,23 @@
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "ICO files contain a directory of images at multiple sizes; each directory entry holds an offset to the embedded image data (BMP or PNG). Malformed ICO files have been a historical attack vector via Windows Explorer thumbnail parsing. Inspect imageCount for abnormally large values and verify each image offset is within the file.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "ICO Icon - image format",
+    "suggestedInspections": [
+      "Validate ICO Icon signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "ICO Directory Header", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "ICO Directory Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Canon RAW (CRW)
    Category:  Images
    Ext:       .crw
@@ -113,5 +113,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Canon RAW format (older cameras)",
+    "suggestedInspections": [
+      "Validate Canon RAW (CRW) signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ARJ Archive
    Category:  Archives
    Ext:       .arj
@@ -119,5 +119,18 @@
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "ARJ compressed archive format",
+    "suggestedInspections": [
+      "Verify ARJ Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

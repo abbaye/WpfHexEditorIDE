@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Sony SR2 RAW
    Category:  Images
    Ext:       .sr2
@@ -125,5 +125,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Sony RAW format (DSLR cameras)",
+    "suggestedInspections": [
+      "Validate Sony SR2 RAW signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

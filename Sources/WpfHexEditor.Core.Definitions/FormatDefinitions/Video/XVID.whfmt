@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Xvid Video
    Category:  Video
    Ext:       .xvid
@@ -121,5 +121,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Xvid MPEG-4 video codec, typically stored in AVI container",
+    "suggestedInspections": [
+      "Validate Xvid Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

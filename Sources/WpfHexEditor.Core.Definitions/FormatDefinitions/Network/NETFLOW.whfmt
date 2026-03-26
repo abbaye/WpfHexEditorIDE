@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NetFlow v5
    Category:  Network
    Ext:       .nf, .nfcap
@@ -205,5 +205,18 @@
   "functions": {
     "readUInt16BE": "Read NetFlow header",
     "readUInt32BE": "Read timestamps and counts"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Cisco NetFlow v5 - Network flow data format",
+    "suggestedInspections": [
+      "Validate NetFlow v5 file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

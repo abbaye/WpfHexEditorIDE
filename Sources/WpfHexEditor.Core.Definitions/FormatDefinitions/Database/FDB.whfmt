@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Firebird Database
    Category:  Database
    Ext:       .fdb
@@ -117,5 +117,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Firebird SQL database format",
+    "suggestedInspections": [
+      "Verify Firebird Database file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
+    ]
   }
 }

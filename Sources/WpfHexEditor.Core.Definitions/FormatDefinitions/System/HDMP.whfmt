@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Heap Dump
    Category:  System
    Ext:       .hdmp
@@ -169,5 +169,18 @@
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows heap dump file - Heap memory analysis",
+    "suggestedInspections": [
+      "Verify Windows Heap Dump file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

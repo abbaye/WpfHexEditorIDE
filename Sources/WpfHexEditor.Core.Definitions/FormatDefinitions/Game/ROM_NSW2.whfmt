@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Nintendo Switch 2 Package
    Category:  Game
    Ext:       .nsp, .xci, .nca
@@ -237,5 +237,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)",
+    "suggestedInspections": [
+      "Validate Nintendo Switch 2 Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

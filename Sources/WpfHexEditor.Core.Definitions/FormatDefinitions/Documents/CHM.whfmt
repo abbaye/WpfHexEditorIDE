@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Compiled HTML Help
    Category:  Documents
    Ext:       .chm
@@ -124,5 +124,18 @@
   },
   "TechnicalDetails": {
     "DocumentFormat": true
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Compiled HTML Help file",
+    "suggestedInspections": [
+      "Validate Compiled HTML Help file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

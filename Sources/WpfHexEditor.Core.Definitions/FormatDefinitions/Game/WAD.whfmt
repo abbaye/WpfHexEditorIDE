@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Doom WAD File
    Category:  Game
    Ext:       .wad
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Doom/Quake WAD archive",
+    "suggestedInspections": [
+      "Validate Doom WAD File container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

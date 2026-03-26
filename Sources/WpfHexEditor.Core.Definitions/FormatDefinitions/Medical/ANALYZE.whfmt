@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Analyze 7.5 Image
    Category:  Medical
    Ext:       .hdr, .img
@@ -138,5 +138,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Analyze 7.5 medical image format",
+    "suggestedInspections": [
+      "Verify Analyze 7.5 Image preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

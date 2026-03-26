@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ZFS Filesystem
    Category:  Disk
    Ext:       .zfs
@@ -116,5 +116,18 @@
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Zettabyte File System",
+    "suggestedInspections": [
+      "Verify ZFS Filesystem superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
+    ]
   }
 }

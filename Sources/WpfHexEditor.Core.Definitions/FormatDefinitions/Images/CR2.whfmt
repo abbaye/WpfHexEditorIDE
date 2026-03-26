@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Canon Raw Image
    Category:  Images
    Ext:       .cr2
@@ -123,5 +123,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Canon RAW v2 camera image",
+    "suggestedInspections": [
+      "Validate Canon Raw Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

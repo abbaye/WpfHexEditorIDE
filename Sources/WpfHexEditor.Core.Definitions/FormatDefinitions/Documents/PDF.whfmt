@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PDF Document
    Category:  Documents
    Ext:       .pdf
@@ -8,7 +8,6 @@
    Detection: signature=25504446 @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "PDF Document",
@@ -280,9 +279,34 @@
       "description": "Human-readable file size with appropriate units"
     }
   ],
-  "navigation": { "bookmarks": [{ "name": "PDF Header", "offset": 0, "icon": "\uE8A5" }] },
-  "forensic": { "category": "document", "riskLevel": "medium", "suspiciousPatterns": [{ "name": "JavaScript in PDF", "condition": "false", "description": "PDF may contain embedded JavaScript — inspect with PDF reader" }] },
-  "aiHints": { "analysisContext": "PDF document — check %PDF- version header, cross-reference table (xref), trailer dictionary, and end-of-file %%EOF marker", "suggestedInspections": ["Check PDF version (1.4-2.0)", "Look for /JavaScript /JS /AA /OpenAction entries indicating active content"] },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "PDF Header",
+        "offset": 0,
+        "icon": ""
+      }
+    ]
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "JavaScript in PDF",
+        "condition": "false",
+        "description": "PDF may contain embedded JavaScript — inspect with PDF reader"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Portable Document Format by Adobe - A page-description language for representing documents independently of ...",
+    "suggestedInspections": [
+      "Validate PDF Document file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
+  },
   "MimeTypes": [
     "application/pdf"
   ],

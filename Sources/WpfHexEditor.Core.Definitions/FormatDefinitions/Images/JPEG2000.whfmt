@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    JPEG 2000 Image
    Category:  Images
    Ext:       .jp2, .j2k, .jpf, .jpx, .jpm
@@ -152,5 +152,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "JPEG 2000 - Advanced wavelet-based image compression",
+    "suggestedInspections": [
+      "Validate JPEG 2000 Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

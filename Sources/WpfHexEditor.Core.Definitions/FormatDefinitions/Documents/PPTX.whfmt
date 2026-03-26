@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PowerPoint Presentation
    Category:  Documents
    Ext:       .pptx
@@ -45,7 +45,7 @@
     "fileCount": 0,
     "title": "Unknown",
     "author": "Unknown",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "subject": "Unknown",
     "slides": 0,
     "notes": 0,
@@ -317,5 +317,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft PowerPoint Open XML presentation stored as a ZIP container. The file begins with a ZIP Local File ...",
+    "suggestedInspections": [
+      "Validate PowerPoint Presentation file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

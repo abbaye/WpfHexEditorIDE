@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    VASP POSCAR
    Category:  Science
    Ext:       .vasp, .poscar, .contcar
@@ -107,5 +107,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Vienna Ab-initio Simulation Package structure file",
+    "suggestedInspections": [
+      "Validate VASP POSCAR file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

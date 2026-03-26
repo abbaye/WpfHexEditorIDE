@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Atari 2600 ROM
    Category:  Game
    Ext:       .a26, .bin
@@ -156,5 +156,18 @@
     "extractASCIIString": "Read filenames",
     "readUInt32LE": "Read sizes",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Atari 2600 ROM cartridge format (raw binary, no header)",
+    "suggestedInspections": [
+      "Validate Atari 2600 ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

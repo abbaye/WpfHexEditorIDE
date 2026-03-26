@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Adaptive Multi-Rate
    Category:  Audio
    Ext:       .amr
@@ -121,11 +121,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AMR narrowband voice codec used in mobile networks; file begins with '#!AMR\\n' magic, followed by frame header bytes.",
+    "analysisContext": "AMR audio codec optimized for speech coding, used in GSM and 3G mobile networks",
     "suggestedInspections": [
-      "Verify 6-byte magic header '#!AMR\\n' (0x2321414D520A) at offset 0",
-      "Check frame type byte (bits 6-3) for valid AMR mode index (0-7)",
-      "Inspect quality bit (bit 2) per frame for packet loss or corruption indicators"
+      "Validate Adaptive Multi-Rate header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Crystallographic Information File
    Category:  Science
    Ext:       .cif
@@ -111,5 +111,18 @@
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Crystallographic Information File for crystal structures",
+    "suggestedInspections": [
+      "Validate Crystallographic Information File file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

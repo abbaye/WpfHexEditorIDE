@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Autodesk FBX
    Category:  3D
    Ext:       .fbx
@@ -137,5 +137,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Autodesk Filmbox 3D format",
+    "suggestedInspections": [
+      "Validate Autodesk FBX header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NumPy Compressed Archive
    Category:  Science
    Ext:       .npz
@@ -303,5 +303,18 @@
     "Container": "ZIP",
     "Endianness": "little-endian",
     "HeaderSize": 30
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "NumPy Compressed Archive - a ZIP container for storing multiple NumPy arrays in .npy format. The file begins...",
+    "suggestedInspections": [
+      "Validate NumPy Compressed Archive file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

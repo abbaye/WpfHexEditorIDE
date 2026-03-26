@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    LZ4 Compressed
    Category:  Archives
    Ext:       .lz4
@@ -144,11 +144,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "LZ4 frame-format compressed stream; magic 0x184D2204; extremely fast decompression used in databases and real-time pipelines.",
+    "analysisContext": "LZ4 compression format - Extremely fast",
     "suggestedInspections": [
-      "Verify magic number 0x04224D18 (LE) and FLG/BD flag bytes",
-      "Check content size field if B.Indep flag is set to validate expected output size",
-      "Inspect header checksum (xxHash32) for frame integrity"
+      "Verify LZ4 Compressed file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   }
 }

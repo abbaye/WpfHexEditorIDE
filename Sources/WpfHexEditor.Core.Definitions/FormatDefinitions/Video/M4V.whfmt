@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    iTunes Video
    Category:  Video
    Ext:       .m4v
@@ -121,5 +121,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MPEG-4 video container developed by Apple for iTunes Store",
+    "suggestedInspections": [
+      "Validate iTunes Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

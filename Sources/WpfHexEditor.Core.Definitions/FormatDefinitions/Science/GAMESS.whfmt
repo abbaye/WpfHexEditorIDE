@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    GAMESS Output
    Category:  Science
    Ext:       .log, .out
@@ -112,5 +112,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "GAMESS quantum chemistry program output",
+    "suggestedInspections": [
+      "Validate GAMESS Output file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

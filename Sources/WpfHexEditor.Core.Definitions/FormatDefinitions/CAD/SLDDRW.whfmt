@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SolidWorks Drawing
    Category:  CAD
    Ext:       .slddrw
@@ -134,5 +134,18 @@
   "functions": {
     "readUInt32LE": "Read CAD header",
     "extractASCIIString": "Read metadata"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SolidWorks drawing file (OLE2 Compound Document)",
+    "suggestedInspections": [
+      "Validate SolidWorks Drawing file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

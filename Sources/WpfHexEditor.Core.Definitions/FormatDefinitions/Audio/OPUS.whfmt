@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Opus Audio
    Category:  Audio
    Ext:       .opus
@@ -130,11 +130,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Opus audio in Ogg container; first page carries 'OpusHead' identification header with version, channels and pre-skip.",
+    "analysisContext": "Opus lossy audio codec designed for interactive speech and audio transmission",
     "suggestedInspections": [
-      "Verify 'OggS' capture pattern at offset 0 and 'OpusHead' magic in first packet payload",
-      "Check Opus version byte (must be 1) and channel count in identification header",
-      "Inspect output gain field and channel mapping family for multi-channel configuration"
+      "Validate Opus Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

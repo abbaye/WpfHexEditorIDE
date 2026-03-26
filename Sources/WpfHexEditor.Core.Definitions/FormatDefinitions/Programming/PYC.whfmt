@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Python Compiled Bytecode
    Category:  Programming
    Ext:       .pyc, .pyo
@@ -132,22 +132,23 @@
   "forensic": {
     "category": "programming",
     "riskLevel": "medium",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Python .pyc files begin with a version-specific magic number (2 bytes) + CRLF (2 bytes), then a timestamp (4 bytes), source file size (4 bytes, Python 3.3+), and a marshalled code object. The magic number encodes the exact CPython version, enabling version fingerprinting. Malicious .pyc files may obfuscate the embedded bytecode using opcode remapping or marshal format tricks to evade static analysis.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Python compiled bytecode file",
     "suggestedInspections": [
-      "Decode the magic number to identify the exact CPython version that compiled this file",
-      "Compare the embedded timestamp against the source .py file modification time for tamper detection",
-      "Decompile the marshalled code object to recover original Python source logic",
-      "Look for opcode remapping or marshal format manipulations used to evade static analysis tools"
+      "Verify Python Compiled Bytecode magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "PYC Header", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "PYC Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {}

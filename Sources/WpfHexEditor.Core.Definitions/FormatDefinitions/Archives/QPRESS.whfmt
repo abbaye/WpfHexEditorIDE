@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Qpress Compression
    Category:  Archives
    Ext:       .qp, .qpress
@@ -149,5 +149,18 @@
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size",
     "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
+    "suggestedInspections": [
+      "Verify Qpress Compression file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

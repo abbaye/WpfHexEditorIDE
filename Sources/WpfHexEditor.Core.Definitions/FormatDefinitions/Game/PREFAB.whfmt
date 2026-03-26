@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Unity Prefab
    Category:  Game
    Ext:       .prefab
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read game header",
     "extractASCIIString": "Read file list"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unity prefab object file",
+    "suggestedInspections": [
+      "Validate Unity Prefab container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

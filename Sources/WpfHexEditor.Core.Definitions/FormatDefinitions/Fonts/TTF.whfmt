@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TrueType Font
    Category:  Fonts
    Ext:       .ttf
@@ -354,19 +354,33 @@
   "forensic": {
     "category": "font",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "TrueType fonts expose attack surface through the 'name' table (which stores metadata strings that may contain injected content), the 'cmap' table (complex parsing of character maps), and embedded bytecode hints executed by the font renderer. Verify numberOfTables is within a realistic range and that all table offsets land within the file.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "TrueType Font format - a scalable outline font standard originally developed by Apple and later adopted by M...",
+    "suggestedInspections": [
+      "Validate TrueType Font offset table and required table tags (head, cmap, glyf)",
+      "Check glyph count, loca table offsets, and encoding records",
+      "Inspect name table entries and OS/2 metrics for consistency"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Offset Table", "offsetVar": "currentOffset", "icon": "\uE8A9" },
-      { "name": "Table 1 Data", "offsetVar": "table1Offset", "icon": "\uE8A9" },
-      { "name": "Table 2 Data", "offsetVar": "table2Offset", "icon": "\uE8A9" }
+      {
+        "name": "Offset Table",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      },
+      {
+        "name": "Table 1 Data",
+        "offsetVar": "table1Offset",
+        "icon": ""
+      },
+      {
+        "name": "Table 2 Data",
+        "offsetVar": "table2Offset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Event Log XML
    Category:  System
    Ext:       .evtx
@@ -121,24 +121,29 @@
   },
   "forensic": {
     "category": "system",
-    "riskLevel": "high",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "EVTX files use a 4096-byte chunk structure (ElfChnk signature) containing binary XML event records. The file header tracks the oldest and current chunk numbers, enabling detection of log tampering via sequence gaps. Each event record embeds an EventID, timestamp, and provider name; forensic analysis should flag large time gaps between records, missing Security event IDs (e.g., 1102 = log cleared), and inconsistent chunk checksums.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Windows Event Log file (modern XML format)",
     "suggestedInspections": [
-      "Look for event ID 1102 (Security log cleared) or 104 (System log cleared) as indicators of anti-forensic activity",
-      "Compare the oldest chunk number against current chunk number to detect sequence gaps caused by log wiping",
-      "Verify the CRC32 checksum of each 4096-byte chunk header to identify partial tampering",
-      "Extract timestamps and examine inter-event time gaps for evidence of event deletion or time manipulation"
+      "Verify Windows Event Log XML file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "EVTX File Header", "offsetVar": "currentOffset", "icon": "\uE8A9" },
-      { "name": "Oldest Chunk", "offsetVar": "oldestChunk", "icon": "\uE8A9" }
+      {
+        "name": "EVTX File Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      },
+      {
+        "name": "Oldest Chunk",
+        "offsetVar": "oldestChunk",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {},

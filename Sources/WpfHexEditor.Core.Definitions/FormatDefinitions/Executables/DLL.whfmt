@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DLL Library
    Category:  Executables
    Ext:       .dll
@@ -158,5 +158,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "high",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Dynamic Link Library - Windows library file",
+    "suggestedInspections": [
+      "Verify DLL Library signature, section table, and entry point",
+      "Check import/export tables for suspicious library references",
+      "Inspect section entropy for packing, encryption, or hollowing"
+    ]
   }
 }

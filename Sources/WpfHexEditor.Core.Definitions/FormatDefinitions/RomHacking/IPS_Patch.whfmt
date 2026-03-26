@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    IPS Patch
    Category:  RomHacking
    Ext:       .ips
@@ -75,5 +75,18 @@
     "MaxFileSize": "16 MB (24-bit offsets)",
     "SupportsRLE": true,
     "SupportsTruncation": true
+  },
+  "forensic": {
+    "category": "romhacking",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "IPS (International Patching System) binary patch format — used for ROM hacking. Contains offset/data records...",
+    "suggestedInspections": [
+      "Validate IPS Patch patch header, format version, and source CRC",
+      "Check patch record offsets stay within target ROM bounds",
+      "Verify end-of-file marker and total patch data length"
+    ]
   }
 }

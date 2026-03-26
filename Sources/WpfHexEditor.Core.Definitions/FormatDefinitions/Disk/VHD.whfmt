@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Virtual Hard Disk
    Category:  Disk
    Ext:       .vhd
@@ -148,22 +148,23 @@
   "forensic": {
     "category": "disk",
     "riskLevel": "medium",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "VHD files store a 512-byte footer at both the beginning (for fixed/differencing) and end of the file containing disk geometry, disk type, creator application, and a CRC-32 of the footer itself. Differencing VHDs reference a parent via a relative or absolute path in the Dynamic Disk Header; verify parent locator entries to reconstruct the differencing chain in forensic investigations.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Microsoft Virtual Hard Disk format",
     "suggestedInspections": [
-      "Verify the footer CRC-32 checksum at both file start and end to detect tampering or corruption",
-      "Read the disk type field (Fixed=2, Dynamic=3, Differencing=4) to determine parsing strategy",
-      "For differencing VHDs, extract the parent locator entries to reconstruct the full disk chain",
-      "Inspect the creator application and creator version fields to fingerprint the virtualisation tool"
+      "Verify Virtual Hard Disk superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "VHD Footer", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "VHD Footer",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {},

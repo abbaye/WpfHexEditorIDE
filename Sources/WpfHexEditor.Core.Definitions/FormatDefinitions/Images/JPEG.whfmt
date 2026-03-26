@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    JPEG Image
    Category:  Images
    Ext:       .jpg, .jpeg, .jpe, .jfif
@@ -8,7 +8,6 @@
    Detection: signature=FFD8FF @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "JPEG Image",
@@ -295,11 +294,40 @@
     }
   ],
   "assertions": [
-    { "name": "SOI marker", "expression": "soiMarker == 65496", "severity": "error", "message": "Missing JPEG SOI marker FFD8" }
+    {
+      "name": "SOI marker",
+      "expression": "soiMarker == 65496",
+      "severity": "error",
+      "message": "Missing JPEG SOI marker FFD8"
+    }
   ],
-  "navigation": { "bookmarks": [{ "name": "SOI Marker", "offset": 0, "icon": "\uE8A5" }, { "name": "SOS Marker (scan data)", "offset": 0, "icon": "\uE768" }] },
-  "forensic": { "category": "image", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "JPEG image — inspect JFIF/Exif APP0/APP1 headers, comment markers, and SOF markers for resolution", "suggestedInspections": ["Check APP1 Exif for GPS metadata", "Inspect JFIF APP0 for thumbnail data"] },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "SOI Marker",
+        "offset": 0,
+        "icon": ""
+      },
+      {
+        "name": "SOS Marker (scan data)",
+        "offset": 0,
+        "icon": ""
+      }
+    ]
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "JPEG (Joint Photographic Experts Group) image using JFIF (JPEG File Interchange Format) container. The file ...",
+    "suggestedInspections": [
+      "Validate JPEG Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
+  },
   "MimeTypes": [
     "image/jpeg",
     "image/jpg"

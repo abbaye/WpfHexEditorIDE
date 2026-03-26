@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ACIS SAT
    Category:  CAD
    Ext:       .sat
@@ -115,5 +115,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "ACIS text format (Standard ACIS Text)",
+    "suggestedInspections": [
+      "Validate ACIS SAT file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

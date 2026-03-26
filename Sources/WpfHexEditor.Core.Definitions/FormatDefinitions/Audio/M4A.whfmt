@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    M4A Audio
    Category:  Audio
    Ext:       .m4a, .m4b, .m4p
@@ -159,11 +159,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MPEG-4 audio container (AAC/ALAC); 'ftyp' box at offset 4 with major brand 'M4A ' indicates iTunes-origin audio.",
+    "analysisContext": "MPEG-4 Audio - AAC audio container",
     "suggestedInspections": [
-      "Verify 'ftyp' box at offset 4 with major brand 'M4A ' (0x4D344120)",
-      "Inspect 'moov' atom for 'esds' descriptor containing AAC codec configuration",
-      "Check 'udta' and 'meta' atoms for embedded iTunes metadata and DRM flags"
+      "Validate M4A Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

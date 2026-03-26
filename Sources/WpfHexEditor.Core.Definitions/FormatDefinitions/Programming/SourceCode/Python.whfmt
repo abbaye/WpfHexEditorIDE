@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Python Source File
    Category:  Programming
    Ext:       .py, .pyw, .pyi
@@ -6,12 +6,15 @@
    Desc:      Python programming language source file.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Python Source File",
   "version": "2.0",
-  "extensions": [".py", ".pyw", ".pyi"],
+  "extensions": [
+    ".py",
+    ".pyw",
+    ".pyi"
+  ],
   "description": "Python programming language source file.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -29,27 +32,61 @@
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-python"],
-  "Software": ["PyCharm", "VS Code", "Spyder"],
-  "UseCases": ["Python scripting", "Data science", "Web development"],
+  "MimeTypes": [
+    "text/x-python"
+  ],
+  "Software": [
+    "PyCharm",
+    "VS Code",
+    "Spyder"
+  ],
+  "UseCases": [
+    "Python scripting",
+    "Data science",
+    "Web development"
+  ],
   "syntaxDefinition": {
     "id": "python",
     "name": "Python",
-    "extensions": [".py", ".pyw", ".pyi"],
+    "extensions": [
+      ".py",
+      ".pyw",
+      ".pyi"
+    ],
     "lineCommentPrefix": "#",
     "rules": [
-      { "type": "String",    "pattern": "(f?r?b?\"\"\"[\\s\\S]*?\"\"\"|f?r?b?'''[\\s\\S]*?'''|f?r?b?\"(?:[^\"\\\\]|\\\\.)*\"|f?r?b?'(?:[^'\\\\]|\\\\.)*')" },
-      { "type": "Comment",   "pattern": "#.*$" },
-      { "type": "Keyword",   "pattern": "\\b(False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield|match|case|type)\\b" },
-      { "type": "Type",      "pattern": "\\b(bool|bytearray|bytes|complex|dict|float|frozenset|int|list|memoryview|object|range|set|slice|str|super|tuple|type|zip|map|filter|enumerate|reversed|sorted|abs|all|any|bin|breakpoint|callable|chr|compile|delattr|dir|divmod|eval|exec|format|getattr|globals|hasattr|hash|help|hex|id|input|isinstance|issubclass|iter|len|locals|max|min|next|oct|open|ord|pow|print|repr|round|setattr|staticmethod|sum|vars|classmethod|property|Exception|TypeError|ValueError|KeyError|IndexError|AttributeError|NameError|ImportError|IOError|OSError|RuntimeError|StopIteration|NotImplementedError|OverflowError|ZeroDivisionError|MemoryError|RecursionError|SystemExit|KeyboardInterrupt|BaseException|Warning|UserWarning|DeprecationWarning|FutureWarning)\\b" },
-      { "type": "Decorator", "pattern": "@[A-Za-z_][A-Za-z0-9_.]*" },
-      { "type": "Number",    "pattern": "\\b(0x[0-9A-Fa-f_]+|0b[01_]+|0o[0-7_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[jJ]?)\\b" }
+      {
+        "type": "String",
+        "pattern": "(f?r?b?\"\"\"[\\s\\S]*?\"\"\"|f?r?b?'''[\\s\\S]*?'''|f?r?b?\"(?:[^\"\\\\]|\\\\.)*\"|f?r?b?'(?:[^'\\\\]|\\\\.)*')"
+      },
+      {
+        "type": "Comment",
+        "pattern": "#.*$"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield|match|case|type)\\b"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(bool|bytearray|bytes|complex|dict|float|frozenset|int|list|memoryview|object|range|set|slice|str|super|tuple|type|zip|map|filter|enumerate|reversed|sorted|abs|all|any|bin|breakpoint|callable|chr|compile|delattr|dir|divmod|eval|exec|format|getattr|globals|hasattr|hash|help|hex|id|input|isinstance|issubclass|iter|len|locals|max|min|next|oct|open|ord|pow|print|repr|round|setattr|staticmethod|sum|vars|classmethod|property|Exception|TypeError|ValueError|KeyError|IndexError|AttributeError|NameError|ImportError|IOError|OSError|RuntimeError|StopIteration|NotImplementedError|OverflowError|ZeroDivisionError|MemoryError|RecursionError|SystemExit|KeyboardInterrupt|BaseException|Warning|UserWarning|DeprecationWarning|FutureWarning)\\b"
+      },
+      {
+        "type": "Decorator",
+        "pattern": "@[A-Za-z_][A-Za-z0-9_.]*"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(0x[0-9A-Fa-f_]+|0b[01_]+|0o[0-7_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[jJ]?)\\b"
+      }
     ],
     "foldingRules": {
       "indentBased": true,
       "indentTabWidth": 4,
       "blockStartPattern": "^\\s*(?:def|class|if|elif|else|for|while|with|try|except|finally|async\\s+def|async\\s+for|async\\s+with)\\b",
-      "endOfBlockHint": { "enabled": false }
+      "endOfBlockHint": {
+        "enabled": false
+      }
     },
     "breakpointRules": {
       "nonExecutablePatterns": [
@@ -59,5 +96,18 @@
         "^\\s*'''"
       ]
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Python programming language source file.",
+    "suggestedInspections": [
+      "Verify Python Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

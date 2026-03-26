@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    JPEG-LS Lossless
    Category:  Images
    Ext:       .jls
@@ -124,5 +124,18 @@
   },
   "functions": {
     "readUInt32BE": "Read certificate"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "JPEG-LS Lossless/Near-lossless compression",
+    "suggestedInspections": [
+      "Validate JPEG-LS Lossless signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    IPFIX
    Category:  Network
    Ext:       .ipfix
@@ -177,5 +177,18 @@
   "functions": {
     "readUInt16BE": "Read message header",
     "readUInt32BE": "Read sequence numbers"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "IP Flow Information Export - Network flow monitoring protocol",
+    "suggestedInspections": [
+      "Validate IPFIX file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Minecraft Region
    Category:  Game
    Ext:       .mcr
@@ -125,5 +125,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Minecraft legacy region format",
+    "suggestedInspections": [
+      "Validate Minecraft Region container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

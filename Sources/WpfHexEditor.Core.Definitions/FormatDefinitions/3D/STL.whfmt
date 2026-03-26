@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    STL 3D Model
    Category:  3D
    Ext:       .stl
@@ -125,5 +125,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Stereolithography CAD format - 3D model file",
+    "suggestedInspections": [
+      "Validate STL 3D Model header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

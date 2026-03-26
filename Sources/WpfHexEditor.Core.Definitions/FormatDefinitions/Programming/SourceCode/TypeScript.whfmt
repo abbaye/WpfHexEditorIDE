@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TypeScript Source File
    Category:  Programming
    Ext:       .ts, .tsx, .mts, .cts
@@ -6,7 +6,6 @@
    Desc:      TypeScript programming language source file (typed superset of JavaScript).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "TypeScript Source File",
@@ -115,7 +114,12 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     },
     "breakpointRules": {
       "nonExecutablePatterns": [
@@ -126,5 +130,18 @@
         "^\\s*export\\s+(?:default\\s+)?(?:interface|type|enum)\\b"
       ]
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "TypeScript programming language source file (typed superset of JavaScript).",
+    "suggestedInspections": [
+      "Verify TypeScript Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

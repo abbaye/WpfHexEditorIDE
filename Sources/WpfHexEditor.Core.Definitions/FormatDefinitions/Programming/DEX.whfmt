@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Android DEX File
    Category:  Programming
    Ext:       .dex
@@ -110,8 +110,19 @@
       "description": "Human-readable file size"
     }
   ],
-  "forensic": { "category": "executable", "riskLevel": "medium" },
-  "aiHints": { "analysisContext": "Android Dalvik Executable — check header magic, checksum (Adler32), SHA-1 signature, and string/type/method ID tables", "suggestedInspections": ["Verify Adler32 checksum at offset 8", "Check DEX version (035, 036, 037, 038, 039)"] },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Dalvik Executable - Android bytecode",
+    "suggestedInspections": [
+      "Verify Android DEX File magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
+  },
   "software": [
     "Android Runtime (ART)",
     "Dalvik VM",

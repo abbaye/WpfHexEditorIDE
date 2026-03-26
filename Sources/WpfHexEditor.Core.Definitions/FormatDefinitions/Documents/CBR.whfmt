@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Comic Book RAR
    Category:  Documents
    Ext:       .cbr
@@ -153,5 +153,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Comic Book RAR archive format, a RAR file containing sequential images for digital comics",
+    "suggestedInspections": [
+      "Validate Comic Book RAR file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

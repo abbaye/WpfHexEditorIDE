@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Executable (PE)
    Category:  Executables
    Ext:       .exe, .scr
@@ -8,7 +8,6 @@
    Detection: signature=4D5A @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "Windows Executable (PE)",
@@ -592,16 +591,78 @@
       "maxIterations": 96,
       "entrySize": 40,
       "indexVar": "sectionIndex",
-      "colorCycle": ["#FF6B6B", "#4ECDC4", "#FFE66D", "#95E1D3", "#FFA07A", "#A8E6CF", "#DDA0DD"],
+      "colorCycle": [
+        "#FF6B6B",
+        "#4ECDC4",
+        "#FFE66D",
+        "#95E1D3",
+        "#FFA07A",
+        "#A8E6CF",
+        "#DDA0DD"
+      ],
       "opacity": 0.2,
       "description": "PE Section [$iteration$]",
       "fields": [
-        { "type": "field", "name": "Section Name",         "offset": 0,  "length": 8,  "color": "#FF6B6B", "valueType": "ascii8",  "storeAs": "sectionName",         "opacity": 0.35 },
-        { "type": "field", "name": "Virtual Size",         "offset": 8,  "length": 4,  "color": "#4ECDC4", "valueType": "uint32",  "storeAs": "sectionVirtualSize",  "opacity": 0.3  },
-        { "type": "field", "name": "Virtual Address",      "offset": 12, "length": 4,  "color": "#FFE66D", "valueType": "uint32",  "storeAs": "sectionVirtualAddr",  "opacity": 0.3  },
-        { "type": "field", "name": "Size of Raw Data",     "offset": 16, "length": 4,  "color": "#95E1D3", "valueType": "uint32",  "storeAs": "sectionRawSize",      "opacity": 0.3  },
-        { "type": "field", "name": "Ptr to Raw Data",      "offset": 20, "length": 4,  "color": "#FFA07A", "valueType": "uint32",  "storeAs": "sectionRawOffset",    "opacity": 0.3  },
-        { "type": "field", "name": "Characteristics",      "offset": 36, "length": 4,  "color": "#F7DC6F", "valueType": "uint32",  "storeAs": "sectionCharacteristics", "opacity": 0.3 }
+        {
+          "type": "field",
+          "name": "Section Name",
+          "offset": 0,
+          "length": 8,
+          "color": "#FF6B6B",
+          "valueType": "ascii8",
+          "storeAs": "sectionName",
+          "opacity": 0.35
+        },
+        {
+          "type": "field",
+          "name": "Virtual Size",
+          "offset": 8,
+          "length": 4,
+          "color": "#4ECDC4",
+          "valueType": "uint32",
+          "storeAs": "sectionVirtualSize",
+          "opacity": 0.3
+        },
+        {
+          "type": "field",
+          "name": "Virtual Address",
+          "offset": 12,
+          "length": 4,
+          "color": "#FFE66D",
+          "valueType": "uint32",
+          "storeAs": "sectionVirtualAddr",
+          "opacity": 0.3
+        },
+        {
+          "type": "field",
+          "name": "Size of Raw Data",
+          "offset": 16,
+          "length": 4,
+          "color": "#95E1D3",
+          "valueType": "uint32",
+          "storeAs": "sectionRawSize",
+          "opacity": 0.3
+        },
+        {
+          "type": "field",
+          "name": "Ptr to Raw Data",
+          "offset": 20,
+          "length": 4,
+          "color": "#FFA07A",
+          "valueType": "uint32",
+          "storeAs": "sectionRawOffset",
+          "opacity": 0.3
+        },
+        {
+          "type": "field",
+          "name": "Characteristics",
+          "offset": 36,
+          "length": 4,
+          "color": "#F7DC6F",
+          "valueType": "uint32",
+          "storeAs": "sectionCharacteristics",
+          "opacity": 0.3
+        }
       ]
     }
   ],
@@ -627,29 +688,83 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "DOS Header",     "offset": 0,                           "icon": "\uE7C3" },
-      { "name": "PE Header",      "offsetVar": "peHeaderOffset",         "icon": "\uE7C1" },
-      { "name": "COFF Header",    "offsetVar": "peHeaderOffset",         "icon": "\uE8A5" },
-      { "name": "Section Table",  "offsetVar": "sectionTableOffset",     "icon": "\uE8FD" },
-      { "name": "Entry Point",    "offsetVar": "addressOfEntryPoint",    "icon": "\uE768", "color": "#FF4444" }
+      {
+        "name": "DOS Header",
+        "offset": 0,
+        "icon": ""
+      },
+      {
+        "name": "PE Header",
+        "offsetVar": "peHeaderOffset",
+        "icon": ""
+      },
+      {
+        "name": "COFF Header",
+        "offsetVar": "peHeaderOffset",
+        "icon": ""
+      },
+      {
+        "name": "Section Table",
+        "offsetVar": "sectionTableOffset",
+        "icon": ""
+      },
+      {
+        "name": "Entry Point",
+        "offsetVar": "addressOfEntryPoint",
+        "icon": "",
+        "color": "#FF4444"
+      }
     ]
   },
   "versionDetection": {
     "field": "optionalMagic",
-    "map": { "267": "PE32", "523": "PE32+" }
+    "map": {
+      "267": "PE32",
+      "523": "PE32+"
+    }
   },
   "versionedBlocks": {
     "PE32": [
-      { "type": "field", "name": "BaseOfData", "offsetFrom": "peHeaderOffset", "offsetAdd": 52, "length": 4, "color": "#98D8C8", "valueType": "uint32", "storeAs": "baseOfData", "opacity": 0.3 },
-      { "type": "field", "name": "ImageBase",  "offsetFrom": "peHeaderOffset", "offsetAdd": 56, "length": 4, "color": "#98D8C8", "valueType": "uint32", "storeAs": "peImageBase", "opacity": 0.3 }
+      {
+        "type": "field",
+        "name": "BaseOfData",
+        "offsetFrom": "peHeaderOffset",
+        "offsetAdd": 52,
+        "length": 4,
+        "color": "#98D8C8",
+        "valueType": "uint32",
+        "storeAs": "baseOfData",
+        "opacity": 0.3
+      },
+      {
+        "type": "field",
+        "name": "ImageBase",
+        "offsetFrom": "peHeaderOffset",
+        "offsetAdd": 56,
+        "length": 4,
+        "color": "#98D8C8",
+        "valueType": "uint32",
+        "storeAs": "peImageBase",
+        "opacity": 0.3
+      }
     ],
     "PE32+": [
-      { "type": "field", "name": "ImageBase",  "offsetFrom": "peHeaderOffset", "offsetAdd": 48, "length": 8, "color": "#98D8C8", "valueType": "uint64", "storeAs": "peImageBase", "opacity": 0.3 }
+      {
+        "type": "field",
+        "name": "ImageBase",
+        "offsetFrom": "peHeaderOffset",
+        "offsetAdd": 48,
+        "length": 8,
+        "color": "#98D8C8",
+        "valueType": "uint64",
+        "storeAs": "peImageBase",
+        "opacity": 0.3
+      }
     ]
   },
   "forensic": {
     "category": "executable",
-    "riskLevel": "medium",
+    "riskLevel": "high",
     "suspiciousPatterns": [
       {
         "name": "Invalid e_lfanew",
@@ -672,15 +787,12 @@
     ]
   },
   "aiHints": {
-    "analysisContext": "Windows PE executable — focus on section layout, imports table RVA, entry point RVA, and TimeDateStamp",
-    "knownVulnerabilities": ["malformed e_lfanew", "section overlap", "header padding injection", "PE header stomping"],
+    "analysisContext": "Windows Portable Executable format. The PE format is the standard executable file format on Windows, consist...",
     "suggestedInspections": [
-      "Verify e_lfanew (offset 60) points to a valid PE signature",
-      "Check TimeDateStamp for anachronisms or epoch 0",
-      "Inspect section RVAs for overlaps",
-      "Look for high-entropy sections indicating packing"
-    ],
-    "forensicContext": "Common in malware analysis — check for packed sections (entropy > 7.2), hollowed code sections, and anomalous timestamps"
+      "Verify Windows Executable (PE) signature, section table, and entry point",
+      "Check import/export tables for suspicious library references",
+      "Inspect section entropy for packing, encryption, or hollowing"
+    ]
   },
   "software": [
     "Windows OS",

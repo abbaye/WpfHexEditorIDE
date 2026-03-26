@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Assembly Source File
    Category:  Programming
    Ext:       .asm, .s, .z80, .arm, .mips, .65s, .6502
@@ -6,12 +6,19 @@
    Desc:      Assembly language source files for various architectures (x86, ARM, Z80, 6502, MIPS).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Assembly Source File",
   "version": "2.0",
-  "extensions": [".asm", ".s", ".z80", ".arm", ".mips", ".65s", ".6502"],
+  "extensions": [
+    ".asm",
+    ".s",
+    ".z80",
+    ".arm",
+    ".mips",
+    ".65s",
+    ".6502"
+  ],
   "description": "Assembly language source files for various architectures (x86, ARM, Z80, 6502, MIPS).",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -29,13 +36,27 @@
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-asm"],
-  "Software": ["NASM", "MASM", "VS Code"],
-  "UseCases": ["Low-level systems programming", "Reverse engineering", "Embedded ROM development", "Retro computing"],
+  "MimeTypes": [
+    "text/x-asm"
+  ],
+  "Software": [
+    "NASM",
+    "MASM",
+    "VS Code"
+  ],
+  "UseCases": [
+    "Low-level systems programming",
+    "Reverse engineering",
+    "Embedded ROM development",
+    "Retro computing"
+  ],
   "syntaxDefinition": {
     "id": "asm_x86",
     "name": "Assembly x86/x64",
-    "extensions": [".asm", ".s"],
+    "extensions": [
+      ".asm",
+      ".s"
+    ],
     "lineCommentPrefix": ";",
     "rules": [
       {
@@ -73,6 +94,19 @@
         "pattern": ";.*$",
         "colorKey": "TE_Comment"
       }
+    ]
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Assembly language source files for various architectures (x86, ARM, Z80, 6502, MIPS).",
+    "suggestedInspections": [
+      "Verify Assembly Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
     ]
   }
 }

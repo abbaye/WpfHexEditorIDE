@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PNG Image
    Category:  Images
    Ext:       .png
@@ -8,7 +8,6 @@
    Detection: signature=89504E470D0A1A0A @ offset 0
    Updated:   2026-02-24
    ============================================================ */
-
 {
   "diffMode": "binary",
   "formatName": "PNG Image",
@@ -327,11 +326,35 @@
     }
   ],
   "assertions": [
-    { "name": "PNG magic", "expression": "pngSignature == -8552249625308161526", "severity": "error", "message": "Invalid PNG signature" }
+    {
+      "name": "PNG magic",
+      "expression": "pngSignature == -8552249625308161526",
+      "severity": "error",
+      "message": "Invalid PNG signature"
+    }
   ],
-  "navigation": { "bookmarks": [{ "name": "IHDR chunk", "offset": 8, "icon": "\uE8A5" }] },
-  "forensic": { "category": "image", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "PNG image — check IHDR dimensions, bit depth, color type, and chunk integrity via CRC32", "suggestedInspections": ["Verify each chunk CRC", "Check for embedded tEXt/zTXt metadata"] },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "IHDR chunk",
+        "offset": 8,
+        "icon": ""
+      }
+    ]
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Portable Network Graphics (PNG) is a lossless raster image format that uses DEFLATE compression. The file be...",
+    "suggestedInspections": [
+      "Validate PNG Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
+  },
   "MimeTypes": [
     "image/png"
   ],

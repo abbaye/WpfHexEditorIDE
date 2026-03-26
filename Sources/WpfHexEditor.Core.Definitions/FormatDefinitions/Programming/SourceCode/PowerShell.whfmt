@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PowerShell Script
    Category:  Programming
    Ext:       .ps1, .psm1, .psd1
@@ -6,7 +6,6 @@
    Desc:      PowerShell script and module files (Windows/cross-platform scripting).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "PowerShell Script",
@@ -126,7 +125,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": true }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": true
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PowerShell script and module files (Windows/cross-platform scripting).",
+    "suggestedInspections": [
+      "Verify PowerShell Script file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

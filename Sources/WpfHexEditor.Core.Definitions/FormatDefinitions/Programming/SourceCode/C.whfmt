@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    C Source File
    Category:  Programming
    Ext:       .c, .h
@@ -6,12 +6,14 @@
    Desc:      C programming language source and header files.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "C Source File",
   "version": "2.0",
-  "extensions": [".c", ".h"],
+  "extensions": [
+    ".c",
+    ".h"
+  ],
   "description": "C programming language source and header files.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -29,13 +31,26 @@
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "MimeTypes": ["text/x-csrc"],
-  "Software": ["GCC", "Clang", "Visual Studio"],
-  "UseCases": ["Systems programming", "Embedded systems", "OS kernels"],
+  "MimeTypes": [
+    "text/x-csrc"
+  ],
+  "Software": [
+    "GCC",
+    "Clang",
+    "Visual Studio"
+  ],
+  "UseCases": [
+    "Systems programming",
+    "Embedded systems",
+    "OS kernels"
+  ],
   "syntaxDefinition": {
     "id": "c",
     "name": "C",
-    "extensions": [".c", ".h"],
+    "extensions": [
+      ".c",
+      ".h"
+    ],
     "lineCommentPrefix": "//",
     "blockCommentStart": "/*",
     "blockCommentEnd": "*/",
@@ -75,12 +90,38 @@
         "pattern": "\\b(0x[0-9A-Fa-f]+[uUlLfF]*|0b[01]+[uUlL]*|0[0-7]+[uUlL]*|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?[uUlLfFdD]*)\\b",
         "colorKey": "TE_Number"
       },
-      { "type": "MethodCall", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()", "colorKey": "TE_Label" }
+      {
+        "type": "MethodCall",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "colorKey": "TE_Label"
+      }
     ],
     "foldingRules": {
-      "startPatterns": ["\\{"],
-      "endPatterns": ["\\}"],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ],
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "C programming language source and header files.",
+    "suggestedInspections": [
+      "Verify C Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

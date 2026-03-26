@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    CATIA Part
    Category:  CAD
    Ext:       .catpart
@@ -103,5 +103,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "CATIA Part - CAD/engineering format",
+    "suggestedInspections": [
+      "Validate CATIA Part file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

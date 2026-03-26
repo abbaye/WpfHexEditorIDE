@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Apache ORC
    Category:  Data
    Ext:       .orc
@@ -103,5 +103,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Apache Optimized Row Columnar file format",
+    "suggestedInspections": [
+      "Validate Apache ORC schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

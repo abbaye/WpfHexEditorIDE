@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DjVu Document
    Category:  Documents
    Ext:       .djvu, .djv
@@ -42,7 +42,7 @@
     "pageCount": 0,
     "title": "",
     "author": "",
-  "preferredEditor": "hex-editor",
+    "preferredEditor": "hex-editor",
     "atTForm": 0,
     "fileSize": 0,
     "djvuType": "",
@@ -144,5 +144,18 @@
   "functions": {
     "readUInt32LE": "Read document header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "DjVu scanned document format",
+    "suggestedInspections": [
+      "Validate DjVu Document file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

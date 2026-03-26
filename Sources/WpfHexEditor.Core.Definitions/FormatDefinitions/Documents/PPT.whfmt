@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PowerPoint Presentation (Legacy)
    Category:  Documents
    Ext:       .ppt
@@ -128,11 +128,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Legacy PowerPoint OLE2 compound document; PowerPoint Document stream contains atom records; may embed VBA and OLE objects.",
+    "analysisContext": "Microsoft PowerPoint 97-2003 presentation (OLE2)",
     "suggestedInspections": [
-      "Verify OLE2 signature D0CF11E0A1B11AE1 at offset 0 and locate 'PowerPoint Document' stream in directory",
-      "Scan OLE2 directory for 'VBA' storage and macro presence in presentation",
-      "Inspect CurrentUser atom and UserEditAtom records for last-save information and embedded object references"
+      "Validate PowerPoint Presentation (Legacy) file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
     ]
   }
 }

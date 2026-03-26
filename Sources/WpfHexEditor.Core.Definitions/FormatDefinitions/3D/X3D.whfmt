@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Extensible 3D
    Category:  3D
    Ext:       .x3d
@@ -123,5 +123,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Web3D X3D format (XML based)",
+    "suggestedInspections": [
+      "Validate Extensible 3D header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    TGA Image
    Category:  Images
    Ext:       .tga, .tpic
@@ -131,5 +131,18 @@
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Truevision TGA/TARGA image format",
+    "suggestedInspections": [
+      "Validate TGA Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

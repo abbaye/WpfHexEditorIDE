@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Lotus Notes NSF Database
    Category:  Database
    Ext:       .nsf
@@ -124,11 +124,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "IBM Lotus Notes NSF database; stores email, calendar, and application data in a note-based B-tree structure.",
+    "analysisContext": "IBM Lotus Notes/Domino database format",
     "suggestedInspections": [
-      "Validate 0x1A magic byte and NSF superblock at offset 0",
-      "Identify note type tags to locate mail messages and attachments",
-      "Check for deleted-but-recoverable notes in the free-list pages"
+      "Verify Lotus Notes NSF Database file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
     ]
   }
 }

@@ -171,6 +171,46 @@ namespace WpfHexEditor.Core.Interfaces
         public bool HasForensicAlerts => _forensicAlerts?.Count > 0;
         public int ForensicAlertCount => _forensicAlerts?.Count ?? 0;
 
+        // ── D4 — Inspector groups from whfmt inspector.groups ──────────────
+        private List<InspectorGroupItem> _inspectorGroups;
+
+        public List<InspectorGroupItem> InspectorGroups
+        {
+            get => _inspectorGroups;
+            set
+            {
+                _inspectorGroups = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasInspectorGroups));
+            }
+        }
+
+        public bool HasInspectorGroups => _inspectorGroups?.Count > 0;
+
+        private string _inspectorBadge;
+        public string InspectorBadge
+        {
+            get => _inspectorBadge;
+            set { _inspectorBadge = value; OnPropertyChanged(); OnPropertyChanged(nameof(HasInspectorBadge)); }
+        }
+        public bool HasInspectorBadge => !string.IsNullOrEmpty(_inspectorBadge);
+
+        // ── D5 — Export templates from whfmt exportTemplates ───────────────
+        private List<ExportTemplateItem> _exportTemplates;
+
+        public List<ExportTemplateItem> ExportTemplates
+        {
+            get => _exportTemplates;
+            set
+            {
+                _exportTemplates = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasExportTemplates));
+            }
+        }
+
+        public bool HasExportTemplates => _exportTemplates?.Count > 0;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -221,5 +261,58 @@ namespace WpfHexEditor.Core.Interfaces
             Field = field;
             NewBytes = newBytes;
         }
+    }
+
+    /// <summary>
+    /// D4 — A collapsible group of fields for the Inspector section.
+    /// Built from whfmt inspector.groups.
+    /// </summary>
+    public class InspectorGroupItem : INotifyPropertyChanged
+    {
+        private bool _isExpanded = true;
+
+        public string Title      { get; set; }
+        public string Icon       { get; set; }
+        public bool   Highlight  { get; set; }
+        public List<InspectorFieldItem> Fields { get; set; } = new();
+
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set { _isExpanded = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsExpanded))); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    /// <summary>
+    /// D4 — A single field within an inspector group.
+    /// </summary>
+    public class InspectorFieldItem
+    {
+        public string Name         { get; set; }
+        public string DisplayValue { get; set; }
+        public override string ToString() => $"{Name}: {DisplayValue}";
+    }
+
+    /// <summary>
+    /// D5 — An export template available for the active format.
+    /// Built from whfmt exportTemplates.
+    /// </summary>
+    public class ExportTemplateItem
+    {
+        public string Name   { get; set; }
+        public string Format { get; set; }
+        public string Icon   => Format switch
+        {
+            "json"         => "\uE943",
+            "csv"          => "\uE8A5",
+            "c-struct"     => "\uE943",
+            "python-bytes" => "\uE943",
+            "xml"          => "\uE943",
+            _              => "\uE8A5"
+        };
+        public FormatDetection.ExportTemplate Source { get; set; }
+        public override string ToString() => Name;
     }
 }

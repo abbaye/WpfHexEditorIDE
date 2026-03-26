@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    WavPack Audio
    Category:  Audio
    Ext:       .wv
@@ -127,11 +127,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "WavPack hybrid lossless audio; each block starts with 'wvpk' signature followed by block size, version and sample count.",
+    "analysisContext": "WavPack hybrid lossless audio compression format",
     "suggestedInspections": [
-      "Verify 'wvpk' (0x7776706B) signature at offset 0 of each block",
-      "Check block flags for hybrid mode, floating point, and DSD audio indicators",
-      "Validate CRC32 at end of each block for data integrity"
+      "Validate WavPack Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

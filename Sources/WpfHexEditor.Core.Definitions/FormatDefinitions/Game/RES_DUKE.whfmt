@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Duke Nukem GRP
    Category:  Game
    Ext:       .grp
@@ -134,5 +134,18 @@
     "readUInt32LE": "Read GRP resource header",
     "extractASCIIString": "Extract file names",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Duke Nukem 3D GRP resource archive",
+    "suggestedInspections": [
+      "Validate Duke Nukem GRP container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

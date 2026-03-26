@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    LZMA Compression
    Category:  Archives
    Ext:       .lzma
@@ -147,11 +147,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Raw LZMA compressed stream (legacy format); 13-byte header: 1-byte properties, 4-byte dictionary size, 8-byte uncompressed size.",
+    "analysisContext": "LZMA (Lempel-Ziv-Markov chain Algorithm) compressed file format, used in 7-Zip and XZ Utils",
     "suggestedInspections": [
-      "Decode properties byte to extract lc, lp, pb parameters (lc + lp must be ≤ 4)",
-      "Check uncompressed size field — 0xFFFFFFFFFFFFFFFF indicates unknown/streaming",
-      "Verify dictionary size is a power of two between 4 KB and 1.5 GB"
+      "Verify LZMA Compression file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   }
 }

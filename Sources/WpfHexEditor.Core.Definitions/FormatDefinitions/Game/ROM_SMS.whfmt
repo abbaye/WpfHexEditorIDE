@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Sega Master System ROM
    Category:  Game
    Ext:       .sms, .gg
@@ -174,5 +174,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Sega Master System / Game Gear ROM format (TMR SEGA header)",
+    "suggestedInspections": [
+      "Validate Sega Master System ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

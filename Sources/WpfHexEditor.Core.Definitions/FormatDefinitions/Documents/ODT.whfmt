@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    OpenDocument Text
    Category:  Documents
    Ext:       .odt
@@ -307,5 +307,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOf...",
+    "suggestedInspections": [
+      "Validate OpenDocument Text file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

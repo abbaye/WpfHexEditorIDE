@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Markdown Document
    Category:  Programming
    Ext:       .md, .markdown, .mkd, .mdx
@@ -6,7 +6,6 @@
    Desc:      Markdown lightweight markup language document.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Markdown Document",
@@ -141,38 +140,140 @@
     "foldingRules": {
       "headingBased": true,
       "minHeadingLevel": 2,
-      "endOfBlockHint": { "enabled": false }
+      "endOfBlockHint": {
+        "enabled": false
+      }
     },
     "embeddedLanguages": [
-      { "id": "csharp",     "extension": ".cs"     },
-      { "id": "cs",         "extension": ".cs"     },
-      { "id": "javascript", "extension": ".js"     },
-      { "id": "js",         "extension": ".js"     },
-      { "id": "typescript", "extension": ".ts"     },
-      { "id": "ts",         "extension": ".ts"     },
-      { "id": "python",     "extension": ".py"     },
-      { "id": "py",         "extension": ".py"     },
-      { "id": "json",       "extension": ".json"   },
-      { "id": "xml",        "extension": ".xml"    },
-      { "id": "xaml",       "extension": ".xaml"   },
-      { "id": "html",       "extension": ".html"   },
-      { "id": "sql",        "extension": ".sql"    },
-      { "id": "rust",       "extension": ".rs"     },
-      { "id": "go",         "extension": ".go"     },
-      { "id": "java",       "extension": ".java"   },
-      { "id": "kotlin",     "extension": ".kt"     },
-      { "id": "swift",      "extension": ".swift"  },
-      { "id": "ruby",       "extension": ".rb"     },
-      { "id": "php",        "extension": ".php"    },
-      { "id": "shell",      "extension": ".sh"     },
-      { "id": "bash",       "extension": ".sh"     },
-      { "id": "sh",         "extension": ".sh"     },
-      { "id": "powershell", "extension": ".ps1"    },
-      { "id": "ps1",        "extension": ".ps1"    },
-      { "id": "lua",        "extension": ".lua"    },
-      { "id": "dart",       "extension": ".dart"   },
-      { "id": "cpp",        "extension": ".cpp"    },
-      { "id": "c",          "extension": ".c"      }
+      {
+        "id": "csharp",
+        "extension": ".cs"
+      },
+      {
+        "id": "cs",
+        "extension": ".cs"
+      },
+      {
+        "id": "javascript",
+        "extension": ".js"
+      },
+      {
+        "id": "js",
+        "extension": ".js"
+      },
+      {
+        "id": "typescript",
+        "extension": ".ts"
+      },
+      {
+        "id": "ts",
+        "extension": ".ts"
+      },
+      {
+        "id": "python",
+        "extension": ".py"
+      },
+      {
+        "id": "py",
+        "extension": ".py"
+      },
+      {
+        "id": "json",
+        "extension": ".json"
+      },
+      {
+        "id": "xml",
+        "extension": ".xml"
+      },
+      {
+        "id": "xaml",
+        "extension": ".xaml"
+      },
+      {
+        "id": "html",
+        "extension": ".html"
+      },
+      {
+        "id": "sql",
+        "extension": ".sql"
+      },
+      {
+        "id": "rust",
+        "extension": ".rs"
+      },
+      {
+        "id": "go",
+        "extension": ".go"
+      },
+      {
+        "id": "java",
+        "extension": ".java"
+      },
+      {
+        "id": "kotlin",
+        "extension": ".kt"
+      },
+      {
+        "id": "swift",
+        "extension": ".swift"
+      },
+      {
+        "id": "ruby",
+        "extension": ".rb"
+      },
+      {
+        "id": "php",
+        "extension": ".php"
+      },
+      {
+        "id": "shell",
+        "extension": ".sh"
+      },
+      {
+        "id": "bash",
+        "extension": ".sh"
+      },
+      {
+        "id": "sh",
+        "extension": ".sh"
+      },
+      {
+        "id": "powershell",
+        "extension": ".ps1"
+      },
+      {
+        "id": "ps1",
+        "extension": ".ps1"
+      },
+      {
+        "id": "lua",
+        "extension": ".lua"
+      },
+      {
+        "id": "dart",
+        "extension": ".dart"
+      },
+      {
+        "id": "cpp",
+        "extension": ".cpp"
+      },
+      {
+        "id": "c",
+        "extension": ".c"
+      }
+    ]
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Markdown lightweight markup language document.",
+    "suggestedInspections": [
+      "Verify Markdown Document file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
     ]
   }
 }

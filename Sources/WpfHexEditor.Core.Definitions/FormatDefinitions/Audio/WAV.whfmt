@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    WAV Audio
    Category:  Audio
    Ext:       .wav, .wave
@@ -150,7 +150,7 @@
         "2": "Microsoft ADPCM",
         "3": "IEEE 754 Float",
         "6": "ITU G.711 A-law",
-        "7": "ITU G.711 \u00b5-law",
+        "7": "ITU G.711 µ-law",
         "17": "IMA ADPCM",
         "85": "MPEG Layer III",
         "65534": "Extensible (WAVEFORMATEXTENSIBLE)"
@@ -324,17 +324,23 @@
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "WAV files use a chunk-based RIFF layout; data beyond the declared 'data' chunk or unknown chunk types (e.g., 'id3 ', 'LIST') may hide metadata or steganographic payloads. Cross-validate byteRate against sampleRate * numChannels * bitsPerSample / 8 to detect inconsistencies indicating manipulation.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "Waveform Audio File Format - A RIFF-based container for uncompressed (PCM) and compressed audio. The file be...",
+    "suggestedInspections": [
+      "Validate WAV Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "RIFF Header", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "RIFF Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "assertions": [

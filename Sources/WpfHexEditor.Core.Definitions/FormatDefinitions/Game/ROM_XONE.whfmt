@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Xbox One Package
    Category:  Game
    Ext:       .xvd, .msixvc
@@ -164,5 +164,18 @@
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Xbox One XVD (Xbox Virtual Disk) format",
+    "suggestedInspections": [
+      "Validate Xbox One Package container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

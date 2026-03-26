@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MacroMolecular CIF
    Category:  Science
    Ext:       .cif, .mmcif
@@ -105,5 +105,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MacroMolecular Crystallographic Information File",
+    "suggestedInspections": [
+      "Validate MacroMolecular CIF file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

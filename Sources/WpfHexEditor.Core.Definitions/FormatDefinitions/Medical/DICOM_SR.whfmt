@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DICOM Structured Report
    Category:  Medical
    Ext:       .dcm, .sr
@@ -132,5 +132,18 @@
     "readUInt32LE": "Read width and height",
     "multiply": "Calculate total pixels",
     "computeFromVariables(imageWidth * imageHeight, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "DICOM Structured Report for medical data",
+    "suggestedInspections": [
+      "Verify DICOM Structured Report preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

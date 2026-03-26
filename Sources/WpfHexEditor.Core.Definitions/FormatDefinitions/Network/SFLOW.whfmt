@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    sFlow
    Category:  Network
    Ext:       .sflow
@@ -179,5 +179,18 @@
   "functions": {
     "readUInt32BE": "Read sFlow datagram header",
     "readUInt16BE": "Read version"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "sFlow network monitoring - Sampled flow data",
+    "suggestedInspections": [
+      "Validate sFlow file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

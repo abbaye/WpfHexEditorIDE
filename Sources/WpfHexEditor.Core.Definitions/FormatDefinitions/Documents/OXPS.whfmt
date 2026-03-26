@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Open XML Paper Specification
    Category:  Documents
    Ext:       .oxps
@@ -306,5 +306,18 @@
     "Endianness": "little-endian",
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft OXPS (Open XML Paper Specification) document - a ZIP-based fixed-layout document format, successor...",
+    "suggestedInspections": [
+      "Validate Open XML Paper Specification file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

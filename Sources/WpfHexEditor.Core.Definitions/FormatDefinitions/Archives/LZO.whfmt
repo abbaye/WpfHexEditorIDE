@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    LZO Compression
    Category:  Archives
    Ext:       .lzo, .lzop
@@ -159,5 +159,18 @@
     "calculateCRC32": "Validate CRC checksum",
     "readUInt32LE": "Read header fields",
     "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "LZO compressed file format using Lempel-Ziv-Oberhumer algorithm, optimized for decompression speed",
+    "suggestedInspections": [
+      "Verify LZO Compression file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

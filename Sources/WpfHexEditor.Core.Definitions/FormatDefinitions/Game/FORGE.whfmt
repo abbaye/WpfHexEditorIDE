@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Ubisoft FORGE
    Category:  Game
    Ext:       .forge
@@ -159,5 +159,18 @@
     "readUInt32LE": "Read disk header",
     "multiply": "Calculate capacity",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Ubisoft FORGE archive format",
+    "suggestedInspections": [
+      "Validate Ubisoft FORGE container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

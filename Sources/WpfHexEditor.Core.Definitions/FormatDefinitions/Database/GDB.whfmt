@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    InterBase/Firebird Database (Legacy)
    Category:  Database
    Ext:       .gdb
@@ -117,5 +117,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Legacy InterBase/Firebird database format",
+    "suggestedInspections": [
+      "Verify InterBase/Firebird Database (Legacy) file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
+    ]
   }
 }

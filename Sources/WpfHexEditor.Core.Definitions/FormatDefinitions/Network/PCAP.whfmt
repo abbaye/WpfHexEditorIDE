@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PCAP Network Capture
    Category:  Network
    Ext:       .pcap, .cap
@@ -187,22 +187,23 @@
   "forensic": {
     "category": "network",
     "riskLevel": "medium",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "PCAP files store raw packet captures prefixed by a global header (24 bytes) followed by per-packet records (16-byte header + payload). The linkLayerType value (Ethernet=1, WiFi=105, loopback=0) determines payload structure. Forensic analysis should examine timestamps for time gaps, snapshotLength truncation of packets, and non-zero timeZoneOffset which is non-standard.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Packet Capture file - Network traffic recording",
     "suggestedInspections": [
-      "Verify the magic number (0xD4C3B2A1 LE or 0xA1B2C3D4 BE) to confirm endianness",
-      "Inspect linkLayerType to determine the network medium and payload decoder to apply",
-      "Check for timestamp anomalies: backwards time, large gaps, or future timestamps",
-      "Examine snapshotLength — values less than 65535 may indicate truncated packet payloads"
+      "Validate PCAP Network Capture file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "PCAP Global Header", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "PCAP Global Header",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {},

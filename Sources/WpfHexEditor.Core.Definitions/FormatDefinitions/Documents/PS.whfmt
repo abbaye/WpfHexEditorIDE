@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    PostScript Document
    Category:  Documents
    Ext:       .ps, .eps
@@ -120,5 +120,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "PostScript document format",
+    "suggestedInspections": [
+      "Validate PostScript Document file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
+    ]
   }
 }

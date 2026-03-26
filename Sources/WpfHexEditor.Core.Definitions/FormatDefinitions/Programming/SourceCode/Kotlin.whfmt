@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Kotlin Source File
    Category:  Programming
    Ext:       .kt, .kts
@@ -6,7 +6,6 @@
    Desc:      Kotlin programming language source files (JVM and Android).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Kotlin Source File",
@@ -103,7 +102,25 @@
       "endPatterns": [
         "\\}"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 3, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Kotlin programming language source files (JVM and Android).",
+    "suggestedInspections": [
+      "Verify Kotlin Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

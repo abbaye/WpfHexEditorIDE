@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    OGG Audio
    Category:  Audio
    Ext:       .ogg, .oga, .ogv
@@ -363,17 +363,23 @@
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Ogg is a page-based bitstream container where each page carries a CRC-32 checksum over the full page. Forensic analysis should verify per-page CRCs, confirm monotonically increasing pageSequenceNumber values (gaps indicate missing/deleted pages), and inspect the BOS page payload for the codec identification header to determine the embedded codec (Vorbis, Opus, FLAC, or Theora).",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "Ogg is a free, open container format maintained by the Xiph.Org Foundation. The file is composed of pages, e...",
+    "suggestedInspections": [
+      "Validate OGG Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "First OGG Page (BOS)", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "First OGG Page (BOS)",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

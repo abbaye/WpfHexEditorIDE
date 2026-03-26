@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    LAS Well Log
    Category:  Science
    Ext:       .las
@@ -111,5 +111,18 @@
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Log ASCII Standard for well log data",
+    "suggestedInspections": [
+      "Validate LAS Well Log file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    CriWare CPK
    Category:  Game
    Ext:       .cpk
@@ -139,5 +139,18 @@
   },
   "functions": {
     "parseZIPArchive": "Parse ZIP metadata"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "CRI Middleware CPK archive",
+    "suggestedInspections": [
+      "Validate CriWare CPK container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

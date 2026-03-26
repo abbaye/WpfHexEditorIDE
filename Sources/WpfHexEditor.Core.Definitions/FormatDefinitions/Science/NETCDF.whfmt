@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NetCDF Data File
    Category:  Science
    Ext:       .nc, .netcdf
@@ -113,5 +113,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Network Common Data Form - Scientific data",
+    "suggestedInspections": [
+      "Validate NetCDF Data File file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

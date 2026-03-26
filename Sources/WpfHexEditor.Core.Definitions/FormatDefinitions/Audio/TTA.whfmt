@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    True Audio
    Category:  Audio
    Ext:       .tta
@@ -129,11 +129,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "True Audio lossless format; 'TTA1' signature at offset 0 is followed by channels, bit depth, sample rate and CRC32.",
+    "analysisContext": "True Audio lossless audio compression format",
     "suggestedInspections": [
-      "Verify 'TTA1' (0x54544131) signature at offset 0",
-      "Validate header CRC32 at bytes 14-17 against the preceding 14 header bytes",
-      "Check channels, bits per sample and sample rate fields for valid PCM audio parameters"
+      "Validate True Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

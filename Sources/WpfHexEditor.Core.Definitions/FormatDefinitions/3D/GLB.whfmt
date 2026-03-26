@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Binary glTF
    Category:  3D
    Ext:       .glb
@@ -150,5 +150,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "3d-model",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Khronos glTF binary format",
+    "suggestedInspections": [
+      "Validate Binary glTF header magic bytes and format version",
+      "Check vertex/face count fields and mesh data boundaries",
+      "Inspect embedded material, texture, and animation references"
+    ]
   }
 }

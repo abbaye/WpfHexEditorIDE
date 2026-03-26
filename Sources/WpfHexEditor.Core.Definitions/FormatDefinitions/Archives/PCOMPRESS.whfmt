@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Parallel Compression Archive
    Category:  Archives
    Ext:       .pz
@@ -156,5 +156,18 @@
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size",
     "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Parallel compression archive format optimized for multi-threaded compression and decompression",
+    "suggestedInspections": [
+      "Verify Parallel Compression Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

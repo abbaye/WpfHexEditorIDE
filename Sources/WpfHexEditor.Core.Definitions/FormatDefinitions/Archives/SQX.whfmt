@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SQX Archive
    Category:  Archives
    Ext:       .sqx
@@ -154,5 +154,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SQX archive format with advanced compression algorithms and encryption support",
+    "suggestedInspections": [
+      "Verify SQX Archive file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
+    ]
   }
 }

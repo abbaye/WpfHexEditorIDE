@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NES ROM
    Category:  Game
    Ext:       .nes
@@ -226,5 +226,18 @@
     "BlocksDefined": 13,
     "ValidationRules": 2,
     "LastUpdated": "2026-03-01"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo Entertainment System ROM (iNES format)",
+    "suggestedInspections": [
+      "Validate NES ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

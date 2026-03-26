@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    SolidWorks Part
    Category:  CAD
    Ext:       .sldprt
@@ -103,5 +103,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read CAD header"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "SolidWorks Part - CAD/engineering format",
+    "suggestedInspections": [
+      "Validate SolidWorks Part file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

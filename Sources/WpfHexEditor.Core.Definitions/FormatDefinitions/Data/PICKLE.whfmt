@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Python Pickle
    Category:  Data
    Ext:       .pkl, .pickle
@@ -102,5 +102,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read bytecode header"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Python object serialization format",
+    "suggestedInspections": [
+      "Validate Python Pickle schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

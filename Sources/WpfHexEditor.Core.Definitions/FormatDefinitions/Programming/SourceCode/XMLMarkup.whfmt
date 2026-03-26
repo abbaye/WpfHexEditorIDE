@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    XML Markup Source File
    Category:  Programming
    Ext:       .xsl, .xslt, .xhtml, .resx, .svg
@@ -6,7 +6,6 @@
    Desc:      XML-derived markup source files: XSLT stylesheets, XHTML documents, .NET resource files, and SVG vector graphics.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "semantic",
   "formatName": "XML Markup Source File",
@@ -135,7 +134,25 @@
         "</[a-zA-Z]",
         "/>"
       ],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 1,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "XML-derived markup source files: XSLT stylesheets, XHTML documents, and SVG vector graphics.",
+    "suggestedInspections": [
+      "Verify XML Markup Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

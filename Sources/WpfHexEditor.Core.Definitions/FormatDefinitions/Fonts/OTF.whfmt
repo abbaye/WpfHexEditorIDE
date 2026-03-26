@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    OpenType Font
    Category:  Fonts
    Ext:       .otf
@@ -355,19 +355,33 @@
   "forensic": {
     "category": "font",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "OpenType CFF fonts embed PostScript Type 2 charstring programs in the CFF table, which have historically been exploited via stack overflow in font parsing engines. Check for a DSIG table (digital signature) to confirm the font has not been tampered with post-signing. Ensure table offsets and lengths do not overlap or exceed the file boundary.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "OpenType Font format with CFF (Compact Font Format) outlines - a cross-platform font standard jointly develo...",
+    "suggestedInspections": [
+      "Validate OpenType Font offset table and required table tags (head, cmap, glyf)",
+      "Check glyph count, loca table offsets, and encoding records",
+      "Inspect name table entries and OS/2 metrics for consistency"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Offset Table", "offsetVar": "currentOffset", "icon": "\uE8A9" },
-      { "name": "Table 1 Data", "offsetVar": "table1Offset", "icon": "\uE8A9" },
-      { "name": "Table 2 Data", "offsetVar": "table2Offset", "icon": "\uE8A9" }
+      {
+        "name": "Offset Table",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      },
+      {
+        "name": "Table 1 Data",
+        "offsetVar": "table1Offset",
+        "icon": ""
+      },
+      {
+        "name": "Table 2 Data",
+        "offsetVar": "table2Offset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

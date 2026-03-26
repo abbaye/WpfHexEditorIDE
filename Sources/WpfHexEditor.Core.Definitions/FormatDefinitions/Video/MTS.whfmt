@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AVCHD Video
    Category:  Video
    Ext:       .mts, .m2ts
@@ -131,11 +131,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AVCHD transport stream from camcorders; 188-byte MPEG-TS packets each starting with sync byte 0x47.",
+    "analysisContext": "AVCHD (Advanced Video Coding High Definition) video format used by camcorders",
     "suggestedInspections": [
-      "Verify sync byte 0x47 at offset 0 and every 188 bytes throughout the file",
-      "Check PID field (bits 12-0 of bytes 1-2) in each packet header for valid stream assignments",
-      "Inspect H.264 SPS NAL unit within video PES packets for resolution and frame rate"
+      "Validate AVCHD Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MP4 Video
    Category:  Video
    Ext:       .mp4, .m4v, .m4a
@@ -291,8 +291,19 @@
       "description": "Total file size formatted as a human-readable string (KB/MB/GB)"
     }
   ],
-  "forensic": { "category": "video", "riskLevel": "low" },
-  "aiHints": { "analysisContext": "MP4/ISOBMFF container — iterate 4-byte length + 4-byte FourCC boxes: ftyp, moov, mdat, free. Check ftyp brand.", "suggestedInspections": ["Check ftyp compatible brands", "Look for udta boxes with metadata", "Inspect mvhd for creation/modification time"] },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MPEG-4 Part 14 multimedia container based on ISO Base Media File Format (ISOBMFF). The file begins with a Fi...",
+    "suggestedInspections": [
+      "Validate MP4 Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
+  },
   "MimeTypes": [
     "video/mp4",
     "audio/mp4"

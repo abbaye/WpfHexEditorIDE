@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    VP9 Video
    Category:  Video
    Ext:       .vp9, .ivf
@@ -131,11 +131,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "VP9 video in IVF container; 'DKIF' magic at offset 0 followed by codec FourCC 'VP90', width, height and frame rate.",
+    "analysisContext": "VP9 video codec, successor to VP8 developed by Google",
     "suggestedInspections": [
-      "Verify 'DKIF' (0x444B4946) IVF header signature at offset 0",
-      "Check codec FourCC at bytes 8-11 for 'VP90' identifying VP9 bitstream",
-      "Inspect VP9 frame header profile field (bits 29-28) for valid profile (0-3)"
+      "Validate VP9 Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

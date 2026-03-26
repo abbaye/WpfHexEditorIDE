@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    STEP 3D Model
    Category:  CAD
    Ext:       .step, .stp
@@ -121,5 +121,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "ISO 10303 STEP CAD format",
+    "suggestedInspections": [
+      "Validate STEP 3D Model file header, version stamp, and entity sections",
+      "Check layer/block table structure and cross-references",
+      "Inspect geometric entity records and coordinate precision"
+    ]
   }
 }

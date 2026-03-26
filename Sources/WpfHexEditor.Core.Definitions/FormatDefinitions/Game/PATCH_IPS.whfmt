@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    IPS Patch
    Category:  Game
    Ext:       .ips
@@ -150,5 +150,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "International Patching System (IPS) format - Classic ROM patching format",
+    "suggestedInspections": [
+      "Validate IPS Patch container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

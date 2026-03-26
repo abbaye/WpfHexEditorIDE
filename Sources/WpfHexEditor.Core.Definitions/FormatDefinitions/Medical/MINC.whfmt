@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MINC Medical Image
    Category:  Medical
    Ext:       .mnc, .minc
@@ -127,5 +127,18 @@
     "readUInt32LE": "Read medical header",
     "extractASCIIString": "Read patient",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Medical Image NetCDF format",
+    "suggestedInspections": [
+      "Verify MINC Medical Image preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

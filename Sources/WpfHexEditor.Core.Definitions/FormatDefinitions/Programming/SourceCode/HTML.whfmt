@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    HTML Source File
    Category:  Programming
    Ext:       .html, .htm
@@ -6,7 +6,6 @@
    Desc:      HyperText Markup Language source file for web pages.
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "semantic",
   "formatName": "HTML Source File",
@@ -105,8 +104,41 @@
     "foldingRules": {
       "tagBased": true,
       "multilineTagSupport": true,
-      "selfClosingTags": ["br", "hr", "img", "input", "link", "meta", "area", "base", "col", "embed", "param", "source", "track", "wbr"],
-      "endOfBlockHint": { "enabled": true, "maxContextLines": 1, "triggerBrace": true, "triggerDirective": false }
+      "selfClosingTags": [
+        "br",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "area",
+        "base",
+        "col",
+        "embed",
+        "param",
+        "source",
+        "track",
+        "wbr"
+      ],
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 1,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "HyperText Markup Language source file for web pages.",
+    "suggestedInspections": [
+      "Verify HTML Source File file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

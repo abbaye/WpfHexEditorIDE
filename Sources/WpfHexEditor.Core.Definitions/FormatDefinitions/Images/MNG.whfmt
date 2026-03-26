@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Multiple-image Network Graphics
    Category:  Images
    Ext:       .mng
@@ -133,5 +133,18 @@
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MNG animation format (PNG-based)",
+    "suggestedInspections": [
+      "Validate Multiple-image Network Graphics signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

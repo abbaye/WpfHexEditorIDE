@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MPEG Video
    Category:  Video
    Ext:       .mpg, .mpeg, .m2v
@@ -138,11 +138,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MPEG-1/2 video stream; sequence header start code 0x000001B3 carries width, height, aspect ratio and frame rate.",
+    "analysisContext": "MPEG-1/2 video stream",
     "suggestedInspections": [
-      "Verify sequence header start code 0x000001B3 at offset 0",
-      "Check 12-bit width and height packed fields at bytes 4-6 for valid resolution",
-      "Inspect aspect ratio code and frame rate code against MPEG standard lookup tables"
+      "Validate MPEG Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

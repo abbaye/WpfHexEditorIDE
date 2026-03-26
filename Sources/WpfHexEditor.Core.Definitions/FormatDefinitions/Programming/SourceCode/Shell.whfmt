@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Shell Script
    Category:  Programming
    Ext:       .sh, .bash, .zsh, .fish
@@ -6,7 +6,6 @@
    Desc:      Unix/Linux shell script files (Bash, Zsh, Fish).
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "diffMode": "text",
   "formatName": "Shell Script",
@@ -107,5 +106,18 @@
         "\\}"
       ]
     }
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unix/Linux shell script files (Bash, Zsh, Fish).",
+    "suggestedInspections": [
+      "Verify Shell Script file signature and header structure",
+      "Check data integrity and field boundaries",
+      "Inspect metadata and version information"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    FITS Astronomical Data
    Category:  Science
    Ext:       .fits, .fit
@@ -115,11 +115,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "FITS astronomical image/data; starts with 'SIMPLE  =' keyword; 2880-byte fixed-block header units with ASCII keyword=value cards.",
+    "analysisContext": "Flexible Image Transport System - Astronomy",
     "suggestedInspections": [
-      "Parse mandatory keywords: SIMPLE, BITPIX, NAXIS, NAXISn to determine data dimensions and type",
-      "Verify header block alignment (each HDU header is a multiple of 2880 bytes)",
-      "Inspect extension HDUs (XTENSION keyword) for binary tables or image arrays appended after primary HDU"
+      "Validate FITS Astronomical Data file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
     ]
   },
   "functions": {

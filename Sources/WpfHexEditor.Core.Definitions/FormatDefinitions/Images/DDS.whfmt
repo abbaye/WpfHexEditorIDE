@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DirectDraw Surface
    Category:  Images
    Ext:       .dds
@@ -179,11 +179,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "DirectDraw Surface texture; 'DDS ' magic; 124-byte DDS_HEADER followed by optional DDS_HEADER_DXT10 for modern formats.",
+    "analysisContext": "DirectX texture format",
     "suggestedInspections": [
-      "Verify header size field equals 124 and validate DDSD/DDSCAPS flags",
-      "Identify pixel format (dwFourCC: DXT1–DXT5, BC4–BC7, RGBA) and mip count",
-      "Check for DX10 extended header when dwFourCC is 'DX10' for array/cube-map textures"
+      "Validate DirectDraw Surface signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
     ]
   }
 }

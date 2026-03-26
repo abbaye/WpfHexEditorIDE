@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    JSON Data
    Category:  Data
    Ext:       .json
@@ -9,7 +9,6 @@
    Detection: signature=7B @ offset 0
    Updated:   2026-03-22
    ============================================================ */
-
 {
   "formatName": "JSON Data",
   "version": "2.1",
@@ -162,5 +161,18 @@
         "\\]"
       ]
     }
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "JavaScript Object Notation - a lightweight text-based data interchange format. JSON files begin with either ...",
+    "suggestedInspections": [
+      "Validate JSON Data schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

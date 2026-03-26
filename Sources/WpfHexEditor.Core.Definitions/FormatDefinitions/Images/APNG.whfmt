@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    APNG Animated Image
    Category:  Images
    Ext:       .apng, .png
@@ -157,5 +157,18 @@
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Animated Portable Network Graphics",
+    "suggestedInspections": [
+      "Validate APNG Animated Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

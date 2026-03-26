@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    RPG Maker Encrypted Archive
    Category:  Game
    Ext:       .rgssad, .rgss2a, .rgss3a
@@ -145,5 +145,18 @@
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",
     "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "RPG Maker encrypted game archive",
+    "suggestedInspections": [
+      "Validate RPG Maker Encrypted Archive container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

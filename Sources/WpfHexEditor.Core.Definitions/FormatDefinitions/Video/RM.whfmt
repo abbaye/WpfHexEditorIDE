@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    RealMedia
    Category:  Video
    Ext:       .rm, .ra
@@ -121,11 +121,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "RealMedia container; '.RMF' signature at offset 0 followed by file version and number of headers.",
+    "analysisContext": "RealMedia multimedia container format developed by RealNetworks",
     "suggestedInspections": [
-      "Verify '.RMF' (0x2E524D46) signature at offset 0 and file version field",
-      "Inspect PROP chunk for duration, bitrate, number of streams and flags",
-      "Check MDPR chunk per stream for stream type, codec ID and MIME type"
+      "Validate RealMedia container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

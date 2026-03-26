@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Excel Workbook (Legacy)
    Category:  Documents
    Ext:       .xls
@@ -128,11 +128,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Legacy Excel OLE2 compound document; same OLE2 signature as DOC/PPT; Workbook stream contains BIFF records.",
+    "analysisContext": "Microsoft Excel 97-2003 workbook (OLE2)",
     "suggestedInspections": [
-      "Verify OLE2 signature D0CF11E0A1B11AE1 at offset 0 and locate Workbook or Book stream in directory",
-      "Scan OLE2 directory for 'VBA' storage containing Excel macro modules",
-      "Inspect BIFF record stream for BOF record (type 0x0809) identifying Excel version and sheet type"
+      "Validate Excel Workbook (Legacy) file signature and container structure",
+      "Check for embedded macros, scripts, or active content",
+      "Inspect document metadata: author, timestamps, revisions"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DSD Interchange File Format
    Category:  Audio
    Ext:       .dff
@@ -115,5 +115,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Philips DSDIFF format for Direct Stream Digital audio interchange",
+    "suggestedInspections": [
+      "Validate DSD Interchange File Format header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

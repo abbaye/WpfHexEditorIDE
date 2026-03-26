@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    XZ Compressed File
    Category:  Archives
    Ext:       .xz
@@ -131,11 +131,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "XZ compressed file using LZMA2 algorithm; magic 0xFD377A585A00; widely used for Linux kernel and package distribution.",
+    "analysisContext": "XZ/LZMA2 compression format",
     "suggestedInspections": [
-      "Verify 6-byte magic header and stream flags CRC-32 at bytes 6–9",
-      "Decode block headers to identify LZMA2 filter chain and dictionary size",
-      "Validate stream index and footer CRC-32 for complete stream integrity"
+      "Verify XZ Compressed File file header, compression method, and stored CRCs",
+      "Check central directory or entry table for consistency",
+      "Inspect individual entry sizes for truncation or overflow"
     ]
   }
 }

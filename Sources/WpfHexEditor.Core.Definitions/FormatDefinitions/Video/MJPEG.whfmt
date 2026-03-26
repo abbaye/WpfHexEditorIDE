@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Motion JPEG
    Category:  Video
    Ext:       .mjpeg, .mjpg
@@ -123,5 +123,18 @@
   "functions": {
     "parseJPEGDimensions": "Extract frame dimensions from JPEG data",
     "computeFromVariables(jpegWidth * jpegHeight, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Motion JPEG video format where each frame is a separate JPEG image",
+    "suggestedInspections": [
+      "Validate Motion JPEG container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

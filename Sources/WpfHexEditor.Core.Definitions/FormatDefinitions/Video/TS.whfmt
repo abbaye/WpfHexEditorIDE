@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MPEG Transport Stream
    Category:  Video
    Ext:       .ts, .tsv, .tsa
@@ -110,5 +110,18 @@
   },
   "TechnicalDetails": {
     "VideoFormat": true
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MPEG-2 Transport Stream container format used for broadcasting and streaming",
+    "suggestedInspections": [
+      "Validate MPEG Transport Stream container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MIDI Audio
    Category:  Audio
    Ext:       .mid, .midi
@@ -155,5 +155,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Musical Instrument Digital Interface file",
+    "suggestedInspections": [
+      "Validate MIDI Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

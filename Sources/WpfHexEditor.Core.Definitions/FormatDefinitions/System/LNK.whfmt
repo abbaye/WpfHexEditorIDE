@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Shortcut
    Category:  System
    Ext:       .lnk
@@ -129,5 +129,18 @@
   "functions": {
     "readUInt32LE": "Read Windows shortcut header",
     "extractUTF8String": "Extract target path"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Windows shell link (shortcut)",
+    "suggestedInspections": [
+      "Verify Windows Shortcut file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

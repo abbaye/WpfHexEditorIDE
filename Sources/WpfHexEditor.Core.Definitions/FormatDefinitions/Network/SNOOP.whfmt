@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Snoop Capture
    Category:  Network
    Ext:       .snoop, .cap
@@ -139,5 +139,18 @@
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"
+  },
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Solaris snoop packet capture format",
+    "suggestedInspections": [
+      "Validate Snoop Capture file header: magic, version, link-layer type",
+      "Check packet record timestamps and capture lengths",
+      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+    ]
   }
 }

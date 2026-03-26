@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    AIFF Audio
    Category:  Audio
    Ext:       .aiff, .aif, .aifc
@@ -154,17 +154,23 @@
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AIFF uses an IFF FORM container with big-endian chunk lengths. Key forensic points: the COMM chunk contains the authoritative channel count, sample frames, bit depth, and 80-bit extended sample rate; the SSND chunk holds the audio payload with an optional offset and blockSize that can hide data in the gap before audio samples.",
-    "knownVulnerabilities": [],
-    "suggestedInspections": []
+    "analysisContext": "Audio Interchange File Format - Apple audio format",
+    "suggestedInspections": [
+      "Validate AIFF Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "FORM Chunk", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "FORM Chunk",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {

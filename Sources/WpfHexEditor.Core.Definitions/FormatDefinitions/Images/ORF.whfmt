@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Olympus Raw Image
    Category:  Images
    Ext:       .orf
@@ -123,5 +123,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "image",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Olympus RAW Format camera image",
+    "suggestedInspections": [
+      "Validate Olympus Raw Image signature, image dimensions, and color model",
+      "Check pixel data offset, compression type, and scanline alignment",
+      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+    ]
   }
 }

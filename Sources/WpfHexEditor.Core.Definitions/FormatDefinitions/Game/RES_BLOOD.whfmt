@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Blood RFF
    Category:  Game
    Ext:       .rff
@@ -136,5 +136,18 @@
   "functions": {
     "readUInt32LE": "Read RFF resource header",
     "extractASCIIString": "Extract resource names"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Blood game RFF resource archive",
+    "suggestedInspections": [
+      "Validate Blood RFF container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

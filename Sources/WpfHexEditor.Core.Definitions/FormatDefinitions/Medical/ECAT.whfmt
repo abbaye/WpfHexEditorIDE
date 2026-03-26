@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    ECAT PET Image
    Category:  Medical
    Ext:       .v, .i
@@ -126,5 +126,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "ECAT PET medical imaging format",
+    "suggestedInspections": [
+      "Verify ECAT PET Image preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }

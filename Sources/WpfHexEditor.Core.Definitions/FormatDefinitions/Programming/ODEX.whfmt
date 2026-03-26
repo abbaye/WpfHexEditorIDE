@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Android ODEX
    Category:  Programming
    Ext:       .odex
@@ -147,5 +147,18 @@
   "TechnicalDetails": {},
   "functions": {
     "parseZIPArchive": "Parse ZIP archive metadata"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Android ODEX (Optimized DEX) format, contains optimized Dalvik bytecode for Android",
+    "suggestedInspections": [
+      "Verify Android ODEX magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Apple Lossless Audio Codec
    Category:  Audio
    Ext:       .alac, .m4a
@@ -132,11 +132,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Apple Lossless in MP4/M4A container; 'ftyp' box at offset 4 identifies the container brand and compatible brands.",
+    "analysisContext": "Apple Lossless Audio Codec for lossless compression of digital music",
     "suggestedInspections": [
-      "Verify 'ftyp' box type at offset 4 and check major brand for 'M4A ' or 'alac'",
-      "Inspect 'alac' codec box inside 'moov' atom for sample rate and bit depth",
-      "Check channel count and bit depth fields in ALAC specific box"
+      "Validate Apple Lossless Audio Codec header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

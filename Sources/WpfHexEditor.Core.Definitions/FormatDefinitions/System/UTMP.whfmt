@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Unix UTMP
    Category:  System
    Editor:    hex-editor
@@ -208,5 +208,18 @@
   "TechnicalDetails": {},
   "functions": {
     "readUInt32LE": "Read system header"
+  },
+  "forensic": {
+    "category": "system",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Unix UTMP file - Current user login records",
+    "suggestedInspections": [
+      "Verify Unix UTMP file signature and record/chunk header structure",
+      "Check timestamp sequence for gaps or chronological anomalies",
+      "Inspect event severity levels and source identifiers"
+    ]
   }
 }

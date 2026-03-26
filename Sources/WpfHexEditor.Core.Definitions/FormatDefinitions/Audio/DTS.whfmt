@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DTS Audio
    Category:  Audio
    Ext:       .dts, .dtshd
@@ -117,5 +117,18 @@
   },
   "TechnicalDetails": {
     "AudioFormat": true
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "DTS (Digital Theater Systems) multi-channel audio codec",
+    "suggestedInspections": [
+      "Validate DTS Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

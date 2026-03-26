@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Media Audio
    Category:  Audio
    Ext:       .wma
@@ -119,11 +119,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Windows Media Audio in ASF container; 16-byte GUID header identifies the ASF Header Object at offset 0.",
+    "analysisContext": "Microsoft Windows Media Audio lossy audio codec",
     "suggestedInspections": [
-      "Verify ASF Header Object GUID (30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C) at offset 0",
-      "Inspect Stream Properties Object for codec ID (0x0161=WMA Standard, 0x0162=WMA Pro)",
-      "Check Content Description Object for title, author, and copyright metadata"
+      "Validate Windows Media Audio header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
     ]
   }
 }

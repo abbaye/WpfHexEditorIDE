@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    VirtualBox Disk Image
    Category:  Disk
    Ext:       .vdi
@@ -137,5 +137,18 @@
   "functions": {
     "readUInt32LE": "Read disk header",
     "multiply": "Calculate capacity"
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "VirtualBox virtual disk format",
+    "suggestedInspections": [
+      "Verify VirtualBox Disk Image superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
+    ]
   }
 }

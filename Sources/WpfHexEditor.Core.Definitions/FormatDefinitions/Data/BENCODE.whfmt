@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    BitTorrent Bencode
    Category:  Data
    Ext:       .torrent
@@ -83,5 +83,18 @@
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "functions": {}
+  "functions": {},
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "BitTorrent bencoding format for .torrent files",
+    "suggestedInspections": [
+      "Validate BitTorrent Bencode schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
+  }
 }

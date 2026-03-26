@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Sound File
    Category:  Audio
    Ext:       .snd
@@ -129,5 +129,18 @@
     "readUInt32BE": "Read audio header",
     "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
     "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
+  },
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Generic sound file format used by various systems",
+    "suggestedInspections": [
+      "Validate Sound File header: sample rate, channels, bit depth, codec ID",
+      "Check frame/block alignment and data chunk boundaries",
+      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+    ]
   }
 }

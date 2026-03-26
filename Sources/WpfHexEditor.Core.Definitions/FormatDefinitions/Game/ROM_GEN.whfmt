@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Sega Genesis/Mega Drive ROM
    Category:  Game
    Ext:       .md, .bin, .gen, .smd
@@ -311,5 +311,18 @@
   },
   "functions": {
     "readUInt32LE": "Read executable header"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Sega Genesis / Mega Drive ROM cartridge format",
+    "suggestedInspections": [
+      "Validate Sega Genesis/Mega Drive ROM container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Linux Shared Object
    Category:  Programming
    Ext:       .so
@@ -160,5 +160,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Linux Shared Object library file using ELF (Executable and Linkable Format) structure",
+    "suggestedInspections": [
+      "Verify Linux Shared Object magic number and format version identifier",
+      "Check symbol/string table integrity and section boundaries",
+      "Inspect code section offsets, relocations, and debug info"
+    ]
   }
 }

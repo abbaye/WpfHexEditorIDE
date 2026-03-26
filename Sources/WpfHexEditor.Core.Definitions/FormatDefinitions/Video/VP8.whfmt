@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    VP8 Video
    Category:  Video
    Ext:       .vp8, .ivf
@@ -131,11 +131,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "VP8 video in IVF container; 'DKIF' magic at offset 0 followed by codec FourCC 'VP80', width, height and frame rate.",
+    "analysisContext": "VP8 video codec, open video compression format developed by Google",
     "suggestedInspections": [
-      "Verify 'DKIF' (0x444B4946) IVF header signature at offset 0",
-      "Check codec FourCC at bytes 8-11 for 'VP80' identifying VP8 bitstream",
-      "Inspect width, height and frame rate numerator/denominator at bytes 12-19"
+      "Validate VP8 Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

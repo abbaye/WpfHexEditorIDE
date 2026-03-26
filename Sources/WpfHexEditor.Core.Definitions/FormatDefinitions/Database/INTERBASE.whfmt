@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    InterBase Database
    Category:  Database
    Ext:       .ib, .ibd
@@ -119,5 +119,18 @@
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
+  },
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Borland/Embarcadero InterBase database format",
+    "suggestedInspections": [
+      "Verify InterBase Database file header, page size, and version fields",
+      "Check B-tree/index page pointers and free page list",
+      "Inspect record format, schema tables, and journal state"
+    ]
   }
 }

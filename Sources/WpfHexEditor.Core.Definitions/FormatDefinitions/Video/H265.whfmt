@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Raw H.265/HEVC
    Category:  Video
    Ext:       .h265, .265, .hevc
@@ -126,5 +126,18 @@
   "functions": {
     "readUInt32LE": "Read video header",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
+    "suggestedInspections": [
+      "Validate Raw H.265/HEVC container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
+    ]
   }
 }

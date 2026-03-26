@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    NTFS Filesystem
    Category:  Disk
    Ext:       .ntfs
@@ -114,23 +114,24 @@
   },
   "forensic": {
     "category": "disk",
-    "riskLevel": "high",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "riskLevel": "medium",
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "NTFS volumes begin with a 512-byte boot sector (BPB) containing the 'NTFS    ' OEM ID at offset 3, cluster size, MFT offset, and MFT mirror offset. The Master File Table starts at the cluster offset given in the BPB; each MFT record is 1024 bytes with 'FILE' signature. Forensic analysis focuses on MFT record sequence numbers, $LogFile journal, $UsnJrnl change log, and hidden Alternate Data Streams.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Windows NT File System",
     "suggestedInspections": [
-      "Parse the BPB to locate the MFT start cluster and navigate to the Master File Table for file enumeration",
-      "Scan for MFT records with the IN_USE flag cleared to enumerate deleted files available for recovery",
-      "Search the $UsnJrnl ($Extend\\$UsnJrnl) change journal for a timestamped record of all file system changes",
-      "Enumerate Alternate Data Streams (ADS) via MFT attribute type 0x80 with non-empty stream names to find hidden data"
+      "Verify NTFS Filesystem superblock/boot sector signature and version",
+      "Check partition/volume layout and allocation bitmap",
+      "Inspect filesystem journal and metadata consistency"
     ]
   },
   "navigation": {
     "bookmarks": [
-      { "name": "Boot Sector (BPB)", "offsetVar": "currentOffset", "icon": "\uE8A9" }
+      {
+        "name": "Boot Sector (BPB)",
+        "offsetVar": "currentOffset",
+        "icon": ""
+      }
     ]
   },
   "TechnicalDetails": {},

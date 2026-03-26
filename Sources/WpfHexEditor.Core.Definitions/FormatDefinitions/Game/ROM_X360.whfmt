@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Xbox 360 Disc Image
    Category:  Game
    Ext:       .iso, .xex
@@ -171,5 +171,18 @@
     "readUInt32LE": "Read dimensions",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Xbox 360 disc image and executable format",
+    "suggestedInspections": [
+      "Validate Xbox 360 Disc Image container magic and version header",
+      "Check resource/asset table entries and data block offsets",
+      "Inspect compression flags, checksums, and embedded file boundaries"
+    ]
   }
 }

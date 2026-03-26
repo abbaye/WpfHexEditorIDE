@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    BUFR Weather Data
    Category:  Science
    Ext:       .bufr, .bfr
@@ -136,5 +136,18 @@
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"
+  },
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "Binary Universal Form for Representation of meteorological data",
+    "suggestedInspections": [
+      "Validate BUFR Weather Data file header, data type, and dimension fields",
+      "Check axis labels, units, and calibration metadata",
+      "Inspect data array boundaries and fill/missing value markers"
+    ]
   }
 }

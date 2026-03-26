@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    BPS Patch
    Category:  RomHacking
    Ext:       .bps
@@ -74,6 +74,24 @@
     "Endianness": "Little-Endian (CRC32), VLQ (actions)",
     "HasChecksums": true,
     "ChecksumAlgorithm": "CRC-32",
-    "Actions": [ "SourceRead", "TargetRead", "SourceCopy", "TargetCopy" ]
+    "Actions": [
+      "SourceRead",
+      "TargetRead",
+      "SourceCopy",
+      "TargetCopy"
+    ]
+  },
+  "forensic": {
+    "category": "romhacking",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "BPS (Beat Patch System) binary patch format by Near/byuu. Uses variable-length quantities (VLQ), four action...",
+    "suggestedInspections": [
+      "Validate BPS Patch patch header, format version, and source CRC",
+      "Check patch record offsets stay within target ROM bounds",
+      "Verify end-of-file marker and total patch data length"
+    ]
   }
 }

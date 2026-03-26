@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    CBOR (Concise Binary Object Representation)
    Category:  Data
    Ext:       .cbor
@@ -116,5 +116,18 @@
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  },
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "CBOR binary data format (RFC 7049)",
+    "suggestedInspections": [
+      "Validate CBOR (Concise Binary Object Representation) schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
+    ]
   }
 }

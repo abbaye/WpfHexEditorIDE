@@ -1,0 +1,130 @@
+<UserControl x:Class="WpfHexEditor.Plugins.FormatStructure.Views.FormatStructurePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.Plugins.FormatStructure.Views">
+
+    <UserControl.Resources>
+        <!-- Recursive template for StructureFieldNode tree -->
+        <HierarchicalDataTemplate x:Key="FieldNodeTemplate"
+                                  DataType="{x:Type local:StructureFieldNode}"
+                                  ItemsSource="{Binding Children}">
+            <Grid Height="20" ToolTip="{Binding Tooltip}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="44"/>
+                </Grid.ColumnDefinitions>
+                <!-- Color swatch -->
+                <Border Grid.Column="0" Width="8" Height="8" CornerRadius="2"
+                        VerticalAlignment="Center" Margin="0,0,4,0">
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding SwatchColor}"/>
+                    </Border.Background>
+                </Border>
+                <!-- Name -->
+                <TextBlock Grid.Column="1"
+                           Text="{Binding Name}"
+                           FontSize="11" FontFamily="Segoe UI"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsGroup}" Value="True">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <!-- Offset -->
+                <TextBlock Grid.Column="2"
+                           Text="{Binding OffsetHex}"
+                           FontSize="10" FontFamily="Consolas"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.6"/>
+                <!-- Length -->
+                <TextBlock Grid.Column="3"
+                           Text="{Binding LengthText}"
+                           FontSize="10" FontFamily="Consolas"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.5"
+                           Margin="0,0,4,0"/>
+            </Grid>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+
+    <DockPanel Background="{DynamicResource DockTabBackgroundBrush}">
+        <!-- Toolbar -->
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource DockTabBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="6,3">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left"
+                           Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                           VerticalAlignment="Center" Margin="0,0,6,0"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.7"/>
+                <TextBlock x:Name="FormatNameText"
+                           DockPanel.Dock="Left"
+                           Text="No format detected"
+                           FontSize="11" FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                <TextBlock x:Name="BlockCountText"
+                           DockPanel.Dock="Right"
+                           Text=""
+                           FontSize="10" HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.5"/>
+                <Grid/>
+            </DockPanel>
+        </Border>
+
+        <!-- Column header -->
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource DockTabBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="22,2,4,2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="44"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Text="Name" FontSize="10" Opacity="0.5"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                <TextBlock Grid.Column="2" Text="Offset" FontSize="10" Opacity="0.5"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                <TextBlock Grid.Column="3" Text="Size" FontSize="10" Opacity="0.5"
+                           HorizontalAlignment="Right" Margin="0,0,4,0"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            </Grid>
+        </Border>
+
+        <!-- Tree -->
+        <TreeView x:Name="StructureTree"
+                  ItemTemplate="{StaticResource FieldNodeTemplate}"
+                  BorderThickness="0"
+                  Background="Transparent"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  SelectedItemChanged="OnTreeSelectedItemChanged">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+    </DockPanel>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Windows Media Video
    Category:  Video
    Ext:       .wmv, .wma, .asf
@@ -132,11 +132,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Windows Media Video in ASF container; 16-byte GUID header object at offset 0 identifies the ASF structure.",
+    "analysisContext": "Windows Media Video/Audio format (ASF container)",
     "suggestedInspections": [
-      "Verify ASF Header Object GUID (30 26 B2 75 8E 66 CF 11) at offset 0",
-      "Inspect Stream Properties Object for video codec GUID (WMV1/WMV2/WMV3/WMVA)",
-      "Check Extended Content Description Object for duration, bitrate and resolution metadata"
+      "Validate Windows Media Video container magic, box/atom sizes, and codec FourCC",
+      "Check track/stream layout, frame index, and timing fields",
+      "Inspect audio-video sync, keyframe distribution, and metadata"
     ]
   }
 }

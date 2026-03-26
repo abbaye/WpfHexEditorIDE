@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    Protocol Buffers
    Category:  Data
    Ext:       .pb, .protobuf
@@ -102,17 +102,14 @@
   "forensic": {
     "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownMaliciousPatterns": []
+    "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Protocol Buffers encode data as a sequence of tag-length-value (TLV) records using variable-length integer (varint) encoding. Without a .proto schema the wire types (0=varint, 1=64-bit, 2=length-delimited, 5=32-bit) guide field interpretation. Forensically, deeply nested length-delimited fields and oversized varint sequences may indicate crafted payloads designed to exploit parser vulnerabilities.",
-    "knownVulnerabilities": [],
+    "analysisContext": "Google Protocol Buffers binary serialization format",
     "suggestedInspections": [
-      "Identify the wire types of the first few tags to infer the message schema without a .proto definition",
-      "Flag length-delimited fields (wire type 2) with lengths exceeding the remaining file size as malformed",
-      "Check varint encodings for unnecessarily long sequences (e.g., 10-byte varints for small values) indicating crafted payloads",
-      "Look for field number 0 or numbers > 536870911 which are invalid in the protobuf wire format"
+      "Validate Protocol Buffers schema header and encoding markers",
+      "Check nested structure depth and field type tags",
+      "Inspect string encodings and numeric value boundaries"
     ]
   },
   "TechnicalDetails": {},

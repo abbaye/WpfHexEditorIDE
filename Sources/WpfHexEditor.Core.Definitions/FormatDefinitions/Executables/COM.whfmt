@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    DOS COM Executable
    Category:  Executables
    Ext:       .com
@@ -129,11 +129,11 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "DOS COM executable; flat binary loaded at CS:0100h; no header — entire file is raw x86 code.",
+    "analysisContext": "DOS Command file - Simple executable",
     "suggestedInspections": [
-      "Disassemble from offset 0x0000 to identify entry-point instructions",
-      "Scan for interrupt calls (INT 21h, INT 13h) that indicate DOS API or direct disk access",
-      "Check for self-modifying code patterns common in DOS malware"
+      "Verify DOS COM Executable signature, section table, and entry point",
+      "Check import/export tables for suspicious library references",
+      "Inspect section entropy for packing, encryption, or hollowing"
     ]
   }
 }

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Format:    MGH/MGZ Medical Image
    Category:  Medical
    Ext:       .mgh, .mgz
@@ -161,5 +161,18 @@
     "readUInt32LE": "Read medical header",
     "extractASCIIString": "Read patient",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "MGH/MGZ FreeSurfer medical image format",
+    "suggestedInspections": [
+      "Verify MGH/MGZ Medical Image preamble, magic bytes, and transfer syntax",
+      "Check image matrix dimensions, voxel spacing, and data type",
+      "Inspect patient/study metadata tags and private sequences"
+    ]
   }
 }
