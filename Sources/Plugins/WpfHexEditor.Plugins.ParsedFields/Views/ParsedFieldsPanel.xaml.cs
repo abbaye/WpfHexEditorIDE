@@ -1461,6 +1461,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     {
                         Name          = g.Key,
                         IsGroup       = true,
+                        IsValid       = true,
                         IsExpanded    = !string.Equals(g.Key, EnrichedGroupName, StringComparison.Ordinal),
                         Color         = first.Color,
                         ValueType     = "group",
