@@ -130,6 +130,9 @@
         "^\\s*#define\\b",
         "^\\s*#pragma\\b",
         "^\\s*namespace\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

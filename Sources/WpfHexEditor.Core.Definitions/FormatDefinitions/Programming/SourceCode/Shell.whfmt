@@ -110,6 +110,9 @@
       "nonExecutablePatterns": [
         "^\\s*#",
         "^\\s*$"
+      ],
+      "statementContinuationPatterns": [
+        "\\\\\\s*$"
       ]
     }
   },

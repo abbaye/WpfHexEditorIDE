@@ -94,6 +94,9 @@
         "^\\s*$",
         "^\\s*\"\"\"",
         "^\\s*'''"
+      ],
+      "statementContinuationPatterns": [
+        "\\\\\\s*$"
       ]
     }
   },

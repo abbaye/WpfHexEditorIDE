@@ -111,6 +111,9 @@
         "^\\s*\\*",
         "^\\s*$",
         "^\\s*export\\s+(?:default\\s+)?(?:interface|type|enum)\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

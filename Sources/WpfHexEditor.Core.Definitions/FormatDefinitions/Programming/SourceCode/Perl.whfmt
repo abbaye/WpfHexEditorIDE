@@ -100,6 +100,9 @@
         "^\\s*$",
         "^\\s*use\\s",
         "^\\s*package\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

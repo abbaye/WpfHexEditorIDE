@@ -203,6 +203,10 @@
       "^\\s*$",
       "^\\s*open\\s",
       "^\\s*module\\b"
+    ],
+    "statementContinuationPatterns": [
+      "\\|>\\s*$",
+      ",\\s*$"
     ]
   }
 }

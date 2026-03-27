@@ -52,6 +52,15 @@ public sealed class BreadcrumbSegment
 }
 
 /// <summary>
+/// Event args for breadcrumb navigation (carries offset + length for selection).
+/// </summary>
+public sealed class BreadcrumbNavigateEventArgs : EventArgs
+{
+    public long Offset { get; init; }
+    public int Length { get; init; }
+}
+
+/// <summary>
 /// Interactive breadcrumb bar: clickable segments, chevron dropdowns, bookmark chips.
 /// Fires <see cref="NavigateRequested"/> when user clicks a segment to jump to an offset.
 /// </summary>
@@ -86,7 +95,7 @@ public sealed class HexBreadcrumbBar : Border
 
     // ── Events ────────────────────────────────────────────────────────────────
     /// <summary>Raised when user clicks a breadcrumb segment or bookmark to navigate.</summary>
-    public event EventHandler<long>? NavigateRequested;
+    public event EventHandler<BreadcrumbNavigateEventArgs>? NavigateRequested;
 
     // ── Static brushes ────────────────────────────────────────────────────────
     private static readonly Brush SeparatorLineBrush;
@@ -210,7 +219,11 @@ public sealed class HexBreadcrumbBar : Border
             {
                 if (s is Border b && b.Tag is long bmOffset)
                 {
-                    NavigateRequested?.Invoke(this, bmOffset);
+                    NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
+                    {
+                        Offset = bmOffset,
+                        Length = 0,
+                    });
                     e.Handled = true;
                 }
             };
@@ -285,30 +298,15 @@ public sealed class HexBreadcrumbBar : Border
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            // Format segment: name + confidence badge
+            // Format segment: name only (no confidence badge)
             if (seg.IsFormat && ShowFormatInfo)
             {
-                var fmtLabel = CreateSegmentLabel(seg.Name, isLast, seg.Offset);
+                var fmtLabel = CreateSegmentLabel(seg, isLast);
                 segPanel.Children.Add(fmtLabel);
-
-                if (seg.Confidence > 0)
-                {
-                    var confLabel = new TextBlock
-                    {
-                        Text = $" {seg.Confidence}%",
-                        VerticalAlignment = VerticalAlignment.Center,
-                        FontSize = FontSize - 2.5,
-                        Margin = new Thickness(2, 0, 0, 0),
-                        Foreground = seg.Confidence >= 80
-                            ? new SolidColorBrush(Colors.LimeGreen)
-                            : new SolidColorBrush(Colors.Orange),
-                    };
-                    segPanel.Children.Add(confLabel);
-                }
             }
             else if (!seg.IsFormat)
             {
-                var label = CreateSegmentLabel(seg.Name, isLast, seg.Offset);
+                var label = CreateSegmentLabel(seg, isLast);
                 segPanel.Children.Add(label);
             }
             else
@@ -340,17 +338,17 @@ public sealed class HexBreadcrumbBar : Border
         }
     }
 
-    private TextBlock CreateSegmentLabel(string text, bool isLast, long offset)
+    private TextBlock CreateSegmentLabel(BreadcrumbSegment seg, bool isLast)
     {
         var lbl = new TextBlock
         {
-            Text = text,
+            Text = seg.Name,
             VerticalAlignment = VerticalAlignment.Center,
             FontSize = FontSize,
             FontWeight = isLast ? FontWeights.SemiBold : FontWeights.Normal,
             Cursor = Cursors.Hand,
             Padding = new Thickness(2, 1, 2, 1),
-            Tag = offset,
+            Tag = seg,
         };
 
         if (isLast)
@@ -369,9 +367,13 @@ public sealed class HexBreadcrumbBar : Border
 
     private void OnSegmentClick(object sender, MouseButtonEventArgs e)
     {
-        if (sender is TextBlock tb && tb.Tag is long offset)
+        if (sender is TextBlock tb && tb.Tag is BreadcrumbSegment seg)
         {
-            NavigateRequested?.Invoke(this, offset);
+            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
+            {
+                Offset = seg.Offset,
+                Length = seg.Length,
+            });
             e.Handled = true;
         }
     }
@@ -449,11 +451,16 @@ public sealed class HexBreadcrumbBar : Border
             if (item.Offset == seg.Offset)
                 lbi.SetResourceReference(BackgroundProperty, "BC_HoverBackground");
 
+            var capturedItem = item;
             lbi.MouseLeftButtonUp += (s, _) =>
             {
-                if (s is ListBoxItem li && li.Tag is long targetOffset)
+                if (s is ListBoxItem)
                 {
-                    NavigateRequested?.Invoke(this, targetOffset);
+                    NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
+                    {
+                        Offset = capturedItem.Offset,
+                        Length = capturedItem.Length,
+                    });
                     popup.IsOpen = false;
                 }
             };

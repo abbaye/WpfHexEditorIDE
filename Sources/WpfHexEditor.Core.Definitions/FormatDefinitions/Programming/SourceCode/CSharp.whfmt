@@ -156,6 +156,9 @@
         "^\\s*namespace\\b",
         "^\\s*#region\\b",
         "^\\s*#endregion\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

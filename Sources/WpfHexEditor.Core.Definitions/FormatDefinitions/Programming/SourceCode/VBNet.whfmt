@@ -196,6 +196,9 @@
       "^\\s*$",
       "^\\s*Imports\\s",
       "^\\s*Namespace\\b"
+    ],
+    "statementContinuationPatterns": [
+      "_\\s*$"
     ]
   }
 }

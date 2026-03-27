@@ -101,6 +101,10 @@
         "^\\s*$",
         "^\\s*require\\b",
         "^\\s*module\\b"
+      ],
+      "statementContinuationPatterns": [
+        "\\\\\\s*$",
+        ",\\s*$"
       ]
     }
   },

@@ -119,6 +119,9 @@
         "^\\s*#include\\b",
         "^\\s*#define\\b",
         "^\\s*#pragma\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

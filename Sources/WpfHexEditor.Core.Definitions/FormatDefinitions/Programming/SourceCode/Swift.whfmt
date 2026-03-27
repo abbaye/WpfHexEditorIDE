@@ -114,6 +114,9 @@
         "^\\s*\\*",
         "^\\s*$",
         "^\\s*import\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

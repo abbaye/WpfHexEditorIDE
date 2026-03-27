@@ -3,11 +3,12 @@
 // File: PartialClasses/UI/HexEditor.BreadcrumbBar.cs
 // Description:
 //     Wires the interactive HexBreadcrumbBar into the HexEditor layout.
-//     Walks the ParsedFieldViewModel tree to build hierarchical breadcrumb path.
-//     Handles navigation via SetPosition when user clicks segments.
-//     Configurable via public properties.
+//     Searches the flat ParsedFields list by offset to build a 2-level breadcrumb:
+//       Format Name › GroupName (section) › Field Name
+//     Handles navigation + selection via SetPosition when user clicks segments.
 //////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -72,7 +73,7 @@ public partial class HexEditor
         if (_breadcrumbBar is not null) return;
 
         _breadcrumbBar = new HexBreadcrumbBar();
-        _breadcrumbBar.NavigateRequested += (_, targetOffset) => SetPosition(targetOffset);
+        _breadcrumbBar.NavigateRequested += OnBreadcrumbNavigate;
 
         // Insert at the top of the root grid (row 0, before existing content)
         if (Content is Grid rootGrid)
@@ -93,6 +94,15 @@ public partial class HexEditor
         }
     }
 
+    private void OnBreadcrumbNavigate(object? sender, BreadcrumbNavigateEventArgs e)
+    {
+        SetPosition(e.Offset);
+        // Only select range for small fields (≤256 bytes) to avoid freezing —
+        // DataInspectorPanel reads all selected bytes synchronously via GetByte()
+        if (e.Length > 0 && e.Length <= 256)
+            SelectionStop = e.Offset + e.Length - 1;
+    }
+
     /// <summary>Updates the breadcrumb bar with current state. Call from SelectionChanged handler.</summary>
     internal void UpdateBreadcrumb()
     {
@@ -110,16 +120,11 @@ public partial class HexEditor
         _breadcrumbBar.SetState(offset, selLen, formatName, confidence, segments);
 
         // Update bookmarks from parsed fields panel
-        var bookmarks = ParsedFieldsPanel?.FormatInfo?.Bookmarks;
-        _breadcrumbBar.SetBookmarks(bookmarks);
+        _breadcrumbBar.SetBookmarks(ParsedFieldsPanel?.FormatInfo?.Bookmarks);
     }
 
-    // ── Tree walking ──────────────────────────────────────────────────────────
+    // ── Flat list search + GroupName grouping ─────────────────────────────────
 
-    /// <summary>
-    /// Walks the ParsedFieldViewModel tree to build a hierarchical breadcrumb path
-    /// from the root format node down to the leaf field containing the given offset.
-    /// </summary>
     private List<BreadcrumbSegment> BuildBreadcrumbPath(long offset, string? formatName, int confidence)
     {
         var segments = new List<BreadcrumbSegment>();
@@ -131,64 +136,113 @@ public partial class HexEditor
             {
                 Name = formatName!,
                 Offset = 0,
-                Length = (int)System.Math.Min(Length, int.MaxValue),
+                Length = (int)Math.Min(Length, int.MaxValue),
                 IsFormat = true,
-                Confidence = confidence,
+                Confidence = 0,
             });
         }
 
-        // 2. Walk ParsedFields tree to find path to current offset
+        // 2. Find field at current offset from flat ParsedFields list
         var panel = ParsedFieldsPanel;
-        if (panel?.ParsedFields != null && BreadcrumbShowFieldPath)
-            FindPathInTree(panel.ParsedFields, offset, segments);
+        if (panel?.ParsedFields == null || !BreadcrumbShowFieldPath) return segments;
+
+        var fields = panel.ParsedFields;
+        if (fields.Count == 0) return segments;
+
+        // Find the most specific field containing offset (smallest range)
+        ParsedFieldViewModel? match = null;
+        long bestLength = long.MaxValue;
+        foreach (var f in fields)
+        {
+            if (f.Length <= 0) continue;
+            if (offset >= f.Offset && offset < f.Offset + f.Length && f.Length < bestLength)
+            {
+                match = f;
+                bestLength = f.Length;
+            }
+        }
+
+        if (match == null) return segments;
+
+        // 3. GroupName segment (section: "Signature", "Header Fields", "Data Fields", etc.)
+        if (!string.IsNullOrEmpty(match.GroupName))
+        {
+            // Compute group offset range
+            var groupFields = new List<ParsedFieldViewModel>();
+            foreach (var f in fields)
+                if (f.GroupName == match.GroupName && f.Length > 0)
+                    groupFields.Add(f);
+
+            long groupOffset = long.MaxValue;
+            long groupEnd = 0;
+            foreach (var gf in groupFields)
+            {
+                if (gf.Offset < groupOffset) groupOffset = gf.Offset;
+                var end = gf.Offset + gf.Length;
+                if (end > groupEnd) groupEnd = end;
+            }
+
+            // Siblings = other groups
+            var seenGroups = new HashSet<string> { match.GroupName };
+            var groupSiblings = new List<BreadcrumbSegment>();
+            foreach (var f in fields)
+            {
+                if (f.Length <= 0 || string.IsNullOrEmpty(f.GroupName)) continue;
+                if (!seenGroups.Add(f.GroupName)) continue;
+
+                // Compute this sibling group's offset range
+                long sOff = long.MaxValue, sEnd = 0;
+                foreach (var sf in fields)
+                {
+                    if (sf.GroupName != f.GroupName || sf.Length <= 0) continue;
+                    if (sf.Offset < sOff) sOff = sf.Offset;
+                    var se = sf.Offset + sf.Length;
+                    if (se > sEnd) sEnd = se;
+                }
+
+                groupSiblings.Add(new BreadcrumbSegment
+                {
+                    Name = f.GroupName,
+                    Offset = sOff,
+                    Length = (int)Math.Min(sEnd - sOff, int.MaxValue),
+                    IsGroup = true,
+                });
+            }
+
+            segments.Add(new BreadcrumbSegment
+            {
+                Name = match.GroupName,
+                Offset = groupOffset,
+                Length = (int)Math.Min(groupEnd - groupOffset, int.MaxValue),
+                IsGroup = true,
+                Siblings = groupSiblings,
+            });
+        }
+
+        // 4. Field segment (leaf — the matched field)
+        var fieldSiblings = new List<BreadcrumbSegment>();
+        foreach (var f in fields)
+        {
+            if (f == match || f.Length <= 0) continue;
+            if (f.GroupName != match.GroupName) continue;
+            fieldSiblings.Add(new BreadcrumbSegment
+            {
+                Name = f.Name,
+                Offset = f.Offset,
+                Length = f.Length,
+                Color = f.Color,
+            });
+        }
+
+        segments.Add(new BreadcrumbSegment
+        {
+            Name = match.Name,
+            Offset = match.Offset,
+            Length = match.Length,
+            Color = match.Color,
+            Siblings = fieldSiblings,
+        });
 
         return segments;
-    }
-
-    /// <summary>
-    /// Recursively finds the node containing the offset and adds each ancestor to the path.
-    /// Also collects sibling nodes at each level for the chevron dropdown.
-    /// </summary>
-    private static void FindPathInTree(
-        IEnumerable<ParsedFieldViewModel> nodes,
-        long offset,
-        List<BreadcrumbSegment> path)
-    {
-        var nodeList = nodes as IList<ParsedFieldViewModel> ?? nodes.ToList();
-
-        foreach (var node in nodeList)
-        {
-            if (node.Length <= 0) continue;
-            if (offset < node.Offset || offset >= node.Offset + node.Length) continue;
-
-            // Build siblings list (other nodes at this level, excluding current)
-            var siblings = nodeList
-                .Where(n => n != node && n.Length > 0)
-                .Select(n => new BreadcrumbSegment
-                {
-                    Name = n.IsGroup ? n.GroupLabel : n.Name,
-                    Offset = n.Offset,
-                    Length = n.Length,
-                    IsGroup = n.IsGroup,
-                    Color = n.Color,
-                })
-                .ToList();
-
-            path.Add(new BreadcrumbSegment
-            {
-                Name = node.IsGroup ? node.GroupLabel : node.Name,
-                Offset = node.Offset,
-                Length = node.Length,
-                IsGroup = node.IsGroup,
-                Color = node.Color,
-                Siblings = siblings,
-            });
-
-            // Recurse into children
-            if (node.ChildItems?.Count > 0)
-                FindPathInTree(node.ChildItems, offset, path);
-
-            return; // only match first containing node
-        }
     }
 }

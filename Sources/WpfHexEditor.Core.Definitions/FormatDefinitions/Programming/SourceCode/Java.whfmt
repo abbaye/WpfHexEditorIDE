@@ -115,6 +115,9 @@
         "^\\s*$",
         "^\\s*package\\b",
         "^\\s*import\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

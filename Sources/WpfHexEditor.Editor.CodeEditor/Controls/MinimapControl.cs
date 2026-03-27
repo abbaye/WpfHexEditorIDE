@@ -56,11 +56,6 @@ public sealed class MinimapControl : FrameworkElement
     private static readonly Brush HoverBandBrush;
     private static readonly Brush DarkenOverlay;
     private static readonly Brush DefaultTextBrush;
-    private static readonly Brush KeywordBrush;
-    private static readonly Brush StringBrush;
-    private static readonly Brush CommentBrush;
-    private static readonly Brush NumberBrush;
-    private static readonly Brush TypeBrush;
 
     static MinimapControl()
     {
@@ -69,12 +64,7 @@ public sealed class MinimapControl : FrameworkElement
         ViewportPen = FreezePen(new Pen(ViewportBorderBrush, 1.0));
         HoverBandBrush = Freeze(new SolidColorBrush(Color.FromArgb(20, 255, 255, 255)));
         DarkenOverlay = Freeze(new SolidColorBrush(Color.FromArgb(25, 0, 0, 0)));
-        DefaultTextBrush = Freeze(new SolidColorBrush(Color.FromArgb(100, 200, 200, 200)));
-        KeywordBrush = Freeze(new SolidColorBrush(Color.FromArgb(180, 86, 156, 214)));
-        StringBrush = Freeze(new SolidColorBrush(Color.FromArgb(180, 206, 145, 120)));
-        CommentBrush = Freeze(new SolidColorBrush(Color.FromArgb(120, 106, 153, 85)));
-        NumberBrush = Freeze(new SolidColorBrush(Color.FromArgb(180, 181, 206, 168)));
-        TypeBrush = Freeze(new SolidColorBrush(Color.FromArgb(180, 78, 201, 176)));
+        DefaultTextBrush = Freeze(new SolidColorBrush(Color.FromArgb(130, 200, 200, 200)));
     }
 
     private static Brush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
@@ -257,6 +247,9 @@ public sealed class MinimapControl : FrameworkElement
         // Effective row drawing height (with gap)
         double drawH = Math.Max(scale * RowFillRatio, 0.5);
 
+        // Active highlighter for on-demand fallback (whfmt-driven, not hardcoded)
+        var highlighter = _editor.ActiveHighlighter;
+
         // Draw lines
         for (int i = firstLine; i < maxLine; i++)
         {
@@ -267,12 +260,25 @@ public sealed class MinimapControl : FrameworkElement
             if (y + scale < 0) continue;
             if (y > h) break;
 
-            if (_renderCharacters && line.TokensCache is { } tokens && !line.IsCacheDirty && tokens.Count > 0)
+            // Try cached tokens first, then on-demand highlight, then neutral fallback
+            var lineTokens = (line.TokensCache is { } cached && !line.IsCacheDirty && cached.Count > 0)
+                ? cached
+                : null;
+
+            // On-demand fallback: use the editor's active highlighter (whfmt-driven)
+            if (lineTokens is null && _renderCharacters && highlighter is not null)
+            {
+                try { lineTokens = highlighter.Highlight(line.Text, i) as List<SyntaxHighlightToken>
+                        ?? new List<SyntaxHighlightToken>(highlighter.Highlight(line.Text, i)); }
+                catch { /* highlighter not ready */ }
+            }
+
+            if (_renderCharacters && lineTokens is { Count: > 0 })
             {
                 // Character-level rendering: one rect per syntax token
-                for (int t = 0; t < tokens.Count; t++)
+                for (int t = 0; t < lineTokens.Count; t++)
                 {
-                    var token = tokens[t];
+                    var token = lineTokens[t];
                     double x = LeftPad + token.StartColumn * CharWidth;
                     if (x >= w - 2) break;
                     double tw = token.Length * CharWidth;
@@ -285,11 +291,10 @@ public sealed class MinimapControl : FrameworkElement
             }
             else
             {
-                // Fallback: single rect per line with heuristic color
+                // Neutral fallback: visible line shape, no language-specific heuristic
                 int chars = Math.Min(line.Text.Length, MaxVisibleChars);
                 double lineWidth = chars * CharWidth;
-                var brush = GetLineBrush(line.Text);
-                dc.DrawRectangle(brush, null,
+                dc.DrawRectangle(DefaultTextBrush, null,
                     new Rect(LeftPad, y, Math.Min(lineWidth, w - LeftPad - 2), drawH));
             }
         }
@@ -403,30 +408,6 @@ public sealed class MinimapControl : FrameworkElement
         _separatorPen = new Pen(brush, 1.0);
         _separatorPen.Freeze();
         return _separatorPen;
-    }
-
-    // ── Heuristic line brush (fallback) ──────────────────────────────────────
-
-    private static Brush GetLineBrush(string text)
-    {
-        var trimmed = text.AsSpan().TrimStart();
-        if (trimmed.Length == 0) return Brushes.Transparent;
-        if (trimmed.StartsWith("//") || trimmed.StartsWith("/*") || trimmed.StartsWith("*"))
-            return CommentBrush;
-        if (trimmed.StartsWith("\"") || trimmed.StartsWith("'") || trimmed.StartsWith("@\"") || trimmed.StartsWith("$\""))
-            return StringBrush;
-        if (trimmed.StartsWith("using ") || trimmed.StartsWith("namespace ") ||
-            trimmed.StartsWith("public ") || trimmed.StartsWith("private ") ||
-            trimmed.StartsWith("protected ") || trimmed.StartsWith("internal ") ||
-            trimmed.StartsWith("class ") || trimmed.StartsWith("interface ") ||
-            trimmed.StartsWith("struct ") || trimmed.StartsWith("enum ") ||
-            trimmed.StartsWith("if ") || trimmed.StartsWith("else") ||
-            trimmed.StartsWith("for ") || trimmed.StartsWith("foreach ") ||
-            trimmed.StartsWith("while ") || trimmed.StartsWith("return ") ||
-            trimmed.StartsWith("var ") || trimmed.StartsWith("async ") ||
-            trimmed.StartsWith("await "))
-            return KeywordBrush;
-        return DefaultTextBrush;
     }
 
     // ── Mouse interaction ────────────────────────────────────────────────────

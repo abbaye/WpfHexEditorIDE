@@ -116,6 +116,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(ExternalHighlighterProperty, value);
         }
 
+        /// <summary>
+        /// The active syntax highlighter: <see cref="ExternalHighlighter"/> if set,
+        /// otherwise the built-in <see cref="CodeSyntaxHighlighter"/>.
+        /// Used by the minimap for on-demand token fallback when TokensCache is not ready.
+        /// </summary>
+        public ISyntaxHighlighter? ActiveHighlighter
+            => (ISyntaxHighlighter?)ExternalHighlighter ?? _highlighter;
+
         private static void OnExternalHighlighterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not CodeEditor editor) return;
@@ -462,6 +470,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private IBreakpointSource?      _bpSource;
         private BreakpointInfoPopup?    _bpInfoPopup;
         private IReadOnlyList<Regex>    _bpNonExecutableRegexes = Array.Empty<Regex>();
+        private IReadOnlyList<Regex>    _bpContinuationRegexes  = Array.Empty<Regex>();
+        private int                     _bpMaxScanLines         = 20;
 
         // True between the first Ctrl+M press and the second chord key (outlining commands).
         private bool _outlineChordPending;
@@ -911,6 +921,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 catch { /* malformed pattern — skip silently */              }
             }
             _bpNonExecutableRegexes = compiled;
+
+            // Compile statement continuation regexes for multi-line highlight.
+            var contPatterns = lang?.BreakpointRules?.StatementContinuationPatterns ?? Array.Empty<string>();
+            var contCompiled = new List<Regex>(contPatterns.Count);
+            foreach (var cp in contPatterns)
+            {
+                try   { contCompiled.Add(new Regex(cp, RegexOptions.Compiled)); }
+                catch { /* malformed pattern — skip silently */                   }
+            }
+            _bpContinuationRegexes = contCompiled;
+            _bpMaxScanLines        = lang?.BreakpointRules?.MaxStatementScanLines ?? 20;
 
             if (_breakpointGutterControl is null) return;
             _breakpointGutterControl.ValidateLine = compiled.Count == 0

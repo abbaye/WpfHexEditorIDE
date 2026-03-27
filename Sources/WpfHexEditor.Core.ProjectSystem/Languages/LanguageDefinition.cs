@@ -223,6 +223,20 @@ public sealed record BreakpointRules
     /// An empty list means all lines are valid targets.
     /// </summary>
     public IReadOnlyList<string> NonExecutablePatterns { get; init; } = [];
+
+    /// <summary>
+    /// Regex patterns applied to each line's raw text.
+    /// If a line matches ANY pattern, its statement is considered to continue
+    /// on the next line — breakpoint/execution highlights extend forward.
+    /// An empty list means every line is treated as a single-line statement.
+    /// </summary>
+    public IReadOnlyList<string> StatementContinuationPatterns { get; init; } = [];
+
+    /// <summary>
+    /// Maximum number of lines to scan forward when resolving multi-line
+    /// statement extent.  Prevents runaway scanning.  Default = 20.
+    /// </summary>
+    public int MaxStatementScanLines { get; init; } = 20;
 }
 
 /// <summary>

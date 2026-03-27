@@ -127,6 +127,9 @@
         "^\\s*use\\s",
         "^\\s*mod\\s",
         "^\\s*extern\\s+crate\\b"
+      ],
+      "statementContinuationPatterns": [
+        "[^;{}]\\s*$"
       ]
     }
   },

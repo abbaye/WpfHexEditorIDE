@@ -745,28 +745,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             RenderCurrentLineHighlight(dc, contentW, contentH);
 
             // 3a. Execution line highlight — yellow tint across the full text area when debugger is paused.
+            //     Extends to multi-line statement extent via continuation patterns.
             if (_executionLineOneBased.HasValue)
             {
                 int execLine0 = _executionLineOneBased.Value - 1;
-                if (_lineYLookup.TryGetValue(execLine0, out double execY))
+                var execBrush = TryFindResource("DB_ExecutionLineBackgroundBrush") as System.Windows.Media.Brush
+                                ?? new System.Windows.Media.SolidColorBrush(
+                                       System.Windows.Media.Color.FromArgb(0x40, 0xFF, 0xDD, 0x00));
+                int execEnd0 = ResolveStatementEndLine(execLine0);
+                for (int j = execLine0; j <= execEnd0; j++)
                 {
-                    var execBrush = TryFindResource("DB_ExecutionLineBackgroundBrush") as System.Windows.Media.Brush
-                                    ?? new System.Windows.Media.SolidColorBrush(
-                                           System.Windows.Media.Color.FromArgb(0x40, 0xFF, 0xDD, 0x00));
-                    dc.DrawRectangle(execBrush, null,
-                        new Rect(textLeft, execY, Math.Max(0, contentW - textLeft), _lineHeight));
+                    if (_lineYLookup.TryGetValue(j, out double execY))
+                        dc.DrawRectangle(execBrush, null,
+                            new Rect(textLeft, execY, Math.Max(0, contentW - textLeft), _lineHeight));
                 }
             }
 
             // 3b. Breakpoint line highlights — tinted background for lines with breakpoints.
+            //     Extends to multi-line statement extent via continuation patterns.
             if (ShowBreakpointLineHighlight && _bpSource is not null && !string.IsNullOrEmpty(_currentFilePath))
             {
                 var bpBrush     = TryFindResource("DB_BreakpointLineBackgroundBrush") as System.Windows.Media.Brush;
                 var bpCondBrush = TryFindResource("DB_BreakpointLineConditionalBackgroundBrush") as System.Windows.Media.Brush;
                 var bpOffBrush  = TryFindResource("DB_BreakpointLineDisabledBackgroundBrush") as System.Windows.Media.Brush;
 
+                var highlightedLines = new HashSet<int>();
+
                 for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
                 {
+                    if (highlightedLines.Contains(i)) continue;
+
                     int line1 = i + 1;
 
                     // Execution line takes precedence — skip if debugger is paused here.
@@ -775,14 +783,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     var info = _bpSource.GetBreakpoint(_currentFilePath, line1);
                     if (info is null) continue;
 
-                    if (!_lineYLookup.TryGetValue(i, out double bpY)) continue;
-
                     var brush = !info.IsEnabled ? bpOffBrush
                               : !string.IsNullOrEmpty(info.Condition) ? bpCondBrush
                               : bpBrush;
+                    if (brush is null) continue;
 
-                    if (brush is not null)
-                        dc.DrawRectangle(brush, null, new Rect(0, bpY, contentW, _lineHeight));
+                    int endLine0 = ResolveStatementEndLine(i);
+
+                    for (int j = i; j <= endLine0; j++)
+                    {
+                        if (highlightedLines.Contains(j)) continue;
+                        if (_executionLineOneBased == j + 1) continue;
+
+                        if (_lineYLookup.TryGetValue(j, out double lineY))
+                        {
+                            dc.DrawRectangle(brush, null, new Rect(0, lineY, contentW, _lineHeight));
+                            highlightedLines.Add(j);
+                        }
+                    }
                 }
             }
 
@@ -1348,6 +1366,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 dc.DrawLine(s_glyphInnerPen, new Point(centerX, glyphY + glyphSize * 0.2), new Point(centerX, glyphY + glyphSize * 0.6));
                 dc.DrawEllipse(Brushes.White, null, new Point(centerX, glyphY + glyphSize * 0.8), 1, 1);
             }
+        }
+
+        /// <summary>
+        /// Given a 0-based line, resolves the 0-based end line of the containing
+        /// statement by scanning forward while lines match any continuation pattern.
+        /// Returns <paramref name="line0"/> when no multi-line expansion is needed.
+        /// </summary>
+        private int ResolveStatementEndLine(int line0)
+        {
+            if (_bpContinuationRegexes.Count == 0) return line0;
+
+            int lineCount = _document?.Lines.Count ?? 0;
+            int maxEnd    = Math.Min(line0 + _bpMaxScanLines, lineCount - 1);
+            int current   = line0;
+
+            while (current < maxEnd)
+            {
+                string text = (_document!.Lines[current].Text ?? string.Empty).TrimEnd();
+                bool continues = false;
+                foreach (var r in _bpContinuationRegexes)
+                {
+                    if (r.IsMatch(text)) { continues = true; break; }
+                }
+                if (!continues) break;
+                current++;
+            }
+
+            return current;
         }
 
         /// <summary>
