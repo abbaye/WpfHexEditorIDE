@@ -18,6 +18,9 @@
 // ==========================================================
 
 using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -88,6 +91,33 @@ internal sealed class PluginScopedContext : IIDEHostContext
 
     /// <inheritdoc />
     public IDocumentHostService DocumentHost => _inner.DocumentHost;
+
+    /// <inheritdoc />
+    public ICommandRegistry? CommandRegistry => _inner.CommandRegistry;
+
+    /// <inheritdoc />
+    public IDebuggerService? Debugger => _inner.Debugger;
+
+    /// <inheritdoc />
+    public IScriptingService? Scripting => _inner.Scripting;
+
+    /// <inheritdoc />
+    public IBuildSystem? BuildSystem => _inner.BuildSystem;
+
+    /// <inheritdoc />
+    public IWorkspaceService? Workspace => _inner.Workspace;
+
+    /// <inheritdoc />
+    public IFormatCatalogService FormatCatalog => _inner.FormatCatalog;
+
+    /// <inheritdoc />
+    public IFormatParsingService? FormatParsing => _inner.FormatParsing;
+
+    /// <inheritdoc />
+    public ITestRunnerService? TestRunner => _inner.TestRunner;
+
+    /// <inheritdoc />
+    public IDiffService? DiffService => _inner.DiffService;
 
     public PluginScopedContext(IIDEHostContext inner, TimedHexEditorService timedHexEditor)
     {

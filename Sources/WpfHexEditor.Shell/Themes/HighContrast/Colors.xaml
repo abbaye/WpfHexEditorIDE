@@ -262,6 +262,12 @@
     <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#FFFFFF"/>
     <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#000000"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#1A1A1A"/>
+
+    <!-- Standardized item selection / hover tokens (used by PanelCommon + ContentControls) -->
+    <SolidColorBrush x:Key="Panel_ItemHoverBrush"              Color="#1A1A1A"/>
+    <SolidColorBrush x:Key="Panel_ItemSelectedBrush"           Color="#1A1A1A"/>
+    <SolidColorBrush x:Key="Panel_ItemSelectedForegroundBrush" Color="#000000"/>
+    <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#111111"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#2A2A2A"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#FFFFFF"/>
     <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#000000"/>

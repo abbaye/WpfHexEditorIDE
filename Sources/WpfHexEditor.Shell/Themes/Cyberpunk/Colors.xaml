@@ -22,7 +22,7 @@
 
     <!-- Core UI -->
     <Color x:Key="DockBackgroundColor">#0A0E27</Color>
-    <Color x:Key="DockBorderColor">#8B00FF</Color>
+    <Color x:Key="DockBorderColor">#1A1440</Color>
     <Color x:Key="DockTabActiveColor">#FF006E</Color>
     <Color x:Key="DockTabInactiveColor">#141B3D</Color>
     <Color x:Key="DockTabHoverColor">#2A3759</Color>
@@ -31,14 +31,14 @@
     <Color x:Key="DockTabActiveTextColor">#FFFFFF</Color>
     <Color x:Key="DockSplitterColor">#2E3A5F</Color>
     <Color x:Key="DockOverlayColor">#40FF006E</Color>
-    <Color x:Key="DockDocumentHostBorderColor">#FF006E</Color>
+    <Color x:Key="DockDocumentHostBorderColor">#1A1440</Color>
 
     <!-- Menu / toolbar -->
     <Color x:Key="DockMenuBackgroundColor">#141B3D</Color>
     <Color x:Key="DockMenuForegroundColor">#E0E7FF</Color>
     <Color x:Key="DockMenuHighlightColor">#2A3759</Color>
-    <Color x:Key="DockMenuBorderColor">#8B00FF</Color>
-    <Color x:Key="DockMenuHighlightBorderColor">#BB77FF</Color>
+    <Color x:Key="DockMenuBorderColor">#1E1845</Color>
+    <Color x:Key="DockMenuHighlightBorderColor">#2A2460</Color>
     <Color x:Key="DockToolBarBackgroundColor">#141B3D</Color>
     <Color x:Key="DockWindowBackgroundColor">#060810</Color>
 
@@ -271,6 +271,12 @@
     <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
     <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#0C1028"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#2A3759"/>
+
+    <!-- Standardized item selection / hover tokens (used by PanelCommon + ContentControls) -->
+    <SolidColorBrush x:Key="Panel_ItemHoverBrush"              Color="#2A3759"/>
+    <SolidColorBrush x:Key="Panel_ItemSelectedBrush"           Color="#2A1A4A"/>
+    <SolidColorBrush x:Key="Panel_ItemSelectedForegroundBrush" Color="#FF80B9"/>
+    <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#1F1438"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#3A4A70"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#E0E7FF"/>
     <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->

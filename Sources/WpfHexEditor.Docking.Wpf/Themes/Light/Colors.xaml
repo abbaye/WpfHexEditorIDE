@@ -266,6 +266,12 @@
     <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
     <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#DADADF"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#D6D6DE"/>
+
+    <!-- Standardized item selection / hover tokens (used by PanelCommon + ContentControls) -->
+    <SolidColorBrush x:Key="Panel_ItemHoverBrush"              Color="#D6D6DE"/>
+    <SolidColorBrush x:Key="Panel_ItemSelectedBrush"           Color="#CCE8FF"/>
+    <SolidColorBrush x:Key="Panel_ItemSelectedForegroundBrush" Color="#01579B"/>
+    <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#E0F0FF"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#C8C8D4"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#1E1E1E"/>
     <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
