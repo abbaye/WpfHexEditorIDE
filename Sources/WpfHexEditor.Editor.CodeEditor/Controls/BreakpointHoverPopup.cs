@@ -327,13 +327,14 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
 
     private CustomPopupPlacement[] PlacePopup(Size popup, Size target, Point offset)
     {
-        // Position 2 lines above the breakpoint line.
+        // Position based on mouse/anchor: top of popup = anchorY - 2 line heights.
+        double lineH = _anchorRect.Height;
         double x = _anchorRect.X + 20;
-        double y = _anchorRect.Y - popup.Height - _anchorRect.Height;
+        double y = _anchorRect.Y - 2 * lineH;
 
-        // If no room above, fall below the line.
+        // Clamp: if no room above, fall below the line.
         if (y < 0)
-            y = _anchorRect.Y + _anchorRect.Height;
+            y = _anchorRect.Y + lineH;
 
         return [new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.Horizontal)];
     }

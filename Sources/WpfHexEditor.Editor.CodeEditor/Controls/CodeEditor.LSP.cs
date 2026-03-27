@@ -93,7 +93,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Position the popup to the right of the gutter, at the clicked line's Y.
             // PlacementMode.Relative offsets are relative to PlacementTarget (the gutter).
             var offset = new Point(BreakpointGutterControl.GutterWidth, clickY);
-            _bpInfoPopup.Show(_breakpointGutterControl, _bpSource, filePath, line1, offset);
+            _bpInfoPopup.Show(_breakpointGutterControl, _bpSource, filePath, line1, offset, _lineHeight);
         }
 
         // ── Breakpoint hover popup ────────────────────────────────────────────
