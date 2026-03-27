@@ -65,7 +65,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         CustomPopupPlacementCallback = PlacePopup;
         PopupAnimation = PopupAnimation.Fade;
 
-        _graceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _graceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
         _graceTimer.Tick += (_, _) =>
         {
             _graceTimer.Stop();
@@ -327,14 +327,13 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
 
     private CustomPopupPlacement[] PlacePopup(Size popup, Size target, Point offset)
     {
-        // Position directly below the anchor line, no gap — so the user can
-        // slide the mouse from the breakpoint circle into the popup seamlessly.
+        // Position 2 lines above the breakpoint line.
         double x = _anchorRect.X + 20;
-        double y = _anchorRect.Y + _anchorRect.Height;
+        double y = _anchorRect.Y - popup.Height - _anchorRect.Height;
 
-        // Flip above the line only if truly no room below. Touch the anchor (no gap).
-        if (y + popup.Height > target.Height)
-            y = _anchorRect.Y - popup.Height;
+        // If no room above, fall below the line.
+        if (y < 0)
+            y = _anchorRect.Y + _anchorRect.Height;
 
         return [new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.Horizontal)];
     }

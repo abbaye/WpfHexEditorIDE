@@ -57,7 +57,7 @@ internal sealed class BreakpointInfoPopup : Popup
         AllowsTransparency = true;
         Placement          = PlacementMode.Relative;
 
-        _graceTimer          = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _graceTimer          = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
         _graceTimer.Tick    += (_, _) => { _graceTimer.Stop(); IsOpen = false; };
 
         // ── Header row ────────────────────────────────────────────────────────
