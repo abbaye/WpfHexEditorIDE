@@ -29,10 +29,21 @@ namespace WpfHexEditor.PluginSandbox;
 
 /// <summary>
 /// Measures sandbox process metrics and pushes them to the IDE host every 5 seconds.
+/// Enforces memory and CPU thresholds — raises <see cref="ResourceLimitExceeded"/>
+/// when a plugin exceeds limits for 3 consecutive checks.
 /// </summary>
 internal sealed class SandboxMetricsRelay
 {
     private const int PushIntervalMs = 5_000;
+
+    /// <summary>Maximum private memory (512 MB). Exceeding for 3 consecutive checks triggers limit event.</summary>
+    private const long MaxPrivateMemoryBytes = 512L * 1024 * 1024;
+
+    /// <summary>Maximum sustained CPU % (80%). Exceeding for 3 consecutive checks triggers limit event.</summary>
+    private const double MaxCpuPercent = 80.0;
+
+    /// <summary>Number of consecutive threshold breaches before triggering.</summary>
+    private const int ConsecutiveBreachThreshold = 3;
 
     private readonly IpcChannel _channel;
     private readonly Process _self;
@@ -45,6 +56,13 @@ internal sealed class SandboxMetricsRelay
     private long _callCount;
     private double _totalExecMs;
     private readonly object _execLock = new();
+
+    // Resource limit tracking
+    private int _consecutiveMemoryBreaches;
+    private int _consecutiveCpuBreaches;
+
+    /// <summary>Raised when a resource limit is exceeded for multiple consecutive checks.</summary>
+    public event Action<string>? ResourceLimitExceeded;
 
     // Last-known CPU sample
     private TimeSpan _lastCpuTime;
@@ -150,5 +168,35 @@ internal sealed class SandboxMetricsRelay
             Kind    = SandboxMessageKind.MetricsPush,
             Payload = System.Text.Json.JsonSerializer.Serialize(payload),
         }, ct).ConfigureAwait(false);
+
+        // ── Resource limit enforcement ─────────────────────────────────────
+        EnforceResourceLimits(privateMem, cpuPct);
+    }
+
+    private void EnforceResourceLimits(long privateMemory, double cpuPercent)
+    {
+        // Memory check
+        if (privateMemory > MaxPrivateMemoryBytes)
+            _consecutiveMemoryBreaches++;
+        else
+            _consecutiveMemoryBreaches = 0;
+
+        // CPU check
+        if (cpuPercent > MaxCpuPercent)
+            _consecutiveCpuBreaches++;
+        else
+            _consecutiveCpuBreaches = 0;
+
+        if (_consecutiveMemoryBreaches >= ConsecutiveBreachThreshold)
+        {
+            ResourceLimitExceeded?.Invoke(
+                $"Plugin '{_pluginId}' exceeded memory limit ({privateMemory / (1024 * 1024)} MB > {MaxPrivateMemoryBytes / (1024 * 1024)} MB) for {ConsecutiveBreachThreshold} consecutive checks.");
+        }
+
+        if (_consecutiveCpuBreaches >= ConsecutiveBreachThreshold)
+        {
+            ResourceLimitExceeded?.Invoke(
+                $"Plugin '{_pluginId}' exceeded CPU limit ({cpuPercent:F1}% > {MaxCpuPercent}%) for {ConsecutiveBreachThreshold} consecutive checks.");
+        }
     }
 }

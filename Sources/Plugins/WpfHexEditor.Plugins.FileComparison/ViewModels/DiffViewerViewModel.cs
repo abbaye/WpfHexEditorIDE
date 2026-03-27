@@ -358,6 +358,43 @@ public sealed class DiffViewerViewModel : INotifyPropertyChanged
         set => SetField(ref _zoomLevel, Math.Clamp(value, 0.5, 4.0));
     }
 
+    // ── Font (defaults match HexEditor.xaml: Consolas 14) ────────────────────
+
+    private System.Windows.Media.FontFamily _hexFontFamily = new("Consolas");
+    private double _hexFontSize = 14.0;
+
+    /// <summary>Font family for the binary diff canvas. Bound from HexEditor defaults.</summary>
+    public System.Windows.Media.FontFamily HexFontFamily
+    {
+        get => _hexFontFamily;
+        set => SetField(ref _hexFontFamily, value);
+    }
+
+    /// <summary>Font size for the binary diff canvas. Bound from HexEditor defaults.</summary>
+    public double HexFontSize
+    {
+        get => _hexFontSize;
+        set => SetField(ref _hexFontSize, value);
+    }
+
+    // ── Focused side (left/right) for ParsedFields integration ───────────────
+
+    private bool _isLeftSideFocused = true;
+
+    /// <summary>True when the mouse is over the left pane, false for the right pane.</summary>
+    public bool IsLeftSideFocused
+    {
+        get => _isLeftSideFocused;
+        set
+        {
+            if (!SetField(ref _isLeftSideFocused, value)) return;
+            OnPropertyChanged(nameof(ActiveSideFilePath));
+        }
+    }
+
+    /// <summary>File path of the currently focused side (left or right).</summary>
+    public string ActiveSideFilePath => IsLeftSideFocused ? LeftPath : RightPath;
+
     // ── Binary diff mode ─────────────────────────────────────────────────────
 
     /// <summary><see langword="true"/> when the result is a binary comparison (hex dump view).</summary>

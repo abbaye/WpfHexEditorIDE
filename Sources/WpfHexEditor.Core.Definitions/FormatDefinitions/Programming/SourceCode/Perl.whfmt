@@ -93,6 +93,14 @@
       "endPatterns": [
         "\\}"
       ]
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*#",
+        "^\\s*$",
+        "^\\s*use\\s",
+        "^\\s*package\\b"
+      ]
     }
   },
   "forensic": {

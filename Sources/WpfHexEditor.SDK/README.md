@@ -3,7 +3,15 @@
 Public plugin API for the WpfHexEditor IDE — all contracts, models, and infrastructure types that a plugin author needs, with no other project reference required.
 
 **License:** GNU Affero General Public License v3.0
-**Target:** net8.0-windows · WPF · Version 1.1.0
+**Target:** net8.0-windows · WPF · **Version 2.0.0** (SemVer frozen)
+
+### Versioning
+
+This SDK follows [Semantic Versioning](https://semver.org/). All interfaces listed as
+**Stable** in [`CHANGELOG.md`](CHANGELOG.md) are frozen within the 2.x line — no breaking
+changes until SDK 3.0. Interfaces marked `[Obsolete]` are preview stubs.
+
+See [`SDK_MIGRATION.md`](SDK_MIGRATION.md) for upgrade guides between major versions.
 
 ---
 

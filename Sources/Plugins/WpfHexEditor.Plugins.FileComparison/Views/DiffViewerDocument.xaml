@@ -187,7 +187,7 @@
                 </Button>
 
                 <!-- F3 — Format overlay toggle -->
-                <ToggleButton Style="{DynamicResource XD_ToolbarIconButtonStyle}"
+                <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                               Width="Auto" Padding="6,2"
                               IsChecked="{Binding ShowFormatOverlay, Mode=TwoWay}"
                               ToolTip="Toggle whfmt format-field color overlay"
@@ -338,6 +338,8 @@
                                        ZoomLevel="{Binding ZoomLevel, Mode=TwoWay}"
                                        FormatBlocksLeft="{Binding ActiveLeftFormatBlocks}"
                                        FormatBlocksRight="{Binding ActiveRightFormatBlocks}"
+                                       HexFontFamily="{Binding HexFontFamily}"
+                                       HexFontSize="{Binding HexFontSize}"
                                        Focusable="True"/>
             </ScrollViewer>
 

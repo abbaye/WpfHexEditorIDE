@@ -69,12 +69,12 @@
       },
       {
         "type": "Keyword",
-        "pattern": "\b(abstract|as|assert|async|await|base|break|case|catch|class|const|continue|covariant|default|deferred|do|dynamic|else|enum|export|extends|extension|external|factory|false|final|finally|for|Function|get|hide|if|implements|import|in|interface|is|late|library|mixin|new|null|on|operator|part|required|rethrow|return|sealed|set|show|static|super|switch|sync|this|throw|true|try|typedef|var|void|when|while|with|yield)\b",
+        "pattern": "\\b(abstract|as|assert|async|await|base|break|case|catch|class|const|continue|covariant|default|deferred|do|dynamic|else|enum|export|extends|extension|external|factory|false|final|finally|for|Function|get|hide|if|implements|import|in|interface|is|late|library|mixin|new|null|on|operator|part|required|rethrow|return|sealed|set|show|static|super|switch|sync|this|throw|true|try|typedef|var|void|when|while|with|yield)\\b",
         "colorKey": "TE_Keyword"
       },
       {
         "type": "Type",
-        "pattern": "\b(bool|double|int|num|String|List|Map|Set|Symbol|Object|Never|Null|Iterable|Iterator|Future|Stream|Duration|DateTime|Uri|RegExp|Function|Type|Error|Exception|StackTrace|Zone|Completer|StreamController|Widget|StatefulWidget|StatelessWidget|State|BuildContext|Key|BuildOwner|Element|RenderObject|RenderBox|Canvas|Paint|Color|Rect|Size|Offset|Alignment|EdgeInsets|TextStyle|ThemeData|MaterialApp|Scaffold|AppBar|Column|Row|Container|Center|Text|Icon|ElevatedButton|TextButton|IconButton|Navigator|Route|MaterialPageRoute|showDialog|AlertDialog|SnackBar|Provider|Consumer|Selector|ChangeNotifier|ValueNotifier|StreamBuilder|FutureBuilder)\b",
+        "pattern": "\\b(bool|double|int|num|String|List|Map|Set|Symbol|Object|Never|Null|Iterable|Iterator|Future|Stream|Duration|DateTime|Uri|RegExp|Function|Type|Error|Exception|StackTrace|Zone|Completer|StreamController|Widget|StatefulWidget|StatelessWidget|State|BuildContext|Key|BuildOwner|Element|RenderObject|RenderBox|Canvas|Paint|Color|Rect|Size|Offset|Alignment|EdgeInsets|TextStyle|ThemeData|MaterialApp|Scaffold|AppBar|Column|Row|Container|Center|Text|Icon|ElevatedButton|TextButton|IconButton|Navigator|Route|MaterialPageRoute|showDialog|AlertDialog|SnackBar|Provider|Consumer|Selector|ChangeNotifier|ValueNotifier|StreamBuilder|FutureBuilder)\\b",
         "colorKey": "TE_Type"
       },
       {
@@ -84,12 +84,12 @@
       },
       {
         "type": "Number",
-        "pattern": "\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\b",
+        "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
         "colorKey": "TE_Number"
       },
       {
         "type": "MethodCall",
-        "pattern": "\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+        "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
         "colorKey": "TE_Label"
       }
     ],
@@ -106,6 +106,17 @@
         "triggerBrace": true,
         "triggerDirective": false
       }
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*//",
+        "^\\s*/\\*",
+        "^\\s*\\*",
+        "^\\s*$",
+        "^\\s*import\\b",
+        "^\\s*part\\b",
+        "^\\s*library\\b"
+      ]
     }
   },
   "forensic": {

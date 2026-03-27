@@ -206,6 +206,9 @@ public abstract class DapClientBase : IDapClient
     public virtual async Task StepOutAsync(StepArgs args, CancellationToken ct = default) =>
         await SendRequestAsync("stepOut", args, ct);
 
+    public virtual async Task PauseAsync(PauseArgs args, CancellationToken ct = default) =>
+        await SendRequestAsync("pause", args, ct);
+
     public virtual async Task<StackTraceBody?> StackTraceAsync(
         StackTraceArgs args, CancellationToken ct = default)
     {

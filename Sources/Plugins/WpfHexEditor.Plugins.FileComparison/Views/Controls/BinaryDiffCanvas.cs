@@ -30,14 +30,15 @@ namespace WpfHexEditor.Plugins.FileComparison.Views.Controls;
 /// </summary>
 public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
 {
-    // ── Base geometry constants (at ZoomLevel 1.0) ───────────────────────────
+    // ── Base geometry (computed from FontFamily + FontSize, scaled by ZoomLevel) ─
 
-    private const double BaseRowH     = 22.0;
-    private const double BaseCellW    = 20.0;   // hex cell
-    private const double BaseAsciiW   = 8.0;    // ascii cell
-    private const double BaseOffsetW  = 72.0;   // "00000000  " column
-    private const double BaseSepW     = 14.0;   // centre separator
-    private const double BaseFontSz   = 10.0;
+    private const double BaseSepW = 14.0;   // centre separator (font-independent)
+
+    private double _baseRowH    = 22.0;
+    private double _baseCellW   = 20.0;   // hex cell
+    private double _baseAsciiW  = 8.0;    // ascii cell
+    private double _baseOffsetW = 72.0;   // "00000000  " column
+    private double _baseFontSz  = 14.0;
 
     // ── Scroll state ─────────────────────────────────────────────────────────
 
@@ -59,6 +60,7 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
     private Brush? _padBrush;
     private Brush? _collBgBrush;
     private Brush? _collFgBrush;
+    private Brush? _hoverBrush;
     private bool   _brushesDirty = true;
 
     private Typeface? _typeface;
@@ -77,6 +79,23 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
 
     private List<CustomBackgroundBlock>? _sortedBlocksLeft;
     private List<CustomBackgroundBlock>? _sortedBlocksRight;
+
+    // ── Hover state ────────────────────────────────────────────────────────────
+
+    private int  _hoverRowIndex  = -1;   // row index in Rows collection
+    private int  _hoverCellIndex = -1;   // byte index 0..15 within the row
+    private bool _hoverIsLeftSide;       // true = left pane, false = right pane
+
+    /// <summary>Raised when the mouse enters the left (true) or right (false) area.</summary>
+    public event EventHandler<bool>? FocusedSideChanged;
+
+    /// <summary>Raised when the hovered cell changes. Provides offset, value and hex text for status bar.</summary>
+    public event EventHandler<HoverCellInfo>? HoverCellChanged;
+
+    /// <summary>Information about the currently hovered byte cell.</summary>
+    public readonly record struct HoverCellInfo(
+        int RowIndex, int CellIndex, bool IsLeft,
+        long Offset, string HexText);
 
     // ── Render-time measurement ────────────────────────────────────────────────
 
@@ -144,18 +163,51 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         set => SetValue(FormatBlocksRightProperty, value);
     }
 
+    // ── Font DPs (defaults match HexEditor.xaml: Consolas 14) ────────────────
+
+    public static readonly DependencyProperty HexFontFamilyProperty =
+        DependencyProperty.Register(
+            nameof(HexFontFamily),
+            typeof(FontFamily),
+            typeof(BinaryDiffCanvas),
+            new FrameworkPropertyMetadata(
+                new FontFamily("Consolas"),
+                FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure,
+                (d, _) => ((BinaryDiffCanvas)d).OnFontChanged()));
+
+    public static readonly DependencyProperty HexFontSizeProperty =
+        DependencyProperty.Register(
+            nameof(HexFontSize),
+            typeof(double),
+            typeof(BinaryDiffCanvas),
+            new FrameworkPropertyMetadata(
+                14.0,
+                FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure,
+                (d, _) => ((BinaryDiffCanvas)d).OnFontChanged()));
+
+    public FontFamily HexFontFamily
+    {
+        get => (FontFamily)GetValue(HexFontFamilyProperty);
+        set => SetValue(HexFontFamilyProperty, value);
+    }
+
+    public double HexFontSize
+    {
+        get => (double)GetValue(HexFontSizeProperty);
+        set => SetValue(HexFontSizeProperty, value);
+    }
 
     /// <summary>Raised when <see cref="ZoomLevel"/> changes (mirrors HexViewport pattern).</summary>
     public event Action<BinaryDiffCanvas, double>? ZoomLevelChanged;
 
     // ── Effective (zoom-scaled) geometry ─────────────────────────────────────
 
-    public  double EffectiveRowH   => BaseRowH    * ZoomLevel;
-    private double EffectiveCellW  => BaseCellW   * ZoomLevel;
-    private double EffectiveAsciiW => BaseAsciiW  * ZoomLevel;
-    private double EffectiveOffsetW=> BaseOffsetW * ZoomLevel;
-    private double EffectiveSepW   => BaseSepW    * ZoomLevel;
-    private double EffectiveFontSz => BaseFontSz  * ZoomLevel;
+    public  double EffectiveRowH   => _baseRowH    * ZoomLevel;
+    private double EffectiveCellW  => _baseCellW   * ZoomLevel;
+    private double EffectiveAsciiW => _baseAsciiW  * ZoomLevel;
+    private double EffectiveOffsetW=> _baseOffsetW * ZoomLevel;
+    private double EffectiveSepW   => BaseSepW     * ZoomLevel;
+    private double EffectiveFontSz => _baseFontSz  * ZoomLevel;
 
     private double TotalContentWidth
         => EffectiveOffsetW + BinaryHexDiffRow.BytesPerRow * EffectiveCellW
@@ -259,6 +311,34 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         ZoomLevelChanged?.Invoke(this, ZoomLevel);
     }
 
+    private void OnFontChanged()
+    {
+        RecalculateMetrics();
+        _typeface = null; // force rebuild in EnsureTypeface
+        ClearFormattedTextCaches();
+        ScrollOwner?.InvalidateScrollInfo();
+        InvalidateMeasure();
+    }
+
+    /// <summary>
+    /// Derives base geometry (row height, cell widths) from current FontFamily + FontSize
+    /// using actual FormattedText measurement.
+    /// </summary>
+    private void RecalculateMetrics()
+    {
+        var dpi = _dpi > 0 ? _dpi : 96.0;
+        var tf  = new Typeface(HexFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+        var ft  = new FormattedText("W", CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+            tf, HexFontSize, Brushes.White, dpi);
+
+        var charW = ft.WidthIncludingTrailingWhitespace;
+        _baseCellW   = Math.Ceiling(charW * 2.6);   // 2 hex chars + spacing
+        _baseAsciiW  = Math.Ceiling(charW);
+        _baseRowH    = Math.Ceiling(ft.Height) + 8;
+        _baseOffsetW = Math.Ceiling(charW * 9);      // 8 hex digits + margin
+        _baseFontSz  = HexFontSize;
+    }
+
     protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
     {
         if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -350,7 +430,7 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         {
             // fractional-pixel offset so first row can be partially scrolled
             double y = (i - firstRow) * rowH - (_verticalOffset - firstRow * rowH);
-            DrawRow(dc, rows[i], y);
+            DrawRow(dc, rows[i], y, i);
         }
 
         dc.Pop(); // translate
@@ -360,7 +440,7 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         RefreshTimeUpdated?.Invoke(this, _renderStopwatch.ElapsedMilliseconds);
     }
 
-    private void DrawRow(DrawingContext dc, BinaryHexDiffRow row, double y)
+    private void DrawRow(DrawingContext dc, BinaryHexDiffRow row, double y, int rowIndex)
     {
         if (row.IsCollapsedContext)
         {
@@ -380,6 +460,10 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         DrawHexCells  (dc, row.LeftCells, offsetW,             y, row.LeftOffset,  _sortedBlocksLeft);
         DrawAsciiCells(dc, row.LeftCells, offsetW + n * cellW, y, row.LeftOffset,  _sortedBlocksLeft);
 
+        // Left hover highlight (hex + ascii)
+        if (_hoverRowIndex == rowIndex && _hoverIsLeftSide && _hoverCellIndex >= 0)
+            DrawHoverHighlight(dc, offsetW, offsetW + n * cellW, y);
+
         // ── Separator ────────────────────────────────────────────────────────
         double sepX = offsetW + n * cellW + n * asciiW;
         dc.DrawRectangle(_separatorBrush, null,
@@ -390,6 +474,22 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         DrawOffset(dc, row.RightOffsetText, rx, y);
         DrawHexCells  (dc, row.RightCells, rx + offsetW,             y, row.RightOffset, _sortedBlocksRight);
         DrawAsciiCells(dc, row.RightCells, rx + offsetW + n * cellW, y, row.RightOffset, _sortedBlocksRight);
+
+        // Right hover highlight (hex + ascii)
+        if (_hoverRowIndex == rowIndex && !_hoverIsLeftSide && _hoverCellIndex >= 0)
+            DrawHoverHighlight(dc, rx + offsetW, rx + offsetW + n * cellW, y);
+    }
+
+    private void DrawHoverHighlight(DrawingContext dc, double hexX, double asciiX, double y)
+    {
+        if (_hoverBrush is null) return;
+        var cellW  = EffectiveCellW;
+        var asciiW = EffectiveAsciiW;
+        var rowH   = EffectiveRowH;
+        dc.DrawRectangle(_hoverBrush, null,
+            new Rect(hexX + _hoverCellIndex * cellW, y, cellW, rowH));
+        dc.DrawRectangle(_hoverBrush, null,
+            new Rect(asciiX + _hoverCellIndex * asciiW, y, asciiW, rowH));
     }
 
     private void DrawOffset(DrawingContext dc, string text, double x, double y)
@@ -529,19 +629,111 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         return null;
     }
 
-    // ── Hover tooltip ─────────────────────────────────────────────────────────
+    // ── Hover tooltip + cell highlight ─────────────────────────────────────────
 
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        var tip = ResolveTooltipAtPoint(e.GetPosition(this));
+        var pos = e.GetPosition(this);
+
+        // Tooltip from format-field overlay
+        var tip = ResolveTooltipAtPoint(pos);
         ToolTip = tip is not null ? new ToolTip { Content = tip } : null;
+
+        // Hover cell highlight
+        var (rowIdx, cellIdx, isLeft) = ResolveHoverCell(pos);
+        UpdateHoverState(rowIdx, cellIdx, isLeft);
     }
 
     protected override void OnMouseLeave(MouseEventArgs e)
     {
         base.OnMouseLeave(e);
         ToolTip = null;
+        if (_hoverRowIndex >= 0)
+        {
+            _hoverRowIndex  = -1;
+            _hoverCellIndex = -1;
+            InvalidateVisual();
+            HoverCellChanged?.Invoke(this, default);
+        }
+    }
+
+    private void UpdateHoverState(int rowIdx, int cellIdx, bool isLeft)
+    {
+        bool sideChanged = _hoverIsLeftSide != isLeft && rowIdx >= 0;
+        if (rowIdx == _hoverRowIndex && cellIdx == _hoverCellIndex && !sideChanged)
+            return;
+
+        _hoverRowIndex  = rowIdx;
+        _hoverCellIndex = cellIdx;
+
+        if (sideChanged)
+        {
+            _hoverIsLeftSide = isLeft;
+            FocusedSideChanged?.Invoke(this, isLeft);
+        }
+
+        InvalidateVisual();
+
+        // Fire hover info for status bar
+        if (rowIdx >= 0 && cellIdx >= 0)
+        {
+            var rows = Rows;
+            if (rows is not null && rowIdx < rows.Count)
+            {
+                var row   = rows[rowIdx];
+                var cells = isLeft ? row.LeftCells : row.RightCells;
+                long? baseOff = isLeft ? row.LeftOffset : row.RightOffset;
+                if (cellIdx < cells.Count && baseOff.HasValue)
+                {
+                    var cell = cells[cellIdx];
+                    HoverCellChanged?.Invoke(this, new HoverCellInfo(
+                        rowIdx, cellIdx, isLeft,
+                        baseOff.Value + cellIdx,
+                        cell.HexText));
+                }
+            }
+        }
+    }
+
+    private (int rowIdx, int cellIdx, bool isLeft) ResolveHoverCell(Point pos)
+    {
+        var rows = Rows;
+        if (rows is null) return (-1, -1, false);
+
+        double rowH      = EffectiveRowH;
+        double adjustedX = pos.X + _horizontalOffset;
+        int    rowIdx    = (int)((_verticalOffset + pos.Y) / rowH);
+        if (rowIdx < 0 || rowIdx >= rows.Count) return (-1, -1, false);
+        if (rows[rowIdx].IsCollapsedContext) return (-1, -1, false);
+
+        int    n       = BinaryHexDiffRow.BytesPerRow;
+        double cellW   = EffectiveCellW;
+        double asciiW  = EffectiveAsciiW;
+        double offsetW = EffectiveOffsetW;
+        double sepW    = EffectiveSepW;
+
+        double leftHexStart   = offsetW;
+        double leftAsciiStart = offsetW + n * cellW;
+        double leftEnd        = leftAsciiStart + n * asciiW;
+        double rightStart     = leftEnd + sepW;
+        double rightHexStart  = rightStart + offsetW;
+        double rightAsciiStart= rightHexStart + n * cellW;
+
+        // Left hex cells
+        if (adjustedX >= leftHexStart && adjustedX < leftHexStart + n * cellW)
+            return (rowIdx, (int)((adjustedX - leftHexStart) / cellW), true);
+        // Left ascii cells
+        if (adjustedX >= leftAsciiStart && adjustedX < leftAsciiStart + n * asciiW)
+            return (rowIdx, (int)((adjustedX - leftAsciiStart) / asciiW), true);
+        // Right hex cells
+        if (adjustedX >= rightHexStart && adjustedX < rightHexStart + n * cellW)
+            return (rowIdx, (int)((adjustedX - rightHexStart) / cellW), false);
+        // Right ascii cells
+        if (adjustedX >= rightAsciiStart && adjustedX < rightAsciiStart + n * asciiW)
+            return (rowIdx, (int)((adjustedX - rightAsciiStart) / asciiW), false);
+
+        return (-1, -1, adjustedX < leftEnd);
     }
 
     private string? ResolveTooltipAtPoint(Point pos)
@@ -604,6 +796,8 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
                      ?? new SolidColorBrush(Color.FromArgb(0xFF, 0x30, 0x30, 0x30));
         _collFgBrush= TryFindResource("BDiff_CollapsedContextFgBrush")   as Brush
                      ?? Brushes.Silver;
+        _hoverBrush = TryFindResource("BDiff_HoverBrush") as Brush
+                     ?? new SolidColorBrush(Color.FromArgb(0x50, 0x64, 0x96, 0xFF));
 
         _brushesDirty = false;
 
@@ -625,8 +819,9 @@ public sealed class BinaryDiffCanvas : FrameworkElement, IScrollInfo
         // Rebuild typeface + caches if DPI changes (e.g. monitor change)
         if (_typeface is null || Math.Abs(_dpi - _lastDpi) > 0.001)
         {
-            _typeface = new Typeface("Consolas");
+            _typeface = new Typeface(HexFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             _lastDpi  = _dpi;
+            RecalculateMetrics();
             ClearFormattedTextCaches();
         }
     }

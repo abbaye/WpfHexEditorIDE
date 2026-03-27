@@ -195,5 +195,14 @@
       "Check data integrity and field boundaries",
       "Inspect metadata and version information"
     ]
+  },
+  "breakpointRules": {
+    "nonExecutablePatterns": [
+      "^\\s*//",
+      "^\\s*\\(\\*",
+      "^\\s*$",
+      "^\\s*open\\s",
+      "^\\s*module\\b"
+    ]
   }
 }

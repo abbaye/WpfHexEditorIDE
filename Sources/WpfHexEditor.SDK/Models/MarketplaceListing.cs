@@ -9,6 +9,10 @@ namespace WpfHexEditor.SDK.Models;
 /// <summary>
 /// Represents a plugin listing from the WpfHexEditor marketplace.
 /// </summary>
+/// <remarks>
+/// Preview model — properties may change when the marketplace backend is implemented.
+/// </remarks>
+[Obsolete("Preview API — properties will change in SDK 3.0. Do not depend on current shape.")]
 public sealed class MarketplaceListing
 {
     /// <summary>Unique marketplace listing identifier.</summary>

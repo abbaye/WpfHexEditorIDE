@@ -50,6 +50,10 @@ public record ContinueArgs(
     [property: JsonPropertyName("singleThread")]       bool SingleThread = false
 );
 
+public record PauseArgs(
+    [property: JsonPropertyName("threadId")]           int ThreadId
+);
+
 public record StepArgs(
     [property: JsonPropertyName("threadId")]           int    ThreadId,
     [property: JsonPropertyName("granularity")]        string Granularity = "statement"

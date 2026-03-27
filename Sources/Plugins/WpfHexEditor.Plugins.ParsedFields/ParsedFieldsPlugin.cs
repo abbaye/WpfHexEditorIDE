@@ -64,6 +64,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     private IDisposable?       _grammarSub;
     private IDisposable?       _filePreviewSub;
     private IDisposable?       _assemblyMemberSub;
+    private IDisposable?       _diffSideSub;
 
     // ── Preview service (owned by plugin — separate from HexEditor's per-tab service) ──
     private FormatParsingService? _previewService;
@@ -132,6 +133,9 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         _templateSub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateApplyRequested);
         _grammarSub  = context.EventBus.Subscribe<GrammarAppliedEvent>(OnGrammarApplied);
 
+        // ── Binary Diff side focus → preview for the focused file ─────
+        _diffSideSub = context.EventBus.Subscribe<DiffSideFocusChangedEvent>(OnDiffSideFocusChanged);
+
         return Task.CompletedTask;
     }
 
@@ -141,6 +145,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         _grammarSub?.Dispose();
         _filePreviewSub?.Dispose();
         _assemblyMemberSub?.Dispose();
+        _diffSideSub?.Dispose();
 
         // Cleanup preview service
         _previewService?.DisconnectPanel();
@@ -366,6 +371,18 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
             FilePath = string.IsNullOrEmpty(evt.FilePath) ? null : evt.FilePath,
             SourceKind = "assembly",
             PeOffset = evt.PeOffset
+        });
+    }
+
+    /// <summary>Binary Diff viewer side focus changed → preview the focused file's format.</summary>
+    private void OnDiffSideFocusChanged(DiffSideFocusChangedEvent evt)
+    {
+        if (string.IsNullOrEmpty(evt.FilePath)) return;
+
+        QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent
+        {
+            FilePath   = evt.FilePath,
+            SourceKind = "document"
         });
     }
 

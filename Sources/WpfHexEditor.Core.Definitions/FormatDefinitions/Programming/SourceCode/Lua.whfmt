@@ -97,6 +97,12 @@
       "endPatterns": [
         "\\bend\\b"
       ]
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*--",
+        "^\\s*$"
+      ]
     }
   },
   "forensic": {

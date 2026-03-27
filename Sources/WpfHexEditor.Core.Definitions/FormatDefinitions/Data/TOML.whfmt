@@ -2,7 +2,7 @@
    Format:    TOML Configuration
    Category:  Data
    Ext:       .toml
-   Editor:    hex-editor
+   Editor:    code-editor
    Desc:      Tom's Obvious, Minimal Language configuration format
    Variables: currentOffset, machineType, sectionCount, entryPoint
    Detection: signature=00 @ offset 0
@@ -18,7 +18,7 @@
   "description": "Tom's Obvious, Minimal Language configuration format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
+  "preferredEditor": "code-editor",
   "references": {
     "specifications": [
       "TOML Configuration Format"
@@ -131,12 +131,12 @@
       },
       {
         "type": "Boolean",
-        "pattern": "\b(true|false)\b",
+        "pattern": "\\b(true|false)\\b",
         "colorKey": "TE_Keyword"
       },
       {
         "type": "Number",
-        "pattern": "\b(0x[0-9A-Fa-f_]+|0o[0-7_]+|0b[01_]+|[+-]?(?:[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?|nan|inf))\b",
+        "pattern": "\\b(0x[0-9A-Fa-f_]+|0o[0-7_]+|0b[01_]+|[+-]?(?:[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?|nan|inf))\\b",
         "colorKey": "TE_Number"
       },
       {

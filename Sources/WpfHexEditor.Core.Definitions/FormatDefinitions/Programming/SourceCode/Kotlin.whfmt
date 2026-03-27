@@ -108,6 +108,16 @@
         "triggerBrace": true,
         "triggerDirective": false
       }
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*//",
+        "^\\s*/\\*",
+        "^\\s*\\*",
+        "^\\s*$",
+        "^\\s*package\\b",
+        "^\\s*import\\b"
+      ]
     }
   },
   "forensic": {

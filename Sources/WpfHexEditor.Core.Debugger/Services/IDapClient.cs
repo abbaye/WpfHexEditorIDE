@@ -52,6 +52,9 @@ public interface IDapClient : IAsyncDisposable
     /// <summary>Step out on the given thread.</summary>
     Task StepOutAsync(StepArgs args, CancellationToken ct = default);
 
+    /// <summary>Pause execution on the given thread.</summary>
+    Task PauseAsync(PauseArgs args, CancellationToken ct = default);
+
     // ── Inspection ────────────────────────────────────────────────────────────
 
     /// <summary>Get the call stack for a given thread.</summary>

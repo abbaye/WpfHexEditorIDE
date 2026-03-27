@@ -1057,7 +1057,11 @@ public partial class MainWindow
         var hexEditor  = new HexEditorServiceImpl();
         var output     = new OutputServiceImpl();
         var errorPanel = new ErrorPanelServiceImpl();
-        var theme      = new ThemeServiceImpl();
+        var theme      = new ThemeServiceImpl
+        {
+            SyncHexEditors      = SyncAllHexEditorThemes,
+            NotifySandboxPlugins = themeXaml => _pluginHost?.NotifyThemeChangedAsync(themeXaml) ?? Task.CompletedTask,
+        };
         var terminal   = new TerminalServiceImpl();
 
         if (_errorPanel is not null)

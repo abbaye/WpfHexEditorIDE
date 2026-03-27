@@ -51,6 +51,10 @@ public sealed partial class DiffViewerDocument : UserControl
 
         vm.StatsPanel.PropertyChanged += OnStatsPanelPropertyChanged;
 
+        // Wire hover events from BinaryDiffCanvas
+        BinaryDiffCanvas.FocusedSideChanged += (_, isLeft) => _vm!.IsLeftSideFocused = isLeft;
+        BinaryDiffCanvas.HoverCellChanged   += OnHoverCellChanged;
+
         Loaded += (_, _) =>
         {
             WireRefreshTimeReporter();
@@ -339,6 +343,19 @@ public sealed partial class DiffViewerDocument : UserControl
     {
         if (_vm is null) return;
         StatusBar.Text = $"{System.IO.Path.GetFileName(_vm.LeftPath)}  \u2194  {System.IO.Path.GetFileName(_vm.RightPath)}" +
+                         $"   |   {_vm.TotalDiffCount} differences   |   {_vm.SimilarityText}";
+    }
+
+    private void OnHoverCellChanged(object? sender, Controls.BinaryDiffCanvas.HoverCellInfo info)
+    {
+        if (_vm is null) return;
+        if (info.RowIndex < 0 || info.CellIndex < 0)
+        {
+            UpdateStatusBar();
+            return;
+        }
+        var side = info.IsLeft ? "Left" : "Right";
+        StatusBar.Text = $"{side}  |  Offset: 0x{info.Offset:X8}  |  Value: {info.HexText}" +
                          $"   |   {_vm.TotalDiffCount} differences   |   {_vm.SimilarityText}";
     }
 }

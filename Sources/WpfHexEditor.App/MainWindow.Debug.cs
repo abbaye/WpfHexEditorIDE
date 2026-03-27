@@ -16,12 +16,14 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Core.Options;
+using WpfHexEditor.SDK.Commands;
 
 namespace WpfHexEditor.App;
 
@@ -32,6 +34,9 @@ public partial class MainWindow
 
     // IDisposable subscriptions for debug events (disposed on shutdown).
     private IDisposable[]? _debugSubs;
+
+    // Stored handler reference for BreakpointsChanged (so we can unsubscribe on shutdown).
+    private EventHandler? _bpChangedHandler;
 
     // ── Initialisation ────────────────────────────────────────────────────────
 
@@ -46,8 +51,8 @@ public partial class MainWindow
         _bpSourceAdapter = new BreakpointSourceAdapter(_debuggerService);
 
         // When breakpoints change, refresh all open CodeEditor gutters.
-        _debuggerService.BreakpointsChanged += (_, _) =>
-            Dispatcher.InvokeAsync(RefreshAllBreakpointGutters);
+        _bpChangedHandler = (_, _) => Dispatcher.InvokeAsync(RefreshAllBreakpointGutters);
+        _debuggerService.BreakpointsChanged += _bpChangedHandler;
 
         _debugSubs =
         [
@@ -82,6 +87,18 @@ public partial class MainWindow
         // WireBreakpointSourceToEditor() is a no-op when _bpSourceAdapter is null (it runs before
         // this method), so we must explicitly push the adapter to all existing CodeEditors now.
         RefreshAllBreakpointGutters();
+
+        // Register keyboard shortcuts for debug commands.
+        // InputGestureText on MenuItems is display-only — actual WPF InputBindings are required.
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnDebugStartOrContinue()),           Key.F5,  ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StopSessionAsync()),  Key.F5,  ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnDebugRestart()),                   Key.F5,  ModifierKeys.Control | ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnToggleBreakpoint()),               Key.F9,  ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.ClearAllBreakpointsAsync()), Key.F9, ModifierKeys.Control | ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepOverAsync()),     Key.F10, ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepIntoAsync()),     Key.F11, ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepOutAsync()),      Key.F11, ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnAttachToProcess()),                Key.P,   ModifierKeys.Control | ModifierKeys.Alt));
     }
 
     // ── Gutter wiring ─────────────────────────────────────────────────────────
@@ -329,7 +346,7 @@ public partial class MainWindow
     private void OnDebugToggleBp(object sender, RoutedEventArgs e)     => OnToggleBreakpoint();
     private void OnDebugDeleteAllBps(object sender, RoutedEventArgs e) => _ = _debuggerService?.ClearAllBreakpointsAsync();
     private void OnDebugContinue(object sender, RoutedEventArgs e)     => _ = _debuggerService?.ContinueAsync();
-    private void OnDebugPause(object sender, RoutedEventArgs e)        { /* DAP Pause not yet in IDebuggerService — no-op */ }
+    private void OnDebugPause(object sender, RoutedEventArgs e)        => _ = _debuggerService?.PauseAsync();
 
     private void OnShowDebugBreakpoints(object sender, RoutedEventArgs e)  => ShowOrCreatePanel("Breakpoints",  "panel-dbg-breakpoints", DockDirection.Bottom);
     private void OnShowDebugCallStack(object sender, RoutedEventArgs e)    => ShowOrCreatePanel("Call Stack",   "panel-dbg-callstack",   DockDirection.Bottom);
@@ -343,8 +360,12 @@ public partial class MainWindow
     {
         if (_debugSubs is not null)
             foreach (var s in _debugSubs) s.Dispose();
-        _debugSubs       = null;
-        _bpSourceAdapter = null;
+        _debugSubs = null;
+
+        if (_bpChangedHandler is not null && _debuggerService is not null)
+            _debuggerService.BreakpointsChanged -= _bpChangedHandler;
+        _bpChangedHandler = null;
+        _bpSourceAdapter  = null;
     }
 
     // ── BreakpointSourceAdapter ───────────────────────────────────────────────

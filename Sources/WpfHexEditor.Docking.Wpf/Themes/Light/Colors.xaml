@@ -1,4 +1,4 @@
-﻿<!-- ==========================================================
+<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Light/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -754,7 +754,8 @@
     <SolidColorBrush x:Key="BDiff_AsciiNonPrintableBrush"    Color="#BBBBBB" />
     <SolidColorBrush x:Key="BDiff_ContextRowBackgroundBrush" Color="#FAFAFA" />
     <SolidColorBrush x:Key="BDiff_CollapsedContextBrush"     Color="#F0F0F0" />
-    <SolidColorBrush x:Key="BDiff_CollapsedContextFgBrush"   Color="#AAAAAA" />
+    <SolidColorBrush x:Key="BDiff_CollapsedContextFgBrush"   Color="#AAAAAA" />
+    <SolidColorBrush x:Key="BDiff_HoverBrush"              Color="#504472C4" />
     <!-- whfmt v2.0 tokens (WF_*) - inserted by Add-WhfmtV2Tokens.ps1 -->
     <SolidColorBrush x:Key="WF_RepeatingGroupBackground"  Color="#F0F0F0" />
     <SolidColorBrush x:Key="WF_AssertionErrorBrush"       Color="#C00000" />

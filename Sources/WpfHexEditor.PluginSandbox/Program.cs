@@ -85,6 +85,15 @@ internal static class Program
             var relay = new SandboxMetricsRelay(channel);
             runner = new SandboxedPluginRunner(channel, relay, cts.Token, Console.Error.WriteLine);
 
+            // Wire resource limit enforcement — push crash notification and exit
+            relay.ResourceLimitExceeded += async reason =>
+            {
+                Console.Error.WriteLine($"[Sandbox] Resource limit exceeded: {reason}");
+                await runner.PushCrash("unknown", new InvalidOperationException(reason), "ResourceLimit")
+                    .ConfigureAwait(false);
+                cts.Cancel();
+            };
+
             // 2. Message loop
             // I/O receive stays on thread pool; plugin handling is dispatched back to
             // the STA thread so plugins can safely create WPF UI elements.

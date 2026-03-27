@@ -94,6 +94,14 @@
     ],
     "foldingRules": {
       "type": "indent"
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*#",
+        "^\\s*$",
+        "^\\s*require\\b",
+        "^\\s*module\\b"
+      ]
     }
   },
   "forensic": {

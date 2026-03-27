@@ -2164,7 +2164,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (editor is System.Windows.FrameworkElement fe)
             {
                 if (editor is IOpenableDocument openable)
-                    _ = openable.OpenAsync(filePath);
+                    _ = SafeOpenAsync(openable, filePath);
 
                 // Restore EditorConfig + bookmarks if available
                 if (editor is IEditorPersistable p)
@@ -2229,6 +2229,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                         editor, _ideEventBus, filePath);
                     _editorEventAdapters[item.ContentId] = adapter;
                 }
+
+                // Wire breakpoint gutter adapter so project-opened files can render breakpoints.
+                WireBreakpointSourceToEditor(editor);
 
                 ActiveDocumentEditor       = editor;
                 ActiveStatusBarContributor = editor as IStatusBarContributor;
@@ -2318,7 +2321,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (factory?.Create() is IDocumentEditor editor && editor is FrameworkElement fe)
         {
             if (editor is IOpenableDocument openable)
-                _ = openable.OpenAsync(filePath);
+                _ = SafeOpenAsync(openable, filePath);
 
             // Apply user settings (scroll speed, etc.) from Options to newly created editors.
             ApplyEditorSettings(editor);
@@ -2433,6 +2436,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
 
         return entry?.PreferredEditor;
+    }
+
+    /// <summary>
+    /// Wraps <see cref="IOpenableDocument.OpenAsync"/> in a try/catch so that exceptions
+    /// from fire-and-forget calls are surfaced in the Output panel instead of silently lost.
+    /// </summary>
+    private async Task SafeOpenAsync(IOpenableDocument doc, string filePath)
+    {
+        try
+        {
+            await doc.OpenAsync(filePath);
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to open '{Path.GetFileName(filePath)}': {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -5260,12 +5279,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void ApplyThemeFromSettings()
-    {
-        var stem = AppSettingsService.Instance.Current.ActiveThemeName;
-        if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
-        ApplyTheme($"{stem}.xaml", stem);
-    }
+    private void ApplyThemeFromSettings() => _themeService?.ApplyFromSettings();
 
     /// <summary>
     /// Copies <see cref="TabPreviewAppSettings"/> values from <see cref="AppSettings"/> into
@@ -6303,50 +6317,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         UpdateStatusBar();
     }
 
-    private const string FallbackThemeFile = "DarkTheme.xaml";
-    private const string FallbackThemeName = "DarkTheme";
+    // Theme constants and logic moved to ThemeServiceImpl (Phase 4 refactoring)
 
-    private void ApplyTheme(string themeFile, string themeName)
-    {
-        try
-        {
-            Application.Current.Resources.MergedDictionaries.Clear();
-            Application.Current.Resources.MergedDictionaries.Add(
-                new ResourceDictionary
-                {
-                    Source = new Uri($"pack://application:,,,/WpfHexEditor.Shell;component/Themes/{themeFile}")
-                });
-        }
-        catch (Exception ex) when (ex is System.IO.IOException or System.IO.FileNotFoundException or UriFormatException)
-        {
-            OutputLogger.Warn($"Theme '{themeName}' could not be loaded: {ex.Message}. Reverting to {FallbackThemeName}.");
-            AppSettingsService.Instance.Current.ActiveThemeName = string.Empty;
-            AppSettingsService.Instance.Save();
-            _lastAppliedTheme = string.Empty;
-            // Avoid recursion if the fallback itself is missing.
-            if (!themeFile.Equals(FallbackThemeFile, StringComparison.OrdinalIgnoreCase))
-                ApplyTheme(FallbackThemeFile, FallbackThemeName);
-            return;
-        }
-        SyncAllHexEditorThemes();
-        OutputLogger.Info($"Theme changed to {themeName}.");
-
-        // Phase 9 — forward new theme resources to sandbox plugins so their
-        // WPF controls apply the same brush/color tokens as the IDE.
-        _themeService?.NotifyThemeChanged(themeName);
-        if (_pluginHost is not null)
-        {
-            var themeXaml = WpfHexEditor.PluginHost.Sandbox.ThemeResourceSerializer.Serialize(
-                Application.Current.Resources);
-            _ = _pluginHost.NotifyThemeChangedAsync(themeXaml);
-        }
-
-        // Persist theme selection so it survives app restarts.
-        var stem = System.IO.Path.GetFileNameWithoutExtension(themeFile);
-        AppSettingsService.Instance.Current.ActiveThemeName = stem;
-        AppSettingsService.Instance.Save();
-        _lastAppliedTheme = stem;
-    }
+    private void ApplyTheme(string themeFile, string themeName) => _themeService?.ApplyTheme(themeFile, themeName);
 
     // -----------------------------------------------------------------------
     // Image menu — delegates to the active ImageViewer

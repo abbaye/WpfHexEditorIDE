@@ -11,6 +11,11 @@ namespace WpfHexEditor.SDK.Contracts;
 /// <summary>
 /// Provides access to the WpfHexEditor plugin marketplace.
 /// </summary>
+/// <remarks>
+/// This interface is a preview stub. The API surface will change when the marketplace
+/// backend is implemented. Do not depend on the current method signatures.
+/// </remarks>
+[Obsolete("Preview API — method signatures will change in SDK 3.0. Do not depend on current shape.")]
 public interface IMarketplaceService
 {
     /// <summary>

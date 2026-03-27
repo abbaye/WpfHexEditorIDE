@@ -118,6 +118,17 @@
         "triggerBrace": true,
         "triggerDirective": false
       }
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*//",
+        "^\\s*/\\*",
+        "^\\s*\\*",
+        "^\\s*#",
+        "^\\s*$",
+        "^\\s*use\\s",
+        "^\\s*namespace\\b"
+      ]
     }
   },
   "forensic": {

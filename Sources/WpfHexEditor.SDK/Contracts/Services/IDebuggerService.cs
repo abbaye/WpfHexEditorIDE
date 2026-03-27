@@ -76,6 +76,9 @@ public interface IDebuggerService
     /// <summary>Raised whenever session state changes.</summary>
     event EventHandler? SessionChanged;
 
+    /// <summary>Stop the active debug session. No-op when idle.</summary>
+    Task StopSessionAsync();
+
     // ── Breakpoints ────────────────────────────────────────────────────────
 
     /// <summary>All currently registered breakpoints.</summary>
@@ -114,6 +117,9 @@ public interface IDebuggerService
 
     /// <summary>Step out of the current method.</summary>
     Task StepOutAsync();
+
+    /// <summary>Pause execution (break all). No-op when already paused or idle.</summary>
+    Task PauseAsync();
 
     // ── Inspection ─────────────────────────────────────────────────────────
 

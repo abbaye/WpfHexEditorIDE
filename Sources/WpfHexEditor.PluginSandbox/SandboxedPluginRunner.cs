@@ -479,18 +479,35 @@ internal sealed class SandboxedHostContext : IIDEHostContext
     internal readonly IpcHexEditorService HexEditorIpc = new();
     internal readonly IpcEventBus         EventBusIpc  = new();
 
-    // IIDEHostContext services
-    public IHexEditorService    HexEditor       => HexEditorIpc;
+    // IIDEHostContext services — permission-gated access
+    public IHexEditorService HexEditor
+    {
+        get { AssertGranted("AccessHexEditor"); return HexEditorIpc; }
+    }
+    public ICodeEditorService CodeEditor
+    {
+        get { AssertGranted("AccessCodeEditor"); return NullCodeEditorService.Instance; }
+    }
+    public IOutputService Output
+    {
+        get { AssertGranted("WriteOutput"); return NullOutputService.Instance; }
+    }
+    public IErrorPanelService ErrorPanel
+    {
+        get { AssertGranted("WriteErrorPanel"); return NullErrorPanelService.Instance; }
+    }
+    public ITerminalService Terminal
+    {
+        get { AssertGranted("WriteTerminal"); return NullTerminalService.Instance; }
+    }
+
+    // Ungated services (always available)
     public IPluginEventBus      EventBus        => EventBusIpc;
-    public ICodeEditorService   CodeEditor      => NullCodeEditorService.Instance;
-    public IOutputService       Output          => NullOutputService.Instance;
     public IParsedFieldService  ParsedField     => NullParsedFieldService.Instance;
-    public IErrorPanelService   ErrorPanel      => NullErrorPanelService.Instance;
     public IFocusContextService FocusContext    => NullFocusContextService.Instance;
     public IUIRegistry          UIRegistry      { get; }
     public IThemeService        Theme           => NullThemeService.Instance;
     public IPermissionService   Permissions     => NullPermissionService.Instance;
-    public ITerminalService     Terminal        => NullTerminalService.Instance;
     public ISolutionExplorerService SolutionExplorer => NullSolutionExplorerService.Instance;
     public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => null; // Not available inside sandbox process
     public WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? LspServers => null;  // Not available inside sandbox process

@@ -187,6 +187,18 @@ public sealed class FileComparisonPlugin : IWpfHexEditorPlugin
         var vm  = new DiffViewerViewModel(result);
         var doc = new DiffViewerDocument(vm);
 
+        // Publish DiffSideFocusChangedEvent when the focused side changes
+        // so ParsedFieldsPlugin can switch format preview to the focused file.
+        vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName != nameof(DiffViewerViewModel.ActiveSideFilePath)) return;
+            _context?.EventBus.Publish(new WpfHexEditor.SDK.Events.DiffSideFocusChangedEvent
+            {
+                FilePath          = vm.ActiveSideFilePath,
+                DocumentContentId = uiId
+            });
+        };
+
         var leftName  = Path.GetFileName(result.LeftPath);
         var rightName = Path.GetFileName(result.RightPath);
 

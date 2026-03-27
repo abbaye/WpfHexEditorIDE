@@ -190,6 +190,12 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         await _client.StepOutAsync(new StepArgs(_session.ActiveThreadId));
     }
 
+    public async Task PauseAsync()
+    {
+        if (_client is null || !_session.IsActive || _session.IsPaused) return;
+        await _client.PauseAsync(new PauseArgs(_session.ActiveThreadId));
+    }
+
     // ── IDebuggerService — inspection ─────────────────────────────────────────
 
     public async Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync()
@@ -379,6 +385,14 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
                 {
                     FilePath = filePath, Line = line, ThreadId = e.ThreadId ?? 1,
                     Source   = nameof(DebuggerServiceImpl)
+                });
+            else if (e.Reason == StopReason.Exception)
+                _eventBus.Publish(new ExceptionHitEvent
+                {
+                    ExceptionType = e.Description ?? "Exception",
+                    Message       = e.Text ?? string.Empty,
+                    FilePath      = filePath, Line = line,
+                    Source        = nameof(DebuggerServiceImpl)
                 });
             else if (e.Reason is StopReason.Step or StopReason.Goto)
                 _eventBus.Publish(new StepCompletedEvent

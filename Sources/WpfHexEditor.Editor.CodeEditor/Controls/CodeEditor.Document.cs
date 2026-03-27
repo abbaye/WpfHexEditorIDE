@@ -546,6 +546,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _lineNumberCache.Clear();
             InvalidateMeasure();
+            InvalidateVisual();   // Force re-render when content is loaded after initial layout pass
         }
 
         /// <summary>
@@ -661,6 +662,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _currentFilePath = filePath;
+            _breakpointGutterControl?.SetFilePath(_currentFilePath);
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             _undoEngine.MarkSaved();  // Stamp save-point so Undo can detect "back to clean".
             _isDirty = false;
@@ -685,6 +687,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 text = sr.ReadToEnd();
             LoadText(text);
             _currentFilePath = filePath;
+            _breakpointGutterControl?.SetFilePath(_currentFilePath);
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             TitleChanged?.Invoke(this, BuildTitle());
             StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
@@ -748,7 +751,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _foldingEngine.Analyze(_document.Lines);
             _lineNumberCache.Clear();
             InvalidateMeasure();
+            InvalidateVisual();   // Force re-render when async content load completes after initial layout
             _currentFilePath = filePath;
+            _breakpointGutterControl?.SetFilePath(_currentFilePath);
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
 
             // Re-attach InlineHints with the resolved file path so workspace-wide
