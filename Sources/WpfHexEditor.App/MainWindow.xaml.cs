@@ -3284,7 +3284,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Publish file preview event for ParsedFields panel (and any other consumers).
         var filePath = e.Item?.AbsolutePath;
-        OutputLogger.Info($"[SolExplorer] ItemSelected: {filePath} (hostContext={((_ideHostContext != null) ? "OK" : "NULL")}, eventBus={(_ideHostContext?.EventBus != null ? "OK" : "NULL")})");
         if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
         {
             _ideHostContext?.EventBus?.Publish(new WpfHexEditor.SDK.Events.FilePreviewRequestedEvent

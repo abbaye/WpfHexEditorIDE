@@ -99,6 +99,9 @@ public sealed class IDEHostContext : IIDEHostContext
     public WpfHexEditor.SDK.Contracts.Services.IWorkspaceService? Workspace { get; }
 
     /// <inheritdoc />
+    public IFormatCatalogService FormatCatalog { get; }
+
+    /// <inheritdoc />
     public IFormatParsingService? FormatParsing { get; }
 
     /// <inheritdoc />
@@ -134,7 +137,8 @@ public sealed class IDEHostContext : IIDEHostContext
         WpfHexEditor.SDK.Contracts.Services.IScriptingService? scriptingService = null,
         IBuildSystem? buildSystem = null,
         WpfHexEditor.SDK.Contracts.Services.IWorkspaceService? workspaceService = null,
-        IFormatParsingService? formatParsingService = null)
+        IFormatParsingService? formatParsingService = null,
+        IFormatCatalogService? formatCatalogService = null)
     {
         DocumentHost        = documentHost        ?? throw new ArgumentNullException(nameof(documentHost));
         SolutionExplorer    = solutionExplorer    ?? throw new ArgumentNullException(nameof(solutionExplorer));
@@ -159,5 +163,6 @@ public sealed class IDEHostContext : IIDEHostContext
         BuildSystem         = buildSystem;
         Workspace           = workspaceService;
         FormatParsing       = formatParsingService;
+        FormatCatalog       = formatCatalogService!;
     }
 }

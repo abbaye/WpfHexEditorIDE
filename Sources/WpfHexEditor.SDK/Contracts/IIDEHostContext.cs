@@ -178,6 +178,15 @@ public interface IIDEHostContext
     /// </summary>
     IDiffService? DiffService => null;
 
+    // -- Format Catalog -------------------------------------------------------
+
+    /// <summary>
+    /// Shared format definition catalog (427+ whfmt formats).
+    /// Loaded once at app startup. All format detection consumers use this catalog
+    /// transparently. Null only in sandboxed/standalone contexts.
+    /// </summary>
+    IFormatCatalogService? FormatCatalog => null;
+
     // -- Format Parsing -------------------------------------------------------
 
     /// <summary>

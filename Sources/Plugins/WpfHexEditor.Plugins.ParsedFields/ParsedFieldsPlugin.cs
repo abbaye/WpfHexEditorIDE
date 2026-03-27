@@ -70,7 +70,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     private GenericFileDataSource? _previewDataSource;
     private string? _lastPreviewFilePath;
     private bool _isPreviewActive; // true when preview service owns the panel
-    private bool _previewFormatsLoaded; // true after embedded format catalog loaded into preview service
+    // _previewFormatsLoaded removed — shared catalog loaded at app startup via FormatCatalogService
 
     // ── Lazy update state ────────────────────────────────────────────────────
     private bool _isPanelVisible = true;
@@ -209,21 +209,19 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     /// </summary>
     private void ActivatePreview(string? filePath)
     {
-        _context?.Output?.Info($"[ParsedFields] ActivatePreview: {filePath}");
-        if (_panel == null) { _context?.Output?.Info("[ParsedFields] ActivatePreview: _panel is null"); return; }
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) { _context?.Output?.Info("[ParsedFields] ActivatePreview: file missing"); return; }
+        if (_panel == null) return;
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
 
         // Dedup: don't re-parse the same file
         if (string.Equals(filePath, _lastPreviewFilePath, StringComparison.OrdinalIgnoreCase)
             && _previewService?.ActiveFormat != null)
-        { _context?.Output?.Info("[ParsedFields] ActivatePreview: dedup skip"); return; }
+            return;
 
         // Disconnect HexEditor's panel connection — preview takes over
         _context?.HexEditor.DisconnectParsedFieldsPanel();
 
-        // Create preview service on first use + load embedded format catalog
+        // Create preview service on first use (uses shared catalog via FormatDetectionService.EffectiveFormats)
         _previewService ??= new FormatParsingService();
-        EnsurePreviewFormatsLoaded();
 
         // Connect panel to preview service (steals it from HexEditor)
         if (!_isPreviewActive)
@@ -236,45 +234,8 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Attach new data source
         _previewDataSource?.Dispose();
         _previewDataSource = new GenericFileDataSource(filePath);
-        _context?.Output?.Info($"[ParsedFields] Attaching source, formats={_previewService.LoadedFormatCount}");
         _previewService.Attach(_previewDataSource); // autoDetect=true → DetectAndParseAsync
         _lastPreviewFilePath = filePath;
-        _context?.Output?.Info($"[ParsedFields] Done. ActiveFormat={_previewService.ActiveFormat?.FormatName ?? "(detecting async...)"}");
-    }
-
-    /// <summary>
-    /// Load all 458+ embedded whfmt format definitions into the preview service's
-    /// FormatDetectionService. Only runs once (cached via _previewFormatsLoaded flag).
-    /// </summary>
-    private void EnsurePreviewFormatsLoaded()
-    {
-        if (_previewFormatsLoaded || _previewService == null) return;
-        _previewFormatsLoaded = true;
-
-        try
-        {
-            var catalog = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance;
-            var allEntries = catalog.GetAll();
-            _context?.Output?.Info($"[ParsedFields] EmbeddedFormatCatalog: {allEntries.Count} entries");
-
-            int loaded = 0;
-            foreach (var entry in allEntries)
-            {
-                try
-                {
-                    var json = catalog.GetJson(entry.ResourceKey);
-                    if (string.IsNullOrEmpty(json)) continue;
-                    _previewService.LoadFormats(new[] { (json, (string?)entry.Category) });
-                    loaded++;
-                }
-                catch { /* skip bad format */ }
-            }
-            _context?.Output?.Info($"[ParsedFields] Preview formats loaded: {loaded} (service reports {_previewService.LoadedFormatCount})");
-        }
-        catch (Exception ex)
-        {
-            _context?.Output?.Error($"[ParsedFields] Failed to load embedded formats: {ex.Message}");
-        }
     }
 
     /// <summary>
@@ -386,7 +347,6 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     /// <summary>Solution Explorer file selected → preview format.</summary>
     private void OnFilePreviewRequested(FilePreviewRequestedEvent evt)
     {
-        _context?.Output?.Info($"[ParsedFields] OnFilePreviewRequested: {evt.FilePath} (visible={_isPanelVisible})");
         if (string.IsNullOrEmpty(evt.FilePath) || !File.Exists(evt.FilePath)) return;
 
         QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent

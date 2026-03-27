@@ -94,10 +94,7 @@ namespace WpfHexEditor.Core.Services.FormatParsing
             }
 
             if (autoDetect)
-            {
-                System.Diagnostics.Debug.WriteLine($"[FormatParsingService] Attach: autoDetect=true, source={source.FilePath}, formats={_detectionService.GetFormatCount()}");
                 _ = DetectAndParseAsync();
-            }
         }
 
         public void Detach()
@@ -168,8 +165,6 @@ namespace WpfHexEditor.Core.Services.FormatParsing
                     _source.FilePath);
 
                 _lastResult = result;
-
-                System.Diagnostics.Debug.WriteLine($"[FormatParsingService] DetectAndParseAsync: result={result?.Success}, format={result?.Format?.FormatName ?? "null"}, candidates={result?.Candidates?.Count ?? 0}");
 
                 if (result != null && result.Success && result.Format != null)
                 {

@@ -28,6 +28,47 @@ namespace WpfHexEditor.Core.Services
         private readonly List<FormatDefinition> _loadedFormats = new List<FormatDefinition>();
         private readonly ContentAnalyzer _contentAnalyzer = new ContentAnalyzer();
 
+        // ── Static shared catalog (set once at app startup) ─────────────
+        private static IReadOnlyList<FormatDefinition>? s_sharedFormats;
+        private static readonly object s_sharedLock = new();
+
+        /// <summary>
+        /// Set the shared format catalog used by ALL FormatDetectionService instances.
+        /// Called once at app startup by FormatCatalogService. Thread-safe.
+        /// </summary>
+        public static void SetSharedCatalog(IReadOnlyList<FormatDefinition> formats)
+        {
+            lock (s_sharedLock)
+                s_sharedFormats = formats;
+        }
+
+        /// <summary>Static shared catalog (read-only).</summary>
+        public static IReadOnlyList<FormatDefinition>? SharedCatalog
+        {
+            get { lock (s_sharedLock) return s_sharedFormats; }
+        }
+
+        /// <summary>
+        /// All available formats: instance-level overrides + shared catalog.
+        /// Instance formats take priority (searched first).
+        /// </summary>
+        private List<FormatDefinition> EffectiveFormats
+        {
+            get
+            {
+                var shared = s_sharedFormats;
+                if (_loadedFormats.Count > 0 && shared?.Count > 0)
+                {
+                    var combined = new List<FormatDefinition>(_loadedFormats.Count + shared.Count);
+                    combined.AddRange(_loadedFormats);
+                    combined.AddRange(shared);
+                    return combined;
+                }
+                if (_loadedFormats.Count > 0) return _loadedFormats;
+                return shared != null ? new List<FormatDefinition>(shared) : _loadedFormats;
+            }
+        }
+
         #region Format Loading
 
         /// <summary>
@@ -347,7 +388,7 @@ namespace WpfHexEditor.Core.Services
             var candidates = new List<FormatMatchCandidate>();
 
             // Only check formats with required: true AND medium+ signature strength
-            var strongFormats = _loadedFormats
+            var strongFormats = EffectiveFormats
                 .Where(f => f.Detection?.Required == true)
                 .Where(f => GetSignatureStrength(f.Detection) >= SignatureStrength.Medium)
                 .OrderByDescending(f => GetSignatureStrength(f.Detection));
@@ -390,7 +431,7 @@ namespace WpfHexEditor.Core.Services
             var candidates = new List<FormatMatchCandidate>();
 
             // Only consider formats marked as text-based
-            var textFormats = _loadedFormats.Where(f => f.Detection?.IsTextFormat == true).ToList();
+            var textFormats = EffectiveFormats.Where(f => f.Detection?.IsTextFormat == true).ToList();
 
             foreach (var format in textFormats)
             {
@@ -442,7 +483,7 @@ namespace WpfHexEditor.Core.Services
             var candidates = new List<FormatMatchCandidate>();
 
             // Only check formats with weak/no signatures
-            var weakFormats = _loadedFormats
+            var weakFormats = EffectiveFormats
                 .Where(f => f.Detection?.Required == false ||
                            GetSignatureStrength(f.Detection) <= SignatureStrength.Weak);
 
@@ -982,14 +1023,14 @@ namespace WpfHexEditor.Core.Services
                 if (!string.IsNullOrWhiteSpace(extension))
                 {
                     // Add formats matching extension first
-                    candidates.AddRange(_loadedFormats.Where(f =>
+                    candidates.AddRange(EffectiveFormats.Where(f =>
                         f.Extensions != null && f.Extensions.Any(ext =>
                             ext.Equals(extension, StringComparison.OrdinalIgnoreCase))));
                 }
             }
 
             // Add remaining formats
-            candidates.AddRange(_loadedFormats.Where(f => !candidates.Contains(f)));
+            candidates.AddRange(EffectiveFormats.Where(f => !candidates.Contains(f)));
 
             return candidates;
         }
@@ -1100,15 +1141,13 @@ namespace WpfHexEditor.Core.Services
             if (string.IsNullOrWhiteSpace(name))
                 return null;
 
-            return _loadedFormats.FirstOrDefault(f =>
+            return EffectiveFormats.FirstOrDefault(f =>
                 f.FormatName.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
         /// Get formats by file extension
         /// </summary>
-        /// <param name="extension">File extension (e.g., ".zip", ".png")</param>
-        /// <returns>List of matching formats</returns>
         public List<FormatDefinition> GetFormatsByExtension(string extension)
         {
             if (string.IsNullOrWhiteSpace(extension))
@@ -1118,45 +1157,45 @@ namespace WpfHexEditor.Core.Services
             if (!ext.StartsWith("."))
                 ext = "." + ext;
 
-            return _loadedFormats
+            return EffectiveFormats
                 .Where(f => f.Extensions != null && f.Extensions.Any(e =>
                     e.Equals(ext, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
 
         /// <summary>
-        /// Get all loaded formats
+        /// Get all loaded formats (instance + shared catalog)
         /// </summary>
-        /// <returns>List of all formats</returns>
         public List<FormatDefinition> GetAllFormats()
         {
-            return _loadedFormats.ToList();
+            return EffectiveFormats.ToList();
         }
 
         /// <summary>
-        /// Get number of loaded formats
+        /// Get number of available formats (instance + shared catalog)
         /// </summary>
-        public int GetFormatCount() => _loadedFormats.Count;
+        public int GetFormatCount() => EffectiveFormats.Count;
 
         /// <summary>
-        /// Check if any formats are loaded
+        /// Check if any formats are available (instance + shared catalog)
         /// </summary>
-        public bool HasFormats() => _loadedFormats.Count > 0;
+        public bool HasFormats() => EffectiveFormats.Count > 0;
 
         #endregion
 
         #region Statistics
 
         /// <summary>
-        /// Get statistics about loaded formats
+        /// Get statistics about available formats
         /// </summary>
         public FormatStatistics GetStatistics()
         {
+            var allFormats = EffectiveFormats;
             return new FormatStatistics
             {
-                TotalFormats = _loadedFormats.Count,
-                TotalExtensions = _loadedFormats.SelectMany(f => f.Extensions ?? new List<string>()).Distinct().Count(),
-                FormatsByCategory = _loadedFormats
+                TotalFormats = allFormats.Count,
+                TotalExtensions = allFormats.SelectMany(f => f.Extensions ?? new List<string>()).Distinct().Count(),
+                FormatsByCategory = allFormats
                     .GroupBy(f => GetCategory(f.FormatName))
                     .ToDictionary(g => g.Key, g => g.Count())
             };
