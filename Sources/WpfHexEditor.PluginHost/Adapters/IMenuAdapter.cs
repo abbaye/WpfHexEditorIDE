@@ -45,4 +45,18 @@ public interface IMenuAdapter
     /// </summary>
     IReadOnlyDictionary<string, MenuItemDescriptor> GetAllViewMenuItems()
         => new Dictionary<string, MenuItemDescriptor>();
+
+    /// <summary>
+    /// Raised when a Debug-parented menu item is added or removed.
+    /// The <see cref="DebugMenuOrganizer"/> subscribes to trigger a rebuild.
+    /// Default implementation is a no-op for backward compatibility.
+    /// </summary>
+    event Action? DebugItemsChanged { add { } remove { } }
+
+    /// <summary>
+    /// Returns only the Debug-parented menu item descriptors (intercepted for dynamic organization).
+    /// Default implementation returns an empty dictionary for backward compatibility.
+    /// </summary>
+    IReadOnlyDictionary<string, MenuItemDescriptor> GetAllDebugMenuItems()
+        => new Dictionary<string, MenuItemDescriptor>();
 }

@@ -344,23 +344,15 @@ public partial class MainWindow
         }
     }
 
-    // ── Menu click handlers (thin wrappers — real logic in existing methods) ──
+    // ── Toolbar button click handlers (DebugToolBar in MainWindow.xaml) ────────
+    // Debug menu is now fully dynamic (DebugMenuOrganizer) — these remain for the toolbar buttons.
 
-    private void OnDebugStart(object sender, RoutedEventArgs e)        => OnDebugStartOrContinue();
+    private void OnDebugContinue(object sender, RoutedEventArgs e)     => _ = _debuggerService?.ContinueAsync();
+    private void OnDebugPause(object sender, RoutedEventArgs e)        => _ = _debuggerService?.PauseAsync();
     private void OnDebugStop(object sender, RoutedEventArgs e)         => _ = _debuggerService?.StopSessionAsync();
-    private void OnDebugRestart(object sender, RoutedEventArgs e)      => OnDebugRestart();
     private void OnDebugStepOver(object sender, RoutedEventArgs e)     => _ = _debuggerService?.StepOverAsync();
     private void OnDebugStepInto(object sender, RoutedEventArgs e)     => _ = _debuggerService?.StepIntoAsync();
     private void OnDebugStepOut(object sender, RoutedEventArgs e)      => _ = _debuggerService?.StepOutAsync();
-    private void OnDebugToggleBp(object sender, RoutedEventArgs e)     => OnToggleBreakpoint();
-    private void OnDebugDeleteAllBps(object sender, RoutedEventArgs e) => _ = _debuggerService?.ClearAllBreakpointsAsync();
-    private void OnDebugContinue(object sender, RoutedEventArgs e)     => _ = _debuggerService?.ContinueAsync();
-    private void OnDebugPause(object sender, RoutedEventArgs e)        => _ = _debuggerService?.PauseAsync();
-
-    private void OnShowDebugBreakpoints(object sender, RoutedEventArgs e)  => ShowOrCreatePanel("Breakpoints",  "panel-dbg-breakpoints", DockDirection.Bottom);
-    private void OnShowDebugCallStack(object sender, RoutedEventArgs e)    => ShowOrCreatePanel("Call Stack",   "panel-dbg-callstack",   DockDirection.Bottom);
-    private void OnShowDebugLocals(object sender, RoutedEventArgs e)       => ShowOrCreatePanel("Locals",       "panel-dbg-locals",      DockDirection.Bottom);
-    private void OnShowDebugWatch(object sender, RoutedEventArgs e)        => ShowOrCreatePanel("Watch",        "panel-dbg-watch",       DockDirection.Bottom);
 
     // ── Solution → breakpoint lifecycle ─────────────────────────────────────
 

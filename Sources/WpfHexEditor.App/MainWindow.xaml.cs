@@ -3951,9 +3951,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Real editor tab selected — cancel any non-editor lock.
         _isNonEditorTabActive = false;
 
-        // Content not yet materialized (lazy tab never selected): clear and exit.
+        // Content not yet materialized (lazy tab first click after layout restore).
+        // Sync what we can from saved metadata; full sync happens when content gets focus.
         if (!_contentCache.TryGetValue(item.ContentId, out var content))
         {
+            if (item.Metadata.TryGetValue("FilePath", out var lazyFp) && !string.IsNullOrEmpty(lazyFp))
+            {
+                _lastSyncFilePath = lazyFp;
+                _solutionExplorerPanel?.SyncWithFile(lazyFp);
+
+                if (_errorPanel is not null)
+                {
+                    _errorPanel.CurrentDocumentPath = lazyFp;
+                    _errorPanel.CurrentProjectName = _solutionManager.CurrentSolution?
+                        .Projects.FirstOrDefault(p => p.FindItemByPath(lazyFp) is not null)?.Name
+                        ?? string.Empty;
+                    _errorPanel.RefreshFilter();
+                }
+            }
+
+            SyncActiveDocument(item.ContentId);
             ActiveStatusBarContributor = _defaultStatusBarContributor;
             return;
         }

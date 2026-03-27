@@ -24,6 +24,12 @@ public static class DebugAdapterLocator
         if (!string.IsNullOrWhiteSpace(overridePath) && File.Exists(overridePath))
             return overridePath;
 
+        // 1.5. Bundled with the IDE — tools/netcoredbg/ next to the app executable
+        var exeName = OperatingSystem.IsWindows() ? "netcoredbg.exe" : "netcoredbg";
+        var appDir = AppDomain.CurrentDomain.BaseDirectory;
+        var bundled = Path.Combine(appDir, "tools", "netcoredbg", exeName);
+        if (File.Exists(bundled)) return bundled;
+
         // 2. netcoredbg in PATH
         var inPath = FindInPath("netcoredbg");
         if (inPath is not null) return inPath;

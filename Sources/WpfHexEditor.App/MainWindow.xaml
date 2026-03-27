@@ -526,31 +526,8 @@
                         </MenuItem>
                     </MenuItem>
 
-                    <!-- ═══════════ Debug ═══════════ -->
-                    <MenuItem Header="_Debug" IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
-                        <!-- Start / Stop -->
-                        <MenuItem Header="Start _Debugging"          Click="OnDebugStart"          InputGestureText="F5"            />
-                        <MenuItem Header="Start _Without Debugging"  Click="OnRunStartupProject"   InputGestureText="Ctrl+F5"       />
-                        <MenuItem Header="S_top Debugging"           Click="OnDebugStop"           InputGestureText="Shift+F5"      />
-                        <MenuItem Header="_Restart"                  Click="OnDebugRestart"        InputGestureText="Ctrl+Shift+F5" />
-                        <Separator/>
-                        <!-- Stepping -->
-                        <MenuItem Header="Step _Over"                Click="OnDebugStepOver"       InputGestureText="F10"           />
-                        <MenuItem Header="Step _Into"                Click="OnDebugStepInto"       InputGestureText="F11"           />
-                        <MenuItem Header="Step O_ut"                 Click="OnDebugStepOut"        InputGestureText="Shift+F11"     />
-                        <Separator/>
-                        <!-- Breakpoints -->
-                        <MenuItem Header="Toggle _Breakpoint"        Click="OnDebugToggleBp"       InputGestureText="F9"            />
-                        <MenuItem Header="_Delete All Breakpoints"   Click="OnDebugDeleteAllBps"   InputGestureText="Ctrl+Shift+F9" />
-                        <Separator/>
-                        <!-- Panels -->
-                        <MenuItem Header="Show _Breakpoints"         Click="OnShowDebugBreakpoints"/>
-                        <MenuItem Header="Show _Call Stack"          Click="OnShowDebugCallStack"  />
-                        <MenuItem Header="Show _Locals"              Click="OnShowDebugLocals"     />
-                        <MenuItem Header="Show _Watch"               Click="OnShowDebugWatch"      />
-                        <Separator/>
-                        <MenuItem Header="_Attach to Process…"       Click="OnAttachToProcess"     InputGestureText="Ctrl+Alt+P"    />
-                    </MenuItem>
+                    <!-- ═══════════ Debug (dynamic — populated by DebugMenuOrganizer) ═══════════ -->
+                    <MenuItem Header="_Debug" x:Name="DebugMenu" IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}" />
 
                     <!-- ═══════════ Layout ═══════════ -->
                     <MenuItem Header="_Layout">

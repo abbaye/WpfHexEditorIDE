@@ -3,9 +3,8 @@
 // File: PartialClasses/UI/HexEditor.BreadcrumbBar.cs
 // Description:
 //     Wires the interactive HexBreadcrumbBar into the HexEditor layout.
-//     Performance-optimized: pre-built sorted index, binary search O(log n),
-//     debounced segment rebuild (150ms), skip-if-same-field caching.
-//     Offset text updates instantly; path segments update debounced.
+//     Simple linear scan of ParsedFields + skip-if-same-field optimization.
+//     Builds Format › GroupName › FieldName breadcrumb path.
 //////////////////////////////////////////////
 
 using System;
@@ -13,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.HexEditor.Controls;
 
@@ -22,13 +20,8 @@ namespace WpfHexEditor.HexEditor;
 public partial class HexEditor
 {
     private HexBreadcrumbBar? _breadcrumbBar;
-
-    // ── Performance cache ─────────────────────────────────────────────────────
-    private BreadcrumbIndex? _bcIndex;
-    private int _bcFieldsVersion;
     private ParsedFieldViewModel? _bcLastMatch;
 
-    /// <summary>Shows or hides the breadcrumb bar above the hex viewport.</summary>
     public bool ShowBreadcrumbBar
     {
         get => _breadcrumbBar?.Visibility == Visibility.Visible;
@@ -104,176 +97,130 @@ public partial class HexEditor
         var offset = SelectionStart >= 0 ? SelectionStart : 0;
         var selLen = (SelectionStop > SelectionStart) ? SelectionStop - SelectionStart + 1 : 0;
 
-        // Update offset text (always immediate)
+        // Always update offset text (cheap)
         _breadcrumbBar.UpdateOffsetOnly(offset, selLen);
 
-        // Rebuild segments using cached index (O(log n) + skip-if-same)
-        RebuildBreadcrumbSegments(offset);
-    }
-
-    private void RebuildBreadcrumbSegments(long offset)
-    {
-        // Ensure index is up-to-date
+        // Find field at offset
         var panel = ParsedFieldsPanel;
         var fields = panel?.ParsedFields;
-        int fieldsCount = fields?.Count ?? 0;
-        if (fieldsCount != _bcFieldsVersion)
+        ParsedFieldViewModel? match = null;
+
+        if (fields != null && fields.Count > 0)
         {
-            _bcIndex = fieldsCount > 0 ? BuildIndex(fields!) : null;
-            _bcFieldsVersion = fieldsCount;
-            _bcLastMatch = null; // force rebuild
+            long bestLen = long.MaxValue;
+            foreach (var f in fields)
+            {
+                if (f.Length <= 0) continue;
+                if (offset >= f.Offset && offset < f.Offset + f.Length && f.Length < bestLen)
+                {
+                    match = f;
+                    bestLen = f.Length;
+                }
+            }
         }
 
-        // Find field at offset via binary search
-        var match = _bcIndex != null ? FindFieldAtOffset(_bcIndex.SortedFields, offset) : null;
-
-        // Skip full rebuild if same field as last time
+        // Skip segment rebuild if same field as last time
         if (match == _bcLastMatch && _bcLastMatch != null) return;
         _bcLastMatch = match;
 
-        // Build segments from cached index
-        var segments = BuildSegmentsFromIndex(offset, match);
-        var formatName = _detectedFormat?.FormatName;
-        var confidence = (_detectionCandidates?.Count > 0)
-            ? (int)(_detectionCandidates[0].ConfidenceScore * 100) : 0;
-
-        _breadcrumbBar!.SetSegments(segments);
+        // Build segments
+        var segments = BuildSegments(fields, match);
+        _breadcrumbBar.SetSegments(segments);
         _breadcrumbBar.SetBookmarks(panel?.FormatInfo?.Bookmarks);
     }
 
-    // ── Index building (once per format detection) ────────────────────────────
-
-    private sealed class BreadcrumbIndex
-    {
-        public ParsedFieldViewModel[] SortedFields = Array.Empty<ParsedFieldViewModel>();
-        public Dictionary<string, GroupInfo> Groups = new();
-        public List<BreadcrumbSegment> GroupSegments = new();
-    }
-
-    private sealed class GroupInfo
-    {
-        public long MinOffset = long.MaxValue;
-        public long MaxEnd;
-        public int FieldCount;
-        public int Length => (int)Math.Min(MaxEnd - MinOffset, int.MaxValue);
-    }
-
-    private static BreadcrumbIndex BuildIndex(System.Collections.ObjectModel.ObservableCollection<ParsedFieldViewModel> fields)
-    {
-        var idx = new BreadcrumbIndex();
-
-        // Sort fields by offset for binary search
-        var withLength = new List<ParsedFieldViewModel>(fields.Count);
-        foreach (var f in fields)
-            if (f.Length > 0) withLength.Add(f);
-
-        withLength.Sort((a, b) => a.Offset.CompareTo(b.Offset));
-        idx.SortedFields = withLength.ToArray();
-
-        // Pre-compute group info
-        foreach (var f in withLength)
-        {
-            var gn = f.GroupName;
-            if (string.IsNullOrEmpty(gn)) continue;
-
-            if (!idx.Groups.TryGetValue(gn, out var gi))
-            {
-                gi = new GroupInfo();
-                idx.Groups[gn] = gi;
-            }
-            if (f.Offset < gi.MinOffset) gi.MinOffset = f.Offset;
-            var end = f.Offset + f.Length;
-            if (end > gi.MaxEnd) gi.MaxEnd = end;
-            gi.FieldCount++;
-        }
-
-        // Pre-build group segments (for dropdown popups)
-        idx.GroupSegments = new List<BreadcrumbSegment>(idx.Groups.Count);
-        foreach (var kv in idx.Groups.OrderBy(k => k.Value.MinOffset))
-        {
-            idx.GroupSegments.Add(new BreadcrumbSegment
-            {
-                Name = kv.Key,
-                Offset = kv.Value.MinOffset,
-                Length = kv.Value.Length,
-                IsGroup = true,
-            });
-        }
-
-        return idx;
-    }
-
-    // ── Binary search O(log n) ────────────────────────────────────────────────
-
-    private static ParsedFieldViewModel? FindFieldAtOffset(ParsedFieldViewModel[] sorted, long offset)
-    {
-        // Binary search for first field with Offset <= offset
-        int lo = 0, hi = sorted.Length - 1;
-        ParsedFieldViewModel? best = null;
-        long bestLen = long.MaxValue;
-
-        // Find insertion point
-        while (lo <= hi)
-        {
-            int mid = (lo + hi) / 2;
-            if (sorted[mid].Offset <= offset)
-                lo = mid + 1;
-            else
-                hi = mid - 1;
-        }
-
-        // Scan backward from insertion point to find containing fields
-        for (int i = hi; i >= 0 && i >= hi - 20; i--)
-        {
-            var f = sorted[i];
-            if (f.Offset + f.Length <= offset) break; // past this field
-            if (offset >= f.Offset && offset < f.Offset + f.Length && f.Length < bestLen)
-            {
-                best = f;
-                bestLen = f.Length;
-            }
-        }
-
-        return best;
-    }
-
-    // ── Segment building from cached index ────────────────────────────────────
-
-    private List<BreadcrumbSegment> BuildSegmentsFromIndex(long offset, ParsedFieldViewModel? match)
+    private List<BreadcrumbSegment> BuildSegments(
+        System.Collections.ObjectModel.ObservableCollection<ParsedFieldViewModel>? fields,
+        ParsedFieldViewModel? match)
     {
         var segments = new List<BreadcrumbSegment>(3);
 
-        // 1. Format segment
+        // 1. Format segment — siblings = all groups
         var formatName = _detectedFormat?.FormatName;
         if (!string.IsNullOrEmpty(formatName))
         {
-            // Format segment siblings = all groups (for dropdown)
+            List<BreadcrumbSegment>? groupSegs = null;
+            if (fields != null && fields.Count > 0)
+            {
+                var seenGroups = new HashSet<string>();
+                groupSegs = new List<BreadcrumbSegment>();
+                foreach (var f in fields)
+                {
+                    if (f.Length <= 0 || string.IsNullOrEmpty(f.GroupName)) continue;
+                    if (!seenGroups.Add(f.GroupName!)) continue;
+
+                    long gMin = long.MaxValue, gMax = 0;
+                    foreach (var gf in fields)
+                    {
+                        if (gf.GroupName != f.GroupName || gf.Length <= 0) continue;
+                        if (gf.Offset < gMin) gMin = gf.Offset;
+                        var end = gf.Offset + gf.Length;
+                        if (end > gMax) gMax = end;
+                    }
+                    groupSegs.Add(new BreadcrumbSegment
+                    {
+                        Name = f.GroupName!,
+                        Offset = gMin,
+                        Length = (int)Math.Min(gMax - gMin, int.MaxValue),
+                        IsGroup = true,
+                    });
+                }
+                groupSegs.Sort((a, b) => a.Offset.CompareTo(b.Offset));
+            }
+
             segments.Add(new BreadcrumbSegment
             {
                 Name = formatName!,
                 Offset = 0,
                 Length = (int)Math.Min(Length, int.MaxValue),
                 IsFormat = true,
-                Siblings = _bcIndex?.GroupSegments,
+                Siblings = groupSegs,
             });
         }
 
-        if (match == null || _bcIndex == null || !BreadcrumbShowFieldPath) return segments;
+        if (match == null || fields == null || !BreadcrumbShowFieldPath) return segments;
 
-        // 2. Group segment
-        var groupName = match.GroupName;
-        if (!string.IsNullOrEmpty(groupName) && _bcIndex.Groups.TryGetValue(groupName!, out var gi))
+        // 2. Group segment — siblings = other groups
+        if (!string.IsNullOrEmpty(match.GroupName))
         {
-            // Group siblings = other groups (pre-built, just filter out current)
-            var groupSiblings = _bcIndex.GroupSegments
-                .Where(g => g.Name != groupName)
-                .ToList();
+            long gMin = long.MaxValue, gMax = 0;
+            foreach (var f in fields)
+            {
+                if (f.GroupName != match.GroupName || f.Length <= 0) continue;
+                if (f.Offset < gMin) gMin = f.Offset;
+                var end = f.Offset + f.Length;
+                if (end > gMax) gMax = end;
+            }
+
+            var groupSiblings = new List<BreadcrumbSegment>();
+            var seen = new HashSet<string> { match.GroupName! };
+            foreach (var f in fields)
+            {
+                if (f.Length <= 0 || string.IsNullOrEmpty(f.GroupName)) continue;
+                if (!seen.Add(f.GroupName!)) continue;
+
+                long sMin = long.MaxValue, sMax = 0;
+                foreach (var sf in fields)
+                {
+                    if (sf.GroupName != f.GroupName || sf.Length <= 0) continue;
+                    if (sf.Offset < sMin) sMin = sf.Offset;
+                    var se = sf.Offset + sf.Length;
+                    if (se > sMax) sMax = se;
+                }
+                groupSiblings.Add(new BreadcrumbSegment
+                {
+                    Name = f.GroupName!,
+                    Offset = sMin,
+                    Length = (int)Math.Min(sMax - sMin, int.MaxValue),
+                    IsGroup = true,
+                });
+            }
 
             segments.Add(new BreadcrumbSegment
             {
-                Name = groupName!,
-                Offset = gi.MinOffset,
-                Length = gi.Length,
+                Name = match.GroupName!,
+                Offset = gMin,
+                Length = (int)Math.Min(gMax - gMin, int.MaxValue),
                 IsGroup = true,
                 Siblings = groupSiblings,
             });
@@ -281,9 +228,9 @@ public partial class HexEditor
 
         // 3. Field segment — siblings = other fields in same group
         var fieldSiblings = new List<BreadcrumbSegment>();
-        foreach (var f in _bcIndex.SortedFields)
+        foreach (var f in fields)
         {
-            if (f == match || f.GroupName != match.GroupName) continue;
+            if (f == match || f.Length <= 0 || f.GroupName != match.GroupName) continue;
             fieldSiblings.Add(new BreadcrumbSegment
             {
                 Name = f.Name,

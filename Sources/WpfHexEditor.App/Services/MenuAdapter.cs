@@ -30,6 +30,9 @@ public sealed class MenuAdapter : IMenuAdapter
     // uiId → original descriptor (View-parented items only, for ViewMenuOrganizer)
     private readonly Dictionary<string, MenuItemDescriptor> _viewDescriptors = new(StringComparer.OrdinalIgnoreCase);
 
+    // uiId → original descriptor (Debug-parented items only, for DebugMenuOrganizer)
+    private readonly Dictionary<string, MenuItemDescriptor> _debugDescriptors = new(StringComparer.OrdinalIgnoreCase);
+
     // (normalised parentPath + group) → Separator element that heads that group block
     private readonly Dictionary<string, Separator> _groupSeparators = new(StringComparer.OrdinalIgnoreCase);
 
@@ -45,6 +48,9 @@ public sealed class MenuAdapter : IMenuAdapter
     public event Action? ViewItemsChanged;
 
     /// <inheritdoc />
+    public event Action? DebugItemsChanged;
+
+    /// <inheritdoc />
     public void AddMenuItem(string uiId, MenuItemDescriptor descriptor)
     {
         if (_descriptors.ContainsKey(uiId)) return;
@@ -57,6 +63,15 @@ public sealed class MenuAdapter : IMenuAdapter
         {
             _viewDescriptors[uiId] = descriptor;
             ViewItemsChanged?.Invoke();
+            return;
+        }
+
+        // Debug-parented items are intercepted — store but do not create WPF MenuItems.
+        // The DebugMenuOrganizer will build the Debug menu dynamically.
+        if (IsDebugParent(descriptor.ParentPath))
+        {
+            _debugDescriptors[uiId] = descriptor;
+            DebugItemsChanged?.Invoke();
             return;
         }
 
@@ -124,6 +139,13 @@ public sealed class MenuAdapter : IMenuAdapter
             return;
         }
 
+        // Debug-parented item?
+        if (_debugDescriptors.Remove(uiId))
+        {
+            DebugItemsChanged?.Invoke();
+            return;
+        }
+
         // Non-View item: remove WPF MenuItem
         if (!_addedItems.TryGetValue(uiId, out var item)) return;
 
@@ -154,8 +176,14 @@ public sealed class MenuAdapter : IMenuAdapter
     /// <inheritdoc />
     public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllViewMenuItems() => _viewDescriptors;
 
+    /// <inheritdoc />
+    public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllDebugMenuItems() => _debugDescriptors;
+
     private static bool IsViewParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "View", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsDebugParent(string parentPath)
+        => string.Equals(parentPath?.TrimStart('_'), "Debug", StringComparison.OrdinalIgnoreCase);
 
     private ItemsControl FindOrCreateParent(string parentPath)
     {

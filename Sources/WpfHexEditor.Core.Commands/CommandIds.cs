@@ -125,7 +125,9 @@ public static class CommandIds
         public const string ShowBreakpoints      = "Debug.ShowBreakpoints";
         public const string ShowCallStack        = "Debug.ShowCallStack";
         public const string ShowLocals           = "Debug.ShowLocals";
-        public const string ShowWatch            = "Debug.ShowWatch";
+        public const string StartWithoutDebugging = "Debug.StartWithoutDebugging";
+        public const string Pause                 = "Debug.Pause";
+        public const string ShowWatch             = "Debug.ShowWatch";
     }
 
     public static class Workspace

@@ -69,7 +69,6 @@ public sealed class HexBreadcrumbBar : Border
     private long _offset;
     private long _selectionLength;
     private List<BreadcrumbSegment> _segments = new();
-    private Popup? _activePopup;
 
     // ── Static ────────────────────────────────────────────────────────────────
     private static readonly Brush SepLineBrush;
@@ -276,130 +275,60 @@ public sealed class HexBreadcrumbBar : Border
         }
     }
 
-    // ── Click → Popup ─────────────────────────────────────────────────────────
+    // ── Click → ContextMenu ──────────────────────────────────────────────────
 
     private void OnSegmentClick(object sender, MouseButtonEventArgs e)
     {
-        if (sender is TextBlock tb && tb.Tag is BreadcrumbSegment seg)
+        if (sender is not TextBlock tb || tb.Tag is not BreadcrumbSegment seg) return;
+
+        if (seg.Siblings?.Count > 0)
         {
-            if (seg.Siblings?.Count > 0)
+            // Build ContextMenu with current + siblings
+            var menu = new ContextMenu { MinWidth = 200 };
+            menu.SetResourceReference(BackgroundProperty, "BC_Background");
+            menu.SetResourceReference(ContextMenu.BorderBrushProperty, "BC_SeparatorForeground");
+
+            var allItems = new List<BreadcrumbSegment> { seg };
+            allItems.AddRange(seg.Siblings);
+            allItems.Sort((a, b) => a.Offset.CompareTo(b.Offset));
+
+            foreach (var item in allItems)
             {
-                // Defer popup to next frame — prevents StaysOpen=false from
-                // immediately closing it due to the same click event propagating.
-                var anchor = tb;
-                var captured = seg;
-                Dispatcher.BeginInvoke(new Action(() => OpenSegmentPopup(captured, anchor)),
-                    System.Windows.Threading.DispatcherPriority.Input);
-            }
-            else
-            {
-                NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
-                    { Offset = seg.Offset, Length = seg.Length });
-            }
-            e.Handled = true;
-        }
-    }
-
-    private void OpenSegmentPopup(BreadcrumbSegment seg, UIElement anchor)
-    {
-        CloseActivePopup();
-        if (seg.Siblings == null || seg.Siblings.Count == 0) return;
-
-        var popup = new Popup
-        {
-            PlacementTarget = anchor,
-            Placement = PlacementMode.Bottom,
-            StaysOpen = false,
-            AllowsTransparency = true,
-        };
-
-        var listBox = new ListBox
-        {
-            MaxHeight = 350,
-            MinWidth = 200,
-            BorderThickness = new Thickness(1),
-            Padding = new Thickness(2),
-        };
-        listBox.SetResourceReference(BackgroundProperty, "BC_Background");
-        listBox.SetResourceReference(BorderBrushProperty, "BC_SeparatorForeground");
-
-        // Current + siblings sorted by offset
-        var allItems = new List<BreadcrumbSegment> { seg };
-        allItems.AddRange(seg.Siblings);
-        allItems.Sort((a, b) => a.Offset.CompareTo(b.Offset));
-
-        foreach (var item in allItems)
-        {
-            var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(2) };
-
-            var nameBlock = new TextBlock
-            {
-                Text = item.Name,
-                FontSize = FontSize,
-                VerticalAlignment = VerticalAlignment.Center,
-                FontWeight = item.Offset == seg.Offset && item.Name == seg.Name
-                    ? FontWeights.SemiBold : FontWeights.Normal,
-                MinWidth = 120,
-            };
-            nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "BC_Foreground");
-
-            var offBlock = new TextBlock
-            {
-                Text = $"0x{item.Offset:X}",
-                FontSize = FontSize - 2,
-                FontFamily = new FontFamily("Consolas"),
-                VerticalAlignment = VerticalAlignment.Center,
-                Opacity = 0.5,
-                Margin = new Thickness(8, 0, 0, 0),
-            };
-            offBlock.SetResourceReference(TextBlock.ForegroundProperty, "BC_Foreground");
-
-            row.Children.Add(nameBlock);
-            row.Children.Add(offBlock);
-
-            var lbi = new ListBoxItem
-            {
-                Content = row,
-                Cursor = Cursors.Hand,
-                Padding = new Thickness(6, 3, 6, 3),
-            };
-
-            if (item.Offset == seg.Offset && item.Name == seg.Name)
-                lbi.SetResourceReference(BackgroundProperty, "BC_HoverBackground");
-
-            var captured = item;
-            lbi.MouseLeftButtonUp += (_, _) =>
-            {
-                NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
+                bool isCurrent = item.Offset == seg.Offset && item.Name == seg.Name;
+                var mi = new MenuItem
                 {
-                    Offset = captured.Offset,
-                    Length = captured.Length,
-                });
-                popup.IsOpen = false;
-            };
+                    Header = $"{item.Name}    0x{item.Offset:X}",
+                    FontWeight = isCurrent ? FontWeights.SemiBold : FontWeights.Normal,
+                    FontSize = FontSize,
+                    Tag = item,
+                };
+                mi.SetResourceReference(MenuItem.ForegroundProperty, "BC_Foreground");
+                mi.Click += OnMenuItemClick;
+                menu.Items.Add(mi);
+            }
 
-            listBox.Items.Add(lbi);
+            menu.PlacementTarget = tb;
+            menu.Placement = PlacementMode.Bottom;
+            menu.IsOpen = true;
         }
-
-        popup.Child = new Border
+        else
         {
-            Child = listBox,
-            CornerRadius = new CornerRadius(4),
-            Effect = new System.Windows.Media.Effects.DropShadowEffect
-            {
-                BlurRadius = 8, Opacity = 0.3, ShadowDepth = 2,
-            },
-        };
-
-        popup.Closed += (_, _) => { if (_activePopup == popup) _activePopup = null; };
-        _activePopup = popup;
-        popup.IsOpen = true;
+            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
+                { Offset = seg.Offset, Length = seg.Length });
+        }
+        e.Handled = true;
     }
 
-    private void CloseActivePopup()
+    private void OnMenuItemClick(object sender, RoutedEventArgs e)
     {
-        if (_activePopup is { IsOpen: true }) _activePopup.IsOpen = false;
-        _activePopup = null;
+        if (sender is MenuItem mi && mi.Tag is BreadcrumbSegment item)
+        {
+            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
+            {
+                Offset = item.Offset,
+                Length = item.Length,
+            });
+        }
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────

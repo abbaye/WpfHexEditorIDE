@@ -136,4 +136,11 @@
     <ProjectReference Include="..\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
   </ItemGroup>
 
+  <!-- Bundled debug adapter (netcoredbg) — copied to output/tools/netcoredbg/ -->
+  <ItemGroup>
+    <None Include="..\..\tools\netcoredbg\**"
+          CopyToOutputDirectory="PreserveNewest"
+          LinkBase="tools\netcoredbg" />
+  </ItemGroup>
+
 </Project>
