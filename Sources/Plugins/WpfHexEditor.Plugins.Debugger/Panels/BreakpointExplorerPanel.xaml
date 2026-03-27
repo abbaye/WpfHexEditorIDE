@@ -1,0 +1,231 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.BreakpointExplorerPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels"
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.Debugger.Converters">
+
+    <UserControl.Resources>
+        <conv:BoolToOpacityConverter       x:Key="BoolToOpacity" />
+        <conv:BoolToVerifiedConverter      x:Key="BoolToVerified" />
+        <conv:BreakpointTypeToBrushConverter x:Key="TypeToBrush" />
+        <conv:HitCountToVisibilityConverter x:Key="HitCountToVis" />
+        <BooleanToVisibilityConverter      x:Key="BoolToVis" />
+        <conv:InvertBoolToVisibilityConverter x:Key="InvertBoolToVis" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="24" />
+        </Grid.RowDefinitions>
+
+        <!-- ═══ Row 0: Toolbar ═══ -->
+        <Border Grid.Row="0" Background="{DynamicResource DB_ToolbarBackgroundBrush}" BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource PanelBorderBrush}">
+            <DockPanel Margin="4,2">
+                <!-- Search box -->
+                <TextBox x:Name="SearchBox" DockPanel.Dock="Left" Width="180"
+                         VerticalContentAlignment="Center" FontSize="11"
+                         Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged, Delay=200}"
+                         Background="{DynamicResource TextBoxBackground}"
+                         Foreground="{DynamicResource TextBoxForeground}"
+                         BorderBrush="{DynamicResource TextBoxBorderBrush}" />
+
+                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
+
+                <!-- Enable All -->
+                <Button DockPanel.Dock="Left" Command="{Binding EnableAllCommand}" ToolTip="Enable All"
+                        Content="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                <!-- Disable All -->
+                <Button DockPanel.Dock="Left" Command="{Binding DisableAllCommand}" ToolTip="Disable All"
+                        Content="&#xECC9;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                <!-- Delete All -->
+                <Button DockPanel.Dock="Left" Command="{Binding DeleteAllCommand}" ToolTip="Delete All Breakpoints"
+                        Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+
+                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
+
+                <!-- Group By -->
+                <TextBlock DockPanel.Dock="Left" Text="Group:" VerticalAlignment="Center" FontSize="11"
+                           Foreground="{DynamicResource PanelForeground}" Margin="2,0,4,0" />
+                <ComboBox x:Name="GroupByCombo" DockPanel.Dock="Left" Width="90" FontSize="11"
+                          VerticalContentAlignment="Center"
+                          SelectedIndex="0" SelectionChanged="OnGroupByChanged">
+                    <ComboBoxItem Content="None" />
+                    <ComboBoxItem Content="File" />
+                    <ComboBoxItem Content="Type" />
+                    <ComboBoxItem Content="Enabled" />
+                </ComboBox>
+
+                <!-- Spacer -->
+                <Border />
+            </DockPanel>
+        </Border>
+
+        <!-- ═══ Row 1: Flat ListView (when GroupBy == None) ═══ -->
+        <ListView Grid.Row="1" ItemsSource="{Binding FlatBreakpoints}"
+                  SelectedItem="{Binding SelectedBreakpoint}"
+                  Visibility="{Binding IsGrouped, Converter={StaticResource InvertBoolToVis}}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  MouseDoubleClick="OnRowDoubleClick"
+                  x:Name="FlatList">
+            <ListView.View>
+                <GridView>
+                    <!-- Icon -->
+                    <GridViewColumn Width="26">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="10" Height="10"
+                                         Fill="{Binding TypeLabel, Converter={StaticResource TypeToBrush}}"
+                                         Opacity="{Binding IsEnabled, Converter={StaticResource BoolToOpacity}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Enabled checkbox -->
+                    <GridViewColumn Width="26">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Center"
+                                          Click="OnCheckBoxClicked" Tag="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Location -->
+                    <GridViewColumn Header="Location" Width="220"
+                                    DisplayMemberBinding="{Binding DisplayLocation}" />
+
+                    <!-- Condition -->
+                    <GridViewColumn Header="Condition" Width="150"
+                                    DisplayMemberBinding="{Binding Condition}" />
+
+                    <!-- Hit Count -->
+                    <GridViewColumn Header="Hits" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding HitCount}"
+                                           Visibility="{Binding HitCount, Converter={StaticResource HitCountToVis}}"
+                                           Foreground="{DynamicResource DB_BreakpointConditionalBrush}"
+                                           FontWeight="SemiBold" FontSize="11" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Verified -->
+                    <GridViewColumn Header="&#x2713;" Width="26">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding IsVerified, Converter={StaticResource BoolToVerified}}"
+                                           Foreground="{DynamicResource DB_BreakpointActiveBrush}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Delete button -->
+                    <GridViewColumn Width="28">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                        Background="Transparent" BorderThickness="0"
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding}" ToolTip="Delete breakpoint" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Go To Source" Click="OnGoToSource"
+                              InputGestureText="Enter">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Enable/Disable" Click="OnToggleEnabled">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Copy Location" Click="OnCopyLocation">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Delete" Click="OnDeleteSelected">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+
+        <!-- ═══ Row 1: Grouped TreeView (when GroupBy != None) ═══ -->
+        <TreeView Grid.Row="1" ItemsSource="{Binding GroupedBreakpoints}"
+                  Visibility="{Binding IsGrouped, Converter={StaticResource BoolToVis}}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  x:Name="GroupedTree">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type vm:BreakpointGroupNode}"
+                                           ItemsSource="{Binding Children}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding GroupIcon}" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding GroupKey}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <TextBlock Margin="6,0,0,0" VerticalAlignment="Center" Opacity="0.6">
+                            <TextBlock.Text>
+                                <Binding Path="Count" StringFormat="({0})" />
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <!-- Child breakpoint rows -->
+                    <HierarchicalDataTemplate.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:BreakpointRowEx}">
+                            <StackPanel Orientation="Horizontal" Margin="0,1" MouseLeftButtonDown="OnTreeItemDoubleClick">
+                                <Ellipse Width="8" Height="8" Margin="0,0,6,0"
+                                         Fill="{Binding TypeLabel, Converter={StaticResource TypeToBrush}}"
+                                         Opacity="{Binding IsEnabled, Converter={StaticResource BoolToOpacity}}" />
+                                <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Center" Margin="0,0,6,0"
+                                          Click="OnCheckBoxClicked" Tag="{Binding}" />
+                                <TextBlock Text="{Binding DisplayLocation}" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Condition}" Margin="8,0,0,0" Opacity="0.6"
+                                           VerticalAlignment="Center" FontStyle="Italic" />
+                                <TextBlock Text="{Binding HitCount, StringFormat=' [{0} hits]'}"
+                                           Visibility="{Binding HitCount, Converter={StaticResource HitCountToVis}}"
+                                           Foreground="{DynamicResource DB_BreakpointConditionalBrush}"
+                                           Margin="6,0,0,0" VerticalAlignment="Center" FontSize="11" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </HierarchicalDataTemplate.ItemTemplate>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+
+        <!-- ═══ Row 2: Status bar ═══ -->
+        <Border Grid.Row="2" Background="{DynamicResource DB_ToolbarBackgroundBrush}"
+                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource PanelBorderBrush}">
+            <TextBlock Text="{Binding SummaryText}" VerticalAlignment="Center"
+                       Margin="8,0" FontSize="11" Foreground="{DynamicResource PanelForeground}" Opacity="0.7" />
+        </Border>
+    </Grid>
+</UserControl>

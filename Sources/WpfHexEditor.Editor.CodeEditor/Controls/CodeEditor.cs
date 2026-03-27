@@ -472,6 +472,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private IReadOnlyList<Regex>    _bpNonExecutableRegexes = Array.Empty<Regex>();
         private IReadOnlyList<Regex>    _bpContinuationRegexes  = Array.Empty<Regex>();
         private int                     _bpMaxScanLines         = 20;
+        private bool                    _bpBlockScopeHighlight  = true;
 
         // True between the first Ctrl+M press and the second chord key (outlining commands).
         private bool _outlineChordPending;
@@ -932,6 +933,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             _bpContinuationRegexes = contCompiled;
             _bpMaxScanLines        = lang?.BreakpointRules?.MaxStatementScanLines ?? 20;
+            _bpBlockScopeHighlight = lang?.BreakpointRules?.BlockScopeHighlight ?? true;
 
             if (_breakpointGutterControl is null) return;
             _breakpointGutterControl.ValidateLine = compiled.Count == 0
@@ -2084,6 +2086,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Breakpoint gutter (ADR-DBG-01): positioned to the left of fold markers.
             _breakpointGutterControl = new BreakpointGutterControl();
             _breakpointGutterControl.RightClickRequested += OnBreakpointRightClick;
+            _breakpointGutterControl.HoverBreakpointRequested += OnGutterBreakpointHover;
             _scrollBarChildren.Add(_breakpointGutterControl);
 
             // Initialize word-highlight scroll marker overlay.

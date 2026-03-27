@@ -42,6 +42,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
     private IBreakpointSource? _source;
     private string _filePath = string.Empty;
     private int _line1;
+    private Rect _anchorRect;
 
     // ── Events ───────────────────────────────────────────────────────────────
 
@@ -90,6 +91,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         _filePath = filePath;
         _line1 = line1;
 
+        _anchorRect = anchorRect;
         PlacementTarget = host;
         Child = BuildContent(info, line1, filePath, documentLines, highlighter);
         IsOpen = true;
@@ -323,10 +325,17 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
 
     // ── Placement callback ───────────────────────────────────────────────────
 
-    private static CustomPopupPlacement[] PlacePopup(Size popup, Size target, Point offset)
+    private CustomPopupPlacement[] PlacePopup(Size popup, Size target, Point offset)
     {
-        // Below the anchor line, aligned left
-        return [new CustomPopupPlacement(new Point(offset.X + 20, offset.Y), PopupPrimaryAxis.Horizontal)];
+        // Position below the anchor line, offset right by 20px from anchor X.
+        double x = _anchorRect.X + 20;
+        double y = _anchorRect.Y + _anchorRect.Height + 2;
+
+        // Flip above the line if the popup would extend beyond the PlacementTarget.
+        if (y + popup.Height > target.Height)
+            y = _anchorRect.Y - popup.Height - 2;
+
+        return [new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.Horizontal)];
     }
 
     // ── Dispose ──────────────────────────────────────────────────────────────

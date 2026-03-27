@@ -283,6 +283,7 @@ public static class LanguageDefinitionSerializer
             NonExecutablePatterns          = dto.NonExecutablePatterns ?? [],
             StatementContinuationPatterns  = dto.StatementContinuationPatterns ?? [],
             MaxStatementScanLines          = dto.MaxStatementScanLines ?? 20,
+            BlockScopeHighlight            = dto.BlockScopeHighlight ?? true,
         };
     }
 
@@ -401,6 +402,9 @@ public static class LanguageDefinitionSerializer
 
         [JsonPropertyName("maxStatementScanLines")]
         public int? MaxStatementScanLines { get; set; }
+
+        [JsonPropertyName("blockScopeHighlight")]
+        public bool? BlockScopeHighlight { get; set; }
     }
 
     private sealed class EndOfBlockHintDto

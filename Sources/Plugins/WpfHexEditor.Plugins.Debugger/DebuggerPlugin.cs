@@ -40,7 +40,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
     private readonly List<IDisposable> _subs = [];
 
     // Panel view-models
-    private BreakpointsPanelViewModel?  _bpVm;
+    private BreakpointExplorerViewModel? _bpVm;
     private CallStackPanelViewModel?    _csVm;
     private LocalsPanelViewModel?       _locVm;
     private WatchesPanelViewModel?      _watchVm;
@@ -58,7 +58,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         }
 
         // Create view-models
-        _bpVm      = new BreakpointsPanelViewModel(_debugger);
+        _bpVm      = new BreakpointExplorerViewModel(_debugger, context);
         _csVm      = new CallStackPanelViewModel(_debugger, context);
         _locVm     = new LocalsPanelViewModel(_debugger);
         _watchVm   = new WatchesPanelViewModel(_debugger);
@@ -72,7 +72,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         // Register panels
         var ui = context.UIRegistry;
 
-        ui.RegisterPanel("panel-dbg-breakpoints", new BreakpointsPanel { DataContext = _bpVm }, Id,
+        ui.RegisterPanel("panel-dbg-breakpoints", new BreakpointExplorerPanel { DataContext = _bpVm }, Id,
             new PanelDescriptor { Title = "Breakpoints", DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         ui.RegisterPanel("panel-dbg-callstack", new CallStackPanel { DataContext = _csVm }, Id,

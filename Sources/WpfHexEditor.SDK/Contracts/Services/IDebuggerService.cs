@@ -20,7 +20,8 @@ public sealed record DebugBreakpointInfo(
     int     Line,
     string? Condition,
     bool    IsEnabled,
-    bool    IsVerified
+    bool    IsVerified,
+    int     HitCount = 0
 );
 
 /// <summary>
@@ -103,6 +104,13 @@ public interface IDebuggerService
 
     /// <summary>Remove all breakpoints.</summary>
     Task ClearAllBreakpointsAsync();
+
+    /// <summary>Get the hit count for a breakpoint in the current session (0 if not hit or no session).</summary>
+    int GetHitCount(string filePath, int line) => 0;
+
+    /// <summary>Get all breakpoints for a specific file.</summary>
+    IReadOnlyList<DebugBreakpointInfo> GetBreakpointsForFile(string filePath) =>
+        Breakpoints.Where(b => string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase)).ToList();
 
     // ── Execution ──────────────────────────────────────────────────────────
 

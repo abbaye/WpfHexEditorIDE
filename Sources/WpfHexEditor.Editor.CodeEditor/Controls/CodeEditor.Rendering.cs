@@ -1429,30 +1429,58 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         /// <summary>
         /// Given a 0-based line, resolves the 0-based end line of the containing
-        /// statement by scanning forward while lines match any continuation pattern.
+        /// statement by scanning forward while lines match any continuation pattern,
+        /// then optionally extends to the enclosing block scope via folding regions.
         /// Returns <paramref name="line0"/> when no multi-line expansion is needed.
         /// </summary>
         private int ResolveStatementEndLine(int line0)
         {
-            if (_bpContinuationRegexes.Count == 0) return line0;
-
-            int lineCount = _document?.Lines.Count ?? 0;
-            int maxEnd    = Math.Min(line0 + _bpMaxScanLines, lineCount - 1);
-            int current   = line0;
-
-            while (current < maxEnd)
+            // Phase 1: Continuation-based resolution (regex scan forward).
+            int continuationEnd = line0;
+            if (_bpContinuationRegexes.Count > 0)
             {
-                string text = (_document!.Lines[current].Text ?? string.Empty).TrimEnd();
-                bool continues = false;
-                foreach (var r in _bpContinuationRegexes)
+                int lineCount = _document?.Lines.Count ?? 0;
+                int maxEnd    = Math.Min(line0 + _bpMaxScanLines, lineCount - 1);
+                int current   = line0;
+
+                while (current < maxEnd)
                 {
-                    if (r.IsMatch(text)) { continues = true; break; }
+                    string text = (_document!.Lines[current].Text ?? string.Empty).TrimEnd();
+                    bool continues = false;
+                    foreach (var r in _bpContinuationRegexes)
+                    {
+                        if (r.IsMatch(text)) { continues = true; break; }
+                    }
+                    if (!continues) break;
+                    current++;
                 }
-                if (!continues) break;
-                current++;
+                continuationEnd = current;
             }
 
-            return current;
+            // Phase 2: Block-scope extension via folding regions.
+            // Finds a Brace region whose StartLine falls within [line0, continuationEnd + 1]
+            // (+1 handles K&R style where '{' sits on the line right after continuation range;
+            //  for Allman style, BraceFoldingStrategy already adjusts StartLine to header line).
+            if (!_bpBlockScopeHighlight || _foldingEngine is null)
+                return continuationEnd;
+
+            FoldingRegion? best      = null;
+            int            searchLim = continuationEnd + 1;
+
+            foreach (var r in _foldingEngine.Regions)
+            {
+                if (r.Kind != FoldingRegionKind.Brace) continue;
+                if (r.IsCollapsed) continue;
+                if (r.StartLine < line0 || r.StartLine > searchLim) continue;
+
+                // Pick innermost (smallest span) to avoid class/method-level extension.
+                if (best is null || (r.EndLine - r.StartLine) < (best.EndLine - best.StartLine))
+                    best = r;
+            }
+
+            return best is not null
+                ? Math.Max(continuationEnd, best.EndLine)
+                : continuationEnd;
         }
 
         /// <summary>

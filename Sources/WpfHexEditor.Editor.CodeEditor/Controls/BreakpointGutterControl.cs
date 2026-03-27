@@ -87,6 +87,8 @@ internal sealed class BreakpointGutterControl : FrameworkElement
     private IReadOnlyDictionary<int, double> _lineYLookup = new Dictionary<int, double>();
     private Brush              _backgroundBrush = Brushes.Transparent;
     private int                _hoverLine = -1;          // 1-based, -1 = no hover
+    private DispatcherTimer?   _gutterHoverTimer;
+    private int                _gutterHoverTimerLine = -1; // 1-based line being timed
 
     // ── Extensibility ─────────────────────────────────────────────────────────
 
@@ -104,6 +106,12 @@ internal sealed class BreakpointGutterControl : FrameworkElement
     /// The App layer should open a <c>BreakpointInfoPopup</c> in response.
     /// </summary>
     internal event Action<string, int, double>? RightClickRequested;
+
+    /// <summary>
+    /// Fires when the mouse dwells on a breakpoint circle for 400ms.
+    /// Args: (filePath, 1-based line). Used to show the BreakpointHoverPopup from the gutter.
+    /// </summary>
+    internal event Action<string, int>? HoverBreakpointRequested;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -286,10 +294,44 @@ internal sealed class BreakpointGutterControl : FrameworkElement
         if (newHover == _hoverLine) return;
         _hoverLine = newHover;
         InvalidateVisual();
+
+        // Start/restart 400ms dwell timer when hovering a breakpoint circle.
+        if (newHover >= 1 && _source is not null && !string.IsNullOrEmpty(_filePath)
+            && _source.HasBreakpoint(_filePath, newHover))
+        {
+            if (_gutterHoverTimerLine != newHover)
+            {
+                _gutterHoverTimerLine = newHover;
+                _gutterHoverTimer ??= new DispatcherTimer();
+                _gutterHoverTimer.Stop();
+                _gutterHoverTimer.Interval = TimeSpan.FromMilliseconds(400);
+                _gutterHoverTimer.Tick -= OnGutterHoverTick;
+                _gutterHoverTimer.Tick += OnGutterHoverTick;
+                _gutterHoverTimer.Start();
+            }
+        }
+        else
+        {
+            StopGutterHoverTimer();
+        }
+    }
+
+    private void OnGutterHoverTick(object? sender, EventArgs e)
+    {
+        _gutterHoverTimer?.Stop();
+        if (_gutterHoverTimerLine >= 1 && !string.IsNullOrEmpty(_filePath))
+            HoverBreakpointRequested?.Invoke(_filePath, _gutterHoverTimerLine);
+    }
+
+    private void StopGutterHoverTimer()
+    {
+        _gutterHoverTimer?.Stop();
+        _gutterHoverTimerLine = -1;
     }
 
     private void OnMouseLeave(object sender, MouseEventArgs e)
     {
+        StopGutterHoverTimer();
         if (_hoverLine == -1) return;
         _hoverLine = -1;
         InvalidateVisual();

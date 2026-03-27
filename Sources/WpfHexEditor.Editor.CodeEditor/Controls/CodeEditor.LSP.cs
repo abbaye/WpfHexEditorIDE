@@ -157,6 +157,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             OnBreakpointRightClick(filePath, line1, clickY);
         }
 
+        /// <summary>Gutter hover dwell — delegate to the same breakpoint hover pipeline.</summary>
+        private void OnGutterBreakpointHover(string filePath, int line1)
+        {
+            HandleBreakpointHover(line1 - 1);
+        }
+
         internal void DismissBreakpointHover()
         {
             _bpHoverTimer?.Stop();

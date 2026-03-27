@@ -20,6 +20,7 @@ namespace WpfHexEditor.App.Services;
 internal sealed class BreakpointPersistenceManager
 {
     private readonly AppSettings _settings;
+    private readonly SolutionBreakpointStore _solutionStore = new();
 
     public BreakpointPersistenceManager(AppSettings settings)
         => _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -48,5 +49,26 @@ internal sealed class BreakpointPersistenceManager
                 Condition = b.Condition,
                 IsEnabled = b.IsEnabled,
             }));
+    }
+
+    // ── Solution-aware persistence ──────────────────────────────────────────
+
+    /// <summary>
+    /// Load breakpoints for the current context: solution store when available, global fallback.
+    /// </summary>
+    public IReadOnlyList<BreakpointLocation> LoadForContext(string? solutionFilePath) =>
+        !string.IsNullOrEmpty(solutionFilePath)
+            ? _solutionStore.Load(solutionFilePath)
+            : Load();
+
+    /// <summary>
+    /// Save breakpoints for the current context: solution store when available, global fallback.
+    /// </summary>
+    public void SaveForContext(string? solutionFilePath, IEnumerable<BreakpointLocation> breakpoints)
+    {
+        if (!string.IsNullOrEmpty(solutionFilePath))
+            _solutionStore.Save(solutionFilePath, breakpoints);
+        else
+            Save(breakpoints);
     }
 }

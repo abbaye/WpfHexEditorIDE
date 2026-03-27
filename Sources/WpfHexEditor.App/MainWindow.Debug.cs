@@ -24,6 +24,8 @@ using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.App.Services;
+using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App;
 
@@ -87,6 +89,13 @@ public partial class MainWindow
         // WireBreakpointSourceToEditor() is a no-op when _bpSourceAdapter is null (it runs before
         // this method), so we must explicitly push the adapter to all existing CodeEditors now.
         RefreshAllBreakpointGutters();
+
+        // Solution lifecycle → load/save per-solution breakpoints.
+        _solutionManager.SolutionChanged += OnSolutionChangedForBreakpoints;
+
+        // If a solution is already open (e.g. workspace restore), load its breakpoints now.
+        if (_solutionManager.CurrentSolution is not null)
+            (_debuggerService as DebuggerServiceImpl)?.OnSolutionChanged(_solutionManager.CurrentSolution.FilePath);
 
         // Register keyboard shortcuts for debug commands.
         // InputGestureText on MenuItems is display-only — actual WPF InputBindings are required.
@@ -353,11 +362,31 @@ public partial class MainWindow
     private void OnShowDebugLocals(object sender, RoutedEventArgs e)       => ShowOrCreatePanel("Locals",       "panel-dbg-locals",      DockDirection.Bottom);
     private void OnShowDebugWatch(object sender, RoutedEventArgs e)        => ShowOrCreatePanel("Watch",        "panel-dbg-watch",       DockDirection.Bottom);
 
+    // ── Solution → breakpoint lifecycle ─────────────────────────────────────
+
+    private void OnSolutionChangedForBreakpoints(object? sender, SolutionChangedEventArgs e)
+    {
+        if (_debuggerService is not DebuggerServiceImpl impl) return;
+
+        var solutionPath = e.Kind switch
+        {
+            SolutionChangeKind.Opened => e.Solution?.FilePath,
+            SolutionChangeKind.Closed => null,
+            _ => null, // Modified — no breakpoint action needed
+        };
+
+        // Only react to open/close transitions.
+        if (e.Kind is SolutionChangeKind.Opened or SolutionChangeKind.Closed)
+            impl.OnSolutionChanged(solutionPath);
+    }
+
     // ── Shutdown ──────────────────────────────────────────────────────────────
 
     /// <summary>Unsubscribes debug event subscriptions. Called from ShutdownPluginSystemAsync.</summary>
     private void ShutdownDebugIntegration()
     {
+        _solutionManager.SolutionChanged -= OnSolutionChangedForBreakpoints;
+
         if (_debugSubs is not null)
             foreach (var s in _debugSubs) s.Dispose();
         _debugSubs = null;

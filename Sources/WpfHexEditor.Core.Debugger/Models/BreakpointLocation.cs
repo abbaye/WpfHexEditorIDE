@@ -30,6 +30,9 @@ public sealed record BreakpointLocation
     /// <summary>Adapter-reported message (e.g. "unbound" reason).</summary>
     public string? Message   { get; init; }
 
+    /// <summary>Number of times this breakpoint was hit in the current debug session.</summary>
+    public int HitCount { get; init; }
+
     public override string ToString() =>
         $"{System.IO.Path.GetFileName(FilePath)}:{Line}{(string.IsNullOrEmpty(Condition) ? "" : $" [{Condition}]")}";
 }

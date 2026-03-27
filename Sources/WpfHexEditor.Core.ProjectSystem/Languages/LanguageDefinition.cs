@@ -237,6 +237,14 @@ public sealed record BreakpointRules
     /// statement extent.  Prevents runaway scanning.  Default = 20.
     /// </summary>
     public int MaxStatementScanLines { get; init; } = 20;
+
+    /// <summary>
+    /// When true, breakpoint/execution highlights extend to cover the enclosing
+    /// block scope (e.g., from <c>var x = new Foo</c> down to <c>};</c>) by
+    /// consulting folding regions whose StartLine falls within the statement
+    /// continuation range.  Default = true.
+    /// </summary>
+    public bool BlockScopeHighlight { get; init; } = true;
 }
 
 /// <summary>

@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.HexEditor.Controls;
@@ -28,7 +27,6 @@ public partial class HexEditor
     private BreadcrumbIndex? _bcIndex;
     private int _bcFieldsVersion;
     private ParsedFieldViewModel? _bcLastMatch;
-    private DispatcherTimer? _bcDebounce;
 
     /// <summary>Shows or hides the breadcrumb bar above the hex viewport.</summary>
     public bool ShowBreadcrumbBar
@@ -98,7 +96,7 @@ public partial class HexEditor
             SelectionStop = e.Offset + e.Length - 1;
     }
 
-    /// <summary>Updates the breadcrumb bar. Offset text is immediate; path is debounced.</summary>
+    /// <summary>Updates the breadcrumb bar with current state.</summary>
     internal void UpdateBreadcrumb()
     {
         if (_breadcrumbBar is null || _breadcrumbBar.Visibility != Visibility.Visible) return;
@@ -106,27 +104,10 @@ public partial class HexEditor
         var offset = SelectionStart >= 0 ? SelectionStart : 0;
         var selLen = (SelectionStop > SelectionStart) ? SelectionStop - SelectionStart + 1 : 0;
 
-        // Immediate: update offset + selection text (cheap — no allocation)
+        // Update offset text (always immediate)
         _breadcrumbBar.UpdateOffsetOnly(offset, selLen);
 
-        // Debounced: rebuild path segments
-        if (_bcDebounce == null)
-        {
-            _bcDebounce = new DispatcherTimer(DispatcherPriority.Background)
-            { Interval = TimeSpan.FromMilliseconds(150) };
-            _bcDebounce.Tick += OnBreadcrumbDebounce;
-        }
-        _bcDebounce.Stop();
-        _bcDebounce.Tag = offset;
-        _bcDebounce.Start();
-    }
-
-    private void OnBreadcrumbDebounce(object? sender, EventArgs e)
-    {
-        _bcDebounce!.Stop();
-        if (_breadcrumbBar is null || _breadcrumbBar.Visibility != Visibility.Visible) return;
-
-        var offset = _bcDebounce.Tag is long o ? o : 0L;
+        // Rebuild segments using cached index (O(log n) + skip-if-same)
         RebuildBreadcrumbSegments(offset);
     }
 
