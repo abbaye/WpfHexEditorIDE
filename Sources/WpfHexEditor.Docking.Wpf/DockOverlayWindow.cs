@@ -68,6 +68,9 @@ public class DockOverlayWindow : Window
             {
                 _highlightedDirection = value;
                 Rebuild();
+                // Accessibility: announce direction change to screen readers
+                System.Windows.Automation.AutomationProperties.SetName(
+                    this, value is not null ? $"Docking {value}" : "No dock target");
             }
         }
     }
@@ -86,6 +89,10 @@ public class DockOverlayWindow : Window
         ShowInTaskbar = false;
         Topmost = true;
         IsHitTestVisible = false;
+
+        // Accessibility: announce drop target to screen readers
+        System.Windows.Automation.AutomationProperties.SetLiveSetting(
+            this, System.Windows.Automation.AutomationLiveSetting.Polite);
 
         _canvas = new Canvas();
         Content = _canvas;
@@ -164,6 +171,7 @@ public class DockOverlayWindow : Window
 
         Rebuild();
         Show();
+        DockAnimationHelper.FadeIn(this, DockAnimationHelper.OverlayFadeInMs);
     }
 
     /// <summary>

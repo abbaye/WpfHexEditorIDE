@@ -282,6 +282,14 @@ public class AutoHideFlyout : Grid
     private const double MinSize              = 80;
     private const double ResizeThickness      = 6;
 
+    /// <summary>
+    /// Optional configurable timing. When null, uses built-in defaults.
+    /// </summary>
+    public AutoHideSettings? Settings { get; set; }
+
+    private int OpenAnimMs => Settings?.SlideAnimationMs ?? 120;
+    private int CloseAnimMs => Settings?.SlideAnimationMs > 0 ? Math.Max(Settings.SlideAnimationMs / 2, 60) : 100;
+
     private IReadOnlyList<DockItem> _currentGroup = [];
     private StackPanel? _tabStrip;
     private Func<DockItem, object>? _contentFactory;
@@ -638,7 +646,7 @@ public class AutoHideFlyout : Grid
         Visibility = Visibility.Visible;
 
         var showAnim = new DoubleAnimation(0, targetSize,
-            new Duration(TimeSpan.FromMilliseconds(120)))
+            new Duration(TimeSpan.FromMilliseconds(OpenAnimMs)))
         {
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
         };
@@ -669,7 +677,10 @@ public class AutoHideFlyout : Grid
         bool isHorizontal = _currentSide is DockSide.Left or DockSide.Right;
 
         var hideAnim = new DoubleAnimation(0,
-            new Duration(TimeSpan.FromMilliseconds(100)));
+            new Duration(TimeSpan.FromMilliseconds(CloseAnimMs)))
+        {
+            EasingFunction = DockAnimationHelper.GetFlyoutEase()
+        };
         hideAnim.Completed += (_, _) =>
         {
             if (_isOpen) return;  // ShowForItem was called before hide animation completed

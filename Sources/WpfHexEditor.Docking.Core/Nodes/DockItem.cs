@@ -34,10 +34,16 @@ public class DockItem : INotifyPropertyChanged
 
     public bool CanFloat { get; set; } = true;
 
+    private bool _isPinned;
+
     /// <summary>
     /// Whether this document tab is pinned (moved to the left, protected from Close All).
     /// </summary>
-    public bool IsPinned { get; set; }
+    public bool IsPinned
+    {
+        get => _isPinned;
+        set { if (_isPinned != value) { _isPinned = value; OnPropertyChanged(); } }
+    }
 
     private bool _isSticky;
 
@@ -50,6 +56,18 @@ public class DockItem : INotifyPropertyChanged
     {
         get => _isSticky;
         set { if (_isSticky != value) { _isSticky = value; OnPropertyChanged(); } }
+    }
+
+    private bool _isDirty;
+
+    /// <summary>
+    /// Whether this item has unsaved changes. When true, the tab header
+    /// shows a dirty indicator (dot) and appends " \u2022" to the title display.
+    /// </summary>
+    public bool IsDirty
+    {
+        get => _isDirty;
+        set { if (_isDirty != value) { _isDirty = value; OnPropertyChanged(); } }
     }
 
     /// <summary>

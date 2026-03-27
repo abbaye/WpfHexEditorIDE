@@ -75,6 +75,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     // ── Lazy update state ────────────────────────────────────────────────────
     private bool _isPanelVisible = true;
     private ParsedFieldsUpdateRequestedEvent? _pendingUpdate;
+    private bool _hexEditorHandledLastSwitch; // set by OnActiveEditorChanged, cleared by OnFocusChanged
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -208,13 +209,14 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     /// </summary>
     private void ActivatePreview(string? filePath)
     {
-        if (_panel == null) return;
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
+        _context?.Output?.Info($"[ParsedFields] ActivatePreview: {filePath}");
+        if (_panel == null) { _context?.Output?.Info("[ParsedFields] ActivatePreview: _panel is null"); return; }
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) { _context?.Output?.Info("[ParsedFields] ActivatePreview: file missing"); return; }
 
         // Dedup: don't re-parse the same file
         if (string.Equals(filePath, _lastPreviewFilePath, StringComparison.OrdinalIgnoreCase)
             && _previewService?.ActiveFormat != null)
-            return;
+        { _context?.Output?.Info("[ParsedFields] ActivatePreview: dedup skip"); return; }
 
         // Disconnect HexEditor's panel connection — preview takes over
         _context?.HexEditor.DisconnectParsedFieldsPanel();
@@ -234,8 +236,10 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Attach new data source
         _previewDataSource?.Dispose();
         _previewDataSource = new GenericFileDataSource(filePath);
+        _context?.Output?.Info($"[ParsedFields] Attaching source, formats={_previewService.LoadedFormatCount}");
         _previewService.Attach(_previewDataSource); // autoDetect=true → DetectAndParseAsync
         _lastPreviewFilePath = filePath;
+        _context?.Output?.Info($"[ParsedFields] Done. ActiveFormat={_previewService.ActiveFormat?.FormatName ?? "(detecting async...)"}");
     }
 
     /// <summary>
@@ -250,18 +254,26 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         try
         {
             var catalog = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance;
-            var formats = catalog.GetAll()
-                .Select(entry => (json: catalog.GetJson(entry.ResourceKey), entry.Category))
-                .Where(t => !string.IsNullOrEmpty(t.json))
-                .Select(t => (t.json!, (string?)t.Category));
-            _previewService.LoadFormats(formats);
-            System.Diagnostics.Debug.WriteLine(
-                $"[ParsedFieldsPlugin] Preview service loaded {_previewService.LoadedFormatCount} formats");
+            var allEntries = catalog.GetAll();
+            _context?.Output?.Info($"[ParsedFields] EmbeddedFormatCatalog: {allEntries.Count} entries");
+
+            int loaded = 0;
+            foreach (var entry in allEntries)
+            {
+                try
+                {
+                    var json = catalog.GetJson(entry.ResourceKey);
+                    if (string.IsNullOrEmpty(json)) continue;
+                    _previewService.LoadFormats(new[] { (json, (string?)entry.Category) });
+                    loaded++;
+                }
+                catch { /* skip bad format */ }
+            }
+            _context?.Output?.Info($"[ParsedFields] Preview formats loaded: {loaded} (service reports {_previewService.LoadedFormatCount})");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine(
-                $"[ParsedFieldsPlugin] Failed to load embedded formats: {ex.Message}");
+            _context?.Output?.Error($"[ParsedFields] Failed to load embedded formats: {ex.Message}");
         }
     }
 
@@ -339,32 +351,42 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     // ══════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Document tab focus changed.
-    /// HexEditor tabs are SKIPPED — handled by OnActiveEditorChanged (legacy path).
-    /// Non-hex document tabs trigger a preview via _previewService.
+    /// Document tab focus changed. For non-HexEditor tabs (CodeEditor, TextEditor, etc.),
+    /// activates preview mode. HexEditor tabs are handled by OnActiveEditorChanged instead.
+    /// Deferred to Background priority so OnActiveEditorChanged has time to set
+    /// _hexEditorHandledLastSwitch before this callback checks it.
     /// </summary>
     private void OnFocusChanged(object? sender, FocusChangedEventArgs e)
     {
         if (e.ActiveDocument == null) return;
         if (e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
 
-        // HexEditor tabs are handled by their own per-tab FormatParsingService
-        // via the legacy ActiveEditorChanged → ConnectParsedFieldsPanel path.
-        if (e.ActiveDocument.DocumentType == "hex") return;
-
         var filePath = e.ActiveDocument.FilePath;
         if (string.IsNullOrEmpty(filePath)) return;
 
-        QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent
+        // Clear the flag — OnActiveEditorChanged will set it back to true if it fires
+        _hexEditorHandledLastSwitch = false;
+
+        // Defer to ContextIdle priority (LOWER than Background) so OnActiveEditorChanged
+        // (which fires at Background) has already run and set the flag by the time we check.
+        _panel?.Dispatcher.InvokeAsync(() =>
         {
-            FilePath = filePath,
-            SourceKind = "document"
-        });
+            // If HexEditor claimed this tab switch, skip — it already reconnected the panel
+            if (_hexEditorHandledLastSwitch) return;
+
+            // Non-hex document — activate preview
+            QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent
+            {
+                FilePath = filePath,
+                SourceKind = "document"
+            });
+        }, System.Windows.Threading.DispatcherPriority.ContextIdle);
     }
 
     /// <summary>Solution Explorer file selected → preview format.</summary>
     private void OnFilePreviewRequested(FilePreviewRequestedEvent evt)
     {
+        _context?.Output?.Info($"[ParsedFields] OnFilePreviewRequested: {evt.FilePath} (visible={_isPanelVisible})");
         if (string.IsNullOrEmpty(evt.FilePath) || !File.Exists(evt.FilePath)) return;
 
         QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent
@@ -400,10 +422,14 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     /// <summary>
     /// HexEditor tab switched. Deactivate preview service and reconnect
     /// the panel to the new HexEditor's per-tab FormatParsingService.
+    /// Only fires when the new active tab IS a HexEditor.
     /// </summary>
     private void OnActiveEditorChanged(object? sender, EventArgs e)
     {
         if (_panel is null || _context is null) return;
+
+        // Signal that HexEditor handled this tab switch — OnFocusChanged should skip
+        _hexEditorHandledLastSwitch = true;
 
         // Deactivate preview — HexEditor takes panel ownership
         DeactivatePreview();

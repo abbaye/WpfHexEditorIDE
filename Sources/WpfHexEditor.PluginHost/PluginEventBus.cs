@@ -104,36 +104,42 @@ public sealed class PluginEventBus : IPluginEventBus
 
     private sealed class WeakHandlerWrapper<TEvent> : WeakHandlerWrapper where TEvent : class
     {
-        private readonly WeakReference<Delegate> _weakRef;
+        // Strong reference to the delegate — prevents GC from collecting method group
+        // delegates allocated by Subscribe() before Publish() is called.
+        // Cleanup is handled by IDisposable.Dispose() on the Subscription token.
+        private Delegate? _strongRef;
         private readonly bool _isAsync;
 
         public WeakHandlerWrapper(Action<TEvent> handler, bool isAsync)
         {
-            _weakRef = new WeakReference<Delegate>(handler);
+            _strongRef = handler;
             _isAsync = false;
         }
 
         public WeakHandlerWrapper(Func<TEvent, Task> handler)
         {
-            _weakRef = new WeakReference<Delegate>(handler);
+            _strongRef = handler;
             _isAsync = true;
         }
 
-        public override bool IsAlive => _weakRef.TryGetTarget(out _);
+        public override bool IsAlive => _strongRef is not null;
 
         public override void Invoke(object evt)
         {
-            if (!_isAsync && _weakRef.TryGetTarget(out var d) && d is Action<TEvent> action)
+            if (!_isAsync && _strongRef is Action<TEvent> action)
                 action((TEvent)evt);
         }
 
         public override async Task InvokeAsync(object evt, CancellationToken ct)
         {
-            if (_isAsync && _weakRef.TryGetTarget(out var d) && d is Func<TEvent, Task> func)
+            if (_isAsync && _strongRef is Func<TEvent, Task> func)
                 await func((TEvent)evt).ConfigureAwait(false);
             else
                 Invoke(evt);
         }
+
+        /// <summary>Release the strong reference (called when Subscription is disposed).</summary>
+        public void Release() => _strongRef = null;
     }
 
     private sealed class Subscription(Action onDispose) : IDisposable

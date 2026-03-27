@@ -65,4 +65,59 @@ public static class DockCommands
     public static readonly RoutedUICommand RedoLayout = new(
         "Redo Layout", nameof(RedoLayout), typeof(DockCommands),
         new InputGestureCollection { new KeyGesture(Key.Y, ModifierKeys.Control | ModifierKeys.Shift) });
+
+    public static readonly RoutedUICommand NewVerticalTabGroup = new(
+        "New Vertical Tab Group", nameof(NewVerticalTabGroup), typeof(DockCommands));
+
+    public static readonly RoutedUICommand NewHorizontalTabGroup = new(
+        "New Horizontal Tab Group", nameof(NewHorizontalTabGroup), typeof(DockCommands));
+
+    public static readonly RoutedUICommand MoveToNextTabGroup = new(
+        "Move to Next Tab Group", nameof(MoveToNextTabGroup), typeof(DockCommands));
+
+    public static readonly RoutedUICommand MoveToPreviousTabGroup = new(
+        "Move to Previous Tab Group", nameof(MoveToPreviousTabGroup), typeof(DockCommands));
+
+    public static readonly RoutedUICommand PinTab = new(
+        "Pin Tab", nameof(PinTab), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt) });
+
+    public static readonly RoutedUICommand QuickWindowSearch = new(
+        "Quick Window Search", nameof(QuickWindowSearch), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.A, ModifierKeys.Control | ModifierKeys.Shift) });
+
+    public static readonly RoutedUICommand QuickSaveLayout1 = new(
+        "Save Layout 1", nameof(QuickSaveLayout1), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Shift) });
+
+    public static readonly RoutedUICommand QuickSaveLayout2 = new(
+        "Save Layout 2", nameof(QuickSaveLayout2), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Shift) });
+
+    public static readonly RoutedUICommand QuickSaveLayout3 = new(
+        "Save Layout 3", nameof(QuickSaveLayout3), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Shift) });
+
+    public static readonly RoutedUICommand QuickSaveLayout4 = new(
+        "Save Layout 4", nameof(QuickSaveLayout4), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Shift) });
+
+    public static readonly RoutedUICommand QuickLoadLayout1 = new(
+        "Load Layout 1", nameof(QuickLoadLayout1), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt) });
+
+    public static readonly RoutedUICommand QuickLoadLayout2 = new(
+        "Load Layout 2", nameof(QuickLoadLayout2), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Alt) });
+
+    public static readonly RoutedUICommand QuickLoadLayout3 = new(
+        "Load Layout 3", nameof(QuickLoadLayout3), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt) });
+
+    public static readonly RoutedUICommand QuickLoadLayout4 = new(
+        "Load Layout 4", nameof(QuickLoadLayout4), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt) });
+
+    public static readonly RoutedUICommand ManageProfiles = new(
+        "Manage Layout Profiles", nameof(ManageProfiles), typeof(DockCommands));
 }

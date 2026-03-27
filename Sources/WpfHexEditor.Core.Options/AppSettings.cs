@@ -139,6 +139,50 @@ public sealed class AppSettings
 
     /// <summary>Docking tab thumbnail hover-preview options.</summary>
     public TabPreviewAppSettings TabPreview { get; set; } = new();
+
+    // -- Docking — Auto-Hide Timing -----------------------------------------------
+
+    /// <summary>Delay in ms before auto-hide flyout opens on hover (default 400).</summary>
+    public int AutoHideOpenDelayMs { get; set; } = 400;
+
+    /// <summary>Delay in ms before auto-hide flyout closes after mouse leaves (default 300).</summary>
+    public int AutoHideCloseDelayMs { get; set; } = 300;
+
+    /// <summary>Duration in ms for auto-hide slide animation (default 120).</summary>
+    public int AutoHideSlideAnimationMs { get; set; } = 120;
+
+    // -- Docking — Animations -----------------------------------------------------
+
+    /// <summary>Duration in ms for dock overlay fade-in (default 150). 0 = instant.</summary>
+    public int DockOverlayFadeInMs { get; set; } = 150;
+
+    /// <summary>Duration in ms for dock overlay fade-out (default 100). 0 = instant.</summary>
+    public int DockOverlayFadeOutMs { get; set; } = 100;
+
+    /// <summary>Duration in ms for floating window fade-in (default 120). 0 = instant.</summary>
+    public int FloatingWindowFadeInMs { get; set; } = 120;
+
+    /// <summary>When false, all docking animations are disabled (instant transitions).</summary>
+    public bool DockAnimationsEnabled { get; set; } = true;
+
+    // -- Docking — Panel Sizing ---------------------------------------------------
+
+    /// <summary>Maximum display width in px for a tab header title (default 180). Controls ellipsis truncation.</summary>
+    public int MaxTabWidth { get; set; } = 180;
+
+    /// <summary>Minimum pane size in px during splitter resize (default 60).</summary>
+    public int MinPaneSize { get; set; } = 60;
+
+    /// <summary>Default width in px for new floating windows (default 400).</summary>
+    public int FloatingWindowDefaultWidth { get; set; } = 400;
+
+    /// <summary>Default height in px for new floating windows (default 300).</summary>
+    public int FloatingWindowDefaultHeight { get; set; } = 300;
+
+    // -- Docking — Layout Profiles ------------------------------------------------
+
+    /// <summary>Directory for storing layout profile files. Null = AppData default.</summary>
+    public string? LayoutProfileDirectory { get; set; }
 }
 
 // ─── Command Palette ──────────────────────────────────────────────────────────
@@ -842,6 +886,21 @@ public sealed class TabPreviewAppSettings
     public static event Action? Changed;
 
     /// <summary>Signal that settings have been updated. Called by <c>TabPreviewOptionsPage.Flush()</c>.</summary>
+    public static void NotifyChanged() => Changed?.Invoke();
+}
+
+// ─── Auto-Hide Settings Notification ──────────────────────────────────────────
+
+/// <summary>
+/// Static notification for auto-hide settings changes, mirroring
+/// <see cref="TabPreviewAppSettings.Changed"/> pattern.
+/// </summary>
+public static class AutoHideAppSettings
+{
+    /// <summary>Raised when auto-hide timing settings are flushed.</summary>
+    public static event Action? Changed;
+
+    /// <summary>Signal that settings have been updated. Called by DockingOptionsPage.Flush().</summary>
     public static void NotifyChanged() => Changed?.Invoke();
 }
 

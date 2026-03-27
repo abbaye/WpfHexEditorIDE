@@ -46,6 +46,8 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
     private readonly ComboBox  _colorModeCombo;
     private readonly CheckBox  _multiRowCheck;
     private readonly CheckBox  _multiRowWheelCheck;
+    private readonly Slider    _maxTabWidthSlider;
+    private readonly TextBlock _maxTabWidthLabel;
 
     // ── UI fields — Tab Preview ───────────────────────────────────────────────
 
@@ -105,6 +107,8 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
         _multiRowWheelCheck.Checked   += OnChanged;
         _multiRowWheelCheck.Unchecked += OnChanged;
 
+        (_maxTabWidthSlider, _maxTabWidthLabel) = MakeSlider(80, 500, 10);
+
         // ── Tab Preview ───────────────────────────────────────────────────────
         _enableCheck = new CheckBox { Content = "Enable tab hover preview", Margin = new Thickness(0, 4, 0, 4) };
         _enableCheck.Checked   += OnChanged;
@@ -132,6 +136,7 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
         root.Children.Add(MakeLabeledRow("Tab color mode:", _colorModeCombo));
         root.Children.Add(_multiRowCheck);
         root.Children.Add(_multiRowWheelCheck);
+        root.Children.Add(MakeSliderRow("Max tab width (px):", _maxTabWidthSlider, _maxTabWidthLabel));
 
         // Tab Preview section
         root.Children.Add(MakeSectionHeader("Tab Preview"));
@@ -166,6 +171,7 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
                 _colorModeCombo.SelectedIndex  = (int)_tabBarSettings.ColorMode;
                 _multiRowCheck.IsChecked       = _tabBarSettings.MultiRowTabs;
                 _multiRowWheelCheck.IsChecked  = _tabBarSettings.MultiRowWithMouseWheel;
+                _maxTabWidthSlider.Value       = settings.MaxTabWidth;
             }
             else
             {
@@ -198,6 +204,7 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
             _tabBarSettings.MultiRowTabs           = _multiRowCheck.IsChecked      == true;
             _tabBarSettings.MultiRowWithMouseWheel = _multiRowWheelCheck.IsChecked == true;
         }
+        settings.MaxTabWidth = (int)_maxTabWidthSlider.Value;
 
         // Tab Preview — write to AppSettings then notify MainWindow
         var p = settings.TabPreview;

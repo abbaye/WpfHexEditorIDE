@@ -91,6 +91,28 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     public TabPreviewSettings TabPreviewSettings { get; } = new();
 
+    /// <summary>
+    /// Configurable timing for auto-hide flyout. Mutate then rebuild visual tree to apply.
+    /// </summary>
+    public AutoHideSettings AutoHideSettings { get; } = new();
+
+    /// <summary>
+    /// Optional workspace facade for profile quick-save/load commands.
+    /// </summary>
+    public DockWorkspace? Workspace { get; set; }
+
+    /// <summary>
+    /// Applies animation timing settings to the internal animation helper.
+    /// Call after changing settings to take effect immediately.
+    /// </summary>
+    public void ApplyAnimationSettings(bool enabled, int overlayFadeInMs, int overlayFadeOutMs, int floatingFadeInMs)
+    {
+        DockAnimationHelper.AnimationsEnabled = enabled;
+        DockAnimationHelper.OverlayFadeInMs   = overlayFadeInMs;
+        DockAnimationHelper.OverlayFadeOutMs  = overlayFadeOutMs;
+        DockAnimationHelper.FloatingFadeInMs  = floatingFadeInMs;
+    }
+
     public static readonly DependencyProperty LayoutProperty =
         DependencyProperty.Register(
             nameof(Layout),
@@ -395,7 +417,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideRight = new AutoHideBar(Dock.Right);
         _autoHideTop = new AutoHideBar(Dock.Top);
         _autoHideBottom = new AutoHideBar(Dock.Bottom);
-        _autoHideFlyout = new AutoHideFlyout();
+        _autoHideFlyout = new AutoHideFlyout { Settings = AutoHideSettings };
         _autoHideFlyout.SnapshotReady    += CaptureAutoHideSnapshot;  // primary: full-size, fully-painted panel
         _autoHideFlyout.Dismissing       += CaptureAutoHideSnapshot;  // fallback: covers quick dismiss before animation ends
         _autoHideFlyout.Dismissing       += () => ClearAllAutoHideBarHighlights();
@@ -514,6 +536,89 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             DockCommands.RedoLayout,
             (_, _) => { CommandStack.Redo(); RebuildVisualTree(); },
             (_, e) => e.CanExecute = CommandStack.CanRedo));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.NewVerticalTabGroup,
+            (_, _) =>
+            {
+                if (GetActiveDocumentItem() is { } item)
+                    HandleNewTabGroup(item, DockDirection.Right);
+            },
+            (_, e) => e.CanExecute = GetActiveDocumentItem() is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.NewHorizontalTabGroup,
+            (_, _) =>
+            {
+                if (GetActiveDocumentItem() is { } item)
+                    HandleNewTabGroup(item, DockDirection.Bottom);
+            },
+            (_, e) => e.CanExecute = GetActiveDocumentItem() is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.MoveToNextTabGroup,
+            (_, _) =>
+            {
+                if (GetActiveDocumentItem() is { } item)
+                    HandleMoveToAdjacentGroup(item, forward: true);
+            },
+            (_, e) => e.CanExecute = GetActiveDocumentItem() is not null
+                && (Layout?.GetAllDocumentHosts().Skip(1).Any() ?? false)));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.MoveToPreviousTabGroup,
+            (_, _) =>
+            {
+                if (GetActiveDocumentItem() is { } item)
+                    HandleMoveToAdjacentGroup(item, forward: false);
+            },
+            (_, e) => e.CanExecute = GetActiveDocumentItem() is not null
+                && (Layout?.GetAllDocumentHosts().Skip(1).Any() ?? false)));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.PinTab,
+            (_, _) =>
+            {
+                if (GetActiveDocumentItem() is not { } item) return;
+                item.IsPinned = !item.IsPinned;
+                // Reorder pinned tabs first in the group
+                if (item.Owner is { } group)
+                {
+                    var current = group.Items.ToList();
+                    var ordered = current.Where(i => i.IsPinned)
+                        .Concat(current.Where(i => !i.IsPinned)).ToList();
+                    if (!current.SequenceEqual(ordered))
+                    {
+                        var active = group.ActiveItem;
+                        foreach (var i in current) group.RemoveItem(i);
+                        foreach (var i in ordered) group.AddItem(i);
+                        if (active is not null) group.ActiveItem = active;
+                    }
+                }
+                RebuildVisualTree();
+            },
+            (_, e) => e.CanExecute = GetActiveDocumentItem() is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.QuickWindowSearch,
+            (_, _) => ShowQuickWindowSearch(),
+            (_, e) => e.CanExecute = Layout is not null));
+
+        // Quick layout profile save/load (Ctrl+Shift+1..4 / Ctrl+Alt+1..4)
+        var saveCommands = new[] { DockCommands.QuickSaveLayout1, DockCommands.QuickSaveLayout2, DockCommands.QuickSaveLayout3, DockCommands.QuickSaveLayout4 };
+        var loadCommands = new[] { DockCommands.QuickLoadLayout1, DockCommands.QuickLoadLayout2, DockCommands.QuickLoadLayout3, DockCommands.QuickLoadLayout4 };
+        for (int i = 0; i < 4; i++)
+        {
+            var slot = i + 1;
+            CommandBindings.Add(new CommandBinding(
+                saveCommands[i],
+                (_, _) => Workspace?.SaveQuickProfile(slot),
+                (_, e) => e.CanExecute = Layout is not null));
+            CommandBindings.Add(new CommandBinding(
+                loadCommands[i],
+                (_, _) => { if (Workspace?.LoadQuickProfile(slot) == true) RebuildVisualTree(); },
+                (_, e) => e.CanExecute = Layout is not null));
+        }
     }
 
     /// <summary>
@@ -879,6 +984,113 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         RebuildVisualTree();
     }
 
+    // ── Document Tab Group Operations ──────────────────────────────────
+
+    /// <summary>
+    /// Splits the document area by moving <paramref name="item"/> into a new
+    /// DocumentHostNode beside the current one.
+    /// </summary>
+    internal void HandleNewTabGroup(DockItem item, DockDirection direction)
+    {
+        if (_engine is null || item.Owner is not DocumentHostNode docHost) return;
+        _engine.SplitDocumentHost(item, docHost, direction);
+        RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Moves <paramref name="item"/> to the next (or previous) DocumentHostNode.
+    /// </summary>
+    internal void HandleMoveToAdjacentGroup(DockItem item, bool forward)
+    {
+        if (_engine is null || Layout is null || item.Owner is not DocumentHostNode currentHost) return;
+        var hosts = Layout.GetAllDocumentHosts().ToList();
+        if (hosts.Count < 2) return;
+        var idx = hosts.IndexOf(currentHost);
+        if (idx < 0) return;
+        var targetIdx = forward ? (idx + 1) % hosts.Count : (idx - 1 + hosts.Count) % hosts.Count;
+        _engine.MoveItem(item, hosts[targetIdx]);
+        RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Closes the document tab group that contains <paramref name="item"/>
+    /// by moving all its tabs to the main document host.
+    /// </summary>
+    internal void HandleCloseTabGroup(DockItem item)
+    {
+        if (_engine is null || Layout is null || item.Owner is not DocumentHostNode docHost) return;
+        if (docHost.IsMain) return; // Cannot close the main document host
+        var mainHost = Layout.MainDocumentHost;
+        _engine.BeginTransaction();
+        foreach (var tabItem in docHost.Items.ToList())
+            _engine.MoveItem(tabItem, mainHost);
+        _engine.CommitTransaction();
+        RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Returns the active item in the main document host (for command CanExecute checks).
+    /// </summary>
+    private DockItem? GetActiveDocumentItem() =>
+        Layout?.MainDocumentHost.ActiveItem
+        ?? Layout?.GetAllDocumentHosts().Select(h => h.ActiveItem).FirstOrDefault(i => i is not null);
+
+    /// <summary>
+    /// Opens the Quick Window Search popup (Ctrl+Shift+A) showing all known panels.
+    /// </summary>
+    private void ShowQuickWindowSearch()
+    {
+        if (Layout is null) return;
+
+        // Collect all items: docked groups + floating + auto-hide + hidden
+        var allItems = new List<DockItem>();
+        foreach (var group in Layout.GetAllGroups())
+            allItems.AddRange(group.Items);
+        allItems.AddRange(Layout.FloatingItems);
+        allItems.AddRange(Layout.AutoHideItems);
+        allItems.AddRange(Layout.HiddenItems);
+
+        // Deduplicate by Id
+        var seen = new HashSet<Guid>();
+        var deduped = new List<DockItem>();
+        foreach (var item in allItems)
+        {
+            if (seen.Add(item.Id))
+                deduped.Add(item);
+        }
+
+        var popup = new QuickWindowSearchWindow(deduped);
+
+        // Center over the dock control
+        var screenPos = PointToScreen(new Point(ActualWidth / 2 - 200, ActualHeight / 4));
+        popup.Left = screenPos.X;
+        popup.Top = screenPos.Y;
+        popup.ShowDialog();
+
+        if (popup.SelectedItem is { } selected)
+        {
+            // Activate the selected item
+            if (selected.State == DockItemState.Hidden && _engine is not null)
+            {
+                _engine.Show(selected);
+                RebuildVisualTree();
+            }
+            else if (selected.State == DockItemState.AutoHide && _engine is not null)
+            {
+                _engine.RestoreFromAutoHide(selected);
+                RebuildVisualTree();
+            }
+            else if (selected.Owner is { } group)
+            {
+                group.ActiveItem = selected;
+                RebuildVisualTree();
+            }
+            TrackActivation(selected);
+        }
+    }
+
+    // ── End Document Tab Group Operations ───────────────────────────────
+
     /// <summary>
     /// Rebuilds the entire visual tree from the current Layout.
     /// </summary>
@@ -910,6 +1122,20 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             var mainActiveItem = Layout.MainDocumentHost.ActiveItem;
             if (mainActiveItem is not null)
                 Dispatcher.BeginInvoke(() => TrackActivation(mainActiveItem));
+        }
+
+        // Restore focus to the previously active tab's content after visual tree rebuild
+        if (ActivationHistory.Count > 0)
+        {
+            var lastActive = ActivationHistory[0];
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, () =>
+            {
+                if (lastActive.Owner is { } group && _tabControlCache.TryGetValue(group, out var tc))
+                {
+                    if (tc.SelectedItem is System.Windows.Controls.TabItem tab)
+                        tab.Focus();
+                }
+            });
         }
     }
 
@@ -992,6 +1218,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         var tabControl = new DockTabControl();
         tabControl.TabStripPlacement     = Dock.Bottom;
         tabControl.ExtraMenuItemsFactory = TabExtraMenuItemsFactory;
+        tabControl.HasMultipleDocumentHostsCheck = () =>
+            Layout?.GetAllDocumentHosts().Skip(1).Any() ?? false;
         tabControl.Bind(group, CachedContentFactory);
         WireTabControlEvents(tabControl);
         _tabPreviews.Add(TabHoverPreview.Attach(tabControl, TabPreviewSettings));

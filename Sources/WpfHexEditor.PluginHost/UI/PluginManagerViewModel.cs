@@ -255,6 +255,10 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         if (previousId is not null)
             SelectedPlugin = Plugins.FirstOrDefault(p => p.Id == previousId);
 
+        // Auto-select first plugin when no prior selection exists
+        if (SelectedPlugin is null && Plugins.Count > 0)
+            SelectedPlugin = Plugins[0];
+
         RefreshGlobalMetrics();
     }
 

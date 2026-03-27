@@ -44,6 +44,8 @@ internal sealed class DockKeyboardNavigation
         _dockControl.PreviewKeyDown -= OnPreviewKeyDown;
     }
 
+    private bool _isDockNavMode;
+
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Tab && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
@@ -55,6 +57,50 @@ internal sealed class DockKeyboardNavigation
         {
             CyclePanels();
             e.Handled = true;
+        }
+        else if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift))
+        {
+            ToggleDockNavigationMode();
+            e.Handled = true;
+        }
+        else if (_isDockNavMode)
+        {
+            HandleDockNavKey(e);
+        }
+    }
+
+    private void ToggleDockNavigationMode()
+    {
+        _isDockNavMode = !_isDockNavMode;
+        // Visual feedback: highlight the border of the focused panel
+        if (!_isDockNavMode) return;
+        var tabControls = new List<DockTabControl>();
+        CollectTabControls(_dockControl, tabControls);
+        if (tabControls.Count > 0 && tabControls[0].SelectedItem is TabItem tab)
+            tab.Focus();
+    }
+
+    private void HandleDockNavKey(KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Escape:
+                _isDockNavMode = false;
+                e.Handled = true;
+                break;
+
+            case Key.Enter:
+                _isDockNavMode = false;
+                e.Handled = true;
+                break;
+
+            case Key.Left:
+            case Key.Right:
+            case Key.Up:
+            case Key.Down:
+                CyclePanels();
+                e.Handled = true;
+                break;
         }
     }
 

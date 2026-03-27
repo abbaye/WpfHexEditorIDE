@@ -6,6 +6,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -16,11 +17,15 @@ namespace WpfHexEditor.Shell;
 /// VS-style Ctrl+Tab navigator window. Shows two columns: "Active Documents" and
 /// "Active Tool Windows", sorted by most-recently-used order.
 /// Tab/arrows cycle the selection; releasing Ctrl confirms; Escape cancels.
+/// Left/Right arrows cross between columns. Type-ahead filter supported.
 /// </summary>
 internal sealed class NavigatorWindow : Window
 {
     private readonly ListBox _documentsList;
     private readonly ListBox _toolsList;
+    private readonly TextBox _searchBox;
+    private readonly IReadOnlyList<DockItem> _allDocuments;
+    private readonly IReadOnlyList<DockItem> _allTools;
     private DockItem? _selectedItem;
     private bool _confirmed;
 
@@ -31,6 +36,9 @@ internal sealed class NavigatorWindow : Window
         IReadOnlyList<DockItem> tools,
         DockItem? currentItem)
     {
+        _allDocuments = documents;
+        _allTools = tools;
+
         WindowStyle = WindowStyle.None;
         AllowsTransparency = true;
         ResizeMode = ResizeMode.NoResize;
@@ -49,6 +57,24 @@ internal sealed class NavigatorWindow : Window
         border.Freeze();
         BorderBrush = border;
         BorderThickness = new Thickness(1);
+
+        var outerPanel = new DockPanel();
+
+        // Search box at top
+        _searchBox = new TextBox
+        {
+            Margin = new Thickness(8, 8, 8, 4),
+            Padding = new Thickness(4, 2, 4, 2),
+            FontSize = 12,
+            Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x37)),
+            Foreground = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(0x50, 0x50, 0x55)),
+            BorderThickness = new Thickness(1),
+            CaretBrush = Brushes.White
+        };
+        DockPanel.SetDock(_searchBox, Dock.Top);
+        _searchBox.TextChanged += OnSearchTextChanged;
+        outerPanel.Children.Add(_searchBox);
 
         var rootGrid = new Grid();
         rootGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -70,7 +96,8 @@ internal sealed class NavigatorWindow : Window
         Grid.SetColumn(toolsPanel, 1);
         rootGrid.Children.Add(toolsPanel);
 
-        Content = rootGrid;
+        outerPanel.Children.Add(rootGrid);
+        Content = outerPanel;
 
         // Select the current item or first document
         if (currentItem is not null)
@@ -119,6 +146,39 @@ internal sealed class NavigatorWindow : Window
         PreviewKeyUp += OnPreviewKeyUp;
     }
 
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        var filter = _searchBox.Text.Trim();
+        RebuildFilteredList(_documentsList, _allDocuments, filter);
+        RebuildFilteredList(_toolsList, _allTools, filter);
+
+        // Auto-select first visible item
+        if (_documentsList.Items.Count > 0)
+        {
+            _documentsList.SelectedIndex = 0;
+            _selectedItem = _documentsList.Items[0] as DockItem;
+        }
+        else if (_toolsList.Items.Count > 0)
+        {
+            _toolsList.SelectedIndex = 0;
+            _selectedItem = _toolsList.Items[0] as DockItem;
+        }
+    }
+
+    private static void RebuildFilteredList(ListBox list, IReadOnlyList<DockItem> source, string filter)
+    {
+        list.Items.Clear();
+        foreach (var item in source)
+        {
+            if (string.IsNullOrEmpty(filter)
+                || item.Title.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                || item.ContentId.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            {
+                list.Items.Add(item);
+            }
+        }
+    }
+
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Escape)
@@ -137,11 +197,41 @@ internal sealed class NavigatorWindow : Window
             return;
         }
 
+        // Left/Right arrows cross between document and tool columns
+        if (e.Key == Key.Left)
+        {
+            if (_toolsList.SelectedIndex >= 0 && _documentsList.Items.Count > 0)
+            {
+                _documentsList.SelectedIndex = Math.Min(_toolsList.SelectedIndex, _documentsList.Items.Count - 1);
+                _documentsList.Focus();
+                e.Handled = true;
+            }
+            return;
+        }
+
+        if (e.Key == Key.Right)
+        {
+            if (_documentsList.SelectedIndex >= 0 && _toolsList.Items.Count > 0)
+            {
+                _toolsList.SelectedIndex = Math.Min(_documentsList.SelectedIndex, _toolsList.Items.Count - 1);
+                _toolsList.Focus();
+                e.Handled = true;
+            }
+            return;
+        }
+
         if (e.Key == Key.Tab)
         {
             var reverse = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
             AdvanceSelection(reverse);
             e.Handled = true;
+        }
+
+        // Type-ahead: forward printable keys to search box
+        if (e.Key >= Key.A && e.Key <= Key.Z && !_searchBox.IsFocused)
+        {
+            _searchBox.Focus();
+            // Let the key pass through to the TextBox
         }
     }
 

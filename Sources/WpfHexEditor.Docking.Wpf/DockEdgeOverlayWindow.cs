@@ -234,6 +234,7 @@ public class DockEdgeOverlayWindow : Window
 
         Rebuild();
         Show();
+        DockAnimationHelper.FadeIn(this, DockAnimationHelper.OverlayFadeInMs);
     }
 
     /// <summary>

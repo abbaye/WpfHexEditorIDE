@@ -168,6 +168,12 @@ public class DockWorkspace
         _host.RebuildVisualTree();
     }
 
+    /// <summary>Saves the current layout to quick slot 1–4.</summary>
+    public void SaveQuickProfile(int slot) => SaveProfile($"QuickSlot_{slot}");
+
+    /// <summary>Loads quick slot 1–4 if it exists.</summary>
+    public bool LoadQuickProfile(int slot) => LoadProfile($"QuickSlot_{slot}");
+
     public bool CanUndo => _commandStack.CanUndo;
     public bool CanRedo => _commandStack.CanRedo;
 

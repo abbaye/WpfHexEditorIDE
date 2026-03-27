@@ -249,6 +249,10 @@ public class FloatingWindow : Window
             outerBorder.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
         Content = outerBorder;
+
+        // Fade-in animation on first show
+        Opacity = 0;
+        ContentRendered += (_, _) => DockAnimationHelper.FadeInWindow(this, DockAnimationHelper.FloatingFadeInMs);
     }
 
     public void Bind(DockGroupNode node, DockItem item, Func<DockItem, object>? contentFactory = null)
