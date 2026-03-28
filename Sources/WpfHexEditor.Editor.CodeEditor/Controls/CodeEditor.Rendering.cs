@@ -503,8 +503,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double baseX     = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
             double pixelsPerDip = _renderPixelsPerDip; // cached once per OnRender (OPT-PERF-03)
 
+            int lineCount = _document.Lines.Count;
             for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
             {
+                if (i >= lineCount) break; // guard against stale _lastVisibleLine
                 if (_foldingEngine?.IsLineHidden(i) == true) continue;
 
                 if (IsHintEntryVisible(i) && _hintsData.TryGetValue(i, out var entry) && entry.Count > 0)

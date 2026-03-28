@@ -37,14 +37,17 @@
                 <!-- Enable All -->
                 <Button DockPanel.Dock="Left" Command="{Binding EnableAllCommand}" ToolTip="Enable All"
                         Content="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Foreground="{DynamicResource PanelForeground}"
                         Background="Transparent" BorderThickness="0" Padding="4,2" />
                 <!-- Disable All -->
                 <Button DockPanel.Dock="Left" Command="{Binding DisableAllCommand}" ToolTip="Disable All"
                         Content="&#xECC9;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Foreground="{DynamicResource PanelForeground}"
                         Background="Transparent" BorderThickness="0" Padding="4,2" />
                 <!-- Delete All -->
                 <Button DockPanel.Dock="Left" Command="{Binding DeleteAllCommand}" ToolTip="Delete All Breakpoints"
                         Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Foreground="{DynamicResource PanelForeground}"
                         Background="Transparent" BorderThickness="0" Padding="4,2" />
 
                 <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
@@ -52,10 +55,12 @@
                 <!-- Import from VS XML -->
                 <Button DockPanel.Dock="Left" Command="{Binding ImportCommand}" ToolTip="Import Breakpoints (VS XML)"
                         Content="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Foreground="{DynamicResource PanelForeground}"
                         Background="Transparent" BorderThickness="0" Padding="4,2" />
                 <!-- Export to VS XML -->
                 <Button DockPanel.Dock="Left" Command="{Binding ExportCommand}" ToolTip="Export Breakpoints (VS XML)"
                         Content="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Foreground="{DynamicResource PanelForeground}"
                         Background="Transparent" BorderThickness="0" Padding="4,2" />
 
                 <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
@@ -145,6 +150,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                        Foreground="{DynamicResource PanelForeground}"
                                         Background="Transparent" BorderThickness="0"
                                         Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                         CommandParameter="{Binding}" ToolTip="Delete breakpoint" />
