@@ -11,6 +11,46 @@
         <conv:HitCountToVisibilityConverter x:Key="HitCountToVis" />
         <BooleanToVisibilityConverter      x:Key="BoolToVis" />
         <conv:InvertBoolToVisibilityConverter x:Key="InvertBoolToVis" />
+
+        <!-- ── Toolbar button style (matches DiagnosticTools pattern) ── -->
+        <Style x:Key="ToolbarBtn" TargetType="Button">
+            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize"        Value="14" />
+            <Setter Property="Padding"         Value="6,2" />
+            <Setter Property="Margin"          Value="0,0,2,0" />
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground"      Value="{DynamicResource PanelForeground}" />
+            <Setter Property="Cursor"          Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -32,38 +72,31 @@
                          Foreground="{DynamicResource TextBoxForeground}"
                          BorderBrush="{DynamicResource TextBoxBorderBrush}" />
 
-                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
+                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
+                           Background="{DynamicResource PanelBorderBrush}" />
 
                 <!-- Enable All -->
                 <Button DockPanel.Dock="Left" Command="{Binding EnableAllCommand}" ToolTip="Enable All"
-                        Content="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        Foreground="{DynamicResource PanelForeground}"
-                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                        Style="{StaticResource ToolbarBtn}" Content="&#xE73E;" />
                 <!-- Disable All -->
                 <Button DockPanel.Dock="Left" Command="{Binding DisableAllCommand}" ToolTip="Disable All"
-                        Content="&#xECC9;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        Foreground="{DynamicResource PanelForeground}"
-                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                        Style="{StaticResource ToolbarBtn}" Content="&#xECC9;" />
                 <!-- Delete All -->
                 <Button DockPanel.Dock="Left" Command="{Binding DeleteAllCommand}" ToolTip="Delete All Breakpoints"
-                        Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        Foreground="{DynamicResource PanelForeground}"
-                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                        Style="{StaticResource ToolbarBtn}" Content="&#xE74D;" />
 
-                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
+                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
+                           Background="{DynamicResource PanelBorderBrush}" />
 
                 <!-- Import from VS XML -->
                 <Button DockPanel.Dock="Left" Command="{Binding ImportCommand}" ToolTip="Import Breakpoints (VS XML)"
-                        Content="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        Foreground="{DynamicResource PanelForeground}"
-                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                        Style="{StaticResource ToolbarBtn}" Content="&#xE8B5;" />
                 <!-- Export to VS XML -->
                 <Button DockPanel.Dock="Left" Command="{Binding ExportCommand}" ToolTip="Export Breakpoints (VS XML)"
-                        Content="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                        Foreground="{DynamicResource PanelForeground}"
-                        Background="Transparent" BorderThickness="0" Padding="4,2" />
+                        Style="{StaticResource ToolbarBtn}" Content="&#xEDE1;" />
 
-                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2" />
+                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
+                           Background="{DynamicResource PanelBorderBrush}" />
 
                 <!-- Group By -->
                 <TextBlock DockPanel.Dock="Left" Text="Group:" VerticalAlignment="Center" FontSize="11"
@@ -149,9 +182,9 @@
                     <GridViewColumn Width="28">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                        Foreground="{DynamicResource PanelForeground}"
-                                        Background="Transparent" BorderThickness="0"
+                                <Button Content="&#xE74D;" FontSize="11"
+                                        Style="{StaticResource ToolbarBtn}"
+                                        Padding="2" Margin="0"
                                         Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                         CommandParameter="{Binding}" ToolTip="Delete breakpoint" />
                             </DataTemplate>
