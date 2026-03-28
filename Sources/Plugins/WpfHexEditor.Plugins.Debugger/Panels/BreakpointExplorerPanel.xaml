@@ -20,7 +20,7 @@
             <Setter Property="Margin"          Value="0,0,2,0" />
             <Setter Property="Background"      Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground"      Value="{DynamicResource PanelForeground}" />
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="Cursor"          Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -62,18 +62,15 @@
 
         <!-- ═══ Row 0: Toolbar ═══ -->
         <Border Grid.Row="0" Background="{DynamicResource DB_ToolbarBackgroundBrush}" BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource PanelBorderBrush}">
+                BorderBrush="{DynamicResource DockBorderBrush}">
             <DockPanel Margin="4,2">
                 <!-- Search box -->
                 <TextBox x:Name="SearchBox" DockPanel.Dock="Left" Width="180"
                          VerticalContentAlignment="Center" FontSize="11"
-                         Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged, Delay=200}"
-                         Background="{DynamicResource TextBoxBackground}"
-                         Foreground="{DynamicResource TextBoxForeground}"
-                         BorderBrush="{DynamicResource TextBoxBorderBrush}" />
+                         Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
 
                 <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
-                           Background="{DynamicResource PanelBorderBrush}" />
+                           Background="{DynamicResource DockBorderBrush}" />
 
                 <!-- Enable All -->
                 <Button DockPanel.Dock="Left" Command="{Binding EnableAllCommand}" ToolTip="Enable All"
@@ -86,7 +83,7 @@
                         Style="{StaticResource ToolbarBtn}" Content="&#xE74D;" />
 
                 <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
-                           Background="{DynamicResource PanelBorderBrush}" />
+                           Background="{DynamicResource DockBorderBrush}" />
 
                 <!-- Import from VS XML -->
                 <Button DockPanel.Dock="Left" Command="{Binding ImportCommand}" ToolTip="Import Breakpoints (VS XML)"
@@ -96,11 +93,11 @@
                         Style="{StaticResource ToolbarBtn}" Content="&#xEDE1;" />
 
                 <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
-                           Background="{DynamicResource PanelBorderBrush}" />
+                           Background="{DynamicResource DockBorderBrush}" />
 
                 <!-- Group By -->
                 <TextBlock DockPanel.Dock="Left" Text="Group:" VerticalAlignment="Center" FontSize="11"
-                           Foreground="{DynamicResource PanelForeground}" Margin="2,0,4,0" />
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="2,0,4,0" />
                 <ComboBox x:Name="GroupByCombo" DockPanel.Dock="Left" Width="90" FontSize="11"
                           VerticalContentAlignment="Center"
                           SelectedIndex="0" SelectionChanged="OnGroupByChanged">
@@ -119,8 +116,8 @@
         <ListView Grid.Row="1" ItemsSource="{Binding FlatBreakpoints}"
                   SelectedItem="{Binding SelectedBreakpoint}"
                   Visibility="{Binding IsGrouped, Converter={StaticResource InvertBoolToVis}}"
-                  Background="{DynamicResource PanelBackground}"
-                  Foreground="{DynamicResource PanelForeground}"
+                  Background="{DynamicResource DockBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   MouseDoubleClick="OnRowDoubleClick"
@@ -236,8 +233,8 @@
         <!-- ═══ Row 1: Grouped TreeView (when GroupBy != None) ═══ -->
         <TreeView Grid.Row="1" ItemsSource="{Binding GroupedBreakpoints}"
                   Visibility="{Binding IsGrouped, Converter={StaticResource BoolToVis}}"
-                  Background="{DynamicResource PanelBackground}"
-                  Foreground="{DynamicResource PanelForeground}"
+                  Background="{DynamicResource DockBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
                   x:Name="GroupedTree">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type vm:BreakpointGroupNode}"
@@ -284,9 +281,9 @@
 
         <!-- ═══ Row 2: Status bar ═══ -->
         <Border Grid.Row="2" Background="{DynamicResource DB_ToolbarBackgroundBrush}"
-                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource PanelBorderBrush}">
+                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DockBorderBrush}">
             <TextBlock Text="{Binding SummaryText}" VerticalAlignment="Center"
-                       Margin="8,0" FontSize="11" Foreground="{DynamicResource PanelForeground}" Opacity="0.7" />
+                       Margin="8,0" FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.7" />
         </Border>
     </Grid>
 </UserControl>
