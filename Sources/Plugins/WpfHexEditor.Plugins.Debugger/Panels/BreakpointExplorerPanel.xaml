@@ -65,11 +65,13 @@
                 BorderBrush="{DynamicResource DockBorderBrush}">
             <DockPanel Margin="4,2">
                 <!-- Search box -->
-                <TextBox x:Name="SearchBox" DockPanel.Dock="Left" Width="180"
-                         VerticalContentAlignment="Center" FontSize="11"
-                         Background="{DynamicResource DockBackgroundBrush}"
-                         BorderBrush="{DynamicResource DockBorderBrush}"
+                <TextBox x:Name="SearchBox" DockPanel.Dock="Left"
+                         Width="160" Height="22"
+                         Background="{DynamicResource ERR_SearchBoxBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource ERR_GridLinesBrush}"
                          BorderThickness="1"
+                         VerticalContentAlignment="Center" FontSize="11"
                          Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
 
                 <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
