@@ -88,6 +88,22 @@ public partial class BreakpointExplorerPanel : UserControl
     private void OnImportBreakpoints(object sender, RoutedEventArgs e) => Vm?.ImportCommand.Execute(null);
     private void OnExportBreakpoints(object sender, RoutedEventArgs e) => Vm?.ExportCommand.Execute(null);
 
+    // ── Overflow button ───────────────────────────────────────────────────
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.ContextMenu is not null)
+        {
+            btn.ContextMenu.PlacementTarget = btn;
+            btn.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            btn.ContextMenu.IsOpen = true;
+        }
+    }
+
+    private void OnOvfEnableAll(object sender, RoutedEventArgs e)  => Vm?.EnableAllCommand.Execute(null);
+    private void OnOvfDisableAll(object sender, RoutedEventArgs e) => Vm?.DisableAllCommand.Execute(null);
+    private void OnOvfDeleteAll(object sender, RoutedEventArgs e)  => Vm?.DeleteAllCommand.Execute(null);
+
     private BreakpointRowEx? GetSelectedRow() =>
         Vm?.SelectedBreakpoint ?? FlatList.SelectedItem as BreakpointRowEx;
 }

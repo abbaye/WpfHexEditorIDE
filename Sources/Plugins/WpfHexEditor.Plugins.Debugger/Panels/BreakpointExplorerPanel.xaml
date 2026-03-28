@@ -11,99 +11,56 @@
         <conv:HitCountToVisibilityConverter x:Key="HitCountToVis" />
         <BooleanToVisibilityConverter      x:Key="BoolToVis" />
         <conv:InvertBoolToVisibilityConverter x:Key="InvertBoolToVis" />
-
-        <!-- ── Toolbar button style (matches DiagnosticTools pattern) ── -->
-        <Style x:Key="ToolbarBtn" TargetType="Button">
-            <Setter Property="FontFamily"      Value="Segoe MDL2 Assets" />
-            <Setter Property="FontSize"        Value="14" />
-            <Setter Property="Padding"         Value="6,2" />
-            <Setter Property="Margin"          Value="0,0,2,0" />
-            <Setter Property="Background"      Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="Cursor"          Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="2"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              TextElement.Foreground="{TemplateBinding Foreground}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.4" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="28" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="24" />
         </Grid.RowDefinitions>
 
-        <!-- ═══ Row 0: Toolbar ═══ -->
-        <Border Grid.Row="0" Background="{DynamicResource DB_ToolbarBackgroundBrush}" BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource DockBorderBrush}">
-            <DockPanel Margin="4,2">
-                <!-- Search box -->
+        <!-- ═══ Row 0: Toolbar (PanelToolbarStyle from PanelCommon.xaml) ═══ -->
+        <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="False">
+
+                <!-- ── Left: Search box ── -->
                 <TextBox x:Name="SearchBox" DockPanel.Dock="Left"
                          Width="160" Height="22"
                          Background="{DynamicResource ERR_SearchBoxBrush}"
-                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                          BorderBrush="{DynamicResource ERR_GridLinesBrush}"
                          BorderThickness="1"
                          VerticalContentAlignment="Center" FontSize="11"
                          Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
 
-                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
-                           Background="{DynamicResource DockBorderBrush}" />
+                <Rectangle DockPanel.Dock="Left" Width="1" Height="16" Margin="6,0"
+                           Fill="{DynamicResource Panel_ToolbarBorderBrush}" />
 
-                <!-- Enable All -->
+                <!-- ── Left: Actions ── -->
                 <Button DockPanel.Dock="Left" Command="{Binding EnableAllCommand}" ToolTip="Enable All"
-                        Style="{StaticResource ToolbarBtn}" Content="&#xE73E;" />
-                <!-- Disable All -->
+                        Style="{DynamicResource PanelIconButtonStyle}" Content="&#xE73E;" />
                 <Button DockPanel.Dock="Left" Command="{Binding DisableAllCommand}" ToolTip="Disable All"
-                        Style="{StaticResource ToolbarBtn}" Content="&#xECC9;" />
-                <!-- Delete All -->
+                        Style="{DynamicResource PanelIconButtonStyle}" Content="&#xECC9;" />
                 <Button DockPanel.Dock="Left" Command="{Binding DeleteAllCommand}" ToolTip="Delete All Breakpoints"
-                        Style="{StaticResource ToolbarBtn}" Content="&#xE74D;" />
+                        Style="{DynamicResource PanelIconButtonStyle}" Content="&#xE74D;" />
 
-                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
-                           Background="{DynamicResource DockBorderBrush}" />
+                <Rectangle DockPanel.Dock="Left" Width="1" Height="16" Margin="6,0"
+                           Fill="{DynamicResource Panel_ToolbarBorderBrush}" />
 
-                <!-- Import from VS XML -->
+                <!-- ── Left: Import / Export ── -->
                 <Button DockPanel.Dock="Left" Command="{Binding ImportCommand}" ToolTip="Import Breakpoints (VS XML)"
-                        Style="{StaticResource ToolbarBtn}" Content="&#xE8B5;" />
-                <!-- Export to VS XML -->
+                        Style="{DynamicResource PanelIconButtonStyle}" Content="&#xE8B5;" />
                 <Button DockPanel.Dock="Left" Command="{Binding ExportCommand}" ToolTip="Export Breakpoints (VS XML)"
-                        Style="{StaticResource ToolbarBtn}" Content="&#xEDE1;" />
+                        Style="{DynamicResource PanelIconButtonStyle}" Content="&#xEDE1;" />
 
-                <Separator DockPanel.Dock="Left" Width="1" Margin="6,2"
-                           Background="{DynamicResource DockBorderBrush}" />
+                <Rectangle DockPanel.Dock="Left" Width="1" Height="16" Margin="6,0"
+                           Fill="{DynamicResource Panel_ToolbarBorderBrush}" />
 
-                <!-- Group By -->
+                <!-- ── Left: Group By ── -->
                 <TextBlock DockPanel.Dock="Left" Text="Group:" VerticalAlignment="Center" FontSize="11"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="2,0,4,0" />
-                <ComboBox x:Name="GroupByCombo" DockPanel.Dock="Left" Width="90" FontSize="11"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="2,0,4,0" />
+                <ComboBox x:Name="GroupByCombo" DockPanel.Dock="Left" Width="90" Height="22" FontSize="11"
                           VerticalContentAlignment="Center"
                           SelectedIndex="0" SelectionChanged="OnGroupByChanged">
                     <ComboBoxItem Content="None" />
@@ -112,8 +69,34 @@
                     <ComboBoxItem Content="Enabled" />
                 </ComboBox>
 
-                <!-- Spacer -->
-                <Border />
+                <!-- ── Right: Overflow button ── -->
+                <Button x:Name="OverflowButton" DockPanel.Dock="Right"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowMenu">
+                            <MenuItem Header="Enable All"           Click="OnOvfEnableAll">
+                                <MenuItem.Icon><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Disable All"          Click="OnOvfDisableAll">
+                                <MenuItem.Icon><TextBlock Text="&#xECC9;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Delete All"           Click="OnOvfDeleteAll">
+                                <MenuItem.Icon><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Import from VS XML…"  Click="OnImportBreakpoints">
+                                <MenuItem.Icon><TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Export All to VS XML…" Click="OnExportBreakpoints">
+                                <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
             </DockPanel>
         </Border>
 
@@ -184,9 +167,9 @@
                     <GridViewColumn Width="28">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="&#xE74D;" FontSize="11"
-                                        Style="{StaticResource ToolbarBtn}"
-                                        Padding="2" Margin="0"
+                                <Button Content="&#xE74D;"
+                                        Style="{DynamicResource PanelIconButtonStyle}"
+                                        Width="18" Height="18" FontSize="11"
                                         Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                         CommandParameter="{Binding}" ToolTip="Delete breakpoint" />
                             </DataTemplate>
@@ -221,12 +204,12 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Import from VS XML..." Click="OnImportBreakpoints">
+                    <MenuItem Header="Import from VS XML…" Click="OnImportBreakpoints">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Export All to VS XML..." Click="OnExportBreakpoints">
+                    <MenuItem Header="Export All to VS XML…" Click="OnExportBreakpoints">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
                         </MenuItem.Icon>
@@ -285,10 +268,10 @@
         </TreeView>
 
         <!-- ═══ Row 2: Status bar ═══ -->
-        <Border Grid.Row="2" Background="{DynamicResource DB_ToolbarBackgroundBrush}"
-                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DockBorderBrush}">
+        <Border Grid.Row="2" Style="{DynamicResource PanelToolbarStyle}">
             <TextBlock Text="{Binding SummaryText}" VerticalAlignment="Center"
-                       Margin="8,0" FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.7" />
+                       Margin="4,0" FontSize="11"
+                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.7" />
         </Border>
     </Grid>
 </UserControl>
