@@ -11,6 +11,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -45,6 +46,16 @@ namespace WpfHexEditor.Core.Interfaces
         void RefreshView();
         void Clear();
         void SetEnrichedFormat(WpfHexEditor.Core.FormatDetection.FormatDefinition? format);
+
+        /// <summary>
+        /// Suppresses <see cref="ParsedFields"/> CollectionChanged → ApplyFilter() during
+        /// bulk field population. Call <see cref="EndBulkUpdate"/> when done; it fires
+        /// ApplyFilter exactly once.
+        /// </summary>
+        void BeginBulkUpdate();
+
+        /// <summary>Ends a bulk update and triggers a single ApplyFilter() pass.</summary>
+        void EndBulkUpdate();
     }
 
     /// <summary>
@@ -126,11 +137,21 @@ namespace WpfHexEditor.Core.Interfaces
                 _references = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasReferences));
+                OnPropertyChanged(nameof(HasSpecifications));
+                OnPropertyChanged(nameof(HasWebLinks));
+                OnPropertyChanged(nameof(HasBothReferences));
+                OnPropertyChanged(nameof(Specifications));
+                OnPropertyChanged(nameof(WebLinks));
             }
         }
 
-        public bool HasReferences => References != null &&
+        public bool HasReferences     => References != null &&
             (References.Specifications?.Count > 0 || References.WebLinks?.Count > 0);
+        public bool HasSpecifications => References?.Specifications?.Count > 0;
+        public bool HasWebLinks       => References?.WebLinks?.Count > 0;
+        public bool HasBothReferences => HasSpecifications && HasWebLinks;
+        public List<string>? Specifications => References?.Specifications;
+        public List<string>? WebLinks       => References?.WebLinks;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

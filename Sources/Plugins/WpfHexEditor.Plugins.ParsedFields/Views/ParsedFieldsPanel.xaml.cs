@@ -43,6 +43,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         private long _totalFileSize;
         private ToolbarOverflowManager _overflowManager = null!;
         private readonly EnrichedFormatViewModel _enrichedVm = new();
+        private bool _suppressFilter; // set by BeginBulkUpdate/EndBulkUpdate
 
         public ParsedFieldsPanel()
         {
@@ -58,8 +59,9 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             var view = CollectionViewSource.GetDefaultView(FilteredFields);
             view?.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
 
-            // Subscribe to collection changes to automatically update filtered view
-            ParsedFields.CollectionChanged += (s, e) => ApplyFilter();
+            // Subscribe to collection changes to automatically update filtered view.
+            // Guard: skip during bulk field population (BeginBulkUpdate/EndBulkUpdate).
+            ParsedFields.CollectionChanged += (s, e) => { if (!_suppressFilter) ApplyFilter(); };
 
             FormatInfo = new FormatInfo();
 
@@ -875,6 +877,19 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         {
             FieldsListBox.SelectedItem = field;
             FieldsListBox.ScrollIntoView(field);
+        }
+
+        /// <summary>
+        /// Suppresses CollectionChanged → ApplyFilter during bulk field population.
+        /// Call EndBulkUpdate() when done; it fires ApplyFilter exactly once.
+        /// </summary>
+        public void BeginBulkUpdate() => _suppressFilter = true;
+
+        /// <summary>Ends a bulk update and triggers a single ApplyFilter() pass.</summary>
+        public void EndBulkUpdate()
+        {
+            _suppressFilter = false;
+            ApplyFilter();
         }
 
         /// <summary>

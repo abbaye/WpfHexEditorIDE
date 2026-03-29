@@ -370,6 +370,10 @@ namespace WpfHexEditor.HexEditor
                     var panel = ParsedFieldsPanel;
                     if (panel == null) return;
 
+                    // Suppress CollectionChanged → ApplyFilter during bulk population.
+                    // BeginBulkUpdate covers both Clear() and all ParseBlocks() adds.
+                    panel.BeginBulkUpdate();
+
                     // Clear existing fields and variables
                     panel.ParsedFields.Clear();
                     _variableContext?.Clear();
@@ -435,9 +439,11 @@ namespace WpfHexEditor.HexEditor
                     // Set total file size for coverage bar (C6)
                     panel.TotalFileSize = Length;
 
-                    // Parse all blocks from the format definition
+                    // Parse all blocks from the format definition, then fire ApplyFilter once.
                     if (_detectedFormat.Blocks != null)
                         ParseBlocks(_detectedFormat.Blocks, 0, panel);
+
+                    panel.EndBulkUpdate(); // fires ApplyFilter exactly once
                 }, System.Windows.Threading.DispatcherPriority.Background);
             }
             catch (Exception ex)
