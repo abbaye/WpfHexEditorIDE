@@ -709,9 +709,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         /// </summary>
         private void ReferenceLink_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is System.Windows.Documents.Hyperlink link &&
-                link.Tag is string url &&
-                url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            var url = sender is System.Windows.Controls.Button btn ? btn.Tag as string : null;
+            if (!string.IsNullOrEmpty(url) && url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url)
                 {

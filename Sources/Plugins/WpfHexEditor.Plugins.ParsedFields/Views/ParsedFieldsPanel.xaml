@@ -696,13 +696,31 @@
                                 <ItemsControl ItemsSource="{Binding FormatInfo.WebLinks}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Margin="4,2">
-                                                <Hyperlink Click="ReferenceLink_Click"
-                                                           Tag="{Binding}"
-                                                           Foreground="{DynamicResource PFP_AccentBrush}">
-                                                    <Run Text="{Binding}"/>
-                                                </Hyperlink>
-                                            </TextBlock>
+                                            <Button Content="{Binding}"
+                                                    Tag="{Binding}"
+                                                    Click="ReferenceLink_Click"
+                                                    Cursor="Hand"
+                                                    Margin="4,1,0,1"
+                                                    Padding="0"
+                                                    BorderThickness="0"
+                                                    Background="Transparent"
+                                                    Foreground="{DynamicResource PFP_AccentBrush}"
+                                                    FontSize="11"
+                                                    HorizontalAlignment="Left"
+                                                    HorizontalContentAlignment="Left">
+                                                <Button.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}"
+                                                                   TextWrapping="Wrap"
+                                                                   TextDecorations="Underline"/>
+                                                    </DataTemplate>
+                                                </Button.ContentTemplate>
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <ContentPresenter/>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
