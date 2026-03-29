@@ -10,7 +10,7 @@
 //     source, destination, and offset information.
 //
 // Architecture Notes:
-//     Located in EventArguments (legacy namespace); mirrored in Events/.
+//     Located in Events; mirrored in Events/.
 //     Pure event data container — no WPF dependencies.
 //
 // ==========================================================
@@ -18,7 +18,7 @@
 using System;
 using WpfHexEditor.Core.Bytes;
 
-namespace WpfHexEditor.Core.EventArguments
+namespace WpfHexEditor.Core.Events
 {
     /// <summary>
     /// Custom event arguments used for pass somes informations to delegate
