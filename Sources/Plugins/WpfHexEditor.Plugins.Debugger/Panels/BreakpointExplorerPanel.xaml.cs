@@ -66,6 +66,7 @@ public partial class BreakpointExplorerPanel : UserControl
     private void OnOvfGroupFile(object sender, RoutedEventArgs e)    { GroupByCombo.SelectedIndex = 1; }
     private void OnOvfGroupType(object sender, RoutedEventArgs e)    { GroupByCombo.SelectedIndex = 2; }
     private void OnOvfGroupEnabled(object sender, RoutedEventArgs e) { GroupByCombo.SelectedIndex = 3; }
+    private void OnOvfGroupProject(object sender, RoutedEventArgs e) { GroupByCombo.SelectedIndex = 4; }
 
     // ── Group-by ComboBox ─────────────────────────────────────────────────
 

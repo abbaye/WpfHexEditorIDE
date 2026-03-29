@@ -16,8 +16,9 @@ public sealed class BreakpointRowEx : INotifyPropertyChanged
     private bool _isEnabled;
     private int  _hitCount;
 
-    public string  FilePath   { get; init; } = string.Empty;
-    public string  FileName   { get; init; } = string.Empty;
+    public string  FilePath     { get; init; } = string.Empty;
+    public string  FileName     { get; init; } = string.Empty;
+    public string  ProjectName  { get; init; } = string.Empty;
     public int     Line       { get; init; }
     public string? Condition  { get; init; }
     public bool    IsVerified { get; init; }
