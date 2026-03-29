@@ -207,9 +207,30 @@ public class TabOverflowButton : Button
                 Margin            = new Thickness(0, 0, 6, 0)
             };
 
+            // --- Editor name badge (italic, dimmed, right-aligned) ---
+            TextBlock? editorBadge = null;
+            if (tabItem.Tag is DockItem di
+                && di.Metadata.TryGetValue("EditorDisplayName", out var editorDisplayName)
+                && !string.IsNullOrEmpty(editorDisplayName))
+            {
+                editorBadge = new TextBlock
+                {
+                    Text              = editorDisplayName,
+                    FontStyle         = FontStyles.Italic,
+                    Opacity           = 0.55,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin            = new Thickness(8, 0, 6, 0),
+                    TextTrimming      = TextTrimming.CharacterEllipsis,
+                    MaxWidth          = 120
+                };
+                editorBadge.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
+            }
+
             DockPanel.SetDock(closeBox, Dock.Right);
+            if (editorBadge is not null) DockPanel.SetDock(editorBadge, Dock.Right);
             var headerPanel = new DockPanel { LastChildFill = true, MinWidth = 200 };
             headerPanel.Children.Add(closeBox);
+            if (editorBadge is not null) headerPanel.Children.Add(editorBadge);
             headerPanel.Children.Add(title);
 
             var menuItem = new MenuItem

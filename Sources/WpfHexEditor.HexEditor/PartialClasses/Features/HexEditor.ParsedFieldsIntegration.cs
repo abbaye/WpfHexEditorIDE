@@ -64,13 +64,10 @@ namespace WpfHexEditor.HexEditor
             if (e.NewValue is IParsedFieldsPanel newPanel)
             {
                 editor._formatParsingService?.ConnectPanel(newPanel);
-
-                // If a format is already detected, trigger re-parse + enriched metadata
-                if (editor.Stream != null && editor._detectedFormat != null)
-                {
-                    editor._formatParsingService?.Refresh();
+                // ConnectPanel already schedules ParseFieldsOnDispatcher if _activeFormat is set.
+                // Only set enriched metadata (no parse trigger).
+                if (editor._detectedFormat != null)
                     newPanel.SetEnrichedFormat(editor._detectedFormat);
-                }
             }
         }
 

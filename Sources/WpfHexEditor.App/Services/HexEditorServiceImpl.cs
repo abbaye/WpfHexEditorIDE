@@ -123,6 +123,25 @@ public sealed class HexEditorServiceImpl : IHexEditorService
     }
 
     /// <summary>
+    /// Called when a non-HexEditor tab becomes active.
+    /// Clears _activeEditor so returning to the same hex tab
+    /// correctly fires ActiveEditorChanged.
+    /// </summary>
+    public void ClearActiveEditor()
+    {
+        if (_activeEditor is null) return;
+
+        _activeEditor.SelectionStartChanged    -= OnSelectionChanged;
+        _activeEditor.SelectionStopChanged     -= OnSelectionChanged;
+        _activeEditor.FormatDetected           -= OnFormatDetected;
+        _activeEditor.FileOpened               -= OnHexEditorFileOpened;
+        _activeEditor.VerticalScrollBarChanged -= OnVerticalScrollBarChanged;
+
+        _activeEditor = null;
+        // Do NOT fire ActiveEditorChanged — OnFocusChanged handles non-hex tabs via preview.
+    }
+
+    /// <summary>
     /// Called by MainWindow when the active hex editor changes.
     /// </summary>
     public void SetActiveEditor(HexEditorControl? editor)

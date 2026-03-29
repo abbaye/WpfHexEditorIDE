@@ -103,6 +103,40 @@ internal static class LayoutPersistenceService
     }
 
     /// <summary>
+    /// Removes duplicate document tabs (same file + same editor) from the layout.
+    /// Keeps the first occurrence; subsequent duplicates are removed.
+    /// </summary>
+    public static void PruneDuplicateDocumentItems(DockLayoutRoot layout)
+    {
+        var seen    = new HashSet<(string Path, string EditorId)>();
+        var pruned  = new List<string>();
+
+        // Walk groups inside the tree (normal + document host nodes).
+        foreach (var group in layout.GetAllGroups())
+        {
+            foreach (var item in group.Items.ToList())
+            {
+                if (GetDocumentEditorKey(item) is not var (path, editorId)) continue;
+                if (!seen.Add((path, editorId)))
+                {
+                    group.RemoveItem(item);
+                    pruned.Add(item.Title ?? Path.GetFileName(path) ?? path);
+                }
+            }
+        }
+
+        // Walk flat lists: floating, auto-hide, hidden.
+        PruneDuplicatesFromList(layout.FloatingItems, seen, pruned);
+        PruneDuplicatesFromList(layout.AutoHideItems, seen, pruned);
+        PruneDuplicatesFromList(layout.HiddenItems,   seen, pruned);
+
+        if (pruned.Count > 0)
+            OutputLogger.Info(
+                $"Layout restore: removed {pruned.Count} duplicate document(s): " +
+                string.Join(", ", pruned));
+    }
+
+    /// <summary>
     /// Captures window state (position, size) into the layout before saving.
     /// </summary>
     public static void CaptureWindowState(
@@ -168,9 +202,7 @@ internal static class LayoutPersistenceService
     {
         label = string.Empty;
 
-        bool isDocument = item.ContentId.StartsWith("doc-file-")
-                       || item.ContentId.StartsWith("doc-hex-")
-                       || item.ContentId.StartsWith("doc-proj-");
+        bool isDocument = IsDocumentItem(item);
         if (!isDocument) return false;
 
         if (!item.Metadata.TryGetValue("FilePath", out var filePath) || filePath is null)
@@ -183,5 +215,44 @@ internal static class LayoutPersistenceService
 
         label = item.Title ?? Path.GetFileName(filePath) ?? filePath;
         return true;
+    }
+
+    private static bool IsDocumentItem(DockItem item)
+        => item.ContentId.StartsWith("doc-file-")
+        || item.ContentId.StartsWith("doc-hex-")
+        || item.ContentId.StartsWith("doc-proj-");
+
+    /// <summary>
+    /// Returns a normalized (path, editorId) key for dedup, or null if item is not a document.
+    /// </summary>
+    private static (string Path, string EditorId)? GetDocumentEditorKey(DockItem item)
+    {
+        if (!IsDocumentItem(item)) return null;
+        if (!item.Metadata.TryGetValue("FilePath", out var filePath) || filePath is null) return null;
+
+        var editorId = "auto";
+        if (item.Metadata.TryGetValue("ForceEditorId", out var feid) && feid is not null)
+            editorId = feid;
+        else if (item.Metadata.TryGetValue("ActiveEditorId", out var aeid) && aeid is not null)
+            editorId = aeid;
+        else if (item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true")
+            editorId = "hex-editor";
+
+        return (filePath.ToUpperInvariant(), editorId.ToLowerInvariant());
+    }
+
+    private static void PruneDuplicatesFromList(
+        List<DockItem> items,
+        HashSet<(string Path, string EditorId)> seen,
+        List<string> pruned)
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            if (GetDocumentEditorKey(items[i]) is not var (path, editorId)) continue;
+            if (seen.Add((path, editorId))) continue;
+
+            pruned.Add(items[i].Title ?? Path.GetFileName(path) ?? path);
+            items.RemoveAt(i);
+        }
     }
 }

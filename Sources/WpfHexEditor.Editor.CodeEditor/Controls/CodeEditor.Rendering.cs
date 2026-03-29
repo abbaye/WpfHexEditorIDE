@@ -834,7 +834,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     if (startLine0 == endLine0)
                     {
                         // Single-line — simple rounded rect.
-                        if (_lineYLookup.TryGetValue(startLine0, out double ly) && _document != null)
+                        if (_lineYLookup.TryGetValue(startLine0, out double ly) && _document != null
+                            && startLine0 < _document.Lines.Count)
                         {
                             double w = Math.Max(_document.Lines[startLine0].Length * _charWidth, _charWidth);
                             dc.DrawRoundedRectangle(brush, null,
@@ -851,7 +852,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         {
                             if (highlightedLines.Contains(j)) continue;
                             if (_executionLineOneBased == j + 1) continue;
-                            if (!_lineYLookup.TryGetValue(j, out double ly) || _document == null) continue;
+                            if (!_lineYLookup.TryGetValue(j, out double ly) || _document == null
+                                || j >= _document.Lines.Count) continue;
 
                             double w    = Math.Max(_document.Lines[j].Length * _charWidth, _charWidth);
                             double yAdj = j == startLine0 ? ly : ly - SelectionCornerRadius;
@@ -1502,6 +1504,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             while (current > minLine)
             {
+                if (current - 1 >= _document.Lines.Count) break; // stale visible-line index: exit scan
                 string prevText = (_document.Lines[current - 1].Text ?? string.Empty).TrimEnd();
                 bool continues = false;
                 foreach (var r in _bpContinuationRegexes)

@@ -997,7 +997,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _ctrlClickService?.Dispose();
             _ctrlClickService = null;
 
-            _document = new Models.CodeDocument();
+            // Do NOT replace _document with a new empty instance here.
+            // Replacing it causes an immediate blank re-render via InvalidateVisual(),
+            // which persists whenever Close() is called before OpenAsync() completes
+            // (e.g. during tab-reload or rapid file switching). The existing document
+            // content stays visible until OpenAsync() loads the next file.
             _currentFilePath = null;
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = null;
             _isDirty = false;
@@ -1006,7 +1010,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _selection.Clear();
             _undoEngine.Reset();
             _validationErrors.Clear();
-            InvalidateVisual();
+            // Do NOT call InvalidateVisual() — the tab is either being removed from the
+            // visual tree (no render needed) or OpenAsync() will trigger the next render.
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
             TitleChanged?.Invoke(this, BuildTitle());
             DiagnosticsChanged?.Invoke(this, EventArgs.Empty);

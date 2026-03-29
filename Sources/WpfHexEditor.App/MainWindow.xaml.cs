@@ -267,6 +267,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // (same VS-like behaviour enforced in OnActiveDocumentChanged).
             if (value is HexEditorControl hexEditor)
                 _hexEditorService?.SetActiveEditor(hexEditor);
+            else
+                _hexEditorService?.ClearActiveEditor();
 
             // Sync progress bar immediately to reflect the new active document's state
             SyncProgressBarToActiveEditor(value);
@@ -1005,6 +1007,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             RestoreWindowState(layout);
             Services.LayoutPersistenceService.PruneStaleDocumentItems(layout);
+            Services.LayoutPersistenceService.PruneDuplicateDocumentItems(layout);
             ApplyLayout(layout);
             EnsureErrorPanel();
             _layoutWasRestoredFromFile = true;
@@ -1199,6 +1202,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 var layout = DockLayoutSerializer.Deserialize(reader.ReadToEnd());
                 if (restoreWindowState) RestoreWindowState(layout);
                 Services.LayoutPersistenceService.PruneStaleDocumentItems(layout);
+                Services.LayoutPersistenceService.PruneDuplicateDocumentItems(layout);
                 ApplyLayout(layout);
                 EnsureErrorPanel();
                 _layoutWasRestoredFromFile = true; // treat embedded default like a restored layout — defer plugin panels absent from it
@@ -1270,7 +1274,42 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _dockingAdapter?.RebindLayout(_engine, _layout);
 
         SyncDocumentCounter();
+        BackfillEditorDisplayNames();
         UpdateStatusBar();
+    }
+
+    /// <summary>
+    /// Fills missing <c>EditorDisplayName</c> metadata on all document items in the current layout.
+    /// Called after ApplyLayout so that tabs restored from serialized JSON (which may predate
+    /// this metadata) show the editor badge in the overflow menu without waiting for lazy activation.
+    /// </summary>
+    private void BackfillEditorDisplayNames()
+    {
+        var allItems = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems);
+
+        foreach (var item in allItems)
+        {
+            if (item.Metadata.ContainsKey("EditorDisplayName")) continue;
+            if (!item.Metadata.TryGetValue("FilePath", out var fp) || fp is null) continue;
+
+            bool isDoc = item.ContentId.StartsWith("doc-file-")
+                      || item.ContentId.StartsWith("doc-hex-")
+                      || item.ContentId.StartsWith("doc-proj-");
+            if (!isDoc) continue;
+
+            // Resolve from explicit metadata first, then auto-detect from file extension.
+            if (item.Metadata.TryGetValue("ForceEditorId", out var feid) && feid is not null)
+                item.Metadata["EditorDisplayName"] = ResolveEditorDisplayName(feid);
+            else if (item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true")
+                item.Metadata["EditorDisplayName"] = "Hex Editor";
+            else
+            {
+                var factory = _editorRegistry.FindFactory(fp, GetPreferredEditorId(fp));
+                item.Metadata["EditorDisplayName"] = factory?.Descriptor.DisplayName ?? "Hex Editor";
+            }
+        }
     }
 
     private void EnsureErrorPanel()
@@ -1703,8 +1742,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     Title     = Path.GetFileName(e.FilePath),
                     Metadata  =
                     {
-                        ["FilePath"]       = e.FilePath,
-                        ["ActiveEditorId"] = factory.Descriptor.Id
+                        ["FilePath"]            = e.FilePath,
+                        ["ActiveEditorId"]      = factory.Descriptor.Id,
+                        ["EditorDisplayName"]   = factory.Descriptor.DisplayName
                     }
                 };
                 _engine.Dock(newDockItem, _layout.MainDocumentHost, DockDirection.Center);
@@ -2135,7 +2175,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         // Record which editor was resolved so "View in" deduplication can match back to this tab.
-        item.Metadata["ActiveEditorId"] = factory?.Descriptor.Id ?? "hex-editor";
+        item.Metadata["ActiveEditorId"]    = factory?.Descriptor.Id ?? "hex-editor";
+        item.Metadata["EditorDisplayName"] = factory?.Descriptor.DisplayName ?? "Hex Editor";
 
         if (factory != null)
         {
@@ -3232,11 +3273,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _documentCounter++;
+        var earlyFactory = _editorRegistry.FindFactory(filePath, GetPreferredEditorId(filePath));
         var item = new DockItem
         {
             Title     = Path.GetFileName(filePath),
             ContentId = $"doc-file-{_documentCounter}",
-            Metadata  = { ["FilePath"] = filePath }
+            Metadata  =
+            {
+                ["FilePath"]          = filePath,
+                ["EditorDisplayName"] = earlyFactory?.Descriptor.DisplayName ?? "Hex Editor"
+            }
         };
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         if (item.Owner is { } itemOwner) itemOwner.ActiveItem = item;
@@ -3657,6 +3703,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         else
             meta["ForceEditorId"] = factoryId;
 
+        meta["EditorDisplayName"] = ResolveEditorDisplayName(factoryId);
+
         var dockItem = new DockItem { Title = item.Name, ContentId = contentId };
         foreach (var (k, v) in meta) dockItem.Metadata[k] = v;
 
@@ -3740,8 +3788,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         else
             dockItem.Metadata["ForceEditorId"] = factoryId;
 
+        dockItem.Metadata["EditorDisplayName"] = ResolveEditorDisplayName(factoryId);
+
         _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Resolves a factory ID to its display name via the editor registry.
+    /// Returns "Hex Editor" when <paramref name="factoryId"/> is null.
+    /// </summary>
+    private string ResolveEditorDisplayName(string? factoryId)
+    {
+        if (factoryId is null) return "Hex Editor";
+        return _editorRegistry.GetAll()
+                   .FirstOrDefault(f => f.Descriptor.Id == factoryId)
+                   ?.Descriptor.DisplayName ?? factoryId;
     }
 
     private async void OnSEPhysicalFileInclude(object? sender, PhysicalFileIncludeRequestedEventArgs e)
@@ -6165,6 +6227,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(dlg.FileName));
             Services.LayoutPersistenceService.PruneStaleDocumentItems(layout);
+            Services.LayoutPersistenceService.PruneDuplicateDocumentItems(layout);
             _contentCache.Clear();
             ApplyLayout(layout);
             OutputLogger.Debug($"Layout loaded from: {dlg.FileName}");

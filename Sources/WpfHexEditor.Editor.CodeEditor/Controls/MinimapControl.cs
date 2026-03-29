@@ -305,8 +305,9 @@ public sealed class MinimapControl : FrameworkElement
         // Hover highlight band — uses actualVisibleLines (no buffer)
         if (_isMouseOver && !_isDragging && _hoverY >= 0 && actualVisibleLines > 0)
         {
-            double bandH = Math.Max((actualVisibleLines / (double)totalLines) * contentHeight, 10);
-            double bandTop = Math.Clamp(_hoverY - bandH / 2, 0, contentHeight - bandH);
+            double bandH      = Math.Max((actualVisibleLines / (double)totalLines) * contentHeight, 10);
+            double maxBandTop = Math.Max(contentHeight - bandH, 0);  // guard: bandH can exceed contentHeight on tiny documents
+            double bandTop    = Math.Clamp(_hoverY - bandH / 2, 0, maxBandTop);
             dc.DrawRectangle(HoverBandBrush, null, new Rect(0, bandTop, w, bandH));
         }
 

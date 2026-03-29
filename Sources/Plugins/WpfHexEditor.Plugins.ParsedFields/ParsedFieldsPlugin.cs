@@ -418,7 +418,9 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
 
     private void OnFileOpened(object? sender, EventArgs e)
     {
-        _panel?.Clear();
+        // Clearing is handled by FormatParsingService.ExecuteParsing() when
+        // ConnectPanel triggers re-parse. Clearing here causes a visible
+        // empty-panel flash because FileOpened fires before ActiveEditorChanged.
     }
 
     private void OnFormatDetected(object? sender, FormatDetectedArgs e)

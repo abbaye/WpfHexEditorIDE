@@ -315,4 +315,39 @@ namespace WpfHexEditor.Core.Interfaces
         public FormatDetection.ExportTemplate Source { get; set; }
         public override string ToString() => Name;
     }
+
+    /// <summary>
+    /// Event args for breadcrumb enrichment. The HexEditor fires this event
+    /// so plugins (e.g. ParsedFieldsPlugin) can enrich the breadcrumb segments
+    /// with richer data (GroupName-based hierarchy). Without any subscriber,
+    /// the breadcrumb works standalone using CustomBackgroundBlock data.
+    /// </summary>
+    public class BreadcrumbEnrichEventArgs : EventArgs
+    {
+        /// <summary>Current cursor offset in the file.</summary>
+        public long Offset { get; init; }
+
+        /// <summary>
+        /// Base segments built from CustomBackgroundBlock data.
+        /// Subscribers can replace or enrich this list.
+        /// </summary>
+        public List<BreadcrumbSegmentData> Segments { get; set; } = new();
+
+        /// <summary>Whether a subscriber has enriched the segments.</summary>
+        public bool IsEnriched { get; set; }
+    }
+
+    /// <summary>
+    /// Portable breadcrumb segment data (Core-level, no WPF dependency).
+    /// </summary>
+    public class BreadcrumbSegmentData
+    {
+        public string Name { get; set; } = "";
+        public long Offset { get; set; }
+        public int Length { get; set; }
+        public bool IsGroup { get; set; }
+        public bool IsFormat { get; set; }
+        public string? Color { get; set; }
+        public List<BreadcrumbSegmentData>? Siblings { get; set; }
+    }
 }

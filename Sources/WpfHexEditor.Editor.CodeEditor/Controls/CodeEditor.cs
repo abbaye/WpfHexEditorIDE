@@ -949,14 +949,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 };
 
             // Statement-span enforcement: 1 instruction = 1 breakpoint.
-            // Uses MOVE semantics — clicking a different line of the same
-            // statement moves the existing BP rather than adding a second.
+            // The BP is always anchored to the FIRST line of the statement,
+            // regardless of which line the user clicked.
             _breakpointGutterControl.ResolveBreakpointLine = contCompiled.Count == 0
                 ? null
                 : clickedLine1 =>
                 {
                     int line0 = clickedLine1 - 1;
                     var (start0, end0) = ResolveStatementSpan(line0);
+
+                    int firstLine1 = start0 + 1; // 1-based first line of the statement
 
                     var existingBps = _bpSource?.GetBreakpointLines(_currentFilePath ?? string.Empty)
                                       ?? (IReadOnlyList<int>)Array.Empty<int>();
@@ -972,17 +974,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         }
                     }
 
-                    // No existing BP in this statement → allow placement.
+                    // No existing BP in this statement → place on the first line.
                     if (existingInSpan is null)
-                        return clickedLine1;
+                        return firstLine1;
 
-                    // Clicking the same line → normal toggle (remove).
-                    if (existingInSpan.Value == clickedLine1)
-                        return clickedLine1;
+                    // BP already on the first line → toggle it off.
+                    if (existingInSpan.Value == firstLine1)
+                        return firstLine1;
 
-                    // Move: remove old BP, return clicked line for Toggle to place new one.
+                    // BP on a non-first line (anomalous state): move it to the first line.
                     _bpSource!.Delete(_currentFilePath!, existingInSpan.Value);
-                    return clickedLine1;
+                    return firstLine1;
                 };
         }
 
