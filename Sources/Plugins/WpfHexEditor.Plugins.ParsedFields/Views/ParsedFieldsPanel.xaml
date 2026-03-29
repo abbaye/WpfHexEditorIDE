@@ -615,19 +615,90 @@
                                    VerticalAlignment="Center"
                                    Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                     </StackPanel>
-                    <Border Grid.Column="2"
-                            Background="{DynamicResource PFP_CategoryBadgeBackgroundBrush}"
-                            BorderBrush="{DynamicResource PFP_CategoryBadgeBorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="3"
-                            Padding="6,2"
-                            Margin="8,0,0,0">
-                        <TextBlock FontSize="10"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource PFP_CategoryBadgeForegroundBrush}"
-                                   Text="{Binding FormatInfo.Category}"/>
-                    </Border>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Background="{DynamicResource PFP_CategoryBadgeBackgroundBrush}"
+                                BorderBrush="{DynamicResource PFP_CategoryBadgeBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Padding="6,2"
+                                Margin="8,0,0,0">
+                            <TextBlock FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource PFP_CategoryBadgeForegroundBrush}"
+                                       Text="{Binding FormatInfo.Category}"/>
+                        </Border>
+                        <!-- References info button — visible only when whfmt has references/weblinks -->
+                        <Button x:Name="ReferencesInfoButton"
+                                Visibility="{Binding FormatInfo.HasReferences, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Click="ReferencesInfoButton_Click"
+                                ToolTip="Format References &amp; Specifications"
+                                Style="{StaticResource PFP_NavBookmarkButtonStyle}"
+                                Margin="4,0,0,0" Padding="5,2"
+                                FontFamily="Segoe MDL2 Assets" Content="&#xE946;"
+                                FontSize="11" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Grid>
+
+                <!-- References popup — anchored to info button -->
+                <Popup x:Name="ReferencesPopup"
+                       StaysOpen="False"
+                       PlacementTarget="{Binding ElementName=ReferencesInfoButton}"
+                       Placement="Bottom"
+                       AllowsTransparency="True"
+                       PopupAnimation="Fade">
+                    <Border Background="{DynamicResource DockBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="12,10"
+                            MaxWidth="400"
+                            MinWidth="220">
+                        <StackPanel>
+                            <!-- Specifications -->
+                            <StackPanel Visibility="{Binding FormatInfo.HasSpecifications, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="Specifications"
+                                           FontWeight="SemiBold" FontSize="11"
+                                           Margin="0,0,0,4"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <ItemsControl ItemsSource="{Binding FormatInfo.Specifications}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="4,1" TextWrapping="Wrap" FontSize="11"
+                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                       Text="{Binding}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                            <!-- Separator (only when both sections present) -->
+                            <Rectangle Height="1"
+                                       Fill="{DynamicResource DockBorderBrush}"
+                                       Margin="0,6"
+                                       Visibility="{Binding FormatInfo.HasBothReferences, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <!-- Web Links -->
+                            <StackPanel Visibility="{Binding FormatInfo.HasWebLinks, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="Web Links"
+                                           FontWeight="SemiBold" FontSize="11"
+                                           Margin="0,0,0,4"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <ItemsControl ItemsSource="{Binding FormatInfo.WebLinks}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="4,2">
+                                                <Hyperlink Click="ReferenceLink_Click"
+                                                           Tag="{Binding}"
+                                                           Foreground="{DynamicResource PFP_AccentBrush}">
+                                                    <Run Text="{Binding}"/>
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
                 <TextBlock FontSize="11" Foreground="{DynamicResource PFP_SubTextBrush}" TextWrapping="Wrap"
                            Text="{Binding FormatInfo.Description}"/>
 
