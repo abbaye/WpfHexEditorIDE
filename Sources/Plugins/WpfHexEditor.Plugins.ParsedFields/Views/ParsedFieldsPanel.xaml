@@ -645,15 +645,19 @@
                     </Border>
                 </Grid>
 
-                <!-- References popup — anchored to info button.
-                     Popup is not in visual tree so DataContext must be set explicitly. -->
+                <!-- Proxy element: stays in the visual tree so the Popup can reach the DataContext.
+                     Popup content is not in the visual tree and cannot use RelativeSource/ElementName
+                     to the UserControl root — this hidden FrameworkElement bridges the gap. -->
+                <FrameworkElement x:Name="PopupDataContextProxy" Visibility="Collapsed"/>
+
+                <!-- References popup — anchored to info button. -->
                 <Popup x:Name="ReferencesPopup"
                        StaysOpen="False"
                        PlacementTarget="{Binding ElementName=ReferencesInfoButton}"
                        Placement="Bottom"
                        AllowsTransparency="True"
                        PopupAnimation="Fade">
-                    <Border DataContext="{Binding DataContext, ElementName=RootPanel}"
+                    <Border DataContext="{Binding DataContext, ElementName=PopupDataContextProxy}"
                             Background="{DynamicResource DockBackgroundBrush}"
                             BorderBrush="{DynamicResource DockBorderBrush}"
                             BorderThickness="1"
