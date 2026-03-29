@@ -2322,6 +2322,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         item.Metadata.TryGetValue("FilePath", out var filePath);
         if (filePath is null) return CreateDocumentContent(item);
 
+        // Guard: file was deleted since last session — close tab silently and skip editor creation.
+        bool isNewFile = item.Metadata.TryGetValue("IsNewFile", out var isNF) && isNF == "true";
+        if (!isNewFile && !File.Exists(filePath))
+        {
+            OutputLogger.Error($"File not found: {filePath}");
+            ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+            Dispatcher.InvokeAsync(() => CloseTab(item, promptIfDirty: false),
+                                   System.Windows.Threading.DispatcherPriority.Background);
+            return new TextBlock
+            {
+                Text                = $"File not found:\n{filePath}",
+                Foreground          = System.Windows.Media.Brushes.Gray,
+                VerticalAlignment   = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                TextAlignment       = TextAlignment.Center,
+                FontSize            = 14
+            };
+        }
+
         // Support "Open With" for standalone files too (ForceHexEditor / ForceEditorId)
         bool forceHex = item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true";
         IEditorFactory? factory;

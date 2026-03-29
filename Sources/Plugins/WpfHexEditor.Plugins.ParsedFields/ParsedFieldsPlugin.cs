@@ -136,6 +136,20 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // ── Binary Diff side focus → preview for the focused file ─────
         _diffSideSub = context.EventBus.Subscribe<DiffSideFocusChangedEvent>(OnDiffSideFocusChanged);
 
+        // ── Deferred startup reconnect ────────────────────────────────
+        // After workspace restore the HexEditor may have already emitted its
+        // FormatDetected event before we subscribed, leaving the panel blank.
+        // Defer to Loaded priority so the dock has finished rendering, then
+        // reconnect the panel — this triggers SyncDetectionResultsToService + Refresh.
+        _panel?.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)(() =>
+        {
+            if (_context?.HexEditor.IsActive == true && _panel != null)
+            {
+                _context.HexEditor.DisconnectParsedFieldsPanel();
+                _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+            }
+        }));
+
         return Task.CompletedTask;
     }
 

@@ -130,8 +130,14 @@ namespace WpfHexEditor.Core.Interfaces
             }
         }
 
-        public bool HasReferences => References != null &&
+        public bool HasReferences     => References != null &&
             (References.Specifications?.Count > 0 || References.WebLinks?.Count > 0);
+        public bool HasSpecifications => References?.Specifications?.Count > 0;
+        public bool HasWebLinks       => References?.WebLinks?.Count > 0;
+        public bool HasBothReferences => HasSpecifications && HasWebLinks;
+
+        public List<string>? Specifications => References?.Specifications;
+        public List<string>? WebLinks       => References?.WebLinks;
 
         // ── Navigation bookmarks from whfmt navigation.bookmarks (C6) ──────────
         private ObservableCollection<FormatNavigationBookmark> _bookmarks;

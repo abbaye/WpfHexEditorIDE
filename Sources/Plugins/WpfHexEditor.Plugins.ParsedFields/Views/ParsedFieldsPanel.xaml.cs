@@ -697,6 +697,30 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         }
 
         /// <summary>
+        /// Toggle the References info popup on info button click.
+        /// </summary>
+        private void ReferencesInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReferencesPopup.IsOpen = !ReferencesPopup.IsOpen;
+        }
+
+        /// <summary>
+        /// Open a web link from the References popup in the default browser.
+        /// </summary>
+        private void ReferenceLink_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is System.Windows.Documents.Hyperlink link &&
+                link.Tag is string url &&
+                url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url)
+                {
+                    UseShellExecute = true
+                });
+            }
+        }
+
+        /// <summary>
         /// Navigate to the offset associated with a bookmark chip click. (C6)
         /// </summary>
         private void NavigatorBookmark_Click(object sender, RoutedEventArgs e)
