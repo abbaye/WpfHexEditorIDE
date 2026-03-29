@@ -416,6 +416,9 @@ namespace WpfHexEditor.Core.Bytes
             if (IsReadOnly)
                 throw new InvalidOperationException("File is read-only");
 
+            // Convert to physical position (needed both for undo recording and actual deletion)
+            var (physicalPos, isInserted) = _positionMapper.VirtualToPhysical(virtualPosition, _fileProvider.Length);
+
             if (_recordUndo)
             {
                 // Read old value for undo
@@ -423,12 +426,13 @@ namespace WpfHexEditor.Core.Bytes
                 if (!success)
                     return; // Can't delete invalid position
 
-                // Record undo operation
-                _undoRedoManager.RecordDelete(virtualPosition, new[] { oldValue });
+                // Capture physical position before deletion so ApplyUndoOperation can
+                // call UndeleteByte on the exact slot (avoids green border on restore).
+                long[] physPositions = (!isInserted && physicalPos.HasValue)
+                    ? new[] { physicalPos.Value }
+                    : new[] { -1L };
+                _undoRedoManager.RecordDelete(virtualPosition, new[] { oldValue }, physPositions);
             }
-
-            // Convert to physical position
-            var (physicalPos, isInserted) = _positionMapper.VirtualToPhysical(virtualPosition, _fileProvider.Length);
 
             if (isInserted)
             {
@@ -512,8 +516,15 @@ namespace WpfHexEditor.Core.Bytes
                 // Read old values for undo
                 byte[] oldValues = GetBytes(startVirtualPosition, (int)count);
 
-                // Record undo operation
-                _undoRedoManager.RecordDelete(startVirtualPosition, oldValues);
+                // Capture physical positions BEFORE the deletion loop (positions shift after each delete).
+                // physPos == -1 means the byte was an inserted byte, not a physical file byte.
+                var physPositions = new long[count];
+                for (int j = 0; j < count; j++)
+                {
+                    var (pPos, isIns) = _positionMapper.VirtualToPhysical(startVirtualPosition + j, _fileProvider.Length);
+                    physPositions[j] = (!isIns && pPos.HasValue) ? pPos.Value : -1L;
+                }
+                _undoRedoManager.RecordDelete(startVirtualPosition, oldValues, physPositions);
             }
 
             // CRITICAL FIX: Must invalidate cache after EACH deletion, not just at the end
@@ -1525,13 +1536,24 @@ namespace WpfHexEditor.Core.Bytes
                     break;
 
                 case UndoOperationType.Delete:
-                    // Undo of a delete = re-insert the deleted bytes at the original virtual position.
-                    // Using InsertBytes avoids the post-deletion virtual-position shift problem:
-                    // after deletion, VirtualToPhysical(originalPos) maps to wrong physical positions,
-                    // so UndeleteByte would restore the wrong bytes. InsertBytes does not need to
-                    // resolve a pre-existing physical slot — it just inserts at the correct virtual position.
                     if (operation.OldValues == null) break;
-                    InsertBytes(operation.VirtualPosition, operation.OldValues);
+                    if (operation.PhysicalPositions != null
+                        && System.Linq.Enumerable.All(operation.PhysicalPositions, p => p >= 0))
+                    {
+                        // All bytes were original file bytes — call UndeleteByte on the exact
+                        // physical positions captured before deletion. No virtual-shift issue,
+                        // and restored bytes appear without the green "inserted" border.
+                        foreach (long physPos in operation.PhysicalPositions)
+                            _editsManager.UndeleteByte(physPos);
+                        InvalidateCaches();
+                    }
+                    else
+                    {
+                        // At least one byte was an inserted byte (PhysicalPositions[i] == -1),
+                        // or no physical info available. Re-insert — green border is correct
+                        // for originally-inserted bytes.
+                        InsertBytes(operation.VirtualPosition, operation.OldValues);
+                    }
                     break;
             }
         }

@@ -59,6 +59,14 @@ namespace WpfHexEditor.Core.Bytes
         /// <summary>UTC timestamp ticks — used for coalescence window.</summary>
         internal long TimestampTicks;
 
+        /// <summary>
+        /// Physical file positions captured at delete time (Delete ops only).
+        /// Each entry: &gt;= 0 = physical file offset (restore via UndeleteByte — no green border),
+        ///              -1  = byte was an inserted byte (must re-insert on undo).
+        /// Null for Modify and Insert operations.
+        /// </summary>
+        internal long[]? PhysicalPositions;
+
         public UndoOperation(UndoOperationType type, long virtualPosition,
             byte[]? oldValues, byte[]? newValues, int count)
         {
@@ -150,13 +158,16 @@ namespace WpfHexEditor.Core.Bytes
                 null, insertedValues, insertedValues.Length));
         }
 
-        public void RecordDelete(long virtualPosition, byte[] deletedValues)
+        public void RecordDelete(long virtualPosition, byte[] deletedValues, long[]? physicalPositions = null)
         {
             if (deletedValues == null || deletedValues.Length == 0)
                 throw new ArgumentException("deletedValues cannot be null or empty", nameof(deletedValues));
 
             AddOperation(new UndoOperation(UndoOperationType.Delete, virtualPosition,
-                deletedValues, null, deletedValues.Length));
+                deletedValues, null, deletedValues.Length)
+            {
+                PhysicalPositions = physicalPositions
+            });
         }
 
         private void AddOperation(UndoOperation op)
