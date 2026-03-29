@@ -377,13 +377,19 @@
 
     <Grid x:Name="BaseGrid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Breadcrumb Bar -->
             <RowDefinition Height="Auto"/> <!-- Column Headers -->
             <RowDefinition Height="*"/>    <!-- Content -->
             <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
+        <!-- Breadcrumb Bar — offset / selection / format name -->
+        <controls:HexBreadcrumbBar x:Name="BreadcrumbBar"
+                                   Grid.Row="0" Grid.ColumnSpan="2"
+                                   Visibility="Visible"/>
+
         <!-- Column Headers -->
-        <Border x:Name="HeaderBorder" Grid.Row="0" Background="{DynamicResource HeaderBrush}" BorderBrush="{DynamicResource ColumnSeparatorBrush}" BorderThickness="0,0,0,1" Padding="0,5,0,5">
+        <Border x:Name="HeaderBorder" Grid.Row="1" Background="{DynamicResource HeaderBrush}" BorderBrush="{DynamicResource ColumnSeparatorBrush}" BorderThickness="0,0,0,1" Padding="0,5,0,5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="{Binding ActualOffsetWidth, RelativeSource={RelativeSource AncestorType=local:HexEditor}}"/> <!-- Offset: pinned, does not scroll -->
@@ -411,7 +417,7 @@
         </Border>
 
         <!-- Content area with scrollbar -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/> <!-- Scrollbar -->
@@ -456,6 +462,12 @@
                                       Panel.ZIndex="10"
                                       Visibility="Collapsed"/>
 
+            <!-- Column highlight overlay — semi-transparent stripe on the active byte column -->
+            <controls:ColumnHighlightOverlay x:Name="ColHighlightOverlay"
+                                             Grid.Column="0"
+                                             IsHitTestVisible="False"
+                                             Panel.ZIndex="2"/>
+
             <!-- Canvas overlay — allows the QuickSearchBar to be dragged anywhere.
                  No Background (null) so empty areas let clicks through; the bar
                  itself captures clicks via its explicit Background. -->
@@ -470,7 +482,7 @@
         </Grid>
 
         <!-- Status bar -->
-        <StatusBar x:Name="StatusBar" Grid.Row="2"
+        <StatusBar x:Name="StatusBar" Grid.Row="3"
                    Background="{DynamicResource StatusBarBrush}"
                    Foreground="{DynamicResource StatusBarTextBrush}"
                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">

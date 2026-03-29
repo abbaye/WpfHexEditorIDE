@@ -52,7 +52,10 @@ public partial class MainWindow
     private WpfPluginHost? _pluginHost;
     private IDEHostContext? _ideHostContext;
     private IDEEventBus? _ideEventBus;
-    private DocumentHostService? _documentHostService;
+    private DocumentHostService?    _documentHostService;
+    private EditorSettingsService?  _editorSettingsService;
+    private StatusBarManager?       _statusBarManager;
+    private DocumentTabManager     _documentTabManager = new();
     private WpfHexEditor.App.Services.LspDocumentBridgeService? _lspBridgeService;
     private WpfHexEditor.App.Services.LspStatusBarAdapter?      _lspStatusBarAdapter;
     private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
@@ -116,7 +119,8 @@ public partial class MainWindow
             _terminalService   = (TerminalServiceImpl)   _serviceProvider.GetRequiredService<WpfHexEditor.SDK.Contracts.Services.ITerminalService>();
             _dockingAdapter    = (DockingAdapter)        _serviceProvider.GetRequiredService<WpfHexEditor.PluginHost.Adapters.IDockingAdapter>();
             _menuAdapter       = (MenuAdapter)           _serviceProvider.GetRequiredService<WpfHexEditor.PluginHost.Adapters.IMenuAdapter>();
-            _documentHostService = (DocumentHostService) _serviceProvider.GetRequiredService<WpfHexEditor.SDK.Contracts.Services.IDocumentHostService>();
+            _documentHostService   = (DocumentHostService)  _serviceProvider.GetRequiredService<WpfHexEditor.SDK.Contracts.Services.IDocumentHostService>();
+            _editorSettingsService = _serviceProvider.GetRequiredService<EditorSettingsService>();
 
             var dockingAdapter   = _dockingAdapter;
             var menuAdapter      = _menuAdapter;

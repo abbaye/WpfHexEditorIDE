@@ -413,30 +413,7 @@ public partial class MainWindow
     // -----------------------------------------------------------------------
 
     private void UpdateBuildStatusBar(string text, string icon, bool visible, int progressPercent)
-    {
-        Dispatcher.InvokeAsync(() =>
-        {
-            if (BuildStatusItem  is null) return;
-            if (BuildStatusText  is null) return;
-            if (BuildStatusIcon  is null) return;
-            if (BuildProgressBar is null) return;
-
-            BuildStatusText.Text       = text;
-            BuildStatusIcon.Text       = icon;
-            BuildStatusItem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-
-            // progressPercent 0–100 → show bar; -1 → hide (build done/failed/cancelled)
-            if (progressPercent >= 0)
-            {
-                BuildProgressBar.Value      = progressPercent;
-                BuildProgressBar.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BuildProgressBar.Visibility = Visibility.Collapsed;
-            }
-        });
-    }
+        => _statusBarManager?.UpdateBuildStatus(text, icon, visible, progressPercent);
 
     // -----------------------------------------------------------------------
     // Helpers

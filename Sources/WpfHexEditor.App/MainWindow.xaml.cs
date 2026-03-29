@@ -125,11 +125,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // --- Fields --------------------------------------------------------
     private DockLayoutRoot _layout = null!;
     private DockEngine     _engine = null!;
-    private int  _documentCounter;
     private bool _isLocked;
 
+    // Document counter — proxied through DocumentTabManager for centralized state.
+    private int _documentCounter
+    {
+        get => _documentTabManager.Counter;
+        set => _documentTabManager.Counter = value;
+    }
+
     // Content cache: ContentId → actual editor UIElement (unwrapped; used for editor logic)
-    private readonly Dictionary<string, UIElement> _contentCache = new();
+    // Backed by DocumentTabManager.ContentCache — single source of truth for tab state.
+    private Dictionary<string, UIElement> _contentCache => _documentTabManager.ContentCache;
+
+    // Display cache: ContentId → visual UIElement shown in the docking layout
+    // When an InfoBar is present this is a Grid wrapper; otherwise == _contentCache entry.
+    private Dictionary<string, UIElement> _displayContent => _documentTabManager.DisplayContent;
+
+    // ContentIds of "doc-projprops-*" tabs with deferred content (solution not yet loaded).
+    private HashSet<string> _pendingProjectPropertiesContentIds => _documentTabManager.PendingProjectPropertiesContentIds;
 
     // Project properties map: doc-projprops-{id} → IProject (for deferred content creation)
     private readonly Dictionary<string, IProject> _projectPropertiesMap = new();
@@ -142,14 +156,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Reference manager map: doc-refs-{name} → IProject (for deferred content creation)
     private readonly Dictionary<string, IProject> _refManagerMap = new();
-
-    // ContentIds of "doc-projprops-*" tabs that received the placeholder at layout-restore time
-    // because the solution was not yet loaded. Evicted and rebuilt in OnSolutionChanged().
-    private readonly HashSet<string> _pendingProjectPropertiesContentIds = new();
-
-    // Display cache: ContentId → visual UIElement shown in the docking layout
-    // When an InfoBar is present this is a Grid wrapper; otherwise == _contentCache entry.
-    private readonly Dictionary<string, UIElement> _displayContent = new();
 
     // Per-document format tracking: ContentId → last logged format name
     private readonly Dictionary<string, string> _loggedFormats = new();
@@ -185,8 +191,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private const string FindReferencesPanelContentId = "panel-find-references";
     private WpfHexEditor.Editor.CodeEditor.Controls.FindReferencesPanel? _findReferencesPanel;
     private const string OptionsContentId       = "panel-options";
-    private const string FileComparisonPanelContentId    = "panel-file-comparison";
-    private const string ArchivePanelContentId           = "panel-archive";
     private const string MarkdownOutlinePanelContentId   = "panel-md-outline";
 
     // Markdown Outline panel (persistent singleton)
@@ -202,9 +206,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Output Panel (persistent singleton — pre-created so OutputLogger works from startup)
     private OutputPanel? _outputPanel;
-
-    // FileOps panels (persistent singletons)
-    private WpfHexEditor.Panels.FileOps.ArchiveStructurePanel? _archivePanel;
 
     // MenuAdapter — captured after plugin system initialises; used by CommandPalette
     private MenuAdapter? _menuAdapter;
@@ -491,6 +492,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        // Initialize StatusBarManager with named XAML control refs
+        _statusBarManager = new StatusBarManager(Dispatcher);
+        _statusBarManager.Initialize(
+            BuildStatusItem, BuildStatusText, BuildStatusIcon, BuildProgressBar,
+            DbgStatusItem,   DbgStatusText,
+            WorkspaceStatusItem, WorkspaceStatusText);
+
         // Wire DocumentManager events (title changes, dirty state → all open editors)
         InitDocumentManager();
 
@@ -1198,6 +1206,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void HandleStartupFile()
     {
+        // --diff left right → open DiffViewer directly
+        if (App.StartupDiffPaths is { } diff)
+        {
+            _ = _compareFileLaunchService?.LaunchAsync(diff.Left, diff.Right);
+            return;
+        }
+
         var path = App.StartupFilePath;
         if (string.IsNullOrEmpty(path)) return;
 
@@ -1387,8 +1402,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "panel-properties"         => CreatePropertiesContent(),
             ErrorPanelContentId          => CreateErrorPanelContent(),
             FindReferencesPanelContentId => CreateFindReferencesPanelContent(),
-            FileComparisonPanelContentId   => CreateFileComparisonContent(),
-            ArchivePanelContentId          => CreateArchivePanelContent(),
             OptionsContentId               => CreateOptionsContent(),
             "doc-welcome"                  => CreateWelcomeContent(),
             TerminalPanelContentId         => CreateTerminalPanelContent(),
@@ -1500,13 +1513,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return _outputPanel;
     }
 
-    private UIElement CreateFileComparisonContent()
-    {
-        // FileComparisonPanel manages its own file selection internally
-        var panel = new WpfHexEditor.Panels.FileOps.FileComparisonPanel();
-        return panel;
-    }
-
     private UIElement CreateMarkdownOutlinePanelContent()
     {
         _markdownOutlinePanel ??= new WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel();
@@ -1516,11 +1522,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return _markdownOutlinePanel!;
     }
 
-    private UIElement CreateArchivePanelContent()
-    {
-        _archivePanel ??= new WpfHexEditor.Panels.FileOps.ArchiveStructurePanel();
-        return _archivePanel;
-    }
 
     private UIElement CreateErrorPanelContent() => EnsureErrorPanelInstance();
 
@@ -2282,7 +2283,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _ = openable.OpenAsync(filePath);
 
             // Apply user settings (scroll speed, etc.) from Options to newly created editors.
-            ApplyEditorSettings(editor);
+            _editorSettingsService?.Apply(editor);
 
             // Restore per-file position (scroll, selection, caret) from previous session.
             if (editor is IEditorPersistable persistable &&
@@ -3920,8 +3921,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (_connectedHexEditor is IDiagnosticSource newDiag)
                 EnsureErrorPanelInstance().AddSource(newDiag);
 
-            // Refresh archive-structure panel for ZIP files (analysis panels handled by plugins)
-            _ = RefreshAnalysisPanelsAsync(_connectedHexEditor);
+            // Analysis panel refresh delegated to plugins via event bus.
         }
 
         ActiveDocumentEditor       = content as IDocumentEditor;
@@ -5172,7 +5172,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         foreach (var uiElement in _contentCache.Values)
         {
             if (uiElement is IDocumentEditor docEditor)
-                ApplyEditorSettings(docEditor);
+                _editorSettingsService?.Apply(docEditor);
         }
 
         _autoSerializeTimer?.Stop();
@@ -5953,89 +5953,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowMarkdownOutline(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Markdown Outline", MarkdownOutlinePanelContentId, DockDirection.Left);
-
-    private async System.Threading.Tasks.Task RefreshAnalysisPanelsAsync(HexEditorControl hex)
-    {
-        try
-        {
-            // Auto-load archive structure for ZIP files
-            if (_archivePanel is not null && !string.IsNullOrEmpty(hex.FileName))
-            {
-                var ext = System.IO.Path.GetExtension(hex.FileName).ToLowerInvariant();
-                if (ext == ".zip")
-                {
-                    try
-                    {
-                        var root = await System.Threading.Tasks.Task.Run(() => BuildZipArchiveTree(hex.FileName));
-                        if (!ReferenceEquals(hex, _connectedHexEditor)) return;
-                        _archivePanel.LoadArchive(root);
-                    }
-                    catch { /* not a valid zip */ }
-                }
-            }
-
-        }
-        catch (Exception ex)
-        {
-            OutputLogger.Debug($"RefreshAnalysisPanels error: {ex.Message}");
-        }
-    }
-
-    private static WpfHexEditor.Panels.FileOps.ArchiveNode BuildZipArchiveTree(string zipPath)
-    {
-        var root = new WpfHexEditor.Panels.FileOps.ArchiveNode
-        {
-            Name     = System.IO.Path.GetFileName(zipPath),
-            IsFolder = true,
-            Children = new System.Collections.ObjectModel.ObservableCollection<WpfHexEditor.Panels.FileOps.ArchiveNode>()
-        };
-
-        using var zip = System.IO.Compression.ZipFile.OpenRead(zipPath);
-        var folderMap = new System.Collections.Generic.Dictionary<string, WpfHexEditor.Panels.FileOps.ArchiveNode>
-        {
-            [""] = root
-        };
-
-        // Ensure folder nodes exist for the given path
-        WpfHexEditor.Panels.FileOps.ArchiveNode EnsureFolder(string folderPath)
-        {
-            if (folderMap.TryGetValue(folderPath, out var existing)) return existing;
-            var parent = EnsureFolder(System.IO.Path.GetDirectoryName(folderPath)?.Replace('\\', '/') ?? "");
-            var node = new WpfHexEditor.Panels.FileOps.ArchiveNode
-            {
-                Name     = System.IO.Path.GetFileName(folderPath.TrimEnd('/')),
-                IsFolder = true,
-                Children = new System.Collections.ObjectModel.ObservableCollection<WpfHexEditor.Panels.FileOps.ArchiveNode>()
-            };
-            parent.Children.Add(node);
-            folderMap[folderPath] = node;
-            return node;
-        }
-
-        foreach (var entry in zip.Entries)
-        {
-            var fullName = entry.FullName.Replace('\\', '/');
-            if (fullName.EndsWith("/"))
-            {
-                EnsureFolder(fullName.TrimEnd('/'));
-                continue;
-            }
-            var dirPart  = System.IO.Path.GetDirectoryName(fullName)?.Replace('\\', '/') ?? "";
-            var parentNode = EnsureFolder(dirPart);
-            parentNode.Children.Add(new WpfHexEditor.Panels.FileOps.ArchiveNode
-            {
-                Name              = entry.Name,
-                IsFolder          = false,
-                Size              = entry.Length,
-                CompressedSize    = entry.CompressedLength,
-                Crc               = $"{entry.Crc32:X8}",
-                CompressionMethod = "Deflate",
-                Children          = new System.Collections.ObjectModel.ObservableCollection<WpfHexEditor.Panels.FileOps.ArchiveNode>()
-            });
-        }
-
-        return root;
-    }
 
     private void OnGoToOffset(object sender, RoutedEventArgs e)
     {

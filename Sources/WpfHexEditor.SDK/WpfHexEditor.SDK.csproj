@@ -9,8 +9,22 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Description>Public SDK for WpfHexEditor plugin development — interfaces, contracts, models, and MSBuild targets.</Description>
-    <Version>1.2.0</Version>
+    <Version>2.0.0</Version>
+    <Authors>Derek Tremblay</Authors>
+    <PackageId>WpfHexEditor.SDK</PackageId>
+    <PackageTags>wpf;hexeditor;plugin;sdk;ide</PackageTags>
+    <PackageProjectUrl>https://github.com/WPFHexEditorControl/WPFHexEditorControl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/WPFHexEditorControl/WPFHexEditorControl</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->
   <ItemGroup>
@@ -22,9 +36,6 @@
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\WpfHexEditor.Panels.FileOps\WpfHexEditor.Panels.FileOps.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

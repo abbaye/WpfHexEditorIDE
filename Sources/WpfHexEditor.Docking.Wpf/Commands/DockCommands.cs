@@ -57,7 +57,7 @@ public static class DockCommands
 
     public static readonly RoutedUICommand UndoLayout = new(
         "Undo Layout", nameof(UndoLayout), typeof(DockCommands),
-        new InputGestureCollection { new KeyGesture(Key.Z, ModifierKeys.Control | ModifierKeys.Shift) });
+        new InputGestureCollection { new KeyGesture(Key.Z, ModifierKeys.Control | ModifierKeys.Alt) });
 
     public static readonly RoutedUICommand RedoLayout = new(
         "Redo Layout", nameof(RedoLayout), typeof(DockCommands),

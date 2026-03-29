@@ -43,4 +43,9 @@ public sealed class DebuggerSettings
 
     /// <summary>Breakpoints saved between IDE sessions.</summary>
     public List<PersistedBreakpoint> Breakpoints { get; set; } = [];
+
+    // ── Gutter highlights ─────────────────────────────────────────────────────
+
+    /// <summary>When true, the entire source line is highlighted when a breakpoint is hit.</summary>
+    public bool BreakpointLineHighlightEnabled { get; set; } = true;
 }

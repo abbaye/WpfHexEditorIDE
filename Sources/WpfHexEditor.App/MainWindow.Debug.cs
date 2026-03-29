@@ -304,18 +304,13 @@ public partial class MainWindow
 
     private void UpdateDbgStatusBar(DebugSessionPausedEvent? e)
     {
-        if (DbgStatusItem is null) return;
         if (e is null)
         {
-            DbgStatusItem.Visibility = Visibility.Collapsed;
+            _statusBarManager?.UpdateDebugStatus(null, visible: false);
             return;
         }
-        DbgStatusItem.Visibility = Visibility.Visible;
-        if (DbgStatusText is not null)
-        {
-            var fileName = System.IO.Path.GetFileName(e.FilePath);
-            DbgStatusText.Text = $"Paused at {fileName}:{e.Line}";
-        }
+        var fileName = System.IO.Path.GetFileName(e.FilePath);
+        _statusBarManager?.UpdateDebugStatus($"Paused at {fileName}:{e.Line}", visible: true);
     }
 
     // ── Menu click handlers (thin wrappers — real logic in existing methods) ──

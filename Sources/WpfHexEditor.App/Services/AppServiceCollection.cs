@@ -58,6 +58,9 @@ internal static class AppServiceCollection
         services.AddSingleton(args.StatusBarAdapter);
         services.AddSingleton(args.DocumentHostService);
 
+        // Stateless services that only need AppSettingsService.Instance.
+        services.AddSingleton<EditorSettingsService>();
+
         return services;
     }
 }

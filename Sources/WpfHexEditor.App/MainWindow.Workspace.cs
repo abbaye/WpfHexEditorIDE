@@ -265,17 +265,5 @@ public partial class MainWindow
     // ── Status bar ─────────────────────────────────────────────────────────────
 
     private void UpdateWorkspaceStatusBar(string? workspaceName)
-    {
-        if (WorkspaceStatusItem is null) return;
-
-        if (string.IsNullOrWhiteSpace(workspaceName))
-        {
-            WorkspaceStatusItem.Visibility = Visibility.Collapsed;
-        }
-        else
-        {
-            WorkspaceStatusText.Text       = workspaceName;
-            WorkspaceStatusItem.Visibility = Visibility.Visible;
-        }
-    }
+        => _statusBarManager?.UpdateWorkspaceStatus(workspaceName);
 }

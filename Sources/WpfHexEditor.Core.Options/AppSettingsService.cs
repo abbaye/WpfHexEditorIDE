@@ -46,12 +46,49 @@ public sealed class AppSettingsService
             if (!File.Exists(SettingsPath)) return;
             var json     = File.ReadAllText(SettingsPath);
             var settings = JsonSerializer.Deserialize<AppSettings>(json, JsonOptions);
-            if (settings != null) Current = settings;
+            if (settings is null) return;
+
+            bool migrated = MigrateIfNeeded(settings);
+            Current = settings;
+            if (migrated) Save();   // persist migrated values immediately
         }
         catch
         {
             Current = new AppSettings();
         }
+    }
+
+    // -- Migration ---------------------------------------------------------
+
+    /// <summary>
+    /// Applies incremental migration blocks to bring <paramref name="s"/> up to
+    /// <see cref="AppSettings.CurrentSettingsVersion"/>.
+    /// Returns <c>true</c> if any migration was applied (caller should re-save).
+    /// </summary>
+    /// <remarks>
+    /// RULES:
+    ///  • Each block is a single if (s.SettingsVersion &lt; N) { … s.SettingsVersion = N; }
+    ///  • Never modify previous blocks — add new blocks at the end only.
+    ///  • Keep blocks idempotent — safe to run twice on the same settings object.
+    /// </remarks>
+    private static bool MigrateIfNeeded(AppSettings s)
+    {
+        bool changed = false;
+
+        // v0 → v1 (2026-03-29)
+        //   BreakpointLineHighlightEnabled added to DebuggerSettings (default true).
+        //   Old settings.json files without this field deserialise it as false (bool default),
+        //   so migration resets it to the intended default of true.
+        if (s.SettingsVersion < 1)
+        {
+            s.Debugger.BreakpointLineHighlightEnabled = true;
+            s.SettingsVersion = 1;
+            changed = true;
+        }
+
+        // v1 → v2: (reserved for next breaking change)
+
+        return changed;
     }
 
     public void Save()

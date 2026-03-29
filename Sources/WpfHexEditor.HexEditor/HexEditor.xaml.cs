@@ -120,6 +120,10 @@ namespace WpfHexEditor.HexEditor
             // Sync header horizontal position with content horizontal scroll
             ContentScroller.ScrollChanged += ContentScroller_ScrollChanged;
 
+            // Initialize breadcrumb bar and column highlight overlay
+            InitializeBreadcrumbBar();
+            InitializeColumnHighlight();
+
             // Find XAML elements for display options
             _headerBorder = this.FindName("HeaderBorder") as Border;
             _statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;

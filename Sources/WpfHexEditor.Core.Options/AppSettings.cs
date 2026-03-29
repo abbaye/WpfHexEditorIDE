@@ -14,6 +14,18 @@ namespace WpfHexEditor.Core.Options;
 /// </summary>
 public sealed class AppSettings
 {
+    // -- Schema version --------------------------------------------------
+
+    /// <summary>
+    /// Schema version of this settings file.
+    /// Incremented whenever a breaking change requires migration.
+    /// Old settings.json files without this field deserialise to 0 (default).
+    /// </summary>
+    public int SettingsVersion { get; set; } = 0;
+
+    /// <summary>Latest known schema version. Bump when adding a new migration block.</summary>
+    internal const int CurrentSettingsVersion = 1;
+
     // -- Environment > General -------------------------------------------
 
     /// <summary>
