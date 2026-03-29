@@ -529,10 +529,18 @@ namespace WpfHexEditor.Core.Bytes
 
                 if (isInserted)
                 {
-                    // Deleting an inserted byte - remove from insertions
+                    // CRITICAL: Deleting an inserted byte — must REMOVE the insertion,
+                    // NOT mark a physical position as deleted (same logic as DeleteByte single).
                     if (physicalPos.HasValue)
                     {
-                        _editsManager.DeleteByte(physicalPos.Value);
+                        long physicalByteVirtualPos = _positionMapper.PhysicalToVirtual(physicalPos.Value, _fileProvider.Length);
+                        int totalInsertions = _editsManager.GetInsertionCountAt(physicalPos.Value);
+                        long firstInsertedVirtualPos = physicalByteVirtualPos - totalInsertions;
+                        long relativePosition = virtualPos - firstInsertedVirtualPos;
+                        long virtualOffset = totalInsertions - 1 - relativePosition;
+
+                        if (virtualOffset >= 0 && virtualOffset < totalInsertions)
+                            _editsManager.RemoveSpecificInsertion(physicalPos.Value, virtualOffset);
                     }
                 }
                 else if (physicalPos.HasValue)
