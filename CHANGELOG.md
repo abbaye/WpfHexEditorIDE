@@ -6,6 +6,58 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.3.8] — 2026-03-29 — HexEditor Undo/Redo Overkill Upgrade
+
+Block-level undo/redo for the HexEditor, fixing paste-byte-by-byte, broken batch, cut split, plus coalescence for hex digit typing and a VS-style history dropdown.
+
+### 🐛 Fixed
+
+- **Paste (overwrite mode) was byte-by-byte** — pressing Ctrl+Z after pasting N bytes would only undo 1 byte. Root cause: `HexEditorViewModel.Paste()` called `ModifyByte()` in a loop, each call recording its own `RecordModify()` entry. Now wrapped in `BeginUndoTransaction`/`CommitUndoTransaction` → single undo step.
+- **`UndoRedoManager.EndBatch()` was broken** — accumulated operations in `_batchOperations` then pushed them **individually** anyway. The comment said "they'll be undone/redone together" but `Undo()` only popped one entry at a time. Fixed with `UndoGroup` composite — `EndBatch()` now creates one grouped entry.
+- **Cut = 2 separate undo steps** — cut (copy + delete) was not wrapped in any transaction. Ctrl+Z after cut would only restore the selection highlight, not the bytes. Now wrapped in a named transaction.
+
+### ✨ Added — `UndoRedoManager` (ADR-UNDO-01)
+
+- **`UndoGroup`** (internal sealed class) — composite entry wrapping `List<UndoOperation>` with a description string; enables multi-op atomic undo
+- Stack type changed from `Stack<UndoOperation>` → `Stack<object>` (accepts both `UndoOperation` and `UndoGroup`)
+- **`BeginBatch(string description)`** — description parameter added (was parameterless)
+- **`EndBatch()`** — now creates a single `UndoGroup` pushed as one entry instead of N individual ops
+- **`RollbackBatch()`** — new: discard batch without pushing (for exception paths)
+- **`PeekUndoDescription()`** / **`PeekRedoDescription()`** → human-readable string for dynamic tooltip / menu header
+- **`GetUndoDescriptions(int)`** / **`GetRedoDescriptions(int)`** → ordered list for history dropdown
+- **Coalescence** — consecutive single-byte `Modify` ops at adjacent positions within 500 ms are merged into a single ranged op (keeps history clean during hex digit typing)
+- `PopUndo()` / `PopRedo()` now return `object` (callers updated accordingly)
+
+### ✨ Added — `ByteProvider` Transaction API
+
+- **`BeginUndoTransaction(string description)`** — delegates to `_undoRedoManager.BeginBatch()`
+- **`CommitUndoTransaction()`** — delegates to `_undoRedoManager.EndBatch()`
+- **`RollbackUndoTransaction()`** — delegates to `_undoRedoManager.RollbackBatch()`
+- **`PeekUndoDescription()`** / **`PeekRedoDescription()`** — pass-through for tooltip data
+- **`GetUndoDescriptions(int)`** / **`GetRedoDescriptions(int)`** — pass-through for history list
+- `Undo()` / `Redo()` handle `UndoGroup` — iterate ops in reverse order (undo) or forward (redo); extracted `ApplyUndoOperation()` / `ApplyRedoOperation()` helpers
+
+### ✨ Added — `HexEditorViewModel` Descriptions
+
+- `UndoDescription`, `RedoDescription`, `UndoHistory`, `RedoHistory` properties (notified in `Undo()` / `Redo()`)
+- `Paste()` insert mode: `InsertBytes` already records one op, now wrapped for description label
+- `DeleteSelection()`: wrapped in `BeginUndoTransaction("Delete N bytes")`
+
+### ✨ Added — `UndoHistoryPopup` (new control)
+
+- **`Controls/UndoHistoryPopup.cs`** — VS-style popup listing undo/redo step descriptions
+- Hover highlights all steps up to the hovered row; click invokes `StepsRequested(int steps)` for multi-level undo/redo
+- Uses `ET_PopupBackground` / `SE_HoverBrush` theme tokens; no new tokens required
+
+### ✨ Added — Dynamic Undo/Redo Descriptions in Shell
+
+- **`IDocumentEditor`** — added `string UndoDescription { get => "Undo"; }` and `RedoDescription { get => "Redo"; }` default interface members (no breaking change to existing implementations)
+- **`HexEditor.EditOperations`** — exposes `UndoDescription`, `RedoDescription`, `GetUndoDescriptions()`, `GetRedoDescriptions()`
+- **`MainWindow.xaml`** toolbar Undo/Redo buttons: `ToolTip` now bound to `ActiveDocumentEditor.UndoDescription/RedoDescription` with `FallbackValue`
+- **Edit menu** `_Undo`/`_Redo` `Header` now dynamically bound to descriptions (e.g. "Paste 50 bytes")
+
+---
+
 ## [0.6.3.7] — 2026-03-25 — Debugger UI, Workspace System, Sticky Scroll, Find All References & Performance
 
 This release delivers a fully wired VS-style debugger UI, a `.whidews` workspace system, sticky scroll with line numbers, Find All References (Shift+F12), auto-close brackets/quotes, F#/VB.NET language support, a redesigned New File Dialog, Compare Files overkill upgrade (Phases A–H), DiffHub document viewer redesign, end-of-block hover hints, build progress bar, Quick File Open (Ctrl+P), InlineHints background pre-warming, 3 phases of architectural refactoring, and a critical performance fix that eliminates a 100% CPU / 567 MB infinite render loop introduced by the sticky scroll implementation.

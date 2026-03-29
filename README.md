@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.3.7-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.3.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
@@ -66,7 +66,7 @@
 
 ### 📋 IDE Infrastructure
 - **IDocumentEditor** plugin contract — every editor is pluggable
-- **Shared `UndoEngine`** — coalescing (500 ms), transactions, save-point tracking; `Ctrl+Z/Y/Shift+Z` across all editors
+- **Shared `UndoEngine`** — coalescing (500 ms), transactions, save-point tracking; `Ctrl+Z/Y/Shift+Z` across all editors; **HexEditor block undo** — paste/cut/delete undo as a single step via `UndoGroup` composite + `BeginUndoTransaction` API; VS-style history dropdown
 - **Rectangular selection** (Alt+Click) + **drag-to-move** — CodeEditor & TextEditor
 - **VS2022-style status bar** (edit mode, bytes/line, caret offset, LSP server state)
 - **Output panel** + **Error/Diagnostics panel** + **Dockable Search Panel** (`Ctrl+Shift+F`)
