@@ -52,7 +52,7 @@ public sealed class ColumnHighlightOverlay : FrameworkElement
     /// <param name="columnIndex">0-based byte column within the visible row.</param>
     /// <param name="hexPanelStartX">X offset where the hex panel starts (offset column width).</param>
     /// <param name="cellWidth">Width of one hex cell (includes spacing).</param>
-    public void SetColumn(int columnIndex, double hexPanelStartX, double cellWidth)
+    public void SetColumn(int columnIndex, double hexPanelStartX, double cellWidth, double spacerOffset = 0)
     {
         if (columnIndex < 0 || cellWidth <= 0)
         {
@@ -60,7 +60,7 @@ public sealed class ColumnHighlightOverlay : FrameworkElement
             return;
         }
 
-        _x       = hexPanelStartX + columnIndex * cellWidth;
+        _x       = hexPanelStartX + columnIndex * cellWidth + spacerOffset;
         _width   = cellWidth;
         _visible = true;
         InvalidateVisual();

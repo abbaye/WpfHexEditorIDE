@@ -21,6 +21,41 @@
         <!-- Collapses groups whose name matches the ConverterParameter (default: "Format Metadata") -->
         <local:GroupNameToExpandedConverter x:Key="GroupNameToExpandedConverter"/>
 
+        <!-- Style for nav/bookmark buttons (info icon, bookmark chips) -->
+        <Style x:Key="PFP_NavBookmarkButtonStyle" TargetType="Button">
+            <Setter Property="Foreground"      Value="{DynamicResource PFP_TextBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource PFP_SectionBackgroundBrush}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource PFP_BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"         Value="6,2"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"  Value="{DynamicResource Panel_ItemHoverBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PFP_ItemSelectedBorderBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PFP_AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Panel_ItemSelectedBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Panel_ItemSelectedForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Style for field items with improved colors -->
         <Style x:Key="FieldItemStyle" TargetType="ListBoxItem">
             <Setter Property="Padding" Value="10,6"/>
@@ -519,10 +554,23 @@
                 <Grid Margin="0,0,0,4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+
+                    <!-- References info button — far left, visible only when whfmt has references/weblinks -->
+                    <Button x:Name="ReferencesInfoButton"
+                            Grid.Column="0"
+                            Visibility="{Binding FormatInfo.HasReferences, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Click="ReferencesInfoButton_Click"
+                            ToolTip="Format References &amp; Specifications"
+                            Style="{StaticResource PFP_NavBookmarkButtonStyle}"
+                            Margin="0,0,4,0" Padding="4,2"
+                            FontFamily="Segoe MDL2 Assets" Content="&#xE946;"
+                            FontSize="11" VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <TextBlock FontWeight="SemiBold" FontSize="12"
                                    VerticalAlignment="Center" Margin="0,0,4,0"
                                    Foreground="{DynamicResource PFP_TextBrush}"
@@ -543,19 +591,106 @@
                                    VerticalAlignment="Center"
                                    Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                     </StackPanel>
-                    <Border Grid.Column="2"
+
+                    <Border Grid.Column="3"
                             Background="{DynamicResource PFP_CategoryBadgeBackgroundBrush}"
                             BorderBrush="{DynamicResource PFP_CategoryBadgeBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="3"
                             Padding="6,2"
-                            Margin="8,0,0,0">
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center">
                         <TextBlock FontSize="10"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource PFP_CategoryBadgeForegroundBrush}"
                                    Text="{Binding FormatInfo.Category}"/>
                     </Border>
                 </Grid>
+
+                <!-- Proxy element: stays in the visual tree so the Popup can reach the DataContext.
+                     Popup content is not in the visual tree and cannot use RelativeSource/ElementName
+                     to the UserControl root — this hidden FrameworkElement bridges the gap. -->
+                <FrameworkElement x:Name="PopupDataContextProxy" Visibility="Collapsed"/>
+
+                <!-- References popup — anchored to info button. -->
+                <Popup x:Name="ReferencesPopup"
+                       StaysOpen="False"
+                       PlacementTarget="{Binding ElementName=ReferencesInfoButton}"
+                       Placement="Bottom"
+                       AllowsTransparency="True"
+                       PopupAnimation="Fade">
+                    <Border DataContext="{Binding DataContext, ElementName=PopupDataContextProxy}"
+                            Background="{DynamicResource DockBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="12,10"
+                            MaxWidth="400"
+                            MinWidth="220">
+                        <StackPanel>
+                            <!-- Specifications -->
+                            <StackPanel Visibility="{Binding FormatInfo.HasSpecifications, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="Specifications"
+                                           FontWeight="SemiBold" FontSize="11"
+                                           Margin="0,0,0,4"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <ItemsControl ItemsSource="{Binding FormatInfo.Specifications}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="4,1" TextWrapping="Wrap" FontSize="11"
+                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                       Text="{Binding}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                            <!-- Separator (only when both sections present) -->
+                            <Rectangle Height="1"
+                                       Fill="{DynamicResource DockBorderBrush}"
+                                       Margin="0,6"
+                                       Visibility="{Binding FormatInfo.HasBothReferences, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <!-- Web Links -->
+                            <StackPanel Visibility="{Binding FormatInfo.HasWebLinks, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="Web Links"
+                                           FontWeight="SemiBold" FontSize="11"
+                                           Margin="0,0,0,4"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <ItemsControl ItemsSource="{Binding FormatInfo.WebLinks}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding}"
+                                                    Tag="{Binding}"
+                                                    Click="ReferenceLink_Click"
+                                                    Cursor="Hand"
+                                                    Margin="4,1,0,1"
+                                                    Padding="0"
+                                                    BorderThickness="0"
+                                                    Background="Transparent"
+                                                    Foreground="{DynamicResource PFP_AccentBrush}"
+                                                    FontSize="11"
+                                                    HorizontalAlignment="Left"
+                                                    HorizontalContentAlignment="Left">
+                                                <Button.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}"
+                                                                   TextWrapping="Wrap"
+                                                                   TextDecorations="Underline"/>
+                                                    </DataTemplate>
+                                                </Button.ContentTemplate>
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <ContentPresenter/>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
                 <TextBlock FontSize="11" Foreground="{DynamicResource PFP_SubTextBrush}" TextWrapping="Wrap"
                            Text="{Binding FormatInfo.Description}"/>
 

@@ -1815,6 +1815,27 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         {
             _overflowManager?.SyncMenuVisibility();
         }
+
+        // ── References popup ──────────────────────────────────────────────────
+
+        /// <summary>Toggle the References info popup on info button click.</summary>
+        private void ReferencesInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReferencesPopup.IsOpen = !ReferencesPopup.IsOpen;
+        }
+
+        /// <summary>Open a web link from the References popup in the default browser.</summary>
+        private void ReferenceLink_Click(object sender, RoutedEventArgs e)
+        {
+            var url = sender is System.Windows.Controls.Button btn ? btn.Tag as string : null;
+            if (!string.IsNullOrEmpty(url) && url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url)
+                {
+                    UseShellExecute = true
+                });
+            }
+        }
     }
 
     /// <summary>

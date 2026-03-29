@@ -18,6 +18,7 @@
 
 using System;
 using System.Windows;
+using WpfHexEditor.Core;
 using WpfHexEditor.HexEditor.Controls;
 
 namespace WpfHexEditor.HexEditor
@@ -81,12 +82,24 @@ namespace WpfHexEditor.HexEditor
             int bytesPerLine = HexViewport.BytesPerLine;
             if (bytesPerLine <= 0) { _columnHighlight.Hide(); return; }
 
-            long offset      = _viewModel.SelectionStart.Value;
-            int  colIdx      = (int)(offset % bytesPerLine);
+            long   offset    = _viewModel.SelectionStart.Value;
+            int    colIdx    = (int)(offset % bytesPerLine);
             double cellWidth = HexViewport.CalculateCellWidthForByteCount(1) + 2; // +2 for HexByteSpacing
             double hexStart  = HexViewport.HexPanelStartX;
 
-            _columnHighlight.SetColumn(colIdx, hexStart, cellWidth);
+            // Account for byte-group spacers inserted by the renderer at every group boundary.
+            // e.g. with ByteGrouping=4 and colIdx=6: 1 spacer before col 4 → +spacerWidth
+            double spacerOffset = 0;
+            int groupSize = (int)HexViewport.ByteGrouping;
+            if (bytesPerLine >= groupSize &&
+                (HexViewport.ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                 HexViewport.ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel))
+            {
+                int spacerCount = colIdx / groupSize;
+                spacerOffset = spacerCount * (int)HexViewport.ByteSpacerWidthTickness;
+            }
+
+            _columnHighlight.SetColumn(colIdx, hexStart, cellWidth, spacerOffset);
         }
     }
 }
