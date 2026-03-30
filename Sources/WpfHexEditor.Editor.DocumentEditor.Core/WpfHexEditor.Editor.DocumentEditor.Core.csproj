@@ -12,7 +12,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <RootNamespace>WpfHexEditor.Editor.DocumentEditor.Core</RootNamespace>
     <AssemblyName>WpfHexEditor.Editor.DocumentEditor.Core</AssemblyName>
     <LangVersion>preview</LangVersion>
