@@ -112,7 +112,7 @@ public partial class ArchiveExplorerPanel : UserControl
 
     // ── Drag-Drop ──────────────────────────────────────────────────────────
 
-    private void OnTreeMouseMove(object sender, MouseEventArgs e)
+    private async void OnTreeMouseMove(object sender, MouseEventArgs e)
     {
         if (e.LeftButton != MouseButtonState.Pressed) return;
         if (ViewModel.SelectedNode is not { IsFolder: false } node) return;
@@ -126,21 +126,30 @@ public partial class ArchiveExplorerPanel : UserControl
         if (_isDragging) return;
         _isDragging = true;
 
+        // Capture UI-thread values before the await suspends.
+        var entry       = node.Node.Entry;
+        var nodeName    = node.Name;
+        var archivePath = ViewModel.CurrentArchivePath;
+        var tempRoot    = Path.Combine(Path.GetTempPath(), "WpfHexEditor", "ArchiveExplorer", "drag");
+        var destPath    = Path.Combine(tempRoot, nodeName);
+
         try
         {
-            // Extract to temp synchronously for drag
-            var tempRoot = Path.Combine(Path.GetTempPath(), "WpfHexEditor", "ArchiveExplorer", "drag");
-            Directory.CreateDirectory(tempRoot);
-            var destPath = Path.Combine(tempRoot, node.Name);
-
-            // Fire-and-forget: if extraction fails, drag carries no file
-            if (!File.Exists(destPath) && ViewModel is { } vm && vm.CurrentArchivePath is not null)
+            if (!File.Exists(destPath) && archivePath is not null)
             {
-                using var reader = Services.ArchiveReaderFactory.CreateReader(vm.CurrentArchivePath);
-                if (reader is not null)
-                    reader.ExtractEntryAsync(node.Node.Entry, destPath).GetAwaiter().GetResult();
+                // Extract on thread pool — no SynchronizationContext inside Task.Run,
+                // so ConfigureAwait(false) inside ExtractEntryAsync works without deadlock.
+                // The await here (without ConfigureAwait(false)) resumes on the UI thread.
+                await Task.Run(async () =>
+                {
+                    Directory.CreateDirectory(tempRoot);
+                    using var reader = Services.ArchiveReaderFactory.CreateReader(archivePath);
+                    if (reader is not null)
+                        await reader.ExtractEntryAsync(entry, destPath).ConfigureAwait(false);
+                });
             }
 
+            // Back on UI thread — DoDragDrop must be called here.
             if (File.Exists(destPath))
             {
                 var data = new DataObject(DataFormats.FileDrop, new[] { destPath });
