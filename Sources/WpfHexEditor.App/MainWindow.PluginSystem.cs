@@ -59,6 +59,7 @@ public partial class MainWindow
     private DocumentTabManager     _documentTabManager = new();
     private WpfHexEditor.App.Services.LspDocumentBridgeService? _lspBridgeService;
     private WpfHexEditor.App.Services.LspStatusBarAdapter?      _lspStatusBarAdapter;
+    private WpfHexEditor.App.Services.LspDiagnosticsAdapter?    _lspDiagnosticsAdapter;
     private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
     private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
     private readonly FocusContextService _focusContextService = new();
@@ -178,6 +179,10 @@ public partial class MainWindow
                 _lspStatusBarAdapter = new WpfHexEditor.App.Services.LspStatusBarAdapter(
                     _lspBridgeService,
                     onErrorClick: () => OpenSettingsAt("Editor", "Language Servers"));
+
+                // LSP-02-E: Bridge LSP diagnostics → ErrorPanel (IDiagnosticSource adapter).
+                _lspDiagnosticsAdapter = new WpfHexEditor.App.Services.LspDiagnosticsAdapter(_lspBridgeService);
+                EnsureErrorPanelInstance().AddSource(_lspDiagnosticsAdapter);
             }
 
             // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.
@@ -921,6 +926,8 @@ public partial class MainWindow
         _lspStatusBarAdapter?.Dispose();
         _lspStatusBarAdapter = null;
         ShutdownDebugIntegration();
+        _lspDiagnosticsAdapter?.Dispose();
+        _lspDiagnosticsAdapter = null;
         _lspBridgeService?.Dispose();
         _lspBridgeService = null;
         if (_debuggerService is not null)
