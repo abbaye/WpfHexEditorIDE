@@ -1,0 +1,126 @@
+<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
+             Background="{DynamicResource DE_TextPaneBackground}"
+             Foreground="{DynamicResource DE_TextPaneForeground}">
+    <UserControl.Resources>
+        <!-- DE_* tokens with fallbacks for design-time -->
+        <SolidColorBrush x:Key="DE_TextPaneBackground_Fallback"  Color="#1E1E1E"/>
+        <SolidColorBrush x:Key="DE_TextPaneForeground_Fallback"  Color="#D4D4D4"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Row 0: Toolbar -->
+            <RowDefinition Height="*"/>     <!-- Row 1: Content panes -->
+            <RowDefinition Height="Auto"/>  <!-- Row 2: MiniMap strip -->
+        </Grid.RowDefinitions>
+
+        <!-- ══ Row 0: Toolbar ═════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource DockBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <ToolBar x:Name="PART_Toolbar"
+                     Background="Transparent"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     ToolBarTray.IsLocked="True">
+
+                <!-- View mode toggle buttons -->
+                <ToggleButton x:Name="PART_TextModeBtn"
+                              ToolTip="Text view"
+                              Width="28" Height="24" Margin="1"
+                              IsChecked="{Binding IsTextPaneVisible, RelativeSource={RelativeSource AncestorType=local:DocumentEditorHost}}"
+                              Click="OnTextModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="14"/>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_SplitModeBtn"
+                              ToolTip="Split view (text + hex)"
+                              Width="28" Height="24" Margin="1"
+                              Click="OnSplitModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="14"/>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_HexModeBtn"
+                              ToolTip="Hex view"
+                              Width="28" Height="24" Margin="1"
+                              Click="OnHexModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="14"/>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_StructModeBtn"
+                              ToolTip="Structure view"
+                              Width="28" Height="24" Margin="1"
+                              Click="OnStructureModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="14"/>
+                </ToggleButton>
+
+                <Separator/>
+
+                <ToggleButton x:Name="PART_ForensicBtn"
+                              ToolTip="Forensic mode"
+                              Width="28" Height="24" Margin="1"
+                              Click="OnForensicModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C3;" FontSize="14"/>
+                </ToggleButton>
+
+                <Separator/>
+
+                <Button x:Name="PART_SaveBtn"
+                        ToolTip="Save"
+                        Width="28" Height="24" Margin="1"
+                        Click="OnSaveClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" FontSize="14"/>
+                </Button>
+
+            </ToolBar>
+        </Border>
+
+        <!-- ══ Row 1: Content grid (3 panes + splitters) ══════════════════ -->
+        <Grid x:Name="PART_ContentGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="PART_TextCol"      Width="2*"  MinWidth="100"/>
+                <ColumnDefinition x:Name="PART_Splitter1Col" Width="4"/>
+                <ColumnDefinition x:Name="PART_StructCol"    Width="0"   MinWidth="0"/>
+                <ColumnDefinition x:Name="PART_Splitter2Col" Width="0"/>
+                <ColumnDefinition x:Name="PART_HexCol"       Width="*"   MinWidth="100"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Text pane (col 0) -->
+            <local:DocumentTextPane x:Name="PART_TextPane"
+                                    Grid.Column="0"/>
+
+            <!-- Splitter 1 (col 1) -->
+            <GridSplitter x:Name="PART_Splitter1"
+                          Grid.Column="1"
+                          Width="4"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockBorderBrush}"/>
+
+            <!-- Structure pane (col 2) — hidden unless Structure mode -->
+            <local:DocumentStructurePane x:Name="PART_StructurePane"
+                                         Grid.Column="2"
+                                         Visibility="Collapsed"/>
+
+            <!-- Splitter 2 (col 3) — hidden by default -->
+            <GridSplitter x:Name="PART_Splitter2"
+                          Grid.Column="3"
+                          Width="4"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockBorderBrush}"
+                          Visibility="Collapsed"/>
+
+            <!-- Hex pane (col 4) -->
+            <local:DocumentHexPane x:Name="PART_HexPane"
+                                   Grid.Column="4"/>
+        </Grid>
+
+        <!-- ══ Row 2: MiniMap strip ═══════════════════════════════════════ -->
+        <local:DocumentMiniMap x:Name="PART_MiniMap"
+                               Grid.Row="2"
+                               Height="60"
+                               Visibility="Collapsed"/>
+    </Grid>
+</UserControl>

@@ -53,6 +53,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.DocumentEditor\WpfHexEditor.Editor.DocumentEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
@@ -131,6 +132,12 @@
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ResxLocalization\WpfHexEditor.Plugins.ResxLocalization.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ScriptRunner\WpfHexEditor.Plugins.ScriptRunner.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.DocumentLoader.Rtf\WpfHexEditor.Plugins.DocumentLoader.Rtf.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.DocumentLoader.Docx\WpfHexEditor.Plugins.DocumentLoader.Docx.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.DocumentLoader.Odt\WpfHexEditor.Plugins.DocumentLoader.Odt.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
   </ItemGroup>

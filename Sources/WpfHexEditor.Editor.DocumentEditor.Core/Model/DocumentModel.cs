@@ -127,6 +127,10 @@ public sealed class DocumentModel : INotifyPropertyChanged
     /// <summary>Raises <see cref="BlocksChanged"/>.</summary>
     public void NotifyBlocksChanged() => BlocksChanged?.Invoke(this, EventArgs.Empty);
 
+    /// <summary>Replaces forensic alerts and raises <see cref="ForensicAlertsChanged"/>.</summary>
+    public void SetForensicAlerts(IReadOnlyList<ForensicAlert> alerts) =>
+        ForensicAlerts = alerts;
+
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 

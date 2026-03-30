@@ -540,6 +540,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new WpfHexEditor.Editor.JsonEditor.JsonEditorFactory());
         _editorRegistry.Register(new TblEditorFactory());
         _editorRegistry.Register(new CodeEditorFactory());
+        _editorRegistry.Register(new WpfHexEditor.Editor.DocumentEditor.DocumentEditorFactory(() => _ideHostContext)); // before TextEditor
         _editorRegistry.Register(new MarkdownEditorFactory()); // must be before TextEditorFactory
         _editorRegistry.Register(new TextEditorFactory());
         _editorRegistry.Register(new ImageViewerFactory());
