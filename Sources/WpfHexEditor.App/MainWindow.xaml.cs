@@ -5414,12 +5414,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             s.FloatingWindowFadeInMs);
     }
 
-    private static void ApplyEditorSettings(IDocumentEditor editor) => Services.EditorSettingsService.Apply(editor);
+    private void ApplyEditorSettings(IDocumentEditor editor) => _editorSettingsService?.Apply(editor);
 
     // Editor settings logic (ApplyEditorSettings body, ApplySyntaxColorOverrides, TryParseHexColor)
-    // moved to Services.EditorSettingsService (Phase 4 refactoring)
+    // moved to EditorSettingsService (Phase 4 refactoring)
 
-    private void ApplyHexEditorDefaults(HexEditorControl hex) => Services.EditorSettingsService.ApplyHexDefaults(hex);
+    private void ApplyHexEditorDefaults(HexEditorControl hex) => _editorSettingsService?.ApplyHexDefaults(hex);
 
     // --- Menu: Project -------------------------------------------------
 

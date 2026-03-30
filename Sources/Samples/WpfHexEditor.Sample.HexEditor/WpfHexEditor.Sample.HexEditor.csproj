@@ -14,7 +14,6 @@
     <ProjectReference Include="..\..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.Panels.IDE\WpfHexEditor.Panels.IDE.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Panels.FileOps\WpfHexEditor.Panels.FileOps.csproj" />
   </ItemGroup>
 
   <ItemGroup>

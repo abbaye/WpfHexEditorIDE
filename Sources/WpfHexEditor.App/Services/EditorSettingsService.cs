@@ -64,6 +64,10 @@ public sealed class EditorSettingsService
         }
     }
 
+    /// <summary>Applies hex-editor defaults from settings to a bare <see cref="HexEditorControl"/>.</summary>
+    public void ApplyHexDefaults(HexEditorControl hex)
+        => ApplyHexEditor(hex, AppSettingsService.Instance.Current);
+
     // ── Per-editor helpers ─────────────────────────────────────────────────────
 
     private static void ApplyCodeEditor(

@@ -45,10 +45,6 @@
     <None Include="SDK_MIGRATION.md" Pack="true" PackagePath="\" />
     <None Include="WHFMT_AUTHORING.md" Pack="true" PackagePath="\" />
     <None Include="PLUGIN_GUIDE.md" Pack="true" PackagePath="\" />
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
   </ItemGroup>
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->
