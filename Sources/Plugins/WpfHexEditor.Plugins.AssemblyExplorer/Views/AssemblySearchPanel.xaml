@@ -68,19 +68,11 @@
                     <TextBox x:Name="SearchBox"
                              Width="200"
                              Margin="2,1"
-                             VerticalContentAlignment="Center"
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
-                             Foreground="{DynamicResource PFP_TextBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
+                             Style="{DynamicResource PanelSearchBoxStyle}"
+                             Tag="Search types and members..."
                              ToolTip="Search types and members across all loaded assemblies"
-                             KeyDown="OnSearchBoxKeyDown">
-                        <TextBox.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="2"/>
-                            </Style>
-                        </TextBox.Resources>
-                    </TextBox>
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             KeyDown="OnSearchBoxKeyDown" />
 
                     <!-- Kind filter -->
                     <ComboBox Width="90"

@@ -110,6 +110,21 @@ public partial class ArchiveExplorerPanel : UserControl
             ViewModel.SelectedNode = vm;
     }
 
+    private void OnTreeMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (ViewModel.PreviewCommand.CanExecute(null))
+            ViewModel.PreviewCommand.Execute(null);
+    }
+
+    private void OnTreeKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter && ViewModel.PreviewCommand.CanExecute(null))
+        {
+            ViewModel.PreviewCommand.Execute(null);
+            e.Handled = true;
+        }
+    }
+
     // ── Drag-Drop ──────────────────────────────────────────────────────────
 
     private async void OnTreeMouseMove(object sender, MouseEventArgs e)

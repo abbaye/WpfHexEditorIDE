@@ -823,4 +823,69 @@
         <Setter Property="Padding"      Value="8"/>
     </Style>
 
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelSearchBoxStyle
+         Consistent search TextBox for all dockable panels.
+         - Permanent visible border (Panel_SearchBoxBorderBrush)
+         - Focus border changes to Panel_ItemSelectedForegroundBrush (blue accent)
+         - Watermark: set Tag="Search..." on the TextBox
+         - No default WPF Aero2 chrome (custom ControlTemplate)
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelSearchBoxStyle" TargetType="TextBox">
+        <Setter Property="Background"               Value="{DynamicResource ERR_SearchBoxBrush}" />
+        <Setter Property="Foreground"               Value="{DynamicResource Panel_ToolbarForegroundBrush}" />
+        <Setter Property="BorderBrush"              Value="{DynamicResource Panel_SearchBoxBorderBrush}" />
+        <Setter Property="BorderThickness"          Value="1" />
+        <Setter Property="Height"                   Value="22" />
+        <Setter Property="Padding"                  Value="4,0" />
+        <Setter Property="FontSize"                 Value="11" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusVisualStyle"         Value="{x:Null}" />
+        <Setter Property="CaretBrush"               Value="{DynamicResource Panel_ToolbarForegroundBrush}" />
+        <Setter Property="SelectionBrush"           Value="{DynamicResource Panel_ItemSelectedBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <!-- Watermark — visible only when empty and unfocused; text from Tag -->
+                            <TextBlock x:Name="Watermark"
+                                       Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Margin="{TemplateBinding Padding}"
+                                       VerticalAlignment="Center"
+                                       Opacity="0.45"
+                                       IsHitTestVisible="False"
+                                       Visibility="Collapsed" />
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          Focusable="False"
+                                          VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Show watermark when empty and not focused -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text"      Value="" />
+                                <Condition Property="IsFocused" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Watermark" Property="Visibility" Value="Visible" />
+                        </MultiTrigger>
+                        <!-- Accent border on focus -->
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush"
+                                    Value="{DynamicResource Panel_ItemSelectedForegroundBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

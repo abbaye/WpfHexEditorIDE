@@ -212,6 +212,8 @@
                       VirtualizingPanel.VirtualizationMode="Recycling"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       MouseMove="OnTreeMouseMove"
+                      MouseDoubleClick="OnTreeMouseDoubleClick"
+                      KeyDown="OnTreeKeyDown"
                       SelectedItemChanged="OnTreeSelectedItemChanged">
 
                 <TreeView.Resources>

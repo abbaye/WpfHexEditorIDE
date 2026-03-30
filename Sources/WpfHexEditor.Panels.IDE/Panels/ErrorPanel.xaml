@@ -257,35 +257,10 @@
                                Fill="{DynamicResource ERR_GridLinesBrush}"
                                Margin="6,0,2,0"/>
                     <TextBox x:Name="SearchBox"
-                             Width="160" Height="22"
-                             Background="{DynamicResource ERR_SearchBoxBrush}"
-                             Foreground="{DynamicResource ERR_ForegroundBrush}"
-                             BorderBrush="{DynamicResource ERR_GridLinesBrush}"
-                             BorderThickness="1"
-                             Padding="4,2"
-                             VerticalContentAlignment="Center"
-                             FontSize="11"
-                             TextChanged="OnSearchChanged">
-                        <TextBox.Style>
-                            <Style TargetType="TextBox">
-                                <Style.Resources>
-                                    <VisualBrush x:Key="Watermark" TileMode="None" Opacity="0.4" Stretch="None" AlignmentX="Left">
-                                        <VisualBrush.Visual>
-                                            <TextBlock Text="Search..."
-                                                       Foreground="{DynamicResource ERR_ForegroundBrush}"
-                                                       FontSize="11"
-                                                       Padding="4,2"/>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Style.Resources>
-                                <Style.Triggers>
-                                    <Trigger Property="Text" Value="">
-                                        <Setter Property="Background" Value="{StaticResource Watermark}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
+                             Width="160"
+                             Style="{DynamicResource PanelSearchBoxStyle}"
+                             Tag="Search..."
+                             TextChanged="OnSearchChanged" />
                 </StackPanel>
 
                 <!-- Collapsible: severity filter toggles -->

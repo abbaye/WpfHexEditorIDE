@@ -256,6 +256,7 @@
     <SolidColorBrush x:Key="ERR_FilterActiveBrush"     Color="#3E3E42"/>
     <SolidColorBrush x:Key="ERR_FilterInactiveBrush"   Color="Transparent"/>
     <SolidColorBrush x:Key="ERR_SearchBoxBrush"        Color="#333337"/>
+    <SolidColorBrush x:Key="Panel_SearchBoxBorderBrush"        Color="#585860"/>
     <SolidColorBrush x:Key="ERR_HeaderBrush"           Color="#252526"/>
     <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#3E3E42"/>
     <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1A1A1C"/>
@@ -754,7 +755,8 @@
     <SolidColorBrush x:Key="BDiff_AsciiNonPrintableBrush"    Color="#555555" />
     <SolidColorBrush x:Key="BDiff_ContextRowBackgroundBrush" Color="#1A1A1A" />
     <SolidColorBrush x:Key="BDiff_CollapsedContextBrush"     Color="#252526" />
-    <SolidColorBrush x:Key="BDiff_CollapsedContextFgBrush"   Color="#858585" />
+    <SolidColorBrush x:Key="BDiff_CollapsedContextFgBrush"   Color="#858585" />
+
     <SolidColorBrush x:Key="BDiff_HoverBrush"              Color="#506496FF" />
     <SolidColorBrush x:Key="TDiff_HoverSegmentBrush"        Color="#50FFCC00" />
     <!-- whfmt v2.0 tokens (WF_*) - inserted by Add-WhfmtV2Tokens.ps1 -->

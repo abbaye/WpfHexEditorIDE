@@ -28,16 +28,11 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <TextBox x:Name="SearchBox"
                          Width="160"
-                         Padding="2,1"
-                         FontSize="11"
-                         VerticalAlignment="Center"
-                         Background="{DynamicResource CD_DslEditorBackground}"
-                         Foreground="{DynamicResource DockMenuForegroundBrush}"
-                         BorderBrush="{DynamicResource DockToolBarBorderBrush}"
-                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Tag="Search classes and members..."
+                         ToolTip="Search classes and members (Enter)"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         KeyDown="OnSearchBoxKeyDown"
-                         ToolTip="Search classes and members (Enter)"/>
+                         KeyDown="OnSearchBoxKeyDown" />
                 <Button Content="&#xE721;" FontFamily="Segoe MDL2 Assets"
                         FontSize="11"
                         Margin="4,0,0,0"
