@@ -6207,7 +6207,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Theme constants and logic moved to ThemeServiceImpl (Phase 4 refactoring)
 
-    private void ApplyTheme(string themeFile, string themeName) => _themeService?.ApplyTheme(themeFile, themeName);
+    private void ApplyTheme(string themeFile, string themeName)
+    {
+        _themeService?.ApplyTheme(themeFile, themeName);
+        // HexViewport uses DrawingContext (not pure WPF bindings) — must explicitly re-read
+        // theme resource colors after the ResourceDictionary swap.
+        Dispatcher.InvokeAsync(SyncAllHexEditorThemes, System.Windows.Threading.DispatcherPriority.Render);
+    }
 
     // -----------------------------------------------------------------------
     // Image menu — delegates to the active ImageViewer
