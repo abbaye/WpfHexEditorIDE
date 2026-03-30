@@ -61,6 +61,8 @@
         <Setter Property="Cursor"              Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding Path=(ToolTip), RelativeSource={RelativeSource Self}}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
