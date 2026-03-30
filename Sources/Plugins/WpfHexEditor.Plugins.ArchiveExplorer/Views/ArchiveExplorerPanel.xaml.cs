@@ -159,6 +159,34 @@ public partial class ArchiveExplorerPanel : UserControl
         finally { _isDragging = false; }
     }
 
+    // ── Panel-level drop (open archive by dropping onto the panel) ────────────
+
+    private void OnPanelDragOver(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            var files = (string[]?)e.Data.GetData(DataFormats.FileDrop);
+            if (files?.Length == 1 && ArchiveReaderFactory.IsSupported(files[0]))
+            {
+                e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
+                return;
+            }
+        }
+        e.Effects = DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private void OnPanelDrop(object sender, DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+        var files = (string[]?)e.Data.GetData(DataFormats.FileDrop);
+        if (files?.Length != 1) return;
+        var path = files[0];
+        if (!ArchiveReaderFactory.IsSupported(path)) return;
+        _ = LoadArchiveAsync(path);
+    }
+
     // ── Properties dialog ──────────────────────────────────────────────────
 
     private void OnPropertiesRequested(object? sender, ArchiveNodeViewModel vm)

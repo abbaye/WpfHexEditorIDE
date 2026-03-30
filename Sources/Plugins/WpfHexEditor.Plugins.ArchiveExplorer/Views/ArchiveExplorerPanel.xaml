@@ -28,6 +28,13 @@
         <conv:FileSizeConverter                 x:Key="FileSizeConv"/>
         <conv:ArchiveFormatToIconGlyphConverter x:Key="FormatGlyphConv"/>
 
+        <!-- Shared style for context-menu icon glyphs -->
+        <Style x:Key="CtxMenuIconStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily"       Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"         Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
         <!-- Collapse TbgExtract and TbgActions into overflow menu items -->
         <ContextMenu x:Key="OverflowContextMenu" x:Name="OverflowMenu">
             <MenuItem x:Name="OvfExtractAll"
@@ -46,7 +53,9 @@
         </ContextMenu>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid AllowDrop="True"
+          Drop="OnPanelDrop"
+          DragOver="OnPanelDragOver">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- Toolbar -->
             <RowDefinition Height="*"/>     <!-- TreeView -->
@@ -283,54 +292,91 @@
                 <TreeView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Preview"
-                                  FontFamily="Segoe MDL2 Assets"
                                   Command="{Binding PlacementTarget.DataContext.PreviewCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                  InputGestureText="Enter"/>
+                                  InputGestureText="Enter">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE8A4;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="Extract Selected…"
                                   Command="{Binding PlacementTarget.DataContext.ExtractSelectedCommand,
-                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE896;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="Open Raw in Hex Editor"
                                   Command="{Binding PlacementTarget.DataContext.OpenRawInHexCommand,
-                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE81E;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="Drill Into Archive"
                                   Command="{Binding PlacementTarget.DataContext.DrillIntoCommand,
-                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE7C3;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <Separator/>
                         <MenuItem Header="Copy Path"
                                   Command="{Binding PlacementTarget.DataContext.CopyPathCommand,
-                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE8C8;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="Properties…"
                                   Command="{Binding PlacementTarget.DataContext.ShowPropertiesCommand,
-                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE946;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </ContextMenu>
                 </TreeView.ContextMenu>
             </TreeView>
 
-            <!-- Empty state hint -->
-            <TextBlock HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Text="Open an archive file to browse its contents."
-                       TextWrapping="Wrap"
-                       TextAlignment="Center"
-                       Margin="20"
-                       Foreground="{DynamicResource PFP_SubTextBrush}"
-                       FontSize="12">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
+            <!-- Drop hint — visible when not loading AND no archive is loaded -->
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsLoading}"      Value="False"/>
-                                    <Condition Binding="{Binding RootNodes.Count}" Value="0"/>
+                                    <Condition Binding="{Binding IsLoading}" Value="False"/>
+                                    <Condition Binding="{Binding CurrentArchivePath,
+                                                         Converter={x:Static conv:StringToVisibilityConverter.Instance},
+                                                         ConverterParameter=Invert}"
+                                               Value="Visible"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible"/>
                             </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBlock.Style>
-            </TextBlock>
+                </StackPanel.Style>
+                <TextBlock Text="&#xE7C3;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="48"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="Drop an archive here"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                <TextBlock Text="or click Open in the toolbar above"
+                           FontSize="11"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
         </Grid>
 
         <!-- ═══ ROW 2: Info bar ════════════════════════════════════════════════ -->

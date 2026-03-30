@@ -90,8 +90,9 @@ public sealed class ArchiveExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpti
             Id,
             new ArchiveSolutionExplorerContributor(context, this));
 
-        // Subscribe to HexEditor file-open for auto-show
-        context.HexEditor.FileOpened += OnFileOpened;
+        // Subscribe to HexEditor file-open for auto-show (optional — plugin works standalone too)
+        if (context.HexEditor is not null)
+            context.HexEditor.FileOpened += OnFileOpened;
 
         return Task.CompletedTask;
     }
@@ -100,7 +101,7 @@ public sealed class ArchiveExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpti
     {
         _cts.Cancel();
 
-        if (_context is not null)
+        if (_context?.HexEditor is not null)
             _context.HexEditor.FileOpened -= OnFileOpened;
 
         _panel       = null;
