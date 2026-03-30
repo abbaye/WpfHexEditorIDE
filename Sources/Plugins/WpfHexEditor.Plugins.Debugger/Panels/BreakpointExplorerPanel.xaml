@@ -22,14 +22,12 @@
             <RowDefinition Height="24" />
         </Grid.RowDefinitions>
 
-        <!-- ═══ Row 0: Toolbar (ToolbarOverflowManager pattern) ═══ -->
-        <!-- Collapse order: TbgGroupBy(0) → TbgImportExport(1) → TbgActions(2) -->
+        <!-- ═══ Row 0: Toolbar ═══ -->
         <Border Grid.Row="0" x:Name="ToolbarBorder"
                 Style="{DynamicResource PanelToolbarStyle}"
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False" Margin="4,0">
 
-                <!-- ── Overflow button (rightmost, Visibility=Collapsed by default) ── -->
                 <Button x:Name="OverflowButton" DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         ToolTip="More options" Visibility="Collapsed"
@@ -38,7 +36,6 @@
                                VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowMenu" Opened="OnOverflowMenuOpened">
-                            <!-- TbgActions items -->
                             <MenuItem Header="Enable All"  Click="OnOvfEnableAll"  Tag="TbgActions">
                                 <MenuItem.Icon><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                             </MenuItem>
@@ -52,7 +49,6 @@
                                 <MenuItem.Icon><TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                             </MenuItem>
                             <Separator Tag="TbgActions" />
-                            <!-- TbgImportExport items -->
                             <MenuItem Header="Import from VS XML…"   Click="OnImportBreakpoints" Tag="TbgImportExport">
                                 <MenuItem.Icon><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                             </MenuItem>
@@ -60,38 +56,38 @@
                                 <MenuItem.Icon><TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                             </MenuItem>
                             <Separator Tag="TbgImportExport" />
-                            <!-- TbgGroupBy items -->
                             <MenuItem Header="Group by None"    Click="OnOvfGroupNone"    Tag="TbgGroupBy" />
                             <MenuItem Header="Group by File"    Click="OnOvfGroupFile"    Tag="TbgGroupBy" />
                             <MenuItem Header="Group by Type"    Click="OnOvfGroupType"    Tag="TbgGroupBy" />
                             <MenuItem Header="Group by Enabled" Click="OnOvfGroupEnabled" Tag="TbgGroupBy" />
                             <MenuItem Header="Group by Project" Click="OnOvfGroupProject" Tag="TbgGroupBy" />
+                            <Separator Tag="TbgGroupBy" />
+                            <MenuItem Header="Detail: Right"   Click="OnOvfLayoutRight"  Tag="TbgLayout" />
+                            <MenuItem Header="Detail: Bottom"  Click="OnOvfLayoutBottom" Tag="TbgLayout" />
+                            <MenuItem Header="Detail: Hidden"  Click="OnOvfLayoutHidden" Tag="TbgLayout" />
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
 
-                <!-- ── Search box (right-anchored, always visible) ── -->
                 <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Right"
                             Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
-                    <TextBox x:Name="SearchBox"
-                             Width="140"
+                    <TextBox x:Name="SearchBox" Width="140"
                              Style="{DynamicResource PanelSearchBoxStyle}"
                              Tag="Search breakpoints..."
                              Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
                 </StackPanel>
 
-                <!-- ── Fixed RIGHT: always visible ── -->
                 <StackPanel x:Name="ToolbarRightPanel" DockPanel.Dock="Right"
                             Orientation="Horizontal" VerticalAlignment="Center" />
 
-                <!-- ── Group: TbgActions — Enable/Disable/Delete/Edit (collapse last) ── -->
+                <!-- TbgActions -->
                 <StackPanel x:Name="TbgActions" DockPanel.Dock="Left"
                             Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Command="{Binding EnableAllCommand}" ToolTip="Enable All"
+                    <Button Command="{Binding EnableAllCommand}"  ToolTip="Enable All"
                             Style="{DynamicResource PanelIconButtonStyle}" Content="&#xE73E;" />
                     <Button Command="{Binding DisableAllCommand}" ToolTip="Disable All"
                             Style="{DynamicResource PanelIconButtonStyle}" Content="&#xECC9;" />
-                    <Button Command="{Binding DeleteAllCommand}" ToolTip="Delete All Breakpoints"
+                    <Button Command="{Binding DeleteAllCommand}"  ToolTip="Delete All Breakpoints"
                             Style="{DynamicResource PanelIconButtonStyle}" Content="&#xE74D;" />
                     <Button Command="{Binding EditConditionCommand}"
                             CommandParameter="{Binding SelectedBreakpoint}"
@@ -101,7 +97,7 @@
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}" />
                 </StackPanel>
 
-                <!-- ── Group: TbgImportExport — Import(↓)/Export(↑) ── -->
+                <!-- TbgImportExport -->
                 <StackPanel x:Name="TbgImportExport" DockPanel.Dock="Left"
                             Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Command="{Binding ImportCommand}" ToolTip="Import Breakpoints (VS XML)"
@@ -112,7 +108,7 @@
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}" />
                 </StackPanel>
 
-                <!-- ── Group: TbgGroupBy — Group ComboBox (collapse first) ── -->
+                <!-- TbgGroupBy -->
                 <StackPanel x:Name="TbgGroupBy" DockPanel.Dock="Left"
                             Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Group:" VerticalAlignment="Center" FontSize="11"
@@ -126,21 +122,49 @@
                         <ComboBoxItem Content="Enabled" />
                         <ComboBoxItem Content="Project" />
                     </ComboBox>
+                    <Rectangle Width="1" Height="16" Margin="6,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}" />
+                </StackPanel>
+
+                <!-- TbgLayout — detail panel position -->
+                <StackPanel x:Name="TbgLayout" DockPanel.Dock="Left"
+                            Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BtnLayoutRight"  ToolTip="Detail panel: Right (default)"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Click="OnLayoutRight">
+                        <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                    </Button>
+                    <Button x:Name="BtnLayoutBottom" ToolTip="Detail panel: Bottom"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Click="OnLayoutBottom">
+                        <TextBlock Text="&#xE8F0;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                    </Button>
+                    <Button x:Name="BtnLayoutHidden" ToolTip="Hide detail panel"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Click="OnLayoutHidden">
+                        <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
+                    </Button>
                 </StackPanel>
 
             </DockPanel>
         </Border>
 
-        <!-- ═══ Row 1: List + Splitter + Detail Panel ═══ -->
-        <Grid Grid.Row="1">
+        <!-- ═══ Row 1: Content grid — rows/cols managed by code-behind for layout ═══ -->
+        <Grid Grid.Row="1" x:Name="ContentGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="MainRow"     Height="*" />
+                <RowDefinition x:Name="SplitterRow" Height="0" />
+                <RowDefinition x:Name="DetailRow"   Height="0" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="120" />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="220" MinWidth="0" />
+                <ColumnDefinition x:Name="MainCol"     Width="*" MinWidth="120" />
+                <ColumnDefinition x:Name="SplitterCol" Width="5" />
+                <ColumnDefinition x:Name="DetailCol"   Width="220" MinWidth="0" />
             </Grid.ColumnDefinitions>
 
-            <!-- ── Col 0: Flat ListView (when GroupBy == None) ── -->
-            <ListView Grid.Column="0" ItemsSource="{Binding FlatBreakpoints}"
+            <!-- ── List area (always at row=0, col=0) ── -->
+            <ListView Grid.Row="0" Grid.Column="0"
+                      ItemsSource="{Binding FlatBreakpoints}"
                       SelectedItem="{Binding SelectedBreakpoint}"
                       Visibility="{Binding IsGrouped, Converter={StaticResource InvertBoolToVis}}"
                       Background="{DynamicResource DockBackgroundBrush}"
@@ -149,28 +173,21 @@
                       VirtualizingPanel.VirtualizationMode="Recycling"
                       MouseDoubleClick="OnRowDoubleClick"
                       x:Name="FlatList">
-
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="FocusVisualStyle"           Value="{x:Null}" />
-                        <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListViewItem">
-                                    <Border x:Name="Bd"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            Padding="0,1"
-                                            SnapsToDevicePixels="True">
+                                    <Border x:Name="Bd" Background="Transparent" BorderThickness="0" Padding="0,1" SnapsToDevicePixels="True">
                                         <GridViewRowPresenter VerticalAlignment="Center"
-                                                              Columns="{Binding Path=View.Columns,
-                                                                  RelativeSource={RelativeSource AncestorType=ListView}}" />
+                                                              Columns="{Binding Path=View.Columns, RelativeSource={RelativeSource AncestorType=ListView}}" />
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Bd" Property="Background"
-                                                    Value="{DynamicResource BP_ExplorerRowSelectedBrush}" />
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BP_ExplorerRowSelectedBrush}" />
                                         </Trigger>
                                         <MultiTrigger>
                                             <MultiTrigger.Conditions>
@@ -178,8 +195,7 @@
                                                 <Condition Property="IsSelected"  Value="False" />
                                             </MultiTrigger.Conditions>
                                             <MultiTrigger.Setters>
-                                                <Setter TargetName="Bd" Property="Background"
-                                                        Value="{DynamicResource BP_ExplorerRowHoverBrush}" />
+                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BP_ExplorerRowHoverBrush}" />
                                             </MultiTrigger.Setters>
                                         </MultiTrigger>
                                     </ControlTemplate.Triggers>
@@ -188,7 +204,6 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
-
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="26">
@@ -208,10 +223,8 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Location" Width="220"
-                                        DisplayMemberBinding="{Binding DisplayLocation}" />
-                        <GridViewColumn Header="Condition" Width="150"
-                                        DisplayMemberBinding="{Binding Condition}" />
+                        <GridViewColumn Header="Location"  Width="220" DisplayMemberBinding="{Binding DisplayLocation}" />
+                        <GridViewColumn Header="Condition" Width="150" DisplayMemberBinding="{Binding Condition}" />
                         <GridViewColumn Header="Hits" Width="50">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -233,8 +246,7 @@
                         <GridViewColumn Width="28">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="&#xE74D;"
-                                            Style="{DynamicResource PanelIconButtonStyle}"
+                                    <Button Content="&#xE74D;" Style="{DynamicResource PanelIconButtonStyle}"
                                             Width="18" Height="18" FontSize="11"
                                             Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                             CommandParameter="{Binding}" ToolTip="Delete breakpoint" />
@@ -243,10 +255,9 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
-
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Go To Source" Click="OnGoToSource" InputGestureText="Enter">
+                        <MenuItem Header="Go To Source"    Click="OnGoToSource"    InputGestureText="Enter">
                             <MenuItem.Icon><TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                         </MenuItem>
                         <Separator />
@@ -254,18 +265,18 @@
                             <MenuItem.Icon><TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Enable/Disable" Click="OnToggleEnabled">
+                        <MenuItem Header="Enable/Disable"  Click="OnToggleEnabled">
                             <MenuItem.Icon><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Copy Location" Click="OnCopyLocation">
+                        <MenuItem Header="Copy Location"   Click="OnCopyLocation">
                             <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Delete" Click="OnDeleteSelected">
+                        <MenuItem Header="Delete"          Click="OnDeleteSelected">
                             <MenuItem.Icon><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Import from VS XML…" Click="OnImportBreakpoints">
+                        <MenuItem Header="Import from VS XML…"   Click="OnImportBreakpoints">
                             <MenuItem.Icon><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Export All to VS XML…" Click="OnExportBreakpoints">
@@ -275,36 +286,33 @@
                 </ListView.ContextMenu>
             </ListView>
 
-            <!-- ── Col 0: Grouped TreeView (when GroupBy != None) ── -->
-            <TreeView Grid.Column="0" ItemsSource="{Binding GroupedBreakpoints}"
+            <TreeView Grid.Row="0" Grid.Column="0"
+                      ItemsSource="{Binding GroupedBreakpoints}"
                       Visibility="{Binding IsGrouped, Converter={StaticResource BoolToVis}}"
                       Background="{DynamicResource DockBackgroundBrush}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      SelectedItemChanged="OnTreeSelectionChanged"
                       x:Name="GroupedTree">
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type vm:BreakpointGroupNode}"
-                                               ItemsSource="{Binding Children}">
+                    <HierarchicalDataTemplate DataType="{x:Type vm:BreakpointGroupNode}" ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding GroupIcon}" FontFamily="Segoe MDL2 Assets"
-                                       FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding GroupIcon}" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding GroupKey}" FontWeight="SemiBold" VerticalAlignment="Center" />
                             <TextBlock Margin="6,0,0,0" VerticalAlignment="Center" Opacity="0.6">
-                                <TextBlock.Text>
-                                    <Binding Path="Count" StringFormat="({0})" />
-                                </TextBlock.Text>
+                                <TextBlock.Text><Binding Path="Count" StringFormat="({0})" /></TextBlock.Text>
                             </TextBlock>
                         </StackPanel>
                         <HierarchicalDataTemplate.ItemTemplate>
                             <DataTemplate DataType="{x:Type vm:BreakpointRowEx}">
-                                <StackPanel Orientation="Horizontal" Margin="0,1" MouseLeftButtonDown="OnTreeItemDoubleClick">
+                                <StackPanel Orientation="Horizontal" Margin="0,1"
+                                            MouseLeftButtonDown="OnTreeItemDoubleClick">
                                     <Ellipse Width="8" Height="8" Margin="0,0,6,0"
                                              Fill="{Binding TypeLabel, Converter={StaticResource TypeToBrush}}"
                                              Opacity="{Binding IsEnabled, Converter={StaticResource BoolToOpacity}}" />
                                     <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Center" Margin="0,0,6,0"
                                               Click="OnCheckBoxClicked" Tag="{Binding}" />
                                     <TextBlock Text="{Binding DisplayLocation}" VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding Condition}" Margin="8,0,0,0" Opacity="0.6"
-                                               VerticalAlignment="Center" FontStyle="Italic" />
+                                    <TextBlock Text="{Binding Condition}" Margin="8,0,0,0" Opacity="0.6" VerticalAlignment="Center" FontStyle="Italic" />
                                     <TextBlock Text="{Binding HitCount, StringFormat=' [{0} hits]'}"
                                                Visibility="{Binding HitCount, Converter={StaticResource HitCountToVis}}"
                                                Foreground="{DynamicResource DB_BreakpointConditionalBrush}"
@@ -316,10 +324,10 @@
                 </TreeView.ItemTemplate>
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
-                        <Setter Property="IsExpanded"  Value="{Binding IsExpanded, Mode=TwoWay}" />
-                        <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
-                        <Setter Property="Background"  Value="Transparent" />
-                        <Setter Property="Padding"     Value="2,1" />
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Padding"    Value="2,1" />
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Background" Value="{DynamicResource BP_ExplorerRowSelectedBrush}" />
@@ -332,13 +340,17 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
 
-            <!-- ── Col 1: Splitter ── -->
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"
+            <!-- ── Splitter — initial position: Right layout (col=1). ApplyLayout() adjusts for Bottom/Hidden. ── -->
+            <GridSplitter x:Name="DetailSplitter"
+                          Grid.Row="0" Grid.Column="1"
+                          Width="5" Height="Auto"
                           Background="{DynamicResource DockBorderBrush}"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                           Visibility="{Binding SelectedBreakpoint, Converter={StaticResource NullToVis}}" />
 
-            <!-- ── Col 2: Detail Panel ── -->
-            <Border Grid.Column="2"
+            <!-- ── Detail panel — initial position: Right layout (col=2). ApplyLayout() adjusts for Bottom/Hidden. ── -->
+            <Border x:Name="DetailBorder"
+                    Grid.Row="0" Grid.Column="2"
                     Background="{DynamicResource DockBackgroundBrush}"
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="1,0,0,0"
@@ -346,7 +358,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Margin="8,6" DataContext="{Binding SelectedBreakpoint}">
 
-                        <!-- ── Header: dot + location ── -->
+                        <!-- Header: dot + location -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"
                                      Fill="{Binding TypeLabel, Converter={StaticResource TypeToBrush}}"
@@ -356,11 +368,9 @@
                                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
                         </StackPanel>
 
-                        <!-- ── Separator ── -->
-                        <Rectangle Height="1" Margin="0,0,0,8"
-                                   Fill="{DynamicResource DockBorderBrush}" />
+                        <Rectangle Height="1" Margin="0,0,0,8" Fill="{DynamicResource DockBorderBrush}" />
 
-                        <!-- ── State: enabled + verified + type ── -->
+                        <!-- State grid -->
                         <Grid Margin="0,0,0,6">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -391,14 +401,14 @@
                                        VerticalAlignment="Center" Margin="0,0,0,3" />
                         </Grid>
 
-                        <!-- ── Condition ── -->
+                        <!-- Condition -->
                         <TextBlock Text="Condition" FontSize="11" Opacity="0.6" Margin="0,0,0,3"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}" />
                         <TextBlock Text="{Binding Condition}" FontSize="11" TextWrapping="Wrap"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    FontStyle="Italic" Margin="0,0,0,8" Opacity="0.85" />
 
-                        <!-- ── Hit count ── -->
+                        <!-- Hit count -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
                                     Visibility="{Binding HitCount, Converter={StaticResource HitCountToVis}}">
                             <TextBlock Text="Hits: " FontSize="11" Opacity="0.6"
@@ -407,12 +417,10 @@
                                        Foreground="{DynamicResource DB_BreakpointConditionalBrush}" />
                         </StackPanel>
 
-                        <!-- ── Separator ── -->
-                        <Rectangle Height="1" Margin="0,0,0,8"
-                                   Fill="{DynamicResource DockBorderBrush}" />
+                        <Rectangle Height="1" Margin="0,0,0,8" Fill="{DynamicResource DockBorderBrush}" />
 
-                        <!-- ── Action buttons ── -->
-                        <Button Content="Go To Source" FontSize="11" Margin="0,0,0,4"
+                        <!-- Action buttons -->
+                        <Button Content="Go To Source"    FontSize="11" Margin="0,0,0,4"
                                 HorizontalAlignment="Stretch"
                                 Style="{DynamicResource PanelIconButtonStyle}"
                                 Click="OnDetailGoToSource" />
@@ -420,7 +428,7 @@
                                 HorizontalAlignment="Stretch"
                                 Style="{DynamicResource PanelIconButtonStyle}"
                                 Click="OnDetailEditCondition" />
-                        <Button Content="Delete" FontSize="11"
+                        <Button Content="Delete"          FontSize="11"
                                 HorizontalAlignment="Stretch"
                                 Style="{DynamicResource PanelIconButtonStyle}"
                                 Click="OnDetailDelete" />

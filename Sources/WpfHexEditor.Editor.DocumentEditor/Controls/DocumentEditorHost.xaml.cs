@@ -162,6 +162,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         IsBusy = true;
         OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Loading document…" });
 
+        bool loadSucceeded = false;
         try
         {
             // Resolve loader via IExtensionRegistry
@@ -179,20 +180,22 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
             // Run UI work on dispatcher
             await Dispatcher.InvokeAsync(() => BindModel(model));
+            loadSucceeded = true;
         }
         catch (OperationCanceledException) { /* ignore cancel */ }
         catch (Exception ex)
         {
             StatusMessage?.Invoke(this, $"Failed to open document: {ex.Message}");
-            OutputMessage?.Invoke(this, ex.ToString());
+            OutputMessage?.Invoke(this, $"[DocumentEditor] {ex}");
             _ideContext?.Output.Error($"[DocumentEditor] Failed to open '{System.IO.Path.GetFileName(filePath)}': {ex}");
+            await Dispatcher.InvokeAsync(() => PART_TextPane.ShowError(ex.Message));
         }
         finally
         {
             IsBusy = false;
             OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs
             {
-                Success = !linked.IsCancellationRequested,
+                Success = loadSucceeded,
             });
         }
     }
@@ -228,12 +231,28 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_HexPane.Visibility       = hex       ? Visibility.Visible   : Visibility.Collapsed;
         PART_Splitter2.Visibility     = hex && structure ? Visibility.Visible : Visibility.Collapsed;
 
-        // Adjust column widths
-        PART_TextCol.Width   = text      ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
-        PART_StructCol.Width = structure ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        PART_HexCol.Width    = hex       ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        PART_Splitter1Col.Width = (text && (structure || hex)) ? new GridLength(4) : new GridLength(0);
-        PART_Splitter2Col.Width = (structure && hex)           ? new GridLength(4) : new GridLength(0);
+        if (text && hex && !structure)
+        {
+            // Split mode (Text + Hex, no Structure):
+            // Move HexPane to StructCol (col 2) so Splitter1 correctly resizes Text ↔ Hex.
+            // Without this, Splitter1 resizes Text ↔ StructCol(0-width), leaving Hex unaffected.
+            Grid.SetColumn(PART_HexPane, 2);
+            PART_TextCol.Width      = new GridLength(2, GridUnitType.Star);
+            PART_Splitter1Col.Width = new GridLength(4);
+            PART_StructCol.Width    = new GridLength(1, GridUnitType.Star); // acts as Hex column
+            PART_Splitter2Col.Width = new GridLength(0);
+            PART_HexCol.Width       = new GridLength(0);
+        }
+        else
+        {
+            // All other modes: restore HexPane to its designated column (col 4)
+            Grid.SetColumn(PART_HexPane, 4);
+            PART_TextCol.Width      = text      ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
+            PART_StructCol.Width    = structure ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+            PART_HexCol.Width       = hex       ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+            PART_Splitter1Col.Width = (text && (structure || hex)) ? new GridLength(4) : new GridLength(0);
+            PART_Splitter2Col.Width = (structure && hex)           ? new GridLength(4) : new GridLength(0);
+        }
     }
 
     private static void OnIsForensicModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

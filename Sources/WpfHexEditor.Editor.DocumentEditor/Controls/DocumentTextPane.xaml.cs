@@ -77,6 +77,28 @@ public partial class DocumentTextPane : UserControl
 
     // ── FlowDocument building ────────────────────────────────────────────────
 
+    /// <summary>Shows an inline error message when loading fails.</summary>
+    public void ShowError(string message)
+    {
+        _isInternalUpdate = true;
+        try
+        {
+            var doc  = new FlowDocument { Foreground = new SolidColorBrush(Color.FromRgb(220, 80, 80)) };
+            var para = new Paragraph(new Run($"Failed to load document:\n{message}"))
+            {
+                FontFamily = new FontFamily("Segoe UI"),
+                FontSize   = 13
+            };
+            doc.Blocks.Add(para);
+            PART_RichTextBox.Document = doc;
+            _pointerMap = null;
+        }
+        finally
+        {
+            _isInternalUpdate = false;
+        }
+    }
+
     private void RebuildFlowDocument()
     {
         if (_model is null) return;
@@ -84,7 +106,10 @@ public partial class DocumentTextPane : UserControl
         _isInternalUpdate = true;
         try
         {
-            var doc       = new FlowDocument();
+            var fgBrush = TryFindResource("DE_TextPaneForeground") as Brush
+                          ?? new SolidColorBrush(Color.FromRgb(212, 212, 212));
+
+            var doc       = new FlowDocument { Foreground = fgBrush };
             var ptrMap    = new TextPointerMap();
             var docBlocks = _model.Blocks.ToList();
 

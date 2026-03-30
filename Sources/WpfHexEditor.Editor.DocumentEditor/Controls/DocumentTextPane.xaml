@@ -21,7 +21,7 @@
         <ScrollViewer Grid.Column="1"
                       x:Name="PART_ScrollViewer"
                       VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto">
+                      HorizontalScrollBarVisibility="Disabled">
             <RichTextBox x:Name="PART_RichTextBox"
                          Background="Transparent"
                          Foreground="{DynamicResource DE_TextPaneForeground}"

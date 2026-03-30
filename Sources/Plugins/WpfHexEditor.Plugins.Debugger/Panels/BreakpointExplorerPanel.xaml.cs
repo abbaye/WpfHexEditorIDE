@@ -5,7 +5,7 @@
 //     Code-behind for the VS-style Breakpoint Explorer panel.
 //     Delegates all logic to BreakpointExplorerViewModel.
 //     Uses ToolbarOverflowManager for dynamic toolbar overflow.
-//     Detail panel (right column) is shown on selection — no hover popup.
+//     Detail panel (splitter + detail border) supports Right/Bottom/Hidden layouts.
 // ==========================================================
 
 using System.Windows;
@@ -31,10 +31,100 @@ public partial class BreakpointExplorerPanel : UserControl
             alwaysVisiblePanel:    ToolbarRightPanel,
             overflowButton:        OverflowButton,
             overflowMenu:          OverflowMenu,
-            groupsInCollapseOrder: [TbgGroupBy, TbgImportExport, TbgActions],
+            groupsInCollapseOrder: [TbgGroupBy, TbgImportExport, TbgActions, TbgLayout],
             leftFixedElements:     [ToolbarLeftPanel]);
 
         Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+
+        DataContextChanged += (_, _) => ApplyLayout();
+        Loaded += (_, _) => ApplyLayout();
+    }
+
+    // ── Layout management ──────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Positions DetailSplitter and DetailBorder inside ContentGrid
+    /// based on Vm.DetailLayout (Right / Bottom / Hidden).
+    /// Manipulates RowDefinitions / ColumnDefinitions and Grid attached properties.
+    /// </summary>
+    private void ApplyLayout()
+    {
+        var layout = Vm?.DetailLayout ?? DetailPanelLayout.Right;
+
+        switch (layout)
+        {
+            case DetailPanelLayout.Right:
+                // Columns: list | 5px splitter | 220 detail
+                MainCol.Width     = new GridLength(1, GridUnitType.Star);
+                SplitterCol.Width = new GridLength(5);
+                DetailCol.Width   = new GridLength(220);
+                // Rows: single row for everything
+                MainRow.Height     = new GridLength(1, GridUnitType.Star);
+                SplitterRow.Height = new GridLength(0);
+                DetailRow.Height   = new GridLength(0);
+
+                // Splitter: vertical (col=1)
+                Grid.SetRow(DetailSplitter, 0);        Grid.SetRowSpan(DetailSplitter, 1);
+                Grid.SetColumn(DetailSplitter, 1);     Grid.SetColumnSpan(DetailSplitter, 1);
+                DetailSplitter.Width  = 5;
+                DetailSplitter.Height = double.NaN;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+
+                // Detail panel: col=2
+                Grid.SetRow(DetailBorder, 0);          Grid.SetRowSpan(DetailBorder, 1);
+                Grid.SetColumn(DetailBorder, 2);       Grid.SetColumnSpan(DetailBorder, 1);
+                DetailBorder.BorderThickness = new Thickness(1, 0, 0, 0);
+                break;
+
+            case DetailPanelLayout.Bottom:
+                // Columns: full width
+                MainCol.Width     = new GridLength(1, GridUnitType.Star);
+                SplitterCol.Width = new GridLength(0);
+                DetailCol.Width   = new GridLength(0);
+                // Rows: list | 5px splitter | 180 detail
+                MainRow.Height     = new GridLength(1, GridUnitType.Star);
+                SplitterRow.Height = new GridLength(5);
+                DetailRow.Height   = new GridLength(180);
+
+                // List: span all columns
+                Grid.SetColumnSpan(FlatList, 3);
+                Grid.SetColumnSpan(GroupedTree, 3);
+
+                // Splitter: horizontal (row=1)
+                Grid.SetRow(DetailSplitter, 1);        Grid.SetRowSpan(DetailSplitter, 1);
+                Grid.SetColumn(DetailSplitter, 0);     Grid.SetColumnSpan(DetailSplitter, 3);
+                DetailSplitter.Width  = double.NaN;
+                DetailSplitter.Height = 5;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+
+                // Detail panel: row=2, span all cols
+                Grid.SetRow(DetailBorder, 2);          Grid.SetRowSpan(DetailBorder, 1);
+                Grid.SetColumn(DetailBorder, 0);       Grid.SetColumnSpan(DetailBorder, 3);
+                DetailBorder.BorderThickness = new Thickness(0, 1, 0, 0);
+                break;
+
+            case DetailPanelLayout.Hidden:
+                // Hide splitter and detail, list takes full space
+                SplitterCol.Width  = new GridLength(0);
+                DetailCol.Width    = new GridLength(0);
+                SplitterRow.Height = new GridLength(0);
+                DetailRow.Height   = new GridLength(0);
+                MainRow.Height     = new GridLength(1, GridUnitType.Star);
+                MainCol.Width      = new GridLength(1, GridUnitType.Star);
+
+                Grid.SetColumnSpan(FlatList, 3);
+                Grid.SetColumnSpan(GroupedTree, 3);
+                break;
+        }
+
+        // Reset list column span for Right layout
+        if (layout == DetailPanelLayout.Right)
+        {
+            Grid.SetColumnSpan(FlatList, 1);
+            Grid.SetColumnSpan(GroupedTree, 1);
+        }
     }
 
     // ── Toolbar overflow ──────────────────────────────────────────────────
@@ -68,6 +158,23 @@ public partial class BreakpointExplorerPanel : UserControl
     private void OnOvfGroupEnabled(object sender, RoutedEventArgs e) { GroupByCombo.SelectedIndex = 3; }
     private void OnOvfGroupProject(object sender, RoutedEventArgs e) { GroupByCombo.SelectedIndex = 4; }
 
+    // ── Layout button handlers ────────────────────────────────────────────
+
+    private void OnLayoutRight(object sender, RoutedEventArgs e)  => SetLayout(DetailPanelLayout.Right);
+    private void OnLayoutBottom(object sender, RoutedEventArgs e) => SetLayout(DetailPanelLayout.Bottom);
+    private void OnLayoutHidden(object sender, RoutedEventArgs e) => SetLayout(DetailPanelLayout.Hidden);
+
+    private void OnOvfLayoutRight(object sender, RoutedEventArgs e)  => SetLayout(DetailPanelLayout.Right);
+    private void OnOvfLayoutBottom(object sender, RoutedEventArgs e) => SetLayout(DetailPanelLayout.Bottom);
+    private void OnOvfLayoutHidden(object sender, RoutedEventArgs e) => SetLayout(DetailPanelLayout.Hidden);
+
+    private void SetLayout(DetailPanelLayout layout)
+    {
+        if (Vm is null) return;
+        Vm.DetailLayout = layout;
+        ApplyLayout();
+    }
+
     // ── Group-by ComboBox ─────────────────────────────────────────────────
 
     private void OnGroupByChanged(object sender, SelectionChangedEventArgs e)
@@ -82,6 +189,16 @@ public partial class BreakpointExplorerPanel : UserControl
     {
         if (Vm?.SelectedBreakpoint is not null)
             Vm.EditConditionCommand.Execute(Vm.SelectedBreakpoint);
+    }
+
+    // ── Tree selection → sync SelectedBreakpoint ─────────────────────────
+
+    private void OnTreeSelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (Vm is null) return;
+        // Only sync leaf nodes (BreakpointRowEx), not group headers
+        if (e.NewValue is BreakpointRowEx row)
+            Vm.SelectedBreakpoint = row;
     }
 
     // ── Tree item double-click → edit condition ───────────────────────────

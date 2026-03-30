@@ -2357,6 +2357,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (editor is IOpenableDocument openable)
                 _ = SafeOpenAsync(openable, filePath);
 
+            editor.OperationCompleted += (_, e) =>
+            {
+                if (!e.Success)
+                    Dispatcher.InvokeAsync(() =>
+                        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom));
+            };
+
             // Apply user settings (scroll speed, etc.) from Options to newly created editors.
             _editorSettingsService?.Apply(editor);
 

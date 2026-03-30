@@ -28,6 +28,9 @@ namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
 public enum GroupByMode { None, File, Type, EnabledState, Project }
 
+/// <summary>Position of the detail panel relative to the breakpoint list.</summary>
+public enum DetailPanelLayout { Right, Bottom, Hidden }
+
 public sealed class BreakpointExplorerViewModel : INotifyPropertyChanged
 {
     private readonly IDebuggerService _debugger;
@@ -37,6 +40,7 @@ public sealed class BreakpointExplorerViewModel : INotifyPropertyChanged
     private GroupByMode _groupBy = GroupByMode.File;
     private string     _summaryText = string.Empty;
     private BreakpointRowEx? _selectedBreakpoint;
+    private DetailPanelLayout _detailLayout = DetailPanelLayout.Right;
 
     // ── Internal services (for code-behind popup wiring) ─────────────────────
 
@@ -74,6 +78,24 @@ public sealed class BreakpointExplorerViewModel : INotifyPropertyChanged
         get => _selectedBreakpoint;
         set { if (_selectedBreakpoint == value) return; _selectedBreakpoint = value; OnPropertyChanged(); }
     }
+
+    public DetailPanelLayout DetailLayout
+    {
+        get => _detailLayout;
+        set
+        {
+            if (_detailLayout == value) return;
+            _detailLayout = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsDetailRight));
+            OnPropertyChanged(nameof(IsDetailBottom));
+            OnPropertyChanged(nameof(IsDetailVisible));
+        }
+    }
+
+    public bool IsDetailRight   => _detailLayout == DetailPanelLayout.Right;
+    public bool IsDetailBottom  => _detailLayout == DetailPanelLayout.Bottom;
+    public bool IsDetailVisible => _detailLayout != DetailPanelLayout.Hidden;
 
     // ── Commands ─────────────────────────────────────────────────────────────
 

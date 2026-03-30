@@ -2,7 +2,7 @@
 // Project: WpfHexEditor.Plugins.Debugger
 // File: Converters/DebugConverters.cs
 // Description:
-//     Value converters used by debug panel XAML (BreakpointsPanel, CallStackPanel).
+//     Value converters used by debug panel XAML (BreakpointExplorerPanel, CallStackPanel).
 // Architecture:
 //     Plugin-local — no dependency beyond WPF.
 // ==========================================================
