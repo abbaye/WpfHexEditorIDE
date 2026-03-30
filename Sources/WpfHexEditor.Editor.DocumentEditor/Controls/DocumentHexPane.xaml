@@ -25,6 +25,6 @@
         <!-- Embedded HexEditor -->
         <hex:HexEditor x:Name="PART_HexEditor"
                        Grid.Row="1"
-                       IsReadOnly="True"/>
+                       ReadOnlyMode="True"/>
     </Grid>
 </UserControl>

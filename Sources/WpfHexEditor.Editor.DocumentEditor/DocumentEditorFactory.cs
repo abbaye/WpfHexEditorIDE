@@ -15,7 +15,8 @@
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Controls;
-using WpfHexEditor.SDK.Services;
+using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.Editor.DocumentEditor.Core;
 
 namespace WpfHexEditor.Editor.DocumentEditor;
 

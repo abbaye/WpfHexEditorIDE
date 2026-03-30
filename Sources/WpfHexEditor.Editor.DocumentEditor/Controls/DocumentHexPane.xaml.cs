@@ -115,7 +115,7 @@ public partial class DocumentHexPane : UserControl
                 entry.Offset,
                 entry.Length,
                 brush,
-                $"{entry.Block.Kind}: {entry.Block.Text.Length > 30 ? entry.Block.Text[..30] + "…" : entry.Block.Text}")
+                $"{entry.Block.Kind}: {(entry.Block.Text.Length > 30 ? entry.Block.Text[..30] + "…" : entry.Block.Text)}")
             {
                 Tag = BinaryMapTag
             };

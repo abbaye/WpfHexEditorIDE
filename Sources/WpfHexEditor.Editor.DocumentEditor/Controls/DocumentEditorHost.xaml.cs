@@ -18,7 +18,8 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
-using WpfHexEditor.SDK.Services;
+using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.Editor.DocumentEditor.Core;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
