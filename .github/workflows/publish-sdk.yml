@@ -1,0 +1,56 @@
+name: Publish SDK to NuGet
+
+# Trigger: push a tag like `sdk/v2.0.0`
+# Usage:
+#   git tag sdk/v2.0.0 && git push --tags
+on:
+  push:
+    tags:
+      - 'sdk/v*'
+
+  # Allow manual dispatch with an explicit version tag
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'SDK version tag (e.g. sdk/v2.0.0)'
+        required: true
+
+jobs:
+  publish:
+    name: Pack + Validate + Publish
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Sources/WpfHexEditorControl.sln --nologo
+
+      - name: Build SDK
+        run: dotnet build Sources/WpfHexEditor.SDK/WpfHexEditor.SDK.csproj -c Release --nologo -v minimal
+
+      - name: Pack SDK
+        run: pwsh ./Sources/pack.ps1 -Configuration Release
+
+      - name: Validate SDK (smoke-test minimal plugin)
+        run: pwsh ./Sources/validate-sdk.ps1
+
+      - name: Upload NuGet package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/nuget/*.nupkg
+
+      - name: Push to NuGet.org
+        run: |
+          dotnet nuget push artifacts/nuget/*.nupkg `
+            --api-key ${{ secrets.NUGET_API_KEY }} `
+            --source https://api.nuget.org/v3/index.json `
+            --skip-duplicate
+        shell: pwsh

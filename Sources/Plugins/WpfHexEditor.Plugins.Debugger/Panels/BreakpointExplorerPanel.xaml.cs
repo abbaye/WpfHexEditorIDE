@@ -27,10 +27,15 @@ public partial class BreakpointExplorerPanel : UserControl
     // ── Hover popup ───────────────────────────────────────────────────────────
     private readonly DispatcherTimer _hoverTimer;
     private BreakpointRowEx? _pendingHoverRow;
+    private readonly BreakpointHoverPopup BpHoverPopup;
 
     public BreakpointExplorerPanel()
     {
         InitializeComponent();
+
+        // Popup types cannot have x:Name in XAML (MC3054) — create in code-behind.
+        BpHoverPopup = new BreakpointHoverPopup();
+        AddLogicalChild(BpHoverPopup);
 
         _overflowManager = new ToolbarOverflowManager(
             toolbarContainer:      ToolbarBorder,

@@ -15,9 +15,6 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- Hover popup — declared here so it inherits resources from the logical tree -->
-        <ctrl:BreakpointHoverPopup x:Name="BpHoverPopup" />
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

@@ -1,0 +1,31 @@
+{
+  "id": "WpfHexEditor.Plugins.ArchiveExplorer",
+  "name": "Archive Explorer",
+  "author": "Derek Tremblay",
+  "publisher": "WpfHexEditor",
+  "trustedPublisher": true,
+  "description": "Browse, extract, and preview archive contents (ZIP, 7z, RAR, TAR, GZ, BZ2, XZ) with format detection and nested archive navigation.",
+  "version": "1.0.0",
+  "sdkVersion": "2.0.0",
+  "minIDEVersion": "0.3.0",
+  "entryPoint": "WpfHexEditor.Plugins.ArchiveExplorer.ArchiveExplorerPlugin",
+  "assembly": {
+    "file": "WpfHexEditor.Plugins.ArchiveExplorer.dll"
+  },
+  "isolationMode": "Auto",
+  "loadPriority": 30,
+  "permissions": {
+    "accessHexEditor": true,
+    "accessFileSystem": true,
+    "accessNetwork": false,
+    "registerMenus": true,
+    "writeOutput": true,
+    "accessSettings": false
+  },
+  "activation": {
+    "fileExtensions": [ ".zip", ".7z", ".rar", ".tar", ".gz", ".bz2", ".xz", ".tgz", ".tbz2" ],
+    "onStartup": true
+  },
+  "features": [ "ArchiveBrowser", "ArchiveExtractor" ],
+  "dependencies": []
+}

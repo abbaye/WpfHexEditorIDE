@@ -339,6 +339,20 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     /// </summary>
     public long MemoryDisplayMb => _isMetricsEstimated ? WeightedMemMb : MemoryMb;
 
+    // -- Hot-reload mode badge -----------------------------------------------
+
+    private string _reloadMode = "Full";
+
+    /// <summary>
+    /// Reload mode badge: "Fast" when the plugin implements IWpfHexEditorPluginV2 with SupportsHotReload=true,
+    /// "Full" otherwise (full unload + GC + load cycle).
+    /// </summary>
+    public string ReloadMode
+    {
+        get => _reloadMode;
+        set { _reloadMode = value; OnPropertyChanged(); }
+    }
+
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
@@ -1219,6 +1233,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             row.IsMetricsEstimated = isInProc;
             row.AlcAssemblyCount   = entry.Diagnostics.AlcAssemblyCount;
             row.AlcConflictCount   = entry.Diagnostics.AlcConflictCount;
+            row.ReloadMode         = entry.Instance is IWpfHexEditorPluginV2 { SupportsHotReload: true } ? "Fast" : "Full";
 
             // Evaluate memory alert for this plugin
             if (_memoryAlertService != null)

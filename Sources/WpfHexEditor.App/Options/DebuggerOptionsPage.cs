@@ -37,6 +37,11 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
     private readonly CheckBox _showReturnValuesCheck;
     private readonly CheckBox _bpLineHighlightCheck;
 
+    // VS Breakpoint Interop
+    private readonly CheckBox _autoImportVsCheck;
+    private readonly CheckBox _autoExportVsCheck;
+    private readonly TextBox  _vsExportPathBox;
+
     private bool _loading;
 
     // ── Constructor ──────────────────────────────────────────────────────────
@@ -124,6 +129,56 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
         root.Children.Add(MakeSectionHeader("Editor Integration"));
         root.Children.Add(_bpLineHighlightCheck);
 
+        // ── VS Breakpoint Interop ─────────────────────────────────────────────
+        _autoImportVsCheck = new CheckBox
+        {
+            Content = "Auto-import VS breakpoints on first solution open",
+            Margin  = new Thickness(0, 4, 0, 4),
+        };
+        _autoImportVsCheck.Checked   += OnChanged;
+        _autoImportVsCheck.Unchecked += OnChanged;
+
+        _autoExportVsCheck = new CheckBox
+        {
+            Content = "Auto-export breakpoints to VS XML on save",
+            Margin  = new Thickness(0, 4, 0, 4),
+        };
+        _autoExportVsCheck.Checked   += OnChanged;
+        _autoExportVsCheck.Unchecked += OnChanged;
+
+        _vsExportPathBox = new TextBox
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            Margin              = new Thickness(0, 4, 0, 4),
+        };
+        _vsExportPathBox.TextChanged += OnChanged;
+
+        var exportPathRow = new Grid { Margin = new Thickness(0, 0, 0, 2) };
+        exportPathRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
+        exportPathRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        var exportPathLabel = new TextBlock
+        {
+            Text              = "Export path:",
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        Grid.SetColumn(exportPathLabel,  0);
+        Grid.SetColumn(_vsExportPathBox, 1);
+        exportPathRow.Children.Add(exportPathLabel);
+        exportPathRow.Children.Add(_vsExportPathBox);
+
+        root.Children.Add(MakeSectionHeader("VS Breakpoint Interop"));
+        root.Children.Add(_autoImportVsCheck);
+        root.Children.Add(_autoExportVsCheck);
+        root.Children.Add(exportPathRow);
+        root.Children.Add(new TextBlock
+        {
+            Text         = "Path is relative to the solution directory.",
+            FontStyle    = FontStyles.Italic,
+            Opacity      = 0.6,
+            Margin       = new Thickness(0, 2, 0, 4),
+            TextWrapping = TextWrapping.Wrap,
+        });
+
         Content = new ScrollViewer
         {
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -143,6 +198,11 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
             _stopAtEntryCheck.IsChecked       = s.StopAtEntry;
             _showReturnValuesCheck.IsChecked  = s.ShowReturnValues;
             _bpLineHighlightCheck.IsChecked   = settings.CodeEditorDefaults.BreakpointLineHighlightEnabled;
+
+            var d = settings.Debugger;
+            _autoImportVsCheck.IsChecked = d.AutoImportVsBreakpoints;
+            _autoExportVsCheck.IsChecked = d.AutoExportVsXml;
+            _vsExportPathBox.Text        = d.VsExportRelativePath;
         }
         finally
         {
@@ -157,6 +217,12 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
         s.StopAtEntry      = _stopAtEntryCheck.IsChecked  == true;
         s.ShowReturnValues = _showReturnValuesCheck.IsChecked == true;
         settings.CodeEditorDefaults.BreakpointLineHighlightEnabled = _bpLineHighlightCheck.IsChecked == true;
+
+        s.AutoImportVsBreakpoints = _autoImportVsCheck.IsChecked == true;
+        s.AutoExportVsXml         = _autoExportVsCheck.IsChecked == true;
+        s.VsExportRelativePath    = string.IsNullOrWhiteSpace(_vsExportPathBox.Text)
+            ? ".whide/breakpoints-vs.xml"
+            : _vsExportPathBox.Text.Trim();
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
