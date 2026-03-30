@@ -1367,8 +1367,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // End-of-block hint — show popup when cursor is on a region's closing line.
                 HandleEndBlockHintHover(hoverPos.Line);
 
-                // Breakpoint hover popup — show when hovering a breakpoint-highlighted line.
-                HandleBreakpointHover(hoverPos.Line);
 
                 // Ctrl+hover symbol underline.
                 // Enabled when: (a) no LanguageDefinition is registered for this file type

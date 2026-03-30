@@ -34,7 +34,8 @@ public sealed class OdtDocumentLoader : IDocumentLoader
         DocumentModel     target,
         CancellationToken ct = default)
     {
-        target.Metadata = new DocumentMetadata { Title = "DIAG_ENTER" };
+        target.Metadata = new DocumentMetadata { Title = "PYTHON_WROTE" };
+        target.Blocks.Add(new DocumentBlock { Kind = "paragraph", Text = "ODT_SENTINEL_ENTER" });
         byte[] rawBytes = await BufferStreamAsync(stream, ct);
         using var ms = new MemoryStream(rawBytes, writable: false);
 
