@@ -11,9 +11,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Panels.IDE.Panels;
 
@@ -77,6 +80,8 @@ public partial class ErrorPanel : UserControl, IErrorPanel
     /// </summary>
     public event EventHandler<DiagnosticEntry>? OpenInTextEditorRequested;
 
+    private ToolbarOverflowManager? _overflowManager;
+
     // -- Ctor -----------------------------------------------------------------
     public ErrorPanel()
     {
@@ -88,6 +93,15 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         EntryList.ItemsSource = _viewSource.View;
 
         ScopeCombo.SelectedIndex = 0;
+
+        _overflowManager = new ToolbarOverflowManager(
+            toolbarContainer:      ToolbarBorder,
+            alwaysVisiblePanel:    ToolbarRightPanel,
+            overflowButton:        OverflowButton,
+            overflowMenu:          OverflowMenu,
+            groupsInCollapseOrder: [TbgFilters],
+            leftFixedElements:     [ToolbarLeftPanel]);
+        Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
     }
 
     // ------------------------------------------------------------------------
@@ -247,6 +261,41 @@ public partial class ErrorPanel : UserControl, IErrorPanel
     // ------------------------------------------------------------------------
     // Event handlers
     // ------------------------------------------------------------------------
+
+    // -- Toolbar overflow -----------------------------------------------------
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowMenu.PlacementTarget = OverflowButton;
+        OverflowMenu.Placement       = PlacementMode.Bottom;
+        OverflowMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+        => _overflowManager?.SyncMenuVisibility();
+
+    private void OnOvfErrorToggle(object sender, RoutedEventArgs e)
+    {
+        ErrorToggle.IsChecked = !(ErrorToggle.IsChecked == true);
+        ApplyFilter();
+    }
+
+    private void OnOvfWarningToggle(object sender, RoutedEventArgs e)
+    {
+        WarningToggle.IsChecked = !(WarningToggle.IsChecked == true);
+        ApplyFilter();
+    }
+
+    private void OnOvfMessageToggle(object sender, RoutedEventArgs e)
+    {
+        MessageToggle.IsChecked = !(MessageToggle.IsChecked == true);
+        ApplyFilter();
+    }
 
     private void OnFilterChanged(object sender, RoutedEventArgs e) => ApplyFilter();
 

@@ -1089,7 +1089,12 @@ public partial class MainWindow
         var docHost    = new DocumentHostService(
             _documentManager,
             (path, editorId) => Dispatcher.InvokeAsync(() =>
-                OpenStandaloneFileWithEditor(path, editorId)).Task);
+                OpenStandaloneFileWithEditor(path, editorId)).Task,
+            contentId =>
+            {
+                var di = _layout?.FindItemByContentId(contentId);
+                if (di?.Owner is { } owner) { owner.ActiveItem = di; DockHost.RebuildVisualTree(); }
+            });
 
         args = new MainWindowServiceArgs(
             HexEditorService:    hexEditor,

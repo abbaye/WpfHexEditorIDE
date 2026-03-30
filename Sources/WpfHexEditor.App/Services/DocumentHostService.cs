@@ -13,6 +13,8 @@
 //     Pattern: Facade + Callback Bridge
 //     - openFileHandler: Func<string, string?, Task> delegated from MainWindow.
 //       This avoids a direct MainWindow reference in the service layer.
+//     - activateTabHandler: Action<string> delegated from MainWindow.
+//       Called with a ContentId to bring an already-open docking tab to front.
 //     - ActivateAndNavigateTo: applies INavigableDocument.NavigateTo() when the
 //       editor is already loaded; uses a pending-navigation approach for lazy
 //       tabs (tab opened but content not yet created by the docking engine).
@@ -33,6 +35,7 @@ public sealed class DocumentHostService : IDocumentHostService
 {
     private readonly IDocumentManager _documentManager;
     private readonly Func<string, string?, Task> _openFileHandler;
+    private readonly Action<string>? _activateTabHandler;
 
     // Pending navigations: FilePath → (line, column)
     // Set when ActivateAndNavigateTo is called for a file that is not yet open
@@ -49,10 +52,12 @@ public sealed class DocumentHostService : IDocumentHostService
 
     public DocumentHostService(
         IDocumentManager documentManager,
-        Func<string, string?, Task> openFileHandler)
+        Func<string, string?, Task> openFileHandler,
+        Action<string>? activateTabHandler = null)
     {
-        _documentManager = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
-        _openFileHandler = openFileHandler  ?? throw new ArgumentNullException(nameof(openFileHandler));
+        _documentManager    = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
+        _openFileHandler    = openFileHandler  ?? throw new ArgumentNullException(nameof(openFileHandler));
+        _activateTabHandler = activateTabHandler;
 
         // When a document becomes active, apply any pending navigation for that file.
         _documentManager.ActiveDocumentChanged += OnActiveDocumentChanged;
@@ -105,7 +110,8 @@ public sealed class DocumentHostService : IDocumentHostService
 
         if (model is not null)
         {
-            // Tab already registered — activate it and navigate immediately if possible.
+            // Tab already registered — bring it to front in the dock UI, then navigate.
+            _activateTabHandler?.Invoke(model.ContentId);
             _documentManager.SetActive(model.ContentId);
             TryNavigate(model, line, column);
         }

@@ -3784,7 +3784,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         _documentCounter++;
-        var suffix    = factoryId is null ? "hex" : factoryId;
+        var suffix    = factoryId is null ? "file" : factoryId;
         var contentId = $"doc-file-{suffix}-{_documentCounter}";
 
         var dockItem = new DockItem
@@ -3796,9 +3796,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 ["FilePath"] = filePath,
             },
         };
-        if (factoryId is null)
+        if (factoryId == "hex-editor")
             dockItem.Metadata["ForceHexEditor"] = "true";
-        else
+        else if (factoryId is not null)
             dockItem.Metadata["ForceEditorId"] = factoryId;
 
         dockItem.Metadata["EditorDisplayName"] = ResolveEditorDisplayName(factoryId);

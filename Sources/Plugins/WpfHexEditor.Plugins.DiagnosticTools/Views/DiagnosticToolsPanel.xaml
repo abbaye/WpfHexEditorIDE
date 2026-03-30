@@ -149,52 +149,77 @@
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ─────────────────────────────────────────────────────── -->
-        <Border Grid.Row="0"
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
                 Background="{DynamicResource DT_ToolbarBackground}"
                 BorderBrush="{DynamicResource DT_GraphBorder}"
-                BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+                BorderThickness="0,0,0,1"
+                SizeChanged="OnToolbarSizeChanged">
+            <DockPanel Margin="4,0" LastChildFill="False" VerticalAlignment="Center">
 
-                <!-- Pause / Resume -->
-                <Button Content="{Binding PauseResumeGlyph}"
+                <!-- Fixed LEFT: Pause/Resume -->
+                <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="{Binding PauseResumeGlyph}"
+                            Style="{StaticResource ToolbarBtn}"
+                            ToolTip="Pause / Resume collection"
+                            Click="OnPauseResumeClick" />
+                    <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
+                </StackPanel>
+
+                <!-- Fixed RIGHT: empty placeholder -->
+                <StackPanel x:Name="ToolbarRightPanel" DockPanel.Dock="Right" Orientation="Horizontal" />
+
+                <!-- Overflow button -->
+                <Button x:Name="OverflowButton"
+                        DockPanel.Dock="Right"
                         Style="{StaticResource ToolbarBtn}"
-                        ToolTip="Pause / Resume collection"
-                        Click="OnPauseResumeClick" />
+                        Visibility="Collapsed"
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowMenu" Opened="OnOverflowMenuOpened">
+                            <MenuItem Header="Heap Snapshot"  Tag="TbgActions" Click="OnSnapshotClick" />
+                            <MenuItem Header="Clear Events"   Tag="TbgActions" Click="OnClearEventsClick" />
+                            <MenuItem Header="Export CSV"     Tag="TbgActions" Click="OnExportClick" />
+                            <Separator />
+                            <MenuItem Header="CPU / Mem / GC metrics" Tag="TbgMetrics" IsEnabled="False" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
 
-                <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
+                <!-- Collapsible: metrics (collapses first — most verbose) -->
+                <StackPanel x:Name="TbgMetrics" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="CPU:"  Style="{StaticResource MetricLabel}" />
+                    <TextBlock Text="{Binding CurrentCpu}"    Style="{StaticResource MetricValue}" />
+                    <TextBlock Text="Mem:"  Style="{StaticResource MetricLabel}" />
+                    <TextBlock Text="{Binding CurrentMemory}" Style="{StaticResource MetricValue}" />
+                    <TextBlock Text="GC:"   Style="{StaticResource MetricLabel}" />
+                    <TextBlock Text="{Binding GcHeapMbText}"  Style="{StaticResource MetricValue}" />
+                    <TextBlock Text="TP:"   Style="{StaticResource MetricLabel}" />
+                    <TextBlock Text="{Binding ThreadPoolQueue}"   Style="{StaticResource MetricValue}" />
+                    <TextBlock Text="threads:"  Style="{StaticResource MetricLabel}" />
+                    <TextBlock Text="{Binding ThreadPoolThreads}" Style="{StaticResource MetricValue}" />
+                </StackPanel>
 
-                <!-- Heap snapshot -->
-                <Button Content="&#xE9F9;"
-                        Style="{StaticResource ToolbarBtn}"
-                        ToolTip="Capture heap snapshot (.gcdump)"
-                        Click="OnSnapshotClick" />
+                <!-- Collapsible: action buttons -->
+                <StackPanel x:Name="TbgActions" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
+                    <Button Content="&#xE9F9;"
+                            Style="{StaticResource ToolbarBtn}"
+                            ToolTip="Capture heap snapshot (.gcdump)"
+                            Click="OnSnapshotClick" />
+                    <Button Content="&#xE894;"
+                            Style="{StaticResource ToolbarBtn}"
+                            ToolTip="Clear event log"
+                            Click="OnClearEventsClick" />
+                    <Button Content="&#xE74E;"
+                            Style="{StaticResource ToolbarBtn}"
+                            ToolTip="Export metrics to CSV"
+                            Click="OnExportClick" />
+                </StackPanel>
 
-                <!-- Clear events -->
-                <Button Content="&#xE894;"
-                        Style="{StaticResource ToolbarBtn}"
-                        ToolTip="Clear event log"
-                        Click="OnClearEventsClick" />
-
-                <!-- Export CSV -->
-                <Button Content="&#xE74E;"
-                        Style="{StaticResource ToolbarBtn}"
-                        ToolTip="Export metrics to CSV"
-                        Click="OnExportClick" />
-
-                <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
-
-                <TextBlock Text="CPU:"  Style="{StaticResource MetricLabel}" />
-                <TextBlock Text="{Binding CurrentCpu}"    Style="{StaticResource MetricValue}" />
-                <TextBlock Text="Mem:"  Style="{StaticResource MetricLabel}" />
-                <TextBlock Text="{Binding CurrentMemory}" Style="{StaticResource MetricValue}" />
-                <TextBlock Text="GC:"   Style="{StaticResource MetricLabel}" />
-                <TextBlock Text="{Binding GcHeapMbText}"  Style="{StaticResource MetricValue}" />
-                <TextBlock Text="TP:"   Style="{StaticResource MetricLabel}" />
-                <TextBlock Text="{Binding ThreadPoolQueue}"   Style="{StaticResource MetricValue}" />
-                <TextBlock Text="threads:"  Style="{StaticResource MetricLabel}" />
-                <TextBlock Text="{Binding ThreadPoolThreads}" Style="{StaticResource MetricValue}" />
-
-            </StackPanel>
+            </DockPanel>
         </Border>
 
         <!-- ── Status bar ───────────────────────────────────────────────────── -->
