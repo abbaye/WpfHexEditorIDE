@@ -59,6 +59,9 @@
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
+    <ProjectReference Include="..\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj">
+      <PrivateAssets>none</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

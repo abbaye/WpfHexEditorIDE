@@ -9,7 +9,7 @@ namespace WpfHexEditor.Editor.DocumentEditor.Core.Model;
 /// <summary>
 /// Document-level metadata extracted by the format loader.
 /// </summary>
-public sealed class DocumentMetadata
+public sealed record DocumentMetadata
 {
     /// <summary>Document title (from properties or file name).</summary>
     public string Title { get; set; } = string.Empty;

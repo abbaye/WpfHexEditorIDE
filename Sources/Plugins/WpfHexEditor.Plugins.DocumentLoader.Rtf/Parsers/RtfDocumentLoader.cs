@@ -10,6 +10,7 @@
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
+using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 
 namespace WpfHexEditor.Plugins.DocumentLoader.Rtf.Parsers;

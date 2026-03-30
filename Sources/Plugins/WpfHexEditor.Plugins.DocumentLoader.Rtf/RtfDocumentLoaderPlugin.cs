@@ -11,7 +11,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Plugins.DocumentLoader.Rtf.Parsers;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.SDK.Services;
+using WpfHexEditor.Editor.DocumentEditor.Core;
 
 namespace WpfHexEditor.Plugins.DocumentLoader.Rtf;
 

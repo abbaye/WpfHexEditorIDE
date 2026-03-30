@@ -346,7 +346,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         };
         bd.MouseEnter        += (_, _) => bd.SetResourceReference(Border.BackgroundProperty, "ET_HeaderBackground");
         bd.MouseLeave        += (_, _) => bd.Background = Brushes.Transparent;
-        bd.MouseLeftButtonUp += handler;
+        bd.MouseLeftButtonUp += (s, e) => handler(s, e);
         return bd;
     }
 

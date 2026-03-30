@@ -625,6 +625,9 @@ public partial class MainWindow
             OpenPluginQuickStatusPopup();
     }
 
+    private void OnNotificationBellClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        => _notificationBellAdapter?.TogglePopup();
+
     private void OpenPluginQuickStatusPopup()
     {
         if (_pluginHost is null) return;
