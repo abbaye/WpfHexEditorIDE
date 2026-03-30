@@ -9,7 +9,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
-using WpfHexEditor.Editor.DocumentEditor.Core.Contracts;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 

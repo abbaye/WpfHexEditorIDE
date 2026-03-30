@@ -6,7 +6,7 @@
 //     IDocumentLoader extension via IExtensionRegistry on startup.
 // ==========================================================
 
-using WpfHexEditor.Editor.DocumentEditor.Core.Contracts;
+using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Plugins.DocumentLoader.Odt.Parsers;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
