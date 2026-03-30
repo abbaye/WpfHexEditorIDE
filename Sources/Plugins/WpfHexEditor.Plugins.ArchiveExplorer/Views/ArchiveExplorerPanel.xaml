@@ -69,10 +69,16 @@
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False">
 
-                <!-- Always-visible right panel — Refresh always reachable -->
+                <!-- Always-visible right panel — Open/Refresh always reachable -->
                 <StackPanel x:Name="ToolbarRightPanel"
                             DockPanel.Dock="Right"
                             Orientation="Horizontal">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE8E5;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="22" Height="22"
+                            Click="OnOpenArchiveClick"
+                            ToolTip="Open archive…"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE72C;"
                             FontFamily="Segoe MDL2 Assets"

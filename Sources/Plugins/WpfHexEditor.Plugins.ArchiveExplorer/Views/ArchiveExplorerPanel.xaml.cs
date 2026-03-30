@@ -110,6 +110,17 @@ public partial class ArchiveExplorerPanel : UserControl
             ViewModel.SelectedNode = vm;
     }
 
+    private async void OnOpenArchiveClick(object sender, RoutedEventArgs e)
+    {
+        var dlg = new Microsoft.Win32.OpenFileDialog
+        {
+            Title  = "Open Archive",
+            Filter = "Archive files|*.zip;*.jar;*.war;*.nupkg;*.7z;*.rar;*.tar;*.tgz;*.tbz2;*.gz;*.bz2;*.xz|All files|*.*"
+        };
+        if (dlg.ShowDialog() != true) return;
+        await LoadArchiveAsync(dlg.FileName);
+    }
+
     private void OnTreeMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (ViewModel.PreviewCommand.CanExecute(null))
