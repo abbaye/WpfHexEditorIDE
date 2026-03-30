@@ -44,6 +44,7 @@ public static class SynalysisToBackgroundBlockBridge
 
         foreach (var region in regions)
         {
+            if (region is null) continue;
             var brush = ParseBrush(region.Color);
             if (brush is null) continue;
 

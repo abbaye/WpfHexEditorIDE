@@ -36,6 +36,10 @@ public sealed class BreakpointExplorerViewModel : INotifyPropertyChanged
     private string     _summaryText = string.Empty;
     private BreakpointRowEx? _selectedBreakpoint;
 
+    // ── Internal services (for code-behind popup wiring) ─────────────────────
+
+    internal IDebuggerService DebuggerService => _debugger;
+
     // ── Collections ──────────────────────────────────────────────────────────
 
     public ObservableCollection<BreakpointRowEx>   FlatBreakpoints    { get; } = [];

@@ -1506,6 +1506,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 if (current - 1 >= _document.Lines.Count) break; // stale visible-line index: exit scan
                 string prevText = (_document.Lines[current - 1].Text ?? string.Empty).TrimEnd();
+
+                // A non-executable line (comment, blank, directive) is never part of the
+                // statement — stop the backward scan before including it.
+                bool isNonExecutable = false;
+                foreach (var r in _bpNonExecutableRegexes)
+                {
+                    if (r.IsMatch(prevText)) { isNonExecutable = true; break; }
+                }
+                if (isNonExecutable) break;
+
                 bool continues = false;
                 foreach (var r in _bpContinuationRegexes)
                 {

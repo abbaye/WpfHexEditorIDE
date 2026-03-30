@@ -33,7 +33,6 @@ namespace WpfHexEditor.Plugins.SynalysisGrammar.Services;
 public sealed class SynalysisGrammarService
 {
     private readonly SynalysisGrammarRepository _repository;
-    private readonly SynalysisGrammarInterpreter _interpreter = new();
     private readonly IIDEHostContext _context;
 
     private const int SampleSize = 64 * 1024;   // 64 KB for initial parse
@@ -83,7 +82,7 @@ public sealed class SynalysisGrammarService
         SynalysisParseResult result;
         try
         {
-            result = await Task.Run(() => _interpreter.Execute(grammar, data), ct);
+            result = await Task.Run(() => new SynalysisGrammarInterpreter().Execute(grammar, data), ct);
         }
         catch (OperationCanceledException)
         {

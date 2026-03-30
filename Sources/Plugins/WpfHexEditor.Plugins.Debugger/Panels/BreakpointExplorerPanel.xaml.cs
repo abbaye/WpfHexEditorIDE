@@ -11,7 +11,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Plugins.Debugger.Controls;
 using WpfHexEditor.Plugins.Debugger.ViewModels;
 using WpfHexEditor.SDK.UI;
 
@@ -21,6 +23,11 @@ public partial class BreakpointExplorerPanel : UserControl
 {
     private BreakpointExplorerViewModel? Vm => DataContext as BreakpointExplorerViewModel;
     private ToolbarOverflowManager? _overflowManager;
+
+    // ── Hover popup ───────────────────────────────────────────────────────────
+    private BreakpointHoverPopup? _hoverPopup;
+    private readonly DispatcherTimer _hoverTimer;
+    private BreakpointRowEx? _pendingHoverRow;
 
     public BreakpointExplorerPanel()
     {
@@ -35,6 +42,16 @@ public partial class BreakpointExplorerPanel : UserControl
             leftFixedElements:     [ToolbarLeftPanel]);
 
         Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+
+        _hoverTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _hoverTimer.Tick += OnHoverTimerTick;
+
+        Loaded += (_, _) =>
+        {
+            FlatList.MouseMove  += OnListMouseMove;
+            FlatList.MouseLeave += OnListMouseLeave;
+        };
+        Unloaded += (_, _) => _hoverPopup?.Dispose();
     }
 
     // ── Toolbar overflow ──────────────────────────────────────────────────
@@ -136,4 +153,51 @@ public partial class BreakpointExplorerPanel : UserControl
 
     private BreakpointRowEx? GetSelectedRow() =>
         Vm?.SelectedBreakpoint ?? FlatList.SelectedItem as BreakpointRowEx;
+
+    // ── Hover popup ───────────────────────────────────────────────────────────
+
+    private void OnListMouseMove(object sender, MouseEventArgs e)
+    {
+        var row = GetRowUnderMouse(e.GetPosition(FlatList));
+        if (row == _pendingHoverRow) return;
+
+        _hoverTimer.Stop();
+        _pendingHoverRow = row;
+
+        if (row is not null)
+            _hoverTimer.Start();
+        else
+            _hoverPopup?.OnHostMouseLeft();
+    }
+
+    private void OnListMouseLeave(object sender, MouseEventArgs e)
+    {
+        _hoverTimer.Stop();
+        _pendingHoverRow = null;
+        _hoverPopup?.OnHostMouseLeft();
+    }
+
+    private void OnHoverTimerTick(object? sender, EventArgs e)
+    {
+        _hoverTimer.Stop();
+        if (_pendingHoverRow is null || Vm is null) return;
+
+        _hoverPopup ??= new BreakpointHoverPopup { PlacementTarget = FlatList };
+        _hoverPopup.Show(_pendingHoverRow, Vm.DebuggerService);
+    }
+
+    private BreakpointRowEx? GetRowUnderMouse(Point pos)
+    {
+        var hit = VisualTreeHelper.HitTest(FlatList, pos);
+        if (hit?.VisualHit is null) return null;
+
+        DependencyObject? current = hit.VisualHit;
+        while (current is not null)
+        {
+            if (current is ListViewItem { DataContext: BreakpointRowEx row })
+                return row;
+            current = VisualTreeHelper.GetParent(current);
+        }
+        return null;
+    }
 }

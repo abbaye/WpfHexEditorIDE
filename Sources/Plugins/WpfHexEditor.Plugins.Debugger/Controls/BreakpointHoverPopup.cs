@@ -36,11 +36,14 @@ internal sealed class BreakpointHoverPopup : Popup
 
     // ── Visual tree ───────────────────────────────────────────────────────────
 
-    private readonly TextBlock _locationText;
-    private readonly TextBox   _conditionBox;
-    private readonly Button    _enableBtn;
-    private readonly Button    _deleteBtn;
-    private readonly Button    _saveBtn;
+    private readonly TextBlock   _locationText;
+    private readonly TextBox     _conditionBox;
+    private readonly Button      _enableBtn;
+    private readonly Button      _deleteBtn;
+    private readonly Button      _saveBtn;
+    private readonly StackPanel  _codePreviewStack;
+    private readonly Border      _codePreviewBorder;
+    private readonly Border      _codePreviewSep;
 
     // ── State ─────────────────────────────────────────────────────────────────
 
@@ -120,6 +123,21 @@ internal sealed class BreakpointHoverPopup : Popup
         var sep1 = new Border { Height = 1 };
         sep1.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
 
+        // ── Code preview (populated dynamically in Show()) ────────────────────
+        _codePreviewStack = new StackPanel { Margin = new Thickness(0) };
+        _codePreviewBorder = new Border
+        {
+            CornerRadius = new CornerRadius(3),
+            Padding      = new Thickness(8, 5, 8, 5),
+            Margin       = new Thickness(8, 6, 8, 2),
+            Visibility   = Visibility.Collapsed,
+            Child        = _codePreviewStack,
+        };
+        _codePreviewBorder.SetResourceReference(Border.BackgroundProperty, "ET_HeaderBackground");
+
+        _codePreviewSep = new Border { Height = 1, Margin = new Thickness(0, 4, 0, 0), Visibility = Visibility.Collapsed };
+        _codePreviewSep.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
+
         // ── Condition row ─────────────────────────────────────────────────────
         var condLabel = new TextBlock
         {
@@ -186,6 +204,8 @@ internal sealed class BreakpointHoverPopup : Popup
         var stack = new StackPanel { Orientation = Orientation.Vertical };
         stack.Children.Add(headerBorder);
         stack.Children.Add(sep1);
+        stack.Children.Add(_codePreviewBorder);
+        stack.Children.Add(_codePreviewSep);
         stack.Children.Add(condBorder);
         stack.Children.Add(sep2);
         stack.Children.Add(actionBorder);
@@ -227,6 +247,42 @@ internal sealed class BreakpointHoverPopup : Popup
     private void OnApplicationDeactivated(object? sender, EventArgs e)
         => Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => IsOpen = false));
 
+    private void PopulateCodePreview(string filePath, int line1)
+    {
+        _codePreviewStack.Children.Clear();
+
+        string[] fileLines;
+        try { fileLines = File.ReadAllLines(filePath); }
+        catch { fileLines = []; }
+
+        if (fileLines.Length == 0 || line1 < 1 || line1 > fileLines.Length)
+        {
+            _codePreviewBorder.Visibility = Visibility.Collapsed;
+            _codePreviewSep.Visibility    = Visibility.Collapsed;
+            return;
+        }
+
+        int startLine = Math.Max(0, line1 - 2);              // 0-based: 1 line before BP
+        int endLine   = Math.Min(fileLines.Length - 1, line1 - 1); // 0-based: the BP line
+
+        for (int i = startLine; i <= endLine; i++)
+        {
+            var tb = new TextBlock
+            {
+                Text         = fileLines[i],
+                FontFamily   = new FontFamily("Cascadia Code, Consolas, Courier New"),
+                FontSize     = 11,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                FontWeight   = (i == line1 - 1) ? FontWeights.SemiBold : FontWeights.Normal,
+            };
+            tb.SetResourceReference(TextBlock.ForegroundProperty, "ET_HeaderForeground");
+            _codePreviewStack.Children.Add(tb);
+        }
+
+        _codePreviewBorder.Visibility = Visibility.Visible;
+        _codePreviewSep.Visibility    = Visibility.Visible;
+    }
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>Opens the popup anchored at the current mouse position for the given row.</summary>
@@ -243,6 +299,8 @@ internal sealed class BreakpointHoverPopup : Popup
         _conditionBox.Text = row.Condition ?? string.Empty;
         _enableBtn.Content = row.IsEnabled ? "Disable" : "Enable";
         _locationText.Text = $"  ·  {Path.GetFileName(row.FilePath)} : {row.Line}";
+
+        PopulateCodePreview(row.FilePath, row.Line);
 
         IsOpen = true;
     }

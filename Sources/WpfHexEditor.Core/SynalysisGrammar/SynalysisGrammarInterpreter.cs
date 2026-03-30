@@ -467,8 +467,10 @@ public sealed class SynalysisGrammarInterpreter
         if (_hasErrors && _fields.Count > savedFieldCount)
         {
             // Revert fields / regions added by this failed attempt.
+            // Guard against nested rollbacks that may have already removed items past the saved index.
             _fields.RemoveRange(savedFieldCount, _fields.Count - savedFieldCount);
-            _colorRegions.RemoveRange(savedRegCount, _colorRegions.Count - savedRegCount);
+            if (_colorRegions.Count > savedRegCount)
+                _colorRegions.RemoveRange(savedRegCount, _colorRegions.Count - savedRegCount);
             frame.CurrentOffset = savedOffset;
             _hasErrors = false;  // reset so the next structref gets a clean try
             return false;

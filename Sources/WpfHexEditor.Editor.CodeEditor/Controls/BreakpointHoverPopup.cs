@@ -225,8 +225,8 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
             };
             codeBorder.SetResourceReference(Border.BackgroundProperty, "ET_HeaderBackground");
 
-            int startLine = Math.Max(0, line1 - 2);  // 0-based, show 1 line before
-            int endLine   = Math.Min(lines.Count - 1, line1);  // 0-based, show current line
+            int startLine = Math.Max(0, line1 - 2);      // 0-based: 1 line before the BP
+            int endLine   = Math.Min(lines.Count - 1, line1 - 1);  // 0-based: the BP line itself
 
             for (int i = startLine; i <= endLine; i++)
             {
@@ -246,6 +246,8 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
                         var run = new Run(token.Text);
                         if (token.Foreground is not null)
                             run.Foreground = token.Foreground;
+                        else
+                            run.SetResourceReference(TextElement.ForegroundProperty, "ET_HeaderForeground");
                         if (token.IsBold) run.FontWeight = FontWeights.Bold;
                         if (token.IsItalic) run.FontStyle = FontStyles.Italic;
                         tb.Inlines.Add(run);
