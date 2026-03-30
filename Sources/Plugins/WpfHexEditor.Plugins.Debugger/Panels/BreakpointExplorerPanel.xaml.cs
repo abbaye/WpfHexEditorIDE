@@ -103,7 +103,7 @@ public partial class BreakpointExplorerPanel : UserControl
                 // Columns: list | 5px splitter | 220 detail
                 MainCol.Width     = new GridLength(1, GridUnitType.Star);
                 SplitterCol.Width = new GridLength(5);
-                DetailCol.Width   = new GridLength(280);
+                DetailCol.Width   = new GridLength(350);
                 // Rows: single row for everything
                 MainRow.Height     = new GridLength(1, GridUnitType.Star);
                 SplitterRow.Height = new GridLength(0);

@@ -391,7 +391,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        // Do not dispose VM — docking may reattach. Only cancel pending loads.
-        _loadCts.Cancel();
+        // Do NOT cancel _loadCts here — the docking system unloads/reloads controls
+        // during layout restore and tab switches, which would kill active loads.
+        // Cancellation is handled explicitly by Close() and CancelOperation().
     }
 }

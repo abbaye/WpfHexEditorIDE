@@ -38,14 +38,35 @@ internal sealed class OdtXmlMapper
 
         if (body is null) return blocks;
 
-        foreach (var child in body.Elements())
-        {
-            ct.ThrowIfCancellationRequested();
-            var block = MapElement(child, entryBaseOffset, mapBuilder);
-            if (block is not null) blocks.Add(block);
-        }
+        CollectBlocks(body, entryBaseOffset, mapBuilder, blocks, ct);
 
         return blocks;
+    }
+
+    // Recursively collect blocks, transparently descending into ODF container elements
+    // (text:section, text:text) that are not themselves content blocks.
+    private static void CollectBlocks(
+        XElement          parent,
+        long              baseOffset,
+        BinaryMapBuilder  mapBuilder,
+        List<DocumentBlock> blocks,
+        CancellationToken ct)
+    {
+        foreach (var child in parent.Elements())
+        {
+            ct.ThrowIfCancellationRequested();
+
+            // Transparent containers — descend without emitting a block
+            if (child.Name.Namespace == TextNs &&
+                child.Name.LocalName is "section" or "text-section" or "index-body" or "tracked-changes")
+            {
+                CollectBlocks(child, baseOffset, mapBuilder, blocks, ct);
+                continue;
+            }
+
+            var block = MapElement(child, baseOffset, mapBuilder);
+            if (block is not null) blocks.Add(block);
+        }
     }
 
     private static DocumentBlock? MapElement(XElement elem, long baseOffset, BinaryMapBuilder mapBuilder)

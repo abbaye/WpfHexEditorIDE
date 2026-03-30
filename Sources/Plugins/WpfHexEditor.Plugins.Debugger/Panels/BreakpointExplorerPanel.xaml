@@ -192,7 +192,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="MainCol"     Width="*" MinWidth="120" />
                 <ColumnDefinition x:Name="SplitterCol" Width="5" />
-                <ColumnDefinition x:Name="DetailCol"   Width="280" MinWidth="0" />
+                <ColumnDefinition x:Name="DetailCol"   Width="350" MinWidth="0" />
             </Grid.ColumnDefinitions>
 
             <!-- ── List area (always at row=0, col=0) ── -->
