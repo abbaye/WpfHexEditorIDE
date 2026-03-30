@@ -4,16 +4,21 @@
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-29
+// Updated: 2026-03-29 — Row highlight + ASCII stripe + height clamping + options DPs
 // Description:
 //     Partial class wiring ColumnHighlightOverlay to cursor position changes.
-//     The overlay renders a semi-transparent vertical stripe on the byte column
-//     matching the current cursor position.
+//     Renders up to three highlight elements:
+//       • Vertical column stripe in the hex panel (active byte column)
+//       • Vertical column stripe in the ASCII panel (same column, when ShowAscii=true)
+//       • Horizontal row stripe (line the cursor is on)
+//     All stripes are clamped to the visible content height so they never bleed
+//     into the empty space below the last rendered line.
 //
 // Architecture Notes:
-//     Subscribes to SelectionStartChanged to recompute the active column.
-//     Column index = (cursorOffset % BytesPerLine).
-//     Cell width and hex panel start are read from HexViewport public API.
-//     ShowColumnHighlight DP controls visibility.
+//     ShowColumnHighlight / ShowRowHighlight / ShowAsciiColumnHighlight are DPs
+//     wired from EditorSettingsService → HexEditorDefaultSettings.
+//     Subscribes to SelectionStartChanged + ZoomScaleChanged.
+//     Geometry is read from HexViewport public API.
 // ==========================================================
 
 using System;
@@ -25,15 +30,15 @@ namespace WpfHexEditor.HexEditor
 {
     public partial class HexEditor
     {
-        // ── Dependency Property ───────────────────────────────────────────────
+        // ── Dependency Properties ─────────────────────────────────────────────
 
-        /// <summary>Shows or hides the active column highlight overlay.</summary>
+        /// <summary>Shows or hides the active column highlight overlay (hex panel stripe).</summary>
         public static readonly DependencyProperty ShowColumnHighlightProperty =
             DependencyProperty.Register(
                 nameof(ShowColumnHighlight),
                 typeof(bool),
                 typeof(HexEditor),
-                new PropertyMetadata(true, OnShowColumnHighlightChanged));
+                new PropertyMetadata(true, OnColumnHighlightOptionChanged));
 
         public bool ShowColumnHighlight
         {
@@ -41,10 +46,39 @@ namespace WpfHexEditor.HexEditor
             set => SetValue(ShowColumnHighlightProperty, value);
         }
 
-        private static void OnShowColumnHighlightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        /// <summary>Shows or hides the horizontal row highlight behind the active line.</summary>
+        public static readonly DependencyProperty ShowRowHighlightProperty =
+            DependencyProperty.Register(
+                nameof(ShowRowHighlight),
+                typeof(bool),
+                typeof(HexEditor),
+                new PropertyMetadata(true, OnColumnHighlightOptionChanged));
+
+        public bool ShowRowHighlight
+        {
+            get => (bool)GetValue(ShowRowHighlightProperty);
+            set => SetValue(ShowRowHighlightProperty, value);
+        }
+
+        /// <summary>Shows or hides the column stripe in the ASCII panel.</summary>
+        public static readonly DependencyProperty ShowAsciiColumnHighlightProperty =
+            DependencyProperty.Register(
+                nameof(ShowAsciiColumnHighlight),
+                typeof(bool),
+                typeof(HexEditor),
+                new PropertyMetadata(true, OnColumnHighlightOptionChanged));
+
+        public bool ShowAsciiColumnHighlight
+        {
+            get => (bool)GetValue(ShowAsciiColumnHighlightProperty);
+            set => SetValue(ShowAsciiColumnHighlightProperty, value);
+        }
+
+        private static void OnColumnHighlightOptionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not HexEditor editor) return;
-            if (!(bool)e.NewValue)
+            // Hide immediately if all highlights are disabled; otherwise refresh position.
+            if (!editor.ShowColumnHighlight && !editor.ShowRowHighlight && !editor.ShowAsciiColumnHighlight)
                 editor._columnHighlight?.Hide();
             else
                 editor.UpdateColumnHighlight();
@@ -72,7 +106,14 @@ namespace WpfHexEditor.HexEditor
 
         private void UpdateColumnHighlight()
         {
-            if (_columnHighlight is null || !ShowColumnHighlight) return;
+            if (_columnHighlight is null) return;
+
+            // All highlights disabled → hide everything.
+            if (!ShowColumnHighlight && !ShowRowHighlight && !ShowAsciiColumnHighlight)
+            {
+                _columnHighlight.Hide();
+                return;
+            }
 
             if (!_viewModel.SelectionStart.IsValid)
             {
@@ -85,13 +126,11 @@ namespace WpfHexEditor.HexEditor
 
             long   offset    = _viewModel.SelectionStart.Value;
             int    colIdx    = (int)(offset % bytesPerLine);
-            // ZoomScale multiplies all logical distances to match the LayoutTransform applied to HexViewport
             double zoom      = ZoomScale;
             double cellWidth = HexViewport.CalculateCellWidthForByteCount(1) * zoom;
             double hexStart  = HexViewport.HexPanelStartX * zoom;
 
-            // Account for byte-group spacers inserted by the renderer at every group boundary.
-            // e.g. with ByteGrouping=4 and colIdx=6: 1 spacer before col 4 → +spacerWidth
+            // Byte-group spacer offset (only for the hex panel stripe).
             double spacerOffset = 0;
             int groupSize = (int)HexViewport.ByteGrouping;
             if (bytesPerLine >= groupSize &&
@@ -102,7 +141,55 @@ namespace WpfHexEditor.HexEditor
                 spacerOffset = spacerCount * (int)HexViewport.ByteSpacerWidthTickness * zoom;
             }
 
-            _columnHighlight.SetColumn(colIdx, hexStart, cellWidth, spacerOffset);
+            // Visible content height — clamps all stripes so they don't bleed
+            // into the empty space below the last rendered line.
+            double lineHeight   = HexViewport.LineHeight * zoom;
+            int    visibleLines = HexViewport.GetVisibleLinesForHighlight().Count;
+            double visibleH     = visibleLines > 0 ? visibleLines * lineHeight : 0;
+
+            // Each stripe only renders in its own panel when that panel is active.
+            bool hexActive   = HexViewport.ActivePanel == Controls.ActivePanelType.Hex;
+            bool asciiActive = HexViewport.ActivePanel == Controls.ActivePanelType.Ascii;
+
+            // Hex column stripe: shown when hex panel is active.
+            // Re-use colIdx = -1 to tell the overlay to skip the hex stripe.
+            int effectiveColIdx = (ShowColumnHighlight && hexActive) ? colIdx : -1;
+
+            // ASCII stripe parameters (negative = don't draw).
+            double asciiX     = -1;
+            double asciiCW    = 0;
+            if (ShowAsciiColumnHighlight && asciiActive && HexViewport.ShowAscii)
+            {
+                asciiX  = HexViewport.AsciiPanelStartX * zoom;
+                asciiCW = HexViewport.AsciiCharacterWidth * zoom;
+            }
+
+            // Row highlight position: which line number is the cursor on?
+            double rowY      = -1;
+            double rowHeight = lineHeight;
+            if (ShowRowHighlight && visibleLines > 0 && lineHeight > 0)
+            {
+                var lines = HexViewport.GetVisibleLinesForHighlight();
+                if (lines.Count > 0)
+                {
+                    long firstOffset = lines[0].Bytes[0].VirtualPos;
+                    long lineIndex   = (offset - firstOffset) / bytesPerLine;
+                    if (lineIndex >= 0 && lineIndex < lines.Count)
+                        rowY = lineIndex * lineHeight;
+                }
+            }
+
+            _columnHighlight.SetColumn(
+                columnIndex:          effectiveColIdx,
+                hexPanelStartX:       hexStart,
+                cellWidth:            cellWidth,
+                spacerOffset:         spacerOffset,
+                visibleContentHeight: visibleH,
+                asciiPanelStartX:     asciiX,
+                asciiCharWidth:       asciiCW,
+                rowY:                 rowY,
+                rowHeight:            rowHeight,
+                showRow:              ShowRowHighlight && rowY >= 0);
         }
     }
 }

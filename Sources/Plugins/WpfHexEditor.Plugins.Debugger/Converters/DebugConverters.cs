@@ -2,7 +2,7 @@
 // Project: WpfHexEditor.Plugins.Debugger
 // File: Converters/DebugConverters.cs
 // Description:
-//     Value converters used by debug panel XAML (BreakpointsPanel, CallStackPanel).
+//     Value converters used by debug panel XAML (BreakpointExplorerPanel, CallStackPanel).
 // Architecture:
 //     Plugin-local — no dependency beyond WPF.
 // ==========================================================
@@ -76,6 +76,28 @@ internal sealed class InvertBoolToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
         value is true ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
+
+/// <summary>Null → Collapsed, non-null → Visible.</summary>
+internal sealed class NullToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+        value is null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
+
+/// <summary>Null or empty string → Collapsed, non-empty → Visible.</summary>
+internal sealed class NullOrEmptyToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+        string.IsNullOrEmpty(value as string)
+            ? System.Windows.Visibility.Collapsed
+            : System.Windows.Visibility.Visible;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
         throw new NotSupportedException();

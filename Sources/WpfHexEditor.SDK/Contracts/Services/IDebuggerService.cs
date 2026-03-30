@@ -21,7 +21,18 @@ public sealed record DebugBreakpointInfo(
     string? Condition,
     bool    IsEnabled,
     bool    IsVerified,
-    int     HitCount = 0
+    int     HitCount = 0,
+    // Extended settings (mirrors BreakpointLocation)
+    WpfHexEditor.Core.Debugger.Models.BpConditionKind ConditionKind  = WpfHexEditor.Core.Debugger.Models.BpConditionKind.None,
+    WpfHexEditor.Core.Debugger.Models.BpConditionMode ConditionMode  = WpfHexEditor.Core.Debugger.Models.BpConditionMode.IsTrue,
+    WpfHexEditor.Core.Debugger.Models.BpHitCountOp    HitCountOp     = WpfHexEditor.Core.Debugger.Models.BpHitCountOp.Equal,
+    int     HitCountTarget    = 1,
+    string? FilterExpr        = null,
+    bool    HasAction         = false,
+    string? LogMessage        = null,
+    bool    ContinueExecution = true,
+    bool    DisableOnceHit    = false,
+    string? DependsOnBpKey    = null
 );
 
 /// <summary>
@@ -96,6 +107,13 @@ public interface IDebuggerService
     /// No-op when no breakpoint exists at that location.
     /// </summary>
     Task UpdateBreakpointAsync(string filePath, int line, string? condition, bool isEnabled);
+
+    /// <summary>
+    /// Apply full breakpoint settings (condition, action, options) from the
+    /// <c>BreakpointConditionDialog</c>.  No-op when no breakpoint exists at that location.
+    /// </summary>
+    Task UpdateBreakpointSettingsAsync(string filePath, int line,
+        WpfHexEditor.Core.Debugger.Models.BreakpointSettings settings);
 
     /// <summary>
     /// Explicitly delete a breakpoint. No-op when no breakpoint exists at that location.

@@ -1266,6 +1266,11 @@ namespace WpfHexEditor.HexEditor.Controls
         public double AsciiPanelStartX => SeparatorStartX + SeparatorWidth;
 
         /// <summary>
+        /// Gets the width of one ASCII character cell (fixed layout constant).
+        /// </summary>
+        public double AsciiCharacterWidth => AsciiCharWidth;
+
+        /// <summary>
         /// Gets or sets the active panel (Hex or ASCII)
         /// </summary>
         public ActivePanelType ActivePanel

@@ -1,0 +1,39 @@
+<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentTextPane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
+             Background="{DynamicResource DE_PageCanvasBackground}"
+             Foreground="{DynamicResource DE_TextPaneForeground}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Forensic gutter (16px, hidden unless forensic mode) -->
+            <ColumnDefinition x:Name="PART_GutterCol" Width="0"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Forensic gutter strip -->
+        <Canvas x:Name="PART_ForensicGutter"
+                Grid.Column="0"
+                Width="16"
+                ClipToBounds="True"
+                Visibility="Collapsed"/>
+
+        <!-- ── Canvas renderer inside a ScrollViewer (IScrollInfo) ─── -->
+        <ScrollViewer Grid.Column="1"
+                      x:Name="PART_ScrollViewer"
+                      Background="{DynamicResource DE_PageCanvasBackground}"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      CanContentScroll="True">
+            <ScrollViewer.LayoutTransform>
+                <ScaleTransform x:Name="PART_ZoomTransform" ScaleX="1" ScaleY="1"/>
+            </ScrollViewer.LayoutTransform>
+
+            <!-- DocumentCanvasRenderer is the IScrollInfo provider -->
+            <local:DocumentCanvasRenderer
+                x:Name="PART_Renderer"
+                SelectedBlockChanged="OnRendererSelectedBlockChanged"
+                PopToolbarRequested="OnRendererPopToolbarRequested"/>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

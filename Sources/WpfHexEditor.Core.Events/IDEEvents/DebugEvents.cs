@@ -87,3 +87,14 @@ public sealed record ExceptionHitEvent : IDEEventBase
     public string FilePath      { get; init; } = string.Empty;
     public int    Line          { get; init; }
 }
+
+/// <summary>
+/// Published by the App layer when the user clicks "Settings…" on the inline
+/// breakpoint gutter popup. The Debugger plugin subscribes and opens
+/// <c>BreakpointConditionDialog</c> — keeping the dialog out of the App assembly.
+/// </summary>
+public sealed record OpenBreakpointSettingsRequestedEvent : IDEEventBase
+{
+    public string FilePath { get; init; } = string.Empty;
+    public int    Line     { get; init; }
+}

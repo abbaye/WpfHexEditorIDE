@@ -178,6 +178,35 @@
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
+        <Separator Margin="0,16,0,16"
+                   Background="{DynamicResource DockBorderBrush}"/>
+
+        <TextBlock Text="Column and Row Highlight"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,16"/>
+
+        <CheckBox x:Name="CheckShowColumnHighlight"
+                  Content="Show active column highlight (hex panel)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowAsciiColumnHighlight"
+                  Content="Show active column highlight (ASCII panel)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowRowHighlight"
+                  Content="Show active row (line) highlight"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,0"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

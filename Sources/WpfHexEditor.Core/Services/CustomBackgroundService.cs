@@ -338,11 +338,11 @@ namespace WpfHexEditor.Core.Services
             if (tag == null)
                 return 0;
 
-            var removed = _backgroundBlocks.Where(b => b.Description == tag).ToList();
+            var removed = _backgroundBlocks.Where(b => (b.Tag ?? b.Description) == tag).ToList();
             if (removed.Count == 0)
                 return 0;
 
-            _backgroundBlocks.RemoveAll(b => b.Description == tag);
+            _backgroundBlocks.RemoveAll(b => (b.Tag ?? b.Description) == tag);
 
             OnBlockRemoved(new CustomBackgroundBlockEventArgs(
                 BlockChangeType.RemovedMultiple,

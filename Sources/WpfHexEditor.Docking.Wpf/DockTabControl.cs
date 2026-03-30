@@ -89,6 +89,12 @@ public class DockTabControl : TabControl
     public Func<bool>? HasMultipleDocumentHostsCheck { get; set; }
 
     private Func<DockItem, object>? _contentFactory;
+
+    // Tracks DockItems whose plugin panel has already been created at least once.
+    // On subsequent Bind() rebuilds we call the factory directly (synchronous, fast)
+    // instead of re-showing PluginLoadingPlaceholder — avoids the one-frame flash.
+    private readonly HashSet<DockItem> _everMaterialized = new();
+
     private int  _dragOriginalModelIndex = -1;
     private int  _currentInsertionIdx    = -1;
     private Popup?                   _reorderGhost;
@@ -157,6 +163,7 @@ public class DockTabControl : TabControl
             if (Items[i] is TabItem ti && ti.Tag is DockItem d && d == item)
             {
                 Items.RemoveAt(i);
+                _everMaterialized.Remove(item);
                 return;
             }
         }
@@ -181,6 +188,7 @@ public class DockTabControl : TabControl
                         var factory = _contentFactory;
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
                         {
+                            _everMaterialized.Add(item);
                             tab.Content = factory.Invoke(item);
                         });
                     }
@@ -237,8 +245,16 @@ public class DockTabControl : TabControl
         }
         else if (isActive && item.Metadata.ContainsKey("_pluginPanel"))
         {
-            tabContent = new PluginLoadingPlaceholder();
-            deferPluginContent = true;
+            if (_everMaterialized.Contains(item))
+            {
+                // Already built once — call factory directly (fast, no flash).
+                tabContent = contentFactory.Invoke(item);
+            }
+            else
+            {
+                tabContent = new PluginLoadingPlaceholder();
+                deferPluginContent = true;    // first load only
+            }
         }
         else if (isActive)
         {
@@ -261,6 +277,7 @@ public class DockTabControl : TabControl
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
             {
+                _everMaterialized.Add(item);
                 tabItem.Content = contentFactory!.Invoke(item);
             });
         }

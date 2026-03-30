@@ -51,21 +51,6 @@
             </Setter>
         </Style>
 
-        <!-- ── Search TextBox style ── -->
-        <Style x:Key="XD_SearchBox" TargetType="TextBox">
-            <Setter Property="Width"           Value="120"/>
-            <Setter Property="Height"          Value="18"/>
-            <Setter Property="Padding"         Value="4,1"/>
-            <Setter Property="FontSize"        Value="11"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background"      Value="{DynamicResource XD_PanelToolbarBrush}"/>
-            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CaretBrush"      Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="SelectionBrush"  Value="{DynamicResource DockTabActiveBrush}"/>
-        </Style>
-
         <!-- ── TreeViewItem style ── -->
         <Style TargetType="TreeViewItem">
             <Setter Property="IsExpanded"                 Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -194,21 +179,12 @@
                                Fill="{DynamicResource DockBorderBrush}"
                                VerticalAlignment="Center"/>
 
-                    <!-- Search filter TextBox with placeholder -->
-                    <Grid VerticalAlignment="Center">
-                        <TextBox x:Name="TbxSearch"
-                                 Style="{StaticResource XD_SearchBox}"
-                                 ToolTip="Filter elements by name or tag"/>
-                        <!-- Placeholder text — hidden when TextBox has content -->
-                        <TextBlock x:Name="TbxSearchPlaceholder"
-                                   Text="Search elements…"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                   Opacity="0.4"
-                                   Margin="5,0,0,0"
-                                   VerticalAlignment="Center"
-                                   IsHitTestVisible="False"/>
-                    </Grid>
+                    <!-- Search filter TextBox -->
+                    <TextBox x:Name="TbxSearch"
+                             Width="120"
+                             Style="{DynamicResource PanelSearchBoxStyle}"
+                             Tag="Search elements…"
+                             ToolTip="Filter elements by name or tag" />
                 </StackPanel>
 
             </DockPanel>

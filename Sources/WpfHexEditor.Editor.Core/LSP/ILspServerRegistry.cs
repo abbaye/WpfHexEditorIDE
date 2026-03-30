@@ -34,6 +34,12 @@ public sealed class LspServerEntry
 
     /// <summary>Whether this entry is currently enabled.</summary>
     public bool IsEnabled { get; init; } = true;
+
+    /// <summary>
+    /// <c>true</c> when this entry was resolved from the application's bundled
+    /// <c>tools/lsp/</c> directory rather than from the system PATH or a user-supplied path.
+    /// </summary>
+    public bool IsBundled { get; init; }
 }
 
 /// <summary>

@@ -17,7 +17,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor;
@@ -25,6 +24,7 @@ using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.App.Services;
+using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App;
@@ -122,6 +122,7 @@ public partial class MainWindow
         foreach (var ce in GetAllCodeEditors())
         {
             ce.SetBreakpointSource(_bpSourceAdapter);
+            WireBreakpointSettingsHandler(ce);
             ce.InvalidateVisual();
         }
     }
@@ -134,7 +135,34 @@ public partial class MainWindow
     {
         if (_bpSourceAdapter is null) return;
         var ce = GetCodeEditorControl(editor);
-        ce?.SetBreakpointSource(_bpSourceAdapter);
+        if (ce is null) return;
+        ce.SetBreakpointSource(_bpSourceAdapter);
+        WireBreakpointSettingsHandler(ce);
+    }
+
+    /// <summary>
+    /// Subscribe to <see cref="CodeEditor.BreakpointSettingsRequested"/> so the
+    /// Debugger plugin can open <c>BreakpointConditionDialog</c> from the gutter popup.
+    /// Uses a named field delegate to avoid duplicate subscriptions.
+    /// </summary>
+    private void WireBreakpointSettingsHandler(CodeEditor ce)
+    {
+        if (_debuggerService is null) return;
+        // Unsubscribe first to prevent duplicate wiring if called multiple times.
+        ce.BreakpointSettingsRequested -= OnCodeEditorBreakpointSettings;
+        ce.BreakpointSettingsRequested += OnCodeEditorBreakpointSettings;
+    }
+
+    private void OnCodeEditorBreakpointSettings(string filePath, int line)
+    {
+        // BreakpointConditionDialog lives in the Debugger plugin assembly — App has no
+        // project reference to it.  Publish an IDE event; the plugin subscribes and
+        // opens the dialog on the UI thread, then calls UpdateBreakpointSettingsAsync.
+        _ideEventBus?.Publish(new OpenBreakpointSettingsRequestedEvent
+        {
+            FilePath = filePath,
+            Line     = line,
+        });
     }
 
     private void OnDebugSessionPaused(DebugSessionPausedEvent e)

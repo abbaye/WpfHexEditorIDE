@@ -16,6 +16,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Notifications;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.SDK.Contracts;
@@ -103,6 +104,9 @@ public sealed class IDEHostContext : IIDEHostContext
 
     /// <inheritdoc />
     public IFormatParsingService? FormatParsing { get; }
+
+    /// <inheritdoc />
+    public INotificationService? Notifications { get; init; }
 
     /// <inheritdoc />
     /// Resolved lazily from <see cref="ExtensionRegistry"/> — set by UnitTesting plugin on init.

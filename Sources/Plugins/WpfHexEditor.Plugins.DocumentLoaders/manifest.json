@@ -1,0 +1,20 @@
+{
+  "id": "WpfHexEditor.Plugins.DocumentLoaders",
+  "name": "Document Loaders (RTF / DOCX / ODT)",
+  "version": "1.0.0",
+  "sdkVersion": "2.0.0",
+  "entryPoint": "WpfHexEditor.Plugins.DocumentLoaders.DocumentLoadersPlugin",
+  "assembly": {
+    "file": "WpfHexEditor.Plugins.DocumentLoaders.dll"
+  },
+  "isolationMode": "InProcess",
+  "loadPriority": 20,
+  "permissions": {
+    "accessFileSystem": true,
+    "writeOutput": true
+  },
+  "activation": {
+    "fileExtensions": [".rtf", ".docx", ".dotx", ".odt", ".ott"],
+    "onStartup": true
+  }
+}

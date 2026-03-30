@@ -234,7 +234,7 @@ public partial class MainWindow
             () => OnToggleLock(this, null!));
         Reg(CommandIds.Layout.CustomizeLayout, "Customize Layout…",    "Layout",   "Ctrl+Shift+L",   "\uE713",
             () => OnCustomizeLayout());
-        Reg(CommandIds.Layout.FullScreen,      "Full Screen",          "Layout",   "F11",            "\uE740",
+        Reg(CommandIds.Layout.FullScreen,      "Full Screen",          "Layout",   "Alt+Enter",      "\uE740",
             () => OnToggleFullScreen());
         Reg(CommandIds.Layout.ZenMode,         "Zen Mode",             "Layout",   null,             "\uE78B",
             () => OnToggleZenMode());

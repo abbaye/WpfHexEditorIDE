@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,15 +46,15 @@
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true" />
+          OverwriteReadOnlyFiles="true" />
     <!-- Copy DiagnosticsClient and TraceEvent deps into the plugin folder -->
     <Copy SourceFiles="$(OutputPath)Microsoft.Diagnostics.NETCore.Client.dll"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true"
           Condition="Exists('$(OutputPath)Microsoft.Diagnostics.NETCore.Client.dll')" />
     <Copy SourceFiles="$(OutputPath)Microsoft.Diagnostics.Tracing.TraceEvent.dll"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true"
           Condition="Exists('$(OutputPath)Microsoft.Diagnostics.Tracing.TraceEvent.dll')" />
   </Target>
 

@@ -11,6 +11,8 @@
     <SolidColorBrush x:Key="Panel_ItemSelectedBrush"           Color="#252842"/>
     <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#1A1D35"/>
     <SolidColorBrush x:Key="Panel_ItemHoverBrush"              Color="#40FFFFFF"/>
+    <SolidColorBrush x:Key="BP_ExplorerRowHoverBrush"    Color="#40FFFFFF"/>
+    <SolidColorBrush x:Key="BP_ExplorerRowSelectedBrush" Color="#252842"/>
     <SolidColorBrush x:Key="Panel_ItemSelectedForegroundBrush" Color="#FFFFFF"/>
 
     <!-- VS 2026 Preview - Dark Theme (Default) -->
@@ -76,4 +78,18 @@
         <GradientStop Color="#00BD00FF" Offset="1"/>
     </RadialGradientBrush>
 
+
+    <!-- DE_* Document Editor tokens -->
+    <SolidColorBrush x:Key="DE_TextPaneBackground"    Color="#FAFAFA"/>
+    <SolidColorBrush x:Key="DE_TextPaneForeground"    Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="DE_BlockHoverBrush"       Color="#20007ACC"/>
+    <SolidColorBrush x:Key="DE_SelectedBlockBrush"    Color="#5000AA7A"/>
+    <SolidColorBrush x:Key="DE_ForensicOkBrush"       Color="#22227722"/>
+    <SolidColorBrush x:Key="DE_ForensicWarnBrush"     Color="#44CC9900"/>
+    <SolidColorBrush x:Key="DE_ForensicErrorBrush"    Color="#44CC0000"/>
+    <SolidColorBrush x:Key="DE_ForensicAlertBadgeFg"  Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DE_StructureNodeFg"       Color="#0070C1"/>
+    <SolidColorBrush x:Key="DE_StructureKindFg"       Color="#007F6A"/>
+    <SolidColorBrush x:Key="DE_MiniMapBg"             Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="DE_MiniMapScrollBrush"    Color="#CCCCCC"/>
 </ResourceDictionary>

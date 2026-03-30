@@ -42,6 +42,17 @@ internal sealed class BreakpointInfoPopup : Popup
     private readonly Button    _enableBtn;        // "Disable" / "Enable"
     private readonly Button    _deleteBtn;
     private readonly Button    _saveBtn;
+    private readonly Button    _settingsBtn;     // "Settings…" → full dialog
+
+    // ── Event ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Fired when the user clicks the "Settings…" button.
+    /// The CodeEditor layer relays this as <c>BreakpointSettingsRequested</c>
+    /// so the Debugger plugin can open <c>BreakpointConditionDialog</c>.
+    /// Args: (filePath, 1-based line).
+    /// </summary>
+    internal event Action<string, int>? OpenSettingsRequested;
 
     // ── State ─────────────────────────────────────────────────────────────────
 
@@ -172,12 +183,16 @@ internal sealed class BreakpointInfoPopup : Popup
         _saveBtn = MakeActionButton("Save");
         _saveBtn.Click += OnSaveClicked;
 
+        _settingsBtn = MakeActionButton("Settings\u2026");  // "Settings…"
+        _settingsBtn.Click += OnSettingsClicked;
+
         var actionRow = new StackPanel
         {
-            Orientation       = Orientation.Horizontal,
+            Orientation         = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Right,
-            Margin            = new Thickness(10, 5, 10, 6),
+            Margin              = new Thickness(10, 5, 10, 6),
         };
+        actionRow.Children.Add(_settingsBtn);
         actionRow.Children.Add(_enableBtn);
         actionRow.Children.Add(_deleteBtn);
         actionRow.Children.Add(_saveBtn);
@@ -309,6 +324,12 @@ internal sealed class BreakpointInfoPopup : Popup
     {
         _source?.Delete(_filePath, _line);
         IsOpen = false;
+    }
+
+    private void OnSettingsClicked(object sender, RoutedEventArgs e)
+    {
+        IsOpen = false;
+        OpenSettingsRequested?.Invoke(_filePath, _line);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

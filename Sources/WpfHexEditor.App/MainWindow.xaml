@@ -91,6 +91,42 @@
                             Click="OnCloseWindow" ToolTip="Close" />
                 </StackPanel>
 
+                <!-- Notification bell (title bar) -->
+                <Border x:Name="NotificationBellButton"
+                        DockPanel.Dock="Right"
+                        Width="46" Height="32"
+                        Cursor="Hand"
+                        ToolTip="Notifications"
+                        VerticalAlignment="Stretch"
+                        WindowChrome.IsHitTestVisibleInChrome="True"
+                        MouseLeftButtonDown="OnNotificationBellClick">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!-- Inner grid sized to icon — keeps badge anchored to the icon, not the full 32px border -->
+                    <Grid Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE7E7;"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border x:Name="NotificationBadge"
+                                Background="#E81123" CornerRadius="6"
+                                Padding="3,0" Margin="9,-5,-5,0"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Visibility="Collapsed">
+                            <TextBlock x:Name="NotificationBadgeText"
+                                       Text="0" FontSize="9" Foreground="White"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
                 <!-- Customize Layout button (right, before window buttons) -->
                 <Button x:Name="CustomizeLayoutButton"
                         DockPanel.Dock="Right"

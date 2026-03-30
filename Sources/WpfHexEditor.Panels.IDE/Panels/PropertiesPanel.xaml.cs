@@ -149,6 +149,9 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
         SearchClearButton.Visibility = _filterText.Length > 0
             ? Visibility.Visible
             : Visibility.Collapsed;
+        SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchBox.Text)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         Refresh();
     }
 

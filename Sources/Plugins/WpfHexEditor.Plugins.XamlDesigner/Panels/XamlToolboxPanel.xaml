@@ -209,20 +209,12 @@
                     </Separator.Template>
                 </Separator>
 
-                <!-- Search icon + TextBox -->
-                <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                           VerticalAlignment="Center" Margin="0,0,4,0"
-                           Foreground="{DynamicResource XD_PropertyNameForeground}"/>
+                <!-- Search TextBox -->
                 <TextBox x:Name="TbxFilter"
-                         Height="18" FontSize="11"
-                         Background="Transparent"
-                         Foreground="{DynamicResource XD_PropertyValueForeground}"
-                         BorderBrush="{DynamicResource DockBorderBrush}"
-                         BorderThickness="1"
-                         VerticalContentAlignment="Center"
-                         Padding="2,0"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Tag="Search controls…"
                          ToolTip="Search controls…"
-                         TextChanged="OnSearchTextChanged"/>
+                         TextChanged="OnSearchTextChanged" />
             </DockPanel>
         </Border>
 

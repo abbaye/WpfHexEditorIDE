@@ -72,4 +72,7 @@ public static class WellKnownEditorIds
 
     /// <summary>Dedicated JSON/JSONC editor with format, minify, and validation.</summary>
     public const string JsonEditor = "json-editor";
+
+    /// <summary>Multi-format document editor (RTF, DOCX, ODT) with binary-map sync.</summary>
+    public const string DocumentEditor = "document-editor";
 }

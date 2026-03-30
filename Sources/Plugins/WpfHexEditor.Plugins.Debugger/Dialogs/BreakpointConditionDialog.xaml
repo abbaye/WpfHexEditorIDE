@@ -1,0 +1,208 @@
+<!--
+    Project: WpfHexEditor.Plugins.Debugger
+    File: Dialogs/BreakpointConditionDialog.xaml
+    Description: VS-style "Breakpoint Settings" ThemedDialog.
+                 Static skeleton + dynamic condition rows (code-behind).
+-->
+<ec:ThemedDialog x:Class="WpfHexEditor.Plugins.Debugger.Dialogs.BreakpointConditionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
+        Title="Breakpoint Settings"
+        Width="560" MinHeight="420"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource DockBackgroundBrush}"
+        SizeToContent="Height">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- subtitle -->
+            <RowDefinition Height="*"    />  <!-- scrollable body -->
+            <RowDefinition Height="Auto" />  <!-- footer buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══ Subtitle: location info ═══ -->
+        <Border Grid.Row="0"
+                BorderThickness="0,0,0,1"
+                Padding="16,8"
+                Background="{DynamicResource DockMenuBackgroundBrush}">
+            <Border.BorderBrush>
+                <DynamicResource ResourceKey="DockBorderBrush" />
+            </Border.BorderBrush>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xEA39;"
+                           FontFamily="Segoe MDL2 Assets" FontSize="13"
+                           VerticalAlignment="Center" Margin="0,0,6,0"
+                           Foreground="{DynamicResource ET_AccentBrush}" />
+                <TextBlock x:Name="LocationText"
+                           FontSize="11" VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ Body ═══ -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="16,12,16,12" x:Name="BodyPanel">
+
+                <!-- ─── Conditions section ─── -->
+                <StackPanel x:Name="ConditionsSection">
+                    <!-- Section header checkbox -->
+                    <CheckBox x:Name="ConditionsCheck"
+                              Content="Conditions"
+                              FontWeight="SemiBold" FontSize="12"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              Checked="OnConditionsCheckedChanged"
+                              Unchecked="OnConditionsCheckedChanged"
+                              Margin="0,0,0,6" />
+
+                    <!-- Condition rows container (populated in code-behind) -->
+                    <StackPanel x:Name="ConditionRowsPanel"
+                                Margin="20,0,0,6"
+                                Visibility="Collapsed" />
+
+                    <!-- "Add a condition" link -->
+                    <TextBlock x:Name="AddConditionLink"
+                               Text="+ Add a condition"
+                               FontSize="11"
+                               Margin="20,2,0,8"
+                               Cursor="Hand"
+                               Visibility="Collapsed"
+                               Foreground="{DynamicResource ET_AccentBrush}"
+                               TextDecorations="Underline"
+                               MouseLeftButtonUp="OnAddConditionClicked" />
+                </StackPanel>
+
+                <!-- Divider -->
+                <Border Height="1" Margin="0,6,0,10"
+                        Background="{DynamicResource DockBorderBrush}" />
+
+                <!-- ─── Actions section ─── -->
+                <StackPanel x:Name="ActionsSection">
+                    <CheckBox x:Name="ActionsCheck"
+                              Content="Actions"
+                              FontWeight="SemiBold" FontSize="12"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              Checked="OnActionsCheckedChanged"
+                              Unchecked="OnActionsCheckedChanged"
+                              Margin="0,0,0,6" />
+
+                    <StackPanel x:Name="ActionsContent"
+                                Margin="20,0,0,0"
+                                Visibility="Collapsed">
+
+                        <!-- Log message label + info button -->
+                        <DockPanel Margin="0,0,0,4">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="Log a message to Output window:"
+                                       FontSize="11"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                            <Button x:Name="LogHintBtn"
+                                    DockPanel.Dock="Right"
+                                    Content="&#xE946;"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="12"
+                                    Width="22" Height="22"
+                                    Margin="6,0,0,0"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                    ToolTip="Use $FUNCTION for method name, {expression} for values, $ADDRESS, $CALLER"
+                                    Click="OnLogHintClicked" />
+                        </DockPanel>
+
+                        <!-- Log message textbox -->
+                        <TextBox x:Name="LogMessageBox"
+                                 FontSize="11"
+                                 Padding="6,4"
+                                 BorderThickness="1"
+                                 MinHeight="26"
+                                 Margin="0,0,0,8"
+                                 Background="{DynamicResource DockMenuBackgroundBrush}"
+                                 Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                 BorderBrush="{DynamicResource DockBorderBrush}"
+                                 GotFocus="OnLogBoxGotFocus"
+                                 LostFocus="OnLogBoxLostFocus" />
+
+                        <!-- Continue execution -->
+                        <CheckBox x:Name="ContinueCheck"
+                                  Content="Continue code execution"
+                                  FontSize="11"
+                                  IsChecked="True"
+                                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                  Margin="0,0,0,6" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Divider -->
+                <Border Height="1" Margin="0,6,0,10"
+                        Background="{DynamicResource DockBorderBrush}" />
+
+                <!-- ─── Options section ─── -->
+                <StackPanel Margin="0,0,0,8">
+                    <CheckBox x:Name="DisableOnceCheck"
+                              Content="Disable breakpoint once hit"
+                              FontSize="11"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              Margin="0,0,0,8" />
+
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="DependsOnCheck"
+                                  FontSize="11"
+                                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                  VerticalAlignment="Center"
+                                  Checked="OnDependsOnCheckedChanged"
+                                  Unchecked="OnDependsOnCheckedChanged"
+                                  Content="Only enable when following breakpoint is hit:" />
+                        <ComboBox x:Name="DependsOnCombo"
+                                  FontSize="11"
+                                  MinWidth="160" Height="22"
+                                  Margin="8,0,0,0"
+                                  IsEnabled="False"
+                                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                  Background="{DynamicResource DockMenuBackgroundBrush}"
+                                  BorderBrush="{DynamicResource DockBorderBrush}"
+                                  VerticalContentAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ═══ Footer ═══ -->
+        <Border Grid.Row="2"
+                BorderThickness="0,1,0,0"
+                Padding="16,10"
+                Background="{DynamicResource DockMenuBackgroundBrush}">
+            <Border.BorderBrush>
+                <DynamicResource ResourceKey="DockBorderBrush" />
+            </Border.BorderBrush>
+            <DockPanel>
+                <Button x:Name="ResetBtn"
+                        Content="Reset"
+                        DockPanel.Dock="Left"
+                        Width="80" Height="26"
+                        FontSize="11"
+                        Background="{DynamicResource DockMenuBackgroundBrush}"
+                        Foreground="{DynamicResource DockMenuForegroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        Click="OnResetClicked" />
+                <Button x:Name="CloseBtn"
+                        Content="Close"
+                        HorizontalAlignment="Right"
+                        Width="80" Height="26"
+                        FontSize="11"
+                        IsDefault="True"
+                        Background="{DynamicResource DockMenuBackgroundBrush}"
+                        Foreground="{DynamicResource DockMenuForegroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        Click="OnCloseClicked" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</ec:ThemedDialog>

@@ -437,6 +437,9 @@ namespace WpfHexEditor.Core.Services.FormatParsing
                 // D5 — Export templates
                 FormatMetadataBuilder.BuildExportTemplates(format, panel);
 
+                // D6 — AI Hints
+                FormatMetadataBuilder.BuildAiHints(format, panel);
+
                 // Raise parsing complete event
                 ParsingComplete?.Invoke(this, new FormatParsingCompleteEventArgs
                 {

@@ -18,7 +18,7 @@
   "description": "Rich Text Format document",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
+  "preferredEditor": "document-editor",
   "references": {
     "specifications": [
       "Rich Text Format Format"
@@ -46,7 +46,7 @@
     "version": 1,
     "title": "Unknown",
     "author": "Unknown",
-    "preferredEditor": "hex-editor",
+    "preferredEditor": "document-editor",
     "subject": "Unknown",
     "pages": 0,
     "defaultFont": 0,

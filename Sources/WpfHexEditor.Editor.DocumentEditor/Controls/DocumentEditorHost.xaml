@@ -1,0 +1,299 @@
+<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
+             Background="{DynamicResource DE_TextPaneBackground}"
+             Foreground="{DynamicResource DE_TextPaneForeground}">
+    <UserControl.Resources>
+        <!-- Design-time fallbacks -->
+        <SolidColorBrush x:Key="DE_TextPaneBackground_Fallback"  Color="#1E1E1E"/>
+        <SolidColorBrush x:Key="DE_TextPaneForeground_Fallback"  Color="#D4D4D4"/>
+
+        <!-- Toolbar toggle-button style (radio-like, checked = active) -->
+        <Style x:Key="DocViewToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background"   Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="Padding"      Value="7,4"/>
+            <Setter Property="Height"       Value="26"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DE_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DE_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Plain action button style (save, export, metadata) -->
+        <Style x:Key="DocActionButtonStyle" TargetType="Button">
+            <Setter Property="Background"   Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="Padding"      Value="7,4"/>
+            <Setter Property="Height"       Value="26"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DE_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DE_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Toolbar separator -->
+        <Style x:Key="DocToolbarSeparatorStyle" TargetType="Separator">
+            <Setter Property="Width"          Value="1"/>
+            <Setter Property="Margin"         Value="4,4"/>
+            <Setter Property="Background"     Value="{DynamicResource DE_ToolbarBorderBrush}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Row 0: Toolbar -->
+            <RowDefinition Height="Auto"/>  <!-- Row 1: Breadcrumb bar -->
+            <RowDefinition Height="*"/>     <!-- Row 2: Content panes -->
+            <RowDefinition Height="Auto"/>  <!-- Row 3: MiniMap strip -->
+            <RowDefinition Height="Auto"/>  <!-- Row 4: Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ══ Row 0: Toolbar ═════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource DE_ToolbarBackground}"
+                BorderBrush="{DynamicResource DE_ToolbarBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel Margin="4,2" LastChildFill="False">
+
+                <!-- Group 1 — View mode (radio-like toggles) -->
+                <ToggleButton x:Name="PART_TextModeBtn"
+                              Style="{StaticResource DocViewToggleStyle}"
+                              DockPanel.Dock="Left"
+                              ToolTip="Text view"
+                              Click="OnTextModeClicked">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Text" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_SplitModeBtn"
+                              Style="{StaticResource DocViewToggleStyle}"
+                              DockPanel.Dock="Left"
+                              Margin="2,0,0,0"
+                              ToolTip="Split view (text + hex)"
+                              Click="OnSplitModeClicked">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Split" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_HexModeBtn"
+                              Style="{StaticResource DocViewToggleStyle}"
+                              DockPanel.Dock="Left"
+                              Margin="2,0,0,0"
+                              ToolTip="Hex view"
+                              Click="OnHexModeClicked">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Hex" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_StructModeBtn"
+                              Style="{StaticResource DocViewToggleStyle}"
+                              DockPanel.Dock="Left"
+                              Margin="2,0,0,0"
+                              ToolTip="Structure tree view"
+                              Click="OnStructureModeClicked">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Structure" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <Separator Style="{StaticResource DocToolbarSeparatorStyle}" DockPanel.Dock="Left"/>
+
+                <!-- Group 2 — Forensic mode -->
+                <ToggleButton x:Name="PART_ForensicBtn"
+                              Style="{StaticResource DocViewToggleStyle}"
+                              DockPanel.Dock="Left"
+                              ToolTip="Forensic analysis mode"
+                              Click="OnForensicModeClicked">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C3;" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text=" Forensic" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <Separator Style="{StaticResource DocToolbarSeparatorStyle}" DockPanel.Dock="Left"/>
+
+                <!-- Group 3 — Zoom controls -->
+                <Button x:Name="PART_ZoomOutBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Left"
+                        Padding="6,4"
+                        ToolTip="Zoom out"
+                        Click="OnZoomOutClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71F;" FontSize="13"/>
+                </Button>
+
+                <TextBlock x:Name="PART_ZoomLabel"
+                           DockPanel.Dock="Left"
+                           Text="100%"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="4,0"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           MinWidth="38"
+                           TextAlignment="Center"/>
+
+                <Button x:Name="PART_ZoomInBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Left"
+                        Padding="6,4"
+                        ToolTip="Zoom in"
+                        Click="OnZoomInClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A3;" FontSize="13"/>
+                </Button>
+
+                <!-- Group 4 — Right-aligned actions -->
+                <Button x:Name="PART_MetadataBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="Document metadata"
+                        Click="OnMetadataClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="13"/>
+                </Button>
+
+                <Button x:Name="PART_ExportBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="Export document"
+                        Click="OnExportClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEDE1;" FontSize="13"/>
+                </Button>
+
+                <Button x:Name="PART_SaveBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="Save"
+                        Click="OnSaveClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" FontSize="13"/>
+                </Button>
+
+                <Separator Style="{StaticResource DocToolbarSeparatorStyle}" DockPanel.Dock="Right"/>
+
+            </DockPanel>
+        </Border>
+
+        <!-- ══ Row 1: Breadcrumb bar ══════════════════════════════════════════ -->
+        <local:DocumentBreadcrumb x:Name="PART_Breadcrumb"
+                                  Grid.Row="1"
+                                  BlockSelected="OnBreadcrumbBlockSelected"/>
+
+        <!-- ══ Row 2: Content grid (3 panes + splitters) ══════════════════════ -->
+        <Grid x:Name="PART_ContentGrid" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="PART_TextCol"      Width="2*"  MinWidth="100"/>
+                <ColumnDefinition x:Name="PART_Splitter1Col" Width="4"/>
+                <ColumnDefinition x:Name="PART_StructCol"    Width="0"   MinWidth="0"/>
+                <ColumnDefinition x:Name="PART_Splitter2Col" Width="0"/>
+                <ColumnDefinition x:Name="PART_HexCol"       Width="*"   MinWidth="100"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Text pane (col 0) -->
+            <local:DocumentTextPane x:Name="PART_TextPane"
+                                    Grid.Column="0"
+                                    SelectedBlockChanged="OnTextPaneSelectedBlockChanged"
+                                    PopToolbarRequested="OnPopToolbarRequested"/>
+
+            <!-- Splitter 1 (col 1) -->
+            <GridSplitter x:Name="PART_Splitter1"
+                          Grid.Column="1"
+                          Width="4"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockBorderBrush}"/>
+
+            <!-- Structure pane (col 2) — hidden unless Structure mode -->
+            <local:DocumentStructurePane x:Name="PART_StructurePane"
+                                         Grid.Column="2"
+                                         Visibility="Collapsed"
+                                         BlockNavigated="OnStructureBlockNavigated"/>
+
+            <!-- Splitter 2 (col 3) — hidden by default -->
+            <GridSplitter x:Name="PART_Splitter2"
+                          Grid.Column="3"
+                          Width="4"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockBorderBrush}"
+                          Visibility="Collapsed"/>
+
+            <!-- Hex pane (col 4) -->
+            <local:DocumentHexPane x:Name="PART_HexPane"
+                                   Grid.Column="4"/>
+
+            <!-- Pop-toolbar popup (anchored to content grid) -->
+            <Popup x:Name="PART_PopToolbar"
+                   AllowsTransparency="True"
+                   PlacementTarget="{Binding ElementName=PART_TextPane}"
+                   Placement="RelativePoint"
+                   StaysOpen="False"
+                   PopupAnimation="Fade">
+                <local:DocumentPopToolbar x:Name="PART_PopToolbarContent"
+                                          FormatRequested="OnPopToolbarFormat"
+                                          CopyTextRequested="OnPopToolbarCopyText"
+                                          CopyHexRequested="OnPopToolbarCopyHex"
+                                          InspectRequested="OnPopToolbarInspect"
+                                          JumpHexRequested="OnPopToolbarJumpHex"/>
+            </Popup>
+        </Grid>
+
+        <!-- ══ Row 3: MiniMap strip ════════════════════════════════════════════ -->
+        <local:DocumentMiniMap x:Name="PART_MiniMap"
+                               Grid.Row="3"
+                               Height="14"/>
+
+        <!-- ══ Row 4: Status bar ════════════════════════════════════════════════ -->
+        <local:DocumentStatusBar x:Name="PART_StatusBar"
+                                 Grid.Row="4"
+                                 ForensicBadgeClicked="OnStatusBarForensicClicked"
+                                 ZoomChanged="OnStatusBarZoomChanged"/>
+    </Grid>
+</UserControl>

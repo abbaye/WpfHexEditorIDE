@@ -23,9 +23,6 @@
                 BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                 Padding="4,3">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                           VerticalAlignment="Center" Margin="0,0,4,0"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <TextBox x:Name="SearchBox"
                          Width="160"
                          Style="{DynamicResource PanelSearchBoxStyle}"

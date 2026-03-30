@@ -23,20 +23,11 @@
                 BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                 Padding="4,3">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                           VerticalAlignment="Center" Margin="0,0,4,0"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <TextBox x:Name="SearchBox"
                          Width="140"
-                         Padding="2,1"
-                         FontSize="11"
-                         VerticalAlignment="Center"
-                         Background="{DynamicResource CD_DslEditorBackground}"
-                         Foreground="{DynamicResource DockMenuForegroundBrush}"
-                         BorderBrush="{DynamicResource DockToolBarBorderBrush}"
-                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Search class names and kinds"/>
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Tag="Search class names and kinds"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Border>
 

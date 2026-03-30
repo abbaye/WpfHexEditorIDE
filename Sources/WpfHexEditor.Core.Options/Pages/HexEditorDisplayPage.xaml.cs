@@ -47,6 +47,11 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             CheckShowInsertedMarkers.IsChecked     = s.HexEditorDefaults.ShowInsertedMarkers;
             CheckShowDeletedMarkers.IsChecked      = s.HexEditorDefaults.ShowDeletedMarkers;
             CheckShowSearchResultMarkers.IsChecked = s.HexEditorDefaults.ShowSearchResultMarkers;
+
+            // Column / row highlight
+            CheckShowColumnHighlight.IsChecked      = s.HexEditorDefaults.ShowColumnHighlight;
+            CheckShowAsciiColumnHighlight.IsChecked = s.HexEditorDefaults.ShowAsciiColumnHighlight;
+            CheckShowRowHighlight.IsChecked         = s.HexEditorDefaults.ShowRowHighlight;
         }
         finally { _loading = false; }
     }
@@ -78,6 +83,10 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         s.HexEditorDefaults.ShowInsertedMarkers     = CheckShowInsertedMarkers.IsChecked == true;
         s.HexEditorDefaults.ShowDeletedMarkers      = CheckShowDeletedMarkers.IsChecked  == true;
         s.HexEditorDefaults.ShowSearchResultMarkers = CheckShowSearchResultMarkers.IsChecked == true;
+
+        s.HexEditorDefaults.ShowColumnHighlight      = CheckShowColumnHighlight.IsChecked      == true;
+        s.HexEditorDefaults.ShowAsciiColumnHighlight = CheckShowAsciiColumnHighlight.IsChecked == true;
+        s.HexEditorDefaults.ShowRowHighlight         = CheckShowRowHighlight.IsChecked         == true;
     }
 
     // -- Control handlers -------------------------------------------------

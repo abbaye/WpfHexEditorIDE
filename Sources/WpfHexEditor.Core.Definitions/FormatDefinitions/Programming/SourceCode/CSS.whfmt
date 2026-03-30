@@ -1,0 +1,246 @@
+/* ============================================================
+   Format:    CSS / SCSS / SASS / LESS Stylesheet
+   Category:  Programming
+   Ext:       .css, .scss, .sass, .less, .styl
+   Editor:    code-editor
+   Desc:      Cascading Style Sheets and pre-processor variants.
+              Covers CSS3, SCSS (Sass), LESS, and Stylus syntaxes.
+   Updated:   2026-03-30
+   ============================================================ */
+{
+  "diffMode": "text",
+  "formatName": "CSS Stylesheet",
+  "version": "2.0",
+  "extensions": [
+    ".css",
+    ".scss",
+    ".sass",
+    ".less",
+    ".styl"
+  ],
+  "description": "Cascading Style Sheets and pre-processor variants (SCSS, LESS, Stylus). Defines visual presentation rules for HTML/XML documents.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false,
+    "textSignatures": [
+      "/*",
+      "//",
+      "@charset",
+      "@import",
+      "@media",
+      ":root",
+      "body {",
+      "html {"
+    ]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 95,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-30",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": [
+    "text/css",
+    "text/x-scss",
+    "text/x-less",
+    "text/x-sass"
+  ],
+  "Software": [
+    "VS Code",
+    "WebStorm",
+    "Sublime Text",
+    "Figma",
+    "Sass",
+    "PostCSS"
+  ],
+  "UseCases": [
+    "Web page styling and layout",
+    "UI component theming",
+    "Responsive design with media queries",
+    "CSS animations and transitions",
+    "Design system token definitions",
+    "Cross-browser compatibility rules"
+  ],
+  "syntaxDefinition": {
+    "id": "css",
+    "name": "CSS / SCSS / LESS",
+    "extensions": [
+      ".css",
+      ".scss",
+      ".sass",
+      ".less",
+      ".styl"
+    ],
+    "lineCommentPrefix": "//",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/"
+      },
+      {
+        "type": "Comment",
+        "pattern": "//.*$"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "@(?:charset|import|namespace|media|supports|document|page|font-face|font-feature-values|font-palette-values|keyframes|-webkit-keyframes|-moz-keyframes|-o-keyframes|counter-style|layer|property|color-profile|container|starting-style|scope|apply|custom-media|custom-selector|each|for|function|if|else|mixin|include|extend|use|forward|warn|error|debug|return|while|at-root)\\b"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(?:from|to|and|or|not|only|in|of|important|inherit|initial|unset|revert|revert-layer|auto|none|normal|bold|italic|oblique|underline|overline|line-through|blink|left|right|center|justify|top|bottom|middle|baseline|sub|super|text-top|text-bottom|block|inline|inline-block|inline-flex|inline-grid|flex|grid|table|table-row|table-cell|list-item|run-in|contents|flow|flow-root|ruby|absolute|relative|fixed|sticky|static|clip|visible|hidden|scroll|overlay|collapse|separate|nowrap|pre|pre-wrap|pre-line|break-spaces|uppercase|lowercase|capitalize|ltr|rtl|embed|isolate|bidi-override|pointer|default|crosshair|move|text|wait|help|progress|not-allowed|no-drop|context-menu|cell|vertical-text|alias|copy|zoom-in|zoom-out|grab|grabbing|all-scroll|col-resize|row-resize|n-resize|e-resize|s-resize|w-resize|ne-resize|nw-resize|se-resize|sw-resize|ew-resize|ns-resize|nesw-resize|nwse-resize|dotted|dashed|solid|double|groove|ridge|inset|outset|thin|medium|thick|serif|sans-serif|monospace|cursive|fantasy|system-ui|ui-serif|ui-sans-serif|ui-monospace|ui-rounded|emoji|math|fangsong|ease|ease-in|ease-out|ease-in-out|linear|step-start|step-end|infinite|alternate|reverse|alternate-reverse|forwards|backwards|both|running|paused|flat|preserve-3d|border-box|content-box|padding-box|fill-box|stroke-box|view-box|cover|contain|currentColor|transparent|currentcolor)\\b"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(?:px|em|rem|vh|vw|vmin|vmax|vb|vi|svh|svw|lvh|lvw|dvh|dvw|%|pt|pc|cm|mm|in|ex|ch|ic|cap|lh|rlh|fr|deg|rad|grad|turn|s|ms|dpi|dpcm|dppx|Q|cqw|cqh|cqi|cqb|cqmin|cqmax)(?=[\\s;,){}]|$)"
+      },
+      {
+        "type": "Number",
+        "pattern": "-?(?:\\b[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:px|em|rem|vh|vw|vmin|vmax|%|pt|cm|mm|in|s|ms|deg|rad|fr|ch|ex|lh|rlh|dpi|dpcm|dppx)?\\b"
+      },
+      {
+        "type": "Number",
+        "pattern": "#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{3})\\b"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(?:color|background(?:-color|-image|-position|-size|-repeat|-origin|-clip|-attachment|-blend-mode)?|border(?:-top|-right|-bottom|-left|-width|-style|-color|-radius|-image|-collapse|-spacing)?|outline(?:-width|-style|-color|-offset)?|margin(?:-top|-right|-bottom|-left)?|padding(?:-top|-right|-bottom|-left)?|width|min-width|max-width|height|min-height|max-height|display|position|top|right|bottom|left|z-index|overflow(?:-x|-y|-anchor)?|float|clear|clip(?:-path)?|visibility|opacity|cursor|pointer-events|user-select|box-sizing|box-shadow|text-shadow|font(?:-family|-size|-weight|-style|-variant|-stretch|-line-height|-kerning|-feature-settings|-language-override|-optical-sizing|-size-adjust|-display|)|-family|-size|-weight|-style)?|line-height|letter-spacing|word-spacing|text(?:-align|-indent|-decoration(?:-line|-color|-style|-thickness)?|-transform|-overflow|-wrap|-orientation|-rendering|-size-adjust|-stroke(?:-width|-color)?|-fill-color|-emphasis(?:-style|-color|-position)?|-underline(?:-offset|-position)?)?|white-space|word-break|overflow-wrap|hyphens|writing-mode|direction|unicode-bidi|vertical-align|list-style(?:-type|-position|-image)?|counter(?:-reset|-increment|-set)?|content|quotes|resize|appearance|filter|backdrop-filter|transform(?:-origin|-box|-style)?|perspective(?:-origin)?|backface-visibility|transition(?:-property|-duration|-timing-function|-delay)?|animation(?:-name|-duration|-timing-function|-delay|-iteration-count|-direction|-fill-mode|-play-state)?|flex(?:-direction|-wrap|-flow|-grow|-shrink|-basis)?|justify(?:-content|-items|-self|-tracks|-normal)?|align(?:-content|-items|-self|-tracks|-normal)?|place(?:-content|-items|-self)?|order|gap|row-gap|column-gap|grid(?:-template(?:-columns|-rows|-areas)?|-auto(?:-columns|-rows|-flow)?|-column(?:-start|-end|-gap)?|-row(?:-start|-end|-gap)?|-area|)?|columns|column(?:-count|-width|-gap|-rule(?:-width|-style|-color)?|-fill|-span)?|object(?:-fit|-position)?|image(?:-rendering|-orientation|-resolution)?|mask(?:-image|-mode|-position|-size|-repeat|-origin|-clip|-composite|-border)?|shape(?:-outside|-margin|-image-threshold)?|isolation|mix-blend-mode|paint-order|vector-effect|fill(?:-opacity|-rule)?|stroke(?:-width|-linecap|-linejoin|-miterlimit|-dasharray|-dashoffset|-opacity)?|marker(?:-start|-mid|-end)?|cx|cy|rx|ry|r|d|x|y|dominant-baseline|text-anchor|font-synthesis|src|unicode-range|size|marks|bleed|orphans|widows|page-break(?:-before|-after|-inside)?|break(?:-before|-after|-inside)?|scroll(?:-behavior|-snap(?:-type|-align|-stop|-margin(?:-top|-right|-bottom|-left)?|-padding(?:-top|-right|-bottom|-left)?)?|-margin(?:-top|-right|-bottom|-left)?|-padding(?:-top|-right|-bottom|-left)?)?|overscroll-behavior(?:-x|-y)?|touch-action|will-change|contain(?:ment)?|container(?:-type|-name)?|accent-color|caret(?:-color|-shape|-width)?|forced-color-adjust|print-color-adjust|color(?:-scheme|-interpolation(?:-filters)?|-rendering|-profile|-adjust)?|forced-colors|prefers-color-scheme|prefers-reduced-motion|prefers-reduced-transparency|prefers-contrast|prefers-reduced-data|aspect-ratio|inset(?:-block(?:-start|-end)?|-inline(?:-start|-end)?)?|margin(?:-block(?:-start|-end)?|-inline(?:-start|-end)?)?|padding(?:-block(?:-start|-end)?|-inline(?:-start|-end)?)?|border(?:-block(?:-start(?:-width|-style|-color)?|-end(?:-width|-style|-color)?)?|-inline(?:-start(?:-width|-style|-color)?|-end(?:-width|-style|-color)?)?|-end-end-radius|-end-start-radius|-start-end-radius|-start-start-radius)?|min-block-size|max-block-size|block-size|min-inline-size|max-inline-size|inline-size|overflow-block|overflow-inline|caption-side|border-collapse|empty-cells|table-layout|speak|azimuth|elevation|pitch(?:-range)?|richness|stress|voice(?:-family|-pitch|-range|-rate|-stress|-volume)?|tab-size|text-size-adjust|font-smoothing|osx-font-smoothing|font-face|line-clamp|box-decoration-break|text-decoration-skip(?:-ink)?|text-emphasis|all|var|calc|env|min|max|clamp|rgb|rgba|hsl|hsla|hwb|lch|oklch|lab|oklab|color-mix|color-contrast|device-cmyk|light-dark|linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient|repeating-conic-gradient|image|image-set|cross-fade|element|paint|url|format|local|counter|counters|attr|symbols|leader|string|running|target|target-counter|target-counters|target-text|cubic-bezier|steps|matrix|matrix3d|translate|translateX|translateY|translateZ|translate3d|scale|scaleX|scaleY|scaleZ|scale3d|rotate|rotateX|rotateY|rotateZ|rotate3d|skew|skewX|skewY|perspective|blur|brightness|contrast|drop-shadow|grayscale|hue-rotate|invert|opacity|saturate|sepia|polygon|circle|ellipse|inset|path|ray|env|constant)\\b"
+      },
+      {
+        "type": "Decorator",
+        "pattern": ":(?:hover|focus(?:-within|-visible)?|active|visited|link|checked|disabled|enabled|required|optional|valid|invalid|in-range|out-of-range|read-only|read-write|placeholder-shown|default|indeterminate|root|empty|first-child|last-child|first-of-type|last-of-type|only-child|only-of-type|nth-child|nth-last-child|nth-of-type|nth-last-of-type|not|is|where|has|any|matches|lang|dir|scope|global|local|target|target-within|focus-ring|any-link|local-link|current|past|future|playing|paused|fullscreen|modal|picture-in-picture|autofill|user-invalid|user-valid|defined|host|host-context|slotted|part|state|nth-col|nth-last-col)(?:\\([^)]*\\))?"
+      },
+      {
+        "type": "Decorator",
+        "pattern": "::(?:before|after|first-line|first-letter|selection|placeholder|backdrop|marker|spelling-error|grammar-error|cue|cue-region|slotted|part|highlight|file-selector-button|target-text|webkit-scrollbar(?:-thumb|-track(?:-piece)?|-button|-corner|-resizer)?|webkit-input-placeholder|moz-placeholder|ms-input-placeholder|moz-focus-inner|webkit-search-cancel-button|webkit-search-decoration)(?:\\([^)]*\\))?"
+      },
+      {
+        "type": "Decorator",
+        "pattern": "\\$[A-Za-z_][A-Za-z0-9_-]*"
+      },
+      {
+        "type": "Decorator",
+        "pattern": "--[A-Za-z_][A-Za-z0-9_-]*"
+      },
+      {
+        "type": "Decorator",
+        "pattern": "@[A-Za-z_][A-Za-z0-9_-]*(?=\\s*:)"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ],
+      "endOfBlockHint": {
+        "enabled": true,
+        "maxContextLines": 3,
+        "triggerBrace": true,
+        "triggerDirective": false
+      }
+    },
+    "breakpointRules": {
+      "nonExecutablePatterns": [
+        "^\\s*//",
+        "^\\s*/\\*",
+        "^\\s*\\*",
+        "^\\s*\\*/",
+        "^\\s*$",
+        "^\\s*\\}"
+      ],
+      "statementContinuationPatterns": []
+    }
+  },
+  "navigation": {
+    "bookmarkPatterns": [
+      {
+        "pattern": "^@(?:media|keyframes|supports|layer|container)[^{]*\\{",
+        "label": "At-rule",
+        "icon": "AtRule"
+      },
+      {
+        "pattern": "^[a-zA-Z#.:*\\[\\]][^{\\n]{0,120}\\{\\s*$",
+        "label": "Selector",
+        "icon": "Selector"
+      },
+      {
+        "pattern": "^/\\*\\s*={3,}.*={3,}\\s*\\*/",
+        "label": "Section",
+        "icon": "Region"
+      },
+      {
+        "pattern": "^/\\*\\s*[-]{3,}.*[-]{3,}\\s*\\*/",
+        "label": "Section",
+        "icon": "Region"
+      },
+      {
+        "pattern": ":root\\s*\\{",
+        "label": "CSS Variables",
+        "icon": "Variable"
+      }
+    ]
+  },
+  "forensic": {
+    "category": "other",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "pattern": "expression\\s*\\(",
+        "description": "IE CSS expression — potential XSS vector",
+        "severity": "high"
+      },
+      {
+        "pattern": "behavior\\s*:",
+        "description": "IE behavior property — can load external HTC files",
+        "severity": "medium"
+      },
+      {
+        "pattern": "-moz-binding\\s*:",
+        "description": "Firefox XBL binding — legacy remote script injection vector",
+        "severity": "medium"
+      },
+      {
+        "pattern": "javascript\\s*:",
+        "description": "javascript: URI in CSS — potential XSS",
+        "severity": "high"
+      },
+      {
+        "pattern": "url\\s*\\(\\s*['\"]?data:",
+        "description": "Data URI embedded in CSS — inspect for obfuscated content",
+        "severity": "low"
+      },
+      {
+        "pattern": "\\\\[0-9a-fA-F]{1,6}",
+        "description": "CSS unicode escape — possible obfuscation attempt",
+        "severity": "low"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CSS/SCSS/LESS stylesheet file — defines visual presentation, layout, and theming rules for web documents. May contain pre-processor variables, mixins, nesting, and at-rules.",
+    "suggestedInspections": [
+      "Check for valid CSS property names and values",
+      "Inspect @media queries for responsive breakpoints",
+      "Verify CSS custom property (--var) definitions in :root",
+      "Check SCSS/LESS variable ($var / @var) usage consistency",
+      "Inspect @keyframes for animation correctness",
+      "Scan for deprecated or vendor-prefixed properties",
+      "Look for IE-era hacks (expression(), behavior:, *property)",
+      "Verify @import chains for performance impact",
+      "Inspect specificity conflicts between selectors"
+    ]
+  }
+}

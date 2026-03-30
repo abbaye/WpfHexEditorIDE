@@ -733,6 +733,51 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             }
         }
 
+        // ── D6 — AI Analysis handlers ─────────────────────────────────────────
+
+        private void AiSectionToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FormatInfo != null)
+                FormatInfo.IsAiSectionExpanded = !FormatInfo.IsAiSectionExpanded;
+        }
+
+        private void CopyAiPromptButton_Click(object sender, RoutedEventArgs e)
+        {
+            var h = FormatInfo?.AiHintsData;
+            if (h == null) return;
+
+            var insp  = h.Inspections?.Select(i => i.Text) ?? Enumerable.Empty<string>();
+            var vulns = h.Vulnerabilities?.Select(v => v.Text) ?? Enumerable.Empty<string>();
+            var prompt = $"Analyze this {FormatInfo.Name} file. " +
+                         $"Context: {h.AnalysisContext}. " +
+                         $"Check for: {string.Join(", ", insp)}. " +
+                         $"Known risks: {string.Join(", ", vulns)}.";
+            try { Clipboard.SetText(prompt); } catch { return; }
+            ShowCopiedFeedback(CopyAiPromptLabel, "Copy AI Prompt", "Copied!");
+        }
+
+        private void CopyChecklistButton_Click(object sender, RoutedEventArgs e)
+        {
+            var items = FormatInfo?.AiInspections;
+            if (items == null) return;
+
+            var text = string.Join(Environment.NewLine,
+                items.Where(i => !i.IsChecked).Select(i => $"- {i.Text}"));
+            if (string.IsNullOrEmpty(text)) return;
+            try { Clipboard.SetText(text); } catch { return; }
+            ShowCopiedFeedback(CopyChecklistLabel, "Copy Checklist", "Copied!");
+        }
+
+        private void ShowCopiedFeedback(TextBlock label, string original, string feedback)
+        {
+            label.Text = feedback;
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+            timer.Tick += (s, _) => { label.Text = original; ((DispatcherTimer)s).Stop(); };
+            timer.Start();
+        }
+
+        // ── end D6 ───────────────────────────────────────────────────────────
+
         /// <summary>
         /// D5 — Handle export template button click.
         /// Generates export output and saves to file via SaveFileDialog.
@@ -1415,6 +1460,19 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                         TextForeground = HexBrush("#2B2B2B")
                     });
                 }
+            }
+
+            // D6 — Vulnerability chips from aiHints.knownVulnerabilities
+            if (FormatInfo?.AiVulnerabilities?.Count > 0)
+            {
+                foreach (var v in FormatInfo.AiVulnerabilities)
+                    InsightChips.Add(new InsightChip
+                    {
+                        Icon           = "\u26A0",
+                        Value          = v.Text,
+                        Background     = HexBrush("#FFF3CD"),
+                        TextForeground = HexBrush("#7A4F00")
+                    });
             }
 
             // Update visibility
@@ -2141,5 +2199,15 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         {
             throw new NotImplementedException();
         }
+    }
+
+    /// <summary>D6 — Maps IsAiSectionExpanded bool to Segoe MDL2 chevron glyph.</summary>
+    public class BoolToChevronConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is true ? "\uE70D" : "\uE70E";   // chevron-down : chevron-right
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => DependencyProperty.UnsetValue;
     }
 }

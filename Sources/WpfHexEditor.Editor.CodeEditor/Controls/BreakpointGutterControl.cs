@@ -140,7 +140,14 @@ internal sealed class BreakpointGutterControl : FrameworkElement
         MouseLeftButtonDown += OnMouseLeftButtonDown;
         MouseMove           += OnMouseMove;
         MouseLeave          += OnMouseLeave;
-        ToolTip             = "Click to toggle breakpoint";
+
+        // Mouse-tracking tooltip so it follows the cursor.
+        var tt = new System.Windows.Controls.ToolTip
+        {
+            Content   = "Click to toggle breakpoint",
+            Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
+        };
+        ToolTip = tt;
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -220,11 +227,11 @@ internal sealed class BreakpointGutterControl : FrameworkElement
                     else
                         dc.DrawEllipse(BpActiveBrush, null, new Point(cx, cy), CircleRadius, CircleRadius);
                 }
-                // Ghost circle on hover (no existing breakpoint)
-                else if (_hoverLine == line1)
+                // Ghost circle on hover (no existing breakpoint, only on valid lines)
+                else if (_hoverLine == line1 && (ValidateLine == null || ValidateLine(line1)))
                     dc.DrawEllipse(null, BpDisabledPen, new Point(cx, cy), CircleRadius, CircleRadius);
             }
-            else if (_hoverLine == line1)
+            else if (_hoverLine == line1 && (ValidateLine == null || ValidateLine(line1)))
                 dc.DrawEllipse(null, BpDisabledPen, new Point(cx, cy), CircleRadius, CircleRadius);
         }
     }
@@ -318,8 +325,14 @@ internal sealed class BreakpointGutterControl : FrameworkElement
         InvalidateVisual();
 
         // Start/restart 400ms dwell timer when hovering a breakpoint circle.
-        if (newHover >= 1 && _source is not null && !string.IsNullOrEmpty(_filePath)
-            && _source.HasBreakpoint(_filePath, newHover))
+        bool hasBreakpointHere = newHover >= 1 && _source is not null
+            && !string.IsNullOrEmpty(_filePath) && _source.HasBreakpoint(_filePath, newHover);
+
+        // Suppress the generic tooltip when the dot hover popup will show instead.
+        if (ToolTip is System.Windows.Controls.ToolTip tt2)
+            tt2.Content = hasBreakpointHere ? null : "Click to toggle breakpoint";
+
+        if (hasBreakpointHere)
         {
             if (_gutterHoverTimerLine != newHover)
             {
@@ -378,12 +391,17 @@ internal sealed class BreakpointGutterControl : FrameworkElement
         ToolTip    = tip;
         tip.IsOpen = true;
 
+        var restore = new ToolTip
+        {
+            Content   = "Click to toggle breakpoint",
+            Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
+        };
         var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1500) };
         timer.Tick += (_, _) =>
         {
             tip.IsOpen = false;
             timer.Stop();
-            ToolTip = "Click to toggle breakpoint";
+            ToolTip = restore;
         };
         timer.Start();
     }

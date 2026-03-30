@@ -21,6 +21,8 @@
         <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <!-- Collapses groups whose name matches the ConverterParameter (default: "Format Metadata") -->
         <local:GroupNameToExpandedConverter x:Key="GroupNameToExpandedConverter"/>
+        <!-- D6 — Maps IsAiSectionExpanded bool to chevron-down / chevron-right glyph -->
+        <local:BoolToChevronConverter x:Key="BoolToChevronConverter"/>
 
         <!-- Override WPF inactive-selection system colors so ListBox and TreeView keep
              the same selection highlight when the panel loses keyboard focus. -->
@@ -468,50 +470,18 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Search icon and textbox -->
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="🔍"
-                           FontSize="14"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,0"/>
-
                 <TextBox x:Name="SearchTextBox"
-                         Grid.Row="0" Grid.Column="1"
-                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         FontSize="12"
-                         Padding="4"
-                         VerticalAlignment="Center"
-                         BorderThickness="1"
-                         BorderBrush="{DynamicResource PFP_InputBorderBrush}">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Triggers>
-                                <Trigger Property="Text" Value="">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                                                <VisualBrush.Visual>
-                                                    <TextBlock Text="Search fields..."
-                                                             Foreground="#888888"
-                                                             FontSize="12"
-                                                             Margin="4,0,0,0"/>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                         Grid.Row="0" Grid.Column="0"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Tag="Search fields..."
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Button x:Name="ClearSearchButton"
-                        Grid.Row="0" Grid.Column="2"
+                        Grid.Row="0" Grid.Column="1"
                         Content="✕"
                         Width="24" Height="24"
                         Margin="4,0,0,0"
@@ -529,7 +499,7 @@
                 </Button>
 
                 <!-- Advanced search options -->
-                <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                            Orientation="Horizontal"
                            Margin="0,6,0,0">
                     <CheckBox x:Name="RegexSearchCheckBox"
@@ -880,6 +850,209 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                </StackPanel>
+
+                <!-- D6 — AI Analysis: from whfmt aiHints -->
+                <StackPanel Margin="0,6,0,0"
+                            Visibility="{Binding FormatInfo.HasAiHints,
+                                         Converter={StaticResource BoolToVisibilityConverter}}">
+
+                    <!-- D6 header -->
+                    <Border Padding="6,4"
+                            Background="{DynamicResource WF_AiHintSectionHeaderBrush}"
+                            CornerRadius="3,3,0,0"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource PFP_BorderBrush}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Icon + label -->
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="&#xE946;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12" Margin="0,0,5,0"
+                                           Foreground="{DynamicResource WF_AiHintAccentBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="AI Analysis"
+                                           FontSize="10" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource WF_AiHintAccentBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Count badge (visible when collapsed) -->
+                            <Border Grid.Column="1"
+                                    CornerRadius="8" Padding="5,1" Margin="0,0,4,0"
+                                    Background="{DynamicResource WF_AiHintAccentBrush}"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding FormatInfo.IsAiSectionExpanded,
+                                                 Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                <TextBlock Text="{Binding FormatInfo.AiHintsBadge}"
+                                           FontSize="9" FontWeight="SemiBold"
+                                           Foreground="White"/>
+                            </Border>
+
+                            <!-- Copy AI Prompt button (visible when expanded) -->
+                            <Button Grid.Column="1"
+                                    x:Name="CopyAiPromptButton"
+                                    Click="CopyAiPromptButton_Click"
+                                    ToolTip="Copy ready-to-paste AI analysis prompt to clipboard"
+                                    Style="{StaticResource PFP_NavBookmarkButtonStyle}"
+                                    Padding="5,1" Margin="0,0,4,0"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding FormatInfo.IsAiSectionExpanded,
+                                                 Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                               Text="&#xE8C8;" Margin="0,0,3,0"/>
+                                    <TextBlock x:Name="CopyAiPromptLabel"
+                                               Text="Copy AI Prompt" FontSize="9"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Chevron toggle -->
+                            <Button Grid.Column="2"
+                                    Click="AiSectionToggleButton_Click"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="4,0"
+                                    Cursor="Hand"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource PFP_NavBookmarkButtonStyle}">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                           Text="{Binding FormatInfo.IsAiSectionExpanded,
+                                                  Converter={StaticResource BoolToChevronConverter}}"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- D6 body -->
+                    <StackPanel Visibility="{Binding FormatInfo.IsAiSectionExpanded,
+                                             Converter={StaticResource BoolToVisibilityConverter}}">
+
+                        <!-- Analysis Context -->
+                        <Border Margin="0,0,0,0" Padding="8,5"
+                                BorderThickness="1,0,1,0"
+                                BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                Visibility="{Binding FormatInfo.AiHintsData.HasAnalysisContext,
+                                             Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Analysis Context"
+                                           FontSize="9" FontWeight="SemiBold" Margin="0,0,0,3"
+                                           Foreground="{DynamicResource WF_AiHintAccentBrush}"
+                                           Opacity="0.85"/>
+                                <TextBlock Text="{Binding FormatInfo.AiHintsData.AnalysisContext}"
+                                           FontSize="10" FontStyle="Italic" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Known Vulnerabilities -->
+                        <Border Margin="0,1,0,0" Padding="8,5"
+                                BorderThickness="1,0,1,0"
+                                BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                Visibility="{Binding FormatInfo.AiHintsData.HasVulnerabilities,
+                                             Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Known Vulnerabilities"
+                                           FontSize="9" FontWeight="SemiBold" Margin="0,0,0,3"
+                                           Foreground="{DynamicResource WF_AiHintAccentBrush}"
+                                           Opacity="0.85"/>
+                                <ItemsControl ItemsSource="{Binding FormatInfo.AiVulnerabilities}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" Padding="7,2" Margin="0,0,5,4"
+                                                    Background="{DynamicResource WF_AiHintSectionHeaderBrush}"
+                                                    BorderThickness="1"
+                                                    BorderBrush="{DynamicResource WF_AiHintAccentBrush}">
+                                                <TextBlock FontSize="10"
+                                                           Foreground="{DynamicResource WF_AiHintAccentBrush}">
+                                                    <Run Text="{Binding Icon, Mode=OneWay}"/>
+                                                    <Run Text=" "/>
+                                                    <Run Text="{Binding Text, Mode=OneWay}"/>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Suggested Inspections (checklist) -->
+                        <Border Margin="0,1,0,0" Padding="8,5"
+                                BorderThickness="1,0,1,0"
+                                BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                Visibility="{Binding FormatInfo.AiHintsData.HasInspections,
+                                             Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="Suggested Inspections"
+                                               FontSize="9" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource WF_AiHintAccentBrush}"
+                                               Opacity="0.85" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1"
+                                            x:Name="CopyChecklistButton"
+                                            Click="CopyChecklistButton_Click"
+                                            ToolTip="Copy unchecked inspections to clipboard"
+                                            Style="{StaticResource PFP_NavBookmarkButtonStyle}"
+                                            Padding="4,1" FontSize="9">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;"
+                                                       FontSize="9" Margin="0,0,3,0"/>
+                                            <TextBlock x:Name="CopyChecklistLabel" Text="Copy Checklist"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                                <ItemsControl ItemsSource="{Binding FormatInfo.AiInspections}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                          VerticalAlignment="Center"
+                                                          Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding Text}"
+                                                           FontSize="10" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Forensic Context -->
+                        <Border Margin="0,1,0,0" Padding="8,5"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,3,3"
+                                BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                Visibility="{Binding FormatInfo.AiHintsData.HasForensicContext,
+                                             Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Forensic Context"
+                                           FontSize="9" FontWeight="SemiBold" Margin="0,0,0,3"
+                                           Foreground="{DynamicResource WF_AiHintAccentBrush}"
+                                           Opacity="0.85"/>
+                                <TextBlock Text="{Binding FormatInfo.AiHintsData.ForensicContext}"
+                                           FontSize="10" TextWrapping="Wrap" Opacity="0.75"
+                                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
                 </StackPanel>
 
             </StackPanel>

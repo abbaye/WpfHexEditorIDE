@@ -119,6 +119,13 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
             Binding = new Binding(nameof(LspServerRow.Arguments)) { Mode = BindingMode.TwoWay },
             Width   = new DataGridLength(1, DataGridLengthUnitType.Star),
         });
+        _grid.Columns.Add(new DataGridTextColumn
+        {
+            Header   = "Source",
+            Binding  = new Binding(nameof(LspServerRow.Source)),
+            IsReadOnly = true,
+            Width    = new DataGridLength(70),
+        });
 
         _grid.SetResourceReference(DataGrid.StyleProperty,    "KSP_DataGridStyle");
         _grid.SetResourceReference(DataGrid.RowStyleProperty, "KSP_DataGridRowStyle");
@@ -215,6 +222,10 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
         private string _extensions     = string.Join(", ", entry.FileExtensions);
         private string _executablePath = entry.ExecutablePath;
         private string _arguments      = entry.Arguments ?? string.Empty;
+        private bool   _isBundled      = entry.IsBundled;
+
+        /// <summary>Display string shown in the Source column ("Bundled" / "Custom").</summary>
+        public string Source => _isBundled ? "Bundled" : "Custom";
 
         public bool IsEnabled
         {
@@ -253,6 +264,7 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
             ExecutablePath = _executablePath.Trim(),
             Arguments      = string.IsNullOrWhiteSpace(_arguments) ? null : _arguments.Trim(),
             IsEnabled      = _isEnabled,
+            IsBundled      = _isBundled,
         };
 
         private static IReadOnlyList<string> ParseExtensions(string raw)

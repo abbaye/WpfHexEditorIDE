@@ -385,35 +385,10 @@
                 <StackPanel x:Name="TbgFilter" DockPanel.Dock="Left"
                             Orientation="Horizontal" Margin="4,2,0,2">
                     <TextBox x:Name="TbxFilter"
-                             Width="120" Height="20"
-                             Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                             Background="{DynamicResource DockMenuBackgroundBrush}"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             BorderThickness="1" Padding="3,1"
-                             FontSize="11"
-                             VerticalContentAlignment="Center">
-                        <TextBox.Style>
-                            <Style TargetType="TextBox">
-                                <Style.Triggers>
-                                    <Trigger Property="Text" Value="">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <VisualBrush Stretch="None" AlignmentX="Left">
-                                                    <VisualBrush.Visual>
-                                                        <TextBlock Text="Filter properties…"
-                                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                                                   Opacity="0.4"
-                                                                   FontSize="11" Margin="4,1,0,0"/>
-                                                    </VisualBrush.Visual>
-                                                </VisualBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
+                             Width="120"
+                             Style="{DynamicResource PanelSearchBoxStyle}"
+                             Tag="Filter properties…"
+                             Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </DockPanel>
         </Border>

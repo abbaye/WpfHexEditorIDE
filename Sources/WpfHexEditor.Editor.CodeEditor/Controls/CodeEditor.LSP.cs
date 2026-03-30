@@ -62,6 +62,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         // ── Debugger integration (ADR-DBG-01) ─────────────────────────────────────
 
+        // ── BreakpointSettingsRequested event ─────────────────────────────────────
+
+        /// <summary>
+        /// Fired when the user clicks "Settings…" on the gutter right-click popup.
+        /// The Debugger plugin subscribes to this to open <c>BreakpointConditionDialog</c>.
+        /// Args: filePath, 1-based line number.
+        /// </summary>
+        public event Action<string, int>? BreakpointSettingsRequested;
+
         /// <summary>
         /// Wire the breakpoint gutter to a data source (injected by DebuggerService).
         /// Pass null to disconnect (session ended).
@@ -88,7 +97,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             if (_bpSource is null || _breakpointGutterControl is null) return;
 
-            _bpInfoPopup ??= new BreakpointInfoPopup();
+            if (_bpInfoPopup is null)
+            {
+                _bpInfoPopup = new BreakpointInfoPopup();
+                _bpInfoPopup.OpenSettingsRequested += (fp, ln) =>
+                    BreakpointSettingsRequested?.Invoke(fp, ln);
+            }
 
             // Position the popup to the right of the gutter, at the clicked line's Y.
             // PlacementMode.Relative offsets are relative to PlacementTarget (the gutter).

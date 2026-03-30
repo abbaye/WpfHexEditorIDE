@@ -69,7 +69,7 @@
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False">
 
-                <!-- Always-visible right panel — Open/Refresh always reachable -->
+                <!-- Always-visible right panel — Refresh + NavUp always reachable -->
                 <StackPanel x:Name="ToolbarRightPanel"
                             DockPanel.Dock="Right"
                             Orientation="Horizontal">
@@ -105,10 +105,23 @@
                         ToolTip="More options"
                         Click="OnOverflowButtonClick"/>
 
+                <!-- Open (always visible, leftmost — primary entry point) -->
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE8E5;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Width="22" Height="22"
+                        Margin="0,0,2,0"
+                        Click="OnOpenArchiveClick"
+                        ToolTip="Open archive…"/>
+
+                <!-- Separator -->
+                <Separator Width="1" Margin="2,4"
+                           Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
+
                 <!-- Group 1 (lowest priority): Extract operations -->
                 <StackPanel x:Name="TbgExtract"
                             Orientation="Horizontal"
-                            Margin="0,0,4,0">
+                            Margin="2,0,4,0">
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE78C;"
                             FontFamily="Segoe MDL2 Assets"
@@ -159,34 +172,10 @@
                             Margin="4,0,0,0">
                     <TextBox x:Name="FilterBox"
                              Width="140"
-                             Height="20"
-                             VerticalContentAlignment="Center"
-                             Background="{DynamicResource ERR_SearchBoxBrush}"
-                             Foreground="{DynamicResource PFP_TextBrush}"
-                             BorderBrush="{DynamicResource ERR_GridLinesBrush}"
-                             Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Filter entries…">
-                        <TextBox.Style>
-                            <Style TargetType="TextBox">
-                                <Style.Triggers>
-                                    <Trigger Property="Text" Value="">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <VisualBrush Stretch="None" AlignmentX="Left">
-                                                    <VisualBrush.Visual>
-                                                        <TextBlock Text="  Filter…"
-                                                                   Foreground="{DynamicResource PFP_SubTextBrush}"
-                                                                   FontStyle="Italic"
-                                                                   FontSize="11"/>
-                                                    </VisualBrush.Visual>
-                                                </VisualBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
+                             Style="{DynamicResource PanelSearchBoxStyle}"
+                             Tag="Filter…"
+                             ToolTip="Filter entries…"
+                             Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE711;"
                             FontFamily="Segoe MDL2 Assets"

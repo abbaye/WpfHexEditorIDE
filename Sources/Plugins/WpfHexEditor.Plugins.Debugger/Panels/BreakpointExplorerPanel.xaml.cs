@@ -5,15 +5,14 @@
 //     Code-behind for the VS-style Breakpoint Explorer panel.
 //     Delegates all logic to BreakpointExplorerViewModel.
 //     Uses ToolbarOverflowManager for dynamic toolbar overflow.
+//     Detail panel (splitter + detail border) supports Right/Bottom/Hidden layouts.
 // ==========================================================
 
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
-using WpfHexEditor.Plugins.Debugger.Controls;
 using WpfHexEditor.Plugins.Debugger.ViewModels;
 using WpfHexEditor.SDK.UI;
 
@@ -24,10 +23,6 @@ public partial class BreakpointExplorerPanel : UserControl
     private BreakpointExplorerViewModel? Vm => DataContext as BreakpointExplorerViewModel;
     private ToolbarOverflowManager? _overflowManager;
 
-    // ── Hover popup ───────────────────────────────────────────────────────────
-    private readonly DispatcherTimer _hoverTimer;
-    private BreakpointRowEx? _pendingHoverRow;
-
     public BreakpointExplorerPanel()
     {
         InitializeComponent();
@@ -37,15 +32,145 @@ public partial class BreakpointExplorerPanel : UserControl
             alwaysVisiblePanel:    ToolbarRightPanel,
             overflowButton:        OverflowButton,
             overflowMenu:          OverflowMenu,
-            groupsInCollapseOrder: [TbgGroupBy, TbgImportExport, TbgActions],
+            groupsInCollapseOrder: [TbgGroupBy, TbgImportExport, TbgActions, TbgLayout],
             leftFixedElements:     [ToolbarLeftPanel]);
 
         Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
 
-        _hoverTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
-        _hoverTimer.Tick += OnHoverTimerTick;
+        DataContextChanged += OnDataContextChanged;
+        Loaded += (_, _) => { ApplyLayout(); ApplyDetailVisibility(); };
+    }
 
-        Unloaded += (_, _) => BpHoverPopup.Dispose();
+    // ── DataContext wiring ────────────────────────────────────────────────────
+
+    private BreakpointExplorerViewModel? _subscribedVm;
+
+    private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (_subscribedVm is not null)
+            _subscribedVm.PropertyChanged -= OnVmPropertyChanged;
+
+        _subscribedVm = Vm;
+
+        if (_subscribedVm is not null)
+            _subscribedVm.PropertyChanged += OnVmPropertyChanged;
+
+        ApplyLayout();
+        ApplyDetailVisibility();
+        if (LayoutCombo is not null)
+            LayoutCombo.SelectedIndex = (int)(Vm?.DetailLayout ?? DetailPanelLayout.Right);
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(BreakpointExplorerViewModel.SelectedBreakpoint))
+            ApplyDetailVisibility();
+    }
+
+    /// <summary>Shows or hides the splitter + detail columns based on selection state.</summary>
+    private void ApplyDetailVisibility()
+    {
+        var hasSelection = Vm?.SelectedBreakpoint is not null;
+        var layout = Vm?.DetailLayout ?? DetailPanelLayout.Right;
+
+        if (layout == DetailPanelLayout.Hidden || !hasSelection)
+        {
+            SplitterCol.Width  = new GridLength(0);
+            DetailCol.Width    = new GridLength(0);
+            SplitterRow.Height = new GridLength(0);
+            DetailRow.Height   = new GridLength(0);
+        }
+        else
+        {
+            ApplyLayout(); // restore widths for current layout
+        }
+    }
+
+    // ── Layout management ──────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Positions DetailSplitter and DetailBorder inside ContentGrid
+    /// based on Vm.DetailLayout (Right / Bottom / Hidden).
+    /// Manipulates RowDefinitions / ColumnDefinitions and Grid attached properties.
+    /// </summary>
+    private void ApplyLayout()
+    {
+        var layout = Vm?.DetailLayout ?? DetailPanelLayout.Right;
+
+        switch (layout)
+        {
+            case DetailPanelLayout.Right:
+                // Columns: list | 5px splitter | 220 detail
+                MainCol.Width     = new GridLength(1, GridUnitType.Star);
+                SplitterCol.Width = new GridLength(5);
+                DetailCol.Width   = new GridLength(350);
+                // Rows: single row for everything
+                MainRow.Height     = new GridLength(1, GridUnitType.Star);
+                SplitterRow.Height = new GridLength(0);
+                DetailRow.Height   = new GridLength(0);
+
+                // Splitter: vertical (col=1)
+                Grid.SetRow(DetailSplitter, 0);        Grid.SetRowSpan(DetailSplitter, 1);
+                Grid.SetColumn(DetailSplitter, 1);     Grid.SetColumnSpan(DetailSplitter, 1);
+                DetailSplitter.Width  = 5;
+                DetailSplitter.Height = double.NaN;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+
+                // Detail panel: col=2
+                Grid.SetRow(DetailBorder, 0);          Grid.SetRowSpan(DetailBorder, 1);
+                Grid.SetColumn(DetailBorder, 2);       Grid.SetColumnSpan(DetailBorder, 1);
+                DetailBorder.BorderThickness = new Thickness(1, 0, 0, 0);
+                break;
+
+            case DetailPanelLayout.Bottom:
+                // Columns: full width
+                MainCol.Width     = new GridLength(1, GridUnitType.Star);
+                SplitterCol.Width = new GridLength(0);
+                DetailCol.Width   = new GridLength(0);
+                // Rows: list | 5px splitter | 180 detail
+                MainRow.Height     = new GridLength(1, GridUnitType.Star);
+                SplitterRow.Height = new GridLength(5);
+                DetailRow.Height   = new GridLength(180);
+
+                // List: span all columns
+                Grid.SetColumnSpan(FlatList, 3);
+                Grid.SetColumnSpan(GroupedTree, 3);
+
+                // Splitter: horizontal (row=1)
+                Grid.SetRow(DetailSplitter, 1);        Grid.SetRowSpan(DetailSplitter, 1);
+                Grid.SetColumn(DetailSplitter, 0);     Grid.SetColumnSpan(DetailSplitter, 3);
+                DetailSplitter.Width  = double.NaN;
+                DetailSplitter.Height = 5;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+
+                // Detail panel: row=2, span all cols
+                Grid.SetRow(DetailBorder, 2);          Grid.SetRowSpan(DetailBorder, 1);
+                Grid.SetColumn(DetailBorder, 0);       Grid.SetColumnSpan(DetailBorder, 3);
+                DetailBorder.BorderThickness = new Thickness(0, 1, 0, 0);
+                break;
+
+            case DetailPanelLayout.Hidden:
+                // Hide splitter and detail, list takes full space
+                SplitterCol.Width  = new GridLength(0);
+                DetailCol.Width    = new GridLength(0);
+                SplitterRow.Height = new GridLength(0);
+                DetailRow.Height   = new GridLength(0);
+                MainRow.Height     = new GridLength(1, GridUnitType.Star);
+                MainCol.Width      = new GridLength(1, GridUnitType.Star);
+
+                Grid.SetColumnSpan(FlatList, 3);
+                Grid.SetColumnSpan(GroupedTree, 3);
+                break;
+        }
+
+        // Reset list column span for Right layout
+        if (layout == DetailPanelLayout.Right)
+        {
+            Grid.SetColumnSpan(FlatList, 1);
+            Grid.SetColumnSpan(GroupedTree, 1);
+        }
     }
 
     // ── Toolbar overflow ──────────────────────────────────────────────────
@@ -79,6 +204,31 @@ public partial class BreakpointExplorerPanel : UserControl
     private void OnOvfGroupEnabled(object sender, RoutedEventArgs e) { GroupByCombo.SelectedIndex = 3; }
     private void OnOvfGroupProject(object sender, RoutedEventArgs e) { GroupByCombo.SelectedIndex = 4; }
 
+    // ── Layout ComboBox ───────────────────────────────────────────────────
+
+    private void OnLayoutComboChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (Vm is null || LayoutCombo.SelectedIndex < 0) return;
+        SetLayout((DetailPanelLayout)LayoutCombo.SelectedIndex);
+    }
+
+    private void OnOvfLayoutRight(object sender, RoutedEventArgs e)  => SetLayoutCombo(DetailPanelLayout.Right);
+    private void OnOvfLayoutBottom(object sender, RoutedEventArgs e) => SetLayoutCombo(DetailPanelLayout.Bottom);
+    private void OnOvfLayoutHidden(object sender, RoutedEventArgs e) => SetLayoutCombo(DetailPanelLayout.Hidden);
+
+    private void SetLayoutCombo(DetailPanelLayout layout)
+    {
+        LayoutCombo.SelectedIndex = (int)layout; // triggers OnLayoutComboChanged
+    }
+
+    private void SetLayout(DetailPanelLayout layout)
+    {
+        if (Vm is null) return;
+        Vm.DetailLayout = layout;
+        ApplyLayout();
+        ApplyDetailVisibility();
+    }
+
     // ── Group-by ComboBox ─────────────────────────────────────────────────
 
     private void OnGroupByChanged(object sender, SelectionChangedEventArgs e)
@@ -87,23 +237,41 @@ public partial class BreakpointExplorerPanel : UserControl
         Vm.GroupBy = (GroupByMode)GroupByCombo.SelectedIndex;
     }
 
-    // ── Flat list double-click → navigate ─────────────────────────────────
+    // ── Flat list double-click → edit condition ───────────────────────────
 
     private void OnRowDoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (Vm?.SelectedBreakpoint is not null)
-            Vm.GoToSourceCommand.Execute(Vm.SelectedBreakpoint);
+            Vm.EditConditionCommand.Execute(Vm.SelectedBreakpoint);
     }
 
-    // ── Tree item double-click → navigate ─────────────────────────────────
+    // ── Tree selection → sync SelectedBreakpoint ─────────────────────────
+
+    private void OnTreeSelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (Vm is null) return;
+        // Only sync leaf nodes (BreakpointRowEx), not group headers
+        if (e.NewValue is BreakpointRowEx row)
+            Vm.SelectedBreakpoint = row;
+    }
+
+    // ── Tree item double-click → edit condition ───────────────────────────
 
     private void OnTreeItemDoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2 && sender is FrameworkElement fe && fe.DataContext is BreakpointRowEx row)
         {
-            Vm?.GoToSourceCommand.Execute(row);
+            Vm?.EditConditionCommand.Execute(row);
             e.Handled = true;
         }
+    }
+
+    // ── Edit condition ────────────────────────────────────────────────────
+
+    private void OnEditCondition(object sender, RoutedEventArgs e)
+    {
+        var row = GetSelectedRow();
+        if (row is not null) Vm?.EditConditionCommand.Execute(row);
     }
 
     // ── CheckBox enable/disable ───────────────────────────────────────────
@@ -145,60 +313,34 @@ public partial class BreakpointExplorerPanel : UserControl
     private void OnImportBreakpoints(object sender, RoutedEventArgs e) => Vm?.ImportCommand.Execute(null);
     private void OnExportBreakpoints(object sender, RoutedEventArgs e) => Vm?.ExportCommand.Execute(null);
 
+    // ── Detail panel action buttons ───────────────────────────────────────
+
+    private void OnDetailGoToSource(object sender, RoutedEventArgs e)
+    {
+        var row = Vm?.SelectedBreakpoint;
+        if (row is not null) Vm?.GoToSourceCommand.Execute(row);
+    }
+
+    private void OnDetailEditCondition(object sender, RoutedEventArgs e)
+    {
+        var row = Vm?.SelectedBreakpoint;
+        if (row is not null) Vm?.EditConditionCommand.Execute(row);
+    }
+
+    private void OnDetailDelete(object sender, RoutedEventArgs e)
+    {
+        var row = Vm?.SelectedBreakpoint;
+        if (row is not null) Vm?.DeleteCommand.Execute(row);
+    }
+
+    private void OnDetailToggleEnabled(object sender, RoutedEventArgs e)
+    {
+        var row = Vm?.SelectedBreakpoint;
+        if (row is not null) Vm?.ToggleEnabledCommand.Execute(row);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+
     private BreakpointRowEx? GetSelectedRow() =>
         Vm?.SelectedBreakpoint ?? FlatList.SelectedItem as BreakpointRowEx;
-
-    // ── Hover popup ───────────────────────────────────────────────────────────
-
-    private void OnListMouseMove(object sender, MouseEventArgs e)
-    {
-        var row = GetRowUnderMouse<ListViewItem>(FlatList, e.GetPosition(FlatList));
-        UpdateHover(row);
-    }
-
-    private void OnTreeMouseMove(object sender, MouseEventArgs e)
-    {
-        var row = GetRowUnderMouse<TreeViewItem>(GroupedTree, e.GetPosition(GroupedTree));
-        UpdateHover(row);
-    }
-
-    private void OnListMouseLeave(object sender, MouseEventArgs e)
-    {
-        _hoverTimer.Stop();
-        _pendingHoverRow = null;
-        BpHoverPopup.OnHostMouseLeft();
-    }
-
-    private void UpdateHover(BreakpointRowEx? row)
-    {
-        if (row == _pendingHoverRow) return;
-        _hoverTimer.Stop();
-        _pendingHoverRow = row;
-        if (row is not null) _hoverTimer.Start();
-        else BpHoverPopup.OnHostMouseLeft();
-    }
-
-    private void OnHoverTimerTick(object? sender, EventArgs e)
-    {
-        _hoverTimer.Stop();
-        if (_pendingHoverRow is null || Vm is null) return;
-        BpHoverPopup.Show(_pendingHoverRow, Vm.DebuggerService);
-    }
-
-    // Generic hit-test: walks up from the hit visual looking for TContainer with BreakpointRowEx DataContext.
-    private static BreakpointRowEx? GetRowUnderMouse<TContainer>(UIElement root, Point pos)
-        where TContainer : FrameworkElement
-    {
-        var hit = VisualTreeHelper.HitTest(root, pos);
-        if (hit?.VisualHit is null) return null;
-
-        DependencyObject? current = hit.VisualHit;
-        while (current is not null)
-        {
-            if (current is TContainer { DataContext: BreakpointRowEx row })
-                return row;
-            current = VisualTreeHelper.GetParent(current);
-        }
-        return null;
-    }
 }

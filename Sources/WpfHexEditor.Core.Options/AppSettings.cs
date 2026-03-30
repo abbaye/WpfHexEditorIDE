@@ -153,6 +153,11 @@ public sealed class AppSettings
     /// <summary>Dynamic View menu organization preferences.</summary>
     public ViewMenuSettings ViewMenu { get; set; } = new();
 
+    // -- Document Editor ----------------------------------------------------------
+
+    /// <summary>Document Editor (RTF/DOCX/ODT) preferences.</summary>
+    public WpfHexEditor.Editor.DocumentEditor.Core.Options.DocumentEditorOptions DocumentEditor { get; set; } = new();
+
     // -- Layout Customization -----------------------------------------------------
 
     /// <summary>Layout visibility, positions, and mode preferences (Customize Layout popup).</summary>

@@ -127,6 +127,7 @@ public sealed class LspServerRegistry : ILspServerRegistry
                     ExecutablePath = dto.ExecutablePath ?? string.Empty,
                     Arguments      = dto.Arguments,
                     IsEnabled      = dto.IsEnabled,
+                    IsBundled      = dto.IsBundled,
                 });
             }
         }
@@ -148,6 +149,7 @@ public sealed class LspServerRegistry : ILspServerRegistry
                 ExecutablePath = e.ExecutablePath,
                 Arguments      = e.Arguments,
                 IsEnabled      = e.IsEnabled,
+                IsBundled      = e.IsBundled,
             }).ToList();
 
             var json = JsonSerializer.Serialize(dtos, s_json);
@@ -160,6 +162,11 @@ public sealed class LspServerRegistry : ILspServerRegistry
 
     private void AddBuiltInEntriesIfMissing()
     {
+        // Bundled servers (OmniSharp, clangd) — installed by Scripts/Download-LspServers.ps1.
+        TryAddBuiltIn("csharp", new[] { ".cs", ".csx" },              "OmniSharp", "--languageserver");
+        TryAddBuiltIn("cpp",    new[] { ".cpp", ".c", ".h", ".hpp" }, "clangd",    string.Empty);
+
+        // PATH-discovered servers (optional, user must install separately).
         TryAddBuiltIn("json",   new[] { ".json", ".jsonc" },     "vscode-json-languageserver", "--stdio");
         TryAddBuiltIn("xml",    new[] { ".xml", ".xaml" },       "lemminx",                    string.Empty);
         TryAddBuiltIn("fsharp", new[] { ".fs", ".fsx", ".fsi" }, "fsautocomplete",             "--stdio");
@@ -172,7 +179,9 @@ public sealed class LspServerRegistry : ILspServerRegistry
             if (_entries.Any(e => e.LanguageId.Equals(langId, StringComparison.OrdinalIgnoreCase)))
                 return;
 
-        var path = FindOnPath(execName);
+        // Prefer bundled executable; fall back to system PATH.
+        var bundledPath = LspBundledLocator.TryGetBundledExecutable(execName);
+        var path        = bundledPath ?? FindOnPath(execName);
         if (path is null) return;
 
         _entries.Add(new LspServerEntry
@@ -182,6 +191,7 @@ public sealed class LspServerRegistry : ILspServerRegistry
             ExecutablePath = path,
             Arguments      = args,
             IsEnabled      = true,
+            IsBundled      = bundledPath is not null,
         });
     }
 
@@ -209,5 +219,6 @@ public sealed class LspServerRegistry : ILspServerRegistry
         public string?        ExecutablePath { get; set; }
         public string?        Arguments      { get; set; }
         public bool           IsEnabled      { get; set; } = true;
+        public bool           IsBundled      { get; set; }
     }
 }

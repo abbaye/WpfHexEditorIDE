@@ -495,27 +495,11 @@
                 <Grid x:Name="SearchBoxGrid" VerticalAlignment="Center" Margin="6,0">
 
                     <TextBox x:Name="SearchBox"
-                             Style="{StaticResource SearchBoxStyle}"
+                             Style="{DynamicResource PanelSearchBoxStyle}"
+                             Tag="Search (Ctrl+I)…"
                              TextChanged="OnSearchTextChanged"
                              GotFocus="OnSearchBoxGotFocus"
                              KeyDown="OnSearchBoxKeyDown"/>
-
-                    <!-- Placeholder text -->
-                    <TextBlock IsHitTestVisible="False" Text="Search (Ctrl+I)…"
-                               FontSize="11" Opacity="0.40"
-                               VerticalAlignment="Center" Margin="6,0,0,0"
-                               Foreground="{DynamicResource PFP_TextBrush}">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
 
                     <!-- Clear button — default Visible, collapsed only when empty (bug fix) -->
                     <Button HorizontalAlignment="Right" VerticalAlignment="Center"

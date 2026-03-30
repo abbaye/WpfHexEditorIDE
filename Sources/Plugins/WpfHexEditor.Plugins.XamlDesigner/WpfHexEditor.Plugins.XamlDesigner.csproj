@@ -29,9 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <!-- XamlDesigner editor: provides XamlDesignerSplitHost, XamlOutlinePanel, PropertyInspectorPanel.
-         DLL resolved via host AssemblyLoadContext fallback at runtime — no copy to Plugins dir. -->
     <ProjectReference Include="..\..\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
   </ItemGroup>
 
@@ -45,7 +42,7 @@
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true" />
+          OverwriteReadOnlyFiles="true" />
   </Target>
 
 </Project>

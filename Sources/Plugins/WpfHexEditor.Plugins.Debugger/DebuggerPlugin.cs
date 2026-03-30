@@ -10,8 +10,13 @@
 //     All UI marshalled to dispatcher thread.
 // ==========================================================
 
+using System;
+using System.Linq;
+using System.Windows;
+using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Events.IDEEvents;
+using WpfHexEditor.Plugins.Debugger.Dialogs;
 using WpfHexEditor.Plugins.Debugger.Panels;
 using WpfHexEditor.Plugins.Debugger.ViewModels;
 using WpfHexEditor.SDK.Commands;
@@ -68,6 +73,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         _subs.Add(context.IDEEvents.Subscribe<DebugSessionPausedEvent>(OnPaused));
         _subs.Add(context.IDEEvents.Subscribe<DebugSessionEndedEvent>(OnEnded));
         _subs.Add(context.IDEEvents.Subscribe<DebugOutputReceivedEvent>(OnOutput));
+        _subs.Add(context.IDEEvents.Subscribe<OpenBreakpointSettingsRequestedEvent>(OnOpenBpSettings));
 
         // Register panels
         var ui = context.UIRegistry;
@@ -117,6 +123,49 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
                 _locVm?.SetVariables(locals);
                 await _watchVm!.RefreshAsync(_debugger);
             }
+        });
+    }
+
+    private void OnOpenBpSettings(OpenBreakpointSettingsRequestedEvent e)
+    {
+        if (_debugger is null) return;
+
+        Application.Current?.Dispatcher.Invoke(() =>
+        {
+            var bp = _debugger.Breakpoints.FirstOrDefault(
+                b => string.Equals(b.FilePath, e.FilePath, StringComparison.OrdinalIgnoreCase)
+                     && b.Line == e.Line);
+            if (bp is null) return;
+
+            var loc = new BreakpointLocation
+            {
+                FilePath          = bp.FilePath,
+                Line              = bp.Line,
+                Condition         = bp.Condition ?? string.Empty,
+                IsEnabled         = bp.IsEnabled,
+                ConditionKind     = bp.ConditionKind,
+                ConditionMode     = bp.ConditionMode,
+                HitCountOp        = bp.HitCountOp,
+                HitCountTarget    = bp.HitCountTarget,
+                FilterExpr        = bp.FilterExpr,
+                HasAction         = bp.HasAction,
+                LogMessage        = bp.LogMessage,
+                ContinueExecution = bp.ContinueExecution,
+                DisableOnceHit    = bp.DisableOnceHit,
+                DependsOnBpKey    = bp.DependsOnBpKey,
+            };
+
+            var allLocs = _debugger.Breakpoints.Select(b => new BreakpointLocation
+            {
+                FilePath  = b.FilePath,
+                Line      = b.Line,
+                Condition = b.Condition ?? string.Empty,
+                IsEnabled = b.IsEnabled,
+            }).ToList();
+
+            var result = BreakpointConditionDialog.Show(Application.Current.MainWindow, loc, allLocs);
+            if (result is not null)
+                _ = _debugger.UpdateBreakpointSettingsAsync(e.FilePath, e.Line, result);
         });
     }
 

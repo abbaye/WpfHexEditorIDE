@@ -102,6 +102,13 @@ namespace WpfHexEditor.Core
         public string Description { get; set; }
 
         /// <summary>
+        /// Optional tag used to group blocks by feature (e.g. "BinaryMap", "FormatDetection").
+        /// Use <see cref="WpfHexEditor.HexEditor.HexEditor.ClearCustomBackgroundBlockByTag"/> to clear by tag.
+        /// When null, <see cref="Description"/> is used as the tag fallback.
+        /// </summary>
+        public string? Tag { get; set; }
+
+        /// <summary>
         /// When false, this block is excluded from byte tooltip display.
         /// Set to false for auto-detected whole-file coverage blocks so they
         /// do not trigger tooltips on every byte in OnCustomBackgroundBlocks mode.

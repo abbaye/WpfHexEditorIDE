@@ -347,13 +347,23 @@
                                HorizontalAlignment="Center"/>
                 </Button>
                 <!-- Filter text box -->
-                <TextBox x:Name="SearchBox"
-                         Background="Transparent"
-                         Foreground="{DynamicResource PP_EditableForegroundBrush}"
-                         BorderThickness="0"
-                         VerticalAlignment="Center"
-                         TextChanged="OnSearchTextChanged"
-                         KeyDown="OnSearchKeyDown"/>
+                <Grid>
+                    <TextBox x:Name="SearchBox"
+                             Background="Transparent"
+                             Foreground="{DynamicResource PP_EditableForegroundBrush}"
+                             BorderThickness="0"
+                             VerticalAlignment="Center"
+                             TextChanged="OnSearchTextChanged"
+                             KeyDown="OnSearchKeyDown"/>
+                    <TextBlock x:Name="SearchPlaceholder"
+                               Text="Filter properties…"
+                               Foreground="{DynamicResource PP_DescriptionForegroundBrush}"
+                               Opacity="0.45"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Margin="2,0,0,0"
+                               IsHitTestVisible="False"/>
+                </Grid>
             </DockPanel>
         </Border>
 

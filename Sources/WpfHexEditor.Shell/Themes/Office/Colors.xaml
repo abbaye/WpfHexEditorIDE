@@ -276,6 +276,8 @@
 
     <!-- Standardized item selection / hover tokens (used by PanelCommon + ContentControls) -->
     <SolidColorBrush x:Key="Panel_ItemHoverBrush"              Color="#DEECF9"/>
+    <SolidColorBrush x:Key="BP_ExplorerRowHoverBrush"    Color="#DEECF9"/>
+    <SolidColorBrush x:Key="BP_ExplorerRowSelectedBrush" Color="#CCE4F7"/>
     <SolidColorBrush x:Key="Panel_ItemSelectedBrush"           Color="#CCE4F7"/>
     <SolidColorBrush x:Key="Panel_ItemSelectedForegroundBrush" Color="#004578"/>
     <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#E0F0FF"/>
@@ -771,6 +773,8 @@
     <SolidColorBrush x:Key="WF_PointerArrowBrush"         Color="#16A085" />
     <SolidColorBrush x:Key="WF_BitfieldSubrowBrush"       Color="#ECECEC" />
     <SolidColorBrush x:Key="WF_InspectorGroupHeaderBrush" Color="#E0E0E0" />
+    <SolidColorBrush x:Key="WF_AiHintAccentBrush"         Color="#C07000" />
+    <SolidColorBrush x:Key="WF_AiHintSectionHeaderBrush"  Color="#FFF4DA" />
     <SolidColorBrush x:Key="WF_NavigatorBookmarkBrush"    Color="#2980B9" />
     <SolidColorBrush x:Key="WF_ConfidenceBadgeBrush"      Color="#27AE60" />
 
@@ -792,4 +796,44 @@
     <SolidColorBrush x:Key="AR_FormatBadgeBackgroundBrush"   Color="#107C10" />
     <SolidColorBrush x:Key="AR_FormatBadgeForegroundBrush"   Color="#FFFFFF" />
     <SolidColorBrush x:Key="AR_NestIndicatorBrush"           Color="#767676" />
-</ResourceDictionary>
+
+    <!-- DE_* Document Editor tokens -->
+    <SolidColorBrush x:Key="DE_TextPaneBackground"    Color="#FAFAFA"/>
+    <SolidColorBrush x:Key="DE_TextPaneForeground"    Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="DE_BlockHoverBrush"       Color="#20007ACC"/>
+    <SolidColorBrush x:Key="DE_SelectedBlockBrush"    Color="#5000AA7A"/>
+    <SolidColorBrush x:Key="DE_ForensicOkBrush"       Color="#22227722"/>
+    <SolidColorBrush x:Key="DE_ForensicWarnBrush"     Color="#44CC9900"/>
+    <SolidColorBrush x:Key="DE_ForensicErrorBrush"    Color="#44CC0000"/>
+    <SolidColorBrush x:Key="DE_ForensicAlertBadgeFg"  Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DE_StructureNodeFg"       Color="#0070C1"/>
+    <SolidColorBrush x:Key="DE_StructureKindFg"       Color="#007F6A"/>
+    <SolidColorBrush x:Key="DE_MiniMapBg"             Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="DE_MiniMapScrollBrush"    Color="#CCCCCC"/>
+
+    <!-- DE_* v2 â€” Toolbar / BreadcrumbBar / PopToolbar / StatusBar / Zoom -->
+    <SolidColorBrush x:Key="DE_ToolbarBackground"        Color="#F3F3F3"/>
+    <SolidColorBrush x:Key="DE_ToolbarBorderBrush"       Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="DE_ToolbarButtonHoverBrush"  Color="#E4E4E4"/>
+    <SolidColorBrush x:Key="DE_ToolbarButtonActiveBrush" Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="DE_PopToolbarBackground"     Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DE_PopToolbarBorderBrush"    Color="#C8C8C8"/>
+    <SolidColorBrush x:Key="DE_BreadcrumbBackground"     Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="DE_BreadcrumbForeground"     Color="#555555"/>
+    <SolidColorBrush x:Key="DE_BreadcrumbSeparatorBrush" Color="#A0A0A0"/>
+    <SolidColorBrush x:Key="DE_BreadcrumbHoverBrush"     Color="#E8E8E8"/>
+    <SolidColorBrush x:Key="DE_StatusBarBackground"      Color="#EBEBEB"/>
+    <SolidColorBrush x:Key="DE_StatusBarForeground"      Color="#555555"/>
+    <SolidColorBrush x:Key="DE_StatusBarBorderBrush"     Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="DE_FormatChipBackground"     Color="#0078D4"/>
+    <SolidColorBrush x:Key="DE_FormatChipForeground"     Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DE_ZoomSliderThumbBrush"     Color="#0078D4"/>
+    <SolidColorBrush x:Key="DE_ForensicBadgeErrorBg"     Color="#CC3333"/>
+    <SolidColorBrush x:Key="DE_ForensicBadgeWarnBg"      Color="#CC7A00"/>
+    <SolidColorBrush x:Key="DE_PageShadowBrush"          Color="#20000000"/>
+    <SolidColorBrush x:Key="DE_BlockBorderHoverBrush"    Color="#600078D4"/>
+    <SolidColorBrush x:Key="DE_MetaPanelBackground"      Color="#FAFAFA"/>
+    <SolidColorBrush x:Key="DE_MetaPanelForeground"      Color="#333333"/>
+    <!-- DE_* page canvas (document-in-canvas visual metaphor) -->
+    <SolidColorBrush x:Key="DE_PageCanvasBackground" Color="#B8B8B8"/>
+    <SolidColorBrush x:Key="DE_PageBackground"       Color="#FFFFFF"/></ResourceDictionary>

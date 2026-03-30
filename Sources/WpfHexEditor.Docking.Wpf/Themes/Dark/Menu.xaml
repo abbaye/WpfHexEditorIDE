@@ -329,6 +329,8 @@
         <Setter Property="Cursor"            Value="Hand"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize"          Value="12"/>
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding Path=(ToolTip), RelativeSource={RelativeSource Self}}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

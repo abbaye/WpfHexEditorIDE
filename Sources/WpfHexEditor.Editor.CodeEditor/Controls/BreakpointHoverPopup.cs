@@ -2,18 +2,17 @@
 // Project: WpfHexEditor.Editor.CodeEditor
 // File: Controls/BreakpointHoverPopup.cs
 // Description:
-//     VS-style hover popup shown when the mouse dwells on a breakpoint-highlighted
-//     line. Displays breakpoint type badge, condition (syntax-colored), code preview,
-//     and action links (Edit Condition / Disable / Delete).
-//     Uses ET_* theme tokens — no hardcoded colors.
+//     VS-style hover popup shown when the mouse dwells on a breakpoint-highlighted line.
+//     Shows type badge + location, syntax-colored code preview, and a context-menu
+//     action list with Segoe MDL2 icons (Edit Condition / Enable-Disable / Delete).
 // Architecture:
-//     Grace-timer pattern (200ms) identical to EndBlockHintPopup.
+//     Grace-timer pattern (300ms) identical to EndBlockHintPopup.
 //     Communicates via IBreakpointSource — no SDK dependency.
+//     All colours via SetResourceReference (ET_* tokens); syntax tokens via ISyntaxHighlighter.
 // ==========================================================
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -28,7 +27,8 @@ using WpfHexEditor.Editor.CodeEditor.Rendering;
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
 /// <summary>
-/// Hover popup for breakpoint lines — shows type, condition, code preview, and action links.
+/// Hover popup for breakpoint lines — shows type badge, syntax-colored code preview,
+/// and an icon-equipped context-menu action list.
 /// </summary>
 internal sealed class BreakpointHoverPopup : Popup, IDisposable
 {
@@ -41,29 +41,29 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
 
     private IBreakpointSource? _source;
     private string _filePath = string.Empty;
-    private int _line1;
-    private Rect _anchorRect;
+    private int    _line1;
+    private Rect   _anchorRect;
 
     // ── Events ───────────────────────────────────────────────────────────────
 
-    /// <summary>Fired when the user clicks "Edit Condition" — host should open the BreakpointInfoPopup.</summary>
+    /// <summary>Fired when "Edit Condition" is clicked — host opens BreakpointInfoPopup.</summary>
     internal event Action<string, int>? EditConditionRequested;
 
-    /// <summary>Fired when the user clicks "Disable" / "Enable".</summary>
+    /// <summary>Fired when "Disable" / "Enable" is clicked.</summary>
     internal event Action<string, int, bool>? ToggleEnabledRequested;
 
-    /// <summary>Fired when the user clicks "Delete".</summary>
+    /// <summary>Fired when "Delete" is clicked.</summary>
     internal event Action<string, int>? DeleteRequested;
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
     public BreakpointHoverPopup()
     {
-        StaysOpen = true;
-        AllowsTransparency = true;
-        Placement = PlacementMode.Custom;
+        StaysOpen                  = true;
+        AllowsTransparency         = true;
+        Placement                  = PlacementMode.Custom;
         CustomPopupPlacementCallback = PlacePopup;
-        PopupAnimation = PopupAnimation.Fade;
+        PopupAnimation             = PopupAnimation.Fade;
 
         _graceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
         _graceTimer.Tick += (_, _) =>
@@ -87,14 +87,14 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         ISyntaxHighlighter? highlighter,
         Rect anchorRect)
     {
-        _source = source;
-        _filePath = filePath;
-        _line1 = line1;
-
+        _source     = source;
+        _filePath   = filePath;
+        _line1      = line1;
         _anchorRect = anchorRect;
+
         PlacementTarget = host;
-        Child = BuildContent(info, line1, filePath, documentLines, highlighter);
-        IsOpen = true;
+        Child           = BuildContent(info, line1, filePath, documentLines, highlighter);
+        IsOpen          = true;
     }
 
     public void OnEditorMouseLeft()
@@ -113,129 +113,128 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         IReadOnlyList<Models.CodeLine>? lines,
         ISyntaxHighlighter? highlighter)
     {
-        var border = new Border
+        var outerBorder = new Border
         {
-            CornerRadius = new CornerRadius(4),
+            CornerRadius    = new CornerRadius(4),
             BorderThickness = new Thickness(1),
+            MinWidth        = 240,
+            MaxWidth        = 500,
             Effect = new DropShadowEffect { BlurRadius = 8, ShadowDepth = 2, Opacity = 0.35 },
-            MinWidth = 280,
-            MaxWidth = 500,
         };
-        border.SetResourceReference(Border.BackgroundProperty, "ET_PopupBackground");
-        border.SetResourceReference(Border.BorderBrushProperty, "ET_PopupBorderBrush");
+        outerBorder.SetResourceReference(Border.BackgroundProperty,  "ET_PopupBackground");
+        outerBorder.SetResourceReference(Border.BorderBrushProperty, "ET_PopupBorderBrush");
 
-        border.MouseEnter += (_, _) => { _mouseInsidePopup = true; _graceTimer.Stop(); };
-        border.MouseLeave += (_, _) => { _mouseInsidePopup = false; _graceTimer.Start(); };
+        outerBorder.MouseEnter += (_, _) => { _mouseInsidePopup = true;  _graceTimer.Stop(); };
+        outerBorder.MouseLeave += (_, _) => { _mouseInsidePopup = false; _graceTimer.Start(); };
 
-        var stack = new StackPanel { Margin = new Thickness(8, 6, 8, 6) };
+        var stack = new StackPanel { Orientation = Orientation.Vertical };
 
-        // ── Header: icon + type badge + location ────────────────────────────
-        var headerPanel = new WrapPanel { Margin = new Thickness(0, 0, 0, 4) };
-
-        // BP circle indicator
+        // ── Header: circle + type badge + location + close ──────────────────
         string typeLabel;
-        Brush circleBrush;
+        Brush  circleBrush;
         if (!info.IsEnabled)
         {
-            typeLabel = "Disabled";
+            typeLabel   = "Disabled";
             circleBrush = Brushes.DimGray;
         }
         else if (!string.IsNullOrEmpty(info.Condition))
         {
-            typeLabel = "Conditional";
+            typeLabel   = "Conditional";
             circleBrush = new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x1E));
         }
         else
         {
-            typeLabel = "Breakpoint";
+            typeLabel   = "Breakpoint";
             circleBrush = new SolidColorBrush(Color.FromRgb(0xE5, 0x14, 0x00));
         }
 
         var circle = new Border
         {
             Width = 10, Height = 10,
-            CornerRadius = new CornerRadius(5),
-            Background = circleBrush,
-            Margin = new Thickness(0, 2, 6, 0),
+            CornerRadius      = new CornerRadius(5),
+            Background        = circleBrush,
+            Margin            = new Thickness(0, 2, 6, 0),
             VerticalAlignment = VerticalAlignment.Center,
         };
-        headerPanel.Children.Add(circle);
 
         var typeBadge = new TextBlock
         {
-            Text = typeLabel,
-            FontWeight = FontWeights.SemiBold,
-            FontSize = 12,
+            Text              = typeLabel,
+            FontWeight        = FontWeights.SemiBold,
+            FontSize          = 12,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 8, 0),
+            Margin            = new Thickness(0, 0, 8, 0),
         };
         typeBadge.SetResourceReference(TextBlock.ForegroundProperty, "ET_HeaderForeground");
-        headerPanel.Children.Add(typeBadge);
 
         var locationText = new TextBlock
         {
-            Text = $"{System.IO.Path.GetFileName(filePath)}:{line1}",
-            FontSize = 11,
-            Opacity = 0.7,
+            Text              = $"{System.IO.Path.GetFileName(filePath)}:{line1}",
+            FontSize          = 11,
+            Opacity           = 0.7,
             VerticalAlignment = VerticalAlignment.Center,
         };
         locationText.SetResourceReference(TextBlock.ForegroundProperty, "ET_MetaForeground");
-        headerPanel.Children.Add(locationText);
 
-        stack.Children.Add(headerPanel);
+        var closeGlyph = new TextBlock
+        {
+            Text              = "\uE711",
+            FontFamily        = new FontFamily("Segoe MDL2 Assets"),
+            FontSize          = 10,
+            Cursor            = Cursors.Hand,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(8, 0, 0, 0),
+        };
+        closeGlyph.SetResourceReference(TextBlock.ForegroundProperty, "ET_MetaForeground");
+        closeGlyph.MouseLeftButtonUp += (_, _) => IsOpen = false;
+
+        var headerRow = new StackPanel
+        {
+            Orientation       = Orientation.Horizontal,
+            Margin            = new Thickness(10, 7, 10, 5),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        headerRow.Children.Add(circle);
+        headerRow.Children.Add(typeBadge);
+        headerRow.Children.Add(locationText);
+        headerRow.Children.Add(new Border { HorizontalAlignment = HorizontalAlignment.Stretch, MinWidth = 16 });
+        headerRow.Children.Add(closeGlyph);
+
+        var headerBorder = new Border { Padding = new Thickness(0) };
+        headerBorder.SetResourceReference(Border.BackgroundProperty, "ET_HeaderBackground");
+        headerBorder.Child = headerRow;
+
+        stack.Children.Add(headerBorder);
 
         // ── Separator ───────────────────────────────────────────────────────
-        var sep = new Border { Height = 1, Margin = new Thickness(-8, 2, -8, 4) };
-        sep.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
-        stack.Children.Add(sep);
+        var sep1 = new Border { Height = 1 };
+        sep1.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
+        stack.Children.Add(sep1);
 
-        // ── Condition row (if conditional) ──────────────────────────────────
-        if (!string.IsNullOrEmpty(info.Condition))
-        {
-            var condLabel = new TextBlock
-            {
-                Text = "Condition:",
-                FontSize = 11,
-                Opacity = 0.7,
-                Margin = new Thickness(0, 0, 0, 2),
-            };
-            condLabel.SetResourceReference(TextBlock.ForegroundProperty, "ET_MetaForeground");
-            stack.Children.Add(condLabel);
-
-            var condValue = new TextBlock
-            {
-                Text = info.Condition,
-                FontFamily = new FontFamily("Cascadia Code, Consolas, Courier New"),
-                FontSize = 12,
-                Margin = new Thickness(0, 0, 0, 4),
-                TextWrapping = TextWrapping.Wrap,
-            };
-            condValue.SetResourceReference(TextBlock.ForegroundProperty, "ET_HeaderForeground");
-            stack.Children.Add(condValue);
-        }
-
-        // ── Code preview (1-3 lines around breakpoint) ──────────────────────
+        // ── Code preview (syntax colored) ────────────────────────────────────
         if (lines is not null && line1 >= 1 && line1 <= lines.Count)
         {
-            var codePanel = new StackPanel { Margin = new Thickness(0, 2, 0, 4) };
+            var codeStack = new StackPanel();
             var codeBorder = new Border
             {
                 CornerRadius = new CornerRadius(3),
-                Padding = new Thickness(6, 4, 6, 4),
+                Padding      = new Thickness(8, 5, 8, 5),
+                Margin       = new Thickness(8, 6, 8, 2),
             };
             codeBorder.SetResourceReference(Border.BackgroundProperty, "ET_HeaderBackground");
 
-            int startLine = Math.Max(0, line1 - 2);      // 0-based: 1 line before the BP
-            int endLine   = Math.Min(lines.Count - 1, line1 - 1);  // 0-based: the BP line itself
+            int startLine = Math.Max(0, line1 - 2);
+            int endLine   = Math.Min(lines.Count - 1, line1 - 1);
 
             for (int i = startLine; i <= endLine; i++)
             {
                 var lineText = lines[i].Text ?? string.Empty;
                 var tb = new TextBlock
                 {
-                    FontFamily = new FontFamily("Cascadia Code, Consolas, Courier New"),
-                    FontSize = 11,
+                    FontFamily   = new FontFamily("Cascadia Code, Consolas, Courier New"),
+                    FontSize     = 11,
                     TextTrimming = TextTrimming.CharacterEllipsis,
+                    FontWeight   = (i == line1 - 1) ? FontWeights.SemiBold : FontWeights.Normal,
                 };
 
                 if (highlighter is not null)
@@ -248,8 +247,8 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
                             run.Foreground = token.Foreground;
                         else
                             run.SetResourceReference(TextElement.ForegroundProperty, "ET_HeaderForeground");
-                        if (token.IsBold) run.FontWeight = FontWeights.Bold;
-                        if (token.IsItalic) run.FontStyle = FontStyles.Italic;
+                        if (token.IsBold)   run.FontWeight = FontWeights.Bold;
+                        if (token.IsItalic) run.FontStyle  = FontStyles.Italic;
                         tb.Inlines.Add(run);
                     }
                 }
@@ -259,82 +258,113 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
                     tb.SetResourceReference(TextBlock.ForegroundProperty, "ET_HeaderForeground");
                 }
 
-                // Highlight the breakpoint line with a subtle marker
-                if (i == line1 - 1)
-                    tb.FontWeight = FontWeights.SemiBold;
-
-                codePanel.Children.Add(tb);
+                codeStack.Children.Add(tb);
             }
 
-            codeBorder.Child = codePanel;
+            codeBorder.Child = codeStack;
             stack.Children.Add(codeBorder);
+
+            var sep2 = new Border { Height = 1 };
+            sep2.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
+            stack.Children.Add(sep2);
         }
 
-        // ── Action links ────────────────────────────────────────────────────
-        var actionsPanel = new WrapPanel { Margin = new Thickness(0, 2, 0, 0) };
+        // ── Context-menu action list ─────────────────────────────────────────
+        var menuPanel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(0, 2, 0, 4) };
 
-        actionsPanel.Children.Add(MakeActionLink("Edit Condition", () =>
+        menuPanel.Children.Add(MakeMenuItem("\uE8AC", "Edit Condition", (_, _) =>
         {
             IsOpen = false;
             EditConditionRequested?.Invoke(_filePath, _line1);
         }));
 
-        actionsPanel.Children.Add(MakeSep());
+        menuPanel.Children.Add(MakeMenuSeparator());
 
-        string toggleText = info.IsEnabled ? "Disable" : "Enable";
-        actionsPanel.Children.Add(MakeActionLink(toggleText, () =>
+        string toggleLabel = info.IsEnabled ? "Disable" : "Enable";
+        string toggleGlyph = info.IsEnabled ? "\uE73E" : "\uE73F";
+        menuPanel.Children.Add(MakeMenuItem(toggleGlyph, toggleLabel, (_, _) =>
         {
             _source?.SetEnabled(_filePath, _line1, !info.IsEnabled);
+            ToggleEnabledRequested?.Invoke(_filePath, _line1, !info.IsEnabled);
             IsOpen = false;
         }));
 
-        actionsPanel.Children.Add(MakeSep());
+        menuPanel.Children.Add(MakeMenuSeparator());
 
-        actionsPanel.Children.Add(MakeActionLink("Delete", () =>
+        menuPanel.Children.Add(MakeMenuItem("\uE74D", "Delete Breakpoint", (_, _) =>
         {
             _source?.Delete(_filePath, _line1);
+            DeleteRequested?.Invoke(_filePath, _line1);
             IsOpen = false;
-        }));
+        }, isDestructive: true));
 
-        stack.Children.Add(actionsPanel);
+        var menuBorder = new Border();
+        menuBorder.SetResourceReference(Border.BackgroundProperty, "ET_PopupBackground");
+        menuBorder.Child = menuPanel;
+        stack.Children.Add(menuBorder);
 
-        border.Child = stack;
-        return border;
+        outerBorder.Child = stack;
+        return outerBorder;
     }
 
-    private static TextBlock MakeActionLink(string text, Action onClick)
+    // ── Menu item helpers ─────────────────────────────────────────────────────
+
+    private static FrameworkElement MakeMenuItem(string glyph, string label,
+        RoutedEventHandler handler, bool isDestructive = false)
     {
-        var tb = new TextBlock
+        var fgKey = isDestructive ? "ET_AccentBrush" : "ET_HeaderForeground";
+
+        var iconTb = new TextBlock
         {
-            Text = text,
-            FontSize = 11,
-            Cursor = Cursors.Hand,
-            Margin = new Thickness(0, 0, 0, 0),
+            Text              = glyph,
+            FontFamily        = new FontFamily("Segoe MDL2 Assets"),
+            FontSize          = 12,
+            Width             = 20,
+            VerticalAlignment = VerticalAlignment.Center,
         };
-        tb.SetResourceReference(TextBlock.ForegroundProperty, "ET_AccentBrush");
-        tb.MouseLeftButtonDown += (_, e) => { onClick(); e.Handled = true; };
-        tb.MouseEnter += (_, _) => tb.TextDecorations = TextDecorations.Underline;
-        tb.MouseLeave += (_, _) => tb.TextDecorations = null;
-        return tb;
+        iconTb.SetResourceReference(TextBlock.ForegroundProperty, fgKey);
+
+        var labelTb = new TextBlock
+        {
+            Text              = label,
+            FontSize          = 11,
+            Margin            = new Thickness(4, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        labelTb.SetResourceReference(TextBlock.ForegroundProperty, fgKey);
+
+        var row = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        row.Children.Add(iconTb);
+        row.Children.Add(labelTb);
+
+        var bd = new Border
+        {
+            Padding    = new Thickness(10, 5, 16, 5),
+            Cursor     = Cursors.Hand,
+            Background = Brushes.Transparent,
+            Child      = row,
+        };
+        bd.MouseEnter        += (_, _) => bd.SetResourceReference(Border.BackgroundProperty, "ET_HeaderBackground");
+        bd.MouseLeave        += (_, _) => bd.Background = Brushes.Transparent;
+        bd.MouseLeftButtonUp += (s, e) => handler(s, e);
+        return bd;
     }
 
-    private static TextBlock MakeSep() => new()
+    private static Border MakeMenuSeparator()
     {
-        Text = "  |  ",
-        FontSize = 11,
-        Opacity = 0.4,
-    };
+        var sep = new Border { Height = 1, Margin = new Thickness(10, 2, 10, 2) };
+        sep.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
+        return sep;
+    }
 
     // ── Placement callback ───────────────────────────────────────────────────
 
     private CustomPopupPlacement[] PlacePopup(Size popup, Size target, Point offset)
     {
-        // Position based on mouse/anchor: top of popup = anchorY - 2 line heights.
         double lineH = _anchorRect.Height;
-        double x = _anchorRect.X + 20;
-        double y = _anchorRect.Y - 2 * lineH;
+        double x     = _anchorRect.X + 20;
+        double y     = _anchorRect.Y - 2 * lineH;
 
-        // Clamp: if no room above, fall below the line.
         if (y < 0)
             y = _anchorRect.Y + lineH;
 

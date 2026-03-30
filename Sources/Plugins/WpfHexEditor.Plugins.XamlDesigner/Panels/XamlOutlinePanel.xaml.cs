@@ -126,10 +126,6 @@ public partial class XamlOutlinePanel : UserControl
         TbxSearch.TextChanged -= OnSearchTextChanged;
         TbxSearch.TextChanged += OnSearchTextChanged;
 
-        // Keep placeholder visibility in sync with content.
-        TbxSearch.TextChanged -= OnSearchPlaceholderUpdate;
-        TbxSearch.TextChanged += OnSearchPlaceholderUpdate;
-
         // Wire context menu items for all nodes via the TreeView's ContextMenuOpening.
         OutlineTree.ContextMenuOpening -= OnTreeContextMenuOpening;
         OutlineTree.ContextMenuOpening += OnTreeContextMenuOpening;
@@ -165,7 +161,6 @@ public partial class XamlOutlinePanel : UserControl
         OutlineTree.KeyDown              -= OnTreeKeyDown;
 
         TbxSearch.TextChanged -= OnSearchTextChanged;
-        TbxSearch.TextChanged -= OnSearchPlaceholderUpdate;
     }
 
     // ── Toolbar handlers ──────────────────────────────────────────────────────
@@ -196,12 +191,6 @@ public partial class XamlOutlinePanel : UserControl
 
     private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         => _vm.SearchText = TbxSearch.Text;
-
-    private void OnSearchPlaceholderUpdate(object sender, TextChangedEventArgs e)
-        => TbxSearchPlaceholder.Visibility =
-               string.IsNullOrEmpty(TbxSearch.Text)
-                   ? Visibility.Visible
-                   : Visibility.Collapsed;
 
     // ── Tree selection ────────────────────────────────────────────────────────
 

@@ -158,6 +158,11 @@ public sealed class EditorSettingsService
 
         hex.ByteToolTipDisplayMode               = d.ByteToolTipDisplayMode;
 
+        // Column / row highlight
+        hex.ShowColumnHighlight      = d.ShowColumnHighlight;
+        hex.ShowAsciiColumnHighlight = d.ShowAsciiColumnHighlight;
+        hex.ShowRowHighlight         = d.ShowRowHighlight;
+
         // Breadcrumb bar
         hex.ShowBreadcrumbBar             = d.ShowBreadcrumbBar;
         hex.BreadcrumbOffsetFormat        = (WpfHexEditor.HexEditor.Controls.BreadcrumbOffsetFormat)d.BreadcrumbOffsetFormat;

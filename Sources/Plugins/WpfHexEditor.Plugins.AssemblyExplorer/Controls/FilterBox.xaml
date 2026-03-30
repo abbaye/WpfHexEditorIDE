@@ -12,10 +12,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Height="22" MinWidth="80">
-    <Border BorderBrush="{DynamicResource PFP_BorderBrush}"
+    <Border BorderBrush="{DynamicResource Panel_SearchBoxBorderBrush}"
             BorderThickness="1"
             CornerRadius="2"
-            Background="{DynamicResource PFP_SectionBackgroundBrush}">
+            Background="{DynamicResource ERR_SearchBoxBrush}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

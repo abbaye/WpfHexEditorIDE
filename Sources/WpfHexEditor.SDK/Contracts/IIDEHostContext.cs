@@ -6,6 +6,7 @@
 
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.LSP;
+using WpfHexEditor.Editor.Core.Notifications;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.SDK.Commands;
@@ -204,4 +205,12 @@ public interface IIDEHostContext
     /// Null when no workspace support is configured.
     /// </summary>
     IWorkspaceService? Workspace => null;
+
+    // -- Notification Center --------------------------------------------------
+
+    /// <summary>
+    /// IDE-wide notification service. Post user-visible alerts, progress messages,
+    /// and first-run prompts. Never null after IDE v0.8.
+    /// </summary>
+    INotificationService? Notifications => null;
 }

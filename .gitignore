@@ -243,3 +243,6 @@ _Pvt_Extensions
 
 Sources/WPFHexaEditor/
 DevPlans/
+
+# LSP bundled server binaries (run Scripts/Download-LspServers.ps1 after clone)
+tools/lsp/

@@ -232,6 +232,38 @@ namespace WpfHexEditor.Core.Interfaces
 
         public bool HasExportTemplates => _exportTemplates?.Count > 0;
 
+        // ── D6 — AI Hints from whfmt aiHints ─────────────────────────────────
+        private AiHintsData _aiHintsData;
+        private bool        _isAiSectionExpanded = true;
+
+        public AiHintsData AiHintsData
+        {
+            get => _aiHintsData;
+            set
+            {
+                _aiHintsData = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasAiHints));
+                OnPropertyChanged(nameof(AiHintsCount));
+                OnPropertyChanged(nameof(AiHintsBadge));
+                OnPropertyChanged(nameof(AiVulnerabilities));
+                OnPropertyChanged(nameof(AiInspections));
+            }
+        }
+
+        public bool   HasAiHints       => _aiHintsData != null && _aiHintsData.TotalCount > 0;
+        public int    AiHintsCount     => _aiHintsData?.TotalCount ?? 0;
+        public string AiHintsBadge     => AiHintsCount > 0 ? $"{AiHintsCount} hint{(AiHintsCount == 1 ? "" : "s")}" : string.Empty;
+
+        public ObservableCollection<AiInspectionItem> AiInspections    => _aiHintsData?.Inspections;
+        public List<AiVulnerabilityChip>              AiVulnerabilities => _aiHintsData?.Vulnerabilities;
+
+        public bool IsAiSectionExpanded
+        {
+            get => _isAiSectionExpanded;
+            set { _isAiSectionExpanded = value; OnPropertyChanged(); }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -335,6 +367,52 @@ namespace WpfHexEditor.Core.Interfaces
         };
         public FormatDetection.ExportTemplate Source { get; set; }
         public override string ToString() => Name;
+    }
+
+    /// <summary>D6 — Interactive inspection item from aiHints.suggestedInspections.</summary>
+    public class AiInspectionItem : INotifyPropertyChanged
+    {
+        private bool _isChecked;
+
+        public string Text { get; set; }
+
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                _isChecked = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    /// <summary>D6 — Vulnerability pill from aiHints.knownVulnerabilities.</summary>
+    public class AiVulnerabilityChip
+    {
+        public string Text { get; set; }
+        public string Icon => "\u26A0";   // ⚠
+    }
+
+    /// <summary>
+    /// D6 — Aggregated AI hints for the panel. Panel-layer view of FormatDefinition.AiHints.
+    /// Replaced atomically so XAML binding paths re-evaluate via FormatInfo.AiHintsData setter.
+    /// </summary>
+    public class AiHintsData
+    {
+        public string AnalysisContext { get; set; }
+        public string ForensicContext { get; set; }
+
+        public ObservableCollection<AiInspectionItem> Inspections     { get; set; } = new();
+        public List<AiVulnerabilityChip>              Vulnerabilities { get; set; } = new();
+
+        public bool HasAnalysisContext  => !string.IsNullOrWhiteSpace(AnalysisContext);
+        public bool HasForensicContext  => !string.IsNullOrWhiteSpace(ForensicContext);
+        public bool HasInspections      => Inspections?.Count > 0;
+        public bool HasVulnerabilities  => Vulnerabilities?.Count > 0;
+        public int  TotalCount          => (Inspections?.Count ?? 0) + (Vulnerabilities?.Count ?? 0);
     }
 
     /// <summary>

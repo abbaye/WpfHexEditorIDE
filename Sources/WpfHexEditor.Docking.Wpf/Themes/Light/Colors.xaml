@@ -270,6 +270,8 @@
 
     <!-- Standardized item selection / hover tokens (used by PanelCommon + ContentControls) -->
     <SolidColorBrush x:Key="Panel_ItemHoverBrush"              Color="#D6D6DE"/>
+    <SolidColorBrush x:Key="BP_ExplorerRowHoverBrush"    Color="#D6D6DE"/>
+    <SolidColorBrush x:Key="BP_ExplorerRowSelectedBrush" Color="#CCE8FF"/>
     <SolidColorBrush x:Key="Panel_ItemSelectedBrush"           Color="#CCE8FF"/>
     <SolidColorBrush x:Key="Panel_ItemSelectedForegroundBrush" Color="#01579B"/>
     <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#E0F0FF"/>
@@ -767,6 +769,8 @@
     <SolidColorBrush x:Key="WF_PointerArrowBrush"         Color="#007070" />
     <SolidColorBrush x:Key="WF_BitfieldSubrowBrush"       Color="#E8E8E8" />
     <SolidColorBrush x:Key="WF_InspectorGroupHeaderBrush" Color="#DDDDDD" />
+    <SolidColorBrush x:Key="WF_AiHintAccentBrush"         Color="#C07800" />
+    <SolidColorBrush x:Key="WF_AiHintSectionHeaderBrush"  Color="#FFF8E7" />
     <SolidColorBrush x:Key="WF_NavigatorBookmarkBrush"    Color="#1F5299" />
     <SolidColorBrush x:Key="WF_ConfidenceBadgeBrush"      Color="#1E7C1E" />
 
@@ -780,4 +784,18 @@
     <SolidColorBrush x:Key="CL_RadioUnselectedBrush"  Color="#E0E0E0" />
     <SolidColorBrush x:Key="CL_HoverBrush"            Color="#E8E8E8" />
     <SolidColorBrush x:Key="CL_ModeBadgeBrush"        Color="#107C10" />
+
+    <!-- DE_* Document Editor tokens -->
+    <SolidColorBrush x:Key="DE_TextPaneBackground"    Color="#FAFAFA"/>
+    <SolidColorBrush x:Key="DE_TextPaneForeground"    Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="DE_BlockHoverBrush"       Color="#20007ACC"/>
+    <SolidColorBrush x:Key="DE_SelectedBlockBrush"    Color="#5000AA7A"/>
+    <SolidColorBrush x:Key="DE_ForensicOkBrush"       Color="#22227722"/>
+    <SolidColorBrush x:Key="DE_ForensicWarnBrush"     Color="#44CC9900"/>
+    <SolidColorBrush x:Key="DE_ForensicErrorBrush"    Color="#44CC0000"/>
+    <SolidColorBrush x:Key="DE_ForensicAlertBadgeFg"  Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DE_StructureNodeFg"       Color="#0070C1"/>
+    <SolidColorBrush x:Key="DE_StructureKindFg"       Color="#007F6A"/>
+    <SolidColorBrush x:Key="DE_MiniMapBg"             Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="DE_MiniMapScrollBrush"    Color="#CCCCCC"/>
 </ResourceDictionary>

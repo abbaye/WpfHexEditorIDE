@@ -55,8 +55,23 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
 
     public IReadOnlyList<DebugBreakpointInfo> Breakpoints =>
         _breakpoints.Select(b => new DebugBreakpointInfo(
-            b.FilePath, b.Line, string.IsNullOrEmpty(b.Condition) ? null : b.Condition,
-            b.IsEnabled, b.IsVerified, b.HitCount)).ToList();
+            FilePath:         b.FilePath,
+            Line:             b.Line,
+            Condition:        string.IsNullOrEmpty(b.Condition) ? null : b.Condition,
+            IsEnabled:        b.IsEnabled,
+            IsVerified:       b.IsVerified,
+            HitCount:         b.HitCount,
+            ConditionKind:    b.ConditionKind,
+            ConditionMode:    b.ConditionMode,
+            HitCountOp:       b.HitCountOp,
+            HitCountTarget:   b.HitCountTarget,
+            FilterExpr:       b.FilterExpr,
+            HasAction:        b.HasAction,
+            LogMessage:       b.LogMessage,
+            ContinueExecution: b.ContinueExecution,
+            DisableOnceHit:   b.DisableOnceHit,
+            DependsOnBpKey:   b.DependsOnBpKey
+        )).ToList();
 
     public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings)
     {
@@ -279,6 +294,44 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             {
                 Condition = condition ?? string.Empty,
                 IsEnabled = isEnabled,
+            };
+        }
+
+        _persistence.SaveForContext(_currentSolutionPath, _breakpoints);
+        BreakpointsChanged?.Invoke(this, EventArgs.Empty);
+
+        if (_client is not null && _session.IsActive)
+            await SyncBreakpointsForFileAsync(_client, filePath);
+    }
+
+    public async Task UpdateBreakpointSettingsAsync(string filePath, int line,
+        BreakpointSettings settings)
+    {
+        lock (_lock)
+        {
+            int idx = _breakpoints.FindIndex(
+                b => string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase) && b.Line == line);
+            if (idx < 0) return;
+
+            // Map BreakpointSettings → BreakpointLocation fields.
+            // For ConditionalExpression, keep the Condition string for adapter compatibility.
+            string condition = settings.ConditionKind == BpConditionKind.ConditionalExpression
+                ? (settings.ConditionExpr ?? string.Empty)
+                : string.Empty;
+
+            _breakpoints[idx] = _breakpoints[idx] with
+            {
+                Condition         = condition,
+                ConditionKind     = settings.ConditionKind,
+                ConditionMode     = settings.ConditionMode,
+                HitCountOp        = settings.HitCountOp,
+                HitCountTarget    = settings.HitCountTarget,
+                FilterExpr        = settings.FilterExpr,
+                HasAction         = settings.HasAction,
+                LogMessage        = settings.LogMessage,
+                ContinueExecution = settings.ContinueExecution,
+                DisableOnceHit    = settings.DisableOnceHit,
+                DependsOnBpKey    = settings.DependsOnBpKey,
             };
         }
 

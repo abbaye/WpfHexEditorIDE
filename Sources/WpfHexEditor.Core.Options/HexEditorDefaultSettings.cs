@@ -132,6 +132,17 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Controls where byte tooltips are shown (None / OnCustomBackgroundBlocks / Everywhere).</summary>
     public ByteToolTipDisplayMode ByteToolTipDisplayMode { get; set; } = ByteToolTipDisplayMode.OnCustomBackgroundBlocks;
 
+    // -- Column / Row Highlight -------------------------------------------
+
+    /// <summary>Show the active-column stripe in the hex byte panel.</summary>
+    public bool ShowColumnHighlight { get; set; } = true;
+
+    /// <summary>Show the active-column stripe in the ASCII panel.</summary>
+    public bool ShowAsciiColumnHighlight { get; set; } = true;
+
+    /// <summary>Show the active-row (line) highlight behind the cursor row.</summary>
+    public bool ShowRowHighlight { get; set; } = true;
+
     // -- Breadcrumb Bar ---------------------------------------------------
 
     /// <summary>Show the breadcrumb bar above the hex viewport.</summary>

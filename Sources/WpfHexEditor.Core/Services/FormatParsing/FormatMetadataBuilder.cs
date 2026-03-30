@@ -163,5 +163,32 @@ namespace WpfHexEditor.Core.Services.FormatParsing
                 panel.FormatInfo.ExportTemplates = null;
             }
         }
+
+        /// <summary>
+        /// Build AI hints from whfmt aiHints (D6).
+        /// Maps AnalysisContext, SuggestedInspections, KnownVulnerabilities, ForensicContext.
+        /// </summary>
+        public static void BuildAiHints(FormatDefinition format, IParsedFieldsPanel panel)
+        {
+            var src = format.AiHints;
+            if (src == null) { panel.FormatInfo.AiHintsData = null; return; }
+
+            var data = new AiHintsData
+            {
+                AnalysisContext = src.AnalysisContext,
+                ForensicContext = src.ForensicContext
+            };
+
+            if (src.SuggestedInspections != null)
+                foreach (var t in src.SuggestedInspections)
+                    data.Inspections.Add(new AiInspectionItem { Text = t });
+
+            if (src.KnownVulnerabilities != null)
+                foreach (var t in src.KnownVulnerabilities)
+                    data.Vulnerabilities.Add(new AiVulnerabilityChip { Text = t });
+
+            var hasContent = data.TotalCount > 0 || data.HasAnalysisContext || data.HasForensicContext;
+            panel.FormatInfo.AiHintsData = hasContent ? data : null;
+        }
     }
 }
