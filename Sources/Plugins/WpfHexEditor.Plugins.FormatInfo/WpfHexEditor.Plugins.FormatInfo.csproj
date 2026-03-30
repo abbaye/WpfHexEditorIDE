@@ -41,7 +41,7 @@
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true" />
+          OverwriteReadOnlyFiles="true" />
   </Target>
 
 </Project>

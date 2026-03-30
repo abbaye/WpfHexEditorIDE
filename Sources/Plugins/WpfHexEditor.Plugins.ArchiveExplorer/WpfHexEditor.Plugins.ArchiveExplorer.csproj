@@ -38,9 +38,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <!-- Editor.Core: compile-only reference for ThemedDialog in ArchivePropertiesDialog.
-         DLL resolved at runtime via the host AssemblyLoadContext fallback. -->
-    <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
@@ -53,7 +50,7 @@
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)SharpCompress.dll"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true" />
+          OverwriteReadOnlyFiles="true" />
   </Target>
 
 </Project>

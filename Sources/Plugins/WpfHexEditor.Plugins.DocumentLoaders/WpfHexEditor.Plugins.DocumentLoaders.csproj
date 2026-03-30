@@ -41,8 +41,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 
@@ -55,7 +53,7 @@
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
           DestinationFolder="$(PluginDestDir)"
-          SkipUnchangedFiles="true" />
+          OverwriteReadOnlyFiles="true" />
   </Target>
 
 </Project>
