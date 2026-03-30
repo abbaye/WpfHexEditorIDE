@@ -16,7 +16,7 @@ namespace WpfHexEditor.Plugins.Debugger.Panels;
 public partial class BreakpointsPanel : UserControl
 {
     private BreakpointHoverPopup? _popup;
-    private BreakpointRow?        _lastHoveredRow;
+    private BreakpointRowEx?      _lastHoveredRow;
 
     public BreakpointsPanel() => InitializeComponent();
 
@@ -43,7 +43,7 @@ public partial class BreakpointsPanel : UserControl
 
     // ── Hit-test helper ───────────────────────────────────────────────────────
 
-    private BreakpointRow? HitTestRow(Point position)
+    private BreakpointRowEx? HitTestRow(Point position)
     {
         var hit = VisualTreeHelper.HitTest(BpListView, position);
         if (hit is null) return null;
@@ -51,7 +51,7 @@ public partial class BreakpointsPanel : UserControl
         DependencyObject? current = hit.VisualHit;
         while (current is not null)
         {
-            if (current is ListViewItem { DataContext: BreakpointRow row })
+            if (current is ListViewItem { DataContext: BreakpointRowEx row })
                 return row;
             current = VisualTreeHelper.GetParent(current);
         }
