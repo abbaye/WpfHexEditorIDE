@@ -49,6 +49,7 @@ internal sealed class LspDocumentBridgeService : IDisposable
     private readonly IDocumentManager              _documentManager;
     private readonly ILspServerRegistry            _registry;
     private readonly Action<string>                _log;
+    private readonly Func<string?>                 _workspacePathProvider;
 
     // One initialized LSP client per language ID (created lazily, shared across documents).
     private readonly Dictionary<string, ILspClient>       _clients = new(StringComparer.OrdinalIgnoreCase);
@@ -79,11 +80,13 @@ internal sealed class LspDocumentBridgeService : IDisposable
     internal LspDocumentBridgeService(
         IDocumentManager   documentManager,
         ILspServerRegistry registry,
-        Action<string>     log)
+        Action<string>     log,
+        Func<string?>?     workspacePathProvider = null)
     {
-        _documentManager = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
-        _registry        = registry        ?? throw new ArgumentNullException(nameof(registry));
-        _log             = log             ?? (_ => { });
+        _documentManager       = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
+        _registry              = registry        ?? throw new ArgumentNullException(nameof(registry));
+        _log                   = log             ?? (_ => { });
+        _workspacePathProvider = workspacePathProvider ?? (() => null);
 
         _documentManager.DocumentRegistered   += OnDocumentRegistered;
         _documentManager.DocumentUnregistered += OnDocumentUnregistered;
@@ -102,30 +105,33 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
     private void TryCreateBridge(DocumentModel doc)
     {
-        OutputLogger.Info($"[LSP] TryCreateBridge: disposed={_disposed}, buffer={doc.Buffer?.FilePath ?? "null"}, lang={doc.Buffer?.LanguageId ?? "null"}");
         if (_disposed || doc.Buffer is not { } buffer) return;
         if (string.IsNullOrEmpty(buffer.LanguageId))   return;
         if (_bridges.ContainsKey(buffer.FilePath))     return;  // already bridged
 
         var entry = _registry.FindByLanguage(buffer.LanguageId);
-        OutputLogger.Info($"[LSP] FindByLanguage({buffer.LanguageId}) = {(entry is null ? "null" : entry.LanguageId)}, enabled={entry?.IsEnabled}");
         if (entry is null || !entry.IsEnabled) return;
 
+        OutputLogger.LspDebug($"TryCreateBridge: {System.IO.Path.GetFileName(buffer.FilePath)} [{buffer.LanguageId}]");
         _ = InitBridgeAsync(entry, buffer);
     }
 
     private async Task InitBridgeAsync(LspServerEntry entry, IDocumentBuffer buffer)
     {
-        OutputLogger.Info($"[LSP] InitBridgeAsync: {entry.LanguageId} → {System.IO.Path.GetFileName(buffer.FilePath)}");
         try
         {
             if (!_clients.TryGetValue(entry.LanguageId, out var client))
             {
                 RaiseState(entry, LspServerState.Connecting);
-                client = _registry.CreateClient(entry);
-                await client.InitializeAsync().ConfigureAwait(true);  // true = resume on UI thread
+                var workspacePath = _workspacePathProvider()
+                    ?? System.IO.Path.GetDirectoryName(buffer.FilePath);
+                OutputLogger.LspDebug($"CreateClient [{entry.LanguageId}] workspace={workspacePath ?? "null"}");
+                client = _registry.CreateClient(entry, workspacePath);
+                if (client is WpfHexEditor.Core.LSP.Client.LspClientImpl impl)
+                    impl.Logger = msg => OutputLogger.LspDebug(msg);
+                await client.InitializeAsync().ConfigureAwait(true);
                 _clients[entry.LanguageId] = client;
-                _log($"[LSP] Server initialized for '{entry.LanguageId}'.");
+                OutputLogger.LspInfo($"Server ready: {entry.LanguageId}");
                 RaiseState(entry, LspServerState.Ready);
             }
 
@@ -133,20 +139,15 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
             var bridge = new LspBufferBridge(client, buffer);
             _bridges[buffer.FilePath] = bridge;
-            _log($"[LSP] Bridge created: {System.IO.Path.GetFileName(buffer.FilePath)} → {entry.LanguageId}");
+            OutputLogger.LspInfo($"Bridge: {System.IO.Path.GetFileName(buffer.FilePath)} → {entry.LanguageId}");
 
             // Inject the LSP client into any ILspAwareEditor so it can invoke
             // Code Actions and Rename directly (e.g. CodeEditor via Ctrl+. / F2).
             var doc = _documentManager.FindDocumentByBuffer(buffer);
-            OutputLogger.Info($"[LSP] doc={doc is not null}, editor={doc?.AssociatedEditor?.GetType().Name ?? "null"}");
             if (doc?.AssociatedEditor is ILspAwareEditor lspEditor)
             {
-                OutputLogger.Info($"[LSP] AssociatedEditor type: {lspEditor.GetType().Name}");
                 if (lspEditor is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost splitHost)
-                {
-                    OutputLogger.Debug("[LSP] BreadcrumbLogger wired to General channel.");
-                    splitHost.BreadcrumbLogger = msg => OutputLogger.Info(msg);
-                }
+                    splitHost.BreadcrumbLogger = msg => OutputLogger.LspDebug(msg);
 
                 lspEditor.SetLspClient(client);
                 lspEditor.SetDocumentManager(_documentManager);
@@ -154,7 +155,7 @@ internal sealed class LspDocumentBridgeService : IDisposable
         }
         catch (Exception ex)
         {
-            _log($"[LSP] Bridge init failed for '{buffer.FilePath}': {ex.Message}");
+            OutputLogger.LspError($"Bridge init failed for '{System.IO.Path.GetFileName(buffer.FilePath)}': {ex.Message}");
             RaiseState(entry, LspServerState.Error, ex.Message);
         }
     }
@@ -190,6 +191,16 @@ internal sealed class LspDocumentBridgeService : IDisposable
     /// <summary>Returns the active LSP client for the given language ID, or null if none.</summary>
     public ILspClient? TryGetClient(string languageId)
         => _clients.TryGetValue(languageId, out var client) ? client : null;
+
+    /// <summary>
+    /// Re-tries bridging all currently open documents.
+    /// Call after the LSP service is created to catch documents opened before initialization.
+    /// </summary>
+    public void RetryOpenDocuments()
+    {
+        foreach (var doc in _documentManager.OpenDocuments)
+            TryCreateBridge(doc);
+    }
 
     // ── IDisposable ───────────────────────────────────────────────────────────
 

@@ -90,6 +90,7 @@ internal static class OutputLogger
     public const string SourceBuild        = "Build";
     public const string SourceDebug        = "Debug";
     public const string SourceUnitTesting  = "Unit Testing";
+    public const string SourceLsp          = "Language Server";
 
     // --- Public API — General channel ----------------------------------
 
@@ -124,6 +125,13 @@ internal static class OutputLogger
     /// </summary>
     public static void BuildRaw(string message, Brush? color = null)
         => Append(message, color, SourceBuild);
+
+    // --- Public API — LSP channel -------------------------------------
+
+    public static void LspInfo(string message)  => Log("INFO ", message, null,          SourceLsp);
+    public static void LspWarn(string message)  => Log("WARN ", message, _warnBrush,   SourceLsp);
+    public static void LspError(string message) => Log("ERROR", message, _errorBrush,  SourceLsp);
+    public static void LspDebug(string message) => Log("DEBUG", message, _debugBrush,  SourceLsp);
 
     // --- Public API — Unit Testing channel ----------------------------
 

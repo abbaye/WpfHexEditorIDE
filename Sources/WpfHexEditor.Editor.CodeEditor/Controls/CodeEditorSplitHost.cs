@@ -217,7 +217,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
         _minimap.MinimapToggled += visible => ShowMinimap = visible;
         _minimap.SideChangeRequested += side => MinimapSide = side;
 
-        // Coalesced minimap refresh — fires at most every 150ms on scroll/edit
+        // Coalesced minimap refresh — fires at most every 150ms on scroll/edit/highlight.
+        // Uses MinimapRefreshRequested (not LayoutUpdated) to avoid a feedback loop:
+        // LayoutUpdated fires after every layout pass including the minimap's own
+        // InvalidateVisual, which would cause a continuous 150ms refresh cycle.
         _minimapRefreshTimer = new System.Windows.Threading.DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(150)
@@ -227,7 +230,7 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
             _minimapRefreshTimer.Stop();
             if (ShowMinimap) _minimap.Refresh();
         };
-        _primaryEditor.LayoutUpdated += (_, _) => RequestMinimapRefresh();
+        _primaryEditor.MinimapRefreshRequested += (_, _) => RequestMinimapRefresh();
 
         // Wire minimap to editor on first Loaded (ensures Document is initialized)
         Loaded += (_, _) =>
@@ -753,7 +756,11 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
     // ═══════════════════════════════════════════════════════════════════
 
     /// <inheritdoc/>
-    public void AttachBuffer(IDocumentBuffer buffer) => _primaryEditor.AttachBuffer(buffer);
+    public void AttachBuffer(IDocumentBuffer buffer)
+    {
+        _primaryEditor.AttachBuffer(buffer);
+        _breadcrumbBar.AttachBuffer(buffer);
+    }
 
     /// <inheritdoc/>
     public void DetachBuffer() => _primaryEditor.DetachBuffer();

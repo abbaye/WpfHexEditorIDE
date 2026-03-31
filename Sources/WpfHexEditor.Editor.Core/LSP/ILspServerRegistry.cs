@@ -66,9 +66,11 @@ public interface ILspServerRegistry
     /// <summary>
     /// Creates (but does not initialize) a new <see cref="ILspClient"/> for the
     /// specified <paramref name="entry"/>.
+    /// <paramref name="workspacePath"/> is sent as <c>rootUri</c> in the LSP initialize
+    /// request so the server can index project files (required by OmniSharp).
     /// Callers must call <see cref="ILspClient.InitializeAsync"/> before use.
     /// </summary>
-    ILspClient CreateClient(LspServerEntry entry);
+    ILspClient CreateClient(LspServerEntry entry, string? workspacePath = null);
 
     /// <summary>Registers or replaces a server entry (persists to settings).</summary>
     void Register(LspServerEntry entry);

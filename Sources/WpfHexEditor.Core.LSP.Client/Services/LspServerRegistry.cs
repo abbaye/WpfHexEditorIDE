@@ -82,8 +82,8 @@ public sealed class LspServerRegistry : ILspServerRegistry
                 e.IsEnabled && e.LanguageId.Equals(languageId, StringComparison.OrdinalIgnoreCase));
     }
 
-    public ILspClient CreateClient(LspServerEntry entry)
-        => new LspClientImpl(entry.ExecutablePath, entry.Arguments, null, _dispatcher);
+    public ILspClient CreateClient(LspServerEntry entry, string? workspacePath = null)
+        => new LspClientImpl(entry.ExecutablePath, entry.Arguments, workspacePath, _dispatcher);
 
     public void Register(LspServerEntry entry)
     {

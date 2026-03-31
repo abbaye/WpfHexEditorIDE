@@ -58,6 +58,9 @@ public sealed class LspClientImpl : ILspClient
 
     public bool IsInitialized { get; private set; }
 
+    /// <summary>Optional diagnostic logger injected by the host.</summary>
+    public Action<string>? Logger { get; set; }
+
     /// <summary>Server capability flags — valid after <see cref="InitializeAsync"/> completes.</summary>
     internal ServerCapabilities Capabilities { get; private set; } = ServerCapabilities.Parse(null);
 
@@ -89,7 +92,7 @@ public sealed class LspClientImpl : ILspClient
         _linkedEditing = new LspLinkedEditingProvider(channel);
         _callHierarchy  = new LspCallHierarchyProvider(channel);
         _typeHierarchy  = new LspTypeHierarchyProvider(channel);
-        _symbolProvider = new LspDocumentSymbolProvider(channel);
+        _symbolProvider = new LspDocumentSymbolProvider(channel) { _log = Logger };
 
         Capabilities  = _process.Capabilities;
 

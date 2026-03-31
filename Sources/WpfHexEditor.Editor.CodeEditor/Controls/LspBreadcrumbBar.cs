@@ -44,7 +44,9 @@ public sealed class LspBreadcrumbBar : Border
     private CodeEditor?          _editor;
     private string?              _filePath;
     private readonly DispatcherTimer _debounce;
+    private readonly DispatcherTimer _bufferDebounce;   // longer debounce after buffer changes
     private CancellationTokenSource? _cts;
+    private WpfHexEditor.Editor.Core.Documents.IDocumentBuffer? _buffer;
 
     /// <summary>Optional logger wired by the host (e.g. OutputLogger.Debug).</summary>
     public Action<string>? Logger { get; set; }
@@ -76,6 +78,13 @@ public sealed class LspBreadcrumbBar : Border
             Interval = TimeSpan.FromMilliseconds(200)
         };
         _debounce.Tick += OnDebounce;
+
+        // Longer debounce after buffer change — gives OmniSharp time to re-index.
+        _bufferDebounce = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(1500)
+        };
+        _bufferDebounce.Tick += OnDebounce;
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -91,6 +100,25 @@ public sealed class LspBreadcrumbBar : Border
 
         if (_editor is not null)
             _editor.CaretMoved += OnCaretMoved;
+    }
+
+    /// <summary>Attaches a document buffer so the bar refreshes after content changes (e.g. initial load).</summary>
+    public void AttachBuffer(WpfHexEditor.Editor.Core.Documents.IDocumentBuffer? buffer)
+    {
+        if (_buffer is not null)
+            _buffer.Changed -= OnBufferChanged;
+
+        _buffer = buffer;
+
+        if (_buffer is not null)
+            _buffer.Changed += OnBufferChanged;
+    }
+
+    private void OnBufferChanged(object? sender, WpfHexEditor.Editor.Core.Documents.DocumentBufferChangedEventArgs e)
+    {
+        // Re-trigger with longer debounce to let OmniSharp re-index the new content.
+        _bufferDebounce.Stop();
+        _bufferDebounce.Start();
     }
 
     /// <summary>Updates the file path (called when user opens/saves a different file).</summary>
@@ -125,10 +153,11 @@ public sealed class LspBreadcrumbBar : Border
     private async void OnDebounce(object? sender, EventArgs e)
     {
         _debounce.Stop();
+        _bufferDebounce.Stop();
 
         if (_lspClient?.IsInitialized != true || _filePath is null || _editor is null)
         {
-            Logger?.Invoke($"[BreadcrumbBar] Guard hit: lsp={_lspClient?.IsInitialized}, path={_filePath ?? "null"}, editor={_editor is not null}");
+            Logger?.Invoke($"[Breadcrumb] Guard: lsp={_lspClient?.IsInitialized}, path={_filePath is not null}, editor={_editor is not null}");
             _crumbPanel.Children.Clear();
             return;
         }
@@ -141,15 +170,14 @@ public sealed class LspBreadcrumbBar : Border
             var symbols = await _lspClient.DocumentSymbolsAsync(_filePath, _cts.Token)
                 .ConfigureAwait(true);
 
-            Logger?.Invoke($"[BreadcrumbBar] Got {symbols.Count} symbols for {System.IO.Path.GetFileName(_filePath)}, caret={_editor.CursorPosition.Line}");
             var crumbs = ResolveCrumbs(symbols, _editor.CursorPosition.Line);
-            Logger?.Invoke($"[BreadcrumbBar] Crumbs: [{string.Join(" › ", crumbs)}]");
+            Logger?.Invoke($"[Breadcrumb] {symbols.Count} symbols → [{string.Join(" › ", crumbs)}] (line {_editor.CursorPosition.Line})");
             RenderCrumbs(crumbs);
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            Logger?.Invoke($"[BreadcrumbBar] DocumentSymbols failed: {ex.GetType().Name}: {ex.Message}");
+            Logger?.Invoke($"[Breadcrumb] Failed: {ex.GetType().Name}: {ex.Message}");
             _crumbPanel.Children.Clear();
         }
     }

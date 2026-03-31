@@ -184,7 +184,15 @@ public partial class MainWindow
                 _lspBridgeService = new WpfHexEditor.App.Services.LspDocumentBridgeService(
                     _documentManager,
                     lspRegistry,
-                    msg => OutputLogger.PluginInfo(msg));
+                    msg => OutputLogger.PluginInfo(msg),
+                    workspacePathProvider: () =>
+                    {
+                        var solPath = _solutionManager.CurrentSolution?.FilePath;
+                        return solPath is not null ? System.IO.Path.GetDirectoryName(solPath) : null;
+                    });
+
+                // Catch-up: bridge any documents that were opened before the LSP service was ready.
+                _lspBridgeService.RetryOpenDocuments();
 
                 // LSP-02-D: Status bar indicator for LSP server state.
                 _lspStatusBarAdapter = new WpfHexEditor.App.Services.LspStatusBarAdapter(

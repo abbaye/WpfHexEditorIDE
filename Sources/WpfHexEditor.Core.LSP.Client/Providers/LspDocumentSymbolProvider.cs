@@ -29,6 +29,7 @@ internal sealed class LspDocumentSymbolProvider
     private static readonly IReadOnlyList<LspDocumentSymbol> s_empty = Array.Empty<LspDocumentSymbol>();
 
     private readonly LspJsonRpcChannel _channel;
+    internal Action<string>? _log;
 
     internal LspDocumentSymbolProvider(LspJsonRpcChannel channel)
         => _channel = channel;
@@ -45,10 +46,17 @@ internal sealed class LspDocumentSymbolProvider
             result = await _channel.CallAsync("textDocument/documentSymbol", @params, ct)
                                    .ConfigureAwait(false);
         }
-        catch { return s_empty; }
+        catch (Exception ex)
+        {
+            _log?.Invoke($"[SymbolProvider] CallAsync failed: {ex.GetType().Name}: {ex.Message}");
+            return s_empty;
+        }
 
         if (result is not JsonArray arr || arr.Count == 0)
+        {
+            _log?.Invoke($"[SymbolProvider] Empty result for {System.IO.Path.GetFileName(filePath)}");
             return s_empty;
+        }
 
         // Detect shape from first element:
         //   DocumentSymbol  → has "range" key
