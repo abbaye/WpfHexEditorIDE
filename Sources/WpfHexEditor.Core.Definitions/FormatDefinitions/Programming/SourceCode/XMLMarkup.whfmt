@@ -1,10 +1,10 @@
 /* ============================================================
    Format:    XML Markup Source File
    Category:  Programming
-   Ext:       .xsl, .xslt, .xhtml, .resx, .svg
+   Ext:       .xsl, .xslt, .xhtml, .svg, .tasks, .targets, .props
    Editor:    code-editor
-   Desc:      XML-derived markup source files: XSLT stylesheets, XHTML documents, .NET resource files, and SVG vector graphics.
-   Updated:   2026-03-22
+   Desc:      XML-derived markup source files: XSLT, XHTML, SVG, and MSBuild project files (.tasks, .targets, .props).
+   Updated:   2026-03-30
    ============================================================ */
 {
   "diffMode": "semantic",
@@ -14,9 +14,12 @@
     ".xsl",
     ".xslt",
     ".xhtml",
-    ".svg"
+    ".svg",
+    ".tasks",
+    ".targets",
+    ".props"
   ],
-  "description": "XML-derived markup source files: XSLT stylesheets, XHTML documents, and SVG vector graphics.",
+  "description": "XML-derived markup source files: XSLT stylesheets, XHTML documents, SVG vector graphics, and MSBuild project files (.tasks, .targets, .props).",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "code-editor",
@@ -48,7 +51,9 @@
     "XSLT transformations",
     ".NET resource files",
     "SVG vector graphics",
-    "XHTML web pages"
+    "XHTML web pages",
+    "MSBuild custom tasks (.tasks)",
+    "MSBuild targets and props (.targets, .props)"
   ],
   "syntaxDefinition": {
     "diagnosticPrefix": "XML",
@@ -66,7 +71,10 @@
       ".config",
       ".csproj",
       ".vbproj",
-      ".fsproj"
+      ".fsproj",
+      ".tasks",
+      ".targets",
+      ".props"
     ],
     "blockCommentStart": "<!--",
     "blockCommentEnd": "-->",
