@@ -43,6 +43,7 @@
     "Server-side Dart"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "DART",
     "id": "dart",
     "name": "Dart / Flutter",
     "extensions": [
@@ -120,7 +121,7 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [80],
         "formattingRules": {"indentSize":2,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

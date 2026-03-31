@@ -48,14 +48,43 @@ public sealed class DocumentMutator(DocumentModel model)
     // ── Text editing ─────────────────────────────────────────────────────────
 
     /// <summary>
+    /// If the block stores text in run children (DOCX-style), collapses all children
+    /// into <see cref="DocumentBlock.Text"/> and clears the children list.
+    /// Called before any in-place text mutation so editing always operates on a flat string.
+    /// Run-level formatting is dropped on first edit — run-aware editing is a future enhancement.
+    /// </summary>
+    public void EnsureFlatText(DocumentBlock block)
+    {
+        if (block.Children.Count == 0) return;
+        block.Text = string.Concat(block.Children.Select(c => c.Text));
+        block.Children.Clear();
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(block, BlockMutationKind.TextEdited));
+        model.NotifyBlocksChanged();
+    }
+
+    /// <summary>
     /// Inserts <paramref name="text"/> at <paramref name="charOffset"/> in the block.
     /// Pushes a <see cref="TextEditUndoEntry"/> (auto-coalesces within 1 s).
     /// </summary>
     public void InsertText(DocumentBlock block, int charOffset, string text)
     {
         if (string.IsNullOrEmpty(text)) return;
-        charOffset = Math.Clamp(charOffset, 0, block.Text.Length);
 
+        if (block.Children.Count > 0)
+        {
+            // Run-aware: find which run owns flatOffset and insert there, preserving formatting.
+            int flatLen = block.Children.Sum(c => c.Text.Length);
+            charOffset  = Math.Clamp(charOffset, 0, flatLen);
+            var (run, localOff) = FindRunAtFlatOffset(block, charOffset);
+            var oldRunText = run.Text;
+            run.Text = run.Text.Insert(localOff, text);
+            model.UndoEngine.Push(new TextEditUndoEntry { Block = run, OldText = oldRunText, NewText = run.Text });
+            BlockMutated?.Invoke(this, new BlockMutatedArgs(block, BlockMutationKind.TextEdited));
+            model.NotifyBlocksChanged();
+            return;
+        }
+
+        charOffset = Math.Clamp(charOffset, 0, block.Text.Length);
         var oldText = block.Text;
         var newText = block.Text.Insert(charOffset, text);
         block.Text = newText;
@@ -72,9 +101,41 @@ public sealed class DocumentMutator(DocumentModel model)
     public void DeleteText(DocumentBlock block, int charOffset, int length)
     {
         if (length <= 0 || charOffset < 0) return;
+
+        if (block.Children.Count > 0)
+        {
+            // Run-aware: if the range fits entirely within one run, delete there.
+            // If it spans multiple runs, fall back to flatten (cross-run delete loses formatting).
+            int flatLen = block.Children.Sum(c => c.Text.Length);
+            charOffset  = Math.Clamp(charOffset, 0, flatLen);
+            length      = Math.Min(length, flatLen - charOffset);
+            if (length <= 0) return;
+
+            int pos = 0;
+            foreach (var run in block.Children)
+            {
+                int end = pos + run.Text.Length;
+                if (charOffset >= pos && charOffset + length <= end)
+                {
+                    // Fully within this run
+                    int localStart = charOffset - pos;
+                    var oldRunText = run.Text;
+                    run.Text = run.Text.Remove(localStart, length);
+                    model.UndoEngine.Push(new TextEditUndoEntry { Block = run, OldText = oldRunText, NewText = run.Text });
+                    BlockMutated?.Invoke(this, new BlockMutatedArgs(block, BlockMutationKind.TextEdited));
+                    model.NotifyBlocksChanged();
+                    return;
+                }
+                pos = end;
+            }
+            // Cross-run: flatten then fall through to block.Text path
+            EnsureFlatText(block);
+            length = Math.Min(length, block.Text.Length - charOffset);
+            if (length <= 0) return;
+        }
+
         length = Math.Min(length, block.Text.Length - charOffset);
         if (length <= 0) return;
-
         var oldText = block.Text;
         var newText = block.Text.Remove(charOffset, length);
         block.Text = newText;
@@ -146,6 +207,7 @@ public sealed class DocumentMutator(DocumentModel model)
     public (DocumentBlock First, DocumentBlock Second) SplitBlock(int blockIndex, int charOffset)
     {
         var block  = model.Blocks[blockIndex];
+        EnsureFlatText(block);
         charOffset = Math.Clamp(charOffset, 0, block.Text.Length);
 
         var firstText  = block.Text[..charOffset];
@@ -181,6 +243,8 @@ public sealed class DocumentMutator(DocumentModel model)
 
         var first      = model.Blocks[blockIndex];
         var second     = model.Blocks[blockIndex + 1];
+        EnsureFlatText(first);
+        EnsureFlatText(second);
         var firstText  = first.Text;
         var secondText = second.Text;
 
@@ -326,6 +390,28 @@ public sealed class DocumentMutator(DocumentModel model)
         {
             foreach (var e in children) ApplyEntry(e, isUndo: false);
         }
+    }
+
+    // ── Run-aware helpers ─────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Given a flat <paramref name="flatOffset"/> into <paramref name="para"/>'s children,
+    /// returns the child run that owns that offset and the local offset within that run.
+    /// </summary>
+    private static (DocumentBlock Run, int LocalOffset) FindRunAtFlatOffset(
+        DocumentBlock para, int flatOffset)
+    {
+        int pos = 0;
+        foreach (var run in para.Children)
+        {
+            int end = pos + run.Text.Length;
+            if (flatOffset <= end)
+                return (run, flatOffset - pos);
+            pos = end;
+        }
+        // Past all runs: clamp to end of last run
+        var last = para.Children[^1];
+        return (last, last.Text.Length);
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

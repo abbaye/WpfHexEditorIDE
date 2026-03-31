@@ -6,15 +6,20 @@
 // Created: 2026-03-30
 // Description:
 //     Stateful depth tracker that assigns CE_Bracket_1/2/3/4 colors to bracket
-//     tokens based on their nesting depth within the current document.
+//     characters based on their nesting depth within the current document.
 //     Bracket pairs are data-driven from LanguageDefinition.BracketPairs (whfmt).
-//     Null BracketPairs → service is a no-op (single CE_Bracket color remains).
+//     Null BracketPairs → service is a no-op (no depth tracking).
 //
 // Architecture Notes:
 //     Service (stateful) — one instance per CodeEditor.
 //     Call SetPairs() when the active language changes.
 //     Call Reset() + pre-scan non-visible lines before each render pass.
 //     Call ColorizeLine() for each rendered line in document order.
+//
+//     Design: scans lineText directly for bracket chars — does NOT rely on
+//     any SyntaxTokenKind.Bracket tokens being present in the token stream.
+//     String/comment token spans are used to skip brackets inside them (correct
+//     depth tracking, no erroneous colorization of brackets in string literals).
 //
 // Depth color palette (4 levels, cycling):
 //     depth % 4 == 0 → CE_Bracket_1  (gold / yellow family)
@@ -25,7 +30,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
@@ -33,7 +37,7 @@ using WpfHexEditor.Editor.CodeEditor.Helpers;
 namespace WpfHexEditor.Editor.CodeEditor.Services;
 
 /// <summary>
-/// Assigns depth-based foreground colors to bracket tokens using whfmt-driven bracket pairs.
+/// Assigns depth-based foreground colors to bracket characters using whfmt-driven bracket pairs.
 /// Nil-safe: when no pairs are configured the service returns tokens unchanged.
 /// </summary>
 internal sealed class BracketDepthColorizer
@@ -89,14 +93,14 @@ internal sealed class BracketDepthColorizer
     /// </summary>
     public void Reset()
     {
-        foreach (var key in _depths.Keys.ToArray())
+        foreach (var key in _depths.Keys.ToArrayFast())
             _depths[key] = 0;
     }
 
     /// <summary>
     /// Advances bracket depth state for a non-rendered line (before the visible range).
-    /// Uses <paramref name="cachedTokens"/> for accuracy (skips brackets inside strings/comments);
-    /// falls back to raw character scan when no token cache is available.
+    /// Uses <paramref name="cachedTokens"/> to skip brackets inside string/comment spans.
+    /// Falls back to a raw character scan when no token cache is available.
     /// </summary>
     public void AdvanceLine(
         string                               lineText,
@@ -106,11 +110,13 @@ internal sealed class BracketDepthColorizer
 
         if (cachedTokens is { Count: > 0 })
         {
-            foreach (var token in cachedTokens)
+            // Build protected-column set from string/comment token spans.
+            // Brackets inside strings/comments advance depth but are not colorized.
+            var protectedCols = BuildProtectedCols(lineText.Length, cachedTokens);
+            for (int i = 0; i < lineText.Length; i++)
             {
-                if (token.Kind != SyntaxTokenKind.Bracket || token.Length != 1) continue;
-                if (token.StartColumn < lineText.Length)
-                    UpdateDepth(lineText[token.StartColumn]);
+                if (_bracketChars.Contains(lineText[i]) && !protectedCols[i])
+                    UpdateDepth(lineText[i]);
             }
         }
         else
@@ -124,12 +130,17 @@ internal sealed class BracketDepthColorizer
     }
 
     /// <summary>
-    /// Returns the token list with bracket tokens' foreground replaced by CE_Bracket_N
-    /// based on the current nesting depth.  Advances the depth state for this line.
+    /// Returns the token list with bracket characters assigned CE_Bracket_N foreground
+    /// based on nesting depth.  Advances the depth state for this line.
     /// </summary>
-    /// <param name="lineText">Raw source text of the line.</param>
-    /// <param name="tokens">Token list (already brush-resolved).</param>
-    /// <param name="resourceLookup">Delegate mapping a resource key to a <see cref="Brush"/>.</param>
+    /// <remarks>
+    /// Scans <paramref name="lineText"/> directly — does NOT require
+    /// <see cref="SyntaxTokenKind.Bracket"/> tokens in <paramref name="tokens"/>.
+    /// Brackets inside string/comment token spans are depth-tracked but not colorized.
+    /// For brackets with a matching single-char token in the stream, the token's
+    /// foreground is replaced in-place.  For brackets with no existing token, a new
+    /// single-char token is injected at the end of the stream.
+    /// </remarks>
     public IEnumerable<SyntaxHighlightToken> ColorizeLine(
         string                              lineText,
         IEnumerable<SyntaxHighlightToken>   tokens,
@@ -141,29 +152,92 @@ internal sealed class BracketDepthColorizer
             yield break;
         }
 
-        foreach (var token in tokens)
+        // Always materialize to a fresh list — we mutate entries in-place
+        // (struct with { ... }) and must not modify the caller's collection.
+        var tokenList = new List<SyntaxHighlightToken>(tokens);
+
+        int len = lineText.Length;
+
+        // Mark columns covered by string/comment tokens (brackets inside = advance only, no color).
+        // Mark all columns covered by ANY token (brackets with a token = replace foreground).
+        var protectedCols = BuildProtectedCols(len, tokenList);
+        var coveredCols   = BuildCoveredCols(len, tokenList);
+
+        // column → index in tokenList (only for single-char tokens at that exact column).
+        var singleCharTokenAtCol = new Dictionary<int, int>(16);
+        for (int ti = 0; ti < tokenList.Count; ti++)
         {
-            if (token.Kind == SyntaxTokenKind.Bracket
-                && token.Length == 1
-                && token.StartColumn < lineText.Length)
-            {
-                char ch = lineText[token.StartColumn];
-                if (_bracketChars.Contains(ch))
-                {
-                    int depth = ComputeDepthAndAdvance(ch);
-                    var brush = resourceLookup(s_depthKeys[depth % 4]);
-                    if (brush is not null)
-                    {
-                        yield return token with { Foreground = brush };
-                        continue;
-                    }
-                }
-            }
-            yield return token;
+            var t = tokenList[ti];
+            if (t.Length == 1 && t.StartColumn < len)
+                singleCharTokenAtCol[t.StartColumn] = ti;
         }
+
+        // Scan lineText: assign depth colors for each bracket char.
+        var injected = new List<SyntaxHighlightToken>(4);
+
+        for (int i = 0; i < len; i++)
+        {
+            char ch = lineText[i];
+            if (!_bracketChars.Contains(ch)) continue;
+
+            if (protectedCols[i])
+            {
+                // Inside string/comment — track depth but don't colorize.
+                UpdateDepth(ch);
+                continue;
+            }
+
+            int depth = ComputeDepthAndAdvance(ch);
+            var brush = resourceLookup(s_depthKeys[depth % 4]);
+            if (brush is null) continue;
+
+            if (singleCharTokenAtCol.TryGetValue(i, out int ti))
+            {
+                // Replace foreground of the existing single-char token.
+                tokenList[ti] = tokenList[ti] with { Foreground = brush };
+            }
+            else if (!coveredCols[i])
+            {
+                // No token covers this column — inject a new bracket token.
+                injected.Add(new SyntaxHighlightToken(
+                    i, 1, ch.ToString(), brush,
+                    Kind: SyntaxTokenKind.Bracket));
+            }
+            // else: column is covered by a multi-char token — leave it as-is.
+        }
+
+        foreach (var t in tokenList) yield return t;
+        foreach (var t in injected)  yield return t;
     }
 
     // -- Private helpers ------------------------------------------------------
+
+    /// <summary>Returns a bool array where true = column is inside a string or comment token.</summary>
+    private static bool[] BuildProtectedCols(int lineLen, IEnumerable<SyntaxHighlightToken> tokens)
+    {
+        var result = new bool[lineLen];
+        foreach (var t in tokens)
+        {
+            if (t.Kind is not (SyntaxTokenKind.String or SyntaxTokenKind.Comment)) continue;
+            int end = Math.Min(t.StartColumn + t.Length, lineLen);
+            for (int c = t.StartColumn; c < end; c++)
+                result[c] = true;
+        }
+        return result;
+    }
+
+    /// <summary>Returns a bool array where true = column is covered by any token.</summary>
+    private static bool[] BuildCoveredCols(int lineLen, IEnumerable<SyntaxHighlightToken> tokens)
+    {
+        var result = new bool[lineLen];
+        foreach (var t in tokens)
+        {
+            int end = Math.Min(t.StartColumn + t.Length, lineLen);
+            for (int c = t.StartColumn; c < end; c++)
+                result[c] = true;
+        }
+        return result;
+    }
 
     private void UpdateDepth(char ch)
     {
@@ -182,19 +256,30 @@ internal sealed class BracketDepthColorizer
     {
         if (_depths.TryGetValue(ch, out int openDepth))
         {
-            // Opening bracket: colour at current depth, then go deeper.
             _depths[ch] = openDepth + 1;
             return openDepth;
         }
 
         if (_closeToOpen.TryGetValue(ch, out char open) && _depths.TryGetValue(open, out int closeDepth))
         {
-            // Closing bracket: come up first, colour at new depth.
             int newDepth = Math.Max(0, closeDepth - 1);
             _depths[open] = newDepth;
             return newDepth;
         }
 
-        return 0; // Fallback (unmatched bracket).
+        return 0;
+    }
+}
+
+/// <summary>Extension shim for <see cref="Dictionary{TKey,TValue}.Keys"/> → array.</summary>
+file static class DictExt
+{
+    public static TKey[] ToArrayFast<TKey, TVal>(this Dictionary<TKey, TVal>.KeyCollection keys)
+        where TKey : notnull
+    {
+        var arr = new TKey[keys.Count];
+        int i = 0;
+        foreach (var k in keys) arr[i++] = k;
+        return arr;
     }
 }

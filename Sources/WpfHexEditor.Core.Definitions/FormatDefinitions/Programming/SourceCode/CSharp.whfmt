@@ -44,6 +44,7 @@
     ".NET applications"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "CS",
     "id": "csharp",
     "name": "C#",
     "extensions": [

@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -18,30 +19,42 @@ namespace WpfHexEditor.Editor.ScriptEditor.Controls;
 /// <summary>
 /// Script editor — opens C# script files (.csx, .cs) and provides F5 / Ctrl+F5
 /// shortcuts to run or validate the script via <see cref="IScriptingService"/>.
-/// Also supports game script formats (.scr, .msg, .evt, .script, .dec) in read/edit mode.
+/// Uses <see cref="WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost"/> for
+/// syntax highlighting and SmartComplete (globals driven from CSharpScript.whfmt).
 /// </summary>
 public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenableDocument
 {
-    private string            _filePath      = string.Empty;
+    private string             _filePath = string.Empty;
     private IScriptingService? _scripting;
     private CancellationTokenSource? _runCts;
+    private bool _editorUpdating;
 
     // ── Construction ──────────────────────────────────────────────────────────
 
     public ScriptEditor()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
 
-        UndoCommand      = new RelayCommand(() => CodeBox.Undo(),  () => CodeBox.CanUndo);
-        RedoCommand      = new RelayCommand(() => CodeBox.Redo(),  () => CodeBox.CanRedo);
-        SaveCommand      = new RelayCommand(() => SaveFile(),      () => IsDirty);
-        CopyCommand      = new RelayCommand(() => CodeBox.Copy(),  () => CodeBox.SelectionLength > 0);
-        CutCommand       = new RelayCommand(() => CodeBox.Cut(),   () => CodeBox.SelectionLength > 0);
-        PasteCommand     = new RelayCommand(() => CodeBox.Paste(), () => Clipboard.ContainsText());
-        DeleteCommand    = new RelayCommand(() => CodeBox.SelectedText = string.Empty, () => CodeBox.SelectionLength > 0);
+        UndoCommand      = new RelayCommand(() => CodeBox.PrimaryEditor.Undo(),      () => CodeBox.PrimaryEditor.CanUndo);
+        RedoCommand      = new RelayCommand(() => CodeBox.PrimaryEditor.Redo(),      () => CodeBox.PrimaryEditor.CanRedo);
+        SaveCommand      = new RelayCommand(() => SaveFile(),                         () => IsDirty);
+        CopyCommand      = new RelayCommand(() => CodeBox.Copy(),      () => true);
+        CutCommand       = new RelayCommand(() => CodeBox.Cut(),       () => true);
+        PasteCommand     = new RelayCommand(() => CodeBox.Paste(),     () => true);
+        DeleteCommand    = new RelayCommand(() => CodeBox.Delete(),    () => true);
         SelectAllCommand = new RelayCommand(() => CodeBox.SelectAll());
 
-        CodeBox.TextChanged += (_, _) => ModifiedChanged?.Invoke(this, EventArgs.Empty);
+        CodeBox.PrimaryEditor.ModifiedChanged += (_, _) => ModifiedChanged?.Invoke(this, EventArgs.Empty);
+        CodeBox.PreviewKeyDown += OnCodeBoxKeyDown;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        // Wire language — enables syntax highlighting and scriptGlobals SmartComplete.
+        var lang = LanguageRegistry.Instance?.FindById("csharp-script");
+        if (lang is not null)
+            CodeBox.SetLanguage(lang);
     }
 
     // ── Scripting injection ───────────────────────────────────────────────────
@@ -57,10 +70,10 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
 
     // ── IDocumentEditor — State ───────────────────────────────────────────────
 
-    public bool IsDirty    => CodeBox.CanUndo;
-    public bool CanUndo    => CodeBox.CanUndo;
-    public bool CanRedo    => CodeBox.CanRedo;
-    public bool IsReadOnly { get => !CodeBox.IsEnabled; set => CodeBox.IsEnabled = !value; }
+    public bool IsDirty    => CodeBox.PrimaryEditor.CanUndo;
+    public bool CanUndo    => CodeBox.PrimaryEditor.CanUndo;
+    public bool CanRedo    => CodeBox.PrimaryEditor.CanRedo;
+    public bool IsReadOnly { get => CodeBox.IsReadOnly; set => CodeBox.IsReadOnly = value; }
     public string Title { get; private set; } = "";
     public bool IsBusy { get; private set; }
 
@@ -92,8 +105,8 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
 
     // ── IDocumentEditor — Methods ─────────────────────────────────────────────
 
-    public void Undo() => CodeBox.Undo();
-    public void Redo() => CodeBox.Redo();
+    public void Undo() => CodeBox.PrimaryEditor.Undo();
+    public void Redo() => CodeBox.PrimaryEditor.Redo();
 
     public void Save()
     {
@@ -104,8 +117,11 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
     public async Task SaveAsync(CancellationToken ct = default)
     {
         if (!string.IsNullOrEmpty(_filePath))
-            await Task.Run(() => File.WriteAllText(_filePath, CodeBox.Text, Encoding.UTF8), ct)
+        {
+            var text = CodeBox.PrimaryEditor.GetText();
+            await Task.Run(() => File.WriteAllText(_filePath, text, Encoding.UTF8), ct)
                       .ConfigureAwait(false);
+        }
     }
 
     public async Task SaveAsAsync(string filePath, CancellationToken ct = default)
@@ -116,12 +132,12 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
         TitleChanged?.Invoke(this, Title);
     }
 
-    public void Copy()       => CodeBox.Copy();
-    public void Cut()        => CodeBox.Cut();
-    public void Paste()      => CodeBox.Paste();
-    public void Delete()     => CodeBox.SelectedText = string.Empty;
-    public void SelectAll()  => CodeBox.SelectAll();
-    public void Close()      { _runCts?.Cancel(); }
+    public void Copy()      => CodeBox.Copy();
+    public void Cut()       => CodeBox.Cut();
+    public void Paste()     => CodeBox.Paste();
+    public void Delete()    => CodeBox.Delete();
+    public void SelectAll() => CodeBox.SelectAll();
+    public void Close()     { _runCts?.Cancel(); }
     public void CancelOperation() { _runCts?.Cancel(); }
 
     // ── IOpenableDocument ─────────────────────────────────────────────────────
@@ -138,8 +154,9 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
                                  .ConfigureAwait(false);
             Dispatcher.Invoke(() =>
             {
-                CodeBox.Text = text;
-                CodeBox.ScrollToHome();
+                _editorUpdating = true;
+                CodeBox.PrimaryEditor.LoadText(text);
+                _editorUpdating = false;
             });
         }
         catch (Exception ex)
@@ -186,14 +203,14 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
 
         if (IsBusy) return;
 
-        var code = CodeBox.Text;
+        var code = CodeBox.PrimaryEditor.GetText();
         if (string.IsNullOrWhiteSpace(code)) return;
 
         IsBusy = true;
         _runCts = new CancellationTokenSource();
         var label = validate ? "Validating" : "Running";
-        StatusBar.Text  = $"{label}…";
-        OutputBox.Text  = string.Empty;
+        StatusBar.Text = $"{label}…";
+        OutputBox.Text = string.Empty;
 
         try
         {
@@ -248,7 +265,7 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
     {
         try
         {
-            File.WriteAllText(_filePath, CodeBox.Text, Encoding.UTF8);
+            File.WriteAllText(_filePath, CodeBox.PrimaryEditor.GetText(), Encoding.UTF8);
             StatusBar.Text = "Saved.";
         }
         catch (Exception ex)
@@ -265,4 +282,3 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
             : "Scripting engine not available";
     }
 }
-

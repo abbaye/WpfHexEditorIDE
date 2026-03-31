@@ -425,7 +425,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
 
                 _document.ClearDirtyLines();
-                _validationErrors = _validator.Validate(textToValidate);
+
+                // FormatSchemaValidator validates JSON-based .whfmt format definitions.
+                // Skip it for named languages (C#, Python, etc.) — LSP handles those.
+                var langId = Language?.Id;
+                if (langId is null || langId == "json" || langId == "whfmt")
+                {
+                    _validationErrors = _validator.Validate(textToValidate);
+
+                    // Apply language-specific prefix to raw error codes (e.g. "JSON_SYNTAX" → "JSON_SYNTAX").
+                    // For named languages the prefix comes from the LanguageDefinition.DiagnosticPrefix.
+                    var prefix = Language?.DiagnosticPrefix;
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        foreach (var err in _validationErrors)
+                            if (!string.IsNullOrEmpty(err.ErrorCode) && !err.ErrorCode.StartsWith(prefix, StringComparison.Ordinal))
+                                err.ErrorCode = $"{prefix}_{err.ErrorCode}";
+                    }
+                }
+                else
+                {
+                    // Non-JSON language: clear schema errors, keep LSP-layer errors.
+                    _validationErrors.RemoveAll(v => v.Layer != WpfHexEditor.Editor.CodeEditor.Models.ValidationLayer.Lsp);
+                }
+
                 RebuildValidationIndex();
                 InvalidateVisual();
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);

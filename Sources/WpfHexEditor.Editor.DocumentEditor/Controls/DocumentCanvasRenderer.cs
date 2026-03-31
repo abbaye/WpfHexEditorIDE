@@ -1272,6 +1272,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             case Key.Back:         DeleteAtCaret(forward: false); e.Handled = true; break;
             case Key.Delete:       DeleteAtCaret(forward: true);  e.Handled = true; break;
             case Key.Return:       SplitBlockAtCaret();       e.Handled = true; break;
+        case Key.Escape:
+            if (!_selection.IsEmpty)
+            {
+                _selection.Anchor = _caret;
+                _selection.Focus  = _caret;
+                InvalidateVisual();
+            }
+            e.Handled = true;  // prevent propagation to IDE shell
+            break;
         }
     }
 
@@ -1426,13 +1435,37 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         double originY = PageCanvasPad + rb.Y - _offset.Y;
         double relX    = canvasPt.X - originX;
 
-        // Build a single-line FormattedText to probe character positions
-        var ft = MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                   _fgBrush ?? Brushes.Gray,
-                                   Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
+        // Use the cached FormattedText (same one used for rendering + navigation) so
+        // character positions agree with what is drawn and with GetVisualLines.
+        var ft = rb.FormattedLines is { Count: > 0 }
+            ? rb.FormattedLines[0]
+            : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                _fgBrush ?? Brushes.Gray,
+                                Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
 
-        // Binary search for the nearest char boundary
-        int lo = 0, hi = text.Length;
+        // For wrapped text, chars on later visual lines have Bounds.Left ≈ 0 again, so a
+        // simple Left-based binary search gives wrong results across line breaks.
+        // Correct approach: determine which visual line was clicked (by Y), then binary-search
+        // within that line's char range using Bounds.Left.
+        double relY = canvasPt.Y - originY;
+
+        var vlines = GetVisualLines(blockIdx);
+        VisualLine targetLine = vlines.Count > 0 ? vlines[^1] : new VisualLine(0, text.Length, 0, _baseFontSize + 2);
+
+        if (vlines.Count > 0)
+        {
+            foreach (var vl in vlines)
+            {
+                if (relY <= vl.Top + vl.Height)
+                {
+                    targetLine = vl;
+                    break;
+                }
+            }
+        }
+
+        // Binary search within [targetLine.Start, targetLine.End] on Bounds.Left
+        int lo = targetLine.Start, hi = targetLine.End;
         while (lo < hi)
         {
             int mid = (lo + hi) / 2;
@@ -1488,8 +1521,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (fromChar >= toChar) continue;
 
             double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
-            var ft = MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                       _fgBrush ?? Brushes.Gray, contentW);
+            var ft = rb.FormattedLines is { Count: > 0 }
+                ? rb.FormattedLines[0]
+                : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                    _fgBrush ?? Brushes.Gray, contentW);
 
             var geo = ft.BuildHighlightGeometry(new Point(contentX, blockScreenY),
                                                 fromChar, toChar - fromChar);
@@ -1513,8 +1548,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var text = GetFlatText(_caret.BlockIndex);
         if (!string.IsNullOrEmpty(text))
         {
-            var ft = MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                       _fgBrush ?? Brushes.Gray, contentW);
+            var ft = rb.FormattedLines is { Count: > 0 }
+                ? rb.FormattedLines[0]
+                : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                    _fgBrush ?? Brushes.Gray, contentW);
 
             // Probe the char just before (or at) the caret to get the visual-line geometry.
             // geo.Bounds.Top  = Y offset of that visual line within FormattedText
@@ -1523,6 +1560,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 _caret.CharOffset > 0 ? _caret.CharOffset - 1 : 0,
                 0, text.Length - 1);
             var geo = ft.BuildHighlightGeometry(new Point(0, 0), probeChar, 1);
+
+            // Stale cache: FormattedLines[0] was built before the last mutation (async
+            // RebuildLayout not yet executed). Fall back to a fresh FT so the blink timer
+            // doesn't snap the caret to the left edge while the layout is catching up.
+            if ((geo is null || geo.Bounds.IsEmpty) && rb.FormattedLines is { Count: > 0 })
+            {
+                ft  = MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                        _fgBrush ?? Brushes.Gray, contentW);
+                geo = ft.BuildHighlightGeometry(new Point(0, 0), probeChar, 1);
+            }
+
             if (geo is not null && !geo.Bounds.IsEmpty)
             {
                 caretY = blockScreenY + geo.Bounds.Top;   // ← correct visual-line Y
@@ -1899,7 +1947,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (forward)
         {
-            if (off < block.Text.Length) _mutator.DeleteText(block, off, 1);
+            if (off < GetFlatText(bi).Length) _mutator.DeleteText(block, off, 1);
             else if (bi + 1 < _blocks.Count) _mutator.MergeWithNext(bi);
         }
         else
@@ -2031,9 +2079,12 @@ internal static class CaretNavHelper
     /// <summary>Returns the index of the line that contains <paramref name="charOffset"/>.</summary>
     internal static int GetLineIndex(IReadOnlyList<VisualLine> lines, int charOffset)
     {
-        for (int i = 0; i < lines.Count; i++)
-            if (charOffset >= lines[i].Start && charOffset <= lines[i].End) return i;
-        return lines.Count - 1;
+        // Use strict < for End on all but the last line so that a position exactly at
+        // the end of line N (= start of line N+1) is resolved to line N+1, not line N.
+        // This prevents Up/Down navigation from skipping visual lines at boundaries.
+        for (int i = 0; i < lines.Count - 1; i++)
+            if (charOffset >= lines[i].Start && charOffset < lines[i].End) return i;
+        return lines.Count - 1;  // last line: charOffset may equal End (= textLen)
     }
 
     /// <summary>Binary-searches within a visual line for the char position closest to targetX.</summary>

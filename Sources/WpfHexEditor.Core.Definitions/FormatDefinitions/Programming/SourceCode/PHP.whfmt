@@ -44,6 +44,7 @@
     "Server-side scripting"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "PHP",
     "id": "php",
     "name": "PHP",
     "extensions": [
@@ -132,7 +133,7 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [120],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

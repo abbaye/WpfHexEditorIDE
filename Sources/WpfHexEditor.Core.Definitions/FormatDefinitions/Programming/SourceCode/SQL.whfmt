@@ -46,6 +46,7 @@
     "Stored procedures"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "SQL",
     "id": "sql",
     "name": "SQL",
     "extensions": [
@@ -100,7 +101,7 @@
       "endPatterns": [
         "\\bEND\\b"
       ]
-    },,
+    },
         "columnRulers": [120],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}
   },

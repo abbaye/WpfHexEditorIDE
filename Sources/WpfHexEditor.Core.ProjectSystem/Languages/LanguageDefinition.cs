@@ -126,7 +126,49 @@ public sealed class LanguageDefinition
     /// Null = no color swatch preview for this language.
     /// </summary>
     public IReadOnlyList<System.Text.RegularExpressions.Regex>? ColorLiteralPatterns { get; init; }
+
+    /// <summary>
+    /// Language-specific prefix for diagnostic error codes shown in the Error List
+    /// (e.g. "CS" for C#, "PY" for Python, "JSON" for JSON).
+    /// Null = use raw code as produced by the validator.
+    /// Sourced from "diagnosticPrefix" in the whfmt syntaxDefinition block.
+    /// </summary>
+    public string? DiagnosticPrefix { get; init; }
+
+    /// <summary>
+    /// Script globals injected into the execution environment for this language.
+    /// Populated from the "scriptGlobals" block in the .whfmt syntaxDefinition.
+    /// Empty for non-script languages.
+    /// Used by <see cref="WpfHexEditor.Editor.CodeEditor.Providers.ScriptGlobalsCompletionProvider"/>
+    /// to provide context-aware completions for script globals and their members.
+    /// </summary>
+    public IReadOnlyList<ScriptGlobalEntry> ScriptGlobals { get; init; } = [];
 }
+
+// ==========================================================
+// File: ScriptGlobalEntry / ScriptMemberEntry
+//       (embedded in LanguageDefinition.cs)
+// Description: Script global + member metadata for SmartComplete.
+// ==========================================================
+
+/// <summary>
+/// A member of a script global (property, method, or field).
+/// </summary>
+public sealed record ScriptMemberEntry(
+    string Name,
+    string Type,
+    string Kind,           // "method" | "property" | "field"
+    string Documentation);
+
+/// <summary>
+/// A top-level global injected into the script execution environment.
+/// Listed in the "scriptGlobals" block of a .whfmt syntaxDefinition.
+/// </summary>
+public sealed record ScriptGlobalEntry(
+    string                         Name,
+    string                         Type,
+    string                         Documentation,
+    IReadOnlyList<ScriptMemberEntry> Members);
 
 /// <summary>Maps a regex pattern to a token kind for syntax highlighting.</summary>
 public sealed class SyntaxRule

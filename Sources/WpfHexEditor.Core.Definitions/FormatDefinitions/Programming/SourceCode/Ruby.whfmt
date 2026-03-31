@@ -46,6 +46,7 @@
     "DevOps automation"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "RB",
     "id": "ruby",
     "name": "Ruby",
     "extensions": [
@@ -106,7 +107,7 @@
         "\\\\\\s*$",
         ",\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [120],
         "formattingRules": {"indentSize":2,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

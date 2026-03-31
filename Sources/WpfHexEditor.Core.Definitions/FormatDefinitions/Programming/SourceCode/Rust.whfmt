@@ -44,6 +44,7 @@
     "Embedded development"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "RS",
     "id": "rust",
     "name": "Rust",
     "extensions": [
@@ -131,7 +132,7 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [100],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

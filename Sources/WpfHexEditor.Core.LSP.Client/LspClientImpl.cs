@@ -48,6 +48,7 @@ public sealed class LspClientImpl : ILspClient
     private LspLinkedEditingProvider?     _linkedEditing;
     private LspCallHierarchyProvider?     _callHierarchy;
     private LspTypeHierarchyProvider?     _typeHierarchy;
+    private LspDocumentSymbolProvider?    _symbolProvider;
 
     // Pull-diagnostics state (LSP 3.18) — used when server advertises diagnosticProvider.
     private System.Windows.Threading.DispatcherTimer? _pullDiagTimer;
@@ -86,8 +87,9 @@ public sealed class LspClientImpl : ILspClient
         _codeAction    = new LspCodeActionProvider(channel);
         _rename        = new LspRenameProvider(channel);
         _linkedEditing = new LspLinkedEditingProvider(channel);
-        _callHierarchy = new LspCallHierarchyProvider(channel);
-        _typeHierarchy = new LspTypeHierarchyProvider(channel);
+        _callHierarchy  = new LspCallHierarchyProvider(channel);
+        _typeHierarchy  = new LspTypeHierarchyProvider(channel);
+        _symbolProvider = new LspDocumentSymbolProvider(channel);
 
         Capabilities  = _process.Capabilities;
 
@@ -235,7 +237,9 @@ public sealed class LspClientImpl : ILspClient
 
     public Task<IReadOnlyList<LspDocumentSymbol>> DocumentSymbolsAsync(
         string filePath, CancellationToken ct = default)
-        => Task.FromResult<IReadOnlyList<LspDocumentSymbol>>(Array.Empty<LspDocumentSymbol>());
+        => _symbolProvider is not null && IsInitialized
+            ? _symbolProvider.GetAsync(filePath, ct)
+            : Task.FromResult<IReadOnlyList<LspDocumentSymbol>>(Array.Empty<LspDocumentSymbol>());
 
     // ── ILspClient: workspace symbols ────────────────────────────────────────
 

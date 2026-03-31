@@ -23,8 +23,11 @@
 //       replacement/augmentation of the built-in implementations.
 // ==========================================================
 
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Folding;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
+using WpfHexEditor.Editor.CodeEditor.Models;
+using WpfHexEditor.Editor.CodeEditor.Providers;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
 
 namespace WpfHexEditor.Editor.CodeEditor.Services;
@@ -52,6 +55,10 @@ public sealed class EditorPluginIntegration
 
     // Per-language folding strategy overrides (last registration wins).
     private readonly Dictionary<string, IFoldingStrategy> _foldingStrategies
+        = new(StringComparer.OrdinalIgnoreCase);
+
+    // Per-language local completion providers (multiple per language supported).
+    private readonly Dictionary<string, List<ILocalCompletionProvider>> _completionProviders
         = new(StringComparer.OrdinalIgnoreCase);
 
     // -----------------------------------------------------------------------
@@ -97,6 +104,31 @@ public sealed class EditorPluginIntegration
                 _diagnosticRules[languageId] = list = [];
             list.Add(rule);
         }
+    }
+
+    /// <summary>
+    /// Adds a local completion provider for <paramref name="languageId"/>.
+    /// Use <c>"*"</c> to apply to all languages.
+    /// </summary>
+    public void RegisterCompletionProvider(string languageId, ILocalCompletionProvider provider)
+    {
+        ArgumentNullException.ThrowIfNull(provider);
+        lock (_lock)
+        {
+            if (!_completionProviders.TryGetValue(languageId, out var list))
+                _completionProviders[languageId] = list = [];
+            list.Add(provider);
+        }
+    }
+
+    /// <summary>
+    /// Removes a specific <see cref="ILocalCompletionProvider"/> previously registered.
+    /// </summary>
+    public void UnregisterCompletionProvider(string languageId, ILocalCompletionProvider provider)
+    {
+        lock (_lock)
+            if (_completionProviders.TryGetValue(languageId, out var list))
+                list.Remove(provider);
     }
 
     /// <summary>
@@ -196,6 +228,26 @@ public sealed class EditorPluginIntegration
         lock (_lock) _foldingStrategies.Remove(languageId);
     }
 
+    /// <summary>
+    /// Returns all completions from local providers for <paramref name="languageId"/>
+    /// (includes universal <c>"*"</c> providers).
+    /// Called by <see cref="Controls.SmartCompletePopup"/> after LSP / CodeSmartCompleteProvider.
+    /// </summary>
+    public IReadOnlyList<SmartCompleteSuggestion> GetLocalCompletions(
+        string              languageId,
+        SmartCompleteContext context,
+        LanguageDefinition? language)
+    {
+        lock (_lock)
+        {
+            var result = new List<SmartCompleteSuggestion>();
+            AppendCompletions(_completionProviders, "*",        result, context, language);
+            if (!string.Equals(languageId, "*", StringComparison.OrdinalIgnoreCase))
+                AppendCompletions(_completionProviders, languageId, result, context, language);
+            return result;
+        }
+    }
+
     // -----------------------------------------------------------------------
     // Private helpers
     // -----------------------------------------------------------------------
@@ -208,5 +260,17 @@ public sealed class EditorPluginIntegration
         if (dict.TryGetValue(key, out var providers))
             foreach (var p in providers)
                 result.AddRange(p.GetSnippets());
+    }
+
+    private static void AppendCompletions(
+        Dictionary<string, List<ILocalCompletionProvider>> dict,
+        string key,
+        List<SmartCompleteSuggestion> result,
+        SmartCompleteContext context,
+        LanguageDefinition? language)
+    {
+        if (dict.TryGetValue(key, out var providers))
+            foreach (var p in providers)
+                result.AddRange(p.GetCompletions(context, language));
     }
 }

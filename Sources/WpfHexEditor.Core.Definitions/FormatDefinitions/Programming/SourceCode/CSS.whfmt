@@ -68,6 +68,7 @@
     "Cross-browser compatibility rules"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "CSS",
     "id": "css",
     "name": "CSS / SCSS / LESS",
     "extensions": [
@@ -162,7 +163,7 @@
         "^\\s*\\}"
       ],
       "statementContinuationPatterns": []
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [80],
         "formattingRules": {"indentSize":2,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true},

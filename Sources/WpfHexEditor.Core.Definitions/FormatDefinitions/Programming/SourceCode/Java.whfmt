@@ -43,6 +43,7 @@
     "Android development"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "JAVA",
     "id": "java",
     "name": "Java",
     "extensions": [
@@ -119,7 +120,7 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [80, 120],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

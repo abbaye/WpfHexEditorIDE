@@ -51,6 +51,7 @@
     "XHTML web pages"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "XML",
     "id": "xml_markup",
     "name": "XML Markup",
     "extensions": [

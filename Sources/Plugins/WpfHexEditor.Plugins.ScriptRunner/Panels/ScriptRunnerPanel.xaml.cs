@@ -3,12 +3,16 @@
 // File: Panels/ScriptRunnerPanel.xaml.cs
 // Description:
 //     Code-behind for the ScriptRunner dockable panel.
-//     Handles F5/Ctrl+F5 keyboard shortcuts and auto-scrolls output.
+//     Replaces plain TextBox with CodeEditorSplitHost for syntax highlighting
+//     and scriptGlobals SmartComplete (driven from CSharpScript.whfmt).
+//     Two-way sync between CodeBox and ScriptRunnerViewModel.Code
+//     uses _editorUpdating flag to prevent feedback loops.
 // ==========================================================
 
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Plugins.ScriptRunner.ViewModels;
 
 namespace WpfHexEditor.Plugins.ScriptRunner.Panels;
@@ -19,18 +23,50 @@ namespace WpfHexEditor.Plugins.ScriptRunner.Panels;
 public partial class ScriptRunnerPanel : UserControl
 {
     private readonly ScriptRunnerViewModel _vm;
+    private bool _editorUpdating;
 
     public ScriptRunnerPanel(ScriptRunnerViewModel vm)
     {
         _vm         = vm;
         DataContext = vm;
         InitializeComponent();
+        Loaded += OnLoaded;
 
         // Auto-scroll output when text changes.
         vm.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(ScriptRunnerViewModel.Output))
                 Dispatcher.InvokeAsync(() => OutputBox.ScrollToEnd());
+
+            // Reflect Code changes from outside (e.g. file load) into the editor.
+            if (e.PropertyName == nameof(ScriptRunnerViewModel.Code))
+            {
+                if (_editorUpdating) return;
+                _editorUpdating = true;
+                CodeBox.PrimaryEditor.LoadText(_vm.Code ?? string.Empty);
+                _editorUpdating = false;
+            }
+        };
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        // Wire language → syntax highlighting + scriptGlobals SmartComplete.
+        var lang = LanguageRegistry.Instance.FindById("csharp-script");
+        if (lang is not null)
+            CodeBox.SetLanguage(lang);
+
+        // Sync initial Code value into editor.
+        if (!string.IsNullOrEmpty(_vm.Code))
+            CodeBox.PrimaryEditor.LoadText(_vm.Code);
+
+        // Push editor changes back to ViewModel.
+        CodeBox.PrimaryEditor.ModifiedChanged += (_, _) =>
+        {
+            if (_editorUpdating) return;
+            _editorUpdating = true;
+            _vm.Code = CodeBox.PrimaryEditor.GetText();
+            _editorUpdating = false;
         };
     }
 

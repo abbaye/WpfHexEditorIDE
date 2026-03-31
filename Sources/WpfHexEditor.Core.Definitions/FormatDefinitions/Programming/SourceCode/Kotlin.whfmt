@@ -44,6 +44,7 @@
     "Multiplatform projects"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "KT",
     "id": "kotlin",
     "name": "Kotlin",
     "extensions": [
@@ -121,7 +122,7 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [120],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

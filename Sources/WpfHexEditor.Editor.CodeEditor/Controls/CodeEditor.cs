@@ -132,6 +132,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (e.OldValue is ISyntaxHighlighter old) old.Reset();
             if (e.NewValue is ISyntaxHighlighter h)   h.Reset();
 
+            // Invalidate all token caches so the pipeline re-highlights with the new highlighter.
+            // Required for bracket colorization: new highlighter may produce different token Kinds
+            // (e.g. Kind.Bracket from the synthetic bracket rule added in BuildHighlighter).
+            // Without this, IsCacheDirty stays false and ColorizeLine never sees Kind.Bracket tokens.
+            editor._document?.InvalidateAllCache();
+
             // Force a full repaint so the new (or cleared) highlighter is applied
             // to all currently visible lines immediately, without waiting for a scroll.
             editor.InvalidateVisual();
@@ -933,6 +939,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Compile breakpoint placement validation regexes from BreakpointRules.
             editor.RebuildBreakpointValidation(newLang);
+
+            // Keep SmartComplete popup aware of the current language (for local completions).
+            if (editor._smartCompletePopup is not null)
+                editor._smartCompletePopup.CurrentLanguage = newLang;
         }
 
         private void RebuildBreakpointValidation(LanguageDefinition? lang)

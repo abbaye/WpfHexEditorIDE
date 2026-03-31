@@ -46,6 +46,7 @@
     "Web development"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "PY",
     "id": "python",
     "name": "Python",
     "extensions": [
@@ -98,7 +99,7 @@
       "statementContinuationPatterns": [
         "\\\\\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [79],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

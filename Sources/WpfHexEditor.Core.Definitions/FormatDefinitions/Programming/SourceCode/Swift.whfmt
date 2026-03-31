@@ -43,6 +43,7 @@
     "SwiftUI applications"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "SW",
     "id": "swift",
     "name": "Swift",
     "extensions": [
@@ -118,7 +119,7 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [120],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

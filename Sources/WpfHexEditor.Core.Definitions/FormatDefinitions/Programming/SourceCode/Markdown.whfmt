@@ -47,6 +47,7 @@
     "Static site content"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "MD",
     "id": "markdown",
     "name": "Markdown",
     "extensions": [

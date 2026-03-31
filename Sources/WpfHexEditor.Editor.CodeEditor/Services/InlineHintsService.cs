@@ -108,7 +108,31 @@ internal sealed class InlineHintsService : IDisposable
     // ── Event handlers ────────────────────────────────────────────────────────
 
     private void OnDocumentTextChanged(object sender, TextChangedEventArgs e)
-        => ScheduleRefresh();
+    {
+        ShiftHintsForLineChange(e);
+        ScheduleRefresh();
+    }
+
+    // Shifts HintsData line keys immediately when a line is inserted or deleted,
+    // so hints stay visible and correctly positioned while the debounce recomputes.
+    private void ShiftHintsForLineChange(TextChangedEventArgs e)
+    {
+        if (e.ChangeType != TextChangeType.NewLine && e.ChangeType != TextChangeType.DeleteLine)
+            return;
+        if (HintsData.Count == 0) return;
+
+        int pivot = e.Position.Line;
+        int delta = e.ChangeType == TextChangeType.NewLine ? +1 : -1;
+
+        var shifted = new Dictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind)>(HintsData.Count);
+        foreach (var (key, val) in HintsData)
+        {
+            if (key == pivot && delta == -1) continue;   // deleted line's hint is dropped
+            shifted[key > pivot ? key + delta : key] = val;
+        }
+        HintsData = shifted;
+        HintsDataRefreshed?.Invoke(this, EventArgs.Empty);
+    }
 
     // WorkspaceChanged fires on an arbitrary thread — marshal to the UI dispatcher.
     private void OnWorkspaceChanged()

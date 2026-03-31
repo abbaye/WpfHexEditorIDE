@@ -191,6 +191,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>The LSP client currently attached to this editor. May be null.</summary>
         public WpfHexEditor.Editor.Core.LSP.ILspClient? LspClient => _lspClient;
 
+        /// <summary>
+        /// Injects (or clears) the local completion provider registry for this editor.
+        /// When set, <see cref="Controls.SmartCompletePopup"/> merges local completions
+        /// (e.g. script globals) alongside LSP and built-in suggestions.
+        /// Called by <see cref="Controls.CodeEditorSplitHost.SetLanguage"/> when
+        /// the language declares <c>scriptGlobals</c>.
+        /// </summary>
+        public void SetLocalCompletionRegistry(WpfHexEditor.Editor.CodeEditor.Services.EditorPluginIntegration? registry)
+        {
+            if (_smartCompletePopup is not null)
+                _smartCompletePopup.SetLocalCompletionRegistry(registry);
+        }
+
         public void SetLspClient(WpfHexEditor.Editor.Core.LSP.ILspClient? client)
         {
             if (_lspClient is not null)

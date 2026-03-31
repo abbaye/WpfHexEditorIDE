@@ -104,24 +104,6 @@ public sealed class CodeEditorFactory : IEditorFactory
             isItalic: rule.Kind is SyntaxTokenKind.Comment,
             kind:     rule.Kind));
 
-        // Auto-inject a bracket rule from bracketPairs so that BracketDepthColorizer
-        // can tag individual bracket characters with SyntaxTokenKind.Bracket.
-        // Prepended so it runs before operator/identifier rules that might cover the same chars.
-        // This avoids adding a "bracket" entry to every whfmt file.
-        if (language.BracketPairs is { Count: > 0 } pairs)
-        {
-            var escaped = string.Concat(pairs.Select(p =>
-                System.Text.RegularExpressions.Regex.Escape(p.Open.ToString()) +
-                System.Text.RegularExpressions.Regex.Escape(p.Close.ToString())));
-
-            var bracketRule = new RegexHighlightRule(
-                $"[{escaped}]",
-                TokenKindToBrush(SyntaxTokenKind.Bracket),
-                kind: SyntaxTokenKind.Bracket);
-
-            rules = rules.Prepend(bracketRule);
-        }
-
         return new SyntaxRuleHighlighter(
             rules,
             language.Name,

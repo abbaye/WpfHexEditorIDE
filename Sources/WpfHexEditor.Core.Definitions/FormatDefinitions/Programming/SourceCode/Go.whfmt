@@ -43,6 +43,7 @@
     "Cloud-native development"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "GO",
     "id": "go",
     "name": "Go",
     "extensions": [
@@ -114,7 +115,7 @@
       "statementContinuationPatterns": [
         "[^;{})]\\s*$"
       ]
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [80, 120],
         "formattingRules": {"indentSize":1,"useTabs":true,"trimTrailingWhitespace":true,"insertFinalNewline":true}

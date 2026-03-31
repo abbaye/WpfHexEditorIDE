@@ -178,6 +178,7 @@ public static class LanguageDefinitionSerializer
             EnableInlineHints        = dto.EnableInlineHints,
             EnableCtrlClickNavigation = dto.EnableCtrlClickNavigation,
             IsDefault                = dto.IsDefault,
+            DiagnosticPrefix         = dto.DiagnosticPrefix,
         };
     }
 
@@ -239,6 +240,8 @@ public static class LanguageDefinitionSerializer
             BracketPairs              = MapBracketPairs(dto.BracketPairs),
             FormattingRules           = MapFormattingRules(dto.FormattingRules),
             ColorLiteralPatterns      = MapColorLiteralPatterns(dto.ColorLiteralPatterns),
+            DiagnosticPrefix          = dto.DiagnosticPrefix,
+            ScriptGlobals             = MapScriptGlobals(dto.ScriptGlobals),
         };
     }
 
@@ -334,6 +337,9 @@ public static class LanguageDefinitionSerializer
         /// extensions declared in the file, making this the preferred language.
         /// </summary>
         public bool IsDefault { get; set; }
+
+        [JsonPropertyName("diagnosticPrefix")]
+        public string? DiagnosticPrefix { get; set; }
     }
 
     private sealed class SyntaxRuleDto
@@ -390,6 +396,28 @@ public static class LanguageDefinitionSerializer
 
         [JsonPropertyName("colorLiteralPatterns")]
         public string[]?             ColorLiteralPatterns     { get; set; }
+
+        [JsonPropertyName("diagnosticPrefix")]
+        public string?               DiagnosticPrefix         { get; set; }
+
+        [JsonPropertyName("scriptGlobals")]
+        public ScriptGlobalDto[]?    ScriptGlobals            { get; set; }
+    }
+
+    private sealed class ScriptGlobalDto
+    {
+        [JsonPropertyName("name")]          public string?              Name          { get; set; }
+        [JsonPropertyName("type")]          public string?              Type          { get; set; }
+        [JsonPropertyName("documentation")] public string?              Documentation { get; set; }
+        [JsonPropertyName("members")]       public ScriptMemberDto[]?   Members       { get; set; }
+    }
+
+    private sealed class ScriptMemberDto
+    {
+        [JsonPropertyName("name")]          public string? Name          { get; set; }
+        [JsonPropertyName("type")]          public string? Type          { get; set; }
+        [JsonPropertyName("kind")]          public string? Kind          { get; set; }
+        [JsonPropertyName("documentation")] public string? Documentation { get; set; }
     }
 
     private sealed class FoldingRulesDto
@@ -473,6 +501,24 @@ public static class LanguageDefinitionSerializer
             TrimTrailingWhitespace = dto.TrimTrailingWhitespace,
             InsertFinalNewline     = dto.InsertFinalNewline,
         };
+    }
+
+    private static IReadOnlyList<ScriptGlobalEntry> MapScriptGlobals(ScriptGlobalDto[]? dtos)
+    {
+        if (dtos is null or { Length: 0 }) return [];
+
+        return dtos.Select(g => new ScriptGlobalEntry(
+            Name:          g.Name          ?? string.Empty,
+            Type:          g.Type          ?? string.Empty,
+            Documentation: g.Documentation ?? string.Empty,
+            Members:       (g.Members ?? [])
+                           .Select(m => new ScriptMemberEntry(
+                               Name:          m.Name          ?? string.Empty,
+                               Type:          m.Type          ?? string.Empty,
+                               Kind:          m.Kind          ?? "property",
+                               Documentation: m.Documentation ?? string.Empty))
+                           .ToList()))
+            .ToList();
     }
 
     private static IReadOnlyList<Regex>? MapColorLiteralPatterns(string[]? patterns)

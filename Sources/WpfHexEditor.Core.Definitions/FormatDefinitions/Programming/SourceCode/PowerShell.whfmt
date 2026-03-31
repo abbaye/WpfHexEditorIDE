@@ -45,6 +45,7 @@
     "System administration"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "PS",
     "id": "powershell",
     "name": "PowerShell",
     "extensions": [
@@ -131,7 +132,7 @@
         "triggerBrace": true,
         "triggerDirective": true
       }
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [120],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

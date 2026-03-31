@@ -47,6 +47,7 @@
     "React JSX components"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "JS",
     "id": "javascript",
     "name": "JavaScript / TypeScript",
     "extensions": [
@@ -86,6 +87,26 @@
         "pattern": "@[A-Za-z][A-Za-z0-9_]*"
       },
       {
+        "type": "JsxComponentTag",
+        "pattern": "</?[A-Z][A-Za-z0-9.]*",
+        "colorKey": "TE_Type"
+      },
+      {
+        "type": "JsxBuiltinTag",
+        "pattern": "</?(?:a|abbr|address|article|aside|audio|b|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|data|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|embed|fieldset|figcaption|figure|footer|form|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|main|map|mark|menu|meta|meter|nav|noscript|object|ol|optgroup|option|output|p|picture|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strong|style|sub|summary|sup|table|tbody|td|template|textarea|tfoot|th|thead|time|title|tr|track|u|ul|var|video|wbr)(?=[\\s/>])",
+        "colorKey": "TE_Keyword"
+      },
+      {
+        "type": "JsxAttribute",
+        "pattern": "\\b[a-zA-Z][a-zA-Z0-9-]*(?=\\s*=\\s*[{\"'])",
+        "colorKey": "TE_Label"
+      },
+      {
+        "type": "JsxSpreadAttribute",
+        "pattern": "\\{\\.\\.\\.(?:[^}]*)\\}",
+        "colorKey": "TE_Directive"
+      },
+      {
         "type": "Number",
         "pattern": "\\b(0x[0-9A-Fa-f]+n?|0b[01]+n?|0o[0-7]+n?|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?n?)\\b"
       }
@@ -115,11 +136,11 @@
       "statementContinuationPatterns": [
         "[^;{}]\\s*$"
       ]
-    },,
-        "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
-        "columnRulers": [80],
-        "formattingRules": {"indentSize":2,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true},
-        "colorLiteralPatterns": ["#[0-9A-Fa-f]{8}","#[0-9A-Fa-f]{6}","#[0-9A-Fa-f]{3}","rgb\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)"]
+    },
+    "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
+    "columnRulers": [80],
+    "formattingRules": {"indentSize":2,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true},
+    "colorLiteralPatterns": ["#[0-9A-Fa-f]{8}","#[0-9A-Fa-f]{6}","#[0-9A-Fa-f]{3}","rgb\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)"]
   },
   "forensic": {
     "category": "other",

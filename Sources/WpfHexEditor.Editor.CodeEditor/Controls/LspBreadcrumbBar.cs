@@ -23,7 +23,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -39,7 +38,6 @@ public sealed class LspBreadcrumbBar : Border
 {
     // ── Child controls ────────────────────────────────────────────────────────
     private readonly StackPanel _crumbPanel;
-    private readonly TextBlock  _crumbText;
 
     // ── State ─────────────────────────────────────────────────────────────────
     private ILspClient?          _lspClient;
@@ -62,20 +60,11 @@ public sealed class LspBreadcrumbBar : Border
         SetResourceReference(BorderBrushProperty, "CE_NavBarBorder");
         BorderThickness = new Thickness(0, 0, 0, 1);
 
-        _crumbText = new TextBlock
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            TextTrimming       = TextTrimming.CharacterEllipsis,
-            FontSize           = 11,
-        };
-        _crumbText.SetResourceReference(TextBlock.ForegroundProperty, "BC_Foreground");
-
         _crumbPanel = new StackPanel
         {
             Orientation = Orientation.Horizontal,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        _crumbPanel.Children.Add(_crumbText);
 
         Child = _crumbPanel;
 
@@ -117,7 +106,7 @@ public sealed class LspBreadcrumbBar : Border
         if (client is not null)
             RequestRefresh();
         else
-            _crumbText.Text = string.Empty;
+            _crumbPanel.Children.Clear();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -136,7 +125,7 @@ public sealed class LspBreadcrumbBar : Border
 
         if (_lspClient?.IsInitialized != true || _filePath is null || _editor is null)
         {
-            _crumbText.Text = string.Empty;
+            _crumbPanel.Children.Clear();
             return;
         }
 
@@ -152,14 +141,14 @@ public sealed class LspBreadcrumbBar : Border
             RenderCrumbs(crumbs);
         }
         catch (OperationCanceledException) { }
-        catch { _crumbText.Text = string.Empty; }
+        catch { _crumbPanel.Children.Clear(); }
     }
 
     private static List<string> ResolveCrumbs(IReadOnlyList<LspDocumentSymbol> symbols, int caretLine)
     {
         // Find all symbols whose range contains the caret line, ordered by specificity.
         var enclosing = symbols
-            .Where(s => s.StartLine <= caretLine)
+            .Where(s => s.StartLine <= caretLine && s.EndLine >= caretLine)
             .OrderBy(s => s.StartLine)
             .ToList();
 
@@ -194,7 +183,7 @@ public sealed class LspBreadcrumbBar : Border
     {
         if (crumbs.Count == 0)
         {
-            _crumbText.Text = string.Empty;
+            _crumbPanel.Children.Clear();
             return;
         }
 

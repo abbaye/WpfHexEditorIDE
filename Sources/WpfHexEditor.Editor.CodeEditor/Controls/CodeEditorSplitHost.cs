@@ -38,6 +38,8 @@ using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.Core.Views;
 using EditorStatusBarItem = WpfHexEditor.Editor.Core.StatusBarItem;
 using WpfHexEditor.Core.ProjectSystem.Languages;
+using WpfHexEditor.Editor.CodeEditor.Providers;
+using WpfHexEditor.Editor.CodeEditor.Services;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -260,6 +262,13 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
         }
     }
 
+    /// <summary>Shows or hides line numbers in both editors.</summary>
+    public bool ShowLineNumbers
+    {
+        get => _primaryEditor.ShowLineNumbers;
+        set { _primaryEditor.ShowLineNumbers = value; _secondaryEditor.ShowLineNumbers = value; }
+    }
+
     /// <summary>Render per-token colored blocks (true) or single rect per line (false).</summary>
     public bool MinimapRenderCharacters
     {
@@ -390,6 +399,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
     /// Pass <see langword="null"/> to clear syntax highlighting (Plain Text mode).
     /// </summary>
     /// <param name="lang">The language to activate, or <see langword="null"/> for none.</param>
+    // Holds the per-instance EditorPluginIntegration for script-global completions.
+    // Created lazily the first time a language with ScriptGlobals is set.
+    private EditorPluginIntegration? _scriptGlobalsRegistry;
+
     public void SetLanguage(LanguageDefinition? lang)
     {
         var highlighter = lang is not null ? CodeEditorFactory.BuildHighlighter(lang) : null;
@@ -397,6 +410,25 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
         _secondaryEditor.ExternalHighlighter = highlighter;
         _primaryEditor.Language   = lang;
         _secondaryEditor.Language = lang;
+
+        // Auto-wire script globals completion when the language declares scriptGlobals.
+        if (lang is not null && lang.ScriptGlobals.Count > 0)
+        {
+            if (_scriptGlobalsRegistry is null)
+            {
+                _scriptGlobalsRegistry = new EditorPluginIntegration();
+                _scriptGlobalsRegistry.RegisterCompletionProvider(
+                    lang.Id, new ScriptGlobalsCompletionProvider());
+            }
+            _primaryEditor.SetLocalCompletionRegistry(_scriptGlobalsRegistry);
+            _secondaryEditor.SetLocalCompletionRegistry(_scriptGlobalsRegistry);
+        }
+        else
+        {
+            // Clear any previously set registry when switching away from a script language.
+            _primaryEditor.SetLocalCompletionRegistry(null);
+            _secondaryEditor.SetLocalCompletionRegistry(null);
+        }
     }
 
     #endregion

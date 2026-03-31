@@ -6,7 +6,8 @@
 
 <UserControl x:Class="WpfHexEditor.Editor.ScriptEditor.Controls.ScriptEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -36,22 +37,11 @@
             </StackPanel>
         </Border>
 
-        <!-- Code editor (TextBox, monospace) -->
-        <TextBox Grid.Row="1"
-                 x:Name="CodeBox"
-                 FontFamily="Consolas, Courier New, monospace"
-                 FontSize="12"
-                 AcceptsReturn="True"
-                 AcceptsTab="True"
-                 HorizontalScrollBarVisibility="Auto"
-                 VerticalScrollBarVisibility="Auto"
-                 Foreground="{DynamicResource TE_Foreground}"
-                 Background="{DynamicResource TE_Background}"
-                 CaretBrush="{DynamicResource TE_Foreground}"
-                 BorderThickness="0"
-                 Padding="6"
-                 SpellCheck.IsEnabled="False"
-                 KeyDown="OnCodeBoxKeyDown" />
+        <!-- Code editor (CodeEditorSplitHost — syntax + SmartComplete) -->
+        <ce:CodeEditorSplitHost Grid.Row="1"
+                                x:Name="CodeBox"
+                                ShowMinimap="False"
+                                ShowLineNumbers="True" />
 
         <!-- Splitter -->
         <GridSplitter Grid.Row="2"

@@ -46,6 +46,7 @@
     ".NET functional programming"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "FS",
     "id": "fsharp",
     "name": "F#",
     "extensions": [
@@ -181,7 +182,7 @@
         "triggerBrace": true,
         "triggerDirective": false
       }
-    },,
+    },
         "bracketPairs": [{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"}],
         "columnRulers": [100],
         "formattingRules": {"indentSize":4,"useTabs":false,"trimTrailingWhitespace":true,"insertFinalNewline":true}

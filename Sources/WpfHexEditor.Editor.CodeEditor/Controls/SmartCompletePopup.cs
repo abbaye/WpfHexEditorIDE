@@ -15,8 +15,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Models;
+using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Editor.Core.LSP;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
@@ -45,6 +47,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         /// <summary>Current file path, kept in sync by CodeEditor.SetLspClient wiring.</summary>
         internal string? CurrentFilePath { get; set; }
+
+        /// <summary>
+        /// Current language definition, updated by CodeEditor when Language changes.
+        /// Passed to <see cref="EditorPluginIntegration.GetLocalCompletions"/> on each trigger.
+        /// </summary>
+        internal LanguageDefinition? CurrentLanguage { get; set; }
+
+        /// <summary>
+        /// Local completion provider registry, injected by CodeEditor via
+        /// <see cref="Controls.CodeEditor.SetLocalCompletionRegistry"/>.
+        /// When set, local completions are prepended to the suggestion list.
+        /// </summary>
+        internal EditorPluginIntegration? LocalProviderRegistry { get; set; }
 
         #endregion
 
@@ -299,6 +314,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         internal void SetLspClient(ILspClient? client) => _lspClient = client;
 
         /// <summary>
+        /// Sets (or clears) the local completion provider registry.
+        /// Called by CodeEditor.SetLocalCompletionRegistry when the host injects
+        /// a language-specific registry (e.g. script globals for .csx files).
+        /// </summary>
+        internal void SetLocalCompletionRegistry(EditorPluginIntegration? registry)
+            => LocalProviderRegistry = registry;
+
+        /// <summary>
         /// Hide SmartComplete popup
         /// </summary>
         public void Hide()
@@ -354,6 +377,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 };
 
                 _allSuggestions = _provider.GetSuggestions(context);
+
+                // Merge local completions (script globals, plugin-registered providers)
+                if (LocalProviderRegistry is not null)
+                {
+                    var langId = CurrentLanguage?.Id ?? string.Empty;
+                    var local  = LocalProviderRegistry.GetLocalCompletions(langId, context, CurrentLanguage);
+                    if (local.Count > 0)
+                        _allSuggestions = [..local, .._allSuggestions];
+                }
+
                 ShowWithCurrentSuggestions();
             }
             catch (Exception)

@@ -1,7 +1,8 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ScriptRunner.Panels.ScriptRunnerPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ScriptRunner.ViewModels">
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ScriptRunner.ViewModels"
+             xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor">
 
     <UserControl.Resources>
         <!-- Converters -->
@@ -86,23 +87,12 @@
             </StackPanel>
         </Border>
 
-        <!-- ── Code Input ─────────────────────────────────────────────────── -->
-        <TextBox Grid.Row="1"
-                 x:Name="CodeBox"
-                 Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
-                 FontFamily="Consolas, Courier New, monospace"
-                 FontSize="12"
-                 AcceptsReturn="True"
-                 AcceptsTab="True"
-                 HorizontalScrollBarVisibility="Auto"
-                 VerticalScrollBarVisibility="Auto"
-                 Foreground="{DynamicResource SR_CodeForegroundBrush}"
-                 Background="{DynamicResource SR_CodeBackgroundBrush}"
-                 CaretBrush="{DynamicResource ForegroundBrush}"
-                 BorderThickness="0"
-                 Padding="6"
-                 SpellCheck.IsEnabled="False"
-                 KeyDown="OnCodeBoxKeyDown" />
+        <!-- ── Code Input (CodeEditorSplitHost — syntax + SmartComplete) ──── -->
+        <ce:CodeEditorSplitHost Grid.Row="1"
+                                x:Name="CodeBox"
+                                ShowMinimap="False"
+                                ShowLineNumbers="True"
+                                KeyDown="OnCodeBoxKeyDown" />
 
         <!-- ── Splitter ────────────────────────────────────────────────────── -->
         <GridSplitter Grid.Row="2"

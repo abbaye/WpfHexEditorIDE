@@ -118,11 +118,13 @@ public sealed class LspCodeAction
 /// <summary>A symbol within a document (used for breadcrumb / outline).</summary>
 public sealed class LspDocumentSymbol
 {
-    public required string Name       { get; init; }
+    public required string Name        { get; init; }
     /// <summary>Kind string e.g. "class", "method", "namespace".</summary>
-    public required string Kind       { get; init; }
-    public required int    StartLine  { get; init; }
-    public required int    StartColumn{ get; init; }
+    public required string Kind        { get; init; }
+    public required int    StartLine   { get; init; }
+    public required int    StartColumn { get; init; }
+    public required int    EndLine     { get; init; }
+    public required int    EndColumn   { get; init; }
     public          string? ContainerName { get; init; }
 }
 

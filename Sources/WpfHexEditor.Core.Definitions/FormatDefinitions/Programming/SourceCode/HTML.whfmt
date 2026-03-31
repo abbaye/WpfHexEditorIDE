@@ -45,6 +45,7 @@
     "Static site generation"
   ],
   "syntaxDefinition": {
+    "diagnosticPrefix": "HTML",
     "id": "html",
     "name": "HTML",
     "extensions": [
