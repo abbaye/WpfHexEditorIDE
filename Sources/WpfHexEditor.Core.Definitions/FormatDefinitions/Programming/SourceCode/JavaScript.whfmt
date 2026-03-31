@@ -113,10 +113,15 @@
     ],
     "foldingRules": {
       "startPatterns": [
-        "\\{"
+        "\\{",
+        "\\(",
+        "<(?!/)(?!.*/>)[A-Za-z>]"
       ],
       "endPatterns": [
-        "\\}"
+        "\\}",
+        "^\\s*\\)",
+        "</>",
+        "</[A-Za-z]"
       ],
       "endOfBlockHint": {
         "enabled": true,
