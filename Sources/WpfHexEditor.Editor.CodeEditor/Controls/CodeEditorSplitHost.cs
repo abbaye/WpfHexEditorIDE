@@ -52,6 +52,13 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 {
     #region Child controls
 
+    /// <summary>Optional logger injected by the host app (e.g. OutputLogger.Debug).</summary>
+    public Action<string>? BreadcrumbLogger
+    {
+        get => _breadcrumbBar.Logger;
+        set => _breadcrumbBar.Logger = value;
+    }
+
     private readonly CodeEditor              _primaryEditor;
     private readonly CodeEditor              _secondaryEditor;
     private readonly GridSplitter            _splitter;

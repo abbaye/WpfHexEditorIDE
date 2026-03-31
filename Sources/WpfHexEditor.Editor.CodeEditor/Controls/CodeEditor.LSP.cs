@@ -557,35 +557,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!new Uri(_currentFilePath).AbsoluteUri.Equals(e.DocumentUri, StringComparison.OrdinalIgnoreCase))
                 return;
 
-            // Remove any previous LSP-sourced errors and replace with the new set.
-            _validationErrors.RemoveAll(v => v.Layer == Models.ValidationLayer.Lsp);
-            foreach (var d in e.Diagnostics)
+            // All mutations must happen on the UI thread — _validationErrors and
+            // _validationByLine are read by OnRender and PerformValidation (UI thread).
+            // Moving the entire mutation + render into a single Dispatcher.InvokeAsync
+            // eliminates the race condition that caused displaced text insertions (BUG-LSP-THREAD).
+            _diagnosticsRenderPending = true;
+            var diagnostics = e.Diagnostics; // capture before dispatch
+            Dispatcher.InvokeAsync(() =>
             {
-                _validationErrors.Add(new Models.ValidationError
+                _validationErrors.RemoveAll(v => v.Layer == Models.ValidationLayer.Lsp);
+                foreach (var d in diagnostics)
                 {
-                    Line     = d.StartLine,
-                    Column   = d.StartColumn,
-                    Message  = d.Message,
-                    Severity = d.Severity == "error"   ? Models.ValidationSeverity.Error
-                             : d.Severity == "warning" ? Models.ValidationSeverity.Warning
-                                                       : Models.ValidationSeverity.Info,
-                    Layer    = Models.ValidationLayer.Lsp,
-                });
-            }
-            RebuildValidationIndex();
-            DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
-
-            // Coalesce rapid diagnostic batches into a single render pass (OPT-PERF-05).
-            if (!_diagnosticsRenderPending)
-            {
-                _diagnosticsRenderPending = true;
-                Dispatcher.InvokeAsync(() =>
-                {
-                    if (!_diagnosticsRenderPending) return;
-                    _diagnosticsRenderPending = false;
-                    InvalidateVisual();
-                }, System.Windows.Threading.DispatcherPriority.Render);
-            }
+                    _validationErrors.Add(new Models.ValidationError
+                    {
+                        Line     = d.StartLine,
+                        Column   = d.StartColumn,
+                        Message  = d.Message,
+                        Severity = d.Severity == "error"   ? Models.ValidationSeverity.Error
+                                 : d.Severity == "warning" ? Models.ValidationSeverity.Warning
+                                                           : Models.ValidationSeverity.Info,
+                        Layer    = Models.ValidationLayer.Lsp,
+                    });
+                }
+                RebuildValidationIndex();
+                DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+                _diagnosticsRenderPending = false;
+                InvalidateVisual();
+            }, System.Windows.Threading.DispatcherPriority.Normal);
         }
 
         // -- Find All References (LSP) ------------------------------------

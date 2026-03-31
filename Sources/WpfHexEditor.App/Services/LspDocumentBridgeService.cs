@@ -102,11 +102,13 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
     private void TryCreateBridge(DocumentModel doc)
     {
+        OutputLogger.Info($"[LSP] TryCreateBridge: disposed={_disposed}, buffer={doc.Buffer?.FilePath ?? "null"}, lang={doc.Buffer?.LanguageId ?? "null"}");
         if (_disposed || doc.Buffer is not { } buffer) return;
         if (string.IsNullOrEmpty(buffer.LanguageId))   return;
         if (_bridges.ContainsKey(buffer.FilePath))     return;  // already bridged
 
         var entry = _registry.FindByLanguage(buffer.LanguageId);
+        OutputLogger.Info($"[LSP] FindByLanguage({buffer.LanguageId}) = {(entry is null ? "null" : entry.LanguageId)}, enabled={entry?.IsEnabled}");
         if (entry is null || !entry.IsEnabled) return;
 
         _ = InitBridgeAsync(entry, buffer);
@@ -114,6 +116,7 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
     private async Task InitBridgeAsync(LspServerEntry entry, IDocumentBuffer buffer)
     {
+        OutputLogger.Info($"[LSP] InitBridgeAsync: {entry.LanguageId} → {System.IO.Path.GetFileName(buffer.FilePath)}");
         try
         {
             if (!_clients.TryGetValue(entry.LanguageId, out var client))
@@ -135,8 +138,16 @@ internal sealed class LspDocumentBridgeService : IDisposable
             // Inject the LSP client into any ILspAwareEditor so it can invoke
             // Code Actions and Rename directly (e.g. CodeEditor via Ctrl+. / F2).
             var doc = _documentManager.FindDocumentByBuffer(buffer);
+            OutputLogger.Info($"[LSP] doc={doc is not null}, editor={doc?.AssociatedEditor?.GetType().Name ?? "null"}");
             if (doc?.AssociatedEditor is ILspAwareEditor lspEditor)
             {
+                OutputLogger.Info($"[LSP] AssociatedEditor type: {lspEditor.GetType().Name}");
+                if (lspEditor is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost splitHost)
+                {
+                    OutputLogger.Debug("[LSP] BreadcrumbLogger wired to General channel.");
+                    splitHost.BreadcrumbLogger = msg => OutputLogger.Info(msg);
+                }
+
                 lspEditor.SetLspClient(client);
                 lspEditor.SetDocumentManager(_documentManager);
             }

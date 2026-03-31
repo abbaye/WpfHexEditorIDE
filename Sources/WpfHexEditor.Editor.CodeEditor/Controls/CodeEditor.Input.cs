@@ -1680,8 +1680,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             line = Math.Max(0, Math.Min(_document.Lines.Count - 1, line));
 
-            // Calculate column (account for horizontal scroll offset)
-            int column = (int)((pixel.X - leftEdge + _horizontalScrollOffset) / _charWidth);
+            // Calculate column (account for horizontal scroll offset + tab expansion)
+            string clickLineText = _document?.Lines[line]?.Text ?? string.Empty;
+            int column = _glyphRenderer?.ComputeColumnFromVisualX(clickLineText, pixel.X - leftEdge + _horizontalScrollOffset)
+                         ?? (int)((pixel.X - leftEdge + _horizontalScrollOffset) / _charWidth);
 
             // Word wrap: the click may be on a sub-row — add the sub-row column offset.
             if (IsWordWrapEnabled && _charsPerVisualLine > 0)

@@ -46,6 +46,9 @@ public sealed class LspBreadcrumbBar : Border
     private readonly DispatcherTimer _debounce;
     private CancellationTokenSource? _cts;
 
+    /// <summary>Optional logger wired by the host (e.g. OutputLogger.Debug).</summary>
+    public Action<string>? Logger { get; set; }
+
     private static readonly string Separator = " › ";
 
     // ── Constructor ───────────────────────────────────────────────────────────
@@ -125,6 +128,7 @@ public sealed class LspBreadcrumbBar : Border
 
         if (_lspClient?.IsInitialized != true || _filePath is null || _editor is null)
         {
+            Logger?.Invoke($"[BreadcrumbBar] Guard hit: lsp={_lspClient?.IsInitialized}, path={_filePath ?? "null"}, editor={_editor is not null}");
             _crumbPanel.Children.Clear();
             return;
         }
@@ -137,11 +141,17 @@ public sealed class LspBreadcrumbBar : Border
             var symbols = await _lspClient.DocumentSymbolsAsync(_filePath, _cts.Token)
                 .ConfigureAwait(true);
 
+            Logger?.Invoke($"[BreadcrumbBar] Got {symbols.Count} symbols for {System.IO.Path.GetFileName(_filePath)}, caret={_editor.CursorPosition.Line}");
             var crumbs = ResolveCrumbs(symbols, _editor.CursorPosition.Line);
+            Logger?.Invoke($"[BreadcrumbBar] Crumbs: [{string.Join(" › ", crumbs)}]");
             RenderCrumbs(crumbs);
         }
         catch (OperationCanceledException) { }
-        catch { _crumbPanel.Children.Clear(); }
+        catch (Exception ex)
+        {
+            Logger?.Invoke($"[BreadcrumbBar] DocumentSymbols failed: {ex.GetType().Name}: {ex.Message}");
+            _crumbPanel.Children.Clear();
+        }
     }
 
     private static List<string> ResolveCrumbs(IReadOnlyList<LspDocumentSymbol> symbols, int caretLine)

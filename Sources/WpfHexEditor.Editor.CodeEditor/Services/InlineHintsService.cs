@@ -210,7 +210,7 @@ internal sealed class InlineHintsService : IDisposable
 
         foreach (var item in items)
         {
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested) return result;
 
             string symbol = item.Name;
             if (string.IsNullOrEmpty(symbol)) continue;
@@ -228,7 +228,7 @@ internal sealed class InlineHintsService : IDisposable
             // current file (already counted above via in-memory lines).
             foreach (var wPath in workspacePaths)
             {
-                ct.ThrowIfCancellationRequested();
+                if (ct.IsCancellationRequested) return result;
 
                 if (wPath.Equals(currentFilePath, StringComparison.OrdinalIgnoreCase))
                     continue;
@@ -279,7 +279,7 @@ internal sealed class InlineHintsService : IDisposable
 
         for (int i = 0; i < lines.Count; i++)
         {
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested) return 0;
 
             string text = lines[i].Text;
             if (string.IsNullOrEmpty(text)) continue;
@@ -313,7 +313,7 @@ internal sealed class InlineHintsService : IDisposable
 
         for (int i = 0; i < lines.Length; i++)
         {
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested) return 0;
 
             string text = lines[i];
             if (string.IsNullOrEmpty(text)) continue;
