@@ -1244,7 +1244,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double textAreaW = Math.Max(0, contentW - textLeft);
             if (textAreaW <= 0) return;
 
-            double cursorX = _cursorColumn * _charWidth;        // position in the text area (no offset)
+            string ensureLineText = _document?.Lines[_cursorLine]?.Text ?? string.Empty;
+            double cursorX = _glyphRenderer?.ComputeVisualX(ensureLineText, _cursorColumn) ?? _cursorColumn * _charWidth;
             double rightEdge = cursorX + _charWidth;
 
             if (cursorX < _horizontalScrollOffset)
@@ -2541,7 +2542,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     : (EnableVirtualScrolling && _virtualizationEngine != null
                         ? TopMargin + _virtualizationEngine.GetLineYPosition(_cursorLine)
                         : TopMargin + (_cursorLine - _firstVisibleLine) * _lineHeight);
-                x = textLeft + (_cursorColumn * _charWidth);
+                string caretLineText = _document?.Lines[_cursorLine]?.Text ?? string.Empty;
+                x = textLeft + (_glyphRenderer?.ComputeVisualX(caretLineText, _cursorColumn) ?? _cursorColumn * _charWidth);
             }
 
             // Draw cursor as vertical line using DPs for color and width
@@ -2579,7 +2581,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     var c = carets[ci];
                     if (c.Line < _firstVisibleLine || c.Line > _lastVisibleLine) continue;
 
-                    double sx = textLeftSec + c.Column * _charWidth;
+                    string secLineText = _document?.Lines[c.Line]?.Text ?? string.Empty;
+                    double sx = textLeftSec + (_glyphRenderer?.ComputeVisualX(secLineText, c.Column) ?? c.Column * _charWidth);
                     double sy = _lineYLookup.TryGetValue(c.Line, out double scy) ? scy
                         : TopMargin + (c.Line - _firstVisibleLine) * _lineHeight;
                     dc.DrawLine(secondaryPen, new Point(sx, sy), new Point(sx, sy + _lineHeight - 2));
@@ -2606,8 +2609,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     double y = TopMargin + (EnableVirtualScrolling && _virtualizationEngine != null
                         ? _virtualizationEngine.GetLineYPosition(error.Line)
                         : (error.Line - _firstVisibleLine) * _lineHeight) + _lineHeight - 3;
-                    double x1 = leftEdge + (error.Column * _charWidth);
-                    double x2 = x1 + (error.Length * _charWidth);
+                    string errLineText = _document?.Lines[i]?.Text ?? string.Empty;
+                    double x1 = leftEdge + (_glyphRenderer?.ComputeVisualX(errLineText, error.Column) ?? error.Column * _charWidth);
+                    double x2 = leftEdge + (_glyphRenderer?.ComputeVisualX(errLineText, error.Column + error.Length) ?? (error.Column + error.Length) * _charWidth);
 
                     Pen squigglyPen = error.Severity switch
                     {

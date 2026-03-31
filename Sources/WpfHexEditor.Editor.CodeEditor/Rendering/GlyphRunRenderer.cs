@@ -99,11 +99,37 @@ public sealed class GlyphRunRenderer
     /// <returns>Visual X offset in device-independent pixels.</returns>
     public double ComputeVisualX(string lineText, int charColumn)
     {
+        // Fast path: no tabs — O(1)
+        if (lineText.IndexOf('\t') < 0)
+            return Math.Min(charColumn, lineText.Length) * CharWidth;
+
         double visualX = 0;
         int limit = Math.Min(charColumn, lineText.Length);
         for (int i = 0; i < limit; i++)
             visualX += lineText[i] == '\t' ? CharWidth * TabSize : CharWidth;
         return visualX;
+    }
+
+    /// <summary>
+    /// Reverse of <see cref="ComputeVisualX"/>: given a target pixel offset in the text area,
+    /// returns the zero-based character column whose left edge is closest to that offset.
+    /// Tab characters expand to <see cref="TabSize"/> character-widths.
+    /// </summary>
+    public int ComputeColumnFromVisualX(string lineText, double targetVisualX)
+    {
+        // Fast path: no tabs — O(1)
+        if (lineText.IndexOf('\t') < 0)
+            return Math.Max(0, Math.Min(lineText.Length, (int)((targetVisualX + CharWidth / 2) / CharWidth)));
+
+        double visualX = 0;
+        for (int i = 0; i < lineText.Length; i++)
+        {
+            double charW = lineText[i] == '\t' ? CharWidth * TabSize : CharWidth;
+            if (targetVisualX < visualX + charW / 2)
+                return i;
+            visualX += charW;
+        }
+        return lineText.Length;
     }
 
     #endregion
