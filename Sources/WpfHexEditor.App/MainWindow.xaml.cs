@@ -640,7 +640,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Code Editor options page (General, Auto-close, Hints, Minimap, Coloring)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Code Editor", "Coloring",
+            "Code Editor", "Features",
             () => new WpfHexEditor.App.Options.CodeEditorOptionsPage(),
             "\uE943");
 
