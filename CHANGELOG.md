@@ -6,6 +6,24 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.4.2] — 2026-03-30 — Options Reorganization + Code Editor Settings Wiring
+
+### ✨ Added — Code Editor Settings
+
+- **`BracketPairColorization`** setting in `AppSettings.CodeEditorDefaultSettings` (default `true`) — persisted and applied via `EditorSettingsService` to `CodeEditor.BracketPairColorizationEnabled`
+- **`ColorSwatchPreview`** setting (default `true`) — applied to `CodeEditor.ColorSwatchPreviewEnabled`
+- **`FormatOnSave`** setting (default `false`) — applied to `CodeEditor.FormatOnSave` (public property exposed from `_formatOnSave` field)
+- All three settings wired in `CodeEditorOptionsPage` (App) `Load()` / `Flush()` with dedicated checkboxes in the "Features" section
+
+### 🔧 Changed — Options Tree Reorganization
+
+- **Code Editor options page** moved from `"Editor"` category → `"Code Editor"` category; page named `"Features"`
+- **Language Servers** options page moved from `"Editor"` → `"Code Editor"`
+- Static registry entry `"Code Editor", "General"` renamed → `"Code Editor", "Appearance & Colors"` in `OptionsPageRegistry.cs`
+- `OpenSettingsAt("Editor", "Language Servers")` updated to `OpenSettingsAt("Code Editor", "Language Servers")` in `MainWindow.PluginSystem.cs`
+
+---
+
 ## [0.6.3.8] — 2026-03-29 — HexEditor Undo/Redo Overkill Upgrade
 
 Block-level undo/redo for the HexEditor, fixing paste-byte-by-byte, broken batch, cut split, plus coalescence for hex digit typing and a VS-style history dropdown.
