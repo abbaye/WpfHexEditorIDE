@@ -35,6 +35,11 @@ public abstract class PluginTerminalCommandBase : ITerminalCommandProvider
     /// <inheritdoc />
     public abstract string Usage { get; }
 
+    /// <inheritdoc />
+    /// <remarks>Returns <c>"Plugin"</c> for all plugin-contributed commands.
+    /// Override to return a more specific label (e.g. the plugin display name).</remarks>
+    public virtual string? Source => "Plugin";
+
     /// <summary>
     /// Sealed dispatcher: wraps <see cref="ExecuteCoreAsync"/> with
     /// uniform cancellation and exception handling.

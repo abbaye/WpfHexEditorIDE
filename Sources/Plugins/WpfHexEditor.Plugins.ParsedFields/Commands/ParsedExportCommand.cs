@@ -9,6 +9,7 @@
 
 using System.IO;
 using System.Text;
+using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.SDK.Contracts.Terminal;
 
 namespace WpfHexEditor.Plugins.ParsedFields.Commands;
@@ -55,15 +56,15 @@ internal sealed class ParsedExportCommand : PluginTerminalCommandBase
         return Task.FromResult(0);
     }
 
-    private static string SerializeJson(IReadOnlyList<SDK.Contracts.Services.ParsedFieldEntry> fields)
+    private static string SerializeJson(IReadOnlyList<ParsedFieldViewModel> fields)
     {
         var sb = new StringBuilder();
         sb.AppendLine("[");
         for (int i = 0; i < fields.Count; i++)
         {
             var f = fields[i];
-            sb.Append($"  {{ \"name\": {JsonStr(f.Name)}, \"type\": {JsonStr(f.DataType)}, " +
-                      $"\"offset\": {f.Offset}, \"length\": {f.Length}, \"value\": {JsonStr(f.ValueDisplay)} }}");
+            sb.Append($"  {{ \"name\": {JsonStr(f.Name)}, \"type\": {JsonStr(f.ValueType)}, " +
+                      $"\"offset\": {f.Offset}, \"length\": {f.Length}, \"value\": {JsonStr(f.FormattedValue)} }}");
             if (i < fields.Count - 1) sb.Append(',');
             sb.AppendLine();
         }
@@ -71,12 +72,12 @@ internal sealed class ParsedExportCommand : PluginTerminalCommandBase
         return sb.ToString();
     }
 
-    private static string SerializeCsv(IReadOnlyList<SDK.Contracts.Services.ParsedFieldEntry> fields)
+    private static string SerializeCsv(IReadOnlyList<ParsedFieldViewModel> fields)
     {
         var sb = new StringBuilder();
         sb.AppendLine("Name,Type,Offset,Length,Value");
         foreach (var f in fields)
-            sb.AppendLine($"{CsvEsc(f.Name)},{CsvEsc(f.DataType)},{f.Offset},{f.Length},{CsvEsc(f.ValueDisplay)}");
+            sb.AppendLine($"{CsvEsc(f.Name)},{CsvEsc(f.ValueType)},{f.Offset},{f.Length},{CsvEsc(f.FormattedValue)}");
         return sb.ToString();
     }
 

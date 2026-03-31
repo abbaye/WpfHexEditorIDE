@@ -160,7 +160,7 @@ public sealed class VbNetRecordTemplate : IFileTemplate
 public sealed class CsxScriptTemplate : IFileTemplate
 {
     public string Name             => "WpfHexEditor Script";
-    public string Description      => "Creates a new .csx script that runs inside WpfHexEditor with access to editor, buffer and output built-in references.";
+    public string Description      => "Creates a new .csx script that runs inside WpfHexEditor with access to HexEditor, Documents, Output, Terminal and CT globals.";
     public string DefaultExtension => ".csx";
     public string Category         => "C# / .NET";
     public string IconGlyph        => "\uE756";
@@ -169,8 +169,22 @@ public sealed class CsxScriptTemplate : IFileTemplate
 
     public byte[] CreateContent() => Encoding.UTF8.GetBytes(
         "// WpfHexEditor Script (.csx)\n" +
-        "// Built-in references: editor, buffer, output\n\n" +
-        "output.WriteLine(\"Hello from WpfHexEditor Script!\");\n");
+        "// Built-in globals: HexEditor, Documents, Output, Terminal, CT\n" +
+        "//\n" +
+        "// Run with F5 in the Script Editor, or: run-csharp <path.csx>\n\n" +
+        "Print(\"File: \" + HexEditor.CurrentFilePath);\n" +
+        "Print(\"Size: \" + HexEditor.FileSize + \" bytes\");\n\n" +
+        "// ── Register a custom HxTerminal command (optional) ───────────────────\n" +
+        "// Terminal?.RegisterCommand(new ScriptCommand(\n" +
+        "//     name:        \"my-cmd\",\n" +
+        "//     description: \"My script command.\",\n" +
+        "//     usage:       \"my-cmd [arg]\",\n" +
+        "//     source:      \"Script\",\n" +
+        "//     execute:     async (args, output, ctx, ct) =>\n" +
+        "//     {\n" +
+        "//         output.WriteInfo(\"Hello from my-cmd!\");\n" +
+        "//         return 0;\n" +
+        "//     }));\n");
 }
 
 /// <summary>Template for a WPF UserControl (.xaml + code-behind).</summary>

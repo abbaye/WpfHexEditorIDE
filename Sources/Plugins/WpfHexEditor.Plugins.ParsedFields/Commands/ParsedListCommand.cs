@@ -7,7 +7,7 @@
 // Description: HxTerminal command — list parsed fields for the active file.
 // ==========================================================
 
-using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.SDK.Contracts.Terminal;
 
 namespace WpfHexEditor.Plugins.ParsedFields.Commands;
@@ -35,7 +35,7 @@ internal sealed class ParsedListCommand : PluginTerminalCommandBase
         output.WriteLine($"  {"──────",-12} {"──────",-8} {"────",-16} {"────",-24} ─────");
 
         foreach (var f in fields)
-            output.WriteLine($"  0x{f.Offset:X8}   {f.Length,-8} {f.DataType,-16} {f.Name,-24} {f.ValueDisplay}");
+            output.WriteLine($"  0x{f.Offset:X8}   {f.Length,-8} {f.ValueType,-16} {f.Name,-24} {f.FormattedValue}");
 
         return Task.FromResult(0);
     }

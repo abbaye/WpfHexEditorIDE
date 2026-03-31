@@ -287,6 +287,11 @@ namespace WpfHexEditor.Core.Services.FormatParsing
         public IReadOnlyList<FormatMatchCandidate> Candidates =>
             (IReadOnlyList<FormatMatchCandidate>?)_detectionCandidates ?? Array.Empty<FormatMatchCandidate>();
 
+        public bool HasParsedFields => _panel?.ParsedFields?.Count > 0;
+
+        public IReadOnlyList<ParsedFieldViewModel> GetParsedFields()
+            => _panel?.ParsedFields?.ToList() ?? (IReadOnlyList<ParsedFieldViewModel>)Array.Empty<ParsedFieldViewModel>();
+
         // ── IFormatParsingService: User Actions ──────────────────────────
 
         public void SelectCandidate(FormatMatchCandidate candidate)

@@ -19,13 +19,24 @@ public sealed class HelpCommand(TerminalCommandRegistry registry) : ITerminalCom
             var cmd = registry.FindCommand(args[0]);
             if (cmd is null) { output.WriteError($"Unknown command: {args[0]}"); return Task.FromResult(1); }
             output.WriteLine($"{cmd.CommandName}  —  {cmd.Description}");
-            output.WriteLine($"Usage: {cmd.Usage}");
+            output.WriteLine($"Usage:  {cmd.Usage}");
+            output.WriteLine($"Source: {cmd.Source ?? "Built-in"}");
             return Task.FromResult(0);
         }
 
-        output.WriteLine("Available commands:");
-        foreach (var cmd in registry.GetAll())
-            output.WriteLine($"  {cmd.CommandName,-20} {cmd.Description}");
+        var groups = registry.GetAll()
+            .GroupBy(c => c.Source ?? "Built-in")
+            .OrderBy(g => g.Key == "Built-in" ? 0 : g.Key == "Plugin" ? 1 : g.Key == "Script" ? 2 : 3)
+            .ThenBy(g => g.Key);
+
+        foreach (var group in groups)
+        {
+            output.WriteLine($"{group.Key} commands:");
+            foreach (var cmd in group.OrderBy(c => c.CommandName))
+                output.WriteLine($"  {cmd.CommandName,-22} {cmd.Description}");
+            output.WriteLine("");
+        }
+
         return Task.FromResult(0);
     }
 }

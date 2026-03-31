@@ -7,6 +7,7 @@
 // Description: HxTerminal command — show entropy value and classification.
 // ==========================================================
 
+using WpfHexEditor.Plugins.FileStatistics.Views;
 using WpfHexEditor.SDK.Contracts.Terminal;
 
 namespace WpfHexEditor.Plugins.FileStatistics.Commands;

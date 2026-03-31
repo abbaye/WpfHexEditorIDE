@@ -33,7 +33,7 @@ internal sealed class GrammarAutoCommand(GrammarSelectorViewModel viewModel) : P
         };
 
         viewModel.IsAutoApply              = newValue;
-        GrammarExplorerOptions.Instance.AutoApply = newValue;
+        GrammarExplorerOptions.Instance.AutoApplyOnFileOpen = newValue;
         GrammarExplorerOptions.Instance.Save();
 
         output.WriteInfo($"Grammar auto-apply: {(newValue ? "ON" : "OFF")}");

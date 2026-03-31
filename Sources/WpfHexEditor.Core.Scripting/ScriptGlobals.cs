@@ -8,6 +8,7 @@
 // ==========================================================
 
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.SDK.Contracts.Terminal;
 
 namespace WpfHexEditor.Core.Scripting;
 
@@ -32,6 +33,13 @@ public sealed class ScriptGlobals
 
     /// <summary>Cancellation token linked to the Cancel button in the ScriptRunner panel.</summary>
     public CancellationToken CT { get; init; }
+
+    /// <summary>
+    /// Terminal service: register or unregister HxTerminal commands from a script.
+    /// Use <c>Terminal.RegisterCommand(new MyCommand())</c> to expose a script-defined command.
+    /// <para>May be <c>null</c> when the terminal is not available (e.g. unit-test host).</para>
+    /// </summary>
+    public ITerminalService? Terminal { get; init; }
 
     // ── Script-facing helpers ─────────────────────────────────────────────────
 

@@ -211,7 +211,8 @@ public partial class MainWindow
                 _scriptingService = new WpfHexEditor.App.Services.ScriptingServiceImpl(
                     _hexEditorService,
                     _documentHostService,
-                    _outputService);
+                    _outputService,
+                    _terminalService);
             }
             catch (Exception ex)
             {

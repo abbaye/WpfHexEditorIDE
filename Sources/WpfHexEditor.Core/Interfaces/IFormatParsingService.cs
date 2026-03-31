@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.Interfaces
 {
@@ -117,6 +118,14 @@ namespace WpfHexEditor.Core.Interfaces
         /// Re-formats all existing field values.
         /// </summary>
         void SetFormatter(string formatterType);
+
+        // ── Parsed Field Access ──────────────────────────────────────────
+
+        /// <summary>True when at least one field was parsed from the active format.</summary>
+        bool HasParsedFields { get; }
+
+        /// <summary>Returns a snapshot of all parsed fields from the active format.</summary>
+        IReadOnlyList<ParsedFieldViewModel> GetParsedFields();
 
         // ── Events ───────────────────────────────────────────────────────
 

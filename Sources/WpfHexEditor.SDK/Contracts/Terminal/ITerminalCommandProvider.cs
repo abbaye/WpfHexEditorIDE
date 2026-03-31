@@ -36,6 +36,17 @@ public interface ITerminalCommandProvider
     string Usage { get; }
 
     /// <summary>
+    /// Origin of the command, used to group entries in <c>help</c> output.
+    /// <list type="bullet">
+    ///   <item><c>null</c> — Built-in (registered by the core terminal engine).</item>
+    ///   <item><c>"Plugin"</c> — Contributed by a plugin via <see cref="WpfHexEditor.SDK.Contracts.Services.ITerminalService.RegisterCommand"/>.</item>
+    ///   <item><c>"Script"</c> — Registered by a user script at runtime.</item>
+    ///   <item>Any other string — Custom source label defined by the registrant.</item>
+    /// </list>
+    /// </summary>
+    string? Source => null;
+
+    /// <summary>
     /// Executes the command asynchronously.
     /// </summary>
     /// <param name="args">Arguments after the command name.</param>

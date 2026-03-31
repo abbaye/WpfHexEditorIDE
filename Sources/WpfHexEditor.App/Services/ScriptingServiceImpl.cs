@@ -26,17 +26,20 @@ public sealed class ScriptingServiceImpl : IScriptingService
     private readonly IHexEditorService      _hexEditor;
     private readonly IDocumentHostService   _documentHost;
     private readonly IOutputService         _output;
+    private readonly ITerminalService?      _terminal;
 
     public event EventHandler<ScriptExecutedEventArgs>? ScriptExecuted;
 
     public ScriptingServiceImpl(
         IHexEditorService    hexEditor,
         IDocumentHostService documentHost,
-        IOutputService       output)
+        IOutputService       output,
+        ITerminalService?    terminal = null)
     {
         _hexEditor    = hexEditor    ?? throw new ArgumentNullException(nameof(hexEditor));
         _documentHost = documentHost ?? throw new ArgumentNullException(nameof(documentHost));
         _output       = output       ?? throw new ArgumentNullException(nameof(output));
+        _terminal     = terminal;
     }
 
     // ── IScriptingService ────────────────────────────────────────────────────
@@ -66,6 +69,7 @@ public sealed class ScriptingServiceImpl : IScriptingService
         HexEditor  = _hexEditor,
         Documents  = _documentHost,
         Output     = _output,
+        Terminal   = _terminal,
         CT         = ct,
     };
 

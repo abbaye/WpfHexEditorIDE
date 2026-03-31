@@ -7,6 +7,7 @@
 // Description: HxTerminal command — show file statistics summary in the terminal.
 // ==========================================================
 
+using WpfHexEditor.Plugins.FileStatistics.Views;
 using WpfHexEditor.SDK.Contracts.Terminal;
 
 namespace WpfHexEditor.Plugins.FileStatistics.Commands;
