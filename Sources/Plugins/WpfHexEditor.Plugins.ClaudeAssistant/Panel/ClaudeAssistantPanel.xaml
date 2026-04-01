@@ -1,13 +1,12 @@
 <!-- ==========================================================
      Project: WpfHexEditor.Plugins.ClaudeAssistant
      GNU Affero General Public License v3.0  2026
-     Description: Main assistant panel — tab strip + conversation area + history overlay.
+     Description: Main assistant panel — tab strip + conversation area (simplified for stability).
      ========================================================== -->
 <UserControl x:Class="WpfHexEditor.Plugins.ClaudeAssistant.Panel.ClaudeAssistantPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:tabs="clr-namespace:WpfHexEditor.Plugins.ClaudeAssistant.Panel.Tabs"
-             xmlns:hist="clr-namespace:WpfHexEditor.Plugins.ClaudeAssistant.Panel.History"
              MinWidth="320" MinHeight="200">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -19,130 +18,31 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ═══ Tab strip (B1) ═══ -->
-        <Border Grid.Row="0" Height="30"
+        <!-- Tab strip -->
+        <Border Grid.Row="0" Height="28" Padding="4,0"
                 Background="{DynamicResource DockTabInactiveBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,0,0,1">
-            <DockPanel>
-                <!-- Right-side action buttons -->
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="2,0,4,0">
-                    <Border Width="26" Height="26" CornerRadius="2" Cursor="Hand"
-                            ToolTip="History"
-                            MouseLeftButtonDown="OnHistoryClick">
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <Border Width="26" Height="26" CornerRadius="2" Cursor="Hand"
+            <DockPanel VerticalAlignment="Center">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="+" Width="24" Height="22" FontSize="14" Padding="0"
                             ToolTip="New conversation"
-                            MouseLeftButtonDown="OnNewTabClick">
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
+                            Command="{Binding CreateNewTabCommand}"/>
                 </StackPanel>
-
-                <!-- Tab items (scrollable) -->
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
-                              Padding="0">
-                    <ItemsControl ItemsSource="{Binding Tabs}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border x:Name="TabBorder" Padding="8,0" Height="30" Cursor="Hand"
-                                        MouseLeftButtonDown="OnTabClick"
-                                        BorderThickness="0,2,0,0">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Background" Value="Transparent"/>
-                                            <Setter Property="BorderBrush" Value="Transparent"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <DockPanel VerticalAlignment="Center">
-                                        <Border DockPanel.Dock="Right" Width="18" Height="18"
-                                                CornerRadius="2" Cursor="Hand" Margin="6,0,0,0"
-                                                MouseLeftButtonDown="OnCloseTabClick">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="Transparent"/>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="8"
-                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBlock Text="{Binding Title}" FontSize="11"
-                                                   Foreground="{DynamicResource DockTabTextBrush}"
-                                                   TextTrimming="CharacterEllipsis" MaxWidth="140"
-                                                   VerticalAlignment="Center"/>
-                                    </DockPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                <TextBlock Text="{Binding ActiveTab.Title, FallbackValue='Claude AI Assistant'}"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
             </DockPanel>
         </Border>
 
-        <!-- ═══ Content area ═══ -->
-        <Grid Grid.Row="1">
-            <!-- Active conversation tab -->
-            <ContentControl Content="{Binding ActiveTab}">
-                <ContentControl.Style>
-                    <Style TargetType="ContentControl">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsHistoryVisible}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
-                <ContentControl.ContentTemplate>
-                    <DataTemplate>
-                        <tabs:ConversationTab DataContext="{Binding}"/>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
-
-            <!-- History panel overlay -->
-            <hist:HistoryPanel DataContext="{Binding History}"
-                               Visibility="{Binding DataContext.IsHistoryVisible, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}"/>
-        </Grid>
+        <!-- Active conversation -->
+        <ContentControl Grid.Row="1" Content="{Binding ActiveTab}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <tabs:ConversationTab DataContext="{Binding}"/>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
     </Grid>
 </UserControl>

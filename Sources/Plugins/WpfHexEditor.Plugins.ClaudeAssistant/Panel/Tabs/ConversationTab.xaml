@@ -1,7 +1,7 @@
 <!-- ==========================================================
      Project: WpfHexEditor.Plugins.ClaudeAssistant
      GNU Affero General Public License v3.0  2026
-     Description: Conversation tab — themed chat bubbles + VS Code style input bar.
+     Description: Conversation tab — chat messages + input bar (simplified for stability).
      ========================================================== -->
 <UserControl x:Class="WpfHexEditor.Plugins.ClaudeAssistant.Panel.Tabs.ConversationTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -17,259 +17,57 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- ═══ Chat messages area ═══ -->
-        <ScrollViewer x:Name="ChatScroller" Grid.Row="0"
-                      VerticalScrollBarVisibility="Auto" Padding="0">
-            <ItemsControl x:Name="MessagesControl"
-                          ItemsSource="{Binding Messages}" Padding="10,8">
+        <!-- Chat messages -->
+        <ScrollViewer x:Name="ChatScroller" Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Messages}" Padding="10,8">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type msgs:ChatMessageViewModel}">
-                        <Grid Margin="0,3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Avatar -->
-                            <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12"
-                                    VerticalAlignment="Top" Margin="0,2,8,0">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="{DynamicResource CA_AccentBrandingBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsUser}" Value="True">
-                                                <Setter Property="Background" Value="{DynamicResource DockTabActiveBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           FontSize="11" FontWeight="Bold" Foreground="White">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="&#xE734;"/>
-                                            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsUser}" Value="True">
-                                                    <Setter Property="Text" Value="U"/>
-                                                    <Setter Property="FontFamily" Value="Segoe UI"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Border>
-
-                            <!-- Message bubble -->
-                            <Border Grid.Column="1" Padding="10,8" MaxWidth="360"
-                                    BorderThickness="1"
-                                    BorderBrush="{DynamicResource CA_MessageBorderBrush}">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="{DynamicResource CA_MessageAssistantBackgroundBrush}"/>
-                                        <Setter Property="CornerRadius" Value="2,12,12,12"/>
-                                        <Setter Property="HorizontalAlignment" Value="Left"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsUser}" Value="True">
-                                                <Setter Property="Background" Value="{DynamicResource CA_MessageUserBackgroundBrush}"/>
-                                                <Setter Property="CornerRadius" Value="12,2,12,12"/>
-                                                <Setter Property="HorizontalAlignment" Value="Right"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsError}" Value="True">
-                                                <Setter Property="Background" Value="#30E05252"/>
-                                                <Setter Property="BorderBrush" Value="#60E05252"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <StackPanel>
-                                    <!-- Thinking (collapsed by default) -->
-                                    <Expander Visibility="{Binding HasThinking, Converter={StaticResource BoolToVis}}"
-                                              IsExpanded="False" Margin="0,0,0,4">
-                                        <Expander.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                                           Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
-                                                           VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                <TextBlock Text="Thinking..." FontSize="11"
-                                                           Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
-                                            </StackPanel>
-                                        </Expander.Header>
-                                        <TextBlock Text="{Binding ThinkingText}" TextWrapping="Wrap"
-                                                   Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
-                                                   FontSize="11" FontStyle="Italic" Opacity="0.7"
-                                                   FontFamily="Cascadia Code,Consolas,Courier New"/>
-                                    </Expander>
-
-                                    <!-- Tool calls -->
-                                    <ItemsControl ItemsSource="{Binding ToolCalls}"
-                                                  Visibility="{Binding HasToolCalls, Converter={StaticResource BoolToVis}}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type msgs:ToolCallViewModel}">
-                                                <Expander IsExpanded="{Binding IsExpanded}" Margin="0,2">
-                                                    <Expander.Header>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets"
-                                                                       FontSize="10" Margin="0,0,4,0"
-                                                                       Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
-                                                                       VerticalAlignment="Center"/>
-                                                            <TextBlock Text="{Binding ToolName}" FontSize="11"
-                                                                       FontWeight="SemiBold"
-                                                                       Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
-                                                        </StackPanel>
-                                                    </Expander.Header>
-                                                    <Border Background="{DynamicResource CA_ToolCallBackgroundBrush}"
-                                                            BorderBrush="{DynamicResource CA_ToolCallBorderBrush}"
-                                                            BorderThickness="1" CornerRadius="4" Padding="6,4"
-                                                            Margin="0,2">
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding ArgsJson}" TextWrapping="Wrap"
-                                                                       FontFamily="Cascadia Code,Consolas,Courier New"
-                                                                       FontSize="10"
-                                                                       Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
-                                                            <TextBlock Text="{Binding ResultJson}" TextWrapping="Wrap"
-                                                                       FontFamily="Cascadia Code,Consolas,Courier New"
-                                                                       FontSize="10" Margin="0,4,0,0"
-                                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                                                       Visibility="{Binding IsDone, Converter={StaticResource BoolToVis}}"/>
-                                                        </StackPanel>
-                                                    </Border>
-                                                </Expander>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-
-                                    <!-- Message text -->
-                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap"
-                                               Foreground="{DynamicResource CA_MessageForegroundBrush}"
-                                               FontSize="12.5"/>
-
-                                    <!-- Streaming dots -->
-                                    <TextBlock Text="..." FontSize="16" FontWeight="Bold"
-                                               Foreground="{DynamicResource CA_AccentBrandingBrush}"
-                                               Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock.Triggers>
-                                            <EventTrigger RoutedEvent="Loaded">
-                                                <BeginStoryboard>
-                                                    <Storyboard RepeatBehavior="Forever">
-                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                                         From="1" To="0.3"
-                                                                         Duration="0:0:0.5"
-                                                                         AutoReverse="True"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                        </TextBlock.Triggers>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
+                        <Border Margin="0,3" Padding="10,8" CornerRadius="6"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                Background="{DynamicResource DockTabInactiveBrush}">
+                            <StackPanel>
+                                <!-- Role label -->
+                                <TextBlock FontSize="10" FontWeight="Bold" Margin="0,0,0,4"
+                                           Foreground="{DynamicResource DockTabActiveBrush}"
+                                           Text="{Binding Role}"/>
+                                <!-- Message text -->
+                                <TextBlock Text="{Binding Text}" TextWrapping="Wrap" FontSize="12.5"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            </StackPanel>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
 
-        <!-- ═══ Input bar (B3) ═══ -->
-        <Border Grid.Row="1" BorderThickness="0,1,0,0"
+        <!-- Input bar -->
+        <Border Grid.Row="1" Padding="8" BorderThickness="0,1,0,0"
                 BorderBrush="{DynamicResource DockBorderBrush}"
-                Background="{DynamicResource DockBackgroundBrush}"
-                Padding="10,8">
-            <StackPanel>
-                <!-- Input row -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                Background="{DynamicResource DockBackgroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" CornerRadius="8"
-                            Background="{DynamicResource CA_InputBackgroundBrush}"
-                            BorderBrush="{DynamicResource CA_InputBorderBrush}"
-                            BorderThickness="1" Padding="2">
-                        <TextBox Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
-                                 Background="Transparent" BorderThickness="0"
-                                 Foreground="{DynamicResource CA_InputForegroundBrush}"
-                                 CaretBrush="{DynamicResource CA_InputForegroundBrush}"
-                                 AcceptsReturn="True" TextWrapping="Wrap"
-                                 MaxHeight="100" Padding="8,6"
-                                 VerticalScrollBarVisibility="Auto"
-                                 KeyDown="OnInputKeyDown">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Style.Triggers>
-                                        <Trigger Property="Text" Value="">
-                                            <Setter Property="Tag" Value="Ask Claude or type /..."/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-                    </Border>
+                <TextBox Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{DynamicResource DockTabInactiveBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="100"
+                         Padding="8,6" KeyDown="OnInputKeyDown"/>
 
-                    <!-- Send / Cancel buttons -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="6,0,0,0"
-                                VerticalAlignment="Bottom">
-                        <!-- Send button (round accent) -->
-                        <Border Width="32" Height="32" CornerRadius="16" Cursor="Hand"
-                                ToolTip="Send (Enter)"
-                                MouseLeftButtonDown="OnSendClick">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="{DynamicResource CA_AccentBrandingBrush}"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Opacity" Value="0.85"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-
-                        <!-- Cancel button (visible during streaming) -->
-                        <Border Width="32" Height="32" CornerRadius="16" Cursor="Hand"
-                                Margin="4,0,0,0"
-                                ToolTip="Cancel (Esc)"
-                                Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"
-                                MouseLeftButtonDown="OnCancelClick">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="#E05252"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Opacity" Value="0.85"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </StackPanel>
-                </Grid>
-
-                <!-- Model pill (below input) -->
-                <Border Margin="0,6,0,0" HorizontalAlignment="Left"
-                        Padding="8,3" CornerRadius="10" Cursor="Hand"
-                        Background="{DynamicResource CA_ToolCallBackgroundBrush}"
-                        BorderBrush="{DynamicResource CA_ToolCallBorderBrush}"
-                        BorderThickness="1"
-                        ToolTip="Click to switch model">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="6" Height="6" Fill="{DynamicResource CA_TitleBarBadgeIdleBrush}"
-                                 VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock FontSize="10.5"
-                                   Foreground="{DynamicResource CA_ToolCallForegroundBrush}">
-                            <Run Text="{Binding SelectedProviderId, Mode=OneWay}"/>
-                            <Run Text=" / "/>
-                            <Run Text="{Binding SelectedModelId, Mode=OneWay}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="6,0,0,0"
+                            VerticalAlignment="Bottom">
+                    <Button Content="Send" Width="60" Height="28"
+                            Command="{Binding SendCommand}"/>
+                    <Button Content="Stop" Width="50" Height="28" Margin="4,0,0,0"
+                            Command="{Binding CancelCommand}"
+                            Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
