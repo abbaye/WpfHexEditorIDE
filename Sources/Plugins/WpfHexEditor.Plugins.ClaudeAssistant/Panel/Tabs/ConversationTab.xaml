@@ -280,7 +280,7 @@
                         <Grid>
                             <!-- Watermark -->
                             <TextBlock x:Name="InputWatermark"
-                                       Text="Ask Claude anything... (@ to mention)"
+                                       Text="Ask Claude anything... (@ to mention, Alt+Enter to send)"
                                        FontSize="12" Opacity="0.4" IsHitTestVisible="False"
                                        Foreground="{DynamicResource CA_InputForegroundBrush}"
                                        VerticalAlignment="Center" Margin="10,0,0,0"/>
@@ -301,7 +301,7 @@
                             Margin="6,0,0,0" Cursor="Hand" VerticalAlignment="Bottom"
                             Background="{DynamicResource CA_AccentBrandingBrush}"
                             MouseLeftButtonDown="OnSendClick"
-                            ToolTip="Send (Enter)">
+                            ToolTip="Send (Alt+Enter)">
                         <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

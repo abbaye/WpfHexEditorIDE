@@ -95,7 +95,7 @@ public partial class ConversationTab : UserControl
     private void OnInputKeyDown(object sender, KeyEventArgs e)
         => SafeGuard.Run(() =>
         {
-            if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
+            if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.Alt)
             {
                 if (Vm?.SendCommand is { } cmd && cmd.CanExecute(null))
                 {
