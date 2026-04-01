@@ -169,7 +169,7 @@ Parallel (16-core):  950ms (13.1x faster)
 | `FindAllAsync()` | Same | Same | UI responsiveness needed |
 | `FindAllParallel()` | 2-4x (large files) | 10% | Files > 100MB, multi-core |
 
-**See also:** [PERFORMANCE_GUIDE.md](../../../../PERFORMANCE_GUIDE.md) for comprehensive optimization documentation.
+**See also:** [PERFORMANCE_GUIDE.md](../../../../docs/PERFORMANCE_GUIDE.md) for comprehensive optimization documentation.
 
 ## 🎯 Purpose
 

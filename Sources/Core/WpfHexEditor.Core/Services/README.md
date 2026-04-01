@@ -632,7 +632,7 @@ While the current 10 services cover all significant business logic, potential en
 
 ## 📚 Related Documentation
 
-- **[Performance Guide](../../../PERFORMANCE_GUIDE.md)** - ⚡ Service performance optimization and benchmarking
-- [Architecture Documentation](../../../ARCHITECTURE.md) - Overall system architecture
+- **[Performance Guide](../../../../docs/PERFORMANCE_GUIDE.md)** - ⚡ Service performance optimization and benchmarking
+- [Architecture Documentation](../../../../docs/ARCHITECTURE.md) - Overall system architecture
 - [Unit Tests](../../WPFHexaEditor.Tests/Services/) - Service test suite (275 tests)
 - [Main README](../../../README.md) - Project overview

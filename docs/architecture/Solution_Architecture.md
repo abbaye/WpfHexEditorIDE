@@ -15,7 +15,7 @@ This document provides visual diagrams and detailed architecture documentation f
 ## 📚 Related Documentation
 
 - **[Multilingual System](Multilingual_System.md)** - Localization architecture and 6-language support
-- **[Performance Guide](PERFORMANCE_GUIDE.md)** - Comprehensive performance optimization guide with benchmarking
+- **[Performance Guide](../PERFORMANCE_GUIDE.md)** - Comprehensive performance optimization guide with benchmarking
 - [Main README](README.md) - Project overview and quick start
 - [Services Documentation](Sources/WPFHexaEditor/Services/README.md) - Service layer details
 - [Benchmarks README](Sources/WPFHexaEditor.Benchmarks/README.md) - How to run performance benchmarks
@@ -868,7 +868,7 @@ graph TB
 
 ## ⚡ Performance Optimization Architecture (v2.2+)
 
-> 📖 **Complete Guide**: See [PERFORMANCE_GUIDE.md](PERFORMANCE_GUIDE.md) for comprehensive documentation with examples, benchmarks, and migration guides.
+> 📖 **Complete Guide**: See [PERFORMANCE_GUIDE.md](../PERFORMANCE_GUIDE.md) for comprehensive documentation with examples, benchmarks, and migration guides.
 
 ### Overview
 
@@ -1461,7 +1461,7 @@ Operation: Find all occurrences of byte pattern in 10MB file
 ### Documentation
 
 #### Guides
-- **[PERFORMANCE_GUIDE.md](PERFORMANCE_GUIDE.md)** - Complete optimization guide (600+ lines)
+- **[PERFORMANCE_GUIDE.md](../PERFORMANCE_GUIDE.md)** - Complete optimization guide (600+ lines)
   - 3-tier optimization system overview
   - When to use each optimization
   - 4 core patterns with examples
@@ -1514,7 +1514,7 @@ The architecture has been optimized for performance at multiple levels:
 
 ### Benchmarking
 Performance metrics and detailed optimization guide:
-- **[Performance Guide](PERFORMANCE_GUIDE.md)** - Complete optimization documentation
+- **[Performance Guide](../PERFORMANCE_GUIDE.md)** - Complete optimization documentation
 - **[Benchmarks](Sources/WPFHexaEditor.Benchmarks/README.md)** - Run benchmarks with BenchmarkDotNet
 
 **Key Metrics (2026):**
@@ -1528,7 +1528,7 @@ Performance metrics and detailed optimization guide:
 
 ## 📚 Related Documentation
 
-- **[Performance Guide](PERFORMANCE_GUIDE.md)** - ⚡ Comprehensive performance optimization guide
+- **[Performance Guide](../PERFORMANCE_GUIDE.md)** - ⚡ Comprehensive performance optimization guide
 - [Main README](README.md) - Project overview
 - [Services Documentation](Sources/WPFHexaEditor/Services/README.md) - Service details
 - [Core Documentation](Sources/WPFHexaEditor/Core/README.md) - Core components
