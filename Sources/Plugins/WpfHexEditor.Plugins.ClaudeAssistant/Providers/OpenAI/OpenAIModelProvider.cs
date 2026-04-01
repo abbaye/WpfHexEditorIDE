@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Providers/OpenAI/OpenAIModelProvider.cs
-// Description: OpenAI provider — streaming via HTTP SSE with function_calling normalized to tool_use.
-
+// File: OpenAIModelProvider.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     OpenAI provider. SSE streaming with function_calling normalized to tool_use.
+// ==========================================================
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;

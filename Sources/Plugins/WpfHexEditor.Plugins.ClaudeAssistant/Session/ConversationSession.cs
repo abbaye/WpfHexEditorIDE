@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Session/ConversationSession.cs
-// Description: Represents a single conversation with message history, provider, and model state.
-
+// File: ConversationSession.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Single conversation with message history, provider, and model state.
+// ==========================================================
 using WpfHexEditor.Plugins.ClaudeAssistant.Api;
 
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Session;

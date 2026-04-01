@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Connection/RateLimitHandler.cs
-// Description: Handles API rate limits with exponential backoff and request queuing.
-
+// File: RateLimitHandler.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Handles API rate limits with exponential backoff and request queuing.
+// ==========================================================
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Connection;
 
 public sealed class RateLimitHandler

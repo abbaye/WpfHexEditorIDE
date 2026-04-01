@@ -1,8 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Providers/Anthropic/AnthropicModelProvider.cs
-// Description: Anthropic Claude provider — streaming via HTTP SSE with tool_use and thinking support.
-// Architecture: Uses raw HttpClient + SSE parsing (no Anthropic.SDK NuGet dependency for Phase 1).
-
+// File: AnthropicModelProvider.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Anthropic Claude provider. HTTP SSE streaming with tool_use and thinking.
+// ==========================================================
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;

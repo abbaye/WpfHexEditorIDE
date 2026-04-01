@@ -1,8 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
 // File: ClaudeAssistantPlugin.cs
-// Description: Main plugin entry point — registers panel, menus, commands, titlebar icon, MCP servers.
-// Architecture: IWpfHexEditorPlugin + IPluginWithOptions, multi-provider AI assistant with MCP.
-
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Main plugin entry point. Registers panel, menus, commands, titlebar icon, MCP servers.
+// ==========================================================
 using System.Windows;
 using WpfHexEditor.Plugins.ClaudeAssistant.Connection;
 using WpfHexEditor.Plugins.ClaudeAssistant.Options;

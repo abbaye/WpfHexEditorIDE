@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Api/ChatStreamChunk.cs
-// Description: Provider-agnostic streaming chunk model for token-by-token delivery.
-
+// File: ChatStreamChunk.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Provider-agnostic streaming chunk model for token-by-token delivery.
+// ==========================================================
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Api;
 
 public sealed record ChatStreamChunk(

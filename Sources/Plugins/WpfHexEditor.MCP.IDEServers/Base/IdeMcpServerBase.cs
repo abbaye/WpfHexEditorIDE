@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.MCP.IDEServers
-// File: Base/IdeMcpServerBase.cs
-// Description: Base class for IDE MCP servers with tool registration and dispatch.
-
+// File: IdeMcpServerBase.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Base class for IDE MCP servers with tool registration and dispatch.
+// ==========================================================
 using System.Text.Json;
 
 namespace WpfHexEditor.MCP.IDEServers.Base;

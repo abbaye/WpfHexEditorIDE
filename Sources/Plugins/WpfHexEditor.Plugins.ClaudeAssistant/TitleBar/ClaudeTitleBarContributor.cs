@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: TitleBar/ClaudeTitleBarContributor.cs
-// Description: ITitleBarContributor implementation — creates the Claude button for the IDE title bar.
-
+// File: ClaudeTitleBarContributor.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     ITitleBarContributor implementation. Creates the Claude titlebar button.
+// ==========================================================
 using System.Windows;
 using WpfHexEditor.Plugins.ClaudeAssistant.Connection;
 using WpfHexEditor.SDK.Contracts;

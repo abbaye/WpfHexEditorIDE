@@ -1,12 +1,19 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Panel/Tabs/ConversationTabViewModel.cs
-// Description: ViewModel for a single conversation tab — owns the session, handles streaming.
-
+// File: ConversationTabViewModel.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     ViewModel for a conversation tab. Streaming loop, Send/Cancel, tool execution.
+// ==========================================================
 using System.Collections.ObjectModel;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WpfHexEditor.Plugins.ClaudeAssistant.Api;
+using WpfHexEditor.Plugins.ClaudeAssistant.Mcp.Host;
 using WpfHexEditor.Plugins.ClaudeAssistant.Panel.Messages;
 using WpfHexEditor.Plugins.ClaudeAssistant.Session;
 
@@ -15,6 +22,7 @@ namespace WpfHexEditor.Plugins.ClaudeAssistant.Panel.Tabs;
 public sealed partial class ConversationTabViewModel : ObservableObject
 {
     private readonly ModelRegistry _registry;
+    private IMcpServerManager? _mcpManager;
     private CancellationTokenSource? _streamCts;
 
     public ConversationSession Session { get; }
@@ -28,14 +36,17 @@ public sealed partial class ConversationTabViewModel : ObservableObject
 
     public string Title => Session.Title;
 
-    public ConversationTabViewModel(ConversationSession session, ModelRegistry registry)
+    public ConversationTabViewModel(ConversationSession session, ModelRegistry registry, IMcpServerManager? mcpManager = null)
     {
         Session = session;
         _registry = registry;
+        _mcpManager = mcpManager;
         _selectedProviderId = session.ProviderId;
         _selectedModelId = session.ModelId;
         _thinkingEnabled = session.ThinkingEnabled;
     }
+
+    public void SetMcpManager(IMcpServerManager manager) => _mcpManager = manager;
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     private async Task SendAsync()
@@ -79,10 +90,16 @@ public sealed partial class ConversationTabViewModel : ObservableObject
             ? new ThinkingConfig(true, Session.ThinkingBudgetTokens)
             : null;
 
+        // Get MCP tools if available
+        var tools = _mcpManager?.GetAllTools();
+
         try
         {
+            ToolCallViewModel? currentToolCall = null;
+            string? currentToolCallId = null;
+
             await foreach (var chunk in provider.StreamAsync(
-                Session.Messages, SelectedModelId, tools: null, thinking, _streamCts.Token))
+                Session.Messages, SelectedModelId, tools, thinking, _streamCts.Token))
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -94,6 +111,18 @@ public sealed partial class ConversationTabViewModel : ObservableObject
                         case ChunkKind.ThinkingDelta:
                             assistantVm.AppendThinking(chunk.ThinkingText ?? "");
                             break;
+                        case ChunkKind.ToolUseStart:
+                            currentToolCallId = chunk.ToolCallId;
+                            currentToolCall = new ToolCallViewModel
+                            {
+                                ToolName = chunk.ToolName ?? "",
+                                Status = ToolCallStatus.Running
+                            };
+                            assistantVm.ToolCalls.Add(currentToolCall);
+                            break;
+                        case ChunkKind.ToolInputDelta:
+                            currentToolCall?.AppendArgs(chunk.ToolInputJson ?? "");
+                            break;
                         case ChunkKind.Error:
                             assistantVm.Text = $"Error: {chunk.ErrorMessage}";
                             assistantVm.IsError = true;
@@ -102,6 +131,23 @@ public sealed partial class ConversationTabViewModel : ObservableObject
                             break;
                     }
                 });
+            }
+
+            // Execute pending tool calls and feed results back
+            if (assistantVm.HasToolCalls && _mcpManager is not null)
+            {
+                foreach (var tc in assistantVm.ToolCalls.Where(t => t.Status == ToolCallStatus.Running))
+                {
+                    try
+                    {
+                        var result = await _mcpManager.CallToolAsync(tc.ToolName, tc.ArgsJson, _streamCts.Token);
+                        Application.Current.Dispatcher.Invoke(() => tc.SetResult(result));
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.Current.Dispatcher.Invoke(() => tc.SetResult($"{{\"error\":\"{ex.Message}\"}}", isError: true));
+                    }
+                }
             }
         }
         catch (OperationCanceledException)

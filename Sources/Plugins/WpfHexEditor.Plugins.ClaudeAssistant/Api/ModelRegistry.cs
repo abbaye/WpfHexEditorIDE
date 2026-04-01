@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Api/ModelRegistry.cs
-// Description: Registry of all available model providers. Providers register at startup.
-
+// File: ModelRegistry.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Registry of all available model providers. Providers register at startup.
+// ==========================================================
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Api;
 
 public sealed class ModelRegistry

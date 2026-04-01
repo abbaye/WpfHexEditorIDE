@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.MCP.IDEServers\WpfHexEditor.MCP.IDEServers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

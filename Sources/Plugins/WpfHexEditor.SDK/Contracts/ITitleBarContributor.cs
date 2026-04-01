@@ -1,8 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.SDK
-// File: Contracts/ITitleBarContributor.cs
-// Description: Interface for plugins to contribute buttons/icons to the IDE title bar.
-// Architecture: Registered via IUIRegistry.RegisterTitleBarItem; displayed in TitleBarPluginZone.
-
+// File: ITitleBarContributor.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Interface for plugins to contribute buttons/icons to the IDE title bar.
+// ==========================================================
 using System.Windows;
 
 namespace WpfHexEditor.SDK.Contracts;

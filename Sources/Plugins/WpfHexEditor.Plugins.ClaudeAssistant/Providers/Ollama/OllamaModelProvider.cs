@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Providers/Ollama/OllamaModelProvider.cs
-// Description: Ollama local provider — OpenAI-compatible API on localhost. Auto-discovers models.
-
+// File: OllamaModelProvider.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Ollama local provider. OpenAI-compatible API, auto model discovery.
+// ==========================================================
 using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;

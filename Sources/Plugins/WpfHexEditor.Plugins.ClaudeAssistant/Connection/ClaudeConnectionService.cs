@@ -1,8 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Connection/ClaudeConnectionService.cs
-// Description: Background service that monitors connection to AI providers,
-//              publishes status changes via event, and drives the titlebar badge state.
-
+// File: ClaudeConnectionService.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Background health-check, rate-limit backoff, offline detection. Drives titlebar badge.
+// ==========================================================
 using System.Diagnostics;
 using System.Net.Http;
 using WpfHexEditor.Plugins.ClaudeAssistant.Options;

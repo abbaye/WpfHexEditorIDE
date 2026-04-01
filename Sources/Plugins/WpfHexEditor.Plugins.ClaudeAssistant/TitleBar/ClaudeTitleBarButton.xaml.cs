@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: TitleBar/ClaudeTitleBarButton.xaml.cs
-// Description: Claude icon button for the IDE title bar with animated status badge.
-
+// File: ClaudeTitleBarButton.xaml.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Claude icon button for the IDE title bar with animated status badge.
+// ==========================================================
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Panel/ClaudeAssistantPanel.xaml.cs
-// Description: Panel code-behind — tab click handler, auto-save on unload.
-
+// File: ClaudeAssistantPanel.xaml.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Panel code-behind. Tab click handler.
+// ==========================================================
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

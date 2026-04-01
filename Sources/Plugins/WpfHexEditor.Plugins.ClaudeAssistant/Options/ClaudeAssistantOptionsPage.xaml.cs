@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Options/ClaudeAssistantOptionsPage.xaml.cs
-// Description: Options page code-behind — loads/saves per-provider API keys via DPAPI.
-
+// File: ClaudeAssistantOptionsPage.xaml.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Options page code-behind. Per-provider API key config + defaults.
+// ==========================================================
 using System.Windows;
 using System.Windows.Controls;
 

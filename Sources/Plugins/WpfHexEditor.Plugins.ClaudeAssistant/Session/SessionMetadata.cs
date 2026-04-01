@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Session/SessionMetadata.cs
-// Description: Lightweight metadata for conversation index (no full message history).
-
+// File: SessionMetadata.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Lightweight metadata for conversation index (no full message history).
+// ==========================================================
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Session;
 
 public sealed class SessionMetadata

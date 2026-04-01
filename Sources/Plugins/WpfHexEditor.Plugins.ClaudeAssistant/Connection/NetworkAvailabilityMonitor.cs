@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Connection/NetworkAvailabilityMonitor.cs
-// Description: Monitors system network availability; fires event on change.
-
+// File: NetworkAvailabilityMonitor.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Monitors OS network availability; fires event on change.
+// ==========================================================
 using System.Net.NetworkInformation;
 
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Connection;

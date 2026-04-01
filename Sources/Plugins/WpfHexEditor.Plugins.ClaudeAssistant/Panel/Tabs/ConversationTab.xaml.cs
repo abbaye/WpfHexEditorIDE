@@ -1,7 +1,13 @@
+// ==========================================================
 // Project: WpfHexEditor.Plugins.ClaudeAssistant
-// File: Panel/Tabs/ConversationTab.xaml.cs
-// Description: Conversation tab code-behind — auto-scroll and input key handling.
-
+// File: ConversationTab.xaml.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Opus 4.6
+// Created: 2026-03-31
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
+// Description:
+//     Conversation tab code-behind. Auto-scroll and input key handling.
+// ==========================================================
 using System.Collections.Specialized;
 using System.Windows.Controls;
 using System.Windows.Input;
