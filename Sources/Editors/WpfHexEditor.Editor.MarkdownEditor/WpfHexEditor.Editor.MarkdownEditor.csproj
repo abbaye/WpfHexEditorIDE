@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Editor.MarkdownEditor</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.MarkdownEditor</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>WpfHexEditor.Editor.MarkdownEditor</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>WpfHexEditor Contributors</Authors>
+    <Description>GitHub-Flavored Markdown editor with live preview (tables, Mermaid diagrams, emoji) for WpfHexEditor IDE. Implements IDocumentEditor with WebView2-backed split-pane preview.</Description>
+    <PackageTags>wpf;hex;editor;markdown;preview;mermaid;github</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2739.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.MarkdownEditor.Core\WpfHexEditor.Editor.MarkdownEditor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
+  </ItemGroup>
+
+  <!-- JS/CSS assets and rendering services moved to WpfHexEditor.Editor.MarkdownEditor.Core -->
+
+</Project>

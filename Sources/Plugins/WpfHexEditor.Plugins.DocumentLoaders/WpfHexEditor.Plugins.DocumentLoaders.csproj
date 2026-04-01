@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     WpfHexEditor.Plugins.DocumentLoaders
     =====================================
     Plugin: loads RTF, DOCX, and ODT files into DocumentModel.
@@ -41,10 +41,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 
-  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+  <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
 
   <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
     <PropertyGroup>

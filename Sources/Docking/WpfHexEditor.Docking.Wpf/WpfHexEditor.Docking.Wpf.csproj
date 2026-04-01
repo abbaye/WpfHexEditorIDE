@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!--
+      RootNamespace intentionally kept as WpfHexEditor.Shell for backward namespace compatibility.
+      All .cs files declare 'namespace WpfHexEditor.Shell' and require no modification.
+      AssemblyName changes to WpfHexEditor.Docking.Wpf — consumers update xmlns:dock assembly= only.
+    -->
+    <RootNamespace>WpfHexEditor.Shell</RootNamespace>
+    <AssemblyName>WpfHexEditor.Docking.Wpf</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+  </ItemGroup>
+
+</Project>

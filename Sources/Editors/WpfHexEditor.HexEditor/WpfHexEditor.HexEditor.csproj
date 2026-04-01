@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.HexEditor</RootNamespace>
+    <AssemblyName>WpfHexEditor.HexEditor</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- Profile-Guided Optimization (PGO) Configuration for .NET 8.0+ -->
+  <PropertyGroup Condition="'$(Configuration)'=='Release' and '$(TargetFramework)'=='net8.0-windows'">
+    <TieredCompilation>true</TieredCompilation>
+    <TieredPGO>true</TieredPGO>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <DebugType>embedded</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.HexBox\WpfHexEditor.HexBox.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
+  </ItemGroup>
+
+</Project>

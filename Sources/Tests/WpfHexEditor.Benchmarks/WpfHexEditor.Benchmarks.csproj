@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- BenchmarkDotNet requires Release for accurate measurements -->
+    <Optimize>true</Optimize>
+    <Description>Performance benchmarks for WpfHexEditor — HexEditor load, diff engine, format detection, checksum, workspace.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj" />
+  </ItemGroup>
+
+</Project>

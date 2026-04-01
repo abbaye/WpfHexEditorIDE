@@ -1,0 +1,44 @@
+﻿<!--
+    WpfHexEditor.Editor.DocumentEditor
+    ====================================
+    WPF editor host for RTF / DOCX / ODT documents.
+    Provides:
+      - DocumentEditorHost (IDocumentEditor + IOpenableDocument + …)
+      - DocumentTextPane (FlowDocument-backed RichTextBox)
+      - DocumentStructurePane (TreeView of DocumentBlock tree)
+      - DocumentHexPane (embedded HexEditor for raw binary view)
+      - DocumentMiniMap (DrawingVisual dual-strip)
+      - ForensicOverlayControl (AdornerLayer gutter badges)
+      - DocumentEditorFactory (IEditorFactory registration)
+    Format loaders are contributed separately via IDocumentLoader plugins.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Editor.DocumentEditor</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.DocumentEditor</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>WpfHexEditor.Editor.DocumentEditor</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>WpfHexEditor Contributors</Authors>
+    <Description>Multi-format document editor (RTF/DOCX/ODT) for WpfHexEditor IDE. Provides split Text+Structure+Hex view with binary-map synchronisation and forensic overlay.</Description>
+    <PackageTags>wpf;hex;editor;document;rtf;docx;odt</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+  </ItemGroup>
+
+</Project>

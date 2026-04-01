@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -31,7 +31,7 @@
         WpfHexEditor.Shell   (theme ResourceDictionaries — used for themes only, not docking)
         WpfHexEditor.SDK           (service contracts for StandaloneIDEHostContext)
     -->
-    <ProjectReference Include="..\..\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
   </ItemGroup>
 
 </Project>

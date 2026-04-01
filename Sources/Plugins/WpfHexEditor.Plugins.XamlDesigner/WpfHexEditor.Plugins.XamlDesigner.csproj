@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -28,11 +28,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
   </ItemGroup>
 
-  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+  <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
 
   <!-- Copy compiled plugin to App Plugins directory after build -->
   <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">

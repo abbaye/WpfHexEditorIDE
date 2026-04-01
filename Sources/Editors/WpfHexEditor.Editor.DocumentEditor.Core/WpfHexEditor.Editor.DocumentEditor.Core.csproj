@@ -1,0 +1,37 @@
+﻿<!--
+    WpfHexEditor.Editor.DocumentEditor.Core
+    ========================================
+    No WPF dependency. Contains:
+      - DocumentModel / DocumentBlock domain objects
+      - BinaryMap engine (offset ↔ block mapping)
+      - ForensicAnalyzer (gap/overlap/encoding/assertion alerts)
+      - DocumentEditorOptions / DocumentEditorContext
+      - DocumentWhfmtAdapter (reads document.* hints from .whfmt)
+      - TextEditUndoEntry (coalescible undo entries)
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <RootNamespace>WpfHexEditor.Editor.DocumentEditor.Core</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.DocumentEditor.Core</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>WpfHexEditor.Editor.DocumentEditor.Core</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>WpfHexEditor Contributors</Authors>
+    <Description>Core domain model, BinaryMap engine, ForensicAnalyzer, and options for the WpfHexEditor multi-format document editor. No WPF dependency.</Description>
+    <PackageTags>wpf;hex;editor;document;rtf;docx;odt;binary-map;forensic</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+  </ItemGroup>
+
+</Project>

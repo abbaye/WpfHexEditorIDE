@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Core.Commands</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core.Commands</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Centralized command bus, registry, and keybinding service for WpfHexEditor IDE.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+  </ItemGroup>
+
+</Project>

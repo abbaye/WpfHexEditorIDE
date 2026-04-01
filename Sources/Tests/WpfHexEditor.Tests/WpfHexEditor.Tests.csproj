@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
+  </ItemGroup>
+
+</Project>

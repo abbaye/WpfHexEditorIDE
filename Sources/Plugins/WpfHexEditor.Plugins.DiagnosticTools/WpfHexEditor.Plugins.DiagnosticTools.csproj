@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +36,7 @@
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.7" />
   </ItemGroup>
 
-  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+  <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
 
   <!-- Copy compiled plugin + NuGet deps to App Plugins directory after build -->
   <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">

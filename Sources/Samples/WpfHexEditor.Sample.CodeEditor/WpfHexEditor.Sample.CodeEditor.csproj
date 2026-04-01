@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -34,8 +34,8 @@
         WpfHexEditor.SDK, WpfHexEditor.HexEditor, WpfHexEditor.Editor.TextEditor, etc.
       Docking.Wpf is needed explicitly for the theme ResourceDictionaries.
     -->
-    <ProjectReference Include="..\..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
   </ItemGroup>
 
 </Project>

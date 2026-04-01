@@ -1,63 +1,63 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.4.11506.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E7C58EBD-5476-4A12-83EB-235DE68AF079}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core", "WpfHexEditor.Core\WpfHexEditor.Core.csproj", "{A53B3778-BA1D-4C35-9DC8-7A21E8224872}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core", "Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj", "{A53B3778-BA1D-4C35-9DC8-7A21E8224872}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.HexEditor", "WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj", "{B8A9C0D1-E2F3-4567-89AB-CDEF01234567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.HexEditor", "Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj", "{B8A9C0D1-E2F3-4567-89AB-CDEF01234567}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.HexEditor", "Samples\WpfHexEditor.Sample.HexEditor\WpfHexEditor.Sample.HexEditor.csproj", "{B1A2C3D4-E5F6-7890-A1B2-C3D4E5F67890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Tests", "WpfHexEditor.Tests\WpfHexEditor.Tests.csproj", "{AC616BD2-091D-47F8-8B3A-8C4F51A059B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Tests", "Tests\WpfHexEditor.Tests\WpfHexEditor.Tests.csproj", "{AC616BD2-091D-47F8-8B3A-8C4F51A059B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test and Benchmark", "Test and Benchmark", "{17DF3F5C-B057-775F-6415-08BE72BB68E2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docking", "Docking", "{FEF6DC7F-62E8-4254-9C7D-1324AC8B8E19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Docking.Core", "WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj", "{6B52E370-D952-4E45-AB8F-46C36B440D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Docking.Core", "Docking\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj", "{6B52E370-D952-4E45-AB8F-46C36B440D8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Shell", "WpfHexEditor.Shell\WpfHexEditor.Shell.csproj", "{AF320FF3-6DA4-4F0B-9847-9747A5D1D28C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Shell", "Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj", "{AF320FF3-6DA4-4F0B-9847-9747A5D1D28C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.App", "WpfHexEditor.App\WpfHexEditor.App.csproj", "{AC792237-B019-47C9-85C7-874A6E0212EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Docking.Tests", "WpfHexEditor.Docking.Tests\WpfHexEditor.Docking.Tests.csproj", "{E3B2C99D-8506-4B91-A75E-2062F0E2F26D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Docking.Tests", "Tests\WpfHexEditor.Docking.Tests\WpfHexEditor.Docking.Tests.csproj", "{E3B2C99D-8506-4B91-A75E-2062F0E2F26D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.CodeEditor", "WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj", "{D4CD9155-5A32-429A-AA18-9E4BF03F1D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.CodeEditor", "Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj", "{D4CD9155-5A32-429A-AA18-9E4BF03F1D8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TextEditor", "WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj", "{E5F6A7B8-C9D0-1234-5678-9ABCDEF01234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TextEditor", "Editors\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj", "{E5F6A7B8-C9D0-1234-5678-9ABCDEF01234}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ImageViewer", "WpfHexEditor.Editor.ImageViewer\WpfHexEditor.Editor.ImageViewer.csproj", "{A8B9C0D1-E2F3-4567-89AB-CDEF01234567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ImageViewer", "Editors\WpfHexEditor.Editor.ImageViewer\WpfHexEditor.Editor.ImageViewer.csproj", "{A8B9C0D1-E2F3-4567-89AB-CDEF01234567}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.EntropyViewer", "WpfHexEditor.Editor.EntropyViewer\WpfHexEditor.Editor.EntropyViewer.csproj", "{B9C0D1E2-F3A4-5678-9ABC-DEF012345678}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.EntropyViewer", "Editors\WpfHexEditor.Editor.EntropyViewer\WpfHexEditor.Editor.EntropyViewer.csproj", "{B9C0D1E2-F3A4-5678-9ABC-DEF012345678}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DiffViewer", "WpfHexEditor.Editor.DiffViewer\WpfHexEditor.Editor.DiffViewer.csproj", "{C0D1E2F3-A4B5-6789-ABCD-EF0123456789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DiffViewer", "Editors\WpfHexEditor.Editor.DiffViewer\WpfHexEditor.Editor.DiffViewer.csproj", "{C0D1E2F3-A4B5-6789-ABCD-EF0123456789}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.ColorPicker", "WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.ColorPicker", "Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Shell.Panels", "WpfHexEditor.Shell.Panels\WpfHexEditor.Shell.Panels.csproj", "{C1D2E3F4-A5B6-7890-C1D2-E3F4A5B67890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Shell.Panels", "Shell\WpfHexEditor.Shell.Panels\WpfHexEditor.Shell.Panels.csproj", "{C1D2E3F4-A5B6-7890-C1D2-E3F4A5B67890}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.Git", "Plugins\WpfHexEditor.Plugins.Git\WpfHexEditor.Plugins.Git.csproj", "{F6A7B8C9-D0E1-2345-F6A7-B8C9D0E12345}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.BinaryAnalysis", "WpfHexEditor.Core.BinaryAnalysis\WpfHexEditor.Core.BinaryAnalysis.csproj", "{D5E6F7A8-B9C0-1234-DEFA-B01234567890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.BinaryAnalysis", "Core\WpfHexEditor.Core.BinaryAnalysis\WpfHexEditor.Core.BinaryAnalysis.csproj", "{D5E6F7A8-B9C0-1234-DEFA-B01234567890}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.BinaryAnalysis.Tests", "WpfHexEditor.BinaryAnalysis.Tests\WpfHexEditor.BinaryAnalysis.Tests.csproj", "{E4F5A6B7-C8D9-0123-EFA1-B23456789012}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.BinaryAnalysis.Tests", "Tests\WpfHexEditor.BinaryAnalysis.Tests\WpfHexEditor.BinaryAnalysis.Tests.csproj", "{E4F5A6B7-C8D9-0123-EFA1-B23456789012}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.Core", "WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj", "{F1A2B3C4-D5E6-7890-F1A2-B3C4D5E67890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.Core", "Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj", "{F1A2B3C4-D5E6-7890-F1A2-B3C4D5E67890}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TblEditor", "WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj", "{A0B1C2D3-E4F5-6789-A0B1-C2D3E4F56789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TblEditor", "Editors\WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj", "{A0B1C2D3-E4F5-6789-A0B1-C2D3E4F56789}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ChangesetEditor", "WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj", "{CE000001-CE00-CE00-CE00-CE0000000001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ChangesetEditor", "Editors\WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj", "{CE000001-CE00-CE00-CE00-CE0000000001}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.XamlDesigner", "WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj", "{E4516B00-A775-426E-B9A0-4CB5B4E312FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.XamlDesigner", "Editors\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj", "{E4516B00-A775-426E-B9A0-4CB5B4E312FE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.MarkdownEditor", "WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj", "{FA100001-FA10-FA10-FA10-FA1000000001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.MarkdownEditor", "Editors\WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj", "{FA100001-FA10-FA10-FA10-FA1000000001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.JsonEditor", "WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj", "{0313B9D0-DF10-449D-9DB8-55E93E090749}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.JsonEditor", "Editors\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj", "{0313B9D0-DF10-449D-9DB8-55E93E090749}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ResxEditor", "WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj", "{E568440D-E0B4-4AC4-9012-15DCFDBC0E78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ResxEditor", "Editors\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj", "{E568440D-E0B4-4AC4-9012-15DCFDBC0E78}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.ResxLocalization", "Plugins\WpfHexEditor.Plugins.ResxLocalization\WpfHexEditor.Plugins.ResxLocalization.csproj", "{1DBED7DD-CA74-4523-935B-7E85B89CEB2F}"
 EndProject
@@ -67,47 +67,47 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controls", "Controls", "{8F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Editors", "Editors", "{77555033-FC44-4882-8FFD-DA2B27CEDD9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.HexBox", "WpfHexEditor.HexBox\WpfHexEditor.HexBox.csproj", "{47D236DA-09DA-4A6E-A3B4-26F77D4D0C49}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.HexBox", "Controls\WpfHexEditor.HexBox\WpfHexEditor.HexBox.csproj", "{47D236DA-09DA-4A6E-A3B4-26F77D4D0C49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{250FC96D-F272-4DA2-9454-5817440CB125}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.ProjectSystem", "WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj", "{D57AA8EE-8C82-47BD-87F4-870E1E46056A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.ProjectSystem", "Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj", "{D57AA8EE-8C82-47BD-87F4-870E1E46056A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DisassemblyViewer", "WpfHexEditor.Editor.DisassemblyViewer\WpfHexEditor.Editor.DisassemblyViewer.csproj", "{A1B2C3D4-E5F6-7891-ABCD-EF1234567891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DisassemblyViewer", "Editors\WpfHexEditor.Editor.DisassemblyViewer\WpfHexEditor.Editor.DisassemblyViewer.csproj", "{A1B2C3D4-E5F6-7891-ABCD-EF1234567891}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.StructureEditor", "WpfHexEditor.Editor.StructureEditor\WpfHexEditor.Editor.StructureEditor.csproj", "{B2C3D4E5-F6A7-8902-BCDE-F01234567891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.StructureEditor", "Editors\WpfHexEditor.Editor.StructureEditor\WpfHexEditor.Editor.StructureEditor.csproj", "{B2C3D4E5-F6A7-8902-BCDE-F01234567891}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TileEditor", "WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj", "{C3D4E5F6-A7B8-9013-CDEF-012345678912}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TileEditor", "Editors\WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj", "{C3D4E5F6-A7B8-9013-CDEF-012345678912}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.AudioViewer", "WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj", "{D4E5F6A7-B8C9-0124-DEF0-123456789123}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.AudioViewer", "Editors\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj", "{D4E5F6A7-B8C9-0124-DEF0-123456789123}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ScriptEditor", "WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj", "{E5F6A7B8-C9D0-1235-EF01-234567890134}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.ScriptEditor", "Editors\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj", "{E5F6A7B8-C9D0-1235-EF01-234567890134}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Decompiler", "WpfHexEditor.Core.Decompiler\WpfHexEditor.Core.Decompiler.csproj", "{F6A7B8C9-D0E1-2346-F012-345678901245}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Decompiler", "Core\WpfHexEditor.Core.Decompiler\WpfHexEditor.Core.Decompiler.csproj", "{F6A7B8C9-D0E1-2346-F012-345678901245}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Definitions", "WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj", "{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Definitions", "Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj", "{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Options", "WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj", "{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Options", "Core\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj", "{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugin System", "Plugin System", "{A04155C4-07E6-49BE-AA0E-979BBE4F0F0C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.SDK", "WpfHexEditor.SDK\WpfHexEditor.SDK.csproj", "{AA000001-AA00-AA00-AA00-AA0000000001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.SDK", "Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj", "{AA000001-AA00-AA00-AA00-AA0000000001}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Events", "WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj", "{AA000006-AA00-AA00-AA00-AA0000000006}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Events", "Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj", "{AA000006-AA00-AA00-AA00-AA0000000006}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.PluginHost", "WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj", "{AA000002-AA00-AA00-AA00-AA0000000002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.PluginHost", "Plugins\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj", "{AA000002-AA00-AA00-AA00-AA0000000002}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Terminal", "WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj", "{AA000003-AA00-AA00-AA00-AA0000000003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Terminal", "Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj", "{AA000003-AA00-AA00-AA00-AA0000000003}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.SourceAnalysis", "WpfHexEditor.Core.SourceAnalysis\WpfHexEditor.Core.SourceAnalysis.csproj", "{AA000008-AA00-AA00-AA00-AA0000000008}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.SourceAnalysis", "Core\WpfHexEditor.Core.SourceAnalysis\WpfHexEditor.Core.SourceAnalysis.csproj", "{AA000008-AA00-AA00-AA00-AA0000000008}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.AssemblyAnalysis", "WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj", "{AA000009-AA00-AA00-AA00-AA0000000009}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.AssemblyAnalysis", "Core\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj", "{AA000009-AA00-AA00-AA00-AA0000000009}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Diff", "WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj", "{AA00000B-AA00-AA00-AA00-AA000000000B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Diff", "Core\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj", "{AA00000B-AA00-AA00-AA00-AA000000000B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Terminal", "WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj", "{AA000004-AA00-AA00-AA00-AA0000000004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Terminal", "Controls\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj", "{AA000004-AA00-AA00-AA00-AA0000000004}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.PluginSandbox", "WpfHexEditor.PluginSandbox\WpfHexEditor.PluginSandbox.csproj", "{AA000005-AA00-AA00-AA00-AA0000000005}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.PluginSandbox", "Plugins\WpfHexEditor.PluginSandbox\WpfHexEditor.PluginSandbox.csproj", "{AA000005-AA00-AA00-AA00-AA0000000005}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Official Plugins", "Official Plugins", "{97E00D62-D6F1-44E5-881F-3727FE8CDD1E}"
 EndProject
@@ -151,67 +151,67 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.Termina
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.CodeEditor", "Samples\WpfHexEditor.Sample.CodeEditor\WpfHexEditor.Sample.CodeEditor.csproj", "{BB000003-BB00-BB00-BB00-BB0000000003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.LSP", "WpfHexEditor.Core.LSP\WpfHexEditor.Core.LSP.csproj", "{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.LSP", "Core\WpfHexEditor.Core.LSP\WpfHexEditor.Core.LSP.csproj", "{792D158F-BAAD-42E4-8EF3-41B6DC5D2F88}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.LSP.Client", "WpfHexEditor.Core.LSP.Client\WpfHexEditor.Core.LSP.Client.csproj", "{EE300001-EE00-EE00-EE00-EE0000000001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.LSP.Client", "Core\WpfHexEditor.Core.LSP.Client\WpfHexEditor.Core.LSP.Client.csproj", "{EE300001-EE00-EE00-EE00-EE0000000001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.BuildSystem", "WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj", "{DA5101BD-8749-439F-AFDC-C76143E335B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.BuildSystem", "Core\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj", "{DA5101BD-8749-439F-AFDC-C76143E335B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.VS", "WpfHexEditor.Plugins.SolutionLoader.VS\WpfHexEditor.Plugins.SolutionLoader.VS.csproj", "{CC100001-CC00-CC00-CC00-CC0000000001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.VS", "Plugins\WpfHexEditor.Plugins.SolutionLoader.VS\WpfHexEditor.Plugins.SolutionLoader.VS.csproj", "{CC100001-CC00-CC00-CC00-CC0000000001}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.WH", "WpfHexEditor.Plugins.SolutionLoader.WH\WpfHexEditor.Plugins.SolutionLoader.WH.csproj", "{CC100002-CC00-CC00-CC00-CC0000000002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.WH", "Plugins\WpfHexEditor.Plugins.SolutionLoader.WH\WpfHexEditor.Plugins.SolutionLoader.WH.csproj", "{CC100002-CC00-CC00-CC00-CC0000000002}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.Folder", "WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj", "{CC100006-CC00-CC00-CC00-CC0000000006}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SolutionLoader.Folder", "Plugins\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj", "{CC100006-CC00-CC00-CC00-CC0000000006}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.Build.MSBuild", "WpfHexEditor.Plugins.Build.MSBuild\WpfHexEditor.Plugins.Build.MSBuild.csproj", "{CC100003-CC00-CC00-CC00-CC0000000003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.Build.MSBuild", "Plugins\WpfHexEditor.Plugins.Build.MSBuild\WpfHexEditor.Plugins.Build.MSBuild.csproj", "{CC100003-CC00-CC00-CC00-CC0000000003}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.WorkspaceTemplates", "WpfHexEditor.Core.WorkspaceTemplates\WpfHexEditor.Core.WorkspaceTemplates.csproj", "{CC100004-CC00-CC00-CC00-CC0000000004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.WorkspaceTemplates", "Core\WpfHexEditor.Core.WorkspaceTemplates\WpfHexEditor.Core.WorkspaceTemplates.csproj", "{CC100004-CC00-CC00-CC00-CC0000000004}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.PluginDev", "WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj", "{CC100005-CC00-CC00-CC00-CC0000000005}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.PluginDev", "Plugins\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj", "{CC100005-CC00-CC00-CC00-CC0000000005}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shell", "Shell", "{50BEFE8E-AAFD-4CE3-AFE9-89DD1ECD8667}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.MarkdownEditor.Core", "WpfHexEditor.Editor.MarkdownEditor.Core\WpfHexEditor.Editor.MarkdownEditor.Core.csproj", "{9E14A20E-53AF-40DF-841F-20D6FAB9C526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.MarkdownEditor.Core", "Editors\WpfHexEditor.Editor.MarkdownEditor.Core\WpfHexEditor.Editor.MarkdownEditor.Core.csproj", "{9E14A20E-53AF-40DF-841F-20D6FAB9C526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.ClassDiagram.Core", "WpfHexEditor.Editor.ClassDiagram.Core\WpfHexEditor.Editor.ClassDiagram.Core.csproj", "{7F168659-05C7-49A6-9CF6-568E449160C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.ClassDiagram.Core", "Editors\WpfHexEditor.Editor.ClassDiagram.Core\WpfHexEditor.Editor.ClassDiagram.Core.csproj", "{7F168659-05C7-49A6-9CF6-568E449160C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.ClassDiagram", "WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj", "{C7DF1D38-8FFB-4562-B763-16D3E9CB1134}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.ClassDiagram", "Editors\WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj", "{C7DF1D38-8FFB-4562-B763-16D3E9CB1134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.ClassDiagram", "WpfHexEditor.Plugins.ClassDiagram\WpfHexEditor.Plugins.ClassDiagram.csproj", "{A4C42553-4BDA-4D77-B1D5-BA20E551F6BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.ClassDiagram", "Plugins\WpfHexEditor.Plugins.ClassDiagram\WpfHexEditor.Plugins.ClassDiagram.csproj", "{A4C42553-4BDA-4D77-B1D5-BA20E551F6BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Docking.Wpf", "WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj", "{685E12CB-0991-4B14-B615-47FB2310DFC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Docking.Wpf", "Docking\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj", "{685E12CB-0991-4B14-B615-47FB2310DFC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Commands", "WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj", "{4D11DA03-E3B2-4806-9C47-E83F650F6C84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Commands", "Core\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj", "{4D11DA03-E3B2-4806-9C47-E83F650F6C84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.UnitTesting", "Plugins\WpfHexEditor.Plugins.UnitTesting\WpfHexEditor.Plugins.UnitTesting.csproj", "{66289963-0862-4A5A-AC49-AFD2A78C6DBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Debugger", "WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj", "{832DF58E-1FFE-4759-9CD9-9ACC20A24775}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Debugger", "Core\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj", "{832DF58E-1FFE-4759-9CD9-9ACC20A24775}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.Debugger", "Plugins\WpfHexEditor.Plugins.Debugger\WpfHexEditor.Plugins.Debugger.csproj", "{D7371C72-31AD-4344-8103-DC0FB249FC2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Scripting", "WpfHexEditor.Core.Scripting\WpfHexEditor.Core.Scripting.csproj", "{6A7BC7A5-8CE0-44C0-8C43-9485C637EC69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Scripting", "Core\WpfHexEditor.Core.Scripting\WpfHexEditor.Core.Scripting.csproj", "{6A7BC7A5-8CE0-44C0-8C43-9485C637EC69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.ScriptRunner", "Plugins\WpfHexEditor.Plugins.ScriptRunner\WpfHexEditor.Plugins.ScriptRunner.csproj", "{2F8A1D3C-9E5B-4C7F-8D6A-1B3E4F5C7D8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Workspaces", "WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj", "{7C4E2A1B-3F9D-4B8E-A5C2-0D6F8E9B1C3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core.Workspaces", "Core\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj", "{7C4E2A1B-3F9D-4B8E-A5C2-0D6F8E9B1C3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DocumentEditor.Core", "WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj", "{DE100001-DE00-DE00-DE00-DE0000000001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DocumentEditor.Core", "Editors\WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj", "{DE100001-DE00-DE00-DE00-DE0000000001}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DocumentEditor", "WpfHexEditor.Editor.DocumentEditor\WpfHexEditor.Editor.DocumentEditor.csproj", "{DE100002-DE00-DE00-DE00-DE0000000002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.DocumentEditor", "Editors\WpfHexEditor.Editor.DocumentEditor\WpfHexEditor.Editor.DocumentEditor.csproj", "{DE100002-DE00-DE00-DE00-DE0000000002}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.DocumentLoaders", "Plugins\WpfHexEditor.Plugins.DocumentLoaders\WpfHexEditor.Plugins.DocumentLoaders.csproj", "{DE100006-DE00-DE00-DE00-DE0000000006}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Diff.Tests", "WpfHexEditor.Core.Diff.Tests\WpfHexEditor.Core.Diff.Tests.csproj", "{42602CAC-BA79-4B40-B34C-AAE5B914A597}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Diff.Tests", "Tests\WpfHexEditor.Core.Diff.Tests\WpfHexEditor.Core.Diff.Tests.csproj", "{42602CAC-BA79-4B40-B34C-AAE5B914A597}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Workspaces.Tests", "WpfHexEditor.Core.Workspaces.Tests\WpfHexEditor.Core.Workspaces.Tests.csproj", "{E138E754-51EA-4E81-8476-8143F92E3A62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Workspaces.Tests", "Tests\WpfHexEditor.Core.Workspaces.Tests\WpfHexEditor.Core.Workspaces.Tests.csproj", "{E138E754-51EA-4E81-8476-8143F92E3A62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Benchmarks", "WpfHexEditor.Benchmarks\WpfHexEditor.Benchmarks.csproj", "{6169B019-D2A1-49AB-9836-5E5A2838A739}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Benchmarks", "Tests\WpfHexEditor.Benchmarks\WpfHexEditor.Benchmarks.csproj", "{6169B019-D2A1-49AB-9836-5E5A2838A739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.PluginHost.Tests", "WpfHexEditor.PluginHost.Tests\WpfHexEditor.PluginHost.Tests.csproj", "{4BBBABF1-EC76-4BDF-BA2D-8B70437A306F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.PluginHost.Tests", "Tests\WpfHexEditor.PluginHost.Tests\WpfHexEditor.PluginHost.Tests.csproj", "{4BBBABF1-EC76-4BDF-BA2D-8B70437A306F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.AssemblyExplorer.Tests", "WpfHexEditor.Plugins.AssemblyExplorer.Tests\WpfHexEditor.Plugins.AssemblyExplorer.Tests.csproj", "{3A20F793-E761-4F5C-9C2D-78197273DB85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.AssemblyExplorer.Tests", "Tests\WpfHexEditor.Plugins.AssemblyExplorer.Tests\WpfHexEditor.Plugins.AssemblyExplorer.Tests.csproj", "{3A20F793-E761-4F5C-9C2D-78197273DB85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.CodeEditor.Tests", "WpfHexEditor.Editor.CodeEditor.Tests\WpfHexEditor.Editor.CodeEditor.Tests.csproj", "{ED089212-AF8F-4049-9447-24687D67B025}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.CodeEditor.Tests", "Tests\WpfHexEditor.Editor.CodeEditor.Tests\WpfHexEditor.Editor.CodeEditor.Tests.csproj", "{ED089212-AF8F-4049-9447-24687D67B025}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

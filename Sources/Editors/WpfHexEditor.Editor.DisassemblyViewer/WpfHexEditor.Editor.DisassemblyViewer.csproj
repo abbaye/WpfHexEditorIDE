@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Editor.DisassemblyViewer</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.DisassemblyViewer</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- NuGet packaging -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>WpfHexEditor.Editor.DisassemblyViewer</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>WpfHexEditor Contributors</Authors>
+    <Description>Disassembly viewer stub for WpfHexEditor — implements IDocumentEditor. Planned for a future sprint (requires Iced/Capstone.NET).</Description>
+    <PackageTags>wpf;hex;editor;disassembly;binary</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Decompiler\WpfHexEditor.Core.Decompiler.csproj" />
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+  </ItemGroup>
+
+</Project>

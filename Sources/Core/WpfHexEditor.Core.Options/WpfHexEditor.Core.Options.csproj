@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Core.Options</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core.Options</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+    <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+  </ItemGroup>
+
+</Project>

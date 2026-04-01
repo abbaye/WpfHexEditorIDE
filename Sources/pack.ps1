@@ -1,4 +1,4 @@
-# pack.ps1 — Build and pack WpfHexEditor.SDK to artifacts/nuget/
+﻿# pack.ps1 — Build and pack WpfHexEditor.SDK to artifacts/nuget/
 # Usage: ./pack.ps1 [-Configuration Release]
 
 param(
@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $root      = $PSScriptRoot
-$sdkProj   = Join-Path $root "WpfHexEditor.SDK\WpfHexEditor.SDK.csproj"
+$sdkProj   = Join-Path $root "Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj"
 $outputDir = Join-Path $root "..\artifacts\nuget"
 
 if (-not (Test-Path $outputDir)) {

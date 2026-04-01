@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <!-- Only dependency: the docking framework (pulls in Docking.Core + Editor.Core transitively) -->
-    <ProjectReference Include="..\..\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+    <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
   </ItemGroup>
 
 </Project>

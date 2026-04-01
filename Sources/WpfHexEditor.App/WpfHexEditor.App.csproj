@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -26,59 +26,59 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Shell.Panels\WpfHexEditor.Shell.Panels.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.ImageViewer\WpfHexEditor.Editor.ImageViewer.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.EntropyViewer\WpfHexEditor.Editor.EntropyViewer.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.DiffViewer\WpfHexEditor.Editor.DiffViewer.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Scripting\WpfHexEditor.Core.Scripting.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.DisassemblyViewer\WpfHexEditor.Editor.DisassemblyViewer.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.StructureEditor\WpfHexEditor.Editor.StructureEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.DocumentEditor\WpfHexEditor.Editor.DocumentEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.LSP.Client\WpfHexEditor.Core.LSP.Client.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
+    <ProjectReference Include="..\Docking\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
+    <ProjectReference Include="..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+    <ProjectReference Include="..\Shell\WpfHexEditor.Shell.Panels\WpfHexEditor.Shell.Panels.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.ImageViewer\WpfHexEditor.Editor.ImageViewer.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.EntropyViewer\WpfHexEditor.Editor.EntropyViewer.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.DiffViewer\WpfHexEditor.Editor.DiffViewer.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Scripting\WpfHexEditor.Core.Scripting.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.DisassemblyViewer\WpfHexEditor.Editor.DisassemblyViewer.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.StructureEditor\WpfHexEditor.Editor.StructureEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.XamlDesigner\WpfHexEditor.Editor.XamlDesigner.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.MarkdownEditor\WpfHexEditor.Editor.MarkdownEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.DocumentEditor\WpfHexEditor.Editor.DocumentEditor.csproj" />
+    <ProjectReference Include="..\Editors\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
+    <ProjectReference Include="..\Controls\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.LSP.Client\WpfHexEditor.Core.LSP.Client.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj" />
   </ItemGroup>
 
   <!-- Sandbox host process: build-only reference so the exe is always up to date,
        then copy it next to the App exe so SandboxProcessManager can find it. -->
   <ItemGroup Label="SandboxBuildOrder">
-    <ProjectReference Include="..\WpfHexEditor.PluginSandbox\WpfHexEditor.PluginSandbox.csproj"
+    <ProjectReference Include="..\Plugins\WpfHexEditor.PluginSandbox\WpfHexEditor.PluginSandbox.csproj"
                       ReferenceOutputAssembly="false"
                       SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
 
   <Target Name="CopySandboxExe" AfterTargets="Build">
     <PropertyGroup>
-      <_SandboxExeDir>$(MSBuildThisFileDirectory)..\WpfHexEditor.PluginSandbox\bin\$(Configuration)\net8.0-windows\</_SandboxExeDir>
+      <_SandboxExeDir>$(MSBuildThisFileDirectory)..\Plugins\WpfHexEditor.PluginSandbox\bin\$(Configuration)\net8.0-windows\</_SandboxExeDir>
     </PropertyGroup>
     <Copy SourceFiles="$(_SandboxExeDir)WpfHexEditor.PluginSandbox.exe"
           DestinationFolder="$(OutputPath)"
@@ -119,11 +119,11 @@
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SynalysisGrammar\WpfHexEditor.Plugins.SynalysisGrammar.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
-    <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.VS\WpfHexEditor.Plugins.SolutionLoader.VS.csproj"
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SolutionLoader.VS\WpfHexEditor.Plugins.SolutionLoader.VS.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
-    <ProjectReference Include="..\WpfHexEditor.Plugins.SolutionLoader.WH\WpfHexEditor.Plugins.SolutionLoader.WH.csproj"
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SolutionLoader.WH\WpfHexEditor.Plugins.SolutionLoader.WH.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
-    <ProjectReference Include="..\WpfHexEditor.Plugins.Build.MSBuild\WpfHexEditor.Plugins.Build.MSBuild.csproj"
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.Build.MSBuild\WpfHexEditor.Plugins.Build.MSBuild.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.XamlDesigner\WpfHexEditor.Plugins.XamlDesigner.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
@@ -137,7 +137,7 @@
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.DocumentLoaders\WpfHexEditor.Plugins.DocumentLoaders.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
-    <ProjectReference Include="..\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
   </ItemGroup>
 
   <!-- Bundled debug adapter (netcoredbg) — copied to output/tools/netcoredbg/ -->

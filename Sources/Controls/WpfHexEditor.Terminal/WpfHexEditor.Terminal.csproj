@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WpfHexEditor.Terminal</RootNamespace>
+    <AssemblyName>WpfHexEditor.Terminal</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
+    <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+  </ItemGroup>
+
+</Project>

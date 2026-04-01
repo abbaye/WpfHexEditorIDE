@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.PluginHost</RootNamespace>
+    <AssemblyName>WpfHexEditor.PluginHost</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Plugin lifecycle host — discovery, loading, monitoring, hot-load/unload, and IDE UI integration.</Description>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>WpfHexEditor.Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>WpfHexEditor.PluginHost.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Docking\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Options\WpfHexEditor.Core.Options.csproj" />
+  </ItemGroup>
+
+</Project>

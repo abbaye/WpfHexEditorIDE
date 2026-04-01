@@ -20,7 +20,7 @@ This document provides comprehensive architecture documentation for the HexEdito
 ## 📚 Related Documentation
 
 - **[Main README](README.md)** - Project overview and quick start
-- **[Architecture V1](ARCHITECTURE.md)** - Original architecture documentation
+- **[Architecture V1](../ARCHITECTURE.md)** - Original architecture documentation
 - **[Issue #145](https://github.com/abbaye/WpfHexEditorIDE/issues/145)** - Insert Mode F0 pattern bug
 - **[Issue #146](https://github.com/abbaye/WpfHexEditorIDE/issues/146)** - Critical Save data loss bug
 
@@ -1834,8 +1834,8 @@ graph LR
 
 ### Documentation
 - **[Main README](README.md)** - Project overview
-- **[Architecture V1](ARCHITECTURE.md)** - Original architecture
-- **[Performance Guide](PERFORMANCE_GUIDE.md)** - Performance optimizations
+- **[Architecture V1](../ARCHITECTURE.md)** - Original architecture
+- **[Performance Guide](../PERFORMANCE_GUIDE.md)** - Performance optimizations
 
 ### Issue Tracking
 - **[Issue #145](https://github.com/abbaye/WpfHexEditorIDE/issues/145)** - Insert Mode F0 pattern bug

@@ -599,7 +599,7 @@ Console.WriteLine($"Search cache: {searchService.HasCache ? "Active" : "Empty"}"
 ## 🔗 Related Documentation
 
 - [Benchmarks README](Sources/WPFHexaEditor.Benchmarks/README.md) - How to run benchmarks
-- [Architecture Guide](ARCHITECTURE.md) - System architecture
+- [Architecture Guide](../ARCHITECTURE.md) - System architecture
 - [Services Documentation](Sources/WPFHexaEditor/Services/README.md) - Service layer details
 - [Main README](README.md) - General documentation
 
