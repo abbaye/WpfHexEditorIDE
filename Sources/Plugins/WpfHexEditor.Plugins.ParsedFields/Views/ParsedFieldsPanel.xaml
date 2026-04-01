@@ -8,6 +8,7 @@
              x:Name="RootPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfHexEditor.Plugins.ParsedFields.Views"
@@ -1113,12 +1114,10 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Height="8">
                     <Border CornerRadius="4" Background="{DynamicResource PFP_CoverageTrackBrush}"/>
-                    <ProgressBar x:Name="CoverageProgressBar"
-                                 Height="8"
-                                 Minimum="0" Maximum="100" Value="0"
-                                 Foreground="{DynamicResource PFP_CoverageProgressBrush}"
-                                 Background="Transparent"
-                                 BorderThickness="0"/>
+                    <pb:LinearProgressBar x:Name="CoverageProgressBar"
+                                          Height="8" BarHeight="8"
+                                          Progress="0"
+                                          ProgressBrush="{DynamicResource PFP_CoverageProgressBrush}"/>
                 </Grid>
                 <TextBlock x:Name="CoverageText"
                            Grid.Column="1"

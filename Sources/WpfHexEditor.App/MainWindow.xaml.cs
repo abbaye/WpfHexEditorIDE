@@ -1804,7 +1804,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         WpfHexEditor.Editor.CodeEditor.Controls.GoToExternalDefinitionEventArgs e)
     {
         // Parse assembly name + type name from the LSP metadata URI (if present).
-        // OmniSharp format: omnisharp-metadata:?assembly=System.Console&type=System.Console&...
+        // Supported formats: metadata:?assembly=X&type=Y, csharp-metadata:, dotnet://metadata
         var (assemblyName, typeName) = ParseMetadataUri(e.MetadataUri);
 
         if (assemblyName is null)
@@ -1888,9 +1888,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Parses the assembly name and type name from an OmniSharp / Roslyn LSP metadata URI.
+    /// Parses the assembly name and type name from a Roslyn LSP metadata URI.
     /// Supports two formats:
-    ///   Format A (query-string): omnisharp-metadata:?assembly=System.Console&amp;type=System.Console
+    ///   Format A (query-string): metadata:?assembly=System.Console&amp;type=System.Console
     ///   Format B (path-based):   csharp-metadata://System.Collections.Concurrent/ConcurrentDictionary.cs
     /// Returns (null, null) when the URI is null or cannot be parsed.
     /// </summary>
@@ -4392,7 +4392,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ProgressStatusItem.Visibility   = Visibility.Visible;
             ProgressTitleText.Text          = e.Title;
             AppProgressBar.IsIndeterminate  = e.IsIndeterminate;
-            AppProgressBar.Value            = e.Percentage;
+            AppProgressBar.Progress         = e.Percentage / 100.0;
             ProgressPercentText.Text        = e.IsIndeterminate ? "" : $"{e.Percentage}%";
             ProgressMessageText.Text        = e.Message;
             ProgressCancelButton.Visibility = e.CanCancel ? Visibility.Visible : Visibility.Collapsed;
@@ -4404,7 +4404,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Dispatcher.BeginInvoke(() =>
         {
             AppProgressBar.IsIndeterminate = e.IsIndeterminate;
-            AppProgressBar.Value           = e.Percentage;
+            AppProgressBar.Progress        = e.Percentage / 100.0;
             ProgressPercentText.Text       = e.IsIndeterminate ? "" : $"{e.Percentage}%";
             ProgressMessageText.Text       = e.Message;
         });

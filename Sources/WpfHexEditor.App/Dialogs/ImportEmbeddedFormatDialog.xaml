@@ -9,6 +9,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
+        xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
         Title="Import Built-in Format Definition"
         Width="980" Height="580"
         MinWidth="680" MinHeight="420"
@@ -179,12 +180,8 @@
                                    FontSize="11" Margin="0,0,0,4"/>
 
                         <!-- Quality bar + percentage -->
-                        <ProgressBar x:Name="DetailQualityBar"
-                                     Minimum="0" Maximum="100"
-                                     Height="6" Value="0"
-                                     Foreground="{DynamicResource AccentBrush}"
-                                     Background="{DynamicResource ERR_GridLinesBrush}"
-                                     BorderThickness="0"/>
+                        <pb:LinearProgressBar x:Name="DetailQualityBar"
+                                     Height="6"/>
                         <TextBlock x:Name="DetailQualityText"
                                    FontSize="11" Opacity="0.8"
                                    Margin="0,3,0,0"/>

@@ -20,6 +20,7 @@
 <UserControl x:Class="WpfHexEditor.PluginHost.UI.PluginMonitoringPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:local="clr-namespace:WpfHexEditor.PluginHost.UI"
              xmlns:vm="clr-namespace:WpfHexEditor.PluginHost.UI"
              Background="{DynamicResource DockBackgroundBrush}"
@@ -892,8 +893,7 @@
                                Foreground="#60A5FA" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                     <TextBlock Text="Installing plugin…" FontSize="13" FontWeight="SemiBold"
                                Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                    <ProgressBar IsIndeterminate="True" Width="180" Height="4"
-                                 Foreground="#60A5FA"/>
+                    <pb:LinearProgressBar IsIndeterminate="True" Width="180" Height="4" BarHeight="4"/>
                 </StackPanel>
             </Border>
 

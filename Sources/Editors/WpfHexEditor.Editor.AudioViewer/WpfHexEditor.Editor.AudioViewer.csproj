@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 

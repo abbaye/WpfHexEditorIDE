@@ -177,6 +177,23 @@ internal sealed class NotificationCenterPopup : Popup
             body.Children.Add(msg);
         }
 
+        // Progress bar
+        if (item.Progress is { } progress)
+        {
+            var bar = new WpfHexEditor.ProgressBar.Controls.LinearProgressBar
+            {
+                Height  = 4,
+                Margin  = new Thickness(0, 6, 0, 0),
+            };
+
+            if (progress < 0)
+                bar.IsIndeterminate = true;
+            else
+                bar.Progress = progress;
+
+            body.Children.Add(bar);
+        }
+
         // Action buttons
         if (item.Actions.Count > 0)
         {

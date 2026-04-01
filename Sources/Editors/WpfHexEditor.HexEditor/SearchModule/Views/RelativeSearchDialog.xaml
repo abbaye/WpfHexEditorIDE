@@ -7,6 +7,7 @@
 <ec:ThemedDialog x:Class="WpfHexEditor.HexEditor.Search.Views.RelativeSearchDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
@@ -199,11 +200,11 @@
         </GroupBox>
 
         <!-- Progress Bar -->
-        <ProgressBar Grid.Row="3"
-                     Height="4"
-                     IsIndeterminate="True"
-                     Margin="0,0,0,10"
-                     Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <pb:LinearProgressBar Grid.Row="3"
+                              BarHeight="4" Height="4"
+                              IsIndeterminate="True"
+                              Margin="0,0,0,10"
+                              Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
         <!-- Status Bar and Action Buttons -->
         <Grid Grid.Row="4">

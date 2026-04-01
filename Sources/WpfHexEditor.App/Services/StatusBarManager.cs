@@ -23,6 +23,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using WpfHexEditor.ProgressBar.Controls;
 
 namespace WpfHexEditor.App.Services;
 
@@ -38,7 +39,7 @@ public sealed class StatusBarManager
     private StatusBarItem? _buildItem;
     private TextBlock?     _buildText;
     private TextBlock?     _buildIcon;
-    private ProgressBar?   _buildProgress;
+    private LinearProgressBar? _buildProgress;
 
     // Debug slot
     private StatusBarItem? _debugItem;
@@ -62,7 +63,7 @@ public sealed class StatusBarManager
     /// with the named XAML controls that this manager owns.
     /// </summary>
     public void Initialize(
-        StatusBarItem? buildItem,    TextBlock? buildText,    TextBlock? buildIcon,  ProgressBar? buildProgress,
+        StatusBarItem? buildItem,    TextBlock? buildText,    TextBlock? buildIcon,  LinearProgressBar? buildProgress,
         StatusBarItem? debugItem,    TextBlock? debugText,
         StatusBarItem? workspaceItem, TextBlock? workspaceText)
     {
@@ -94,7 +95,7 @@ public sealed class StatusBarManager
 
             if (progressPercent >= 0)
             {
-                _buildProgress.Value      = progressPercent;
+                _buildProgress.Progress   = progressPercent / 100.0;
                 _buildProgress.Visibility = Visibility.Visible;
             }
             else

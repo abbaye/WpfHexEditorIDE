@@ -38,6 +38,23 @@ internal sealed class NotificationServiceImpl : INotificationService
         get { lock (_lock) return _items.Count; }
     }
 
+    public double? AggregateDownloadProgress
+    {
+        get
+        {
+            lock (_lock)
+            {
+                var active = _items.Where(i => i.IsActiveDownload).ToList();
+                if (active.Count == 0) return null;
+                if (active.Any(i => i.Progress is < 0)) return -1;
+
+                var determinate = active.Where(i => i.Progress is >= 0).ToList();
+                if (determinate.Count == 0) return -1;
+                return determinate.Average(i => i.Progress!.Value);
+            }
+        }
+    }
+
     public void Post(NotificationItem notification)
     {
         ArgumentNullException.ThrowIfNull(notification);

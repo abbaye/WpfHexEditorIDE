@@ -49,6 +49,7 @@
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->
   <ItemGroup>
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>

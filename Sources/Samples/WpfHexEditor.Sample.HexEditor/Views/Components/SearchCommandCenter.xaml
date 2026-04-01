@@ -9,6 +9,7 @@
 <UserControl x:Class="WpfHexEditor.Sample.HexEditor.Views.Components.SearchCommandCenter"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfHexEditor.Sample.HexEditor.Views.Components"
@@ -181,13 +182,10 @@
         </StackPanel>
 
         <!-- Progress Bar -->
-        <ProgressBar Grid.Row="0"
-                    Height="1"
-                    VerticalAlignment="Bottom"
-                    IsIndeterminate="True"
-                    Foreground="{DynamicResource AccentBrush}"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <pb:LinearProgressBar Grid.Row="0"
+                              BarHeight="1" Height="1"
+                              VerticalAlignment="Bottom"
+                              IsIndeterminate="True"
+                              Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
     </Grid>
 </UserControl>

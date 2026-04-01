@@ -8,6 +8,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:av="clr-namespace:WpfHexEditor.Editor.AudioViewer.Controls"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              Background="{DynamicResource TE_Background}">
     <Grid>
         <Grid.RowDefinitions>
@@ -79,10 +80,10 @@
         <Grid x:Name="BusyOverlay"
               Grid.Row="1"
               Visibility="Collapsed">
-            <ProgressBar IsIndeterminate="True"
-                         Height="2"
-                         VerticalAlignment="Top"
-                         Foreground="{DynamicResource TE_LineNumberForeground}"/>
+            <pb:LinearProgressBar IsIndeterminate="True"
+                                    BarHeight="2"
+                                    Height="2"
+                                    VerticalAlignment="Top"/>
             <TextBlock Text="Analyzing…"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"

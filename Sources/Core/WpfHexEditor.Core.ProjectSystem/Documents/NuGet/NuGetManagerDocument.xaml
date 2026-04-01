@@ -1,6 +1,7 @@
 <UserControl x:Class="WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetManagerDocument"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:local="clr-namespace:WpfHexEditor.Core.ProjectSystem.Documents.NuGet"
              Background="{DynamicResource DockMenuBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -677,14 +678,11 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Busy indicator -->
-                <ProgressBar Grid.Column="0"
-                             Width="80" Height="4"
-                             IsIndeterminate="True"
-                             Margin="8,0"
-                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
-                             Foreground="{DynamicResource DockTabActiveBrush}"
-                             Background="Transparent"
-                             BorderThickness="0"/>
+                <pb:LinearProgressBar Grid.Column="0"
+                                      Width="80" Height="4" BarHeight="4"
+                                      IsIndeterminate="True"
+                                      Margin="8,0"
+                                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
 
                 <!-- Status text -->
                 <TextBlock Grid.Column="1"

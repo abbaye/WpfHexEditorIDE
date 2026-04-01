@@ -1,6 +1,8 @@
 <UserControl x:Class="WpfHexEditor.Plugins.FileComparison.Views.BinaryStatsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
+             xmlns:pbc="clr-namespace:WpfHexEditor.ProgressBar.Converters;assembly=WpfHexEditor.ProgressBar"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters">
 
     <UserControl.Resources>
@@ -79,10 +81,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Modified" FontSize="10"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <ProgressBar Grid.Column="1" Value="{Binding ModifiedPercent, Mode=OneWay}"
-                                 Maximum="100" Height="6" VerticalAlignment="Center"
-                                 Background="{DynamicResource DockBorderBrush}"
-                                 Foreground="{DynamicResource DF_ModifiedLineBrush}"/>
+                    <pb:LinearProgressBar Grid.Column="1" Progress="{Binding ModifiedPercent, Mode=OneWay, Converter={x:Static pbc:ValueToProgressConverter.Instance}, ConverterParameter=100}"
+                                          Height="6" BarHeight="6" VerticalAlignment="Center"
+                                          ProgressBrush="{DynamicResource DF_ModifiedLineBrush}"/>
                     <TextBlock Grid.Column="2" Text="{Binding ModifiedPercent, StringFormat='{}{0:F1}%'}"
                                FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -96,10 +97,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Inserted" FontSize="10"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <ProgressBar Grid.Column="1" Value="{Binding InsertedPercent, Mode=OneWay}"
-                                 Maximum="100" Height="6" VerticalAlignment="Center"
-                                 Background="{DynamicResource DockBorderBrush}"
-                                 Foreground="{DynamicResource DF_InsertedLineBrush}"/>
+                    <pb:LinearProgressBar Grid.Column="1" Progress="{Binding InsertedPercent, Mode=OneWay, Converter={x:Static pbc:ValueToProgressConverter.Instance}, ConverterParameter=100}"
+                                          Height="6" BarHeight="6" VerticalAlignment="Center"
+                                          ProgressBrush="{DynamicResource DF_InsertedLineBrush}"/>
                     <TextBlock Grid.Column="2" Text="{Binding InsertedPercent, StringFormat='{}{0:F1}%'}"
                                FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -113,10 +113,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Deleted" FontSize="10"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <ProgressBar Grid.Column="1" Value="{Binding DeletedPercent, Mode=OneWay}"
-                                 Maximum="100" Height="6" VerticalAlignment="Center"
-                                 Background="{DynamicResource DockBorderBrush}"
-                                 Foreground="{DynamicResource DF_DeletedLineBrush}"/>
+                    <pb:LinearProgressBar Grid.Column="1" Progress="{Binding DeletedPercent, Mode=OneWay, Converter={x:Static pbc:ValueToProgressConverter.Instance}, ConverterParameter=100}"
+                                          Height="6" BarHeight="6" VerticalAlignment="Center"
+                                          ProgressBrush="{DynamicResource DF_DeletedLineBrush}"/>
                     <TextBlock Grid.Column="2" Text="{Binding DeletedPercent, StringFormat='{}{0:F1}%'}"
                                FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>

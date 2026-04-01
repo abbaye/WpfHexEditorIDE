@@ -36,6 +36,13 @@ public interface INotificationService
     void DismissAll();
 
     /// <summary>
+    /// Aggregate download progress across all notifications with <see cref="NotificationItem.IsActiveDownload"/> = true.
+    /// <c>null</c> = no active downloads; <c>-1</c> = at least one indeterminate;
+    /// <c>0..1</c> = simple average of all determinate downloads.
+    /// </summary>
+    double? AggregateDownloadProgress { get; }
+
+    /// <summary>
     /// Raised on the WPF Dispatcher thread whenever the active notification list changes
     /// (post, dismiss, or dismiss-all).
     /// </summary>

@@ -66,6 +66,8 @@
     <ProjectReference Include="..\Plugins\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />
     <ProjectReference Include="..\Core\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.Roslyn\WpfHexEditor.Core.Roslyn.csproj" />
+    <ProjectReference Include="..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
   </ItemGroup>
 
   <!-- Sandbox host process: build-only reference so the exe is always up to date,
@@ -147,7 +149,7 @@
           LinkBase="tools\netcoredbg" />
   </ItemGroup>
 
-  <!-- Bundled LSP servers (OmniSharp, clangd) — copied to output/tools/lsp/     -->
+  <!-- Bundled LSP servers (clangd) — copied to output/tools/lsp/                -->
   <!-- Run Scripts/Download-LspServers.ps1 once after clone to populate the dir. -->
   <ItemGroup>
     <None Include="..\..\tools\lsp\**"

@@ -15,6 +15,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.DataInspector.Views.DataInspectorPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:chart="clr-namespace:WpfHexEditor.Plugins.DataInspector.Controls"
@@ -433,10 +434,9 @@
                                    Foreground="White"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,6"/>
-                        <ProgressBar x:Name="LoadingProgress"
-                                     Width="200" Height="6"
-                                     IsIndeterminate="True"
-                                     Foreground="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        <pb:LinearProgressBar x:Name="LoadingProgress"
+                                              Width="200" Height="6" BarHeight="6"
+                                              IsIndeterminate="True"/>
                     </StackPanel>
                 </Border>
             </Grid>

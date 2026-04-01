@@ -1,6 +1,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.UnitTesting.Views.UnitTestingPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.UnitTesting.ViewModels">
 
     <UserControl.Resources>
@@ -557,13 +558,10 @@
         </Border>
 
         <!-- ─── Row 1: Progress bar (2px, running only) ──────────── -->
-        <ProgressBar Grid.Row="1"
-                     Height="2"
-                     IsIndeterminate="True"
-                     Foreground="{DynamicResource UT_PassForegroundBrush}"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
+        <pb:LinearProgressBar Grid.Row="1"
+                              Height="2" BarHeight="2"
+                              IsIndeterminate="True"
+                              Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
 
         <!-- ─── Row 2: ContentArea (tree + splitter + detail) ─────── -->
         <Grid x:Name="ContentArea" Grid.Row="2">

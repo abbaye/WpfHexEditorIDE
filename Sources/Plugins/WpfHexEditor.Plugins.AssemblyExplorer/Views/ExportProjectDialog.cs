@@ -37,7 +37,7 @@ public sealed class ExportProjectDialog : Window
     private CancellationTokenSource? _cts;
 
     private readonly TextBox      _pathBox;
-    private readonly ProgressBar  _progressBar;
+    private readonly WpfHexEditor.ProgressBar.Controls.LinearProgressBar _progressBar;
     private readonly TextBlock    _statusLabel;
     private readonly Button       _exportButton;
     private readonly Button       _cancelButton;
@@ -91,13 +91,12 @@ public sealed class ExportProjectDialog : Window
         root.Children.Add(pathRow);
 
         // ── Progress bar ───────────────────────────────────────────────────
-        _progressBar = new ProgressBar
+        _progressBar = new WpfHexEditor.ProgressBar.Controls.LinearProgressBar
         {
-            Height  = 18,
-            Minimum = 0,
-            Maximum = 100,
-            Value   = 0,
-            Margin  = new Thickness(0, 0, 0, 6)
+            Height   = 18,
+            BarHeight = 18,
+            Progress = 0,
+            Margin   = new Thickness(0, 0, 0, 6)
         };
         root.Children.Add(_progressBar);
 
@@ -187,7 +186,7 @@ public sealed class ExportProjectDialog : Window
         _cts = new CancellationTokenSource();
         var progress = new Progress<double>(value =>
         {
-            _progressBar.Value = value * 100;
+            _progressBar.Progress = value;
             _statusLabel.Text  = $"Exporting… {value * 100:F0}% of {_model.Types.Count:N0} types";
         });
 
@@ -198,7 +197,7 @@ public sealed class ExportProjectDialog : Window
 
             _statusLabel.Foreground = Brushes.LimeGreen;
             _statusLabel.Text       = $"Export complete. Project written to:\n{outputDir}";
-            _progressBar.Value      = 100;
+            _progressBar.Progress   = 1.0;
         }
         catch (OperationCanceledException)
         {

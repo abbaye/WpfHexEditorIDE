@@ -10,6 +10,7 @@
 <Window x:Class="WpfHexEditor.PluginInstaller.InstallerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
         Title="Plugin Installer — WpfHexEditor"
         Width="540" Height="480"
         MinWidth="460" MinHeight="420"
@@ -155,9 +156,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <ProgressBar x:Name="Progress" Grid.Column="0"
-                         Height="6" VerticalAlignment="Center"
-                         IsIndeterminate="False" Visibility="Collapsed"/>
+            <pb:LinearProgressBar x:Name="Progress" Grid.Column="0"
+                                  Height="6" BarHeight="6" VerticalAlignment="Center"
+                                  Visibility="Collapsed"/>
 
             <Button x:Name="BtnInstall" Grid.Column="1"
                     Content="Install" Width="90" Height="28"

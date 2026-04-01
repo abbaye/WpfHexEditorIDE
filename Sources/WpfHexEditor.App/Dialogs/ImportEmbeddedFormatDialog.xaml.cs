@@ -330,7 +330,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
             DetailVersionText.Text      = "";
             DetailAuthorText.Text       = "";
             DetailExtWrap.Children.Clear();
-            DetailQualityBar.Value = 0;
+            DetailQualityBar.Progress = 0;
             DetailQualityText.Text = "";
             return;
         }
@@ -350,7 +350,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
         foreach (var ext in row.Entry.Extensions)
             DetailExtWrap.Children.Add(MakeExtBadge(ext));
 
-        DetailQualityBar.Value = row.QualityScore;
+        DetailQualityBar.Progress = row.QualityScore / 100.0;
         DetailQualityText.Text = $"{row.QualityScore}%";
     }
 

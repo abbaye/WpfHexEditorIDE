@@ -9,6 +9,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
+             xmlns:pbc="clr-namespace:WpfHexEditor.ProgressBar.Converters;assembly=WpfHexEditor.ProgressBar"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="400">
 
@@ -51,12 +53,12 @@
                            MinHeight="20"/>
 
                 <!-- Progress Bar -->
-                <ProgressBar Value="{Binding ProgressPercentage}"
-                             Maximum="100"
-                             Height="24"
-                             Margin="0,0,0,8"
-                             IsIndeterminate="{Binding IsIndeterminate}"
-                             Foreground="#0078D4"/>
+                <pb:LinearProgressBar Progress="{Binding ProgressPercentage, Converter={x:Static pbc:ValueToProgressConverter.Instance}, ConverterParameter=100}"
+                                      BarHeight="24"
+                                      Height="24"
+                                      Margin="0,0,0,8"
+                                      IsIndeterminate="{Binding IsIndeterminate}"
+                                      ShowPercentage="True"/>
 
                 <!-- Progress Text -->
                 <TextBlock Text="{Binding ProgressText}"

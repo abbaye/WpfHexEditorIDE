@@ -2,15 +2,15 @@
 // Project: WpfHexEditor.App
 // File: Services/LspFirstRunService.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
+// Contributors: Claude Sonnet 4.6, Claude Opus 4.6
 // Created: 2026-03-29
 // Description:
 //     Posts a first-run notification when bundled LSP servers are absent.
-//     "Download now" action fetches OmniSharp + clangd inline via HttpClient
-//     and updates the notification in-place with progress/result feedback.
-//     No PowerShell execution required.
+//     "Download now" action fetches clangd inline via HttpClient.
+//     C# and VB.NET use in-process Roslyn (no external server needed).
 // ==========================================================
 
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
@@ -21,13 +21,12 @@ namespace WpfHexEditor.App.Services;
 /// <summary>
 /// Checks whether bundled LSP servers are present in the output directory and,
 /// if not, posts a notification offering an inline download.
+/// C# and VB.NET use in-process Roslyn — only clangd requires download.
 /// </summary>
 internal sealed class LspFirstRunService : IDisposable
 {
     private const string NotifId    = "lsp-first-run";
-    private const string OmniSharpUrl =
-        "https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.39.12/omnisharp-win-x64-net6.0.zip";
-    private const string ClangdUrl    =
+    private const string ClangdUrl  =
         "https://github.com/clangd/clangd/releases/download/18.1.3/clangd-windows-18.1.3.zip";
 
     private readonly INotificationService _notifications;
@@ -44,14 +43,14 @@ internal sealed class LspFirstRunService : IDisposable
     /// </summary>
     public void CheckAndNotify()
     {
-        var omniExe = Path.Combine(AppContext.BaseDirectory, "tools", "lsp", "OmniSharp", "OmniSharp.exe");
-        if (File.Exists(omniExe)) return;   // already installed — nothing to do
+        var clangdExe = Path.Combine(AppContext.BaseDirectory, "tools", "lsp", "clangd", "clangd.exe");
+        if (File.Exists(clangdExe)) return;   // already installed — nothing to do
 
         _notifications.Post(new NotificationItem
         {
             Id       = NotifId,
-            Title    = "LSP servers not installed",
-            Message  = "OmniSharp (C#) and clangd (C/C++) add IntelliSense, live diagnostics, and rename. ~110 MB.",
+            Title    = "C/C++ LSP server not installed",
+            Message  = "clangd adds IntelliSense, live diagnostics, and rename for C/C++. ~50 MB. (C#/VB.NET use built-in Roslyn.)",
             Severity = NotificationSeverity.Info,
             Actions  =
             [
@@ -71,24 +70,9 @@ internal sealed class LspFirstRunService : IDisposable
 
     private async Task DownloadAsync()
     {
-        // Replace with in-progress entry (non-dismissible while downloading).
-        _notifications.Post(new NotificationItem
-        {
-            Id           = NotifId,
-            Title        = "Downloading LSP servers…",
-            Message      = "OmniSharp (C#) + clangd (C/C++) — please do not close the IDE.",
-            Severity     = NotificationSeverity.Info,
-            IsDismissible = false,
-        });
-
         try
         {
             var lspRoot = Path.Combine(AppContext.BaseDirectory, "tools", "lsp");
-
-            await DownloadAndExtractAsync(
-                OmniSharpUrl,
-                Path.Combine(lspRoot, "OmniSharp"),
-                "OmniSharp");
 
             await DownloadAndExtractAsync(
                 ClangdUrl,
@@ -98,8 +82,8 @@ internal sealed class LspFirstRunService : IDisposable
             _notifications.Post(new NotificationItem
             {
                 Id       = NotifId,
-                Title    = "LSP servers ready",
-                Message  = "Open a .cs or .cpp file to activate IntelliSense and live diagnostics.",
+                Title    = "clangd ready",
+                Message  = "Open a .cpp or .h file to activate C/C++ IntelliSense.",
                 Severity = NotificationSeverity.Success,
             });
         }
@@ -108,7 +92,7 @@ internal sealed class LspFirstRunService : IDisposable
             _notifications.Post(new NotificationItem
             {
                 Id       = NotifId,
-                Title    = "LSP download failed",
+                Title    = "clangd download failed",
                 Message  = ex.Message,
                 Severity = NotificationSeverity.Error,
                 Actions  =
@@ -122,24 +106,55 @@ internal sealed class LspFirstRunService : IDisposable
 
     private async Task DownloadAndExtractAsync(string url, string destDir, string label)
     {
-        // Update progress message in-place.
-        _notifications.Post(new NotificationItem
-        {
-            Id           = NotifId,
-            Title        = $"Downloading {label}…",
-            Message      = "Please do not close the IDE.",
-            Severity     = NotificationSeverity.Info,
-            IsDismissible = false,
-        });
+        PostProgress(label, -1, 0, null);
 
         var zipPath = Path.Combine(Path.GetTempPath(), $"whe-lsp-{label}.zip");
         try
         {
-            // Download to temp file.
-            var bytes = await _http.GetByteArrayAsync(url).ConfigureAwait(false);
-            await File.WriteAllBytesAsync(zipPath, bytes).ConfigureAwait(false);
+            // ── Stream-based download with progress ──────────────────────
+            using var response = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
 
-            // Extract — flatten single top-level folder if present.
+            var totalBytes = response.Content.Headers.ContentLength;
+            await using var source = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var dest   = File.Create(zipPath);
+
+            var buffer       = new byte[81920];
+            long downloaded  = 0;
+            double lastPct   = -1;
+            var sw           = Stopwatch.StartNew();
+
+            int read;
+            while ((read = await source.ReadAsync(buffer).ConfigureAwait(false)) > 0)
+            {
+                await dest.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+                downloaded += read;
+
+                double pct = totalBytes.HasValue ? (double)downloaded / totalBytes.Value : -1;
+
+                // Throttle: post only on ≥1% change or ≥500ms elapsed
+                if (Math.Abs(pct - lastPct) >= 0.01 || sw.ElapsedMilliseconds >= 500)
+                {
+                    PostProgress(label, pct, downloaded, totalBytes);
+                    lastPct = pct;
+                    sw.Restart();
+                }
+            }
+
+            // ── Extract ──────────────────────────────────────────────────
+            dest.Close();
+
+            _notifications.Post(new NotificationItem
+            {
+                Id             = NotifId,
+                Title          = $"Extracting {label}…",
+                Severity       = NotificationSeverity.Info,
+                IsDismissible  = false,
+                Progress       = -1,
+                IsActiveDownload = true,
+            });
+
             var tmpExtract = zipPath + "_extract";
             if (Directory.Exists(tmpExtract)) Directory.Delete(tmpExtract, recursive: true);
 
@@ -165,6 +180,24 @@ internal sealed class LspFirstRunService : IDisposable
         {
             if (File.Exists(zipPath)) File.Delete(zipPath);
         }
+    }
+
+    private void PostProgress(string label, double progress, long downloaded, long? totalBytes)
+    {
+        string message = totalBytes.HasValue && progress >= 0
+            ? $"{downloaded / (1024.0 * 1024):F1} / {totalBytes.Value / (1024.0 * 1024):F1} MB"
+            : $"{downloaded / (1024.0 * 1024):F1} MB downloaded";
+
+        _notifications.Post(new NotificationItem
+        {
+            Id               = NotifId,
+            Title            = $"Downloading {label}…",
+            Message          = message,
+            Severity         = NotificationSeverity.Info,
+            IsDismissible    = false,
+            Progress         = progress,
+            IsActiveDownload = true,
+        });
     }
 
     public void Dispose() => _http.Dispose();

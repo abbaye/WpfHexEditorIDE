@@ -1,6 +1,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.FileComparison.Views.DiffHubPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.FileComparison.ViewModels"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters">
 
@@ -50,8 +51,8 @@
             </Button>
 
             <!-- Busy indicator -->
-            <ProgressBar IsIndeterminate="True" Width="60" Height="3" Margin="4,0"
-                         Visibility="{Binding IsComparing, Converter={StaticResource BoolToVis}}"/>
+            <pb:LinearProgressBar IsIndeterminate="True" Width="60" Height="3" BarHeight="3" Margin="4,0"
+                                    Visibility="{Binding IsComparing, Converter={StaticResource BoolToVis}}"/>
         </ToolBar>
 
         <!-- ── Row 1: File path inputs ── -->

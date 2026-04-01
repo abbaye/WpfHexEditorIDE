@@ -65,23 +65,23 @@ public partial class FileStatisticsPanel : UserControl
         DataTypeText.Text     = dtLabel;
         DataTypeDescText.Text = GetDataTypeDescription(dtLabel);
 
-        NullBar.Value      = stats.NullBytePercentage;
+        NullBar.Progress   = stats.NullBytePercentage / 100.0;
         NullPctText.Text   = $"{stats.NullBytePercentage:F1}%";
-        AsciiBar.Value     = stats.PrintableAsciiPercentage;
+        AsciiBar.Progress  = stats.PrintableAsciiPercentage / 100.0;
         AsciiPctText.Text  = $"{stats.PrintableAsciiPercentage:F1}%";
 
         var otherPct       = Math.Max(0, 100.0 - stats.NullBytePercentage - stats.PrintableAsciiPercentage);
-        BinaryBar.Value    = otherPct;
+        BinaryBar.Progress = otherPct / 100.0;
         BinaryPctText.Text = $"{otherPct:F1}%";
 
         MostCommonByteText.Text = $"0x{stats.MostCommonByte:X2} ({stats.MostCommonBytePct:F1}%)";
         UniqueCountText.Text    = $"{stats.UniqueBytesCount} / 256";
 
-        HealthScoreBar.Value  = stats.HealthScore;
-        HealthScoreText.Text  = $"{stats.HealthScore}/100";
-        HealthStatusText.Text = stats.HealthMessage ?? string.Empty;
+        HealthScoreBar.Progress = stats.HealthScore / 100.0;
+        HealthScoreText.Text    = $"{stats.HealthScore}/100";
+        HealthStatusText.Text   = stats.HealthMessage ?? string.Empty;
 
-        EntropyBar.Value     = (stats.Entropy / 8.0) * 100;
+        EntropyBar.Progress  = stats.Entropy / 8.0;
         EntropyText.Text     = $"{stats.Entropy:F2}/8.0";
         EntropyDescText.Text = GetEntropyDescription(stats.Entropy);
 

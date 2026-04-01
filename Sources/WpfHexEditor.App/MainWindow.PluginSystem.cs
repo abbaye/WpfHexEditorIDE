@@ -60,6 +60,7 @@ public partial class MainWindow
     private StatusBarManager?       _statusBarManager;
     private DocumentTabManager     _documentTabManager = new();
     private WpfHexEditor.App.Services.LspDocumentBridgeService?    _lspBridgeService;
+    private string?                                                _roslynSolutionPath;
     private WpfHexEditor.App.Services.LspStatusBarAdapter?         _lspStatusBarAdapter;
     private WpfHexEditor.App.Services.LspDiagnosticsAdapter?       _lspDiagnosticsAdapter;
     private WpfHexEditor.App.Services.NotificationServiceImpl?     _notificationService;
@@ -147,6 +148,20 @@ public partial class MainWindow
             var eventBus = new PluginEventBus();
             var uiRegistry = new UIRegistry(dockingAdapter, menuAdapter, statusBarAdapter);
 
+            // Wire command palette anchor provider for plugin popups
+            uiRegistry.CommandPaletteAnchorProvider = () =>
+            {
+                if (TitleBarSearchButton is not { IsLoaded: true }) return null;
+                var physPt = TitleBarSearchButton.PointToScreen(
+                    new System.Windows.Point(
+                        TitleBarSearchButton.ActualWidth / 2,
+                        TitleBarSearchButton.ActualHeight));
+                var src = System.Windows.PresentationSource.FromVisual(this);
+                var dpiX = src?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+                var dpiY = src?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+                return new System.Windows.Point(physPt.X / dpiX, physPt.Y / dpiY);
+            };
+
             // Wire title bar plugin zone — rebuild when contributors change
             uiRegistry.TitleBarChanged += (_, _) => Dispatcher.InvokeAsync(() =>
             {
@@ -173,11 +188,68 @@ public partial class MainWindow
                 _notificationService,
                 NotificationBadge,
                 NotificationBadgeText,
-                NotificationBellButton);
+                NotificationBellButton,
+                NotificationBellGrid);
+
+            // MSBuildLocator must be registered before any MSBuildWorkspace is created.
+            try { Microsoft.Build.Locator.MSBuildLocator.RegisterDefaults(); }
+            catch (Exception ex) { OutputLogger.PluginError($"[Roslyn] MSBuildLocator init failed: {ex.Message}"); }
 
             // LSP server registry — best-effort: failures must not block IDE startup.
             WpfHexEditor.Editor.Core.LSP.ILspServerRegistry? lspRegistry = null;
-            try { lspRegistry = new WpfHexEditor.Core.LSP.Client.Services.LspServerRegistry(Dispatcher); }
+            try
+            {
+                var registry = new WpfHexEditor.Core.LSP.Client.Services.LspServerRegistry(Dispatcher);
+
+                // Register in-process Roslyn client for C# and VB.NET (replaces OmniSharp).
+                var dispatcher = Dispatcher;
+                registry.RegisterInProcess("csharp", [".cs", ".csx"],
+                    () => new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher));
+                registry.RegisterInProcess("vbnet", [".vb"],
+                    () => new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher));
+
+                lspRegistry = registry;
+
+                // Wire solution events → Roslyn MSBuildWorkspace loading.
+                _solutionManager.SolutionChanged += async (_, e) =>
+                {
+                    try
+                    {
+                        if (e.Kind == WpfHexEditor.Editor.Core.SolutionChangeKind.Opened && e.Solution?.FilePath is not null)
+                        {
+                            // If the solution IS already a .sln/.csproj, use it directly.
+                            // Otherwise (.whsln custom format), scan the directory for the real .sln.
+                            var ext = System.IO.Path.GetExtension(e.Solution.FilePath).ToLowerInvariant();
+                            var realSlnPath = ext is ".sln" or ".csproj" or ".vbproj"
+                                ? e.Solution.FilePath
+                                : FindDotNetSolutionOrProject(System.IO.Path.GetDirectoryName(e.Solution.FilePath));
+                            if (realSlnPath is null)
+                            {
+                                OutputLogger.PluginInfo("[Roslyn] No .sln/.csproj found — using standalone analysis.");
+                                _roslynSolutionPath = null;
+                                return;
+                            }
+
+                            OutputLogger.PluginInfo($"[Roslyn] Loading: {realSlnPath}");
+                            _roslynSolutionPath = realSlnPath;
+                            if (_lspBridgeService is not null)
+                                _lspBridgeService._roslynSolutionPath = realSlnPath;
+
+                            // Load solution into all active Roslyn clients.
+                            await LoadRoslynSolutionIntoActiveClientsAsync(realSlnPath);
+                        }
+                        else if (e.Kind == WpfHexEditor.Editor.Core.SolutionChangeKind.Closed)
+                        {
+                            OutputLogger.PluginInfo("[Roslyn] Solution closed.");
+                            _roslynSolutionPath = null;
+                            if (_lspBridgeService is not null)
+                                _lspBridgeService._roslynSolutionPath = null;
+                            UnloadRoslynSolutionFromActiveClients();
+                        }
+                    }
+                    catch (Exception ex) { OutputLogger.PluginError($"[Roslyn] Solution event: {ex.Message}"); }
+                };
+            }
             catch (Exception ex) { OutputLogger.PluginError($"[LSP] Registry init failed: {ex.Message}"); }
 
             // LSP-4: Options page for LSP server configuration.
@@ -1246,5 +1318,73 @@ public partial class MainWindow
             MenuAdapter:         menu,
             StatusBarAdapter:    statusBar,
             DocumentHostService: docHost);
+    }
+
+    // ── Roslyn solution wiring helpers ────────────────────────────────────────
+
+    /// <summary>
+    /// Scans the given directory for a .sln file, then .csproj/.vbproj.
+    /// Returns the path Roslyn MSBuildWorkspace can load, or null.
+    /// </summary>
+    private static string? FindDotNetSolutionOrProject(string? directory)
+    {
+        if (directory is null || !System.IO.Directory.Exists(directory)) return null;
+
+        // Prefer .sln (full project graph).
+        var slnFiles = System.IO.Directory.GetFiles(directory, "*.sln");
+        if (slnFiles.Length > 0) return slnFiles[0];
+
+        // Fall back to first .csproj or .vbproj.
+        var projFiles = System.IO.Directory.GetFiles(directory, "*.csproj")
+            .Concat(System.IO.Directory.GetFiles(directory, "*.vbproj"))
+            .ToArray();
+        if (projFiles.Length > 0) return projFiles[0];
+
+        // Scan one level of subdirectories for .sln.
+        foreach (var subDir in System.IO.Directory.GetDirectories(directory))
+        {
+            var subSln = System.IO.Directory.GetFiles(subDir, "*.sln");
+            if (subSln.Length > 0) return subSln[0];
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Calls <see cref="WpfHexEditor.Core.Roslyn.RoslynLanguageClient.LoadSolutionAsync"/>
+    /// on all active in-process Roslyn clients.
+    /// </summary>
+    private async Task LoadRoslynSolutionIntoActiveClientsAsync(string solutionPath)
+    {
+        if (_lspBridgeService is null) return;
+
+        foreach (var langId in new[] { "csharp", "vbnet" })
+        {
+            var client = _lspBridgeService.TryGetClient(langId);
+            if (client is WpfHexEditor.Core.Roslyn.RoslynLanguageClient roslynClient)
+            {
+                try
+                {
+                    await roslynClient.LoadSolutionAsync(solutionPath).ConfigureAwait(true);
+                    OutputLogger.PluginInfo($"[Roslyn] {langId} workspace loaded: {solutionPath}");
+                }
+                catch (Exception ex)
+                {
+                    OutputLogger.PluginError($"[Roslyn] {langId} workspace load failed: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    private void UnloadRoslynSolutionFromActiveClients()
+    {
+        if (_lspBridgeService is null) return;
+
+        foreach (var langId in new[] { "csharp", "vbnet" })
+        {
+            var client = _lspBridgeService.TryGetClient(langId);
+            if (client is WpfHexEditor.Core.Roslyn.RoslynLanguageClient roslynClient)
+                roslynClient.UnloadSolution();
+        }
     }
 }

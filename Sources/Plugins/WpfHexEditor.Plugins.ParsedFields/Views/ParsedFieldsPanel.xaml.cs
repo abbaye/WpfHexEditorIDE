@@ -1521,7 +1521,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             double percent = (double)coveredBytes / TotalFileSize * 100;
             percent = Math.Min(percent, 100);
 
-            CoverageProgressBar.Value = percent;
+            CoverageProgressBar.Progress = percent / 100.0;
             CoverageText.Text = $"{percent:F0}% parsed ({coveredBytes:N0} / {TotalFileSize:N0} bytes)";
             CoverageBarSection.Visibility = Visibility.Visible;
         }

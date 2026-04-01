@@ -2,6 +2,7 @@
     x:Class="WpfHexEditor.Plugins.Git.Views.GitChangesPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
     Background="{DynamicResource DockBackgroundBrush}"
     Foreground="{DynamicResource DockMenuForegroundBrush}">
@@ -74,8 +75,8 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBlock Text="{Binding StatusText}"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
-                <ProgressBar IsIndeterminate="True" Width="60" Height="4" Margin="8,0,0,0"
-                             Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" />
+                <pb:LinearProgressBar IsIndeterminate="True" Width="60" Height="4" BarHeight="4" Margin="8,0,0,0"
+                                      Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" />
             </StackPanel>
         </Border>
 

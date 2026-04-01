@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
   </ItemGroup>
 
   <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />

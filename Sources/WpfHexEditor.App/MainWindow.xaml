@@ -13,6 +13,7 @@
         xmlns:local="clr-namespace:WpfHexEditor.App"
         xmlns:appCtrl="clr-namespace:WpfHexEditor.App.Controls"
         xmlns:appModels="clr-namespace:WpfHexEditor.App.Models"
+        xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
         Title="WpfHexEditor"
         Icon="pack://application:,,,/WpfHexEditor.App;component/Logo.ico"
         Width="1200" Height="800"
@@ -111,7 +112,7 @@
                         </Style>
                     </Border.Style>
                     <!-- Inner grid sized to icon — keeps badge anchored to the icon, not the full 32px border -->
-                    <Grid Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid x:Name="NotificationBellGrid" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="&#xE7E7;"
                                    FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -1837,8 +1838,8 @@
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                FontWeight="SemiBold" Margin="8,0,8,0"
                                VerticalAlignment="Center"/>
-                    <ProgressBar x:Name="AppProgressBar"
-                                 Width="160" Height="10" Minimum="0" Maximum="100"
+                    <pb:LinearProgressBar x:Name="AppProgressBar"
+                                 Width="160" Height="10"
                                  VerticalAlignment="Center"/>
                     <TextBlock x:Name="ProgressPercentText"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
@@ -1906,15 +1907,11 @@
                     <TextBlock x:Name="BuildStatusIcon" Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                VerticalAlignment="Center" Margin="4,0,4,0"/>
-                    <ProgressBar x:Name="BuildProgressBar"
+                    <pb:LinearProgressBar x:Name="BuildProgressBar"
                                  Width="80" Height="6"
-                                 Minimum="0" Maximum="100" Value="0"
                                  Visibility="Collapsed"
                                  VerticalAlignment="Center"
-                                 Margin="0,0,6,0"
-                                 Foreground="{DynamicResource DockTabActiveTextBrush}"
-                                 Background="{DynamicResource DockBorderBrush}"
-                                 BorderThickness="0"/>
+                                 Margin="0,0,6,0"/>
                     <TextBlock x:Name="BuildStatusText"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -1924,9 +1921,10 @@
             <!-- LSP server state indicator -->
             <StatusBarItem x:Name="LspStatusItem" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock x:Name="LspStatusDot" Text="●" FontSize="10"
+                    <TextBlock x:Name="LspStatusDot" Text="●" FontSize="18"
                                Foreground="{DynamicResource LSP_ReadyDot}"
-                               VerticalAlignment="Center" Margin="4,0,4,0"/>
+                               VerticalAlignment="Center" Margin="4,-1,4,0"
+                               LineHeight="14" LineStackingStrategy="BlockLineHeight"/>
                     <TextBlock x:Name="LspStatusText"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>

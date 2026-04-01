@@ -16,6 +16,7 @@
 <UserControl x:Class="WpfHexEditor.SDK.UI.LoadingOverlay"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              Visibility="Collapsed"
              IsHitTestVisible="True"
              Focusable="False">
@@ -26,9 +27,8 @@
                        Foreground="White"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,8"/>
-            <ProgressBar Width="180" Height="4"
-                         IsIndeterminate="True"
-                         Foreground="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+            <pb:LinearProgressBar Width="180" Height="4" BarHeight="4"
+                                    IsIndeterminate="True"/>
         </StackPanel>
     </Border>
 </UserControl>

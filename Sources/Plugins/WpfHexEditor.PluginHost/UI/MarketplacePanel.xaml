@@ -18,6 +18,8 @@
 <UserControl x:Class="WpfHexEditor.PluginHost.UI.MarketplacePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
+             xmlns:pbc="clr-namespace:WpfHexEditor.ProgressBar.Converters;assembly=WpfHexEditor.ProgressBar"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
@@ -84,14 +86,10 @@
         </ToolBar>
 
         <!-- ── Install progress bar ─────────────────────────────────────────── -->
-        <ProgressBar DockPanel.Dock="Bottom"
-                     Height="3"
-                     Minimum="0" Maximum="100"
-                     Value="{Binding InstallPercent, Mode=OneWay}"
-                     Foreground="{DynamicResource DockAccentBrush}"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVis}}"/>
+        <pb:LinearProgressBar DockPanel.Dock="Bottom"
+                              Height="3" BarHeight="3"
+                              Progress="{Binding InstallPercent, Mode=OneWay, Converter={x:Static pbc:ValueToProgressConverter.Instance}, ConverterParameter=100}"
+                              Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVis}}"/>
 
         <!-- ── Status bar ────────────────────────────────────────────────────── -->
         <Border DockPanel.Dock="Bottom"

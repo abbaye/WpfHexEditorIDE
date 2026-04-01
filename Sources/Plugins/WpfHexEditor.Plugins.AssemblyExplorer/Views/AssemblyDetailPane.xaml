@@ -19,6 +19,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Views.AssemblyDetailPane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:controls="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Controls"
              Background="{DynamicResource PFP_SectionBackgroundBrush}">
 
@@ -309,9 +310,7 @@
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                                 Visibility="{Binding CfgViewModel.IsBuilding,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
-                        <ProgressBar IsIndeterminate="True" Width="160" Height="3"
-                                     Foreground="{DynamicResource PFP_AccentBrush}"
-                                     Background="Transparent" BorderThickness="0"/>
+                        <pb:LinearProgressBar IsIndeterminate="True" Width="160" Height="3" BarHeight="3"/>
                         <TextBlock Text="Building CFG…" Margin="0,6,0,0"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    FontSize="11" FontFamily="Segoe UI"
@@ -351,9 +350,7 @@
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                                 Visibility="{Binding XRefViewModel.IsLoading,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
-                        <ProgressBar IsIndeterminate="True" Width="160" Height="3"
-                                     Foreground="{DynamicResource PFP_AccentBrush}"
-                                     Background="Transparent" BorderThickness="0"/>
+                        <pb:LinearProgressBar IsIndeterminate="True" Width="160" Height="3" BarHeight="3"/>
                         <TextBlock Text="Scanning XRefs…" Margin="0,6,0,0"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    FontSize="11" FontFamily="Segoe UI"
@@ -478,9 +475,7 @@
                                 Margin="0,6"
                                 Visibility="{Binding SourceViewModel.IsLoading,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
-                        <ProgressBar IsIndeterminate="True" Width="160" Height="3"
-                                     Foreground="{DynamicResource PFP_AccentBrush}"
-                                     Background="Transparent" BorderThickness="0"/>
+                        <pb:LinearProgressBar IsIndeterminate="True" Width="160" Height="3" BarHeight="3"/>
                         <TextBlock Text="Reading PDB…" Margin="0,4,0,0"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    FontSize="11" FontFamily="Segoe UI"
@@ -609,11 +604,8 @@
                 Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ProgressBar IsIndeterminate="True"
-                             Width="200" Height="3"
-                             Foreground="{DynamicResource PFP_AccentBrush}"
-                             Background="Transparent"
-                             BorderThickness="0"/>
+                <pb:LinearProgressBar IsIndeterminate="True"
+                                      Width="200" Height="3" BarHeight="3"/>
                 <TextBlock Text="{Binding LoadingMessage}"
                            Margin="0,7,0,0"
                            Foreground="{DynamicResource PFP_SubTextBrush}"

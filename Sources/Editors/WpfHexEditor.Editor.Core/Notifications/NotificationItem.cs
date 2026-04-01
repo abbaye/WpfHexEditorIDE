@@ -59,4 +59,17 @@ public sealed record NotificationItem
     /// Use for in-progress operations that must not be accidentally closed.
     /// </summary>
     public bool IsDismissible { get; init; } = true;
+
+    /// <summary>
+    /// Operation progress indicator.
+    /// <c>null</c> = no progress bar; <c>-1</c> = indeterminate;
+    /// <c>0.0–1.0</c> = determinate percentage.
+    /// </summary>
+    public double? Progress { get; init; }
+
+    /// <summary>
+    /// When <c>true</c> this notification contributes to the aggregate
+    /// download progress shown on the titlebar bell icon.
+    /// </summary>
+    public bool IsActiveDownload { get; init; }
 }
