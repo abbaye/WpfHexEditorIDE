@@ -40,6 +40,7 @@ using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.PluginHost.UI.Options;
 using WpfHexEditor.Core.Options;
+using WpfHexEditor.Core.Options.Pages;
 using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -357,6 +358,12 @@ public partial class MainWindow
                 "Plugin System",
                 "Event Bus",
                 () => new IDEEventBusOptionsPage(capturedBus));
+
+            // 4d. Register Plugins → Marketplace options page.
+            OptionsPageRegistry.RegisterDynamic(
+                "Plugins",
+                "Marketplace",
+                () => new MarketplaceOptionsPage());
 
             // 5. Discover + load all plugins.
             // Suspend visual tree rebuilds so that N plugins each registering a panel
@@ -800,7 +807,10 @@ public partial class MainWindow
     {
         if (ActivateExistingDockPanel(MarketplaceContentId)) return;
 
-        var svc   = new MarketplaceServiceImpl(logger: msg => OutputLogger.PluginInfo(msg));
+        var token = AppSettingsService.Instance.Current.Marketplace.GitHubToken;
+        var svc   = new MarketplaceServiceImpl(
+            gitHubToken: string.IsNullOrEmpty(token) ? null : token,
+            logger: msg => OutputLogger.PluginInfo(msg));
         var vm    = new MarketplacePanelViewModel(svc, _pluginHost!, msg => OutputLogger.PluginInfo(msg));
         var panel = new MarketplacePanel();
         panel.Initialize(vm);

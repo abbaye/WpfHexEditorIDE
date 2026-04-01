@@ -158,6 +158,11 @@ public sealed class AppSettings
     /// <summary>Document Editor (RTF/DOCX/ODT) preferences.</summary>
     public WpfHexEditor.Editor.DocumentEditor.Core.Options.DocumentEditorOptions DocumentEditor { get; set; } = new();
 
+    // -- Marketplace --------------------------------------------------------------
+
+    /// <summary>Plugin Marketplace preferences (GitHub token, auto-update check).</summary>
+    public MarketplaceSettings Marketplace { get; set; } = new();
+
     // -- Layout Customization -----------------------------------------------------
 
     /// <summary>Layout visibility, positions, and mode preferences (Customize Layout popup).</summary>
@@ -1065,4 +1070,30 @@ public sealed class LayoutSettings
 
     /// <summary>Hide all dock panels when entering Zen Mode. Default: true.</summary>
     public bool ZenHidePanels { get; set; } = true;
+}
+
+// ── Marketplace settings ──────────────────────────────────────────────────────
+
+/// <summary>
+/// Plugin Marketplace preferences — GitHub API authentication and auto-update behavior.
+/// </summary>
+public sealed class MarketplaceSettings
+{
+    /// <summary>
+    /// Optional GitHub Personal Access Token (PAT) used to raise the API rate limit
+    /// from 60 to 5 000 requests per hour. Leave empty for anonymous access.
+    /// </summary>
+    public string GitHubToken { get; set; } = string.Empty;
+
+    /// <summary>
+    /// When true, the marketplace checks for plugin updates automatically at startup.
+    /// Default: true.
+    /// </summary>
+    public bool AutoCheckUpdates { get; set; } = true;
+
+    /// <summary>
+    /// Interval in hours between automatic update checks.
+    /// Minimum enforced value: 1 hour. Default: 24.
+    /// </summary>
+    public int UpdateCheckIntervalHours { get; set; } = 24;
 }

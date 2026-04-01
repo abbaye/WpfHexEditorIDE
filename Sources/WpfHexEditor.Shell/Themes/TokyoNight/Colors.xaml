@@ -399,7 +399,15 @@
     <SolidColorBrush x:Key="PM_BadgeFaultedBrush"               Color="#F7768E"/>
     <SolidColorBrush x:Key="PM_BadgeSlowBrush"                  Color="#E0AF68"/>
     <SolidColorBrush x:Key="PM_BadgeTrustedBrush"               Color="#9ECE6A"/>
-    <SolidColorBrush x:Key="DangerBrush"                        Color="#F7768E"/>
+    
+    <!-- Marketplace (MP_*) -->
+    <SolidColorBrush x:Key="MP_VerifiedBadgeBrush"         Color="#9ECE6A"/>
+    <SolidColorBrush x:Key="MP_UpdateAvailableBrush"        Color="#E0AF68"/>
+    <SolidColorBrush x:Key="MP_InstallButtonBrush"          Color="#7AA2F7"/>
+    <SolidColorBrush x:Key="MP_DownloadCountForeground"     Color="#565F89"/>
+    <SolidColorBrush x:Key="MP_ProgressFillBrush"           Color="#7AA2F7"/>
+    <SolidColorBrush x:Key="MP_Sha256BadgeBrush"            Color="#73DACA"/>
+<SolidColorBrush x:Key="DangerBrush"                        Color="#F7768E"/>
     <SolidColorBrush x:Key="DangerHoverBrush"                   Color="#DB4B4B"/>
     <SolidColorBrush x:Key="WarningBannerBrush"                 Color="#3DE0AF68"/>
     <SolidColorBrush x:Key="WarningBorderBrush"                 Color="#E0AF68"/>

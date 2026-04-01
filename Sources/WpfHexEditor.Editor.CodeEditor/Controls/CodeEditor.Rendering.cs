@@ -870,7 +870,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         if (_lineYLookup.TryGetValue(startLine0, out double ly) && _document != null
                             && startLine0 < _document.Lines.Count)
                         {
-                            double w = Math.Max(_document.Lines[startLine0].Length * _charWidth, _charWidth);
+                            var bpLineText = _document.Lines[startLine0].Text;
+                            double w = Math.Max(
+                                _glyphRenderer?.ComputeVisualX(bpLineText, bpLineText.Length) ?? bpLineText.Length * _charWidth,
+                                _charWidth);
                             dc.DrawRoundedRectangle(brush, null,
                                 new Rect(bpLeft, ly, w, _lineHeight),
                                 SelectionCornerRadius, SelectionCornerRadius);
@@ -888,7 +891,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             if (!_lineYLookup.TryGetValue(j, out double ly) || _document == null
                                 || j >= _document.Lines.Count) continue;
 
-                            double w    = Math.Max(_document.Lines[j].Length * _charWidth, _charWidth);
+                            var bpLineTextJ = _document.Lines[j].Text;
+                            double w = Math.Max(
+                                _glyphRenderer?.ComputeVisualX(bpLineTextJ, bpLineTextJ.Length) ?? bpLineTextJ.Length * _charWidth,
+                                _charWidth);
                             double yAdj = j == startLine0 ? ly : ly - SelectionCornerRadius;
                             double hAdj = j == startLine0 ? _lineHeight + SelectionCornerRadius
                                         : j == endLine0   ? _lineHeight + SelectionCornerRadius
@@ -1974,8 +1980,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         ? TopMargin + _virtualizationEngine.GetLineYPosition(pos.Line)
                         : TopMargin + (pos.Line - _firstVisibleLine) * _lineHeight);
 
-                double x1 = leftEdge + pos.Column * _charWidth;
-                double x2 = x1 + _wordHighlightLen * _charWidth;
+                var whLineText = (_document != null && pos.Line < _document.Lines.Count)
+                    ? _document.Lines[pos.Line].Text : string.Empty;
+                double x1 = leftEdge + (_glyphRenderer?.ComputeVisualX(whLineText, pos.Column) ?? pos.Column * _charWidth);
+                double x2 = leftEdge + (_glyphRenderer?.ComputeVisualX(whLineText, pos.Column + _wordHighlightLen) ?? (pos.Column + _wordHighlightLen) * _charWidth);
 
                 dc.DrawRectangle(s_wordHighlightBg, s_wordHighlightPen,
                     new Rect(x1, y, x2 - x1, _lineHeight));
