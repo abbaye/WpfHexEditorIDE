@@ -17,7 +17,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Multi-provider AI assistant with MCP integration, streaming chat, inline apply, and full IDE context awareness.</PluginDescription>
-    <PluginIsolationMode>Auto</PluginIsolationMode>
+    <PluginIsolationMode>Isolated</PluginIsolationMode>
     <PluginLoadPriority>200</PluginLoadPriority>
     <PluginSdkVersion>2.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.6.0</PluginMinIDEVersion>

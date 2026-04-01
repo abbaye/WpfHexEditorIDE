@@ -255,6 +255,9 @@ file sealed class NullUIRegistry : IUIRegistry
     public void UnregisterContextMenuContributor(string pluginId) { }
     public IReadOnlyList<ISolutionExplorerContextMenuContributor> GetContextMenuContributors() => [];
 
+    public void RegisterTitleBarItem(string uiId, string pluginId, ITitleBarContributor contributor) { }
+    public void UnregisterTitleBarItem(string uiId) { }
+
     public void UnregisterAllForPlugin(string pluginId)                                                    { }
 }
 

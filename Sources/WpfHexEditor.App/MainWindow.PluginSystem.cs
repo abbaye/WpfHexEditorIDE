@@ -147,6 +147,14 @@ public partial class MainWindow
             var eventBus = new PluginEventBus();
             var uiRegistry = new UIRegistry(dockingAdapter, menuAdapter, statusBarAdapter);
 
+            // Wire title bar plugin zone — rebuild when contributors change
+            uiRegistry.TitleBarChanged += (_, _) => Dispatcher.InvokeAsync(() =>
+            {
+                TitleBarPluginZone.Children.Clear();
+                foreach (var contributor in uiRegistry.GetTitleBarContributors())
+                    TitleBarPluginZone.Children.Add(contributor.CreateButton());
+            });
+
             var solutionService = new SolutionExplorerServiceImpl(_solutionManager);
             solutionService.OpenFileHandler = path => Dispatcher.InvokeAsync(() => OpenStandaloneFileWithEditor(path, null)).Task;
             var codeEditorService = new NullCodeEditorService();

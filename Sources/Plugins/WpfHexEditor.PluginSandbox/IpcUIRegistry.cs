@@ -333,6 +333,12 @@ internal sealed class IpcUIRegistry : IUIRegistry
     public IReadOnlyList<ISolutionExplorerContextMenuContributor> GetContextMenuContributors()
         => [];
 
+    public void RegisterTitleBarItem(string uiId, string pluginId, ITitleBarContributor contributor)
+    { /* No-op in sandbox: title bar injection is in-process only */ }
+
+    public void UnregisterTitleBarItem(string uiId)
+    { /* No-op in sandbox */ }
+
     // ── Bulk unregister ───────────────────────────────────────────────────────
 
     public void UnregisterAllForPlugin(string pluginId)

@@ -26,6 +26,9 @@ public sealed class UIRegistry : IUIRegistry
     // Maps pluginId -> Solution Explorer context menu contributor (one per plugin)
     private readonly Dictionary<string, ISolutionExplorerContextMenuContributor> _contextMenuContributors
         = new(StringComparer.OrdinalIgnoreCase);
+    // Maps uiId -> title bar contributor (pluginId stored via _registrations)
+    private readonly Dictionary<string, ITitleBarContributor> _titleBarContributors
+        = new(StringComparer.OrdinalIgnoreCase);
     private int _idCounter;
 
     public UIRegistry(IDockingAdapter dockingAdapter, IMenuAdapter menuAdapter, IStatusBarAdapter statusBarAdapter)
@@ -180,6 +183,43 @@ public sealed class UIRegistry : IUIRegistry
             return [.. _contextMenuContributors.Values];
     }
 
+    // -- Title Bar Registration -----------------------------------------------
+
+    /// <inheritdoc />
+    public void RegisterTitleBarItem(string uiId, string pluginId, ITitleBarContributor contributor)
+    {
+        lock (_lock)
+        {
+            _titleBarContributors[uiId] = contributor;
+            _registrations[uiId] = new UIRegistration(pluginId, UIElementKind.TitleBar);
+        }
+        TitleBarChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <inheritdoc />
+    public void UnregisterTitleBarItem(string uiId)
+    {
+        lock (_lock)
+        {
+            _titleBarContributors.Remove(uiId);
+            _registrations.Remove(uiId);
+        }
+        TitleBarChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Returns all registered title bar contributors ordered by <see cref="ITitleBarContributor.Order"/>.
+    /// Called by MainWindow to populate the TitleBarPluginZone.
+    /// </summary>
+    public IReadOnlyList<ITitleBarContributor> GetTitleBarContributors()
+    {
+        lock (_lock)
+            return [.. _titleBarContributors.Values.OrderBy(c => c.Order)];
+    }
+
+    /// <summary>Raised when title bar contributors change (add/remove).</summary>
+    public event EventHandler? TitleBarChanged;
+
     // -- Bulk Unregister (also removes contributor) ----------------------------
 
     /// <inheritdoc />
@@ -188,6 +228,13 @@ public sealed class UIRegistry : IUIRegistry
         lock (_lock)
         {
             _contextMenuContributors.Remove(pluginId);
+
+            // Remove title bar contributors owned by this plugin
+            var tbToRemove = _titleBarContributors
+                .Where(kvp => _registrations.TryGetValue(kvp.Key, out var reg) && reg.PluginId == pluginId)
+                .Select(kvp => kvp.Key).ToList();
+            foreach (var key in tbToRemove)
+                _titleBarContributors.Remove(key);
 
             var toRemove = _registrations
                 .Where(kvp => kvp.Value.PluginId == pluginId)
@@ -261,6 +308,7 @@ public sealed class UIRegistry : IUIRegistry
         MenuItem,
         ToolbarItem,
         DocumentTab,
-        StatusBarItem
+        StatusBarItem,
+        TitleBar
     }
 }

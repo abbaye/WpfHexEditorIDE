@@ -136,6 +136,17 @@ public interface IUIRegistry
     /// </summary>
     IReadOnlyList<ISolutionExplorerContextMenuContributor> GetContextMenuContributors();
 
+    // -- Title Bar Registration -----------------------------------------------
+
+    /// <summary>
+    /// Registers a title bar button/icon contributed by a plugin.
+    /// Displayed in the TitleBarPluginZone between the main menu and notification bell.
+    /// </summary>
+    void RegisterTitleBarItem(string uiId, string pluginId, ITitleBarContributor contributor);
+
+    /// <summary>Unregisters a title bar item by its UI ID.</summary>
+    void UnregisterTitleBarItem(string uiId);
+
     // -- Bulk Unregister ------------------------------------------------------
 
     /// <summary>

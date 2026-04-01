@@ -83,12 +83,12 @@ public sealed class ClaudeAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOpti
             Category = "AI & Assistants"
         });
 
-        // Register titlebar button (Phase 0.5)
-        // NOTE: ITitleBarContributor.RegisterTitleBarItem not yet in IUIRegistry —
-        // the contributor is created but will be wired once IUIRegistry is extended.
-        var _titleBarContributor = new ClaudeTitleBarContributor(
+        // Register titlebar button
+        var titleBarContributor = new ClaudeTitleBarContributor(
             _connectionService,
             () => context.UIRegistry.TogglePanel(_panelUiId!));
+        var titleBarUiId = context.UIRegistry.GenerateUIId(Id, "TitleBar", "Button");
+        context.UIRegistry.RegisterTitleBarItem(titleBarUiId, Id, titleBarContributor);
 
         // Register status bar item
         var statusUiId = context.UIRegistry.GenerateUIId(Id, "StatusBar", "Connection");

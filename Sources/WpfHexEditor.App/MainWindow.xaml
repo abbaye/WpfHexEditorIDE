@@ -127,6 +127,13 @@
                     </Grid>
                 </Border>
 
+                <!-- Plugin title bar zone (icons contributed by plugins via ITitleBarContributor) -->
+                <StackPanel x:Name="TitleBarPluginZone"
+                            DockPanel.Dock="Right"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Stretch"
+                            WindowChrome.IsHitTestVisibleInChrome="True"/>
+
                 <!-- Customize Layout button (right, before window buttons) -->
                 <Button x:Name="CustomizeLayoutButton"
                         DockPanel.Dock="Right"
