@@ -42,14 +42,15 @@ public sealed class ModelSwitcherPopup : Window
         Background = Brushes.Transparent;
         ResizeMode = ResizeMode.NoResize;
         ShowInTaskbar = false;
-        Topmost = true;
         Width = 320;
         SizeToContent = SizeToContent.Height;
         MaxHeight = 400;
-        WindowStartupLocation = WindowStartupLocation.Manual;
 
         if (anchor is not null)
         {
+            var ownerWin = Window.GetWindow(anchor);
+            if (ownerWin is not null) Owner = ownerWin;
+            WindowStartupLocation = WindowStartupLocation.Manual;
             var screenPt = anchor.PointToScreen(new Point(0, anchor.RenderSize.Height));
             Left = screenPt.X;
             Top = screenPt.Y + 2;

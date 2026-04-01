@@ -260,10 +260,17 @@ public sealed class ClaudeCommandPalette : Window
         Action newTab,
         Action showHistory,
         Action openOptions,
+        Action? switchModel = null,
+        string? currentModel = null,
         IReadOnlyList<PromptPreset>? presets = null)
     {
         var entries = new List<ClaudeCommandEntry>
         {
+            // Model & Account (top of list)
+            new("Switch AI Model", currentModel, "\uE8AB", "Model", switchModel ?? (() => { })),
+            new("API Key & Provider Settings", null, "\uE8D7", "Model", openOptions),
+
+            // Quick Actions
             new("Explain selected code", "@selection", "\uE946", "Quick Actions", explainSelection),
             new("Fix errors in current file", "@errors", "\uE90F", "Quick Actions", fixErrors),
             new("Refactor with diff preview", "@selection", "\uE70F", "Quick Actions", refactorSelection),

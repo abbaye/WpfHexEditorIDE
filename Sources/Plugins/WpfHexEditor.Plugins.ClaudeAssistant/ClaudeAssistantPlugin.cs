@@ -18,6 +18,7 @@ using WpfHexEditor.Plugins.ClaudeAssistant.Mcp.Host;
 using WpfHexEditor.Plugins.ClaudeAssistant.Options;
 using WpfHexEditor.Plugins.ClaudeAssistant.Panel;
 using WpfHexEditor.Plugins.ClaudeAssistant.Panel.CommandPalette;
+using WpfHexEditor.Plugins.ClaudeAssistant.Panel.ModelSwitcher;
 using WpfHexEditor.Plugins.ClaudeAssistant.Presets;
 using WpfHexEditor.Plugins.ClaudeAssistant.TitleBar;
 using WpfHexEditor.SDK.Contracts;
@@ -192,6 +193,10 @@ public sealed class ClaudeAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOpti
 
     private void ShowCommandPalette(UIElement? anchor = null)
     {
+        var currentModel = _vm?.ActiveTab is { } tab
+            ? $"{tab.SelectedProviderId} / {tab.SelectedModelId}"
+            : null;
+
         var entries = ClaudeCommandPalette.BuildDefaultCatalog(
             explainSelection: () => SendQuickAction("@selection Explain this code in detail."),
             fixErrors: () => SendQuickAction("@selection @errors Fix the errors in this code."),
@@ -201,6 +206,8 @@ public sealed class ClaudeAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOpti
             newTab: () => _vm?.CreateNewTabCommand.Execute(null),
             showHistory: () => _vm?.ToggleHistoryCommand.Execute(null),
             openOptions: () => _context?.CommandRegistry?.Find("View.Options")?.Command.Execute(null),
+            switchModel: () => ShowModelSwitcher(),
+            currentModel: currentModel,
             presets: PromptPresetsService.Instance.Presets);
 
         var owner = (_panel != null ? Window.GetWindow(_panel) : null)
@@ -209,6 +216,28 @@ public sealed class ClaudeAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOpti
         var paletteAnchor = _context?.UIRegistry.GetCommandPaletteAnchor();
         var palette = new ClaudeCommandPalette(entries, owner!, paletteAnchor);
         palette.Show();
+    }
+
+    private void ShowModelSwitcher()
+    {
+        if (_vm?.ActiveTab is not { } tab) return;
+        var owner = (_panel != null ? Window.GetWindow(_panel) : null)
+                 ?? Application.Current.MainWindow;
+        var popup = new ModelSwitcherPopup(
+            tab.Registry,
+            tab.SelectedProviderId,
+            tab.SelectedModelId,
+            tab.ThinkingEnabled,
+            _panel);
+        popup.Closed += (_, _) => SafeGuard.Run(() =>
+        {
+            if (popup.SelectedProviderId is not null)
+                tab.SelectedProviderId = popup.SelectedProviderId;
+            if (popup.SelectedModelId is not null)
+                tab.SelectedModelId = popup.SelectedModelId;
+            tab.ThinkingEnabled = popup.ThinkingEnabled;
+        });
+        popup.Show();
     }
 
     private void SendQuickAction(string message)
