@@ -36,6 +36,7 @@ public sealed partial class ConversationTabViewModel : ObservableObject
     [ObservableProperty] private bool _thinkingEnabled;
 
     public string Title => Session.Title;
+    public void NotifyTitleChanged() => OnPropertyChanged(nameof(Title));
 
     public ConversationTabViewModel(ConversationSession session, ModelRegistry registry, IMcpServerManager? mcpManager = null)
     {

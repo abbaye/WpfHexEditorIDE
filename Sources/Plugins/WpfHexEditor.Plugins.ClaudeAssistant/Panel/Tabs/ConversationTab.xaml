@@ -42,26 +42,50 @@
                 <Border CornerRadius="12" Padding="10,5" Margin="3" Cursor="Hand"
                         Background="{DynamicResource CA_ToolCallBackgroundBrush}"
                         MouseLeftButtonDown="OnSuggestionClick" Tag="@selection Explain this code in detail.">
-                    <TextBlock Text="&#xE943; Explain selection" FontSize="11"
-                               Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Explain selection" FontSize="11"
+                                   Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Border>
                 <Border CornerRadius="12" Padding="10,5" Margin="3" Cursor="Hand"
                         Background="{DynamicResource CA_ToolCallBackgroundBrush}"
                         MouseLeftButtonDown="OnSuggestionClick" Tag="@errors Fix the errors in this code.">
-                    <TextBlock Text="&#xE90F; Fix errors" FontSize="11"
-                               Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Fix errors" FontSize="11"
+                                   Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Border>
                 <Border CornerRadius="12" Padding="10,5" Margin="3" Cursor="Hand"
                         Background="{DynamicResource CA_ToolCallBackgroundBrush}"
                         MouseLeftButtonDown="OnSuggestionClick" Tag="@selection Generate xUnit tests for this code.">
-                    <TextBlock Text="&#xE8A1; Generate tests" FontSize="11"
-                               Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Generate tests" FontSize="11"
+                                   Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Border>
                 <Border CornerRadius="12" Padding="10,5" Margin="3" Cursor="Hand"
                         Background="{DynamicResource CA_ToolCallBackgroundBrush}"
                         MouseLeftButtonDown="OnSuggestionClick" Tag="@hex Explain this binary format.">
-                    <TextBlock Text="&#xE9D9; Explain hex data" FontSize="11"
-                               Foreground="{DynamicResource CA_ToolCallForegroundBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Explain hex data" FontSize="11"
+                                   Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Border>
             </WrapPanel>
         </StackPanel>

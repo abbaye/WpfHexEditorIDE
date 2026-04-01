@@ -72,7 +72,25 @@
                         <DataTemplate>
                             <Border Padding="8,0" Height="28" Cursor="Hand"
                                     BorderThickness="0,2,0,0"
-                                    MouseLeftButtonDown="OnTabClick">
+                                    MouseLeftButtonDown="OnTabClick"
+                                    MouseRightButtonDown="OnTabRightClick">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Rename" Click="OnRenameTabClick">
+                                            <MenuItem.Icon>
+                                                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <Separator/>
+                                        <MenuItem Header="Close" Click="OnCloseTabFromMenuClick">
+                                            <MenuItem.Icon>
+                                                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Close Others" Click="OnCloseOtherTabsClick"/>
+                                        <MenuItem Header="Close All" Click="OnCloseAllTabsClick"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="Transparent"/>
