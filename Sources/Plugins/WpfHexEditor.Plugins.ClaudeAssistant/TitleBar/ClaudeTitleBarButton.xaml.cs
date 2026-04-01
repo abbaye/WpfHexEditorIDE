@@ -94,11 +94,7 @@ public partial class ClaudeTitleBarButton : UserControl
             ButtonBorder.Background = Brushes.Transparent;
         });
 
-    private void OnLeftClick(object sender, MouseButtonEventArgs e)
-    {
-        e.Handled = true;
-        SafeGuard.Run(() => ShowCommandPaletteRequested?.Invoke());
-    }
+    private void OnLeftClick(object sender, MouseButtonEventArgs e) => SafeGuard.Run(() => ShowCommandPaletteRequested?.Invoke());
     private void OnRightClick(object sender, MouseButtonEventArgs e) => SafeGuard.Run(() => ContextMenu!.IsOpen = true);
     private void OnNewTabClick(object sender, RoutedEventArgs e) => SafeGuard.Run(() => NewTabRequested?.Invoke());
     private void OnAskSelectionClick(object sender, RoutedEventArgs e) => SafeGuard.Run(() => AskSelectionRequested?.Invoke());

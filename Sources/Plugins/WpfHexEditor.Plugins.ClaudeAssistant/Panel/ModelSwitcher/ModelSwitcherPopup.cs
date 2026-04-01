@@ -167,11 +167,7 @@ public sealed class ModelSwitcherPopup : Window
         Content = rootBorder;
 
         PreviewKeyDown += (_, e) => { if (e.Key == Key.Escape) SafeClose(); };
-        Deactivated += (_, _) =>
-        {
-            if (!_closingStarted)
-                Dispatcher.BeginInvoke(new Action(SafeClose));
-        };
+        Deactivated += (_, _) => SafeClose();
     }
 
     private void SafeClose()

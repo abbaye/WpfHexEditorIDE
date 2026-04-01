@@ -6,7 +6,7 @@
     <Border x:Name="ButtonBorder" CornerRadius="2" Padding="4,0"
             Background="{DynamicResource CA_TitleBarButtonBackgroundBrush}"
             MouseEnter="OnMouseEnter" MouseLeave="OnMouseLeave"
-            MouseLeftButtonUp="OnLeftClick" MouseRightButtonDown="OnRightClick">
+            MouseLeftButtonDown="OnLeftClick" MouseRightButtonDown="OnRightClick">
         <Grid>
             <!-- Claude icon (sparkle glyph) -->
             <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" FontSize="16"
