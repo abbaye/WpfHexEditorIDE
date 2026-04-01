@@ -1,7 +1,7 @@
 <!-- ==========================================================
      Project: WpfHexEditor.Plugins.ClaudeAssistant
      GNU Affero General Public License v3.0  2026
-     Description: Conversation tab — chat messages + input bar (simplified for stability).
+     Description: Conversation tab — chat messages + themed input bar.
      ========================================================== -->
 <UserControl x:Class="WpfHexEditor.Plugins.ClaudeAssistant.Panel.Tabs.ConversationTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -22,18 +22,44 @@
             <ItemsControl ItemsSource="{Binding Messages}" Padding="10,8">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type msgs:ChatMessageViewModel}">
-                        <Border Margin="0,3" Padding="10,8" CornerRadius="6"
+                        <Border Margin="0,4" Padding="10,8" CornerRadius="6"
                                 BorderThickness="1"
-                                BorderBrush="{DynamicResource DockBorderBrush}"
-                                Background="{DynamicResource DockTabInactiveBrush}">
+                                BorderBrush="{DynamicResource DockBorderBrush}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="{DynamicResource DockTabInactiveBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource DockTabSelectedHoverBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsError}" Value="True">
+                                            <Setter Property="BorderBrush" Value="#E05252"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
                             <StackPanel>
                                 <!-- Role label -->
                                 <TextBlock FontSize="10" FontWeight="Bold" Margin="0,0,0,4"
-                                           Foreground="{DynamicResource DockTabActiveBrush}"
-                                           Text="{Binding Role}"/>
+                                           Foreground="{DynamicResource DockTabActiveBrush}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="assistant"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                    <Setter Property="Text" Value="you"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                 <!-- Message text -->
                                 <TextBlock Text="{Binding Text}" TextWrapping="Wrap" FontSize="12.5"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <!-- Streaming indicator -->
+                                <TextBlock Text="..." FontWeight="Bold" FontSize="14"
+                                           Foreground="{DynamicResource DockTabActiveBrush}"
+                                           Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
@@ -49,6 +75,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
@@ -59,14 +86,23 @@
                          AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="100"
                          Padding="8,6" KeyDown="OnInputKeyDown"/>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="6,0,0,0"
-                            VerticalAlignment="Bottom">
-                    <Button Content="Send" Width="60" Height="28"
-                            Command="{Binding SendCommand}"/>
-                    <Button Content="Stop" Width="50" Height="28" Margin="4,0,0,0"
-                            Command="{Binding CancelCommand}"
-                            Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"/>
-                </StackPanel>
+                <Border Grid.Column="1" Width="50" Height="28" CornerRadius="4"
+                        Margin="6,0,0,0" Cursor="Hand" VerticalAlignment="Bottom"
+                        Background="{DynamicResource DockTabActiveBrush}"
+                        MouseLeftButtonDown="OnSendClick">
+                    <TextBlock Text="Send" FontSize="11" FontWeight="SemiBold"
+                               Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+
+                <Border Grid.Column="2" Width="40" Height="28" CornerRadius="4"
+                        Margin="4,0,0,0" Cursor="Hand" VerticalAlignment="Bottom"
+                        Background="#E05252"
+                        Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"
+                        MouseLeftButtonDown="OnCancelClick">
+                    <TextBlock Text="Stop" FontSize="11" Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
             </Grid>
         </Border>
     </Grid>

@@ -6,7 +6,7 @@
 // Created: 2026-03-31
 // License: GNU Affero General Public License v3.0 (AGPL-3.0)
 // Description:
-//     Panel code-behind. Tab click, close tab, history toggle, new tab handlers.
+//     Panel code-behind. Tab click, close tab, new tab handlers.
 // ==========================================================
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +24,9 @@ public partial class ClaudeAssistantPanel : UserControl
 
     private ClaudeAssistantPanelViewModel? Vm => DataContext as ClaudeAssistantPanelViewModel;
 
+    private void OnNewTabClick(object sender, MouseButtonEventArgs e)
+        => Vm?.CreateNewTabCommand.Execute(null);
+
     private void OnTabClick(object sender, MouseButtonEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: ConversationTabViewModel tab } && Vm is not null)
@@ -38,7 +41,4 @@ public partial class ClaudeAssistantPanel : UserControl
             e.Handled = true;
         }
     }
-
-    private void OnHistoryClick(object sender, MouseButtonEventArgs e) => Vm?.ToggleHistoryCommand.Execute(null);
-    private void OnNewTabClick(object sender, MouseButtonEventArgs e) => Vm?.CreateNewTabCommand.Execute(null);
 }
