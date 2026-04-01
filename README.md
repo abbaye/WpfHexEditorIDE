@@ -9,7 +9,7 @@
   [![IDE Version](https://img.shields.io/badge/IDE-v0.6.4.1-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
-  [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](ROADMAP.md)
+  [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
 
   <br/>
 
@@ -28,7 +28,7 @@
     <a href="#-ide-panels"><b>Panels</b></a> •
     <a href="#-quick-start"><b>Quick Start</b></a> •
     <a href="#-documentation"><b>Docs</b></a> •
-    <a href="CHANGELOG.md"><b>Changelog</b></a>
+    <a href="docs/CHANGELOG.md"><b>Changelog</b></a>
   </p>
 </div>
 
@@ -191,13 +191,13 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 </Window>
 ```
 
-> **[Complete Tutorial →](GETTING_STARTED.md)** · NuGet packaging planned (#109)
+> **[Complete Tutorial →](docs/GETTING_STARTED.md)** · NuGet packaging planned (#109)
 
 ---
 
 ## 🗺️ Roadmap
 
-> Full details: **[ROADMAP.md](ROADMAP.md)** · **[CHANGELOG.md](CHANGELOG.md)**
+> Full details: **[ROADMAP.md](docs/ROADMAP.md)** · **[CHANGELOG.md](docs/CHANGELOG.md)**
 
 **In Progress / Planned:**
 
@@ -256,9 +256,9 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | | |
 |---|---|
-| **[GETTING_STARTED.md](GETTING_STARTED.md)** | Run the IDE or embed the control |
-| **[FEATURES.md](FEATURES.md)** | Complete feature list |
-| **[CHANGELOG.md](CHANGELOG.md)** | Version history |
+| **[GETTING_STARTED.md](docs/GETTING_STARTED.md)** | Run the IDE or embed the control |
+| **[FEATURES.md](docs/FEATURES.md)** | Complete feature list |
+| **[CHANGELOG.md](docs/CHANGELOG.md)** | Version history |
 | **[MIGRATION.md](docs/migration/MIGRATION.md)** | Legacy V1 → V2 migration |
 | **[Architecture Overview](docs/architecture/Overview.md)** | Services, MVVM, data flow |
 | **[API Reference](docs/api-reference/)** | Full API docs with examples |
@@ -279,7 +279,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 WPF HexEditor is **100% free and open source** (GNU AGPL v3.0).
 
 - ⭐ **Star this repo** — helps others discover it
-- 🍴 **Fork & contribute** — see **[CONTRIBUTING.md](CONTRIBUTING.md)**
+- 🍴 **Fork & contribute** — see **[CONTRIBUTING.md](.github/CONTRIBUTING.md)**
 - 🐛 **Bug reports** — [GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
 - 💡 **Feature requests** — [GitHub Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)
 - 📧 **Email** — derektremblay666@gmail.com

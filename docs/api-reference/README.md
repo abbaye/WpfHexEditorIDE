@@ -54,8 +54,8 @@ Each API page includes:
 
 ## 🔗 See Also
 
-- **[Getting Started Guide](../../GETTING_STARTED.md)** - Tutorial
-- **[Feature List](../../FEATURES.md)** - All features
+- **[Getting Started Guide](../GETTING_STARTED.md)** - Tutorial
+- **[Feature List](../FEATURES.md)** - All features
 - **[Architecture](../architecture/)** - System design
 
 ---

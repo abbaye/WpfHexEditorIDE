@@ -382,7 +382,7 @@ long diffs = comparison.CountDifferencesSIMD(other);  // 16-32x faster!
 
 - [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) - V2 architecture details
 - [OPTIMIZATIONS_PHASE6.md](Sources/WPFHexaEditor/OPTIMIZATIONS_PHASE6.md) - Performance improvements
-- [CHANGELOG.md](CHANGELOG.md) - Version history
+- [CHANGELOG.md](../CHANGELOG.md) - Version history
 - [Semantic Versioning](https://semver.org/) - Versioning strategy
 
 ---

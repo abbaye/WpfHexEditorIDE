@@ -194,7 +194,7 @@ public void Init(IIDEHostContext context)
 - **[GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)** — Source code
 - **[Issue Tracker](https://github.com/abbaye/WpfHexEditorIDE/issues)** — Bug reports
 - **[Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)** — Community Q&A
-- **[Changelog](../../CHANGELOG.md)** — Version history and roadmap
+- **[Changelog](../CHANGELOG.md)** — Version history and roadmap
 
 ---
 

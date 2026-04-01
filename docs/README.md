@@ -114,10 +114,10 @@ Complete documentation for the WpfHexEditor IDE.
 ## 🔗 Resources
 
 - **[Main README](../README.md)** — Project overview and feature table
-- **[CHANGELOG](../CHANGELOG.md)** — Version history (v0.5.8+, v0.6.0)
-- **[ROADMAP](../ROADMAP.md)** — Planned features and progress
-- **[CONTRIBUTING](../CONTRIBUTING.md)** — How to contribute
-- **[SECURITY](../SECURITY.md)** — Security policy
+- **[CHANGELOG](CHANGELOG.md)** — Version history (v0.5.8+, v0.6.0)
+- **[ROADMAP](ROADMAP.md)** — Planned features and progress
+- **[CONTRIBUTING](../.github/CONTRIBUTING.md)** — How to contribute
+- **[SECURITY](../.github/SECURITY.md)** — Security policy
 - **[Wiki](../WpfHexEditorControl.wiki/Home.md)** — Community wiki
 
 ---

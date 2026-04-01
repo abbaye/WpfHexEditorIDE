@@ -314,8 +314,8 @@ But **we recommend reporting the issue** so we can fix V2 instead!
 
 ## 📖 Additional Resources
 
-- **[Complete Feature Comparison](FEATURES.md)** - See all 163 features compared
-- **[Getting Started Guide](GETTING_STARTED.md)** - Tutorial and code examples
+- **[Complete Feature Comparison](../FEATURES.md)** - See all 163 features compared
+- **[Getting Started Guide](../GETTING_STARTED.md)** - Tutorial and code examples
 - **[Architecture Guide](ARCHITECTURE.md)** - Understand the V2 design
 - **[Performance Guide](PERFORMANCE_GUIDE.md)** - Benchmarks and optimization tips
 - **[API Reference](Sources/WPFHexaEditor/README.md)** - Complete API documentation
@@ -347,4 +347,4 @@ Found an issue? Have a question?
 
 **Ready to migrate?** It's risk-free, backward-compatible, and dramatically faster! 🚀
 
-📖 **Back to:** [Main README](README.md) | [Features](FEATURES.md) | [Getting Started](GETTING_STARTED.md)
+📖 **Back to:** [Main README](../../README.md) | [Features](../FEATURES.md) | [Getting Started](../GETTING_STARTED.md)
