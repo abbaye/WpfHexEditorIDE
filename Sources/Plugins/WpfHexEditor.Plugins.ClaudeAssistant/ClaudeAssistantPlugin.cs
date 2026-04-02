@@ -23,6 +23,7 @@ using WpfHexEditor.Plugins.ClaudeAssistant.Presets;
 using WpfHexEditor.Plugins.ClaudeAssistant.TitleBar;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.Plugins.ClaudeAssistant.Panel.ConnectionManager;
+using WpfHexEditor.Plugins.ClaudeAssistant.Providers.ClaudeCode;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 
@@ -115,11 +116,21 @@ public sealed class ClaudeAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOpti
         {
             _panel?.Dispatcher.InvokeAsync(() =>
             {
-                // Auto-show connection manager on first NotConfigured
+                // Auto-select claude-code if CLI is available and no API key configured
                 if (status == ClaudeConnectionStatus.NotConfigured && !_shownConnectionManagerOnce)
                 {
                     _shownConnectionManagerOnce = true;
-                    ShowConnectionManager();
+
+                    if (ClaudeCodeModelProvider.FindClaudeExecutable() is not null && _vm?.ActiveTab is { } tab)
+                    {
+                        tab.SelectedProviderId = "claude-code";
+                        tab.SelectedModelId = "sonnet";
+                        context.Output?.Info("[ClaudeAssistant] Auto-selected Claude Code CLI (no API key needed)");
+                    }
+                    else
+                    {
+                        ShowConnectionManager();
+                    }
                 }
             });
         };

@@ -17,6 +17,7 @@ using WpfHexEditor.Plugins.ClaudeAssistant.Panel.History;
 using WpfHexEditor.Plugins.ClaudeAssistant.Panel.Tabs;
 using WpfHexEditor.Plugins.ClaudeAssistant.Providers.Anthropic;
 using WpfHexEditor.Plugins.ClaudeAssistant.Providers.Google;
+using WpfHexEditor.Plugins.ClaudeAssistant.Providers.ClaudeCode;
 using WpfHexEditor.Plugins.ClaudeAssistant.Providers.Ollama;
 using WpfHexEditor.Plugins.ClaudeAssistant.Providers.OpenAI;
 using WpfHexEditor.Plugins.ClaudeAssistant.Session;
@@ -47,6 +48,7 @@ public sealed partial class ClaudeAssistantPanelViewModel : ObservableObject
         _registry.Register(new OpenAIModelProvider());
         _registry.Register(new GeminiModelProvider());
         _registry.Register(new OllamaModelProvider());
+        _registry.Register(new ClaudeCodeModelProvider());
         ProviderIds = _registry.Providers.Select(p => p.ProviderId).ToArray();
 
         History.OpenSessionRequested += OnOpenSessionFromHistory;
@@ -97,10 +99,22 @@ public sealed partial class ClaudeAssistantPanelViewModel : ObservableObject
     private void CreateNewTab()
     {
         var opts = ClaudeAssistantOptions.Instance;
+
+        // Auto-fallback to claude-code if default provider has no API key
+        var providerId = opts.DefaultProviderId;
+        var modelId = opts.DefaultModelId;
+        if (providerId != "ollama" && providerId != "claude-code"
+            && string.IsNullOrEmpty(opts.GetApiKey(providerId))
+            && ClaudeCodeModelProvider.FindClaudeExecutable() is not null)
+        {
+            providerId = "claude-code";
+            modelId = "sonnet";
+        }
+
         var session = new ConversationSession
         {
-            ProviderId = opts.DefaultProviderId,
-            ModelId = opts.DefaultModelId,
+            ProviderId = providerId,
+            ModelId = modelId,
             ThinkingEnabled = opts.DefaultThinkingEnabled,
             ThinkingBudgetTokens = opts.ThinkingBudgetTokens
         };

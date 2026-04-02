@@ -342,7 +342,8 @@
                                      CaretBrush="{DynamicResource CA_InputForegroundBrush}"
                                      AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="100"
                                      Padding="10,8" FontSize="12.5"
-                                     KeyDown="OnInputKeyDown"/>
+                                     KeyDown="OnInputKeyDown"
+                                     TextChanged="OnInputTextChanged"/>
                         </Grid>
                     </Border>
 

@@ -114,6 +114,9 @@ public partial class ConversationTab : UserControl
         }
     }
 
+    private void OnInputTextChanged(object sender, TextChangedEventArgs e)
+        => SafeGuard.Run(UpdateWatermark);
+
     private void UpdateWatermark()
     {
         InputWatermark.Visibility = string.IsNullOrEmpty(Vm?.InputText)

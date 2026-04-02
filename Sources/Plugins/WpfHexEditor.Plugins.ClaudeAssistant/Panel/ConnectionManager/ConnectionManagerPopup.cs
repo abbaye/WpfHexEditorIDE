@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using WpfHexEditor.Plugins.ClaudeAssistant.Api;
 using WpfHexEditor.Plugins.ClaudeAssistant.Options;
+using WpfHexEditor.Plugins.ClaudeAssistant.Providers.ClaudeCode;
 using WpfTextBlock = System.Windows.Controls.TextBlock;
 
 namespace WpfHexEditor.Plugins.ClaudeAssistant.Panel.ConnectionManager;
@@ -33,11 +34,12 @@ public sealed class ConnectionManagerPopup : Window
 
     private static readonly ProviderCardInfo[] s_providers =
     [
-        new("anthropic",    "Anthropic Claude", "\uE774", true,  false, false, false),
-        new("openai",       "OpenAI",           "\uE945", true,  false, false, false),
-        new("gemini",       "Google Gemini",    "\uE771", true,  false, false, false),
-        new("ollama",       "Ollama (Local)",   "\uE839", false, false, false, true),
-        new("azure-openai", "Azure OpenAI",     "\uE753", true,  true,  true,  false)
+        new("claude-code",  "Claude Code (CLI)", "\uE756", false, false, false, false),
+        new("anthropic",    "Anthropic Claude",  "\uE774", true,  false, false, false),
+        new("openai",       "OpenAI",            "\uE945", true,  false, false, false),
+        new("gemini",       "Google Gemini",     "\uE771", true,  false, false, false),
+        new("ollama",       "Ollama (Local)",    "\uE839", false, false, false, true),
+        new("azure-openai", "Azure OpenAI",      "\uE753", true,  true,  true,  false)
     ];
 
     private readonly ModelRegistry _registry;
@@ -258,10 +260,12 @@ public sealed class ConnectionManagerPopup : Window
         };
         var hasKey = info.NeedsApiKey && !string.IsNullOrEmpty(opts.GetApiKey(info.ProviderId));
         var hasUrl = info.IsLocalUrl && !string.IsNullOrEmpty(opts.OllamaBaseUrl);
-        statusDot.Fill = (hasKey || hasUrl)
+        var hasCli = info.ProviderId == "claude-code" && ClaudeCodeModelProvider.FindClaudeExecutable() is not null;
+        var isConfigured = hasKey || hasUrl || hasCli;
+        statusDot.Fill = isConfigured
             ? new SolidColorBrush(Color.FromRgb(0x4E, 0xC9, 0xB0))
             : (Brush)Application.Current.TryFindResource("DockBorderBrush") ?? Brushes.Gray;
-        statusDot.ToolTip = (hasKey || hasUrl) ? "Configured" : "Not configured";
+        statusDot.ToolTip = isConfigured ? "Configured" : "Not configured";
         _statusDots[info.ProviderId] = statusDot;
         Grid.SetColumn(statusDot, 2);
         headerGrid.Children.Add(statusDot);
@@ -269,6 +273,23 @@ public sealed class ConnectionManagerPopup : Window
         cardStack.Children.Add(headerGrid);
 
         // ── Input field(s) ──────────────────────────────────────────────────
+        if (info.ProviderId == "claude-code")
+        {
+            var cliPath = ClaudeCodeModelProvider.FindClaudeExecutable();
+            var infoText = new WpfTextBlock
+            {
+                Text = cliPath is not null
+                    ? $"Uses your claude.ai subscription via CLI\n{cliPath}"
+                    : "Claude Code CLI not found.\nInstall: npm install -g @anthropic-ai/claude-code",
+                FontSize = 10.5,
+                TextWrapping = TextWrapping.Wrap,
+                Opacity = 0.7,
+                Margin = new Thickness(0, 6, 0, 0)
+            };
+            infoText.SetResourceReference(WpfTextBlock.ForegroundProperty, "DockMenuForegroundBrush");
+            cardStack.Children.Add(infoText);
+        }
+
         if (info.NeedsApiKey)
         {
             var pwBox = CreatePasswordBox("Enter API key...", info.ProviderId);
@@ -617,9 +638,11 @@ public sealed class ConnectionManagerPopup : Window
         var info = Array.Find(s_providers, p => p.ProviderId == providerId);
         if (info is null) return;
 
-        var configured = info.NeedsApiKey
-            ? !string.IsNullOrEmpty(opts.GetApiKey(providerId))
-            : !string.IsNullOrEmpty(opts.OllamaBaseUrl);
+        var configured = providerId == "claude-code"
+            ? ClaudeCodeModelProvider.FindClaudeExecutable() is not null
+            : info.NeedsApiKey
+                ? !string.IsNullOrEmpty(opts.GetApiKey(providerId))
+                : !string.IsNullOrEmpty(opts.OllamaBaseUrl);
 
         dot.Fill = configured ? s_greenBrush : (Brush)Application.Current.TryFindResource("DockBorderBrush") ?? Brushes.Gray;
         dot.ToolTip = configured ? "Configured" : "Not configured";
@@ -632,7 +655,9 @@ public sealed class ConnectionManagerPopup : Window
 
         foreach (var info in s_providers)
         {
-            if (info.NeedsApiKey && !string.IsNullOrEmpty(opts.GetApiKey(info.ProviderId)))
+            if (info.ProviderId == "claude-code" && ClaudeCodeModelProvider.FindClaudeExecutable() is not null)
+                configured++;
+            else if (info.NeedsApiKey && !string.IsNullOrEmpty(opts.GetApiKey(info.ProviderId)))
                 configured++;
             else if (info.IsLocalUrl && !string.IsNullOrEmpty(opts.OllamaBaseUrl))
                 configured++;
