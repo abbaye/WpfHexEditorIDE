@@ -1,0 +1,61 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Plugins.AIAssistant
+     GNU Affero General Public License v3.0  2026
+     Description: Inline chat popup (Ctrl+I) — anchored to CodeEditor selection.
+     ========================================================== -->
+<UserControl x:Class="WpfHexEditor.Plugins.AIAssistant.Panel.InlineChat.InlineChatPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="440" MaxHeight="350">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <Border CornerRadius="8" Padding="12"
+            Background="{DynamicResource CA_PanelBackgroundBrush}"
+            BorderBrush="{DynamicResource CA_AccentBrandingBrush}"
+            BorderThickness="1.5"
+>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" MaxHeight="180"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Input -->
+            <TextBox Grid.Row="0" Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{DynamicResource CA_InputBackgroundBrush}"
+                     Foreground="{DynamicResource CA_InputForegroundBrush}"
+                     BorderBrush="{DynamicResource CA_InputBorderBrush}"
+                     AcceptsReturn="False" TextWrapping="Wrap"
+                     Padding="6,4" MaxHeight="60"
+                     KeyDown="OnInputKeyDown"/>
+
+            <!-- Response -->
+            <ScrollViewer Grid.Row="1" Margin="0,8,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          Visibility="{Binding ResponseText, Converter={StaticResource StringToVis}}">
+                <TextBlock Text="{Binding ResponseText}" TextWrapping="Wrap"
+                           Foreground="{DynamicResource CA_MessageForegroundBrush}"
+                           FontSize="12"/>
+            </ScrollViewer>
+
+            <!-- Streaming indicator -->
+            <TextBlock Grid.Row="2" Text="Thinking..." FontSize="11" Opacity="0.6"
+                       Foreground="{DynamicResource CA_AccentBrandingBrush}"
+                       Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"
+                       Margin="0,4,0,0"/>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                <Button Content="Send" Width="60" Command="{Binding SendCommand}" Margin="0,0,4,0"/>
+                <Button Content="Apply" Width="60" Margin="0,0,4,0" IsEnabled="False"
+                        ToolTip="Apply code changes (Phase 7+)"/>
+                <Button Content="Open in Tab" Width="80" Command="{Binding OpenInTabCommand}" Margin="0,0,4,0"/>
+                <Button Content="Dismiss" Width="60" Command="{Binding DismissCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

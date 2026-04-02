@@ -1,0 +1,263 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Plugins.AIAssistant
+     GNU Affero General Public License v3.0  2026
+     Description: Main assistant panel — toolbar + tab strip + conversation area.
+     ========================================================== -->
+<UserControl x:Class="WpfHexEditor.Plugins.AIAssistant.Panel.AIAssistantPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:tabs="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Tabs"
+             MinWidth="320" MinHeight="200">
+
+    <Grid Background="{DynamicResource DockBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Toolbar -->
+            <RowDefinition Height="Auto"/>  <!-- Tab strip -->
+            <RowDefinition Height="*"/>     <!-- Conversation -->
+        </Grid.RowDefinitions>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             Row 0 — Toolbar: Provider chip, Usage, History, New Tab, More
+             ══════════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Height="28" Padding="2,0"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel VerticalAlignment="Center">
+
+                <!-- Left: Provider chip + Usage -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="2,0,4,0">
+                    <!-- Provider/Model chip -->
+                    <Border Height="20" CornerRadius="3" Cursor="Hand" Padding="6,0"
+                            ToolTip="Switch provider / model"
+                            MouseLeftButtonUp="OnProviderChipClick">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource Panel_ItemHoverBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       Foreground="{DynamicResource CA_AccentBrandingBrush}"
+                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock x:Name="ProviderChipText" Text="{Binding ActiveProviderDisplayName}"
+                                       FontSize="10.5"
+                                       Foreground="{DynamicResource DockTabTextBrush}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="7"
+                                       Foreground="{DynamicResource DockTabTextBrush}"
+                                       VerticalAlignment="Center" Margin="4,1,0,0" Opacity="0.5"/>
+                        </StackPanel>
+                    </Border>
+                    <!-- Usage button -->
+                    <Border Width="22" Height="22" CornerRadius="2" Cursor="Hand" Margin="2,0,0,0"
+                            ToolTip="Account &amp; Usage"
+                            MouseLeftButtonDown="OnUsageClick">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Right: History + New Tab + More -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="2,0,4,0">
+                    <!-- History button -->
+                    <Border Width="22" Height="22" CornerRadius="2" Cursor="Hand"
+                            ToolTip="Conversation history"
+                            MouseLeftButtonDown="OnHistoryClick">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <!-- New tab button -->
+                    <Border Width="22" Height="22" CornerRadius="2" Cursor="Hand"
+                            ToolTip="New conversation (Ctrl+Shift+Alt+A)"
+                            MouseLeftButtonDown="OnNewTabClick">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <!-- More menu button -->
+                    <Border x:Name="MoreMenuButton" Width="22" Height="22" CornerRadius="2" Cursor="Hand"
+                            ToolTip="More actions"
+                            MouseLeftButtonDown="OnMoreMenuClick">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Border.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Manage Connections..." Click="OnMoreConnectionsClick">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Prompt Presets..." Click="OnMorePresetsClick">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="Options..." Click="OnMoreOptionsClick">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Border.ContextMenu>
+                        <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Center filler (empty — keeps left/right docked) -->
+                <Border/>
+            </DockPanel>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             Row 1 — Tab strip
+             ══════════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="1" Height="26" Padding="2,0"
+                Background="{DynamicResource DockBackgroundBrush}"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <ItemsControl ItemsSource="{Binding Tabs}" VerticalAlignment="Stretch">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8,0" Height="26" Cursor="Hand"
+                                BorderThickness="0,0,0,2"
+                                MouseLeftButtonDown="OnTabClick"
+                                MouseRightButtonDown="OnTabRightClick">
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Rename" Click="OnRenameTabClick">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator/>
+                                    <MenuItem Header="Close" Click="OnCloseTabFromMenuClick">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Close Others" Click="OnCloseOtherTabsClick">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Close All" Click="OnCloseAllTabsClick">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CA_AccentBrandingBrush}"/>
+                                            <Setter Property="Background" Value="{DynamicResource Panel_ToolbarBrush}"/>
+                                        </DataTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver" Value="True"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                                        </MultiTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <DockPanel VerticalAlignment="Center">
+                                <Border DockPanel.Dock="Right" Width="16" Height="16"
+                                        CornerRadius="2" Cursor="Hand" Margin="6,0,0,0"
+                                        MouseLeftButtonDown="OnCloseTabClick">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Opacity" Value="0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                                                    <Setter Property="Opacity" Value="1"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="8"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="{Binding Title}" FontSize="11"
+                                           Foreground="{DynamicResource DockTabTextBrush}"
+                                           TextTrimming="CharacterEllipsis" MaxWidth="120"
+                                           VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             Row 2 — Active conversation
+             ══════════════════════════════════════════════════════════════════ -->
+        <ContentControl Grid.Row="2" Content="{Binding ActiveTab}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <tabs:ConversationTab DataContext="{Binding}"/>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+    </Grid>
+</UserControl>

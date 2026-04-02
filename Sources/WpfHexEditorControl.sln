@@ -213,7 +213,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.Assemb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.CodeEditor.Tests", "Tests\WpfHexEditor.Editor.CodeEditor.Tests\WpfHexEditor.Editor.CodeEditor.Tests.csproj", "{ED089212-AF8F-4049-9447-24687D67B025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.ClaudeAssistant", "Plugins\WpfHexEditor.Plugins.ClaudeAssistant\WpfHexEditor.Plugins.ClaudeAssistant.csproj", "{0FF0D0CB-4E58-4A3C-B7D2-214D884FA48B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.AIAssistant", "Plugins\WpfHexEditor.Plugins.AIAssistant\WpfHexEditor.Plugins.AIAssistant.csproj", "{0FF0D0CB-4E58-4A3C-B7D2-214D884FA48B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.MCP", "WpfHexEditor.Core.MCP\WpfHexEditor.Core.MCP.csproj", "{12612C90-5ECC-4285-A1BB-D9444C18ECF5}"
 EndProject
