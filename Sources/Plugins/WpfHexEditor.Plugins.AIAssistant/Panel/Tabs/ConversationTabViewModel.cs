@@ -126,13 +126,7 @@ public sealed partial class ConversationTabViewModel : ObservableObject
             }
             else if (att.FilePath is not null)
             {
-                var ext = System.IO.Path.GetExtension(att.FilePath).ToLowerInvariant();
-                var isTextFile = ext is ".txt" or ".cs" or ".xml" or ".json" or ".md" or ".yaml" or ".yml"
-                    or ".html" or ".css" or ".js" or ".ts" or ".py" or ".cpp" or ".h" or ".c"
-                    or ".java" or ".rb" or ".go" or ".rs" or ".toml" or ".ini" or ".cfg"
-                    or ".log" or ".csv" or ".sql" or ".sh" or ".bat" or ".ps1" or ".xaml";
-
-                if (isTextFile)
+                if (IsLikelyTextFile(att.FilePath))
                 {
                     try
                     {
@@ -144,8 +138,7 @@ public sealed partial class ConversationTabViewModel : ObservableObject
                 }
                 else
                 {
-                    // Binary file — just mention the path so CLI can access it
-                    content.Add(new TextBlock($"\n[File attached: {att.FilePath}]"));
+                    content.Add(new TextBlock($"\n[Binary file attached: {att.FilePath}]"));
                     displayText += $"\n[Attached: {att.DisplayName}]";
                 }
             }
@@ -307,7 +300,22 @@ public sealed partial class ConversationTabViewModel : ObservableObject
         }
     }
 
-    private bool CanSend() => !IsStreaming && !string.IsNullOrWhiteSpace(InputText);
+    private bool CanSend() => !IsStreaming && (!string.IsNullOrWhiteSpace(InputText) || Attachments.Count > 0);
+
+    /// <summary>Detects text files by reading the first 8KB and checking for null bytes.</summary>
+    private static bool IsLikelyTextFile(string filePath)
+    {
+        try
+        {
+            var buffer = new byte[8192];
+            using var fs = System.IO.File.OpenRead(filePath);
+            var bytesRead = fs.Read(buffer, 0, buffer.Length);
+            for (int i = 0; i < bytesRead; i++)
+                if (buffer[i] == 0) return false; // null byte = binary
+            return true;
+        }
+        catch { return false; }
+    }
 
     [RelayCommand(CanExecute = nameof(IsStreaming))]
     private void Cancel()
