@@ -2,7 +2,9 @@
   <a href="Images/Logo2026.png"><img src="Images/Logo2026.png" width="600" height="250" /></a>
   <br/><br/>
 
-  <h3>🖥️ A full-featured open-source IDE for .NET — Binary analysis, reverse engineering & build tooling</h3>
+  <h1><code>&lt;WpfHexEditor Studio/&gt;</code></h1>
+  <h3>Professional Binary & Source Editor</h3>
+  <p>🖥️ A full-featured open-source IDE for .NET — Binary analysis, reverse engineering & build tooling</p>
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
@@ -38,15 +40,15 @@
 
 ## 🖥️ The IDE Application
 
-**WpfHexEditor** is a full-featured binary analysis IDE for Windows, built with WPF and .NET 8. Think Visual Studio for binary files.
+**&lt;WpfHexEditor Studio/&gt;** is a full-featured binary analysis IDE for Windows, built with WPF and .NET 8. Think Visual Studio for binary files.
 
 | | |
 |---|---|
 | **🪟 Docking** *(100% in-house)* ⭐ | Fully custom VS-style docking engine — float, dock, auto-hide, pin, colored tab strips, **16 built-in themes** (Dark, Light, VS2022Dark, DarkGlass, Dracula, Nord, Tokyo Night, Catppuccin Mocha/Latte, Gruvbox Dark, Forest, Matrix, Synthwave 84, Cyberpunk, High Contrast…), tab placement left/right/bottom, layout undo/redo (`Ctrl+Shift+Z/Y`), serializable workspace state |
 | **🏗️ Project System** ⭐ | Open and build `.whsln`/`.whproj` native projects or Visual Studio `.sln`/`.csproj`/`.vbproj` solutions — MSBuild build/rebuild/clean with parallel project compilation, real-time build progress bar, virtual and physical folder organization, per-file editor state persistence, project template scaffolding |
-| **📐 `.whfmt` — Declaration-Driven IDE** ⭐⭐⭐ | The ❤️ heart of WpfHexEditor is its **`.whfmt` format engine** — an in-house unified definition language that makes the entire IDE **data-driven**. No behavior is hardcoded: every file type, every editor, every language feature is declared in `.whfmt` definition files. **460+ definitions** ship built-in. **It decides everything:** which editor opens a file (Hex, Code, Image, Audio, JSON, Markdown…), how binary formats are parsed and displayed (repeating blocks, unions, versioned structures, pointers, checksums, assertions, forensic alerts, AI hints), how source code behaves in the Code Editor (syntax highlighting for 55+ languages, folding strategies, bracket pairs, comment toggles, auto-close pairs, indentation rules, end-of-block hints, breakpoint validation, whitespace rendering), and how formats are detected (magic bytes with confidence scoring and multi-signature matching). Add a new file type? Write a `.whfmt` file — no C# code needed. The IDE adapts instantly. This architecture makes WpfHexEditor fundamentally different from traditional IDEs: **the data defines the IDE, not the code.** |
+| **📐 `.whfmt` — Declaration-Driven IDE** ⭐⭐⭐ | The ❤️ of &lt;WpfHexEditor Studio/&gt; is its **`.whfmt` format engine** — an in-house unified definition language that makes the entire IDE **data-driven**. No behavior is hardcoded: every file type, every editor, every language feature is declared in `.whfmt` definition files. **460+ definitions** ship built-in. **It decides everything:** which editor opens a file (Hex, Code, Image, Audio, JSON, Markdown…), how binary formats are parsed and displayed (repeating blocks, unions, versioned structures, pointers, checksums, assertions, forensic alerts, AI hints), how source code behaves in the Code Editor (syntax highlighting for 55+ languages, folding strategies, bracket pairs, comment toggles, auto-close pairs, indentation rules, end-of-block hints, breakpoint validation, whitespace rendering), and how formats are detected (magic bytes with confidence scoring and multi-signature matching). Add a new file type? Write a `.whfmt` file — no C# code needed. The IDE adapts instantly. This architecture makes &lt;WpfHexEditor Studio/&gt; fundamentally different from traditional IDEs: **the data defines the IDE, not the code.** |
 | **🔍 Binary Intelligence** | Deep binary analysis toolkit — 460+ format auto-detection via magic bytes with confidence scoring, reactive Parsed Fields panel with expandable groups and FormatNavigator bookmark strip, format field color overlay directly on the hex view, Data Inspector showing 40+ type interpretations at caret (integers, floats, strings, GUIDs, dates, colors, IP addresses…), Assembly Explorer for .NET PE inspection with ILSpy C#/VB.NET decompilation |
-| **🧠 Code Intelligence** ⭐⭐ | **In-process Roslyn** for C#/VB.NET analysis (no external OmniSharp process) — full LSP 3.17 client supporting 13 provider types: completion, hover, signature help, code actions, rename, inlay hints, code lens, semantic tokens, call hierarchy, type hierarchy, pull diagnostics, linked editing, breadcrumb navigation bar |
+| **🧠 Code Intelligence** ⭐⭐ | **In-process Roslyn** for C#/VB.NET analysis — full LSP 3.17 client supporting 13 provider types: completion, hover, signature help, code actions, rename, inlay hints, code lens, semantic tokens, call hierarchy, type hierarchy, pull diagnostics, linked editing, breadcrumb navigation bar |
 | **🤖 AI Assistant** | Multi-provider AI chat panel — supports Anthropic, OpenAI, Google Gemini, Ollama, and Claude Code CLI out of the box, 25 MCP tools for deep IDE integration (build, debug, navigate, analyze), streaming responses with inline code apply, `@mentions` for context injection (`@file`/`@selection`/`@errors`/`@solution`), dedicated command palette (`Ctrl+Shift+A`), conversation history, customizable prompt presets |
 | **🔌 Plugin System** | Extensible plugin architecture — SDK 2.0.0 (API frozen, semver), `.whxplugin` package format, Plugin Manager UI, typed EventBus (39+ domain events), capability registry, extension points (menus, toolbar, titlebar, panels, status bar, terminal commands), dependency graph, plugin signing with signature validation, out-of-process sandbox with HWND embedding — **28 built-in plugins** ship with the IDE |
 | **⌨️ Command & Terminal** | Command Palette (`Ctrl+Shift+P`) with 9 search modes (commands, files, symbols, go-to-line…) — central command registry (~100 commands) with configurable keyboard shortcuts, integrated multi-tab terminal (`Ctrl+\``) with 35+ built-in commands including `plugin-reload`, extensible by plugins via `ITerminalService` API |
@@ -303,7 +305,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 ## ⭐ Support & Contributing
 
-WPF HexEditor is **100% free and open source** (GNU AGPL v3.0).
+&lt;WpfHexEditor Studio/&gt; is **100% free and open source** (GNU AGPL v3.0).
 
 - ⭐ **Star this repo** — helps others discover it
 - 🍴 **Fork & contribute** — see **[CONTRIBUTING.md](.github/CONTRIBUTING.md)**
