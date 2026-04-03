@@ -100,11 +100,12 @@ public sealed class WhitespaceRenderer
         }
         else if (c == '\t')
         {
-            DrawGlyph(dc, TabMarker, x, y);
+            double glyphX = x + (advance - CharWidth) * 0.5;
+            DrawGlyph(dc, TabMarker, glyphX, y);
             double ruleY = y + CharHeight * 0.5;
-            dc.DrawLine(new Pen(_markerBrush, 0.5),
-                new Point(x + CharWidth, ruleY),
-                new Point(x + advance, ruleY));
+            var rulePen = new Pen(_markerBrush, 0.5);
+            dc.DrawLine(rulePen, new Point(x, ruleY), new Point(glyphX, ruleY));
+            dc.DrawLine(rulePen, new Point(glyphX + CharWidth, ruleY), new Point(x + advance, ruleY));
         }
     }
 
