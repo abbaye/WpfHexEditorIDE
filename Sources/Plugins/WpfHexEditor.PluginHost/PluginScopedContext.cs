@@ -119,6 +119,12 @@ internal sealed class PluginScopedContext : IIDEHostContext
     /// <inheritdoc />
     public IDiffService? DiffService => _inner.DiffService;
 
+    /// <inheritdoc />
+    public IUIControlFactory? UIFactory => _inner.UIFactory;
+
+    /// <inheritdoc />
+    public ISyntaxColoringService? SyntaxColoring => _inner.SyntaxColoring;
+
     public PluginScopedContext(IIDEHostContext inner, TimedHexEditorService timedHexEditor)
     {
         _inner    = inner          ?? throw new ArgumentNullException(nameof(inner));

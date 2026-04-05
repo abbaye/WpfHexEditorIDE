@@ -702,6 +702,32 @@ public sealed class CodeEditorDefaultSettings
 
     /// <summary>Settings for the Sticky Scroll feature.</summary>
     public StickyScrollSettings StickyScroll { get; set; } = new();
+
+    // -- Per-language formatting overrides -----------------------------------
+
+    /// <summary>
+    /// Per-language formatting overrides keyed by language ID (e.g. "csharp", "shell").
+    /// Each entry only overrides explicitly set properties; null = inherit .whfmt default.
+    /// </summary>
+    public Dictionary<string, LanguageFormattingOverrides> PerLanguageOverrides { get; set; } = new();
+}
+
+// ── LanguageFormattingOverrides ─────────────────────────────────────────────
+
+/// <summary>
+/// Per-language formatting preference overrides stored in IDE settings.
+/// All properties are nullable: <see langword="null"/> = inherit the .whfmt default.
+/// Serialised as a child object of <see cref="CodeEditorDefaultSettings.PerLanguageOverrides"/>.
+/// </summary>
+public sealed class LanguageFormattingOverrides
+{
+    public bool? TrimTrailingWhitespace     { get; set; }
+    public bool? InsertFinalNewline         { get; set; }
+    public bool? SpaceAfterKeywords         { get; set; }
+    public bool? SpaceAroundBinaryOperators { get; set; }
+    public bool? SpaceAfterComma            { get; set; }
+    public bool? IndentCaseLabels           { get; set; }
+    public bool? OrganizeImports            { get; set; }
 }
 
 // ----------------------------------------------------------------------------

@@ -475,6 +475,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Detects the dominant programming language of the currently loaded solution
+    /// by tallying file extensions of all project items against the language registry.
+    /// Returns null when no solution is open or no language can be determined.
+    /// </summary>
+    private string? DetectDominantLanguageId()
+    {
+        var solution = _solutionManager.CurrentSolution;
+        if (solution is null) return null;
+
+        var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var project in solution.Projects)
+        {
+            foreach (var item in project.Items)
+            {
+                if (string.IsNullOrEmpty(item.AbsolutePath)) continue;
+                var lang = LanguageRegistry.Instance.GetLanguageForFile(item.AbsolutePath);
+                if (lang is null) continue;
+                counts[lang.Id] = counts.TryGetValue(lang.Id, out var c) ? c + 1 : 1;
+            }
+        }
+
+        return counts.Count > 0 ? counts.MaxBy(kv => kv.Value).Key : null;
+    }
+
+    /// <summary>
     /// Registers all embedded syntax definitions into <see cref="LanguageRegistry"/>
     /// so that <see cref="CodeEditorFactory"/> can resolve the correct
     /// <see cref="ISyntaxHighlighter"/> for every file type it opens.
@@ -654,10 +679,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // The static entry (no colorizer) is kept as fallback if this line is not reached.
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "Code Editor", "Formatting",
-            () => new WpfHexEditor.Core.Options.Pages.CodeEditorFormattingPage(
-                      new WpfHexEditor.App.Services.PreviewColorizerAdapter(
-                          new WpfHexEditor.App.Services.SyntaxColoringService()),
-                      new WpfHexEditor.App.Services.PreviewFormatterAdapter()),
+            () =>
+            {
+                var page = new WpfHexEditor.Core.Options.Pages.CodeEditorFormattingPage(
+                               new WpfHexEditor.App.Services.PreviewColorizerAdapter(
+                                   new WpfHexEditor.App.Services.SyntaxColoringService()),
+                               new WpfHexEditor.App.Services.PreviewFormatterAdapter());
+
+                var langId = DetectDominantLanguageId();
+                if (langId is not null)
+                    page.SelectLanguage(langId);
+
+                return page;
+            },
             "\uE943");
 
         // Register Debugger options page

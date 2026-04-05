@@ -56,7 +56,6 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
     {
         _context  = context;
         _debugger = context.Debugger;
-        Controls.BreakpointCodePreview.SyntaxColoringService = context.SyntaxColoring;
 
         if (_debugger is null)
         {
@@ -80,7 +79,9 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         // Register panels
         var ui = context.UIRegistry;
 
-        ui.RegisterPanel("panel-dbg-breakpoints", new BreakpointExplorerPanel { DataContext = _bpVm }, Id,
+        var bpPanel = new BreakpointExplorerPanel { DataContext = _bpVm };
+        bpPanel.UIFactory = context.UIFactory;
+        ui.RegisterPanel("panel-dbg-breakpoints", bpPanel, Id,
             new PanelDescriptor { Title = "Breakpoints", DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         ui.RegisterPanel("panel-dbg-callstack", new CallStackPanel { DataContext = _csVm }, Id,

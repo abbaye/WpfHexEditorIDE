@@ -347,6 +347,7 @@ public partial class MainWindow
             var formatParsingService = new WpfHexEditor.Core.Services.FormatParsing.FormatParsingService();
 
             var syntaxColoringService = new WpfHexEditor.App.Services.SyntaxColoringService();
+            var uiControlFactory      = new WpfHexEditor.App.Services.UIControlFactory(syntaxColoringService);
 
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
@@ -374,9 +375,10 @@ public partial class MainWindow
                 formatParsingService: formatParsingService,
                 formatCatalogService: formatCatalog)
             {
-                LspServers    = lspRegistry,
-                Notifications = _notificationService,
+                LspServers     = lspRegistry,
+                Notifications  = _notificationService,
                 SyntaxColoring = syntaxColoringService,
+                UIFactory      = uiControlFactory,
             };
 
             // 3. Create orchestrator

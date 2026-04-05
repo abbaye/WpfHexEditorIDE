@@ -15,6 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Plugins.Debugger.ViewModels;
+using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.Debugger.Panels;
@@ -23,6 +24,29 @@ public partial class BreakpointExplorerPanel : UserControl
 {
     private BreakpointExplorerViewModel? Vm => DataContext as BreakpointExplorerViewModel;
     private ToolbarOverflowManager? _overflowManager;
+    private IUIControlFactory? _uiFactory;
+
+    internal IUIControlFactory? UIFactory
+    {
+        set
+        {
+            _uiFactory = value;
+            // If already loaded (panel was attached before factory arrived), wire up immediately.
+            if (IsLoaded)
+                Dispatcher.InvokeAsync(() => { EnsurePreviewControl(); UpdatePreview(); },
+                    DispatcherPriority.Loaded);
+        }
+    }
+
+    private void EnsurePreviewControl()
+    {
+        if (_uiFactory is null || CodePreviewBorder is null || _codePreviewControl is not null) return;
+        _codePreviewControl = _uiFactory.CreateSyntaxPreview(contextLines: 2, fontSize: 12, highlightFocusLine: true);
+        _codePreviewControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+        CodePreviewBorder.Child = _codePreviewControl;
+    }
+
+    private FrameworkElement? _codePreviewControl;
 
     public BreakpointExplorerPanel()
     {
@@ -39,7 +63,13 @@ public partial class BreakpointExplorerPanel : UserControl
         Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
 
         DataContextChanged += OnDataContextChanged;
-        Loaded += (_, _) => { ApplyLayout(); ApplyDetailVisibility(); };
+        Loaded += (_, _) =>
+        {
+            EnsurePreviewControl();
+            UpdatePreview();
+            ApplyLayout();
+            ApplyDetailVisibility();
+        };
     }
 
     // ── DataContext wiring ────────────────────────────────────────────────────
@@ -58,6 +88,7 @@ public partial class BreakpointExplorerPanel : UserControl
 
         ApplyLayout();
         ApplyDetailVisibility();
+        UpdatePreview();
         if (LayoutCombo is not null)
             LayoutCombo.SelectedIndex = (int)(Vm?.DetailLayout ?? DetailPanelLayout.Right);
     }
@@ -65,7 +96,23 @@ public partial class BreakpointExplorerPanel : UserControl
     private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(BreakpointExplorerViewModel.SelectedBreakpoint))
+        {
             ApplyDetailVisibility();
+            UpdatePreview();
+        }
+    }
+
+    private void UpdatePreview()
+    {
+        if (_codePreviewControl is null || _uiFactory is null) return;
+        var bp = Vm?.SelectedBreakpoint;
+        if (bp is null)
+        {
+            _uiFactory.SetPreviewSource(_codePreviewControl, null, null);
+            return;
+        }
+        int focusIndex = Math.Min(2, Math.Max(0, bp.Line - 1));
+        _uiFactory.SetPreviewSource(_codePreviewControl, bp.SourcePreview, bp.SourceLanguageId, focusIndex);
     }
 
     /// <summary>Shows or hides the splitter + detail columns based on selection state.</summary>
@@ -84,6 +131,16 @@ public partial class BreakpointExplorerPanel : UserControl
         else
         {
             ApplyLayout(); // restore widths for current layout
+        }
+
+        // Show the code preview only when the source file exists on disk.
+        if (CodePreviewBorder is not null)
+        {
+            var fp = Vm?.SelectedBreakpoint?.FilePath;
+            CodePreviewBorder.Visibility =
+                !string.IsNullOrEmpty(fp) && System.IO.File.Exists(fp)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
     }
 

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Core.Options
 // File: Pages/CodeEditorFormattingPage.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -25,6 +25,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Markup;
 using WpfHexEditor.Core.Options.Preview;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 
@@ -63,7 +64,12 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
     private readonly List<(CheckBox Box, string RuleId, string Label)> _ruleMap = [];
 
     private readonly IPreviewColorizer? _colorizer;
-    private bool _loading;
+    private readonly ComboBox           _languageCombo;
+    private readonly Button             _resetButton;
+    private readonly Button             _resetAllButton;
+    private bool         _loading;
+    private AppSettings? _settings;
+    private string?      _currentLangId;
 
     // â”€â”€ Construction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -80,13 +86,74 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
     {
         _colorizer = colorizer;
 
-        // â”€â”€ Root: two-column Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        var root = new Grid();
-        root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 280 });
-        root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8) });   // gutter
-        root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 260 });
+        // -- Language / Reset bar (spans full width) ----------------------------------
+        var langBar = new Border
+        {
+            Padding         = new Thickness(16, 7, 16, 7),
+            BorderThickness = new Thickness(0, 0, 0, 1),
+        };
+        langBar.SetResourceReference(Border.BackgroundProperty,  "DockPanelBackgroundBrush");
+        langBar.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
-        // â”€â”€ Left: options scroll â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        var langRow = new StackPanel { Orientation = Orientation.Horizontal };
+
+        var langLabel = new TextBlock
+        {
+            Text              = "Language",
+            FontSize          = 11,
+            FontWeight        = FontWeights.SemiBold,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(0, 0, 8, 0),
+        };
+        langLabel.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
+        langRow.Children.Add(langLabel);
+
+        _languageCombo = new ComboBox
+        {
+            FontSize                 = 11,
+            MinWidth                 = 200,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            Margin                   = new Thickness(0, 0, 8, 0),
+        };
+        foreach (var l in LanguageRegistry.Instance.AllLanguages().OrderBy(l => l.Name))
+            _languageCombo.Items.Add(new ComboBoxItem { Content = l.Name, Tag = l });
+        if (_languageCombo.Items.Count > 0)
+            _languageCombo.SelectedIndex = 0;
+        _languageCombo.SelectionChanged += OnLanguageComboChanged;
+        langRow.Children.Add(_languageCombo);
+
+        _resetButton = new Button
+        {
+            Content           = "Reset overrides",
+            FontSize          = 11,
+            Padding           = new Thickness(10, 3, 10, 3),
+            VerticalAlignment = VerticalAlignment.Center,
+            Style             = ThemedButtonStyle,
+        };
+        _resetButton.Click += OnResetClicked;
+        langRow.Children.Add(_resetButton);
+
+        _resetAllButton = new Button
+        {
+            Content           = "Reset all overrides",
+            FontSize          = 11,
+            Padding           = new Thickness(10, 3, 10, 3),
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(6, 0, 0, 0),
+            Style             = ThemedButtonStyle,
+        };
+        _resetAllButton.Click += OnResetAllClicked;
+        langRow.Children.Add(_resetAllButton);
+
+        langBar.Child = langRow;
+
+        // -- Content: two-column Grid -------------------------------------------------
+        var content = new Grid();
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 280 });
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8) });   // gutter
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 260 });
+
+        // -- Left: options scroll -----------------------------------------------------
         var leftScroll = new ScrollViewer
         {
             VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
@@ -187,48 +254,48 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         stack.Children.Add(_wrapSelection);
 
         leftScroll.Content = stack;
-        root.Children.Add(leftScroll);
+        content.Children.Add(leftScroll);
 
-        // â”€â”€ Right: preview panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // -- Right: preview panel ------------------------------------------------------
         if (_colorizer is not null)
         {
             _preview = new FormattingPreviewPanel();
             Grid.SetColumn(_preview, 2);
-            root.Children.Add(_preview);
-
-            // Initialize with all languages that have a previewSnippet or previewSamples
-            var langs = LanguageRegistry.Instance.AllLanguages()
-                .Where(l => l.PreviewSnippet is not null || l.PreviewSamples.Count > 0)
-                .OrderBy(l => l.Name)
-                .ToList();
-            _preview.Initialize(langs, _colorizer, formatter);
+            content.Children.Add(_preview);
+            _preview.Initialize(_colorizer, formatter);
         }
         else
         {
             // Placeholder when no colorizer is available
             var placeholder = new TextBlock
             {
-                Text              = "Preview not available\n(colorizer not injected)",
-                TextWrapping      = TextWrapping.Wrap,
+                Text                = "Preview not available\n(colorizer not injected)",
+                TextWrapping        = TextWrapping.Wrap,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
-                FontStyle         = FontStyles.Italic,
-                Opacity           = 0.45,
-                FontSize          = 11,
-                Margin            = new Thickness(16),
+                FontStyle           = FontStyles.Italic,
+                Opacity             = 0.45,
+                FontSize            = 11,
+                Margin              = new Thickness(16),
             };
             placeholder.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
             Grid.SetColumn(placeholder, 2);
-            root.Children.Add(placeholder);
+            content.Children.Add(placeholder);
         }
 
-        Content = root;
+        // -- Outer DockPanel ----------------------------------------------------------
+        var outer = new DockPanel { LastChildFill = true };
+        DockPanel.SetDock(langBar, Dock.Top);
+        outer.Children.Add(langBar);
+        outer.Children.Add(content);
+        Content = outer;
     }
 
     // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     public void Load(AppSettings s)
     {
+        _settings = s;
         _loading = true;
         try
         {
@@ -248,7 +315,10 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         }
         finally { _loading = false; }
 
-        _preview?.Refresh(BuildOverrides());
+        if (_currentLangId is not null)
+            ApplyLanguageOverrides(_currentLangId);
+        else
+            _preview?.Refresh(BuildOverrides());
     }
 
     public void Flush(AppSettings s)
@@ -266,6 +336,9 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         ce.AutoClosingQuotes          = _autoQuotes.IsChecked    == true;
         ce.SkipOverClosingChar        = _skipOverClose.IsChecked == true;
         ce.WrapSelectionInPairs       = _wrapSelection.IsChecked == true;
+
+        if (_currentLangId is not null)
+            PersistLanguageOverrides(_currentLangId, ce.PerLanguageOverrides);
     }
 
     // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -273,8 +346,116 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
     private void OnChanged(object? sender, RoutedEventArgs e)
     {
         if (_loading) return;
+        if (_currentLangId is not null && _settings is not null)
+            PersistLanguageOverrides(_currentLangId, _settings.CodeEditorDefaults.PerLanguageOverrides);
         Changed?.Invoke(this, EventArgs.Empty);
         _preview?.Refresh(BuildOverrides());
+    }
+
+    private void OnLanguageComboChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_languageCombo.SelectedItem is not ComboBoxItem { Tag: LanguageDefinition lang }) return;
+        ApplyLanguageOverrides(lang.Id);
+    }
+
+    private void OnResetClicked(object sender, RoutedEventArgs e)
+    {
+        if (_currentLangId is null || _settings is null) return;
+        _settings.CodeEditorDefaults.PerLanguageOverrides.Remove(_currentLangId);
+        _loading = true;
+        try
+        {
+            _trimTrailing.IsChecked         = null;
+            _insertFinalNewline.IsChecked   = null;
+            _spaceAfterKeywords.IsChecked   = null;
+            _spaceAroundOperators.IsChecked = null;
+            _spaceAfterComma.IsChecked      = null;
+            _indentCaseLabels.IsChecked     = null;
+            _organizeImports.IsChecked      = null;
+        }
+        finally { _loading = false; }
+        Changed?.Invoke(this, EventArgs.Empty);
+        _preview?.Refresh(BuildOverrides());
+    }
+
+    private void OnResetAllClicked(object sender, RoutedEventArgs e)
+    {
+        if (_settings is null) return;
+        _settings.CodeEditorDefaults.PerLanguageOverrides.Clear();
+        _loading = true;
+        try
+        {
+            _trimTrailing.IsChecked         = null;
+            _insertFinalNewline.IsChecked   = null;
+            _spaceAfterKeywords.IsChecked   = null;
+            _spaceAroundOperators.IsChecked = null;
+            _spaceAfterComma.IsChecked      = null;
+            _indentCaseLabels.IsChecked     = null;
+            _organizeImports.IsChecked      = null;
+        }
+        finally { _loading = false; }
+        Changed?.Invoke(this, EventArgs.Empty);
+        _preview?.Refresh(BuildOverrides());
+    }
+
+    /// <summary>
+    /// Pre-selects <paramref name="langId"/> in the language combo so the page
+    /// opens on the active editor's language. Call before or after <see cref="Load"/>.
+    /// </summary>
+    public void SelectLanguage(string langId)
+    {
+        for (int i = 0; i < _languageCombo.Items.Count; i++)
+        {
+            if (_languageCombo.Items[i] is ComboBoxItem { Tag: LanguageDefinition ld } &&
+                string.Equals(ld.Id, langId, StringComparison.OrdinalIgnoreCase))
+            {
+                _languageCombo.SelectedIndex = i;
+                return;
+            }
+        }
+    }
+    private void ApplyLanguageOverrides(string langId)
+    {
+        _currentLangId = langId;
+        if (_settings is null) return;
+
+        // Sync the preview panel to the newly selected language
+        if (LanguageRegistry.Instance.FindById(langId) is { } lang)
+            _preview?.SelectLanguage(lang);
+
+        // Always sync checkboxes: use stored per-language override when available,
+        // or reset to null (indeterminate = inherit .whfmt default) when none is saved.
+        _settings.CodeEditorDefaults.PerLanguageOverrides.TryGetValue(langId, out var ov);
+        _loading = true;
+        try
+        {
+            _trimTrailing.IsChecked         = ov?.TrimTrailingWhitespace;
+            _insertFinalNewline.IsChecked   = ov?.InsertFinalNewline;
+            _spaceAfterKeywords.IsChecked   = ov?.SpaceAfterKeywords;
+            _spaceAroundOperators.IsChecked = ov?.SpaceAroundBinaryOperators;
+            _spaceAfterComma.IsChecked      = ov?.SpaceAfterComma;
+            _indentCaseLabels.IsChecked     = ov?.IndentCaseLabels;
+            _organizeImports.IsChecked      = ov?.OrganizeImports;
+        }
+        finally { _loading = false; }
+
+        _preview?.Refresh(BuildOverrides());
+    }
+
+    private void PersistLanguageOverrides(string langId, Dictionary<string, LanguageFormattingOverrides> dict)
+    {
+        if (!dict.TryGetValue(langId, out var ov))
+        {
+            ov = new LanguageFormattingOverrides();
+            dict[langId] = ov;
+        }
+        ov.TrimTrailingWhitespace     = _trimTrailing.IsChecked;
+        ov.InsertFinalNewline         = _insertFinalNewline.IsChecked;
+        ov.SpaceAfterKeywords         = _spaceAfterKeywords.IsChecked;
+        ov.SpaceAroundBinaryOperators = _spaceAroundOperators.IsChecked;
+        ov.SpaceAfterComma            = _spaceAfterComma.IsChecked;
+        ov.IndentCaseLabels           = _indentCaseLabels.IsChecked;
+        ov.OrganizeImports            = _organizeImports.IsChecked;
     }
 
     private FormattingOverrides BuildOverrides() => new()
@@ -375,4 +556,51 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         tb.SetResourceReference(TextBlock.ForegroundProperty, "CP_SecondaryTextBrush");
         return tb;
     }
+
+    // ── Themed button style (matches OptionsTextButtonStyle from XAML pages) ──────
+
+    private static Style? _themedButtonStyle;
+
+    private static Style ThemedButtonStyle => _themedButtonStyle ??= (Style)XamlReader.Parse("""
+        <Style TargetType="Button"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <Setter Property="Background"          Value="{DynamicResource Panel_ToolbarBrush}"/>
+            <Setter Property="Foreground"          Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"         Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness"     Value="1"/>
+            <Setter Property="Padding"             Value="8,3"/>
+            <Setter Property="Cursor"              Value="Hand"/>
+            <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        """);
 }

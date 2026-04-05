@@ -17,14 +17,12 @@ namespace WpfHexEditor.Core.Options.Preview;
 public sealed class FormattingPreviewPanel : UserControl
 {
     // ── Fields ────────────────────────────────────────────────────────────
-    private readonly RichTextBox    _codeBox;
-    private readonly ComboBox       _languageCombo;
-    private readonly TextBlock      _noPreviewLabel;
-    private IPreviewColorizer?      _colorizer;
-    private IPreviewFormatter?      _formatter;
-    private LanguageDefinition?     _currentLang;
-    private IReadOnlyList<LanguageDefinition> _availableLangs = [];
-    private FormattingOverrides?              _overrides;
+    private readonly RichTextBox  _codeBox;
+    private readonly TextBlock    _noPreviewLabel;
+    private IPreviewColorizer?    _colorizer;
+    private IPreviewFormatter?    _formatter;
+    private LanguageDefinition?   _currentLang;
+    private FormattingOverrides?  _overrides;
     // ── Construction ──────────────────────────────────────────────────────
     public FormattingPreviewPanel()
     {
@@ -37,7 +35,7 @@ public sealed class FormattingPreviewPanel : UserControl
         root.SetResourceReference(Border.BackgroundProperty,  "TE_Background");
         root.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
         var outerStack = new DockPanel { LastChildFill = true };
-        // ── Toolbar (language picker) ─────────────────────────────────────
+        // ── Toolbar (label only — language selection is owned by the page) ─────────
         var toolbar = new Border
         {
             Padding         = new Thickness(6, 4, 6, 4),
@@ -46,14 +44,9 @@ public sealed class FormattingPreviewPanel : UserControl
         toolbar.SetResourceReference(Border.BackgroundProperty,  "DockPanelBackgroundBrush");
         toolbar.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
         DockPanel.SetDock(toolbar, Dock.Top);
-        var toolRow = new StackPanel { Orientation = Orientation.Horizontal };
-        var lbl = new TextBlock { Text = "Preview", FontWeight = FontWeights.SemiBold, FontSize = 11, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 8, 0) };
+        var lbl = new TextBlock { Text = "Preview", FontWeight = FontWeights.SemiBold, FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
         lbl.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
-        toolRow.Children.Add(lbl);
-        _languageCombo = new ComboBox { FontSize = 11, MinWidth = 100, VerticalContentAlignment = VerticalAlignment.Center };
-        _languageCombo.SelectionChanged += OnLanguageChanged;
-        toolRow.Children.Add(_languageCombo);
-        toolbar.Child = toolRow;
+        toolbar.Child = lbl;
         outerStack.Children.Add(toolbar);
         // ── Code box ─────────────────────────────────────────────────────
         _codeBox = new RichTextBox
@@ -93,17 +86,10 @@ public sealed class FormattingPreviewPanel : UserControl
     /// Initialises the panel with available languages and the colorizer.
     /// Call once from the options page after Load().
     /// </summary>
-    public void Initialize(IReadOnlyList<LanguageDefinition> languages, IPreviewColorizer colorizer,
-                           IPreviewFormatter? formatter = null)
+    public void Initialize(IPreviewColorizer colorizer, IPreviewFormatter? formatter = null)
     {
-        _colorizer      = colorizer;
-        _formatter      = formatter;
-        _availableLangs = languages;
-        _languageCombo.Items.Clear();
-        foreach (var lang in languages)
-            _languageCombo.Items.Add(new ComboBoxItem { Content = lang.Name, Tag = lang });
-        if (_languageCombo.Items.Count > 0)
-            _languageCombo.SelectedIndex = 0;
+        _colorizer = colorizer;
+        _formatter = formatter;
     }
     /// <summary>
     /// Refreshes the preview to reflect current checkbox state.
@@ -120,13 +106,14 @@ public sealed class FormattingPreviewPanel : UserControl
     /// Used by the tooltip wiring to refresh Before/After samples for the right language.
     /// </summary>
     public string? SelectedLanguageId => _currentLang?.Id;
+
+    /// <summary>
+    /// Switches the active preview language without re-rendering immediately.
+    /// Call <see cref="Refresh"/> afterwards to update the view.
+    /// </summary>
+    public void SelectLanguage(LanguageDefinition lang) => _currentLang = lang;
+
     // ── Private ───────────────────────────────────────────────────────────
-    private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_languageCombo.SelectedItem is ComboBoxItem { Tag: LanguageDefinition lang })
-            _currentLang = lang;
-        RenderPreview();
-    }
     private void RenderPreview()
     {
         if (_colorizer is null || _currentLang is null)

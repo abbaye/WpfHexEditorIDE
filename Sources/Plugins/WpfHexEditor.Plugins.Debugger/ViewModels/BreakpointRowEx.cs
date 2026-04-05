@@ -83,6 +83,19 @@ public sealed class BreakpointRowEx : INotifyPropertyChanged
 
     public string DisplayLocation => $"{FileName}:{Line}";
 
+    /// <summary>Language ID resolved from the file extension (e.g. "csharp", "python"). Used by SyntaxColoredBlock.</summary>
+    public string SourceLanguageId => Path.GetExtension(FilePath).TrimStart('.').ToLowerInvariant() switch
+    {
+        "cs"   => "csharp",
+        "py"   => "python",
+        "js"   => "javascript",
+        "ts"   => "typescript",
+        "cpp" or "cxx" or "cc" => "cpp",
+        "h" or "hpp"           => "cpp",
+        var ext when !string.IsNullOrEmpty(ext) => ext,
+        _ => string.Empty,
+    };
+
     /// <summary>Up to 5 source lines centred on the breakpoint line. Empty if file not found.</summary>
     public string SourcePreview => BuildSourcePreview(FilePath, Line, contextLines: 2);
 
@@ -90,8 +103,19 @@ public sealed class BreakpointRowEx : INotifyPropertyChanged
     {
         try
         {
-            if (!File.Exists(filePath)) return string.Empty;
-            var lines = File.ReadAllLines(filePath);
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                return string.Empty;
+
+            var rawText = File.ReadAllText(filePath);
+            if (string.IsNullOrWhiteSpace(rawText))
+                return string.Empty;
+
+            // Split on \n — handles \r\n, \n, and \r (old Mac)
+            var lines = rawText.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+
+            if (line1 < 1 || line1 > lines.Length)
+                return string.Empty;
+
             int start = Math.Max(0, line1 - 1 - contextLines);
             int end   = Math.Min(lines.Length - 1, line1 - 1 + contextLines);
             return string.Join("\n", lines[start..(end + 1)]);

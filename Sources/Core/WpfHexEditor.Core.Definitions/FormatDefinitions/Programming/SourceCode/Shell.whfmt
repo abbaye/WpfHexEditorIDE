@@ -66,6 +66,11 @@
         "colorKey": "TE_String"
       },
       {
+        "type": "Preprocessor",
+        "pattern": "^#!.*$",
+        "colorKey": "TE_Directive"
+      },
+      {
         "type": "Comment",
         "pattern": "#.*$",
         "colorKey": "TE_Comment"
@@ -148,7 +153,7 @@
       "maxConsecutiveBlankLines": 2,
       "blankLineBeforeMethod": false,
       "blankLineAfterImports": false,
-      "spaceAroundBinaryOperators": true,
+      "spaceAroundBinaryOperators": false,
       "spaceAfterComma": true,
       "organizeImports": false,
       "separateSystemImports": false,

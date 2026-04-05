@@ -223,6 +223,13 @@ public interface IIDEHostContext
     /// </summary>
     ISyntaxColoringService? SyntaxColoring => null;
 
+    /// <summary>
+    /// Factory for creating shared UI controls from the App layer.
+    /// Plugins use this to obtain syntax-highlighted previews and other
+    /// App-provided controls without referencing WpfHexEditor.App directly.
+    /// </summary>
+    IUIControlFactory? UIFactory => null;
+
     // -- Version Control ------------------------------------------------------
 
     /// <summary>

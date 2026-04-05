@@ -80,12 +80,28 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <Border x:Name="Bd"
-                                        Grid.Row="0"
-                                        Background="{TemplateBinding Background}"
-                                        Padding="{TemplateBinding Padding}"
-                                        CornerRadius="2">
-                                    <Grid>
+                                <!-- Row: 3 px accent slot + content -->
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Full-width hover/selected background -->
+                                    <Border x:Name="Bd"
+                                            Grid.ColumnSpan="2"
+                                            Background="Transparent"
+                                            SnapsToDevicePixels="True"/>
+
+                                    <!-- Left accent bar (visible only when selected) -->
+                                    <Border x:Name="Accent"
+                                            Grid.Column="0"
+                                            Background="{DynamicResource SE_SelectionBorderBrush}"
+                                            Visibility="Collapsed"
+                                            SnapsToDevicePixels="True"/>
+
+                                    <!-- Content column -->
+                                    <Grid Grid.Column="1" Margin="{TemplateBinding Padding}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -105,7 +121,7 @@
                                                         VerticalAlignment="Center"
                                                         Margin="4,0,0,0"/>
                                     </Grid>
-                                </Border>
+                                </Grid>
 
                                 <ItemsPresenter x:Name="ItemsHost"
                                               Grid.Row="1"
@@ -123,12 +139,13 @@
                                     <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                                 </Trigger>
 
-                                <!-- Selection style -->
+                                <!-- Selection: highlight + accent bar -->
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SE_SelectedBrush}"/>
+                                    <Setter TargetName="Bd"     Property="Background" Value="{DynamicResource SE_SelectedBrush}"/>
+                                    <Setter TargetName="Accent" Property="Visibility" Value="Visible"/>
                                 </Trigger>
 
-                                <!-- Hover style -->
+                                <!-- Hover (only when not already selected) -->
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsMouseOver" Value="True"/>

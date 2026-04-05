@@ -31,6 +31,10 @@
     <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controls\" />
+  </ItemGroup>
+
   <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
 
   <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
@@ -38,9 +42,7 @@
       <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
-          DestinationFolder="$(PluginDestDir)"
-          OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json" DestinationFolder="$(PluginDestDir)" OverwriteReadOnlyFiles="true" />
   </Target>
 
 </Project>
