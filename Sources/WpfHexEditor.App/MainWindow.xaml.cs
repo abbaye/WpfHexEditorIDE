@@ -1798,11 +1798,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (existingDockItem != null)
         {
             if (existingDockItem.Owner != null) existingDockItem.Owner.ActiveItem = existingDockItem;
-            // Retrieve the cached editor and check for navigation support
-            var cachedEditor = _contentCache.Values.FirstOrDefault(v =>
-                v is IDocumentEditor de &&
-                string.Equals(de.Title.TrimEnd('*', ' '),
-                    Path.GetFileName(e.FilePath), StringComparison.OrdinalIgnoreCase));
+            // Retrieve the cached editor by ContentId (exact match) to avoid false positives
+            // when multiple files share the same filename (e.g. MakeEverythingPublic.cs in two assemblies).
+            _contentCache.TryGetValue(existingDockItem.ContentId, out var cachedEditor);
             targetNav = cachedEditor as INavigableDocument;
         }
         else

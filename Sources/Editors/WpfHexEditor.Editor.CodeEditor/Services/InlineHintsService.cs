@@ -48,6 +48,11 @@ internal sealed class InlineHintsService : IDisposable
     private IReferenceCountProvider? _roslynProvider;
     private int                      _inlineHintsSource; // 0=Auto, 1=RoslynOnly, 2=RegexAlways
 
+    // Retry counter: when Roslyn is available but workspace not yet compiled,
+    // CountReferencesAsync returns null for every symbol → roslynData.Count == 0.
+    // We retry up to 2 times (4 s, 8 s) so hints upgrade automatically once ready.
+    private int _roslynRetryCount;
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -160,6 +165,7 @@ internal sealed class InlineHintsService : IDisposable
     {
         _roslynProvider    = provider;
         _inlineHintsSource = source;
+        _roslynRetryCount  = 0;
         ScheduleRefresh();
     }
 
@@ -221,8 +227,17 @@ internal sealed class InlineHintsService : IDisposable
             // an empty Roslyn result (e.g. workspace not fully loaded) keeps the regex hints visible.
             if (roslynData.Count > 0)
             {
+                _roslynRetryCount = 0;
                 HintsData = roslynData;
                 HintsDataRefreshed?.Invoke(this, EventArgs.Empty);
+            }
+            else if (HintsData.Count > 0 && _roslynRetryCount < 2)
+            {
+                // Roslyn provider is available but returned nothing (workspace still compiling).
+                // Retry with increasing delays (4 s, 8 s) so the popup upgrades once ready.
+                _roslynRetryCount++;
+                _debounce.Interval = TimeSpan.FromSeconds(4 * _roslynRetryCount);
+                _debounce.Start();
             }
         }
         catch (OperationCanceledException) { /* expected on rapid editing */ }
