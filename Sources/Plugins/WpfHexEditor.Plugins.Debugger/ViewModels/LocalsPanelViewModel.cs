@@ -1,17 +1,18 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.Debugger
 // File: ViewModels/LocalsPanelViewModel.cs
-// Description: VM for the Locals panel — variable tree.
+// Description: VM for the Locals panel â€” variable tree.
 // ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
-public sealed class VariableNode : INotifyPropertyChanged
+public sealed class VariableNode : ViewModelBase
 {
     private bool _isExpanded;
 
@@ -29,12 +30,9 @@ public sealed class VariableNode : INotifyPropertyChanged
         set { _isExpanded = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? p = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }
 
-public sealed class LocalsPanelViewModel : INotifyPropertyChanged
+public sealed class LocalsPanelViewModel : ViewModelBase
 {
     private readonly IDebuggerService _debugger;
 
@@ -76,5 +74,4 @@ public sealed class LocalsPanelViewModel : INotifyPropertyChanged
         });
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

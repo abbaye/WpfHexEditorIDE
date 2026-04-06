@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Binary Templates - Template Structure Model
 // Author : Claude Sonnet 4.5
@@ -16,6 +16,9 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Models.BinaryTemplates
     /// </summary>
     public class TemplateStructure : INotifyPropertyChanged
     {
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+
         private string? _name;
         private string? _description;
         private ObservableCollection<TemplateField> _fields;
@@ -64,10 +67,6 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Models.BinaryTemplates
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 
     /// <summary>
@@ -75,6 +74,9 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Models.BinaryTemplates
     /// </summary>
     public class TemplateField : INotifyPropertyChanged
     {
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+
         private string? _name;
         private string? _type;
         private string? _arraySize;
@@ -113,9 +115,5 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Models.BinaryTemplates
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

@@ -413,6 +413,9 @@
     <SolidColorBrush x:Key="PM_BadgeFaultedBrush"                Color="#FF1744"/>
     <SolidColorBrush x:Key="PM_BadgeSlowBrush"                   Color="#FFB300"/>
     <SolidColorBrush x:Key="PM_BadgeTrustedBrush"                Color="#00FF88"/>
+    <SolidColorBrush x:Key="PM_GroupInProcessBrush"           Color="#00BFFF"/>
+    <SolidColorBrush x:Key="PM_GroupSandboxBrush"             Color="#FF6E2D"/>
+    <SolidColorBrush x:Key="PM_GroupStandbyBrush"             Color="#BD00FF"/>
     
     <!-- Marketplace (MP_*) -->
     <SolidColorBrush x:Key="MP_VerifiedBadgeBrush"         Color="#0FFF50"/>

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ResxEditor
 // File: ViewModels/ResxEditorViewModel.cs
 // Description:
@@ -16,11 +16,12 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.ResxEditor.Models;
 using WpfHexEditor.Editor.ResxEditor.UndoRedo;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ResxEditor.ViewModels;
 
 /// <summary>Main ViewModel for the RESX grid editor.</summary>
-public sealed class ResxEditorViewModel : INotifyPropertyChanged
+public sealed class ResxEditorViewModel : ViewModelBase
 {
     // -- Fields -------------------------------------------------------------
 
@@ -33,7 +34,7 @@ public sealed class ResxEditorViewModel : INotifyPropertyChanged
     private          bool              _isReadOnly;
     private          string            _filePath        = string.Empty;
 
-    // Command backing fields (RelayCommand) — exposed as ICommand via public properties
+    // Command backing fields (RelayCommand) â€” exposed as ICommand via public properties
     private RelayCommand _addCmd    = null!;
     private RelayCommand _deleteCmd = null!;
     private RelayCommand _undoCmd   = null!;
@@ -253,10 +254,7 @@ public sealed class ResxEditorViewModel : INotifyPropertyChanged
 
     // -- INotifyPropertyChanged ---------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // -- RelayCommand -----------------------------------------------------------

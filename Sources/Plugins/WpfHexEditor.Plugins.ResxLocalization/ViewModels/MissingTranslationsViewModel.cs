@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.ResxLocalization
 // File: ViewModels/MissingTranslationsViewModel.cs
 // Description:
@@ -13,11 +13,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ResxEditor.Models;
 using WpfHexEditor.Editor.ResxEditor.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.ResxLocalization.ViewModels;
 
 /// <summary>Represents one cell in the missing-translations matrix.</summary>
-public sealed class TranslationCellViewModel : INotifyPropertyChanged
+public sealed class TranslationCellViewModel : ViewModelBase
 {
     private string _value    = string.Empty;
     private bool   _isMissing;
@@ -36,9 +37,6 @@ public sealed class TranslationCellViewModel : INotifyPropertyChanged
         set { _isMissing = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 /// <summary>Represents one row (one resource key) in the missing-translations matrix.</summary>
@@ -51,7 +49,7 @@ public sealed class TranslationRowViewModel
 /// <summary>
 /// Backing ViewModel for <see cref="Panels.MissingTranslationsPanel"/>.
 /// </summary>
-public sealed class MissingTranslationsViewModel : INotifyPropertyChanged
+public sealed class MissingTranslationsViewModel : ViewModelBase
 {
     private int    _missingCount;
     private string _statusText = "No locale data loaded";
@@ -97,7 +95,7 @@ public sealed class MissingTranslationsViewModel : INotifyPropertyChanged
         foreach (var (code, _) in locales)
             CultureCodes.Add(code);
 
-        // Build lookup: culture → key → value
+        // Build lookup: culture â†’ key â†’ value
         var lookup = locales.ToDictionary(
             l => l.CultureCode,
             l => l.Doc.Entries.ToDictionary(
@@ -134,7 +132,4 @@ public sealed class MissingTranslationsViewModel : INotifyPropertyChanged
             : $"{missing} missing translation(s) across {locales.Count} locale(s)";
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: DataInspectorViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     float, double, string encodings) as a bindable collection for the DataInspectorPanel.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Interpretation logic delegated to WpfHexEditor.BinaryAnalysis.Services.
 //
 // ==========================================================
@@ -22,13 +22,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.BinaryAnalysis.Models.DataInspector;
 using WpfHexEditor.Core.BinaryAnalysis.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for the Data Inspector panel
     /// </summary>
-    public class DataInspectorViewModel : INotifyPropertyChanged
+    public class DataInspectorViewModel : ViewModelBase
     {
         private readonly DataInspectorService _service;
         private ObservableCollection<InspectorValue> _values;
@@ -153,11 +154,6 @@ namespace WpfHexEditor.HexEditor.ViewModels
             return filtered;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

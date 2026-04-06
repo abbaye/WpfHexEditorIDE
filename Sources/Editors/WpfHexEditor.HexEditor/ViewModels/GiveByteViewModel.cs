@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: GiveByteViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     result through an OK/Cancel command pattern.
 //
 // Architecture Notes:
-//     MVVM dialog ViewModel — implements INotifyPropertyChanged manually.
+//     MVVM dialog ViewModel â€” implements INotifyPropertyChanged manually.
 //     Uses RelayCommand from Commands/ for OK/Cancel actions.
 //
 // ==========================================================
@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.HexEditor.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {
@@ -28,7 +29,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
     /// Manages state and business logic for entering a single byte value.
     /// Testable without UI dependencies.
     /// </summary>
-    public class GiveByteViewModel : INotifyPropertyChanged
+    public class GiveByteViewModel : ViewModelBase
     {
         #region Fields
 
@@ -132,12 +133,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

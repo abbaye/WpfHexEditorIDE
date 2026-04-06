@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -21,14 +22,14 @@ namespace WpfHexEditor.PluginHost.UI;
 /// Subscribes to WpfPluginHost events to keep the list in sync with the live plugin state.
 /// All Rebuild/Refresh calls are marshalled to the Dispatcher thread.
 /// </summary>
-public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
+public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
 {
     private readonly WpfPluginHost _host;
     private readonly Dispatcher _dispatcher;
     private readonly Func<(int warning, int high, int critical, bool enabled,
                            string normalColor, string warningColor, string highColor, string criticalColor)>? _getMemoryThresholds;
 
-    // Metrics-only refresh timer (10 s — lighter than full Rebuild)
+    // Metrics-only refresh timer (10 s â€” lighter than full Rebuild)
     private readonly DispatcherTimer _metricsTimer;
 
     // Debounce timer for filter text (200 ms)
@@ -49,7 +50,6 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     private int    _globalTotalCount;
     private int    _globalFaultCount;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginManagerViewModel(
         WpfPluginHost host, 
@@ -61,7 +61,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
         _getMemoryThresholds = getMemoryThresholds;
 
-        // Metrics timer — only refreshes live CPU/RAM + sparkline history, does NOT rebuild the list
+        // Metrics timer â€” only refreshes live CPU/RAM + sparkline history, does NOT rebuild the list
         _metricsTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
         {
             Interval = TimeSpan.FromSeconds(5)
@@ -69,7 +69,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _metricsTimer.Tick += OnMetricsTick;
         _metricsTimer.Start();
 
-        // Filter debounce timer — rebuilds filtered view after user stops typing
+        // Filter debounce timer â€” rebuilds filtered view after user stops typing
         _filterDebounce = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
         {
             Interval = TimeSpan.FromMilliseconds(200)
@@ -153,7 +153,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         private set { _globalMemoryMb = value; OnPropertyChanged(); }
     }
 
-    /// <summary>E.g. "10/10" — loaded/total.</summary>
+    /// <summary>E.g. "10/10" â€” loaded/total.</summary>
     public string RunningLabel => $"{_globalRunningCount}/{_globalTotalCount}";
 
     public int FaultCount
@@ -417,7 +417,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
         var dlg = new SaveFileDialog
         {
-            Title      = $"Export Crash Report — {_selectedPlugin.Name}",
+            Title      = $"Export Crash Report â€” {_selectedPlugin.Name}",
             Filter     = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
             FileName   = $"crash-{_selectedPlugin.Id}-{DateTime.Now:yyyyMMdd-HHmmss}.txt"
         };
@@ -439,7 +439,5 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _host.MigrationSuggested -= OnHostMigrationSuggested;
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
 }

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.PluginDev
 // File: Panels/PluginDevLogViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Threading;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginDev.Panels;
 
@@ -39,7 +40,7 @@ public sealed record LogEntry(
 /// <summary>
 /// ViewModel for the Plugin Developer Log panel.
 /// </summary>
-public sealed class PluginDevLogViewModel : INotifyPropertyChanged, IProgress<string>
+public sealed class PluginDevLogViewModel : ViewModelBase, IProgress<string>
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -145,9 +146,6 @@ public sealed class PluginDevLogViewModel : INotifyPropertyChanged, IProgress<st
     // INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // -----------------------------------------------------------------------
     // Helpers

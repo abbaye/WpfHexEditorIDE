@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Data Inspector - Value Model
 // Author : Claude Sonnet 4.5
@@ -15,6 +15,9 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Models.DataInspector
     /// </summary>
     public class InspectorValue : INotifyPropertyChanged
     {
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+
         private string? _category;
         private string? _format;
         private string? _value;
@@ -74,9 +77,5 @@ namespace WpfHexEditor.Core.BinaryAnalysis.Models.DataInspector
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

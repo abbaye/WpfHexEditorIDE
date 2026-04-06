@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/DiagramSearchPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
@@ -33,7 +34,7 @@ public sealed record SearchResultItem(ClassNode Node, ClassMember? Member, strin
 /// <summary>
 /// ViewModel for the diagram full-text search panel.
 /// </summary>
-public sealed class DiagramSearchPanelViewModel : INotifyPropertyChanged
+public sealed class DiagramSearchPanelViewModel : ViewModelBase
 {
     private readonly ObservableCollection<SearchResultItem> _results = [];
     private string _searchText = string.Empty;
@@ -128,8 +129,5 @@ public sealed class DiagramSearchPanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

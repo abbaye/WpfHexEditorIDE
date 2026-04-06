@@ -1,11 +1,11 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.StructureOverlay
 // File: StructureOverlayPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-06
 // Description:
-//     ViewModel for StructureOverlayPanel — exposes overlay structures,
+//     ViewModel for StructureOverlayPanel â€” exposes overlay structures,
 //     selected field, and toolbar-bound commands.
 // ==========================================================
 
@@ -13,10 +13,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.Models.StructureOverlay;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.StructureOverlay.ViewModels;
 
-public sealed class StructureOverlayPanelViewModel : INotifyPropertyChanged
+public sealed class StructureOverlayPanelViewModel : ViewModelBase
 {
     private ObservableCollection<OverlayStructure> _structures = new();
     private OverlayField?   _selectedField;
@@ -43,12 +44,5 @@ public sealed class StructureOverlayPanelViewModel : INotifyPropertyChanged
         StatusText        = "No structures loaded";
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }

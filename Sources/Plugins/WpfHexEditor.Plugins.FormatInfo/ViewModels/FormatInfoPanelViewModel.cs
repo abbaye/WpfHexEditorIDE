@@ -1,21 +1,22 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.FormatInfo
 // File: FormatInfoPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-06
 // Description:
-//     ViewModel for EnrichedFormatInfoPanel — wraps EnrichedFormatViewModel
+//     ViewModel for EnrichedFormatInfoPanel â€” wraps EnrichedFormatViewModel
 //     and exposes display state flags used by the panel code-behind.
 // ==========================================================
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.ViewModels;
+using EnrichedFormatViewModel = WpfHexEditor.HexEditor.ViewModels.EnrichedFormatViewModel;
 
 namespace WpfHexEditor.Plugins.FormatInfo.ViewModels;
 
-public sealed class FormatInfoPanelViewModel : INotifyPropertyChanged
+public sealed class FormatInfoPanelViewModel : ViewModelBase
 {
     private bool _hasFormat;
     private readonly EnrichedFormatViewModel _inner = new();
@@ -36,12 +37,5 @@ public sealed class FormatInfoPanelViewModel : INotifyPropertyChanged
         HasFormat = false;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }

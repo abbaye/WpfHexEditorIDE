@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.PluginHost;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -16,7 +17,7 @@ namespace WpfHexEditor.PluginHost.UI;
 /// PHASE 5: Diagnostics tab ViewModel for Plugin Monitor panel.
 /// Provides observability into the metrics engine health and sampling status.
 /// </summary>
-public sealed class PluginMonitorDiagnosticsViewModel : INotifyPropertyChanged
+public sealed class PluginMonitorDiagnosticsViewModel : ViewModelBase
 {
     private readonly WpfPluginHost _host;
     private bool _isInitialized;
@@ -25,7 +26,6 @@ public sealed class PluginMonitorDiagnosticsViewModel : INotifyPropertyChanged
     private string _samplingInterval = "5s";
     private string _engineStatus = "Initializing...";
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginMonitorDiagnosticsViewModel(WpfPluginHost host)
     {
@@ -101,6 +101,4 @@ public sealed class PluginMonitorDiagnosticsViewModel : INotifyPropertyChanged
         UpdateMetrics();
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

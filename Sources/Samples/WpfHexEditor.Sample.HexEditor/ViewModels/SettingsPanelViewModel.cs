@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0  2026
 // HexEditor V2 - Settings Panel ViewModel
 // Author : Derek Tremblay (derektremblay666@gmail.com)
@@ -11,13 +11,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Sample.HexEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for Settings Panel - theme, language, search, and performance options
     /// </summary>
-    public class SettingsPanelViewModel : INotifyPropertyChanged
+    public class SettingsPanelViewModel : ViewModelBase
     {
         #region Fields
 
@@ -34,7 +35,6 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
 
         #region Events
 
-        public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<string> ThemeChanged;
         public event EventHandler<string> LanguageChanged;
 
@@ -61,11 +61,11 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
         public List<LanguageOption> AvailableLanguages { get; } = new List<LanguageOption>
         {
             new LanguageOption { Code = "en-US", DisplayName = "English", NativeName = "English" },
-            new LanguageOption { Code = "fr-CA", DisplayName = "French (Canada)", NativeName = "FranÃ§ais (Canada)" },
+            new LanguageOption { Code = "fr-CA", DisplayName = "French (Canada)", NativeName = "FranÃƒÂ§ais (Canada)" },
             new LanguageOption { Code = "pl-PL", DisplayName = "Polish", NativeName = "Polski" },
-            new LanguageOption { Code = "pt-BR", DisplayName = "Portuguese (Brazil)", NativeName = "PortuguÃªs (Brasil)" },
-            new LanguageOption { Code = "ru-RU", DisplayName = "Russian", NativeName = "Ð ÑƒÑÑÐºÐ¸Ð¹" },
-            new LanguageOption { Code = "zh-CN", DisplayName = "Chinese", NativeName = "ä¸­æ–‡" }
+            new LanguageOption { Code = "pt-BR", DisplayName = "Portuguese (Brazil)", NativeName = "PortuguÃƒÂªs (Brasil)" },
+            new LanguageOption { Code = "ru-RU", DisplayName = "Russian", NativeName = "ÃÂ Ã‘Æ’Ã‘ÂÃ‘ÂÃÂºÃÂ¸ÃÂ¹" },
+            new LanguageOption { Code = "zh-CN", DisplayName = "Chinese", NativeName = "Ã¤Â¸Â­Ã¦â€“â€¡" }
         };
 
         /// <summary>
@@ -274,10 +274,6 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
             System.Diagnostics.Debug.WriteLine("[SettingsPanelViewModel] Settings saved");
         }
 
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

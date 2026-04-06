@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: StructureOverlayViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     background regions mapped to parsed binary fields within the viewport.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Consumed by HexViewport to paint custom background blocks via DependencyProperty.
 //
 // ==========================================================
@@ -21,13 +21,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.Models.StructureOverlay;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for the Structure Overlay panel
     /// </summary>
-    public class StructureOverlayViewModel : INotifyPropertyChanged
+    public class StructureOverlayViewModel : ViewModelBase
     {
         private ObservableCollection<OverlayStructure> _structures;
         private OverlayStructure _selectedStructure;
@@ -132,11 +133,6 @@ namespace WpfHexEditor.HexEditor.ViewModels
         /// </summary>
         public event EventHandler<OverlayField> OnFieldSelected;
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

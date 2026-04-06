@@ -27,6 +27,7 @@ using System.Windows;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.ProjectSystem.Services.NuGet;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.ProjectSystem.Documents.NuGet;
 
@@ -34,7 +35,7 @@ namespace WpfHexEditor.Core.ProjectSystem.Documents.NuGet;
 /// ViewModel for <see cref="NuGetSolutionManagerDocument"/>.
 /// Manages packages across all VS projects in the solution.
 /// </summary>
-public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
+public sealed class NuGetSolutionManagerViewModel : ViewModelBase
 {
     private const int PageSize = 25;
 
@@ -241,7 +242,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
     private async Task ExecuteSearchAsync(string query, int skip, bool clearList, CancellationToken ct = default)
     {
         IsBusy     = true;
-        StatusText = "Searching…";
+        StatusText = "Searchingâ€¦";
         if (clearList) PackageList.Clear();
 
         // Pre-load installed packages to mark them in the Browse list.
@@ -300,7 +301,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
     private async Task LoadInstalledAsync()
     {
         IsBusy = true;
-        StatusText = "Loading installed packages…";
+        StatusText = "Loading installed packagesâ€¦";
         PackageList.Clear();
         HasMoreResults = false;
 
@@ -343,7 +344,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
     private async Task LoadConsolidateAsync()
     {
         IsBusy = true;
-        StatusText = "Checking version conflicts…";
+        StatusText = "Checking version conflictsâ€¦";
         PackageList.Clear();
         HasMoreResults = false;
 
@@ -384,7 +385,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
     private async Task LoadUpdatesAsync()
     {
         IsBusy = true;
-        StatusText = "Checking for updates…";
+        StatusText = "Checking for updatesâ€¦";
         PackageList.Clear();
         HasMoreResults = false;
         UpdateCount = 0;
@@ -464,7 +465,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
         }
         catch
         {
-            // Silently ignore — the badge will remain at 0 until the user clicks "Updates".
+            // Silently ignore â€” the badge will remain at 0 until the user clicks "Updates".
         }
     }
 
@@ -494,7 +495,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
         if (_selectedPackage is null || SelectedVersion is null) return;
 
         IsBusy     = true;
-        StatusText = $"Installing {_selectedPackage.Id} {SelectedVersion}…";
+        StatusText = $"Installing {_selectedPackage.Id} {SelectedVersion}â€¦";
         try
         {
             foreach (var row in _selectedPackage.Projects.Where(p => p.IsSelected && !p.HasPackage))
@@ -522,7 +523,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
         if (_selectedPackage is null) return;
 
         IsBusy     = true;
-        StatusText = $"Removing {_selectedPackage.Id}…";
+        StatusText = $"Removing {_selectedPackage.Id}â€¦";
         try
         {
             foreach (var row in _selectedPackage.Projects.Where(p => p.IsSelected && p.HasPackage))
@@ -550,7 +551,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
         if (_selectedPackage is null || SelectedVersion is null) return;
 
         IsBusy     = true;
-        StatusText = $"Updating {_selectedPackage.Id} to {SelectedVersion}…";
+        StatusText = $"Updating {_selectedPackage.Id} to {SelectedVersion}â€¦";
         try
         {
             foreach (var row in _selectedPackage.Projects.Where(p => p.IsSelected && p.HasPackage))
@@ -638,7 +639,7 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> when ≥ 2 projects reference the package with different versions.
+    /// Returns <see langword="true"/> when â‰¥ 2 projects reference the package with different versions.
     /// </summary>
     private static bool DetectConflict(IEnumerable<ProjectSelectionViewModel> rows)
     {
@@ -668,7 +669,4 @@ public sealed class NuGetSolutionManagerViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

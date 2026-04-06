@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Core
 // File: EnrichedFormatViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -12,7 +12,7 @@
 //     Moved to Core so that any editor/plugin can use it without depending on HexEditor.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Consumes WpfHexEditor.Core.FormatDetection output; no I/O performed here.
 //
 // ==========================================================
@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.ViewModels
 {
@@ -29,7 +30,7 @@ namespace WpfHexEditor.Core.ViewModels
     /// ViewModel for displaying enriched format metadata.
     /// Presents format information, software, use cases, and technical details.
     /// </summary>
-    public class EnrichedFormatViewModel : INotifyPropertyChanged
+    public class EnrichedFormatViewModel : ViewModelBase
     {
         private FormatDefinition _currentFormat;
         private string _formatName;
@@ -162,7 +163,7 @@ namespace WpfHexEditor.Core.ViewModels
         }
 
         public string SpecificationsDisplay => Specifications != null && Specifications.Any()
-            ? string.Join("\n• ", new[] { "" }.Concat(Specifications)) : "N/A";
+            ? string.Join("\nâ€¢ ", new[] { "" }.Concat(Specifications)) : "N/A";
 
         public bool HasSpecifications => Specifications != null && Specifications.Any();
 
@@ -352,9 +353,6 @@ namespace WpfHexEditor.Core.ViewModels
             OnPropertyChanged(nameof(HasDetectionInfo));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

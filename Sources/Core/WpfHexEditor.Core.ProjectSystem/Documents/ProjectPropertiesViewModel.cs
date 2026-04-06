@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.ProjectSystem
 // File: Documents/ProjectPropertiesViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     navigation list, section visibility, nav filter, and save workflow.
 //
 // Architecture Notes:
-//     Pattern: MVVM — INotifyPropertyChanged, RelayCommand
+//     Pattern: MVVM â€” INotifyPropertyChanged, RelayCommand
 //     VS-specific metadata (TargetFramework, AssemblyName, etc.) is
 //     read via reflection to avoid a direct dependency on the VS loader
 //     plugin assembly.
@@ -28,19 +28,20 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.ProjectSystem.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.ProjectSystem.Documents;
 
 /// <summary>
 /// ViewModel for <see cref="ProjectPropertiesDocument"/>.
 /// </summary>
-public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
+public sealed class ProjectPropertiesViewModel : ViewModelBase
 {
     private readonly IProject         _project;
     private readonly ISolutionManager _solutionManager;
 
     // -----------------------------------------------------------------------
-    // Backing fields — editable properties
+    // Backing fields â€” editable properties
     // -----------------------------------------------------------------------
     private string  _projectName          = "";
     private string  _assemblyName         = "";
@@ -55,7 +56,7 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
     private bool    _enableCodeAnalysis;
     private bool    _codeAnalysisReleaseOnly;
     private string  _appIconPath          = "";
-    private string  _appManifest          = "Paramètres par défaut";
+    private string  _appManifest          = "ParamÃ¨tres par dÃ©faut";
     private string  _packageId            = "";
     private string  _packageVersion       = "1.0.0";
     private string  _packageAuthors       = "";
@@ -87,7 +88,7 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
         // Editable baseline
         _projectName = project.Name;
 
-        // VS-specific metadata — resolved via reflection to avoid coupling with loader plugin
+        // VS-specific metadata â€” resolved via reflection to avoid coupling with loader plugin
         var propType = project.GetType();
         string Get(string name)
         {
@@ -107,7 +108,7 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
         _defaultNs       = Get("RootNamespace") is { Length: > 0 } ns ? ns : project.Name;
         _outputType      = Get("OutputType")    is { Length: > 0 } o  ? o  : "Library";
 
-        // References list (editable — ObservableCollection)
+        // References list (editable â€” ObservableCollection)
         var initRefs = IsVsProject
             ? GetList("ProjectReferences")
                 .Select(r => new ReferenceEntry(Path.GetFileNameWithoutExtension(r), "Projet"))
@@ -118,7 +119,7 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
         // Global usings (VS only)
         GlobalUsings = IsVsProject ? GetList("GlobalUsings").ToList() : [];
 
-        // Launch profiles (VS only) — default list when not available via reflection
+        // Launch profiles (VS only) â€” default list when not available via reflection
         var launchProfiles = IsVsProject
             ? GetList("LaunchProfiles").ToList()
             : new List<string>();
@@ -191,7 +192,7 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
     }
 
     // -----------------------------------------------------------------------
-    // Editable properties — all mark IsDirty on change
+    // Editable properties â€” all mark IsDirty on change
     // -----------------------------------------------------------------------
 
     public string ProjectName
@@ -365,10 +366,10 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
     public string? ProjectNameError =>
-        string.IsNullOrWhiteSpace(ProjectName) ? "Le nom du projet ne peut pas être vide." : null;
+        string.IsNullOrWhiteSpace(ProjectName) ? "Le nom du projet ne peut pas Ãªtre vide." : null;
 
     public string? AssemblyNameError =>
-        string.IsNullOrWhiteSpace(AssemblyName) ? "Le nom d'assembly ne peut pas être vide." : null;
+        string.IsNullOrWhiteSpace(AssemblyName) ? "Le nom d'assembly ne peut pas Ãªtre vide." : null;
 
     // -----------------------------------------------------------------------
     // Commands
@@ -393,13 +394,13 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
             await _solutionManager.RenameProjectAsync(_project, ProjectName);
 
         IsDirty       = false;
-        SaveCompleted = true;   // pulse — code-behind shows toast
+        SaveCompleted = true;   // pulse â€” code-behind shows toast
         SaveCompleted = false;
     }
 
     private Task AddNuGetAsync()
     {
-        // Raise event — the host (MainWindow) opens the NuGet Manager document tab.
+        // Raise event â€” the host (MainWindow) opens the NuGet Manager document tab.
         ManageNuGetRequested?.Invoke(this, new ManageNuGetRequestedEventArgs { Project = _project });
         return Task.CompletedTask;
     }
@@ -408,7 +409,7 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
     {
         var ofd = new OpenFileDialog
         {
-            Title  = "Sélectionner un projet à référencer",
+            Title  = "SÃ©lectionner un projet Ã  rÃ©fÃ©rencer",
             Filter = "Projets C# (*.csproj)|*.csproj|Tous les projets (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj"
         };
         if (ofd.ShowDialog() == true)
@@ -436,8 +437,8 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
         var items = new List<NavItem>
         {
             new("Application",    "",                 IsHeader: true),
-            new("Général",        "app-general",      IsHeader: false),
-            new("Dépendances",    "app-dependencies", IsHeader: false),
+            new("GÃ©nÃ©ral",        "app-general",      IsHeader: false),
+            new("DÃ©pendances",    "app-dependencies", IsHeader: false),
         };
 
         if (isVsProject)
@@ -447,14 +448,14 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
         }
 
         items.Add(new("Build",      "build",      IsHeader: false));
-        items.Add(new("Éléments",   "items",      IsHeader: false));
-        items.Add(new("Références", "references", IsHeader: false));
+        items.Add(new("Ã‰lÃ©ments",   "items",      IsHeader: false));
+        items.Add(new("RÃ©fÃ©rences", "references", IsHeader: false));
 
         if (isVsProject)
         {
             items.Add(new("Package",         "package",       IsHeader: false));
             items.Add(new("Analyse du code", "code-analysis", IsHeader: false));
-            items.Add(new("Débogage",        "debug",         IsHeader: false));
+            items.Add(new("DÃ©bogage",        "debug",         IsHeader: false));
         }
 
         return items;
@@ -465,13 +466,10 @@ public sealed class ProjectPropertiesViewModel : INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
     /// <summary>
-    /// Raised when the user clicks "+ NuGet…" so the host can open the NuGet Manager document tab.
+    /// Raised when the user clicks "+ NuGetâ€¦" so the host can open the NuGet Manager document tab.
     /// </summary>
     public event EventHandler<ManageNuGetRequestedEventArgs>? ManageNuGetRequested;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // ---------------------------------------------------------------------------

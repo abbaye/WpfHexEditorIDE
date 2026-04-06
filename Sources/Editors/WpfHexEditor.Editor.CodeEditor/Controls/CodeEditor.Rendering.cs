@@ -2083,6 +2083,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void UpdateWordHighlights()
         {
             _wordHighlights.Clear();
+            _wordHighlightLines.Clear();
+            _wordHighlightLineSet.Clear();
             _wordHighlightWord = string.Empty;
             _wordHighlightLen  = 0;
 
@@ -2104,7 +2106,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         bool rightOk = idx + word.Length >= lineText.Length || !IsWordChar(lineText[idx + word.Length]);
 
                         if (leftOk && rightOk)
+                        {
                             _wordHighlights.Add(new TextPosition(li, idx));
+                            // OPT-PERF: maintain distinct line list inline — avoids Distinct() alloc.
+                            if (_wordHighlightLineSet.Add(li))
+                                _wordHighlightLines.Add(li);
+                        }
 
                         idx += word.Length;
                     }
@@ -2120,11 +2127,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _codeScrollMarkerPanel.ClearWordMarkers();
                 else
                 {
-                    var distinctLines = _wordHighlights
-                        .Select(p => p.Line)
-                        .Distinct()
-                        .ToList();
-                    _codeScrollMarkerPanel.UpdateWordMarkers(distinctLines,
+                    _codeScrollMarkerPanel.UpdateWordMarkers(_wordHighlightLines,
                         Math.Max(1, _document?.TotalLines ?? 1));
                 }
 
@@ -2467,6 +2470,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     // URLs are detected regardless of which highlighter is active and always
                     // rendered with SyntaxUrlColor + underline so they are visually distinct.
                     // Materialise to list so we can both render and cache in one pass.
+                    // OPT-PERF: record zone start index before overlay so cache build can use
+                    // a range copy instead of a LINQ Where() scan over all accumulated zones.
+                    int zoneStartIdx = _linkHitZones.Count;
                     var urlOverlaid = OverlayUrlTokens(line.Text, i, rawTokens);
 
                     // Bracket depth colorization post-pass (#162): replace CE_Bracket foreground
@@ -2554,10 +2560,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         line.IsGlyphCacheDirty = false;
 
                         // Cache link zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
-                        line.CachedUrlZones = _linkHitZones
-                            .Where(z => z.Line == i)
-                            .Select(z => (z.StartCol, z.EndCol, z.Url, z.IsEmail))
-                            .ToList();
+                        // OPT-PERF: use range copy [zoneStartIdx..end] instead of LINQ Where scan.
+                        int zoneEndIdx = _linkHitZones.Count;
+                        var cachedZones = new List<(int StartCol, int EndCol, string Url, bool IsEmail)>(zoneEndIdx - zoneStartIdx);
+                        for (int zi = zoneStartIdx; zi < zoneEndIdx; zi++)
+                        {
+                            var z = _linkHitZones[zi];
+                            cachedZones.Add((z.StartCol, z.EndCol, z.Url, z.IsEmail));
+                        }
+                        line.CachedUrlZones = cachedZones;
                     }
                     // ── end cache build ───────────────────────────────────────────────
                 }

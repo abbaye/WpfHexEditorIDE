@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.DiagnosticTools
 // File: ViewModels/DiagnosticToolsPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
 using WpfHexEditor.Plugins.DiagnosticTools.Options;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.DiagnosticTools.ViewModels;
 
@@ -46,7 +47,7 @@ public sealed record DiagnosticEventEntry(DateTime Time, string Text)
 /// <summary>
 /// Data-source for <see cref="Views.DiagnosticToolsPanel"/>.
 /// </summary>
-public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
+public sealed class DiagnosticToolsPanelViewModel : ViewModelBase
 {
     private static int RingCapacity   => DiagnosticToolsOptions.Instance.RingCapacity;
     private static int EventMaxCount  => DiagnosticToolsOptions.Instance.EventMaxCount;
@@ -105,9 +106,9 @@ public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
     private double _gcHeapMb;
     private int    _threadPoolQueue;
     private int    _threadPoolThreads;
-    private string _sessionStatus = "Idle — no process running";
-    private string _currentCpu    = "—";
-    private string _currentMemory = "—";
+    private string _sessionStatus = "Idle â€” no process running";
+    private string _currentCpu    = "â€”";
+    private string _currentMemory = "â€”";
 
     public double GcHeapMb
     {
@@ -171,7 +172,7 @@ public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
     }
 
     // -----------------------------------------------------------------------
-    // Push methods (called from background threads — marshal to UI)
+    // Push methods (called from background threads â€” marshal to UI)
     // -----------------------------------------------------------------------
 
     public void PushCpuSample(double pct)
@@ -217,7 +218,7 @@ public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
             "gen-2-gc-count" => "Gen2",
             _                => counter
         };
-        AddEvent($"[GC] {gen} collected — {value:F0} /s");
+        AddEvent($"[GC] {gen} collected â€” {value:F0} /s");
     }
 
     public void Reset()
@@ -231,9 +232,9 @@ public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
             GcHeapMb          = 0;
             ThreadPoolQueue   = 0;
             ThreadPoolThreads = 0;
-            CurrentCpu        = "—";
-            CurrentMemory     = "—";
-            SessionStatus     = "Idle — no process running";
+            CurrentCpu        = "â€”";
+            CurrentMemory     = "â€”";
+            SessionStatus     = "Idle â€” no process running";
             IsPaused          = false;
         });
     }
@@ -287,10 +288,7 @@ public sealed class DiagnosticToolsPanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // -----------------------------------------------------------------------
 

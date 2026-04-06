@@ -10,20 +10,21 @@
 //     to control whether an install or uninstall operation affects it.
 //
 // Architecture Notes:
-//     Pattern: MVVM — INotifyPropertyChanged so the CheckBox binding
+//     Pattern: MVVM â€” INotifyPropertyChanged so the CheckBox binding
 //     updates CanExecute on the Install / Uninstall commands.
 // ==========================================================
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.ProjectSystem.Documents.NuGet;
 
 /// <summary>
 /// Checkbox-backed row for one project in the solution-level NuGet detail panel.
 /// </summary>
-public sealed class ProjectSelectionViewModel : INotifyPropertyChanged
+public sealed class ProjectSelectionViewModel : ViewModelBase
 {
     private bool    _isSelected;
     private string? _installedVersion;
@@ -64,7 +65,4 @@ public sealed class ProjectSelectionViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

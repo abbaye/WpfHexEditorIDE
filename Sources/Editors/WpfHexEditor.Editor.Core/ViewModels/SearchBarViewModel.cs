@@ -1,4 +1,4 @@
-////////////////////////////////////////
+﻿////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -18,6 +18,10 @@ namespace WpfHexEditor.Editor.Core.ViewModels
     /// </summary>
     public sealed class SearchBarViewModel : INotifyPropertyChanged
     {
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+
         #region Fields
 
         private ISearchTarget? _target;
@@ -31,7 +35,7 @@ namespace WpfHexEditor.Editor.Core.ViewModels
 
         #region Properties
 
-        /// <summary>Search query — changes trigger a new <see cref="ISearchTarget.Find"/> call.</summary>
+        /// <summary>Search query â€” changes trigger a new <see cref="ISearchTarget.Find"/> call.</summary>
         public string SearchText
         {
             get => _searchText;
@@ -105,12 +109,12 @@ namespace WpfHexEditor.Editor.Core.ViewModels
             get
             {
                 if (_target == null || _target.MatchCount == 0)
-                    return string.IsNullOrEmpty(_searchText) ? string.Empty : "Aucun résultat";
+                    return string.IsNullOrEmpty(_searchText) ? string.Empty : "Aucun rÃ©sultat";
 
                 if (_target.CurrentMatchIndex >= 0)
                     return $"{_target.CurrentMatchIndex + 1} / {_target.MatchCount}";
 
-                return $"{_target.MatchCount} résultats";
+                return $"{_target.MatchCount} rÃ©sultats";
             }
         }
 
@@ -219,15 +223,12 @@ namespace WpfHexEditor.Editor.Core.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         #endregion
     }
 
-    // -- Internal RelayCommand — no external dependency on HexEditor search stack --
+    // -- Internal RelayCommand â€” no external dependency on HexEditor search stack --
 
     internal sealed class RelayCommand : ICommand
     {

@@ -1,4 +1,4 @@
-// GNU Affero General Public License v3.0 - 2026
+﻿// GNU Affero General Public License v3.0 - 2026
 // Contributors: Claude Sonnet 4.6
 
 using System.Collections.Generic;
@@ -7,12 +7,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ChangesetEditor.ViewModels;
 
 // -- Row view-models ---------------------------------------------------------
 
-public sealed class ModifiedEntryVm : INotifyPropertyChanged
+public sealed class ModifiedEntryVm : ViewModelBase
 {
     private string _offset = string.Empty;
     private string _values = string.Empty;
@@ -28,9 +29,6 @@ public sealed class ModifiedEntryVm : INotifyPropertyChanged
         set { _values = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? n = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
 }
 
 public sealed class InsertedEntryVm
@@ -52,7 +50,7 @@ public sealed class DeletedRangeVm
 /// Loads a <see cref="ChangesetDto"/> and exposes three observable collections
 /// (Modified / Inserted / Deleted) for virtualized DataGrids.
 /// </summary>
-public sealed class ChangesetEditorViewModel : INotifyPropertyChanged
+public sealed class ChangesetEditorViewModel : ViewModelBase
 {
     // -- Collections ------------------------------------------------------
 
@@ -105,7 +103,4 @@ public sealed class ChangesetEditorViewModel : INotifyPropertyChanged
         DeletedRanges.Clear();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? n = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
 }

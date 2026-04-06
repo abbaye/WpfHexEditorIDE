@@ -1,6 +1,6 @@
 // Project      : WpfHexEditorControl
 // File         : ViewModels/BinaryStatsPanelViewModel.cs
-// Description  : ViewModel for the BinaryStatsPanel drawer — exposes entropy, frequency,
+// Description  : ViewModel for the BinaryStatsPanel drawer â€” exposes entropy, frequency,
 //                and file summary data derived from BinaryDiffAnalysis.
 // Architecture : INPC, no WPF dependency.  Populated asynchronously after diff completes.
 
@@ -8,10 +8,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.Diff.Models;
 using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.FileComparison.ViewModels;
 
-public sealed class BinaryStatsPanelViewModel : INotifyPropertyChanged
+public sealed class BinaryStatsPanelViewModel : ViewModelBase
 {
     // ── Backing fields ────────────────────────────────────────────────────────
 
@@ -93,7 +94,7 @@ public sealed class BinaryStatsPanelViewModel : INotifyPropertyChanged
     private static string BuildBadge(FormatDetectionResult? r)
     {
         if (r is not { Success: true, Format: { } fmt }) return string.Empty;
-        return $"{fmt.FormatName}  ·  {r.Confidence:P0}";
+        return $"{fmt.FormatName}  Â·  {r.Confidence:P0}";
     }
 
     // ── Analysis data ─────────────────────────────────────────────────────────
@@ -140,9 +141,9 @@ public sealed class BinaryStatsPanelViewModel : INotifyPropertyChanged
     public int[]    NibbleFreqRight => _analysis?.NibbleFreqRight ?? new int[16];
 
     public string AvgEntropyLeftText  => _analysis is not null
-        ? $"H = {_analysis.AvgEntropyLeft:F2} bits" : "—";
+        ? $"H = {_analysis.AvgEntropyLeft:F2} bits" : "â€”";
     public string AvgEntropyRightText => _analysis is not null
-        ? $"H = {_analysis.AvgEntropyRight:F2} bits" : "—";
+        ? $"H = {_analysis.AvgEntropyRight:F2} bits" : "â€”";
 
     public long ModifiedBytes => _stats?.ModifiedBytes ?? 0;
     public long InsertedBytes => _stats?.InsertedBytes ?? 0;
@@ -168,10 +169,7 @@ public sealed class BinaryStatsPanelViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {

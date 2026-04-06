@@ -9,8 +9,8 @@
 //     cache, and GlyphRun cache for zero-allocation re-renders (P1-CE-05).
 //
 // Architecture Notes:
-//     TokensCache  — populated by HighlightPipelineService on a bg thread.
-//     GlyphRunCache — pre-built GlyphRuns at (startCol*charWidth, Baseline)
+//     TokensCache  â€” populated by HighlightPipelineService on a bg thread.
+//     GlyphRunCache â€” pre-built GlyphRuns at (startCol*charWidth, Baseline)
 //                     so render can translate instead of rebuild per-frame.
 // ==========================================================
 
@@ -158,11 +158,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
 

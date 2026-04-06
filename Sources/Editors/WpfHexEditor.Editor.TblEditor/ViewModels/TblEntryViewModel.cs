@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -7,13 +7,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.CharacterTable;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.TblEditor.ViewModels;
 
 /// <summary>
 /// ViewModel wrapping a single <see cref="Dte"/> entry for display and editing.
 /// </summary>
-public sealed class TblEntryViewModel : INotifyPropertyChanged
+public sealed class TblEntryViewModel : ViewModelBase
 {
     private string _entry;
     private string? _value;
@@ -44,7 +45,7 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Decoded character(s), e.g. "A" or "の".
+    /// Decoded character(s), e.g. "A" or "ã®".
     /// </summary>
     public string? Value
     {
@@ -131,7 +132,4 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
 
     // -- INotifyPropertyChanged --------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

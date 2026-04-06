@@ -1,16 +1,17 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.Debugger
 // File: ViewModels/DebugConsolePanelViewModel.cs
-// Description: VM for the Debug Console panel — output log + REPL input.
+// Description: VM for the Debug Console panel â€” output log + REPL input.
 // ==========================================================
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
-public sealed class DebugConsolePanelViewModel : INotifyPropertyChanged
+public sealed class DebugConsolePanelViewModel : ViewModelBase
 {
     private readonly StringBuilder _buffer = new();
     private string _outputText = string.Empty;
@@ -44,7 +45,4 @@ public sealed class DebugConsolePanelViewModel : INotifyPropertyChanged
         OutputText = string.Empty;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? p = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }

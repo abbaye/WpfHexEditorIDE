@@ -1,6 +1,6 @@
 // Project      : WpfHexEditorControl
 // File         : ViewModels/DiffHubViewModel.cs
-// Description  : ViewModel for DiffHubPanel (launcher panel) — tracks both file paths,
+// Description  : ViewModel for DiffHubPanel (launcher panel) â€” tracks both file paths,
 //                runs comparisons, fires CompareCompleted so the plugin can open a
 //                DiffViewerDocument tab, and records comparison history.
 // Architecture : INPC, no WPF dependency.  Uses DiffEngine from WpfHexEditor.Core.Diff.
@@ -13,10 +13,11 @@ using System.Windows.Input;
 using WpfHexEditor.Core.Diff.Models;
 using WpfHexEditor.Core.Diff.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.FileComparison.ViewModels;
 
-public sealed class DiffHubViewModel : INotifyPropertyChanged
+public sealed class DiffHubViewModel : ViewModelBase
 {
     // ── Backing fields ────────────────────────────────────────────────────────
     private string  _file1Path   = string.Empty;
@@ -120,7 +121,7 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
         var ct = _cts.Token;
 
         IsComparing = true;
-        StatusText  = "Comparing…";
+        StatusText  = "Comparingâ€¦";
         LastResult  = null;
 
         try
@@ -154,12 +155,12 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
     private void BuildStatusText(DiffEngineResult result)
     {
         if (result.TextResult is { } text)
-            StatusText = $"Text diff — {text.Stats.ModifiedLines} modified, " +
+            StatusText = $"Text diff â€” {text.Stats.ModifiedLines} modified, " +
                          $"{text.Stats.InsertedLines} added, {text.Stats.DeletedLines} removed  " +
                          $"({SimilarityPercent}% similar)" +
                          (result.FallbackReason is not null ? $"  [{result.FallbackReason}]" : "");
         else if (result.BinaryResult is { } bin)
-            StatusText = $"Binary diff — {bin.Stats.TotalRegions} regions  " +
+            StatusText = $"Binary diff â€” {bin.Stats.TotalRegions} regions  " +
                          $"({SimilarityPercent}% similar)" +
                          (bin.Truncated ? "  [truncated]" : "");
     }
@@ -197,17 +198,10 @@ public sealed class DiffHubViewModel : INotifyPropertyChanged
         LastResult = null;
     }
 
-    private void NotifyOf(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    private void NotifyOf(string name) => OnPropertyChanged(name);
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }
 
 /// <summary>One entry in the comparison history list.</summary>

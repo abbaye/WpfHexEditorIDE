@@ -4,7 +4,7 @@
 // Author: Derek Tremblay
 // Created: 2026-03-17
 // Updated: 2026-03-19
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for the Resource Browser dockable panel.
 //     Provides a filterable, grouped view of application resources
@@ -22,13 +22,14 @@ using System.Windows.Threading;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
 /// <summary>
 /// ViewModel for the Resource Browser panel.
 /// </summary>
-public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
+public sealed class ResourceBrowserPanelViewModel : ViewModelBase
 {
     private readonly ResourceScannerService   _scanner        = new();
     private readonly ResourceUsageAnalyzer    _usageAnalyzer  = new();
@@ -235,10 +236,7 @@ public sealed class ResourceBrowserPanelViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── Private: filter ───────────────────────────────────────────────────────
 

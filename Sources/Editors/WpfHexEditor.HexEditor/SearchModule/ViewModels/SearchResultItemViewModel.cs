@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: SearchResultItemViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     for binding in SearchPanel and AdvancedSearchDialog result lists.
 //
 // Architecture Notes:
-//     MVVM pattern — wraps a core search result model for UI presentation.
+//     MVVM pattern â€” wraps a core search result model for UI presentation.
 //     Implements INotifyPropertyChanged for selected-state toggling.
 //
 // ==========================================================
@@ -22,6 +22,7 @@ using System.Text;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.Search.ViewModels
 {
@@ -29,7 +30,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
     /// ViewModel for a single search result item in the results list.
     /// Provides formatted display strings for position, context, etc.
     /// </summary>
-    public class SearchResultItemViewModel : INotifyPropertyChanged
+    public class SearchResultItemViewModel : ViewModelBase
     {
         private bool _isSelected;
 
@@ -230,12 +231,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
 

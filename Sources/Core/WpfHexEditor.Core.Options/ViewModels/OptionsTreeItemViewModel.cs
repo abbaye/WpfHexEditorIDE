@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -7,6 +7,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.Options.ViewModels;
 
@@ -14,7 +15,7 @@ namespace WpfHexEditor.Core.Options.ViewModels;
 /// ViewModel for a single item in the Options TreeView.
 /// Can represent either a category (with children) or a leaf page.
 /// </summary>
-public sealed class OptionsTreeItemViewModel : INotifyPropertyChanged
+public sealed class OptionsTreeItemViewModel : ViewModelBase
 {
     private bool _isExpanded = true;
     private bool _isSelected;
@@ -67,10 +68,7 @@ public sealed class OptionsTreeItemViewModel : INotifyPropertyChanged
 
     // -- INotifyPropertyChanged implementation -----------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {

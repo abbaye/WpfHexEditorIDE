@@ -9,7 +9,7 @@
 //     and INotifyPropertyChanged via CallerMemberName helper.
 //
 // Architecture Notes:
-//     Pattern: MVVM — abstract base for Composite tree nodes.
+//     Pattern: MVVM â€” abstract base for Composite tree nodes.
 //     Children is an ObservableCollection so the WPF TreeView can
 //     react to lazy-loading insertions in future phases.
 // ==========================================================
@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -25,14 +26,11 @@ namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 /// Abstract base for all Assembly Explorer tree node ViewModels.
 /// Concrete subclasses must supply <see cref="DisplayName"/> and <see cref="IconGlyph"/>.
 /// </summary>
-public abstract class AssemblyNodeViewModel : INotifyPropertyChanged
+public abstract class AssemblyNodeViewModel : ViewModelBase
 {
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -62,7 +60,7 @@ public abstract class AssemblyNodeViewModel : INotifyPropertyChanged
     /// </summary>
     public virtual bool IsPublic => true;
 
-    // Frozen default brush (neutral gray) — used by grouping/structural nodes.
+    // Frozen default brush (neutral gray) â€” used by grouping/structural nodes.
     private static readonly Brush _defaultBrush = MakeBrush("#9B9B9B");
 
     /// <summary>Creates and freezes a <see cref="SolidColorBrush"/> from a hex color string.</summary>
@@ -159,7 +157,7 @@ public abstract class AssemblyNodeViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// True when this node was selected via reverse Hex → Tree navigation
+    /// True when this node was selected via reverse Hex â†’ Tree navigation
     /// (i.e. the user moved the hex editor caret to the byte range of this member).
     /// The tree view uses this for a distinct highlight color (ASM-02-A).
     /// </summary>

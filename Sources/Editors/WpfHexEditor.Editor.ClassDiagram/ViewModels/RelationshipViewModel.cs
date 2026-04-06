@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/RelationshipViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -12,19 +12,20 @@
 //     Pattern: ViewModel wrapper (Adapter).
 //     ClassRelationship is a record; Kind and Label updates
 //     create new records via 'with'. The parent document list
-//     is not directly mutated here — the host replaces the entry.
+//     is not directly mutated here â€” the host replaces the entry.
 // ==========================================================
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// Observable wrapper around a <see cref="ClassRelationship"/> record.
 /// </summary>
-public sealed class RelationshipViewModel : INotifyPropertyChanged
+public sealed class RelationshipViewModel : ViewModelBase
 {
     private ClassRelationship _relationship;
     private bool _isSelected;
@@ -103,8 +104,5 @@ public sealed class RelationshipViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

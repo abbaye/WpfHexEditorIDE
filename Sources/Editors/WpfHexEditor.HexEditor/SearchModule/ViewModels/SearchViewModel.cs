@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: SearchViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     result collection, and navigation between search results.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Exposes async search with CancellationToken. Delegates to core search services.
 //
 // ==========================================================
@@ -27,6 +27,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.Properties;
 using WpfHexEditor.Core.Search.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.Search.ViewModels
 {
@@ -34,7 +35,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
     /// ViewModel for search operations with full MVVM support.
     /// Provides bindings for search UI controls and manages search state.
     /// </summary>
-    public class SearchViewModel : INotifyPropertyChanged
+    public class SearchViewModel : ViewModelBase
     {
         #region Fields
 
@@ -678,12 +679,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

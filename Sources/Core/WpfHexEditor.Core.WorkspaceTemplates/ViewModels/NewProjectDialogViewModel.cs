@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Core.WorkspaceTemplates
 // File: ViewModels/NewProjectDialogViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -6,9 +6,9 @@
 // Created: 2026-03-16
 // Description:
 //     ViewModel for the New Project dialog (3-step wizard):
-//       Step 1 — Template selection
-//       Step 2 — Project name + location
-//       Step 3 — Optional plugins
+//       Step 1 â€” Template selection
+//       Step 2 â€” Project name + location
+//       Step 3 â€” Optional plugins
 //
 // Architecture Notes:
 //     Pattern: Wizard / Stepper ViewModel.
@@ -22,13 +22,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.ProjectSystem.Languages;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.WorkspaceTemplates.ViewModels;
 
 /// <summary>
 /// ViewModel for the 3-step New Project wizard dialog.
 /// </summary>
-public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
+public sealed class NewProjectDialogViewModel : ViewModelBase
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -82,7 +83,7 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     }
 
     // -----------------------------------------------------------------------
-    // Step 1 — Template selection
+    // Step 1 â€” Template selection
     // -----------------------------------------------------------------------
 
     /// <summary>All available template categories for grouping in the list.</summary>
@@ -115,7 +116,7 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     }
 
     // -----------------------------------------------------------------------
-    // Step 2 — Name + Location
+    // Step 2 â€” Name + Location
     // -----------------------------------------------------------------------
 
     /// <summary>Project name entered by the user.</summary>
@@ -151,7 +152,7 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     }
 
     // -----------------------------------------------------------------------
-    // Step 3 — Optional plugins
+    // Step 3 â€” Optional plugins
     // -----------------------------------------------------------------------
 
     /// <summary>Optional plugin items the user can toggle on/off.</summary>
@@ -183,10 +184,7 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // -----------------------------------------------------------------------
     // Helpers
@@ -257,7 +255,7 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
 
 /// <summary>Represents an optional plugin the user may include in the new project.</summary>
 public sealed class OptionalPluginItem(string id, string displayName, bool isIncluded = false)
-    : INotifyPropertyChanged
+    : ViewModelBase
 {
     private bool _isIncluded = isIncluded;
 
@@ -267,8 +265,7 @@ public sealed class OptionalPluginItem(string id, string displayName, bool isInc
     public bool IsIncluded
     {
         get => _isIncluded;
-        set { _isIncluded = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsIncluded))); }
+        set { _isIncluded = value; OnPropertyChanged(nameof(IsIncluded)); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

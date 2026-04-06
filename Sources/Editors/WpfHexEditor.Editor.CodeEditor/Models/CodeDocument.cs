@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Custom CodeEditor - Document Model
 // Author : Claude Sonnet 4.5
@@ -27,13 +27,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         private string _filePath;
         private int _indentSize = 2; // Default 2 spaces for JSON
 
-        // Batch update support (P1-CE-04) — suppresses per-item CollectionChanged during bulk load
+        // Batch update support (P1-CE-04) â€” suppresses per-item CollectionChanged during bulk load
         private bool _suppressCollectionNotifications;
 
-        // Dirty-line tracking (P1-CE-07) — enables incremental validation
+        // Dirty-line tracking (P1-CE-07) â€” enables incremental validation
         private readonly HashSet<int> _dirtyLines = new();
 
-        // TotalCharacters incremental cache — avoids O(n) LINQ Sum on every property notification (OPT-PERF-03).
+        // TotalCharacters incremental cache â€” avoids O(n) LINQ Sum on every property notification (OPT-PERF-03).
         private int  _totalChars      = 0;
         private bool _totalCharsDirty = true;
 
@@ -431,7 +431,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
                 UpdateLineNumbers(start.Line);
 
-                // Notify listeners (undo engine, syntax highlighter, LSP, …) of the deletion.
+                // Notify listeners (undo engine, syntax highlighter, LSP, â€¦) of the deletion.
                 OnTextChanged(new TextChangedEventArgs
                 {
                     ChangeType = TextChangeType.Delete,
@@ -525,7 +525,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             OnPropertyChanged(nameof(TotalLines));
             OnPropertyChanged(nameof(TotalCharacters));
 
-            _dirtyLines.Clear(); // fresh load — no dirty lines
+            _dirtyLines.Clear(); // fresh load â€” no dirty lines
             IsModified = false;
             InvalidateAllCache();
 
@@ -603,7 +603,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         private void Lines_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // Suppressed during bulk load (P1-CE-04) — single notification fired at end of batch
+            // Suppressed during bulk load (P1-CE-04) â€” single notification fired at end of batch
             if (_suppressCollectionNotifications) return;
             _totalCharsDirty = true;
             OnPropertyChanged(nameof(TotalLines));
@@ -621,7 +621,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         {
             // Track changed line for incremental validation (P1-CE-07)
             _dirtyLines.Add(e.Position.Line);
-            _totalCharsDirty = true; // character count changed — invalidate cache (OPT-PERF-03)
+            _totalCharsDirty = true; // character count changed â€” invalidate cache (OPT-PERF-03)
             TextChanged?.Invoke(this, e);
         }
 
@@ -630,11 +630,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
 

@@ -3,8 +3,8 @@
 // File: XamlOutlinePanelViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-16
-// Updated: 2026-03-19 — Search highlight, element count, breadcrumb
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+// Updated: 2026-03-19 â€” Search highlight, element count, breadcrumb
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for the XAML Outline dockable panel.
 //     Rebuilds the element tree when the design canvas parses new XAML.
@@ -21,13 +21,14 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Xml.Linq;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
 /// <summary>
 /// ViewModel for the XAML Outline panel.
 /// </summary>
-public sealed class XamlOutlinePanelViewModel : INotifyPropertyChanged
+public sealed class XamlOutlinePanelViewModel : ViewModelBase
 {
     // ── Internal state ────────────────────────────────────────────────────────
 
@@ -172,12 +173,9 @@ public sealed class XamlOutlinePanelViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ── Private — search ──────────────────────────────────────────────────────
+    // ── Private â€” search ──────────────────────────────────────────────────────
 
     private void SearchHighlight(string text)
     {
@@ -210,7 +208,7 @@ public sealed class XamlOutlinePanelViewModel : INotifyPropertyChanged
         return node.IsMatch;
     }
 
-    // ── Private — element count ───────────────────────────────────────────────
+    // ── Private â€” element count ───────────────────────────────────────────────
 
     private static int CountElements(ObservableCollection<XamlOutlineNode> nodes)
     {
@@ -223,7 +221,7 @@ public sealed class XamlOutlinePanelViewModel : INotifyPropertyChanged
         return count;
     }
 
-    // ── Private — breadcrumb ──────────────────────────────────────────────────
+    // ── Private â€” breadcrumb ──────────────────────────────────────────────────
 
     private void RebuildBreadcrumb()
     {
@@ -238,7 +236,7 @@ public sealed class XamlOutlinePanelViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Private — find ────────────────────────────────────────────────────────
+    // ── Private â€” find ────────────────────────────────────────────────────────
 
     private static XamlOutlineNode? FindByPath(XamlOutlineNode node, string path)
     {

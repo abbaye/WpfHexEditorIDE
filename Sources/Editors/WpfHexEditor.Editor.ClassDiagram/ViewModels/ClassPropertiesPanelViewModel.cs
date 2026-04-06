@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/ClassPropertiesPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -19,13 +19,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// ViewModel for the diagram properties panel (F4).
 /// </summary>
-public sealed class ClassPropertiesPanelViewModel : INotifyPropertyChanged
+public sealed class ClassPropertiesPanelViewModel : ViewModelBase
 {
     private object? _selectedObject;
     private string _typeInfo = "No selection";
@@ -39,7 +40,7 @@ public sealed class ClassPropertiesPanelViewModel : INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
     /// <summary>
-    /// The object currently being inspected — either a <see cref="ClassNode"/>
+    /// The object currently being inspected â€” either a <see cref="ClassNode"/>
     /// or a <see cref="ClassMember"/>.
     /// </summary>
     public object? SelectedObject
@@ -151,8 +152,5 @@ public sealed class ClassPropertiesPanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

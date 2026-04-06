@@ -3,9 +3,9 @@
 // File: DesignHistoryPanelViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-18
-// Updated: 2026-03-19 — FilteredEntries, FilterText, HistorySizeLabel,
+// Updated: 2026-03-19 â€” FilteredEntries, FilterText, HistorySizeLabel,
 //                        HistoryCount, MaxHistory, ToggleCheckpointCommand
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for the Design History Panel.
 //     Mirrors the DesignUndoManager's history into an ObservableCollection
@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Input;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
@@ -49,7 +50,7 @@ public sealed class JumpToEntryEventArgs : EventArgs
 /// <summary>
 /// ViewModel for the VS-Like Design History dockable panel.
 /// </summary>
-public sealed class DesignHistoryPanelViewModel : INotifyPropertyChanged
+public sealed class DesignHistoryPanelViewModel : ViewModelBase
 {
     private const int DefaultMaxHistory = 200;
 
@@ -155,7 +156,7 @@ public sealed class DesignHistoryPanelViewModel : INotifyPropertyChanged
             _ =>
             {
                 var text = string.Join(Environment.NewLine,
-                    Entries.Select((e, i) => $"{i + 1}. [{(e.IsCheckpoint ? "★" : " ")}] {e.Description}"));
+                    Entries.Select((e, i) => $"{i + 1}. [{(e.IsCheckpoint ? "â˜…" : " ")}] {e.Description}"));
                 if (!string.IsNullOrEmpty(text))
                     Clipboard.SetText(text);
             },
@@ -249,8 +250,5 @@ public sealed class DesignHistoryPanelViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

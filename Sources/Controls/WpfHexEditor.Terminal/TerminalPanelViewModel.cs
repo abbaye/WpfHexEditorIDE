@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Terminal
 // File: TerminalPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -37,6 +37,7 @@ using WpfHexEditor.Core.Terminal.Scripting;
 using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Terminal;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Terminal;
 
@@ -45,7 +46,7 @@ namespace WpfHexEditor.Terminal;
 /// Exposes the session collection, active-session switching, macro recording controls,
 /// and per-session property proxies consumed by the Terminal XAML.
 /// </summary>
-public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
+public sealed class TerminalPanelViewModel : ViewModelBase, IDisposable
 {
     // -- Shared services ----------------------------------------------------------
 
@@ -471,7 +472,7 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _registry.Register(new WriteHexCommand());
         _registry.Register(new RunPluginCommand());
 
-        // Feature #92 — macro commands
+        // Feature #92 â€” macro commands
         _registry.Register(new RecordMacroCommand(_macroService));
         _registry.Register(new ReplayHistoryCommand(
             _macroService,
@@ -506,10 +507,7 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
 
     // -- INotifyPropertyChanged ---------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // -- IDisposable --------------------------------------------------------------
 

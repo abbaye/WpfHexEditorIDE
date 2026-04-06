@@ -12,11 +12,12 @@ using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Git.ViewModels;
 
 /// <summary>Row in the changes list.</summary>
-public sealed class GitChangeRow : INotifyPropertyChanged
+public sealed class GitChangeRow : ViewModelBase
 {
     public string       FilePath { get; }
     public string       FileName { get; }
@@ -30,16 +31,15 @@ public sealed class GitChangeRow : INotifyPropertyChanged
         Kind     = entry.Kind;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 }
 
 /// <summary>ViewModel for the Git Changes panel.</summary>
-public sealed class GitChangesPanelViewModel : INotifyPropertyChanged
+public sealed class GitChangesPanelViewModel : ViewModelBase
 {
     private readonly IVersionControlService _vcs;
     private readonly IOutputService         _output;
     private bool   _isLoading;
-    private string _statusText = "Initializing…";
+    private string _statusText = "Initializingâ€¦";
 
     public ObservableCollection<GitChangeRow> StagedFiles   { get; } = [];
     public ObservableCollection<GitChangeRow> ModifiedFiles { get; } = [];
@@ -80,7 +80,7 @@ public sealed class GitChangesPanelViewModel : INotifyPropertyChanged
             var changes = await _vcs.GetChangedFilesAsync();
             PopulateGroups(changes);
             StatusText = _vcs.IsRepo
-                ? $"{_vcs.BranchName ?? "detached"}{(_vcs.IsDirty ? " ●" : "")}"
+                ? $"{_vcs.BranchName ?? "detached"}{(_vcs.IsDirty ? " â—" : "")}"
                 : "No repository";
         }
         catch (Exception ex)
@@ -156,7 +156,6 @@ public sealed class GitChangesPanelViewModel : INotifyPropertyChanged
         RefreshAsync();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropChanged([CallerMemberName] string? n = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+        => OnPropertyChanged(n);
 }

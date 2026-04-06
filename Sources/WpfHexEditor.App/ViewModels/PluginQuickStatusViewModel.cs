@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.App
 // File: PluginQuickStatusViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     state colors plus Manage and Install shortcut actions.
 //
 // Architecture Notes:
-//     Not MVVM-heavy on purpose — this is a transient popup VM with no
+//     Not MVVM-heavy on purpose â€” this is a transient popup VM with no
 //     persistent state. It reads a snapshot from WpfPluginHost on construction
 //     and refreshes on demand via Refresh().
 // ==========================================================
@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.PluginHost;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.App.ViewModels;
 
@@ -38,13 +39,12 @@ public sealed class QuickPluginRow
 /// <summary>
 /// ViewModel for <see cref="Controls.PluginQuickStatusPopup"/>.
 /// </summary>
-public sealed class PluginQuickStatusViewModel : INotifyPropertyChanged
+public sealed class PluginQuickStatusViewModel : ViewModelBase
 {
     private readonly WpfPluginHost _host;
     private readonly Action _onManage;
     private readonly Action _onInstall;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginQuickStatusViewModel(WpfPluginHost host, Action onManage, Action onInstall)
     {
@@ -95,7 +95,7 @@ public sealed class PluginQuickStatusViewModel : INotifyPropertyChanged
         var faults = plugins.Count(p => p.State == PluginState.Faulted);
 
         SummaryText = faults > 0
-            ? $"{faults} fault{(faults == 1 ? "" : "s")} — {loaded}/{plugins.Count} running"
+            ? $"{faults} fault{(faults == 1 ? "" : "s")} â€” {loaded}/{plugins.Count} running"
             : plugins.Count == 0
                 ? "No plugins loaded"
                 : $"{loaded}/{plugins.Count} plugins running";
@@ -132,8 +132,6 @@ public sealed class PluginQuickStatusViewModel : INotifyPropertyChanged
         _                        => "#9CA3AF"
     };
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 /// <summary>Minimal relay command for the popup VM.</summary>

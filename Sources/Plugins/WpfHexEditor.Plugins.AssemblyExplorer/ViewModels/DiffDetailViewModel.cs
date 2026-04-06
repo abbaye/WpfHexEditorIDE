@@ -11,7 +11,7 @@
 //     diff via DiffTextService.
 //
 // Architecture Notes:
-//     Pattern: MVVM — populated by AssemblyDiffViewModel.SelectedDiffEntry setter.
+//     Pattern: MVVM â€” populated by AssemblyDiffViewModel.SelectedDiffEntry setter.
 //     Decompilation runs on a background Task to avoid blocking the UI thread.
 //     CancellationTokenSource is recreated on each selection to cancel stale loads.
 // ==========================================================
@@ -20,22 +20,20 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
 /// <summary>
 /// Provides decompiled code and unified diff for the selected diff entry.
 /// </summary>
-public sealed class DiffDetailViewModel : INotifyPropertyChanged
+public sealed class DiffDetailViewModel : ViewModelBase
 {
     private CancellationTokenSource? _cts;
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -168,7 +166,7 @@ public sealed class DiffDetailViewModel : INotifyPropertyChanged
             if (type is null)
                 return $"// Type '{entry.TypeFullName}' not found";
 
-            // Emit the full type skeleton — both for type-level and member-level entries.
+            // Emit the full type skeleton â€” both for type-level and member-level entries.
             // This gives meaningful context regardless of entry kind.
             var emitter = new CSharpSkeletonEmitter();
             return emitter.EmitType(type);

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Sample.CodeEditor
 // File: ViewModels/MainViewModel.cs
 // Author: Auto
@@ -9,7 +9,7 @@
 //     exposes them to the XAML via INotifyPropertyChanged.
 //
 // Architecture Notes:
-//     Pattern: MVVM ViewModel — thin adapter between CodeEditorSplitHost
+//     Pattern: MVVM ViewModel â€” thin adapter between CodeEditorSplitHost
 //     events and WPF data-binding. No business logic here.
 //     Theme: CurrentThemeName drives the menu radio-checkmarks and
 //     toolbar toggle; IsDarkTheme is a convenience bool for the toolbar.
@@ -17,23 +17,23 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Sample.CodeEditor.ViewModels;
 
 /// <summary>
 /// Bindable state for the code editor sample main window.
 /// </summary>
-public sealed class MainViewModel : INotifyPropertyChanged
+public sealed class MainViewModel : ViewModelBase
 {
     // -- INotifyPropertyChanged ---------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private bool Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        OnPropertyChanged(name);
         return true;
     }
 
@@ -105,7 +105,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         set
         {
             Set(ref _zoomLevel, value);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ZoomPercent)));
+            OnPropertyChanged(nameof(ZoomPercent));
         }
     }
 
@@ -132,9 +132,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
         set
         {
             Set(ref _currentThemeName, value);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDarkTheme)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsLightTheme)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ThemeLabel)));
+            OnPropertyChanged(nameof(IsDarkTheme));
+            OnPropertyChanged(nameof(IsLightTheme));
+            OnPropertyChanged(nameof(ThemeLabel));
         }
     }
 
@@ -164,8 +164,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
             : "Untitled";
 
         Title = IsDirty
-            ? $"{fileName}* — CodeEditor Sample"
-            : $"{fileName} — CodeEditor Sample";
+            ? $"{fileName}* â€” CodeEditor Sample"
+            : $"{fileName} â€” CodeEditor Sample";
     }
 
     /// <summary>Updates title, dirty flag, and file path after a file is opened.</summary>

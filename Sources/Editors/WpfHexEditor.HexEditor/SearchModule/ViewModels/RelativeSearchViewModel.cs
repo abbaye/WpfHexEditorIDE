@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: RelativeSearchViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     configurable relative direction and distance constraints.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Uses CancellationToken for async search cancellability.
 //
 // ==========================================================
@@ -29,6 +29,7 @@ using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Search.Models;
 using WpfHexEditor.Core.Search.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.Search.ViewModels
 {
@@ -36,7 +37,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
     /// ViewModel for Relative Search dialog.
     /// Implements MVVM pattern with data binding and commands.
     /// </summary>
-    public class RelativeSearchViewModel : INotifyPropertyChanged
+    public class RelativeSearchViewModel : ViewModelBase
     {
         private ByteProvider _byteProvider;
         private TblStream _currentTbl;
@@ -413,12 +414,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         /// <summary>
         /// Property changed event for INotifyPropertyChanged.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

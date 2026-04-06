@@ -1,9 +1,9 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.XamlDesigner
 // File: KeyframeViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-17
-// Updated: 2026-03-22 — Moved from ViewModels/ to Models/
+// Updated: 2026-03-22 â€” Moved from ViewModels/ to Models/
 //                        (used by StoryboardSyncService and StoryboardExportService).
 // Description:
 //     Domain model representing a single animation keyframe on the timeline.
@@ -17,13 +17,14 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Models;
 
 /// <summary>
 /// A single keyframe on the animation timeline.
 /// </summary>
-public sealed class KeyframeViewModel : INotifyPropertyChanged
+public sealed class KeyframeViewModel : ViewModelBase
 {
     private TimeSpan _time;
     private string   _value = string.Empty;
@@ -68,8 +69,5 @@ public sealed class KeyframeViewModel : INotifyPropertyChanged
         "PowerEase"
     ];
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

@@ -2,7 +2,7 @@
 // Project: WpfHexEditor.PluginHost
 // File: UI/MarketplacePanelViewModel.cs
 // Description:
-//     ViewModel for the Marketplace dockable panel — v2.
+//     ViewModel for the Marketplace dockable panel â€” v2.
 //     3-tab layout: Browse / Installed / Updates.
 //     Orchestrates IMarketplaceService: search, install, uninstall,
 //     SHA-256 progress, update detection.
@@ -21,13 +21,14 @@ using WpfHexEditor.SDK;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginHost.UI;
 
 /// <summary>
-/// ViewModel for the Plugin Marketplace panel (v2 — Browse/Installed/Updates).
+/// ViewModel for the Plugin Marketplace panel (v2 â€” Browse/Installed/Updates).
 /// </summary>
-public sealed class MarketplacePanelViewModel : INotifyPropertyChanged
+public sealed class MarketplacePanelViewModel : ViewModelBase
 {
     private readonly IMarketplaceService _marketplace;
     private readonly WpfPluginHost       _host;
@@ -178,7 +179,7 @@ public sealed class MarketplacePanelViewModel : INotifyPropertyChanged
 
     private async Task LoadBrowseTabAsync()
     {
-        StatusText = "Loading marketplace…";
+        StatusText = "Loading marketplaceâ€¦";
         try
         {
             var listings = await _marketplace.SearchAsync(string.Empty).ConfigureAwait(false);
@@ -263,7 +264,7 @@ public sealed class MarketplacePanelViewModel : INotifyPropertyChanged
     {
         if (listing is null) return;
         IsInstalling = true;
-        StatusText = $"Uninstalling '{listing.Name}'…";
+        StatusText = $"Uninstalling '{listing.Name}'â€¦";
         try
         {
             var ok = await _marketplace.UninstallAsync(listing.ListingId).ConfigureAwait(false);
@@ -332,7 +333,7 @@ public sealed class MarketplacePanelViewModel : INotifyPropertyChanged
         if (dlg.ShowDialog() != true) return;
 
         IsInstalling = true;
-        StatusText = $"Installing {System.IO.Path.GetFileNameWithoutExtension(dlg.FileName)}…";
+        StatusText = $"Installing {System.IO.Path.GetFileNameWithoutExtension(dlg.FileName)}â€¦";
         try
         {
             var entry = await _host.InstallFromFileAsync(dlg.FileName).ConfigureAwait(false);
@@ -383,7 +384,7 @@ public sealed class MarketplacePanelViewModel : INotifyPropertyChanged
         {
             var result = await _marketplace.InstallAsync(listingId, progress).ConfigureAwait(false);
             await UIInvokeAsync(() => StatusText = result.Success
-                ? $"Installed successfully → {result.InstalledPath}"
+                ? $"Installed successfully â†’ {result.InstalledPath}"
                 : $"Install failed: {result.ErrorMessage}");
         }
         catch (Exception ex)
@@ -417,8 +418,5 @@ public sealed class MarketplacePanelViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.PluginHost.UI
 // File: PluginMiniChartViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -11,14 +11,15 @@
 //     detail pane and DataGrid inline columns.
 //
 // Architecture Notes:
-//     Observer pattern — pushed by PluginMonitoringViewModel
+//     Observer pattern â€” pushed by PluginMonitoringViewModel
 //     on every sampling tick via PushSample().
-//     Weighted CPU estimate: process CPU × (plugin AvgExecMs / sum all AvgExecMs).
+//     Weighted CPU estimate: process CPU Ã— (plugin AvgExecMs / sum all AvgExecMs).
 // ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -26,7 +27,7 @@ namespace WpfHexEditor.PluginHost.UI;
 /// Maintains a per-plugin rolling history of CPU% and Memory MB samples
 /// for rendering individual sparkline charts in the Plugin Monitor.
 /// </summary>
-public sealed class PluginMiniChartViewModel : INotifyPropertyChanged
+public sealed class PluginMiniChartViewModel : ViewModelBase
 {
     private const int MaxPoints = 60;
 
@@ -35,7 +36,6 @@ public sealed class PluginMiniChartViewModel : INotifyPropertyChanged
     private double _peakCpu;
     private long   _peakMemoryMb;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginMiniChartViewModel(string pluginId, string pluginName)
     {
@@ -121,6 +121,4 @@ public sealed class PluginMiniChartViewModel : INotifyPropertyChanged
         col.Add(pt);
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

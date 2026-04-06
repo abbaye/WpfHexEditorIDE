@@ -7,6 +7,7 @@
 //     ViewModel for the cross-assembly search panel (Phase 3).
 //     Exposes a debounced search (300ms) across all loaded assemblies
 //     using AssemblySearchService. Results link to tree navigation
+using WpfHexEditor.Core.ViewModels;
 //     and hex editor offset jumping.
 //
 // Architecture Notes:
@@ -32,7 +33,7 @@ namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 /// <summary>
 /// Represents a single result row in the cross-assembly search panel.
 /// </summary>
-public sealed class AssemblySearchResultViewModel : INotifyPropertyChanged
+public sealed class AssemblySearchResultViewModel : ViewModelBase
 {
     private readonly AssemblyExplorerViewModel _explorerVm;
 
@@ -59,7 +60,6 @@ public sealed class AssemblySearchResultViewModel : INotifyPropertyChanged
 
     public ICommand NavigateCommand { get; }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void Navigate()
     {
@@ -95,7 +95,7 @@ public sealed class AssemblySearchResultViewModel : INotifyPropertyChanged
 /// ViewModel for the cross-assembly search panel.
 /// Searches all loaded assemblies simultaneously with a debounced query.
 /// </summary>
-public sealed class AssemblySearchViewModel : INotifyPropertyChanged
+public sealed class AssemblySearchViewModel : ViewModelBase
 {
     private readonly AssemblyExplorerViewModel _explorerVm;
     private readonly DispatcherTimer           _debounceTimer;
@@ -130,10 +130,7 @@ public sealed class AssemblySearchViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -210,7 +207,7 @@ public sealed class AssemblySearchViewModel : INotifyPropertyChanged
         }
 
         IsSearching = true;
-        StatusText  = "Searching…";
+        StatusText  = "Searchingâ€¦";
 
         var assemblies = _explorerVm.GetLoadedAssemblyModels();
         if (assemblies.Count == 0)

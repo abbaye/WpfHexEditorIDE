@@ -1,21 +1,22 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.FileStatistics
 // File: FileStatisticsPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-06
 // Description:
-//     ViewModel for FileStatisticsPanel — exposes file analysis
+//     ViewModel for FileStatisticsPanel â€” exposes file analysis
 //     results: size, entropy, byte composition, health, anomalies.
 // ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.FileStatistics.ViewModels;
 
-public sealed class FileStatisticsPanelViewModel : INotifyPropertyChanged
+public sealed class FileStatisticsPanelViewModel : ViewModelBase
 {
     private string  _fileName           = string.Empty;
     private string  _filePath           = string.Empty;
@@ -60,12 +61,5 @@ public sealed class FileStatisticsPanelViewModel : INotifyPropertyChanged
         Anomalies.Clear();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }

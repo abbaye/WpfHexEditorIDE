@@ -1,21 +1,22 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.PatternAnalysis
 // File: PatternAnalysisPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-06
 // Description:
-//     ViewModel for PatternAnalysisPanel — exposes entropy, patterns,
+//     ViewModel for PatternAnalysisPanel â€” exposes entropy, patterns,
 //     anomalies, and histogram data for the binary analysis view.
 // ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.PatternAnalysis.ViewModels;
 
-public sealed class PatternAnalysisPanelViewModel : INotifyPropertyChanged
+public sealed class PatternAnalysisPanelViewModel : ViewModelBase
 {
     private string  _statusText  = "No data loaded";
     private string  _entropy     = string.Empty;
@@ -49,14 +50,7 @@ public sealed class PatternAnalysisPanelViewModel : INotifyPropertyChanged
         Anomalies.Clear();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }
 
 public sealed record PatternEntry(string Pattern, int Count, long FirstOffset, string Category);

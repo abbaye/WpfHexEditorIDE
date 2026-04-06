@@ -15,10 +15,11 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using WpfHexEditor.Editor.DocumentEditor.Controls;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.DocumentEditor.ViewModels;
 
-public sealed class DocumentSearchViewModel : INotifyPropertyChanged
+public sealed class DocumentSearchViewModel : ViewModelBase
 {
     private readonly DocumentModel          _model;
     private readonly DocumentCanvasRenderer _renderer;
@@ -188,13 +189,6 @@ public sealed class DocumentSearchViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 
     // ── Minimal RelayCommand (no SDK dep) ────────────────────────────────────
 

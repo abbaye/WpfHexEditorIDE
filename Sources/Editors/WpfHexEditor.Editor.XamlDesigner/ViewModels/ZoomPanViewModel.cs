@@ -18,13 +18,14 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.Editor.XamlDesigner.Controls;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.XamlDesigner.ViewModels;
 
 /// <summary>
 /// ViewModel for zoom and pan controls in the designer toolbar.
 /// </summary>
-public sealed class ZoomPanViewModel : INotifyPropertyChanged
+public sealed class ZoomPanViewModel : ViewModelBase
 {
     private readonly ZoomPanCanvas _canvas;
 
@@ -85,10 +86,7 @@ public sealed class ZoomPanViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 /// <summary>A named zoom preset for the zoom combobox.</summary>

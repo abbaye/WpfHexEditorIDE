@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/ClassOutlinePanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -20,13 +20,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// ViewModel for the Class Outline dockable panel.
 /// </summary>
-public sealed class ClassOutlinePanelViewModel : INotifyPropertyChanged
+public sealed class ClassOutlinePanelViewModel : ViewModelBase
 {
     private readonly ObservableCollection<ClassNodeViewModel> _nodes = [];
     private ClassNodeViewModel? _selectedNode;
@@ -119,8 +120,5 @@ public sealed class ClassOutlinePanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

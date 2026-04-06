@@ -23,6 +23,7 @@ using WpfHexEditor.Plugins.Debugger.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
@@ -31,7 +32,7 @@ public enum GroupByMode { None, File, Type, EnabledState, Project }
 /// <summary>Position of the detail panel relative to the breakpoint list.</summary>
 public enum DetailPanelLayout { Right, Bottom, Hidden }
 
-public sealed class BreakpointExplorerViewModel : INotifyPropertyChanged
+public sealed class BreakpointExplorerViewModel : ViewModelBase
 {
     private readonly IDebuggerService _debugger;
     private readonly IIDEHostContext? _context;
@@ -341,7 +342,4 @@ public sealed class BreakpointExplorerViewModel : INotifyPropertyChanged
 
     // ── INPC ─────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? p = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }

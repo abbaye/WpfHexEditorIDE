@@ -151,7 +151,8 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         // before we attempt the first refresh (mirrors ParsedFieldsPlugin pattern).
         _panel?.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)(() =>
         {
-            _isPanelVisible = _context?.UIRegistry.IsPanelVisible(PanelUiId) ?? false;
+            // Force visible so QueueOrRefresh executes immediately — panel is already rendered
+            _isPanelVisible = true;
 
             if (_context?.CodeEditor.IsActive == true)
             {
@@ -297,9 +298,9 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         var filePath = _context.CodeEditor.CurrentFilePath;
         var language = _context.CodeEditor.CurrentLanguage;
 
-        // Decompiled/virtual file: no real path — write content to a temp file
-        // so SourceOutlineEngine can read and parse it from disk.
-        if (string.IsNullOrEmpty(filePath))
+        // Decompiled/virtual file: path is null or does not exist on disk (e.g. "decompiled://...").
+        // Write content to a temp file so SourceOutlineEngine can parse it from disk.
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             filePath = WriteVirtualToTempFile(language);
 
         QueueOrRefresh(filePath, "code", language);

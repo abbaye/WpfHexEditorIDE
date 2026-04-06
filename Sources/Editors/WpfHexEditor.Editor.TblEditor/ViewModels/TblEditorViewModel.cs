@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.TblEditor.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.TblEditor.ViewModels;
 
@@ -19,7 +20,7 @@ namespace WpfHexEditor.Editor.TblEditor.ViewModels;
 /// Internal ViewModel for TblEditor.
 /// Manages the entry collection, filtering, undo/redo and async validation.
 /// </summary>
-internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
+internal sealed class TblEditorViewModel : ViewModelBase, IDisposable
 {
     // -- Undo / Redo --------------------------------------------------------
     private const int MaxUndoDepth = 100;
@@ -281,7 +282,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     private void ExecuteDelete() => DeleteSelected();
 
     /// <summary>
-    /// Returns the first single-byte hex slot ("00"–"FF") not already used by an existing entry.
+    /// Returns the first single-byte hex slot ("00"â€“"FF") not already used by an existing entry.
     /// Falls back to "00" if all 256 slots are taken.
     /// </summary>
     private string FindFirstFreeSlot()
@@ -360,7 +361,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
             var conflicts = await _conflictAnalyzer.AnalyzeConflictsAsync(_entries, ct);
             if (ct.IsCancellationRequested) return;
 
-            // Only the SHORT prefix entry is ambiguous — do not mark longer entries as conflicting.
+            // Only the SHORT prefix entry is ambiguous â€” do not mark longer entries as conflicting.
             // For duplicates, both entries are equally problematic.
             var conflictKeys = new HashSet<string>();
             foreach (var c in conflicts)
@@ -410,9 +411,6 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     }
 
     // -- INotifyPropertyChanged ---------------------------------------------
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // -- IDisposable --------------------------------------------------------
     public void Dispose()

@@ -4,7 +4,7 @@
 // Author: Derek Tremblay
 // Created: 2026-03-17
 // Updated: 2026-03-19
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for the Animation Timeline panel.
 //     Coordinates the AnimationPreviewService (playback) and
@@ -23,13 +23,14 @@ using System.Windows.Input;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
 /// <summary>
 /// ViewModel for the animation timeline dockable panel.
 /// </summary>
-public sealed class AnimationTimelinePanelViewModel : INotifyPropertyChanged
+public sealed class AnimationTimelinePanelViewModel : ViewModelBase
 {
     private readonly StoryboardSyncService    _syncService     = new();
     private readonly StoryboardExportService  _exportService   = new();
@@ -319,8 +320,5 @@ public sealed class AnimationTimelinePanelViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

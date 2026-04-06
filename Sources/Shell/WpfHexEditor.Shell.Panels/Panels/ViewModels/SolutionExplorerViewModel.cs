@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Shell.Panels.ViewModels;
 
@@ -57,7 +58,7 @@ public enum SearchMode
 /// Root view-model for <see cref="SolutionExplorerPanel"/>.
 /// Builds and synchronises the tree from an <see cref="ISolution"/>.
 /// </summary>
-public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
+public sealed class SolutionExplorerViewModel : ViewModelBase
 {
     // -- Flat-cache search node (pre-lowercased for zero-alloc matching) --------
 
@@ -83,14 +84,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     private ISolution? _solution;
     private string     _searchText   = "";
     private SearchMode _searchMode   = SearchMode.FileName;
-    private bool       _searchActive;   // true while a search (≥2 chars) is in effect
+    private bool       _searchActive;   // true while a search (â‰¥2 chars) is in effect
     private bool       _showAllFiles;
     private SortMode   _currentSort   = SortMode.None;
     private FilterMode _currentFilter = FilterMode.All;
 
     // -- Search async pipeline fields -----------------------------------------
 
-    // Captured at construction (UI thread) — used to dispatch back from Task.Run.
+    // Captured at construction (UI thread) â€” used to dispatch back from Task.Run.
     private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
     // Flat ordered list of all tree nodes; rebuilt after every Rebuild().
@@ -289,7 +290,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         if (string.IsNullOrWhiteSpace(_searchText) || _searchText.Trim().Length < 2)
         {
             // Only reset the tree if a search was previously active.
-            // If no search was running, the tree is already in its normal state — touching it
+            // If no search was running, the tree is already in its normal state â€” touching it
             // here would cause an unwanted full expansion when the user types the first char.
             if (_searchActive)
             {
@@ -320,8 +321,8 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         // Capture immutable locals before entering async context.
         var query = _searchText.ToLowerInvariant(); // single allocation per completed search
-        var mode  = _searchMode;                    // snapshot — mode may change while searching
-        var cache = _flatNodeCache;                  // volatile read — gets latest complete list
+        var mode  = _searchMode;                    // snapshot â€” mode may change while searching
+        var cache = _flatNodeCache;                  // volatile read â€” gets latest complete list
 
         var cts = new CancellationTokenSource();
         _searchCts = cts;
@@ -424,7 +425,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
                      .OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
             solutionNode.Children.Add(BuildSolutionFolderNode(folder, _solution));
 
-        // Unfoldered projects follow directly under the solution node — alphabetical.
+        // Unfoldered projects follow directly under the solution node â€” alphabetical.
         var startupId = _solution.StartupProject?.Id;
         foreach (var project in _solution.Projects
                      .Where(p => !folderedNames.Contains(p.Name))
@@ -446,12 +447,12 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         RestoreExpandedState(Roots);
 
         // On a fresh load (no prior expanded state) collapse the entire tree so the user
-        // starts from a clean slate — VS-like behaviour.  The active document's ancestors
+        // starts from a clean slate â€” VS-like behaviour.  The active document's ancestors
         // will be expanded automatically via SyncWithFile once a document is focused.
         if (isFreshLoad)
             CollapseAllExceptRoot(Roots);
 
-        // Cancel any in-flight search — the cache is about to be replaced.
+        // Cancel any in-flight search â€” the cache is about to be replaced.
         CancelSearch();
 
         // Build the flat search cache from the fully-populated tree.
@@ -475,7 +476,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         var cache = new List<FlatNode>(256);
         foreach (var root in Roots)
             PopulateCacheRecursive(root, parent: null, cache);
-        _flatNodeCache = cache; // volatile write — visible to background thread
+        _flatNodeCache = cache; // volatile write â€” visible to background thread
     }
 
     /// <summary>
@@ -569,7 +570,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Returns a stable string key for <paramref name="node"/> based on its
-    /// concrete type and domain identifier (folder ID, project ID, path …).
+    /// concrete type and domain identifier (folder ID, project ID, path â€¦).
     /// Returns <see langword="null"/> for node types that do not need state persistence.
     /// </summary>
     private static string? StableKeyFor(SolutionExplorerNodeVm node) => node switch
@@ -632,11 +633,11 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         var node      = new SolutionFolderNodeVm(folder, solution) { IsExpanded = true };
         var startupId = solution.StartupProject?.Id;
 
-        // Nested solution folders first (recursive) — alphabetical.
+        // Nested solution folders first (recursive) â€” alphabetical.
         foreach (var child in folder.Children.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
             node.Children.Add(BuildSolutionFolderNode(child, solution));
 
-        // Projects inside this folder — alphabetical.
+        // Projects inside this folder â€” alphabetical.
         foreach (var projectName in folder.ProjectIds.OrderBy(n => n, StringComparer.OrdinalIgnoreCase))
         {
             var project = solution.Projects.FirstOrDefault(p => p.Name == projectName);
@@ -649,7 +650,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             node.Children.Add(projNode);
         }
 
-        // Loose file items (README.md, .editorconfig, etc.) — alphabetical, after projects.
+        // Loose file items (README.md, .editorconfig, etc.) â€” alphabetical, after projects.
         if (folder.FileItems is { Count: > 0 })
         {
             var solutionDir = System.IO.Path.GetDirectoryName(solution.FilePath) ?? "";
@@ -664,7 +665,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         var node = new ProjectNodeVm(project);
 
-        // References section — only for projects that expose typed references (e.g. VS projects).
+        // References section â€” only for projects that expose typed references (e.g. VS projects).
         if (project is IProjectWithReferences refs)
         {
             var refsNode = BuildReferencesNode(refs);
@@ -680,7 +681,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         foreach (var folder in project.RootFolders)
             node.Children.Add(BuildFolderNode(folder, project));
 
-        // Loose items — apply nesting within the loose-items scope
+        // Loose items â€” apply nesting within the loose-items scope
         var looseItems = project.Items
             .Where(i => !inFolder.Contains(i.Id))
             .ToList();
@@ -722,17 +723,17 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             container.Children.Add(analyzers);
         }
 
-        // 2. Project-to-project references — sorted alphabetically.
+        // 2. Project-to-project references â€” sorted alphabetically.
         foreach (var path in refs.ProjectReferences
             .OrderBy(p => System.IO.Path.GetFileNameWithoutExtension(p), StringComparer.OrdinalIgnoreCase))
             container.Children.Add(new ProjectReferenceNodeVm(path));
 
-        // 3. NuGet / package references — sorted alphabetically by Id.
+        // 3. NuGet / package references â€” sorted alphabetically by Id.
         foreach (var pkg in refs.PackageReferences
             .OrderBy(p => p.Id, StringComparer.OrdinalIgnoreCase))
             container.Children.Add(new PackageReferenceNodeVm(pkg));
 
-        // 4. Assembly references — BCL/framework first, then external DLLs, all alphabetical.
+        // 4. Assembly references â€” BCL/framework first, then external DLLs, all alphabetical.
         foreach (var asm in refs.AssemblyReferences
             .OrderByDescending(r => r.IsFrameworkRef)
             .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase))
@@ -806,7 +807,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         var node         = new DependentFileNodeVm(item, project) { SupportsExpansion = canExpand };
 
         // Inject a LoadingNodeVm sentinel so the dep file also shows an expand arrow.
-        // Start collapsed — outline loads lazily on first expand.
+        // Start collapsed â€” outline loads lazily on first expand.
         if (canExpand)
         {
             node.IsExpanded = false;
@@ -817,14 +818,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     }
 
     // -------------------------------------------------------------------------
-    // FileNestingDetector — pure utility, no state
+    // FileNestingDetector â€” pure utility, no state
     // -------------------------------------------------------------------------
 
     /// <summary>
     /// Classifies a flat list of <see cref="IProjectItem"/>s within one scope
     /// (folder or loose-items list) into parent items and their dependent children
     /// by applying VS-like naming conventions.
-    /// O(n) per scope — uses a name→item dictionary for O(1) parent lookups.
+    /// O(n) per scope â€” uses a nameâ†’item dictionary for O(1) parent lookups.
     /// </summary>
     private static class FileNestingDetector
     {
@@ -834,7 +835,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             public HashSet<string> DependentNames { get; }
                 = new(StringComparer.OrdinalIgnoreCase);
 
-            /// <summary>Maps parent item name → ordered list of dependent items.</summary>
+            /// <summary>Maps parent item name â†’ ordered list of dependent items.</summary>
             public Dictionary<string, List<IProjectItem>> ParentToChildren { get; }
                 = new(StringComparer.OrdinalIgnoreCase);
         }
@@ -873,14 +874,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             string name,
             Dictionary<string, IProjectItem> nameMap)
         {
-            // Rule 1 — multi-extension: strip last extension and check
-            // e.g. "Foo.xaml.cs" → try "Foo.xaml"; "Foo.xaml.vb" → try "Foo.xaml"
+            // Rule 1 â€” multi-extension: strip last extension and check
+            // e.g. "Foo.xaml.cs" â†’ try "Foo.xaml"; "Foo.xaml.vb" â†’ try "Foo.xaml"
             var inner = StripLastExtension(name);
             if (!string.Equals(inner, name, StringComparison.OrdinalIgnoreCase)
                 && nameMap.ContainsKey(inner))
                 return inner;
 
-            // Rule 2 — .Designer.cs / .designer.cs → check several candidate parents
+            // Rule 2 â€” .Designer.cs / .designer.cs â†’ check several candidate parents
             if (name.EndsWith(".Designer.cs", StringComparison.OrdinalIgnoreCase))
             {
                 var baseName = name[..^".Designer.cs".Length];
@@ -891,7 +892,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
                 }
             }
 
-            // Rule 3 — .settings.cs → .settings
+            // Rule 3 â€” .settings.cs â†’ .settings
             if (name.EndsWith(".settings.cs", StringComparison.OrdinalIgnoreCase))
             {
                 var candidate = name[..^".cs".Length]; // "Foo.settings"
@@ -901,7 +902,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             return null;
         }
 
-        /// <summary>Strips the last extension: "Foo.xaml.cs" → "Foo.xaml".</summary>
+        /// <summary>Strips the last extension: "Foo.xaml.cs" â†’ "Foo.xaml".</summary>
         private static string StripLastExtension(string name)
         {
             var dot = name.LastIndexOf('.');
@@ -970,7 +971,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// <summary>
     /// Marks or clears the <see cref="FileNodeVm.IsModifiedExternally"/> flag for
     /// the node whose backing item has <paramref name="fullPath"/> as its absolute path.
-    /// Safe to call from any thread — walks the tree on the calling thread.
+    /// Safe to call from any thread â€” walks the tree on the calling thread.
     /// </summary>
     public void SetFileModifiedExternally(string fullPath, bool modified)
     {
@@ -983,7 +984,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         foreach (var node in nodes)
         {
-            // Match FileNodeVm or DependentFileNodeVm — allows SyncWithFile to highlight
+            // Match FileNodeVm or DependentFileNodeVm â€” allows SyncWithFile to highlight
             // code-behind files (e.g. App.xaml.cs) that are nested under their parent XAML node.
             string? nodePath = node switch
             {
@@ -1018,7 +1019,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         node.IsSelected = true;
 
-        // Expand ancestors so the node is visible (but NOT the node itself —
+        // Expand ancestors so the node is visible (but NOT the node itself â€”
         // file-level expansion is always user-initiated).
         ExpandAncestors(Roots, node);
 
@@ -1046,7 +1047,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         if (_currentSort == SortMode.None) return;
 
-        // References and Properties are always pinned at the top — only the rest is sorted.
+        // References and Properties are always pinned at the top â€” only the rest is sorted.
         var pinned   = children.Where(IsPinnedNode).ToList();
         var sortable = children.Where(n => !IsPinnedNode(n)).ToList();
 
@@ -1124,7 +1125,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
         catch (OperationCanceledException)
         {
-            return; // superseded by a newer search — do nothing
+            return; // superseded by a newer search â€” do nothing
         }
 
         // Return to UI thread; pass the token so a Rebuild() cancellation skips the apply.
@@ -1173,7 +1174,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             globRegex = GlobToRegex(lowerQuery);
         }
 
-        // Build parent-lookup once — O(n).  ReferenceEqualityComparer avoids
+        // Build parent-lookup once â€” O(n).  ReferenceEqualityComparer avoids
         // string allocations and is correct because each node is a unique object.
         var parentMap = new Dictionary<SolutionExplorerNodeVm, SolutionExplorerNodeVm?>(
             cache.Count,
@@ -1265,28 +1266,28 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     /// of the old recursive approach.
     /// <para>
     /// <b>Critical guard:</b> <see cref="FileNodeVm"/> and <see cref="DependentFileNodeVm"/>
-    /// must never be expanded by search — doing so triggers
-    /// <c>OnTreeItemExpanded</c> → <c>LoadSourceOutlineAsync</c>.
+    /// must never be expanded by search â€” doing so triggers
+    /// <c>OnTreeItemExpanded</c> â†’ <c>LoadSourceOutlineAsync</c>.
     /// These nodes are visible when their parent folder is expanded; they need no
     /// <c>IsExpanded</c> change of their own.
     /// </para>
     /// </summary>
     private void ApplySearchResultBatch(HashSet<SolutionExplorerNodeVm> matchedAndAncestors)
     {
-        var cache = _flatNodeCache; // volatile read — use the same list that was searched
+        var cache = _flatNodeCache; // volatile read â€” use the same list that was searched
         foreach (var flat in cache)
         {
             var inSet = matchedAndAncestors.Contains(flat.Node);
 
             // Visibility: only fire PropertyChanged for nodes whose parent is already visible.
             // If the parent is NOT in the set, IsExpanded=false already hides all its children
-            // via the ControlTemplate trigger — firing PropertyChanged on those descendants is
+            // via the ControlTemplate trigger â€” firing PropertyChanged on those descendants is
             // a wasted WPF DataTrigger evaluation for each live TreeViewItem container.
             var parentVisible = flat.Parent is null || matchedAndAncestors.Contains(flat.Parent);
             if (parentVisible && flat.Node.IsSearchVisible != inSet)
                 flat.Node.IsSearchVisible = inSet;
 
-            // Expansion: containers only — never set IsExpanded on file nodes (triggers lazy outline load).
+            // Expansion: containers only â€” never set IsExpanded on file nodes (triggers lazy outline load).
             if (flat.Node is FileNodeVm or DependentFileNodeVm) continue;
             if (flat.Node.IsExpanded != inSet)
                 flat.Node.IsExpanded = inSet;
@@ -1328,10 +1329,10 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     {
         foreach (var n in nodes)
         {
-            // Restore visibility unconditionally — nodes may have been hidden during search.
+            // Restore visibility unconditionally â€” nodes may have been hidden during search.
             n.IsSearchVisible = true;
 
-            // File and dependent-file nodes must stay collapsed — expanding them triggers
+            // File and dependent-file nodes must stay collapsed â€” expanding them triggers
             // lazy outline loading which must remain user-initiated.
             if (n is FileNodeVm or DependentFileNodeVm)
             {
@@ -1403,7 +1404,4 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     // -- INPC -----------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

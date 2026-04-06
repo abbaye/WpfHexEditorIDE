@@ -12,7 +12,7 @@
 //
 // Architecture Notes:
 //     Pattern:    MVVM with INotifyPropertyChanged
-//     Mutation:   CsprojReferenceWriter (pure XDocument — same pattern as CsprojPackageWriter)
+//     Mutation:   CsprojReferenceWriter (pure XDocument â€” same pattern as CsprojPackageWriter)
 //     Event:      ProjectModified raised after every write-back for SE tree refresh.
 // ==========================================================
 
@@ -25,6 +25,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.ProjectSystem.Services.References;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.ProjectSystem.Documents.References;
 
@@ -34,7 +35,7 @@ namespace WpfHexEditor.Core.ProjectSystem.Documents.References;
 public enum ReferenceKind { Project, Assembly, Package, Analyzer }
 
 /// <summary>Single reference entry shown in the Reference Manager list.</summary>
-public sealed class ReferenceEntryVm : INotifyPropertyChanged
+public sealed class ReferenceEntryVm : ViewModelBase
 {
     private bool _isSelected;
 
@@ -54,15 +55,12 @@ public sealed class ReferenceEntryVm : INotifyPropertyChanged
         set { _isSelected = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // ── Group ViewModel ───────────────────────────────────────────────────────────
 
 /// <summary>Category group (Project References / Assemblies / Packages / Analyzers).</summary>
-public sealed class ReferenceGroupVm : INotifyPropertyChanged
+public sealed class ReferenceGroupVm : ViewModelBase
 {
     private bool _isExpanded = true;
 
@@ -76,15 +74,12 @@ public sealed class ReferenceGroupVm : INotifyPropertyChanged
         set { _isExpanded = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // ── Main ViewModel ────────────────────────────────────────────────────────────
 
 /// <summary>ViewModel for <see cref="ReferenceManagerDocument"/>.</summary>
-public sealed class ReferenceManagerViewModel : INotifyPropertyChanged
+public sealed class ReferenceManagerViewModel : ViewModelBase
 {
     private readonly IProject   _project;
     private readonly ISolution? _solution;
@@ -171,7 +166,7 @@ public sealed class ReferenceManagerViewModel : INotifyPropertyChanged
             Groups.Add(g);
         }
 
-        // Assembly References (non-framework only by default — framework refs are system-managed)
+        // Assembly References (non-framework only by default â€” framework refs are system-managed)
         var asmRefs = refs.AssemblyReferences.Where(a => !a.IsFrameworkRef).ToList();
         if (asmRefs.Count > 0)
         {
@@ -189,7 +184,7 @@ public sealed class ReferenceManagerViewModel : INotifyPropertyChanged
             Groups.Add(g);
         }
 
-        // Package References (read-only — managed via NuGet Manager)
+        // Package References (read-only â€” managed via NuGet Manager)
         if (refs.PackageReferences.Count > 0)
         {
             var g = new ReferenceGroupVm { Header = "Packages (NuGet)", Icon = "\uE7B8", IsExpanded = false };
@@ -357,8 +352,8 @@ public sealed class ReferenceManagerViewModel : INotifyPropertyChanged
             return;
         }
 
-        var names = string.Join("\n  • ", unused.Select(a => a.Name));
-        if (MessageBox.Show($"Remove the following unused assembly references?\n\n  • {names}",
+        var names = string.Join("\n  â€¢ ", unused.Select(a => a.Name));
+        if (MessageBox.Show($"Remove the following unused assembly references?\n\n  â€¢ {names}",
                 "Remove Unused References", MessageBoxButton.OKCancel,
                 MessageBoxImage.Question) != MessageBoxResult.OK) return;
 
@@ -391,14 +386,11 @@ public sealed class ReferenceManagerViewModel : INotifyPropertyChanged
     {
         var total = Groups.Sum(g => g.Items.Count);
         var removable = Groups.Sum(g => g.Items.Count(e => e.IsRemovable));
-        StatusText = $"{total} reference{(total == 1 ? "" : "s")}  •  {removable} editable";
+        StatusText = $"{total} reference{(total == 1 ? "" : "s")}  â€¢  {removable} editable";
     }
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── Inner RelayCommand ────────────────────────────────────────────────────
 

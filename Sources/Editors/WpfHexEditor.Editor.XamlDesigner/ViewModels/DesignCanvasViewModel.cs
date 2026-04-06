@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.XamlDesigner
 // File: DesignCanvasViewModel.cs
 // Author: Derek Tremblay
@@ -13,13 +13,14 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.XamlDesigner.ViewModels;
 
 /// <summary>
 /// Settings for the XAML design canvas (grid, snap, rulers).
 /// </summary>
-public sealed class DesignCanvasViewModel : INotifyPropertyChanged
+public sealed class DesignCanvasViewModel : ViewModelBase
 {
     private bool   _showGrid       = true;
     private int    _gridSize       = 8;
@@ -63,8 +64,5 @@ public sealed class DesignCanvasViewModel : INotifyPropertyChanged
         set { if (_showRulers == value) return; _showRulers = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

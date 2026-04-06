@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/RelationshipsPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -19,13 +19,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// ViewModel for the diagram relationships dockable panel.
 /// </summary>
-public sealed class RelationshipsPanelViewModel : INotifyPropertyChanged
+public sealed class RelationshipsPanelViewModel : ViewModelBase
 {
     private readonly ObservableCollection<RelationshipViewModel> _relationships = [];
     private RelationshipViewModel? _selectedRelationship;
@@ -88,8 +89,5 @@ public sealed class RelationshipsPanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

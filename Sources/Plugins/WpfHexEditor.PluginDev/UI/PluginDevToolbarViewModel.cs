@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.PluginDev
 // File: UI/PluginDevToolbarViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -23,6 +23,7 @@ using WpfHexEditor.PluginDev.Build;
 using WpfHexEditor.PluginDev.Loading;
 using WpfHexEditor.PluginDev.Panels;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginDev.UI;
 
@@ -41,7 +42,7 @@ public enum PluginDevState
 /// ViewModel for <see cref="PluginDevToolbar"/>.
 /// Manages the build/load/unload lifecycle for the active plugin project.
 /// </summary>
-public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposable
+public sealed class PluginDevToolbarViewModel : ViewModelBase, IDisposable
 {
     // -----------------------------------------------------------------------
     // Fields
@@ -130,12 +131,12 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
     {
         if (ActiveProjectPath is null)
         {
-            _log.Add(LogLevel.Warning, "Toolbar", "No plugin project selected. Use File > New > Plugin Project… first.");
+            _log.Add(LogLevel.Warning, "Toolbar", "No plugin project selected. Use File > New > Plugin Projectâ€¦ first.");
             return;
         }
 
         State = PluginDevState.Building;
-        _log.Add(LogLevel.Info, "Toolbar", $"Building {System.IO.Path.GetFileName(ActiveProjectPath)}…");
+        _log.Add(LogLevel.Info, "Toolbar", $"Building {System.IO.Path.GetFileName(ActiveProjectPath)}â€¦");
 
         try
         {
@@ -144,12 +145,12 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
 
             if (!result.IsSuccess)
             {
-                _log.Add(LogLevel.Error, "Toolbar", $"Build failed — {result.Errors.Count} error(s).");
+                _log.Add(LogLevel.Error, "Toolbar", $"Build failed â€” {result.Errors.Count} error(s).");
                 State = PluginDevState.Error;
                 return;
             }
 
-            _log.Add(LogLevel.Info, "Toolbar", "Build succeeded — loading plugin…");
+            _log.Add(LogLevel.Info, "Toolbar", "Build succeeded â€” loading pluginâ€¦");
             _loader.LoadPlugin(result.OutputAssembly);
         }
         catch (Exception ex)
@@ -171,7 +172,7 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
             _loader.UnloadPlugin();
 
         State = PluginDevState.Building;
-        _log.Add(LogLevel.Info, "Toolbar", "Rebuilding…");
+        _log.Add(LogLevel.Info, "Toolbar", "Rebuildingâ€¦");
 
         try
         {
@@ -180,7 +181,7 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
 
             if (!result.IsSuccess)
             {
-                _log.Add(LogLevel.Error, "Toolbar", $"Rebuild failed — {result.Errors.Count} error(s).");
+                _log.Add(LogLevel.Error, "Toolbar", $"Rebuild failed â€” {result.Errors.Count} error(s).");
                 State = PluginDevState.Error;
                 return;
             }
@@ -199,7 +200,7 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
     {
         if (ActiveProjectPath is null) return;
 
-        _log.Add(LogLevel.Info, "Toolbar", "Hot-reload: rebuilding…");
+        _log.Add(LogLevel.Info, "Toolbar", "Hot-reload: rebuildingâ€¦");
         State = PluginDevState.Building;
 
         try
@@ -209,12 +210,12 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
 
             if (!result.IsSuccess)
             {
-                _log.Add(LogLevel.Error, "Toolbar", $"Hot-reload build failed — {result.Errors.Count} error(s).");
+                _log.Add(LogLevel.Error, "Toolbar", $"Hot-reload build failed â€” {result.Errors.Count} error(s).");
                 State = PluginDevState.Error;
                 return;
             }
 
-            _log.Add(LogLevel.Info, "Toolbar", "Hot-reload: reloading assembly…");
+            _log.Add(LogLevel.Info, "Toolbar", "Hot-reload: reloading assemblyâ€¦");
             _loader.ReloadPlugin(result.OutputAssembly);
         }
         catch (Exception ex)
@@ -272,9 +273,6 @@ public sealed class PluginDevToolbarViewModel : INotifyPropertyChanged, IDisposa
     // INotifyPropertyChanged
     // -----------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private static void InvalidateCommands()
         => System.Windows.Input.CommandManager.InvalidateRequerySuggested();

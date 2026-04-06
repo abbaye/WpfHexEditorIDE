@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: ReplaceByteViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     single-byte find-and-replace operations within the HexEditor.
 //
 // Architecture Notes:
-//     MVVM dialog ViewModel — implements INotifyPropertyChanged manually.
+//     MVVM dialog ViewModel â€” implements INotifyPropertyChanged manually.
 //     Uses RelayCommand from Commands/ for OK/Cancel actions.
 //
 // ==========================================================
@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.HexEditor.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {
@@ -28,7 +29,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
     /// Manages state and business logic for single-byte find/replace operations.
     /// Testable without UI dependencies.
     /// </summary>
-    public class ReplaceByteViewModel : INotifyPropertyChanged
+    public class ReplaceByteViewModel : ViewModelBase
     {
         #region Fields
 
@@ -163,7 +164,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
         public bool ReplaceByteValid => _replaceByte.HasValue;
 
         /// <summary>
-        /// Preview text showing the replacement (e.g., "0xFF → 0x42")
+        /// Preview text showing the replacement (e.g., "0xFF â†’ 0x42")
         /// </summary>
         public string PreviewText
         {
@@ -171,7 +172,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
             {
                 if (IsValid)
                 {
-                    return $"0x{_findByte:X2} → 0x{_replaceByte:X2}";
+                    return $"0x{_findByte:X2} â†’ 0x{_replaceByte:X2}";
                 }
                 return string.Empty;
             }
@@ -221,12 +222,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

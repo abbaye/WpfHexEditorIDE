@@ -1,4 +1,4 @@
-﻿// ==========================================================
+// ==========================================================
 // Project: WpfHexEditor.Core.Options
 // File: Pages/CodeEditorFormattingPage.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -38,7 +38,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
 {
     public event EventHandler? Changed;
 
-    // â”€â”€ Checkboxes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Checkboxes ────────────────────────────────────────────────────────
     private readonly CheckBox _formatOnSave;
     private readonly CheckBox _trimTrailing;
     private readonly CheckBox _insertFinalNewline;
@@ -54,7 +54,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
     private readonly CheckBox _skipOverClose;
     private readonly CheckBox _wrapSelection;
 
-    // â”€â”€ Preview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Preview ───────────────────────────────────────────────────────────
     private readonly FormattingPreviewPanel? _preview;
 
     // ruleId â†’ tooltip (lazy-initialised on first MouseEnter)
@@ -71,7 +71,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
     private AppSettings? _settings;
     private string?      _currentLangId;
 
-    // â”€â”€ Construction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Construction ─────────────────────────────────────────────────────
 
     /// <param name="colorizer">
     /// Optional colorizer for the live preview and tooltips.
@@ -185,13 +185,13 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         };
         stack.Children.Add(subtitle);
 
-        // â”€â”€ General â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── General ───────────────────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("GENERAL"));
 
         _formatOnSave = MakeCheckBox("Format on Save (Ctrl+S)", false, "formatOnSave", "Format on Save");
         stack.Children.Add(_formatOnSave);
 
-        // â”€â”€ Whitespace â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── Whitespace ────────────────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("WHITESPACE"));
 
         _trimTrailing = MakeThreeStateCheckBox("Trim trailing whitespace",
@@ -205,7 +205,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         stack.Children.Add(_trimTrailing);
         stack.Children.Add(_insertFinalNewline);
 
-        // â”€â”€ Spacing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── Spacing ───────────────────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("SPACING"));
 
         _spaceAfterKeywords = MakeThreeStateCheckBox(
@@ -226,7 +226,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         stack.Children.Add(_spaceAroundOperators);
         stack.Children.Add(_spaceAfterComma);
 
-        // â”€â”€ Structure â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── Structure ─────────────────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("STRUCTURE"));
 
         _indentCaseLabels = MakeThreeStateCheckBox("Indent case/when labels inside switch",
@@ -240,7 +240,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         stack.Children.Add(_indentCaseLabels);
         stack.Children.Add(_organizeImports);
 
-        // â”€â”€ Smart Editing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── Smart Editing ─────────────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("SMART EDITING"));
 
         _autoBrackets  = MakeCheckBox("Auto-close brackets, braces and parentheses", false, null, null);
@@ -291,7 +291,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         Content = outer;
     }
 
-    // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── IOptionsPage ─────────────────────────────────────────────────────
 
     public void Load(AppSettings s)
     {
@@ -341,7 +341,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             PersistLanguageOverrides(_currentLangId, ce.PerLanguageOverrides);
     }
 
-    // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Helpers ──────────────────────────────────────────────────────────
 
     private void OnChanged(object? sender, RoutedEventArgs e)
     {

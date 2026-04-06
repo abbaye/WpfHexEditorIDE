@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.SynalysisGrammar
 // File: ViewModels/GrammarSelectorViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -25,13 +25,14 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.Core.SynalysisGrammar;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.SynalysisGrammar.ViewModels;
 
 /// <summary>
 /// ViewModel for the Grammar Explorer dockable panel.
 /// </summary>
-public sealed class GrammarSelectorViewModel : INotifyPropertyChanged
+public sealed class GrammarSelectorViewModel : ViewModelBase
 {
     private readonly SynalysisGrammarRepository       _repository;
     private readonly Action<GrammarEntryViewModel>    _applyCallback;
@@ -228,8 +229,5 @@ public sealed class GrammarSelectorViewModel : INotifyPropertyChanged
 
     // -- INotifyPropertyChanged --------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

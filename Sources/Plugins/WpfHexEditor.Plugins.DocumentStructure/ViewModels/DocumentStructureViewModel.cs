@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using WpfHexEditor.Core.DocumentStructure;
 using WpfHexEditor.SDK.ExtensionPoints.DocumentStructure;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.DocumentStructure.ViewModels;
 
@@ -27,7 +28,7 @@ public enum SortMode { SourceOrder, Alphabetical, ByKind }
 /// <summary>
 /// ViewModel for the Document Structure panel.
 /// </summary>
-public sealed class DocumentStructureViewModel : INotifyPropertyChanged
+public sealed class DocumentStructureViewModel : ViewModelBase
 {
     private readonly DocumentStructureProviderResolver _resolver;
     private readonly Dispatcher _dispatcher;
@@ -67,7 +68,7 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
             if (SetField(ref _currentSort, value))
             {
                 ApplySort(value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SortModeIndex)));
+                OnPropertyChanged(nameof(SortModeIndex));
             }
         }
     }
@@ -117,9 +118,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         _dispatcher = Dispatcher.CurrentDispatcher;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Debounced Refresh
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     /// <summary>Queues a debounced refresh (300ms).</summary>
     public void QueueRefresh(string? filePath, string? documentType, string? language)
@@ -202,9 +203,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         IsLoading = false;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Filtering
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     private void ApplyFilter(string text)
     {
@@ -257,9 +258,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         return (matchCount, totalCount);
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Sorting
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     private void ApplySort(SortMode mode)
     {
@@ -312,9 +313,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         _           => 20,
     };
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Tree / Flat
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     private void RebuildTreeFromSource(IReadOnlyList<StructureNodeVm> source)
     {
@@ -338,9 +339,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Caret Tracking
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     /// <summary>Updates the highlighted node to match the caret line. Throttled to 100ms.</summary>
     public void UpdateCaretHighlight(int line)
@@ -379,7 +380,7 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
             }
         }
 
-        // No range match — find closest by StartLine only
+        // No range match â€” find closest by StartLine only
         StructureNodeVm? closest = null;
         foreach (var node in nodes)
         {
@@ -396,9 +397,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
     public void OnNodeActivated(StructureNodeVm node)
         => NavigateRequested?.Invoke(this, node);
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Auto-Expand
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     private void AutoExpand(IReadOnlyList<StructureNodeVm> nodes, int depth)
     {
@@ -412,9 +413,9 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Helpers
-    // ══════════════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     private static int CountNodes(IReadOnlyList<DocumentStructureNode> nodes)
     {
@@ -447,13 +448,12 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
 
     // ── INPC ────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        OnPropertyChanged(name);
         return true;
     }
 }

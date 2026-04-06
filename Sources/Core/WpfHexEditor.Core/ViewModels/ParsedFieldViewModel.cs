@@ -7,6 +7,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Core.ViewModels
 {
@@ -14,7 +15,7 @@ namespace WpfHexEditor.Core.ViewModels
     /// ViewModel representing a single parsed field from a format definition
     /// Displays field name, offset, length, value, and formatting information
     /// </summary>
-    public class ParsedFieldViewModel : INotifyPropertyChanged
+    public class ParsedFieldViewModel : ViewModelBase
     {
         private string _name;
         private long _offset;
@@ -549,12 +550,6 @@ namespace WpfHexEditor.Core.ViewModels
         /// </summary>
         public event System.EventHandler<FieldValueEditedEventArgs> ValueEdited;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         protected virtual void OnValueEdited()
         {

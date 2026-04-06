@@ -17,13 +17,14 @@ using System.Windows.Input;
 using WpfHexEditor.Plugins.ScriptRunner.Options;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.ScriptRunner.ViewModels;
 
 /// <summary>
 /// View-model for the ScriptRunner dockable panel.
 /// </summary>
-public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
+public sealed class ScriptRunnerViewModel : ViewModelBase
 {
     private readonly IScriptingService? _scripting;
 
@@ -97,7 +98,7 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
         if (string.IsNullOrEmpty(code)) return;
 
         IsRunning  = true;
-        StatusText = "Running…";
+        StatusText = "Runningâ€¦";
         if (ScriptRunnerOptions.Instance.AutoClearOnNewSession)
             Output = string.Empty;
 
@@ -114,14 +115,14 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
 
             foreach (var diag in result.Diagnostics)
             {
-                var prefix = diag.IsWarning ? "⚠ Warning" : "✗ Error";
+                var prefix = diag.IsWarning ? "âš  Warning" : "âœ— Error";
                 sb.AppendLine($"{prefix} ({diag.Line},{diag.Column}): {diag.Message}");
             }
 
             Output     = sb.ToString().TrimEnd();
             StatusText = result.Success
-                ? $"Done — {result.Duration.TotalMilliseconds:F0} ms"
-                : $"Failed — {result.Diagnostics.Count(d => !d.IsWarning)} error(s)";
+                ? $"Done â€” {result.Duration.TotalMilliseconds:F0} ms"
+                : $"Failed â€” {result.Diagnostics.Count(d => !d.IsWarning)} error(s)";
 
             AddToHistory(code);
         }
@@ -131,8 +132,8 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            Output     = $"✗ Unexpected error: {ex.Message}";
-            StatusText = "Error — see output.";
+            Output     = $"âœ— Unexpected error: {ex.Message}";
+            StatusText = "Error â€” see output.";
         }
         finally
         {
@@ -145,7 +146,7 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
     private void Cancel()
     {
         _runCts?.Cancel();
-        StatusText = "Cancelling…";
+        StatusText = "Cancellingâ€¦";
     }
 
     private void ClearOutput()
@@ -165,16 +166,12 @@ public sealed class ScriptRunnerViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── Defaults ──────────────────────────────────────────────────────────────
 
     private const string DefaultCode =
         """
-        // C# scripting — IDE services are available directly:
+        // C# scripting â€” IDE services are available directly:
         //   HexEditor, Documents, Output
         //   Use Print("...") to write to this output pane.
 

@@ -15,6 +15,7 @@
 //     Debounce: 300ms CancellationTokenSource pattern on SearchText setter
 //     Write-back: CsprojPackageWriter (pure XDocument manipulation)
 //     Pagination: LoadMoreCommand appends results using _currentSkip offset
+using WpfHexEditor.Core.ViewModels;
 //     Event: ProjectModified raised after every write-back so MainWindow
 //            can reload the VsProject and refresh the Solution Explorer.
 // ==========================================================
@@ -32,7 +33,7 @@ namespace WpfHexEditor.Core.ProjectSystem.Documents.NuGet;
 /// <summary>
 /// ViewModel for <see cref="NuGetManagerDocument"/>.
 /// </summary>
-public sealed class NuGetManagerViewModel : INotifyPropertyChanged
+public sealed class NuGetManagerViewModel : ViewModelBase
 {
     private const int PageSize = 25;
 
@@ -226,7 +227,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
     private async Task ExecuteSearchAsync(string query, int skip, bool clearList, CancellationToken ct = default)
     {
         IsBusy     = true;
-        StatusText = "Searching…";
+        StatusText = "Searchingâ€¦";
         if (clearList) PackageList.Clear();
 
         var installed = CsprojPackageWriter.GetPackageReferences(_project.ProjectFilePath);
@@ -276,7 +277,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
     private async Task LoadInstalledPackagesAsync()
     {
         IsBusy = true;
-        StatusText = "Loading installed packages…";
+        StatusText = "Loading installed packagesâ€¦";
         PackageList.Clear();
         HasMoreResults = false;
 
@@ -301,7 +302,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
     private async Task LoadUpdatesAsync()
     {
         IsBusy = true;
-        StatusText = "Checking for updates…";
+        StatusText = "Checking for updatesâ€¦";
         PackageList.Clear();
         HasMoreResults = false;
 
@@ -354,7 +355,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
         }
         catch
         {
-            // Silently ignore — the badge will remain at 0 until the user clicks "Updates".
+            // Silently ignore â€” the badge will remain at 0 until the user clicks "Updates".
         }
     }
 
@@ -382,7 +383,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
         if (_selectedPackage is null || SelectedVersion is null) return;
 
         IsBusy     = true;
-        StatusText = $"Installing {_selectedPackage.Id} {SelectedVersion}…";
+        StatusText = $"Installing {_selectedPackage.Id} {SelectedVersion}â€¦";
         try
         {
             CsprojPackageWriter.AddOrUpdatePackageReference(
@@ -407,7 +408,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
         if (_selectedPackage is null) return;
 
         IsBusy     = true;
-        StatusText = $"Removing {_selectedPackage.Id}…";
+        StatusText = $"Removing {_selectedPackage.Id}â€¦";
         try
         {
             CsprojPackageWriter.RemovePackageReference(
@@ -432,7 +433,7 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
         if (_selectedPackage is null || SelectedVersion is null) return;
 
         IsBusy     = true;
-        StatusText = $"Updating {_selectedPackage.Id} to {SelectedVersion}…";
+        StatusText = $"Updating {_selectedPackage.Id} to {SelectedVersion}â€¦";
         try
         {
             CsprojPackageWriter.AddOrUpdatePackageReference(
@@ -474,7 +475,4 @@ public sealed class NuGetManagerViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

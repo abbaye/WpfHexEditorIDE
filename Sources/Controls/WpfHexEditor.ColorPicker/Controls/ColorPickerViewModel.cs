@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -17,6 +17,11 @@ namespace WpfHexEditor.ColorPicker.Controls
     /// </summary>
     public class ColorPickerViewModel : INotifyPropertyChanged
     {
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+
         private bool _isUpdating; // Prevents circular updates
         private byte _red;
         private byte _green;
@@ -29,7 +34,6 @@ namespace WpfHexEditor.ColorPicker.Controls
         private bool _isHexValid;
         private Color _selectedColor;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Initializes a new instance with default color (Blue).
@@ -115,10 +119,10 @@ namespace WpfHexEditor.ColorPicker.Controls
 
         #endregion
 
-        #region HSV Properties (H: 0-360Â°, S/V: 0-1)
+        #region HSV Properties (H: 0-360Ã‚Â°, S/V: 0-1)
 
         /// <summary>
-        /// Hue (0-360Â°)
+        /// Hue (0-360Ã‚Â°)
         /// </summary>
         public double Hue
         {
@@ -212,9 +216,9 @@ namespace WpfHexEditor.ColorPicker.Controls
         }
 
         /// <summary>
-        /// Validation icon (âœ“ or âœ—)
+        /// Validation icon (Ã¢Å“â€œ or Ã¢Å“â€”)
         /// </summary>
-        public string ValidationIcon => IsHexValid ? "âœ“" : "âœ—";
+        public string ValidationIcon => IsHexValid ? "Ã¢Å“â€œ" : "Ã¢Å“â€”";
 
         /// <summary>
         /// Validation color (Green or Red)
@@ -458,10 +462,6 @@ namespace WpfHexEditor.ColorPicker.Controls
 
         #region INotifyPropertyChanged
 
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

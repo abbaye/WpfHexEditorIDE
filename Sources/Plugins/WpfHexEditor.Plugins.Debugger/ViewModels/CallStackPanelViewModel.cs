@@ -1,7 +1,7 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.Debugger
 // File: ViewModels/CallStackPanelViewModel.cs
-// Description: VM for the Call Stack panel — frame list + navigate to source.
+// Description: VM for the Call Stack panel â€” frame list + navigate to source.
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -10,10 +10,11 @@ using System.Windows.Input;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
-public sealed class CallStackPanelViewModel : INotifyPropertyChanged
+public sealed class CallStackPanelViewModel : ViewModelBase
 {
     private readonly IIDEHostContext _context;
     private DebugFrameInfo? _selectedFrame;
@@ -58,7 +59,4 @@ public sealed class CallStackPanelViewModel : INotifyPropertyChanged
         });
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged(string p) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }

@@ -4,7 +4,7 @@
 // Author: Derek Tremblay
 // Created: 2026-03-17
 // Updated: 2026-03-19
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for the XAML Toolbox dockable panel.
 //     Exposes filtered and grouped toolbox items for display in a ListBox.
@@ -23,13 +23,14 @@ using System.Windows.Input;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
 /// <summary>
 /// ViewModel for the XAML Toolbox panel.
 /// </summary>
-public sealed class XamlToolboxPanelViewModel : INotifyPropertyChanged
+public sealed class XamlToolboxPanelViewModel : ViewModelBase
 {
     private const int MaxRecentItems = 8;
 
@@ -193,8 +194,5 @@ public sealed class XamlToolboxPanelViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

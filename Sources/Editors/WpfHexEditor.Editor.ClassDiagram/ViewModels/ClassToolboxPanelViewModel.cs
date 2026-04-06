@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/ClassToolboxPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -20,13 +20,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using WpfHexEditor.Editor.ClassDiagram.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// ViewModel for the Class Diagram toolbox panel.
 /// </summary>
-public sealed class ClassToolboxPanelViewModel : INotifyPropertyChanged
+public sealed class ClassToolboxPanelViewModel : ViewModelBase
 {
     private readonly ObservableCollection<ToolboxEntry> _entries;
     private string _searchText = string.Empty;
@@ -82,8 +83,5 @@ public sealed class ClassToolboxPanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

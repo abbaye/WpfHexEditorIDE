@@ -20,13 +20,14 @@ using WpfHexEditor.Plugins.ArchiveExplorer.Models;
 using WpfHexEditor.Plugins.ArchiveExplorer.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.ArchiveExplorer.ViewModels;
 
 /// <summary>
 /// ViewModel bound to <c>ArchiveExplorerPanel</c>.
 /// </summary>
-public sealed class ArchiveExplorerViewModel : INotifyPropertyChanged, IDisposable
+public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
 {
     // ── Services ───────────────────────────────────────────────────────────
     private PreviewService?  _preview;
@@ -136,7 +137,7 @@ public sealed class ArchiveExplorerViewModel : INotifyPropertyChanged, IDisposab
 
         IsLoading = true;
         RootNodes.Clear();
-        InfoBarText = "Loading…";
+        InfoBarText = "Loadingâ€¦";
         CurrentArchivePath = archivePath;
 
         try
@@ -156,7 +157,7 @@ public sealed class ArchiveExplorerViewModel : INotifyPropertyChanged, IDisposab
 
             _reader = reader;
 
-            // Must update UI on the calling (UI) thread — await ensures we're back
+            // Must update UI on the calling (UI) thread â€” await ensures we're back
             foreach (var node in nodes)
                 RootNodes.Add(node);
 
@@ -453,9 +454,6 @@ public sealed class ArchiveExplorerViewModel : INotifyPropertyChanged, IDisposab
         => System.Windows.Input.CommandManager.InvalidateRequerySuggested();
 
     // ── INotifyPropertyChanged ─────────────────────────────────────────────
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── IDisposable ────────────────────────────────────────────────────────
     public void Dispose()

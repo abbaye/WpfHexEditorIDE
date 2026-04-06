@@ -3,7 +3,7 @@
 // File: ResourceEntryViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-17
-// Updated: 2026-03-22 — Moved from ViewModels/ to Models/
+// Updated: 2026-03-22 â€” Moved from ViewModels/ to Models/
 //                        (used by ResourceScannerService and ResourceBrowserPanelViewModel).
 // Description:
 //     Domain model representing a single resource entry in the Resource Browser panel.
@@ -18,13 +18,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Models;
 
 /// <summary>
 /// A single resource entry for display in the Resource Browser panel.
 /// </summary>
-public sealed class ResourceEntryViewModel : INotifyPropertyChanged
+public sealed class ResourceEntryViewModel : ViewModelBase
 {
     private bool   _isSelected;
     private bool   _isEditing;
@@ -115,10 +116,7 @@ public sealed class ResourceEntryViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── Private ───────────────────────────────────────────────────────────────
 

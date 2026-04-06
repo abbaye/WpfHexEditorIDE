@@ -4,10 +4,10 @@
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-23
-// Updated: 2026-03-24 (ADR-UT-07 — VS-style TreeView hierarchy)
+// Updated: 2026-03-24 (ADR-UT-07 â€” VS-style TreeView hierarchy)
 // Description:
 //     ViewModel for the Unit Testing Panel.
-//     Hierarchical test tree: TestProjectNode → TestClassNode → TestResultRow.
+//     Hierarchical test tree: TestProjectNode â†’ TestClassNode â†’ TestResultRow.
 //     Filtering via IsVisible property on each node (DataTrigger in XAML).
 // ==========================================================
 
@@ -20,14 +20,15 @@ using System.Windows;
 using WpfHexEditor.Plugins.UnitTesting.Models;
 using WpfHexEditor.Plugins.UnitTesting.Options;
 using System.Linq;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.UnitTesting.ViewModels;
 
 /// <summary>
 /// MVVM ViewModel for the UnitTestingPanel.
-/// Test results are organized as a 3-level tree: Project → Class → TestMethod.
+/// Test results are organized as a 3-level tree: Project â†’ Class â†’ TestMethod.
 /// </summary>
-public sealed class UnitTestingViewModel : INotifyPropertyChanged
+public sealed class UnitTestingViewModel : ViewModelBase
 {
     // ── Tree ─────────────────────────────────────────────────────────────────
 
@@ -55,7 +56,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         set
         {
             Set(ref _isRunning, value);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanRunFailed)));
+            OnPropertyChanged(nameof(CanRunFailed));
         }
     }
 
@@ -82,9 +83,9 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     private void RaiseCounters()
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalCount)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanRunFailed)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowRatioBarNow)));
+        OnPropertyChanged(nameof(TotalCount));
+        OnPropertyChanged(nameof(CanRunFailed));
+        OnPropertyChanged(nameof(ShowRatioBarNow));
     }
 
     // ── Selection + detail ───────────────────────────────────────────────────
@@ -92,7 +93,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     private object? _selectedNode;
 
     /// <summary>
-    /// Currently selected tree node — can be <see cref="TestProjectNode"/>,
+    /// Currently selected tree node â€” can be <see cref="TestProjectNode"/>,
     /// <see cref="TestClassNode"/>, or <see cref="TestResultRow"/>.
     /// Drives the context-sensitive detail pane (ADR-UT-12).
     /// </summary>
@@ -145,10 +146,10 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     private void RaiseFilterFlags()
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterAll)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterPassed)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterFailed)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSkipped)));
+        OnPropertyChanged(nameof(FilterAll));
+        OnPropertyChanged(nameof(FilterPassed));
+        OnPropertyChanged(nameof(FilterFailed));
+        OnPropertyChanged(nameof(FilterSkipped));
     }
 
     // ── Layout options ───────────────────────────────────────────────────────
@@ -161,7 +162,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         set
         {
             Set(ref _showRatioBar, value);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowRatioBarNow)));
+            OnPropertyChanged(nameof(ShowRatioBarNow));
         }
     }
 
@@ -199,7 +200,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         foreach (var proj in ProjectNodes.ToList())
         {
             // Remember whether this node already had discovered content.
-            // Freshly-added empty nodes (no classes yet) must NOT be pruned —
+            // Freshly-added empty nodes (no classes yet) must NOT be pruned â€”
             // AddDiscoveredTests will populate them right after this call.
             bool hadClasses = proj.Classes.Count > 0;
 
@@ -283,7 +284,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Adds discovered (not-yet-run) tests to the tree without affecting counters.
-    /// Idempotent — skips tests already present by display name.
+    /// Idempotent â€” skips tests already present by display name.
     /// </summary>
     public void AddDiscoveredTests(IEnumerable<DiscoveredTest> tests)
     {
@@ -304,7 +305,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
         ApplyFilter();
     }
 
-    /// <summary>Groups results into the tree by ProjectName → ClassName → TestName.
+    /// <summary>Groups results into the tree by ProjectName â†’ ClassName â†’ TestName.
     /// Merges into existing NotRun rows (discovered tests) when possible.</summary>
     public void AddResults(IEnumerable<TestResult> results)
     {
@@ -400,7 +401,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Walks the tree and sets IsVisible on every node based on current filter/search.
-    /// Supports structured <c>key:value</c> queries (état/nom/classe/projet/erreur/espace).
+    /// Supports structured <c>key:value</c> queries (Ã©tat/nom/classe/projet/erreur/espace).
     /// </summary>
     private void ApplyFilter()
     {
@@ -421,7 +422,7 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
                     bool matchSearch = !hasFilter || filterKey switch
                     {
-                        "état"   or "etat"  => MatchOutcome(test, filterValue),
+                        "Ã©tat"   or "etat"  => MatchOutcome(test, filterValue),
                         "nom"               => test.Display.Contains(filterValue, StringComparison.OrdinalIgnoreCase),
                         "classe"            => cls.FullClassName.Contains(filterValue, StringComparison.OrdinalIgnoreCase),
                         "projet"            => proj.ProjectName.Contains(filterValue, StringComparison.OrdinalIgnoreCase),
@@ -452,9 +453,9 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
     private static bool MatchOutcome(TestResultRow test, string value) =>
         value.ToLowerInvariant() switch
         {
-            "réussite" or "reussite" or "passed" or "ok"  => test.Outcome == TestOutcome.Passed,
-            "échec"    or "echec"    or "failed"  or "fail" => test.Outcome == TestOutcome.Failed,
-            "ignoré"   or "ignore"   or "skipped" or "skip" => test.Outcome == TestOutcome.Skipped,
+            "rÃ©ussite" or "reussite" or "passed" or "ok"  => test.Outcome == TestOutcome.Passed,
+            "Ã©chec"    or "echec"    or "failed"  or "fail" => test.Outcome == TestOutcome.Failed,
+            "ignorÃ©"   or "ignore"   or "skipped" or "skip" => test.Outcome == TestOutcome.Skipped,
             _                                               => test.Outcome.ToString()
                                                                .Contains(value, StringComparison.OrdinalIgnoreCase),
         };
@@ -467,22 +468,21 @@ public sealed class UnitTestingViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return;
         field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        OnPropertyChanged(name);
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // Tree node view-models
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 /// <summary>Project-level node in the test tree.</summary>
-public sealed class TestProjectNode : INotifyPropertyChanged
+public sealed class TestProjectNode : ViewModelBase
 {
     public string ProjectName { get; }
     public ObservableCollection<TestClassNode> Classes { get; } = [];
@@ -510,26 +510,25 @@ public sealed class TestProjectNode : INotifyPropertyChanged
 
     public string OutcomeGlyph =>
         IsRunning                    ? "\uE8A2"   // spinner
-        : FailCount > 0              ? "\uEB90"   // red ✗
-        : PassCount + SkipCount > 0  ? "\uE930"   // green ✓
+        : FailCount > 0              ? "\uEB90"   // red âœ—
+        : PassCount + SkipCount > 0  ? "\uE930"   // green âœ“
         : "\uE73E";                               // pending circle = not yet run
 
     public TestProjectNode(string name) => ProjectName = name;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
-    { if (EqualityComparer<T>.Default.Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
-    private void Raise(string n) => PropertyChanged?.Invoke(this, new(n));
+    { if (EqualityComparer<T>.Default.Equals(f, v)) return; f = v; OnPropertyChanged(n); }
+    private void Raise(string n) => OnPropertyChanged(n);
 }
 
 /// <summary>Class-level node in the test tree.</summary>
-public sealed class TestClassNode : INotifyPropertyChanged
+public sealed class TestClassNode : ViewModelBase
 {
     public string FullClassName  { get; }
     public string ShortClassName { get; }
     public ObservableCollection<TestResultRow> Tests { get; } = [];
 
-    private bool _isExpanded;  // collapsed by default — expanding the project shows classes, not all tests
+    private bool _isExpanded;  // collapsed by default â€” expanding the project shows classes, not all tests
     private int  _passCount, _failCount, _skipCount, _notRunCount, _totalDurationMs;
     private bool _isVisible = true;
 
@@ -549,8 +548,8 @@ public sealed class TestClassNode : INotifyPropertyChanged
         : $"{TotalDurationMs} ms";
 
     public string OutcomeGlyph =>
-        FailCount > 0               ? "\uEB90"   // red ✗
-        : PassCount + SkipCount > 0 ? "\uE930"   // green ✓
+        FailCount > 0               ? "\uEB90"   // red âœ—
+        : PassCount + SkipCount > 0 ? "\uE930"   // green âœ“
         : "\uE73E";                              // pending circle = not yet run
 
     public TestClassNode(string fullName)
@@ -560,21 +559,20 @@ public sealed class TestClassNode : INotifyPropertyChanged
         ShortClassName = dot >= 0 ? fullName[(dot + 1)..] : fullName;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
-    { if (EqualityComparer<T>.Default.Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
-    private void Raise(string n) => PropertyChanged?.Invoke(this, new(n));
+    { if (EqualityComparer<T>.Default.Equals(f, v)) return; f = v; OnPropertyChanged(n); }
+    private void Raise(string n) => OnPropertyChanged(n);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // Leaf row view-model (reused for detail pane)
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 /// <summary>
 /// Leaf view-model for a single test result.
 /// Can be in "discovered" state (NotRun) before a run, then upgraded in-place via Update().
 /// </summary>
-public sealed class TestResultRow : INotifyPropertyChanged
+public sealed class TestResultRow : ViewModelBase
 {
     private TestResult? _result;
     private TestOutcome _outcome;
@@ -633,7 +631,7 @@ public sealed class TestResultRow : INotifyPropertyChanged
     public int     SourceLine => _result?.SourceLine ?? 0;
     public bool    HasSource  => SourceFile is not null && File.Exists(SourceFile);
 
-    /// <summary>Short class name (last dot-segment) shown in the Caractéristiques column.</summary>
+    /// <summary>Short class name (last dot-segment) shown in the CaractÃ©ristiques column.</summary>
     public string ShortClassName
     {
         get
@@ -645,7 +643,7 @@ public sealed class TestResultRow : INotifyPropertyChanged
 
     /// <summary>Truncated error message for the inline column (max 120 chars).</summary>
     public string ShortErrorMessage => ErrorMessage is null ? string.Empty
-        : ErrorMessage.Length > 120 ? ErrorMessage[..120] + "…" : ErrorMessage;
+        : ErrorMessage.Length > 120 ? ErrorMessage[..120] + "â€¦" : ErrorMessage;
 
     public bool IsRunning
     {
@@ -679,14 +677,13 @@ public sealed class TestResultRow : INotifyPropertyChanged
             _                   => "\uE89A",
         };
 
-    public event PropertyChangedEventHandler? PropertyChanged;
     private void Notify(string name)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        => OnPropertyChanged(name);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // Value converters
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 /// <summary>Converts an int count to a star-sized GridLength. Returns "1*" for zero.</summary>
 public sealed class IntToStarGridLengthConverter : System.Windows.Data.IValueConverter
@@ -700,7 +697,7 @@ public sealed class IntToStarGridLengthConverter : System.Windows.Data.IValueCon
         => throw new NotSupportedException();
 }
 
-/// <summary>Converts null → Collapsed, non-null → Visible.</summary>
+/// <summary>Converts null â†’ Collapsed, non-null â†’ Visible.</summary>
 public sealed class NullToVisibilityConverter : System.Windows.Data.IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

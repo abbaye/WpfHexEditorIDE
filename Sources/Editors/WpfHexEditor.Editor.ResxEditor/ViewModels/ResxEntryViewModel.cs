@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ResxEditor
 // File: ViewModels/ResxEntryViewModel.cs
 // Description:
@@ -11,11 +11,12 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ResxEditor.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ResxEditor.ViewModels;
 
 /// <summary>Observable wrapper for a single RESX data entry.</summary>
-public sealed class ResxEntryViewModel : INotifyPropertyChanged
+public sealed class ResxEntryViewModel : ViewModelBase
 {
     // -- Backing fields -----------------------------------------------------
 
@@ -138,7 +139,7 @@ public sealed class ResxEntryViewModel : INotifyPropertyChanged
     public ResxEntry ToEntry()
         => new(_name, _value, _comment, TypeName, MimeType, Space);
 
-    /// <summary>Called after a successful save — resets dirty flag and updates source snapshot.</summary>
+    /// <summary>Called after a successful save â€” resets dirty flag and updates source snapshot.</summary>
     public void MarkSaved()
     {
         SourceEntry = ToEntry();
@@ -147,10 +148,7 @@ public sealed class ResxEntryViewModel : INotifyPropertyChanged
 
     // -- INotifyPropertyChanged ---------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private void MarkDirty() => IsDirty = true;
 }

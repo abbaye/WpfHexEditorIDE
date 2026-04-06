@@ -418,6 +418,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Fields - Word Highlight
 
         private readonly List<TextPosition> _wordHighlights           = new();
+        // OPT-PERF: pre-computed distinct line list reused by scroll marker panel — avoids
+        // Select().Distinct().ToList() allocation on every cursor move.
+        private readonly List<int>          _wordHighlightLines       = new();
+        private readonly HashSet<int>       _wordHighlightLineSet     = new();
         private string                      _wordHighlightWord        = string.Empty;
         private int                         _wordHighlightLen         = 0;
         private int                         _wordHighlightTrackedLine = -1; // last cursor line seen in OnRender
@@ -719,6 +723,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!(bool)e.NewValue)
             {
                 ce._wordHighlights.Clear();
+                ce._wordHighlightLines.Clear();
+                ce._wordHighlightLineSet.Clear();
                 ce._codeScrollMarkerPanel?.ClearWordMarkers();
                 ce.InvalidateVisual();
             }

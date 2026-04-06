@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ResxEditor
 // File: ViewModels/ResxLocaleCompareViewModel.cs
 // Description:
@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ResxEditor.Models;
 using WpfHexEditor.Editor.ResxEditor.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ResxEditor.ViewModels;
 
@@ -37,7 +38,7 @@ public sealed record LocaleCompareRow(
     LocaleCompareStatus Status);
 
 /// <summary>ViewModel for the side-by-side locale comparison panel.</summary>
-public sealed class ResxLocaleCompareViewModel : INotifyPropertyChanged
+public sealed class ResxLocaleCompareViewModel : ViewModelBase
 {
     private CultureInfo? _baseCulture;
     private CultureInfo? _targetCulture;
@@ -90,7 +91,4 @@ public sealed class ResxLocaleCompareViewModel : INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? n = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
 }

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.DocumentEditor
 // File: ViewModels/DocumentEditorViewModel.cs
 // Description:
@@ -9,13 +9,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.DocumentEditor.ViewModels;
 
 /// <summary>
 /// DataContext for <see cref="Controls.DocumentEditorHost"/> and its child panes.
 /// </summary>
-public sealed class DocumentEditorViewModel : INotifyPropertyChanged
+public sealed class DocumentEditorViewModel : ViewModelBase
 {
     private double _scrollRatio;
 
@@ -28,7 +29,7 @@ public sealed class DocumentEditorViewModel : INotifyPropertyChanged
     public DocumentModel Model { get; }
 
     /// <summary>
-    /// Scroll position as a 0–1 ratio (shared between TextPane and MiniMap).
+    /// Scroll position as a 0â€“1 ratio (shared between TextPane and MiniMap).
     /// </summary>
     public double ScrollRatio
     {
@@ -46,12 +47,5 @@ public sealed class DocumentEditorViewModel : INotifyPropertyChanged
             : 0;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }

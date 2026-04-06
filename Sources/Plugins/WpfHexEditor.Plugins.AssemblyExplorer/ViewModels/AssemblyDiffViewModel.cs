@@ -23,13 +23,14 @@ using System.Windows.Media;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
 /// <summary>
 /// Represents a single row in the diff results DataGrid with navigation support.
 /// </summary>
-public sealed class DiffEntryViewModel : INotifyPropertyChanged
+public sealed class DiffEntryViewModel : ViewModelBase
 {
     private readonly AssemblyExplorerViewModel _explorerVm;
 
@@ -57,7 +58,6 @@ public sealed class DiffEntryViewModel : INotifyPropertyChanged
     public ICommand NavigateBaselineCommand { get; }
     public ICommand NavigateTargetCommand   { get; }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void Navigate(int token, bool isBaseline)
     {
@@ -72,7 +72,7 @@ public sealed class DiffEntryViewModel : INotifyPropertyChanged
 /// and computes a live diff on demand.  Also owns the <see cref="DiffDetailViewModel"/>
 /// that is populated when the user selects a row in the results DataGrid.
 /// </summary>
-public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
+public sealed class AssemblyDiffViewModel : ViewModelBase
 {
     private readonly AssemblyExplorerViewModel _explorerVm;
     private AssemblyModel?                     _baselineModel;
@@ -105,10 +105,7 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -120,7 +117,7 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
 
     // ── Bindable properties ───────────────────────────────────────────────────
 
-    /// <summary>Detail pane ViewModel — populated when a diff row is selected.</summary>
+    /// <summary>Detail pane ViewModel â€” populated when a diff row is selected.</summary>
     public DiffDetailViewModel DiffDetail { get; } = new();
 
     /// <summary>Assembly names available in the workspace for selector ComboBoxes.</summary>
@@ -204,7 +201,7 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
         if (_baselineModel is null || _targetModel is null) return;
 
         IsComparing = true;
-        StatusText  = "Comparing…";
+        StatusText  = "Comparingâ€¦";
 
         AssemblyDiff diff;
         try
@@ -230,7 +227,7 @@ public sealed class AssemblyDiffViewModel : INotifyPropertyChanged
 
             StatusText = diff.Entries.Count == 0
                 ? "Assemblies are identical."
-                : $"+{diff.AddedCount} added  −{diff.RemovedCount} removed  ~{diff.ChangedCount} changed";
+                : $"+{diff.AddedCount} added  âˆ’{diff.RemovedCount} removed  ~{diff.ChangedCount} changed";
 
             IsComparing = false;
         });

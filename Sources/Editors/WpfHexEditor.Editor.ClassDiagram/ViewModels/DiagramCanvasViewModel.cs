@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/DiagramCanvasViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -11,19 +11,20 @@
 // Architecture Notes:
 //     Pattern: ViewModel (MVVM).
 //     ZoomIn/ZoomOut clamp between 0.1x and 10x.
-//     All properties are INotifyPropertyChanged — bound from
+//     All properties are INotifyPropertyChanged â€” bound from
 //     ZoomPanCanvas DependencyProperties via TwoWay bindings.
 // ==========================================================
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// Holds canvas view state: zoom, pan offset, snap, grid, selection mode.
 /// </summary>
-public sealed class DiagramCanvasViewModel : INotifyPropertyChanged
+public sealed class DiagramCanvasViewModel : ViewModelBase
 {
     private const double MinZoom = 0.1;
     private const double MaxZoom = 10.0;
@@ -106,8 +107,5 @@ public sealed class DiagramCanvasViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -11,13 +11,14 @@ using System.Windows.Input;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginHost.UI;
 
 /// <summary>
 /// ViewModel for a single plugin entry in the Plugin Manager list.
 /// </summary>
-public sealed class PluginListItemViewModel : INotifyPropertyChanged
+public sealed class PluginListItemViewModel : ViewModelBase
 {
     private readonly PluginEntry _entry;
 
@@ -46,7 +47,6 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     private bool   _migrationSuggested;
     private string _migrationSuggestionReason = string.Empty;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginListItemViewModel(
         PluginEntry entry,
@@ -116,16 +116,16 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public string Id => _entry.Manifest.Id;
     public string Name => _entry.Manifest.Name;
     public string Version => _entry.Manifest.Version;
-    public string VersionLabel => string.IsNullOrEmpty(_entry.Manifest.Version) ? "—" : $"v{_entry.Manifest.Version}";
+    public string VersionLabel => string.IsNullOrEmpty(_entry.Manifest.Version) ? "â€”" : $"v{_entry.Manifest.Version}";
     public string Author => _entry.Manifest.Author;
     public string Publisher => _entry.Manifest.Publisher;
     public bool IsTrustedPublisher => _entry.Manifest.TrustedPublisher;
     public string Description => _entry.Manifest.Description;
-    // IsolationMode — bindable ComboBox selection; changing triggers a hot-swap reload.
+    // IsolationMode â€” bindable ComboBox selection; changing triggers a hot-swap reload.
     public static IReadOnlyList<string> IsolationModes { get; } = ["Auto", "InProcess", "Sandbox"];
 
     /// <summary>
-    /// For Auto-mode plugins: shows "(→ InProcess)" or "(→ Sandbox)" inline next to the ComboBox.
+    /// For Auto-mode plugins: shows "(â†’ InProcess)" or "(â†’ Sandbox)" inline next to the ComboBox.
     /// Visible only when Auto is selected; empty string otherwise.
     /// </summary>
     public string ResolvedIsolationModeLabel
@@ -135,19 +135,19 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
             var declared = _entry.Manifest.IsolationMode;
             var resolved = _entry.ResolvedIsolationMode;
             return declared == PluginIsolationMode.Auto
-                ? $"(→ {resolved})"
+                ? $"(â†’ {resolved})"
                 : string.Empty;
         }
     }
 
     /// <summary>
     /// Semantic foreground color for the resolved isolation mode label.
-    /// InProcess → green (fast, in-host); Sandbox → amber (isolated, external process).
+    /// InProcess â†’ green (fast, in-host); Sandbox â†’ amber (isolated, external process).
     /// </summary>
     public string ResolvedIsolationModeColor => _entry.ResolvedIsolationMode switch
     {
-        PluginIsolationMode.InProcess => "#22C55E",  // green — same as Loaded state badge
-        PluginIsolationMode.Sandbox   => "#F59E0B",  // amber — same as SLOW badge / Loading state
+        PluginIsolationMode.InProcess => "#22C55E",  // green â€” same as Loaded state badge
+        PluginIsolationMode.Sandbox   => "#F59E0B",  // amber â€” same as SLOW badge / Loading state
         _                             => "#9CA3AF"   // gray fallback (Auto not yet resolved)
     };
 
@@ -244,7 +244,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     // -- Extension Points ---------------------------------------------------------
 
     public IReadOnlyList<string> ExtensionLabels
-        => _entry.Manifest.Extensions.Select(kv => $"{kv.Key} → {kv.Value}").ToList();
+        => _entry.Manifest.Extensions.Select(kv => $"{kv.Key} â†’ {kv.Value}").ToList();
     public bool HasExtensions => _entry.Manifest.Extensions.Count > 0;
 
     // -- Dependency Graph ---------------------------------------------------------
@@ -279,7 +279,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
     // Memory alert properties
     private string _memoryAlertColor = "#22C55E";
-    private string _memoryAlertIcon = "🟢";
+    private string _memoryAlertIcon = "ðŸŸ¢";
     private string _memoryAlertMessage = string.Empty;
 
     public string MemoryAlertColor
@@ -310,7 +310,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
     public string LoadedSince => _entry.LoadedAt.HasValue
         ? _entry.LoadedAt.Value.ToString("HH:mm:ss")
-        : "—";
+        : "â€”";
 
     public TimeSpan Uptime => _entry.Diagnostics.Uptime;
 
@@ -319,7 +319,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         get
         {
             var u = _entry.Diagnostics.Uptime;
-            if (u.TotalSeconds < 1) return "—";
+            if (u.TotalSeconds < 1) return "â€”";
             return u.TotalHours >= 1
                 ? $"{(int)u.TotalHours:D2}:{u.Minutes:D2}:{u.Seconds:D2}"
                 : $"{u.Minutes:D2}:{u.Seconds:D2}";
@@ -438,9 +438,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
             if (_entry.Instance is null)  return null;
             if (_entry.Instance is not SDK.Contracts.IPluginWithOptions opts) return null;
 
-            // LoadOptions/CreateOptionsPage may do I/O — call synchronously here but OK since
+            // LoadOptions/CreateOptionsPage may do I/O â€” call synchronously here but OK since
             // this getter is triggered by tab selection (UI thread, user interaction, not hot path).
-            // Guard: a buggy plugin must not crash the host — catch and swallow any plugin exception.
+            // Guard: a buggy plugin must not crash the host â€” catch and swallow any plugin exception.
             // TODO: Put the Debug in the output panel of App instead of the VS debug output, which is invisible to most users and causes crashes when no debugger is attached.
             try
             {
@@ -546,7 +546,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         if (_getMemoryThresholds is null)
         {
             MemoryAlertColor = "#22C55E";
-            MemoryAlertIcon = "🟢";
+            MemoryAlertIcon = "ðŸŸ¢";
             MemoryAlertMessage = string.Empty;
             return;
         }
@@ -558,7 +558,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         {
             // Reset to configured normal color when alerts are disabled
             MemoryAlertColor = normalColor;
-            MemoryAlertIcon = "🟢";
+            MemoryAlertIcon = "ðŸŸ¢";
             MemoryAlertMessage = string.Empty;
             return;
         }
@@ -567,32 +567,30 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         if (memoryMb >= critical)
         {
             MemoryAlertColor = criticalColor;
-            MemoryAlertIcon = "🔴";
+            MemoryAlertIcon = "ðŸ”´";
             MemoryAlertMessage = $"Critical: {memoryMb} MB (threshold: {critical} MB)";
         }
         else if (memoryMb >= high)
         {
             MemoryAlertColor = highColor;
-            MemoryAlertIcon = "🟠";
+            MemoryAlertIcon = "ðŸŸ ";
             MemoryAlertMessage = $"High: {memoryMb} MB (threshold: {high} MB)";
         }
         else if (memoryMb >= warning)
         {
             MemoryAlertColor = warningColor;
-            MemoryAlertIcon = "🟡";
+            MemoryAlertIcon = "ðŸŸ¡";
             MemoryAlertMessage = $"Warning: {memoryMb} MB (threshold: {warning} MB)";
         }
         else
         {
             // Normal - use configured normal color
             MemoryAlertColor = normalColor;
-            MemoryAlertIcon = "🟢";
+            MemoryAlertIcon = "ðŸŸ¢";
             MemoryAlertMessage = string.Empty;
         }
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
 }
 
@@ -600,14 +598,13 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 /// Represents a single permission row in the Plugin Manager Permissions tab.
 /// Toggling <see cref="IsGranted"/> calls Grant/Revoke on the PermissionService.
 /// </summary>
-public sealed class PluginPermissionItemViewModel : INotifyPropertyChanged
+public sealed class PluginPermissionItemViewModel : ViewModelBase
 {
     private readonly string _pluginId;
     private readonly PluginPermission _permission;
     private readonly PermissionService? _service;
     private bool _isGranted;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginPermissionItemViewModel(
         string pluginId,
@@ -640,7 +637,7 @@ public sealed class PluginPermissionItemViewModel : INotifyPropertyChanged
                 if (value) _service.Grant(_pluginId, _permission);
                 else       _service.Revoke(_pluginId, _permission);
             }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGranted)));
+            OnPropertyChanged(nameof(IsGranted));
         }
     }
 }

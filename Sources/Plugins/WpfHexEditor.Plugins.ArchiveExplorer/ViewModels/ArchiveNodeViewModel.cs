@@ -15,13 +15,14 @@ using System.IO;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Plugins.ArchiveExplorer.Models;
 using WpfHexEditor.Plugins.ArchiveExplorer.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.ArchiveExplorer.ViewModels;
 
 /// <summary>
 /// Presentation wrapper for <see cref="ArchiveNode"/>, exposed to the TreeView.
 /// </summary>
-public sealed class ArchiveNodeViewModel : INotifyPropertyChanged
+public sealed class ArchiveNodeViewModel : ViewModelBase
 {
     // ── Node reference ─────────────────────────────────────────────────────
     public ArchiveNode Node { get; }
@@ -102,7 +103,7 @@ public sealed class ArchiveNodeViewModel : INotifyPropertyChanged
     private static string ResolveFileGlyph(string name)
     {
         var ext  = Path.GetExtension(name);
-        // Query the whfmt-driven registry first — no hardcoded extension lists.
+        // Query the whfmt-driven registry first â€” no hardcoded extension lists.
         var lang = LanguageRegistry.Instance.FindByExtension(ext);
         if (lang?.IconGlyph is { } glyph) return glyph;
 
@@ -121,7 +122,4 @@ public sealed class ArchiveNodeViewModel : INotifyPropertyChanged
     }
 
     // ── INotifyPropertyChanged ─────────────────────────────────────────────
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

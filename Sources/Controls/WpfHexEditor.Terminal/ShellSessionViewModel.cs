@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Terminal
 // File: ShellSessionViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -34,6 +34,7 @@ using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Terminal;
 
@@ -42,7 +43,7 @@ namespace WpfHexEditor.Terminal;
 /// Manages command dispatch, external shell process I/O, output rendering,
 /// and per-tab UX state (auto-scroll, pause, find, history navigation).
 /// </summary>
-public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
+public sealed class ShellSessionViewModel : ViewModelBase, IDisposable,
                                             ITerminalContext, ITerminalOutput
 {
     // -- Core model ---------------------------------------------------------------
@@ -103,8 +104,8 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
             if (dir.Length <= 38) return dir;
             var parts = dir.TrimEnd('\\', '/').Split(['\\', '/']);
             return parts.Length >= 3
-                ? parts[0] + "\\…\\" + string.Join('\\', parts[^2..])
-                : "…" + dir[^36..];
+                ? parts[0] + "\\â€¦\\" + string.Join('\\', parts[^2..])
+                : "â€¦" + dir[^36..];
         }
     }
 
@@ -272,7 +273,7 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
         }
         else
         {
-            WriteInfo("WpfHexEditor HxTerminal  —  type 'help' for a list of built-in commands.");
+            WriteInfo("WpfHexEditor HxTerminal  â€”  type 'help' for a list of built-in commands.");
             WriteInfo($"Working directory: {_workingDirectory}");
         }
     }
@@ -473,10 +474,7 @@ public sealed class ShellSessionViewModel : INotifyPropertyChanged, IDisposable,
 
     // -- INotifyPropertyChanged ---------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // -- IDisposable --------------------------------------------------------------
 

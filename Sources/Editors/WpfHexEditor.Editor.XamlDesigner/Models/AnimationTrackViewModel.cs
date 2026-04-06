@@ -3,7 +3,7 @@
 // File: AnimationTrackViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-17
-// Updated: 2026-03-22 — Moved from ViewModels/ to Models/
+// Updated: 2026-03-22 â€” Moved from ViewModels/ to Models/
 //                        (used by StoryboardSyncService and StoryboardExportService).
 // Description:
 //     Domain model for a single animation track in the Timeline panel.
@@ -18,13 +18,14 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Models;
 
 /// <summary>
 /// One animated property track on the timeline.
 /// </summary>
-public sealed class AnimationTrackViewModel : INotifyPropertyChanged
+public sealed class AnimationTrackViewModel : ViewModelBase
 {
     private bool _isExpanded    = true;
     private bool _isContextMatch;
@@ -70,10 +71,7 @@ public sealed class AnimationTrackViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── Private ───────────────────────────────────────────────────────────────
 

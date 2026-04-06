@@ -3,8 +3,8 @@
 // File: PropertyInspectorPanelViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-16
-// Updated: 2026-03-19 — IsGroupedView toggle + ToggleGroupCommand.
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+// Updated: 2026-03-19 â€” IsGroupedView toggle + ToggleGroupCommand.
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for the XAML Property Inspector dockable panel.
 //     Reflects DependencyProperties from the selected element and
@@ -25,13 +25,14 @@ using System.Windows.Input;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
 /// <summary>
 /// ViewModel for the Property Inspector panel.
 /// </summary>
-public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
+public sealed class PropertyInspectorPanelViewModel : ViewModelBase
 {
     private readonly PropertyInspectorService                    _service    = new();
     private readonly ObservableCollection<PropertyInspectorEntry> _allEntries = new();
@@ -147,10 +148,7 @@ public sealed class PropertyInspectorPanelViewModel : INotifyPropertyChanged
 
     // ── INPC ──────────────────────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     // ── Private ───────────────────────────────────────────────────────────────
 

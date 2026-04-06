@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/ClassNodeViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -21,13 +21,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// Observable wrapper around a <see cref="ClassNode"/> for WPF data binding.
 /// </summary>
-public sealed class ClassNodeViewModel : INotifyPropertyChanged
+public sealed class ClassNodeViewModel : ViewModelBase
 {
     private readonly ClassNode _node;
     private bool _isSelected;
@@ -65,13 +66,13 @@ public sealed class ClassNodeViewModel : INotifyPropertyChanged
         set { if (_node.IsAbstract == value) return; _node.IsAbstract = value; OnPropertyChanged(); }
     }
 
-    /// <summary>Display label for the kind (e.g. "«interface»").</summary>
+    /// <summary>Display label for the kind (e.g. "Â«interfaceÂ»").</summary>
     public string KindLabel => _node.Kind switch
     {
-        ClassKind.Interface => "«interface»",
-        ClassKind.Enum      => "«enum»",
-        ClassKind.Struct    => "«struct»",
-        ClassKind.Abstract  => "«abstract»",
+        ClassKind.Interface => "Â«interfaceÂ»",
+        ClassKind.Enum      => "Â«enumÂ»",
+        ClassKind.Struct    => "Â«structÂ»",
+        ClassKind.Abstract  => "Â«abstractÂ»",
         _                   => string.Empty
     };
 
@@ -125,8 +126,5 @@ public sealed class ClassNodeViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

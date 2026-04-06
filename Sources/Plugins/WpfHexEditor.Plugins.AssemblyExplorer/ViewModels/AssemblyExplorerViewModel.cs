@@ -4,7 +4,7 @@
 // Description:
 //     Root orchestrator ViewModel for the Assembly Explorer panel.
 //     Split into 5 partial classes:
-//       - AssemblyExplorerViewModel.cs          (this file — fields, ctor, INPC, commands, events)
+//       - AssemblyExplorerViewModel.cs          (this file â€” fields, ctor, INPC, commands, events)
 //       - AssemblyExplorerViewModel.TreeState.cs (tree properties, toolbar toggles, workspace stats)
 //       - AssemblyExplorerViewModel.Loading.cs   (LoadAssemblyAsync, Clear, CloseEntry, workspace management)
 //       - AssemblyExplorerViewModel.TreeBuilding.cs (BuildTreeChildren, filter, rebuild)
@@ -24,6 +24,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -32,7 +33,7 @@ namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 /// Loaded once and kept alive for the plugin lifetime.
 /// Supports simultaneous loading of multiple assemblies (multi-assembly workspace).
 /// </summary>
-public sealed partial class AssemblyExplorerViewModel : INotifyPropertyChanged
+public sealed partial class AssemblyExplorerViewModel : ViewModelBase
 {
     private readonly IAssemblyAnalysisEngine _analysisService;
     private readonly IDecompilerBackend      _decompilerBackend;
@@ -108,10 +109,7 @@ public sealed partial class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {

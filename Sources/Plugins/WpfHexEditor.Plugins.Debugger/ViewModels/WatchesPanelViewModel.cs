@@ -1,7 +1,7 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.Debugger
 // File: ViewModels/WatchesPanelViewModel.cs
-// Description: VM for the Watch panel — editable expression list + eval.
+// Description: VM for the Watch panel â€” editable expression list + eval.
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -10,13 +10,14 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
-public sealed class WatchRow : INotifyPropertyChanged
+public sealed class WatchRow : ViewModelBase
 {
     private string _expression = string.Empty;
-    private string _value      = "—";
+    private string _value      = "â€”";
     private string? _type;
 
     public string Expression
@@ -39,12 +40,9 @@ public sealed class WatchRow : INotifyPropertyChanged
 
     public bool HasError { get; set; }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? p = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }
 
-public sealed class WatchesPanelViewModel : INotifyPropertyChanged
+public sealed class WatchesPanelViewModel : ViewModelBase
 {
     public ObservableCollection<WatchRow> Rows { get; } = [new WatchRow { Expression = "" }]; // trailing empty row
 
@@ -75,5 +73,4 @@ public sealed class WatchesPanelViewModel : INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

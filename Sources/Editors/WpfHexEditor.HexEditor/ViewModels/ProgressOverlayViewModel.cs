@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: ProgressOverlayViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     and a cancellation command for cooperative task cancellation.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Cancel command uses CancellationTokenSource; callers must observe the token.
 //
 // ==========================================================
@@ -18,13 +18,14 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for the progress overlay control
     /// </summary>
-    public class ProgressOverlayViewModel : INotifyPropertyChanged
+    public class ProgressOverlayViewModel : ViewModelBase
     {
         private string _operationTitle;
         private string _statusMessage;
@@ -33,7 +34,6 @@ namespace WpfHexEditor.HexEditor.ViewModels
         private bool _isIndeterminate;
         private bool _canCancel;
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ProgressOverlayViewModel()
         {
@@ -151,11 +151,6 @@ namespace WpfHexEditor.HexEditor.ViewModels
         private void OnCancel()
         {
             CancelRequested?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

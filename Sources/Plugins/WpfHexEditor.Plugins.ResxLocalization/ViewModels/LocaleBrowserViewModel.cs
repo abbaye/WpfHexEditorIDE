@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.ResxLocalization
 // File: ViewModels/LocaleBrowserViewModel.cs
 // Description:
@@ -11,11 +11,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.ResxLocalization.ViewModels;
 
 /// <summary>Represents one locale row in the Locale Browser tree.</summary>
-public sealed class LocaleRowViewModel : INotifyPropertyChanged
+public sealed class LocaleRowViewModel : ViewModelBase
 {
     private bool _isActive;
 
@@ -31,15 +32,12 @@ public sealed class LocaleRowViewModel : INotifyPropertyChanged
         set { _isActive = value; OnPropertyChanged(); }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 /// <summary>
 /// Backing ViewModel for <see cref="Panels.LocaleBrowserPanel"/>.
 /// </summary>
-public sealed class LocaleBrowserViewModel : INotifyPropertyChanged
+public sealed class LocaleBrowserViewModel : ViewModelBase
 {
     private string _basePath = string.Empty;
     private string _statusText = "No .resx file active";
@@ -78,7 +76,7 @@ public sealed class LocaleBrowserViewModel : INotifyPropertyChanged
         foreach (var path in variantPaths)
         {
             var fileName = System.IO.Path.GetFileName(path);
-            // Extract culture code: Resources.fr-CA.resx → fr-CA
+            // Extract culture code: Resources.fr-CA.resx â†’ fr-CA
             var parts = fileName.Split('.');
             var culture = parts.Length >= 3 ? parts[^2] : fileName;
 
@@ -86,7 +84,7 @@ public sealed class LocaleBrowserViewModel : INotifyPropertyChanged
             try
             {
                 var ci = new System.Globalization.CultureInfo(culture);
-                displayName = $"{culture}  —  {ci.DisplayName}";
+                displayName = $"{culture}  â€”  {ci.DisplayName}";
             }
             catch
             {
@@ -113,7 +111,4 @@ public sealed class LocaleBrowserViewModel : INotifyPropertyChanged
                 StringComparison.OrdinalIgnoreCase);
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

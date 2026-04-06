@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.PluginHost.UI
 // File: PluginMonitoringViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -11,8 +11,8 @@
 //     alert thresholds, CSV/JSON diagnostics export, and the live event log.
 //
 // Architecture Notes:
-//     Observer pattern — subscribes to WpfPluginHost lifecycle events.
-//     Per-plugin CPU estimation: process CPU × (plugin.AvgExecMs / sum all AvgExecMs).
+//     Observer pattern â€” subscribes to WpfPluginHost lifecycle events.
+//     Per-plugin CPU estimation: process CPU Ã— (plugin.AvgExecMs / sum all AvgExecMs).
 //     Canvas-based Polyline charts (global) + SparklineControl (per-plugin).
 //     PluginAlertEngine evaluated on every sampling tick.
 //     PluginDiagnosticsExporter driven by Export commands with SaveFileDialog.
@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.PluginHost;
 using WpfHexEditor.PluginHost.Monitoring;
@@ -34,6 +35,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -62,13 +64,12 @@ public sealed record PluginEventEntry(
 /// Permissions tab. Toggling <see cref="IsGranted"/> immediately calls
 /// <see cref="PermissionService.Grant"/> or <see cref="PermissionService.Revoke"/>.
 /// </summary>
-public sealed class PluginPermissionRowViewModel : INotifyPropertyChanged
+public sealed class PluginPermissionRowViewModel : ViewModelBase
 {
     private readonly PermissionService _permissionService;
     private readonly string _pluginId;
     private bool _isGranted;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginPermissionRowViewModel(
         PermissionService permissionService,
@@ -110,7 +111,7 @@ public sealed class PluginPermissionRowViewModel : INotifyPropertyChanged
 
     /// <summary>
     /// Whether this permission is currently granted.
-    /// Two-way binding in the UI — setter calls Grant/Revoke immediately.
+    /// Two-way binding in the UI â€” setter calls Grant/Revoke immediately.
     /// </summary>
     public bool IsGranted
     {
@@ -127,8 +128,6 @@ public sealed class PluginPermissionRowViewModel : INotifyPropertyChanged
         }
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // ==========================================================================
@@ -139,7 +138,7 @@ public sealed class PluginPermissionRowViewModel : INotifyPropertyChanged
 /// Summary row for a single plugin in the monitoring table.
 /// Holds a reference to its <see cref="PluginMiniChartViewModel"/> for inline sparklines.
 /// </summary>
-public sealed class PluginMonitorRow : INotifyPropertyChanged
+public sealed class PluginMonitorRow : ViewModelBase
 {
     private string _name         = string.Empty;
     private string _state        = string.Empty;
@@ -157,7 +156,6 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     private string _faultMessage = string.Empty;
     private string _version      = string.Empty;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public string Id { get; init; } = string.Empty;
 
@@ -175,11 +173,11 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     public string StateColor   { get => _stateColor;   set { _stateColor   = value; OnPropertyChanged(); } }
     public double CpuPercent   { get => _cpuPercent;   set { _cpuPercent   = value; OnPropertyChanged(); } }
 
-    /// <summary>Weighted CPU estimate for this plugin (process CPU × exec-time weight).</summary>
+    /// <summary>Weighted CPU estimate for this plugin (process CPU Ã— exec-time weight).</summary>
     public double WeightedCpu    { get => _weightedCpu;    set { _weightedCpu    = value; OnPropertyChanged(); } }
     public long   MemoryMb       { get => _memoryMb;       set { _memoryMb       = value; OnPropertyChanged(); OnPropertyChanged(nameof(MemoryDisplayMb)); } }
 
-    /// <summary>Weighted memory estimate for this plugin (process GC heap × exec-time weight).</summary>
+    /// <summary>Weighted memory estimate for this plugin (process GC heap Ã— exec-time weight).</summary>
     public long   WeightedMemMb  { get => _weightedMemMb;  set { _weightedMemMb  = value; OnPropertyChanged(); OnPropertyChanged(nameof(MemoryDisplayMb)); } }
     public double AvgExecMs    { get => _avgExecMs;    set { _avgExecMs    = value; OnPropertyChanged(); } }
     public double InitTimeMs   { get => _initTimeMs;   set { _initTimeMs   = value; OnPropertyChanged(); } }
@@ -226,7 +224,7 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     private bool _hasMemoryAlert;
     private string _memoryAlertLevel = "Normal";
     private string _memoryAlertColor = "#22C55E";
-    private string _memoryAlertIcon = "🟢";
+    private string _memoryAlertIcon = "ðŸŸ¢";
     private string _memoryAlertMessage = string.Empty;
 
     /// <summary>True if memory usage exceeds any configured threshold.</summary>
@@ -258,7 +256,7 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
         set { _memoryAlertColor = value; OnPropertyChanged(); }
     }
 
-    /// <summary>Memory alert icon/emoji (🟢🟡🟠🔴).</summary>
+    /// <summary>Memory alert icon/emoji (ðŸŸ¢ðŸŸ¡ðŸŸ ðŸ”´).</summary>
     public string MemoryAlertIcon
     {
         get => _memoryAlertIcon;
@@ -323,13 +321,13 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
 
     /// <summary>Tooltip for the CPU% column cell explaining metric quality.</summary>
     public string CpuTooltip => _isMetricsEstimated
-        ? "Estimated — weighted share of shared IDE process CPU pool"
-        : "Real — measured from isolated sandbox process";
+        ? "Estimated â€” weighted share of shared IDE process CPU pool"
+        : "Real â€” measured from isolated sandbox process";
 
     /// <summary>Tooltip for the Mem column cell explaining metric quality.</summary>
     public string MemTooltip => _isMetricsEstimated
-        ? "Estimated — weighted share of shared IDE process GC heap"
-        : "Real — OS private memory of isolated sandbox process";
+        ? "Estimated â€” weighted share of shared IDE process GC heap"
+        : "Real â€” OS private memory of isolated sandbox process";
 
     /// <summary>
     /// Memory value to display: weighted GC estimate for InProcess, actual diagnostics memory for Sandbox.
@@ -346,7 +344,7 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
         set { _isDormant = value; OnPropertyChanged(); OnPropertyChanged(nameof(MemoryDisplayMb)); OnPropertyChanged(nameof(MetricsPrefix)); }
     }
 
-    /// <summary>Prefix shown before metric values. Empty for dormant plugins (they show "—").</summary>
+    /// <summary>Prefix shown before metric values. Empty for dormant plugins (they show "â€”").</summary>
     public string MetricsPrefix => IsDormant ? string.Empty : (_isMetricsEstimated ? "~" : string.Empty);
 
     // -- Hot-reload mode badge -----------------------------------------------
@@ -363,8 +361,6 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
         set { _reloadMode = value; OnPropertyChanged(); }
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // ==========================================================================
@@ -376,14 +372,13 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
 /// Displayed in the collapsible group header row of the Plugin Monitor DataGrid.
 /// Pattern: INPC, init-only identity fields, mutable aggregate fields updated on each refresh tick.
 /// </summary>
-public sealed class PluginGroupSummaryViewModel : INotifyPropertyChanged
+public sealed class PluginGroupSummaryViewModel : ViewModelBase
 {
     private double _aggregateCpu;
     private long   _aggregateMem;
     private int    _count;
     private int    _loadedCount;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>Group label matching <see cref="PluginMonitorRow.IsolationCategory"/>.</summary>
     public string Category      { get; init; } = string.Empty;
@@ -391,10 +386,10 @@ public sealed class PluginGroupSummaryViewModel : INotifyPropertyChanged
     /// <summary>Segoe MDL2 glyph for the group icon.</summary>
     public string CategoryIcon  { get; init; } = string.Empty;
 
-    /// <summary>Accent color hex string for the icon and count chip.</summary>
-    public string CategoryColor { get; init; } = string.Empty;
+    /// <summary>Accent brush for the icon and count chip â€” resolved from theme resources.</summary>
+    public Brush CategoryColor { get; init; } = Brushes.Gray;
 
-    /// <summary>Short description of metric quality shown in the header ("Shared pool — estimates" etc.).</summary>
+    /// <summary>Short description of metric quality shown in the header ("Shared pool â€” estimates" etc.).</summary>
     public string MetricsNote   { get; init; } = string.Empty;
 
     /// <summary>Sum of all plugins' CPU in this group (WeightedCpu for InProcess, CpuPercent for Sandbox).</summary>
@@ -428,8 +423,6 @@ public sealed class PluginGroupSummaryViewModel : INotifyPropertyChanged
     /// <summary>Display chip text, e.g. "12/14".</summary>
     public string CountChip => $"{LoadedCount}/{Count}";
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // ==========================================================================
@@ -440,7 +433,7 @@ public sealed class PluginGroupSummaryViewModel : INotifyPropertyChanged
 /// Rich metadata + runtime metrics + interactive permissions + optional
 /// settings page for the currently selected plugin.
 /// </summary>
-public sealed class PluginDetailViewModel : INotifyPropertyChanged
+public sealed class PluginDetailViewModel : ViewModelBase
 {
     // Known permission flags with display metadata.
     private static readonly (PluginPermission Flag, string Name, string Description, string Risk)[] AllPermissions =
@@ -457,7 +450,6 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
         (PluginPermission.TerminalOnly,     "Terminal Only", "Plugin is exclusively a Terminal extension",       "Low"),
     ];
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     // -- Identity & metadata --
     public string  Name             { get; private set; } = string.Empty;
@@ -470,8 +462,8 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
     public string  SdkVersion       { get; private set; } = string.Empty;
 
     // -- Runtime metrics --
-    public string LoadedAtLabel   { get; private set; } = "—";
-    public string UptimeLabel     { get; private set; } = "—";
+    public string LoadedAtLabel   { get; private set; } = "â€”";
+    public string UptimeLabel     { get; private set; } = "â€”";
     public string InitTimeMsLabel { get; private set; } = string.Empty;
     public string AvgExecMsLabel  { get; private set; } = string.Empty;
     public string PeakCpuLabel    { get; private set; } = string.Empty;
@@ -510,7 +502,7 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
         TrustLabel       = entry.Manifest.TrustedPublisher ? "Official" : "Community";
         IsolationMode    = entry.Manifest.IsolationMode.ToString();
         SdkVersion       = entry.Manifest.SdkVersion ?? string.Empty;
-        LoadedAtLabel    = entry.LoadedAt?.ToLocalTime().ToString("HH:mm:ss") ?? "—";
+        LoadedAtLabel    = entry.LoadedAt?.ToLocalTime().ToString("HH:mm:ss") ?? "â€”";
 
         var uptime       = entry.Diagnostics.Uptime;
         UptimeLabel      = FormatUptime(uptime);
@@ -525,7 +517,7 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
         RefreshPermissions(entry, permSvc);
         RefreshOptionsPage(entry);
 
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+        OnPropertyChanged(string.Empty);
     }
 
     private void RefreshPermissions(PluginEntry entry, PermissionService permSvc)
@@ -586,7 +578,7 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
 
     private static string FormatUptime(TimeSpan uptime)
     {
-        if (uptime.TotalSeconds < 1) return "—";
+        if (uptime.TotalSeconds < 1) return "â€”";
         return uptime.TotalHours >= 1
             ? $"{(int)uptime.TotalHours:D2}:{uptime.Minutes:D2}:{uptime.Seconds:D2}"
             : $"{uptime.Minutes:D2}:{uptime.Seconds:D2}";
@@ -610,7 +602,7 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
 /// <summary>
 /// Master ViewModel for the Plugin Monitoring docking panel.
 /// </summary>
-public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposable
+public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 {
     private const int MaxChartPoints = 60; // 5 min at 5 s intervals
     private const int MaxEventLog    = 200;
@@ -626,7 +618,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     // DEBUG: Sample counter for logging
     private long _sampleCount = 0;
 
-    // Per-plugin mini-chart lookup (pluginId → ViewModel)
+    // Per-plugin mini-chart lookup (pluginId â†’ ViewModel)
     private readonly Dictionary<string, PluginMiniChartViewModel> _miniCharts =
         new(StringComparer.OrdinalIgnoreCase);
 
@@ -661,7 +653,6 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     private MonitorChartsPosition _chartsPosition = MonitorChartsPosition.Top;
     private bool                  _showEventLog   = true;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginMonitoringViewModel(WpfPluginHost host, Dispatcher dispatcher, IOutputService? outputService = null, MemoryAlertThresholds? memoryThresholds = null)
     {
@@ -713,7 +704,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         // PHASE 5: Add Force Sample command
         ForceSampleCommand = new RelayCommand(_ => _ = ForceSampleNowAsync());
 
-        // Force GC command — runs GC.Collect + adds marker on memory chart
+        // Force GC command â€” runs GC.Collect + adds marker on memory chart
         ForceGcCommand = new RelayCommand(_ => ForceGcCollect());
 
         // -- Host event subscriptions --
@@ -795,7 +786,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     /// <summary>
     /// Raised when the user chooses "Open in Plugin Manager" from the context menu.
-    /// Carries the plugin ID — code-behind opens/focuses the Plugin Manager tab
+    /// Carries the plugin ID â€” code-behind opens/focuses the Plugin Manager tab
     /// and pre-selects the matching entry.
     /// </summary>
     public event Action<string>? RequestOpenInPluginManager;
@@ -1010,8 +1001,8 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         Category      = "In Process",
         CategoryIcon  = "\uE756", // Segoe MDL2: "ProcessFlow" / general process icon
-        CategoryColor = "#4FC1FF",
-        MetricsNote   = "Shared pool — estimates"
+        CategoryColor = GetGroupBrush("PM_GroupInProcessBrush", "#4FC1FF"),
+        MetricsNote   = "Shared pool â€” estimates"
     };
 
     /// <summary>Aggregate metrics for all Sandbox plugins.</summary>
@@ -1019,18 +1010,29 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         Category      = "Sandbox",
         CategoryIcon  = "\uE72E", // Segoe MDL2: "Lock"
-        CategoryColor = "#CE9178",
-        MetricsNote   = "Isolated — real metrics"
+        CategoryColor = GetGroupBrush("PM_GroupSandboxBrush", "#CE9178"),
+        MetricsNote   = "Isolated â€” real metrics"
     };
 
-    /// <summary>Aggregate metrics for all Standby (Dormant) plugins — not yet loaded.</summary>
+    /// <summary>Aggregate metrics for all Standby (Dormant) plugins â€” not yet loaded.</summary>
     public PluginGroupSummaryViewModel StandbySummary { get; } = new()
     {
         Category      = "Standby",
         CategoryIcon  = "\uE769", // Segoe MDL2: "Pause"
-        CategoryColor = "#A855F7", // purple — same as Dormant badge
-        MetricsNote   = "Not loaded — zero footprint"
+        CategoryColor = GetGroupBrush("PM_GroupStandbyBrush", "#A855F7"),
+        MetricsNote   = "Not loaded â€” zero footprint"
     };
+
+    /// <summary>Resolves a theme brush by resource key, falling back to a hardcoded hex color.</summary>
+    private static Brush GetGroupBrush(string resourceKey, string fallbackHex)
+    {
+        if (Application.Current?.TryFindResource(resourceKey) is Brush themed)
+            return themed;
+        var color = (Color)ColorConverter.ConvertFromString(fallbackHex);
+        var brush = new SolidColorBrush(color);
+        brush.Freeze();
+        return brush;
+    }
 
     /// <summary>Returns the group summary ViewModel for the given isolation category name.</summary>
     public PluginGroupSummaryViewModel? GetGroupSummary(string? category) => category switch
@@ -1155,7 +1157,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
         if (loaded.Count > 0)
         {
-            // Use the host's directly-sampled CPU% — NOT the ring-buffer latest.
+            // Use the host's directly-sampled CPU% â€” NOT the ring-buffer latest.
             // The ring-buffer latest may be the init sample (recorded during batch startup
             // at ~100% CPU) until the first periodic tick fires. LastSampledCpuPercent is
             // only set by OnSamplingTick and starts at 0, giving a correct idle reading.
@@ -1178,7 +1180,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         AddChartPoint(CpuHistory,    new ChartPoint(now, totalCpu));
         AddChartPoint(MemoryHistory, new ChartPoint(now, totalMem));
 
-        // Weighted CPU per plugin: totalCpu × (plugin.AvgExecMs / Σ AvgExecMs)
+        // Weighted CPU per plugin: totalCpu Ã— (plugin.AvgExecMs / Î£ AvgExecMs)
         double sumExecMs = loaded.Sum(e => e.Diagnostics.AverageExecutionTime.TotalMilliseconds);
 
         // Evaluate alert thresholds on every tick.
@@ -1213,16 +1215,16 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             //
             // PHASE 2: Improved fallback logic (FIXED)
             // Rules:
-            //   • Non-loaded plugin (Faulted, Unloaded…) → weight = 0, no allocation.
-            //   • Plugin has measured activity (avgMs > 0):
-            //       → Proportional share based on execution time (avgMs / sumExecMs)
-            //   • Plugin has NO activity (avgMs = 0):
-            //       → Equal share among all loaded plugins (1.0 / loadedCount)
+            //   â€¢ Non-loaded plugin (Faulted, Unloadedâ€¦) â†’ weight = 0, no allocation.
+            //   â€¢ Plugin has measured activity (avgMs > 0):
+            //       â†’ Proportional share based on execution time (avgMs / sumExecMs)
+            //   â€¢ Plugin has NO activity (avgMs = 0):
+            //       â†’ Equal share among all loaded plugins (1.0 / loadedCount)
             //       This ensures visible attribution even for idle plugins.
             //
             // FIX: Changed from 0.01/loadedCount to 1.0/loadedCount for idle plugins.
             // The previous 0.01 factor resulted in weights like 0.001, which when
-            // multiplied by totalCpu (e.g., 3.7%) gave 0.0037% → rounded to 0.0% in UI.
+            // multiplied by totalCpu (e.g., 3.7%) gave 0.0037% â†’ rounded to 0.0% in UI.
             double avgMs  = entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
             double weight = entry.State != PluginState.Loaded
                 ? 0
@@ -1266,7 +1268,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             row.Version        = entry.Manifest.Version ?? string.Empty;
 
             // -- Isolation category & metrics quality ---------------------------------
-            // Dormant plugins have ResolvedIsolationMode = Auto (never resolved yet) —
+            // Dormant plugins have ResolvedIsolationMode = Auto (never resolved yet) â€”
             // group them as "Standby" so they don't incorrectly appear under "Sandbox".
             var prevCategory = row.IsolationCategory;
             var isInProc = entry.ResolvedIsolationMode == PluginIsolationMode.InProcess;
@@ -1274,7 +1276,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
                 ? "Standby"
                 : isInProc ? "In Process" : "Sandbox";
             row.IsMetricsEstimated = isInProc;
-            // If category changed (e.g. Standby → In Process after activation), the
+            // If category changed (e.g. Standby â†’ In Process after activation), the
             // CollectionView grouping must be refreshed to move the row between groups.
             if (row.IsolationCategory != prevCategory) _groupingNeedsRefresh = true;
             row.AlcAssemblyCount   = entry.Diagnostics.AlcAssemblyCount;
@@ -1307,8 +1309,8 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             UpdateSelectedPluginDetail();
         }
 
-        // If any row moved between groups (e.g. Standby → In Process after activation),
-        // force the CollectionView to regroup — PropertyGroupDescription does not regroup
+        // If any row moved between groups (e.g. Standby â†’ In Process after activation),
+        // force the CollectionView to regroup â€” PropertyGroupDescription does not regroup
         // existing items automatically when a property changes.
         if (_groupingNeedsRefresh)
         {
@@ -1446,7 +1448,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         _slowPluginIds.Remove(e.PluginId);
         var initMs = _host.GetPlugin(e.PluginId)?.InitDuration.TotalMilliseconds ?? 0;
         AddEvent(new PluginEventEntry(Now(), "\uE73E", "#22C55E", e.PluginName, "Plugin loaded"));
-        _outputService?.Info($"[{e.PluginName}] Loaded — init: {initMs:F0} ms");
+        _outputService?.Info($"[{e.PluginName}] Loaded â€” init: {initMs:F0} ms");
     }
 
     private void OnPluginCrashed(object? sender, PluginFaultedEventArgs e)
@@ -1462,7 +1464,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         var avgMs = e.AverageExecutionTime.TotalMilliseconds;
         AddEvent(new PluginEventEntry(Now(), "\uE946", "#F59E0B", e.PluginName,
                  $"Slow: avg {avgMs:F0} ms (threshold {e.Threshold.TotalMilliseconds:F0} ms)"));
-        _outputService?.Warning($"[{e.PluginName}] Slow — avg exec: {avgMs:F0} ms");
+        _outputService?.Warning($"[{e.PluginName}] Slow â€” avg exec: {avgMs:F0} ms");
     }
 
     private void OnAlertTriggered(object? sender, PluginAlertEventArgs e)
@@ -1472,10 +1474,10 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         _outputService?.Warning($"[{e.PluginName}] Alert: {e.Message}");
 
         // Trigger a GC cleanup when a memory threshold is breached.
-        // Runs on a background thread — naturally rate-limited by the 60 s alert cooldown.
+        // Runs on a background thread â€” naturally rate-limited by the 60 s alert cooldown.
         if (e.Kind == PluginAlertKind.Memory)
         {
-            _outputService?.Info("[Plugin Monitor] Memory pressure detected — triggering GC cleanup.");
+            _outputService?.Info("[Plugin Monitor] Memory pressure detected â€” triggering GC cleanup.");
             var gcTime = DateTime.UtcNow;
             Task.Run(() =>
             {
@@ -1539,7 +1541,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = $"Export Crash Report — {_selectedPlugin.Name}",
+            Title      = $"Export Crash Report â€” {_selectedPlugin.Name}",
             Filter     = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
             DefaultExt = "txt",
             FileName   = $"crash-{_selectedPlugin.Id}-{DateTime.Now:yyyyMMdd-HHmmss}.txt"
@@ -1631,7 +1633,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     private void AddEvent(PluginEventEntry entry)
     {
-        // Marshal to the UI thread — event handlers (PluginLoaded, Crashed, Slow) can fire
+        // Marshal to the UI thread â€” event handlers (PluginLoaded, Crashed, Slow) can fire
         // from background threads (LoadAllAsync uses ConfigureAwait(false)).
         if (!_dispatcher.CheckAccess())
         {
@@ -1646,7 +1648,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     /// <summary>
     /// Synthesizes "Plugin loaded" entries for plugins already in Loaded state when this
     /// ViewModel was created. Necessary because the VM is constructed after LoadAllAsync
-    /// completes — the initial PluginLoaded events have already fired before subscription.
+    /// completes â€” the initial PluginLoaded events have already fired before subscription.
     /// </summary>
     private void SynthesizeInitialLoadEvents()
     {
@@ -1673,7 +1675,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     private static string FormatUptime(TimeSpan uptime)
     {
-        if (uptime.TotalSeconds < 1) return "—";
+        if (uptime.TotalSeconds < 1) return "â€”";
         return uptime.TotalHours >= 1
             ? $"{(int)uptime.TotalHours:D2}:{uptime.Minutes:D2}:{uptime.Seconds:D2}"
             : $"{uptime.Minutes:D2}:{uptime.Seconds:D2}";
@@ -1711,7 +1713,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         if (item is not PluginMonitorRow row) return false;
         var q = ParseSearchQuery(_searchText);
 
-        // State chip filter — OR among active chips, AND with other criteria.
+        // State chip filter â€” OR among active chips, AND with other criteria.
         var anyChipActive = _filterStateLoaded || _filterStateDisabled || _filterStateFaulted || _filterStateDormant;
         if (anyChipActive)
         {
@@ -1786,7 +1788,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         PluginState.Loaded       => "#22C55E",   // green
         PluginState.Loading      => "#F59E0B",   // amber
-        PluginState.Dormant      => "#A855F7",   // purple — standby/lazy
+        PluginState.Dormant      => "#A855F7",   // purple â€” standby/lazy
         PluginState.Disabled     => "#6B7280",   // gray
         PluginState.Faulted      => "#EF4444",   // red
         PluginState.Incompatible => "#F97316",   // orange
@@ -1834,7 +1836,5 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         _alertEngine.AlertTriggered -= OnAlertTriggered;
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 

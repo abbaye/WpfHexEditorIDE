@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Shell.Panels.ViewModels;
 
@@ -18,7 +19,7 @@ namespace WpfHexEditor.Shell.Panels.ViewModels;
 /// <summary>
 /// Base class for all nodes displayed in the Solution Explorer tree.
 /// </summary>
-public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
+public abstract class SolutionExplorerNodeVm : ViewModelBase
 {
     private bool _isExpanded = true;
     private bool _isSelected;
@@ -69,9 +70,6 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
 
     public ObservableCollection<SolutionExplorerNodeVm> Children { get; } = [];
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 // -- Solution node -------------------------------------------------------------
@@ -476,7 +474,7 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     public IProject?   Project { get; init; }
 }
 
-// -- Solution Folder node (VS-like — holds Projects at solution level) --------
+// -- Solution Folder node (VS-like â€” holds Projects at solution level) --------
 
 /// <summary>
 /// Represents a VS-like Solution Folder node in the Solution Explorer tree.
@@ -497,7 +495,7 @@ public sealed class SolutionFolderNodeVm : SolutionExplorerNodeVm
     public ISolution       Solution { get; }
 
     public override string DisplayName => Folder.Name;
-    /// <summary>Segoe MDL2 "FolderOpen" glyph — distinct colour from project-level FolderNodeVm.</summary>
+    /// <summary>Segoe MDL2 "FolderOpen" glyph â€” distinct colour from project-level FolderNodeVm.</summary>
     public override string Icon => "\uE8B7";
 
     // -- Inline rename ---------------------------------------------------------
@@ -607,7 +605,7 @@ public sealed class DependentFileNodeVm : SolutionExplorerNodeVm
 
     public override string DisplayName => _item.Name;
 
-    /// <summary>Segoe MDL2 U+E71B (Link) — signals the dependency relationship.</summary>
+    /// <summary>Segoe MDL2 U+E71B (Link) â€” signals the dependency relationship.</summary>
     public override string Icon => "\uE71B";
 
     public IProjectItem Source  => _item;
@@ -667,7 +665,7 @@ public sealed class SourceTypeNodeVm : SolutionExplorerNodeVm
     public override string DisplayName => Model.Name;
 
     /// <summary>
-    /// Segoe MDL2 U+E8F1 (Code) — same glyph for all type kinds;
+    /// Segoe MDL2 U+E8F1 (Code) â€” same glyph for all type kinds;
     /// colour differentiation is applied in XAML via DataTrigger on Model.Kind.
     /// </summary>
     public override string Icon => "\uE8F1";
@@ -680,7 +678,7 @@ public sealed class SourceTypeNodeVm : SolutionExplorerNodeVm
 
 /// <summary>
 /// Represents a member declaration inside a <see cref="SourceTypeNodeVm"/>.
-/// Leaf node — no children.
+/// Leaf node â€” no children.
 /// Double-click navigates to <see cref="LineNumber"/> in the code editor.
 /// </summary>
 public sealed class SourceMemberNodeVm : SolutionExplorerNodeVm
@@ -729,7 +727,7 @@ public sealed class ReferencesContainerNodeVm : SolutionExplorerNodeVm
     public IProject? Project { get; init; }
 
     public override string DisplayName => "References";
-    /// <summary>Segoe MDL2 "Link" glyph — matches VS References folder.</summary>
+    /// <summary>Segoe MDL2 "Link" glyph â€” matches VS References folder.</summary>
     public override string Icon        => "\uE71D";
 }
 
@@ -840,7 +838,7 @@ public sealed class AnalyzerNodeVm : SolutionExplorerNodeVm
     public override string DisplayName =>
         System.IO.Path.GetFileNameWithoutExtension(Info.HintPath);
 
-    /// <summary>Segoe MDL2 "Diagnostic" glyph — matches parent container.</summary>
+    /// <summary>Segoe MDL2 "Diagnostic" glyph â€” matches parent container.</summary>
     public override string Icon => "\uE9D9";
 
     /// <summary>Full path to the analyzer DLL.</summary>
@@ -868,6 +866,6 @@ public sealed class ChangesetNodeVm : SolutionExplorerNodeVm
     public IProject?     Project       { get; }
 
     public override string DisplayName => System.IO.Path.GetFileName(ChangesetPath);
-    /// <summary>Segoe MDL2 "Repair" glyph — matches the Patch project type icon.</summary>
+    /// <summary>Segoe MDL2 "Repair" glyph â€” matches the Patch project type icon.</summary>
     public override string Icon        => "\uE8AD";
 }

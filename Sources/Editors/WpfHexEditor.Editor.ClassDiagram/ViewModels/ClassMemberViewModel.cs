@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/ClassMemberViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -19,13 +19,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// Observable wrapper around a <see cref="ClassMember"/> record.
 /// </summary>
-public sealed class ClassMemberViewModel : INotifyPropertyChanged
+public sealed class ClassMemberViewModel : ViewModelBase
 {
     private ClassMember _member;
     private bool _isEditing;
@@ -104,7 +105,7 @@ public sealed class ClassMemberViewModel : INotifyPropertyChanged
     /// <returns>The updated <see cref="ClassMember"/> record.</returns>
     public ClassMember CommitEdit()
     {
-        // Parse DisplayLabel format "Name : Type" — simple split on " : "
+        // Parse DisplayLabel format "Name : Type" â€” simple split on " : "
         string text = EditText.Trim();
         string name = text;
         string typeName = _member.TypeName;
@@ -128,8 +129,5 @@ public sealed class ClassMemberViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

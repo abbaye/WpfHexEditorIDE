@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: HexEditorViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     and file dirty state. Consumed by HexEditor and its partial class hierarchy.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Acts as the single source of truth for observable editor state; partial classes
 //     access it via the HexEditor.ViewModel property.
 //
@@ -28,14 +28,15 @@ using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for HexEditor (V2 architecture) - handles all business logic
-    /// Architecture: Virtual positions (display) ↔ Physical positions (file)
+    /// Architecture: Virtual positions (display) â†” Physical positions (file)
     /// </summary>
-    public class HexEditorViewModel : INotifyPropertyChanged
+    public class HexEditorViewModel : ViewModelBase
     {
         #region Fields
 
@@ -398,7 +399,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
             var vm = new HexEditorViewModel(provider);
             // Sync ReadOnlyMode from the actual provider state.
             // FileProvider may have silently fallen back to read-only
-            // (e.g. system DLLs, ACL-protected files) — reflect that in the VM.
+            // (e.g. system DLLs, ACL-protected files) â€” reflect that in the VM.
             if (provider.IsReadOnly)
                 vm.ReadOnlyMode = true;
             return vm;
@@ -433,7 +434,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
         /// <summary>
         /// Reload the file content from disk, discarding all pending in-memory edits.
-        /// The underlying FileStream is kept open — only the cache is invalidated.
+        /// The underlying FileStream is kept open â€” only the cache is invalidated.
         /// Call this after an external process has modified the file on disk.
         /// </summary>
         public void ReloadFromDisk()
@@ -514,7 +515,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
         /// <summary>
         /// Update byte preview (real-time display during editing, not committed)
-        /// Shows partial byte edit immediately (e.g., FF → 4F when high nibble is edited)
+        /// Shows partial byte edit immediately (e.g., FF â†’ 4F when high nibble is edited)
         /// </summary>
         public void UpdateBytePreview(VirtualPosition virtualPos, byte previewValue)
         {
@@ -605,7 +606,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
             }
             else
             {
-                // File is empty after deletion — in Insert mode, keep a logical cursor at 0.
+                // File is empty after deletion â€” in Insert mode, keep a logical cursor at 0.
                 SelectionStart = EditMode == EditMode.Insert ? VirtualPosition.Zero : VirtualPosition.Invalid;
                 SelectionStop = VirtualPosition.Invalid;
             }
@@ -641,7 +642,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
             }
             else
             {
-                // File is empty after deletion — in Insert mode, keep a logical cursor at 0.
+                // File is empty after deletion â€” in Insert mode, keep a logical cursor at 0.
                 SelectionStart = EditMode == EditMode.Insert ? VirtualPosition.Zero : VirtualPosition.Invalid;
                 SelectionStop = VirtualPosition.Invalid;
             }
@@ -760,7 +761,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
             var length = SelectionLength;
 
-            // Copy first (clipboard op — not undoable, no transaction needed)
+            // Copy first (clipboard op â€” not undoable, no transaction needed)
             if (!CopyToClipboard(copyAsAscii)) return false;
 
             // Wrap the delete in a named transaction so Ctrl+Z restores the full cut.
@@ -847,7 +848,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
             if (EditMode == EditMode.Insert)
             {
-                // INSERT MODE: InsertBytes records a single undo op — wrap for description.
+                // INSERT MODE: InsertBytes records a single undo op â€” wrap for description.
                 _provider.BeginUndoTransaction(pasteDesc);
                 try
                 {
@@ -862,7 +863,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
             }
             else
             {
-                // OVERWRITE MODE: loop creates N individual ops — group into one transaction.
+                // OVERWRITE MODE: loop creates N individual ops â€” group into one transaction.
                 _provider.BeginUndoTransaction(pasteDesc);
                 BeginUpdate();
                 try
@@ -1167,7 +1168,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
         /// <summary>
         /// Clear find/replace cache (call after data modifications).
-        /// Currently a no-op — the search engine rebuilds on every call by design.
+        /// Currently a no-op â€” the search engine rebuilds on every call by design.
         /// </summary>
         public void ClearFindCache() { }
 
@@ -1561,12 +1562,11 @@ namespace WpfHexEditor.HexEditor.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             if (_suppressRefresh) return; // Batch mode: suppress notifications
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            base.OnPropertyChanged(propertyName);
         }
 
         #endregion

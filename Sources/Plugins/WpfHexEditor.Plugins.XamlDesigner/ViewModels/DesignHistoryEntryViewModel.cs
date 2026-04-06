@@ -1,9 +1,9 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Plugins.XamlDesigner
 // File: DesignHistoryEntryViewModel.cs
 // Author: Derek Tremblay
 // Created: 2026-03-18
-//          2026-03-22 — Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
+//          2026-03-22 â€” Moved to plugin project (WpfHexEditor.Plugins.XamlDesigner.ViewModels).
 // Description:
 //     ViewModel for a single row in the Design History Panel.
 //     Wraps an IDesignUndoEntry and exposes display-ready properties:
@@ -17,13 +17,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
 /// <summary>
 /// Represents a single entry in the Design History Panel list.
 /// </summary>
-public sealed class DesignHistoryEntryViewModel : INotifyPropertyChanged
+public sealed class DesignHistoryEntryViewModel : ViewModelBase
 {
     public IDesignUndoEntry Source { get; }
 
@@ -92,8 +93,5 @@ public sealed class DesignHistoryEntryViewModel : INotifyPropertyChanged
         Source = source;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

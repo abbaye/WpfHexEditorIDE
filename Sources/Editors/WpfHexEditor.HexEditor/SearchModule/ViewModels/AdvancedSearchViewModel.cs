@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.HexEditor
 // File: AdvancedSearchViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -10,7 +10,7 @@
 //     Exposes async search execution with cancellation and observable result collection.
 //
 // Architecture Notes:
-//     MVVM pattern — implements INotifyPropertyChanged manually.
+//     MVVM pattern â€” implements INotifyPropertyChanged manually.
 //     Delegates actual search execution to WpfHexEditor.Core search services.
 //
 // ==========================================================
@@ -32,6 +32,7 @@ using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Search.Models;
 using WpfHexEditor.Core.Search.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.Search.ViewModels
 {
@@ -39,7 +40,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
     /// Advanced search ViewModel - always bound to parent HexEditor.
     /// Supports 5 modes: TEXT, HEX, WILDCARD, TBL TEXT, RELATIVE.
     /// </summary>
-    public class AdvancedSearchViewModel : INotifyPropertyChanged, IDisposable
+    public class AdvancedSearchViewModel : ViewModelBase, IDisposable
     {
         #region Fields
 
@@ -1101,7 +1102,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 // Yield once so the UI refreshes the busy state
                 await Task.Yield();
 
-                // Process in REVERSE position order — replacing in forward order would shift
+                // Process in REVERSE position order â€” replacing in forward order would shift
                 // all subsequent offsets when the replacement length differs from the match length.
                 var sortedResults = StandardResults.OrderByDescending(r => r.Position).ToList();
 
@@ -1324,12 +1325,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
 

@@ -1,4 +1,4 @@
-// ==========================================================
+﻿// ==========================================================
 // Project: WpfHexEditor.Editor.ClassDiagram
 // File: ViewModels/ClassHistoryPanelViewModel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -20,13 +20,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ClassDiagram.Services;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 /// <summary>
 /// ViewModel for the class diagram history panel.
 /// </summary>
-public sealed class ClassHistoryPanelViewModel : INotifyPropertyChanged
+public sealed class ClassHistoryPanelViewModel : ViewModelBase
 {
     private readonly ObservableCollection<IClassDiagramUndoEntry> _entries = [];
     private int _currentIndex;
@@ -104,8 +105,5 @@ public sealed class ClassHistoryPanelViewModel : INotifyPropertyChanged
     // INotifyPropertyChanged
     // ---------------------------------------------------------------------------
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

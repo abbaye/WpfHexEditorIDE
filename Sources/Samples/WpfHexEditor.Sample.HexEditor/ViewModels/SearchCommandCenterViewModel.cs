@@ -1,4 +1,4 @@
-//////////////////////////////////////////////
+﻿//////////////////////////////////////////////
 // GNU Affero General Public License v3.0  2026
 // HexEditor V2 - Search Command Center ViewModel
 // Author : Derek Tremblay (derektremblay666@gmail.com)
@@ -17,13 +17,14 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.Search.Models;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Sample.HexEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for Search Command Center - showcasing ultra-performant V2 search
     /// </summary>
-    public class SearchCommandCenterViewModel : INotifyPropertyChanged
+    public class SearchCommandCenterViewModel : ViewModelBase
     {
         #region Fields
 
@@ -40,7 +41,6 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
 
         #region Events
 
-        public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<SearchMatch> OnMatchFound;
 
         #endregion
@@ -312,10 +312,6 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
             return bytes.ToArray();
         }
 
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }
