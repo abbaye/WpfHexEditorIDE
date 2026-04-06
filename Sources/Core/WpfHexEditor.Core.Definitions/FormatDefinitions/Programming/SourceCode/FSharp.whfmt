@@ -260,6 +260,20 @@
         "\\|>\\s*$",
         ",\\s*$"
       ]
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": true,
+      "languageColor": "#C586C0",
+      "aliases": [
+        "f#",
+        "fsharp"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

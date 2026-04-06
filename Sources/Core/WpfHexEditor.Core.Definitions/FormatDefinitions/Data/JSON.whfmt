@@ -160,6 +160,18 @@
         "\\}",
         "\\]"
       ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "jsonc"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

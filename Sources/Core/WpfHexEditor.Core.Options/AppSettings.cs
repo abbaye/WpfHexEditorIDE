@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using WpfHexEditor.Core;
+using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Core.Options;
@@ -153,6 +154,11 @@ public sealed class AppSettings
     /// <summary>Dynamic View menu organization preferences.</summary>
     public ViewMenuSettings ViewMenu { get; set; } = new();
 
+    // -- Environment > Documents --------------------------------------------------
+
+    /// <summary>External file change detection and auto-reload behaviour.</summary>
+    public DocumentSettings Documents { get; set; } = new();
+
     // -- Document Editor ----------------------------------------------------------
 
     /// <summary>Document Editor (RTF/DOCX/ODT) preferences.</summary>
@@ -162,6 +168,14 @@ public sealed class AppSettings
 
     /// <summary>Plugin Marketplace preferences (GitHub token, auto-update check).</summary>
     public MarketplaceSettings Marketplace { get; set; } = new();
+
+    // -- Lazy Plugin Persistence --------------------------------------------------
+
+    /// <summary>
+    /// IDs of lazy (Dormant→Loaded) plugins whose panels were visible at last shutdown.
+    /// Restored eagerly at next startup so the docking layout can re-anchor their panels.
+    /// </summary>
+    public List<string> LazyPluginsToRestore { get; set; } = [];
 
     // -- Layout Customization -----------------------------------------------------
 
@@ -211,6 +225,50 @@ public sealed class AppSettings
 
     /// <summary>Directory for storing layout profile files. Null = AppData default.</summary>
     public string? LayoutProfileDirectory { get; set; }
+
+    // -- Environment > UI ---------------------------------------------------------
+
+    /// <summary>IDE UI appearance options (active panel highlight mode, etc.).</summary>
+    public UiSettings UI { get; set; } = new();
+
+    // -- Environment > Tab Groups -------------------------------------------------
+
+    /// <summary>Document tab group layout preferences.</summary>
+    public TabGroupSettings TabGroups { get; set; } = new();
+}
+
+/// <summary>IDE UI appearance settings.</summary>
+public sealed class UiSettings
+{
+    /// <summary>
+    /// Visual highlight mode for the active panel/document container.
+    /// Default: TopBar (2px accent bar on top edge — VS Code style).
+    /// </summary>
+    public ActivePanelHighlightMode ActivePanelHighlight { get; set; } = ActivePanelHighlightMode.TopBar;
+}
+
+// ─── Tab Groups ───────────────────────────────────────────────────────────────
+
+/// <summary>Document tab group layout preferences.</summary>
+public sealed class TabGroupSettings
+{
+    /// <summary>Minimum width (px) of each pane before a vertical split is refused.</summary>
+    public int MinGroupWidthPx { get; set; } = 200;
+
+    /// <summary>Minimum height (px) of each pane before a horizontal split is refused.</summary>
+    public int MinGroupHeightPx { get; set; } = 150;
+
+    /// <summary>When true, both panes are sized equally (50/50) after a split. Default: true.</summary>
+    public bool EnforceEqualSize { get; set; } = true;
+
+    /// <summary>When true, the tab group layout is included in workspace saves. Default: true.</summary>
+    public bool PersistTabGroupLayout { get; set; } = true;
+
+    /// <summary>
+    /// When true, a "Group N" badge is shown on each document tab bar
+    /// only while multiple groups are open. Default: true.
+    /// </summary>
+    public bool ShowGroupNumberBadge { get; set; } = true;
 }
 
 // ─── Command Palette ──────────────────────────────────────────────────────────
@@ -584,6 +642,13 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public int InlineHintsVisibleKinds { get; set; } = 4095;
 
+    /// <summary>
+    /// Reference-count source strategy: 0=Auto (Roslyn when available, regex fallback),
+    /// 1=RoslynOnly (no hint for non-C# files), 2=RegexAlways.
+    /// Stored as int to avoid cross-project enum dependency.
+    /// </summary>
+    public int InlineHintsSource { get; set; } = 0;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
@@ -591,6 +656,14 @@ public sealed class CodeEditorDefaultSettings
     /// (requires save mode Tracked to be effective).
     /// </summary>
     public bool ChangesetEnabled { get; set; } = false;
+
+    // -- Clickable links --------------------------------------------------
+
+    /// <summary>When true, HTTP/HTTPS URLs are detected and Ctrl+Click opens them in the browser.</summary>
+    public bool ClickableLinksEnabled  { get; set; } = true;
+
+    /// <summary>When true, email addresses are detected and Ctrl+Click opens the mail client.</summary>
+    public bool ClickableEmailsEnabled { get; set; } = true;
 
     // -- Syntax colours --------------------------------------------------
     // Stored as HTML hex strings (e.g. "#FF8C00").  Empty string = use theme default.
@@ -782,6 +855,14 @@ public sealed class TextEditorDefaultSettings
     /// (requires save mode Tracked to be effective).
     /// </summary>
     public bool ChangesetEnabled { get; set; } = false;
+
+    // -- Clickable links --------------------------------------------------
+
+    /// <summary>When true, HTTP/HTTPS URLs are detected and Ctrl+Click opens them in the browser.</summary>
+    public bool ClickableLinksEnabled  { get; set; } = true;
+
+    /// <summary>When true, email addresses are detected and Ctrl+Click opens the mail client.</summary>
+    public bool ClickableEmailsEnabled { get; set; } = true;
 
     // -- Syntax colours --------------------------------------------------
 
@@ -1151,4 +1232,45 @@ public sealed class MarketplaceSettings
     /// Minimum enforced value: 1 hour. Default: 24.
     /// </summary>
     public int UpdateCheckIntervalHours { get; set; } = 24;
+}
+
+// ----------------------------------------------------------------------------
+// Document Settings (External File Changes)
+// ----------------------------------------------------------------------------
+
+/// <summary>
+/// Static notification hub for document settings changes.
+/// </summary>
+public static class DocumentsAppSettings
+{
+    /// <summary>Raised when document settings are flushed from the Options dialog.</summary>
+    public static event Action? Changed;
+
+    /// <summary>Signal that document settings have been updated.</summary>
+    public static void NotifyChanged() => Changed?.Invoke();
+}
+
+/// <summary>
+/// Settings for external file change detection, auto-reload, and ignored directories.
+/// Presented in the Options dialog under Environment > Documents.
+/// </summary>
+public sealed class DocumentSettings
+{
+    /// <summary>
+    /// When true, the IDE monitors project directories for external file changes
+    /// and shows a warning badge on modified files in the Solution Explorer.
+    /// </summary>
+    public bool DetectExternalFileChanges { get; set; } = true;
+
+    /// <summary>
+    /// When true, externally modified files are silently reloaded instead of
+    /// showing a warning badge. Only effective when <see cref="DetectExternalFileChanges"/> is true.
+    /// </summary>
+    public bool AutoReloadExternalChanges { get; set; }
+
+    /// <summary>
+    /// Semicolon-separated list of directory names to exclude from file watching.
+    /// Changes inside these directories never trigger external-modification warnings.
+    /// </summary>
+    public string IgnoredDirectories { get; set; } = "bin;obj;.vs;.git;node_modules";
 }

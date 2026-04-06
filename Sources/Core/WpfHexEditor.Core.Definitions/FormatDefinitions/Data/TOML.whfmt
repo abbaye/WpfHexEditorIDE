@@ -148,6 +148,15 @@
     "foldingRules": {
       "indentBased": true,
       "indentTabWidth": 2
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

@@ -16,7 +16,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -225,14 +224,7 @@ public sealed class LayoutOptionsPage : UserControl, IOptionsPage
 
     // ── Helpers ─────────────────────────────────────────────────────────────
 
-    private TextBlock SectionHeader(string text) => new()
-    {
-        Text       = text,
-        FontSize   = 12,
-        FontWeight = FontWeights.SemiBold,
-        Foreground = Brushes.Gray,
-        Margin     = new Thickness(0, 16, 0, 6)
-    };
+    private static TextBlock SectionHeader(string text) => OptionsPageHelper.SectionHeader(text);
 
     private CheckBox Chk(string label)
     {

@@ -135,7 +135,24 @@
       "organizeImports": true,
       "separateSystemImports": false,
       "quoteStyle": "double",
-      "maxLineLength": 79
+      "maxLineLength": 79,
+      "keywordParenKeywords": [
+        "if",
+        "for",
+        "while",
+        "elif",
+        "except",
+        "with"
+      ],
+      "importKeywords": [
+        "import",
+        "from"
+      ],
+      "methodDeclKeywords": [
+        "def",
+        "async",
+        "class"
+      ]
     },
     "previewSnippet": "import os\nimport abc\n\ndef go(x,y):\n    if x>0:\n        return x+y",
     "previewSamples": {
@@ -163,6 +180,19 @@
         "before": "return x",
         "after": "return x\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "languageColor": "#3776AB",
+      "aliases": [
+        "py"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

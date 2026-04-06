@@ -11,10 +11,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Save Mode ──────────────────────────────────────────────────── -->
-        <TextBlock Text="Save Mode"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="SAVE MODE"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <RadioButton x:Name="RadioDirect"
                      Content="Direct — Ctrl+S writes immediately to the physical file"
@@ -34,10 +34,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Auto-serialize ─────────────────────────────────────────────── -->
-        <TextBlock Text="Auto-save (Tracked mode only)"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="AUTO-SAVE (TRACKED MODE ONLY)"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckAutoSerialize"
                   Content="Periodically save pending changes to .whchg files"
@@ -63,10 +63,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Standalone Files ───────────────────────────────────────────── -->
-        <TextBlock Text="Standalone Files (no project)"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,6"/>
+        <TextBlock Text="STANDALONE FILES (NO PROJECT)"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <TextBlock Text="When Ctrl+S is pressed on a file not belonging to any project:"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"

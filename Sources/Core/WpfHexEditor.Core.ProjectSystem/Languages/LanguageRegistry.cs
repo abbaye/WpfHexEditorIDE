@@ -183,6 +183,52 @@ public sealed class LanguageRegistry
     }
 
     /// <summary>
+    /// Finds a language by its file extension (case-insensitive, with leading dot, e.g. ".cs").
+    /// Uses the builtin → user priority chain (no project context).
+    /// Returns <see langword="null"/> when not found.
+    /// </summary>
+    public LanguageDefinition? FindByExtension(string extension)
+    {
+        if (string.IsNullOrEmpty(extension)) return null;
+        var ext = extension.StartsWith('.') ? extension : "." + extension;
+        return GetLanguageForFile("file" + ext);
+    }
+
+    /// <summary>
+    /// Finds a language by its human-readable <see cref="LanguageDefinition.Name"/> (case-insensitive).
+    /// Returns <see langword="null"/> when not found.
+    /// </summary>
+    public LanguageDefinition? FindByDisplayName(string displayName)
+    {
+        if (string.IsNullOrEmpty(displayName)) return null;
+        lock (_lock)
+        {
+            foreach (var lang in _byId.Values)
+                if (string.Equals(lang.Name, displayName, StringComparison.OrdinalIgnoreCase))
+                    return lang;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Finds a language by one of its <see cref="LanguageDefinition.Aliases"/> (case-insensitive).
+    /// Falls back to <see cref="FindById"/> when no alias matches.
+    /// Returns <see langword="null"/> when not found.
+    /// </summary>
+    public LanguageDefinition? FindByAlias(string alias)
+    {
+        if (string.IsNullOrEmpty(alias)) return null;
+        lock (_lock)
+        {
+            foreach (var lang in _byId.Values)
+                foreach (var a in lang.Aliases)
+                    if (string.Equals(a, alias, StringComparison.OrdinalIgnoreCase))
+                        return lang;
+        }
+        return FindById(alias);
+    }
+
+    /// <summary>
     /// Resolves all <see cref="LanguageDefinition.Includes"/> chains and re-registers
     /// each definition with its merged base-layer rules.
     /// Call once after all built-in and user definitions have been registered.
@@ -285,6 +331,17 @@ public sealed class LanguageRegistry
             ScriptGlobals             = definition.ScriptGlobals,
             PreviewSnippet            = previewSnippet,
             PreviewSamples            = definition.PreviewSamples,
+            IsSourceFile          = definition.IsSourceFile,
+            IsStructuredDataFile  = definition.IsStructuredDataFile,
+            IsSolutionFile        = definition.IsSolutionFile,
+            IsProjectFile         = definition.IsProjectFile,
+            SupportsClassDiagram  = definition.SupportsClassDiagram,
+            SupportsSourceOutline = definition.SupportsSourceOutline,
+            IsProjectLanguage     = definition.IsProjectLanguage,
+            LanguageColor         = definition.LanguageColor,
+            Aliases               = definition.Aliases,
+            IconGlyph             = definition.IconGlyph,
+            IdeDiffMode           = definition.IdeDiffMode,
         };
     }
 }

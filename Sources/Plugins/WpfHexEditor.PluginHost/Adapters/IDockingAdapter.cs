@@ -60,4 +60,24 @@ public interface IDockingAdapter
 
     /// <summary>Raised when a panel transitions from visible to hidden/closed.</summary>
     event EventHandler<string>? PanelHidden;
+
+    // ── Tab Group extensions (default: no-op; overridden by DockingAdapter) ──
+
+    /// <summary>Opens a new vertical tab group containing the active document.</summary>
+    void SplitVertical() { }
+
+    /// <summary>Opens a new horizontal tab group containing the active document.</summary>
+    void SplitHorizontal() { }
+
+    /// <summary>Moves the active document to the next available tab group.</summary>
+    void MoveToNextTabGroup() { }
+
+    /// <summary>Moves the active document to the previous available tab group.</summary>
+    void MoveToPreviousTabGroup() { }
+
+    /// <summary>Closes all secondary tab groups, returning documents to the primary group.</summary>
+    void CloseAllTabGroups() { }
+
+    /// <summary>Returns the number of active document tab groups (minimum 1).</summary>
+    int GetTabGroupCount() => 1;
 }

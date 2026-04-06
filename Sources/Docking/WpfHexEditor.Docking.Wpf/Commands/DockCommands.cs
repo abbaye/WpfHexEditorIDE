@@ -67,16 +67,23 @@ public static class DockCommands
         new InputGestureCollection { new KeyGesture(Key.Y, ModifierKeys.Control | ModifierKeys.Shift) });
 
     public static readonly RoutedUICommand NewVerticalTabGroup = new(
-        "New Vertical Tab Group", nameof(NewVerticalTabGroup), typeof(DockCommands));
+        "New Vertical Tab Group", nameof(NewVerticalTabGroup), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.OemBackslash, ModifierKeys.Control | ModifierKeys.Alt, "Ctrl+Alt+\\") });
 
     public static readonly RoutedUICommand NewHorizontalTabGroup = new(
-        "New Horizontal Tab Group", nameof(NewHorizontalTabGroup), typeof(DockCommands));
+        "New Horizontal Tab Group", nameof(NewHorizontalTabGroup), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.OemBackslash, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift, "Ctrl+Alt+Shift+\\") });
 
     public static readonly RoutedUICommand MoveToNextTabGroup = new(
-        "Move to Next Tab Group", nameof(MoveToNextTabGroup), typeof(DockCommands));
+        "Move to Next Tab Group", nameof(MoveToNextTabGroup), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.Next, ModifierKeys.Control | ModifierKeys.Alt) });
 
     public static readonly RoutedUICommand MoveToPreviousTabGroup = new(
-        "Move to Previous Tab Group", nameof(MoveToPreviousTabGroup), typeof(DockCommands));
+        "Move to Previous Tab Group", nameof(MoveToPreviousTabGroup), typeof(DockCommands),
+        new InputGestureCollection { new KeyGesture(Key.Prior, ModifierKeys.Control | ModifierKeys.Alt) });
+
+    public static readonly RoutedUICommand CloseAllTabGroups = new(
+        "Close All Tab Groups", nameof(CloseAllTabGroups), typeof(DockCommands));
 
     public static readonly RoutedUICommand PinTab = new(
         "Pin Tab", nameof(PinTab), typeof(DockCommands),

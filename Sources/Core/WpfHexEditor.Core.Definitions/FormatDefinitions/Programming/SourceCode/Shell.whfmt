@@ -178,6 +178,22 @@
         "before": "}",
         "after": "}\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "bash",
+        "sh",
+        "zsh",
+        "fish",
+        "shell"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

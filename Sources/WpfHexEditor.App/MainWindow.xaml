@@ -621,6 +621,74 @@
                         </MenuItem>
                     </MenuItem>
 
+                    <!-- ═══════════ Window ═══════════ -->
+                    <MenuItem Header="_Window">
+                        <MenuItem Header="Tab _Groups">
+                            <MenuItem Header="New _Vertical Tab Group"
+                                      Click="OnTabGroupNewVertical"
+                                      InputGestureText="Ctrl+Alt+\"
+                                      x:Name="MenuItemNewVerticalTabGroup">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="New _Horizontal Tab Group"
+                                      Click="OnTabGroupNewHorizontal"
+                                      InputGestureText="Ctrl+Alt+Shift+\"
+                                      x:Name="MenuItemNewHorizontalTabGroup">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Move to _Next Tab Group"
+                                      Click="OnTabGroupMoveNext"
+                                      InputGestureText="Ctrl+Alt+PgDn"
+                                      x:Name="MenuItemMoveToNextTabGroup">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Move to _Previous Tab Group"
+                                      Click="OnTabGroupMovePrevious"
+                                      InputGestureText="Ctrl+Alt+PgUp"
+                                      x:Name="MenuItemMoveToPreviousTabGroup">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="_Close Tab Group"
+                                      Click="OnTabGroupCloseCurrentGroup"
+                                      x:Name="MenuItemCloseTabGroup"
+                                      IsEnabled="False">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Close _All Tab Groups"
+                                      Click="OnTabGroupCloseAll"
+                                      x:Name="MenuItemCloseAllTabGroups"
+                                      IsEnabled="False">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                    </MenuItem>
+
                     <!-- ═══════════ Tools ═══════════ -->
                     <MenuItem Header="_Tools">
                         <MenuItem Header="_Terminal" Click="OnOpenTerminal">

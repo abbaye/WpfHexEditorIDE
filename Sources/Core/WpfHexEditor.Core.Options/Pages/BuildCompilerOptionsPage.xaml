@@ -22,10 +22,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── C# / .NET ─────────────────────────────────────────────────── -->
-        <TextBlock Text="C# / .NET Defaults"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="C# / .NET DEFAULTS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckNullableErrors"
                   Content="Treat nullable warnings as errors (C# 8+)"
@@ -48,10 +48,10 @@
         <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Warnings ──────────────────────────────────────────────────── -->
-        <TextBlock Text="Warnings"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="WARNINGS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>

@@ -285,6 +285,18 @@
         "before": "- item two",
         "after": "- item two\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "md"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

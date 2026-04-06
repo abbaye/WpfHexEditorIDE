@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Shell.Panels.ViewModels;
@@ -648,6 +649,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             node.Children.Add(projNode);
         }
 
+        // Loose file items (README.md, .editorconfig, etc.) — alphabetical, after projects.
+        if (folder.FileItems is { Count: > 0 })
+        {
+            var solutionDir = System.IO.Path.GetDirectoryName(solution.FilePath) ?? "";
+            foreach (var relativePath in folder.FileItems.OrderBy(f => f, StringComparer.OrdinalIgnoreCase))
+                node.Children.Add(new SolutionFileItemNodeVm(relativePath, solutionDir));
+        }
+
         return node;
     }
 
@@ -770,8 +779,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     private static FileNodeVm MakeFileNode(IProjectItem item, IProject project)
     {
         var ext       = Path.GetExtension(item.Name);
-        var canExpand = string.Equals(ext, ".cs",   StringComparison.OrdinalIgnoreCase)
-                     || string.Equals(ext, ".xaml", StringComparison.OrdinalIgnoreCase);
+        var canExpand = LanguageRegistry.Instance.FindByExtension(ext)?.SupportsSourceOutline == true;
 
         var node = new FileNodeVm(item, isDefaultTbl: item.Id == project.DefaultTblItemId)
         {
@@ -794,7 +802,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     private static DependentFileNodeVm MakeDependentFileNode(IProjectItem item, IProject project)
     {
         var ext          = Path.GetExtension(item.Name);
-        var canExpand    = string.Equals(ext, ".cs", StringComparison.OrdinalIgnoreCase);
+        var canExpand    = LanguageRegistry.Instance.FindByExtension(ext)?.SupportsSourceOutline == true;
         var node         = new DependentFileNodeVm(item, project) { SupportsExpansion = canExpand };
 
         // Inject a LoadingNodeVm sentinel so the dep file also shows an expand arrow.

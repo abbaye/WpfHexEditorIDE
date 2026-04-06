@@ -36,4 +36,12 @@ public interface ISolutionFolder
 
     /// <summary>Nested solution sub-folders.</summary>
     IReadOnlyList<ISolutionFolder> Children { get; }
+
+    /// <summary>
+    /// Loose files that belong directly to this solution folder (e.g. README.md,
+    /// .editorconfig). Paths are relative to the solution directory.
+    /// In VS <c>.sln</c> files these come from <c>ProjectSection(SolutionItems)</c>;
+    /// in <c>.slnx</c> files from <c>&lt;File Path="..."/&gt;</c> elements.
+    /// </summary>
+    IReadOnlyList<string> FileItems => [];
 }

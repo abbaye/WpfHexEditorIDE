@@ -185,6 +185,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     public void ReloadPlugin(string id)     => RunLifecycleAndRebuild(() => _host.ReloadPluginAsync(id));
     public void UninstallPlugin(string id)  => RunLifecycleAndRebuild(() => _host.UninstallPluginAsync(id));
     public void LoadPluginNow(string id)    => RunLifecycleAndRebuild(() => _host.ActivateDormantPluginAsync(id));
+    public void SuspendPlugin(string id)    => RunLifecycleAndRebuild(() => _host.SuspendPluginAsync(id));
     public void CascadeUnload(string id)    => RunLifecycleAndRebuild(() => _host.CascadingUnloadAsync(id));
     public void CascadeReload(string id)    => RunLifecycleAndRebuild(() => _host.CascadingReloadAsync(id));
 
@@ -245,6 +246,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                     vm?.ClearMigrationSuggestion();
                 },
                 onLoadNow: LoadPluginNow,
+                onSuspend: SuspendPlugin,
                 onCascadeUnload: CascadeUnload,
                 onCascadeReload: CascadeReload));
         }

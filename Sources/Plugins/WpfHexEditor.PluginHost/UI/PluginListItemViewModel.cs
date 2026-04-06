@@ -31,6 +31,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     private readonly Action<string>? _onMigrateToSandbox;
     private readonly Action<string>? _onDismissMigrationSuggestion;
     private readonly Action<string>? _onLoadNow;
+    private readonly Action<string>? _onSuspend;
     private readonly Action<string>? _onCascadeUnload;
     private readonly Action<string>? _onCascadeReload;
 
@@ -61,6 +62,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         Action<string>? onMigrateToSandbox = null,
         Action<string>? onDismissMigrationSuggestion = null,
         Action<string>? onLoadNow = null,
+        Action<string>? onSuspend = null,
         Action<string>? onCascadeUnload = null,
         Action<string>? onCascadeReload = null)
     {
@@ -75,6 +77,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         _onMigrateToSandbox = onMigrateToSandbox;
         _onDismissMigrationSuggestion = onDismissMigrationSuggestion;
         _onLoadNow = onLoadNow;
+        _onSuspend = onSuspend;
         _onCascadeUnload = onCascadeUnload;
         _onCascadeReload = onCascadeReload;
         _selectedIsolationMode = initialIsolationMode ?? entry.Manifest.IsolationMode;
@@ -92,6 +95,10 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         LoadNowCommand = new RelayCommand(
             _ => _onLoadNow?.Invoke(Id),
             _ => IsDormant && _onLoadNow is not null);
+        SuspendCommand = new RelayCommand(
+            _ => _onSuspend?.Invoke(Id),
+            _ => State == PluginState.Loaded && _onSuspend is not null
+                 && _entry.Manifest.Activation?.OnStartup == false);
         CascadeUnloadCommand = new RelayCommand(
             _ => _onCascadeUnload?.Invoke(Id),
             _ => State == PluginState.Loaded && _onCascadeUnload is not null);
@@ -327,6 +334,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public ICommand MigrateToSandboxCommand { get; }
     public ICommand DismissMigrationSuggestionCommand { get; }
     public ICommand LoadNowCommand { get; }
+    public ICommand SuspendCommand { get; }
     public ICommand CascadeUnloadCommand { get; }
     public ICommand CascadeReloadCommand { get; }
 
@@ -516,6 +524,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         ((RelayCommand)ReloadCommand).RaiseCanExecuteChanged();
         ((RelayCommand)MigrateToSandboxCommand).RaiseCanExecuteChanged();
         ((RelayCommand)LoadNowCommand).RaiseCanExecuteChanged();
+        ((RelayCommand)SuspendCommand).RaiseCanExecuteChanged();
         ((RelayCommand)CascadeUnloadCommand).RaiseCanExecuteChanged();
         ((RelayCommand)CascadeReloadCommand).RaiseCanExecuteChanged();
         OnPropertyChanged(nameof(CanMigrateToSandbox));

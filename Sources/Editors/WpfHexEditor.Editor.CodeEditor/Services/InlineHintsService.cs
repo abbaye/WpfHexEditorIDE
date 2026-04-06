@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 
@@ -43,13 +44,18 @@ internal sealed class InlineHintsService : IDisposable
     private readonly DispatcherTimer _debounce;
     private bool                     _disposed;
 
+    // Roslyn reference-count provider — null when LSP client is not Roslyn.
+    private IReferenceCountProvider? _roslynProvider;
+    private int                      _inlineHintsSource; // 0=Auto, 1=RoslynOnly, 2=RegexAlways
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Current hints data: 0-based line index → (reference count, symbol name, MDL2 icon glyph, icon brush, symbol kind).
+    /// Current hints data: 0-based line index → (reference count, symbol name, MDL2 icon glyph, icon brush, symbol kind, isRoslyn).
+    /// <c>IsRoslyn = true</c> when the count came from Roslyn semantic analysis; <c>false</c> = regex fallback.
     /// </summary>
-    public IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind)> HintsData
-        { get; private set; } = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds)>();
+    public IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind, bool IsRoslyn)> HintsData
+        { get; private set; } = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds, bool)>();
 
     /// <summary>Raised on the UI thread when <see cref="HintsData"/> has been refreshed.</summary>
     public event EventHandler? HintsDataRefreshed;
@@ -94,7 +100,7 @@ internal sealed class InlineHintsService : IDisposable
 
         _currentFilePath = null;
         CancelPending();
-        HintsData = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds)>();
+        HintsData = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds, bool)>();
     }
 
     public void Dispose()
@@ -124,7 +130,7 @@ internal sealed class InlineHintsService : IDisposable
         int pivot = e.Position.Line;
         int delta = e.ChangeType == TextChangeType.NewLine ? +1 : -1;
 
-        var shifted = new Dictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind)>(HintsData.Count);
+        var shifted = new Dictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind, bool IsRoslyn)>(HintsData.Count);
         foreach (var (key, val) in HintsData)
         {
             if (key == pivot && delta == -1) continue;   // deleted line's hint is dropped
@@ -144,11 +150,31 @@ internal sealed class InlineHintsService : IDisposable
         _ = RefreshAsync();
     }
 
+    // ── Roslyn provider ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Updates the Roslyn provider and source strategy, then schedules a refresh.
+    /// Call from <c>CodeEditor.SetLspClient</c> and the settings-changed handler.
+    /// </summary>
+    internal void SetReferenceCountProvider(IReferenceCountProvider? provider, int source)
+    {
+        _roslynProvider    = provider;
+        _inlineHintsSource = source;
+        ScheduleRefresh();
+    }
+
+    private bool UseRoslyn() =>
+        _inlineHintsSource != 2
+        && _roslynProvider is not null
+        && _currentFilePath is not null
+        && _roslynProvider.CanProvide(_currentFilePath);
+
     // ── Core logic ────────────────────────────────────────────────────────────
 
     private void ScheduleRefresh()
     {
         _debounce.Stop();
+        _debounce.Interval = TimeSpan.FromMilliseconds(800);
         _debounce.Start();
     }
 
@@ -172,17 +198,72 @@ internal sealed class InlineHintsService : IDisposable
 
         try
         {
-            // ConfigureAwait(true) resumes on the UI (Dispatcher) thread so we can
-            // safely update HintsData and fire the event without an Invoke call.
-            var data = await Task.Run(() => ComputeHintsData(lineSnapshot, filePath, ct), ct)
-                                 .ConfigureAwait(true);
-
+            // ── Step 1 : Regex — always runs first for immediate feedback (800 ms debounce).
+            // ConfigureAwait(true) resumes on the UI (Dispatcher) thread so HintsData
+            // and the event can be touched without an explicit Invoke call.
+            var regexData = await Task.Run(() => ComputeHintsData(lineSnapshot, filePath, ct), ct)
+                                      .ConfigureAwait(true);
             if (ct.IsCancellationRequested) return;
 
-            HintsData = data;
+            HintsData = regexData;
             HintsDataRefreshed?.Invoke(this, EventArgs.Empty);
+
+            // ── Step 2 : Roslyn upgrade — runs after regex results are visible.
+            // Only attempted when the provider is available and not overridden to regex.
+            if (_inlineHintsSource == 2 || _roslynProvider is null || filePath is null) return;
+            if (!_roslynProvider.CanProvide(filePath)) return;
+
+            var roslynData = await ComputeHintsDataRoslynAsync(lineSnapshot, filePath, _roslynProvider, ct)
+                                   .ConfigureAwait(true);
+            if (ct.IsCancellationRequested) return;
+
+            // Only publish the Roslyn upgrade if it produced at least one result —
+            // an empty Roslyn result (e.g. workspace not fully loaded) keeps the regex hints visible.
+            if (roslynData.Count > 0)
+            {
+                HintsData = roslynData;
+                HintsDataRefreshed?.Invoke(this, EventArgs.Empty);
+            }
         }
         catch (OperationCanceledException) { /* expected on rapid editing */ }
+    }
+
+    /// <summary>
+    /// Roslyn-backed computation: uses <see cref="IReferenceCountProvider"/> for
+    /// semantically-accurate counts (no false positives in strings/comments).
+    /// Falls back to regex count per symbol if the provider returns null.
+    /// </summary>
+    private static async Task<IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind, bool IsRoslyn)>>
+        ComputeHintsDataRoslynAsync(
+            IReadOnlyList<CodeLine> lines,
+            string filePath,
+            IReferenceCountProvider provider,
+            CancellationToken ct)
+    {
+        var snapshot = CodeStructureParser.Parse(lines);
+        var items    = snapshot.Types.Concat(snapshot.Members).ToList();
+        if (items.Count == 0)
+            return new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds, bool)>();
+
+        var result = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds, bool)>(items.Count);
+
+        foreach (var item in items)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            if (string.IsNullOrEmpty(item.Name)) continue;
+
+            // Roslyn gives the true count across the whole solution.
+            var count = await provider.CountReferencesAsync(filePath, item.Line, item.Name, ct)
+                                      .ConfigureAwait(false);
+
+            // null means Roslyn failed for this symbol — skip rather than show a stale count.
+            if (count is null or 0) continue;
+
+            result[item.Line] = (count.Value, item.Name, item.IconGlyph, item.IconBrush, MapToInlineHintsKind(item), true);
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -191,14 +272,14 @@ internal sealed class InlineHintsService : IDisposable
     /// file extension via <see cref="WorkspaceFileCache"/>.
     /// Must not touch any WPF objects — only BCL + snapshotted CodeLine data.
     /// </summary>
-    private static IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind)> ComputeHintsData(
+    private static IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, Brush IconBrush, InlineHintsSymbolKinds Kind, bool IsRoslyn)> ComputeHintsData(
         IReadOnlyList<CodeLine> lines, string? currentFilePath, CancellationToken ct)
     {
         var snapshot = CodeStructureParser.Parse(lines);
 
         // Collect declaration items — Types + Members; skip Namespaces (too broad).
         var items = snapshot.Types.Concat(snapshot.Members).ToList();
-        if (items.Count == 0) return new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds)>();
+        if (items.Count == 0) return new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds, bool)>();
 
         // Gather workspace files of matching extension once per ComputeHintsData call.
         IReadOnlyList<string> workspacePaths = [];
@@ -206,7 +287,7 @@ internal sealed class InlineHintsService : IDisposable
         if (!string.IsNullOrEmpty(ext))
             workspacePaths = WorkspaceFileCache.GetPathsForExtensions([ext]);
 
-        var result = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds)>(items.Count);
+        var result = new Dictionary<int, (int, string, string, Brush, InlineHintsSymbolKinds, bool)>(items.Count);
 
         foreach (var item in items)
         {
@@ -241,7 +322,7 @@ internal sealed class InlineHintsService : IDisposable
 
             // Skip 0-count entries to avoid cluttering the hints layer.
             if (count > 0)
-                result[item.Line] = (count, item.Name, item.IconGlyph, item.IconBrush, MapToInlineHintsKind(item));
+                result[item.Line] = (count, item.Name, item.IconGlyph, item.IconBrush, MapToInlineHintsKind(item), false);
         }
 
         return result;

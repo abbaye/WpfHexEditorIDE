@@ -309,14 +309,11 @@ public sealed partial class AssemblyExplorerViewModel
     {
         var host = new CodeEditorSplitHost();
 
-        var langId = editorLanguageName switch
-        {
-            "C#"     => "csharp",
-            "VB.NET" => "vbnet",
-            "F#"     => "fsharp",
-            { } s    => s,
-            null     => "csharp"
-        };
+        var langId = editorLanguageName is not null
+            ? (LanguageRegistry.Instance.FindByDisplayName(editorLanguageName)?.Id
+               ?? LanguageRegistry.Instance.FindByAlias(editorLanguageName)?.Id
+               ?? editorLanguageName.ToLowerInvariant())
+            : "csharp";
         var lang = LanguageRegistry.Instance.FindById(langId);
         if (lang is not null) host.SetLanguage(lang);
         host.IsReadOnly = true;

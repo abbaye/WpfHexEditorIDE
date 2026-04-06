@@ -216,9 +216,5 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
         return cb;
     }
 
-    private static TextBlock MakeHeader(string text) => new()
-    {
-        Text = text, FontWeight = FontWeights.SemiBold, FontSize = 13,
-        Margin = new Thickness(0, 0, 0, 6),
-    };
+    private static TextBlock MakeHeader(string text) => OptionsPageHelper.SectionHeader(text);
 }

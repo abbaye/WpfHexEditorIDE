@@ -19,7 +19,9 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Core.WorkspaceTemplates.ViewModels;
 
@@ -38,7 +40,7 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     private IProjectTemplate? _selectedTemplate;
     private string            _projectName       = "MyProject";
     private string            _parentDirectory   = DefaultParentDirectory();
-    private string            _selectedLanguage  = "C#";
+    private string            _selectedLanguage  = DefaultLanguage();
     private string            _filterText        = string.Empty;
 
     // -----------------------------------------------------------------------
@@ -134,8 +136,12 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     public string ProjectPath
         => System.IO.Path.Combine(ParentDirectory, ProjectName);
 
-    /// <summary>Available languages for override.</summary>
-    public ObservableCollection<string> Languages { get; } = ["C#", "VB.NET", "F#"];
+    /// <summary>
+    /// Available project languages, populated from whfmt-driven language definitions
+    /// (all languages with <c>IsProjectLanguage = true</c>).
+    /// Falls back to a hardcoded list only when the registry has not yet been populated.
+    /// </summary>
+    public ObservableCollection<string> Languages { get; } = BuildLanguageList();
 
     /// <summary>Selected language (may override template default).</summary>
     public string SelectedLanguage
@@ -185,6 +191,31 @@ public sealed class NewProjectDialogViewModel : INotifyPropertyChanged
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Builds the list of available project languages from the whfmt-driven registry.
+    /// Falls back to ["C#", "VB.NET", "F#"] only when the registry is empty.
+    /// </summary>
+    private static ObservableCollection<string> BuildLanguageList()
+    {
+        var fromRegistry = LanguageRegistry.Instance.AllLanguages()
+            .Where(l => l.IsProjectLanguage)
+            .Select(l => l.Name)
+            .OrderBy(n => n, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return fromRegistry.Count > 0
+            ? new ObservableCollection<string>(fromRegistry)
+            : new ObservableCollection<string> { "C#", "VB.NET", "F#" };
+    }
+
+    /// <summary>Returns the default project language from the registry (first registered project language).</summary>
+    private static string DefaultLanguage()
+    {
+        return LanguageRegistry.Instance.AllLanguages()
+                   .FirstOrDefault(l => l.IsProjectLanguage)?.Name
+               ?? "C#";
+    }
 
     private bool IsCurrentStepValid() => CurrentStep switch
     {

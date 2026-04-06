@@ -13,6 +13,7 @@
 // ==========================================================
 
 using WpfHexEditor.SDK.Contracts.Terminal;
+using WpfHexEditor.SDK.ExtensionPoints.DocumentStructure;
 
 namespace WpfHexEditor.SDK.ExtensionPoints;
 
@@ -35,7 +36,8 @@ public static class ExtensionPointCatalog
             ["Decompiler"]      = typeof(IDecompilerExtension),
             ["QuickInfo"]       = typeof(IQuickInfoProvider),
             ["Minimap"]           = typeof(IMinimapExtension),
-            ["TerminalCommand"]   = typeof(ITerminalCommandProvider),
+            ["TerminalCommand"]     = typeof(ITerminalCommandProvider),
+            ["DocumentStructure"]   = typeof(IDocumentStructureProvider),
         };
 
     /// <summary>

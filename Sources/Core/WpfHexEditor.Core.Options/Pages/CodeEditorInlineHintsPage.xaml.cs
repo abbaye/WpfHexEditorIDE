@@ -58,6 +58,8 @@ public sealed partial class CodeEditorInlineHintsPage : UserControl, IOptionsPag
         {
             var ce   = s.CodeEditorDefaults;
             CheckInlineHintsEnabled.IsChecked = ce.ShowInlineHints;
+            CboSource.SelectedIndex = ce.InlineHintsSource is >= 0 and <= 2
+                ? ce.InlineHintsSource : 0;
 
             // Treat 0 as All (migration: old settings.json without this field defaults to 0).
             int mask = ce.InlineHintsVisibleKinds == 0 ? KindAll : ce.InlineHintsVisibleKinds;
@@ -97,11 +99,17 @@ public sealed partial class CodeEditorInlineHintsPage : UserControl, IOptionsPag
         if (ChkField.IsChecked       == true) mask |= KindField;
         if (ChkEvent.IsChecked       == true) mask |= KindEvent;
         ce.InlineHintsVisibleKinds = mask;
+        ce.InlineHintsSource       = CboSource.SelectedIndex;
     }
 
     // -- Control handlers ------------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
+    {
+        if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnSourceChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }

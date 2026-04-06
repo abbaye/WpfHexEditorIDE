@@ -71,6 +71,15 @@ public interface IDocumentEditor
     void SelectAll();
     void Close();
 
+    // -- Save suppression callback ----------------------------------------
+
+    /// <summary>
+    /// When set by the host, editors should invoke this callback with the file path
+    /// immediately before writing to disk, so the file watcher can suppress the event.
+    /// Default implementation: no-op (null).
+    /// </summary>
+    Action<string>? BeforeSaveCallback { get => null; set { } }
+
     // -- Events (host updates its own menu/statusbar) ---------------------
     event EventHandler?         ModifiedChanged;  // IsDirty changed
     event EventHandler?         CanUndoChanged;

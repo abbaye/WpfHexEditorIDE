@@ -178,9 +178,12 @@ public partial class WelcomePanel : UserControl
 
         var sp = new StackPanel { Orientation = Orientation.Horizontal };
 
-        // Folder icon for .whsln / .whproj, file icon for others
+        // Solution icon for .whsln / .whproj / .sln / .slnx / .slnf, file icon for others
         var isSolution = path.EndsWith(".whsln", StringComparison.OrdinalIgnoreCase)
-                      || path.EndsWith(".whproj", StringComparison.OrdinalIgnoreCase);
+                      || path.EndsWith(".whproj", StringComparison.OrdinalIgnoreCase)
+                      || path.EndsWith(".sln",   StringComparison.OrdinalIgnoreCase)
+                      || path.EndsWith(".slnx",  StringComparison.OrdinalIgnoreCase)
+                      || path.EndsWith(".slnf",  StringComparison.OrdinalIgnoreCase);
 
         var iconBlock = new TextBlock
         {

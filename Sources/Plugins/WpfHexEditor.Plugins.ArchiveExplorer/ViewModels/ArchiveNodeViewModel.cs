@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.IO;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Plugins.ArchiveExplorer.Models;
 using WpfHexEditor.Plugins.ArchiveExplorer.Services;
 
@@ -100,23 +101,22 @@ public sealed class ArchiveNodeViewModel : INotifyPropertyChanged
 
     private static string ResolveFileGlyph(string name)
     {
-        var ext = Path.GetExtension(name).ToLowerInvariant();
-        return ext switch
+        var ext  = Path.GetExtension(name);
+        // Query the whfmt-driven registry first — no hardcoded extension lists.
+        var lang = LanguageRegistry.Instance.FindByExtension(ext);
+        if (lang?.IconGlyph is { } glyph) return glyph;
+
+        // Fallback: category-based heuristics for formats not in the language registry.
+        return ext.ToLowerInvariant() switch
         {
-            ".cs" or ".vb" or ".fs" or ".ts" or ".js" or ".jsx" or ".tsx"
-            or ".py" or ".rb" or ".java" or ".kt" or ".go" or ".rs"
-            or ".c"  or ".cpp" or ".h"                    => "\uE943", // Code
-            ".json" or ".xml" or ".xaml" or ".yaml"
-            or ".yml" or ".toml" or ".ini" or ".cfg"      => "\uE8F4", // Document/Settings
-            ".png"  or ".jpg" or ".jpeg" or ".gif"
-            or ".bmp" or ".ico" or ".webp" or ".tiff"     => "\uEB9F", // Photo
-            ".mp3"  or ".flac" or ".wav" or ".ogg"        => "\uEC4F", // Music
-            ".mp4"  or ".avi"  or ".mkv" or ".mov"        => "\uE8B2", // Video
-            ".exe"  or ".dll"  or ".so"                   => "\uE756", // App/PE
-            ".zip"  or ".7z"  or ".rar" or ".tar"
-            or ".gz" or ".bz2" or ".xz"                   => "\uE7C3", // ZipFolder
-            ".md"   or ".txt" or ".log"                   => "\uE8A5", // Document
-            _                                             => "\uE8A5", // Document (fallback)
+            ".png" or ".jpg" or ".jpeg" or ".gif"
+            or ".bmp" or ".ico" or ".webp" or ".tiff" => "\uEB9F", // Photo
+            ".mp3" or ".flac" or ".wav" or ".ogg"     => "\uEC4F", // Music
+            ".mp4" or ".avi"  or ".mkv" or ".mov"     => "\uE8B2", // Video
+            ".exe" or ".dll"  or ".so"                => "\uE756", // App/PE
+            ".zip" or ".7z"   or ".rar" or ".tar"
+            or ".gz" or ".bz2" or ".xz"               => "\uE7C3", // ZipFolder
+            _                                         => "\uE8A5", // Document (fallback)
         };
     }
 

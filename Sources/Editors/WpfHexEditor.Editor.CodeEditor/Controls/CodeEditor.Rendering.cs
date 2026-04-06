@@ -2289,8 +2289,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             var context = new JsonParserContext();
 
-            // Rebuild URL hit-zones each render pass (document may have changed).
-            _urlHitZones.Clear();
+            // Rebuild link hit-zones (URLs + emails) each render pass (document may have changed).
+            _linkHitZones.Clear();
             _foldLabelHitZones.Clear();
 
             // Cache URL pen; rebuilt only when SyntaxUrlColor DP reference changes (OPT-PERF-03).
@@ -2355,10 +2355,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         && !line.IsGlyphCacheDirty
                         && line.GlyphRunCache is { Count: > 0 } cachedRuns)
                     {
-                        // Restore URL hit-zones (built when the cache was first populated).
+                        // Restore link hit-zones (built when the cache was first populated).
                         if (line.CachedUrlZones is { } zones)
                             foreach (var z in zones)
-                                _urlHitZones.Add(new UrlHitZone(i, z.StartCol, z.EndCol, z.Url));
+                                _linkHitZones.Add(new LinkHitZone(i, z.StartCol, z.EndCol, z.Url, z.IsEmail));
 
                         // Translate once per line → draw all cached GlyphRuns.
                         dc.PushTransform(new System.Windows.Media.TranslateTransform(x, y));
@@ -2366,14 +2366,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             dc.DrawGlyphRun(entry.Foreground, entry.Run);
                         dc.Pop();
 
-                        // URL hover underline (changes per mouse-move without dirtying the cache).
-                        if (_hoveredUrlZone.HasValue && _hoveredUrlZone.Value.Line == i)
+                        // Link hover underline (changes per mouse-move without dirtying the cache).
+                        if (_hoveredLinkZone.HasValue && _hoveredLinkZone.Value.Line == i)
                         {
                             foreach (var entry in cachedRuns)
                             {
                                 if (entry.IsUrlToken
-                                    && entry.StartColumn >= _hoveredUrlZone.Value.StartCol
-                                    && entry.StartColumn <  _hoveredUrlZone.Value.EndCol)
+                                    && entry.StartColumn >= _hoveredLinkZone.Value.StartCol
+                                    && entry.StartColumn <  _hoveredLinkZone.Value.EndCol)
                                 {
                                     double underlineY = y + _glyphRenderer.Baseline + 2;
                                     double tokenX     = x + entry.Run.BaselineOrigin.X;
@@ -2408,7 +2408,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     {
                         if (line.CachedUrlZones is { } zones)
                             foreach (var z in zones)
-                                _urlHitZones.Add(new UrlHitZone(i, z.StartCol, z.EndCol, z.Url));
+                                _linkHitZones.Add(new LinkHitZone(i, z.StartCol, z.EndCol, z.Url, z.IsEmail));
 
                         dc.PushTransform(new System.Windows.Media.TranslateTransform(x, y));
                         foreach (var entry in staleRuns)
@@ -2526,10 +2526,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         // Draw underline only on the URL currently hovered by the mouse.
                         // This avoids permanent underlines on xmlns/href URIs in XML/XAML files.
                         if (ReferenceEquals(token.Foreground, SyntaxUrlColor)
-                            && _hoveredUrlZone.HasValue
-                            && _hoveredUrlZone.Value.Line     == i
-                            && token.StartColumn              >= _hoveredUrlZone.Value.StartCol
-                            && token.StartColumn              <  _hoveredUrlZone.Value.EndCol)
+                            && _hoveredLinkZone.HasValue
+                            && _hoveredLinkZone.Value.Line     == i
+                            && token.StartColumn              >= _hoveredLinkZone.Value.StartCol
+                            && token.StartColumn              <  _hoveredLinkZone.Value.EndCol)
                         {
                             // Place the underline 2px below the text baseline (tight, VS-style).
                             double underlineY = baselineY + 2;
@@ -2553,10 +2553,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         line.GlyphRunCache     = _glyphRenderer.BuildLineGlyphRuns(allCacheTokens, SyntaxUrlColor, line.Text);
                         line.IsGlyphCacheDirty = false;
 
-                        // Cache URL zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
-                        line.CachedUrlZones = _urlHitZones
+                        // Cache link zones for GlyphRun-hit renders (no re-run of OverlayUrlTokens).
+                        line.CachedUrlZones = _linkHitZones
                             .Where(z => z.Line == i)
-                            .Select(z => (z.StartCol, z.EndCol, z.Url))
+                            .Select(z => (z.StartCol, z.EndCol, z.Url, z.IsEmail))
                             .ToList();
                     }
                     // ── end cache build ───────────────────────────────────────────────
@@ -2568,34 +2568,45 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Scans <paramref name="lineText"/> for HTTP/HTTPS URLs using <see cref="s_urlRegex"/>.
-        /// For each match, replaces any existing tokens at the URL's columns with a new token
-        /// colored with <see cref="SyntaxUrlColor"/>, and registers a <see cref="UrlHitZone"/>
+        /// Scans <paramref name="lineText"/> for HTTP/HTTPS URLs and email addresses.
+        /// For each match, replaces any existing tokens at the range's columns with a new token
+        /// colored with <see cref="SyntaxUrlColor"/>, and registers a <see cref="LinkHitZone"/>
         /// for cursor and Ctrl+Click handling.
+        /// Detection is guarded by <see cref="ClickableLinksEnabled"/> / <see cref="ClickableEmailsEnabled"/>.
         /// </summary>
         private IEnumerable<SyntaxHighlightToken> OverlayUrlTokens(
             string lineText, int lineIndex, IEnumerable<SyntaxHighlightToken> source)
         {
-            // Fast-path: cheap string contains check avoids regex allocation on lines without URLs (OPT-PERF-04).
-            if (!lineText.Contains("http", StringComparison.OrdinalIgnoreCase)) return source;
-            var matches = s_urlRegex.Matches(lineText);
-            if (matches.Count == 0) return source;
+            bool hasUrl   = ClickableLinksEnabled  && lineText.Contains("http", StringComparison.OrdinalIgnoreCase);
+            bool hasEmail = ClickableEmailsEnabled && lineText.Contains('@');
 
-            // Materialise the source so we can splice URL tokens in.
-            var result = source.ToList();
+            if (!hasUrl && !hasEmail) return source;
+
+            // Materialise the source so we can splice link tokens in.
+            var result   = source.ToList();
             var urlBrush = SyntaxUrlColor;
 
-            foreach (Match m in matches)
+            if (hasUrl)
             {
-                // Register hit-zone for mouse interaction.
-                _urlHitZones.Add(new UrlHitZone(lineIndex, m.Index, m.Index + m.Length, m.Value));
+                foreach (Match m in s_urlRegex.Matches(lineText))
+                {
+                    _linkHitZones.Add(new LinkHitZone(lineIndex, m.Index, m.Index + m.Length, m.Value, IsEmail: false));
+                    result.RemoveAll(t => t.StartColumn < m.Index + m.Length && t.StartColumn + t.Length > m.Index);
+                    result.Add(new SyntaxHighlightToken(m.Index, m.Length, m.Value, urlBrush));
+                }
+            }
 
-                // Remove any tokens that overlap the URL range (they'll be replaced).
-                result.RemoveAll(t => t.StartColumn < m.Index + m.Length
-                                   && t.StartColumn + t.Length > m.Index);
-
-                // Add the URL token with SyntaxUrlColor (used as a sentinel in RenderTextContent).
-                result.Add(new SyntaxHighlightToken(m.Index, m.Length, m.Value, urlBrush));
+            if (hasEmail)
+            {
+                foreach (Match m in s_emailRegex.Matches(lineText))
+                {
+                    // Skip if already covered by a URL match (e.g. mailto: inside a URL).
+                    if (_linkHitZones.Any(z => z.Line == lineIndex && m.Index >= z.StartCol && m.Index < z.EndCol))
+                        continue;
+                    _linkHitZones.Add(new LinkHitZone(lineIndex, m.Index, m.Index + m.Length, m.Value, IsEmail: true));
+                    result.RemoveAll(t => t.StartColumn < m.Index + m.Length && t.StartColumn + t.Length > m.Index);
+                    result.Add(new SyntaxHighlightToken(m.Index, m.Length, m.Value, urlBrush));
+                }
             }
 
             // Re-sort by start column so tokens render left-to-right.

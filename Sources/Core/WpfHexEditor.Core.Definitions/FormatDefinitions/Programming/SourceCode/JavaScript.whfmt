@@ -182,7 +182,17 @@
       "separateSystemImports": false,
       "quoteStyle": "double",
       "trailingCommas": "es5",
-      "maxLineLength": 100
+      "maxLineLength": 100,
+      "importKeywords": [
+        "import",
+        "require"
+      ],
+      "methodDeclKeywords": [
+        "function",
+        "async",
+        "class",
+        "export"
+      ]
     },
     "colorLiteralPatterns": [
       "#[0-9A-Fa-f]{8}",
@@ -216,6 +226,20 @@
         "before": "}",
         "after": "}\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "languageColor": "#F0DB4F",
+      "aliases": [
+        "js",
+        "jsx"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

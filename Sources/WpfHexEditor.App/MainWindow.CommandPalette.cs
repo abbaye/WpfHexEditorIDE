@@ -30,10 +30,10 @@ public partial class MainWindow
     private void InitCommandPaletteOptions()
     {
         OptionsPageRegistry.RegisterDynamic(
-            category:     "Command Palette",
-            pageName:     "Général",
+            category:     "Tools",
+            pageName:     "Command Palette",
             factory:      () => new CommandPaletteOptionsPage(),
-            categoryIcon: "🔍");
+            categoryIcon: "🛠");
     }
 
     // ── Quick File Open (Ctrl+P) ──────────────────────────────────────────────
@@ -174,6 +174,14 @@ public partial class MainWindow
         //    View-path items are enriched with subcategory from ViewMenuOrganizer below).
         if (_menuAdapter is not null)
         {
+            // Dedup set: built-in registry entries take precedence over plugin re-registrations.
+            // Keyed by "Name|Category" (case-insensitive) so plugins that mirror a built-in
+            // command (e.g. DebuggerPlugin re-registering Continue, Step Over, etc.) are silently
+            // skipped, preventing duplicates in the palette without requiring per-plugin coordination.
+            var registryKeys = entries
+                .Select(e => $"{e.Name.Trim()}|{e.Category?.Trim()}")
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             foreach (var (uiId, descriptor) in _menuAdapter.GetAllMenuItems())
             {
                 if (descriptor.Command is null) continue;
@@ -186,8 +194,14 @@ public partial class MainWindow
                     ? "Plugins"
                     : StripAccessKey(descriptor.ParentPath);
 
+                var name = StripAccessKey(descriptor.Header?.ToString() ?? uiId);
+
+                // Skip if already contributed by the central command registry.
+                if (registryKeys.Contains($"{name.Trim()}|{category.Trim()}"))
+                    continue;
+
                 entries.Add(new CommandPaletteEntry(
-                    Name:             StripAccessKey(descriptor.Header?.ToString() ?? uiId),
+                    Name:             name,
                     Category:         category,
                     GestureText:      descriptor.GestureText,
                     IconGlyph:        descriptor.IconGlyph,

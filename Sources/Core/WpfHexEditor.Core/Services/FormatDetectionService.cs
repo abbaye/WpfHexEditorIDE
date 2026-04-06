@@ -1080,6 +1080,10 @@ namespace WpfHexEditor.Core.Services
             if (string.IsNullOrWhiteSpace(json))
                 return null;
 
+            var firstChar = json.AsSpan().TrimStart()[0];
+            if (firstChar != '{' && firstChar != '[')
+                return null;
+
             try
             {
                 var options = new JsonSerializerOptions

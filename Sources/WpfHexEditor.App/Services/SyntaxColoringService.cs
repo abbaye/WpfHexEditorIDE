@@ -30,30 +30,6 @@ namespace WpfHexEditor.App.Services;
 /// </summary>
 internal sealed class SyntaxColoringService : ISyntaxColoringService
 {
-    /// <summary>
-    /// Common fenced-code-block aliases → canonical LanguageRegistry IDs.
-    /// </summary>
-    private static readonly Dictionary<string, string> s_aliases = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["c#"]         = "csharp",
-        ["cs"]         = "csharp",
-        ["js"]         = "javascript",
-        ["ts"]         = "typescript",
-        ["py"]         = "python",
-        ["rb"]         = "ruby",
-        ["sh"]         = "shell",
-        ["bash"]       = "shell",
-        ["zsh"]        = "shell",
-        ["fish"]       = "shell",
-        ["shell"]      = "shell",
-        ["yml"]        = "yaml",
-        ["md"]         = "markdown",
-        ["vb"]         = "vb",
-        ["vb.net"]     = "vb",
-        ["dockerfile"] = "docker",
-        ["jsonc"]      = "json",
-    };
-
     // ── ISyntaxColoringService ──────────────────────────────────────────
 
     public IReadOnlyList<ColoredSpan> ColorizeLine(string line, string languageId)
@@ -83,17 +59,15 @@ internal sealed class SyntaxColoringService : ISyntaxColoringService
     {
         if (string.IsNullOrEmpty(aliasOrExtension)) return null;
 
-        // Direct alias lookup
-        if (s_aliases.TryGetValue(aliasOrExtension, out var mapped))
-            return mapped;
+        // 1. Try whfmt-driven alias lookup (replaces the old static dictionary).
+        var byAlias = LanguageRegistry.Instance.FindByAlias(aliasOrExtension);
+        if (byAlias is not null) return byAlias.Id;
 
+        // 2. Try direct ID match.
         var id = aliasOrExtension.ToLowerInvariant();
+        if (LanguageRegistry.Instance.FindById(id) is not null) return id;
 
-        // Try direct ID match
-        if (LanguageRegistry.Instance.FindById(id) is not null)
-            return id;
-
-        // Try as file extension
+        // 3. Try as file extension.
         if (aliasOrExtension.StartsWith('.'))
         {
             var lang = LanguageRegistry.Instance.GetLanguageForFile("file" + aliasOrExtension);

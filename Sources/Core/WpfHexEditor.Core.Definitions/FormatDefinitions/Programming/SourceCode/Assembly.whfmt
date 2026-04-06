@@ -123,6 +123,15 @@
         "before": "    int 0x80",
         "after": "    int 0x80\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "asm",
+        "s"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

@@ -1,60 +1,8 @@
-\# ⚡ claude.perf.md — Binary/Hex Optimized
+# Module: Performance / Binary / Hex
 
+- NEVER load full file in memory. Streaming/paging mandatory.
+- Chunk-based processing. Avoid copies. Prefer spans/memory views.
+- Virtualized rendering mandatory. Incremental updates only.
+- Must support GB-scale files. No blocking UI thread.
 
-
-\## Core Rules
-
-
-
-\* NEVER load full file in memory
-
-\* Use streaming / paging
-
-
-
-\## Buffer Management
-
-
-
-\* Use chunk-based processing
-
-\* Avoid copies
-
-\* Prefer spans / memory views
-
-
-
-\## UI + Data
-
-
-
-\* Virtualized rendering mandatory
-
-\* Incremental updates only
-
-
-
-\## Large Files
-
-
-
-\* Must support GB-scale files
-
-\* No blocking UI thread
-
-
-
-\## Validation
-
-
-
-\* O(1) or O(log n) where possible
-
-\* No unnecessary allocations
-
-
-
-❌ Otherwise rejected
-
-
-
+Validation: O(1) or O(log n) where possible, no unnecessary allocations. ❌ Otherwise rejected.

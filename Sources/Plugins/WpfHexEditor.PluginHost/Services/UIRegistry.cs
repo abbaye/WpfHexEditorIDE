@@ -260,7 +260,50 @@ public sealed class UIRegistry : IUIRegistry
         }
     }
 
+    // -- Stub activation helper -----------------------------------------------------------
+
+    /// <summary>
+    /// Returns the first <see cref="System.Windows.Input.ICommand"/> registered by
+    /// <paramref name="pluginId"/> whose <see cref="MenuItemDescriptor.ParentPath"/>
+    /// starts with "View". Used by the stub activation system to invoke the plugin's
+    /// panel-toggle command immediately after the plugin finishes loading.
+    /// </summary>
+    public System.Windows.Input.ICommand? GetFirstViewCommandForPlugin(string pluginId)
+    {
+        var allItems = _menuAdapter.GetAllMenuItems();
+        lock (_lock)
+        {
+            foreach (var kvp in _registrations)
+            {
+                if (!string.Equals(kvp.Value.PluginId, pluginId, StringComparison.OrdinalIgnoreCase)) continue;
+                if (kvp.Value.Kind != UIElementKind.MenuItem) continue;
+                if (!allItems.TryGetValue(kvp.Key, out var desc)) continue;
+                if (desc.ParentPath.StartsWith("View", StringComparison.OrdinalIgnoreCase)
+                    && desc.Command is not null)
+                    return desc.Command;
+            }
+        }
+        return null;
+    }
+
     // -- Panel visibility -----------------------------------------------------------------
+
+    /// <summary>
+    /// Returns true if at least one visible panel is registered by <paramref name="pluginId"/>.
+    /// </summary>
+    public bool HasVisiblePanelForPlugin(string pluginId)
+    {
+        lock (_lock)
+        {
+            foreach (var kvp in _registrations)
+            {
+                if (!string.Equals(kvp.Value.PluginId, pluginId, StringComparison.OrdinalIgnoreCase)) continue;
+                if (kvp.Value.Kind != UIElementKind.Panel) continue;
+                if (_dockingAdapter.IsPanelVisible(kvp.Key)) return true;
+            }
+        }
+        return false;
+    }
 
     public void ShowPanel(string uiId)      => _dockingAdapter.ShowDockablePanel(uiId);
     public void HidePanel(string uiId)      => _dockingAdapter.HideDockablePanel(uiId);

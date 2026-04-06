@@ -6,8 +6,10 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -38,6 +40,37 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     private readonly TextEditorViewModel _vm = new();
     private CancellationTokenSource? _cts         = null; // reserved for future async operations
     private TextLinkAdorner?         _linkAdorner = null;
+
+    // -- Clickable link/email settings ---------------------------------------
+    private bool _clickableLinksEnabled  = true;
+    private bool _clickableEmailsEnabled = true;
+
+    // Regex instances are compiled once (thread-safe, read-only after init).
+    private static readonly Regex s_urlRegex = new(
+        @"https?://[^\s""'<>\[\]{}|\\^`]+",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex s_emailRegex = new(
+        @"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}",
+        RegexOptions.Compiled);
+
+    /// <summary>
+    /// When <see langword="true"/>, HTTP/HTTPS URLs are detected and Ctrl+Click opens them in the browser.
+    /// </summary>
+    public bool ClickableLinksEnabled
+    {
+        get => _clickableLinksEnabled;
+        set { _clickableLinksEnabled = value; RefreshLinkAdorner(); }
+    }
+
+    /// <summary>
+    /// When <see langword="true"/>, email addresses are detected and Ctrl+Click opens the mail client.
+    /// </summary>
+    public bool ClickableEmailsEnabled
+    {
+        get => _clickableEmailsEnabled;
+        set { _clickableEmailsEnabled = value; RefreshLinkAdorner(); }
+    }
 
     // -- Context menu dynamic headers ---
     private MenuItem? _undoMenuItem;
@@ -212,6 +245,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     public bool IsDirty    => _vm.IsDirty;
 
     /// <inheritdoc/>
+    public Action<string>? BeforeSaveCallback { get; set; }
+
+    /// <inheritdoc/>
     public bool CanUndo    => _vm.CanUndo;
 
     /// <inheritdoc/>
@@ -375,6 +411,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     public async Task SaveAsync(CancellationToken ct = default)
     {
         if (string.IsNullOrEmpty(_vm.FilePath)) return;
+        BeforeSaveCallback?.Invoke(_vm.FilePath);
         await _vm.SaveFileAsync(_vm.FilePath, ct);
         StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(_vm.FilePath)}");
     }
@@ -382,6 +419,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     /// <inheritdoc/>
     public async Task SaveAsAsync(string filePath, CancellationToken ct = default)
     {
+        BeforeSaveCallback?.Invoke(filePath);
         await _vm.SaveFileAsync(filePath, ct);
         StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(filePath)}");
     }
@@ -464,6 +502,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         try
         {
             await _vm.LoadFileAsync(filePath, null, ct);
+            RefreshLinkAdorner();
             UpdateStatusBar();
             StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
             OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs { Success = true });
@@ -507,7 +546,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     /// <summary>
     /// Loads a raw text string into the editor.
     /// </summary>
-    public void SetText(string text) => _vm.SetText(text);
+    public void SetText(string text) { _vm.SetText(text); RefreshLinkAdorner(); }
 
     /// <summary>
     /// Returns the full document text.
@@ -595,6 +634,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                 LanguageText.Text    = def.Name;
             }
         }
+
+        RefreshLinkAdorner();
     }
 
     /// <summary>
@@ -637,6 +678,77 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         _linkAdorner = new TextLinkAdorner(Viewport, _vm);
         _linkAdorner.SetLinks(links);
         layer.Add(_linkAdorner);
+    }
+
+    // ── URL / email auto-detection ────────────────────────────────────────────
+
+    /// <summary>
+    /// Scans <paramref name="text"/> for clickable URLs and email addresses (guarded by
+    /// <see cref="ClickableLinksEnabled"/> / <see cref="ClickableEmailsEnabled"/>)
+    /// and returns the resulting <see cref="TextLink"/> list.
+    /// </summary>
+    private List<TextLink> ScanLinksInText(string text)
+    {
+        var links = new List<TextLink>();
+
+        if (_clickableLinksEnabled)
+        {
+            foreach (Match m in s_urlRegex.Matches(text))
+            {
+                var url = m.Value;
+                var start = m.Index;
+                var end   = m.Index + m.Length;
+                links.Add(new TextLink(start, end, url,
+                    () =>
+                    {
+                        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+                        catch { /* ignore: browser unavailable */ }
+                    }));
+            }
+        }
+
+        if (_clickableEmailsEnabled)
+        {
+            foreach (Match m in s_emailRegex.Matches(text))
+            {
+                // Skip ranges already covered by a URL hit (e.g. user@host inside mailto:user@host).
+                if (links.Any(l => m.Index >= l.StartOffset && m.Index < l.EndOffset))
+                    continue;
+
+                var email = m.Value;
+                var start = m.Index;
+                var end   = m.Index + m.Length;
+                links.Add(new TextLink(start, end, email,
+                    () =>
+                    {
+                        try { Process.Start(new ProcessStartInfo($"mailto:{email}") { UseShellExecute = true }); }
+                        catch { /* ignore: mail client unavailable */ }
+                    }));
+            }
+        }
+
+        return links;
+    }
+
+    /// <summary>
+    /// Rebuilds the link adorner based on the current text and feature-flag state.
+    /// Safe to call when the adorner layer is not yet attached (e.g. during early init).
+    /// </summary>
+    private void RefreshLinkAdorner()
+    {
+        if (!_clickableLinksEnabled && !_clickableEmailsEnabled)
+        {
+            ClearLinks();
+            return;
+        }
+
+        var text  = GetText();
+        var links = ScanLinksInText(text);
+
+        if (links.Count > 0)
+            InstallAdorner(links);
+        else
+            ClearLinks();
     }
 
     /// <summary>

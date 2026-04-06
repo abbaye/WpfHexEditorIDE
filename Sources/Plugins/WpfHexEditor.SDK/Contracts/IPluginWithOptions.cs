@@ -36,7 +36,7 @@ public interface IPluginWithOptions
     /// Default: "Plugins"
     /// Example: "Data Analysis", "Editors", "Debugging Tools"
     /// </summary>
-    string GetOptionsCategory() => "Plugins";
+    string GetOptionsCategory() => "Extensions";
 
     /// <summary>
     /// Optional: Returns an icon prefix for the options category header.

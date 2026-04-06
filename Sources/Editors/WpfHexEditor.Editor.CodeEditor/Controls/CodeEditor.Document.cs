@@ -686,6 +686,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             var text = GetText();
             try
             {
+                BeforeSaveCallback?.Invoke(filePath);
                 await Task.Run(() => File.WriteAllText(filePath, text, System.Text.Encoding.UTF8), ct);
             }
             catch (Exception ex)

@@ -10,10 +10,10 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
-        <TextBlock Text="Display"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16"/>
+        <TextBlock Text="DISPLAY"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <!-- Bytes par ligne -->
         <Grid Margin="0,0,0,10">
@@ -78,10 +78,10 @@
         <Separator Margin="0,0,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="Display Format"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16"/>
+        <TextBlock Text="DISPLAY FORMAT"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <!-- Data string visual -->
         <Grid Margin="0,0,0,10">
@@ -138,10 +138,10 @@
         <Separator Margin="0,8,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="Scroll Bar Markers"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16"/>
+        <TextBlock Text="SCROLL BAR MARKERS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowBookmarkMarkers"
                   Content="Show bookmark markers"
@@ -181,10 +181,10 @@
         <Separator Margin="0,16,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="Column and Row Highlight"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16"/>
+        <TextBlock Text="COLUMN AND ROW HIGHLIGHT"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowColumnHighlight"
                   Content="Show active column highlight (hex panel)"

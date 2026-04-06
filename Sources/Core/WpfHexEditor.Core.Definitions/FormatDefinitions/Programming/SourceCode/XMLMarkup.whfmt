@@ -180,6 +180,18 @@
         "before": "</root>",
         "after": "</root>\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "xml"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

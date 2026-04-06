@@ -544,18 +544,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         };
     }
 
-    private static TextBlock MakeSectionHeader(string text)
-    {
-        var tb = new TextBlock
-        {
-            Text       = text,
-            FontSize   = 10,
-            FontWeight = FontWeights.Bold,
-            Margin     = new Thickness(0, 14, 0, 4),
-        };
-        tb.SetResourceReference(TextBlock.ForegroundProperty, "CP_SecondaryTextBrush");
-        return tb;
-    }
+    private static TextBlock MakeSectionHeader(string text) => OptionsPageHelper.SectionHeader(text);
 
     // ── Themed button style (matches OptionsTextButtonStyle from XAML pages) ──────
 

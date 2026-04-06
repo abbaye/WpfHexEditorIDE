@@ -370,6 +370,16 @@
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         </StackPanel>
                     </ToggleButton>
+                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
+                                  IsChecked="{Binding FilterStateDormant}"
+                                  Padding="6,2" Margin="0,0,3,0"
+                                  ToolTip="Show only standby (lazy-loaded) plugins">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="7" Height="7" Fill="#A855F7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Standby" FontSize="9" Margin="4,0,0,0"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                        </StackPanel>
+                    </ToggleButton>
                     <Rectangle Width="1" Height="12" Margin="3,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
@@ -555,13 +565,26 @@
 
                     <DataGridTextColumn Header="Plugin" Binding="{Binding Name}" Width="*" MinWidth="120"/>
 
-                    <!-- State with fault tooltip -->
+                    <!-- State with fault tooltip and per-state color -->
                     <DataGridTemplateColumn Header="State" Width="80" MinWidth="60" SortMemberPath="State">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding State}" ToolTip="{Binding FaultMessage}"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           VerticalAlignment="Center" Margin="4,2"/>
+                                           VerticalAlignment="Center" Margin="4,2">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDormant}" Value="True">
+                                                    <Setter Property="Foreground" Value="#A855F7"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding State}" Value="Error">
+                                                    <Setter Property="Foreground" Value="#EF4444"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -581,6 +604,10 @@
                                                 <DataTrigger Binding="{Binding IsMetricsEstimated}" Value="True">
                                                     <!-- Amber for estimated InProcess metrics -->
                                                     <Setter Property="Foreground" Value="#F59E0B"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsDormant}" Value="True">
+                                                    <!-- Purple for standby plugins -->
+                                                    <Setter Property="Foreground" Value="#A855F7"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

@@ -98,7 +98,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// Cached so that GlyphRun-cache hits can still repopulate the editor's
         /// click-detection list without re-running the regex overlay pass.
         /// </summary>
-        public List<(int StartCol, int EndCol, string Url)>? CachedUrlZones { get; set; }
+        public List<(int StartCol, int EndCol, string Url, bool IsEmail)>? CachedUrlZones { get; set; }
 
         // ──────────────────────────────────────────────────────────────────────
 

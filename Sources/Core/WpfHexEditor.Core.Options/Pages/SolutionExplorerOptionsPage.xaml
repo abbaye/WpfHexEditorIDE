@@ -21,10 +21,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Navigation ────────────────────────────────────────────────── -->
-        <TextBlock Text="Navigation"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="NAVIGATION"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckTrackActive"
                   Content="Automatically highlight active document in tree"
@@ -44,10 +44,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Notifications ─────────────────────────────────────────────── -->
-        <TextBlock Text="Notifications"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="NOTIFICATIONS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckNotifications"
                   Content="Show contextual notifications (external changes, paste conflicts…)"
@@ -60,10 +60,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Default Sort ───────────────────────────────────────────────── -->
-        <TextBlock Text="Defaults when opening a solution"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="DEFAULTS WHEN OPENING A SOLUTION"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>

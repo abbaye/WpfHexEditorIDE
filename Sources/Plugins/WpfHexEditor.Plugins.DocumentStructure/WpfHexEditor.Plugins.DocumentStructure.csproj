@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>WpfHexEditor.Plugins.DocumentStructure</RootNamespace>
+    <AssemblyName>WpfHexEditor.Plugins.DocumentStructure</AssemblyName>
+    <!-- Plugin metadata -->
+    <PluginId>WpfHexEditor.Plugins.DocumentStructure</PluginId>
+    <PluginName>Document Structure</PluginName>
+    <PluginVersion>0.1.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.DocumentStructure.DocumentStructurePlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>VS-style Document Structure / Outline panel. Shows hierarchical structure for code (LSP symbols), binary (format blocks), markdown (headings), JSON, XML, INI, and more.</PluginDescription>
+    <PluginIsolationMode>Auto</PluginIsolationMode>
+    <PluginLoadPriority>50</PluginLoadPriority>
+    <PluginSdkVersion>2.0.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.7.0</PluginMinIDEVersion>
+    <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
+    <PluginPermAccessCodeEditor>true</PluginPermAccessCodeEditor>
+    <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>true</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>false</PluginPermWriteOutput>
+    <PluginPermRegisterTerminalCommands>true</PluginPermRegisterTerminalCommands>
+    <!-- Required so WpfHexEditor.Core.DocumentStructure.dll lands in $(OutputPath)
+         and CopyToPluginsDir can pick it up alongside the plugin DLL. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.DocumentStructure\WpfHexEditor.Core.DocumentStructure.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
+  <!-- Copy compiled plugin to App Plugins directory after build -->
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <!-- Plugin DLL + its Core provider dependency -->
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.DocumentStructure.dll"
+          DestinationFolder="$(PluginDestDir)"
+          OverwriteReadOnlyFiles="true" />
+  </Target>
+
+</Project>

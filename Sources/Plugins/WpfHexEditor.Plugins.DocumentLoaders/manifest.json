@@ -15,6 +15,6 @@
   },
   "activation": {
     "fileExtensions": [".rtf", ".docx", ".dotx", ".odt", ".ott"],
-    "onStartup": true
+    "onStartup": false
   }
 }

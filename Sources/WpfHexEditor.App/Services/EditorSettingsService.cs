@@ -84,8 +84,11 @@ public sealed class EditorSettingsService
         ce.InlineHintsVisibleKinds  = d.InlineHintsVisibleKinds == 0
             ? WpfHexEditor.Editor.Core.InlineHintsSymbolKinds.All
             : (WpfHexEditor.Editor.Core.InlineHintsSymbolKinds)d.InlineHintsVisibleKinds;
+        ce.InlineHintsSource        = d.InlineHintsSource;
         ce.ShowEndOfBlockHint       = d.EndOfBlockHintEnabled;
         ce.EndOfBlockHintDelayMs    = d.EndOfBlockHintDelayMs;
+        ce.ClickableLinksEnabled    = d.ClickableLinksEnabled;
+        ce.ClickableEmailsEnabled   = d.ClickableEmailsEnabled;
         ce.EnableAutoClosingBrackets = d.AutoClosingBrackets;
         ce.EnableAutoClosingQuotes   = d.AutoClosingQuotes;
         ce.SkipOverClosingChar       = d.SkipOverClosingChar;
@@ -107,9 +110,12 @@ public sealed class EditorSettingsService
         WpfHexEditor.Editor.TextEditor.Controls.TextEditor te,
         AppSettings settings)
     {
-        te.MouseWheelSpeed   = settings.TextEditorDefaults.MouseWheelSpeed;
-        te.ZoomLevel         = settings.TextEditorDefaults.DefaultZoom;
-        te.IsWordWrapEnabled = settings.TextEditorDefaults.WordWrap;
+        var td = settings.TextEditorDefaults;
+        te.MouseWheelSpeed      = td.MouseWheelSpeed;
+        te.ZoomLevel            = td.DefaultZoom;
+        te.IsWordWrapEnabled    = td.WordWrap;
+        te.ClickableLinksEnabled  = td.ClickableLinksEnabled;
+        te.ClickableEmailsEnabled = td.ClickableEmailsEnabled;
     }
 
     private static void ApplyHexEditor(HexEditorControl hex, AppSettings settings)

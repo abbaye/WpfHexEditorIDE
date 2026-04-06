@@ -25,12 +25,15 @@ namespace WpfHexEditor.Core.Roslyn;
 /// <summary>
 /// In-process Roslyn-based language client for C# and VB.NET.
 /// Implements <see cref="ILspClient"/> — drop-in replacement for OmniSharp.
+/// Also implements <see cref="IReferenceCountProvider"/> so <c>InlineHintsService</c>
+/// can use semantic reference counts for C#/VB.NET files.
 /// </summary>
-public sealed class RoslynLanguageClient : ILspClient
+public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
 {
     private readonly RoslynWorkspaceManager _workspace;
     private readonly BackgroundAnalysisService _analysisService;
     private readonly MetadataAsSourceCache _metadataCache = new();
+    private readonly RoslynReferenceCountProvider _refCountProvider;
     private string? _lastCompletionFilePath;
     private bool _initialized;
 
@@ -39,6 +42,7 @@ public sealed class RoslynLanguageClient : ILspClient
         _workspace = new RoslynWorkspaceManager();
         _analysisService = new BackgroundAnalysisService(_workspace, dispatcher);
         _analysisService.DiagnosticsReady += (s, e) => DiagnosticsReceived?.Invoke(this, e);
+        _refCountProvider = new RoslynReferenceCountProvider(_workspace);
     }
 
     // ── Lifecycle ──────────────────────────────────────────────────────────────
@@ -334,4 +338,12 @@ public sealed class RoslynLanguageClient : ILspClient
     // ── Diagnostics Push ──────────────────────────────────────────────────────
 
     public event EventHandler<LspDiagnosticsReceivedEventArgs>? DiagnosticsReceived;
+
+    // ── IReferenceCountProvider ───────────────────────────────────────────────
+
+    public bool CanProvide(string filePath)
+        => _refCountProvider.CanProvide(filePath);
+
+    public Task<int?> CountReferencesAsync(string filePath, int declarationLine, string symbolName, CancellationToken ct)
+        => _refCountProvider.CountReferencesAsync(filePath, declarationLine, symbolName, ct);
 }

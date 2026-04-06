@@ -33,9 +33,14 @@ public sealed class SolutionFileWatcher : IDisposable
 {
     private const int DebounceMs = 500;
 
-    private readonly List<FileSystemWatcher>                  _watchers  = [];
+    private readonly List<FileSystemWatcher>                  _watchers    = [];
     private readonly ConcurrentDictionary<string, System.Threading.Timer> _debounce  = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, IProjectItem>         _itemIndex = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, IProjectItem>         _itemIndex   = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, byte>       _suppressed  = new(StringComparer.OrdinalIgnoreCase);
+    private FileSystemWatcher?                                _slnWatcher;
+
+    // Configurable ignored directory names (set via SetIgnoredDirectories).
+    private volatile string[] _ignoredDirNames = ["bin", "obj", ".vs", ".git", "node_modules"];
 
     // The solution currently being watched (null when disposed / no solution loaded).
     private ISolution? _solution;
@@ -47,6 +52,48 @@ public sealed class SolutionFileWatcher : IDisposable
     /// project file has been modified, renamed, or deleted externally.
     /// </summary>
     public event EventHandler<FileChangedExternallyEventArgs>? FileChangedExternally;
+
+    /// <summary>
+    /// Raised when the solution file itself (.sln, .slnx, .whsln, etc.) has been
+    /// modified externally (e.g. a project was added/removed in Visual Studio).
+    /// Callers should prompt the user to reload the solution.
+    /// </summary>
+    public event EventHandler<FileChangedExternallyEventArgs>? SolutionFileChangedExternally;
+
+    /// <summary>
+    /// Temporarily suppresses change notifications for <paramref name="fullPath"/>.
+    /// Use when the IDE itself is saving a file to avoid false-positive external-modification warnings.
+    /// The suppression auto-expires after the debounce window.
+    /// </summary>
+    public void SuppressPath(string fullPath)
+    {
+        _suppressed[fullPath] = 0;
+
+        // Auto-expire after debounce + margin so the timer callback sees the suppression.
+        _ = new System.Threading.Timer(
+            state =>
+            {
+                var (dict, p) = ((ConcurrentDictionary<string, byte>, string))state!;
+                dict.TryRemove(p, out byte _v);
+            },
+            (_suppressed, fullPath),
+            DebounceMs + 200,
+            System.Threading.Timeout.Infinite);
+    }
+
+    /// <summary>
+    /// Updates the list of ignored directory names from a semicolon-separated string.
+    /// </summary>
+    public void SetIgnoredDirectories(string? semicolonSeparated)
+    {
+        if (string.IsNullOrWhiteSpace(semicolonSeparated))
+        {
+            _ignoredDirNames = [];
+            return;
+        }
+        var parts = semicolonSeparated.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        _ignoredDirNames = parts;
+    }
 
     /// <summary>
     /// Begins watching all projects in <paramref name="solution"/>.
@@ -69,6 +116,16 @@ public sealed class SolutionFileWatcher : IDisposable
         _solution = null;
     }
 
+    /// <summary>
+    /// Re-starts watchers using the previously set solution (if any).
+    /// Useful after changing ignored directories or re-enabling detection.
+    /// </summary>
+    public void RestartIfWatching()
+    {
+        if (_solution is not null)
+            Watch(_solution);
+    }
+
     // -- Index construction ---------------------------------------------------
 
     private void RebuildIndex(ISolution solution)
@@ -89,6 +146,20 @@ public sealed class SolutionFileWatcher : IDisposable
 
     private void StartWatchers(ISolution solution)
     {
+        // Watch the solution file itself for external modifications.
+        if (!string.IsNullOrEmpty(solution.FilePath) && File.Exists(solution.FilePath))
+        {
+            var slnDir  = Path.GetDirectoryName(solution.FilePath)!;
+            var slnName = Path.GetFileName(solution.FilePath);
+            _slnWatcher = new FileSystemWatcher(slnDir, slnName)
+            {
+                NotifyFilter        = NotifyFilters.LastWrite | NotifyFilters.Size,
+                EnableRaisingEvents = true
+            };
+            _slnWatcher.Changed += OnSolutionFileChanged;
+        }
+
+        // Watch project directories for file-level changes.
         var watchedDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var project in solution.Projects)
@@ -114,6 +185,13 @@ public sealed class SolutionFileWatcher : IDisposable
 
     private void StopWatchers()
     {
+        if (_slnWatcher is not null)
+        {
+            _slnWatcher.EnableRaisingEvents = false;
+            _slnWatcher.Dispose();
+            _slnWatcher = null;
+        }
+
         foreach (var w in _watchers)
         {
             w.EnableRaisingEvents = false;
@@ -129,6 +207,27 @@ public sealed class SolutionFileWatcher : IDisposable
 
     // -- Event handlers -------------------------------------------------------
 
+    private void OnSolutionFileChanged(object sender, FileSystemEventArgs e)
+    {
+        // Debounce the solution-file change like regular project files.
+        var key = "::sln::" + e.FullPath;
+        _debounce.AddOrUpdate(
+            key,
+            _ => new System.Threading.Timer(_ =>
+            {
+                _debounce.TryRemove(key, out var t);
+                t?.Dispose();
+                if (_suppressed.TryRemove(e.FullPath, out byte _s)) return;
+                SolutionFileChangedExternally?.Invoke(this,
+                    new FileChangedExternallyEventArgs(e.FullPath, e.ChangeType, item: null));
+            }, null, DebounceMs, System.Threading.Timeout.Infinite),
+            (_, existing) =>
+            {
+                existing.Change(DebounceMs, System.Threading.Timeout.Infinite);
+                return existing;
+            });
+    }
+
     private void OnFsEvent(object sender, FileSystemEventArgs e)
         => ScheduleNotification(e.FullPath, e.ChangeType);
 
@@ -141,6 +240,8 @@ public sealed class SolutionFileWatcher : IDisposable
 
     private void ScheduleNotification(string fullPath, WatcherChangeTypes changeType)
     {
+        if (IsIgnoredPath(fullPath)) return;
+
         // Debounce: reset the timer every time a new event arrives for the same path.
         _debounce.AddOrUpdate(
             fullPath,
@@ -159,12 +260,28 @@ public sealed class SolutionFileWatcher : IDisposable
             _debounce.TryRemove(fullPath, out var t);
             t?.Dispose();
 
+            // Skip if the IDE itself triggered this change (e.g. save operation).
+            if (_suppressed.TryRemove(fullPath, out byte _s)) return;
+
             // Find the matching project item (if any).
             _itemIndex.TryGetValue(fullPath, out var item);
 
             FileChangedExternally?.Invoke(this, new FileChangedExternallyEventArgs(fullPath, changeType, item));
 
         }, null, DebounceMs, System.Threading.Timeout.Infinite);
+    }
+
+    // -- Path filtering -------------------------------------------------------
+
+    private bool IsIgnoredPath(string fullPath)
+    {
+        var sep = Path.DirectorySeparatorChar;
+        foreach (var dir in _ignoredDirNames)
+        {
+            if (fullPath.Contains($"{sep}{dir}{sep}", StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
     }
 
     // -- IDisposable ----------------------------------------------------------

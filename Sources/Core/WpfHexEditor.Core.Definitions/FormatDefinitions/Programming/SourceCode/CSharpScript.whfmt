@@ -32,7 +32,34 @@
       "spaceAfterComma": true,
       "organizeImports": true,
       "separateSystemImports": true,
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "keywordParenKeywords": [
+        "if",
+        "for",
+        "foreach",
+        "while",
+        "switch",
+        "catch",
+        "using",
+        "lock",
+        "when"
+      ],
+      "importKeywords": [
+        "using"
+      ],
+      "methodDeclKeywords": [
+        "public",
+        "private",
+        "protected",
+        "internal",
+        "static",
+        "async",
+        "override",
+        "virtual",
+        "abstract",
+        "sealed",
+        "partial"
+      ]
     },
     "scriptGlobals": [
       {
@@ -207,6 +234,14 @@
         "before": "}",
         "after": "}\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "csx"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   }
 }

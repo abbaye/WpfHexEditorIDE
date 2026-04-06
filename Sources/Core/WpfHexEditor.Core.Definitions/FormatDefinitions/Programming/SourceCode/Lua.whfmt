@@ -141,8 +141,17 @@
       "separateSystemImports": false,
       "quoteStyle": "double",
       "maxLineLength": 80,
-      "blockOpenKeywords": ["then", "do", "else"],
-      "blockCloseKeywords": ["end", "else", "elseif", "until"]
+      "blockOpenKeywords": [
+        "then",
+        "do",
+        "else"
+      ],
+      "blockCloseKeywords": [
+        "end",
+        "else",
+        "elseif",
+        "until"
+      ]
     },
     "previewSnippet": "local io = require('io')\nlocal math = require('math')\n\nlocal x = 0\nif x>=0 then\n    x = x+1\nend",
     "previewSamples": {
@@ -170,6 +179,14 @@
         "before": "end",
         "after": "end\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "lua"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

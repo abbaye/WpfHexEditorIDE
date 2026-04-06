@@ -228,6 +228,14 @@
         "before": "}",
         "after": "}\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "css"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "navigation": {

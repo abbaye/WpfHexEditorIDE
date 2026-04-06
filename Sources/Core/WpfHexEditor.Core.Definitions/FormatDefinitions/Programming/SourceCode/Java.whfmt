@@ -159,7 +159,30 @@
       "spaceAfterComma": true,
       "organizeImports": true,
       "separateSystemImports": true,
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "keywordParenKeywords": [
+        "if",
+        "for",
+        "foreach",
+        "while",
+        "switch",
+        "catch"
+      ],
+      "importKeywords": [
+        "import"
+      ],
+      "methodDeclKeywords": [
+        "public",
+        "private",
+        "protected",
+        "static",
+        "final",
+        "abstract",
+        "synchronized",
+        "void",
+        "class",
+        "interface"
+      ]
     },
     "previewSnippet": "import java.util.List;\nimport java.io.File;\n\nclass Example{\nvoid go(int x,int y){\nif(x>0){\nswitch(x){\ncase 1:\nreturn;\n}\n}\n}\n}",
     "previewSamples": {
@@ -187,6 +210,14 @@
         "before": "}",
         "after": "}\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "java"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

@@ -176,6 +176,19 @@
         "before": "</Window>",
         "after": "</Window>\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": true,
+      "isProjectLanguage": false,
+      "languageColor": "#4EC9B0",
+      "aliases": [
+        "xaml"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

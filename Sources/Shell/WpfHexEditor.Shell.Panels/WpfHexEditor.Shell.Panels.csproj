@@ -13,6 +13,7 @@
   <!-- Core IDE panels — NO reference to PluginHost (by design) -->
   <ItemGroup>
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.SourceAnalysis\WpfHexEditor.Core.SourceAnalysis.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>

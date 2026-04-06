@@ -24,7 +24,7 @@
   },
   "activation": {
     "fileExtensions": [ ".zip", ".7z", ".rar", ".tar", ".gz", ".bz2", ".xz", ".tgz", ".tbz2" ],
-    "onStartup": true
+    "onStartup": false
   },
   "features": [ "ArchiveBrowser", "ArchiveExtractor" ],
   "dependencies": []

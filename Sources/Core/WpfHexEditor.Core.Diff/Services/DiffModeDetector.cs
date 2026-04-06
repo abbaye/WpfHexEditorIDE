@@ -13,17 +13,35 @@ namespace WpfHexEditor.Core.Diff.Services;
 /// </summary>
 public static class DiffModeDetector
 {
-    private const long   MaxMeyersFileSizeBytes = 50L * 1024 * 1024; // 50 MB
-    private const int    SniffBytes             = 512;
+    private const long MaxMeyersFileSizeBytes = 50L * 1024 * 1024; // 50 MB
+    private const int  SniffBytes             = 512;
 
-    private static readonly HashSet<string> StructuredExtensions = new(StringComparer.OrdinalIgnoreCase)
+    // ── Injectable resolver ────────────────────────────────────────────────────
+    // App layer calls Configure() once after LanguageRegistry is populated.
+    // Returns the preferred DiffMode for a given extension, or null = unknown (fall through to sniff).
+    private static Func<string, DiffMode?>? s_extensionResolver;
+
+    /// <summary>
+    /// Registers a language-registry-backed extension resolver.
+    /// Must be called once from the App layer after LanguageRegistry is fully populated.
+    /// </summary>
+    /// <param name="resolver">
+    /// Receives the file extension (lower-case, with dot) and returns the preferred
+    /// <see cref="DiffMode"/>, or <see langword="null"/> when the extension is unknown
+    /// (content sniffing will be used as fallback).
+    /// </param>
+    public static void Configure(Func<string, DiffMode?> resolver)
+        => s_extensionResolver = resolver;
+
+    // Fallback tables used only when Configure() has not been called (unit tests, standalone use).
+    private static readonly HashSet<string> FallbackSemanticExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".json", ".xml", ".xaml", ".csproj", ".vbproj", ".fsproj", ".props",
         ".targets", ".config", ".yaml", ".yml", ".toml", ".html", ".htm",
         ".svg", ".cs", ".vb", ".fs"
     };
 
-    private static readonly HashSet<string> TextExtensions = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> FallbackTextExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".txt", ".log", ".md", ".rst", ".csv", ".tsv", ".ini", ".bat",
         ".cmd", ".sh", ".py", ".js", ".ts", ".jsx", ".tsx", ".css",
@@ -55,9 +73,18 @@ public static class DiffModeDetector
 
         var ext = Path.GetExtension(filePath);
 
-        // Extension-based shortcut
-        if (StructuredExtensions.Contains(ext)) return DiffMode.Semantic;
-        if (TextExtensions.Contains(ext))       return DiffMode.Text;
+        // Extension-based shortcut: prefer whfmt-driven resolver when available.
+        if (s_extensionResolver is not null)
+        {
+            var resolved = s_extensionResolver(ext);
+            if (resolved.HasValue) return resolved.Value;
+        }
+        else
+        {
+            // Fallback when Configure() has not been called (unit tests / standalone use).
+            if (FallbackSemanticExtensions.Contains(ext)) return DiffMode.Semantic;
+            if (FallbackTextExtensions.Contains(ext))     return DiffMode.Text;
+        }
 
         // Content sniff
         return SniffContent(filePath);

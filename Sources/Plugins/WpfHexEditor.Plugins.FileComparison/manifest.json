@@ -19,5 +19,10 @@
     "accessFileSystem": true,
     "registerMenus": true,
     "writeOutput": true
+  },
+  "activation": {
+    "fileExtensions": [],
+    "commands": [ "View.CompareFiles", "compare.withActiveEditor", "compare.withClipboard", "compare.withHead" ],
+    "onStartup": false
   }
 }

@@ -209,6 +209,16 @@
       "statementContinuationPatterns": [
         "`\\s*$"
       ]
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "ps1",
+        "psm1",
+        "psd1"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

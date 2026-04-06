@@ -136,6 +136,17 @@ public sealed class PluginManifest
     [JsonPropertyName("activation")]
     public PluginActivationConfig? Activation { get; set; }
 
+    // -- Pre-declared Menu Contributions (for Dormant plugins) ----------------
+
+    /// <summary>
+    /// Menu and Command Palette entries that the PluginHost pre-registers as stubs
+    /// while this plugin is Dormant. Invoking a stub activates the plugin, then
+    /// re-fires the command so the plugin's own handler takes over.
+    /// Empty for startup-loaded plugins (they register their own menus on init).
+    /// </summary>
+    [JsonPropertyName("menuContributions")]
+    public List<PluginMenuContribution> MenuContributions { get; set; } = [];
+
     // -- Semantic Feature Declarations (Feature 3) ----------------------------
 
     /// <summary>

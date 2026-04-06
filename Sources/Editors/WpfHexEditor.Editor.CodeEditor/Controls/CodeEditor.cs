@@ -69,8 +69,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private CodeSyntaxHighlighter _highlighter;
 
-        // URL hit-zones: rebuilt on every render pass; used for cursor + Ctrl+Click.
-        private readonly List<UrlHitZone> _urlHitZones = new();
+        // Link hit-zones (URLs + emails): rebuilt on every render pass; used for cursor + Ctrl+Click.
+        private readonly List<LinkHitZone> _linkHitZones = new();
 
         // Fold-label hit-zones: rebuilt on every render pass; used for click-to-toggle.
         private readonly List<(Rect rect, int line)> _foldLabelHitZones = new();
@@ -86,19 +86,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int                _endBlockHintHoveredLine = -1;
         private FoldingRegion?     _endBlockHintActiveRegion;
 
-        // The URL zone currently under the mouse pointer (null = none).
+        // The link zone (URL or email) currently under the mouse pointer (null = none).
         // Drives hover underline; changing it triggers InvalidateVisual().
-        private UrlHitZone? _hoveredUrlZone;
+        private LinkHitZone? _hoveredLinkZone;
 
         // Explicit tooltip object opened/closed in OnMouseMove.
         // Using ToolTip directly (instead of the ToolTip property) ensures the tooltip
         // appears even when the mouse is already inside the CodeEditor control.
         private ToolTip? _urlTooltip;
+        private ToolTip? _hintTooltip;
 
         // Compiled URL regex — re-used across all render passes (thread-safe read-only after init).
         private static readonly Regex s_urlRegex = new(
             @"https?://[^\s""'<>\[\]{}|\\^`]+",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // Compiled email regex — same lifetime guarantee as s_urlRegex.
+        private static readonly Regex s_emailRegex = new(
+            @"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}",
+            RegexOptions.Compiled);
 
         /// <summary>
         /// Optional external syntax highlighter (e.g. RegexBasedSyntaxHighlighter for .whlang languages).
@@ -152,6 +158,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private bool _isInternalEdit = false; // Prevent undo recording during undo/redo
         private bool _isDirty = false;        // IDocumentEditor: unsaved changes flag
         private string? _currentFilePath;     // IDocumentEditor: last saved file path
+
+        /// <inheritdoc/>
+        public Action<string>? BeforeSaveCallback { get; set; }
 
         // Context-menu items that need dynamic headers (Undo (3) / Redo (0)).
         private System.Windows.Controls.MenuItem? _undoMenuItem;
@@ -241,8 +250,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private          int                            _bracketDepthFirstLine = -1;
 
         // ── InlineHints ──────────────────────────────────────────────────────────
+        private          int                            _inlineHintsSource   = 0; // 0=Auto, 1=RoslynOnly, 2=RegexAlways
         private readonly Services.InlineHintsService                                                                                              _inlineHintsService  = new();
-        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds Kind)> _hintsData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds)>();
+        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds Kind, bool IsRoslyn)> _hintsData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds, bool)>();
         private          int                                                                                                                   _visibleHintsCount = 0;
         private readonly List<(Rect Zone, int LineIndex, string Symbol)>                                                                       _hintsHitZones     = new();
         private readonly List<(int LineIndex, double Y)>                                                                                       _visLinePositions = new();
@@ -756,6 +766,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
         }
 
+        public static readonly DependencyProperty ClickableLinksEnabledProperty =
+            DependencyProperty.Register(nameof(ClickableLinksEnabled), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// When <see langword="true"/>, HTTP/HTTPS URLs are detected and Ctrl+Click opens them in the default browser.
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Clickable Links")]
+        [Description("Ctrl+Click on http(s):// URLs opens them in the default browser.")]
+        public bool ClickableLinksEnabled
+        {
+            get => (bool)GetValue(ClickableLinksEnabledProperty);
+            set => SetValue(ClickableLinksEnabledProperty, value);
+        }
+
+        public static readonly DependencyProperty ClickableEmailsEnabledProperty =
+            DependencyProperty.Register(nameof(ClickableEmailsEnabled), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// When <see langword="true"/>, email addresses are detected and Ctrl+Click opens the default mail client.
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Clickable Emails")]
+        [Description("Ctrl+Click on email addresses opens the default mail client (mailto:).")]
+        public bool ClickableEmailsEnabled
+        {
+            get => (bool)GetValue(ClickableEmailsEnabledProperty);
+            set => SetValue(ClickableEmailsEnabledProperty, value);
+        }
+
         public static readonly DependencyProperty EnableFindAllReferencesProperty =
             DependencyProperty.Register(nameof(EnableFindAllReferences), typeof(bool), typeof(CodeEditor),
                 new FrameworkPropertyMetadata(true));
@@ -851,6 +893,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (d is not CodeEditor ce) return;
             ce.RebuildVisibleHintsCount();
             ce.InvalidateMeasure();
+        }
+
+        /// <summary>
+        /// Reference-count source strategy: 0=Auto, 1=RoslynOnly, 2=RegexAlways.
+        /// Setting this re-wires the InlineHints provider immediately.
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Inline Hints Source")]
+        [Description("0=Auto (Roslyn when available), 1=RoslynOnly, 2=RegexAlways.")]
+        public int InlineHintsSource
+        {
+            get => _inlineHintsSource;
+            set
+            {
+                if (_inlineHintsSource == value) return;
+                _inlineHintsSource = value;
+                _inlineHintsService.SetReferenceCountProvider(
+                    _lspClient as WpfHexEditor.Editor.Core.LSP.IReferenceCountProvider,
+                    value);
+            }
         }
 
         // ── Quick Info DPs ─────────────────────────────────────────────────────
@@ -2503,8 +2565,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             FoldToggleOnDoubleClick  = options.FoldToggleOnDoubleClick;
             IsWordWrapEnabled        = options.WordWrap;
             EnableFindAllReferences  = options.EnableFindAllReferences;
+            ClickableLinksEnabled    = options.ClickableLinksEnabled;
+            ClickableEmailsEnabled   = options.ClickableEmailsEnabled;
             ShowInlineHints             = options.ShowInlineHints;
             InlineHintsVisibleKinds     = options.InlineHintsVisibleKinds;
+            InlineHintsSource           = options.InlineHintsSource;
             EnableWordHighlight      = options.EnableWordHighlight;
             ShowEndOfBlockHint      = options.ShowEndOfBlockHint;
             EndOfBlockHintDelayMs   = options.EndOfBlockHintDelayMs;
@@ -3905,6 +3970,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _cursorLine   = 0;
             _cursorColumn = 0;
             EnsureCursorVisible();
+
+            // Formatting is a bulk replace — skip the 500 ms debounce and re-analyse
+            // folding immediately so toggle arrows and fold lines reflect the new structure.
+            if (IsFoldingEnabled && _foldingEngine != null)
+            {
+                _foldingDebounceTimer?.Stop();
+                _foldingEngine.Analyze(_document.Lines);
+            }
+
+            InvalidateMeasure();
             InvalidateVisual();
         }
 
@@ -3955,6 +4030,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _selection.Clear();
+
+            // Formatting is a bulk replace — skip the 500 ms debounce and re-analyse
+            // folding immediately so toggle arrows and fold lines reflect the new structure.
+            if (IsFoldingEnabled && _foldingEngine != null)
+            {
+                _foldingDebounceTimer?.Stop();
+                _foldingEngine.Analyze(_document.Lines);
+            }
+
+            InvalidateMeasure();
             InvalidateVisual();
         }
 

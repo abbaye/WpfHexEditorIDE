@@ -1,90 +1,11 @@
-\# 🧩 claude.plugins.md — WpfHexEditor Edition
+# Module: Plugins
 
+Plugins must be: isolated, reloadable (hot reload), safe (no crash propagation).
 
+Each plugin MUST include: editor integration, context menu, toolbar actions, search/replace support, status bar updates, settings panel.
 
-\## Plugin Architecture
+Lifecycle: Load → Initialize → Execute → Unload (clean).
 
+Modes: in-process (fast) vs sandbox (safe). Choose based on performance vs isolation tradeoff.
 
-
-Plugins must be:
-
-
-
-\* Isolated
-
-\* Reloadable (hot reload)
-
-\* Safe (no crash propagation)
-
-
-
-\## Required Integration
-
-
-
-Each plugin MUST include:
-
-
-
-\* Editor integration
-
-\* Context menu
-
-\* Toolbar actions
-
-\* Search / Replace support
-
-\* Status bar updates
-
-\* Settings panel
-
-
-
-\## Lifecycle
-
-
-
-\* Load
-
-\* Initialize
-
-\* Execute
-
-\* Unload (clean)
-
-
-
-\## Modes
-
-
-
-\* In-process → fast
-
-\* Sandbox → safe
-
-
-
-Claude must choose mode based on:
-
-
-
-\* performance vs isolation
-
-
-
-\## Validation
-
-
-
-\* Plugin reload works
-
-\* No memory leaks
-
-\* No UI freeze
-
-
-
-❌ Missing = incomplete
-
-
-
+Validation: plugin reload works, no memory leaks, no UI freeze. ❌ Missing = incomplete.

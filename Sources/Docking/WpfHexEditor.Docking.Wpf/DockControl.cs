@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Commands;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -77,6 +78,12 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private readonly AutoHideFlyout _autoHideFlyout;
     private readonly ContentControl _centerHost;
     private Border? _activePanel;
+
+    /// <summary>
+    /// Controls the visual highlight style applied to the active panel container.
+    /// Use <see cref="ApplyHighlightMode"/> for live updates (re-renders the current active panel).
+    /// </summary>
+    public ActivePanelHighlightMode PanelHighlightMode { get; set; } = ActivePanelHighlightMode.TopBar;
 
     // Bitmap snapshots captured when an auto-hide flyout is dismissed,
     // keyed by DockItem so AutoHideBarHoverPreview can display them.
@@ -576,6 +583,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 && (Layout?.GetAllDocumentHosts().Skip(1).Any() ?? false)));
 
         CommandBindings.Add(new CommandBinding(
+            DockCommands.CloseAllTabGroups,
+            (_, _) => HandleCloseAllTabGroups(),
+            (_, e) => e.CanExecute = Layout?.GetAllDocumentHosts().Skip(1).Any() ?? false));
+
+        CommandBindings.Add(new CommandBinding(
             DockCommands.PinTab,
             (_, _) =>
             {
@@ -804,6 +816,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 // M2.1: incremental handler already updated the tab strip — only refresh auto-hide bars.
                 _pendingIncrementalHandled = false;
                 UpdateAutoHideBars();
+                AssignGroupBadges();
                 return;
             }
             RebuildVisualTree();
@@ -990,7 +1003,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// Splits the document area by moving <paramref name="item"/> into a new
     /// DocumentHostNode beside the current one.
     /// </summary>
-    internal void HandleNewTabGroup(DockItem item, DockDirection direction)
+    public void HandleNewTabGroup(DockItem item, DockDirection direction)
     {
         if (_engine is null || item.Owner is not DocumentHostNode docHost) return;
         _engine.SplitDocumentHost(item, docHost, direction);
@@ -1000,7 +1013,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// <summary>
     /// Moves <paramref name="item"/> to the next (or previous) DocumentHostNode.
     /// </summary>
-    internal void HandleMoveToAdjacentGroup(DockItem item, bool forward)
+    public void HandleMoveToAdjacentGroup(DockItem item, bool forward)
     {
         if (_engine is null || Layout is null || item.Owner is not DocumentHostNode currentHost) return;
         var hosts = Layout.GetAllDocumentHosts().ToList();
@@ -1016,7 +1029,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// Closes the document tab group that contains <paramref name="item"/>
     /// by moving all its tabs to the main document host.
     /// </summary>
-    internal void HandleCloseTabGroup(DockItem item)
+    public void HandleCloseTabGroup(DockItem item)
     {
         if (_engine is null || Layout is null || item.Owner is not DocumentHostNode docHost) return;
         if (docHost.IsMain) return; // Cannot close the main document host
@@ -1029,9 +1042,35 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
-    /// Returns the active item in the main document host (for command CanExecute checks).
+    /// Closes all non-main document tab groups, merging their tabs into the main host.
     /// </summary>
-    private DockItem? GetActiveDocumentItem() =>
+    public void HandleCloseAllTabGroups()
+    {
+        if (_engine is null || Layout is null) return;
+        var nonMainHosts = Layout.GetAllDocumentHosts().Where(h => !h.IsMain).ToList();
+        if (nonMainHosts.Count == 0) return;
+        var mainHost = Layout.MainDocumentHost;
+        _engine.BeginTransaction();
+        foreach (var host in nonMainHosts)
+            foreach (var tabItem in host.Items.ToList())
+                _engine.MoveItem(tabItem, mainHost);
+        _engine.CommitTransaction();
+        RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Gives keyboard focus to the tab control rendering <paramref name="host"/>.
+    /// </summary>
+    public void FocusDocumentHost(DocumentHostNode host)
+    {
+        if (_tabControlCache.TryGetValue(host, out var tabControl))
+            tabControl.Focus();
+    }
+
+    /// <summary>
+    /// Returns the active item in the focused document host, or falls back to any host.
+    /// </summary>
+    public DockItem? GetActiveDocumentItem() =>
         Layout?.MainDocumentHost.ActiveItem
         ?? Layout?.GetAllDocumentHosts().Select(h => h.ActiveItem).FirstOrDefault(i => i is not null);
 
@@ -1137,6 +1176,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 }
             });
         }
+
+        AssignGroupBadges();
     }
 
     /// <summary>
@@ -1193,7 +1234,66 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         WireTabControlEvents(host);
         _tabPreviews.Add(TabHoverPreview.Attach(host, TabPreviewSettings));
         _tabControlCache[docHost] = host;  // M2.1: register for incremental updates
-        return CreatePanelBorder(host);
+
+        // Group badge overlay — visible only when ShowGroupBadge == true
+        var badgeBorder = new Border
+        {
+            CornerRadius        = new CornerRadius(8),
+            Padding             = new Thickness(6, 1, 6, 1),
+            Margin              = new Thickness(0, 4, 8, 0),
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment   = VerticalAlignment.Top,
+            IsHitTestVisible    = false,
+        };
+        badgeBorder.SetResourceReference(Border.BackgroundProperty, "TG_BadgeBackgroundBrush");
+
+        var badgeText = new TextBlock
+        {
+            FontSize   = 10,
+            FontWeight = FontWeights.SemiBold,
+        };
+        badgeText.SetResourceReference(TextBlock.ForegroundProperty, "TG_BadgeForegroundBrush");
+        badgeBorder.Child = badgeText;
+
+        // Bind badge visibility and text to host DPs
+        badgeBorder.SetBinding(UIElement.VisibilityProperty, new System.Windows.Data.Binding(nameof(DocumentTabHost.ShowGroupBadge))
+        {
+            Source    = host,
+            Converter = new System.Windows.Controls.BooleanToVisibilityConverter(),
+        });
+        badgeText.SetBinding(TextBlock.TextProperty, new System.Windows.Data.Binding(nameof(DocumentTabHost.GroupIndex))
+        {
+            Source      = host,
+            StringFormat = "Group {0}",
+        });
+
+        var grid = new Grid();
+        grid.Children.Add(host);
+        grid.Children.Add(badgeBorder);
+
+        return CreatePanelBorder(grid);
+    }
+
+    /// <summary>
+    /// Assigns group number badges to all DocumentTabHost controls based on current layout.
+    /// Called after RebuildVisualTree() and on LayoutChanged.
+    /// Zero layout invalidation — only mutates DependencyProperty values.
+    /// </summary>
+    private void AssignGroupBadges()
+    {
+        if (Layout is null) return;
+        var hosts = Layout.GetAllDocumentHosts().ToList();
+        bool showBadge = hosts.Count > 1;
+
+        for (int i = 0; i < hosts.Count; i++)
+        {
+            if (_tabControlCache.TryGetValue(hosts[i], out var tabControl)
+                && tabControl is DocumentTabHost docTabHost)
+            {
+                docTabHost.GroupIndex   = i + 1;
+                docTabHost.ShowGroupBadge = showBadge;
+            }
+        }
     }
 
     private UIElement CreateTabControl(DockGroupNode group)
@@ -1447,18 +1547,75 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
-    /// Activates a panel border (VS2026-style: 2px top accent only) and deactivates the previous one.
-    /// Inactive panels have no visible border. Only the top edge of the active panel turns accent-colored.
+    /// Activates a panel border and deactivates the previous one.
+    /// The visual style is driven by <see cref="PanelHighlightMode"/>.
     /// </summary>
     private void SetActivePanel(Border panelBorder)
     {
         if (_activePanel == panelBorder) return;
 
         if (_activePanel is not null)
+        {
             _activePanel.BorderThickness = new Thickness(0);
+            _activePanel.Effect = null;
+            // Dim the previously active panel border
+            _activePanel.SetResourceReference(Border.BorderBrushProperty, "TG_InactiveGroupBorderBrush");
+        }
 
         _activePanel = panelBorder;
-        _activePanel.BorderThickness = new Thickness(0, 2, 0, 0);
+        // Highlight the newly active panel using the themed token
+        _activePanel.SetResourceReference(Border.BorderBrushProperty, "TG_ActiveGroupBorderBrush");
+        ApplyHighlightToBorder(_activePanel);
+    }
+
+    /// <summary>
+    /// Changes the highlight mode and immediately re-renders the active panel.
+    /// Call this when the user changes the option (live preview).
+    /// </summary>
+    public void ApplyHighlightMode(ActivePanelHighlightMode mode)
+    {
+        PanelHighlightMode = mode;
+
+        if (_activePanel is null) return;
+
+        _activePanel.BorderThickness = new Thickness(0);
+        _activePanel.Effect = null;
+        ApplyHighlightToBorder(_activePanel);
+    }
+
+    private void ApplyHighlightToBorder(Border border)
+    {
+        switch (PanelHighlightMode)
+        {
+            case ActivePanelHighlightMode.None:
+                break;
+
+            case ActivePanelHighlightMode.TopBar:
+                border.BorderThickness = new Thickness(0, 2, 0, 0);
+                break;
+
+            case ActivePanelHighlightMode.FullBorder:
+                border.BorderThickness = new Thickness(2);
+                break;
+
+            case ActivePanelHighlightMode.Glow:
+                border.BorderThickness = new Thickness(2);
+                border.Effect = new DropShadowEffect
+                {
+                    Color       = GetAccentColor(),
+                    BlurRadius  = 12,
+                    ShadowDepth = 0,
+                    Opacity     = 0.8,
+                };
+                break;
+        }
+    }
+
+    private static Color GetAccentColor()
+    {
+        if (Application.Current?.TryFindResource("DockTabActiveColor") is Color c)
+            return c;
+        return Colors.CornflowerBlue;
     }
 
     /// <summary>

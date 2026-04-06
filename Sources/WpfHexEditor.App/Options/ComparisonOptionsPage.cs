@@ -187,13 +187,7 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
 
     // ── Builder helpers ───────────────────────────────────────────────────────
 
-    private static TextBlock MakeSectionHeader(string text) => new()
-    {
-        Text       = text,
-        FontWeight = FontWeights.SemiBold,
-        FontSize   = 13,
-        Margin     = new Thickness(0, 10, 0, 6)
-    };
+    private static TextBlock MakeSectionHeader(string text) => OptionsPageHelper.SectionHeader(text);
 
     private static TextBlock MakeLabel(string text) => new()
     {

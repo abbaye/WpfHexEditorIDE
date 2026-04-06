@@ -153,6 +153,28 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _enableFindAllReferences = value; Notify(); }
     }
 
+    private bool _clickableLinksEnabled = true;
+
+    /// <summary>
+    /// When <see langword="true"/>, HTTP/HTTPS URLs in code are detected and Ctrl+Click opens them in the browser.
+    /// </summary>
+    public bool ClickableLinksEnabled
+    {
+        get => _clickableLinksEnabled;
+        set { _clickableLinksEnabled = value; Notify(); }
+    }
+
+    private bool _clickableEmailsEnabled = true;
+
+    /// <summary>
+    /// When <see langword="true"/>, email addresses in code are detected and Ctrl+Click opens the mail client.
+    /// </summary>
+    public bool ClickableEmailsEnabled
+    {
+        get => _clickableEmailsEnabled;
+        set { _clickableEmailsEnabled = value; Notify(); }
+    }
+
     /// <summary>
     /// When true, shows "N références" hints above each declaration line.
     /// Clicking a hint opens the Find All References popup.
@@ -171,6 +193,18 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _inlineHintsVisibleKinds;
         set { _inlineHintsVisibleKinds = value; Notify(); }
+    }
+
+    private int _inlineHintsSource = 0;
+
+    /// <summary>
+    /// Reference-count source: 0=Auto (Roslyn when available, regex fallback),
+    /// 1=RoslynOnly (no hint for non-C#/VB files), 2=RegexAlways.
+    /// </summary>
+    public int InlineHintsSource
+    {
+        get => _inlineHintsSource;
+        set { _inlineHintsSource = value; Notify(); }
     }
 
     private int  _maxUndoHistory      = 500;

@@ -392,6 +392,15 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
+        <!-- Solution folder loose file items (README.md, .editorconfig, etc.) -->
+        <DataTemplate DataType="{x:Type vm:SolutionFileItemNodeVm}">
+            <StackPanel Orientation="Horizontal"
+                        ToolTip="{Binding AbsolutePath}">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8A5;" Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.7"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+            </StackPanel>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:FileNodeVm}">
             <Grid>
                 <!-- Normal display (IsEditing = false) -->

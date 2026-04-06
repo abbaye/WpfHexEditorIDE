@@ -22,14 +22,17 @@ internal sealed class SolutionFolder : ISolutionFolder
 {
     private readonly ObservableCollection<string>          _projectIds = [];
     private readonly ObservableCollection<SolutionFolder>  _children   = [];
+    private readonly ObservableCollection<string>          _fileItems  = [];
 
     public string Id   { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; } = "";
 
     public IReadOnlyList<string>          ProjectIds => _projectIds;
     public IReadOnlyList<ISolutionFolder> Children   => _children;
+    public IReadOnlyList<string>          FileItems  => _fileItems;
 
     // -- Internal mutable access ------------------------------------------
     internal ObservableCollection<string>         ProjectIdsMutable => _projectIds;
     internal ObservableCollection<SolutionFolder> ChildrenMutable   => _children;
+    internal ObservableCollection<string>         FileItemsMutable  => _fileItems;
 }

@@ -104,13 +104,7 @@ public sealed class DebuggerBreakpointOptionsPage : UserControl, IOptionsPage
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
-    private static TextBlock SectionHeader(string text) => new()
-    {
-        Text       = text,
-        FontWeight = FontWeights.SemiBold,
-        FontSize   = 14,
-        Margin     = new Thickness(0, 12, 0, 6),
-    };
+    private static TextBlock SectionHeader(string text) => OptionsPageHelper.SectionHeader(text);
 
     private CheckBox MakeCheckBox(string content, string? tooltip = null)
     {

@@ -31,9 +31,9 @@ public static class PluginDevRegistrar
         _registered = true;
 
         OptionsPageRegistry.RegisterDynamic(
+            "Tools",
             "Plugin Development",
-            "General",
             static () => new PluginDevOptionsPage(),
-            "🔌");
+            "🛠");
     }
 }

@@ -107,8 +107,14 @@
       80
     ],
     "bracketPairs": [
-      { "open": "(", "close": ")" },
-      { "open": "[", "close": "]" }
+      {
+        "open": "(",
+        "close": ")"
+      },
+      {
+        "open": "[",
+        "close": "]"
+      }
     ],
     "foldingRules": {
       "startPatterns": [
@@ -140,6 +146,15 @@
         "(?i)^\\s*ENDLOCAL\\b"
       ],
       "statementContinuationPatterns": []
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "bat",
+        "cmd"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

@@ -1,36 +1,6 @@
-\# 📚 claude.doc.md
+# Module: Documentation
 
-
-
-\## Rules
-
-
-
-\* Each file → documented
-
-\* README updated
-
-
-
-\## DOC
-
-
-
-\* Full scan
-
-\* Create missing docs
-
-
-
-\## DOCR
-
-
-
-\* Only recent changes
-
-
-
-\## Memory update required
-
-
-
+- Each file must be documented. README kept up to date.
+- `DOC` trigger: full scan, create missing docs.
+- `DOCR` trigger: recent changes only.
+- Memory update required after any doc task.

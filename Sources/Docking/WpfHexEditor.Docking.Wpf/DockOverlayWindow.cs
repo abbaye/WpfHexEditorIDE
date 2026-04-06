@@ -59,6 +59,16 @@ public class DockOverlayWindow : Window
 
     private static Brush Freeze(SolidColorBrush brush) { brush.Freeze(); return brush; }
 
+    /// <summary>
+    /// Returns the correct highlight brush for the current drag intent.
+    /// Prefers the theme token; falls back to the static frozen brush when the resource is unavailable.
+    /// </summary>
+    private Brush ResolveHighlightBrush()
+    {
+        var key = IsDocumentDrag ? "TG_DragSplitIndicatorBrush" : "TG_DragDockIndicatorBrush";
+        return Application.Current?.TryFindResource(key) as Brush ?? HighlightFill;
+    }
+
     public DockDirection? HighlightedDirection
     {
         get => _highlightedDirection;
@@ -80,6 +90,14 @@ public class DockOverlayWindow : Window
     /// Use 0.25 for tool panels (default), 0.5 for document splits.
     /// </summary>
     public double SplitRatio { get; set; } = 0.25;
+
+    /// <summary>
+    /// When true, uses <c>TG_DragSplitIndicatorBrush</c> for the highlighted indicator
+    /// and preview zone (document → new tab group). When false, uses
+    /// <c>TG_DragDockIndicatorBrush</c> (tool panel dock).
+    /// Falls back to the static frozen brushes when the resource is not found.
+    /// </summary>
+    public bool IsDocumentDrag { get; set; }
 
     public DockOverlayWindow()
     {
@@ -263,12 +281,15 @@ public class DockOverlayWindow : Window
             [DockDirection.Bottom] = new(centerX - IndicatorSize / 2, bottomY)
         };
 
+        // Resolve theme-aware highlight brush for the active indicator
+        var activeHighlightFill = ResolveHighlightBrush();
+
         foreach (var (dir, pos) in positions)
         {
             var isHighlighted = _highlightedDirection == dir;
             var bg = _indicatorBgs[dir];
 
-            bg.Fill            = isHighlighted ? HighlightFill : NormalFill;
+            bg.Fill            = isHighlighted ? activeHighlightFill : NormalFill;
             bg.Stroke          = isHighlighted ? HighlightStroke : NormalStroke;
             bg.StrokeThickness = isHighlighted ? 2 : 1;
             Canvas.SetLeft(bg, pos.X);

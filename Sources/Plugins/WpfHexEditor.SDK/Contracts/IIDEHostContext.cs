@@ -239,4 +239,12 @@ public interface IIDEHostContext
     /// </summary>
     IVersionControlService? VersionControl
         => ExtensionRegistry?.GetExtensions<IVersionControlService>().FirstOrDefault();
+
+    // -- Tab Groups -----------------------------------------------------------
+
+    /// <summary>
+    /// Document tab group management (split, move, close, focus).
+    /// Null in sandboxed or non-IDE host contexts.
+    /// </summary>
+    ITabGroupService? TabGroups => null;
 }

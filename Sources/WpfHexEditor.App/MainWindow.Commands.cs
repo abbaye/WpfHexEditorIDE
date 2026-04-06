@@ -10,6 +10,7 @@
 
 using System.Windows.Input;
 using WpfHexEditor.Core.Commands;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.SDK.Commands;
 
@@ -89,6 +90,10 @@ public partial class MainWindow
             () => OnExit(this, null!));
         Reg(CommandIds.File.QuickOpen,     "Quick File Open",        "File",    "Ctrl+P",         "\uE721",
             () => OnQuickOpen());
+        Reg(CommandIds.File.ConvertToSlnx, "Convert Solution to .slnx", "File", null,             "\uE8AB",
+            () => _ = OnConvertSolutionFormatAsync(toSlnx: true));
+        Reg(CommandIds.File.ConvertToSln,  "Convert Solution to .sln",  "File", null,             "\uE8AB",
+            () => _ = OnConvertSolutionFormatAsync(toSlnx: false));
 
         // ── Workspace ────────────────────────────────────────────────────────
         Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",
@@ -255,6 +260,24 @@ public partial class MainWindow
         Reg(CommandIds.Layout.ToggleStatusBar, "Toggle Status Bar",    "Layout",   null,             null,
             () => OnToggleStatusBar());
 
+        // ── Tab Groups ───────────────────────────────────────────────────────
+        Reg(CommandIds.TabGroup.NewVertical,        "New Vertical Tab Group",    "Tab Groups", "Ctrl+Alt+\\",        "\uE8A0",
+            () => OnTabGroupNewVertical(this, null!));
+        Reg(CommandIds.TabGroup.NewHorizontal,      "New Horizontal Tab Group",  "Tab Groups", "Ctrl+Alt+Shift+\\",  "\uE8A0",
+            () => OnTabGroupNewHorizontal(this, null!));
+        Reg(CommandIds.TabGroup.MoveToNext,         "Move to Next Tab Group",    "Tab Groups", "Ctrl+Alt+PgDn",     "\uE76C",
+            () => OnTabGroupMoveNext(this, null!));
+        Reg(CommandIds.TabGroup.MoveToPrevious,     "Move to Previous Tab Group","Tab Groups", "Ctrl+Alt+PgUp",     "\uE76B",
+            () => OnTabGroupMovePrevious(this, null!));
+        Reg(CommandIds.TabGroup.CloseCurrentGroup,  "Close Tab Group",           "Tab Groups", null,                "\uE711",
+            () => OnTabGroupCloseCurrentGroup(this, null!));
+        Reg(CommandIds.TabGroup.CloseAllGroups,     "Close All Tab Groups",      "Tab Groups", null,                "\uE711",
+            () => OnTabGroupCloseAll(this, null!));
+        Reg(CommandIds.TabGroup.FocusGroup1,  "Focus Tab Group 1", "Tab Groups", null, null, () => FocusDocumentGroup(0));
+        Reg(CommandIds.TabGroup.FocusGroup2,  "Focus Tab Group 2", "Tab Groups", null, null, () => FocusDocumentGroup(1));
+        Reg(CommandIds.TabGroup.FocusGroup3,  "Focus Tab Group 3", "Tab Groups", null, null, () => FocusDocumentGroup(2));
+        Reg(CommandIds.TabGroup.FocusGroup4,  "Focus Tab Group 4", "Tab Groups", null, null, () => FocusDocumentGroup(3));
+
         // ── Plugins ──────────────────────────────────────────────────────────
         Reg(CommandIds.Plugins.OpenManager,   "Plugin Manager",     "Plugins",  null,             "\uE74C",
             () => OpenPluginManagerCommand.Execute(null, this));
@@ -392,7 +415,11 @@ public partial class MainWindow
     {
         _commandRegistry.Register(new CommandDefinition(
             id, name, category, defaultGesture, icon,
-            new RelayCommand(_ => execute())));
+            new RelayCommand(_ =>
+            {
+                _ideEventBus?.Publish(new CommandInvokedEvent { CommandId = id });
+                execute();
+            })));
     }
 
     /// <summary>Same as Reg but the execute action receives the command parameter.</summary>
@@ -401,6 +428,10 @@ public partial class MainWindow
     {
         _commandRegistry.Register(new CommandDefinition(
             id, name, category, defaultGesture, icon,
-            new RelayCommand(param => execute(param))));
+            new RelayCommand(param =>
+            {
+                _ideEventBus?.Publish(new CommandInvokedEvent { CommandId = id });
+                execute(param);
+            })));
     }
 }

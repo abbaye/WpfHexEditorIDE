@@ -34,6 +34,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.ClassDiagram.Controls;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
@@ -682,11 +683,16 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             return;
         }
 
-        string[] sourceFiles =
-        [
-            .. Directory.GetFiles(folderPath, "*.cs", SearchOption.AllDirectories),
-            .. Directory.GetFiles(folderPath, "*.vb", SearchOption.AllDirectories),
-        ];
+        var classDiagramExtensions = LanguageRegistry.Instance.AllLanguages()
+            .Where(l => l.SupportsClassDiagram)
+            .SelectMany(l => l.Extensions)
+            .Select(e => "*" + e)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var sourceFiles = classDiagramExtensions
+            .SelectMany(pattern => Directory.GetFiles(folderPath, pattern, SearchOption.AllDirectories))
+            .ToArray();
 
         DiagramDocument doc = await Task.Run(() =>
             ClassDiagramSourceAnalyzer.AnalyzeFiles(sourceFiles, _options));
@@ -716,10 +722,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         return !string.IsNullOrEmpty(path) && IsSourceFile(path);
     }
 
-    /// <summary>Returns true for C# (.cs) and VB.NET (.vb) source files.</summary>
+    /// <summary>Returns true for files of languages that support class diagrams.</summary>
     private static bool IsSourceFile(string path) =>
-        path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) ||
-        path.EndsWith(".vb", StringComparison.OrdinalIgnoreCase);
+        LanguageRegistry.Instance.FindByExtension(Path.GetExtension(path))?.SupportsClassDiagram == true;
 }
 
 // ==========================================================

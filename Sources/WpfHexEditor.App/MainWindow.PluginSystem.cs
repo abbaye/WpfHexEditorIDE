@@ -203,10 +203,14 @@ public partial class MainWindow
                 var registry = new WpfHexEditor.Core.LSP.Client.Services.LspServerRegistry(Dispatcher);
 
                 // Register in-process Roslyn client for C# and VB.NET (replaces OmniSharp).
+                // Extensions are sourced from the whfmt-driven LanguageRegistry — no hardcoded lists.
                 var dispatcher = Dispatcher;
-                registry.RegisterInProcess("csharp", [".cs", ".csx"],
+                var langRegistry = WpfHexEditor.Core.ProjectSystem.Languages.LanguageRegistry.Instance;
+                var csharpExts   = langRegistry.FindById("csharp")?.Extensions.ToArray() ?? [".cs", ".csx"];
+                var vbnetExts    = langRegistry.FindById("vbnet")?.Extensions.ToArray()  ?? [".vb"];
+                registry.RegisterInProcess("csharp", csharpExts,
                     () => new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher));
-                registry.RegisterInProcess("vbnet", [".vb"],
+                registry.RegisterInProcess("vbnet", vbnetExts,
                     () => new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher));
 
                 lspRegistry = registry;
@@ -221,7 +225,7 @@ public partial class MainWindow
                             // If the solution IS already a .sln/.csproj, use it directly.
                             // Otherwise (.whsln custom format), scan the directory for the real .sln.
                             var ext = System.IO.Path.GetExtension(e.Solution.FilePath).ToLowerInvariant();
-                            var realSlnPath = ext is ".sln" or ".csproj" or ".vbproj"
+                            var realSlnPath = ext is ".sln" or ".slnx" or ".slnf" or ".csproj" or ".vbproj"
                                 ? e.Solution.FilePath
                                 : FindDotNetSolutionOrProject(System.IO.Path.GetDirectoryName(e.Solution.FilePath));
                             if (realSlnPath is null)
@@ -349,6 +353,8 @@ public partial class MainWindow
             var syntaxColoringService = new WpfHexEditor.App.Services.SyntaxColoringService();
             var uiControlFactory      = new WpfHexEditor.App.Services.UIControlFactory(syntaxColoringService);
 
+            var tabGroupService = new WpfHexEditor.App.Services.TabGroupService(DockHost);
+
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
                 solutionExplorer:    solutionService,
@@ -379,7 +385,11 @@ public partial class MainWindow
                 Notifications  = _notificationService,
                 SyntaxColoring = syntaxColoringService,
                 UIFactory      = uiControlFactory,
+                TabGroups      = tabGroupService,
             };
+
+            // Attach TabGroupService to the engine (available after DockHost.Layout is set).
+            tabGroupService.AttachEngine(_engine);
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;
@@ -459,9 +469,9 @@ public partial class MainWindow
                 "Event Bus",
                 () => new IDEEventBusOptionsPage(capturedBus));
 
-            // 4d. Register Plugins → Marketplace options page.
+            // 4d. Register Extensions → Marketplace options page.
             OptionsPageRegistry.RegisterDynamic(
-                "Plugins",
+                "Extensions",
                 "Marketplace",
                 () => new MarketplaceOptionsPage());
 
@@ -478,6 +488,21 @@ public partial class MainWindow
                 await _pluginHost.LoadAllAsync(
                     extraDirectories: Directory.Exists(bundledPluginsDir) ? [bundledPluginsDir] : null,
                     ct: CancellationToken.None).ConfigureAwait(false);
+
+                // Eagerly activate lazy plugins whose panels were open at last shutdown.
+                // Must happen BEFORE ResumeRebuild so the dock layout can anchor their panels.
+                var toRestore = AppSettingsService.Instance.Current.LazyPluginsToRestore;
+                if (toRestore.Count > 0)
+                {
+                    OutputLogger.PluginInfo($"[PluginSystem] Restoring {toRestore.Count} lazy plugin(s) from last session.");
+                    foreach (var id in toRestore)
+                    {
+                        try { await _pluginHost.ActivateDormantPluginAsync(id, CancellationToken.None).ConfigureAwait(false); }
+                        catch (Exception ex) { OutputLogger.PluginError($"[PluginSystem] Failed to restore lazy plugin '{id}': {ex.Message}"); }
+                    }
+                    AppSettingsService.Instance.Current.LazyPluginsToRestore = [];
+                    AppSettingsService.Instance.Save();
+                }
             }
             finally
             {
@@ -491,33 +516,17 @@ public partial class MainWindow
                 foreach (var adapter in hostContext.ExtensionRegistry.GetExtensions<IBuildAdapter>())
                     _buildSystem.RegisterAdapter(adapter);
 
-            // Register a dynamic Options page for every in-process plugin that supports IPluginWithOptions.
-            foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
-            {
-                var captured = entry;
-                OptionsPageRegistry.RegisterDynamic(
-                    "Plugins",
-                    captured.PluginName,
-                    () =>
-                    {
-                        captured.Plugin.LoadOptions();
-                        var page = captured.Plugin.CreateOptionsPage();
-                        if (page is System.Windows.Controls.UserControl uc) return uc;
-                        // Wrap arbitrary FrameworkElement in a UserControl for the Options panel.
-                        var wrapper = new System.Windows.Controls.UserControl { Content = page };
-                        return wrapper;
-                    });
-            }
-
             // Phase 11: Register options pages for sandbox plugins that implement IPluginWithOptions.
-            // Each sandbox plugin eagerly creates its options page HwndSource during init and sends
-            // the HWND here. We wrap it in HwndPanelHost inside a UserControl for the Options dialog.
+            // In-process plugins are already registered by PluginOptionsRegistry under their custom
+            // category (via IPluginWithOptions.GetOptionsCategory). Sandbox plugins communicate via
+            // HWND cross-process and cannot implement IPluginWithOptions directly, so we register
+            // them here under "Extensions".
             foreach (var (pluginId, pluginName, hwnd) in _pluginHost.GetSandboxOptionsPages())
             {
                 var capturedId   = pluginId;
                 var capturedHwnd = new IntPtr(hwnd);
                 OptionsPageRegistry.RegisterDynamic(
-                    "Plugins",
+                    "Extensions",
                     pluginName,
                     () =>
                     {
@@ -1130,6 +1139,14 @@ public partial class MainWindow
     private async Task ShutdownPluginSystemAsync()
     {
         if (_pluginHost is null) return;
+
+        // Persist which lazy-loaded plugin panels were open so they auto-restore next session.
+        var lazyWithPanels = _pluginHost.GetLazyPluginsWithOpenPanels();
+        AppSettingsService.Instance.Current.LazyPluginsToRestore = lazyWithPanels;
+        AppSettingsService.Instance.Save();
+        if (lazyWithPanels.Count > 0)
+            OutputLogger.PluginInfo($"[PluginSystem] Saved {lazyWithPanels.Count} lazy plugin(s) for next session restore: {string.Join(", ", lazyWithPanels)}");
+
         _pluginHost.PluginCrashed      -= OnPluginCrashed;
         _pluginHost.SlowPluginDetected -= OnSlowPluginDetected;
         _pluginHost.PluginLoaded       -= OnPluginLoadedOrUnloaded;
@@ -1388,7 +1405,10 @@ public partial class MainWindow
     {
         if (directory is null || !System.IO.Directory.Exists(directory)) return null;
 
-        // Prefer .sln (full project graph).
+        // Prefer .slnx (newest format), then .sln (full project graph).
+        var slnxFiles = System.IO.Directory.GetFiles(directory, "*.slnx");
+        if (slnxFiles.Length > 0) return slnxFiles[0];
+
         var slnFiles = System.IO.Directory.GetFiles(directory, "*.sln");
         if (slnFiles.Length > 0) return slnFiles[0];
 
@@ -1398,9 +1418,12 @@ public partial class MainWindow
             .ToArray();
         if (projFiles.Length > 0) return projFiles[0];
 
-        // Scan one level of subdirectories for .sln.
+        // Scan one level of subdirectories: prefer .slnx then .sln.
         foreach (var subDir in System.IO.Directory.GetDirectories(directory))
         {
+            var subSlnx = System.IO.Directory.GetFiles(subDir, "*.slnx");
+            if (subSlnx.Length > 0) return subSlnx[0];
+
             var subSln = System.IO.Directory.GetFiles(subDir, "*.sln");
             if (subSln.Length > 0) return subSln[0];
         }

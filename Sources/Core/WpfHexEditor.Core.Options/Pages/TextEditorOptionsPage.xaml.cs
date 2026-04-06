@@ -59,7 +59,9 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
             CheckWordWrap.IsChecked        = te.WordWrap;
             TxtZoom.Text = ((int)(te.DefaultZoom * 100)).ToString();
             MouseWheelCombo.SelectedItem = te.MouseWheelSpeed;
-            CheckChangeset.IsChecked = false; // feature not yet implemented — always unchecked
+            CheckChangeset.IsChecked       = false; // feature not yet implemented — always unchecked
+            CheckClickableLinks.IsChecked  = te.ClickableLinksEnabled;
+            CheckClickableEmails.IsChecked = te.ClickableEmailsEnabled;
 
             LoadColorPicker(ChkBg,  CpBg,  te.BackgroundColor, "TE_Background");
             LoadColorPicker(ChkFg,  CpFg,  te.ForegroundColor, "TE_Foreground");
@@ -84,7 +86,9 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         te.DefaultZoom = ParseDouble(TxtZoom.Text, 100.0) / 100.0;
         if (MouseWheelCombo.SelectedItem is MouseWheelSpeed mws)
             te.MouseWheelSpeed = mws;
-        te.ChangesetEnabled = CheckChangeset.IsChecked == true;
+        te.ChangesetEnabled        = CheckChangeset.IsChecked       == true;
+        te.ClickableLinksEnabled   = CheckClickableLinks.IsChecked  == true;
+        te.ClickableEmailsEnabled  = CheckClickableEmails.IsChecked == true;
         te.BackgroundColor = FlushColorPicker(ChkBg,  CpBg);
         te.ForegroundColor = FlushColorPicker(ChkFg,  CpFg);
         te.KeywordColor    = FlushColorPicker(ChkKw,  CpKw);

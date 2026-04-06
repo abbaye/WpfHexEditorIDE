@@ -164,8 +164,17 @@
       "separateSystemImports": false,
       "quoteStyle": "double",
       "maxLineLength": 120,
-      "blockOpenKeywords": ["do"],
-      "blockCloseKeywords": ["end", "else", "elsif", "rescue", "ensure", "when"]
+      "blockOpenKeywords": [
+        "do"
+      ],
+      "blockCloseKeywords": [
+        "end",
+        "else",
+        "elsif",
+        "rescue",
+        "ensure",
+        "when"
+      ]
     },
     "previewSnippet": "require 'ostruct'\nrequire 'json'\n\nx = 10\n3.times do\n  x = x+1\nend",
     "previewSamples": {
@@ -189,6 +198,14 @@
         "before": "end",
         "after": "end\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "rb"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

@@ -153,6 +153,16 @@
         "before": "</html>",
         "after": "</html>\n"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "aliases": [
+        "html",
+        "htm"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

@@ -102,10 +102,5 @@ public sealed class WorkspaceOptionsPage : UserControl, IOptionsPage
 
     private void OnChanged(object sender, RoutedEventArgs e) => Changed?.Invoke(this, EventArgs.Empty);
 
-    private static TextBlock MakeSectionHeader(string title) => new()
-    {
-        Text       = title,
-        FontWeight = FontWeights.SemiBold,
-        Margin     = new Thickness(0, 8, 0, 4)
-    };
+    private static TextBlock MakeSectionHeader(string title) => OptionsPageHelper.SectionHeader(title);
 }

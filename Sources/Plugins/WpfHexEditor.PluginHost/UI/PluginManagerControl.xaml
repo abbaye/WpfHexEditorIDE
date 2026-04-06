@@ -291,9 +291,14 @@
                                     </Grid>
                                 </StackPanel>
 
-                                <!-- Badges: SLOW + Memory Alert + Trusted -->
+                                <!-- Badges: STANDBY + SLOW + Memory Alert + Trusted -->
                                 <StackPanel Grid.Column="2" Orientation="Vertical"
                                             VerticalAlignment="Center" Margin="0,0,2,0">
+                                    <Border Background="#A855F7"
+                                            CornerRadius="6" Padding="4,1" Margin="0,0,0,2"
+                                            Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="STANDBY" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                                    </Border>
                                     <Border Background="{DynamicResource PM_BadgeSlowBrush}"
                                             CornerRadius="6" Padding="4,1" Margin="0,0,0,2"
                                             Visibility="{Binding IsSlow, Converter={StaticResource BoolToVis}}">
@@ -387,6 +392,7 @@
                   DataContext="{Binding SelectedPlugin}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/> <!-- Plugin header card -->
+                    <RowDefinition Height="Auto"/> <!-- Dormant info banner (hidden when not Standby) -->
                     <RowDefinition Height="*"/>    <!-- Tabs -->
                 </Grid.RowDefinitions>
 
@@ -473,6 +479,21 @@
                                 <TextBlock Text="{Binding StateLabel}" FontSize="10"
                                            FontWeight="SemiBold" Foreground="White"/>
                             </Border>
+                            <!-- Load Now: visible only for Dormant/Standby plugins -->
+                            <Button Content="&#xE768; Load Now"
+                                    Command="{Binding LoadNowCommand}"
+                                    Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}"
+                                    Style="{DynamicResource PM_ActionButtonStyle}"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,0,4" Padding="8,3" FontSize="11"
+                                    ToolTip="Activate this plugin immediately (overrides lazy-load trigger)"/>
+                            <!-- Suspend: visible for Loaded lazy-load plugins (onStartup=false) -->
+                            <Button Content="&#xE769; Suspend"
+                                    Command="{Binding SuspendCommand}"
+                                    Style="{DynamicResource PM_ActionButtonStyle}"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,0,4" Padding="8,3" FontSize="11"
+                                    ToolTip="Unload plugin and return to Standby — re-activates on next trigger"/>
                             <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
                             <Button Content="&#xE72A; Sandbox"
                                     Command="{Binding MigrateToSandboxCommand}"
@@ -486,8 +507,29 @@
                     </Grid>
                 </Border>
 
+                <!-- Dormant info banner: activation trigger hint (Row 1) -->
+                <Border Grid.Row="1"
+                        Margin="8,4,8,4"
+                        Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}">
+                    <Border Background="#1FA855F7" BorderBrush="#A855F7" BorderThickness="1"
+                            CornerRadius="4" Padding="8,5">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Foreground="#A855F7" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <StackPanel>
+                                <TextBlock Text="Standby — activates automatically when triggered" FontSize="11"
+                                           Foreground="#A855F7" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding ActivationTriggerLabel}"
+                                           FontSize="10" Opacity="0.8"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Border>
+
                 <!-- Single scrollable page: Info / Permissions / Settings -->
-                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Margin="12,12,12,20">
 
                         <!-- ── Section: Info ────────────────────────────────── -->

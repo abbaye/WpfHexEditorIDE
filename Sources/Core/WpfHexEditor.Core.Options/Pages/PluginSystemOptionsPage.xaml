@@ -15,10 +15,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── General ───────────────────────────────────────────────────────── -->
-        <TextBlock Text="General"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,12"/>
+        <TextBlock Text="GENERAL"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckAutoLoad"
                   Content="Automatically load all discovered plugins at startup"
@@ -58,10 +58,10 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Watchdog ───────────────────────────────────────────────────────── -->
-        <TextBlock Text="Watchdog"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,12"/>
+        <TextBlock Text="WATCHDOG"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckEnableWatchdog"
                   Content="Enable plugin watchdog (monitors call timeouts)"
@@ -89,10 +89,10 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Diagnostics sampling ───────────────────────────────────────────── -->
-        <TextBlock Text="Diagnostics &amp; Sampling"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,12"/>
+        <TextBlock Text="DIAGNOSTICS &AMP; SAMPLING"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,4">
             <Grid.ColumnDefinitions>
@@ -118,10 +118,10 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Slow-Plugin Detection ──────────────────────────────────────────── -->
-        <TextBlock Text="Slow-Plugin Detection"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,12"/>
+        <TextBlock Text="SLOW-PLUGIN DETECTION"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
@@ -174,10 +174,10 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Memory Alert Thresholds ─────────────────────────────────────── -->
-        <TextBlock Text="Memory Alert Thresholds"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,12"/>
+        <TextBlock Text="MEMORY ALERT THRESHOLDS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckEnableMemoryAlerts"
                   Content="Enable memory usage alerts and badges"
@@ -265,10 +265,10 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Memory Alert Colors ─────────────────────────────────────────── -->
-        <TextBlock Text="Memory Alert Colors"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,12"/>
+        <TextBlock Text="MEMORY ALERT COLORS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <TextBlock Text="Customize badge colors for each memory threshold level."
                    FontSize="11" Opacity="0.65"

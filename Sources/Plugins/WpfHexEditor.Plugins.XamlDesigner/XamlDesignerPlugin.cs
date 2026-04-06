@@ -993,6 +993,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     // ── IPluginWithOptions ────────────────────────────────────────────────────
 
+    public string GetOptionsCategory()     => "Editors";
+    public string GetOptionsCategoryIcon() => "📐";
+
     public FrameworkElement CreateOptionsPage()
     {
         _optionsPage = new XamlDesignerOptionsPage();

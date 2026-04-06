@@ -171,6 +171,15 @@
         "before": "my $x = \"hello\";",
         "after": "my $x = 'hello';"
       }
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "pl",
+        "perl"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

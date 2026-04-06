@@ -153,8 +153,14 @@
       }
     },
     "bracketPairs": [
-      { "open": "(", "close": ")" },
-      { "open": "[", "close": "]" }
+      {
+        "open": "(",
+        "close": ")"
+      },
+      {
+        "open": "[",
+        "close": "]"
+      }
     ],
     "breakpointRules": {
       "nonExecutablePatterns": [
@@ -167,6 +173,14 @@
         "\\bAND\\s*$",
         "\\bOR\\s*$"
       ]
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "aliases": [
+        "sql"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
     }
   },
   "forensic": {

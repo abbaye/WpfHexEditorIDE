@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Office/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -941,4 +941,37 @@
     <SolidColorBrush x:Key="CA_CodeBlockBackgroundBrush" Color="{StaticResource CA_CodeBlockBackgroundColor}"/>
     <SolidColorBrush x:Key="CA_ErrorBrush" Color="{StaticResource CA_ErrorColor}"/>
     <SolidColorBrush x:Key="CA_ThinkingForegroundBrush" Color="{StaticResource CA_ThinkingForegroundColor}"/>
+
+    <!-- Document Structure Panel (DS_*) -->
+    <SolidColorBrush x:Key="DS_PanelBackground" Color="Transparent"/>
+    <SolidColorBrush x:Key="DS_CaretHighlightBrush" Color="#30FFD700"/>
+    <SolidColorBrush x:Key="DS_NodeForeground" Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="DS_DetailForeground" Color="#717171"/>
+    <SolidColorBrush x:Key="DS_ProviderBadgeBackground" Color="#DEECF9"/>
+    <SolidColorBrush x:Key="DS_CountBadgeBackground" Color="#E2F0E2"/>
+    <SolidColorBrush x:Key="DS_RowHoverBrush"        Color="#18000000"/>
+    <SolidColorBrush x:Key="DS_RowSelectedBrush"     Color="#DEECF9"/>
+    <SolidColorBrush x:Key="DS_ClassIconBrush" Color="#267F99"/>
+    <SolidColorBrush x:Key="DS_MethodIconBrush" Color="#795E26"/>
+    <SolidColorBrush x:Key="DS_PropertyIconBrush" Color="#001080"/>
+    <SolidColorBrush x:Key="DS_FieldIconBrush" Color="#001080"/>
+    <SolidColorBrush x:Key="DS_EnumIconBrush" Color="#0070C1"/>
+    <SolidColorBrush x:Key="DS_InterfaceIconBrush" Color="#267F99"/>
+
+    <!-- Tab Groups (TG_*) -->
+    <Color x:Key="TG_ActiveGroupBorderColor">#0067C0</Color>
+    <Color x:Key="TG_InactiveGroupBorderColor">#CCCCCC</Color>
+    <Color x:Key="TG_BadgeBackgroundColor">#0067C0</Color>
+    <Color x:Key="TG_BadgeForegroundColor">#FFFFFF</Color>
+    <Color x:Key="TG_DragSplitIndicatorColor">#0067C0</Color>
+    <Color x:Key="TG_DragDockIndicatorColor">#D83B01</Color>
+    <SolidColorBrush x:Key="TG_ActiveGroupBorderBrush"   Color="{StaticResource TG_ActiveGroupBorderColor}"/>
+    <SolidColorBrush x:Key="TG_InactiveGroupBorderBrush" Color="{StaticResource TG_InactiveGroupBorderColor}"/>
+    <SolidColorBrush x:Key="TG_BadgeBackgroundBrush"     Color="{StaticResource TG_BadgeBackgroundColor}"/>
+    <SolidColorBrush x:Key="TG_BadgeForegroundBrush"     Color="{StaticResource TG_BadgeForegroundColor}"/>
+    <SolidColorBrush x:Key="TG_DragSplitIndicatorBrush"  Color="{StaticResource TG_DragSplitIndicatorColor}"/>
+    <SolidColorBrush x:Key="TG_DragDockIndicatorBrush"   Color="{StaticResource TG_DragDockIndicatorColor}"/>
+    <!-- Options page section header foreground -->
+    <SolidColorBrush x:Key="Opt_SectionForegroundBrush" Color="#666666"/>
+
 </ResourceDictionary>

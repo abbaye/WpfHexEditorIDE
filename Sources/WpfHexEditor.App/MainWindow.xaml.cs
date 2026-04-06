@@ -540,6 +540,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Resolve Includes chains after all definitions are registered.
         registry.ResolveIncludes();
+
+        // Configure DiffModeDetector with the whfmt-driven language registry.
+        // This removes the static extension HashSets from the diff engine.
+        WpfHexEditor.Core.Diff.Services.DiffModeDetector.Configure(ext =>
+        {
+            var lang = registry.FindByExtension(ext);
+            if (lang is null) return null;
+            return lang.IdeDiffMode?.ToLowerInvariant() switch
+            {
+                "semantic" => WpfHexEditor.Core.Diff.Models.DiffMode.Semantic,
+                "text"     => WpfHexEditor.Core.Diff.Models.DiffMode.Text,
+                "binary"   => WpfHexEditor.Core.Diff.Models.DiffMode.Binary,
+                _          => null,
+            };
+        });
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -605,8 +620,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ApplyThemeFromSettingsEarly(); // Direct XAML load — _themeService not yet available
         ApplyTabPreviewSettings();   // push persisted thumbnail settings to DockHost
         ApplyAutoHideSettings();     // push persisted auto-hide timing to DockHost
+        ApplyUISettings();           // push persisted UI appearance settings to DockHost
         WpfHexEditor.Core.Options.TabPreviewAppSettings.Changed += ApplyTabPreviewSettings;
         WpfHexEditor.Core.Options.AutoHideAppSettings.Changed   += ApplyAutoHideSettings;
+        WpfHexEditor.Core.Options.DocumentsAppSettings.Changed  += ApplyDocumentSettings;
         InitAutoSerializeTimer();
 
         RebuildTblItemList();   // must be before LoadSavedLayoutOrDefault so SyncTblDropdown finds items
@@ -645,6 +662,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 AppSettingsService.Instance),
             "\uE8A5");
 
+        // Register Documents options page (external file change detection & auto-reload)
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            "Environment", "Documents",
+            () => new WpfHexEditor.App.Options.DocumentsOptionsPage(),
+            "\uE8A5");
+
         // Register Workspace options page
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "Environment", "Workspace",
@@ -663,10 +686,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             () => new WpfHexEditor.App.Options.LayoutOptionsPage(),
             "\uE713");
 
-        // Register Docking options page (Auto-Hide timing + Layout Profiles)
+        // Register Docking options page (Auto-Hide timing + Panel Highlight + Layout Profiles)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "Environment", "Docking",
-            () => new WpfHexEditor.App.Options.DockingOptionsPage(),
+            () => new WpfHexEditor.App.Options.DockingOptionsPage(DockHost.ApplyHighlightMode),
             "\uE8A0");
 
         // Register Code Editor options page (General, Auto-close, Hints, Minimap, Coloring)
@@ -1240,7 +1263,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrEmpty(path)) return;
 
         var ext = Path.GetExtension(path).ToLowerInvariant();
-        if (ext is ".whsln" or ".whproj" or ".sln" or ".csproj" or ".vbproj" or ".fsproj")
+        if (ext is ".whsln" or ".whproj" or ".sln" or ".slnx" or ".slnf" or ".csproj" or ".vbproj" or ".fsproj")
         {
             if (File.Exists(path)) _ = OpenSolutionAsync(path);
             else OutputLogger.Error($"Startup solution not found: {path}");
@@ -1332,6 +1355,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Using a separate engine here would leave the DockControl cache stale on close,
         // causing the next open of the same ContentId to return the old, already-Close()d control.
         _engine = DockHost.Engine!;
+
+        // Keep the _Window > Tab Groups menu in sync with the layout tree.
+        _engine.LayoutChanged += UpdateWindowTabGroupMenu;
 
         // Rebind the DockingAdapter to the new engine/layout so plugin panel toggles continue
         // to work after Reset Layout or Load Layout replaces the layout tree.
@@ -1545,7 +1571,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.ProjectMoveRequested             += OnSEProjectMoveRequested;
         panel.ClipboardPasteRequested          += OnSEClipboardPaste;
         panel.SourceLineNavigationRequested    += OnSESourceLineNavigationRequested;
+        panel.FileAutoReloadRequested          += OnSEFileAutoReload;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
+
+        // Apply document settings (external change detection, ignored dirs, auto-reload).
+        var docSettings = AppSettingsService.Instance.Current.Documents;
+        panel.ApplyDocumentSettings(
+            docSettings.DetectExternalFileChanges,
+            docSettings.AutoReloadExternalChanges,
+            docSettings.IgnoredDirectories);
         // Build context-menu events (guards handle the case where build system isn't ready yet)
         panel.BuildProjectRequested       += (_, id) => { if (_buildSystem is not null) _ = RunBuildProjectByIdAsync(id); };
         panel.RebuildProjectRequested     += (_, id) => { if (_buildSystem is not null) _ = RunRebuildProjectByIdAsync(id); };
@@ -3750,10 +3784,36 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSESaveAll(object? sender, EventArgs e)
     {
+        // Suppress watcher for all open document file paths.
+        foreach (var item in _layout?.MainDocumentHost?.Items ?? [])
+        {
+            if (item.Metadata.TryGetValue("FilePath", out var fp) && !string.IsNullOrEmpty(fp))
+                SuppressFileWatcherForSave(fp);
+        }
+
         if (_solutionManager.CurrentSolution is { } sol)
             _ = _solutionManager.SaveSolutionAsync(sol);
         ActiveDocumentEditor?.SaveCommand?.Execute(null);
         OutputLogger.Info("Save All executed.");
+    }
+
+    private void OnSEFileAutoReload(object? sender, FileAutoReloadEventArgs e)
+    {
+        // Auto-reload: silently reload any open editor tab whose file was modified externally.
+        foreach (var item in _layout?.MainDocumentHost?.Items ?? [])
+        {
+            if (!item.Metadata.TryGetValue("FilePath", out var fp) ||
+                !string.Equals(fp, e.FullPath, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (_contentCache.TryGetValue(item.ContentId, out var ctrl) &&
+                ctrl is IOpenableDocument openable)
+            {
+                _ = SafeOpenAsync(openable, e.FullPath);
+                OutputLogger.Info($"Auto-reloaded: {Path.GetFileName(e.FullPath)}");
+            }
+            break;
+        }
     }
 
     private void OnSEOpenWith(object? sender, OpenWithRequestedEventArgs e)
@@ -4730,7 +4790,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         try
         {
             var currentSlnPath = _solutionManager.CurrentSolution?.FilePath;
-            var isVsSolution   = currentSlnPath?.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) == true;
+            var isVsSolution   = currentSlnPath is not null
+                                  && (currentSlnPath.EndsWith(".sln",  StringComparison.OrdinalIgnoreCase)
+                                   || currentSlnPath.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase));
 
             string slnPath;
             if (isVsSolution)
@@ -5276,6 +5338,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSaveAll(object sender, RoutedEventArgs e)
     {
+        // Suppress watcher for all open document file paths.
+        foreach (var item in _layout?.MainDocumentHost?.Items ?? [])
+        {
+            if (item.Metadata.TryGetValue("FilePath", out var fp) && !string.IsNullOrEmpty(fp))
+                SuppressFileWatcherForSave(fp);
+        }
+
         if (_solutionManager.CurrentSolution is { } saveSol)
             _ = _solutionManager.SaveSolutionAsync(saveSol);
 
@@ -5284,11 +5353,35 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Notifies the file watcher to suppress change events for <paramref name="filePath"/>
+    /// so IDE-initiated saves do not trigger false "externally modified" warnings.
+    /// </summary>
+    private void SuppressFileWatcherForSave(string? filePath)
+    {
+        if (!string.IsNullOrEmpty(filePath))
+            _solutionExplorerPanel?.SuppressFileWatcher(filePath);
+    }
+
+    /// <summary>
+    /// Returns the file path of the currently active document tab, or null.
+    /// </summary>
+    private string? GetActiveDocumentFilePath()
+    {
+        var active = _layout?.MainDocumentHost?.ActiveItem;
+        if (active is not null && active.Metadata.TryGetValue("FilePath", out var fp))
+            return fp;
+        return null;
+    }
+
+    /// <summary>
     /// Ctrl+S handler.  In Tracked mode, serialises edits to the .whchg companion file
     /// without touching the physical binary.  In Direct mode delegates to SaveCommand.
     /// </summary>
     private void OnSave(object sender, RoutedEventArgs e)
     {
+        // Suppress file watcher before writing to prevent false external-modification warnings.
+        SuppressFileWatcherForSave(GetActiveDocumentFilePath());
+
         var settings = AppSettingsService.Instance.Current;
 
         // Try to resolve the active project item for Tracked mode.
@@ -5358,6 +5451,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         try
         {
+            SuppressFileWatcherForSave(wtdItem.AbsolutePath);
             await _solutionManager.WriteItemToDiskAsync(wtdProject!, wtdItem);
 
             // Reload the editor from the updated file
@@ -5523,6 +5617,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// <summary>
     /// Pushes persisted auto-hide timing settings to <see cref="DockHost.AutoHideSettings"/>.
     /// </summary>
+    private void ApplyDocumentSettings()
+    {
+        if (_solutionExplorerPanel is null) return;
+        var d = AppSettingsService.Instance.Current.Documents;
+        _solutionExplorerPanel.ApplyDocumentSettings(
+            d.DetectExternalFileChanges,
+            d.AutoReloadExternalChanges,
+            d.IgnoredDirectories);
+    }
+
     private void ApplyAutoHideSettings()
     {
         var s = AppSettingsService.Instance.Current;
@@ -5538,7 +5642,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             s.FloatingWindowFadeInMs);
     }
 
-    private void ApplyEditorSettings(IDocumentEditor editor) => _editorSettingsService?.Apply(editor);
+    private void ApplyUISettings()
+    {
+        DockHost.ApplyHighlightMode(AppSettingsService.Instance.Current.UI.ActivePanelHighlight);
+    }
+
+    private void ApplyEditorSettings(IDocumentEditor editor)
+    {
+        _editorSettingsService?.Apply(editor);
+        editor.BeforeSaveCallback = SuppressFileWatcherForSave;
+    }
 
     // Editor settings logic (ApplyEditorSettings body, ApplySyntaxColorOverrides, TryParseHexColor)
     // moved to EditorSettingsService (Phase 4 refactoring)

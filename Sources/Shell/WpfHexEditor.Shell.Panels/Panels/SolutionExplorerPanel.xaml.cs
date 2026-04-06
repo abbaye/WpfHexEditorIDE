@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Core.SourceAnalysis.Models;
 using WpfHexEditor.Core.SourceAnalysis.Services;
 using WpfHexEditor.Editor.Core;
@@ -61,13 +62,22 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         _watcher.FileChangedExternally += (_, args) =>
         {
             var modified = args.ChangeType is not System.IO.WatcherChangeTypes.Deleted;
-            Dispatcher.BeginInvoke(() =>
-                _vm.SetFileModifiedExternally(args.FullPath, modified));
 
-            // Invalidate the source outline cache for .cs / .xaml files
+            if (_autoReloadEnabled && modified)
+            {
+                // Auto-reload: request the host to silently reload the file instead of showing ⚠.
+                Dispatcher.BeginInvoke(() =>
+                    FileAutoReloadRequested?.Invoke(this, new FileAutoReloadEventArgs(args.FullPath)));
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(() =>
+                    _vm.SetFileModifiedExternally(args.FullPath, modified));
+            }
+
+            // Invalidate the source outline cache for files that support source outline.
             var ext = Path.GetExtension(args.FullPath);
-            if (string.Equals(ext, ".cs",   StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(ext, ".xaml", StringComparison.OrdinalIgnoreCase))
+            if (LanguageRegistry.Instance.FindByExtension(ext)?.SupportsSourceOutline == true)
             {
                 _sourceOutline.Invalidate(args.FullPath);
                 Dispatcher.BeginInvoke(() => RefreshExpandedOutlineNode(args.FullPath));
@@ -81,6 +91,24 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     }
 
     // -- ISolutionExplorerPanel ------------------------------------------------
+
+    /// <inheritdoc/>
+    public void SuppressFileWatcher(string fullPath) => _watcher.SuppressPath(fullPath);
+
+    /// <inheritdoc/>
+    public void ApplyDocumentSettings(bool detectExternalChanges, bool autoReload, string? ignoredDirectories)
+    {
+        _autoReloadEnabled = autoReload;
+        _watcher.SetIgnoredDirectories(ignoredDirectories);
+
+        if (!detectExternalChanges)
+            _watcher.Stop();
+        else
+            _watcher.RestartIfWatching();
+    }
+
+    /// <summary>When true, externally modified files are reloaded silently instead of showing ⚠.</summary>
+    private bool _autoReloadEnabled;
 
     public void SetSolution(ISolution? solution)
     {
@@ -136,6 +164,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ManageSolutionNuGetRequestedEventArgs>?      ManageSolutionNuGetPackagesRequested;
     public event EventHandler<AddReferenceRequestedEventArgs>?             AddReferenceRequested;
     public event EventHandler<RemoveUnusedReferencesRequestedEventArgs>?   RemoveUnusedReferencesRequested;
+    public event EventHandler<FileAutoReloadEventArgs>?                    FileAutoReloadRequested;
 
     // -- Tree events -----------------------------------------------------------
 
@@ -174,6 +203,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         {
             // Mark handled so TreeViewItem does not toggle expand/collapse on file nodes.
             e.Handled = true;
+            fn.IsModifiedExternally = false;
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
             return;
         }
@@ -182,6 +212,19 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         {
             e.Handled = true;
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = dep.Source, Project = dep.Project });
+            return;
+        }
+
+        // Solution-folder loose file items — open via source-line navigation (line 0 = just open).
+        if (nodeVm is SolutionFileItemNodeVm sfi)
+        {
+            e.Handled = true;
+            if (System.IO.File.Exists(sfi.AbsolutePath))
+                SourceLineNavigationRequested?.Invoke(this, new SourceLineNavigationEventArgs
+                {
+                    AbsolutePath = sfi.AbsolutePath,
+                    LineNumber   = 0,
+                });
             return;
         }
 
@@ -701,6 +744,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         switch (_contextMenuTarget)
         {
             case FileNodeVm fn when fn.Project is not null:
+                fn.IsModifiedExternally = false;
                 ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
                 break;
             case DependentFileNodeVm dep when dep.Project is not null:

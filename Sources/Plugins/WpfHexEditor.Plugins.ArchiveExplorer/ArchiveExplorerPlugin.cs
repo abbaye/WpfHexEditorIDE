@@ -199,7 +199,7 @@ public sealed class ArchiveExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpti
         _optionsPage?.Load();
     }
 
-    public string GetOptionsCategory()     => "Archive Explorer";
+    public string GetOptionsCategory()     => "Tools";
     public string GetOptionsCategoryIcon() => "\uE7C3";
 
     // ── Helpers ───────────────────────────────────────────────────────────────

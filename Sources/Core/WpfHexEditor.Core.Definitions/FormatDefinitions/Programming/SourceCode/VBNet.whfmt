@@ -207,12 +207,32 @@
       "organizeImports": true,
       "separateSystemImports": true,
       "maxLineLength": 120,
-      "blockOpenKeywords": ["Then", "Do", "Else"],
+      "blockOpenKeywords": [
+        "Then",
+        "Do",
+        "Else"
+      ],
       "blockCloseKeywords": [
-        "End If", "End Sub", "End Function", "End Class", "End Module",
-        "End Interface", "End Structure", "End Enum", "End Namespace",
-        "End Property", "End With", "End Select", "End Try", "End While",
-        "Loop", "Next", "Else", "ElseIf", "Catch", "Finally"
+        "End If",
+        "End Sub",
+        "End Function",
+        "End Class",
+        "End Module",
+        "End Interface",
+        "End Structure",
+        "End Enum",
+        "End Namespace",
+        "End Property",
+        "End With",
+        "End Select",
+        "End Try",
+        "End While",
+        "Loop",
+        "Next",
+        "Else",
+        "ElseIf",
+        "Catch",
+        "Finally"
       ]
     },
     "previewSnippet": "Imports System.IO\nImports System\n\nDim a = 1\nIf a>=0 Then\n    Dim x=a+b*2\n    Console.Write(x,a)\nEnd If",
@@ -253,6 +273,21 @@
       "statementContinuationPatterns": [
         "_\\s*$"
       ]
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": true,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": true,
+      "languageColor": "#C8A018",
+      "aliases": [
+        "vb",
+        "vb.net",
+        "vbnet"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
     }
   },
   "forensic": {

@@ -45,6 +45,7 @@ internal sealed class PluginActivationService : IDisposable
         _activateAsync = activateAsync ?? throw new ArgumentNullException(nameof(activateAsync));
 
         _subscriptions.Add(_ideEvents.Subscribe<FileOpenedEvent>(OnFileOpened));
+        _subscriptions.Add(_ideEvents.Subscribe<CommandInvokedEvent>(OnCommandInvoked));
     }
 
     private void OnFileOpened(FileOpenedEvent evt)
@@ -60,6 +61,25 @@ internal sealed class PluginActivationService : IDisposable
 
             bool matches = activation.FileExtensions.Any(
                 fe => string.Equals(fe, ext, StringComparison.OrdinalIgnoreCase));
+            if (!matches) continue;
+
+            ActivateIfNeeded(entry.Manifest.Id);
+        }
+    }
+
+    private void OnCommandInvoked(CommandInvokedEvent evt)
+    {
+        if (string.IsNullOrEmpty(evt.CommandId)) return;
+        foreach (var entry in _entries.Values)
+        {
+            if (entry.State != SDK.Models.PluginState.Dormant)
+                continue;
+
+            var activation = entry.Manifest.Activation;
+            if (activation is null || activation.Commands.Count == 0) continue;
+
+            bool matches = activation.Commands.Any(
+                c => string.Equals(c, evt.CommandId, StringComparison.OrdinalIgnoreCase));
             if (!matches) continue;
 
             ActivateIfNeeded(entry.Manifest.Id);

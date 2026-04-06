@@ -11,6 +11,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core.Options;
+using WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.App.Options;
 
@@ -48,10 +49,29 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
     private readonly TextBox   _profileDirBox;
 
+    // Active Panel Highlight
+    private readonly ComboBox  _highlightModeCombo;
+    private readonly Action<ActivePanelHighlightMode>? _livePreview;
+
     private bool _loading;
 
-    public DockingOptionsPage()
+    public DockingOptionsPage(Action<ActivePanelHighlightMode>? livePreview = null)
     {
+        _livePreview = livePreview;
+        Padding = new Thickness(16);
+
+        Resources.MergedDictionaries.Add(new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml")
+        });
+
+        _highlightModeCombo = new ComboBox { MinWidth = 160 };
+        _highlightModeCombo.Items.Add("None");
+        _highlightModeCombo.Items.Add("Top Bar");
+        _highlightModeCombo.Items.Add("Full Border");
+        _highlightModeCombo.Items.Add("Glow");
+        _highlightModeCombo.SelectionChanged += OnHighlightModeChanged;
+
         (_openDelaySlider,  _openDelayLabel)  = MakeSlider(100, 1000, 50);
         (_closeDelaySlider, _closeDelayLabel) = MakeSlider(50,  800,  50);
         (_slideAnimSlider,  _slideAnimLabel)  = MakeSlider(50,  500,  10);
@@ -68,58 +88,44 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         (_overlayFadeOutSlider, _overlayFadeOutLabel) = MakeSlider(0, 500, 10);
         (_floatingFadeInSlider, _floatingFadeInLabel) = MakeSlider(0, 500, 10);
 
-        (_minPaneSizeSlider,      _minPaneSizeLabel)      = MakeSlider(20, 200, 5);
+        (_minPaneSizeSlider,        _minPaneSizeLabel)        = MakeSlider(20, 200, 5);
         (_floatDefaultWidthSlider,  _floatDefaultWidthLabel)  = MakeSlider(200, 800, 10);
         (_floatDefaultHeightSlider, _floatDefaultHeightLabel) = MakeSlider(150, 600, 10);
 
-        _profileDirBox = new TextBox
-        {
-            Margin = new Thickness(0, 4, 0, 4),
-        };
+        _profileDirBox = new TextBox { Margin = new Thickness(0, 4, 0, 4) };
         _profileDirBox.TextChanged += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
 
-        var root = new StackPanel
-        {
-            Orientation = Orientation.Vertical,
-            Margin      = new Thickness(12, 8, 12, 8),
-        };
+        var root = new StackPanel { Orientation = Orientation.Vertical };
 
-        // Auto-Hide section
-        root.Children.Add(MakeSectionHeader("Auto-Hide Panel Timing"));
+        // Active Panel Highlight — TOP
+        root.Children.Add(SectionHeader("ACTIVE PANEL HIGHLIGHT"));
+        root.Children.Add(MakeLabeledRow("Highlight mode:", _highlightModeCombo));
+        root.Children.Add(Hint("None · Top Bar (2px top) · Full Border (2px outline) · Glow (border + shadow)"));
+
+        // Auto-Hide
+        root.Children.Add(SectionHeader("AUTO-HIDE PANEL TIMING"));
         root.Children.Add(MakeSliderRow("Open delay (ms):",      _openDelaySlider,  _openDelayLabel));
         root.Children.Add(MakeSliderRow("Close delay (ms):",     _closeDelaySlider, _closeDelayLabel));
         root.Children.Add(MakeSliderRow("Slide animation (ms):", _slideAnimSlider,  _slideAnimLabel));
 
-        // Animations section
-        root.Children.Add(MakeSectionHeader("Docking Animations"));
+        // Animations
+        root.Children.Add(SectionHeader("DOCKING ANIMATIONS"));
         root.Children.Add(_animationsEnabledCheck);
-        root.Children.Add(MakeSliderRow("Overlay fade-in (ms):",       _overlayFadeInSlider,  _overlayFadeInLabel));
-        root.Children.Add(MakeSliderRow("Overlay fade-out (ms):",      _overlayFadeOutSlider, _overlayFadeOutLabel));
+        root.Children.Add(MakeSliderRow("Overlay fade-in (ms):",         _overlayFadeInSlider,  _overlayFadeInLabel));
+        root.Children.Add(MakeSliderRow("Overlay fade-out (ms):",        _overlayFadeOutSlider, _overlayFadeOutLabel));
         root.Children.Add(MakeSliderRow("Floating window fade-in (ms):", _floatingFadeInSlider, _floatingFadeInLabel));
-        root.Children.Add(new TextBlock
-        {
-            Text   = "Set to 0 for instant transitions. Uncheck to disable all animations.",
-            Margin = new Thickness(0, 2, 0, 8),
-            FontStyle = FontStyles.Italic,
-            Opacity = 0.6,
-        });
+        root.Children.Add(Hint("Set to 0 for instant transitions. Uncheck to disable all animations."));
 
-        // Panel Sizing section
-        root.Children.Add(MakeSectionHeader("Panel Sizing"));
-        root.Children.Add(MakeSliderRow("Min pane size (px):",             _minPaneSizeSlider,        _minPaneSizeLabel));
-        root.Children.Add(MakeSliderRow("Float default width (px):",       _floatDefaultWidthSlider,  _floatDefaultWidthLabel));
-        root.Children.Add(MakeSliderRow("Float default height (px):",      _floatDefaultHeightSlider, _floatDefaultHeightLabel));
+        // Panel Sizing
+        root.Children.Add(SectionHeader("PANEL SIZING"));
+        root.Children.Add(MakeSliderRow("Min pane size (px):",        _minPaneSizeSlider,        _minPaneSizeLabel));
+        root.Children.Add(MakeSliderRow("Float default width (px):",  _floatDefaultWidthSlider,  _floatDefaultWidthLabel));
+        root.Children.Add(MakeSliderRow("Float default height (px):", _floatDefaultHeightSlider, _floatDefaultHeightLabel));
 
-        // Layout Profiles section
-        root.Children.Add(MakeSectionHeader("Layout Profiles"));
+        // Layout Profiles
+        root.Children.Add(SectionHeader("LAYOUT PROFILES"));
         root.Children.Add(MakeLabeledRow("Profile directory:", _profileDirBox));
-        root.Children.Add(new TextBlock
-        {
-            Text   = "Leave empty to use the default AppData location.",
-            Margin = new Thickness(0, 2, 0, 8),
-            FontStyle = FontStyles.Italic,
-            Opacity = 0.6,
-        });
+        root.Children.Add(Hint("Leave empty to use the default AppData location."));
 
         Content = new ScrollViewer
         {
@@ -134,6 +140,8 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         _loading = true;
         try
         {
+            _highlightModeCombo.SelectedIndex = (int)settings.UI.ActivePanelHighlight;
+
             _openDelaySlider.Value  = settings.AutoHideOpenDelayMs;
             _closeDelaySlider.Value = settings.AutoHideCloseDelayMs;
             _slideAnimSlider.Value  = settings.AutoHideSlideAnimationMs;
@@ -157,6 +165,8 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
     public void Flush(AppSettings settings)
     {
+        settings.UI.ActivePanelHighlight = (ActivePanelHighlightMode)Math.Max(0, _highlightModeCombo.SelectedIndex);
+
         settings.AutoHideOpenDelayMs      = (int)_openDelaySlider.Value;
         settings.AutoHideCloseDelayMs     = (int)_closeDelaySlider.Value;
         settings.AutoHideSlideAnimationMs = (int)_slideAnimSlider.Value;
@@ -177,6 +187,14 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
     // ── Event helpers ─────────────────────────────────────────────────────────
 
+    private void OnHighlightModeChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_loading) return;
+        var mode = (ActivePanelHighlightMode)Math.Max(0, _highlightModeCombo.SelectedIndex);
+        _livePreview?.Invoke(mode);
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
     private void OnChanged(object sender, RoutedEventArgs e)
     {
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
@@ -184,12 +202,8 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private static TextBlock MakeSectionHeader(string title) => new()
-    {
-        Text       = title,
-        FontWeight = FontWeights.SemiBold,
-        Margin     = new Thickness(0, 8, 0, 4),
-    };
+    private static TextBlock SectionHeader(string title) => OptionsPageHelper.SectionHeader(title);
+    private static TextBlock Hint(string text)           => OptionsPageHelper.Hint(text);
 
     private static Grid MakeLabeledRow(string labelText, Control control)
     {

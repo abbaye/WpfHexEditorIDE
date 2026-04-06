@@ -198,7 +198,7 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         _optionsPage?.Load();
     }
 
-    public string GetOptionsCategory()     => "Plugins";
+    public string GetOptionsCategory()     => "Extensions";
     public string GetOptionsCategoryIcon() => "\uE8A5";
 
     // -- Grammar registration ----------------------------------------------

@@ -244,6 +244,17 @@ public static class LanguageDefinitionSerializer
             ScriptGlobals             = MapScriptGlobals(dto.ScriptGlobals),
             PreviewSnippet            = dto.PreviewSnippet,
             PreviewSamples            = MapPreviewSamples(dto.PreviewSamples),
+            IsSourceFile          = dto.IdeMetadata?.IsSourceFile         ?? false,
+            IsStructuredDataFile  = dto.IdeMetadata?.IsStructuredDataFile ?? false,
+            IsSolutionFile        = dto.IdeMetadata?.IsSolutionFile       ?? false,
+            IsProjectFile         = dto.IdeMetadata?.IsProjectFile        ?? false,
+            SupportsClassDiagram  = dto.IdeMetadata?.SupportsClassDiagram  ?? false,
+            SupportsSourceOutline = dto.IdeMetadata?.SupportsSourceOutline ?? false,
+            IsProjectLanguage     = dto.IdeMetadata?.IsProjectLanguage     ?? false,
+            LanguageColor         = dto.IdeMetadata?.LanguageColor,
+            Aliases               = (IReadOnlyList<string>?)dto.IdeMetadata?.Aliases ?? [],
+            IconGlyph             = dto.IdeMetadata?.IconGlyph,
+            IdeDiffMode           = dto.IdeMetadata?.DiffMode,
         };
     }
 
@@ -410,6 +421,24 @@ public static class LanguageDefinitionSerializer
 
         [JsonPropertyName("previewSamples")]
         public Dictionary<string, PreviewSampleDto>? PreviewSamples { get; set; }
+
+        [JsonPropertyName("ideMetadata")]
+        public IdeMetadataDto? IdeMetadata { get; set; }
+    }
+
+    private sealed class IdeMetadataDto
+    {
+        [JsonPropertyName("isSourceFile")]          public bool      IsSourceFile          { get; set; }
+        [JsonPropertyName("isStructuredDataFile")]  public bool      IsStructuredDataFile  { get; set; }
+        [JsonPropertyName("isSolutionFile")]        public bool      IsSolutionFile        { get; set; }
+        [JsonPropertyName("isProjectFile")]         public bool      IsProjectFile         { get; set; }
+        [JsonPropertyName("supportsClassDiagram")]  public bool      SupportsClassDiagram  { get; set; }
+        [JsonPropertyName("supportsSourceOutline")] public bool      SupportsSourceOutline { get; set; }
+        [JsonPropertyName("isProjectLanguage")]     public bool      IsProjectLanguage     { get; set; }
+        [JsonPropertyName("languageColor")]         public string?   LanguageColor         { get; set; }
+        [JsonPropertyName("aliases")]               public string[]? Aliases               { get; set; }
+        [JsonPropertyName("iconGlyph")]             public string?   IconGlyph             { get; set; }
+        [JsonPropertyName("diffMode")]              public string?   DiffMode              { get; set; }
     }
 
     private sealed class ScriptGlobalDto
@@ -519,6 +548,13 @@ public static class LanguageDefinitionSerializer
         [JsonPropertyName("sqlKeywordsUppercase")]   public bool   SqlKeywordsUppercase   { get; set; }
         [JsonPropertyName("blockOpenKeywords")]      public string[]? BlockOpenKeywords    { get; set; }
         [JsonPropertyName("blockCloseKeywords")]     public string[]? BlockCloseKeywords   { get; set; }
+
+        // ── Pattern keywords (whfmt-driven regexes) ─────────────────────────
+        [JsonPropertyName("keywordParenKeywords")]   public string[]? KeywordParenKeywords { get; set; }
+        [JsonPropertyName("binaryOperators")]        public string[]? BinaryOperators      { get; set; }
+        [JsonPropertyName("methodDeclKeywords")]     public string[]? MethodDeclKeywords   { get; set; }
+        [JsonPropertyName("importKeywords")]         public string[]? ImportKeywords       { get; set; }
+        [JsonPropertyName("sqlKeywords")]            public string[]? SqlKeywords          { get; set; }
     }
 
     // -- New mapping helpers ------------------------------------------------
@@ -564,6 +600,11 @@ public static class LanguageDefinitionSerializer
             SqlKeywordsUppercase       = dto.SqlKeywordsUppercase,
             BlockOpenKeywords          = (IReadOnlyList<string>?)dto.BlockOpenKeywords ?? [],
             BlockCloseKeywords         = (IReadOnlyList<string>?)dto.BlockCloseKeywords ?? [],
+            KeywordParenKeywords       = dto.KeywordParenKeywords is { Length: > 0 } ? dto.KeywordParenKeywords : null,
+            BinaryOperators            = dto.BinaryOperators is { Length: > 0 } ? dto.BinaryOperators : null,
+            MethodDeclKeywords         = dto.MethodDeclKeywords is { Length: > 0 } ? dto.MethodDeclKeywords : null,
+            ImportKeywords             = dto.ImportKeywords is { Length: > 0 } ? dto.ImportKeywords : null,
+            SqlKeywords                = dto.SqlKeywords is { Length: > 0 } ? dto.SqlKeywords : null,
         };
     }
 

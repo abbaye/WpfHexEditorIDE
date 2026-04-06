@@ -29,6 +29,10 @@
     <PluginDescription>Loads RTF, DOCX and ODT documents into the Document Editor with binary-map synchronisation.</PluginDescription>
     <PluginIsolationMode>InProcess</PluginIsolationMode>
     <PluginLoadPriority>20</PluginLoadPriority>
+    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationExtensions>".rtf", ".docx", ".dotx", ".odt", ".ott"</PluginActivationExtensions>
+    <PluginActivationCommands>"View.DocumentLoaders"</PluginActivationCommands>
+    <PluginMenuContributionsJson>[{"commandId":"View.DocumentLoaders","label":"_Document Loaders","parentPath":"View","group":"Panels","category":"Data &amp; Files","iconGlyph":"\uE8A5"}]</PluginMenuContributionsJson>
     <PluginSdkVersion>2.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
 

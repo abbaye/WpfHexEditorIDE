@@ -24,6 +24,7 @@ public static class OptionsPageRegistry
         new("Environment",        "General",          () => new EnvironmentGeneralPage(),     "🌍"),
         new("Environment",        "Save",             () => new EnvironmentSavePage(),        "🌍"),
         new("Environment",        "Output",           () => new OutputOptionsPage(),          "🌍"),
+        new("Environment",        "Tab Groups",       () => new TabGroupsOptionsPage(),       "🌍"),
 
         // Hex Editor
         new("Hex Editor",         "Display",          () => new HexEditorDisplayPage(),       "🔧"),
@@ -53,8 +54,8 @@ public static class OptionsPageRegistry
         // Debugger
         new("Debugger",           "Breakpoints",      () => new DebuggerBreakpointOptionsPage(), "🐛"),
 
-        // Plugins
-        new("Plugins",            "Marketplace",      () => new MarketplaceOptionsPage(),        "🔌"),
+        // Extensions
+        new("Extensions",         "Marketplace",      () => new MarketplaceOptionsPage(),        "🔌"),
     ];
 
     /// <summary>

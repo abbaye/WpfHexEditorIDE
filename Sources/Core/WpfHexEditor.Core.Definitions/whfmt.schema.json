@@ -11,6 +11,14 @@
       "type": "string",
       "description": "Human-readable format name (e.g., 'ZIP Archive', 'PNG Image')"
     },
+    "formatId": {
+      "type": "string",
+      "description": "Unique format identifier (optional; defaults to file stem)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Alternate display name alias (used by some source-code .whfmt files)"
+    },
     "version": {
       "type": "string",
       "description": "Version of this definition (e.g., '1.0', '2.0')"
@@ -594,6 +602,20 @@
         "previewSamples": {
           "$ref": "#/$defs/PreviewSamples",
           "description": "Per-rule Before/After code fragments shown as tooltips on Formatting option checkboxes."
+        },
+        "includes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Language IDs to inherit rules from (resolved by LanguageRegistry after full registration)"
+        },
+        "ideMetadata": {
+          "$ref": "#/$defs/IdeMetadata",
+          "description": "IDE-level metadata for the language: icons, diagram support, diff mode override, aliases."
+        },
+        "scriptGlobals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScriptGlobalEntry" },
+          "description": "Script host global objects injected into the script context (e.g. for .csx files). Used by ScriptGlobalsCompletionProvider."
         }
       }
     },
@@ -618,7 +640,28 @@
         "separateSystemImports":    { "type": "boolean", "description": "Place System.* imports in a separate group above user imports (C# / Java)" },
         "quoteStyle":               { "type": "string", "enum": ["single", "double", "backtick"], "description": "Preferred string literal quote character" },
         "maxLineLength":            { "type": "integer", "minimum": 40, "maximum": 300, "description": "Soft line-length limit (shown as a column ruler)" },
-        "indentCaseLabels":         { "type": "boolean", "description": "Indent case/when labels one level inside switch blocks" }
+        "indentCaseLabels":         { "type": "boolean", "description": "Indent case/when labels one level inside switch blocks" },
+        "braceStyle": {
+          "type": "string",
+          "enum": ["allmanStyle", "kernelAndRitchie", "sameLine"],
+          "description": "Opening-brace placement style: allmanStyle (new line), kernelAndRitchie (K&R), sameLine"
+        },
+        "spaceBeforeOpenBrace":     { "type": "boolean", "description": "Insert a space before '{' when brace is on the same line as the header" },
+        "keywordParenKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keywords after which a space is inserted before '(' (overrides CodeEditor built-in list)"
+        },
+        "importKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keywords that introduce import/using directives (used for blankLineAfterImports detection)"
+        },
+        "methodDeclKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keywords that start method/function declarations (used for blankLineBeforeMethod detection)"
+        }
       },
       "additionalProperties": false
     },
@@ -640,6 +683,75 @@
         "after":  { "type": "string", "description": "Code fragment as it appears AFTER the rule is applied" }
       },
       "additionalProperties": false
+    },
+
+    "IdeMetadata": {
+      "type": "object",
+      "description": "IDE-level metadata for a source-code language. Drives icons, panel availability, diff-mode override, and DiffModeDetector configuration.",
+      "properties": {
+        "isSourceFile":          { "type": "boolean", "description": "True if files of this language are source code (not config/data)" },
+        "isStructuredDataFile":  { "type": "boolean", "description": "True if the language is a structured data format (JSON, YAML, TOML…)" },
+        "supportsClassDiagram":  { "type": "boolean", "description": "True if the ClassDiagram plugin can analyse files of this language" },
+        "supportsSourceOutline": { "type": "boolean", "description": "True if the DocumentStructure SourceOutline provider supports this language" },
+        "isProjectLanguage":     { "type": "boolean", "description": "True if the language can be a primary project language (shown in New Project dialog)" },
+        "languageColor":         { "type": "string", "pattern": "^#[0-9A-Fa-f]{3,8}$", "description": "GitHub-style language badge color (#RRGGBB or #RRGGBBAA)" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Alternative names / short IDs (e.g. 'c#', 'cs') used for look-up in LanguageRegistry"
+        },
+        "iconGlyph":   { "type": "string", "description": "Segoe MDL2 / custom font glyph character for the language icon" },
+        "diffMode": {
+          "type": "string",
+          "enum": ["text", "semantic", "binary"],
+          "description": "Per-language diff algorithm override for DiffModeDetector (overrides top-level diffMode for source files)"
+        }
+      }
+    },
+
+    "ScriptGlobalEntry": {
+      "type": "object",
+      "description": "A host-injected global object available inside script files (e.g. .csx). Drives ScriptGlobalsCompletionProvider.",
+      "required": ["name", "type"],
+      "properties": {
+        "name":          { "type": "string", "description": "Variable name as it appears in the script scope" },
+        "type":          { "type": "string", "description": "CLR type name (interface or class, e.g. 'IHexEditorService')" },
+        "documentation": { "type": "string", "description": "One-line summary shown in IntelliSense" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScriptMemberEntry" },
+          "description": "Members exposed by this global object"
+        }
+      }
+    },
+
+    "ScriptMemberEntry": {
+      "type": "object",
+      "description": "A single member (property, method, or event) on a ScriptGlobalEntry.",
+      "required": ["name", "type", "kind"],
+      "properties": {
+        "name":          { "type": "string", "description": "Member name" },
+        "type":          { "type": "string", "description": "Return type or property type" },
+        "kind": {
+          "type": "string",
+          "enum": ["property", "method", "event"],
+          "description": "Member kind"
+        },
+        "documentation": { "type": "string", "description": "One-line summary shown in IntelliSense" },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "properties": {
+              "name":          { "type": "string" },
+              "type":          { "type": "string" },
+              "documentation": { "type": "string" }
+            }
+          },
+          "description": "Method parameters (only for kind: method)"
+        }
+      }
     }
   }
 }
