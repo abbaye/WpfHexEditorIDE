@@ -26,7 +26,9 @@
     </Style>
 
     <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
-        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Foreground"                 Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment"   Value="Center"/>
     </Style>
 
     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
