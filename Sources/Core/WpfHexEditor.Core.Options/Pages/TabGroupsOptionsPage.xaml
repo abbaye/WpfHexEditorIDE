@@ -11,10 +11,10 @@
         <StackPanel Margin="0,0,0,16">
 
             <!-- ── Split Behavior ──────────────────────────────────────────── -->
-            <TextBlock Text="Split Behavior"
-                       FontWeight="SemiBold" FontSize="13"
-                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       Margin="0,0,0,10"/>
+            <TextBlock Text="SPLIT BEHAVIOR"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkEnforceEqualSize"
                       Content="Enforce equal pane size on split (50 / 50)"
@@ -51,10 +51,10 @@
             <Separator Margin="0,16,0,16" Background="{DynamicResource DockBorderBrush}"/>
 
             <!-- ── Visual ──────────────────────────────────────────────────── -->
-            <TextBlock Text="Visual"
-                       FontWeight="SemiBold" FontSize="13"
-                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       Margin="0,0,0,10"/>
+            <TextBlock Text="VISUAL"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkShowGroupBadge"
                       Content="Show 'Group N' badge on tab bar when multiple groups are open"
@@ -65,10 +65,10 @@
             <Separator Margin="0,16,0,16" Background="{DynamicResource DockBorderBrush}"/>
 
             <!-- ── Persistence ─────────────────────────────────────────────── -->
-            <TextBlock Text="Persistence"
-                       FontWeight="SemiBold" FontSize="13"
-                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       Margin="0,0,0,10"/>
+            <TextBlock Text="PERSISTENCE"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkPersistLayout"
                       Content="Include tab group layout in workspace saves"

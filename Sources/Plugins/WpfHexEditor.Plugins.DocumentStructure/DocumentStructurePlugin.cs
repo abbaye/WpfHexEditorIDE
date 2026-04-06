@@ -13,6 +13,7 @@
 //     Provider chain: LSP (1000) > SourceOutline (500) > Language-specific (300) > Folding (100).
 // ==========================================================
 
+using System.IO;
 using WpfHexEditor.Core.DocumentStructure;
 using WpfHexEditor.Core.DocumentStructure.Providers;
 using WpfHexEditor.Core.Events;
@@ -64,6 +65,9 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
 
     // ── Pending update when panel is hidden ──────────────────────────────────
     private (string? filePath, string? docType, string? language)? _pendingRefresh;
+
+    // ── Temp files for virtual/decompiled documents (no real file path) ──────
+    private readonly Dictionary<string, string> _virtualTempFiles = new(StringComparer.OrdinalIgnoreCase);
 
     // ══════════════════════════════════════════════════════════════════════════
     // Lifecycle
@@ -148,17 +152,26 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         _panel?.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)(() =>
         {
             _isPanelVisible = _context?.UIRegistry.IsPanelVisible(PanelUiId) ?? false;
-            var activeDoc = _context?.FocusContext.ActiveDocument;
-            if (activeDoc is not null && !string.IsNullOrEmpty(activeDoc.FilePath))
+
+            if (_context?.CodeEditor.IsActive == true)
             {
-                var lang = _context?.CodeEditor.IsActive == true ? _context.CodeEditor.CurrentLanguage : null;
-                QueueOrRefresh(activeDoc.FilePath, activeDoc.DocumentType, lang);
+                // Reuse OnCodeEditorDocumentChanged logic (handles virtual files too)
+                OnCodeEditorDocumentChanged(null, EventArgs.Empty);
             }
             else if (_context?.HexEditor.IsActive == true)
             {
                 var fp = _context.HexEditor.CurrentFilePath;
                 if (!string.IsNullOrEmpty(fp))
                     QueueOrRefresh(fp, "hex", null);
+            }
+            else
+            {
+                var activeDoc = _context?.FocusContext.ActiveDocument;
+                if (activeDoc is not null && !string.IsNullOrEmpty(activeDoc.FilePath))
+                {
+                    var lang = _context?.CodeEditor.CurrentLanguage;
+                    QueueOrRefresh(activeDoc.FilePath, activeDoc.DocumentType, lang);
+                }
             }
         }));
 
@@ -183,6 +196,10 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
             _context.Terminal.UnregisterCommand(new StructureListCommand(_vm!).CommandName);
             _context.Terminal.UnregisterCommand(new StructureNavigateCommand(_vm!).CommandName);
         }
+
+        // Clean up temp files used for virtual/decompiled documents
+        foreach (var f in _virtualTempFiles.Values)
+            try { File.Delete(f); } catch { /* best-effort */ }
 
         if (_vm is not null)
             _vm.NavigateRequested -= OnNavigateRequested;
@@ -233,7 +250,13 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
     {
         if (e.ActiveDocument is null) return;
         if (e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
-        if (string.IsNullOrEmpty(e.ActiveDocument.FilePath)) return;
+
+        // Skip non-content panels (Options, Settings…) where no editor is active.
+        // Do NOT skip decompiled/virtual files: they have no FilePath but CodeEditor.IsActive = true.
+        var codeActive = _context?.CodeEditor.IsActive == true;
+        var hexActive  = _context?.HexEditor.IsActive  == true;
+        if (string.IsNullOrEmpty(e.ActiveDocument.FilePath) && !codeActive && !hexActive)
+            return;
 
         _hexEditorHandledLastSwitch = false;
 
@@ -270,11 +293,47 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
 
     private void OnCodeEditorDocumentChanged(object? sender, EventArgs e)
     {
-        // Code document tab changed → refresh
-        var filePath = _context?.CodeEditor.CurrentFilePath;
-        var language = _context?.CodeEditor.CurrentLanguage;
-        if (!string.IsNullOrEmpty(filePath))
-            QueueOrRefresh(filePath, "code", language);
+        if (_context?.CodeEditor.IsActive != true) return;
+        var filePath = _context.CodeEditor.CurrentFilePath;
+        var language = _context.CodeEditor.CurrentLanguage;
+
+        // Decompiled/virtual file: no real path — write content to a temp file
+        // so SourceOutlineEngine can read and parse it from disk.
+        if (string.IsNullOrEmpty(filePath))
+            filePath = WriteVirtualToTempFile(language);
+
+        QueueOrRefresh(filePath, "code", language);
+    }
+
+    /// <summary>
+    /// Writes the current code editor content to a per-language temp file.
+    /// Returns the temp file path, or null if content or language is unavailable.
+    /// </summary>
+    private string? WriteVirtualToTempFile(string? language)
+    {
+        if (_context is null) return null;
+        var content = _context.CodeEditor.GetContent();
+        if (string.IsNullOrEmpty(content)) return null;
+
+        var ext = language switch
+        {
+            "csharp" => ".cs",
+            "vb"     => ".vb",
+            "xml"    => ".xml",
+            "xaml"   => ".xaml",
+            _        => null,
+        };
+        if (ext is null) return null;
+
+        if (!_virtualTempFiles.TryGetValue(ext, out var tempPath))
+        {
+            tempPath = Path.Combine(Path.GetTempPath(), $"wpfhex_ds_{Guid.NewGuid():N}{ext}");
+            _virtualTempFiles[ext] = tempPath;
+        }
+
+        try   { File.WriteAllText(tempPath, content); }
+        catch { return null; }
+        return tempPath;
     }
 
     // ══════════════════════════════════════════════════════════════════════════

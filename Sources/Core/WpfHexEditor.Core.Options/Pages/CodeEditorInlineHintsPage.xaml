@@ -63,10 +63,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Inline Hints ──────────────────────────────────────────────────── -->
-        <TextBlock Text="Inline Hints"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="INLINE HINTS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckInlineHintsEnabled"
                   Content="Enable Inline Hints (show inline reference counts above declarations)"
@@ -92,10 +92,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Symbol Kinds ──────────────────────────────────────────────────── -->
-        <TextBlock Text="Show hints for symbol kinds:"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,4"/>
+        <TextBlock Text="SHOW HINTS FOR SYMBOL KINDS:"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <TextBlock Text="Uncheck a kind to hide its reference-count hints while keeping Inline Hints active for others."
                    FontSize="11"

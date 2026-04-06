@@ -130,12 +130,7 @@ public sealed class DocumentsOptionsPage : UserControl, IOptionsPage
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private static TextBlock MakeSectionHeader(string title) => new()
-    {
-        Text       = title,
-        FontWeight = FontWeights.SemiBold,
-        Margin     = new Thickness(0, 8, 0, 4),
-    };
+    private static TextBlock MakeSectionHeader(string title) => OptionsPageHelper.SectionHeader(title);
 
     private static Grid MakeLabeledRow(string labelText, Control control)
     {

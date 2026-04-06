@@ -10,10 +10,10 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
-        <TextBlock Text="Status Bar Visibility"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16"/>
+        <TextBlock Text="STATUS BAR VISIBILITY"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowStatusMessage"
                   Content="Show status message"

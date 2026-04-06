@@ -17,10 +17,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Log-Level Colours ──────────────────────────────────────────── -->
-        <TextBlock Text="Log-Level Colours"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,4"/>
+        <TextBlock Text="LOG-LEVEL COLOURS"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <TextBlock Text="Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed."
                    FontSize="11" Opacity="0.65"

@@ -10,7 +10,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Docking.Core;
 
@@ -203,22 +202,8 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private static TextBlock SectionHeader(string title) => new()
-    {
-        Text       = title,
-        FontSize   = 12,
-        FontWeight = FontWeights.SemiBold,
-        Foreground = Brushes.Gray,
-        Margin     = new Thickness(0, 16, 0, 6),
-    };
-
-    private static TextBlock Hint(string text) => new()
-    {
-        Text      = text,
-        Margin    = new Thickness(0, 2, 0, 4),
-        FontStyle = FontStyles.Italic,
-        Opacity   = 0.6,
-    };
+    private static TextBlock SectionHeader(string title) => OptionsPageHelper.SectionHeader(title);
+    private static TextBlock Hint(string text)           => OptionsPageHelper.Hint(text);
 
     private static Grid MakeLabeledRow(string labelText, Control control)
     {

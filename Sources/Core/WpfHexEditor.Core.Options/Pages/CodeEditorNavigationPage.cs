@@ -201,18 +201,7 @@ public sealed class CodeEditorNavigationPage : UserControl, IOptionsPage
         Margin     = new Thickness(0, 0, 0, 12)
     };
 
-    private TextBlock MakeSectionHeader(string text)
-    {
-        var tb = new TextBlock
-        {
-            Text       = text,
-            FontSize   = 10,
-            FontWeight = FontWeights.Bold,
-            Margin     = new Thickness(0, 14, 0, 4)
-        };
-        tb.SetResourceReference(TextBlock.ForegroundProperty, "CP_SecondaryTextBrush");
-        return tb;
-    }
+    private static TextBlock MakeSectionHeader(string text) => OptionsPageHelper.SectionHeader(text);
 
     private static CheckBox MakeCheckBox(string label, EventHandler handler)
     {

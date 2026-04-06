@@ -11,10 +11,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Apparence ──────────────────────────────────────────────────── -->
-        <TextBlock Text="Appearance"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,16"/>
+        <TextBlock Text="APPEARANCE"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>

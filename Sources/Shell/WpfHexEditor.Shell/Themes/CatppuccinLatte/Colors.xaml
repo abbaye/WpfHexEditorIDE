@@ -950,4 +950,7 @@
     <SolidColorBrush x:Key="TG_BadgeForegroundBrush"     Color="{StaticResource TG_BadgeForegroundColor}"/>
     <SolidColorBrush x:Key="TG_DragSplitIndicatorBrush"  Color="{StaticResource TG_DragSplitIndicatorColor}"/>
     <SolidColorBrush x:Key="TG_DragDockIndicatorBrush"   Color="{StaticResource TG_DragDockIndicatorColor}"/>
+    <!-- Options page section header foreground -->
+    <SolidColorBrush x:Key="Opt_SectionForegroundBrush" Color="#666666"/>
+
 </ResourceDictionary>

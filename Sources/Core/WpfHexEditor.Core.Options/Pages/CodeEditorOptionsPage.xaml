@@ -22,10 +22,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Font ──────────────────────────────────────────────────────── -->
-        <TextBlock Text="Font"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="FONT"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
@@ -63,10 +63,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Indentation ───────────────────────────────────────────────── -->
-        <TextBlock Text="Indentation"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="INDENTATION"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
@@ -92,10 +92,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Features ──────────────────────────────────────────────────── -->
-        <TextBlock Text="Features"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="FEATURES"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckSmartComplete"
                   Content="Enable SmartComplete auto-complete"
@@ -206,10 +206,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Changeset (.whchg) ─────────────────────────────────────────── -->
-        <TextBlock Text="Changeset (.whchg)"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="CHANGESET (.WHCHG)"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckChangeset"
                   Content="Track edits in .whchg companion file (requires Tracked save mode)"
@@ -224,10 +224,10 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Syntax colours ────────────────────────────────────────────── -->
-        <TextBlock Text="Syntax colour overrides"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,4"/>
+        <TextBlock Text="SYNTAX COLOUR OVERRIDES"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <TextBlock Text="Enable a colour to override the active theme's default."
                    FontSize="11"

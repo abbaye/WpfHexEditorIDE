@@ -22,10 +22,10 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── General ───────────────────────────────────────────────────── -->
-        <TextBlock Text="General"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="GENERAL"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckSaveBeforeBuild"
                   Content="Save all changes before building"
@@ -73,10 +73,10 @@
         <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Output Window ─────────────────────────────────────────────── -->
-        <TextBlock Text="Output Window"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="OUTPUT WINDOW"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowOnStart"
                   Content="Show Output window when build starts"
@@ -93,10 +93,10 @@
         <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Run ───────────────────────────────────────────────────────── -->
-        <TextBlock Text="Run"
-                   FontWeight="SemiBold" FontSize="13"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   Margin="0,0,0,10"/>
+        <TextBlock Text="RUN"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
 
         <Grid Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
