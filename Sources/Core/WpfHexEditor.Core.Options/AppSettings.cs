@@ -153,6 +153,11 @@ public sealed class AppSettings
     /// <summary>Dynamic View menu organization preferences.</summary>
     public ViewMenuSettings ViewMenu { get; set; } = new();
 
+    // -- Environment > Documents --------------------------------------------------
+
+    /// <summary>External file change detection and auto-reload behaviour.</summary>
+    public DocumentSettings Documents { get; set; } = new();
+
     // -- Document Editor ----------------------------------------------------------
 
     /// <summary>Document Editor (RTF/DOCX/ODT) preferences.</summary>
@@ -1151,4 +1156,45 @@ public sealed class MarketplaceSettings
     /// Minimum enforced value: 1 hour. Default: 24.
     /// </summary>
     public int UpdateCheckIntervalHours { get; set; } = 24;
+}
+
+// ----------------------------------------------------------------------------
+// Document Settings (External File Changes)
+// ----------------------------------------------------------------------------
+
+/// <summary>
+/// Static notification hub for document settings changes.
+/// </summary>
+public static class DocumentsAppSettings
+{
+    /// <summary>Raised when document settings are flushed from the Options dialog.</summary>
+    public static event Action? Changed;
+
+    /// <summary>Signal that document settings have been updated.</summary>
+    public static void NotifyChanged() => Changed?.Invoke();
+}
+
+/// <summary>
+/// Settings for external file change detection, auto-reload, and ignored directories.
+/// Presented in the Options dialog under Environment > Documents.
+/// </summary>
+public sealed class DocumentSettings
+{
+    /// <summary>
+    /// When true, the IDE monitors project directories for external file changes
+    /// and shows a warning badge on modified files in the Solution Explorer.
+    /// </summary>
+    public bool DetectExternalFileChanges { get; set; } = true;
+
+    /// <summary>
+    /// When true, externally modified files are silently reloaded instead of
+    /// showing a warning badge. Only effective when <see cref="DetectExternalFileChanges"/> is true.
+    /// </summary>
+    public bool AutoReloadExternalChanges { get; set; }
+
+    /// <summary>
+    /// Semicolon-separated list of directory names to exclude from file watching.
+    /// Changes inside these directories never trigger external-modification warnings.
+    /// </summary>
+    public string IgnoredDirectories { get; set; } = "bin;obj;.vs;.git;node_modules";
 }

@@ -23,6 +23,7 @@
 // ==========================================================
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,28 +38,69 @@ namespace WpfHexEditor.Editor.CodeEditor.Services;
 /// </summary>
 public static class StructuralFormatter
 {
-    private static readonly Regex s_keywordParen = new(
-        @"\b(if|for|foreach|while|switch|catch|using|lock|when|elif|except)\(",
-        RegexOptions.Compiled);
+    // Universal comma-space rule — no language-specific variation possible.
+    private static readonly Regex s_commaNoSpace = new(@",(?!\s)", RegexOptions.Compiled);
 
-    private static readonly Regex s_binaryOp = new(
-        @"(?<=\S)(\+|-|\*|/|%|==|!=|<=|>=|&&|\|\||<<|>>|\?\?)(?=\S)",
-        RegexOptions.Compiled);
+    // Per-language regex cache keyed by "type:keyword1|keyword2|…"
+    private static readonly ConcurrentDictionary<string, Regex> s_regexCache = new();
 
-    private static readonly Regex s_commaNoSpace = new(
-        @",(?!\s)", RegexOptions.Compiled);
+    private static Regex GetOrBuild(string cacheKey, Func<Regex> factory)
+        => s_regexCache.GetOrAdd(cacheKey, _ => factory());
 
-    private static readonly Regex s_methodDecl = new(
-        @"^\s*(public|private|protected|internal|static|async|override|virtual|abstract|sealed|partial|def|func|fn|fun|sub|function)\b",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static Regex GetKeywordParenRegex(FormattingRules rules)
+    {
+        var kws = rules.KeywordParenKeywords ?? FormattingDefaults.KeywordParenKeywords;
+        string key = "kp:" + string.Join("|", kws);
+        return GetOrBuild(key, () =>
+        {
+            string alts = string.Join("|", kws.Select(Regex.Escape));
+            return new Regex($@"\b({alts})\(", RegexOptions.Compiled);
+        });
+    }
 
-    private static readonly Regex s_importLine = new(
-        @"^\s*(using|imports?|from|require|include|#include)\b",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static Regex GetBinaryOpRegex(FormattingRules rules)
+    {
+        var ops = rules.BinaryOperators ?? FormattingDefaults.BinaryOperators;
+        string key = "bo:" + string.Join("|", ops);
+        return GetOrBuild(key, () =>
+        {
+            string alts = string.Join("|", ops.Select(op => Regex.Escape(op)));
+            return new Regex($@"(?<=\S)({alts})(?=\S)", RegexOptions.Compiled);
+        });
+    }
 
-    private static readonly Regex s_sqlKeyword = new(
-        @"\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|FULL|CROSS|ON|AND|OR|NOT|IN|EXISTS|BETWEEN|LIKE|ORDER|BY|GROUP|HAVING|UNION|ALL|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|ALTER|DROP|TABLE|INDEX|VIEW|AS|IS|NULL|DISTINCT|TOP|LIMIT|OFFSET|ASC|DESC|CASE|WHEN|THEN|ELSE|END|COUNT|SUM|AVG|MIN|MAX|CAST|CONVERT|COALESCE|ISNULL)\b",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static Regex GetMethodDeclRegex(FormattingRules rules)
+    {
+        var kws = rules.MethodDeclKeywords ?? FormattingDefaults.MethodDeclKeywords;
+        string key = "md:" + string.Join("|", kws);
+        return GetOrBuild(key, () =>
+        {
+            string alts = string.Join("|", kws.Select(Regex.Escape));
+            return new Regex($@"^\s*({alts})\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        });
+    }
+
+    private static Regex GetImportLineRegex(FormattingRules rules)
+    {
+        var kws = rules.ImportKeywords ?? FormattingDefaults.ImportKeywords;
+        string key = "il:" + string.Join("|", kws);
+        return GetOrBuild(key, () =>
+        {
+            string alts = string.Join("|", kws.Select(Regex.Escape));
+            return new Regex($@"^\s*({alts})\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        });
+    }
+
+    private static Regex GetSqlKeywordRegex(FormattingRules rules)
+    {
+        var kws = rules.SqlKeywords ?? FormattingDefaults.SqlKeywords;
+        string key = "sq:" + string.Join("|", kws);
+        return GetOrBuild(key, () =>
+        {
+            string alts = string.Join("|", kws.Select(kw => Regex.Escape(kw.ToUpperInvariant())));
+            return new Regex($@"\b({alts})\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        });
+    }
 
     public static string FormatDocument(string text, FormattingRules? rules)
     {
@@ -91,10 +133,10 @@ public static class StructuralFormatter
         {
             string line = lines[i];
             if (rules.TrimTrailingWhitespace) line = line.TrimEnd();
-            if (rules.SpaceAfterKeywords) line = s_keywordParen.Replace(line, m => m.Value[..^1] + " (");
-            if (rules.SpaceAroundBinaryOperators) line = s_binaryOp.Replace(line, " $1 ");
+            if (rules.SpaceAfterKeywords) line = GetKeywordParenRegex(rules).Replace(line, m => m.Value[..^1] + " (");
+            if (rules.SpaceAroundBinaryOperators) line = GetBinaryOpRegex(rules).Replace(line, " $1 ");
             if (rules.SpaceAfterComma) line = s_commaNoSpace.Replace(line, ", ");
-            if (rules.SqlKeywordsUppercase) line = s_sqlKeyword.Replace(line, m => m.Value.ToUpperInvariant());
+            if (rules.SqlKeywordsUppercase) line = GetSqlKeywordRegex(rules).Replace(line, m => m.Value.ToUpperInvariant());
             if (rules.QuoteStyle is not null) line = NormalizeQuotes(line, rules.QuoteStyle.Value);
             lines[i] = line;
         }
@@ -117,7 +159,7 @@ public static class StructuralFormatter
 
         // ── Pass 6: import organisation ───────────────────────────────────────────
         if (rules.OrganizeImports)
-            OrganizeImportBlock(lines, startLine, endLine, rules.SeparateSystemImports);
+            OrganizeImportBlock(lines, startLine, endLine, rules.SeparateSystemImports, rules);
 
         var sb = new StringBuilder(text.Length + 128);
         for (int i = 0; i < lines.Length; i++)
@@ -281,10 +323,10 @@ public static class StructuralFormatter
             string trimmed = lines[i].Trim();
             bool isEmpty = trimmed.Length == 0;
 
-            if (!inRange) { result.Add(lines[i]); blanks = isEmpty ? blanks + 1 : 0; lastWasImport = !isEmpty && s_importLine.IsMatch(trimmed); continue; }
+            if (!inRange) { result.Add(lines[i]); blanks = isEmpty ? blanks + 1 : 0; lastWasImport = !isEmpty && GetImportLineRegex(rules).IsMatch(trimmed); continue; }
 
-            bool isImport = s_importLine.IsMatch(trimmed);
-            bool isMethod = s_methodDecl.IsMatch(trimmed);
+            bool isImport = GetImportLineRegex(rules).IsMatch(trimmed);
+            bool isMethod = GetMethodDeclRegex(rules).IsMatch(trimmed);
             if (rules.BlankLineAfterImports && lastWasImport && !isImport && !isEmpty && blanks == 0) { result.Add(""); offset++; }
             if (rules.BlankLineBeforeMethod && isMethod && result.Count > 0 && blanks == 0)
             {
@@ -300,13 +342,14 @@ public static class StructuralFormatter
         return result.ToArray();
     }
 
-    private static void OrganizeImportBlock(string[] lines, int start, int end, bool separateSystem)
+    private static void OrganizeImportBlock(string[] lines, int start, int end, bool separateSystem, FormattingRules rules)
     {
+        var importRx = GetImportLineRegex(rules);
         int bs = -1, be = -1;
         for (int i = start; i <= end && i < lines.Length; i++)
         {
             string t = lines[i].Trim();
-            if (s_importLine.IsMatch(t)) { if (bs < 0) bs = i; be = i; }
+            if (importRx.IsMatch(t)) { if (bs < 0) bs = i; be = i; }
             else if (t.Length > 0 && bs >= 0) break;
         }
         if (bs < 0 || be <= bs) return;

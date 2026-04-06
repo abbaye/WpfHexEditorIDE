@@ -510,6 +510,31 @@ public sealed class SolutionFolderNodeVm : SolutionExplorerNodeVm
     public void   CancelEdit() => SetIsEditing(false);
 }
 
+// -- Solution file item node (loose files in solution folders) -----------------
+
+/// <summary>
+/// Represents a loose file directly inside a VS solution folder
+/// (e.g. README.md, .editorconfig from <c>ProjectSection(SolutionItems)</c>).
+/// </summary>
+public sealed class SolutionFileItemNodeVm : SolutionExplorerNodeVm
+{
+    public SolutionFileItemNodeVm(string relativePath, string solutionDirectory)
+    {
+        RelativePath = relativePath;
+        AbsolutePath = System.IO.Path.GetFullPath(
+            System.IO.Path.Combine(solutionDirectory, relativePath));
+    }
+
+    /// <summary>Path relative to the solution directory.</summary>
+    public string RelativePath { get; }
+
+    /// <summary>Absolute path on disk.</summary>
+    public string AbsolutePath { get; }
+
+    public override string DisplayName => System.IO.Path.GetFileName(RelativePath);
+    public override string Icon => "\uE8A5"; // Page glyph
+}
+
 // -- Physical folder node (Show All Files mode) -------------------------------
 
 /// <summary>

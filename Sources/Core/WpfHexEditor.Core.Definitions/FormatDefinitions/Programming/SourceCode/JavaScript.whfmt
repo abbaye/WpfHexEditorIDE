@@ -182,7 +182,9 @@
       "separateSystemImports": false,
       "quoteStyle": "double",
       "trailingCommas": "es5",
-      "maxLineLength": 100
+      "maxLineLength": 100,
+      "importKeywords": ["import", "require"],
+      "methodDeclKeywords": ["function", "async", "class", "export"]
     },
     "colorLiteralPatterns": [
       "#[0-9A-Fa-f]{8}",

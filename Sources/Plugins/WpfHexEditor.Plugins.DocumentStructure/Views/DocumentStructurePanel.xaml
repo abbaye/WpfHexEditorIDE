@@ -1,0 +1,146 @@
+<UserControl x:Class="WpfHexEditor.Plugins.DocumentStructure.Views.DocumentStructurePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.ViewModels"
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Converters">
+
+    <UserControl.Resources>
+        <conv:KindToBrushConverter x:Key="KindToBrush"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Invert bool for flat mode visibility -->
+        <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
+    </UserControl.Resources>
+
+    <DockPanel Background="{DynamicResource DS_PanelBackground}">
+
+        <!-- ── Toolbar ────────────────────────────────────────────── -->
+        <Border DockPanel.Dock="Top" Padding="4,3" BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource ToolWindowBorderBrush}">
+            <DockPanel>
+                <!-- Search box -->
+                <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                         Width="140" VerticalAlignment="Center" Margin="0,0,4,0"
+                         Background="{DynamicResource DS_FilterBoxBackground}"
+                         Foreground="{DynamicResource DS_NodeForeground}">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Tag" Value="Filter symbols..."/>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <!-- Sort combo -->
+                <ComboBox SelectedIndex="0" Width="90" VerticalAlignment="Center" Margin="0,0,4,0"
+                          SelectionChanged="OnSortChanged">
+                    <ComboBoxItem Content="Source Order"/>
+                    <ComboBoxItem Content="Alphabetical"/>
+                    <ComboBoxItem Content="By Kind"/>
+                </ComboBox>
+
+                <!-- Tree/Flat toggle -->
+                <ToggleButton IsChecked="{Binding IsTreeMode}" VerticalAlignment="Center"
+                              Width="24" Height="24" ToolTip="Toggle Tree / Flat view"
+                              Margin="0,0,2,0">
+                    <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </ToggleButton>
+
+                <!-- Refresh -->
+                <Button Click="OnRefreshClicked" VerticalAlignment="Center"
+                        Width="24" Height="24" ToolTip="Refresh">
+                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Status bar ─────────────────────────────────────────── -->
+        <Border DockPanel.Dock="Bottom" Padding="6,2" BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource ToolWindowBorderBrush}">
+            <DockPanel>
+                <TextBlock Text="{Binding ActiveProviderName}" DockPanel.Dock="Right"
+                           Opacity="0.5" Margin="8,0,0,0"
+                           Foreground="{DynamicResource DS_DetailForeground}"/>
+                <TextBlock Text="{Binding StatusText}"
+                           Foreground="{DynamicResource DS_DetailForeground}"/>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Loading indicator ──────────────────────────────────── -->
+        <Border DockPanel.Dock="Top" Height="2"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+            <ProgressBar IsIndeterminate="True" Height="2"/>
+        </Border>
+
+        <!-- ── Tree View (Tree mode) ──────────────────────────────── -->
+        <TreeView x:Name="StructureTree"
+                  ItemsSource="{Binding RootNodes}"
+                  Visibility="{Binding IsTreeMode, Converter={StaticResource BoolToVis}}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  BorderThickness="0"
+                  Background="Transparent"
+                  SelectedItemChanged="OnTreeSelectedItemChanged"
+                  MouseDoubleClick="OnTreeDoubleClick">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type vm:StructureNodeVm}"
+                                          ItemsSource="{Binding Children}">
+                    <StackPanel Orientation="Horizontal" Margin="0,1" Visibility="{Binding Visibility}">
+                        <TextBlock Text="{Binding IconGlyph}"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Width="16" VerticalAlignment="Center"
+                                   Foreground="{Binding Kind, Converter={StaticResource KindToBrush}}"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DS_NodeForeground}"/>
+                        <TextBlock Text="{Binding Detail}" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DS_DetailForeground}"
+                                   Opacity="0.6" Margin="6,0,0,0"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                    <Setter Property="Visibility" Value="{Binding Visibility}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DS_CaretHighlightBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+
+        <!-- ── Flat List (Flat mode) ──────────────────────────────── -->
+        <ListBox x:Name="FlatList"
+                 ItemsSource="{Binding FlatNodes}"
+                 Visibility="{Binding IsTreeMode, Converter={StaticResource InverseBoolToVis}}"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 BorderThickness="0"
+                 Background="Transparent"
+                 SelectionChanged="OnFlatSelectionChanged"
+                 MouseDoubleClick="OnFlatDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:StructureNodeVm}">
+                    <StackPanel Orientation="Horizontal" Margin="{Binding IndentLevel, Converter={conv:IndentToMarginConverter}}">
+                        <TextBlock Text="{Binding IconGlyph}"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Width="16" VerticalAlignment="Center"
+                                   Foreground="{Binding Kind, Converter={StaticResource KindToBrush}}"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DS_NodeForeground}"/>
+                        <TextBlock Text="{Binding Detail}" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DS_DetailForeground}"
+                                   Opacity="0.6" Margin="6,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </DockPanel>
+</UserControl>

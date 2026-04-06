@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>WpfHexEditor.Core.DocumentStructure</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core.DocumentStructure</AssemblyName>
+    <!-- Windows-targeted (transitive SDK and Editor.Core dependencies require net8.0-windows).
+         Provides IDocumentStructureProvider implementations for various file formats. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.SourceAnalysis\WpfHexEditor.Core.SourceAnalysis.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+  </ItemGroup>
+
+</Project>

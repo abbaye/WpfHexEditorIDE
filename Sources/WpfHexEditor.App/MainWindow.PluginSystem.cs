@@ -221,7 +221,7 @@ public partial class MainWindow
                             // If the solution IS already a .sln/.csproj, use it directly.
                             // Otherwise (.whsln custom format), scan the directory for the real .sln.
                             var ext = System.IO.Path.GetExtension(e.Solution.FilePath).ToLowerInvariant();
-                            var realSlnPath = ext is ".sln" or ".csproj" or ".vbproj"
+                            var realSlnPath = ext is ".sln" or ".slnx" or ".slnf" or ".csproj" or ".vbproj"
                                 ? e.Solution.FilePath
                                 : FindDotNetSolutionOrProject(System.IO.Path.GetDirectoryName(e.Solution.FilePath));
                             if (realSlnPath is null)
@@ -1388,7 +1388,10 @@ public partial class MainWindow
     {
         if (directory is null || !System.IO.Directory.Exists(directory)) return null;
 
-        // Prefer .sln (full project graph).
+        // Prefer .slnx (newest format), then .sln (full project graph).
+        var slnxFiles = System.IO.Directory.GetFiles(directory, "*.slnx");
+        if (slnxFiles.Length > 0) return slnxFiles[0];
+
         var slnFiles = System.IO.Directory.GetFiles(directory, "*.sln");
         if (slnFiles.Length > 0) return slnFiles[0];
 
@@ -1398,9 +1401,12 @@ public partial class MainWindow
             .ToArray();
         if (projFiles.Length > 0) return projFiles[0];
 
-        // Scan one level of subdirectories for .sln.
+        // Scan one level of subdirectories: prefer .slnx then .sln.
         foreach (var subDir in System.IO.Directory.GetDirectories(directory))
         {
+            var subSlnx = System.IO.Directory.GetFiles(subDir, "*.slnx");
+            if (subSlnx.Length > 0) return subSlnx[0];
+
             var subSln = System.IO.Directory.GetFiles(subDir, "*.sln");
             if (subSln.Length > 0) return subSln[0];
         }

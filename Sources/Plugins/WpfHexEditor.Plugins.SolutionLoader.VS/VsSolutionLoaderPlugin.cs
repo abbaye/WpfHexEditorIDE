@@ -44,6 +44,8 @@ public sealed class VsSolutionLoaderPlugin : IWpfHexEditorPlugin
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
         context.ExtensionRegistry.Register<ISolutionLoader>(Id, new VsSolutionLoader());
+        context.ExtensionRegistry.Register<ISolutionLoader>(Id + ".slnx", new SlnxSolutionLoader());
+        context.ExtensionRegistry.Register<ISolutionLoader>(Id + ".slnf", new SlnfSolutionLoader());
 
         // Register .NET project templates — only available when this plugin is loaded.
         // C# / .NET

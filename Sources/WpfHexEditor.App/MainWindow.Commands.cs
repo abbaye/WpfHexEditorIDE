@@ -89,6 +89,10 @@ public partial class MainWindow
             () => OnExit(this, null!));
         Reg(CommandIds.File.QuickOpen,     "Quick File Open",        "File",    "Ctrl+P",         "\uE721",
             () => OnQuickOpen());
+        Reg(CommandIds.File.ConvertToSlnx, "Convert Solution to .slnx", "File", null,             "\uE8AB",
+            () => _ = OnConvertSolutionFormatAsync(toSlnx: true));
+        Reg(CommandIds.File.ConvertToSln,  "Convert Solution to .sln",  "File", null,             "\uE8AB",
+            () => _ = OnConvertSolutionFormatAsync(toSlnx: false));
 
         // ── Workspace ────────────────────────────────────────────────────────
         Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",

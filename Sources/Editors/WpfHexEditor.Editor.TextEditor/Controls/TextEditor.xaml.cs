@@ -212,6 +212,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     public bool IsDirty    => _vm.IsDirty;
 
     /// <inheritdoc/>
+    public Action<string>? BeforeSaveCallback { get; set; }
+
+    /// <inheritdoc/>
     public bool CanUndo    => _vm.CanUndo;
 
     /// <inheritdoc/>
@@ -375,6 +378,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     public async Task SaveAsync(CancellationToken ct = default)
     {
         if (string.IsNullOrEmpty(_vm.FilePath)) return;
+        BeforeSaveCallback?.Invoke(_vm.FilePath);
         await _vm.SaveFileAsync(_vm.FilePath, ct);
         StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(_vm.FilePath)}");
     }
@@ -382,6 +386,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     /// <inheritdoc/>
     public async Task SaveAsAsync(string filePath, CancellationToken ct = default)
     {
+        BeforeSaveCallback?.Invoke(filePath);
         await _vm.SaveFileAsync(filePath, ct);
         StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(filePath)}");
     }

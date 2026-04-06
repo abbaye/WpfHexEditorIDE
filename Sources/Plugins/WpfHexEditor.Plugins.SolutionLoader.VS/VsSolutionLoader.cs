@@ -39,6 +39,14 @@ public sealed class VsSolutionLoader : ISolutionLoader
         @"^Project\(""\{(?<typeGuid>[^}]+)\}""\)\s*=\s*""(?<name>[^""]+)""\s*,\s*""(?<path>[^""]+)""\s*,\s*""\{(?<guid>[^}]+)\}""",
         RegexOptions.Compiled | RegexOptions.Multiline);
 
+    private static readonly Regex SolutionItemsSectionRegex = new(
+        @"Project\(""\{2150E333[^}]*\}""\)\s*=\s*""(?<name>[^""]+)""[^\r\n]*\r?\n(?<body>.*?)EndProject",
+        RegexOptions.Compiled | RegexOptions.Singleline);
+
+    private static readonly Regex SolutionItemLineRegex = new(
+        @"^\s+(?<file>[^\s=]+)\s*=\s*(?<file2>[^\s]+)\s*$",
+        RegexOptions.Compiled | RegexOptions.Multiline);
+
     private static readonly Regex ConfigPlatformRegex = new(
         @"^\s*(?<guid>\{[^}]+\})\.(?<config>[^|]+)\|(?<platform>[^.]+)\.ActiveCfg\s*=\s*(?<activeCfg>.+)$",
         RegexOptions.Compiled | RegexOptions.Multiline);
@@ -107,8 +115,11 @@ public sealed class VsSolutionLoader : ISolutionLoader
             .Cast<VsProject>()
             .ToList();
 
+        // ---- Parse solution-folder file items --------------------------------
+        var folderFileItems = ParseSolutionFolderFileItems(content, solutionFolderEntries);
+
         // ---- Build solution folder hierarchy ---------------------------------
-        var rootFolders = BuildSolutionFolders(solutionFolderEntries, nestedMap, projects);
+        var rootFolders = BuildSolutionFolders(solutionFolderEntries, nestedMap, projects, folderFileItems);
 
         // ---- Determine startup project ---------------------------------------
         // Priority: 1) user sidecar (.sln.user)  2) heuristic (Sample/Test exclusion)
@@ -232,7 +243,7 @@ public sealed class VsSolutionLoader : ISolutionLoader
         SlnProjectEntry entry, CancellationToken ct)
     {
         var ext = System.IO.Path.GetExtension(entry.Path).ToLowerInvariant();
-        if (ext is not ".csproj" and not ".vbproj" and not ".fsproj") return null;
+        if (ext is not ".csproj" and not ".vbproj" and not ".fsproj" and not ".shproj") return null;
 
         if (!File.Exists(entry.Path)) return null;
 
@@ -283,16 +294,71 @@ public sealed class VsSolutionLoader : ISolutionLoader
     // Solution folder hierarchy
     // -----------------------------------------------------------------------
 
+    /// <summary>
+    /// Parses <c>ProjectSection(SolutionItems)</c> blocks inside solution-folder entries
+    /// and returns a map of folder GUID → list of relative file paths.
+    /// </summary>
+    private static Dictionary<string, List<string>> ParseSolutionFolderFileItems(
+        string content,
+        Dictionary<string, SlnProjectEntry> folderEntries)
+    {
+        var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (Match m in SolutionItemsSectionRegex.Matches(content))
+        {
+            var body = m.Groups["body"].Value;
+            if (!body.Contains("ProjectSection(SolutionItems)", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            // Find the folder GUID from the Project(...) line that wraps this section.
+            var folderName = m.Groups["name"].Value;
+            var folderEntry = folderEntries.Values
+                .FirstOrDefault(e => e.Name.Equals(folderName, StringComparison.OrdinalIgnoreCase));
+            if (folderEntry is null) continue;
+
+            var files = new List<string>();
+            foreach (Match itemMatch in SolutionItemLineRegex.Matches(body))
+            {
+                var file = itemMatch.Groups["file"].Value.Trim();
+                if (!string.IsNullOrWhiteSpace(file)
+                    && !file.StartsWith("ProjectSection", StringComparison.OrdinalIgnoreCase)
+                    && !file.StartsWith("EndProjectSection", StringComparison.OrdinalIgnoreCase))
+                {
+                    files.Add(file);
+                }
+            }
+
+            if (files.Count > 0)
+                result[folderEntry.Guid] = files;
+        }
+
+        return result;
+    }
+
     private static List<ISolutionFolder> BuildSolutionFolders(
         Dictionary<string, SlnProjectEntry> folderEntries,
         Dictionary<string, string> nestedMap,
-        List<VsProject> projects)
+        List<VsProject> projects,
+        Dictionary<string, List<string>>? folderFileItems = null)
     {
         // Create a VsSolutionFolder for every solution-folder entry.
         var folders = folderEntries.ToDictionary(
             kvp => kvp.Key,
             kvp => new VsSolutionFolder(kvp.Value.Guid, kvp.Value.Name),
             StringComparer.OrdinalIgnoreCase);
+
+        // Attach file items parsed from ProjectSection(SolutionItems).
+        if (folderFileItems is not null)
+        {
+            foreach (var (guid, files) in folderFileItems)
+            {
+                if (folders.TryGetValue(guid, out var folder))
+                {
+                    foreach (var file in files)
+                        folder.AddFileItem(file);
+                }
+            }
+        }
 
         // Wire project guids into their containing solution folder (if any).
         foreach (var project in projects)
@@ -325,8 +391,8 @@ public sealed class VsSolutionLoader : ISolutionLoader
     // Startup project detection
     // -----------------------------------------------------------------------
 
-    private static VsProject? DetermineStartupProject(
-        IEnumerable<VsProject> projects, string content)
+    internal static VsProject? DetermineStartupProject(
+        IEnumerable<VsProject> projects, string? content = null)
     {
         var executables = projects.Where(p =>
             p.OutputType.Equals("Exe",    StringComparison.OrdinalIgnoreCase) ||
@@ -350,7 +416,7 @@ public sealed class VsSolutionLoader : ISolutionLoader
     /// path segment that identifies the project as a sample, test, or sandbox,
     /// disqualifying it from being auto-selected as the startup project.
     /// </summary>
-    private static bool ContainsSampleOrTestSegment(string path)
+    internal static bool ContainsSampleOrTestSegment(string path)
     {
         // Normalise separators and test individual segments so that a project
         // named e.g. "TestResults.App" in a non-test folder is not excluded.
@@ -376,16 +442,19 @@ public sealed class VsSolutionLoader : ISolutionLoader
     {
         private readonly List<string>           _projectIds = [];
         private readonly List<ISolutionFolder>  _children   = [];
+        private readonly List<string>           _fileItems  = [];
 
         public string Id   { get; }
         public string Name { get; }
 
         public IReadOnlyList<string>          ProjectIds => _projectIds;
         public IReadOnlyList<ISolutionFolder> Children   => _children;
+        public IReadOnlyList<string>          FileItems  => _fileItems;
 
         internal VsSolutionFolder(string id, string name) { Id = id; Name = name; }
 
         internal void AddProjectId(string id) => _projectIds.Add(id);
         internal void AddChild(VsSolutionFolder child) => _children.Add(child);
+        internal void AddFileItem(string relativePath) => _fileItems.Add(relativePath);
     }
 }

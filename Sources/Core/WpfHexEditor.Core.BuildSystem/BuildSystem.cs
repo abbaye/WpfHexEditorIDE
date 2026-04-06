@@ -558,7 +558,7 @@ public sealed class BuildSystem : IBuildSystem
     {
         var path = _solutionManager.CurrentSolution?.FilePath;
         return path is not null
-            && Path.GetExtension(path).Equals(".sln", StringComparison.OrdinalIgnoreCase)
+            && Path.GetExtension(path).ToLowerInvariant() is ".sln" or ".slnx"
             ? path
             : null;
     }

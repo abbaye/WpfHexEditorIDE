@@ -155,7 +155,10 @@
       "organizeImports": true,
       "separateSystemImports": true,
       "quoteStyle": "double",
-      "maxLineLength": 100
+      "maxLineLength": 100,
+      "keywordParenKeywords": ["if", "for", "switch"],
+      "importKeywords": ["import"],
+      "methodDeclKeywords": ["func", "type", "struct", "interface"]
     },
     "previewSnippet": "import (\n    \"fmt\"\n    \"os\"\n)\n\nfunc goFunc(x,y int){\nif x>0{\nswitch x{\ncase 1:\nreturn\n}\n}\n}",
     "previewSamples": {

@@ -47,6 +47,18 @@ public sealed class AddItemRequestedEventArgs : EventArgs
 public interface ISolutionExplorerPanel
 {
     /// <summary>
+    /// Suppresses the file watcher for the given path so IDE-initiated saves
+    /// do not trigger false external-modification warnings.
+    /// </summary>
+    void SuppressFileWatcher(string fullPath);
+
+    /// <summary>
+    /// Applies document-related settings (enable/disable watcher, ignored dirs, auto-reload).
+    /// Called after settings are changed in the Options dialog.
+    /// </summary>
+    void ApplyDocumentSettings(bool detectExternalChanges, bool autoReload, string? ignoredDirectories);
+
+    /// <summary>
     /// Replaces the tree with the given solution, or clears it when <see langword="null"/>.
     /// </summary>
     void SetSolution(ISolution? solution);
@@ -278,6 +290,23 @@ public interface ISolutionExplorerPanel
     /// Call after <see cref="SetSolution"/> once the tree has been populated.
     /// </summary>
     void ApplyExpandedNodeKeys(IReadOnlyList<string> keys);
+
+    /// <summary>
+    /// Raised when auto-reload is enabled and a file has been modified externally.
+    /// The host should silently reload the open editor for this file path.
+    /// </summary>
+    event EventHandler<FileAutoReloadEventArgs>? FileAutoReloadRequested;
+}
+
+/// <summary>
+/// Event args for <see cref="ISolutionExplorerPanel.FileAutoReloadRequested"/>.
+/// </summary>
+public sealed class FileAutoReloadEventArgs : EventArgs
+{
+    public FileAutoReloadEventArgs(string fullPath) => FullPath = fullPath;
+
+    /// <summary>Absolute path of the file that should be reloaded.</summary>
+    public string FullPath { get; }
 }
 
 /// <summary>

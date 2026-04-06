@@ -153,6 +153,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private bool _isDirty = false;        // IDocumentEditor: unsaved changes flag
         private string? _currentFilePath;     // IDocumentEditor: last saved file path
 
+        /// <inheritdoc/>
+        public Action<string>? BeforeSaveCallback { get; set; }
+
         // Context-menu items that need dynamic headers (Undo (3) / Redo (0)).
         private System.Windows.Controls.MenuItem? _undoMenuItem;
         private System.Windows.Controls.MenuItem? _redoMenuItem;

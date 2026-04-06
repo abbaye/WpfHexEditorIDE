@@ -100,4 +100,11 @@ internal sealed class SolutionFolderDto
     /// </summary>
     [JsonPropertyName("children")]
     public List<SolutionFolderDto>? Children { get; set; }
+
+    /// <summary>
+    /// Loose files that belong directly to this solution folder (paths relative to the
+    /// solution directory). Omitted when empty (backwards-compatible).
+    /// </summary>
+    [JsonPropertyName("fileItems")]
+    public List<string>? FileItems { get; set; }
 }

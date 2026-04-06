@@ -135,7 +135,10 @@
       "organizeImports": true,
       "separateSystemImports": false,
       "quoteStyle": "double",
-      "maxLineLength": 79
+      "maxLineLength": 79,
+      "keywordParenKeywords": ["if", "for", "while", "elif", "except", "with"],
+      "importKeywords": ["import", "from"],
+      "methodDeclKeywords": ["def", "async", "class"]
     },
     "previewSnippet": "import os\nimport abc\n\ndef go(x,y):\n    if x>0:\n        return x+y",
     "previewSamples": {

@@ -648,6 +648,14 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             node.Children.Add(projNode);
         }
 
+        // Loose file items (README.md, .editorconfig, etc.) — alphabetical, after projects.
+        if (folder.FileItems is { Count: > 0 })
+        {
+            var solutionDir = System.IO.Path.GetDirectoryName(solution.FilePath) ?? "";
+            foreach (var relativePath in folder.FileItems.OrderBy(f => f, StringComparer.OrdinalIgnoreCase))
+                node.Children.Add(new SolutionFileItemNodeVm(relativePath, solutionDir));
+        }
+
         return node;
     }
 

@@ -30,6 +30,8 @@ public static class CommandIds
         public const string WriteToDisk      = "File.WriteToDisk";
         public const string Exit             = "File.Exit";
         public const string QuickOpen        = "File.QuickOpen";
+        public const string ConvertToSlnx    = "File.ConvertToSlnx";
+        public const string ConvertToSln     = "File.ConvertToSln";
     }
 
     public static class Edit

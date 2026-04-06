@@ -46,7 +46,7 @@ public sealed class MSBuildAdapter : IBuildAdapter
     public bool CanBuild(string projectFilePath)
     {
         var ext = Path.GetExtension(projectFilePath).ToLowerInvariant();
-        return ext is ".csproj" or ".vbproj" or ".fsproj" or ".sln";
+        return ext is ".csproj" or ".vbproj" or ".fsproj" or ".sln" or ".slnx" or ".slnf";
     }
 
     /// <inheritdoc />
@@ -76,7 +76,7 @@ public sealed class MSBuildAdapter : IBuildAdapter
         bool                clean,
         CancellationToken   ct)
     {
-        var isSolution = Path.GetExtension(projectFilePath).Equals(".sln", StringComparison.OrdinalIgnoreCase);
+        var isSolution = Path.GetExtension(projectFilePath).ToLowerInvariant() is ".sln" or ".slnx" or ".slnf";
         var platform   = isSolution
             ? NormalizePlatformForSolution(configuration.Platform)
             : NormalizePlatform(configuration.Platform);

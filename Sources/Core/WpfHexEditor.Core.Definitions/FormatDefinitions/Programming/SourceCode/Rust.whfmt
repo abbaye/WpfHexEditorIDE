@@ -171,7 +171,10 @@
       "organizeImports": true,
       "separateSystemImports": false,
       "quoteStyle": "double",
-      "maxLineLength": 100
+      "maxLineLength": 100,
+      "keywordParenKeywords": ["if", "for", "while", "match"],
+      "importKeywords": ["use"],
+      "methodDeclKeywords": ["pub", "fn", "async", "impl", "struct", "enum", "trait"]
     },
     "previewSnippet": "use std::io;\nuse std::fs;\n\nfn go(x:i32,y:i32){\nif x>0{\nmatch x{\n1=>return,\n_=>{}\n}\n}\n}",
     "previewSamples": {

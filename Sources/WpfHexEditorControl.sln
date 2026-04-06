@@ -221,6 +221,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Roslyn", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.ProgressBar", "Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj", "{8ED60D6B-0F7A-4DD9-96ED-80B61829FE7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.DocumentStructure", "Core\WpfHexEditor.Core.DocumentStructure\WpfHexEditor.Core.DocumentStructure.csproj", "{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{07D57EEB-2F50-60C4-C011-FE4FA775C9A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.DocumentStructure", "Plugins\WpfHexEditor.Plugins.DocumentStructure\WpfHexEditor.Plugins.DocumentStructure.csproj", "{BE045BD0-4B2F-4A07-A1A1-287919F25E28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1407,6 +1413,30 @@ Global
 		{8ED60D6B-0F7A-4DD9-96ED-80B61829FE7F}.Release|x64.Build.0 = Release|Any CPU
 		{8ED60D6B-0F7A-4DD9-96ED-80B61829FE7F}.Release|x86.ActiveCfg = Release|Any CPU
 		{8ED60D6B-0F7A-4DD9-96ED-80B61829FE7F}.Release|x86.Build.0 = Release|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Debug|x64.Build.0 = Debug|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Debug|x86.Build.0 = Debug|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Release|x64.ActiveCfg = Release|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Release|x64.Build.0 = Release|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Release|x86.ActiveCfg = Release|Any CPU
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}.Release|x86.Build.0 = Release|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Debug|x64.Build.0 = Debug|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Release|x64.ActiveCfg = Release|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Release|x64.Build.0 = Release|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1512,6 +1542,8 @@ Global
 		{12612C90-5ECC-4285-A1BB-D9444C18ECF5} = {250FC96D-F272-4DA2-9454-5817440CB125}
 		{FEC4865C-1B41-4E1D-A735-C5F01E38E6A6} = {250FC96D-F272-4DA2-9454-5817440CB125}
 		{8ED60D6B-0F7A-4DD9-96ED-80B61829FE7F} = {8F0E84AF-4FC2-46AF-8264-C41FC85FD18E}
+		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6} = {250FC96D-F272-4DA2-9454-5817440CB125}
+		{BE045BD0-4B2F-4A07-A1A1-287919F25E28} = {07D57EEB-2F50-60C4-C011-FE4FA775C9A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B382CAE-4846-466E-A3D3-0842043B4012}

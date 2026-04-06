@@ -199,7 +199,10 @@
       "spaceAfterComma": true,
       "organizeImports": true,
       "separateSystemImports": true,
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "keywordParenKeywords": ["if", "for", "foreach", "while", "switch", "catch", "using", "lock", "when"],
+      "importKeywords": ["using"],
+      "methodDeclKeywords": ["public", "private", "protected", "internal", "static", "async", "override", "virtual", "abstract", "sealed", "partial"]
     },
     "previewSnippet": "using System.IO;\nusing System;\n\nclass Example{\nvoid Go(int x,int y){\nif(x>0){\nswitch(x){\ncase 1:\nreturn;\n}\n}\n}\n}",
     "previewSamples": {

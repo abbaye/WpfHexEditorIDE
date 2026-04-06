@@ -51,20 +51,33 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
                                                CancellationToken ct = default)
         => Task.FromResult(new ProjectScaffold());
 
+    /// <summary>
+    /// When <see langword="true"/>, <see cref="CreateAsync"/> generates a <c>.slnx</c>
+    /// (XML-based) solution instead of a classic <c>.sln</c>. Defaults to <see langword="false"/>.
+    /// </summary>
+    public static bool PreferSlnxFormat { get; set; }
+
     /// <inheritdoc/>
     public async Task<string> CreateAsync(string parentDirectory, string projectName,
                                            CancellationToken ct = default)
     {
-        var projectGuid = Guid.NewGuid().ToString("B").ToUpperInvariant();
-        var projectDir  = Path.Combine(parentDirectory, projectName);
-        var slnPath     = Path.Combine(parentDirectory, $"{projectName}.sln");
-
+        var projectDir = Path.Combine(parentDirectory, projectName);
         Directory.CreateDirectory(projectDir);
 
         await WriteCsprojAsync(projectDir, projectName, ct);
         await WriteSourceFilesAsync(projectDir, projectName, ct);
-        await File.WriteAllTextAsync(slnPath, BuildSln(projectName, projectGuid), ct);
 
+        if (PreferSlnxFormat)
+        {
+            var slnxPath = Path.Combine(parentDirectory, $"{projectName}.slnx");
+            await File.WriteAllTextAsync(slnxPath,
+                SlnxSolutionHelper.BuildSlnx(projectName, ProjectFileExtension), ct);
+            return slnxPath;
+        }
+
+        var projectGuid = Guid.NewGuid().ToString("B").ToUpperInvariant();
+        var slnPath     = Path.Combine(parentDirectory, $"{projectName}.sln");
+        await File.WriteAllTextAsync(slnPath, BuildSln(projectName, projectGuid), ct);
         return slnPath;
     }
 
@@ -72,20 +85,25 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
     public async Task<string> AddToSolutionAsync(string existingSlnPath, string parentDirectory,
                                                    string projectName, CancellationToken ct = default)
     {
-        var projectGuid = Guid.NewGuid().ToString("B").ToUpperInvariant();
-        var projectDir  = Path.Combine(parentDirectory, projectName);
-
+        var projectDir = Path.Combine(parentDirectory, projectName);
         Directory.CreateDirectory(projectDir);
 
         await WriteCsprojAsync(projectDir, projectName, ct);
         await WriteSourceFilesAsync(projectDir, projectName, ct);
 
-        // Compute project file path relative to the .sln file (VS requirement).
-        var slnDir      = Path.GetDirectoryName(existingSlnPath) ?? "";
-        var csprojAbs   = Path.Combine(projectDir, $"{projectName}{ProjectFileExtension}");
-        var csprojRel   = Path.GetRelativePath(slnDir, csprojAbs).Replace('/', '\\');
+        var slnDir    = Path.GetDirectoryName(existingSlnPath) ?? "";
+        var csprojAbs = Path.Combine(projectDir, $"{projectName}{ProjectFileExtension}");
+        var csprojRel = Path.GetRelativePath(slnDir, csprojAbs).Replace('/', '\\');
 
-        await PatchSlnAsync(existingSlnPath, projectName, projectGuid, csprojRel, ct);
+        if (existingSlnPath.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase))
+        {
+            await SlnxSolutionHelper.PatchSlnxAsync(existingSlnPath, csprojRel, ct);
+        }
+        else
+        {
+            var projectGuid = Guid.NewGuid().ToString("B").ToUpperInvariant();
+            await PatchSlnAsync(existingSlnPath, projectName, projectGuid, csprojRel, ct);
+        }
 
         return existingSlnPath;
     }
@@ -95,7 +113,7 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
                                              string projectGuid, string csprojRelPath,
                                              CancellationToken ct)
     {
-        var content = await File.ReadAllTextAsync(slnPath, ct);
+        var (content, encoding) = await SlnFileEditor.ReadWithEncodingAsync(slnPath, ct);
 
         // Insert Project(...)...EndProject block just before "Global".
         var projectBlock =
@@ -126,7 +144,7 @@ internal abstract class DotNetProjectTemplate : ISelfContainedProjectTemplate
                 content = content.Insert(endIdx, configEntries);
         }
 
-        await File.WriteAllTextAsync(slnPath, content, System.Text.Encoding.UTF8, ct);
+        await File.WriteAllTextAsync(slnPath, content, encoding, ct);
     }
 
     /// <summary>Writes the .csproj file into <paramref name="projectDir"/>.</summary>

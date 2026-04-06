@@ -143,6 +143,9 @@ internal static class SolutionSerializer
         if (dto.Children is not null)
             foreach (var child in dto.Children)
                 folder.ChildrenMutable.Add(DtoToSolutionFolder(child));
+        if (dto.FileItems is not null)
+            foreach (var file in dto.FileItems)
+                folder.FileItemsMutable.Add(file);
         return folder;
     }
 
@@ -154,6 +157,7 @@ internal static class SolutionSerializer
         Children   = folder.ChildrenMutable.Count > 0
             ? folder.ChildrenMutable.Select(SolutionFolderToDto).ToList()
             : null,
+        FileItems  = folder.FileItemsMutable.Count > 0 ? [.. folder.FileItemsMutable] : null,
     };
 
     internal static SolutionFolder? FindSolutionFolder(

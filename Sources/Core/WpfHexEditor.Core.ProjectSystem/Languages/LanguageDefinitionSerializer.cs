@@ -519,6 +519,13 @@ public static class LanguageDefinitionSerializer
         [JsonPropertyName("sqlKeywordsUppercase")]   public bool   SqlKeywordsUppercase   { get; set; }
         [JsonPropertyName("blockOpenKeywords")]      public string[]? BlockOpenKeywords    { get; set; }
         [JsonPropertyName("blockCloseKeywords")]     public string[]? BlockCloseKeywords   { get; set; }
+
+        // ── Pattern keywords (whfmt-driven regexes) ─────────────────────────
+        [JsonPropertyName("keywordParenKeywords")]   public string[]? KeywordParenKeywords { get; set; }
+        [JsonPropertyName("binaryOperators")]        public string[]? BinaryOperators      { get; set; }
+        [JsonPropertyName("methodDeclKeywords")]     public string[]? MethodDeclKeywords   { get; set; }
+        [JsonPropertyName("importKeywords")]         public string[]? ImportKeywords       { get; set; }
+        [JsonPropertyName("sqlKeywords")]            public string[]? SqlKeywords          { get; set; }
     }
 
     // -- New mapping helpers ------------------------------------------------
@@ -564,6 +571,11 @@ public static class LanguageDefinitionSerializer
             SqlKeywordsUppercase       = dto.SqlKeywordsUppercase,
             BlockOpenKeywords          = (IReadOnlyList<string>?)dto.BlockOpenKeywords ?? [],
             BlockCloseKeywords         = (IReadOnlyList<string>?)dto.BlockCloseKeywords ?? [],
+            KeywordParenKeywords       = dto.KeywordParenKeywords is { Length: > 0 } ? dto.KeywordParenKeywords : null,
+            BinaryOperators            = dto.BinaryOperators is { Length: > 0 } ? dto.BinaryOperators : null,
+            MethodDeclKeywords         = dto.MethodDeclKeywords is { Length: > 0 } ? dto.MethodDeclKeywords : null,
+            ImportKeywords             = dto.ImportKeywords is { Length: > 0 } ? dto.ImportKeywords : null,
+            SqlKeywords                = dto.SqlKeywords is { Length: > 0 } ? dto.SqlKeywords : null,
         };
     }
 

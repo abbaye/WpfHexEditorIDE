@@ -478,6 +478,38 @@ public sealed record FormattingRules
     /// <summary>Uppercase SQL reserved keywords (SELECT, FROM, WHERE…). Only relevant for SQL.</summary>
     public bool SqlKeywordsUppercase { get; init; }
 
+    // ── Pattern keywords (whfmt-driven, replaces hardcoded regexes) ─────────
+
+    /// <summary>
+    /// Keywords that trigger space-after-keyword formatting (e.g. <c>if(</c> → <c>if (</c>).
+    /// Null = use <see cref="FormattingDefaults.KeywordParenKeywords"/>.
+    /// </summary>
+    public IReadOnlyList<string>? KeywordParenKeywords { get; init; }
+
+    /// <summary>
+    /// Binary operators that trigger space-around formatting (e.g. <c>a+b</c> → <c>a + b</c>).
+    /// Null = use <see cref="FormattingDefaults.BinaryOperators"/>.
+    /// </summary>
+    public IReadOnlyList<string>? BinaryOperators { get; init; }
+
+    /// <summary>
+    /// Keywords that identify method/function declarations for blank-line-before-method.
+    /// Null = use <see cref="FormattingDefaults.MethodDeclKeywords"/>.
+    /// </summary>
+    public IReadOnlyList<string>? MethodDeclKeywords { get; init; }
+
+    /// <summary>
+    /// Keywords that identify import/using directives for organisation and blank-line-after-imports.
+    /// Null = use <see cref="FormattingDefaults.ImportKeywords"/>.
+    /// </summary>
+    public IReadOnlyList<string>? ImportKeywords { get; init; }
+
+    /// <summary>
+    /// SQL reserved keywords for uppercase normalisation.
+    /// Null = use <see cref="FormattingDefaults.SqlKeywords"/>.
+    /// </summary>
+    public IReadOnlyList<string>? SqlKeywords { get; init; }
+
     // ── Keyword-based block delimiters ───────────────────────────────────────
 
     /// <summary>
@@ -518,6 +550,11 @@ public sealed record FormattingRules
             IndentCaseLabels           = ov.IndentCaseLabels ?? IndentCaseLabels,
             OrganizeImports            = ov.OrganizeImports ?? OrganizeImports,
             MaxLineLength              = ov.MaxLineLength ?? MaxLineLength,
+            KeywordParenKeywords       = ov.KeywordParenKeywords ?? KeywordParenKeywords,
+            BinaryOperators            = ov.BinaryOperators ?? BinaryOperators,
+            MethodDeclKeywords         = ov.MethodDeclKeywords ?? MethodDeclKeywords,
+            ImportKeywords             = ov.ImportKeywords ?? ImportKeywords,
+            SqlKeywords                = ov.SqlKeywords ?? SqlKeywords,
         };
     }
 }
@@ -539,4 +576,37 @@ public sealed class FormattingOverrides
     public bool?       IndentCaseLabels           { get; set; }
     public bool?       OrganizeImports            { get; set; }
     public int?        MaxLineLength              { get; set; }
+    public IReadOnlyList<string>? KeywordParenKeywords { get; set; }
+    public IReadOnlyList<string>? BinaryOperators      { get; set; }
+    public IReadOnlyList<string>? MethodDeclKeywords   { get; set; }
+    public IReadOnlyList<string>? ImportKeywords       { get; set; }
+    public IReadOnlyList<string>? SqlKeywords          { get; set; }
+}
+
+/// <summary>
+/// Default keyword lists used by <see cref="StructuralFormatter"/> when the
+/// whfmt language definition does not provide per-language overrides.
+/// </summary>
+public static class FormattingDefaults
+{
+    public static readonly IReadOnlyList<string> KeywordParenKeywords =
+        ["if", "for", "foreach", "while", "switch", "catch", "using", "lock", "when", "elif", "except"];
+
+    public static readonly IReadOnlyList<string> BinaryOperators =
+        ["+", "-", "*", "/", "%", "==", "!=", "<=", ">=", "&&", "||", "<<", ">>", "??"];
+
+    public static readonly IReadOnlyList<string> MethodDeclKeywords =
+        ["public", "private", "protected", "internal", "static", "async", "override",
+         "virtual", "abstract", "sealed", "partial", "def", "func", "fn", "fun", "sub", "function"];
+
+    public static readonly IReadOnlyList<string> ImportKeywords =
+        ["using", "imports", "import", "from", "require", "include", "#include"];
+
+    public static readonly IReadOnlyList<string> SqlKeywords =
+        ["SELECT", "FROM", "WHERE", "JOIN", "LEFT", "RIGHT", "INNER", "OUTER", "FULL", "CROSS",
+         "ON", "AND", "OR", "NOT", "IN", "EXISTS", "BETWEEN", "LIKE", "ORDER", "BY", "GROUP",
+         "HAVING", "UNION", "ALL", "INSERT", "INTO", "VALUES", "UPDATE", "SET", "DELETE",
+         "CREATE", "ALTER", "DROP", "TABLE", "INDEX", "VIEW", "AS", "IS", "NULL", "DISTINCT",
+         "TOP", "LIMIT", "OFFSET", "ASC", "DESC", "CASE", "WHEN", "THEN", "ELSE", "END",
+         "COUNT", "SUM", "AVG", "MIN", "MAX", "CAST", "CONVERT", "COALESCE", "ISNULL"];
 }
