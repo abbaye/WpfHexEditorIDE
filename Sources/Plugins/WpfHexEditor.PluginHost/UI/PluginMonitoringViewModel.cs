@@ -632,6 +632,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     private readonly HashSet<string>   _slowPluginIds = new();
     private readonly ICollectionView   _filteredRows  = null!;
+    private volatile bool              _groupingNeedsRefresh;
 
     // Filter chip state
     private bool _filterStateLoaded   = false;
@@ -1022,11 +1023,21 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         MetricsNote   = "Isolated — real metrics"
     };
 
+    /// <summary>Aggregate metrics for all Standby (Dormant) plugins — not yet loaded.</summary>
+    public PluginGroupSummaryViewModel StandbySummary { get; } = new()
+    {
+        Category      = "Standby",
+        CategoryIcon  = "\uE769", // Segoe MDL2: "Pause"
+        CategoryColor = "#A855F7", // purple — same as Dormant badge
+        MetricsNote   = "Not loaded — zero footprint"
+    };
+
     /// <summary>Returns the group summary ViewModel for the given isolation category name.</summary>
     public PluginGroupSummaryViewModel? GetGroupSummary(string? category) => category switch
     {
         "In Process" => InProcessSummary,
         "Sandbox"    => SandboxSummary,
+        "Standby"    => StandbySummary,
         _            => null
     };
 
@@ -1255,9 +1266,17 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             row.Version        = entry.Manifest.Version ?? string.Empty;
 
             // -- Isolation category & metrics quality ---------------------------------
+            // Dormant plugins have ResolvedIsolationMode = Auto (never resolved yet) —
+            // group them as "Standby" so they don't incorrectly appear under "Sandbox".
+            var prevCategory = row.IsolationCategory;
             var isInProc = entry.ResolvedIsolationMode == PluginIsolationMode.InProcess;
-            row.IsolationCategory  = isInProc ? "In Process" : "Sandbox";
+            row.IsolationCategory = entry.State == PluginState.Dormant
+                ? "Standby"
+                : isInProc ? "In Process" : "Sandbox";
             row.IsMetricsEstimated = isInProc;
+            // If category changed (e.g. Standby → In Process after activation), the
+            // CollectionView grouping must be refreshed to move the row between groups.
+            if (row.IsolationCategory != prevCategory) _groupingNeedsRefresh = true;
             row.AlcAssemblyCount   = entry.Diagnostics.AlcAssemblyCount;
             row.AlcConflictCount   = entry.Diagnostics.AlcConflictCount;
             row.ReloadMode         = entry.Instance is IWpfHexEditorPluginV2 { SupportsHotReload: true } ? "Fast" : "Full";
@@ -1288,19 +1307,29 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             UpdateSelectedPluginDetail();
         }
 
-        // Refresh group header aggregate metrics (InProcess / Sandbox summaries).
+        // If any row moved between groups (e.g. Standby → In Process after activation),
+        // force the CollectionView to regroup — PropertyGroupDescription does not regroup
+        // existing items automatically when a property changes.
+        if (_groupingNeedsRefresh)
+        {
+            _groupingNeedsRefresh = false;
+            _filteredRows.Refresh();
+        }
+
+        // Refresh group header aggregate metrics (InProcess / Sandbox / Standby summaries).
         RefreshGroupSummaries();
     }
 
     /// <summary>
     /// Recomputes aggregate CPU and memory for each isolation group and updates
-    /// <see cref="InProcessSummary"/> and <see cref="SandboxSummary"/>.
+    /// <see cref="InProcessSummary"/>, <see cref="SandboxSummary"/>, and <see cref="StandbySummary"/>.
     /// Called at the end of every <see cref="Refresh"/> tick.
     /// </summary>
     private void RefreshGroupSummaries()
     {
-        double inProcCpu = 0; long inProcMem = 0; int inProcCount = 0; int inProcLoaded = 0;
+        double inProcCpu  = 0; long inProcMem  = 0; int inProcCount  = 0; int inProcLoaded  = 0;
         double sandboxCpu = 0; long sandboxMem = 0; int sandboxCount = 0; int sandboxLoaded = 0;
+        int standbyCount = 0;
 
         foreach (var row in Rows)
         {
@@ -1318,6 +1347,10 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
                 sandboxCount++;
                 if (row.State is "Running" or "Loading") sandboxLoaded++;
             }
+            else if (row.IsolationCategory == "Standby")
+            {
+                standbyCount++;
+            }
         }
 
         InProcessSummary.AggregateCpu  = Math.Round(inProcCpu, 1);
@@ -1329,6 +1362,11 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         SandboxSummary.AggregateMem    = sandboxMem;
         SandboxSummary.Count           = sandboxCount;
         SandboxSummary.LoadedCount     = sandboxLoaded;
+
+        StandbySummary.AggregateCpu    = 0;
+        StandbySummary.AggregateMem    = 0;
+        StandbySummary.Count           = standbyCount;
+        StandbySummary.LoadedCount     = 0;
     }
 
     private PluginMiniChartViewModel GetOrCreateMiniChart(string pluginId, string pluginName)
