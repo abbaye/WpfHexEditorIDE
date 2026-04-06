@@ -1,0 +1,81 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Contributors: Claude Sonnet 4.6
+-->
+<UserControl x:Class="WpfHexEditor.Core.Options.Pages.TabGroupsOptionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="0,0,0,16">
+
+            <!-- ── Split Behavior ──────────────────────────────────────────── -->
+            <TextBlock Text="Split Behavior"
+                       FontWeight="SemiBold" FontSize="13"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="0,0,0,10"/>
+
+            <CheckBox x:Name="ChkEnforceEqualSize"
+                      Content="Enforce equal pane size on split (50 / 50)"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Margin="0,0,0,8"
+                      Checked="OnChanged" Unchecked="OnChanged"/>
+
+            <DockPanel Margin="0,0,0,6">
+                <TextBlock Text="Minimum pane width (px):"
+                           Width="200"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Margin="0,0,8,0"/>
+                <TextBox x:Name="TxtMinWidth"
+                         Width="70"
+                         HorizontalAlignment="Left"
+                         VerticalContentAlignment="Center"
+                         LostFocus="OnChanged"/>
+            </DockPanel>
+
+            <DockPanel Margin="0,0,0,0">
+                <TextBlock Text="Minimum pane height (px):"
+                           Width="200"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Margin="0,0,8,0"/>
+                <TextBox x:Name="TxtMinHeight"
+                         Width="70"
+                         HorizontalAlignment="Left"
+                         VerticalContentAlignment="Center"
+                         LostFocus="OnChanged"/>
+            </DockPanel>
+
+            <Separator Margin="0,16,0,16" Background="{DynamicResource DockBorderBrush}"/>
+
+            <!-- ── Visual ──────────────────────────────────────────────────── -->
+            <TextBlock Text="Visual"
+                       FontWeight="SemiBold" FontSize="13"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="0,0,0,10"/>
+
+            <CheckBox x:Name="ChkShowGroupBadge"
+                      Content="Show 'Group N' badge on tab bar when multiple groups are open"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Margin="0,0,0,8"
+                      Checked="OnChanged" Unchecked="OnChanged"/>
+
+            <Separator Margin="0,16,0,16" Background="{DynamicResource DockBorderBrush}"/>
+
+            <!-- ── Persistence ─────────────────────────────────────────────── -->
+            <TextBlock Text="Persistence"
+                       FontWeight="SemiBold" FontSize="13"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="0,0,0,10"/>
+
+            <CheckBox x:Name="ChkPersistLayout"
+                      Content="Include tab group layout in workspace saves"
+                      Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      Margin="0,0,0,8"
+                      Checked="OnChanged" Unchecked="OnChanged"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

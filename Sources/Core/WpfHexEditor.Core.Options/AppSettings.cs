@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using WpfHexEditor.Core;
+using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Core.Options;
@@ -216,6 +217,50 @@ public sealed class AppSettings
 
     /// <summary>Directory for storing layout profile files. Null = AppData default.</summary>
     public string? LayoutProfileDirectory { get; set; }
+
+    // -- Environment > UI ---------------------------------------------------------
+
+    /// <summary>IDE UI appearance options (active panel highlight mode, etc.).</summary>
+    public UiSettings UI { get; set; } = new();
+
+    // -- Environment > Tab Groups -------------------------------------------------
+
+    /// <summary>Document tab group layout preferences.</summary>
+    public TabGroupSettings TabGroups { get; set; } = new();
+}
+
+/// <summary>IDE UI appearance settings.</summary>
+public sealed class UiSettings
+{
+    /// <summary>
+    /// Visual highlight mode for the active panel/document container.
+    /// Default: TopBar (2px accent bar on top edge — VS Code style).
+    /// </summary>
+    public ActivePanelHighlightMode ActivePanelHighlight { get; set; } = ActivePanelHighlightMode.TopBar;
+}
+
+// ─── Tab Groups ───────────────────────────────────────────────────────────────
+
+/// <summary>Document tab group layout preferences.</summary>
+public sealed class TabGroupSettings
+{
+    /// <summary>Minimum width (px) of each pane before a vertical split is refused.</summary>
+    public int MinGroupWidthPx { get; set; } = 200;
+
+    /// <summary>Minimum height (px) of each pane before a horizontal split is refused.</summary>
+    public int MinGroupHeightPx { get; set; } = 150;
+
+    /// <summary>When true, both panes are sized equally (50/50) after a split. Default: true.</summary>
+    public bool EnforceEqualSize { get; set; } = true;
+
+    /// <summary>When true, the tab group layout is included in workspace saves. Default: true.</summary>
+    public bool PersistTabGroupLayout { get; set; } = true;
+
+    /// <summary>
+    /// When true, a "Group N" badge is shown on each document tab bar
+    /// only while multiple groups are open. Default: true.
+    /// </summary>
+    public bool ShowGroupNumberBadge { get; set; } = true;
 }
 
 // ─── Command Palette ──────────────────────────────────────────────────────────

@@ -18,6 +18,10 @@
     <PluginDescription>Provides a template engine for defining custom binary format parsers using a scripting DSL.</PluginDescription>
     <PluginIsolationMode>Auto</PluginIsolationMode>
     <PluginLoadPriority>50</PluginLoadPriority>
+    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationExtensions></PluginActivationExtensions>
+    <PluginActivationCommands>"View.CustomParserTemplate", "Tools.CustomParser"</PluginActivationCommands>
+    <PluginMenuContributionsJson>[{"commandId":"View.CustomParserTemplate","label":"_Custom Parser Template","parentPath":"View","group":"Panels","category":"Data &amp; Files","iconGlyph":"\uE94D"},{"commandId":"Tools.CustomParser","label":"_Custom Parser","parentPath":"Tools","group":"CustomParser","iconGlyph":"\uE94D"}]</PluginMenuContributionsJson>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>

@@ -142,19 +142,25 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         context.Terminal.RegisterCommand(new StructureListCommand(_vm));
         context.Terminal.RegisterCommand(new StructureNavigateCommand(_vm));
 
-        // ── Initial load: refresh for already-active document ─────────────
-        var activeDoc = context.FocusContext.ActiveDocument;
-        if (activeDoc is not null)
+        // ── Deferred startup load ─────────────────────────────────────────
+        // Defer to Loaded priority so the docking layout has finished rendering
+        // before we attempt the first refresh (mirrors ParsedFieldsPlugin pattern).
+        _panel?.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)(() =>
         {
-            var lang = context.CodeEditor.IsActive ? context.CodeEditor.CurrentLanguage : null;
-            QueueOrRefresh(activeDoc.FilePath, activeDoc.DocumentType, lang);
-        }
-        else if (context.HexEditor.IsActive)
-        {
-            var fp = context.HexEditor.CurrentFilePath;
-            if (!string.IsNullOrEmpty(fp))
-                QueueOrRefresh(fp, "hex", null);
-        }
+            _isPanelVisible = _context?.UIRegistry.IsPanelVisible(PanelUiId) ?? false;
+            var activeDoc = _context?.FocusContext.ActiveDocument;
+            if (activeDoc is not null && !string.IsNullOrEmpty(activeDoc.FilePath))
+            {
+                var lang = _context?.CodeEditor.IsActive == true ? _context.CodeEditor.CurrentLanguage : null;
+                QueueOrRefresh(activeDoc.FilePath, activeDoc.DocumentType, lang);
+            }
+            else if (_context?.HexEditor.IsActive == true)
+            {
+                var fp = _context.HexEditor.CurrentFilePath;
+                if (!string.IsNullOrEmpty(fp))
+                    QueueOrRefresh(fp, "hex", null);
+            }
+        }));
 
         return Task.CompletedTask;
     }

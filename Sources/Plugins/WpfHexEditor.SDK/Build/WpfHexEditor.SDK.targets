@@ -57,6 +57,14 @@
     <PluginPermWriteErrorPanel  Condition="'$(PluginPermWriteErrorPanel)'  == ''">false</PluginPermWriteErrorPanel>
     <PluginPermAccessSettings   Condition="'$(PluginPermAccessSettings)'   == ''">false</PluginPermAccessSettings>
     <PluginPermIsTerminalOnly   Condition="'$(PluginPermIsTerminalOnly)'   == ''">false</PluginPermIsTerminalOnly>
+    <!-- Lazy activation defaults — empty means startup load (eager) -->
+    <PluginActivationOnStartup  Condition="'$(PluginActivationOnStartup)'  == ''"></PluginActivationOnStartup>
+    <PluginActivationExtensions Condition="'$(PluginActivationExtensions)' == ''"></PluginActivationExtensions>
+    <PluginActivationCommands   Condition="'$(PluginActivationCommands)'   == ''"></PluginActivationCommands>
+    <!-- Pre-declared menu contributions for dormant plugin discovery.
+         Set to a JSON array of objects: [{"commandId":"...","label":"...","parentPath":"View",...}]
+         Leave empty for startup-loaded plugins (they register their own menus on init). -->
+    <PluginMenuContributionsJson Condition="'$(PluginMenuContributionsJson)' == ''">[]</PluginMenuContributionsJson>
   </PropertyGroup>
 
   <!--
@@ -67,6 +75,17 @@
   <Target Name="GeneratePluginManifest"
           AfterTargets="Build"
           Condition="'$(PluginId)' != ''">
+
+    <!-- Build the optional "activation" JSON fragment when PluginActivationOnStartup is set. -->
+    <PropertyGroup>
+      <_ActivationBlock></_ActivationBlock>
+      <_ActivationBlock Condition="'$(PluginActivationOnStartup)' != ''">  "activation": {
+    "fileExtensions": [ $(PluginActivationExtensions) ],
+    "commands": [ $(PluginActivationCommands) ],
+    "onStartup": $(PluginActivationOnStartup)
+  },
+</_ActivationBlock>
+    </PropertyGroup>
 
     <PropertyGroup>
       <_ManifestPath>$(OutputPath)manifest.json</_ManifestPath>
@@ -94,6 +113,7 @@
     "accessSettings": $(PluginPermAccessSettings),
     "isTerminalOnly": $(PluginPermIsTerminalOnly)
   },
+$(_ActivationBlock)  "menuContributions": $(PluginMenuContributionsJson),
   "dependencies": [],
   "uiElements": []
 }

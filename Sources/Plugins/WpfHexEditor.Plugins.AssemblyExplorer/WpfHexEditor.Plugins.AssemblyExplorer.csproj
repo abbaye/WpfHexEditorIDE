@@ -18,6 +18,10 @@
     <PluginDescription>Explores .NET and native PE assemblies with a VS-like tree view, metadata inspection, and PE offset sync with the hex editor.</PluginDescription>
     <PluginIsolationMode>Auto</PluginIsolationMode>
     <PluginLoadPriority>40</PluginLoadPriority>
+    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationExtensions>".exe", ".dll", ".sys", ".ocx", ".netmodule"</PluginActivationExtensions>
+    <PluginActivationCommands>"View.AssemblyExplorer"</PluginActivationCommands>
+    <PluginMenuContributionsJson>[{"commandId":"View.AssemblyExplorer","label":"_Assembly Explorer","parentPath":"View","group":"Panels","category":"Analysis","iconGlyph":"\uE943"}]</PluginMenuContributionsJson>
     <PluginSdkVersion>1.2.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>

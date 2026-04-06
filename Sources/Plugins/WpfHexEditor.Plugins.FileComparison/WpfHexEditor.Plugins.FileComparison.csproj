@@ -18,6 +18,10 @@
     <PluginDescription>Side-by-side binary diff viewer for comparing two files byte-by-byte with diff highlighting.</PluginDescription>
     <PluginIsolationMode>Auto</PluginIsolationMode>
     <PluginLoadPriority>40</PluginLoadPriority>
+    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationExtensions></PluginActivationExtensions>
+    <PluginActivationCommands>"View.CompareFiles", "compare.withActiveEditor", "compare.withClipboard", "compare.withHead"</PluginActivationCommands>
+    <PluginMenuContributionsJson>[{"commandId":"View.CompareFiles","label":"_Diff Hub","parentPath":"View","group":"FileTools","category":"Analysis","iconGlyph":"\uE8A1"},{"commandId":"compare.withActiveEditor","label":"Compare with Active Editor","parentPath":"Tools","group":"FileComparison","iconGlyph":"\uE8A1"},{"commandId":"compare.withClipboard","label":"Compare with Clipboard","parentPath":"Tools","group":"FileComparison","iconGlyph":"\uE8A1"},{"commandId":"compare.withHead","label":"Compare with HEAD","parentPath":"Tools","group":"FileComparison","iconGlyph":"\uE8A1"}]</PluginMenuContributionsJson>
     <PluginSdkVersion>1.2.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>

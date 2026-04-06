@@ -132,6 +132,7 @@ public class DockDragManager
 
             // Documents get equal 50/50 split; tool panels use the default 25/75
             _panelOverlay.SplitRatio = isDocumentDrag ? 0.5 : 0.25;
+            _panelOverlay.IsDocumentDrag = isDocumentDrag;
 
             // Only reposition when the target element changes
             if (_targetElement != targetTab)

@@ -260,6 +260,24 @@ public partial class MainWindow
         Reg(CommandIds.Layout.ToggleStatusBar, "Toggle Status Bar",    "Layout",   null,             null,
             () => OnToggleStatusBar());
 
+        // ── Tab Groups ───────────────────────────────────────────────────────
+        Reg(CommandIds.TabGroup.NewVertical,        "New Vertical Tab Group",    "Tab Groups", "Ctrl+Alt+\\",        "\uE8A0",
+            () => OnTabGroupNewVertical(this, null!));
+        Reg(CommandIds.TabGroup.NewHorizontal,      "New Horizontal Tab Group",  "Tab Groups", "Ctrl+Alt+Shift+\\",  "\uE8A0",
+            () => OnTabGroupNewHorizontal(this, null!));
+        Reg(CommandIds.TabGroup.MoveToNext,         "Move to Next Tab Group",    "Tab Groups", "Ctrl+Alt+PgDn",     "\uE76C",
+            () => OnTabGroupMoveNext(this, null!));
+        Reg(CommandIds.TabGroup.MoveToPrevious,     "Move to Previous Tab Group","Tab Groups", "Ctrl+Alt+PgUp",     "\uE76B",
+            () => OnTabGroupMovePrevious(this, null!));
+        Reg(CommandIds.TabGroup.CloseCurrentGroup,  "Close Tab Group",           "Tab Groups", null,                "\uE711",
+            () => OnTabGroupCloseCurrentGroup(this, null!));
+        Reg(CommandIds.TabGroup.CloseAllGroups,     "Close All Tab Groups",      "Tab Groups", null,                "\uE711",
+            () => OnTabGroupCloseAll(this, null!));
+        Reg(CommandIds.TabGroup.FocusGroup1,  "Focus Tab Group 1", "Tab Groups", null, null, () => FocusDocumentGroup(0));
+        Reg(CommandIds.TabGroup.FocusGroup2,  "Focus Tab Group 2", "Tab Groups", null, null, () => FocusDocumentGroup(1));
+        Reg(CommandIds.TabGroup.FocusGroup3,  "Focus Tab Group 3", "Tab Groups", null, null, () => FocusDocumentGroup(2));
+        Reg(CommandIds.TabGroup.FocusGroup4,  "Focus Tab Group 4", "Tab Groups", null, null, () => FocusDocumentGroup(3));
+
         // ── Plugins ──────────────────────────────────────────────────────────
         Reg(CommandIds.Plugins.OpenManager,   "Plugin Manager",     "Plugins",  null,             "\uE74C",
             () => OpenPluginManagerCommand.Execute(null, this));

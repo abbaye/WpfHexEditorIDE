@@ -39,6 +39,33 @@ namespace WpfHexEditor.Shell;
 /// </summary>
 public class DocumentTabHost : DockTabControl
 {
+    // --- Group Badge DPs -----------------------------------------------------
+
+    public static readonly DependencyProperty GroupIndexProperty =
+        DependencyProperty.Register(nameof(GroupIndex), typeof(int), typeof(DocumentTabHost),
+            new PropertyMetadata(0));
+
+    public static readonly DependencyProperty ShowGroupBadgeProperty =
+        DependencyProperty.Register(nameof(ShowGroupBadge), typeof(bool), typeof(DocumentTabHost),
+            new PropertyMetadata(false));
+
+    /// <summary>1-based group number shown in the badge (0 = no badge assigned yet).</summary>
+    public int GroupIndex
+    {
+        get => (int)GetValue(GroupIndexProperty);
+        set => SetValue(GroupIndexProperty, value);
+    }
+
+    /// <summary>
+    /// When true, a "Group N" badge is rendered over the tab bar header area.
+    /// Automatically set to false when only one group exists.
+    /// </summary>
+    public bool ShowGroupBadge
+    {
+        get => (bool)GetValue(ShowGroupBadgeProperty);
+        set => SetValue(ShowGroupBadgeProperty, value);
+    }
+
     // --- Settings DP ---------------------------------------------------------
 
     public static readonly DependencyProperty SettingsProperty =

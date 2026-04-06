@@ -18,6 +18,10 @@
     <PluginDescription>Browse, extract, and preview archive contents (ZIP, 7z, RAR, TAR, GZ, BZ2, XZ) with format detection and nested archive navigation.</PluginDescription>
     <PluginIsolationMode>Auto</PluginIsolationMode>
     <PluginLoadPriority>30</PluginLoadPriority>
+    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationExtensions>".zip", ".7z", ".rar", ".tar", ".gz", ".bz2", ".xz", ".tgz", ".tbz2"</PluginActivationExtensions>
+    <PluginActivationCommands>"View.ArchiveExplorer"</PluginActivationCommands>
+    <PluginMenuContributionsJson>[{"commandId":"View.ArchiveExplorer","label":"_Archive Explorer","parentPath":"View","group":"Panels","category":"Analysis","iconGlyph":"\uE7C3"}]</PluginMenuContributionsJson>
     <PluginSdkVersion>1.2.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
     <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>

@@ -957,4 +957,18 @@
     <SolidColorBrush x:Key="DS_FieldIconBrush" Color="#9CDCFE"/>
     <SolidColorBrush x:Key="DS_EnumIconBrush" Color="#B8D7A3"/>
     <SolidColorBrush x:Key="DS_InterfaceIconBrush" Color="#B8D7A3"/>
+
+    <!-- Tab Groups (TG_*) -->
+    <Color x:Key="TG_ActiveGroupBorderColor">#00FFFF</Color>
+    <Color x:Key="TG_InactiveGroupBorderColor">#1A0A2E</Color>
+    <Color x:Key="TG_BadgeBackgroundColor">#FF00FF</Color>
+    <Color x:Key="TG_BadgeForegroundColor">#00FFFF</Color>
+    <Color x:Key="TG_DragSplitIndicatorColor">#00FF88</Color>
+    <Color x:Key="TG_DragDockIndicatorColor">#FF6600</Color>
+    <SolidColorBrush x:Key="TG_ActiveGroupBorderBrush"   Color="{StaticResource TG_ActiveGroupBorderColor}"/>
+    <SolidColorBrush x:Key="TG_InactiveGroupBorderBrush" Color="{StaticResource TG_InactiveGroupBorderColor}"/>
+    <SolidColorBrush x:Key="TG_BadgeBackgroundBrush"     Color="{StaticResource TG_BadgeBackgroundColor}"/>
+    <SolidColorBrush x:Key="TG_BadgeForegroundBrush"     Color="{StaticResource TG_BadgeForegroundColor}"/>
+    <SolidColorBrush x:Key="TG_DragSplitIndicatorBrush"  Color="{StaticResource TG_DragSplitIndicatorColor}"/>
+    <SolidColorBrush x:Key="TG_DragDockIndicatorBrush"   Color="{StaticResource TG_DragDockIndicatorColor}"/>
 </ResourceDictionary>

@@ -353,6 +353,8 @@ public partial class MainWindow
             var syntaxColoringService = new WpfHexEditor.App.Services.SyntaxColoringService();
             var uiControlFactory      = new WpfHexEditor.App.Services.UIControlFactory(syntaxColoringService);
 
+            var tabGroupService = new WpfHexEditor.App.Services.TabGroupService(DockHost);
+
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
                 solutionExplorer:    solutionService,
@@ -383,7 +385,11 @@ public partial class MainWindow
                 Notifications  = _notificationService,
                 SyntaxColoring = syntaxColoringService,
                 UIFactory      = uiControlFactory,
+                TabGroups      = tabGroupService,
             };
+
+            // Attach TabGroupService to the engine (available after DockHost.Layout is set).
+            tabGroupService.AttachEngine(_engine);
 
             // 3. Create orchestrator
             _ideHostContext = hostContext;

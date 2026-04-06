@@ -152,6 +152,20 @@ public static class CommandIds
         public const string ShowTypeHierarchy  = "Editor.ShowTypeHierarchy";
     }
 
+    public static class TabGroup
+    {
+        public const string NewVertical        = "TabGroup.NewVertical";
+        public const string NewHorizontal      = "TabGroup.NewHorizontal";
+        public const string MoveToNext         = "TabGroup.MoveToNext";
+        public const string MoveToPrevious     = "TabGroup.MoveToPrevious";
+        public const string CloseCurrentGroup  = "TabGroup.CloseCurrentGroup";
+        public const string CloseAllGroups     = "TabGroup.CloseAllGroups";
+        public const string FocusGroup1        = "TabGroup.FocusGroup1";
+        public const string FocusGroup2        = "TabGroup.FocusGroup2";
+        public const string FocusGroup3        = "TabGroup.FocusGroup3";
+        public const string FocusGroup4        = "TabGroup.FocusGroup4";
+    }
+
     public static class Plugins
     {
         public const string OpenManager      = "Plugins.OpenManager";

@@ -620,6 +620,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ApplyThemeFromSettingsEarly(); // Direct XAML load — _themeService not yet available
         ApplyTabPreviewSettings();   // push persisted thumbnail settings to DockHost
         ApplyAutoHideSettings();     // push persisted auto-hide timing to DockHost
+        ApplyUISettings();           // push persisted UI appearance settings to DockHost
         WpfHexEditor.Core.Options.TabPreviewAppSettings.Changed += ApplyTabPreviewSettings;
         WpfHexEditor.Core.Options.AutoHideAppSettings.Changed   += ApplyAutoHideSettings;
         WpfHexEditor.Core.Options.DocumentsAppSettings.Changed  += ApplyDocumentSettings;
@@ -685,10 +686,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             () => new WpfHexEditor.App.Options.LayoutOptionsPage(),
             "\uE713");
 
-        // Register Docking options page (Auto-Hide timing + Layout Profiles)
+        // Register Docking options page (Auto-Hide timing + Panel Highlight + Layout Profiles)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             "Environment", "Docking",
-            () => new WpfHexEditor.App.Options.DockingOptionsPage(),
+            () => new WpfHexEditor.App.Options.DockingOptionsPage(DockHost.ApplyHighlightMode),
             "\uE8A0");
 
         // Register Code Editor options page (General, Auto-close, Hints, Minimap, Coloring)
@@ -1354,6 +1355,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Using a separate engine here would leave the DockControl cache stale on close,
         // causing the next open of the same ContentId to return the old, already-Close()d control.
         _engine = DockHost.Engine!;
+
+        // Keep the _Window > Tab Groups menu in sync with the layout tree.
+        _engine.LayoutChanged += UpdateWindowTabGroupMenu;
 
         // Rebind the DockingAdapter to the new engine/layout so plugin panel toggles continue
         // to work after Reset Layout or Load Layout replaces the layout tree.
@@ -5636,6 +5640,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             s.DockOverlayFadeInMs,
             s.DockOverlayFadeOutMs,
             s.FloatingWindowFadeInMs);
+    }
+
+    private void ApplyUISettings()
+    {
+        DockHost.ApplyHighlightMode(AppSettingsService.Instance.Current.UI.ActivePanelHighlight);
     }
 
     private void ApplyEditorSettings(IDocumentEditor editor)

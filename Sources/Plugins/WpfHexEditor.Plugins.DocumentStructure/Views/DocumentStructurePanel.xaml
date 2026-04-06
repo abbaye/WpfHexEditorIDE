@@ -11,15 +11,30 @@
         <conv:NullToVisibilityConverter x:Key="NullToVis"/>
     </UserControl.Resources>
 
-    <DockPanel Background="{DynamicResource DS_PanelBackground}">
+    <DockPanel Background="{DynamicResource DockBackgroundBrush}">
 
         <!-- ── Toolbar ────────────────────────────────────────────── -->
         <Border DockPanel.Dock="Top"
                 Style="{DynamicResource PanelToolbarStyle}"
                 SizeChanged="OnToolbarSizeChanged">
-            <DockPanel LastChildFill="True">
+            <DockPanel LastChildFill="False">
 
-                <!-- Overflow button — declared first = docks to far right -->
+                <!-- Left: standard action buttons (refresh + tree toggle) -->
+                <StackPanel x:Name="ToolbarLeftPanel" Orientation="Horizontal"
+                            DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <Button x:Name="RefreshButton"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE72C;"
+                            ToolTip="Refresh"
+                            Click="OnRefreshClicked"/>
+                    <ToggleButton x:Name="TreeModeToggle"
+                                  Style="{DynamicResource PanelIconToggleStyle}"
+                                  Content="&#xE8B7;"
+                                  ToolTip="Tree view"
+                                  IsChecked="{Binding IsTreeMode}"/>
+                </StackPanel>
+
+                <!-- Right: overflow — declared first = far right -->
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
@@ -37,27 +52,22 @@
                     </Button.ContextMenu>
                 </Button>
 
-                <!-- Always-visible icon buttons (tree toggle + refresh) -->
-                <StackPanel x:Name="ToolbarRightPanel" Orientation="Horizontal"
-                            DockPanel.Dock="Right" VerticalAlignment="Center">
-                    <Button x:Name="RefreshButton"
-                            Style="{DynamicResource PanelIconButtonStyle}"
-                            Content="&#xE72C;"
-                            ToolTip="Refresh"
-                            Click="OnRefreshClicked"/>
-                    <ToggleButton x:Name="TreeModeToggle"
-                                  Style="{DynamicResource PanelIconToggleStyle}"
-                                  Content="&#xE8B7;"
-                                  ToolTip="Tree view"
-                                  IsChecked="{Binding IsTreeMode}"/>
-                </StackPanel>
+                <!-- Right: filter box — fixed width -->
+                <TextBox x:Name="FilterBox"
+                         DockPanel.Dock="Right"
+                         Width="140"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         Tag="Filter symbols…"/>
 
-                <!-- Collapsible group: sort combo -->
+                <!-- Right: collapsible sort combo -->
                 <StackPanel x:Name="TbgSort" Orientation="Horizontal"
                             DockPanel.Dock="Right" VerticalAlignment="Center">
                     <ComboBox x:Name="SortCombo"
-                              Style="{DynamicResource PanelComboBoxStyle}"
-                              Width="110"
+                              Style="{DynamicResource DockComboBoxStyle}"
+                              Width="110" Height="20" FontSize="11"
+                              VerticalContentAlignment="Center"
                               SelectedIndex="{Binding SortModeIndex}"
                               ToolTip="Sort order">
                         <ComboBoxItem Content="Source Order"/>
@@ -65,14 +75,6 @@
                         <ComboBoxItem Content="By Kind"/>
                     </ComboBox>
                 </StackPanel>
-
-                <!-- Filter box (LastChildFill) -->
-                <TextBox x:Name="FilterBox"
-                         Style="{DynamicResource PanelSearchBoxStyle}"
-                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="4,0"
-                         VerticalAlignment="Center"
-                         Tag="Filter symbols…"/>
 
             </DockPanel>
         </Border>
