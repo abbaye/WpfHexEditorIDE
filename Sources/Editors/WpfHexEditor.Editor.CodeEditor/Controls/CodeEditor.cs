@@ -94,6 +94,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Using ToolTip directly (instead of the ToolTip property) ensures the tooltip
         // appears even when the mouse is already inside the CodeEditor control.
         private ToolTip? _urlTooltip;
+        private ToolTip? _hintTooltip;
 
         // Compiled URL regex — re-used across all render passes (thread-safe read-only after init).
         private static readonly Regex s_urlRegex = new(
@@ -249,8 +250,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private          int                            _bracketDepthFirstLine = -1;
 
         // ── InlineHints ──────────────────────────────────────────────────────────
+        private          int                            _inlineHintsSource   = 0; // 0=Auto, 1=RoslynOnly, 2=RegexAlways
         private readonly Services.InlineHintsService                                                                                              _inlineHintsService  = new();
-        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds Kind)> _hintsData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds)>();
+        private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds Kind, bool IsRoslyn)> _hintsData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds, bool)>();
         private          int                                                                                                                   _visibleHintsCount = 0;
         private readonly List<(Rect Zone, int LineIndex, string Symbol)>                                                                       _hintsHitZones     = new();
         private readonly List<(int LineIndex, double Y)>                                                                                       _visLinePositions = new();
@@ -891,6 +893,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (d is not CodeEditor ce) return;
             ce.RebuildVisibleHintsCount();
             ce.InvalidateMeasure();
+        }
+
+        /// <summary>
+        /// Reference-count source strategy: 0=Auto, 1=RoslynOnly, 2=RegexAlways.
+        /// Setting this re-wires the InlineHints provider immediately.
+        /// </summary>
+        [Category("Features")]
+        [DisplayName("Inline Hints Source")]
+        [Description("0=Auto (Roslyn when available), 1=RoslynOnly, 2=RegexAlways.")]
+        public int InlineHintsSource
+        {
+            get => _inlineHintsSource;
+            set
+            {
+                if (_inlineHintsSource == value) return;
+                _inlineHintsSource = value;
+                _inlineHintsService.SetReferenceCountProvider(
+                    _lspClient as WpfHexEditor.Editor.Core.LSP.IReferenceCountProvider,
+                    value);
+            }
         }
 
         // ── Quick Info DPs ─────────────────────────────────────────────────────
@@ -2547,6 +2569,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ClickableEmailsEnabled   = options.ClickableEmailsEnabled;
             ShowInlineHints             = options.ShowInlineHints;
             InlineHintsVisibleKinds     = options.InlineHintsVisibleKinds;
+            InlineHintsSource           = options.InlineHintsSource;
             EnableWordHighlight      = options.EnableWordHighlight;
             ShowEndOfBlockHint      = options.ShowEndOfBlockHint;
             EndOfBlockHintDelayMs   = options.EndOfBlockHintDelayMs;

@@ -608,7 +608,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_hoveredHintsLine >= 0)
             {
                 _hoveredHintsLine = -1;
-                ToolTip = null;
+                HideHintTooltip();
                 InvalidateVisual();
             }
 
@@ -655,6 +655,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             if (_urlTooltip is not null)
                 _urlTooltip.IsOpen = false;
+        }
+
+        private void ShowHintTooltip(string text)
+        {
+            _hintTooltip ??= new ToolTip();
+            _hintTooltip.Content         = text;
+            _hintTooltip.PlacementTarget = this;
+            _hintTooltip.Placement       = System.Windows.Controls.Primitives.PlacementMode.Mouse;
+            _hintTooltip.IsOpen          = true;
+        }
+
+        private void HideHintTooltip()
+        {
+            if (_hintTooltip is not null)
+                _hintTooltip.IsOpen = false;
         }
 
         private void MoveCursorToLineStart(bool extendSelection)
@@ -1399,9 +1414,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         _hoveredHintsLine = lineIdx;
                         if (_hintsData.TryGetValue(lineIdx, out var entry))
                         {
-                            lensTooltip = entry.Count == 1
-                                ? $"1 reference to '{sym}'  (Alt+3)"
-                                : $"{entry.Count} references to '{sym}'  (Alt+3)";
+                            string refText = entry.Count == 1
+                                ? $"1 reference to '{sym}'"
+                                : $"{entry.Count} references to '{sym}'";
+                            string source = entry.IsRoslyn
+                                ? "Roslyn (semantic)"
+                                : "Regex (text scan)";
+                            lensTooltip = $"{refText}  ·  Source: {source}  (Alt+3)";
                         }
                         break;
                     }
@@ -1410,7 +1429,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     InvalidateVisual();
 
                 bool overLens = _hoveredHintsLine >= 0;
-                ToolTip = overLens ? lensTooltip : null;
+                if (overLens && lensTooltip is not null)
+                    ShowHintTooltip(lensTooltip);
+                else
+                    HideHintTooltip();
 
                 // Fold label zones — Hand cursor + 1.5s peek-on-hover.
                 int newHoveredFoldLine = -1;

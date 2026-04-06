@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: VS2022Dark/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -938,9 +938,12 @@
     <!-- Document Structure Panel (DS_*) -->
     <SolidColorBrush x:Key="DS_PanelBackground" Color="Transparent"/>
     <SolidColorBrush x:Key="DS_CaretHighlightBrush" Color="#30FFD700"/>
-    <SolidColorBrush x:Key="DS_FilterBoxBackground" Color="#333337"/>
     <SolidColorBrush x:Key="DS_NodeForeground" Color="#D4D4D4"/>
     <SolidColorBrush x:Key="DS_DetailForeground" Color="#808080"/>
+    <SolidColorBrush x:Key="DS_ProviderBadgeBackground" Color="#2D4F6A"/>
+    <SolidColorBrush x:Key="DS_CountBadgeBackground" Color="#2D3A2D"/>
+    <SolidColorBrush x:Key="DS_RowHoverBrush"        Color="#18FFFFFF"/>
+    <SolidColorBrush x:Key="DS_RowSelectedBrush"     Color="#2D4F6A"/>
     <SolidColorBrush x:Key="DS_ClassIconBrush" Color="#4EC9B0"/>
     <SolidColorBrush x:Key="DS_MethodIconBrush" Color="#DCDCAA"/>
     <SolidColorBrush x:Key="DS_PropertyIconBrush" Color="#9CDCFE"/>

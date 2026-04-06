@@ -65,8 +65,17 @@ public sealed class DocumentStructureViewModel : INotifyPropertyChanged
         set
         {
             if (SetField(ref _currentSort, value))
+            {
                 ApplySort(value);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SortModeIndex)));
+            }
         }
+    }
+
+    public int SortModeIndex
+    {
+        get => (int)_currentSort;
+        set { CurrentSort = (SortMode)value; }
     }
 
     public bool IsTreeMode

@@ -69,18 +69,29 @@ internal sealed class FormattingRuleTooltip : UserControl
         tb.SetResourceReference(TextBlock.ForegroundProperty, "CP_SecondaryTextBrush");
         return tb;
     }
-    private static RichTextBox MakeCodeBox() => new()
+    private static RichTextBox MakeCodeBox()
     {
-        IsReadOnly = true, BorderThickness = new Thickness(1),
-        Padding = new Thickness(6, 4, 6, 4), MinHeight = 30,
-        FontFamily = new FontFamily("Consolas, Courier New"), FontSize = 12,
-        VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-        IsDocumentEnabled = false, Focusable = false,
-    };
+        var box = new RichTextBox
+        {
+            IsReadOnly                    = true,
+            BorderThickness               = new Thickness(0),
+            Padding                       = new Thickness(6, 4, 6, 4),
+            MinHeight                     = 30,
+            MinWidth                      = 150,
+            FontFamily                    = new FontFamily("Consolas, Courier New"),
+            FontSize                      = 12,
+            VerticalScrollBarVisibility   = ScrollBarVisibility.Disabled,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            IsDocumentEnabled             = false,
+            Focusable                     = false,
+            Background                    = Brushes.Transparent,
+        };
+        box.SetResourceReference(RichTextBox.ForegroundProperty, "DockMenuForegroundBrush");
+        return box;
+    }
     private static void Render(RichTextBox box, string code, string langId, IPreviewColorizer colorizer)
     {
-        var doc = new FlowDocument { PagePadding = new Thickness(0), ColumnWidth = double.PositiveInfinity };
+        var doc = new FlowDocument { PagePadding = new Thickness(0), ColumnWidth = double.PositiveInfinity, PageWidth = 10_000 };
         doc.SetResourceReference(FlowDocument.ForegroundProperty, "DockMenuForegroundBrush");
         var rawLines = code.Split(new[]{"\n"}, StringSplitOptions.None);
         var spans    = colorizer.ColorizeLines(rawLines, langId);

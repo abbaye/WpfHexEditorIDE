@@ -589,6 +589,13 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public int InlineHintsVisibleKinds { get; set; } = 4095;
 
+    /// <summary>
+    /// Reference-count source strategy: 0=Auto (Roslyn when available, regex fallback),
+    /// 1=RoslynOnly (no hint for non-C# files), 2=RegexAlways.
+    /// Stored as int to avoid cross-project enum dependency.
+    /// </summary>
+    public int InlineHintsSource { get; set; } = 0;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>

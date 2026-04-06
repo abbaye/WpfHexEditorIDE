@@ -230,6 +230,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _lspClient.DiagnosticsReceived += OnLspDiagnosticsReceived;
 
+            // Wire Roslyn reference-count provider (null for non-Roslyn clients → regex fallback).
+            _inlineHintsService.SetReferenceCountProvider(
+                client as WpfHexEditor.Editor.Core.LSP.IReferenceCountProvider,
+                _inlineHintsSource);
+
             // If a file is already open, send didOpen immediately.
             if (_currentFilePath is not null && _document is not null)
             {

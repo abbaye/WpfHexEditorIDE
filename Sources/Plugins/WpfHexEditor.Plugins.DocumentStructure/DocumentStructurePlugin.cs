@@ -60,6 +60,7 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
 
     private bool _isPanelVisible = true;
     private bool _hexEditorHandledLastSwitch;
+    private string? _lastTrackedFilePath;
 
     // ── Pending update when panel is hidden ──────────────────────────────────
     private (string? filePath, string? docType, string? language)? _pendingRefresh;
@@ -141,6 +142,20 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         context.Terminal.RegisterCommand(new StructureListCommand(_vm));
         context.Terminal.RegisterCommand(new StructureNavigateCommand(_vm));
 
+        // ── Initial load: refresh for already-active document ─────────────
+        var activeDoc = context.FocusContext.ActiveDocument;
+        if (activeDoc is not null)
+        {
+            var lang = context.CodeEditor.IsActive ? context.CodeEditor.CurrentLanguage : null;
+            QueueOrRefresh(activeDoc.FilePath, activeDoc.DocumentType, lang);
+        }
+        else if (context.HexEditor.IsActive)
+        {
+            var fp = context.HexEditor.CurrentFilePath;
+            if (!string.IsNullOrEmpty(fp))
+                QueueOrRefresh(fp, "hex", null);
+        }
+
         return Task.CompletedTask;
     }
 
@@ -212,6 +227,7 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
     {
         if (e.ActiveDocument is null) return;
         if (e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
+        if (string.IsNullOrEmpty(e.ActiveDocument.FilePath)) return;
 
         _hexEditorHandledLastSwitch = false;
 
@@ -271,6 +287,14 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
     {
         if (_isPanelVisible)
             _vm?.UpdateCaretHighlight(evt.Line);
+
+        // Split-view file-switch detection: re-resolve when the active pane's file changes
+        if (!string.IsNullOrEmpty(evt.FilePath) &&
+            !string.Equals(evt.FilePath, _lastTrackedFilePath, StringComparison.OrdinalIgnoreCase))
+        {
+            _lastTrackedFilePath = evt.FilePath;
+            QueueOrRefresh(evt.FilePath, "code", _context?.CodeEditor.CurrentLanguage);
+        }
     }
 
     private void OnRefreshEvent(DocumentStructureRefreshRequestedEvent evt)

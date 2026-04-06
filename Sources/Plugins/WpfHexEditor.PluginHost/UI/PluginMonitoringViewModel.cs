@@ -321,9 +321,6 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     /// <summary>True when the plugin has at least one ALC dependency version conflict.</summary>
     public bool HasAlcConflict => _alcConflictCount > 0;
 
-    /// <summary>Prefix for metric values: "~" for estimates (InProcess), empty for real (Sandbox).</summary>
-    public string MetricsPrefix => _isMetricsEstimated ? "~" : string.Empty;
-
     /// <summary>Tooltip for the CPU% column cell explaining metric quality.</summary>
     public string CpuTooltip => _isMetricsEstimated
         ? "Estimated — weighted share of shared IDE process CPU pool"
@@ -336,8 +333,21 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
 
     /// <summary>
     /// Memory value to display: weighted GC estimate for InProcess, actual diagnostics memory for Sandbox.
+    /// Dormant plugins always display 0.
     /// </summary>
-    public long MemoryDisplayMb => _isMetricsEstimated ? WeightedMemMb : MemoryMb;
+    public long MemoryDisplayMb => IsDormant ? 0 : _isMetricsEstimated ? WeightedMemMb : MemoryMb;
+
+    private bool _isDormant;
+
+    /// <summary>True when this plugin is in Standby/Dormant state (lazy-loaded, not yet activated).</summary>
+    public bool IsDormant
+    {
+        get => _isDormant;
+        set { _isDormant = value; OnPropertyChanged(); OnPropertyChanged(nameof(MemoryDisplayMb)); OnPropertyChanged(nameof(MetricsPrefix)); }
+    }
+
+    /// <summary>Prefix shown before metric values. Empty for dormant plugins (they show "—").</summary>
+    public string MetricsPrefix => IsDormant ? string.Empty : (_isMetricsEstimated ? "~" : string.Empty);
 
     // -- Hot-reload mode badge -----------------------------------------------
 
@@ -627,6 +637,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     private bool _filterStateLoaded   = false;
     private bool _filterStateDisabled = false;
     private bool _filterStateFaulted  = false;
+    private bool _filterStateDormant  = false;
     private bool _filterWarningsOnly  = false;
 
     private string             _searchText           = string.Empty;
@@ -966,11 +977,20 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         private set { _faultCount = value; OnPropertyChanged(); }
     }
 
+    public int DormantCount
+    {
+        get => _dormantCount;
+        private set { _dormantCount = value; OnPropertyChanged(); }
+    }
+    private int _dormantCount;
+
     public string HealthLabel => FaultCount > 0
         ? $"{FaultCount} fault{(FaultCount == 1 ? "" : "s")}"
-        : LoadedCount == TotalCount && TotalCount > 0
-            ? "Healthy"
-            : TotalCount == 0 ? "No plugins" : $"{LoadedCount}/{TotalCount} running";
+        : DormantCount > 0
+            ? $"{LoadedCount} running, {DormantCount} standby"
+            : LoadedCount == TotalCount && TotalCount > 0
+                ? "Healthy"
+                : TotalCount == 0 ? "No plugins" : $"{LoadedCount}/{TotalCount} running";
 
     public string HealthColor => FaultCount > 0
         ? "#EF4444"
@@ -1040,6 +1060,12 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         get => _filterStateFaulted;
         set { _filterStateFaulted = value; OnPropertyChanged(); RefreshFilter(); }
+    }
+
+    public bool FilterStateDormant
+    {
+        get => _filterStateDormant;
+        set { _filterStateDormant = value; OnPropertyChanged(); RefreshFilter(); }
     }
 
     public bool FilterWarningsOnly
@@ -1134,6 +1160,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         LoadedCount     = loaded.Count;
         TotalCount      = plugins.Count;
         FaultCount      = plugins.Count(p => p.State == PluginState.Faulted);
+        DormantCount    = plugins.Count(p => p.State == PluginState.Dormant);
         OnPropertyChanged(nameof(HealthLabel));
         OnPropertyChanged(nameof(HealthColor));
 
@@ -1212,6 +1239,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             row.Name           = entry.Manifest.Name;
             row.State          = StateLabel(entry.State);
             row.StateColor     = StateBadgeColor(entry.State);
+            row.IsDormant      = entry.State == PluginState.Dormant;
             row.CpuPercent     = snap?.CpuPercent ?? 0;
             row.WeightedCpu    = weightedCpu;
             row.MemoryMb       = entry.EstimatedMemoryFootprint / (1024 * 1024);
@@ -1646,12 +1674,13 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         var q = ParseSearchQuery(_searchText);
 
         // State chip filter — OR among active chips, AND with other criteria.
-        var anyChipActive = _filterStateLoaded || _filterStateDisabled || _filterStateFaulted;
+        var anyChipActive = _filterStateLoaded || _filterStateDisabled || _filterStateFaulted || _filterStateDormant;
         if (anyChipActive)
         {
             var stateMatch = (_filterStateLoaded   && row.State == "Running")  ||
                              (_filterStateDisabled && row.State == "Disabled") ||
-                             (_filterStateFaulted  && row.State == "Error");
+                             (_filterStateFaulted  && row.State == "Error")    ||
+                             (_filterStateDormant  && row.State == "Standby");
             if (!stateMatch) return false;
         }
 
@@ -1707,6 +1736,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     {
         PluginState.Loaded       => "Running",
         PluginState.Loading      => "Loading",
+        PluginState.Dormant      => "Standby",
         PluginState.Disabled     => "Disabled",
         PluginState.Faulted      => "Error",
         PluginState.Incompatible => "Incompatible",
@@ -1716,11 +1746,12 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     private static string StateBadgeColor(PluginState state) => state switch
     {
-        PluginState.Loaded       => "#22C55E",
-        PluginState.Loading      => "#F59E0B",
-        PluginState.Disabled     => "#6B7280",
-        PluginState.Faulted      => "#EF4444",
-        PluginState.Incompatible => "#F97316",
+        PluginState.Loaded       => "#22C55E",   // green
+        PluginState.Loading      => "#F59E0B",   // amber
+        PluginState.Dormant      => "#A855F7",   // purple — standby/lazy
+        PluginState.Disabled     => "#6B7280",   // gray
+        PluginState.Faulted      => "#EF4444",   // red
+        PluginState.Incompatible => "#F97316",   // orange
         _                        => "#9CA3AF"
     };
 

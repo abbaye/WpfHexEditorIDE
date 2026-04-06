@@ -7,63 +7,100 @@
     <UserControl.Resources>
         <conv:KindToBrushConverter x:Key="KindToBrush"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-
-        <!-- Invert bool for flat mode visibility -->
         <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
+        <conv:NullToVisibilityConverter x:Key="NullToVis"/>
     </UserControl.Resources>
 
     <DockPanel Background="{DynamicResource DS_PanelBackground}">
 
         <!-- ── Toolbar ────────────────────────────────────────────── -->
-        <Border DockPanel.Dock="Top" Padding="4,3" BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource ToolWindowBorderBrush}">
-            <DockPanel>
-                <!-- Search box -->
-                <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                         Width="140" VerticalAlignment="Center" Margin="0,0,4,0"
-                         Background="{DynamicResource DS_FilterBoxBackground}"
-                         Foreground="{DynamicResource DS_NodeForeground}">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Tag" Value="Filter symbols..."/>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+        <Border DockPanel.Dock="Top"
+                Style="{DynamicResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
+            <DockPanel LastChildFill="True">
 
-                <!-- Sort combo -->
-                <ComboBox SelectedIndex="0" Width="90" VerticalAlignment="Center" Margin="0,0,4,0"
-                          SelectionChanged="OnSortChanged">
-                    <ComboBoxItem Content="Source Order"/>
-                    <ComboBoxItem Content="Alphabetical"/>
-                    <ComboBoxItem Content="By Kind"/>
-                </ComboBox>
-
-                <!-- Tree/Flat toggle -->
-                <ToggleButton IsChecked="{Binding IsTreeMode}" VerticalAlignment="Center"
-                              Width="24" Height="24" ToolTip="Toggle Tree / Flat view"
-                              Margin="0,0,2,0">
-                    <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </ToggleButton>
-
-                <!-- Refresh -->
-                <Button Click="OnRefreshClicked" VerticalAlignment="Center"
-                        Width="24" Height="24" ToolTip="Refresh">
-                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <!-- Overflow button — declared first = docks to far right -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Visibility="Collapsed"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <MenuItem Header="Source Order" Tag="0" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="Alphabetical" Tag="1" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="By Kind"      Tag="2" Click="OnOverflowSortClicked"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
                 </Button>
+
+                <!-- Always-visible icon buttons (tree toggle + refresh) -->
+                <StackPanel x:Name="ToolbarRightPanel" Orientation="Horizontal"
+                            DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <Button x:Name="RefreshButton"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE72C;"
+                            ToolTip="Refresh"
+                            Click="OnRefreshClicked"/>
+                    <ToggleButton x:Name="TreeModeToggle"
+                                  Style="{DynamicResource PanelIconToggleStyle}"
+                                  Content="&#xE8B7;"
+                                  ToolTip="Tree view"
+                                  IsChecked="{Binding IsTreeMode}"/>
+                </StackPanel>
+
+                <!-- Collapsible group: sort combo -->
+                <StackPanel x:Name="TbgSort" Orientation="Horizontal"
+                            DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <ComboBox x:Name="SortCombo"
+                              Style="{DynamicResource PanelComboBoxStyle}"
+                              Width="110"
+                              SelectedIndex="{Binding SortModeIndex}"
+                              ToolTip="Sort order">
+                        <ComboBoxItem Content="Source Order"/>
+                        <ComboBoxItem Content="Alphabetical"/>
+                        <ComboBoxItem Content="By Kind"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Filter box (LastChildFill) -->
+                <TextBox x:Name="FilterBox"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="4,0"
+                         VerticalAlignment="Center"
+                         Tag="Filter symbols…"/>
+
             </DockPanel>
         </Border>
 
         <!-- ── Status bar ─────────────────────────────────────────── -->
-        <Border DockPanel.Dock="Bottom" Padding="6,2" BorderThickness="0,1,0,0"
-                BorderBrush="{DynamicResource ToolWindowBorderBrush}">
-            <DockPanel>
-                <TextBlock Text="{Binding ActiveProviderName}" DockPanel.Dock="Right"
-                           Opacity="0.5" Margin="8,0,0,0"
-                           Foreground="{DynamicResource DS_DetailForeground}"/>
+        <Border DockPanel.Dock="Bottom"
+                Background="{DynamicResource Panel_StatusBarBackgroundBrush}"
+                Height="20"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}">
+            <DockPanel Margin="6,0" LastChildFill="False">
+
+                <!-- Provider badge pill (right) -->
+                <Border DockPanel.Dock="Right"
+                        Background="{DynamicResource DS_ProviderBadgeBackground}"
+                        CornerRadius="3" Padding="5,1" Margin="4,2"
+                        Visibility="{Binding ActiveProviderName, Converter={StaticResource NullToVis}}">
+                    <TextBlock Text="{Binding ActiveProviderName}"
+                               FontSize="10"
+                               Foreground="{DynamicResource DS_NodeForeground}"/>
+                </Border>
+
+                <!-- Symbol count (left) -->
                 <TextBlock Text="{Binding StatusText}"
+                           FontSize="10"
+                           VerticalAlignment="Center"
                            Foreground="{DynamicResource DS_DetailForeground}"/>
+
             </DockPanel>
         </Border>
 
@@ -102,10 +139,17 @@
             </TreeView.ItemTemplate>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-                    <Setter Property="Visibility" Value="{Binding Visibility}"/>
+                    <Setter Property="IsExpanded"  Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                    <Setter Property="IsSelected"  Value="{Binding IsSelected, Mode=TwoWay}"/>
+                    <Setter Property="Visibility"  Value="{Binding Visibility}"/>
+                    <Setter Property="Background"  Value="Transparent"/>
                     <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DS_RowHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DS_RowSelectedBrush}"/>
+                        </Trigger>
                         <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
                             <Setter Property="Background" Value="{DynamicResource DS_CaretHighlightBrush}"/>
                         </DataTrigger>
@@ -124,6 +168,20 @@
                  Background="Transparent"
                  SelectionChanged="OnFlatSelectionChanged"
                  MouseDoubleClick="OnFlatDoubleClick">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Padding"    Value="2,1"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DS_RowHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DS_RowSelectedBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:StructureNodeVm}">
                     <StackPanel Orientation="Horizontal" Margin="{Binding IndentLevel, Converter={conv:IndentToMarginConverter}}">

@@ -10,6 +10,7 @@
 
 using System.Windows.Input;
 using WpfHexEditor.Core.Commands;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.SDK.Commands;
 
@@ -396,7 +397,11 @@ public partial class MainWindow
     {
         _commandRegistry.Register(new CommandDefinition(
             id, name, category, defaultGesture, icon,
-            new RelayCommand(_ => execute())));
+            new RelayCommand(_ =>
+            {
+                _ideEventBus?.Publish(new CommandInvokedEvent { CommandId = id });
+                execute();
+            })));
     }
 
     /// <summary>Same as Reg but the execute action receives the command parameter.</summary>
@@ -405,6 +410,10 @@ public partial class MainWindow
     {
         _commandRegistry.Register(new CommandDefinition(
             id, name, category, defaultGesture, icon,
-            new RelayCommand(param => execute(param))));
+            new RelayCommand(param =>
+            {
+                _ideEventBus?.Publish(new CommandInvokedEvent { CommandId = id });
+                execute(param);
+            })));
     }
 }

@@ -47,6 +47,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
     // -- Feature 5 & 6 --
     private readonly PluginDependencyGraph _dependencyGraph = new();
     private PluginActivationService? _activationService;
+    private PluginActivationToastService? _activationToastService;
 
     /// <summary>
     /// Live capability registry backed by <see cref="_entries"/>.
@@ -503,6 +504,11 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _activationService = new PluginActivationService(
             _hostContext.IDEEvents, _entries, id => ActivateDormantPluginAsync(id));
 
+        // Wire toast notifications for lazy-load activations (optional — only when Notifications available).
+        if (_hostContext.Notifications is not null)
+            _activationToastService = new PluginActivationToastService(
+                _hostContext.IDEEvents, _hostContext.Notifications);
+
         // PHASE 1: Initialize MetricsEngine after all plugins loaded
         await _metricsEngine.InitializeAsync(delayMs: 150).ConfigureAwait(false);
     }
@@ -528,6 +534,15 @@ public sealed class WpfPluginHost : IAsyncDisposable
         }
 
         _log($"[PluginSystem] Activating dormant plugin '{entry.Manifest.Name}'...");
+
+        // Notify the IDE so toast services can show a "Loading X…" indicator.
+        _hostContext.IDEEvents.Publish(new PluginActivatingEvent
+        {
+            PluginId     = entry.Manifest.Id,
+            PluginName   = entry.Manifest.Name,
+            TriggerReason = "activation"
+        });
+
         await LoadPluginAsync(entry.Manifest, ct).ConfigureAwait(false);
     }
 
@@ -668,6 +683,40 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
             RaiseOnDispatcher(() => PluginUnloaded?.Invoke(this, new PluginEventArgs(pluginId, entry.Manifest.Name)));
         }
+    }
+
+    // --- Suspend (deactivate back to Dormant) ------------------------------------
+
+    /// <summary>
+    /// Suspends a loaded plugin: gracefully shuts it down, unloads its ALC, and resets
+    /// its state to <see cref="PluginState.Dormant"/> so it can be re-activated later
+    /// via a file-extension or command trigger (or manually via Load Now).
+    /// Only valid for plugins whose manifest declares <c>onStartup: false</c>.
+    /// Always-startup plugins cannot be suspended.
+    /// </summary>
+    public async Task SuspendPluginAsync(string pluginId, CancellationToken ct = default)
+    {
+        PluginEntry? entry;
+        lock (_lock) _entries.TryGetValue(pluginId, out entry);
+
+        if (entry is null || entry.State != PluginState.Loaded)
+            return;
+
+        // Refuse to suspend startup plugins — they must always be loaded.
+        if (entry.Manifest.Activation?.OnStartup != false)
+        {
+            _log($"[PluginSystem] SuspendPlugin ignored for '{entry.Manifest.Name}' — onStartup plugin cannot be suspended.");
+            return;
+        }
+
+        _log($"[PluginSystem] Suspending plugin '{entry.Manifest.Name}' → back to Dormant.");
+        await UnloadPluginAsync(pluginId, ct).ConfigureAwait(false);
+
+        // Override Unloaded state back to Dormant so the plugin can be reactivated.
+        lock (_lock) _entries.TryGetValue(pluginId, out entry);
+        entry?.SetState(PluginState.Dormant);
+
+        _log($"[PluginSystem] Plugin '{pluginId}' is now Dormant (suspended).");
     }
 
     // --- Isolation Mode Override -------------------------------------------------
@@ -1179,6 +1228,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _activationService?.Dispose();
+        _activationToastService?.Dispose();
 
         // Dispose MetricsEngine first
         _metricsEngine?.Dispose();

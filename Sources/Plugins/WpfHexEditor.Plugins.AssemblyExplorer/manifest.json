@@ -23,7 +23,7 @@
   },
   "activation": {
     "fileExtensions": [ ".exe", ".dll", ".sys", ".ocx", ".netmodule" ],
-    "onStartup": true
+    "onStartup": false
   },
   "features": [ "BinaryAnalyzer", "PEParser" ],
   "extensions": {

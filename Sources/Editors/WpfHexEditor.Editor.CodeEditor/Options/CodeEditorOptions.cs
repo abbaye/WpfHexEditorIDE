@@ -195,6 +195,18 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _inlineHintsVisibleKinds = value; Notify(); }
     }
 
+    private int _inlineHintsSource = 0;
+
+    /// <summary>
+    /// Reference-count source: 0=Auto (Roslyn when available, regex fallback),
+    /// 1=RoslynOnly (no hint for non-C#/VB files), 2=RegexAlways.
+    /// </summary>
+    public int InlineHintsSource
+    {
+        get => _inlineHintsSource;
+        set { _inlineHintsSource = value; Notify(); }
+    }
+
     private int  _maxUndoHistory      = 500;
 
     /// <summary>

@@ -75,6 +75,19 @@
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Text="Reference source:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="0,0,8,0"/>
+            <ComboBox x:Name="CboSource" Width="240"
+                      SelectionChanged="OnSourceChanged">
+                <ComboBoxItem Content="Auto (Roslyn when available, regex fallback)" Tag="0"/>
+                <ComboBoxItem Content="Roslyn only (C# / VB.NET)" Tag="1"/>
+                <ComboBoxItem Content="Regex always" Tag="2"/>
+            </ComboBox>
+        </StackPanel>
+
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
 

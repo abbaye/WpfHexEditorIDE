@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: CatppuccinLatte/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -924,9 +924,12 @@
     <!-- Document Structure Panel (DS_*) -->
     <SolidColorBrush x:Key="DS_PanelBackground" Color="Transparent"/>
     <SolidColorBrush x:Key="DS_CaretHighlightBrush" Color="#30FFD700"/>
-    <SolidColorBrush x:Key="DS_FilterBoxBackground" Color="#F5F5F5"/>
     <SolidColorBrush x:Key="DS_NodeForeground" Color="#1E1E1E"/>
     <SolidColorBrush x:Key="DS_DetailForeground" Color="#717171"/>
+    <SolidColorBrush x:Key="DS_ProviderBadgeBackground" Color="#CCD0DA"/>
+    <SolidColorBrush x:Key="DS_CountBadgeBackground" Color="#D8E4C8"/>
+    <SolidColorBrush x:Key="DS_RowHoverBrush"        Color="#18000000"/>
+    <SolidColorBrush x:Key="DS_RowSelectedBrush"     Color="#CCD0DA"/>
     <SolidColorBrush x:Key="DS_ClassIconBrush" Color="#267F99"/>
     <SolidColorBrush x:Key="DS_MethodIconBrush" Color="#795E26"/>
     <SolidColorBrush x:Key="DS_PropertyIconBrush" Color="#001080"/>
