@@ -1277,10 +1277,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_buffer is not null) DetachBuffer();
             _buffer = buffer;
 
-            // Push current editor content into the buffer (editor is authoritative on attach).
-            _suppressBufferSync = true;
-            try   { buffer.SetText(GetText(), source: this); }
-            finally { _suppressBufferSync = false; }
+            // Push current editor content into the buffer only if we have real content.
+            // During layout restore, the editor may be empty (OpenAsync pending).
+            var currentText = GetText();
+            if (currentText.Length > 0)
+            {
+                _suppressBufferSync = true;
+                try   { buffer.SetText(currentText, source: this); }
+                finally { _suppressBufferSync = false; }
+            }
 
             buffer.Changed += OnBufferChanged;
         }
@@ -1297,6 +1302,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             // Ignore changes we originated to prevent feedback loops.
             if (_suppressBufferSync || ReferenceEquals(e.Source, this)) return;
+
+            // Guard: do not wipe a non-empty document with empty buffer content.
+            // This can happen when a second editor attaches before its OpenAsync completes.
+            if (e.NewText.Length == 0 && _document.TotalLines > 0) return;
 
             // Another editor updated the buffer — sync our content.
             _suppressBufferSync = true;

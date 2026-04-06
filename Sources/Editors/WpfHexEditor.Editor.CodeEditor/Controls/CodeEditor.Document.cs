@@ -769,6 +769,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // UI-thread work: swap the pre-built line array into the document, then run the same
             // post-load steps as LoadText() so VirtualizationEngine.TotalLines is updated.
             _document.LoadLines(lines, text);
+
+            // Sync the shared buffer with the loaded content — LoadLines suppresses
+            // TextChanged, so the automatic buffer sync in Document_TextChanged won't fire.
+            if (_buffer is not null)
+            {
+                _suppressBufferSync = true;
+                try   { _buffer.SetText(text, source: this); }
+                finally { _suppressBufferSync = false; }
+            }
+
             _undoEngine.Reset();    // Loaded content is the new baseline.
             _undoEngine.MarkSaved();
             _isDirty = false;
