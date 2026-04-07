@@ -28,7 +28,7 @@ namespace WpfHexEditor.Core.Roslyn;
 /// Also implements <see cref="IReferenceCountProvider"/> so <c>InlineHintsService</c>
 /// can use semantic reference counts for C#/VB.NET files.
 /// </summary>
-public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
+public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, IInlineHintsOptionsClient
 {
     private readonly RoslynWorkspaceManager _workspace;
     private readonly BackgroundAnalysisService _analysisService;
@@ -36,6 +36,17 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
     private readonly RoslynReferenceCountProvider _refCountProvider;
     private string? _lastCompletionFilePath;
     private bool _initialized;
+
+    // InlineHints sub-options (configurable from outside)
+    private bool _showVarTypeHints = true;
+    private bool _showLambdaReturnTypeHints = true;
+
+    /// <summary>Sets var-type and lambda-return InlineHints options.</summary>
+    public void SetInlineHintsOptions(bool showVarTypeHints, bool showLambdaReturnTypeHints)
+    {
+        _showVarTypeHints = showVarTypeHints;
+        _showLambdaReturnTypeHints = showLambdaReturnTypeHints;
+    }
 
     public RoslynLanguageClient(Dispatcher dispatcher)
     {
@@ -250,7 +261,10 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
     {
         var doc = _workspace.GetDocument(filePath);
         if (doc is null) return [];
-        return await RoslynInlayHintsProvider.GetInlayHintsAsync(doc, startLine, endLine, ct)
+        return await RoslynInlayHintsProvider.GetInlayHintsAsync(
+                doc, startLine, endLine, ct,
+                showVarTypeHints: _showVarTypeHints,
+                showLambdaReturnTypeHints: _showLambdaReturnTypeHints)
             .ConfigureAwait(false);
     }
 

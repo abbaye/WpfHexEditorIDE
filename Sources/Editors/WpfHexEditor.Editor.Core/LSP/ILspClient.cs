@@ -532,3 +532,17 @@ public interface ILspClient : IAsyncDisposable
     /// </summary>
     event EventHandler<LspDiagnosticsReceivedEventArgs> DiagnosticsReceived;
 }
+
+// ── IInlineHintsOptionsClient ─────────────────────────────────────────────────
+
+/// <summary>
+/// Optional interface implemented by LSP clients that support configuring
+/// semantic InlineHints options (var-type hints, lambda return-type hints).
+/// CodeEditor checks <c>ILspClient as IInlineHintsOptionsClient</c> — no
+/// direct dependency on the Roslyn assembly.
+/// </summary>
+public interface IInlineHintsOptionsClient
+{
+    /// <summary>Propagates var-type and lambda-return InlineHints settings to the underlying provider.</summary>
+    void SetInlineHintsOptions(bool showVarTypeHints, bool showLambdaReturnTypeHints);
+}

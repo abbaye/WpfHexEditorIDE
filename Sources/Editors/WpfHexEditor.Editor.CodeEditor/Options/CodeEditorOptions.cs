@@ -207,6 +207,22 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _inlineHintsSource = value; Notify(); }
     }
 
+    private bool _showVarTypeHints = true;
+    /// <summary>Show inferred type hints for <c>var</c> declarations.</summary>
+    public bool ShowVarTypeHints
+    {
+        get => _showVarTypeHints;
+        set { _showVarTypeHints = value; Notify(); }
+    }
+
+    private bool _showLambdaReturnTypeHints = true;
+    /// <summary>Show return-type hints for lambda expressions.</summary>
+    public bool ShowLambdaReturnTypeHints
+    {
+        get => _showLambdaReturnTypeHints;
+        set { _showLambdaReturnTypeHints = value; Notify(); }
+    }
+
     private int  _maxUndoHistory      = 500;
 
     /// <summary>

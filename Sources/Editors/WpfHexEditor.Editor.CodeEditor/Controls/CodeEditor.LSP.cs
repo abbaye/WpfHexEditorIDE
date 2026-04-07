@@ -238,6 +238,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 client as WpfHexEditor.Editor.Core.LSP.IReferenceCountProvider,
                 _inlineHintsSource);
 
+            // Propagate var/lambda hint options to the client if it supports them.
+            if (client is WpfHexEditor.Editor.Core.LSP.IInlineHintsOptionsClient hintsClient)
+                hintsClient.SetInlineHintsOptions(_showVarTypeHints, _showLambdaReturnTypeHints);
+
             // If a file is already open, send didOpen immediately.
             if (_currentFilePath is not null && _document is not null)
             {

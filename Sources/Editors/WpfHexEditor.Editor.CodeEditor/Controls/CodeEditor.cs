@@ -1030,6 +1030,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
         }
 
+        private bool _showVarTypeHints = true;
+        public bool ShowVarTypeHints
+        {
+            get => _showVarTypeHints;
+            set
+            {
+                if (_showVarTypeHints == value) return;
+                _showVarTypeHints = value;
+                NotifyRoslynInlineHintsOptions();
+            }
+        }
+
+        private bool _showLambdaReturnTypeHints = true;
+        public bool ShowLambdaReturnTypeHints
+        {
+            get => _showLambdaReturnTypeHints;
+            set
+            {
+                if (_showLambdaReturnTypeHints == value) return;
+                _showLambdaReturnTypeHints = value;
+                NotifyRoslynInlineHintsOptions();
+            }
+        }
+
+        private void NotifyRoslynInlineHintsOptions()
+        {
+            if (_lspClient is WpfHexEditor.Editor.Core.LSP.IInlineHintsOptionsClient hintsClient)
+                hintsClient.SetInlineHintsOptions(_showVarTypeHints, _showLambdaReturnTypeHints);
+        }
+
         // ── Quick Info DPs ─────────────────────────────────────────────────────
 
         public static readonly DependencyProperty ShowQuickInfoProperty =
@@ -2709,6 +2739,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ShowInlineHints             = options.ShowInlineHints;
             InlineHintsVisibleKinds     = options.InlineHintsVisibleKinds;
             InlineHintsSource           = options.InlineHintsSource;
+            ShowVarTypeHints            = options.ShowVarTypeHints;
+            ShowLambdaReturnTypeHints   = options.ShowLambdaReturnTypeHints;
             EnableWordHighlight      = options.EnableWordHighlight;
             ShowEndOfBlockHint      = options.ShowEndOfBlockHint;
             EndOfBlockHintDelayMs   = options.EndOfBlockHintDelayMs;

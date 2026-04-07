@@ -654,6 +654,12 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public int InlineHintsSource { get; set; } = 0;
 
+    /// <summary>Show inferred type hints for <c>var</c> declarations (e.g. <c>var x = 1;</c> → <c>: int</c>).</summary>
+    public bool ShowVarTypeHints { get; set; } = true;
+
+    /// <summary>Show return-type hints for lambda and anonymous function expressions.</summary>
+    public bool ShowLambdaReturnTypeHints { get; set; } = true;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
