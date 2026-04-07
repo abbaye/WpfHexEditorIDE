@@ -219,9 +219,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
         Brush memberFg  = Res("CD_MemberTextForeground",     Color.FromRgb(200, 200, 210));
         Brush divBrush  = Res("CD_ClassBoxSectionDivider",   Color.FromRgb(70, 70, 90));
         Brush boxBorder = isSelected
-            ? Res("CD_SelectionBorderBrush", Color.FromRgb(0, 120, 215))
+            ? Res("CD_ClassBoxSelectedBorderBrush", Color.FromRgb(0, 120, 215))
             : (isHovered
-                ? Res("CD_ClassBoxBorderBrush", Color.FromRgb(110, 110, 150))
+                ? Res("CD_ClassBoxHoverBorderBrush", Color.FromRgb(110, 110, 150))
                 : Res("CD_ClassBoxBorderBrush", Color.FromRgb(80, 80, 100)));
 
         double borderThk = isSelected ? 2.0 : 1.0;
