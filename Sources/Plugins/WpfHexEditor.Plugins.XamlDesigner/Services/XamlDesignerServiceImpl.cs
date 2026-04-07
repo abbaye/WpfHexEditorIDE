@@ -166,7 +166,17 @@ internal sealed class XamlDesignerServiceImpl : IXamlDesignerService
         if (depth > MaxDepth) return null;
 
         var typeName = el.GetType().Name;
-        if (SkippedTypes.Contains(typeName)) return null;
+
+        // Transparent containers (ContentPresenter, AdornerDecorator, etc.) are invisible
+        // framework plumbing — skip creating a node but still collect their children so
+        // user content nested inside a ContentPresenter is visible in the outline.
+        if (SkippedTypes.Contains(typeName))
+        {
+            // Return a sentinel-less pass-through: we signal the parent to hoist
+            // children by returning null, but first we call CollectChildren below.
+            // This is handled at the call site by collecting into the parent's list.
+            return null;
+        }
 
         var name = el is FrameworkElement fe ? (string.IsNullOrEmpty(fe.Name) ? null : fe.Name) : null;
 
@@ -176,16 +186,7 @@ internal sealed class XamlDesignerServiceImpl : IXamlDesignerService
         var uid = canvas.GetUidOf(el);
 
         var children = new List<XamlDesignerNode>();
-        int count = VisualTreeHelper.GetChildrenCount(el);
-        for (int i = 0; i < count; i++)
-        {
-            if (VisualTreeHelper.GetChild(el, i) is UIElement child)
-            {
-                var childNode = BuildNode(child, canvas, depth + 1);
-                if (childNode is not null)
-                    children.Add(childNode);
-            }
-        }
+        CollectChildren(el, canvas, depth, children);
 
         return new XamlDesignerNode
         {
@@ -194,5 +195,32 @@ internal sealed class XamlDesignerServiceImpl : IXamlDesignerService
             Name     = name,
             Children = children,
         };
+    }
+
+    /// <summary>
+    /// Walks the immediate visual children of <paramref name="el"/>, adding non-null
+    /// <see cref="XamlDesignerNode"/> results to <paramref name="sink"/>.
+    /// When a child is a <see cref="SkippedTypes"/> transparent container, it is
+    /// not added as a node but its own children are recursively collected (hoist).
+    /// </summary>
+    private static void CollectChildren(UIElement el, DesignCanvas canvas, int depth, List<XamlDesignerNode> sink)
+    {
+        int count = VisualTreeHelper.GetChildrenCount(el);
+        for (int i = 0; i < count; i++)
+        {
+            if (VisualTreeHelper.GetChild(el, i) is not UIElement child) continue;
+
+            if (SkippedTypes.Contains(child.GetType().Name))
+            {
+                // Hoist: skip this layer, recurse directly into its children.
+                CollectChildren(child, canvas, depth, sink);
+            }
+            else
+            {
+                var node = BuildNode(child, canvas, depth + 1);
+                if (node is not null)
+                    sink.Add(node);
+            }
+        }
     }
 }
