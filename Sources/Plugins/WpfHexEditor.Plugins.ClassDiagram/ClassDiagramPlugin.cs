@@ -103,6 +103,12 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private readonly Dictionary<string, string> _openTabs =
         new(StringComparer.OrdinalIgnoreCase);
 
+    // Live-sync services keyed by uiId; disposed when the plugin unloads.
+    private readonly Dictionary<string, DiagramLiveSyncService> _liveSyncServices =
+        new(StringComparer.Ordinal);
+
+    private bool _liveSyncEnabled = true;
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
@@ -227,6 +233,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _context.FocusContext.FocusChanged -= OnFocusChanged;
 
         UnwireCurrentHost();
+
+        foreach (var svc in _liveSyncServices.Values)
+            svc.Dispose();
+        _liveSyncServices.Clear();
 
         _outlinePanel    = null;
         _propertiesPanel = null;
@@ -533,6 +543,28 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 Group      = "ClassDiagram"
             });
 
+        // View > Live Sync toggle.
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.View.LiveSync",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Live Sync",
+                ParentPath = "View",
+                IconGlyph  = "\uE895",
+                ToolTip    = "Auto-refresh the class diagram when source files change on disk",
+                Command    = new RelayCommand(_ =>
+                {
+                    _liveSyncEnabled = !_liveSyncEnabled;
+                    if (!_liveSyncEnabled)
+                    {
+                        foreach (var svc in _liveSyncServices.Values) svc.Dispose();
+                        _liveSyncServices.Clear();
+                    }
+                }),
+                Group = "ClassDiagram"
+            });
+
         // Tools menu — Solution Explorer context menu actions.
         context.UIRegistry.RegisterMenuItem(
             $"{Id}.Menu.Tools.ViewDiagram",
@@ -666,6 +698,24 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             ToolTip   = csharpFilePath,
             CanClose  = true,
         });
+
+        // Attach live-sync service for this file.
+        if (_liveSyncEnabled && File.Exists(csharpFilePath))
+        {
+            var svc = new DiagramLiveSyncService([csharpFilePath], doc, _options);
+            svc.DocumentPatched += (_, e) =>
+            {
+                if (_openTabs.ContainsValue(uiId))
+                    host.ApplyPatch(e.Patch, e.Document);
+                else
+                {
+                    // Tab has been closed — dispose silently.
+                    svc.Dispose();
+                    _liveSyncServices.Remove(uiId);
+                }
+            };
+            _liveSyncServices[uiId] = svc;
+        }
     }
 
     /// <summary>

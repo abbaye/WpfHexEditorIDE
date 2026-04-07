@@ -404,6 +404,36 @@ public sealed class ClassDiagramSplitHost : Grid,
         DiagramChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Applies an incremental <see cref="DiagramPatch"/> produced by the live-sync
+    /// service. Added/removed nodes are merged into <see cref="Document"/>; the canvas
+    /// is repainted only for dirty nodes.
+    /// </summary>
+    public void ApplyPatch(WpfHexEditor.Editor.ClassDiagram.Core.Model.DiagramPatch patch,
+                           WpfHexEditor.Editor.ClassDiagram.Core.Model.DiagramDocument next)
+    {
+        _document = next;
+
+        // Keep DSL pane in sync (suppress canvas re-trigger).
+        _suppressCodeSync = true;
+        _dslTextBox.Text  = ClassDiagramSerializer.Serialize(_document);
+        _suppressCodeSync = false;
+
+        // Repaint only the dirty nodes.
+        var dirtyIds = patch.ModifiedNodes.Select(n => n.Id)
+            .Concat(patch.AddedNodes.Select(n => n.Id))
+            .Concat(patch.RemovedNodeIds)
+            .ToHashSet(StringComparer.Ordinal);
+
+        if (dirtyIds.Count > 0)
+            _canvas.ApplyPatch(dirtyIds);
+        else
+            _canvas.ApplyDocument(_document);
+
+        UpdateStatusBar();
+        DiagramChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     // ---------------------------------------------------------------------------
     // View mode / layout
     // ---------------------------------------------------------------------------
