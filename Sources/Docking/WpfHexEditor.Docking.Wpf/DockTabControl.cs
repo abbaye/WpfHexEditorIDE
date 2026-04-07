@@ -271,7 +271,8 @@ public class DockTabControl : TabControl
             Tag = item,
             Content = tabContent
         };
-        tabItem.SetResourceReference(StyleProperty, "DockTabItemStyle");
+        // DockTabControl is always bottom-placed: use inverted CornerRadius (0,0,4,4) style
+        tabItem.SetResourceReference(StyleProperty, "DockTabItemBottomStyle");
 
         if (deferPluginContent)
         {

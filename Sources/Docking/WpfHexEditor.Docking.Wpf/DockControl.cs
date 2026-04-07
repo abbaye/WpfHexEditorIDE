@@ -1623,15 +1623,18 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         {
             Child               = content,
             BorderThickness     = new Thickness(0),
-            CornerRadius        = new CornerRadius(radius),
+            // VS-like: only bottom corners rounded — top connects flush to IDE chrome,
+            // bottom rounds over the tab strip edge.
+            CornerRadius        = new CornerRadius(0, 0, radius, radius),
             Margin              = new Thickness(2),
             SnapsToDevicePixels = true
         };
         border.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
 
-        // Clip children to the rounded rectangle so title bar / tab strip corners are clean
+        // Clip children to a bottom-only rounded rectangle so the tab strip corners are clean
+        // while the title bar top stays flush (no top-corner clipping artifact).
         border.SizeChanged += (_, e) =>
-            border.Clip = new RectangleGeometry(new Rect(e.NewSize), radius, radius);
+            border.Clip = BuildBottomRoundedClip(e.NewSize, radius);
 
         // Activate on ANY mouse click inside the panel (tunneling catches handled events)
         border.AddHandler(
@@ -1646,6 +1649,35 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             handledEventsToo: true);
 
         return border;
+    }
+
+    /// <summary>
+    /// Builds a clip geometry that is rectangular at the top and has rounded corners
+    /// only at the bottom-left and bottom-right. Matches <see cref="CreatePanelBorder"/>'s
+    /// <c>CornerRadius(0,0,r,r)</c> so child content is clipped correctly.
+    /// </summary>
+    private static StreamGeometry BuildBottomRoundedClip(Size size, double radius)
+    {
+        double w = size.Width;
+        double h = size.Height;
+        double r = Math.Min(radius, Math.Min(w / 2, h / 2));
+
+        var sg = new StreamGeometry();
+        using (var ctx = sg.Open())
+        {
+            ctx.BeginFigure(new Point(0, 0), isFilled: true, isClosed: true);
+            ctx.LineTo(new Point(w, 0),       isStroked: true, isSmoothJoin: false);
+            ctx.LineTo(new Point(w, h - r),   isStroked: true, isSmoothJoin: false);
+            ctx.ArcTo(new Point(w - r, h), new Size(r, r), 0,
+                      isLargeArc: false, sweepDirection: SweepDirection.Clockwise,
+                      isStroked: true, isSmoothJoin: false);
+            ctx.LineTo(new Point(r, h),       isStroked: true, isSmoothJoin: false);
+            ctx.ArcTo(new Point(0, h - r), new Size(r, r), 0,
+                      isLargeArc: false, sweepDirection: SweepDirection.Clockwise,
+                      isStroked: true, isSmoothJoin: false);
+        }
+        sg.Freeze();
+        return sg;
     }
 
     /// <summary>

@@ -34,6 +34,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.ClassDiagram.Controls;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
@@ -327,8 +328,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     /// </summary>
     private void WireHost(ClassDiagramSplitHost host)
     {
-        host.SelectedClassChanged += OnSelectedClassChanged;
-        host.DiagramChanged       += OnDiagramChanged;
+        host.SelectedClassChanged        += OnSelectedClassChanged;
+        host.DiagramChanged              += OnDiagramChanged;
+        host.NavigateToMemberRequested   += OnNavigateToMember;
+        host.RenameNodeRequested         += OnRenameNode;
 
         // History panel — bind to the host's undo manager.
         if (_historyPanel is not null)
@@ -356,8 +359,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         if (_wiredHost is null) return;
 
-        _wiredHost.SelectedClassChanged -= OnSelectedClassChanged;
-        _wiredHost.DiagramChanged       -= OnDiagramChanged;
+        _wiredHost.SelectedClassChanged        -= OnSelectedClassChanged;
+        _wiredHost.DiagramChanged              -= OnDiagramChanged;
+        _wiredHost.NavigateToMemberRequested   -= OnNavigateToMember;
+        _wiredHost.RenameNodeRequested         -= OnRenameNode;
 
         if (_historyPanel is not null)
         {
@@ -441,6 +446,49 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             for (int i = 0; i < -delta; i++) _wiredHost.Undo();
         else
             for (int i = 0; i < delta; i++) _wiredHost.Redo();
+    }
+
+    private void OnNavigateToMember(object? sender, (ClassNode Node, ClassMember Member) e)
+    {
+        string? filePath = e.Member?.SourceFilePath ?? e.Node.SourceFilePath;
+        int     line     = e.Member?.SourceLineOneBased > 0 ? e.Member.SourceLineOneBased
+                         : e.Node.SourceLineOneBased;
+
+        if (string.IsNullOrEmpty(filePath) || line <= 0 || _context is null)
+        {
+            _context?.Output.Warning("[Class Diagram] No source location for navigation.");
+            return;
+        }
+
+        // Open the file in the IDE and navigate to the declaration line.
+        _context.DocumentHost.ActivateAndNavigateTo(filePath, line, 1);
+        _context.Output.Info($"[Class Diagram] Navigate → {Path.GetFileName(filePath)}:{line}");
+    }
+
+    private void OnRenameNode(object? sender, (ClassNode Node, string? NewName) e)
+    {
+        // Show a simple WPF input dialog.
+        string? newName = ShowInputDialog($"Rename '{e.Node.Name}' to:", "Rename", e.Node.Name);
+
+        if (string.IsNullOrWhiteSpace(newName) || newName == e.Node.Name) return;
+
+        _ = Task.Run(async () =>
+        {
+            bool ok = await DiagramCodeEditService.RenameMemberAsync(
+                e.Node,
+                // Pass a synthetic member representing the type declaration itself
+                new WpfHexEditor.Editor.ClassDiagram.Core.Model.ClassMember
+                {
+                    Name               = e.Node.Name,
+                    SourceFilePath     = e.Node.SourceFilePath,
+                    SourceLineOneBased = e.Node.SourceLineOneBased
+                },
+                newName);
+
+            if (!ok)
+                Application.Current.Dispatcher.BeginInvoke(
+                    () => _context?.Output.Warning($"[Class Diagram] Rename failed for '{e.Node.Name}'."));
+        });
     }
 
     private void OnSearchResultSelected(object? sender, SearchResultItem? result)
@@ -800,6 +848,41 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private static string? ShowInputDialog(string prompt, string title, string defaultValue = "")
+    {
+        var tb  = new TextBox { Text = defaultValue, MinWidth = 200, Margin = new Thickness(0, 6, 0, 0) };
+        tb.SelectAll();
+
+        var ok     = new Button { Content = "OK",     IsDefault = true,  Width = 60, Margin = new Thickness(0, 0, 4, 0) };
+        var cancel = new Button { Content = "Cancel", IsCancel  = true,  Width = 60 };
+        var btns   = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+        btns.Children.Add(ok);
+        btns.Children.Add(cancel);
+
+        var panel = new StackPanel { Margin = new Thickness(8) };
+        panel.Children.Add(new TextBlock { Text = prompt });
+        panel.Children.Add(tb);
+        panel.Children.Add(btns);
+
+        var dlg = new Window
+        {
+            Title           = title,
+            Content         = panel,
+            SizeToContent   = SizeToContent.WidthAndHeight,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            ResizeMode      = ResizeMode.NoResize,
+            ShowInTaskbar   = false,
+            Owner           = Application.Current.MainWindow
+        };
+
+        string? result = null;
+        ok.Click     += (_, _) => { result = tb.Text; dlg.DialogResult = true; };
+        cancel.Click += (_, _) => { dlg.DialogResult = false; };
+
+        dlg.Loaded += (_, _) => tb.Focus();
+        return dlg.ShowDialog() == true ? result : null;
+    }
 
     private static bool HasActiveClassDiagramSource(IIDEHostContext context)
     {

@@ -383,6 +383,20 @@ public sealed class ClassDiagramSplitHost : Grid,
     public DiagramDocument Document       => _document;
     public ClassDiagramUndoManager UndoManager => _undoManager;
 
+    /// <summary>Forwarded from DiagramCanvas — fires when Ctrl+Click on a member.</summary>
+    public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested
+    {
+        add    => _canvas.NavigateToMemberRequested += value;
+        remove => _canvas.NavigateToMemberRequested -= value;
+    }
+
+    /// <summary>Forwarded from DiagramCanvas — fires when "Rename…" is chosen.</summary>
+    public event EventHandler<(ClassNode Node, string? NewName)>? RenameNodeRequested
+    {
+        add    => _canvas.RenameNodeRequested += value;
+        remove => _canvas.RenameNodeRequested -= value;
+    }
+
     /// <summary>
     /// Loads a pre-analyzed <see cref="DiagramDocument"/> directly into the editor.
     /// No file I/O — called by the plugin when opening from source file/folder/solution analysis.

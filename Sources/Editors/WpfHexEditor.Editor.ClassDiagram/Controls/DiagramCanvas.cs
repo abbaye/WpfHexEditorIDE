@@ -66,9 +66,12 @@ public sealed class DiagramCanvas : Canvas
     private bool _minimapVisible = true;
 
     // ── Events ────────────────────────────────────────────────────────────────
-    public event EventHandler<ClassNode?>?  SelectedClassChanged;
-    public event EventHandler<ClassNode?>?  HoveredClassChanged;
-    public event EventHandler<ClassNode?>?  AddMemberRequested;
+    public event EventHandler<ClassNode?>?                    SelectedClassChanged;
+    public event EventHandler<ClassNode?>?                    HoveredClassChanged;
+    public event EventHandler<ClassNode?>?                    AddMemberRequested;
+    public event EventHandler<(ClassNode Node, string? NewName)>? RenameNodeRequested;
+    public event EventHandler<(ClassNode Node, ClassMember Member)>? DeleteMemberRequested;
+    public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -246,6 +249,18 @@ public sealed class DiagramCanvas : Canvas
 
         if (node is not null)
         {
+            // Ctrl+Click → navigate to source
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
+            {
+                var member = _layer.HitTestMember(pt, node);
+                if (member is not null)
+                    NavigateToMemberRequested?.Invoke(this, (node, member));
+                else
+                    NavigateToMemberRequested?.Invoke(this, (node, node.Members.FirstOrDefault()!));
+                e.Handled = true;
+                return;
+            }
+
             SelectNode(node);
             _dragNode       = node;
             _dragStart      = pt;
@@ -354,7 +369,7 @@ public sealed class DiagramCanvas : Canvas
     private ContextMenu BuildNodeContextMenu(ClassNode node)
     {
         var menu = StyledMenu();
-        menu.Items.Add(MakeItem("\uE70F", "Rename",    () => { }));
+        menu.Items.Add(MakeItem("\uE70F", "Rename…",   () => RenameNodeRequested?.Invoke(this, (node, null))));
         menu.Items.Add(MakeItem("\uE74D", "Delete",    () => DeleteNode(node)));
         menu.Items.Add(MakeItem("\uE8C8", "Duplicate", () => { }));
         menu.Items.Add(new Separator());

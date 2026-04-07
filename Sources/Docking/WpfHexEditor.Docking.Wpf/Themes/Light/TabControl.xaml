@@ -222,6 +222,69 @@
         </Setter>
     </Style>
 
+    <!-- Tab item style for BOTTOM placement: CornerRadius inverted to 0,0,4,4 (VS-like bottom tabs).
+         Top edge connects flush to content area; bottom corners are rounded. -->
+    <Style x:Key="DockTabItemBottomStyle" TargetType="{x:Type TabItem}">
+        <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,4,8,4" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border x:Name="TabBorder"
+                                Background="Transparent"
+                                CornerRadius="0,0,4,4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                        <Border x:Name="SelectionBorder"
+                                BorderThickness="1,2,1,0"
+                                BorderBrush="{DynamicResource DockTabActiveBrush}"
+                                CornerRadius="0,0,4,4"
+                                Visibility="Collapsed" />
+                        <Border x:Name="ColorStripe"
+                                Height="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Opacity="0"
+                                Background="{Binding Path=(attached:TabColorizerAttached.AccentBrush),
+                                                     RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="TabBorder"       Property="Background"  Value="{DynamicResource DockBackgroundBrush}" />
+                            <Setter TargetName="SelectionBorder" Property="Visibility"  Value="Visible" />
+                            <Setter TargetName="ColorStripe"     Property="Opacity"     Value="1.0" />
+                            <Setter Property="Foreground"                               Value="{DynamicResource DockTabActiveTextBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="TabBorder" Property="Background"
+                                    Value="{DynamicResource DockTabHoverBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="TabBorder" Property="Background"
+                                    Value="{DynamicResource DockTabSelectedHoverBrush}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Tab item style for LEFT placement: inherit DockTabItemStyle and rotate 90° CCW -->
     <Style x:Key="DocumentTabItemLeftStyle" TargetType="{x:Type TabItem}"
            BasedOn="{StaticResource DockTabItemStyle}">
