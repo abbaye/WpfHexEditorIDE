@@ -222,35 +222,45 @@ public partial class MainWindow
                     {
                         if (e.Kind == WpfHexEditor.Editor.Core.SolutionChangeKind.Opened && e.Solution?.FilePath is not null)
                         {
-                            // Drive Roslyn from individual project paths (VS CPS approach):
-                            // extract .csproj/.vbproj from the already-loaded ISolution instead of
-                            // passing the solution file to MSBuildWorkspace.  This is format-agnostic —
-                            // works for .sln, .slnx, .whsln, and any future format.
-                            var projectPaths = e.Solution.Projects
-                                .Select(p => p.ProjectFilePath)
-                                .Where(p => System.IO.File.Exists(p) &&
-                                            System.IO.Path.GetExtension(p).ToLowerInvariant()
-                                                is ".csproj" or ".vbproj")
-                                .ToList();
+                            var solutionPath = e.Solution.FilePath;
+                            var ext = System.IO.Path.GetExtension(solutionPath).ToLowerInvariant();
+                            var slnName = System.IO.Path.GetFileNameWithoutExtension(solutionPath);
 
-                            if (projectPaths.Count == 0)
-                            {
-                                OutputLogger.PluginInfo("[Roslyn] No .csproj/.vbproj in solution — using standalone analysis.");
-                                _roslynSolutionPath = null;
-                                return;
-                            }
-
-                            var slnName = System.IO.Path.GetFileNameWithoutExtension(e.Solution.FilePath);
-                            ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
-                            OutputLogger.PluginInfo($"[Roslyn] Loading {projectPaths.Count} project(s) from: {e.Solution.FilePath}");
-
-                            _roslynSolutionPath = e.Solution.FilePath;
+                            _roslynSolutionPath = solutionPath;
                             if (_lspBridgeService is not null)
-                                _lspBridgeService._roslynSolutionPath = e.Solution.FilePath;
+                                _lspBridgeService._roslynSolutionPath = solutionPath;
 
                             _roslynLoadCts?.Cancel();
                             _roslynLoadCts = new CancellationTokenSource();
-                            _ = LoadRoslynProjectsInBackgroundAsync(projectPaths, _roslynLoadCts.Token);
+
+                            if (ext is ".sln" or ".slnx")
+                            {
+                                // Use OpenSolutionAsync — resolves all P2P references correctly.
+                                ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
+                                OutputLogger.PluginInfo($"[Roslyn] Loading solution: {solutionPath}");
+                                _ = LoadRoslynSolutionInBackgroundAsync(solutionPath, _roslynLoadCts.Token);
+                            }
+                            else
+                            {
+                                // Format-agnostic path (.whsln, etc.): drive Roslyn from individual project paths.
+                                var projectPaths = e.Solution.Projects
+                                    .Select(p => p.ProjectFilePath)
+                                    .Where(p => System.IO.File.Exists(p) &&
+                                                System.IO.Path.GetExtension(p).ToLowerInvariant()
+                                                    is ".csproj" or ".vbproj")
+                                    .ToList();
+
+                                if (projectPaths.Count == 0)
+                                {
+                                    OutputLogger.PluginInfo("[Roslyn] No .csproj/.vbproj in solution — using standalone analysis.");
+                                    _roslynSolutionPath = null;
+                                    return;
+                                }
+
+                                ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
+                                OutputLogger.PluginInfo($"[Roslyn] Loading {projectPaths.Count} project(s) from: {solutionPath}");
+                                _ = LoadRoslynProjectsInBackgroundAsync(projectPaths, _roslynLoadCts.Token);
+                            }
                         }
                         else if (e.Kind == WpfHexEditor.Editor.Core.SolutionChangeKind.Closed)
                         {

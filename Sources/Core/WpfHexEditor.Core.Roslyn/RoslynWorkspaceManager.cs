@@ -160,7 +160,7 @@ internal sealed class RoslynWorkspaceManager : IDisposable
         var msbuild = CreateMsBuildWorkspace();
 
         var ext = Path.GetExtension(solutionOrProjectPath).ToLowerInvariant();
-        if (ext == ".sln")
+        if (ext is ".sln" or ".slnx")
             await msbuild.OpenSolutionAsync(solutionOrProjectPath, cancellationToken: ct).ConfigureAwait(false);
         else
             await msbuild.OpenProjectAsync(solutionOrProjectPath, cancellationToken: ct).ConfigureAwait(false);
