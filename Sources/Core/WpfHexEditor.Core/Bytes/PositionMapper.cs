@@ -63,6 +63,13 @@ namespace WpfHexEditor.Core.Bytes
         }
 
         /// <summary>
+        /// True when no edits exist — virtual positions map 1:1 to physical positions.
+        /// When true, <see cref="ByteReader"/> can bypass VirtualToPhysical and call
+        /// FileProvider directly for a ~400-call-per-frame saving on unedited files.
+        /// </summary>
+        public bool IsIdentityMapping => _segmentMapValid && (_segments == null || _segments.Count == 0);
+
+        /// <summary>
         /// Build segment map for fast position lookups.
         /// This is called lazily when needed and cached.
         /// </summary>
