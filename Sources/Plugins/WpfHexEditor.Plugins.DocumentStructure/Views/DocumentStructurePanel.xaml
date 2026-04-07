@@ -213,7 +213,7 @@
                                    FontSize="11"
                                    Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
                             <Run Text=" : "/>
-                            <Run Text="{Binding Detail}"/>
+                            <Run Text="{Binding Detail, Mode=OneWay}"/>
                         </TextBlock>
                     </StackPanel>
                 </HierarchicalDataTemplate>
@@ -280,7 +280,7 @@
                                    FontSize="11"
                                    Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
                             <Run Text=" : "/>
-                            <Run Text="{Binding Detail}"/>
+                            <Run Text="{Binding Detail, Mode=OneWay}"/>
                         </TextBlock>
                     </StackPanel>
                 </DataTemplate>
