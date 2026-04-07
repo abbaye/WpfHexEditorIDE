@@ -85,6 +85,7 @@ public partial class MainWindow
 
     private int    _pluginFaultCount = 0;
     private string? _infoBarPluginId;   // ID of the plugin currently shown in the InfoBar
+    private WpfHexEditor.PluginHost.Services.MarketplaceUpdateScheduler? _marketplaceScheduler;
 
     // Panels restored from a saved layout before the plugin system was ready.
     // Their DataContext is wired up at the end of InitializePluginSystemAsync.
@@ -638,6 +639,9 @@ public partial class MainWindow
                     _pendingRestoreSolutionPath = null;
                     _ = OpenSolutionAsync(deferredPath);
                 }
+
+                // Start background marketplace update checker
+                StartMarketplaceUpdateScheduler();
             });
         }
         catch (Exception ex)
@@ -1201,6 +1205,8 @@ public partial class MainWindow
             await _debuggerService.DisposeAsync().ConfigureAwait(false);
             _debuggerService = null;
         }
+        _marketplaceScheduler?.Dispose();
+        _marketplaceScheduler = null;
         _ideEventBus?.Dispose();
         _ideEventBus = null;
         if (_serviceProvider is IAsyncDisposable asyncDisposable)
@@ -1208,6 +1214,52 @@ public partial class MainWindow
         else
             (_serviceProvider as IDisposable)?.Dispose();
         _serviceProvider = null;
+    }
+
+    // --- Marketplace update scheduler ------------------------------------
+
+    private void StartMarketplaceUpdateScheduler()
+    {
+        if (_ideEventBus is null) return;
+        var settings  = AppSettingsService.Instance.Current;
+        if (!settings.Marketplace.AutoCheckUpdates) return;
+
+        var token     = settings.Marketplace.GitHubToken;
+        var svc       = new WpfHexEditor.PluginHost.Services.MarketplaceServiceImpl(
+            gitHubToken: string.IsNullOrEmpty(token) ? null : token,
+            logger:      msg => OutputLogger.PluginInfo(msg));
+
+        _marketplaceScheduler = new WpfHexEditor.PluginHost.Services.MarketplaceUpdateScheduler(
+            svc, _ideEventBus, settings, Dispatcher);
+
+        _ideEventBus.Subscribe<WpfHexEditor.Core.Events.IDEEvents.MarketplaceUpdatesAvailableEvent>(
+            OnMarketplaceUpdatesAvailable);
+
+        _marketplaceScheduler.Start();
+    }
+
+    private void OnMarketplaceUpdatesAvailable(
+        WpfHexEditor.Core.Events.IDEEvents.MarketplaceUpdatesAvailableEvent e)
+    {
+        if (MarketplaceBadgeItem is null) return;
+        MarketplaceBadgeItem.Visibility = System.Windows.Visibility.Visible;
+        MarketplaceBadgeText.Text       = e.UpdateCount == 1
+            ? "1 plugin update"
+            : $"{e.UpdateCount} plugin updates";
+
+        // Also post a notification bell entry
+        _notificationService?.Post(new WpfHexEditor.Editor.Core.Notifications.NotificationItem
+        {
+            Id      = "marketplace-updates-available",
+            Title   = $"{e.UpdateCount} plugin update{(e.UpdateCount == 1 ? "" : "s")} available",
+            Message = "Open the Marketplace (Extensions → Marketplace) to install the updates.",
+            Severity = WpfHexEditor.Editor.Core.Notifications.NotificationSeverity.Info,
+        });
+    }
+
+    private void OnMarketplaceBadgeClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnOpenMarketplace(sender, e);
     }
 
     // --- IDE EventBus publishers -----------------------------------------

@@ -2032,6 +2032,25 @@
                     </Border>
                 </StackPanel>
             </StatusBarItem>
+
+            <!-- ── Marketplace update badge ─────────────────────────────────── -->
+            <StatusBarItem x:Name="MarketplaceBadgeItem" Visibility="Collapsed">
+                <Border Background="#CC5500"
+                        CornerRadius="3"
+                        Padding="6,1"
+                        Cursor="Hand"
+                        ToolTip="Plugin updates available — click to open Marketplace"
+                        MouseLeftButtonDown="OnMarketplaceBadgeClick">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                   Foreground="White" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock x:Name="MarketplaceBadgeText"
+                                   Text="1 update" FontSize="10"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </StatusBarItem>
+
         </StatusBar>
     </Grid>
 

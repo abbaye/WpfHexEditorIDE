@@ -73,6 +73,20 @@ public interface IMarketplaceService
     /// <summary>Uninstalls the installed plugin identified by <paramref name="listingId"/>.</summary>
     Task<bool> UninstallAsync(string listingId, CancellationToken ct = default);
 
+    /// <summary>
+    /// Rolls back to the previous version of the installed plugin.
+    /// Restores from the <c>.bak/</c> backup created during the last update.
+    /// Returns true on success; false when no backup is available.
+    /// </summary>
+    Task<bool> RollbackAsync(string listingId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Retrieves the changelog markdown for the given listing
+    /// from the GitHub Releases API (latest release body).
+    /// Returns null when the listing is not found or the API is unavailable.
+    /// </summary>
+    Task<string?> GetChangelogAsync(string listingId, CancellationToken ct = default);
+
     // ── Installed / Updates ───────────────────────────────────────────────────
 
     /// <summary>Returns all currently installed marketplace plugins.</summary>

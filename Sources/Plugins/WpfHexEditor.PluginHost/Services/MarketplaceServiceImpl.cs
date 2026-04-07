@@ -146,9 +146,24 @@ public sealed class MarketplaceServiceImpl : IMarketplaceService, IDisposable
                 }
             }
 
+            // Back up existing version to .bak/ before overwriting
+            ReportProgress(progress, listingId, 85, "Backing up…");
+            var destDir = Path.Combine(PluginsDir, listingId);
+            var bakDir  = Path.Combine(destDir, ".bak");
+            if (Directory.Exists(destDir))
+            {
+                try
+                {
+                    if (Directory.Exists(bakDir)) Directory.Delete(bakDir, recursive: true);
+                    Directory.CreateDirectory(bakDir);
+                    foreach (var file in Directory.EnumerateFiles(destDir, "*", SearchOption.TopDirectoryOnly))
+                        File.Copy(file, Path.Combine(bakDir, Path.GetFileName(file)), overwrite: true);
+                }
+                catch { /* backup is best-effort */ }
+            }
+
             // Extract to PluginsDir/<ListingId>/
             ReportProgress(progress, listingId, 90, "Installing…");
-            var destDir = Path.Combine(PluginsDir, listingId);
             Directory.CreateDirectory(destDir);
             System.IO.Compression.ZipFile.ExtractToDirectory(cachePath, destDir, overwriteFiles: true);
 
@@ -186,6 +201,53 @@ public sealed class MarketplaceServiceImpl : IMarketplaceService, IDisposable
             _log($"[Marketplace] Uninstall failed for '{listingId}': {ex.Message}");
             return Task.FromResult(false);
         }
+    }
+
+    public Task<bool> RollbackAsync(string listingId, CancellationToken ct = default)
+    {
+        var destDir = Path.Combine(PluginsDir, listingId);
+        var bakDir  = Path.Combine(destDir, ".bak");
+
+        if (!Directory.Exists(bakDir))
+        {
+            _log($"[Marketplace] Rollback failed for '{listingId}': no .bak/ directory found.");
+            return Task.FromResult(false);
+        }
+
+        try
+        {
+            // Restore .bak/ files over the current install
+            foreach (var file in Directory.EnumerateFiles(bakDir, "*", SearchOption.TopDirectoryOnly))
+                File.Copy(file, Path.Combine(destDir, Path.GetFileName(file)), overwrite: true);
+
+            _log($"[Marketplace] Rolled back '{listingId}' from .bak/.");
+            return Task.FromResult(true);
+        }
+        catch (Exception ex)
+        {
+            _log($"[Marketplace] Rollback failed for '{listingId}': {ex.Message}");
+            return Task.FromResult(false);
+        }
+    }
+
+    public async Task<string?> GetChangelogAsync(string listingId, CancellationToken ct = default)
+    {
+        // Try GitHub releases body for each official repo owner.
+        foreach (var (owner, repo) in OfficialRepos)
+        {
+            try
+            {
+                var releases = await _ghClient.GetReleasesAsync(owner, repo, ct);
+                var match    = releases.FirstOrDefault(r => r.ListingId == listingId);
+                if (match is not null)
+                {
+                    // GitHubReleasesClient stores the release body in Description
+                    return match.Description;
+                }
+            }
+            catch { /* continue */ }
+        }
+        return null;
     }
 
     public Task<IReadOnlyList<MarketplaceListing>> GetInstalledAsync(CancellationToken ct = default)

@@ -435,15 +435,25 @@
                                         </TextBlock.Style>
                                     </TextBlock>
 
-                                    <!-- Uninstall button -->
-                                    <Button Grid.Column="2"
-                                            Content="Uninstall"
-                                            Style="{DynamicResource ToolbarButtonStyle}"
-                                            Command="{Binding DataContext.UninstallCommand,
-                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}"
-                                            Padding="8,3" FontSize="11"
-                                            VerticalAlignment="Center"/>
+                                    <!-- Rollback + Uninstall buttons -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <Button Content="Rollback"
+                                                Style="{DynamicResource ToolbarButtonStyle}"
+                                                Command="{Binding DataContext.RollbackCommand,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Padding="8,3" FontSize="11"
+                                                Margin="0,0,4,0"
+                                                VerticalAlignment="Center"
+                                                ToolTip="Restore the previously installed version from backup"/>
+                                        <Button Content="Uninstall"
+                                                Style="{DynamicResource ToolbarButtonStyle}"
+                                                Command="{Binding DataContext.UninstallCommand,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Padding="8,3" FontSize="11"
+                                                VerticalAlignment="Center"/>
+                                    </StackPanel>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

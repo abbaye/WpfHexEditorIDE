@@ -137,6 +137,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
     public ICommand UninstallCommand       { get; }
     public ICommand UpdateSelectedCommand  { get; }
     public ICommand UpdateAllCommand       { get; }
+    public ICommand RollbackCommand        { get; }
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -159,6 +160,8 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
         UpdateSelectedCommand  = new RelayCommand(p  => _ = UpdateAsync(p as MarketplaceListing),
                                                   p  => p is MarketplaceListing && !IsInstalling);
         UpdateAllCommand       = new RelayCommand(_ => _ = UpdateAllAsync(), _ => UpdateListings.Count > 0 && !IsInstalling);
+        RollbackCommand        = new RelayCommand(p  => _ = RollbackAsync(p as MarketplaceListing),
+                                                  p  => p is MarketplaceListing l && IsInstalled(l) && !IsInstalling);
 
         _ = LoadBrowseTabAsync();
     }
@@ -313,6 +316,23 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
             await RunInstallAsync(l.ListingId);
         await LoadUpdatesTabAsync();
     }
+
+    private async Task RollbackAsync(MarketplaceListing? listing)
+    {
+        if (listing is null) return;
+        IsInstalling = true;
+        try
+        {
+            bool ok = await _marketplace.RollbackAsync(listing.ListingId);
+            _log(ok
+                ? $"[Marketplace] Rolled back '{listing.Name}' to previous version."
+                : $"[Marketplace] Rollback failed for '{listing.Name}' — no backup available.");
+        }
+        finally { IsInstalling = false; }
+    }
+
+    private static bool IsInstalled(MarketplaceListing l)
+        => !string.IsNullOrEmpty(l.InstalledVersion);
 
     // ── Install pipeline ──────────────────────────────────────────────────────
 
