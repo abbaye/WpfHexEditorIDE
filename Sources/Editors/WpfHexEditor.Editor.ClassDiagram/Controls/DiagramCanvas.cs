@@ -61,6 +61,10 @@ public sealed class DiagramCanvas : Canvas
     private bool  _isRubberBanding;
     private Point _rubberStart;
 
+    // ── Minimap ───────────────────────────────────────────────────────────────
+    private readonly DiagramMinimapControl _minimap = new();
+    private bool _minimapVisible = true;
+
     // ── Events ────────────────────────────────────────────────────────────────
     public event EventHandler<ClassNode?>?  SelectedClassChanged;
     public event EventHandler<ClassNode?>?  HoveredClassChanged;
@@ -77,7 +81,64 @@ public sealed class DiagramCanvas : Canvas
         Children.Add(_layer);
         Canvas.SetLeft(_layer, 0);
         Canvas.SetTop(_layer, 0);
+
+        // Minimap — bottom-left, above main layer.
+        Children.Add(_minimap);
+        _minimap.ViewportNavigateRequested += OnMinimapNavigate;
+        SizeChanged += (_, _) => UpdateMinimapPosition();
+        UpdateMinimapPosition();
     }
+
+    // ── Minimap API ───────────────────────────────────────────────────────────
+
+    public bool IsMinimapVisible
+    {
+        get => _minimapVisible;
+        set
+        {
+            _minimapVisible    = value;
+            _minimap.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+
+    private void UpdateMinimapPosition()
+    {
+        // Position minimap in bottom-left, anchored to visible area.
+        // Use the parent ScrollViewer's ViewportHeight when available.
+        ScrollViewer? sv = FindAncestorScrollViewer();
+        double viewH = sv?.ViewportHeight > 0 ? sv.ViewportHeight
+                     : ActualHeight > 0       ? ActualHeight
+                     : 400;
+        double viewOffY = sv?.VerticalOffset ?? 0;
+
+        Canvas.SetLeft(_minimap, 8);
+        Canvas.SetTop(_minimap, viewOffY + viewH - DiagramMinimapControl.MapHeight - 8);
+        Panel.SetZIndex(_minimap, 100);
+    }
+
+    private void OnMinimapNavigate(object? sender, System.Windows.Point diagPos)
+    {
+        // Walk up to find a ScrollViewer ancestor and set its scroll offset.
+        ScrollViewer? sv = FindAncestorScrollViewer();
+        if (sv is null) return;
+        sv.ScrollToHorizontalOffset(diagPos.X);
+        sv.ScrollToVerticalOffset(diagPos.Y);
+    }
+
+    private ScrollViewer? FindAncestorScrollViewer()
+    {
+        DependencyObject? el = VisualTreeHelper.GetParent(this);
+        while (el is not null)
+        {
+            if (el is ScrollViewer sv) return sv;
+            el = VisualTreeHelper.GetParent(el);
+        }
+        return null;
+    }
+
+    /// <summary>Notifies the minimap of a new scroll viewport (call from the parent scroll host).</summary>
+    public void SetMinimapViewport(Rect viewportInDiagramCoords) =>
+        _minimap.SetViewport(viewportInDiagramCoords);
 
     // ── Public API ────────────────────────────────────────────────────────────
 
@@ -90,6 +151,7 @@ public sealed class DiagramCanvas : Canvas
 
         ClearAdorners();
         _layer.RenderAll(doc);
+        _minimap.SetDocument(doc);
         SelectedClassChanged?.Invoke(this, null);
     }
 
