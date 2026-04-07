@@ -7,7 +7,7 @@
 // Description:
 //     Persisted settings for the Class Diagram plugin.
 //     Controls layout defaults, snap behaviour, and C# source
-//     analysis options used by ClassDiagramSourceAnalyzer.
+//     analysis options used by RoslynClassDiagramAnalyzer.
 //
 // Architecture Notes:
 //     Plain POCO — no WPF dependencies.
@@ -15,6 +15,8 @@
 //     All properties have safe defaults so first-run works
 //     without a settings file.
 // ==========================================================
+
+using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 
 namespace WpfHexEditor.Plugins.ClassDiagram.Options;
 
@@ -30,6 +32,12 @@ public sealed class ClassDiagramOptions
     /// automatically by the auto-layout engine before the canvas is shown.
     /// </summary>
     public bool AutoLayout { get; set; } = true;
+
+    /// <summary>
+    /// Layout algorithm to use when auto-layout is triggered.
+    /// Default: <see cref="LayoutStrategyKind.Hierarchical"/>.
+    /// </summary>
+    public LayoutStrategyKind LayoutStrategy { get; set; } = LayoutStrategyKind.Hierarchical;
 
     /// <summary>
     /// Grid snap granularity in logical pixels used when dragging nodes on the canvas.
@@ -66,9 +74,8 @@ public sealed class ClassDiagramOptions
     // ── Source analysis ───────────────────────────────────────────────────────
 
     /// <summary>
-    /// When true <see cref="ClassDiagramSourceAnalyzer"/> includes private and
-    /// protected members when it parses C# source files.
-    /// When false only public members are extracted.
+    /// When true the Roslyn analyzer includes private and protected members.
+    /// When false only public and internal members are extracted.
     /// </summary>
     public bool IncludePrivateMembers { get; set; } = false;
 

@@ -32,6 +32,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Plugins.ClassDiagram.Options;
 
@@ -83,7 +84,14 @@ public static class RoslynClassDiagramAnalyzer
         ComputeMetrics(nodeMap);
 
         if (options.AutoLayout)
-            ApplyGridLayout(document.Classes, options);
+            LayoutStrategyFactory.Create(options.LayoutStrategy).Layout(document, new LayoutOptions
+            {
+                Strategy      = options.LayoutStrategy,
+                ColSpacing    = 60,
+                RowSpacing    = 80,
+                CanvasPadding = 40,
+                MinBoxWidth   = options.DefaultNodeWidth
+            });
 
         return document;
     }
@@ -528,22 +536,6 @@ public static class RoslynClassDiagramAnalyzer
                     };
                 }
             }
-        }
-    }
-
-    // ── Layout ───────────────────────────────────────────────────────────────
-
-    private static void ApplyGridLayout(List<ClassNode> nodes, ClassDiagramOptions options)
-    {
-        if (nodes.Count == 0) return;
-        const double colGap = 40.0, rowGap = 40.0;
-        int cols = Math.Max(1, (int)Math.Ceiling(Math.Sqrt(nodes.Count)));
-
-        var ordered = nodes.OrderBy(n => n.Kind).ThenBy(n => n.Name).ToList();
-        for (int i = 0; i < ordered.Count; i++)
-        {
-            ordered[i].X = (i % cols) * (options.DefaultNodeWidth  + colGap) + 20;
-            ordered[i].Y = (i / cols) * (options.DefaultNodeHeight + rowGap)  + 20;
         }
     }
 

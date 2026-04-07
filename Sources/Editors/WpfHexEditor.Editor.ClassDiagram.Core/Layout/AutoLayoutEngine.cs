@@ -38,7 +38,20 @@ namespace WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 /// Computes canvas positions and box sizes for all nodes in a
 /// <see cref="DiagramDocument"/> using a BFS layer assignment algorithm.
 /// </summary>
-public sealed class AutoLayoutEngine
+/// <summary>
+/// Creates the appropriate <see cref="ILayoutStrategy"/> for a given <see cref="LayoutStrategyKind"/>.
+/// </summary>
+public static class LayoutStrategyFactory
+{
+    public static ILayoutStrategy Create(LayoutStrategyKind kind) => kind switch
+    {
+        LayoutStrategyKind.ForceDirected => new ForceDirectedLayout(),
+        LayoutStrategyKind.Sugiyama      => new SugiyamaLayout(),
+        _                                => new AutoLayoutEngine()
+    };
+}
+
+public sealed class AutoLayoutEngine : ILayoutStrategy
 {
     /// <summary>
     /// Assigns <see cref="ClassNode.X"/>, <see cref="ClassNode.Y"/>,

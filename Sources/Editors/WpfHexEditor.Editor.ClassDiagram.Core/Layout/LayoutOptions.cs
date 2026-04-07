@@ -17,12 +17,45 @@
 
 namespace WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 
+/// <summary>Selects the auto-layout algorithm.</summary>
+public enum LayoutStrategyKind
+{
+    /// <summary>BFS layered (inheritance-tree based). Fast, deterministic.</summary>
+    Hierarchical,
+
+    /// <summary>Barnes-Hut force-directed spring simulation. Good for complex graphs.</summary>
+    ForceDirected,
+
+    /// <summary>Sugiyama layered graph drawing with crossing minimisation.</summary>
+    Sugiyama
+}
+
 /// <summary>
-/// Controls the sizing and spacing parameters used by <see cref="AutoLayoutEngine"/>.
-/// All values are in logical (device-independent) pixels.
+/// Controls sizing, spacing, and algorithm parameters for all layout strategies.
+/// All lengths are in logical (device-independent) pixels.
 /// </summary>
 public sealed class LayoutOptions
 {
+    // ── Strategy ──────────────────────────────────────────────────────────────
+
+    /// <summary>Which layout algorithm to use. Default: <see cref="LayoutStrategyKind.Hierarchical"/>.</summary>
+    public LayoutStrategyKind Strategy { get; init; } = LayoutStrategyKind.Hierarchical;
+
+    // ── Force-directed parameters ─────────────────────────────────────────────
+
+    /// <summary>Max simulation iterations for force-directed layout. Default 500.</summary>
+    public int ForceIterations { get; init; } = 500;
+
+    /// <summary>Ideal spring rest length between connected nodes (px). Default 260.</summary>
+    public double SpringLength { get; init; } = 260;
+
+    /// <summary>Node-node repulsion constant. Default 12000.</summary>
+    public double RepulsionK { get; init; } = 12_000;
+
+    /// <summary>Initial temperature (cooling factor start). Default 80.</summary>
+    public double InitialTemperature { get; init; } = 80;
+
+
     /// <summary>Horizontal gap between columns of nodes. Default 60.</summary>
     public double ColSpacing { get; init; } = 60;
 
