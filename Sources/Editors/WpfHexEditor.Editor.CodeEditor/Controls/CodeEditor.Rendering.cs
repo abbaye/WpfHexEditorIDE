@@ -803,92 +803,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
-            // ── TextLines fast-path: only repaint the dirty line range ──────────
-            // Triggered by single-char inserts/deletes that don't change the line count.
-            // Skips 25+ passes (backgrounds, breakpoints, scope guides, etc.) and redraws
-            // only the dirty rect. Falls back to full render if Y positions aren't ready.
-            if (dirtyFlags == RenderDirtyFlags.TextLines && !_linePositionsDirty && _lineHeight > 0)
-            {
-                int fromLine = Math.Max(_firstVisibleLine, _dirtyLineRange.From - 1);
-                int toLine   = Math.Min(_lastVisibleLine,  _dirtyLineRange.To   + 1);
-
-                // Resolve Y positions: prefer lookup; fall back to geometry when safe.
-                // Geometric fallback is valid only when InlineHints are off and no folded
-                // lines exist in range (both would shift Y positions unpredictably).
-                bool canGeometricFallback =
-                    !ShowInlineHints &&
-                    (_foldingEngine == null || !_foldingEngine.HasHiddenLinesInRange(fromLine, toLine));
-
-                double y0 = _lineYLookup.TryGetValue(fromLine, out double lv0) ? lv0
-                           : canGeometricFallback
-                               ? TopMargin + (fromLine - _firstVisibleLine) * _lineHeight
-                               : double.NaN;
-
-                double y1 = _lineYLookup.TryGetValue(toLine, out double lv1) ? lv1
-                           : canGeometricFallback
-                               ? TopMargin + (toLine  - _firstVisibleLine) * _lineHeight
-                               : double.NaN;
-
-                if (!double.IsNaN(y0) && !double.IsNaN(y1))
-                {
-                    double textLeft2 = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
-                    var dirtyRect = new Rect(textLeft2, y0, Math.Max(0, contentW - textLeft2), y1 - y0 + _lineHeight);
-
-                    dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
-                    dc.PushClip(new RectangleGeometry(dirtyRect));
-                    dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
-
-                    dc.DrawRectangle(EditorBackground, null, dirtyRect); // erase old content
-                    RenderTextContent(dc, fromLine, toLine);
-                    RenderFindResults(dc);
-                    RenderWordHighlights(dc);
-                    RenderBracketMatching(dc);
-
-                    dc.Pop(); dc.Pop(); dc.Pop(); // H-trans, dirtyClip, contentClip
-
-                    if (_frameCount++ % 60 == 0)
-                        _document.CleanupTokenCache(MaxCachedLines);
-
-                    RenderCaretVisual();
-                    return;
-                }
-                // Miss: Y position unknown and geometric fallback not safe — full render.
-                dirtyFlags |= RenderDirtyFlags.FullFrame;
-            }
-            // ── end TextLines fast-path ─────────────────────────────────────────
-
-            // ── Selection fast-path ─────────────────────────────────────────────
-            // Fired by mouse drag and Escape-key selection clears.
-            // The text content behind the selection is intact from the last full render;
-            // we only need to repaint the selection overlay (semi-transparent rect).
-            if (dirtyFlags == RenderDirtyFlags.Selection)
-            {
-                dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
-                dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
-                RenderSelection(dc);
-                RenderRectSelection(dc);
-                dc.Pop(); dc.Pop();
-                RenderCaretVisual();
-                return;
-            }
-            // ── end Selection fast-path ─────────────────────────────────────────
-
-            // ── Overlays fast-path ──────────────────────────────────────────────
-            // Fired by word-highlight recalc, Ctrl key down/up, and mouse-leave hover clear.
-            // Only find results, word highlights, and Ctrl-hover underline changed.
-            if (dirtyFlags == RenderDirtyFlags.Overlays)
-            {
-                dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
-                dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
-                RenderFindResults(dc);
-                RenderWordHighlights(dc);
-                _symbolHitZones.Clear();
-                RenderCtrlHoverUnderline(dc);
-                dc.Pop(); dc.Pop();
-                RenderCaretVisual();
-                return;
-            }
-            // ── end Overlays fast-path ──────────────────────────────────────────
+            // NOTE: Partial fast-paths (TextLines, Selection, Overlays) via OnRender are not
+            // viable in WPF: each OnRender call replaces the element's entire DrawingGroup,
+            // so drawing only a partial region leaves the rest transparent/blank.
+            // True partial repaints require dedicated DrawingVisual children (as done for the caret).
+            // All dirty flags fall through to the full render below.
 
             // -- Clip to content area (prevent drawing over scrollbars) --
             dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
