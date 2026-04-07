@@ -368,6 +368,8 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool? _spaceAfterComma;
     private bool? _indentCaseLabels;
     private bool? _organizeImports;
+    private int?  _xmlAttributeIndentLevels;
+    private bool? _xmlOneAttributePerLine;
 
     /// <summary>Override whfmt trimTrailingWhitespace. Null = inherit language default.</summary>
     public bool? TrimTrailingWhitespace
@@ -425,6 +427,20 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _organizeImports = value; Notify(); }
     }
 
+    /// <summary>Override xmlAttributeIndentLevels for XML/XAML. Null = inherit whfmt default (2).</summary>
+    public int? XmlAttributeIndentLevels
+    {
+        get => _xmlAttributeIndentLevels;
+        set { _xmlAttributeIndentLevels = value; Notify(); }
+    }
+
+    /// <summary>Override xmlOneAttributePerLine for XML/XAML. Null = inherit whfmt default (false).</summary>
+    public bool? XmlOneAttributePerLine
+    {
+        get => _xmlOneAttributePerLine;
+        set { _xmlOneAttributePerLine = value; Notify(); }
+    }
+
     /// <summary>
     /// Builds a <see cref="FormattingOverrides"/> from the user's current settings.
     /// Properties left at <see langword="null"/> inherit the whfmt language default.
@@ -442,6 +458,8 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         SpaceAfterComma            = _spaceAfterComma,
         IndentCaseLabels           = _indentCaseLabels,
         OrganizeImports            = _organizeImports,
+        XmlAttributeIndentLevels   = _xmlAttributeIndentLevels,
+        XmlOneAttributePerLine     = _xmlOneAttributePerLine,
     };
 
     // -- Sticky Scroll (#160) -------------------------------------------------

@@ -758,6 +758,20 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Override whfmt organizeImports. Null = inherit.</summary>
     public bool? OrganizeImports { get; set; }
 
+    // -- XML / XAML formatting --------------------------------------------------
+
+    /// <summary>
+    /// Attribute continuation indent multiplier for XML/XAML/HTML.
+    /// Default = 2 (double-indent, VS-style).
+    /// </summary>
+    public int XmlAttributeIndentLevels { get; set; } = 2;
+
+    /// <summary>
+    /// When true, each XML/XAML attribute is placed on its own line.
+    /// Default = false.
+    /// </summary>
+    public bool XmlOneAttributePerLine { get; set; } = false;
+
     // -- Column Rulers (#165) ---------------------------------------------------
 
     /// <summary>

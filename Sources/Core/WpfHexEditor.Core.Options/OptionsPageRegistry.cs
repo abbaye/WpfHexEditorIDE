@@ -40,6 +40,7 @@ public static class OptionsPageRegistry
         new("Code Editor",        "Inline Hints",     () => new CodeEditorInlineHintsPage(),    "💻"),
         new("Code Editor",        "Navigation",       () => new CodeEditorNavigationPage(),     "💻"),
         new("Code Editor",        "Formatting",       () => new CodeEditorFormattingPage(),     "💻"),
+        new("Code Editor",        "XML / XAML",       () => new XmlFormattingOptionsPage(),     "💻"),
 
         // Text Editor
         new("Text Editor",        "General",          () => new TextEditorOptionsPage(),      "📝"),

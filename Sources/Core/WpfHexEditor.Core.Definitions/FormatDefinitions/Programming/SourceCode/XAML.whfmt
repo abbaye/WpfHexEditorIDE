@@ -158,7 +158,9 @@
       "maxConsecutiveBlankLines": 1,
       "blankLineBeforeMethod": false,
       "blankLineAfterImports": false,
-      "quoteStyle": "double"
+      "quoteStyle": "double",
+      "xmlAttributeIndentLevels": 2,
+      "xmlOneAttributePerLine": false
     },
     "colorLiteralPatterns": [
       "#[0-9A-Fa-f]{8}",

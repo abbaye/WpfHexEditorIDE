@@ -539,6 +539,39 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => _formatOnSave = value;
         }
 
+        // XML / XAML attribute formatting overrides.
+        private int  _xmlAttributeIndentLevels = 2;
+        private bool _xmlOneAttributePerLine;
+
+        /// <summary>
+        /// Number of extra indent levels applied to attribute continuation lines in XML/XAML.
+        /// Default 2 matches VS XAML formatting (double-indent).
+        /// </summary>
+        public int XmlAttributeIndentLevels
+        {
+            get => _xmlAttributeIndentLevels;
+            set
+            {
+                _xmlAttributeIndentLevels = value;
+                if (_codeEditorOptions is not null)
+                    _codeEditorOptions.XmlAttributeIndentLevels = value;
+            }
+        }
+
+        /// <summary>
+        /// When true, each XML/XAML attribute is placed on its own line during formatting.
+        /// </summary>
+        public bool XmlOneAttributePerLine
+        {
+            get => _xmlOneAttributePerLine;
+            set
+            {
+                _xmlOneAttributePerLine = value;
+                if (_codeEditorOptions is not null)
+                    _codeEditorOptions.XmlOneAttributePerLine = value;
+            }
+        }
+
         // Stored reference to CodeEditorOptions for formatting overrides.
         private Options.CodeEditorOptions? _codeEditorOptions;
 
@@ -2699,7 +2732,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ColorSwatchPreviewEnabled = options.ColorSwatchPreview;
 
             // Code formatting (#159)
-            _formatOnSave = options.FormatOnSave;
+            _formatOnSave              = options.FormatOnSave;
+            _xmlAttributeIndentLevels  = options.XmlAttributeIndentLevels ?? 2;
+            _xmlOneAttributePerLine    = options.XmlOneAttributePerLine   ?? false;
 
             // Whitespace markers
             _whitespaceMode = options.WhitespaceMode;
