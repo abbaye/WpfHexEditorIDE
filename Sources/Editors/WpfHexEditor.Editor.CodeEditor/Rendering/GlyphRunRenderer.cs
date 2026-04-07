@@ -300,6 +300,11 @@ public sealed class GlyphRunRenderer
 
     #region P1-CE-05: GlyphRun segment cache builder
 
+    // Thread-local scratch list: built once, re-used across calls on the same thread.
+    // After building, contents are copied to a right-sized List<GlyphRunEntry> for storage,
+    // avoiding the internal capacity-doubling of List<T> on every cache-miss line.
+    [ThreadStatic] private static List<GlyphRunEntry>? _scratchEntries;
+
     /// <summary>
     /// Builds a list of <see cref="GlyphRunEntry"/> records from the given token sequence.
     /// Each entry's <c>GlyphRun.BaselineOrigin</c> is positioned at
@@ -317,7 +322,8 @@ public sealed class GlyphRunRenderer
         Brush                             urlBrush,
         string                            lineText = "")
     {
-        var result = new List<GlyphRunEntry>();
+        var scratch = _scratchEntries ??= new List<GlyphRunEntry>(16);
+        scratch.Clear();
 
         foreach (var token in tokens)
         {
@@ -337,7 +343,7 @@ public sealed class GlyphRunRenderer
                 Baseline,
                 gt);
 
-            result.Add(new GlyphRunEntry(
+            scratch.Add(new GlyphRunEntry(
                 run,
                 token.Foreground,
                 ReferenceEquals(token.Foreground, urlBrush),
@@ -345,7 +351,9 @@ public sealed class GlyphRunRenderer
                 token.Length));
         }
 
-        return result;
+        // Copy to a right-sized list for storage in CodeLine.GlyphRunCache.
+        // This avoids retaining the oversized scratch capacity in the cache.
+        return new List<GlyphRunEntry>(scratch);
     }
 
     /// <summary>

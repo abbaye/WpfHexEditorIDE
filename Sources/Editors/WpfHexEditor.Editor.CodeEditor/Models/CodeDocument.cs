@@ -194,7 +194,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             var jsonLine = Lines[line];
             column = Math.Max(0, Math.Min(column, jsonLine.Length));
 
-            jsonLine.Text = jsonLine.Text.Insert(column, ch.ToString());
+            // string.Create: single allocation instead of ch.ToString() + string.Insert (2 allocs).
+            var src = jsonLine.Text;
+            jsonLine.Text = string.Create(src.Length + 1, (src, column, ch), static (span, state) =>
+            {
+                var (s, col, c) = state;
+                s.AsSpan(0, col).CopyTo(span);
+                span[col] = c;
+                s.AsSpan(col).CopyTo(span[(col + 1)..]);
+            });
             IsModified = true;
 
             OnTextChanged(new TextChangedEventArgs
@@ -224,7 +232,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
                 // Clamp column to valid range
                 int col = Math.Max(0, Math.Min(position.Column, jsonLine.Text.Length));
-                jsonLine.Text = jsonLine.Text.Insert(col, text);
+
+                // string.Create: single allocation instead of string.Insert (avoids intermediate string).
+                var srcLine = jsonLine.Text;
+                jsonLine.Text = string.Create(srcLine.Length + text.Length, (srcLine, col, text), static (span, state) =>
+                {
+                    var (s, c, ins) = state;
+                    s.AsSpan(0, c).CopyTo(span);
+                    ins.AsSpan().CopyTo(span[c..]);
+                    s.AsSpan(c).CopyTo(span[(c + ins.Length)..]);
+                });
             }
             else
             {
@@ -250,8 +267,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
                 Lines.Insert(position.Line + lines.Length - 1,
                     new CodeLine(lines[lines.Length - 1] + rightPart, position.Line + lines.Length - 1));
 
-                // Update line numbers
-                UpdateLineNumbers(position.Line);
             }
 
             IsModified = true;
@@ -277,7 +292,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
                 return;
 
             char deletedChar = jsonLine.Text[column];
-            jsonLine.Text = jsonLine.Text.Remove(column, 1);
+
+            // string.Create: single allocation, avoids the intermediate Remove allocation.
+            var srcDel = jsonLine.Text;
+            jsonLine.Text = string.Create(srcDel.Length - 1, (srcDel, column), static (span, state) =>
+            {
+                var (s, col) = state;
+                s.AsSpan(0, col).CopyTo(span);
+                s.AsSpan(col + 1).CopyTo(span[col..]);
+            });
             IsModified = true;
 
             OnTextChanged(new TextChangedEventArgs
@@ -339,9 +362,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             // Insert new line
             Lines.Insert(line + 1, new CodeLine(indent + rightPart, line + 1));
 
-            // Update line numbers
-            UpdateLineNumbers(line + 1);
-
             IsModified = true;
             OnTextChanged(new TextChangedEventArgs
             {
@@ -369,9 +389,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
             string deletedText = Lines[line].Text;
             Lines.RemoveAt(line);
-
-            // Update line numbers
-            UpdateLineNumbers(line);
 
             IsModified = true;
             OnTextChanged(new TextChangedEventArgs
@@ -450,9 +467,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
                 for (int i = end.Line; i > start.Line; i--)
                     Lines.RemoveAt(i);
 
-                UpdateLineNumbers(start.Line);
-
-                // Notify listeners (undo engine, syntax highlighter, LSP, â€¦) of the deletion.
+                // Notify listeners (undo engine, syntax highlighter, LSP, …) of the deletion.
                 OnTextChanged(new TextChangedEventArgs
                 {
                     ChangeType = TextChangeType.Delete,
@@ -580,17 +595,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             while (i < text.Length && (text[i] == ' ' || text[i] == '\t'))
                 i++;
             return text[..i];
-        }
-
-        /// <summary>
-        /// Update line numbers after insertion/deletion
-        /// </summary>
-        private void UpdateLineNumbers(int startLine)
-        {
-            for (int i = startLine; i < Lines.Count; i++)
-            {
-                Lines[i].LineNumber = i;
-            }
         }
 
         /// <summary>

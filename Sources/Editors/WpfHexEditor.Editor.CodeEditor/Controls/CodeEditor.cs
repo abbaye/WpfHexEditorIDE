@@ -503,6 +503,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // 1-based execution line (null when no debug session is paused).
         private int? _executionLineOneBased;
 
+        // Reusable geometry segment list — avoids per-frame allocation during execution/breakpoint rendering.
+        private readonly List<Geometry> _renderSegments = new();
+        // Reusable set for tracking highlighted breakpoint lines within a single render pass.
+        private readonly HashSet<int> _renderHighlightedLines = new();
+
+        // Dedicated DrawingVisual for the caret so blink ticks never trigger a full OnRender.
+        // Added last to _scrollBarChildren so it composites on top of all content.
+        private readonly DrawingVisual _caretVisual = new();
+
+        // Dirty line range captured from _document.DirtyLines when TextLines flag is set.
+        // (from, to) are 0-based logical line indices. Expanded by 1 line each side at render time.
+        private (int From, int To) _dirtyLineRange = (0, int.MaxValue);
+
+        // ── Dirty-region rendering (Phase 4) ────────────────────────────────────
+        // Tracks which parts of the viewport need repainting; avoids full-frame
+        // redraws for caret blinks, selection changes, and other partial updates.
+        [Flags]
+        private enum RenderDirtyFlags
+        {
+            None      = 0,
+            Caret     = 1 << 0,   // only caret rect changed (blink tick)
+            Selection = 1 << 1,   // selection overlay changed
+            TextLines = 1 << 2,   // one or more line contents changed
+            Overlays  = 1 << 3,   // breakpoints, execution marker, find highlights
+            FullFrame = 1 << 7    // scroll, fold, theme — full repaint required
+        }
+
+        private RenderDirtyFlags _dirtyFlags = RenderDirtyFlags.FullFrame;
+
+        /// <summary>
+        /// Marks the given dirty region and schedules a WPF visual update.
+        /// Prefer over <c>InvalidateVisual()</c> — accumulates flags so multiple
+        /// callers in one frame are coalesced into a single render pass.
+        /// </summary>
+        private void InvalidateRegion(RenderDirtyFlags flags)
+        {
+            _dirtyFlags |= flags;
+            InvalidateVisual();
+        }
+
         // Sticky scroll header (#160).
         private StickyScrollHeader? _stickyScrollHeader;
         private bool   _stickyScrollEnabled         = true;
@@ -590,6 +630,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // Incremental max-width tracking (P1-CE-02) — O(1) on growth, O(n) only on shrink
         private int _cachedMaxLineLength;
+        // Number of lines whose length equals _cachedMaxLineLength.
+        // When it drops to 0 a rescan is needed; avoids LINQ allocation on every shrink.
+        private int _maxLengthCount;
 
         // Per-line-number FormattedText cache (P1-CE-03) — eliminates 2,400 allocs/s at 60Hz
         private readonly Dictionary<int, FormattedText> _lineNumberCache = new();
@@ -2603,6 +2646,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _stickyScrollHeader.ScopeClicked += OnStickyScrollScopeClicked;
             _scrollBarChildren.Add(_stickyScrollHeader);
 
+            // Caret visual is always last so it composites on top of all content.
+            _scrollBarChildren.Add(_caretVisual);
+
             // Debounce timer: update word highlights 250 ms after the caret stops moving.
             _wordHighlightTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
             _wordHighlightTimer.Tick += (_, _) => { _wordHighlightTimer.Stop(); UpdateWordHighlights(); };
@@ -2957,12 +3003,44 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Caret blink timer tick handler - toggles visibility
+        /// Redraws the caret DrawingVisual only — zero cost to the main OnRender pipeline.
+        /// Must be called after every caret state change (blink toggle, position change, focus change).
+        /// Also called at the end of OnRender to sync the caret over freshly rendered content.
+        /// </summary>
+        private void RenderCaretVisual()
+        {
+            if (_caretVisual is null || !IsLoaded) return;
+
+            using var dc = _caretVisual.RenderOpen();
+
+            if (_document == null || _document.Lines.Count == 0)
+                return;
+
+            bool hasVBar = _vScrollBar?.Visibility == Visibility.Visible;
+            bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+            double contentW = ActualWidth  - (hasVBar ? ScrollBarThickness : 0);
+            double contentH = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            // Mirror the exact clip + transform stack active when RenderCursor is called in OnRender.
+            dc.PushClip(new System.Windows.Media.RectangleGeometry(
+                new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
+            dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
+
+            RenderCursor(dc);
+
+            dc.Pop(); // H-scroll transform
+            dc.Pop(); // text-area clip
+        }
+
+        /// <summary>
+        /// Caret blink timer tick handler — redraws only the caret DrawingVisual.
+        /// Does NOT trigger InvalidateVisual on the main FrameworkElement.
         /// </summary>
         private void CaretTimer_Tick(object sender, EventArgs e)
         {
             _caretVisible = !_caretVisible;
-            InvalidateVisual();
+            RenderCaretVisual();
         }
 
         /// <summary>
@@ -2977,6 +3055,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _caretTimer.Stop();
                 _caretTimer.Start();
             }
+            RenderCaretVisual();
+            SyncScrollMarkerCaretAndSelection();
+        }
+
+        /// <summary>
+        /// Pushes caret + selection positions to the scroll marker panel.
+        /// Called when either changes — not from OnRender — to avoid per-frame panel redraws.
+        /// </summary>
+        private void SyncScrollMarkerCaretAndSelection()
+        {
+            if (_codeScrollMarkerPanel == null || _document == null) return;
+            int visibleLines = Math.Max(1, _document.Lines.Count - (_foldingEngine?.TotalHiddenLineCount ?? 0));
+            bool hasSelection = !_selection.IsEmpty && _selection.NormalizedStart.Line != _selection.NormalizedEnd.Line;
+            _codeScrollMarkerPanel.UpdateCaretAndSelection(
+                _cursorLine,
+                hasSelection ? _selection.NormalizedStart.Line : -1,
+                hasSelection ? _selection.NormalizedEnd.Line   : -1,
+                visibleLines);
         }
 
         /// <summary>

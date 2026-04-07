@@ -740,6 +740,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document == null || _document.Lines.Count == 0)
                 return;
 
+            // Consume and reset dirty flags for this frame.
+            var dirtyFlags = _dirtyFlags;
+            _dirtyFlags    = RenderDirtyFlags.None;
+
             _refreshStopwatch.Restart();
 
             // Cache DPI once per render pass; used by RenderInlineHints and RenderLineNumbers (OPT-PERF-03).
@@ -765,8 +769,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Calculate visible line range
             int prevFirstVisible = _firstVisibleLine, prevLastVisible = _lastVisibleLine;
             CalculateVisibleLines();
-            // Pre-compute per-visible-line Y positions; only declaration lines get +HintLineHeight.
-            ComputeVisibleLinePositions();
 
             // OPT-D: rebuild per-line Y positions only when the visible range, InlineHints, or
             // folding state changed — not on every caret-blink render frame.
@@ -800,6 +802,93 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     InvalidateArrange(); // re-position header at its new height
                 }
             }
+
+            // ── TextLines fast-path: only repaint the dirty line range ──────────
+            // Triggered by single-char inserts/deletes that don't change the line count.
+            // Skips 25+ passes (backgrounds, breakpoints, scope guides, etc.) and redraws
+            // only the dirty rect. Falls back to full render if Y positions aren't ready.
+            if (dirtyFlags == RenderDirtyFlags.TextLines && !_linePositionsDirty && _lineHeight > 0)
+            {
+                int fromLine = Math.Max(_firstVisibleLine, _dirtyLineRange.From - 1);
+                int toLine   = Math.Min(_lastVisibleLine,  _dirtyLineRange.To   + 1);
+
+                // Resolve Y positions: prefer lookup; fall back to geometry when safe.
+                // Geometric fallback is valid only when InlineHints are off and no folded
+                // lines exist in range (both would shift Y positions unpredictably).
+                bool canGeometricFallback =
+                    !ShowInlineHints &&
+                    (_foldingEngine == null || !_foldingEngine.HasHiddenLinesInRange(fromLine, toLine));
+
+                double y0 = _lineYLookup.TryGetValue(fromLine, out double lv0) ? lv0
+                           : canGeometricFallback
+                               ? TopMargin + (fromLine - _firstVisibleLine) * _lineHeight
+                               : double.NaN;
+
+                double y1 = _lineYLookup.TryGetValue(toLine, out double lv1) ? lv1
+                           : canGeometricFallback
+                               ? TopMargin + (toLine  - _firstVisibleLine) * _lineHeight
+                               : double.NaN;
+
+                if (!double.IsNaN(y0) && !double.IsNaN(y1))
+                {
+                    double textLeft2 = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+                    var dirtyRect = new Rect(textLeft2, y0, Math.Max(0, contentW - textLeft2), y1 - y0 + _lineHeight);
+
+                    dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
+                    dc.PushClip(new RectangleGeometry(dirtyRect));
+                    dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
+
+                    dc.DrawRectangle(EditorBackground, null, dirtyRect); // erase old content
+                    RenderTextContent(dc, fromLine, toLine);
+                    RenderFindResults(dc);
+                    RenderWordHighlights(dc);
+                    RenderBracketMatching(dc);
+
+                    dc.Pop(); dc.Pop(); dc.Pop(); // H-trans, dirtyClip, contentClip
+
+                    if (_frameCount++ % 60 == 0)
+                        _document.CleanupTokenCache(MaxCachedLines);
+
+                    RenderCaretVisual();
+                    return;
+                }
+                // Miss: Y position unknown and geometric fallback not safe — full render.
+                dirtyFlags |= RenderDirtyFlags.FullFrame;
+            }
+            // ── end TextLines fast-path ─────────────────────────────────────────
+
+            // ── Selection fast-path ─────────────────────────────────────────────
+            // Fired by mouse drag and Escape-key selection clears.
+            // The text content behind the selection is intact from the last full render;
+            // we only need to repaint the selection overlay (semi-transparent rect).
+            if (dirtyFlags == RenderDirtyFlags.Selection)
+            {
+                dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
+                dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
+                RenderSelection(dc);
+                RenderRectSelection(dc);
+                dc.Pop(); dc.Pop();
+                RenderCaretVisual();
+                return;
+            }
+            // ── end Selection fast-path ─────────────────────────────────────────
+
+            // ── Overlays fast-path ──────────────────────────────────────────────
+            // Fired by word-highlight recalc, Ctrl key down/up, and mouse-leave hover clear.
+            // Only find results, word highlights, and Ctrl-hover underline changed.
+            if (dirtyFlags == RenderDirtyFlags.Overlays)
+            {
+                dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
+                dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
+                RenderFindResults(dc);
+                RenderWordHighlights(dc);
+                _symbolHitZones.Clear();
+                RenderCtrlHoverUnderline(dc);
+                dc.Pop(); dc.Pop();
+                RenderCaretVisual();
+                return;
+            }
+            // ── end Overlays fast-path ──────────────────────────────────────────
 
             // -- Clip to content area (prevent drawing over scrollbars) --
             dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
@@ -849,7 +938,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 else
                 {
                     // Multi-line — union rounded segments (same pattern as selection).
-                    var segs = new List<Geometry>();
+                    _renderSegments.Clear();
                     for (int j = execStart0; j <= execEnd0; j++)
                     {
                         if (!_lineYLookup.TryGetValue(j, out double ly) || _document == null) continue;
@@ -859,14 +948,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         double hAdj = j == execStart0 ? _lineHeight + SelectionCornerRadius
                                     : j == execEnd0   ? _lineHeight + SelectionCornerRadius
                                     : _lineHeight + SelectionCornerRadius * 2;
-                        segs.Add(new RectangleGeometry(new Rect(bpLeft, yAdj, w, hAdj),
+                        _renderSegments.Add(new RectangleGeometry(new Rect(bpLeft, yAdj, w, hAdj),
                             SelectionCornerRadius, SelectionCornerRadius));
                     }
-                    if (segs.Count > 0)
+                    if (_renderSegments.Count > 0)
                     {
-                        Geometry combined = segs[0];
-                        for (int s = 1; s < segs.Count; s++)
-                            combined = Geometry.Combine(combined, segs[s], GeometryCombineMode.Union, null);
+                        Geometry combined = _renderSegments[0];
+                        for (int s = 1; s < _renderSegments.Count; s++)
+                            combined = Geometry.Combine(combined, _renderSegments[s], GeometryCombineMode.Union, null);
                         combined.Freeze();
                         dc.DrawGeometry(execBrush, null, combined);
                     }
@@ -882,11 +971,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 var bpOffBrush  = TryFindResource("DB_BreakpointLineDisabledBackgroundBrush") as System.Windows.Media.Brush;
                 double bpLeft   = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-                var highlightedLines = new HashSet<int>();
+                _renderHighlightedLines.Clear();
 
                 for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
                 {
-                    if (highlightedLines.Contains(i)) continue;
+                    if (_renderHighlightedLines.Contains(i)) continue;
 
                     int line1 = i + 1;
                     if (_executionLineOneBased == line1) continue;
@@ -914,16 +1003,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             dc.DrawRoundedRectangle(brush, null,
                                 new Rect(bpLeft, ly, w, _lineHeight),
                                 SelectionCornerRadius, SelectionCornerRadius);
-                            highlightedLines.Add(startLine0);
+                            _renderHighlightedLines.Add(startLine0);
                         }
                     }
                     else
                     {
                         // Multi-line — union rounded segments.
-                        var segs = new List<Geometry>();
+                        _renderSegments.Clear();
                         for (int j = startLine0; j <= endLine0; j++)
                         {
-                            if (highlightedLines.Contains(j)) continue;
+                            if (_renderHighlightedLines.Contains(j)) continue;
                             if (_executionLineOneBased == j + 1) continue;
                             if (!_lineYLookup.TryGetValue(j, out double ly) || _document == null
                                 || j >= _document.Lines.Count) continue;
@@ -936,15 +1025,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             double hAdj = j == startLine0 ? _lineHeight + SelectionCornerRadius
                                         : j == endLine0   ? _lineHeight + SelectionCornerRadius
                                         : _lineHeight + SelectionCornerRadius * 2;
-                            segs.Add(new RectangleGeometry(new Rect(bpLeft, yAdj, w, hAdj),
+                            _renderSegments.Add(new RectangleGeometry(new Rect(bpLeft, yAdj, w, hAdj),
                                 SelectionCornerRadius, SelectionCornerRadius));
-                            highlightedLines.Add(j);
+                            _renderHighlightedLines.Add(j);
                         }
-                        if (segs.Count > 0)
+                        if (_renderSegments.Count > 0)
                         {
-                            Geometry combined = segs[0];
-                            for (int s = 1; s < segs.Count; s++)
-                                combined = Geometry.Combine(combined, segs[s], GeometryCombineMode.Union, null);
+                            Geometry combined = _renderSegments[0];
+                            for (int s = 1; s < _renderSegments.Count; s++)
+                                combined = Geometry.Combine(combined, _renderSegments[s], GeometryCombineMode.Union, null);
                             combined.Freeze();
                             dc.DrawGeometry(brush, null, combined);
                         }
@@ -1006,8 +1095,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 8. Bracket matching (Phase 6)
             RenderBracketMatching(dc);
 
-            // 9. Cursor
-            RenderCursor(dc);
+            // 9. Cursor — drawn by _caretVisual (DrawingVisual child), not here.
+            //    RenderCaretVisual() is called at the end of OnRender to sync over fresh content.
 
             dc.Pop(); // H translate transform
             dc.Pop(); // text area clip
@@ -1029,6 +1118,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _refreshStopwatch.Stop();
             _sbRefreshTime.Value = $"{_refreshStopwatch.ElapsedMilliseconds} ms";
+
+            // Re-sync the caret DrawingVisual over freshly rendered content.
+            RenderCaretVisual();
 
             // Schedule background highlighting only when the visible range changed or dirty lines exist.
             // Never re-schedule from a render triggered by the pipeline itself (breaks render loop).
@@ -2159,30 +2251,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
-            InvalidateVisual();
+            // Word highlights changed — only the overlay layer needs redrawing.
+            InvalidateRegion(RenderDirtyFlags.Overlays);
 
-            // Update scroll bar tick marks.
+            // Update scroll bar tick marks (word markers only — caret/selection updated separately).
             if (_codeScrollMarkerPanel != null)
             {
                 if (_wordHighlights.Count == 0)
                     _codeScrollMarkerPanel.ClearWordMarkers();
                 else
-                {
                     _codeScrollMarkerPanel.UpdateWordMarkers(_wordHighlightLines,
                         Math.Max(1, _document?.TotalLines ?? 1));
-                }
-
-                // Sync caret + selection markers every render pass.
-                if (_document != null)
-                {
-                    int visibleLines = Math.Max(1, _document.Lines.Count - (_foldingEngine?.TotalHiddenLineCount ?? 0));
-                    bool hasSelection = !_selection.IsEmpty && _selection.NormalizedStart.Line != _selection.NormalizedEnd.Line;
-                    _codeScrollMarkerPanel.UpdateCaretAndSelection(
-                        _cursorLine,
-                        hasSelection ? _selection.NormalizedStart.Line : -1,
-                        hasSelection ? _selection.NormalizedEnd.Line   : -1,
-                        visibleLines);
-                }
             }
         }
 
@@ -2325,6 +2404,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     }
                 }
             }
+        }
+
+        /// <summary>Renders only the lines in [fromLine, toLine] — used by the TextLines fast-path.</summary>
+        private void RenderTextContent(DrawingContext dc, int fromLine, int toLine)
+        {
+            int savedFirst = _firstVisibleLine, savedLast = _lastVisibleLine;
+            _firstVisibleLine = fromLine;
+            _lastVisibleLine  = toLine;
+            RenderTextContent(dc);
+            _firstVisibleLine = savedFirst;
+            _lastVisibleLine  = savedLast;
         }
 
         private void RenderTextContent(DrawingContext dc)
