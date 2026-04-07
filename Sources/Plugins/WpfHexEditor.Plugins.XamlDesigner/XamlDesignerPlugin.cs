@@ -33,12 +33,14 @@ using System.Windows;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.XamlDesigner.Controls;
 using WpfHexEditor.Plugins.XamlDesigner.Panels;
+using WpfHexEditor.Plugins.XamlDesigner.Services;
 using WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 using WpfHexEditor.Plugins.XamlDesigner.Options;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Descriptors;
+using WpfHexEditor.SDK.ExtensionPoints.XamlDesigner;
 using WpfHexEditor.SDK.Models;
 
 namespace WpfHexEditor.Plugins.XamlDesigner;
@@ -97,6 +99,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     // Track the currently wired host to properly unwire on document switch.
     private XamlDesignerSplitHost?     _wiredHost;
+
+    // SDK bridge — exposes live element tree to other plugins (e.g. Document Structure).
+    private XamlDesignerServiceImpl?   _designerService;
 
     // ── Debounce state for resource rescan ────────────────────────────────────
     private System.Windows.Threading.DispatcherTimer? _resourceRescanTimer;
@@ -259,6 +264,10 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Register menu items.
         RegisterMenuItems(context);
 
+        // Register SDK bridge for inter-plugin element tree access (Document Structure, etc.).
+        _designerService = new XamlDesignerServiceImpl(context.FocusContext, context.DocumentHost);
+        context.ExtensionRegistry.Register<IXamlDesignerService>(Id, _designerService);
+
         // Subscribe to document focus changes so panels sync to the active designer.
         context.FocusContext.FocusChanged += OnFocusChanged;
 
@@ -291,8 +300,12 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     public Task ShutdownAsync(CancellationToken ct = default)
     {
+        _designerService?.Dispose();
         if (_context is not null)
+        {
+            _context.ExtensionRegistry.UnregisterAll(Id);
             _context.FocusContext.FocusChanged -= OnFocusChanged;
+        }
 
         UnwireCurrentHost();
 

@@ -446,6 +446,18 @@ public sealed record EndOfBlockHintSettings(
 // Description: Per-language code formatting configuration from whfmt.
 // ==========================================================
 
+/// <summary>
+/// Structural formatting strategy for the fallback formatter.
+/// Derived automatically from <c>foldingRules.tagBased</c> in the whfmt file.
+/// </summary>
+public enum FormatterStrategy
+{
+    /// <summary>Brace-counted re-indentation (C, C#, Java, JS…). Default.</summary>
+    Brace,
+    /// <summary>Tag-aware re-indentation for XML/XAML/HTML markup languages.</summary>
+    Xml,
+}
+
 /// <summary>Brace placement style for languages with C-style blocks.</summary>
 public enum BraceStyle
 {
@@ -554,6 +566,40 @@ public sealed record FormattingRules
     /// <summary>Uppercase SQL reserved keywords (SELECT, FROM, WHERE…). Only relevant for SQL.</summary>
     public bool SqlKeywordsUppercase { get; init; }
 
+    // ── XML / XAML-specific ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// Indent level multiplier for attribute continuation lines in XML/XAML/HTML.
+    /// Default = 2 (double-indent from the element's own level, matching VS XAML style).
+    /// Only used when <see cref="FormatterStrategy"/> == <see cref="FormatterStrategy.Xml"/>.
+    /// </summary>
+    public int XmlAttributeIndentLevels { get; init; } = 2;
+
+    /// <summary>
+    /// When true, each XML/XAML attribute is placed on its own line
+    /// (first attribute stays on the tag line; subsequent attributes are indented).
+    /// Default = false. Only used when <see cref="FormatterStrategy"/> == <see cref="FormatterStrategy.Xml"/>.
+    /// </summary>
+    public bool XmlOneAttributePerLine { get; init; } = false;
+
+    // ── Formatter strategy (auto-derived from foldingRules.tagBased) ────────
+
+    /// <summary>
+    /// Structural formatting strategy used by the fallback formatter.
+    /// Set to <see cref="FormatterStrategy.Xml"/> for tag-based languages (XAML, XML, HTML).
+    /// Derived from <c>foldingRules.tagBased</c> in the whfmt — no manual override needed.
+    /// </summary>
+    public FormatterStrategy FormatterStrategy { get; init; } = FormatterStrategy.Brace;
+
+    /// <summary>
+    /// Optional allow-list of formatting rule IDs supported by this language.
+    /// When <see langword="null"/>, all formatting controls are enabled (backward-compatible default).
+    /// When set, only the listed rule IDs are enabled in the Formatting options page.
+    /// Rule IDs match the JSON keys in the whfmt <c>formattingRules</c> block
+    /// (e.g. "spaceAfterKeywords", "xmlOneAttributePerLine").
+    /// </summary>
+    public IReadOnlyList<string>? SupportedRules { get; init; }
+
     // ── Pattern keywords (whfmt-driven, replaces hardcoded regexes) ─────────
 
     /// <summary>
@@ -626,6 +672,8 @@ public sealed record FormattingRules
             IndentCaseLabels           = ov.IndentCaseLabels ?? IndentCaseLabels,
             OrganizeImports            = ov.OrganizeImports ?? OrganizeImports,
             MaxLineLength              = ov.MaxLineLength ?? MaxLineLength,
+            XmlAttributeIndentLevels   = ov.XmlAttributeIndentLevels ?? XmlAttributeIndentLevels,
+            XmlOneAttributePerLine     = ov.XmlOneAttributePerLine   ?? XmlOneAttributePerLine,
             KeywordParenKeywords       = ov.KeywordParenKeywords ?? KeywordParenKeywords,
             BinaryOperators            = ov.BinaryOperators ?? BinaryOperators,
             MethodDeclKeywords         = ov.MethodDeclKeywords ?? MethodDeclKeywords,
@@ -652,6 +700,8 @@ public sealed class FormattingOverrides
     public bool?       IndentCaseLabels           { get; set; }
     public bool?       OrganizeImports            { get; set; }
     public int?        MaxLineLength              { get; set; }
+    public int?        XmlAttributeIndentLevels   { get; set; }
+    public bool?       XmlOneAttributePerLine     { get; set; }
     public IReadOnlyList<string>? KeywordParenKeywords { get; set; }
     public IReadOnlyList<string>? BinaryOperators      { get; set; }
     public IReadOnlyList<string>? MethodDeclKeywords   { get; set; }

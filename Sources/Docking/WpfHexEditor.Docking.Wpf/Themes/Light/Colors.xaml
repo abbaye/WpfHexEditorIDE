@@ -327,6 +327,9 @@
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#B8B8C0"/>
     <SolidColorBrush x:Key="CE_GutterError"       Color="#F44747"/>
     <SolidColorBrush x:Key="CE_GutterWarning"     Color="#FF8C00"/>
+    <SolidColorBrush x:Key="CE_GutterAdded"    Color="#368C3D"/>
+    <SolidColorBrush x:Key="CE_GutterModified" Color="#B38600"/>
+    <SolidColorBrush x:Key="CE_GutterDeleted" Color="#C74E39"/>
     <SolidColorBrush x:Key="CE_RulerBrush"    Color="#3C404040"/>
     <SolidColorBrush x:Key="CE_Bracket_1"    Color="#C07000"/>
     <SolidColorBrush x:Key="CE_Bracket_2"    Color="#9B009B"/>
@@ -651,6 +654,8 @@
     <!-- Peek Definition popup tokens (GD_*) -->
     <SolidColorBrush x:Key="GD_PeekBackground"       Color="#F3F3F3" />
     <SolidColorBrush x:Key="GD_PeekBorder"           Color="#C8C8C8" />
+    <SolidColorBrush x:Key="GD_PeekTargetLine"       Color="#C8DFFB" />
+    <SolidColorBrush x:Key="GD_PeekHoverLine"         Color="#F0F0F0" />
     <SolidColorBrush x:Key="GD_PeekTitleBar"         Color="#E8E8E8" />
     <SolidColorBrush x:Key="GD_PeekTitleForeground"  Color="#1E1E1E" />
     <SolidColorBrush x:Key="GD_PeekNavLinkForeground" Color="#0066CC" />

@@ -192,7 +192,8 @@
         "async",
         "class",
         "export"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "colorLiteralPatterns": [
       "#[0-9A-Fa-f]{8}",

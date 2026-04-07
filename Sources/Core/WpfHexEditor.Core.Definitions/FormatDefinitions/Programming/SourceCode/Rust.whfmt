@@ -189,7 +189,8 @@
         "struct",
         "enum",
         "trait"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "use std::io;\nuse std::fs;\n\nfn go(x:i32,y:i32){\nif x>0{\nmatch x{\n1=>return,\n_=>{}\n}\n}\n}",
     "previewSamples": {

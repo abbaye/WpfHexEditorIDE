@@ -59,7 +59,8 @@
         "abstract",
         "sealed",
         "partial"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "scriptGlobals": [
       {

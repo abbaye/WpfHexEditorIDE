@@ -200,7 +200,8 @@
       "spaceAfterComma": true,
       "organizeImports": false,
       "separateSystemImports": false,
-      "maxLineLength": 80
+      "maxLineLength": 80,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterComma"]
     },
     "colorLiteralPatterns": [
       "#[0-9A-Fa-f]{8}",

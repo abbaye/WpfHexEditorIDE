@@ -94,6 +94,8 @@ public partial class MainWindow
             () => _ = OnConvertSolutionFormatAsync(toSlnx: true));
         Reg(CommandIds.File.ConvertToSln,  "Convert Solution to .sln",  "File", null,             "\uE8AB",
             () => _ = OnConvertSolutionFormatAsync(toSlnx: false));
+        Reg(CommandIds.File.ConvertToWhsln, "Convert Solution to .whsln", "File", null,            "\uE8AB",
+            () => _ = OnConvertToWhslnAsync());
 
         // ── Workspace ────────────────────────────────────────────────────────
         Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",
@@ -303,6 +305,8 @@ public partial class MainWindow
             () => ExecuteGoToDefinitionOnActiveEditor());
         Reg(CommandIds.Editor.GoToImplementation, "Go to Implementation",  "Editor", "Ctrl+F12",   "\uE8AD",
             () => ExecuteGoToImplementationOnActiveEditor());
+        Reg(CommandIds.Editor.PeekDefinition,     "Peek Definition",       "Editor", "Alt+F12",    "\uE7C3",
+            () => ExecutePeekDefinitionOnActiveEditor());
         Reg(CommandIds.Editor.ShowCallHierarchy,  "Show Call Hierarchy",   "Editor", "Shift+Alt+H",  "\uE81E",
             () => ExecuteCallHierarchyOnActiveEditor());
         Reg(CommandIds.Editor.ShowTypeHierarchy,  "Show Type Hierarchy",   "Editor", "Ctrl+Alt+F12", "\uE81E",
@@ -370,6 +374,13 @@ public partial class MainWindow
         if (_documentManager?.ActiveDocument?.AssociatedEditor
                 is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost host)
             _ = host.PrimaryEditor.GoToImplementationAsync();
+    }
+
+    private void ExecutePeekDefinitionOnActiveEditor()
+    {
+        if (_documentManager?.ActiveDocument?.AssociatedEditor
+                is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost host)
+            _ = host.PrimaryEditor.PeekDefinitionAsync();
     }
 
     private void ExecuteCallHierarchyOnActiveEditor()

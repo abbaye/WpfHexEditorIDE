@@ -105,6 +105,8 @@ public static class StructuralFormatter
     public static string FormatDocument(string text, FormattingRules? rules)
     {
         if (rules is null || string.IsNullOrEmpty(text)) return text;
+        if (rules.FormatterStrategy == FormatterStrategy.Xml)
+            return XmlStructuralFormatter.FormatDocument(text, rules);
         return ApplyAll(text, 0, -1, rules);
     }
 
@@ -112,6 +114,9 @@ public static class StructuralFormatter
     {
         if (rules is null || string.IsNullOrEmpty(text)) return text;
         if (startLine < 0 || endLine < startLine) return text;
+        // XML selection formatting falls back to full-document (range context unavailable).
+        if (rules.FormatterStrategy == FormatterStrategy.Xml)
+            return XmlStructuralFormatter.FormatDocument(text, rules);
         return ApplyAll(text, startLine, endLine, rules);
     }
 

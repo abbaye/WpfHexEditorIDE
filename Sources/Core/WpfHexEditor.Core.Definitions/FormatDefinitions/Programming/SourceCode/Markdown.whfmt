@@ -57,7 +57,8 @@
       "lineEnding": "lf",
       "maxConsecutiveBlankLines": 1,
       "blankLineBeforeMethod": false,
-      "blankLineAfterImports": false
+      "blankLineAfterImports": false,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline"]
     },
     "diagnosticPrefix": "MD",
     "id": "markdown",

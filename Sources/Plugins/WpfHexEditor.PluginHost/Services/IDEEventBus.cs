@@ -30,6 +30,7 @@ namespace WpfHexEditor.PluginHost.Services;
 public sealed class IDEEventBus : IIDEEventBus, IDisposable
 {
     private readonly ReaderWriterLockSlim _lock = new(LockRecursionPolicy.NoRecursion);
+    private volatile bool _disposed;
     // Type → list of handler wrappers (boxed delegates held weakly).
     private readonly Dictionary<Type, List<HandlerEntry>> _handlers = [];
     // Rolling event log (last 100).
@@ -164,6 +165,7 @@ public sealed class IDEEventBus : IIDEEventBus, IDisposable
 
     private List<HandlerEntry> GetHandlers(Type eventType)
     {
+        if (_disposed) return [];
         _lock.EnterReadLock();
         try
         {
@@ -186,7 +188,11 @@ public sealed class IDEEventBus : IIDEEventBus, IDisposable
         }
     }
 
-    public void Dispose() => _lock.Dispose();
+    public void Dispose()
+    {
+        _disposed = true;
+        _lock.Dispose();
+    }
 
     // -------------------------------------------------------------------------
     // Private types

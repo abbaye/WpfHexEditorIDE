@@ -273,6 +273,22 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _wrapSelectionInPairs = value; Notify(); }
     }
 
+    private AutoIndentMode _autoIndentMode = AutoIndentMode.KeepIndent;
+
+    /// <summary>
+    /// Controls automatic indentation when Enter is pressed.
+    /// <list type="bullet">
+    ///   <item><term>None</term><description>No indentation — caret lands at column 0.</description></item>
+    ///   <item><term>KeepIndent</term><description>Copy leading whitespace of the previous line (default).</description></item>
+    ///   <item><term>Smart</term><description>Language-aware: increases indent after <c>{</c>, decreases after <c>}</c>.</description></item>
+    /// </list>
+    /// </summary>
+    public AutoIndentMode AutoIndentMode
+    {
+        get => _autoIndentMode;
+        set { _autoIndentMode = value; Notify(); }
+    }
+
     private bool _enableWordHighlight = true;
 
     /// <summary>
@@ -352,6 +368,8 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     private bool? _spaceAfterComma;
     private bool? _indentCaseLabels;
     private bool? _organizeImports;
+    private int?  _xmlAttributeIndentLevels;
+    private bool? _xmlOneAttributePerLine;
 
     /// <summary>Override whfmt trimTrailingWhitespace. Null = inherit language default.</summary>
     public bool? TrimTrailingWhitespace
@@ -409,6 +427,20 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _organizeImports = value; Notify(); }
     }
 
+    /// <summary>Override xmlAttributeIndentLevels for XML/XAML. Null = inherit whfmt default (2).</summary>
+    public int? XmlAttributeIndentLevels
+    {
+        get => _xmlAttributeIndentLevels;
+        set { _xmlAttributeIndentLevels = value; Notify(); }
+    }
+
+    /// <summary>Override xmlOneAttributePerLine for XML/XAML. Null = inherit whfmt default (false).</summary>
+    public bool? XmlOneAttributePerLine
+    {
+        get => _xmlOneAttributePerLine;
+        set { _xmlOneAttributePerLine = value; Notify(); }
+    }
+
     /// <summary>
     /// Builds a <see cref="FormattingOverrides"/> from the user's current settings.
     /// Properties left at <see langword="null"/> inherit the whfmt language default.
@@ -426,6 +458,8 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         SpaceAfterComma            = _spaceAfterComma,
         IndentCaseLabels           = _indentCaseLabels,
         OrganizeImports            = _organizeImports,
+        XmlAttributeIndentLevels   = _xmlAttributeIndentLevels,
+        XmlOneAttributePerLine     = _xmlOneAttributePerLine,
     };
 
     // -- Sticky Scroll (#160) -------------------------------------------------

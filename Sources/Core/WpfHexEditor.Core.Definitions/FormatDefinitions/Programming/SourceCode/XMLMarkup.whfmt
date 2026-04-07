@@ -70,7 +70,8 @@
       "spaceAfterKeywords": false,
       "spaceAroundBinaryOperators": false,
       "spaceAfterComma": false,
-      "quoteStyle": "double"
+      "quoteStyle": "double",
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "xmlAttributeIndentLevels", "xmlOneAttributePerLine"]
     },
     "diagnosticPrefix": "XML",
     "id": "xml_markup",

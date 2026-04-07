@@ -172,7 +172,8 @@
       "organizeImports": true,
       "separateSystemImports": false,
       "quoteStyle": "single",
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "<?php\nuse Foo\\Bar;\nuse Abc\\Def;\n\nfunction go($x,$y){\nif($x>0){\nswitch($x){\ncase 1:\nreturn;\n}\n}\n}",
     "previewSamples": {

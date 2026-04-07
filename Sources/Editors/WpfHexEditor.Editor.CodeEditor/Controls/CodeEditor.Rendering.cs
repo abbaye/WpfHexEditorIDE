@@ -508,6 +508,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _visLinePositions.Add((logLine, codeY));
                     _visLineSubRows.Add(subRow);
                     y = codeY + _lineHeight;
+                    // Inject inline peek gap after the anchor line.
+                    if (subRow == 0 && _peekHostLine >= 0 && logLine == _peekHostLine && _peekHostHeight > 0)
+                        y += _peekHostHeight;
                     vr++;
                 }
                 return;
@@ -538,6 +541,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         _lineYLookup[i] = y;
                         y += _lineHeight;
                     }
+                    // Inject inline peek gap after the anchor line.
+                    if (_peekHostLine >= 0 && i == _peekHostLine && _peekHostHeight > 0)
+                        y += _peekHostHeight;
                 }
             }
         }
@@ -1095,7 +1101,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double textLeft    = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
             int    hiddenLines = _foldingEngine?.TotalHiddenLineCount ?? 0;
             double totalH      = TopMargin + ((_document?.Lines.Count ?? 0) - hiddenLines) * _lineHeight
-                             + (ShowInlineHints ? _visibleHintsCount * HintLineHeight : 0);
+                             + (ShowInlineHints ? _visibleHintsCount * HintLineHeight : 0)
+                             + (_peekHostLine >= 0 ? _peekHostHeight : 0);
             double totalTW     = textLeft + _maxContentWidth;
 
             // Determine which scrollbars are needed (check for mutual dependency)
@@ -1145,13 +1152,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
-            // Breakpoint gutter: immediately right of blame gutter.
+            // Change-marker gutter (#166): 4px strip immediately right of blame.
+            double changeW = 0.0;
+            if (_changeMarkerGutterControl != null)
+            {
+                bool showChange = ShowChangeMarkers && ShowLineNumbers;
+                _changeMarkerGutterControl.Visibility = showChange ? Visibility.Visible : Visibility.Collapsed;
+                if (showChange)
+                {
+                    changeW = ChangeMarkerGutterControl.GutterWidth;
+                    _changeMarkerGutterControl.Arrange(new Rect(blameW, 0, changeW, contentH));
+                }
+                else
+                {
+                    _changeMarkerGutterControl.Arrange(new Rect(0, 0, 0, 0));
+                }
+            }
+
+            // Breakpoint gutter: immediately right of change-marker gutter.
             if (_breakpointGutterControl != null)
             {
                 bool showBp = ShowLineNumbers;
                 _breakpointGutterControl.Visibility = showBp ? Visibility.Visible : Visibility.Collapsed;
                 _breakpointGutterControl.Arrange(showBp
-                    ? new Rect(blameW, 0, BreakpointGutterControl.GutterWidth, contentH)
+                    ? new Rect(blameW + changeW, 0, BreakpointGutterControl.GutterWidth, contentH)
                     : new Rect(0, 0, 0, 0));
             }
 
@@ -1161,7 +1185,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 bool showGutter = IsFoldingEnabled && ShowLineNumbers;
                 _gutterControl.Visibility = showGutter ? Visibility.Visible : Visibility.Collapsed;
                 _gutterControl.Arrange(showGutter
-                    ? new Rect(blameW + BreakpointGutterControl.GutterWidth, 0, _gutterControl.Width, contentH)
+                    ? new Rect(blameW + changeW + BreakpointGutterControl.GutterWidth, 0, _gutterControl.Width, contentH)
                     : new Rect(0, 0, 0, 0));
             }
 
@@ -1179,6 +1203,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _stickyScrollHeader.Visibility = Visibility.Collapsed;
                     _stickyScrollHeader.Arrange(new Rect(0, 0, 0, 0));
                 }
+            }
+
+            // Inline peek host (#158): arrange below the anchor line.
+            if (_inlinePeekHost != null && _peekHostLine >= 0)
+            {
+                double peekY = _lineYLookup.TryGetValue(_peekHostLine, out double ly)
+                    ? ly + _lineHeight
+                    : TopMargin + (_peekHostLine + 1 - _firstVisibleLine) * _lineHeight;
+                double peekX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+                double peekW = Math.Max(0, contentW - peekX);
+                _inlinePeekHost.PeekHeight = _peekHostHeight;
+                _inlinePeekHost.Arrange(new Rect(peekX, peekY, peekW, _peekHostHeight));
+                _inlinePeekHost.Render(peekW);
             }
 
             UpdateScrollBars(contentW, contentH);
@@ -1416,6 +1453,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Sync blame gutter with same visible range.
             _blameGutterControl?.Update(
                 _lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin, _lineYLookup);
+
+            // Sync change-marker gutter with latest change map.
+            _changeMarkerGutterControl?.Update(
+                _lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin, _lineYLookup, _changeMap);
         }
 
         /// <summary>

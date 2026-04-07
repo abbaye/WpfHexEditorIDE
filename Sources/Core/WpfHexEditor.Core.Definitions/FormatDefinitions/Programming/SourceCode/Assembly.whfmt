@@ -70,7 +70,8 @@
       "blankLineBeforeMethod": true,
       "blankLineAfterImports": false,
       "spaceAfterComma": true,
-      "maxLineLength": 80
+      "maxLineLength": 80,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline"]
     },
     "rules": [
       {

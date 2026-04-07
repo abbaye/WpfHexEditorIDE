@@ -39,12 +39,22 @@ public sealed class DocumentStructureViewModel : ViewModelBase
     private SortMode _currentSort = SortMode.SourceOrder;
     private bool _isTreeMode = true;
     private bool _isLoading;
+    private bool _isDocumentOpen;
+    private bool _isPinned;
+    private bool _scrollSyncEnabled;
     private string _statusText = "No document";
     private string? _activeProviderName;
+    private string _breadcrumbText = string.Empty;
     private int _autoExpandDepth = 2;
+    private int _maxDepthIndex;
     private StructureNodeVm? _highlightedNode;
 
-    // ── Backing data (unfiltered) ─────────────────────────────────────────
+    // ── Depth-limiting ────────────────────────────────────────────────────
+    // Maps dropdown index → max nesting depth (int.MaxValue = unlimited).
+    private static readonly int[] s_depthValues = [int.MaxValue, 2, 3, 5, 10];
+
+    // ── Backing data (unfiltered, full depth) ─────────────────────────────
+    private IReadOnlyList<DocumentStructureNode> _rawNodes = [];
     private IReadOnlyList<StructureNodeVm> _allRootNodes = [];
 
     public ObservableCollection<StructureNodeVm> RootNodes { get; } = [];
@@ -109,8 +119,57 @@ public sealed class DocumentStructureViewModel : ViewModelBase
         set => SetField(ref _autoExpandDepth, value);
     }
 
+    /// <summary>
+    /// Index into the max-depth dropdown (0 = ∞, 1 = 2, 2 = 3, 3 = 5, 4 = 10).
+    /// Changing this rebuilds the visible tree from the last fetched raw nodes.
+    /// </summary>
+    public int MaxDepthIndex
+    {
+        get => _maxDepthIndex;
+        set
+        {
+            if (!SetField(ref _maxDepthIndex, Math.Clamp(value, 0, s_depthValues.Length - 1))) return;
+            if (_rawNodes.Count > 0)
+                _dispatcher.Invoke(RebuildWithCurrentDepth);
+            MaxDepthChanged?.Invoke(this, _maxDepthIndex);
+        }
+    }
+
+    /// <summary>Fired when the user changes the max-depth dropdown so the plugin can persist it.</summary>
+    public event EventHandler<int>? MaxDepthChanged;
+
+    public bool IsDocumentOpen
+    {
+        get => _isDocumentOpen;
+        private set => SetField(ref _isDocumentOpen, value);
+    }
+
+    public bool IsPinned
+    {
+        get => _isPinned;
+        set => SetField(ref _isPinned, value);
+    }
+
+    public bool ScrollSyncEnabled
+    {
+        get => _scrollSyncEnabled;
+        set => SetField(ref _scrollSyncEnabled, value);
+    }
+
+    public string BreadcrumbText
+    {
+        get => _breadcrumbText;
+        private set => SetField(ref _breadcrumbText, value);
+    }
+
+    /// <summary>Raised when scroll sync is active and the panel should scroll to a node.</summary>
+    public event EventHandler<StructureNodeVm>? ScrollToNodeRequested;
+
     /// <summary>Raised when a node is activated (clicked) and the editor should navigate to it.</summary>
     public event EventHandler<StructureNodeVm>? NavigateRequested;
+
+    /// <summary>Optional logger for diagnostics — set by plugin to route to Output panel.</summary>
+    public Action<string>? Logger { get; set; }
 
     public DocumentStructureViewModel(DocumentStructureProviderResolver resolver)
     {
@@ -150,9 +209,12 @@ public sealed class DocumentStructureViewModel : ViewModelBase
             return;
         }
 
-        var provider = _resolver.Resolve(filePath, documentType, language);
-        if (provider is null)
+        var candidates = _resolver.ResolveAll(filePath, documentType, language);
+        Logger?.Invoke($"[RefreshAsync] fp={filePath} docType={documentType} lang={language} candidates={candidates.Count} [{string.Join(",", candidates.Select(c => c.DisplayName))}]");
+
+        if (candidates.Count == 0)
         {
+            Logger?.Invoke("[RefreshAsync] No provider matched — No structure available");
             _dispatcher.Invoke(() => ClearUI("No structure available"));
             return;
         }
@@ -161,25 +223,41 @@ public sealed class DocumentStructureViewModel : ViewModelBase
 
         try
         {
-            var result = await provider.GetStructureAsync(filePath, ct).ConfigureAwait(false);
-            ct.ThrowIfCancellationRequested();
-
-            if (result is null || result.Nodes.Count == 0)
+            // Try providers in priority order — fall through to next if one returns empty
+            DocumentStructureResult? result = null;
+            IDocumentStructureProvider? usedProvider = null;
+            foreach (var candidate in candidates)
             {
+                Logger?.Invoke($"[RefreshAsync] Trying provider: {candidate.DisplayName}");
+                result = await candidate.GetStructureAsync(filePath, ct).ConfigureAwait(false);
+                ct.ThrowIfCancellationRequested();
+                Logger?.Invoke($"[RefreshAsync] Provider {candidate.DisplayName} returned {result?.Nodes.Count ?? -1} nodes");
+                if (result is not null && result.Nodes.Count > 0) { usedProvider = candidate; break; }
+            }
+
+            if (result is null || result.Nodes.Count == 0 || usedProvider is null)
+            {
+                Logger?.Invoke("[RefreshAsync] All providers returned empty — Empty structure");
                 _dispatcher.Invoke(() => ClearUI("Empty structure"));
                 return;
             }
 
-            // Build VMs on background thread
-            var vms = result.Nodes.Select(n => new StructureNodeVm(n)).ToList();
-            var totalCount = CountNodes(result.Nodes);
+            Logger?.Invoke($"[RefreshAsync] SUCCESS via {usedProvider.DisplayName} — {result.Nodes.Count} root nodes");
+
+            // Store raw nodes; build VMs with current depth limit on background thread.
+            var rawNodes = result.Nodes;
+            var effective = ApplyDepthLimit(rawNodes, s_depthValues[_maxDepthIndex]);
+            var vms = effective.Select(n => new StructureNodeVm(n)).ToList();
+            var totalCount = CountNodesVm(vms);
 
             _dispatcher.Invoke(() =>
             {
+                _rawNodes = rawNodes;
                 _allRootNodes = vms;
-                ActiveProviderName = provider.DisplayName;
+                ActiveProviderName = usedProvider.DisplayName;
                 StatusText = $"{totalCount} symbols";
                 IsLoading = false;
+                IsDocumentOpen = true;
 
                 RebuildTreeFromSource(vms);
                 BuildFlatList(vms);
@@ -199,8 +277,58 @@ public sealed class DocumentStructureViewModel : ViewModelBase
         RootNodes.Clear();
         FlatNodes.Clear();
         StatusText = status;
+        BreadcrumbText = string.Empty;
         ActiveProviderName = null;
         IsLoading = false;
+        IsDocumentOpen = false;
+    }
+
+    /// <summary>Clears the panel when no document is open (distinct from "no structure available").</summary>
+    public void ClearForNoDocument()
+    {
+        _dispatcher.Invoke(() =>
+        {
+            ClearUI(string.Empty);
+        });
+    }
+
+    public void CollapseAll()
+    {
+        foreach (var root in RootNodes)
+            SetExpandedRecursive(root, false);
+    }
+
+    public void ExpandAll()
+    {
+        foreach (var root in RootNodes)
+            SetExpandedRecursive(root, true);
+    }
+
+    private static void SetExpandedRecursive(StructureNodeVm node, bool expanded)
+    {
+        node.IsExpanded = expanded;
+        foreach (var child in node.Children)
+            SetExpandedRecursive(child, expanded);
+    }
+
+    public string BuildQualifiedName(StructureNodeVm node)
+    {
+        var path = new List<string>();
+        if (FindPath(_allRootNodes, node, path))
+            return string.Join(".", path);
+        return node.Name;
+    }
+
+    private static bool FindPath(IReadOnlyList<StructureNodeVm> nodes, StructureNodeVm target, List<string> path)
+    {
+        foreach (var n in nodes)
+        {
+            path.Add(n.Name);
+            if (ReferenceEquals(n, target)) return true;
+            if (FindPath(n.Children, target, path)) return true;
+            path.RemoveAt(path.Count - 1);
+        }
+        return false;
     }
 
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -363,6 +491,13 @@ public sealed class DocumentStructureViewModel : ViewModelBase
             {
                 deepest.IsHighlighted = true;
                 _highlightedNode = deepest;
+                UpdateBreadcrumb(deepest);
+                if (ScrollSyncEnabled)
+                    ScrollToNodeRequested?.Invoke(this, deepest);
+            }
+            else
+            {
+                BreadcrumbText = string.Empty;
             }
         }, DispatcherPriority.Background);
     }
@@ -397,6 +532,26 @@ public sealed class DocumentStructureViewModel : ViewModelBase
     public void OnNodeActivated(StructureNodeVm node)
         => NavigateRequested?.Invoke(this, node);
 
+    /// <summary>
+    /// Highlights the node whose Tag is the given designer element UID.
+    /// Called by DocumentStructurePlugin when the XAML Designer canvas selection changes.
+    /// </summary>
+    public void HighlightNodeByUid(int uid)
+    {
+        _dispatcher.Invoke(() =>
+        {
+            foreach (var root in RootNodes)
+                SetUidHighlightRecursive(root, uid);
+        });
+    }
+
+    private static void SetUidHighlightRecursive(StructureNodeVm node, int uid)
+    {
+        node.IsHighlighted = node.Tag is int nodeUid && nodeUid == uid;
+        foreach (var child in node.Children)
+            SetUidHighlightRecursive(child, uid);
+    }
+
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Auto-Expand
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -416,6 +571,48 @@ public sealed class DocumentStructureViewModel : ViewModelBase
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // Helpers
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+    // ── Depth limiting ────────────────────────────────────────────────────────────
+
+    private void RebuildWithCurrentDepth()
+    {
+        var effective = ApplyDepthLimit(_rawNodes, s_depthValues[_maxDepthIndex]);
+        var vms = effective.Select(n => new StructureNodeVm(n)).ToList();
+        _allRootNodes = vms;
+        RebuildTreeFromSource(vms);
+        BuildFlatList(vms);
+        AutoExpand(vms, 0);
+        StatusText = $"{CountNodesVm(vms)} symbols";
+    }
+
+    private static IReadOnlyList<DocumentStructureNode> ApplyDepthLimit(
+        IReadOnlyList<DocumentStructureNode> nodes, int maxDepth)
+    {
+        if (maxDepth == int.MaxValue) return nodes;
+        return nodes.Select(n => TrimDepth(n, maxDepth)).ToList();
+    }
+
+    private static DocumentStructureNode TrimDepth(DocumentStructureNode node, int remaining)
+    {
+        var children = remaining <= 0
+            ? (IReadOnlyList<DocumentStructureNode>)[]
+            : node.Children.Select(c => TrimDepth(c, remaining - 1)).ToList();
+
+        return new DocumentStructureNode
+        {
+            Name        = node.Name,
+            Kind        = node.Kind,
+            IconGlyph   = node.IconGlyph,
+            Detail      = node.Detail,
+            StartLine   = node.StartLine,
+            StartColumn = node.StartColumn,
+            EndLine     = node.EndLine,
+            ByteOffset  = node.ByteOffset,
+            ByteLength  = node.ByteLength,
+            Tag         = node.Tag,
+            Children    = children,
+        };
+    }
 
     private static int CountNodes(IReadOnlyList<DocumentStructureNode> nodes)
     {
@@ -439,6 +636,14 @@ public sealed class DocumentStructureViewModel : ViewModelBase
         return count;
     }
 
+    private void UpdateBreadcrumb(StructureNodeVm? node)
+    {
+        if (node is null) { BreadcrumbText = string.Empty; return; }
+        var path = new List<string>();
+        if (FindPath(_allRootNodes, node, path))
+            BreadcrumbText = string.Join(" › ", path);
+    }
+
     private static void SetVisibilityRecursive(StructureNodeVm node, System.Windows.Visibility vis)
     {
         node.Visibility = vis;
@@ -449,7 +654,7 @@ public sealed class DocumentStructureViewModel : ViewModelBase
     // ── INPC ────────────────────────────────────────────────────────────────
 
 
-    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
+    private new bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;

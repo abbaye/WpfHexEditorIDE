@@ -668,7 +668,15 @@ public sealed class DesignCanvas : Border
                 return;
             }
 
-            var result    = ParseXaml(prepared);
+            var (result, parseError) = TryParseXaml(prepared);
+            if (parseError is not null)
+            {
+                SelectElement(null, suppressEvent: true);
+                DesignRoot         = null;
+                _presenter.Content = null;
+                RenderError?.Invoke(this, ParseLineCol(parseError.Message) with { FilePath = SourceFilePath });
+                return;
+            }
 
             if (result is UIElement uiResult)
             {
@@ -791,13 +799,18 @@ public sealed class DesignCanvas : Border
     }
 
     /// <summary>
-    /// Invokes <see cref="XamlReader.Parse"/> in a method marked <see cref="DebuggerHiddenAttribute"/>
-    /// so that the Visual Studio debugger does not pause on the first-chance
-    /// <see cref="System.Windows.Markup.XamlParseException"/> thrown by invalid XAML.
-    /// The exception propagates normally and is caught by <see cref="RenderXaml"/>.
+    /// Invokes <see cref="XamlReader.Parse"/> inside a <see cref="DebuggerNonUserCodeAttribute"/>
+    /// method so that VS does not pause on the first-chance
+    /// <see cref="System.Windows.Markup.XamlParseException"/> even when
+    /// "Break on all CLR exceptions" is enabled — because the exception is caught
+    /// within the same non-user-code frame and never escapes to user code.
     /// </summary>
-    [DebuggerHidden]
-    private static object ParseXaml(string xaml) => XamlReader.Parse(xaml);
+    [DebuggerNonUserCode]
+    private static (object? Result, Exception? Error) TryParseXaml(string xaml)
+    {
+        try   { return (XamlReader.Parse(xaml), null); }
+        catch (Exception ex) { return (null, ex); }
+    }
 
     /// <summary>
     /// Validates that <paramref name="xml"/> is well-formed XML without throwing.
@@ -2181,6 +2194,23 @@ public sealed class DesignCanvas : Border
         // theme dictionaries and merged ResourceDictionaries are not loaded). DynamicResource
         // silently falls back to null — the element renders without the style/brush but doesn't crash.
         xaml = xaml.Replace("{StaticResource ", "{DynamicResource ");
+
+        // Strip ResourceDictionary.Source="path" — literal URI paths cannot be resolved by
+        // XamlReader.Parse at design time (no project file system context). Replace with an
+        // empty ResourceDictionary so merged-dict containers remain structurally valid.
+        // Self-closing: <ResourceDictionary Source="..."/>
+        xaml = Regex.Replace(
+            xaml,
+            @"<ResourceDictionary\s+Source=""[^""]*""\s*/>",
+            "<ResourceDictionary/>",
+            RegexOptions.IgnoreCase);
+        // Opening-tag form: <ResourceDictionary Source="..." >…</ResourceDictionary>
+        // Just strip the Source attribute; contents (if any) are preserved.
+        xaml = Regex.Replace(
+            xaml,
+            @"(<ResourceDictionary(?:\s+\w+:[^\s>]*)*)(\s+Source=""[^""]*"")",
+            "$1",
+            RegexOptions.IgnoreCase);
 
         // Strip Converter/Source/ConverterParameter inside Binding/MultiBinding that reference
         // resource keys. DynamicResource is ONLY valid on DependencyProperties of DependencyObjects.

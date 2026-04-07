@@ -162,7 +162,8 @@
       "spaceAfterComma": true,
       "organizeImports": false,
       "separateSystemImports": false,
-      "maxLineLength": 80
+      "maxLineLength": 80,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid go(int x,int y){\nif(x>0){\nswitch(x){\ncase 1:\nreturn;\n}\n}\n}",
     "previewSamples": {

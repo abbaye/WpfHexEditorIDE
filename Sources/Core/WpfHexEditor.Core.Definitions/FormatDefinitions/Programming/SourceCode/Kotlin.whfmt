@@ -160,7 +160,8 @@
       "spaceAfterComma": true,
       "organizeImports": true,
       "separateSystemImports": false,
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "import kotlin.io.*\nimport kotlin.math.*\n\nfun go(x:Int,y:Int){\nif(x>0){\nwhen(x){\n1->return\n}\n}\n}",
     "previewSamples": {

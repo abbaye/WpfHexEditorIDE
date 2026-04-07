@@ -32,6 +32,7 @@ public static class CommandIds
         public const string QuickOpen        = "File.QuickOpen";
         public const string ConvertToSlnx    = "File.ConvertToSlnx";
         public const string ConvertToSln     = "File.ConvertToSln";
+        public const string ConvertToWhsln   = "File.ConvertToWhsln";
     }
 
     public static class Edit
@@ -146,6 +147,7 @@ public static class CommandIds
         public const string FindAllReferences  = "Editor.FindAllReferences";
         public const string GoToDefinition     = "Editor.GoToDefinition";
         public const string GoToImplementation = "Editor.GoToImplementation";
+        public const string PeekDefinition     = "Editor.PeekDefinition";
         public const string FormatDocument     = "Editor.FormatDocument";
         public const string FormatSelection    = "Editor.FormatSelection";
         public const string ShowCallHierarchy  = "Editor.ShowCallHierarchy";

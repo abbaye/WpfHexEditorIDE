@@ -16,24 +16,43 @@ namespace WpfHexEditor.Plugins.DocumentStructure.Converters;
 
 public sealed class KindToBrushConverter : IValueConverter
 {
+    // Hardcoded palette — identical to CodeEditor NavigationBar (NavigationBarItem.IconBrush).
+    private static readonly Dictionary<string, SolidColorBrush> KindBrushMap =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["namespace"]     = Freeze("#DCDCAA"),
+            ["module"]        = Freeze("#DCDCAA"),
+            ["class"]         = Freeze("#4FC1FF"),
+            ["record"]        = Freeze("#4FC1FF"),
+            ["object"]        = Freeze("#4FC1FF"),
+            ["interface"]     = Freeze("#B8D7A3"),
+            ["struct"]        = Freeze("#4EC9B0"),
+            ["enum"]          = Freeze("#CE9178"),
+            ["enummember"]    = Freeze("#CE9178"),
+            ["delegate"]      = Freeze("#C586C0"),
+            ["method"]        = Freeze("#C586C0"),
+            ["function"]      = Freeze("#C586C0"),
+            ["constructor"]   = Freeze("#C586C0"),
+            ["property"]      = Freeze("#9CDCFE"),
+            ["indexer"]       = Freeze("#9CDCFE"),
+            ["field"]         = Freeze("#9CDCFE"),
+            ["variable"]      = Freeze("#9CDCFE"),
+            ["constant"]      = Freeze("#9CDCFE"),
+            ["typeparameter"] = Freeze("#9CDCFE"),
+            ["event"]         = Freeze("#DCDCAA"),
+        };
+
+    private static SolidColorBrush Freeze(string hex)
+    {
+        var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+        b.Freeze();
+        return b;
+    }
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not string kind) return DependencyProperty.UnsetValue;
-
-        var resourceKey = kind.ToLowerInvariant() switch
-        {
-            "class" or "struct" or "record" or "object" => "DS_ClassIconBrush",
-            "method" or "function" or "constructor"     => "DS_MethodIconBrush",
-            "property"                                  => "DS_PropertyIconBrush",
-            "field" or "variable"                       => "DS_FieldIconBrush",
-            "enum" or "enummember"                      => "DS_EnumIconBrush",
-            "interface"                                 => "DS_InterfaceIconBrush",
-            _                                           => "DS_NodeForeground",
-        };
-
-        return Application.Current.TryFindResource(resourceKey) is Brush brush
-            ? brush
-            : Brushes.Gray;
+        return KindBrushMap.TryGetValue(kind, out var brush) ? brush : Brushes.Gray;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -60,11 +79,11 @@ public sealed class IndentToMarginConverter : MarkupExtensionValueConverter
         => throw new NotSupportedException();
 }
 
-/// <summary>Converts null to Collapsed, non-null to Visible.</summary>
+/// <summary>Converts null or empty string to Collapsed, any other value to Visible.</summary>
 public sealed class NullToVisibilityConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
-        => value is null ? Visibility.Collapsed : Visibility.Visible;
+        => value is null || (value is string s && s.Length == 0) ? Visibility.Collapsed : Visibility.Visible;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotSupportedException();

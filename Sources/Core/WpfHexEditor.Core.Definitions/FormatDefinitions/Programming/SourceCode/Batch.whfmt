@@ -64,7 +64,8 @@
       "maxConsecutiveBlankLines": 2,
       "blankLineBeforeMethod": false,
       "blankLineAfterImports": false,
-      "maxLineLength": 80
+      "maxLineLength": 80,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline"]
     },
     "rules": [
       {

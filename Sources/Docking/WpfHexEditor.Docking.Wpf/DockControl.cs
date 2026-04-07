@@ -1222,14 +1222,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             Settings = TabBarSettings ?? new DocumentTabBarSettings()
         };
 
-        if (docHost.IsEmpty)
-        {
-            host.ShowEmptyPlaceholder();
-        }
-        else
-        {
-            host.Bind(docHost, CachedContentFactory);
-        }
+        host.Bind(docHost, CachedContentFactory);
 
         WireTabControlEvents(host);
         _tabPreviews.Add(TabHoverPreview.Attach(host, TabPreviewSettings));

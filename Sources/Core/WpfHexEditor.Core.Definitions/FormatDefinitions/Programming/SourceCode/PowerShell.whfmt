@@ -171,7 +171,8 @@
       "organizeImports": false,
       "separateSystemImports": false,
       "quoteStyle": "double",
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "organizeImports"]
     },
     "previewSnippet": "function Go($x,$y){\nif($x -gt 0){\nswitch($x){\n1{ return }\n}\n}\n}",
     "previewSamples": {

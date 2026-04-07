@@ -600,22 +600,40 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             _                    => "Unknown"
         };
 
-        var items = _contextMenuContributorResolver(nodeKind, nodePath);
-        if (items.Count == 0) return;
+        var rawItems = _contextMenuContributorResolver(nodeKind, nodePath);
+        if (rawItems.Count == 0) return;
 
-        // 3. Find insertion index — right before PluginMenuSeparator (used as a stable position marker)
+        // 3. Sanitize: strip leading/trailing separators and collapse consecutive ones.
+        //    This prevents double-separator artifacts when contributors add boundary separators
+        //    or when the static XAML already has a separator at the insertion boundary.
+        var merged = rawItems.ToList();
+        while (merged.Count > 0 && merged[0].IsSeparator)
+            merged.RemoveAt(0);
+        while (merged.Count > 0 && merged[^1].IsSeparator)
+            merged.RemoveAt(merged.Count - 1);
+        for (int i = merged.Count - 2; i >= 0; i--)
+            if (merged[i].IsSeparator && merged[i + 1].IsSeparator)
+                merged.RemoveAt(i + 1);
+
+        if (merged.Count == 0) return;
+
+        // 4. Find insertion index — right before PluginMenuSeparator (stable position marker).
         int insertIndex = contextMenu.Items.IndexOf(PluginMenuSeparator);
         if (insertIndex < 0) insertIndex = contextMenu.Items.Count - 1;
 
-        // PluginMenuSeparator stays Collapsed (it's a marker only).
-        // Inject a self-cleaning tagged separator as the visual divider before plugin items —
-        // this avoids double-separator scenarios with PropertiesSeparator that follows.
-        var divider = new Separator { Tag = "plugin-contrib" };
-        contextMenu.Items.Insert(insertIndex + 1, divider);
+        // Inject a visual divider only if the item immediately above is not already a separator.
+        int offset = 1;
+        bool needsDivider = insertIndex > 0
+            && contextMenu.Items[insertIndex - 1] is not Separator;
+        if (needsDivider)
+        {
+            var divider = new Separator { Tag = "plugin-contrib" };
+            contextMenu.Items.Insert(insertIndex + offset, divider);
+            offset++;
+        }
 
-        // 4. Insert items after the divider
-        int offset = 2;
-        foreach (var contrib in items)
+        // 5. Insert sanitized items.
+        foreach (var contrib in merged)
         {
             FrameworkElement element;
             if (contrib.IsSeparator)
@@ -636,10 +654,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
                 element = new MenuItem
                 {
-                    Header  = contrib.Header,
-                    Command = contrib.Command,
+                    Header           = contrib.Header,
+                    Command          = contrib.Command,
                     CommandParameter = contrib.CommandParameter,
-                    Icon    = icon
+                    Icon             = icon
                 };
             }
             element.Tag = "plugin-contrib";

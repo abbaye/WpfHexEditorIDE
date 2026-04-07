@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "$id": "https://wpfhexeditor.dev/schemas/whfmt/v2.1",
+  "$id": "https://wpfhexeditor.dev/schemas/whfmt/v2.2",
   "title": "WpfHexEditor Format Definition (.whfmt)",
   "description": "Schema for .whfmt format definition files used by WpfHexEditor to parse, colorize, and analyze binary file structures.",
   "type": "object",
@@ -661,6 +661,11 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "Keywords that start method/function declarations (used for blankLineBeforeMethod detection)"
+        },
+        "supportedRules": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Subset of formattingRules keys that apply to this language. When present, the Formatting options page hides or disables rules not in this list. IDs match the JSON property names in this formattingRules block (e.g., 'spaceAfterKeywords', 'organizeImports')."
         }
       },
       "additionalProperties": false

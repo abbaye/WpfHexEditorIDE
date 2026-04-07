@@ -222,33 +222,45 @@ public partial class MainWindow
                     {
                         if (e.Kind == WpfHexEditor.Editor.Core.SolutionChangeKind.Opened && e.Solution?.FilePath is not null)
                         {
-                            // If the solution IS already a .sln/.csproj, use it directly.
-                            // Otherwise (.whsln custom format), scan the directory for the real .sln.
-                            var ext = System.IO.Path.GetExtension(e.Solution.FilePath).ToLowerInvariant();
-                            var realSlnPath = ext is ".sln" or ".slnx" or ".slnf" or ".csproj" or ".vbproj"
-                                ? e.Solution.FilePath
-                                : FindDotNetSolutionOrProject(System.IO.Path.GetDirectoryName(e.Solution.FilePath));
-                            if (realSlnPath is null)
-                            {
-                                OutputLogger.PluginInfo("[Roslyn] No .sln/.csproj found — using standalone analysis.");
-                                _roslynSolutionPath = null;
-                                return;
-                            }
+                            var solutionPath = e.Solution.FilePath;
+                            var ext = System.IO.Path.GetExtension(solutionPath).ToLowerInvariant();
+                            var slnName = System.IO.Path.GetFileNameWithoutExtension(solutionPath);
 
-                            // Show loading progress bar.
-                            var slnName = System.IO.Path.GetFileNameWithoutExtension(realSlnPath);
-                            ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
-
-                            OutputLogger.PluginInfo($"[Roslyn] Loading: {realSlnPath}");
-                            _roslynSolutionPath = realSlnPath;
+                            _roslynSolutionPath = solutionPath;
                             if (_lspBridgeService is not null)
-                                _lspBridgeService._roslynSolutionPath = realSlnPath;
+                                _lspBridgeService._roslynSolutionPath = solutionPath;
 
-                            // Load solution in background — does NOT block the UI (like VS).
-                            // Cancel any previous in-flight load.
                             _roslynLoadCts?.Cancel();
                             _roslynLoadCts = new CancellationTokenSource();
-                            _ = LoadRoslynSolutionInBackgroundAsync(realSlnPath, _roslynLoadCts.Token);
+
+                            if (ext is ".sln" or ".slnx")
+                            {
+                                // Use OpenSolutionAsync — resolves all P2P references correctly.
+                                ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
+                                OutputLogger.PluginInfo($"[Roslyn] Loading solution: {solutionPath}");
+                                _ = LoadRoslynSolutionInBackgroundAsync(solutionPath, _roslynLoadCts.Token);
+                            }
+                            else
+                            {
+                                // Format-agnostic path (.whsln, etc.): drive Roslyn from individual project paths.
+                                var projectPaths = e.Solution.Projects
+                                    .Select(p => p.ProjectFilePath)
+                                    .Where(p => System.IO.File.Exists(p) &&
+                                                System.IO.Path.GetExtension(p).ToLowerInvariant()
+                                                    is ".csproj" or ".vbproj")
+                                    .ToList();
+
+                                if (projectPaths.Count == 0)
+                                {
+                                    OutputLogger.PluginInfo("[Roslyn] No .csproj/.vbproj in solution — using standalone analysis.");
+                                    _roslynSolutionPath = null;
+                                    return;
+                                }
+
+                                ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
+                                OutputLogger.PluginInfo($"[Roslyn] Loading {projectPaths.Count} project(s) from: {solutionPath}");
+                                _ = LoadRoslynProjectsInBackgroundAsync(projectPaths, _roslynLoadCts.Token);
+                            }
                         }
                         else if (e.Kind == WpfHexEditor.Editor.Core.SolutionChangeKind.Closed)
                         {
@@ -394,6 +406,13 @@ public partial class MainWindow
             // 3. Create orchestrator
             _ideHostContext = hostContext;
 
+            // Register built-in solution format conversion contributor for the Solution Explorer.
+            _ideHostContext.UIRegistry.RegisterContextMenuContributor(
+                "WpfHexEditor.App.SolutionConvert",
+                new WpfHexEditor.App.Services.SolutionExplorerConvertContributor(
+                    convertSlnxOrSln: toSlnx => OnConvertSolutionFormatAsync(toSlnx),
+                    convertWhsln:     ()      => OnConvertToWhslnAsync()));
+
             // Wire the terminal panel DataContext NOW — before plugin loading begins.
             // This MUST NOT be deferred to the end of InitializePluginSystemAsync because
             // any plugin exception would skip the deferred block and leave the panel with
@@ -491,16 +510,25 @@ public partial class MainWindow
 
                 // Eagerly activate lazy plugins whose panels were open at last shutdown.
                 // Must happen BEFORE ResumeRebuild so the dock layout can anchor their panels.
+                // Only remove a plugin from the restore list if activation succeeded — this prevents
+                // the vicious cycle where a dormant plugin fails to activate, gets dropped from the
+                // list at shutdown, and never reappears on the next startup.
                 var toRestore = AppSettingsService.Instance.Current.LazyPluginsToRestore;
                 if (toRestore.Count > 0)
                 {
                     OutputLogger.PluginInfo($"[PluginSystem] Restoring {toRestore.Count} lazy plugin(s) from last session.");
+                    var failedToRestore = new List<string>();
                     foreach (var id in toRestore)
                     {
                         try { await _pluginHost.ActivateDormantPluginAsync(id, CancellationToken.None).ConfigureAwait(false); }
-                        catch (Exception ex) { OutputLogger.PluginError($"[PluginSystem] Failed to restore lazy plugin '{id}': {ex.Message}"); }
+                        catch (Exception ex)
+                        {
+                            OutputLogger.PluginError($"[PluginSystem] Failed to restore lazy plugin '{id}': {ex.Message}");
+                            failedToRestore.Add(id);
+                        }
                     }
-                    AppSettingsService.Instance.Current.LazyPluginsToRestore = [];
+                    // Keep failed plugins in the restore list so next startup retries them.
+                    AppSettingsService.Instance.Current.LazyPluginsToRestore = failedToRestore;
                     AppSettingsService.Instance.Save();
                 }
             }
@@ -635,7 +663,10 @@ public partial class MainWindow
 
         // Panel tabs (tool windows) must not override the active document.
         // Focusing a tool panel does not change the active editor — VS-like behavior.
+        // Covers both built-in "panel-*" IDs and plugin-registered panels (any UID).
         if (activeItem.ContentId.StartsWith("panel-", StringComparison.Ordinal))
+            return;
+        if (_ideHostContext?.UIRegistry.IsRegisteredPanel(activeItem.ContentId) == true)
             return;
 
         // Resolve the actual editor content
@@ -1405,10 +1436,7 @@ public partial class MainWindow
     {
         if (directory is null || !System.IO.Directory.Exists(directory)) return null;
 
-        // Prefer .slnx (newest format), then .sln (full project graph).
-        var slnxFiles = System.IO.Directory.GetFiles(directory, "*.slnx");
-        if (slnxFiles.Length > 0) return slnxFiles[0];
-
+        // Prefer .sln for MSBuildWorkspace compatibility.
         var slnFiles = System.IO.Directory.GetFiles(directory, "*.sln");
         if (slnFiles.Length > 0) return slnFiles[0];
 
@@ -1435,6 +1463,65 @@ public partial class MainWindow
     /// Calls <see cref="WpfHexEditor.Core.Roslyn.RoslynLanguageClient.LoadSolutionAsync"/>
     /// on all active in-process Roslyn clients.
     /// </summary>
+    /// <summary>
+    /// Feeds individual project paths to every active Roslyn client.
+    /// Format-agnostic: works for .sln, .slnx, .whsln, and any future solution format.
+    /// </summary>
+    private async Task LoadRoslynProjectsIntoActiveClientsAsync(IReadOnlyList<string> projectPaths)
+    {
+        if (_lspBridgeService is null) return;
+
+        foreach (var langId in new[] { "csharp", "vbnet" })
+        {
+            var client = _lspBridgeService.TryGetClient(langId);
+            if (client is WpfHexEditor.Core.Roslyn.RoslynLanguageClient roslynClient)
+            {
+                try
+                {
+                    await roslynClient.LoadProjectsAsync(projectPaths).ConfigureAwait(false);
+                    OutputLogger.PluginInfo($"[Roslyn] {langId} loaded {projectPaths.Count} project(s).");
+                }
+                catch (Exception ex)
+                {
+                    OutputLogger.PluginError($"[Roslyn] {langId} project load failed: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Loads project paths into Roslyn on a background thread (format-agnostic path).
+    /// </summary>
+    private async Task LoadRoslynProjectsInBackgroundAsync(IReadOnlyList<string> projectPaths, CancellationToken ct)
+    {
+        try
+        {
+            await Task.Run(async () =>
+                await LoadRoslynProjectsIntoActiveClientsAsync(projectPaths).ConfigureAwait(false),
+                ct).ConfigureAwait(true);
+
+            ct.ThrowIfCancellationRequested();
+
+            var projectCount = GetRoslynProjectCount();
+            OutputLogger.PluginInfo($"[Roslyn] {projectCount} project(s) loaded.");
+            ShowRoslynStatus(loading: false,
+                text: $"✓ {projectCount} project{(projectCount != 1 ? "s" : "")} loaded",
+                state: WpfHexEditor.ProgressBar.ProgressState.Success);
+            _ = AutoHideRoslynStatusAsync();
+        }
+        catch (OperationCanceledException)
+        {
+            OutputLogger.PluginInfo("[Roslyn] Project load cancelled.");
+            HideRoslynStatus();
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.PluginError($"[Roslyn] Project load failed: {ex.Message}");
+            ShowRoslynStatus(loading: false, text: "⚠ Roslyn load failed",
+                state: WpfHexEditor.ProgressBar.ProgressState.Error);
+        }
+    }
+
     private async Task LoadRoslynSolutionIntoActiveClientsAsync(string solutionPath)
     {
         if (_lspBridgeService is null) return;

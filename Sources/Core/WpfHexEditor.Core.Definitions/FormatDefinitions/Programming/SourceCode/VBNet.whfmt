@@ -233,7 +233,8 @@
         "ElseIf",
         "Catch",
         "Finally"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "Imports System.IO\nImports System\n\nDim a = 1\nIf a>=0 Then\n    Dim x=a+b*2\n    Console.Write(x,a)\nEnd If",
     "previewSamples": {

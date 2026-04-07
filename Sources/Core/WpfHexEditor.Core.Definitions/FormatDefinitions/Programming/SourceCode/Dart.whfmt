@@ -160,7 +160,8 @@
       "organizeImports": true,
       "separateSystemImports": false,
       "quoteStyle": "single",
-      "maxLineLength": 80
+      "maxLineLength": 80,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "import 'dart:io';\nimport 'dart:math';\n\nvoid go(int x,int y){\nif(x>0){\nswitch(x){\ncase 1:\nreturn;\n}\n}\n}",
     "previewSamples": {

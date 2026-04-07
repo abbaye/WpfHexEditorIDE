@@ -34,7 +34,13 @@ public sealed class SourceOutlineStructureProvider : IDocumentStructureProvider
         => _outlineService = outlineService;
 
     public bool CanProvide(string? filePath, string? documentType, string? language)
-        => !string.IsNullOrEmpty(filePath) && _outlineService.CanOutline(filePath);
+    {
+        if (string.IsNullOrEmpty(filePath)) return false;
+        // Exclude .xaml — XmlStructureProvider (Priority 300) produces a full hierarchy
+        // tree via XDocument; this provider only extracts flat x:Name lists for XAML.
+        if (filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase)) return false;
+        return _outlineService.CanOutline(filePath);
+    }
 
     public async Task<DocumentStructureResult?> GetStructureAsync(string filePath, CancellationToken ct = default)
     {

@@ -169,6 +169,11 @@ public sealed class AppSettings
     /// <summary>Plugin Marketplace preferences (GitHub token, auto-update check).</summary>
     public MarketplaceSettings Marketplace { get; set; } = new();
 
+    // -- Document Structure -------------------------------------------------------
+
+    /// <summary>Document Structure panel preferences (max depth, etc.).</summary>
+    public DocumentStructureSettings DocumentStructure { get; set; } = new();
+
     // -- Lazy Plugin Persistence --------------------------------------------------
 
     /// <summary>
@@ -758,6 +763,20 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Override whfmt organizeImports. Null = inherit.</summary>
     public bool? OrganizeImports { get; set; }
 
+    // -- XML / XAML formatting --------------------------------------------------
+
+    /// <summary>
+    /// Attribute continuation indent multiplier for XML/XAML/HTML.
+    /// Default = 2 (double-indent, VS-style).
+    /// </summary>
+    public int XmlAttributeIndentLevels { get; set; } = 2;
+
+    /// <summary>
+    /// When true, each XML/XAML attribute is placed on its own line.
+    /// Default = false.
+    /// </summary>
+    public bool XmlOneAttributePerLine { get; set; } = false;
+
     // -- Column Rulers (#165) ---------------------------------------------------
 
     /// <summary>
@@ -1273,4 +1292,17 @@ public sealed class DocumentSettings
     /// Changes inside these directories never trigger external-modification warnings.
     /// </summary>
     public string IgnoredDirectories { get; set; } = "bin;obj;.vs;.git;node_modules";
+}
+
+/// <summary>
+/// Document Structure panel preferences.
+/// </summary>
+public sealed class DocumentStructureSettings
+{
+    /// <summary>
+    /// Index into the max-depth dropdown (0 = unlimited, 1 = 2, 2 = 3, 3 = 5, 4 = 10).
+    /// Controls how many levels deep the structure tree is rendered.
+    /// Default = 0 (unlimited).
+    /// </summary>
+    public int MaxDepthIndex { get; set; } = 0;
 }

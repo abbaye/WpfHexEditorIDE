@@ -158,7 +158,8 @@
       "organizeImports": false,
       "separateSystemImports": false,
       "quoteStyle": "double",
-      "maxLineLength": 80
+      "maxLineLength": 80,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline"]
     },
     "previewSnippet": "#!/bin/bash\n\ngo() {\n    if [ $1 -gt 0 ]; then\n        echo $1\n    fi\n}",
     "previewSamples": {

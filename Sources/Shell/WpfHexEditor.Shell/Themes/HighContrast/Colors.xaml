@@ -322,6 +322,9 @@
     <SolidColorBrush x:Key="CE_SelectionInactive" Color="#333333"/>
     <SolidColorBrush x:Key="CE_GutterError"       Color="#FF0000"/>
     <SolidColorBrush x:Key="CE_GutterWarning"     Color="#FFFF00"/>
+    <SolidColorBrush x:Key="CE_GutterAdded"    Color="#00FF00"/>
+    <SolidColorBrush x:Key="CE_GutterModified" Color="#FFFF00"/>
+    <SolidColorBrush x:Key="CE_GutterDeleted" Color="#FF0000"/>
     <SolidColorBrush x:Key="CE_RulerBrush"    Color="#80808080"/>
     <SolidColorBrush x:Key="CE_Bracket_1"    Color="#FFFF00"/>
     <SolidColorBrush x:Key="CE_Bracket_2"    Color="#FF00FF"/>
@@ -637,6 +640,8 @@
     <!-- Peek Definition popup tokens (GD_*) -->
     <SolidColorBrush x:Key="GD_PeekBackground"       Color="#1E1E1E" />
     <SolidColorBrush x:Key="GD_PeekBorder"           Color="#454545" />
+    <SolidColorBrush x:Key="GD_PeekTargetLine"       Color="#501E3A5F" />
+    <SolidColorBrush x:Key="GD_PeekHoverLine"         Color="#282A2D2E" />
     <SolidColorBrush x:Key="GD_PeekTitleBar"         Color="#2D2D2D" />
     <SolidColorBrush x:Key="GD_PeekTitleForeground"  Color="#D4D4D4" />
     <SolidColorBrush x:Key="GD_PeekNavLinkForeground" Color="#569CD6" />
@@ -933,12 +938,16 @@
     <SolidColorBrush x:Key="DS_CountBadgeBackground" Color="#004000"/>
     <SolidColorBrush x:Key="DS_RowHoverBrush"        Color="#40FFFFFF"/>
     <SolidColorBrush x:Key="DS_RowSelectedBrush"     Color="#005A9E"/>
-    <SolidColorBrush x:Key="DS_ClassIconBrush" Color="#4EC9B0"/>
-    <SolidColorBrush x:Key="DS_MethodIconBrush" Color="#DCDCAA"/>
-    <SolidColorBrush x:Key="DS_PropertyIconBrush" Color="#9CDCFE"/>
-    <SolidColorBrush x:Key="DS_FieldIconBrush" Color="#9CDCFE"/>
+    <Color x:Key="DS_RowSelectedColor">#005A9E</Color>
+    <Color x:Key="DS_RowSelectedTextColor">#FFFFFF</Color>
+    <SolidColorBrush x:Key="DS_AccentColorBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="DS_ClassIconBrush" Color="#C586C0"/>
+    <SolidColorBrush x:Key="DS_MethodIconBrush" Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="DS_PropertyIconBrush" Color="#CE9178"/>
+    <SolidColorBrush x:Key="DS_FieldIconBrush" Color="#DCAD4B"/>
     <SolidColorBrush x:Key="DS_EnumIconBrush" Color="#B8D7A3"/>
     <SolidColorBrush x:Key="DS_InterfaceIconBrush" Color="#B8D7A3"/>
+    <SolidColorBrush x:Key="DS_EventIconBrush" Color="#DCDCAA"/>
 
     <!-- Tab Groups (TG_*) -->
     <Color x:Key="TG_ActiveGroupBorderColor">#FFFFFF</Color>

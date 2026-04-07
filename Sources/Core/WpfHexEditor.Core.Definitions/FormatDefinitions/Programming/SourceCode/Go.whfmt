@@ -169,7 +169,8 @@
         "type",
         "struct",
         "interface"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "import (\n    \"fmt\"\n    \"os\"\n)\n\nfunc goFunc(x,y int){\nif x>0{\nswitch x{\ncase 1:\nreturn\n}\n}\n}",
     "previewSamples": {

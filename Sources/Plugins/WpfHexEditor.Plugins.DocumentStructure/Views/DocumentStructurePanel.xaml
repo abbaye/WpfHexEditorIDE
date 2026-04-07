@@ -9,6 +9,37 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
         <conv:NullToVisibilityConverter x:Key="NullToVis"/>
+
+        <!-- Context menu for tree nodes -->
+        <ContextMenu x:Key="TreeNodeContextMenu">
+            <MenuItem Header="Navigate To"         Tag="navigate"       Click="OnContextMenuClick">
+                <MenuItem.Icon><TextBlock Text="&#xE7B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Copy Name"           Tag="copy-name"      Click="OnContextMenuClick">
+                <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Copy Qualified Name" Tag="copy-qualified" Click="OnContextMenuClick">
+                <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Expand All"          Tag="expand-all"     Click="OnContextMenuClick"/>
+            <MenuItem Header="Collapse All"        Tag="collapse-all"   Click="OnContextMenuClick"/>
+        </ContextMenu>
+
+        <!-- Context menu for flat list nodes -->
+        <ContextMenu x:Key="FlatNodeContextMenu">
+            <MenuItem Header="Navigate To"         Tag="navigate"       Click="OnContextMenuClick">
+                <MenuItem.Icon><TextBlock Text="&#xE7B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Copy Name"           Tag="copy-name"      Click="OnContextMenuClick">
+                <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Copy Qualified Name" Tag="copy-qualified" Click="OnContextMenuClick">
+                <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
     </UserControl.Resources>
 
     <DockPanel Background="{DynamicResource DockBackgroundBrush}">
@@ -19,7 +50,7 @@
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False">
 
-                <!-- Left: standard action buttons (refresh + tree toggle) -->
+                <!-- Left: standard action buttons (refresh + tree toggle + collapse + pin + sync) -->
                 <StackPanel x:Name="ToolbarLeftPanel" Orientation="Horizontal"
                             DockPanel.Dock="Left" VerticalAlignment="Center">
                     <Button x:Name="RefreshButton"
@@ -32,6 +63,53 @@
                                   Content="&#xE8B7;"
                                   ToolTip="Tree view"
                                   IsChecked="{Binding IsTreeMode}"/>
+                    <Button x:Name="CollapseAllButton"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE8B6;"
+                            ToolTip="Collapse All"
+                            Click="OnCollapseAllClicked"/>
+                    <ToggleButton x:Name="PinButton"
+                                  Style="{DynamicResource PanelIconToggleStyle}"
+                                  Content="&#xE840;"
+                                  ToolTip="Pin document (keep structure while navigating)"
+                                  IsChecked="{Binding IsPinned}"/>
+                    <ToggleButton x:Name="ScrollSyncButton"
+                                  Style="{DynamicResource PanelIconToggleStyle}"
+                                  Content="&#xE8B1;"
+                                  ToolTip="Sync with editor cursor"
+                                  IsChecked="{Binding ScrollSyncEnabled}"/>
+                </StackPanel>
+
+                <!-- Left: collapsible sort combo -->
+                <StackPanel x:Name="TbgSort" Orientation="Horizontal"
+                            DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <ComboBox x:Name="SortCombo"
+                              Style="{DynamicResource DockComboBoxStyle}"
+                              Width="110" Height="20" FontSize="11"
+                              VerticalContentAlignment="Center"
+                              SelectedIndex="{Binding SortModeIndex}"
+                              ToolTip="Sort order">
+                        <ComboBoxItem Content="Source Order"/>
+                        <ComboBoxItem Content="Alphabetical"/>
+                        <ComboBoxItem Content="By Kind"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Left: max depth combo -->
+                <StackPanel x:Name="TbgDepth" Orientation="Horizontal"
+                            DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <ComboBox x:Name="DepthCombo"
+                              Style="{DynamicResource DockComboBoxStyle}"
+                              Width="72" Height="20" FontSize="11"
+                              VerticalContentAlignment="Center"
+                              SelectedIndex="{Binding MaxDepthIndex}"
+                              ToolTip="Max tree depth">
+                        <ComboBoxItem Content="&#x221E; Depth"/>
+                        <ComboBoxItem Content="2 Levels"/>
+                        <ComboBoxItem Content="3 Levels"/>
+                        <ComboBoxItem Content="5 Levels"/>
+                        <ComboBoxItem Content="10 Levels"/>
+                    </ComboBox>
                 </StackPanel>
 
                 <!-- Right: overflow — declared first = far right -->
@@ -45,9 +123,15 @@
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="Source Order" Tag="0" Click="OnOverflowSortClicked"/>
-                            <MenuItem Header="Alphabetical" Tag="1" Click="OnOverflowSortClicked"/>
-                            <MenuItem Header="By Kind"      Tag="2" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="Source Order" Tag="s0" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="Alphabetical" Tag="s1" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="By Kind"      Tag="s2" Click="OnOverflowSortClicked"/>
+                            <Separator/>
+                            <MenuItem Header="&#x221E; Depth" Tag="d0" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="2 Levels"       Tag="d1" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="3 Levels"       Tag="d2" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="5 Levels"       Tag="d3" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="10 Levels"      Tag="d4" Click="OnOverflowDepthClicked"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -60,21 +144,6 @@
                          Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
                          VerticalAlignment="Center"
                          Tag="Filter symbols…"/>
-
-                <!-- Right: collapsible sort combo -->
-                <StackPanel x:Name="TbgSort" Orientation="Horizontal"
-                            DockPanel.Dock="Right" VerticalAlignment="Center">
-                    <ComboBox x:Name="SortCombo"
-                              Style="{DynamicResource DockComboBoxStyle}"
-                              Width="110" Height="20" FontSize="11"
-                              VerticalContentAlignment="Center"
-                              SelectedIndex="{Binding SortModeIndex}"
-                              ToolTip="Sort order">
-                        <ComboBoxItem Content="Source Order"/>
-                        <ComboBoxItem Content="Alphabetical"/>
-                        <ComboBoxItem Content="By Kind"/>
-                    </ComboBox>
-                </StackPanel>
 
             </DockPanel>
         </Border>
@@ -97,11 +166,26 @@
                                Foreground="{DynamicResource DS_NodeForeground}"/>
                 </Border>
 
-                <!-- Symbol count (left) -->
+                <!-- Symbol count / breadcrumb (left) -->
+                <TextBlock Text="{Binding BreadcrumbText}"
+                           FontSize="10" VerticalAlignment="Center"
+                           Foreground="{DynamicResource DS_DetailForeground}"
+                           Visibility="{Binding BreadcrumbText, Converter={StaticResource NullToVis}}"
+                           TextTrimming="CharacterEllipsis"/>
                 <TextBlock Text="{Binding StatusText}"
-                           FontSize="10"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource DS_DetailForeground}"/>
+                           FontSize="10" VerticalAlignment="Center"
+                           Foreground="{DynamicResource DS_DetailForeground}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BreadcrumbText, Converter={StaticResource NullToVis}}" Value="Visible">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
             </DockPanel>
         </Border>
@@ -122,21 +206,61 @@
                   Background="Transparent"
                   SelectedItemChanged="OnTreeSelectedItemChanged"
                   MouseDoubleClick="OnTreeDoubleClick">
+            <!-- Override system selection brushes so DS_ theme tokens take effect -->
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="{DynamicResource DS_RowSelectedColor}"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                 Color="{DynamicResource DS_RowSelectedTextColor}"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                 Color="{DynamicResource DS_RowSelectedColor}"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                                 Color="{DynamicResource DS_RowSelectedTextColor}"/>
+            </TreeView.Resources>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type vm:StructureNodeVm}"
                                           ItemsSource="{Binding Children}">
-                    <StackPanel Orientation="Horizontal" Margin="0,1" Visibility="{Binding Visibility}">
-                        <TextBlock Text="{Binding IconGlyph}"
-                                   FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                   Width="16" VerticalAlignment="Center"
+                    <Grid Margin="0,1" Visibility="{Binding Visibility}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2"/>   <!-- left accent bar -->
+                            <ColumnDefinition Width="4"/>   <!-- gap -->
+                            <ColumnDefinition Width="Auto"/><!-- icon badge -->
+                            <ColumnDefinition Width="4"/>   <!-- gap -->
+                            <ColumnDefinition Width="*"/>   <!-- name + detail -->
+                        </Grid.ColumnDefinitions>
+                        <!-- Left accent bar (visible when IsSelected) -->
+                        <Rectangle Grid.Column="0" Fill="{DynamicResource DS_AccentColorBrush}">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                        <!-- Kind icon: Segoe MDL2 glyph, colored by symbol type -->
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding IconGlyph}"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    Foreground="{Binding Kind, Converter={StaticResource KindToBrush}}"
-                                   Margin="0,0,4,0"/>
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_NodeForeground}"/>
-                        <TextBlock Text="{Binding Detail}" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_DetailForeground}"
-                                   Opacity="0.6" Margin="6,0,0,0"/>
-                    </StackPanel>
+                                   Width="16" Height="16"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                        <!-- Name + : ReturnType -->
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}"
+                                       Foreground="{DynamicResource DS_NodeForeground}"/>
+                            <TextBlock Foreground="{DynamicResource DS_DetailForeground}"
+                                       FontSize="11"
+                                       Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
+                                <Run Text=" : "/>
+                                <Run Text="{Binding Detail, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
             <TreeView.ItemContainerStyle>
@@ -145,6 +269,7 @@
                     <Setter Property="IsSelected"  Value="{Binding IsSelected, Mode=TwoWay}"/>
                     <Setter Property="Visibility"  Value="{Binding Visibility}"/>
                     <Setter Property="Background"  Value="Transparent"/>
+                    <Setter Property="ContextMenu" Value="{StaticResource TreeNodeContextMenu}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource DS_RowHoverBrush}"/>
@@ -174,6 +299,7 @@
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="Padding"    Value="2,1"/>
+                    <Setter Property="ContextMenu" Value="{StaticResource FlatNodeContextMenu}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource DS_RowHoverBrush}"/>
@@ -186,21 +312,62 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:StructureNodeVm}">
-                    <StackPanel Orientation="Horizontal" Margin="{Binding IndentLevel, Converter={conv:IndentToMarginConverter}}">
-                        <TextBlock Text="{Binding IconGlyph}"
-                                   FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                   Width="16" VerticalAlignment="Center"
+                    <Grid Margin="{Binding IndentLevel, Converter={conv:IndentToMarginConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="{DynamicResource DS_AccentColorBrush}">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding IconGlyph}"
+                                   FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    Foreground="{Binding Kind, Converter={StaticResource KindToBrush}}"
-                                   Margin="0,0,4,0"/>
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_NodeForeground}"/>
-                        <TextBlock Text="{Binding Detail}" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_DetailForeground}"
-                                   Opacity="0.6" Margin="6,0,0,0"/>
-                    </StackPanel>
+                                   Width="16" Height="16"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}"
+                                       Foreground="{DynamicResource DS_NodeForeground}"/>
+                            <TextBlock Foreground="{DynamicResource DS_DetailForeground}"
+                                       FontSize="11"
+                                       Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
+                                <Run Text=" : "/>
+                                <Run Text="{Binding Detail, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <!-- ── Empty state ─────────────────────────────────────────── -->
+        <Grid Visibility="{Binding IsDocumentOpen, Converter={StaticResource InverseBoolToVis}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Opacity="0.4">
+                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="32"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource DS_NodeForeground}"/>
+                <TextBlock Text="Open a document to see its structure"
+                           FontSize="11" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource DS_DetailForeground}"
+                           Margin="0,8,0,0" TextWrapping="Wrap"
+                           MaxWidth="180" TextAlignment="Center"/>
+            </StackPanel>
+        </Grid>
 
     </DockPanel>
 </UserControl>

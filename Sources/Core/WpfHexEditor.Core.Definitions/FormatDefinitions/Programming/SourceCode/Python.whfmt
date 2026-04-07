@@ -152,7 +152,8 @@
         "def",
         "async",
         "class"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "organizeImports"]
     },
     "previewSnippet": "import os\nimport abc\n\ndef go(x,y):\n    if x>0:\n        return x+y",
     "previewSamples": {

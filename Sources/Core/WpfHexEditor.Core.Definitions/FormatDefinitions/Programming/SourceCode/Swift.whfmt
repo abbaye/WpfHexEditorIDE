@@ -158,7 +158,8 @@
       "organizeImports": true,
       "separateSystemImports": false,
       "quoteStyle": "double",
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "import Foundation\nimport UIKit\n\nfunc go(x:Int,y:Int){\nif x>0{\nswitch x{\ncase 1:\nreturn\ndefault:\nbreak\n}\n}\n}",
     "previewSamples": {

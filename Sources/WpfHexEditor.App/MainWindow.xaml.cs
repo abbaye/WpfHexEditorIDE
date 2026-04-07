@@ -1513,6 +1513,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             PluginManagerContentId         => CreatePluginManagerContent(),
             MarkdownOutlinePanelContentId  => CreateMarkdownOutlinePanelContent(),
             _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
+            _ when item.ContentId.StartsWith("doc-src-nav-")   => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")       => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
             _ when item.ContentId.StartsWith("doc-nuget-solution-") => CreateNuGetSolutionManagerContent(item),
@@ -4083,35 +4084,63 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(e.AbsolutePath) || !File.Exists(e.AbsolutePath)) return;
 
-        // Look for an already-open TextEditor tab for this file (match by file name via Title).
-        var fileName   = Path.GetFileName(e.AbsolutePath);
+        // Look for an already-open tab for this file (match by FilePath metadata — editor-agnostic).
         var existingKv = _contentCache.FirstOrDefault(kv =>
-            kv.Value is WpfHexEditor.Editor.TextEditor.Controls.TextEditor tc &&
-            string.Equals(tc.Title.TrimEnd('*', ' '), fileName,
-                System.StringComparison.OrdinalIgnoreCase));
+        {
+            var item = _layout.FindItemByContentId(kv.Key);
+            return item is not null &&
+                   item.Metadata.TryGetValue("FilePath", out var fp) &&
+                   string.Equals(fp, e.AbsolutePath, StringComparison.OrdinalIgnoreCase);
+        });
 
-        WpfHexEditor.Editor.TextEditor.Controls.TextEditor? textEditor;
+        IDocumentEditor? editor;
 
         if (existingKv.Key != null)
         {
-            // Activate the existing tab.
-            textEditor = existingKv.Value as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
+            editor = existingKv.Value as IDocumentEditor;
             var existingItem = _layout.FindItemByContentId(existingKv.Key);
             if (existingItem?.Owner != null) existingItem.Owner.ActiveItem = existingItem;
         }
         else
         {
-            // Open the file in a new TextEditor tab.
+            // Use the registry to pick the right editor (CodeEditor for .cs/.vb/etc., whfmt-driven).
+            var factory = _editorRegistry.FindFactory(e.AbsolutePath, GetPreferredEditorId(e.AbsolutePath));
+            if (factory == null) return;
+
+            editor = factory.Create();
+            if (editor is not System.Windows.FrameworkElement) return;
+
+            if (editor is IOpenableDocument openable)
+                _ = SafeOpenAsync(openable, e.AbsolutePath);
+
+            editor.OutputMessage += OnEditorOutputMessage;
+
+            // Wire CodeEditor-specific events (InlineHints, Go-to-Def, Ctrl+Click, etc.)
+            if (editor is CodeEditorControl plainCe)
+            {
+                plainCe.ReferenceNavigationRequested    += OnCodeEditorReferenceNavigation;
+                plainCe.FindAllReferencesDockRequested  += OnFindAllReferencesDockRequested;
+                plainCe.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
+                plainCe.CallHierarchyDockRequested      += OnCallHierarchyDockRequested;
+                plainCe.TypeHierarchyDockRequested      += OnTypeHierarchyDockRequested;
+                plainCe.FormattingOptionsRequested      += (_, _) => OpenSettingsAt("Code Editor", "Formatting");
+            }
+            if (editor is CodeEditorSplitHost splitHost)
+            {
+                splitHost.ReferenceNavigationRequested    += OnCodeEditorReferenceNavigation;
+                splitHost.FindAllReferencesDockRequested  += OnFindAllReferencesDockRequested;
+                splitHost.GoToExternalDefinitionRequested += OnGoToExternalDefinitionRequested;
+                splitHost.CallHierarchyDockRequested      += OnCallHierarchyDockRequested;
+                splitHost.TypeHierarchyDockRequested      += OnTypeHierarchyDockRequested;
+                splitHost.FormattingOptionsRequested      += (_, _) => OpenSettingsAt("Code Editor", "Formatting");
+            }
+
+            WireBreakpointSourceToEditor(editor);
+
             _documentCounter++;
-            var contentId  = $"doc-text-src-{_documentCounter}";
-            var factory    = new WpfHexEditor.Editor.TextEditor.TextEditorFactory();
-            textEditor     = factory.Create() as WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
-            if (textEditor == null) return;
-
-            textEditor.OutputMessage += OnEditorOutputMessage;
-            _ = textEditor.OpenAsync(e.AbsolutePath);
-
-            StoreContent(contentId, textEditor);
+            var contentId = $"doc-src-nav-{_documentCounter}";
+            var editorUi  = (System.Windows.UIElement)editor;
+            StoreContent(contentId, editorUi);
             var dockItem = new DockItem
             {
                 ContentId = contentId,
@@ -4119,17 +4148,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 Metadata  = { ["FilePath"] = e.AbsolutePath }
             };
             _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
-            RegisterDocumentFromItem(dockItem, textEditor);
-            ActiveDocumentEditor = textEditor;
+            RegisterDocumentFromItem(dockItem, editorUi);
+            ActiveDocumentEditor = editor;
         }
 
-        // Scroll to line after layout is updated.
-        if (e.LineNumber > 0 && textEditor != null)
+        // Navigate to the target line after layout pass.
+        if (e.LineNumber > 0 && editor != null)
         {
             var targetLine = e.LineNumber;
-            var captured   = textEditor;
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
-                () => captured.GoToLine(targetLine, 1));
+            var captured   = editor;
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
+            {
+                if (captured is INavigableDocument nav)
+                    nav.NavigateTo(targetLine - 1, 0);
+                else if (captured is WpfHexEditor.Editor.TextEditor.Controls.TextEditor te)
+                    te.GoToLine(targetLine, 1);
+            });
         }
     }
 

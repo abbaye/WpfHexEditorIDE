@@ -20,7 +20,7 @@
     <PluginLoadPriority>55</PluginLoadPriority>
     <PluginSdkVersion>1.2.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
-    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationOnStartup>true</PluginActivationOnStartup>
     <PluginActivationCommands>"Debug.Start"</PluginActivationCommands>
     <PluginMenuContributionsJson>[{"commandId":"Debug.Start","label":"_Start Debugging","parentPath":"Debug","group":"Session","category":"Debugger","iconGlyph":"\uE768"}]</PluginMenuContributionsJson>
     <PluginPermAccessHexEditor>false</PluginPermAccessHexEditor>

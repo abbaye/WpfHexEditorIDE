@@ -529,14 +529,28 @@
                         <RowDefinition Height="Auto" />  <!-- 7: hit count -->
                     </Grid.RowDefinitions>
 
-                    <!-- Row 0 — Header: dot + location -->
+                    <!-- Row 0 — Header: dot + location + unverified badge -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="8,6,8,4">
                         <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"
                                  Fill="{Binding TypeLabel, Converter={StaticResource TypeToBrush}}"
                                  Opacity="{Binding IsEnabled, Converter={StaticResource BoolToOpacity}}" />
                         <TextBlock Text="{Binding DisplayLocation}"
                                    FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                        <!-- Unverified badge — inline pill, tooltip carries full message -->
+                        <Border Margin="8,0,0,0" Padding="5,1,5,2" CornerRadius="3"
+                                Background="#33FFA500" BorderBrush="#88FFA500" BorderThickness="1"
+                                VerticalAlignment="Center"
+                                ToolTip="Not yet verified — will bind to executable code when the session starts."
+                                Visibility="{Binding IsVerified, Converter={StaticResource InvertBoolToVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                           Foreground="#FFFFA500" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Unverified" FontSize="10" Foreground="#FFFFA500"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
 
                     <!-- Row 1 — Action buttons -->
@@ -608,23 +622,7 @@
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                FontStyle="Italic" Margin="8,0,8,8" Opacity="0.85" />
 
-                    <!-- Row 5 — Unverified warning (visible when IsVerified=false) -->
-                    <Border Grid.Row="5"
-                            Margin="8,0,8,6"
-                            Padding="8,5"
-                            CornerRadius="3"
-                            Background="#33FFA500"
-                            BorderBrush="#88FFA500"
-                            BorderThickness="1"
-                            Visibility="{Binding IsVerified, Converter={StaticResource InvertBoolToVis}}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                       Foreground="#FFFFA500" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Not yet verified — will bind to executable code when the session starts."
-                                       FontSize="11" Foreground="#FFFFA500" TextWrapping="Wrap"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
+                    <!-- Row 5 — (removed: unverified warning moved to header badge) -->
 
                     <!-- Row 6 — Code preview: Height=&quot;*&quot; → prend tout l'espace restant -->
                     <Border Grid.Row="6"

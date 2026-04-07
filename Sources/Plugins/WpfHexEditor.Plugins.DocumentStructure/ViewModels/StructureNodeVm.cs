@@ -42,6 +42,7 @@ public sealed class StructureNodeVm : ViewModelBase
     public long ByteOffset { get; }
     public long ByteLength { get; }
     public int IndentLevel { get; init; }
+    public object? Tag { get; set; }
     public ObservableCollection<StructureNodeVm> Children { get; } = [];
 
     public bool IsExpanded
@@ -79,6 +80,7 @@ public sealed class StructureNodeVm : ViewModelBase
         EndLine = node.EndLine;
         ByteOffset = node.ByteOffset;
         ByteLength = node.ByteLength;
+        Tag = node.Tag;
 
         foreach (var child in node.Children)
             Children.Add(new StructureNodeVm(child));
@@ -99,6 +101,7 @@ public sealed class StructureNodeVm : ViewModelBase
         ByteOffset = source.ByteOffset;
         ByteLength = source.ByteLength;
         IndentLevel = indentLevel;
+        Tag = source.Tag;
     }
 
     // ── Icon Resolution ─────────────────────────────────────────────────────
@@ -109,33 +112,36 @@ public sealed class StructureNodeVm : ViewModelBase
         return KindToIcon.TryGetValue(kind, out var glyph) ? glyph : "\uE946"; // Help
     }
 
+    // Segoe MDL2 Assets glyphs — identical to CodeEditor NavigationBar icon set.
     private static readonly Dictionary<string, string> KindToIcon = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["class"]          = "\uE8A5",  // Page
-        ["struct"]         = "\uE8A5",
-        ["record"]         = "\uE8A5",
-        ["interface"]      = "\uE8C0",  // CalendarReply
-        ["method"]         = "\uEA8C",  // Code
-        ["function"]       = "\uEA8C",
-        ["constructor"]    = "\uEA8C",
-        ["property"]       = "\uE8FC",  // Repair
-        ["field"]          = "\uEA86",
-        ["variable"]       = "\uEA86",
-        ["enum"]           = "\uE8EF",  // List
-        ["enummember"]     = "\uE8EF",
-        ["event"]          = "\uEA8F",
-        ["namespace"]      = "\uE8F1",  // Library
-        ["module"]         = "\uE8F1",
-        ["heading"]        = "\uE8AC",  // FontSize
-        ["section"]        = "\uE7C1",  // GlobalNav
-        ["element"]        = "\uE8A0",  // Tag
-        ["key"]            = "\uE8D7",  // Permissions
-        ["block"]          = "\uE8FD",  // AllApps
-        ["array"]          = "\uE8EF",  // List
-        ["object"]         = "\uE8A5",  // Page
-        ["region"]         = "\uE8A4",  // Trim
-        ["constant"]       = "\uE8A7",
-        ["typeparameter"]  = "\uE8A5",
+        ["class"]          = "\uE943",
+        ["record"]         = "\uE943",
+        ["object"]         = "\uE943",
+        ["struct"]         = "\uE8A0",
+        ["interface"]      = "\uE8C1",
+        ["enum"]           = "\uE945",
+        ["enummember"]     = "\uE945",
+        ["method"]         = "\uE8F4",
+        ["function"]       = "\uE8F4",
+        ["constructor"]    = "\uE8F4",
+        ["delegate"]       = "\uE8F4",
+        ["property"]       = "\uE8EC",
+        ["indexer"]        = "\uE8EC",
+        ["field"]          = "\uE8D2",
+        ["variable"]       = "\uE8D2",
+        ["constant"]       = "\uE8D2",
+        ["event"]          = "\uE7FC",
+        ["namespace"]      = "\uE8B7",
+        ["module"]         = "\uE8B7",
+        ["typeparameter"]  = "\uE8D2",
+        ["heading"]        = "\uE8A5",
+        ["section"]        = "\uE8A5",
+        ["element"]        = "\uE8A5",
+        ["key"]            = "\uE8A5",
+        ["block"]          = "\uE8A5",
+        ["array"]          = "\uE8A5",
+        ["region"]         = "\uE8A5",
         ["file"]           = "\uE8A5",
     };
 

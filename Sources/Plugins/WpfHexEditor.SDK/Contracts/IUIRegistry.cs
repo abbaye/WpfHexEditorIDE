@@ -29,6 +29,9 @@ public interface IUIRegistry
     /// <summary>Returns true if a UI element with this ID is already registered.</summary>
     bool Exists(string uiId);
 
+    /// <summary>Returns true if the given ID is registered as a dockable panel (tool window).</summary>
+    bool IsRegisteredPanel(string uiId) => false;
+
     // -- Panel Registration ---------------------------------------------------
 
     /// <summary>

@@ -151,7 +151,8 @@
         "else",
         "elseif",
         "until"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "organizeImports"]
     },
     "previewSnippet": "local io = require('io')\nlocal math = require('math')\n\nlocal x = 0\nif x>=0 then\n    x = x+1\nend",
     "previewSamples": {

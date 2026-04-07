@@ -182,7 +182,8 @@
         "void",
         "class",
         "interface"
-      ]
+      ],
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "spaceAfterKeywords", "spaceAroundBinaryOperators", "spaceAfterComma", "indentCaseLabels", "organizeImports"]
     },
     "previewSnippet": "import java.util.List;\nimport java.io.File;\n\nclass Example{\nvoid go(int x,int y){\nif(x>0){\nswitch(x){\ncase 1:\nreturn;\n}\n}\n}\n}",
     "previewSamples": {

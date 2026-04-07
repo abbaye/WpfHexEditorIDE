@@ -58,7 +58,8 @@
       "blankLineAfterImports": false,
       "spaceAfterComma": true,
       "quoteStyle": "double",
-      "maxLineLength": 120
+      "maxLineLength": 120,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "xmlAttributeIndentLevels", "xmlOneAttributePerLine"]
     },
     "diagnosticPrefix": "HTML",
     "id": "html",

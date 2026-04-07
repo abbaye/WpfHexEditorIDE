@@ -82,6 +82,25 @@
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
+            <Grid Margin="0,6,0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Auto-indent:"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                <ComboBox  Grid.Column="1"
+                           SelectedItem="{Binding AutoIndentMode}"
+                           Background="{DynamicResource DockMenuBackgroundBrush}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           BorderBrush="{DynamicResource DockBorderBrush}">
+                    <local:AutoIndentMode>None</local:AutoIndentMode>
+                    <local:AutoIndentMode>KeepIndent</local:AutoIndentMode>
+                    <local:AutoIndentMode>Smart</local:AutoIndentMode>
+                </ComboBox>
+            </Grid>
+
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Display ──────────────────────────────────────────── -->

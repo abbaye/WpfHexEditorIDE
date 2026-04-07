@@ -292,7 +292,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         /// <summary>
         /// Insert new line (Enter key handling)
         /// </summary>
-        public void InsertNewLine(int line, int column)
+        /// <summary>
+        /// Inserts a new line at the given position.
+        /// </summary>
+        /// <param name="line">Zero-based line index.</param>
+        /// <param name="column">Zero-based column index.</param>
+        /// <param name="autoIndentMode">
+        /// Controls how leading whitespace is inherited:
+        /// 0 = None (no indent), 1 = KeepIndent (copy whitespace), 2 = Smart (copy + extra after openers).
+        /// Default is 2 (Smart) to preserve existing behaviour for LSP-driven edits.
+        /// </param>
+        public void InsertNewLine(int line, int column, int autoIndentMode = 2)
         {
             if (line < 0 || line >= Lines.Count)
                 return;
@@ -303,14 +313,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
             var leftPart = currentLine.Text.Substring(0, column);
             var rightPart = currentLine.Text.Substring(column);
 
-            // Auto-indent: inherit the leading whitespace of the current line so the caret
-            // lands at the same column level regardless of brace count or language.
-            string indent = GetLeadingWhitespace(currentLine.Text);
+            string indent;
+            if (autoIndentMode == 0)
+            {
+                // None: no leading whitespace on the new line.
+                indent = string.Empty;
+            }
+            else
+            {
+                // KeepIndent or Smart: inherit leading whitespace of the current line.
+                indent = GetLeadingWhitespace(currentLine.Text);
 
-            // If the cursor is directly after an opening brace/bracket, add one extra indent level.
-            bool insideBraces = leftPart.TrimEnd().EndsWith("{") || leftPart.TrimEnd().EndsWith("[");
-            if (insideBraces)
-                indent += new string(' ', IndentSize);
+                // Smart only: add one extra indent level after an opening brace/bracket.
+                if (autoIndentMode == 2)
+                {
+                    bool insideBraces = leftPart.TrimEnd().EndsWith("{") || leftPart.TrimEnd().EndsWith("[");
+                    if (insideBraces)
+                        indent += new string(' ', IndentSize);
+                }
+            }
 
             // Update current line
             currentLine.Text = leftPart;

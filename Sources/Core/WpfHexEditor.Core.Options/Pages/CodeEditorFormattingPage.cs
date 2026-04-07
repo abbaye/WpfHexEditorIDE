@@ -54,6 +54,17 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
     private readonly CheckBox _skipOverClose;
     private readonly CheckBox _wrapSelection;
 
+    // XML / XAML (global — not per-language overrides)
+    private readonly ComboBox _xmlAttrIndentLevels;
+    private readonly CheckBox _xmlOneAttrPerLine;
+
+    // Section panels (layout only — opacity updated per supportedRules).
+    private readonly StackPanel _codeSectionsPanel;  // SPACING + STRUCTURE
+    private readonly StackPanel _xmlSectionPanel;    // XML / XAML
+
+    // ruleId → control — used by UpdateSectionAvailability to enable/disable per whfmt.
+    private readonly Dictionary<string, Control> _ruleControls = new();
+
     // ── Preview ───────────────────────────────────────────────────────────
     private readonly FormattingPreviewPanel? _preview;
 
@@ -205,8 +216,11 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         stack.Children.Add(_trimTrailing);
         stack.Children.Add(_insertFinalNewline);
 
-        // ── Spacing ───────────────────────────────────────────────────────
-        stack.Children.Add(MakeSectionHeader("SPACING"));
+        // ── Code-specific sections (SPACING + STRUCTURE) ─────────────────
+        // Wrapped in a panel so IsEnabled=false grays them out for XML languages.
+        _codeSectionsPanel = new StackPanel();
+
+        _codeSectionsPanel.Children.Add(MakeSectionHeader("SPACING"));
 
         _spaceAfterKeywords = MakeThreeStateCheckBox(
             "Space after keywords (if, for, while, switch, catch)",
@@ -222,12 +236,11 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             "Insert a space after commas: (a, b, c) vs (a,b,c)",
             "spaceAfterComma", "Space after commas");
 
-        stack.Children.Add(_spaceAfterKeywords);
-        stack.Children.Add(_spaceAroundOperators);
-        stack.Children.Add(_spaceAfterComma);
+        _codeSectionsPanel.Children.Add(_spaceAfterKeywords);
+        _codeSectionsPanel.Children.Add(_spaceAroundOperators);
+        _codeSectionsPanel.Children.Add(_spaceAfterComma);
 
-        // ── Structure ─────────────────────────────────────────────────────
-        stack.Children.Add(MakeSectionHeader("STRUCTURE"));
+        _codeSectionsPanel.Children.Add(MakeSectionHeader("STRUCTURE"));
 
         _indentCaseLabels = MakeThreeStateCheckBox("Indent case/when labels inside switch",
             "Add one indent level to case and default labels",
@@ -237,8 +250,9 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             "Sort using/import directives alphabetically when formatting",
             "organizeImports", "Organize imports");
 
-        stack.Children.Add(_indentCaseLabels);
-        stack.Children.Add(_organizeImports);
+        _codeSectionsPanel.Children.Add(_indentCaseLabels);
+        _codeSectionsPanel.Children.Add(_organizeImports);
+        stack.Children.Add(_codeSectionsPanel);
 
         // ── Smart Editing ─────────────────────────────────────────────────
         stack.Children.Add(MakeSectionHeader("SMART EDITING"));
@@ -252,6 +266,51 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         stack.Children.Add(_autoQuotes);
         stack.Children.Add(_skipOverClose);
         stack.Children.Add(_wrapSelection);
+
+        // ── XML / XAML (tag-based languages only) ─────────────────────────
+        // Wrapped in a panel so IsEnabled=false grays it out for non-XML languages.
+        _xmlSectionPanel = new StackPanel();
+        _xmlSectionPanel.Children.Add(MakeSectionHeader("XML / XAML"));
+
+        var attrLevelRow = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Margin      = new Thickness(0, 4, 0, 4),
+        };
+        attrLevelRow.Children.Add(new TextBlock
+        {
+            Text              = "Attribute continuation indent:",
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(0, 0, 8, 0),
+            Width             = 220,
+        });
+        _xmlAttrIndentLevels = new ComboBox { Width = 230 };
+        _xmlAttrIndentLevels.Items.Add("1 level  (4 spaces at root)");
+        _xmlAttrIndentLevels.Items.Add("2 levels (8 spaces at root) — VS default");
+        _xmlAttrIndentLevels.Items.Add("3 levels (12 spaces at root)");
+        _xmlAttrIndentLevels.SelectedIndex = 1;
+        _xmlAttrIndentLevels.SelectionChanged += (_, _) => { if (!_loading) { Changed?.Invoke(this, EventArgs.Empty); _preview?.Refresh(BuildOverrides()); } };
+        if (_colorizer is not null)
+            WireComboTooltip(_xmlAttrIndentLevels, "xmlAttributeIndentLevels", "Attribute continuation indent");
+        attrLevelRow.Children.Add(_xmlAttrIndentLevels);
+        _xmlSectionPanel.Children.Add(attrLevelRow);
+
+        _xmlOneAttrPerLine = MakeCheckBox(
+            "Each XML/XAML attribute on its own line  (first attribute stays on tag line)",
+            false, "xmlOneAttributePerLine", "One attribute per line");
+        _xmlSectionPanel.Children.Add(_xmlOneAttrPerLine);
+        stack.Children.Add(_xmlSectionPanel);
+
+        // ── ruleId → control mapping (used by UpdateSectionAvailability) ────
+        _ruleControls["trimTrailingWhitespace"]     = _trimTrailing;
+        _ruleControls["insertFinalNewline"]         = _insertFinalNewline;
+        _ruleControls["spaceAfterKeywords"]         = _spaceAfterKeywords;
+        _ruleControls["spaceAroundBinaryOperators"] = _spaceAroundOperators;
+        _ruleControls["spaceAfterComma"]            = _spaceAfterComma;
+        _ruleControls["indentCaseLabels"]           = _indentCaseLabels;
+        _ruleControls["organizeImports"]            = _organizeImports;
+        _ruleControls["xmlAttributeIndentLevels"]   = _xmlAttrIndentLevels;
+        _ruleControls["xmlOneAttributePerLine"]     = _xmlOneAttrPerLine;
 
         leftScroll.Content = stack;
         content.Children.Add(leftScroll);
@@ -312,6 +371,8 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             _autoQuotes.IsChecked           = ce.AutoClosingQuotes;
             _skipOverClose.IsChecked        = ce.SkipOverClosingChar;
             _wrapSelection.IsChecked        = ce.WrapSelectionInPairs;
+            _xmlAttrIndentLevels.SelectedIndex = Math.Clamp(ce.XmlAttributeIndentLevels - 1, 0, 2);
+            _xmlOneAttrPerLine.IsChecked       = ce.XmlOneAttributePerLine;
         }
         finally { _loading = false; }
 
@@ -336,6 +397,8 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         ce.AutoClosingQuotes          = _autoQuotes.IsChecked    == true;
         ce.SkipOverClosingChar        = _skipOverClose.IsChecked == true;
         ce.WrapSelectionInPairs       = _wrapSelection.IsChecked == true;
+        ce.XmlAttributeIndentLevels   = _xmlAttrIndentLevels.SelectedIndex + 1;
+        ce.XmlOneAttributePerLine     = _xmlOneAttrPerLine.IsChecked == true;
 
         if (_currentLangId is not null)
             PersistLanguageOverrides(_currentLangId, ce.PerLanguageOverrides);
@@ -414,14 +477,49 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             }
         }
     }
+    /// <summary>
+    /// Enables or disables each formatting control based on the language's
+    /// <c>supportedRules</c> list from its whfmt file.
+    /// When <c>supportedRules</c> is absent (null), all controls are enabled.
+    /// Section panels get dimmed (Opacity 0.38) when all their rules are disabled.
+    /// </summary>
+    private void UpdateSectionAvailability(LanguageDefinition? lang)
+    {
+        var supported = lang?.FormattingRules?.SupportedRules;
+
+        // Enable/disable individual controls.
+        foreach (var (ruleId, control) in _ruleControls)
+        {
+            bool on = supported is null || supported.Contains(ruleId);
+            control.IsEnabled = on;
+            control.Opacity   = on ? 1.0 : 0.38;
+        }
+
+        // Dim entire section panels when none of their rules are supported.
+        bool anyCode = IsAnyOn("spaceAfterKeywords", "spaceAroundBinaryOperators",
+                               "spaceAfterComma", "indentCaseLabels", "organizeImports");
+        _codeSectionsPanel.Opacity = anyCode ? 1.0 : 0.38;
+
+        bool anyXml = IsAnyOn("xmlAttributeIndentLevels", "xmlOneAttributePerLine");
+        _xmlSectionPanel.Opacity = anyXml ? 1.0 : 0.38;
+
+        bool IsAnyOn(params string[] ids)
+            => supported is null || ids.Any(id => supported.Contains(id));
+    }
+
     private void ApplyLanguageOverrides(string langId)
     {
         _currentLangId = langId;
         if (_settings is null) return;
 
         // Sync the preview panel to the newly selected language
-        if (LanguageRegistry.Instance.FindById(langId) is { } lang)
+        LanguageDefinition? lang = null;
+        if (LanguageRegistry.Instance.FindById(langId) is { } l)
+        {
+            lang = l;
             _preview?.SelectLanguage(lang);
+        }
+        UpdateSectionAvailability(lang);
 
         // Always sync checkboxes: use stored per-language override when available,
         // or reset to null (indeterminate = inherit .whfmt default) when none is saved.
@@ -541,6 +639,26 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             cb.ToolTip = tip;
             ToolTipService.SetShowDuration(cb, 30_000);
             ToolTipService.SetInitialShowDelay(cb, 300);
+        };
+    }
+
+    /// <summary>Same as <see cref="WireTooltip"/> but for a <see cref="ComboBox"/>.</summary>
+    private void WireComboTooltip(ComboBox combo, string ruleId, string displayName)
+    {
+        combo.MouseEnter += (_, _) =>
+        {
+            if (_colorizer is null) return;
+            if (!_tooltips.TryGetValue(ruleId, out var tip))
+            {
+                tip = new FormattingRuleTooltip(ruleId, displayName);
+                _tooltips[ruleId] = tip;
+            }
+            var langId  = _preview?.SelectedLanguageId;
+            var langDef = langId is not null ? LanguageRegistry.Instance.FindById(langId) : null;
+            tip.Refresh(langDef, _colorizer);
+            combo.ToolTip = tip;
+            ToolTipService.SetShowDuration(combo, 30_000);
+            ToolTipService.SetInitialShowDelay(combo, 300);
         };
     }
 

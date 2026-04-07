@@ -238,7 +238,7 @@ public static class LanguageDefinitionSerializer
             BreakpointRules           = MapBreakpointRules(dto.BreakpointRules),
             ColumnRulers              = dto.ColumnRulers,
             BracketPairs              = MapBracketPairs(dto.BracketPairs),
-            FormattingRules           = MapFormattingRules(dto.FormattingRules),
+            FormattingRules           = MapFormattingRules(dto.FormattingRules, dto.FoldingRules?.TagBased ?? false),
             ColorLiteralPatterns      = MapColorLiteralPatterns(dto.ColorLiteralPatterns),
             DiagnosticPrefix          = dto.DiagnosticPrefix,
             ScriptGlobals             = MapScriptGlobals(dto.ScriptGlobals),
@@ -545,9 +545,16 @@ public static class LanguageDefinitionSerializer
         [JsonPropertyName("quoteStyle")]             public string? QuoteStyle            { get; set; }
         [JsonPropertyName("trailingCommas")]         public string? TrailingCommas        { get; set; }
         [JsonPropertyName("maxLineLength")]          public int    MaxLineLength          { get; set; } = 120;
-        [JsonPropertyName("sqlKeywordsUppercase")]   public bool   SqlKeywordsUppercase   { get; set; }
-        [JsonPropertyName("blockOpenKeywords")]      public string[]? BlockOpenKeywords    { get; set; }
-        [JsonPropertyName("blockCloseKeywords")]     public string[]? BlockCloseKeywords   { get; set; }
+        [JsonPropertyName("sqlKeywordsUppercase")]      public bool   SqlKeywordsUppercase      { get; set; }
+        [JsonPropertyName("blockOpenKeywords")]         public string[]? BlockOpenKeywords    { get; set; }
+        [JsonPropertyName("blockCloseKeywords")]        public string[]? BlockCloseKeywords   { get; set; }
+
+        // ── XML / XAML-specific ─────────────────────────────────────────────
+        [JsonPropertyName("xmlAttributeIndentLevels")] public int?  XmlAttributeIndentLevels { get; set; }
+        [JsonPropertyName("xmlOneAttributePerLine")]   public bool? XmlOneAttributePerLine   { get; set; }
+
+        // ── Formatting capabilities ──────────────────────────────────────────
+        [JsonPropertyName("supportedRules")] public List<string>? SupportedRules { get; set; }
 
         // ── Pattern keywords (whfmt-driven regexes) ─────────────────────────
         [JsonPropertyName("keywordParenKeywords")]   public string[]? KeywordParenKeywords { get; set; }
@@ -572,11 +579,12 @@ public static class LanguageDefinitionSerializer
         return pairs.Count > 0 ? pairs : null;
     }
 
-    private static FormattingRules? MapFormattingRules(FormattingRulesDto? dto)
+    private static FormattingRules? MapFormattingRules(FormattingRulesDto? dto, bool tagBased = false)
     {
         if (dto is null) return null;
         return new FormattingRules
         {
+            FormatterStrategy          = tagBased ? FormatterStrategy.Xml : FormatterStrategy.Brace,
             IndentSize                 = dto.IndentSize,
             UseTabs                    = dto.UseTabs,
             TrimTrailingWhitespace     = dto.TrimTrailingWhitespace,
@@ -605,6 +613,11 @@ public static class LanguageDefinitionSerializer
             MethodDeclKeywords         = dto.MethodDeclKeywords is { Length: > 0 } ? dto.MethodDeclKeywords : null,
             ImportKeywords             = dto.ImportKeywords is { Length: > 0 } ? dto.ImportKeywords : null,
             SqlKeywords                = dto.SqlKeywords is { Length: > 0 } ? dto.SqlKeywords : null,
+            XmlAttributeIndentLevels   = dto.XmlAttributeIndentLevels ?? 2,
+            XmlOneAttributePerLine     = dto.XmlOneAttributePerLine   ?? false,
+            SupportedRules             = dto.SupportedRules is { Count: > 0 } sr
+                                             ? sr.AsReadOnly()
+                                             : null,
         };
     }
 

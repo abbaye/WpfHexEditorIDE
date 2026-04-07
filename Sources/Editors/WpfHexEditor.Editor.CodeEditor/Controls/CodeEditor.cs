@@ -488,6 +488,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Breakpoint gutter (ADR-DBG-01).
         private BreakpointGutterControl? _breakpointGutterControl;
         private BlameGutterControl?      _blameGutterControl;
+
+        // Change-marker gutter (#166): 4px strip left of the breakpoint gutter.
+        private ChangeMarkerGutterControl?                              _changeMarkerGutterControl;
+        private readonly Services.GutterChangeTracker                  _changeTracker = new();
+        private IReadOnlyDictionary<int, Models.LineChangeKind>        _changeMap
+            = new Dictionary<int, Models.LineChangeKind>();
+
+        // Inline peek definition host (#158 — VS2026 style)
+        private InlinePeekHost? _inlinePeekHost;
+        private int             _peekHostLine   = -1;
+        private double          _peekHostHeight = 0.0;
+
         // 1-based execution line (null when no debug session is paused).
         private int? _executionLineOneBased;
 
@@ -525,6 +537,39 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             get => _formatOnSave;
             set => _formatOnSave = value;
+        }
+
+        // XML / XAML attribute formatting overrides.
+        private int  _xmlAttributeIndentLevels = 2;
+        private bool _xmlOneAttributePerLine;
+
+        /// <summary>
+        /// Number of extra indent levels applied to attribute continuation lines in XML/XAML.
+        /// Default 2 matches VS XAML formatting (double-indent).
+        /// </summary>
+        public int XmlAttributeIndentLevels
+        {
+            get => _xmlAttributeIndentLevels;
+            set
+            {
+                _xmlAttributeIndentLevels = value;
+                if (_codeEditorOptions is not null)
+                    _codeEditorOptions.XmlAttributeIndentLevels = value;
+            }
+        }
+
+        /// <summary>
+        /// When true, each XML/XAML attribute is placed on its own line during formatting.
+        /// </summary>
+        public bool XmlOneAttributePerLine
+        {
+            get => _xmlOneAttributePerLine;
+            set
+            {
+                _xmlOneAttributePerLine = value;
+                if (_codeEditorOptions is not null)
+                    _codeEditorOptions.XmlOneAttributePerLine = value;
+            }
         }
 
         // Stored reference to CodeEditorOptions for formatting overrides.
@@ -851,6 +896,70 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         public void SetBlame(IReadOnlyList<WpfHexEditor.Editor.Core.LSP.BlameEntry>? entries)
             => _blameGutterControl?.SetBlame(entries);
+
+        // ── Inline Peek Definition (#158) ────────────────────────────────────
+
+        /// <summary>Closes the inline peek panel and restores normal line layout.</summary>
+        internal void CloseInlinePeek()
+        {
+            if (_inlinePeekHost != null)
+                _scrollBarChildren.Remove(_inlinePeekHost);
+            _inlinePeekHost = null;
+            _peekHostLine   = -1;
+            _peekHostHeight = 0.0;
+            _linePositionsDirty = true;
+            InvalidateMeasure();
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Scrolls the editor vertically so the peek panel is fully visible
+        /// when it would otherwise extend below the viewport.
+        /// </summary>
+        internal void EnsurePeekVisible(int anchorLine)
+        {
+            if (_lineHeight <= 0) return;
+            if (!_lineYLookup.TryGetValue(anchorLine, out double anchorY))
+                anchorY = TopMargin + (anchorLine - _firstVisibleLine) * _lineHeight;
+
+            double panelTop    = anchorY + _lineHeight;
+            double panelBottom = panelTop + _peekHostHeight;
+            double viewBottom  = ActualHeight - (_hScrollBar?.ActualHeight ?? 0);
+
+            if (panelBottom > viewBottom)
+            {
+                double needed = panelBottom - viewBottom;
+                _verticalScrollOffset = Math.Min(
+                    _verticalScrollOffset + needed,
+                    Math.Max(0, (_document?.Lines.Count ?? 0) * _lineHeight - ActualHeight));
+                _linePositionsDirty = true;
+                InvalidateVisual();
+            }
+        }
+
+        // ── Change Marker Gutter (#166) ───────────────────────────────────────
+
+        public static readonly DependencyProperty ShowChangeMarkersProperty =
+            DependencyProperty.Register(nameof(ShowChangeMarkers), typeof(bool), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(true, OnShowChangeMarkersChanged));
+
+        [Category("Features")]
+        [DisplayName("Show Change Markers")]
+        [Description("Shows Added / Modified / Deleted line indicators in the gutter.")]
+        public bool ShowChangeMarkers
+        {
+            get => (bool)GetValue(ShowChangeMarkersProperty);
+            set => SetValue(ShowChangeMarkersProperty, value);
+        }
+
+        private static void OnShowChangeMarkersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not CodeEditor ce || ce._changeMarkerGutterControl is null) return;
+            ce._changeMarkerGutterControl.Visibility = (bool)e.NewValue
+                ? System.Windows.Visibility.Visible
+                : System.Windows.Visibility.Collapsed;
+            ce.InvalidateMeasure();
+        }
 
         public static readonly DependencyProperty ShowInlineHintsProperty =
             DependencyProperty.Register(nameof(ShowInlineHints), typeof(bool), typeof(CodeEditor),
@@ -1531,6 +1640,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             get => (int)GetValue(IndentSizeProperty);
             set => SetValue(IndentSizeProperty, value);
+        }
+
+        public static readonly DependencyProperty AutoIndentModeProperty =
+            DependencyProperty.Register(nameof(AutoIndentMode), typeof(AutoIndentMode), typeof(CodeEditor),
+                new FrameworkPropertyMetadata(AutoIndentMode.KeepIndent));
+
+        [Category("Behavior")]
+        [DisplayName("Auto-Indent Mode")]
+        [Description("Controls automatic indentation when Enter is pressed: None, KeepIndent, or Smart.")]
+        public AutoIndentMode AutoIndentMode
+        {
+            get => (AutoIndentMode)GetValue(AutoIndentModeProperty);
+            set => SetValue(AutoIndentModeProperty, value);
         }
 
         public static readonly DependencyProperty SmartCompleteDelayProperty =
@@ -2430,6 +2552,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _blameGutterControl = new BlameGutterControl { Visibility = System.Windows.Visibility.Collapsed };
             _scrollBarChildren.Add(_blameGutterControl);
 
+            // Change-marker gutter (#166): 4px strip between blame and breakpoint gutters.
+            _changeMarkerGutterControl = new ChangeMarkerGutterControl();
+            _scrollBarChildren.Add(_changeMarkerGutterControl);
+            _changeTracker.Changed += (_, map) =>
+            {
+                _changeMap = map;
+                _changeMarkerGutterControl?.Update(
+                    _lineHeight, _firstVisibleLine, _lastVisibleLine,
+                    TopMargin, _lineYLookup, _changeMap);
+            };
+
             // Initialize word-highlight scroll marker overlay.
             _codeScrollMarkerPanel = new CodeScrollMarkerPanel();
             _scrollBarChildren.Add(_codeScrollMarkerPanel); // renders on top of _vScrollBar
@@ -2580,6 +2713,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ShowEndOfBlockHint      = options.ShowEndOfBlockHint;
             EndOfBlockHintDelayMs   = options.EndOfBlockHintDelayMs;
 
+            // Auto-indent
+            AutoIndentMode = options.AutoIndentMode;
+
             // Auto-close / smart editing
             EnableAutoClosingBrackets = options.AutoClosingBrackets;
             EnableAutoClosingQuotes   = options.AutoClosingQuotes;
@@ -2596,7 +2732,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             ColorSwatchPreviewEnabled = options.ColorSwatchPreview;
 
             // Code formatting (#159)
-            _formatOnSave = options.FormatOnSave;
+            _formatOnSave              = options.FormatOnSave;
+            _xmlAttributeIndentLevels  = options.XmlAttributeIndentLevels ?? 2;
+            _xmlOneAttributePerLine    = options.XmlOneAttributePerLine   ?? false;
 
             // Whitespace markers
             _whitespaceMode = options.WhitespaceMode;

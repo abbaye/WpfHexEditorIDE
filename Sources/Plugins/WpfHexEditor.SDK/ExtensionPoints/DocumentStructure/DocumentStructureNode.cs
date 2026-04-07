@@ -61,6 +61,12 @@ public sealed class DocumentStructureNode
     /// <summary>True when this node has no children.</summary>
     public bool IsLeaf => Children.Count == 0;
 
+    /// <summary>
+    /// Optional provider-specific payload carried through to <c>StructureNodeVm.Tag</c>.
+    /// Example: XAML Designer element UID (int) for bidirectional selection sync.
+    /// </summary>
+    public object? Tag { get; init; }
+
     /// <summary>Child nodes forming the hierarchy.</summary>
     public IReadOnlyList<DocumentStructureNode> Children { get; init; } = [];
 }

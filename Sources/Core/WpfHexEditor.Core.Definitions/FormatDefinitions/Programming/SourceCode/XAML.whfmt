@@ -158,7 +158,10 @@
       "maxConsecutiveBlankLines": 1,
       "blankLineBeforeMethod": false,
       "blankLineAfterImports": false,
-      "quoteStyle": "double"
+      "quoteStyle": "double",
+      "xmlAttributeIndentLevels": 2,
+      "xmlOneAttributePerLine": true,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline", "xmlAttributeIndentLevels", "xmlOneAttributePerLine"]
     },
     "colorLiteralPatterns": [
       "#[0-9A-Fa-f]{8}",
@@ -175,6 +178,14 @@
       "insertFinalNewline": {
         "before": "</Window>",
         "after": "</Window>\n"
+      },
+      "xmlOneAttributePerLine": {
+        "before": "<Button Grid.Row=\"0\" Width=\"100\" Height=\"30\" Click=\"OnClick\"/>",
+        "after": "<Button Grid.Row=\"0\"\n        Width=\"100\"\n        Height=\"30\"\n        Click=\"OnClick\"/>"
+      },
+      "xmlAttributeIndentLevels": {
+        "before": "<Button\n    Width=\"100\"\n    Height=\"30\"/>",
+        "after": "<Button\n        Width=\"100\"\n        Height=\"30\"/>"
       }
     },
     "ideMetadata": {

@@ -52,6 +52,13 @@ public sealed class UIRegistry : IUIRegistry
     }
 
     /// <inheritdoc />
+    public bool IsRegisteredPanel(string uiId)
+    {
+        lock (_lock)
+            return _registrations.TryGetValue(uiId, out var reg) && reg.Kind == UIElementKind.Panel;
+    }
+
+    /// <inheritdoc />
     public void RegisterPanel(string uiId, UIElement content, string pluginId, PanelDescriptor descriptor)
     {
         lock (_lock)

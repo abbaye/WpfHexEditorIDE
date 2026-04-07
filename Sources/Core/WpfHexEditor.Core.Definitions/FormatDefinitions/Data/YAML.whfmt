@@ -175,6 +175,13 @@
         "colorKey": "TE_Comment"
       }
     ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true,
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline"]
+    },
     "foldingRules": {
       "indentBased": true,
       "indentTabWidth": 2
