@@ -1304,6 +1304,8 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
             row.AlcAssemblyCount   = entry.Diagnostics.AlcAssemblyCount;
             row.AlcConflictCount   = entry.Diagnostics.AlcConflictCount;
             row.ReloadMode         = entry.Instance is IWpfHexEditorPluginV2 { SupportsHotReload: true } ? "Fast" : "Full";
+            row.IsWatching         = _host.IsWatching(entry.Manifest.Id);
+            row.WatchDirectory     = _host.GetWatchDirectory(entry.Manifest.Id);
 
             // Evaluate memory alert for this plugin
             if (_memoryAlertService != null)

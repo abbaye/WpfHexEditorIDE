@@ -57,6 +57,14 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     /// <summary>Registry for registering custom debug adapters from plugins.</summary>
     public IDebugAdapterRegistry AdapterRegistry => _adapterRegistry;
 
+    /// <inheritdoc/>
+    public void RegisterAdapter(string languageId, Func<object> factory)
+        => _adapterRegistry.Register(languageId, () => (IDapClient)factory());
+
+    /// <inheritdoc/>
+    public void UnregisterAdapter(string languageId)
+        => _adapterRegistry.Unregister(languageId);
+
     public IReadOnlyList<DebugBreakpointInfo> Breakpoints =>
         _breakpoints.Select(b => new DebugBreakpointInfo(
             FilePath:         b.FilePath,
