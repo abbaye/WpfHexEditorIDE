@@ -959,6 +959,7 @@
     <SolidColorBrush x:Key="DS_RowSelectedBrush"     Color="#CCE8FF"/>
     <Color x:Key="DS_RowSelectedColor">#CCE8FF</Color>
     <Color x:Key="DS_RowSelectedTextColor">#1B1B1B</Color>
+    <SolidColorBrush x:Key="DS_AccentColorBrush" Color="{StaticResource AccentColor}"/>
     <SolidColorBrush x:Key="DS_ClassIconBrush" Color="#4EC9B0"/>
     <SolidColorBrush x:Key="DS_MethodIconBrush" Color="#DCDCAA"/>
     <SolidColorBrush x:Key="DS_PropertyIconBrush" Color="#9CDCFE"/>

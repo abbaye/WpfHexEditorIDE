@@ -112,34 +112,35 @@ public sealed class StructureNodeVm : ViewModelBase
         return KindToIcon.TryGetValue(kind, out var glyph) ? glyph : "\uE946"; // Help
     }
 
+    // Letter-badge labels rendered inside a colored Border (VS Code-style outline icons).
     private static readonly Dictionary<string, string> KindToIcon = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["class"]          = "\uE8A5",  // Page
-        ["struct"]         = "\uE8A5",
-        ["record"]         = "\uE8A5",
-        ["interface"]      = "\uE8C0",  // CalendarReply
-        ["method"]         = "\uEA8C",  // Code
-        ["function"]       = "\uEA8C",
-        ["constructor"]    = "\uEA8C",
-        ["property"]       = "\uE8FC",  // Repair
-        ["field"]          = "\uEA86",
-        ["variable"]       = "\uEA86",
-        ["enum"]           = "\uE8EF",  // List
-        ["enummember"]     = "\uE8EF",
-        ["event"]          = "\uEA8F",
-        ["namespace"]      = "\uE8F1",  // Library
-        ["module"]         = "\uE8F1",
-        ["heading"]        = "\uE8AC",  // FontSize
-        ["section"]        = "\uE7C1",  // GlobalNav
-        ["element"]        = "\uE8A0",  // Tag
-        ["key"]            = "\uE8D7",  // Permissions
-        ["block"]          = "\uE8FD",  // AllApps
-        ["array"]          = "\uE8EF",  // List
-        ["object"]         = "\uE8A5",  // Page
-        ["region"]         = "\uE8A4",  // Trim
-        ["constant"]       = "\uE8A7",
-        ["typeparameter"]  = "\uE8A5",
-        ["file"]           = "\uE8A5",
+        ["class"]          = "C",
+        ["struct"]         = "S",
+        ["record"]         = "R",
+        ["interface"]      = "I",
+        ["method"]         = "M",
+        ["function"]       = "M",
+        ["constructor"]    = "C",
+        ["property"]       = "P",
+        ["field"]          = "F",
+        ["variable"]       = "V",
+        ["enum"]           = "E",
+        ["enummember"]     = "e",
+        ["event"]          = "Ev",
+        ["namespace"]      = "N",
+        ["module"]         = "N",
+        ["heading"]        = "H",
+        ["section"]        = "§",
+        ["element"]        = "X",
+        ["key"]            = "K",
+        ["block"]          = "B",
+        ["array"]          = "[]",
+        ["object"]         = "O",
+        ["region"]         = "#",
+        ["constant"]       = "K",
+        ["typeparameter"]  = "T",
+        ["file"]           = "F",
     };
 
     // ── INPC ────────────────────────────────────────────────────────────────

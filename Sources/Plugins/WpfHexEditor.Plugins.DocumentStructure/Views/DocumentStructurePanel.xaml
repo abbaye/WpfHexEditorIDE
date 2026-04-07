@@ -197,25 +197,51 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type vm:StructureNodeVm}"
                                           ItemsSource="{Binding Children}">
-                    <StackPanel Orientation="Horizontal" Margin="0,1" Visibility="{Binding Visibility}">
-                        <!-- Kind icon — colored glyph -->
-                        <TextBlock Text="{Binding IconGlyph}"
-                                   FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                   Width="16" VerticalAlignment="Center"
-                                   Foreground="{Binding Kind, Converter={StaticResource KindToBrush}}"
-                                   Margin="0,0,3,0"/>
-                        <!-- Symbol name -->
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_NodeForeground}"/>
-                        <!-- " : ReturnType" separator + detail, VS Solution Explorer style -->
-                        <TextBlock VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_DetailForeground}"
-                                   FontSize="11"
-                                   Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
-                            <Run Text=" : "/>
-                            <Run Text="{Binding Detail, Mode=OneWay}"/>
-                        </TextBlock>
-                    </StackPanel>
+                    <Grid Margin="0,1" Visibility="{Binding Visibility}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2"/>   <!-- left accent bar -->
+                            <ColumnDefinition Width="4"/>   <!-- gap -->
+                            <ColumnDefinition Width="Auto"/><!-- icon badge -->
+                            <ColumnDefinition Width="4"/>   <!-- gap -->
+                            <ColumnDefinition Width="*"/>   <!-- name + detail -->
+                        </Grid.ColumnDefinitions>
+                        <!-- Left accent bar (visible when IsSelected) -->
+                        <Rectangle Grid.Column="0" Fill="{DynamicResource DS_AccentColorBrush}">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                        <!-- Kind badge: colored box with letter label -->
+                        <Border Grid.Column="2"
+                                Width="15" Height="15"
+                                CornerRadius="2"
+                                Background="{Binding Kind, Converter={StaticResource KindToBrush}}"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="{Binding IconGlyph}"
+                                       FontSize="8" FontWeight="SemiBold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       LineHeight="15"/>
+                        </Border>
+                        <!-- Name + : ReturnType -->
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}"
+                                       Foreground="{DynamicResource DS_NodeForeground}"/>
+                            <TextBlock Foreground="{DynamicResource DS_DetailForeground}"
+                                       FontSize="11"
+                                       Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
+                                <Run Text=" : "/>
+                                <Run Text="{Binding Detail, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
             <TreeView.ItemContainerStyle>
@@ -267,22 +293,48 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:StructureNodeVm}">
-                    <StackPanel Orientation="Horizontal" Margin="{Binding IndentLevel, Converter={conv:IndentToMarginConverter}}">
-                        <TextBlock Text="{Binding IconGlyph}"
-                                   FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                   Width="16" VerticalAlignment="Center"
-                                   Foreground="{Binding Kind, Converter={StaticResource KindToBrush}}"
-                                   Margin="0,0,3,0"/>
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_NodeForeground}"/>
-                        <TextBlock VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DS_DetailForeground}"
-                                   FontSize="11"
-                                   Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
-                            <Run Text=" : "/>
-                            <Run Text="{Binding Detail, Mode=OneWay}"/>
-                        </TextBlock>
-                    </StackPanel>
+                    <Grid Margin="{Binding IndentLevel, Converter={conv:IndentToMarginConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="{DynamicResource DS_AccentColorBrush}">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                        <Border Grid.Column="2"
+                                Width="15" Height="15"
+                                CornerRadius="2"
+                                Background="{Binding Kind, Converter={StaticResource KindToBrush}}"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="{Binding IconGlyph}"
+                                       FontSize="8" FontWeight="SemiBold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       LineHeight="15"/>
+                        </Border>
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}"
+                                       Foreground="{DynamicResource DS_NodeForeground}"/>
+                            <TextBlock Foreground="{DynamicResource DS_DetailForeground}"
+                                       FontSize="11"
+                                       Visibility="{Binding Detail, Converter={StaticResource NullToVis}}">
+                                <Run Text=" : "/>
+                                <Run Text="{Binding Detail, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
