@@ -672,9 +672,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 ParentPath = "Tools",
                 IconGlyph  = "\uE92F",
                 ToolTip    = "Analyze the active C# file and open it as a class diagram",
-                Command    = new RelayCommand(
-                    execute: _ => _ = OpenDiagramForActiveFileAsync(context),
-                    canExecute: _ => HasActiveClassDiagramSource(context)),
+                Command    = new RelayCommand(_ => _ = OpenDiagramForActiveFileAsync(context)),
                 Group = "ClassDiagram"
             });
 
@@ -703,10 +701,23 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private async Task OpenDiagramForActiveFileAsync(IIDEHostContext context)
     {
         string? filePath = context.FocusContext.ActiveDocument?.FilePath;
+
+        // If no active source file, let user pick one via dialog.
         if (string.IsNullOrEmpty(filePath) || !IsSourceFile(filePath))
         {
-            context.Output.Info("[Class Diagram] Active document is not a C# or VB.NET file.");
-            return;
+            var dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Title  = "Open Class Diagram for File",
+                Filter = "C# Files (*.cs)|*.cs|VB.NET Files (*.vb)|*.vb|All Files (*.*)|*.*",
+                CheckFileExists = true
+            };
+            if (dlg.ShowDialog() != true) return;
+            filePath = dlg.FileName;
+            if (!IsSourceFile(filePath))
+            {
+                context.Output.Info("[Class Diagram] Selected file is not a supported source file.");
+                return;
+            }
         }
 
         await OpenClassDiagramForFileAsync(filePath, context);

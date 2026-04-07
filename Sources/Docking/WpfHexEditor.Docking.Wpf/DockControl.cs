@@ -1313,20 +1313,50 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         overlayBorder.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
 
         // Size the overlay to the content area only (exclude tab strip height).
-        // Using Margin.Bottom = tabStripHeight lets WPF layout shrink the overlay so its
-        // bottom border line falls exactly at the content/tab boundary — no clip needed
-        // (clip approach hides the bottom line because it draws at element edge, outside clip).
+        // The bottom border line gets a gap punched above the active tab via CombinedGeometry
+        // (GeometryCombineMode.Exclude) — VS classic "active tab connected to content" effect.
         tabControl.Loaded += (_, _) =>
         {
             tabControl.ApplyTemplate();
-            if (tabControl.Template?.FindName("PART_TabStrip", tabControl) is FrameworkElement tabStrip)
-            {
-                void UpdateMargin() =>
-                    overlayBorder.Margin = new Thickness(0, 0, 0, tabStrip.ActualHeight);
+            if (tabControl.Template?.FindName("PART_TabStrip", tabControl) is not FrameworkElement tabStrip)
+                return;
 
-                tabStrip.SizeChanged += (_, _) => UpdateMargin();
-                UpdateMargin();
+            const double gapH = 2.0;
+
+            void UpdateOverlay()
+            {
+                double tabH = tabStrip.ActualHeight;
+                double w    = overlayBorder.ActualWidth;
+                double h    = overlayBorder.ActualHeight;
+
+                overlayBorder.Margin = new Thickness(0, 0, 0, tabH);
+
+                if (w <= 0 || h <= 0) { overlayBorder.Clip = null; return; }
+
+                var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
+
+                if (tabControl.SelectedItem is { } sel &&
+                    tabControl.ItemContainerGenerator.ContainerFromItem(sel) is FrameworkElement activeTab)
+                {
+                    var pos  = activeTab.TranslatePoint(new Point(0, 0), overlayBorder);
+                    double gapX = Math.Max(0, pos.X);
+                    double gapW = activeTab.ActualWidth;
+                    if (gapW > 0)
+                    {
+                        var gap = new RectangleGeometry(new Rect(gapX, h - gapH, gapW, gapH * 2));
+                        overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
+                        return;
+                    }
+                }
+
+                overlayBorder.Clip = contentArea;
             }
+
+            tabStrip.SizeChanged         += (_, _) => UpdateOverlay();
+            overlayBorder.SizeChanged    += (_, _) => UpdateOverlay();
+            tabControl.SelectionChanged  += (_, _) => UpdateOverlay();
+            tabControl.LayoutUpdated     += (_, _) => UpdateOverlay();
+            UpdateOverlay();
         };
 
         var outer = new Grid { Margin = new Thickness(2) };
