@@ -61,7 +61,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             finally
             {
                 _isInternalEdit = false;
-                _changeTracker.Invalidate();
+                // Rebuild change markers from scratch after undo (document state may differ from incremental tracking).
+                _changeTracker.RebuildFromLines(_document.Lines.Select(l => l.Text).ToList());
             }
         }
 
@@ -82,7 +83,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             finally
             {
                 _isInternalEdit = false;
-                _changeTracker.Invalidate();
+                // Rebuild change markers from scratch after redo.
+                _changeTracker.RebuildFromLines(_document.Lines.Select(l => l.Text).ToList());
             }
         }
 
@@ -320,6 +322,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 InvalidateMeasure(); // scrollbar ranges may have changed
             else
                 InvalidateVisual();  // layout unaffected — redraw only
+
+            // Incremental change-marker tracking (gutter change indicators).
+            if (!_isInternalEdit)
+            {
+                switch (e.ChangeType)
+                {
+                    case TextChangeType.NewLine:
+                        _changeTracker.OnLineInserted(e.Position.Line + 1);
+                        if (e.Position.Line < _document.Lines.Count)
+                            _changeTracker.OnLineModified(e.Position.Line, _document.Lines[e.Position.Line].Text);
+                        break;
+                    case TextChangeType.DeleteLine:
+                        _changeTracker.OnLineDeleted(e.Position.Line);
+                        break;
+                    default:
+                        if (e.Position.Line < _document.Lines.Count)
+                            _changeTracker.OnLineModified(e.Position.Line, _document.Lines[e.Position.Line].Text);
+                        break;
+                }
+            }
 
             MinimapRefreshRequested?.Invoke(this, EventArgs.Empty);
         }
@@ -701,7 +723,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _breakpointGutterControl?.SetFilePath(_currentFilePath);
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             _undoEngine.MarkSaved();  // Stamp save-point so Undo can detect "back to clean".
-            _changeTracker.MarkSavePoint();
+            _changeTracker.MarkSavePoint(_document.Lines.Select(l => l.Text).ToList());
             _lspClient?.SaveDocument(filePath);
             _isDirty = false;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
@@ -728,7 +750,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _breakpointGutterControl?.SetFilePath(_currentFilePath);
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             // Seed save-point AFTER load so opened content is the baseline (not the empty doc).
-            _changeTracker.MarkSavePoint();
+            _changeTracker.MarkSavePoint(_document.Lines.Select(l => l.Text).ToList());
             TitleChanged?.Invoke(this, BuildTitle());
             StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
             RefreshJsonStatusBarItems();
@@ -787,7 +809,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             _undoEngine.Reset();    // Loaded content is the new baseline.
             _undoEngine.MarkSaved();
-            _changeTracker.MarkSavePoint();
+            _changeTracker.MarkSavePoint(_document.Lines.Select(l => l.Text).ToList());
             _isDirty = false;
             _cursorLine             = 0;
             _cursorColumn           = 0;

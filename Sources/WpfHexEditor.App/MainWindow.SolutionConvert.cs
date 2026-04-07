@@ -12,6 +12,8 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Windows;
 using System.Xml.Linq;
 using WpfHexEditor.Editor.Core;
@@ -120,6 +122,169 @@ public partial class MainWindow
                 "Convert Solution Format",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // .whsln writer (native WH format)
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Converts the currently open solution to the native .whsln format.
+    /// Produces a JSON file compatible with SolutionSerializer v2.
+    /// The original file is preserved.
+    /// </summary>
+    private async Task OnConvertToWhslnAsync()
+    {
+        var currentPath = _solutionManager.CurrentSolution?.FilePath;
+        if (currentPath is null)
+        {
+            MessageBox.Show(this,
+                "No solution is currently open.",
+                "Convert Solution Format",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var ext = Path.GetExtension(currentPath).ToLowerInvariant();
+        if (ext == ".whsln")
+        {
+            MessageBox.Show(this,
+                "The current solution is already a .whsln file.",
+                "Convert Solution Format",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var sourceName = Path.GetFileName(currentPath);
+        var targetName = Path.GetFileNameWithoutExtension(currentPath) + ".whsln";
+        var solutionDir = Path.GetDirectoryName(currentPath)!;
+        var newPath = Path.Combine(solutionDir, targetName);
+
+        var confirm = MessageBox.Show(this,
+            $"Convert \"{sourceName}\" → \"{targetName}\"?\n\nThe original file will be preserved.",
+            "Convert Solution Format",
+            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+        if (confirm != MessageBoxResult.OK) return;
+
+        var loaders = _ideHostContext?.ExtensionRegistry.GetExtensions<ISolutionLoader>() ?? [];
+        var srcExt = ext.TrimStart('.');
+        var sourceLoader = loaders.FirstOrDefault(l =>
+            l.SupportedExtensions.Contains(srcExt, StringComparer.OrdinalIgnoreCase));
+
+        if (sourceLoader is null)
+        {
+            MessageBox.Show(this,
+                $"No loader registered for {ext} format.",
+                "Convert Solution Format",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            var solution = await sourceLoader.LoadAsync(currentPath);
+            await WriteWhslnAsync(solution, solutionDir, newPath);
+
+            OutputLogger.Info($"[Convert] Solution converted: {newPath}");
+
+            var openResult = MessageBox.Show(this,
+                $"Converted to \"{targetName}\".\n\nOpen the converted solution now?",
+                "Convert Solution Format",
+                MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (openResult == MessageBoxResult.Yes)
+                await OpenSolutionAsync(newPath);
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"[Convert] Conversion failed: {ex.Message}");
+            MessageBox.Show(this,
+                $"Conversion failed:\n{ex.Message}",
+                "Convert Solution Format",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>
+    /// Writes a .whsln JSON file (format version 2) from an <see cref="ISolution"/>.
+    /// Builds the JSON directly so no dependency on internal SolutionSerializer types is needed.
+    /// </summary>
+    private static async Task WriteWhslnAsync(ISolution solution, string solutionDir, string destPath)
+    {
+        var projects = new JsonArray();
+        foreach (var project in solution.Projects)
+        {
+            var relPath = Path.GetRelativePath(solutionDir, project.ProjectFilePath)
+                             .Replace('\\', '/');
+            var folderId = FindProjectFolderId(solution.RootFolders, project.Name);
+            var obj = new JsonObject
+            {
+                ["name"] = project.Name,
+                ["path"] = relPath,
+            };
+            if (folderId is not null)
+                obj["solutionFolderId"] = folderId;
+            projects.Add(obj);
+        }
+
+        var root = new JsonObject
+        {
+            ["version"]  = 2,
+            ["name"]     = solution.Name,
+            ["modified"] = DateTimeOffset.UtcNow.ToString("O"),
+            ["projects"] = projects,
+        };
+
+        if (solution.RootFolders.Count > 0)
+            root["solutionFolders"] = BuildWhslnFolderArray(solution.RootFolders);
+
+        if (solution.StartupProject is not null)
+            root["startupProject"] = solution.StartupProject.Name;
+
+        var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+        Directory.CreateDirectory(solutionDir);
+        await using var stream = File.Create(destPath);
+        await JsonSerializer.SerializeAsync(stream, root, jsonOptions);
+    }
+
+    private static JsonArray BuildWhslnFolderArray(IReadOnlyList<ISolutionFolder> folders)
+    {
+        var arr = new JsonArray();
+        foreach (var folder in folders)
+        {
+            var obj = new JsonObject
+            {
+                ["id"]   = folder.Id,
+                ["name"] = folder.Name,
+            };
+            if (folder.ProjectIds.Count > 0)
+            {
+                var ids = new JsonArray();
+                foreach (var id in folder.ProjectIds) ids.Add(id);
+                obj["projectIds"] = ids;
+            }
+            if (folder.Children.Count > 0)
+                obj["children"] = BuildWhslnFolderArray(folder.Children);
+            if (folder.FileItems.Count > 0)
+            {
+                var files = new JsonArray();
+                foreach (var f in folder.FileItems) files.Add(f);
+                obj["fileItems"] = files;
+            }
+            arr.Add(obj);
+        }
+        return arr;
+    }
+
+    private static string? FindProjectFolderId(IReadOnlyList<ISolutionFolder> folders, string projectName)
+    {
+        foreach (var folder in folders)
+        {
+            if (folder.ProjectIds.Contains(projectName, StringComparer.OrdinalIgnoreCase))
+                return folder.Id;
+            var child = FindProjectFolderId(folder.Children, projectName);
+            if (child is not null) return child;
+        }
+        return null;
     }
 
     // -----------------------------------------------------------------------

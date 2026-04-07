@@ -32,6 +32,7 @@ public static class CommandIds
         public const string QuickOpen        = "File.QuickOpen";
         public const string ConvertToSlnx    = "File.ConvertToSlnx";
         public const string ConvertToSln     = "File.ConvertToSln";
+        public const string ConvertToWhsln   = "File.ConvertToWhsln";
     }
 
     public static class Edit

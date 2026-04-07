@@ -84,34 +84,29 @@ internal sealed class ChangeMarkerGutterControl : FrameworkElement
         var modified = ResolveModified();
         var deleted  = ResolveDeleted();
 
+        // First pass: draw full-height bars for Added and Modified.
         for (int line = _firstVisibleLine; line <= _lastVisibleLine; line++)
         {
-            if (!_changeMap.TryGetValue(line, out var kind) || kind == LineChangeKind.None)
+            if (!_changeMap.TryGetValue(line, out var kind)) continue;
+            if (kind != LineChangeKind.Added && kind != LineChangeKind.Modified) continue;
+
+            if (!_lineYLookup.TryGetValue(line, out double y))
+                y = _topMargin + (line - _firstVisibleLine) * _lineHeight;
+
+            var brush = kind == LineChangeKind.Added ? added : modified;
+            dc.DrawRectangle(brush, null, new Rect(0, y, GutterWidth, _lineHeight));
+        }
+
+        // Second pass: draw deleted triangles on top so they are never occluded.
+        for (int line = _firstVisibleLine; line <= _lastVisibleLine; line++)
+        {
+            if (!_changeMap.TryGetValue(line, out var kind) || kind != LineChangeKind.Deleted)
                 continue;
 
             if (!_lineYLookup.TryGetValue(line, out double y))
                 y = _topMargin + (line - _firstVisibleLine) * _lineHeight;
 
-            var brush = kind switch
-            {
-                LineChangeKind.Added    => added,
-                LineChangeKind.Modified => modified,
-                LineChangeKind.Deleted  => deleted,
-                _                       => null,
-            };
-
-            if (brush is null) continue;
-
-            if (kind == LineChangeKind.Deleted)
-            {
-                // Deletion hint: small 3px triangle at the bottom edge of the predecessor line.
-                DrawDeletedHint(dc, deleted, y + _lineHeight);
-            }
-            else
-            {
-                // Full-height bar for Added and Modified.
-                dc.DrawRectangle(brush, null, new Rect(0, y, GutterWidth, _lineHeight));
-            }
+            DrawDeletedHint(dc, deleted, y + _lineHeight);
         }
     }
 
@@ -119,15 +114,21 @@ internal sealed class ChangeMarkerGutterControl : FrameworkElement
 
     private static void DrawDeletedHint(DrawingContext dc, Brush brush, double tipY)
     {
-        // Small downward-pointing triangle (3×3 px) at the bottom edge.
-        const double hw = 3.0;
-        const double hh = 3.0;
+        // Downward-pointing triangle centered on the 4 px gutter strip.
+        // Tip protrudes 2 px below the line boundary to stay visible.
+        // Total width = 8 px (x: -2 → +6), height = 5 px.
+        const double cx = GutterWidth / 2.0;   // 2.0
+        const double hw = 4.0;                  // half-width
+        const double hh = 5.0;                  // full height
+        double top = tipY - 1.0;                // 1 px above line bottom
+        double tip = tipY + hh - 1.0;           // tip protrudes below
+
         var geom = new StreamGeometry();
         using (var ctx = geom.Open())
         {
-            ctx.BeginFigure(new Point(0, tipY - hh), isFilled: true, isClosed: true);
-            ctx.LineTo(new Point(hw, tipY),          isStroked: false, isSmoothJoin: false);
-            ctx.LineTo(new Point(hw * 2, tipY - hh), isStroked: false, isSmoothJoin: false);
+            ctx.BeginFigure(new Point(cx - hw, top), isFilled: true, isClosed: true);
+            ctx.LineTo(new Point(cx + hw, top),      isStroked: false, isSmoothJoin: false);
+            ctx.LineTo(new Point(cx,       tip),      isStroked: false, isSmoothJoin: false);
         }
         geom.Freeze();
         dc.DrawGeometry(brush, null, geom);

@@ -70,6 +70,19 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
             _analysisService.NotifyChanged(filePath);
     }
 
+    /// <summary>
+    /// Loads individual .csproj / .vbproj files into Roslyn.
+    /// Format-agnostic alternative to <see cref="LoadSolutionAsync"/>: works for any IDE
+    /// solution format (.sln, .slnx, .whsln, …) because it is driven by project paths
+    /// extracted from the already-loaded <c>ISolution</c>, not from the solution file.
+    /// </summary>
+    public async Task LoadProjectsAsync(IEnumerable<string> projectPaths, CancellationToken ct = default)
+    {
+        await _workspace.LoadProjectsAsync(projectPaths, ct).ConfigureAwait(false);
+        foreach (var filePath in _workspace.OpenDocumentPaths)
+            _analysisService.NotifyChanged(filePath);
+    }
+
     /// <summary>Unloads the MSBuild solution, reverting to standalone file analysis.</summary>
     public void UnloadSolution()
     {

@@ -94,6 +94,8 @@ public partial class MainWindow
             () => _ = OnConvertSolutionFormatAsync(toSlnx: true));
         Reg(CommandIds.File.ConvertToSln,  "Convert Solution to .sln",  "File", null,             "\uE8AB",
             () => _ = OnConvertSolutionFormatAsync(toSlnx: false));
+        Reg(CommandIds.File.ConvertToWhsln, "Convert Solution to .whsln", "File", null,            "\uE8AB",
+            () => _ = OnConvertToWhslnAsync());
 
         // ── Workspace ────────────────────────────────────────────────────────
         Reg(CommandIds.Workspace.New,    "New Workspace…",         "Workspace", null,            "\uE8A5",

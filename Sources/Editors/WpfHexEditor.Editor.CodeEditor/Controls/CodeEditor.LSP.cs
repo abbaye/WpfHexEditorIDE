@@ -648,36 +648,87 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Invoked by Alt+F12 — shows a Peek Definition popup below the caret.
+        /// Invoked by Alt+F12 — opens an inline peek definition panel (VS2026 style).
+        /// Lines below the caret push down; the panel is embedded in the editor canvas.
         /// </summary>
         private async Task ShowPeekDefinitionAsync()
         {
-            _foldPeekPopup ??= new FoldPeekPopup();
-            _foldPeekPopup.GoToDefinitionRequested = () => _ = GoToDefinitionAtCaretAsync();
-
-            var word = _hoveredSymbolZone?.SymbolName ?? GetWordAtCaret();
-
-            await _foldPeekPopup.ShowDefinitionAsync(this, word, async () =>
+            if (_lspClient?.IsInitialized != true || _currentFilePath is null)
             {
-                if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+                StatusMessage?.Invoke(this, "LSP not ready.");
+                return;
+            }
+
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspLocation> locs;
+            try
+            {
+                locs = await _lspClient.DefinitionAsync(
+                    _currentFilePath, _cursorLine, _cursorColumn, cts.Token).ConfigureAwait(true);
+            }
+            catch { StatusMessage?.Invoke(this, "Peek Definition: LSP error."); return; }
+
+            var validLocs = new System.Collections.Generic.List<WpfHexEditor.Editor.Core.LSP.LspLocation>();
+            foreach (var l in locs)
+            {
+                if (l.Uri.Contains("metadata:", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!Uri.TryCreate(l.Uri, UriKind.Absolute, out var u)) continue;
+                if (!System.IO.File.Exists(u.LocalPath)) continue;
+                validLocs.Add(l);
+            }
+
+            if (validLocs.Count == 0) { StatusMessage?.Invoke(this, "Definition not found."); return; }
+
+            await OpenInlinePeekAsync(_cursorLine, validLocs, 0).ConfigureAwait(true);
+        }
+
+        private async Task OpenInlinePeekAsync(
+            int anchorLine,
+            System.Collections.Generic.List<WpfHexEditor.Editor.Core.LSP.LspLocation> locs,
+            int index)
+        {
+            var loc  = locs[index];
+            if (!Uri.TryCreate(loc.Uri, UriKind.Absolute, out var uri)) return;
+            string localPath = uri.LocalPath;
+
+            string text;
+            try   { text = await System.IO.File.ReadAllTextAsync(localPath).ConfigureAwait(true); }
+            catch { StatusMessage?.Invoke(this, "Peek: could not read source file."); return; }
+
+            string label = $"{System.IO.Path.GetFileName(localPath)} : {loc.StartLine + 1}";
+
+            // Create or reuse the inline host.
+            if (_inlinePeekHost is null)
+            {
+                _inlinePeekHost = new InlinePeekHost();
+                _inlinePeekHost.CloseRequested         += CloseInlinePeek;
+                _inlinePeekHost.GoToDefinitionRequested += () => _ = GoToDefinitionAtCaretAsync();
+                _inlinePeekHost.ResultIndexChanged      += i  => _ = OpenInlinePeekAsync(anchorLine, locs, i);
+                _inlinePeekHost.HeightChanged           += h  =>
                 {
-                    using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
-                    var locs = await _lspClient.DefinitionAsync(
-                        _currentFilePath, _cursorLine, _cursorColumn, cts.Token).ConfigureAwait(true);
-                    if (locs.Count > 0)
-                    {
-                        var loc  = locs[0];
-                        bool isMeta = loc.Uri.Contains("metadata:", StringComparison.OrdinalIgnoreCase);
-                        if (!isMeta && Uri.TryCreate(loc.Uri, UriKind.Absolute, out var u)
-                            && System.IO.File.Exists(u.LocalPath))
-                        {
-                            var text = await System.IO.File.ReadAllTextAsync(u.LocalPath).ConfigureAwait(true);
-                            return (text, loc.StartLine + 1);
-                        }
-                    }
-                }
-                return (string.Empty, 0);
-            }).ConfigureAwait(true);
+                    _peekHostHeight     = h;
+                    _linePositionsDirty = true;
+                    InvalidateMeasure();
+                    InvalidateVisual();
+                };
+            }
+
+            _inlinePeekHost.SetContent(
+                text, loc.StartLine + 1, label,
+                ExternalHighlighter ?? _highlighter as ISyntaxHighlighter,
+                _typeface, _fontSize, _lineHeight, _charWidth,
+                index, locs.Count);
+
+            // Register in layout engine.
+            _peekHostLine   = anchorLine;
+            _peekHostHeight = _inlinePeekHost.PeekHeight;
+            if (!_scrollBarChildren.Contains(_inlinePeekHost))
+                _scrollBarChildren.Add(_inlinePeekHost);
+
+            _linePositionsDirty = true;
+            InvalidateMeasure();
+            InvalidateVisual();
+            EnsurePeekVisible(anchorLine);
         }
 
         /// <summary>

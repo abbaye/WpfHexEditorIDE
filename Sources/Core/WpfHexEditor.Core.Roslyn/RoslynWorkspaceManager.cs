@@ -157,25 +157,53 @@ internal sealed class RoslynWorkspaceManager : IDisposable
     /// </summary>
     public async Task LoadSolutionAsync(string solutionOrProjectPath, CancellationToken ct)
     {
-        var msbuild = MSBuildWorkspace.Create();
-        msbuild.WorkspaceFailed += (_, e) =>
-        {
-            // Log but don't throw — partial solutions are still useful.
-            System.Diagnostics.Debug.WriteLine($"[Roslyn] Workspace warning: {e.Diagnostic.Message}");
-        };
+        var msbuild = CreateMsBuildWorkspace();
 
         var ext = Path.GetExtension(solutionOrProjectPath).ToLowerInvariant();
-        if (ext is ".sln" or ".slnx")
+        if (ext == ".sln")
             await msbuild.OpenSolutionAsync(solutionOrProjectPath, cancellationToken: ct).ConfigureAwait(false);
         else
             await msbuild.OpenProjectAsync(solutionOrProjectPath, cancellationToken: ct).ConfigureAwait(false);
 
-        lock (_solutionLock)
+        ApplyNewMsBuildWorkspace(msbuild);
+    }
+
+    /// <summary>
+    /// Loads individual .csproj / .vbproj files via MSBuildWorkspace.
+    /// Format-agnostic: works regardless of whether the IDE opened a .sln, .slnx, .whsln, etc.
+    /// This mirrors the VS project-system approach where Roslyn is driven by individual
+    /// project paths rather than the solution file format.
+    /// </summary>
+    public async Task LoadProjectsAsync(IEnumerable<string> projectPaths, CancellationToken ct)
+    {
+        var msbuild = CreateMsBuildWorkspace();
+
+        foreach (var path in projectPaths)
         {
-            _msbuildWorkspace = msbuild;
+            if (ct.IsCancellationRequested) break;
+            await msbuild.OpenProjectAsync(path, cancellationToken: ct).ConfigureAwait(false);
         }
 
-        // Migrate open documents: update their text to match editor buffers.
+        ApplyNewMsBuildWorkspace(msbuild);
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    private static MSBuildWorkspace CreateMsBuildWorkspace()
+    {
+        var ws = MSBuildWorkspace.Create();
+        ws.WorkspaceFailed += (_, e) =>
+            // Log but don't throw — partial solutions are still useful.
+            System.Diagnostics.Debug.WriteLine($"[Roslyn] Workspace warning: {e.Diagnostic.Message}");
+        return ws;
+    }
+
+    private void ApplyNewMsBuildWorkspace(MSBuildWorkspace msbuild)
+    {
+        lock (_solutionLock)
+            _msbuildWorkspace = msbuild;
+
+        // Migrate open documents: re-bind to their new DocumentIds in the MSBuild solution.
         foreach (var (filePath, _) in _openDocuments)
         {
             var ids = msbuild.CurrentSolution.GetDocumentIdsWithFilePath(filePath);

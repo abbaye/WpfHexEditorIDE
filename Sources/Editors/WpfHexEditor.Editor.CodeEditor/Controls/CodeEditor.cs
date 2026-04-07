@@ -495,6 +495,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private IReadOnlyDictionary<int, Models.LineChangeKind>        _changeMap
             = new Dictionary<int, Models.LineChangeKind>();
 
+        // Inline peek definition host (#158 — VS2026 style)
+        private InlinePeekHost? _inlinePeekHost;
+        private int             _peekHostLine   = -1;
+        private double          _peekHostHeight = 0.0;
+
         // 1-based execution line (null when no debug session is paused).
         private int? _executionLineOneBased;
 
@@ -858,6 +863,46 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         public void SetBlame(IReadOnlyList<WpfHexEditor.Editor.Core.LSP.BlameEntry>? entries)
             => _blameGutterControl?.SetBlame(entries);
+
+        // ── Inline Peek Definition (#158) ────────────────────────────────────
+
+        /// <summary>Closes the inline peek panel and restores normal line layout.</summary>
+        internal void CloseInlinePeek()
+        {
+            if (_inlinePeekHost != null)
+                _scrollBarChildren.Remove(_inlinePeekHost);
+            _inlinePeekHost = null;
+            _peekHostLine   = -1;
+            _peekHostHeight = 0.0;
+            _linePositionsDirty = true;
+            InvalidateMeasure();
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Scrolls the editor vertically so the peek panel is fully visible
+        /// when it would otherwise extend below the viewport.
+        /// </summary>
+        internal void EnsurePeekVisible(int anchorLine)
+        {
+            if (_lineHeight <= 0) return;
+            if (!_lineYLookup.TryGetValue(anchorLine, out double anchorY))
+                anchorY = TopMargin + (anchorLine - _firstVisibleLine) * _lineHeight;
+
+            double panelTop    = anchorY + _lineHeight;
+            double panelBottom = panelTop + _peekHostHeight;
+            double viewBottom  = ActualHeight - (_hScrollBar?.ActualHeight ?? 0);
+
+            if (panelBottom > viewBottom)
+            {
+                double needed = panelBottom - viewBottom;
+                _verticalScrollOffset = Math.Min(
+                    _verticalScrollOffset + needed,
+                    Math.Max(0, (_document?.Lines.Count ?? 0) * _lineHeight - ActualHeight));
+                _linePositionsDirty = true;
+                InvalidateVisual();
+            }
+        }
 
         // ── Change Marker Gutter (#166) ───────────────────────────────────────
 
@@ -2477,7 +2522,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Change-marker gutter (#166): 4px strip between blame and breakpoint gutters.
             _changeMarkerGutterControl = new ChangeMarkerGutterControl();
             _scrollBarChildren.Add(_changeMarkerGutterControl);
-            _changeTracker.SetLinesProvider(() => _document.Lines.Select(l => l.Text).ToList());
             _changeTracker.Changed += (_, map) =>
             {
                 _changeMap = map;
@@ -2485,8 +2529,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _lineHeight, _firstVisibleLine, _lastVisibleLine,
                     TopMargin, _lineYLookup, _changeMap);
             };
-            // Hot path: just restart the debounce timer — zero allocations per keystroke.
-            _document.TextChanged += (_, _) => _changeTracker.Invalidate();
 
             // Initialize word-highlight scroll marker overlay.
             _codeScrollMarkerPanel = new CodeScrollMarkerPanel();

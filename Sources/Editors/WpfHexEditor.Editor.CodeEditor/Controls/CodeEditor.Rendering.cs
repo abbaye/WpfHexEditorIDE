@@ -508,6 +508,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _visLinePositions.Add((logLine, codeY));
                     _visLineSubRows.Add(subRow);
                     y = codeY + _lineHeight;
+                    // Inject inline peek gap after the anchor line.
+                    if (subRow == 0 && _peekHostLine >= 0 && logLine == _peekHostLine && _peekHostHeight > 0)
+                        y += _peekHostHeight;
                     vr++;
                 }
                 return;
@@ -538,6 +541,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         _lineYLookup[i] = y;
                         y += _lineHeight;
                     }
+                    // Inject inline peek gap after the anchor line.
+                    if (_peekHostLine >= 0 && i == _peekHostLine && _peekHostHeight > 0)
+                        y += _peekHostHeight;
                 }
             }
         }
@@ -1095,7 +1101,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             double textLeft    = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
             int    hiddenLines = _foldingEngine?.TotalHiddenLineCount ?? 0;
             double totalH      = TopMargin + ((_document?.Lines.Count ?? 0) - hiddenLines) * _lineHeight
-                             + (ShowInlineHints ? _visibleHintsCount * HintLineHeight : 0);
+                             + (ShowInlineHints ? _visibleHintsCount * HintLineHeight : 0)
+                             + (_peekHostLine >= 0 ? _peekHostHeight : 0);
             double totalTW     = textLeft + _maxContentWidth;
 
             // Determine which scrollbars are needed (check for mutual dependency)
@@ -1196,6 +1203,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _stickyScrollHeader.Visibility = Visibility.Collapsed;
                     _stickyScrollHeader.Arrange(new Rect(0, 0, 0, 0));
                 }
+            }
+
+            // Inline peek host (#158): arrange below the anchor line.
+            if (_inlinePeekHost != null && _peekHostLine >= 0)
+            {
+                double peekY = _lineYLookup.TryGetValue(_peekHostLine, out double ly)
+                    ? ly + _lineHeight
+                    : TopMargin + (_peekHostLine + 1 - _firstVisibleLine) * _lineHeight;
+                double peekX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+                double peekW = Math.Max(0, contentW - peekX);
+                _inlinePeekHost.PeekHeight = _peekHostHeight;
+                _inlinePeekHost.Arrange(new Rect(peekX, peekY, peekW, _peekHostHeight));
+                _inlinePeekHost.Render(peekW);
             }
 
             UpdateScrollBars(contentW, contentH);

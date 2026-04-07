@@ -74,6 +74,36 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             bool shiftPressed = (Keyboard.Modifiers & ModifierKeys.Shift)   != 0;
             bool altPressed   = (Keyboard.Modifiers & ModifierKeys.Alt)     != 0;
 
+            // Inline peek keyboard interception — must be first so Escape/F12/arrows are captured.
+            if (_inlinePeekHost != null && _peekHostLine >= 0)
+            {
+                if (e.Key == Key.Escape)
+                {
+                    e.Handled = true;
+                    CloseInlinePeek();
+                    return;
+                }
+                if (e.Key == Key.F12 && !altPressed)
+                {
+                    e.Handled = true;
+                    CloseInlinePeek();
+                    _ = GoToDefinitionAtCaretAsync();
+                    return;
+                }
+                if (e.Key == Key.Up && !ctrlPressed)
+                {
+                    e.Handled = true;
+                    _inlinePeekHost.ScrollUp();
+                    return;
+                }
+                if (e.Key == Key.Down && !ctrlPressed)
+                {
+                    e.Handled = true;
+                    _inlinePeekHost.ScrollDown();
+                    return;
+                }
+            }
+
             // Alt+Z — toggle word wrap
             if (e.Key == Key.Z && altPressed && !ctrlPressed && !shiftPressed)
             {
