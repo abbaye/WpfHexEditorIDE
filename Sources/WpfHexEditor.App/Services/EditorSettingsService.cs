@@ -87,6 +87,8 @@ public sealed class EditorSettingsService
         ce.InlineHintsSource        = d.InlineHintsSource;
         ce.ShowVarTypeHints         = d.ShowVarTypeHints;
         ce.ShowLambdaReturnTypeHints = d.ShowLambdaReturnTypeHints;
+        ce.ShowLspInlayHints        = d.ShowLspInlayHints;
+        ce.ShowLspCodeLens          = d.ShowLspCodeLens;
         ce.ShowEndOfBlockHint       = d.EndOfBlockHintEnabled;
         ce.EndOfBlockHintDelayMs    = d.EndOfBlockHintDelayMs;
         ce.ClickableLinksEnabled    = d.ClickableLinksEnabled;

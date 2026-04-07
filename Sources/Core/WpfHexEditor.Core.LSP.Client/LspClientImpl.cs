@@ -30,7 +30,7 @@ namespace WpfHexEditor.Core.LSP.Client;
 /// Full <see cref="ILspClient"/> implementation backed by a language server process.
 /// Created by <see cref="LspServerRegistry.CreateClient"/>.
 /// </summary>
-public sealed class LspClientImpl : ILspClient
+public sealed class LspClientImpl : ILspClient, WpfHexEditor.Editor.Core.LSP.IDiagnosticsModeClient
 {
     // ── Fields ─────────────────────────────────────────────────────────────────
     private readonly string           _executablePath;
@@ -67,6 +67,9 @@ public sealed class LspClientImpl : ILspClient
 
     /// <summary>Server capability flags — valid after <see cref="InitializeAsync"/> completes.</summary>
     internal ServerCapabilities Capabilities { get; private set; } = ServerCapabilities.Parse(null);
+
+    /// <inheritdoc cref="WpfHexEditor.Editor.Core.LSP.IDiagnosticsModeClient.UsesPullDiagnostics"/>
+    public bool UsesPullDiagnostics => Capabilities.HasDiagnosticProvider;
 
     internal LspClientImpl(
         string  executablePath,

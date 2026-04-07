@@ -546,3 +546,21 @@ public interface IInlineHintsOptionsClient
     /// <summary>Propagates var-type and lambda-return InlineHints settings to the underlying provider.</summary>
     void SetInlineHintsOptions(bool showVarTypeHints, bool showLambdaReturnTypeHints);
 }
+
+// ── IDiagnosticsModeClient ────────────────────────────────────────────────────
+
+/// <summary>
+/// Optional interface implemented by LSP clients that expose their diagnostics
+/// delivery mode (push vs. pull). Status bar and diagnostics panels can check
+/// <c>ILspClient as IDiagnosticsModeClient</c> for observability — no direct
+/// dependency on the transport or server-capabilities layer.
+/// </summary>
+public interface IDiagnosticsModeClient
+{
+    /// <summary>
+    /// <see langword="true"/> when the server uses pull diagnostics (LSP 3.18
+    /// <c>textDocument/diagnostic</c>); <see langword="false"/> when it relies
+    /// on push via <c>textDocument/publishDiagnostics</c>.
+    /// </summary>
+    bool UsesPullDiagnostics { get; }
+}

@@ -781,6 +781,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _linePositionsDirty = false;
             }
 
+            // Push updated viewport context to LSP overlay layers (debounced internally).
+            if (ShowLspInlayHints)
+                _lspInlayHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight);
+            if (ShowLspCodeLens)
+                _lspCodeLensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, BuildVisibleSourceLines());
+
             // Sticky scroll header: refresh only when the true scroll-line changes.
             // Guard: never call InvalidateArrange() unconditionally inside OnRender —
             // it creates a WPF layout → render → layout cycle (infinite loop).
@@ -1229,6 +1235,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _inlinePeekHost.Render(peekW);
             }
 
+            // LSP overlay layers: fill the full content area so their DrawingVisual children
+            // are clipped to the same bounds as the editor text area.
+            _lspInlayHintsLayer.Arrange(new Rect(0, 0, contentW, contentH));
+            _lspCodeLensLayer.Arrange(new Rect(0, 0, contentW, contentH));
+
             UpdateScrollBars(contentW, contentH);
             return finalSize;
         }
@@ -1468,6 +1479,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Sync change-marker gutter with latest change map.
             _changeMarkerGutterControl?.Update(
                 _lineHeight, _firstVisibleLine, _lastVisibleLine, TopMargin, _lineYLookup, _changeMap);
+        }
+
+        /// <summary>
+        /// Builds a snapshot of the currently visible logical lines for the LspCodeLensLayer
+        /// test-attribute scanner. Returns at most the visible range lines.
+        /// </summary>
+        private IReadOnlyList<(int Line, string Text)> BuildVisibleSourceLines()
+        {
+            if (_document is null || _document.Lines.Count == 0)
+                return System.Array.Empty<(int, string)>();
+
+            var result = new System.Collections.Generic.List<(int, string)>(
+                _lastVisibleLine - _firstVisibleLine + 1);
+
+            for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
+                result.Add((i, _document.Lines[i].Text));
+
+            return result;
         }
 
         /// <summary>

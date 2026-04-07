@@ -72,6 +72,7 @@ public sealed class DiagramCanvas : Canvas
     public event EventHandler<(ClassNode Node, string? NewName)>? RenameNodeRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? DeleteMemberRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested;
+    public event EventHandler<string>?                        ExportRequested;  // format: "png","plantUml","structurizr","mermaid","svg","csharp"
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -421,10 +422,12 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(new Separator());
 
         var export = new MenuItem { Header = "Export" };
-        export.Items.Add(MakeItem("\uEB9F", "Export PNG",     () => { }));
-        export.Items.Add(MakeItem("\uE781", "Export SVG",     () => { }));
-        export.Items.Add(MakeItem("\uE8A5", "Export C#",      () => { }));
-        export.Items.Add(MakeItem("\uE8A5", "Export Mermaid", () => { }));
+        export.Items.Add(MakeItem("\uEB9F", "Export PNG",        () => ExportRequested?.Invoke(this, "png")));
+        export.Items.Add(MakeItem("\uE781", "Export SVG",        () => ExportRequested?.Invoke(this, "svg")));
+        export.Items.Add(MakeItem("\uE8A5", "Export C#",         () => ExportRequested?.Invoke(this, "csharp")));
+        export.Items.Add(MakeItem("\uE8A5", "Export Mermaid",    () => ExportRequested?.Invoke(this, "mermaid")));
+        export.Items.Add(MakeItem("\uE8A5", "Export PlantUML",   () => ExportRequested?.Invoke(this, "plantUml")));
+        export.Items.Add(MakeItem("\uE8A5", "Export Structurizr",() => ExportRequested?.Invoke(this, "structurizr")));
         menu.Items.Add(export);
 
         return menu;

@@ -125,7 +125,8 @@
                                           ContentSource="SelectedContent"
                                           KeyboardNavigation.TabNavigation="Local"
                                           KeyboardNavigation.DirectionalNavigation="Contained" />
-                        <Border Grid.Row="1"
+                        <Border x:Name="PART_TabStrip"
+                                Grid.Row="1"
                                 Background="{DynamicResource DockMenuBackgroundBrush}"
                                 BorderBrush="{DynamicResource DockBorderBrush}"
                                 BorderThickness="0,1,0,0">

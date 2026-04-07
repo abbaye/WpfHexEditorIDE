@@ -162,6 +162,7 @@ public sealed class ClassDiagramSplitHost : Grid,
 
         _canvas.SelectedClassChanged += OnCanvasSelectedClassChanged;
         _canvas.HoveredClassChanged  += (_, _) => { };
+        _canvas.ExportRequested      += OnCanvasExportRequested;
 
         // DSL pane
         _dslTextBox = new TextBox();
@@ -1046,6 +1047,31 @@ public sealed class ClassDiagramSplitHost : Grid,
     {
         _ = _exportService.ExportMermaidAsync(_document,
             Path.ChangeExtension(_filePath ?? "diagram", ".md"));
+    }
+
+    private void ExportPlantUml()
+    {
+        _ = _exportService.ExportPlantUmlAsync(_document,
+            Path.ChangeExtension(_filePath ?? "diagram", ".puml"));
+    }
+
+    private void ExportStructurizr()
+    {
+        _ = _exportService.ExportStructurizrAsync(_document,
+            Path.ChangeExtension(_filePath ?? "diagram", ".dsl"));
+    }
+
+    private void OnCanvasExportRequested(object? sender, string format)
+    {
+        switch (format)
+        {
+            case "png":         ExportPng();         break;
+            case "svg":         ExportSvg();         break;
+            case "csharp":      ExportCSharp();      break;
+            case "mermaid":     ExportMermaid();     break;
+            case "plantUml":    ExportPlantUml();    break;
+            case "structurizr": ExportStructurizr(); break;
+        }
     }
 
     private void ShowExportDialog()

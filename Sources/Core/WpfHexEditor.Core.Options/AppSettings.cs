@@ -660,6 +660,12 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Show return-type hints for lambda and anonymous function expressions.</summary>
     public bool ShowLambdaReturnTypeHints { get; set; } = true;
 
+    /// <summary>Show LSP parameter-name inlay hints before function arguments (requires LSP).</summary>
+    public bool ShowLspInlayHints { get; set; } = true;
+
+    /// <summary>Show LSP code lens hints: reference counts and test runner indicators above declarations (requires LSP).</summary>
+    public bool ShowLspCodeLens { get; set; } = true;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>

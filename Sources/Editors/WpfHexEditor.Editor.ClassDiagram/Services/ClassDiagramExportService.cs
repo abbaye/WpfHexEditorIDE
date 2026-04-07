@@ -98,6 +98,130 @@ public sealed class ClassDiagramExportService
     }
 
     // ---------------------------------------------------------------------------
+    // PlantUML
+    // ---------------------------------------------------------------------------
+
+    /// <summary>
+    /// Generates PlantUML @startuml class diagram syntax for <paramref name="doc"/>.
+    /// </summary>
+    public async Task<string> ExportPlantUmlAsync(DiagramDocument doc, string? filePath = null)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("@startuml");
+        sb.AppendLine();
+
+        foreach (var node in doc.Classes)
+        {
+            string keyword = node.Kind switch
+            {
+                ClassKind.Interface => "interface",
+                ClassKind.Enum      => "enum",
+                ClassKind.Struct    => "class",
+                ClassKind.Abstract  => "abstract class",
+                _                   => "class"
+            };
+
+            sb.Append(keyword).Append(' ').AppendLine(node.Name).AppendLine("{");
+
+            foreach (var m in node.Members)
+            {
+                string vis = m.Visibility switch
+                {
+                    MemberVisibility.Public    => "+",
+                    MemberVisibility.Protected => "#",
+                    MemberVisibility.Private   => "-",
+                    _                          => "~"
+                };
+                string stat = m.IsStatic ? "{static} " : "";
+                string abst = m.IsAbstract ? "{abstract} " : "";
+                sb.Append("  ").Append(vis).Append(stat).Append(abst)
+                  .AppendLine(m.DisplayLabel);
+            }
+            sb.AppendLine("}").AppendLine();
+        }
+
+        foreach (var rel in doc.Relationships)
+        {
+            string arrow = rel.Kind switch
+            {
+                RelationshipKind.Inheritance => "<|--",
+                RelationshipKind.Realization => "<|..",
+                RelationshipKind.Dependency  => "<..",
+                RelationshipKind.Aggregation => "o--",
+                RelationshipKind.Composition => "*--",
+                _                            => "-->"
+            };
+
+            var src = doc.FindById(rel.SourceId);
+            var tgt = doc.FindById(rel.TargetId);
+            if (src is null || tgt is null) continue;
+
+            string label = string.IsNullOrWhiteSpace(rel.Label) ? "" : $" : {rel.Label}";
+            sb.Append(tgt.Name).Append(' ').Append(arrow).Append(' ').Append(src.Name)
+              .AppendLine(label);
+        }
+
+        sb.AppendLine("@enduml");
+        string result = sb.ToString();
+
+        if (!string.IsNullOrEmpty(filePath))
+            await File.WriteAllTextAsync(filePath, result).ConfigureAwait(false);
+        return result;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Structurizr DSL
+    // ---------------------------------------------------------------------------
+
+    /// <summary>
+    /// Generates a Structurizr C4 DSL component model for <paramref name="doc"/>.
+    /// </summary>
+    public async Task<string> ExportStructurizrAsync(DiagramDocument doc, string? filePath = null)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("workspace {");
+        sb.AppendLine("  model {");
+
+        // Group by namespace as container
+        var groups = doc.Classes
+            .GroupBy(n => string.IsNullOrEmpty(n.Namespace) ? "Default" : n.Namespace)
+            .OrderBy(g => g.Key);
+
+        foreach (var grp in groups)
+        {
+            sb.Append("    ").Append(SafeId(grp.Key)).Append(" = container \"")
+              .Append(grp.Key).AppendLine("\" {");
+
+            foreach (var node in grp)
+            {
+                string desc = string.IsNullOrEmpty(node.XmlDocSummary)
+                    ? $"{node.Kind} with {node.Members.Count} members"
+                    : node.XmlDocSummary;
+
+                sb.Append("      ").Append(SafeId(node.Name)).Append(" = component \"")
+                  .Append(node.Name).Append("\" \"").Append(desc).AppendLine("\"");
+            }
+            sb.AppendLine("    }");
+        }
+
+        sb.AppendLine("  }");
+        sb.AppendLine("  views {");
+        sb.AppendLine("    systemContext DefaultSystem {");
+        sb.AppendLine("      include *");
+        sb.AppendLine("    }");
+        sb.AppendLine("  }");
+        sb.AppendLine("}");
+
+        string result = sb.ToString();
+        if (!string.IsNullOrEmpty(filePath))
+            await File.WriteAllTextAsync(filePath, result).ConfigureAwait(false);
+        return result;
+    }
+
+    private static string SafeId(string name) =>
+        new string(name.Select(c => char.IsLetterOrDigit(c) ? c : '_').ToArray());
+
+    // ---------------------------------------------------------------------------
     // Private rendering
     // ---------------------------------------------------------------------------
 

@@ -88,6 +88,18 @@ public class DockTabControl : TabControl
     /// </summary>
     public Func<bool>? HasMultipleDocumentHostsCheck { get; set; }
 
+    /// <summary>
+    /// Returns the rendered height of the tab strip (PART_TabStrip in the control template).
+    /// Used by <see cref="DockControl"/> to clip the active-panel overlay border so it stops
+    /// at the content/tab-strip boundary (VS-like: border does not wrap the tab strip).
+    /// Returns 0 if the template has not been applied yet.
+    /// </summary>
+    internal double GetTabStripHeight()
+    {
+        ApplyTemplate();
+        return (Template?.FindName("PART_TabStrip", this) as FrameworkElement)?.ActualHeight ?? 0;
+    }
+
     private Func<DockItem, object>? _contentFactory;
 
     // Tracks DockItems whose plugin panel has already been created at least once.

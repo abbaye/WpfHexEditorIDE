@@ -223,6 +223,22 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _showLambdaReturnTypeHints = value; Notify(); }
     }
 
+    private bool _showLspInlayHints = true;
+    /// <summary>Show LSP parameter-name inlay hints before function arguments.</summary>
+    public bool ShowLspInlayHints
+    {
+        get => _showLspInlayHints;
+        set { _showLspInlayHints = value; Notify(); }
+    }
+
+    private bool _showLspCodeLens = true;
+    /// <summary>Show LSP code lens hints (reference counts and test runner indicators) above declarations.</summary>
+    public bool ShowLspCodeLens
+    {
+        get => _showLspCodeLens;
+        set { _showLspCodeLens = value; Notify(); }
+    }
+
     private int  _maxUndoHistory      = 500;
 
     /// <summary>
