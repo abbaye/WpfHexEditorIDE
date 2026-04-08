@@ -251,21 +251,6 @@
                                 BorderBrush="{DynamicResource DockTabActiveBrush}"
                                 CornerRadius="0,0,4,4"
                                 Visibility="Collapsed" />
-                        <!-- Outward (convex) arc at the top-right corner of the active tab.
-                             Stroked in the accent colour, it curves from the right SelectionBorder
-                             line (at y=4) outward to the content-area boundary (at x=4,y=0).
-                             M 0,4 → start on the right border, 4 px below top
-                             A 4,4 0 0,1 4,0 → clockwise quarter-circle (center 0,0) to top-right
-                             The arc bows rightward — convex outward from the content area. -->
-                        <Path x:Name="TopRightArc"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Right"
-                              Width="4" Height="4"
-                              Data="M 0,4 A 4,4 0 0,1 4,0"
-                              Stroke="{DynamicResource DockTabActiveBrush}"
-                              StrokeThickness="1"
-                              Fill="Transparent"
-                              Visibility="Collapsed" />
                         <Border x:Name="ColorStripe"
                                 Height="2"
                                 HorizontalAlignment="Stretch"

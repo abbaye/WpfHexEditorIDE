@@ -401,6 +401,15 @@ public sealed class DiagramCanvas : Canvas
 
         if (node is not null)
         {
+            // Check section header hit first (collapse/expand toggle)
+            string? sectionHit = _layer.HitTestSectionHeader(pt, node);
+            if (sectionHit is not null)
+            {
+                _layer.ToggleSection(node.Id, sectionHit);
+                e.Handled = true;
+                return;
+            }
+
             // Ctrl+Click → navigate to source
             if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
             {

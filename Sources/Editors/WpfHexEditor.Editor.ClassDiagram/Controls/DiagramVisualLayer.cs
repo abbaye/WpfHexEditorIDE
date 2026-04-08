@@ -64,6 +64,10 @@ public sealed class DiagramVisualLayer : FrameworkElement
     // ── Focus mode (Phase 12 filter) ─────────────────────────────────────────
     private HashSet<string>?  _focusedNodeIds;   // null = all visible; empty = all dimmed
 
+    // ── Collapsible sections ──────────────────────────────────────────────────
+    // key: nodeId, value: set of collapsed section names ("Fields","Properties","Methods","Events")
+    private readonly Dictionary<string, HashSet<string>> _collapsedSections = [];
+
     // ── Toggles (set by ClassDiagramSplitHost toolbar) ───────────────────────
     public bool ShowSwimLanes { get; set; } = false;
 
@@ -172,6 +176,75 @@ public sealed class DiagramVisualLayer : FrameworkElement
             RenderNode(node);
     }
 
+    // ── Collapsible sections ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// Toggles the collapsed state of the named member section in <paramref name="nodeId"/>.
+    /// Re-renders only the affected node.
+    /// </summary>
+    public void ToggleSection(string nodeId, string sectionName)
+    {
+        if (!_collapsedSections.TryGetValue(nodeId, out var set))
+        {
+            set = [];
+            _collapsedSections[nodeId] = set;
+        }
+        if (!set.Add(sectionName)) set.Remove(sectionName);
+
+        if (_doc is null) return;
+        var node = _doc.Classes.FirstOrDefault(n => n.Id == nodeId);
+        if (node is not null) RenderNode(node);
+    }
+
+    private bool IsSectionCollapsed(string nodeId, string sectionName) =>
+        _collapsedSections.TryGetValue(nodeId, out var s) && s.Contains(sectionName);
+
+    /// <summary>
+    /// Hit-tests a section header row within the given node.
+    /// Returns the section name if the point lands on a section header, or null.
+    /// </summary>
+    public string? HitTestSectionHeader(Point pt, ClassNode node)
+    {
+        double relY = pt.Y - node.Y - HeaderHeight - MemberPadding;
+        if (relY < 0) return null;
+
+        double memberY = 0;
+        MemberKind? lastKind = null;
+
+        foreach (var member in node.Members)
+        {
+            if (lastKind.HasValue && member.Kind != lastKind)
+            {
+                string name = GetSectionName(member.Kind);
+                // Section header strip: ~14px tall
+                double secH = 14.0;
+                if (relY >= memberY && relY < memberY + secH)
+                    return name;
+                memberY += secH;
+
+                if (IsSectionCollapsed(node.Id, name))
+                {
+                    // Skip over this entire section
+                    lastKind = member.Kind;
+                    continue;
+                }
+            }
+            lastKind = member.Kind;
+            if (!IsSectionCollapsed(node.Id, GetSectionName(member.Kind)))
+                memberY += MemberHeight;
+        }
+        return null;
+    }
+
+    private static string GetSectionName(MemberKind kind) => kind switch
+    {
+        MemberKind.Field    => "Fields",
+        MemberKind.Property => "Properties",
+        MemberKind.Method   => "Methods",
+        MemberKind.Event    => "Events",
+        _                   => string.Empty
+    };
+
     // ── Hit-testing ──────────────────────────────────────────────────────────
 
     /// <summary>Returns the node at <paramref name="pt"/>, or null if none.</summary>
@@ -227,7 +300,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
         bool isDimmed   = _focusedNodeIds is not null && !_focusedNodeIds.Contains(node.Id);
 
         double width  = ComputeNodeWidth(node);
-        double height = HeaderHeight + node.Members.Count * MemberHeight + MemberPadding * 2;
+        double height = ComputeNodeHeight(node);
 
         // Keep node model in sync with computed size
         node.Width  = width;
@@ -336,27 +409,36 @@ public sealed class DiagramVisualLayer : FrameworkElement
             // B4 — Section group header when kind changes
             if (lastKind.HasValue && member.Kind != lastKind)
             {
+                string sectionName = GetSectionName(member.Kind);
+                bool collapsed = IsSectionCollapsed(node.Id, sectionName);
+
                 // Dashed divider
                 dc.DrawLine(divPenDashed,
                     new Point(HorizPadding, memberY), new Point(width - HorizPadding, memberY));
 
-                // Tiny section label above divider
-                string sectionLabel = member.Kind switch
+                const double secH = 14.0;
+                // Section header background strip (subtle)
+                dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(30, 150, 150, 200)),
+                    null, new Rect(0, memberY, width, secH));
+
+                // ▶/▼ triangle indicator
+                string triangle = collapsed ? "▶" : "▼";
+                var triFt = MakeFT(triangle, sterColor, 7.0);
+                dc.DrawText(triFt, new Point(HorizPadding, memberY + (secH - triFt.Height) / 2));
+
+                // Section label
+                if (sectionName.Length > 0)
                 {
-                    MemberKind.Field    => "Fields",
-                    MemberKind.Property => "Properties",
-                    MemberKind.Method   => "Methods",
-                    MemberKind.Event    => "Events",
-                    _                   => string.Empty
-                };
-                if (sectionLabel.Length > 0)
-                {
-                    var secFt = MakeFT(sectionLabel.ToUpperInvariant(), sterColor, 7.5);
-                    dc.DrawText(secFt, new Point(HorizPadding, memberY + 1.5));
-                    memberY += secFt.Height + 2.0;
+                    var secFt = MakeFT(sectionName.ToUpperInvariant(), sterColor, 7.5);
+                    dc.DrawText(secFt, new Point(HorizPadding + triFt.Width + 3, memberY + (secH - secFt.Height) / 2));
                 }
+                memberY += secH;
             }
             lastKind = member.Kind;
+
+            // Skip rendering if section is collapsed
+            if (IsSectionCollapsed(node.Id, GetSectionName(member.Kind)))
+                continue;
 
             // B3 — Visibility color circle
             Color circleColor = member.Visibility switch
@@ -407,24 +489,38 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private void DrawMetricsBadge(DrawingContext dc, ClassNode node, double boxWidth)
     {
+        const double badgeW = 36, badgeH = 12, gap = 2, badgeX_offset = 4;
+        double badgeX = boxWidth - badgeW - badgeX_offset;
+
+        // Badge 1: Instability (I=x.xx)
         double instability = node.Metrics.Instability;
-        Color badgeColor = instability switch
+        Color instColor = instability switch
         {
-            < 0.35 => Color.FromRgb(0, 180, 80),     // green — stable
-            < 0.65 => Color.FromRgb(200, 160, 0),    // yellow — neutral
-            _      => Color.FromRgb(200, 60, 60)      // red — instable
+            < 0.35 => Color.FromRgb(0, 180, 80),
+            < 0.65 => Color.FromRgb(200, 160, 0),
+            _      => Color.FromRgb(200, 60, 60)
         };
+        double badgeY1 = 2;
+        dc.DrawRoundedRectangle(
+            new SolidColorBrush(Color.FromArgb(180, instColor.R, instColor.G, instColor.B)),
+            null, new Rect(badgeX, badgeY1, badgeW, badgeH), 3, 3);
+        var ft1 = MakeFT($"I={instability:F2}", Brushes.White, 7.5);
+        dc.DrawText(ft1, new Point(badgeX + (badgeW - ft1.Width) / 2, badgeY1 + (badgeH - ft1.Height) / 2));
 
-        double badgeW = 32, badgeH = 12;
-        double badgeX = boxWidth - badgeW - 4;
-        double badgeY = 2;
-
-        var badgeBrush = new SolidColorBrush(Color.FromArgb(180, badgeColor.R, badgeColor.G, badgeColor.B));
-        dc.DrawRoundedRectangle(badgeBrush, null, new Rect(badgeX, badgeY, badgeW, badgeH), 3, 3);
-
-        string label = $"I={instability:F2}";
-        var ft = MakeFT(label, Brushes.White, 7.5);
-        dc.DrawText(ft, new Point(badgeX + (badgeW - ft.Width) / 2, badgeY + (badgeH - ft.Height) / 2));
+        // Badge 2: Member count (M:count)
+        int memberCount = node.Members.Count;
+        Color cntColor = memberCount switch
+        {
+            <= 15 => Color.FromRgb(0, 150, 100),
+            <= 30 => Color.FromRgb(180, 140, 0),
+            _     => Color.FromRgb(200, 60, 60)
+        };
+        double badgeY2 = badgeY1 + badgeH + gap;
+        dc.DrawRoundedRectangle(
+            new SolidColorBrush(Color.FromArgb(180, cntColor.R, cntColor.G, cntColor.B)),
+            null, new Rect(badgeX, badgeY2, badgeW, badgeH), 3, 3);
+        var ft2 = MakeFT($"M:{memberCount}", Brushes.White, 7.5);
+        dc.DrawText(ft2, new Point(badgeX + (badgeW - ft2.Width) / 2, badgeY2 + (badgeH - ft2.Height) / 2));
     }
 
     // ── Arrow rendering ──────────────────────────────────────────────────────
@@ -638,6 +734,22 @@ public sealed class DiagramVisualLayer : FrameworkElement
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private double ComputeNodeHeight(ClassNode node)
+    {
+        double h = HeaderHeight + MemberPadding * 2;
+        MemberKind? lastKind = null;
+        foreach (var m in node.Members)
+        {
+            if (lastKind.HasValue && m.Kind != lastKind)
+                h += 14.0; // section header strip
+            string sec = GetSectionName(m.Kind);
+            if (!IsSectionCollapsed(node.Id, sec))
+                h += MemberHeight;
+            lastKind = m.Kind;
+        }
+        return h;
+    }
 
     private double ComputeNodeWidth(ClassNode node)
     {
