@@ -800,7 +800,32 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                                 .StartsWith(baseName, StringComparison.OrdinalIgnoreCase))
                 .ToArray()
             : [csharpFilePath];
-        string[] filesToAnalyze = siblings.Length > 1 ? siblings : [csharpFilePath];
+        string[] filesToAnalyze;
+        if (siblings.Length > 5)
+        {
+            // C2 — Many siblings: let the user choose scope
+            var result = System.Windows.MessageBox.Show(
+                $"Found {siblings.Length} files starting with '{baseName}' in this folder.\n\n" +
+                $"[Yes]  Analyze all {siblings.Length} sibling files (recommended — merges partial classes)\n" +
+                $"[No]   Analyze only the active file\n" +
+                $"[Cancel] Analyze entire directory",
+                "Class Diagram — File Scope",
+                System.Windows.MessageBoxButton.YesNoCancel,
+                System.Windows.MessageBoxImage.Question);
+
+            if (result == System.Windows.MessageBoxResult.Cancel)
+            {
+                await OpenClassDiagramForFolderAsync(dir, context);
+                return;
+            }
+            filesToAnalyze = result == System.Windows.MessageBoxResult.Yes
+                ? siblings
+                : [csharpFilePath];
+        }
+        else
+        {
+            filesToAnalyze = siblings.Length > 1 ? siblings : [csharpFilePath];
+        }
 
         DiagramDocument doc = await Task.Run(() =>
             RoslynClassDiagramAnalyzer.AnalyzeFiles(filesToAnalyze, _options));
