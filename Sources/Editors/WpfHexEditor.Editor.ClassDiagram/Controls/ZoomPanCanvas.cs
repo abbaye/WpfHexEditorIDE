@@ -95,6 +95,16 @@ public class ZoomPanCanvas : Canvas
     }
 
     // ---------------------------------------------------------------------------
+    // Events
+    // ---------------------------------------------------------------------------
+
+    /// <summary>
+    /// Raised whenever ZoomFactor, OffsetX, or OffsetY changes so that external
+    /// consumers (e.g. ClassDiagramSplitHost scrollbars) can update synchronously.
+    /// </summary>
+    public event EventHandler? TransformChanged;
+
+    // ---------------------------------------------------------------------------
     // CLR wrappers
     // ---------------------------------------------------------------------------
 
@@ -122,16 +132,17 @@ public class ZoomPanCanvas : Canvas
 
     private static void OnZoomFactorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is ZoomPanCanvas c) c._scale.ScaleX = c._scale.ScaleY = (double)e.NewValue;
+        if (d is not ZoomPanCanvas c) return;
+        c._scale.ScaleX = c._scale.ScaleY = (double)e.NewValue;
+        c.TransformChanged?.Invoke(c, EventArgs.Empty);
     }
 
     private static void OnOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is ZoomPanCanvas c)
-        {
-            c._translate.X = c.OffsetX;
-            c._translate.Y = c.OffsetY;
-        }
+        if (d is not ZoomPanCanvas c) return;
+        c._translate.X = c.OffsetX;
+        c._translate.Y = c.OffsetY;
+        c.TransformChanged?.Invoke(c, EventArgs.Empty);
     }
 
     // ---------------------------------------------------------------------------

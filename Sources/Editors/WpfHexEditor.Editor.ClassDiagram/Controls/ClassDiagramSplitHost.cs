@@ -195,11 +195,11 @@ public sealed class ClassDiagramSplitHost : Grid,
         _codeHost = new Border { Child = _dslEditor };
         _codeHost.SetResourceReference(Border.BackgroundProperty, "CD_DslEditorBackground");
 
-        _diagramHost = new Border { Child = _zoomPan };
+        _diagramHost = new Border { Child = _zoomPan, ClipToBounds = true };
         _diagramHost.SetResourceReference(Border.BackgroundProperty, "CD_CanvasBackground");
 
         // Build scroll overlay: zoomPan + h/v scrollbars in a Grid
-        var scrollGrid = new Grid();
+        var scrollGrid = new Grid { ClipToBounds = true };
         scrollGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         scrollGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         scrollGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -211,8 +211,9 @@ public sealed class ClassDiagramSplitHost : Grid,
         scrollGrid.Children.Add(_vScroll);
         scrollGrid.Children.Add(_hScroll);
 
-        // _diagramBorder adds a 1px left separator + wraps the scroll overlay
-        _diagramBorder = new Border { Child = scrollGrid, BorderThickness = new Thickness(1, 0, 0, 0) };
+        // _diagramBorder adds a 1px left separator + wraps the scroll overlay; ClipToBounds
+        // prevents diagram content from bleeding into the adjacent DSL editor column.
+        _diagramBorder = new Border { Child = scrollGrid, BorderThickness = new Thickness(1, 0, 0, 0), ClipToBounds = true };
         _diagramBorder.SetResourceReference(Border.BorderBrushProperty, "DockToolBarBorderBrush");
 
         // Wire scrollbars
@@ -225,9 +226,10 @@ public sealed class ClassDiagramSplitHost : Grid,
             if (!_syncingScrollBars) _zoomPan.OffsetY = -e.NewValue;
         };
 
-        // Update scrollbars when viewport size or zoom changes
-        _zoomPan.SizeChanged += (_, _) => UpdateScrollBars();
-        DiagramChanged       += (_, _) => UpdateScrollBars();
+        // Update scrollbars when viewport size, zoom, or pan changes
+        _zoomPan.SizeChanged       += (_, _) => UpdateScrollBars();
+        _zoomPan.TransformChanged  += (_, _) => UpdateScrollBars();
+        DiagramChanged             += (_, _) => UpdateScrollBars();
 
         // GridSplitter
         _splitter = new GridSplitter

@@ -20,7 +20,6 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -53,7 +52,7 @@ public sealed class DiagramMinimapControl : FrameworkElement
 
     // Reposition drag (left-button on grip strip — top 10px)
     private bool   _repositionDragging;
-    private Point  _repoScreenStart;   // screen-space start for reposition drag
+    private Point  _repoParentStart;   // parent-canvas-space start for reposition drag
 
     // ── Events ────────────────────────────────────────────────────────────────
     /// <summary>Raised when the user drags the viewport rect inside the minimap.</summary>
@@ -209,9 +208,10 @@ public sealed class DiagramMinimapControl : FrameworkElement
 
         if (pt.Y <= GripHeight)
         {
-            // Reposition drag — track screen-space position so we can snap to parent canvas corners
+            // Reposition drag — track parent-canvas-space position (same coordinate system as
+            // Canvas.SetLeft/Top) so the delta can be applied directly without zoom correction.
             _repositionDragging = true;
-            _repoScreenStart    = PointToScreen(pt);
+            _repoParentStart    = e.GetPosition((IInputElement)Parent);
             Cursor              = Cursors.SizeAll;
         }
         else
@@ -231,12 +231,14 @@ public sealed class DiagramMinimapControl : FrameworkElement
     {
         if (_repositionDragging)
         {
-            // Compute screen-space delta and raise event so DiagramCanvas can
-            // move us in real-time; corner-snap happens on MouseUp.
-            Point curScreen  = PointToScreen(e.GetPosition(this));
-            Vector screenDelta = curScreen - _repoScreenStart;
-            _repoScreenStart = curScreen;
-            PositionDeltaRequested?.Invoke(this, screenDelta);
+            // Compute delta in parent-canvas coordinate space.
+            // GetPosition(Parent) travels through the ZoomPanCanvas RenderTransform chain
+            // so the returned value is already in DiagramCanvas local units — the same
+            // space used by Canvas.SetLeft/Top, so no zoom correction is needed.
+            Point  cur   = e.GetPosition((IInputElement)Parent);
+            Vector delta = cur - _repoParentStart;
+            _repoParentStart = cur;
+            PositionDeltaRequested?.Invoke(this, delta);
             e.Handled = true;
             return;
         }
@@ -283,25 +285,23 @@ public sealed class DiagramMinimapControl : FrameworkElement
 
     protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
     {
-        var menu = new ContextMenu();
+        var menu = DiagramMenuHelpers.StyledMenu();
 
-        var hideItem = new MenuItem { Header = "Hide Minimap" };
-        hideItem.Click += (_, _) => HideRequested?.Invoke(this, EventArgs.Empty);
-        menu.Items.Add(hideItem);
+        menu.Items.Add(DiagramMenuHelpers.MakeItem("\uE7BA", "Hide Minimap",
+            () => HideRequested?.Invoke(this, EventArgs.Empty)));
 
         menu.Items.Add(new Separator());
 
-        var moveMenu = new MenuItem { Header = "Move to" };
-        void AddCorner(string label, MinimapCorner corner) {
-            var item = new MenuItem { Header = label };
-            item.Click += (_, _) => CornerChangeRequested?.Invoke(this, corner);
-            moveMenu.Items.Add(item);
-        }
-        AddCorner("Top-Left",     MinimapCorner.TopLeft);
-        AddCorner("Top-Right",    MinimapCorner.TopRight);
-        AddCorner("Bottom-Left",  MinimapCorner.BottomLeft);
-        AddCorner("Bottom-Right", MinimapCorner.BottomRight);
-        menu.Items.Add(moveMenu);
+        var moveSub = DiagramMenuHelpers.MakeItem("\uE893", "Move to Corner", null);
+        moveSub.Items.Add(DiagramMenuHelpers.MakeItem("\uE893", "Top-Left",
+            () => CornerChangeRequested?.Invoke(this, MinimapCorner.TopLeft)));
+        moveSub.Items.Add(DiagramMenuHelpers.MakeItem("\uE893", "Top-Right",
+            () => CornerChangeRequested?.Invoke(this, MinimapCorner.TopRight)));
+        moveSub.Items.Add(DiagramMenuHelpers.MakeItem("\uE893", "Bottom-Left",
+            () => CornerChangeRequested?.Invoke(this, MinimapCorner.BottomLeft)));
+        moveSub.Items.Add(DiagramMenuHelpers.MakeItem("\uE893", "Bottom-Right",
+            () => CornerChangeRequested?.Invoke(this, MinimapCorner.BottomRight)));
+        menu.Items.Add(moveSub);
 
         menu.IsOpen = true;
         e.Handled   = true;

@@ -41,11 +41,15 @@ public sealed class DiagramVisualLayer : FrameworkElement
     private const double HorizPadding  = 8.0;
     private const double CornerRadius  = 3.0;
     private const double BoxMinWidth   = 160.0;
-    private const double MaxNodeHeight = 380.0;  // cap — "N more" footer shown when exceeded
-    private const double FooterHeight  = 18.0;
+    private const double MaxNodeHeight  = 380.0;  // cap — "N more" footer shown when exceeded
+    private const double FooterHeight   = 18.0;
+    private const double GripperHeight  = 6.0;    // bottom-edge drag zone height
 
     // Nodes the user has explicitly expanded past MaxNodeHeight
     private readonly HashSet<string> _expandedNodes = new(StringComparer.Ordinal);
+
+    // Per-node custom heights set by the resize gripper drag
+    private readonly Dictionary<string, double> _customHeights = new(StringComparer.Ordinal);
 
     private const double ArrowHeadLen  = 12.0;
     private const double ArrowHalfAng  = 25.0 * Math.PI / 180.0;
@@ -757,6 +761,10 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     public double ComputeNodeHeight(ClassNode node)
     {
+        // Custom height set by the resize gripper takes priority.
+        if (_customHeights.TryGetValue(node.Id, out double custom))
+            return Math.Max(custom, HeaderHeight + MemberHeight);
+
         double h = HeaderHeight + MemberPadding * 2;
         MemberKind? lastKind = null;
         foreach (var m in node.Members)
@@ -771,6 +779,31 @@ public sealed class DiagramVisualLayer : FrameworkElement
         if (!_expandedNodes.Contains(node.Id) && h > MaxNodeHeight)
             return MaxNodeHeight;  // capped; "N more" footer rendered at bottom
         return h;
+    }
+
+    /// <summary>Pins the node to a custom height (set by the resize gripper drag).</summary>
+    public void SetCustomHeight(string nodeId, double height)
+        => _customHeights[nodeId] = height;
+
+    /// <summary>Removes a custom height override, restoring auto-computed height.</summary>
+    public void ClearCustomHeight(string nodeId)
+        => _customHeights.Remove(nodeId);
+
+    /// <summary>
+    /// Returns the node whose bottom-edge gripper is at <paramref name="pt"/>, or null.
+    /// The gripper zone is GripperHeight pixels above and below the node bottom edge.
+    /// </summary>
+    public ClassNode? IsGripperHit(IReadOnlyList<ClassNode> nodes, Point pt)
+    {
+        foreach (var node in nodes)
+        {
+            double h    = ComputeNodeHeight(node);
+            double edgeY = node.Y + h;
+            if (pt.X >= node.X && pt.X <= node.X + node.Width
+                && pt.Y >= edgeY - GripperHeight && pt.Y <= edgeY + GripperHeight)
+                return node;
+        }
+        return null;
     }
 
     private int CountHiddenMembers(ClassNode node)

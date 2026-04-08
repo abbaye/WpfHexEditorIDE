@@ -67,6 +67,11 @@ public sealed class DiagramCanvas : Canvas
     private double _dragNodeStartX;
     private double _dragNodeStartY;
 
+    // ── Resize gripper ────────────────────────────────────────────────────────
+    private ClassNode? _resizingNode;
+    private double     _resizeStartY;
+    private double     _resizeStartHeight;
+
     // ── Rubber-band ───────────────────────────────────────────────────────────
     private bool  _isRubberBanding;
     private Point _rubberStart;
@@ -440,6 +445,21 @@ public sealed class DiagramCanvas : Canvas
         Point pt   = e.GetPosition(this);
         var   node = _layer.HitTestNode(pt);
 
+        // Resize gripper — bottom edge of any node
+        if (_doc is not null)
+        {
+            var gripNode = _layer.IsGripperHit(_doc.Classes, pt);
+            if (gripNode is not null)
+            {
+                _resizingNode      = gripNode;
+                _resizeStartY      = pt.Y;
+                _resizeStartHeight = _layer.ComputeNodeHeight(gripNode);
+                CaptureMouse();
+                e.Handled = true;
+                return;
+            }
+        }
+
         // Check "N more" footer hit BEFORE node-level checks
         if (_doc is not null)
         {
@@ -509,6 +529,16 @@ public sealed class DiagramCanvas : Canvas
         base.OnMouseMove(e);
         Point pt = e.GetPosition(this);
 
+        // Node resize in progress
+        if (_resizingNode is not null)
+        {
+            double dy = pt.Y - _resizeStartY;
+            _layer.SetCustomHeight(_resizingNode.Id, _resizeStartHeight + dy);
+            _layer.RenderAll(_doc!, _selectedNode?.Id, _hoveredNode?.Id);
+            e.Handled = true;
+            return;
+        }
+
         if (_dragNode is not null && e.LeftButton == MouseButtonState.Pressed)
         {
             double dx = pt.X - _dragStart.X;
@@ -525,7 +555,7 @@ public sealed class DiagramCanvas : Canvas
         }
         else
         {
-            // Hover tracking
+            // Hover tracking + resize gripper cursor
             var hovered = _layer.HitTestNode(pt);
             if (hovered != _hoveredNode)
             {
@@ -542,6 +572,10 @@ public sealed class DiagramCanvas : Canvas
                     _tooltipTimer.Start();
                 }
             }
+
+            // Show SizeNS cursor when hovering over a node's bottom-edge gripper
+            bool onGripper = _doc is not null && _layer.IsGripperHit(_doc.Classes, pt) is not null;
+            Cursor = onGripper ? Cursors.SizeNS : null;
         }
     }
 
@@ -549,6 +583,14 @@ public sealed class DiagramCanvas : Canvas
     {
         base.OnMouseLeftButtonUp(e);
         ReleaseMouseCapture();
+
+        if (_resizingNode is not null)
+        {
+            _resizingNode = null;
+            Cursor = null;
+            e.Handled = true;
+            return;
+        }
 
         if (_dragNode is not null)
         {
@@ -833,35 +875,10 @@ public sealed class DiagramCanvas : Canvas
         _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
     }
 
-    // ── Context menu helpers ──────────────────────────────────────────────────
+    // ── Context menu helpers (delegates to shared DiagramMenuHelpers) ─────────
 
-    private ContextMenu StyledMenu()
-    {
-        var menu = new ContextMenu
-        {
-            PlacementTarget = this,
-            Placement       = System.Windows.Controls.Primitives.PlacementMode.MousePoint
-        };
-        menu.SetResourceReference(Control.BackgroundProperty, "DockMenuBackgroundBrush");
-        menu.SetResourceReference(Control.ForegroundProperty, "DockMenuForegroundBrush");
-        return menu;
-    }
+    private ContextMenu StyledMenu() => DiagramMenuHelpers.StyledMenu(this);
 
     private static MenuItem MakeItem(string icon, string header, Action action)
-    {
-        var iconBlock = new TextBlock
-        {
-            Text              = icon,
-            FontFamily        = new FontFamily("Segoe MDL2 Assets, Segoe UI Symbol"),
-            FontSize          = 13,
-            Width             = 16,
-            TextAlignment     = TextAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-        };
-        iconBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
-
-        var item = new MenuItem { Header = header, Icon = iconBlock };
-        item.Click += (_, _) => action();
-        return item;
-    }
+        => DiagramMenuHelpers.MakeItem(icon, header, action);
 }
