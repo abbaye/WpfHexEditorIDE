@@ -192,7 +192,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
                 foreach (var l in listings) AllListings.Add(l);
                 RebuildCategories();
                 ApplyBrowseFilter();
-                StatusText = $"{AllListings.Count} plugin(s) available.";
+                StatusText = $"{AllListings.Count} extension(s) available.";
             });
         }
         catch (Exception ex)
@@ -230,7 +230,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
             }
             FilteredListings.Add(l);
         }
-        StatusText = $"{FilteredListings.Count} of {AllListings.Count} plugin(s) shown.";
+        StatusText = $"{FilteredListings.Count} of {AllListings.Count} extension(s) shown.";
     }
 
     private void RebuildCategories()
@@ -254,7 +254,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
             {
                 InstalledListings.Clear();
                 foreach (var l in installed) InstalledListings.Add(l);
-                StatusText = $"{InstalledListings.Count} plugin(s) installed.";
+                StatusText = $"{InstalledListings.Count} extension(s) installed.";
             });
         }
         catch (Exception ex)
@@ -346,8 +346,8 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title     = "Install Plugin",
-            Filter    = "Plugin Packages (*.whxplugin)|*.whxplugin",
+            Title     = "Install Extension",
+            Filter    = "Extension Packages (*.whxplugin)|*.whxplugin",
             Multiselect = false,
         };
         if (dlg.ShowDialog() != true) return;

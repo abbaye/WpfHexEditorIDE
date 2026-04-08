@@ -57,7 +57,7 @@ public sealed class PluginPackagePublisherDialog : Window
         _buildOutputDir = buildOutputDir ?? throw new ArgumentNullException(nameof(buildOutputDir));
         _projectDir     = projectDir     ?? throw new ArgumentNullException(nameof(projectDir));
 
-        Title                 = "Publish Plugin Package";
+        Title                 = "Publish Extension Package";
         Width                 = 540;
         Height                = 440;
         ResizeMode            = ResizeMode.NoResize;
@@ -79,7 +79,7 @@ public sealed class PluginPackagePublisherDialog : Window
         // Title
         root.Children.Add(new TextBlock
         {
-            Text       = "Publish Plugin Package",
+            Text       = "Publish Extension Package",
             FontSize   = 15,
             FontWeight = FontWeights.SemiBold,
             Foreground = new SolidColorBrush(Color.FromRgb(0x56, 0x9C, 0xD6)),

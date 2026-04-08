@@ -1372,24 +1372,38 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                     if (gapW > 0)
                     {
                         // Shrink gap by 1px each side so overlay vertical borders align with tab SelectionBorder.
-                        const double bt = 1.0;
-                        double gX = gapX + bt;
-                        double gW = Math.Max(0, gapW - bt * 2);
-                        var gap = new RectangleGeometry(new Rect(gX, h - gapH, gW, gapH * 2));
-                        overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
+                        const double bt   = 1.0;
+                        const double arcR = 4.0;
+                        double arcX = gapX + gapW - bt; // right edge of overlay border = right edge of tab - bt
 
-                        // Corner arc: quarter-circle from the separator (y=h) to the tab's right
-                        // SelectionBorder (x=tabRight), visible only when panel has focus.
-                        // Center at (tabRight, h); CW arc from (tabRight+r, h) to (tabRight, h+r).
+                        // Corner arc: VS-style convex outer corner at the bottom-right of the panel box.
+                        // Arc goes from (arcX, h-arcR) on the overlay right border
+                        //         to   (arcX+arcR, h)  on the separator line.
+                        // CW 12→3 o'clock, center (arcX, h): convex curve bowing to the right.
+                        // Both straight lines are cut at arc extremities:
+                        //   • Overlay right border clipped to stop at h-arcR (via arcStrip exclusion).
+                        //   • Separator gap extended by arcR rightward so it resumes at arcX+arcR.
+                        // Visible only when panel has focus (overlay borders > 0).
                         bool focused = overlayBorder.BorderThickness.Left > 0
                                     || overlayBorder.BorderThickness.Top  > 0;
+
+                        double gX, gW;
                         if (focused)
                         {
-                            const double arcR  = 4.0;
-                            double arcX = gapX + gapW; // outer-right edge of active tab
-                            var fig = new PathFigure { StartPoint = new Point(arcX + arcR, h) };
+                            // Extend gap rightward by arcR: separator resumes at arcX+arcR.
+                            gX = gapX + bt;
+                            gW = Math.Max(0, gapW - bt * 2 + arcR);
+                            var gap = new RectangleGeometry(new Rect(gX, h - gapH, gW, gapH * 2));
+
+                            // Clip the last arcR pixels off the overlay's right border.
+                            var arcStrip      = new RectangleGeometry(new Rect(arcX - 1, h - arcR, 3, arcR));
+                            var clippedArea   = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, arcStrip);
+                            overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, clippedArea, gap);
+
+                            // Arc: (arcX, h-arcR) → (arcX+arcR, h), CW, center (arcX, h).
+                            var fig = new PathFigure { StartPoint = new Point(arcX, h - arcR) };
                             fig.Segments.Add(new ArcSegment(
-                                new Point(arcX, h + arcR),
+                                new Point(arcX + arcR, h),
                                 new Size(arcR, arcR),
                                 0, false,
                                 SweepDirection.Clockwise,
@@ -1399,6 +1413,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                         }
                         else
                         {
+                            // No arc: standard gap, no corner clipping.
+                            gX = gapX + bt;
+                            gW = Math.Max(0, gapW - bt * 2);
+                            var gap = new RectangleGeometry(new Rect(gX, h - gapH, gW, gapH * 2));
+                            overlayBorder.Clip   = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
                             cornerArc.Visibility = Visibility.Collapsed;
                         }
                         return;

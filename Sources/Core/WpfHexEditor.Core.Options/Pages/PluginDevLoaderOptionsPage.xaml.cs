@@ -48,7 +48,7 @@ public partial class PluginDevLoaderOptionsPage : UserControl, IOptionsPage
 
     private void OnBrowse(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFolderDialog { Title = "Select Plugin Output Directory" };
+        var dlg = new OpenFolderDialog { Title = "Select Extension Output Directory" };
         if (dlg.ShowDialog() != true) return;
 
         var current = TxtWatchedFolders.Text.Trim();

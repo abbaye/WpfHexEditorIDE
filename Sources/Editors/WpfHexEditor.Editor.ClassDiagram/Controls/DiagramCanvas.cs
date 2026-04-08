@@ -238,6 +238,14 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Returns the currently selected class node, or null.</summary>
     public ClassNode? SelectedNode => _selectedNode;
 
+    /// <summary>Selects the node with the given Id; no-op if not found.</summary>
+    public void SelectNodeById(string nodeId)
+    {
+        if (_doc is null) return;
+        var node = _doc.Classes.FirstOrDefault(n => n.Id == nodeId);
+        if (node is not null) SelectNode(node);
+    }
+
     // ── Loaded ────────────────────────────────────────────────────────────────
 
     private void OnLoaded(object sender, RoutedEventArgs e)

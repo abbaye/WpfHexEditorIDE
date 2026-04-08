@@ -428,6 +428,49 @@ public sealed class ClassDiagramSplitHost : Grid,
             () => _zoomPan.FitToContent());
     }
 
+    // ── Session state (save/restore zoom-pan-selection-minimap) ─────────────
+
+    /// <summary>
+    /// Returns the current view state as a flat dictionary suitable for
+    /// serialization by the plugin (which owns the serializer).
+    /// </summary>
+    public Dictionary<string, string> GetViewSnapshot()
+    {
+        var d = new Dictionary<string, string>
+        {
+            ["zoom"]     = _zoomPan.ZoomFactor.ToString("R"),
+            ["offsetX"]  = _zoomPan.OffsetX.ToString("R"),
+            ["offsetY"]  = _zoomPan.OffsetY.ToString("R"),
+            ["selected"] = _canvas.SelectedNode?.Id ?? string.Empty,
+            ["minimap"]  = _canvas.IsMinimapVisible ? "1" : "0"
+        };
+        return d;
+    }
+
+    /// <summary>
+    /// Restores a view snapshot previously produced by <see cref="GetViewSnapshot"/>.
+    /// Call after <see cref="LoadDocument"/> to suppress the auto-fit.
+    /// </summary>
+    public void ApplyViewSnapshot(Dictionary<string, string> snap)
+    {
+        if (snap is null) return;
+
+        Application.Current?.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.Loaded, () =>
+            {
+                if (snap.TryGetValue("zoom", out string? z) && double.TryParse(z, out double zoom))
+                    _zoomPan.ZoomFactor = zoom;
+                if (snap.TryGetValue("offsetX", out string? ox) && double.TryParse(ox, out double offX))
+                    _zoomPan.OffsetX = offX;
+                if (snap.TryGetValue("offsetY", out string? oy) && double.TryParse(oy, out double offY))
+                    _zoomPan.OffsetY = offY;
+                if (snap.TryGetValue("minimap", out string? mm))
+                    _canvas.IsMinimapVisible = mm == "1";
+                if (snap.TryGetValue("selected", out string? sel) && !string.IsNullOrEmpty(sel))
+                    _canvas.SelectNodeById(sel);
+            });
+    }
+
     /// <summary>
     /// Applies an incremental <see cref="DiagramPatch"/> produced by the live-sync
     /// service. Added/removed nodes are merged into <see cref="Document"/>; the canvas

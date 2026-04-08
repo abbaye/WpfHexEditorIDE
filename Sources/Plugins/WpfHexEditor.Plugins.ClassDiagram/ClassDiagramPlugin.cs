@@ -38,6 +38,7 @@ using System.Windows.Controls;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.ClassDiagram.Controls;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Editor.ClassDiagram.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 using WpfHexEditor.Plugins.ClassDiagram.Analysis;
@@ -836,6 +837,15 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         var host = new ClassDiagramSplitHost();
         host.LoadDocument(doc, title);
 
+        // Restore session state if enabled
+        if (_options.RestoreLastState)
+        {
+            string? solutionDir = GetSolutionDir(context);
+            var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
+            if (session?.LastFilePath == csharpFilePath)
+                host.ApplyViewSnapshot(session.ViewSnapshot);
+        }
+
         _openTabs[csharpFilePath] = uiId;
         context.UIRegistry.RegisterDocumentTab(uiId, host, Id, new DocumentDescriptor
         {
@@ -844,6 +854,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             ToolTip   = csharpFilePath,
             CanClose  = true,
         });
+
+        // Wire session auto-save on unload
+        host.TitleChanged += (_, _) => SaveSession(host, csharpFilePath, context);
 
         // Attach live-sync service for this file.
         if (_liveSyncEnabled && File.Exists(csharpFilePath))
@@ -862,6 +875,26 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             };
             _liveSyncServices[uiId] = svc;
         }
+    }
+
+    // ── Session state helpers ────────────────────────────────────────────────
+
+    private static string? GetSolutionDir(IIDEHostContext context)
+    {
+        string? solutionPath = context.SolutionExplorer.ActiveSolutionPath;
+        if (string.IsNullOrEmpty(solutionPath)) return null;
+        return Path.GetDirectoryName(solutionPath);
+    }
+
+    private void SaveSession(ClassDiagramSplitHost host, string filePath, IIDEHostContext context)
+    {
+        if (!_options.RestoreLastState) return;
+        var state = new ClassDiagramSessionState
+        {
+            LastFilePath  = filePath,
+            ViewSnapshot  = host.GetViewSnapshot()
+        };
+        ClassDiagramSessionStateSerializer.Save(state, GetSolutionDir(context));
     }
 
     /// <summary>

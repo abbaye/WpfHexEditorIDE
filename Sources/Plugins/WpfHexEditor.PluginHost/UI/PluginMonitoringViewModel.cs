@@ -1537,12 +1537,12 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export Plugin Diagnostics",
+            Title      = "Export Extension Diagnostics",
             Filter     = format == "csv"
                          ? "CSV files (*.csv)|*.csv|All files (*.*)|*.*"
                          : "JSON files (*.json)|*.json|All files (*.*)|*.*",
             DefaultExt = format,
-            FileName   = $"plugin-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.{format}"
+            FileName   = $"extension-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.{format}"
         };
 
         if (dlg.ShowDialog() != true) return;
@@ -1588,8 +1588,8 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title      = "Install Plugin Package",
-            Filter     = "Plugin packages (*.whxplugin)|*.whxplugin|All files (*.*)|*.*",
+            Title      = "Install Extension Package",
+            Filter     = "Extension packages (*.whxplugin)|*.whxplugin|All files (*.*)|*.*",
             DefaultExt = "whxplugin"
         };
 

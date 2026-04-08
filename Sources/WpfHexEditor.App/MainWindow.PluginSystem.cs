@@ -905,7 +905,7 @@ public partial class MainWindow
 
         var vm      = new PluginManagerViewModel(_pluginHost, Dispatcher);
         var control = new PluginManagerControl(vm);
-        var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Plugin Manager", CanClose = true };
+        var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Extension Manager", CanClose = true };
 
         DockPanelToCenter(PluginManagerContentId, item, control);
     }
@@ -938,7 +938,7 @@ public partial class MainWindow
 
         var vm      = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
         var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = vm };
-        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = "Plugin Monitor", CanClose = true };
+        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = "Extensions Monitor", CanClose = true };
 
         DockPanelToBottom(PluginMonitorContentId, item, control);
     }
@@ -956,7 +956,7 @@ public partial class MainWindow
         var vm    = new MarketplacePanelViewModel(svc, _pluginHost!, msg => OutputLogger.PluginInfo(msg));
         var panel = new MarketplacePanel();
         panel.Initialize(vm);
-        var item  = new DockItem { ContentId = MarketplaceContentId, Title = "Plugin Marketplace", CanClose = true };
+        var item  = new DockItem { ContentId = MarketplaceContentId, Title = "Extension Marketplace", CanClose = true };
 
         DockPanelToBottom(MarketplaceContentId, item, panel);
     }
@@ -973,7 +973,7 @@ public partial class MainWindow
 
         var dialog = new Microsoft.Win32.OpenFolderDialog
         {
-            Title = "Select Plugin Build Output Directory",
+            Title = "Select Extension Build Output Directory",
             Multiselect = false
         };
 
@@ -1251,8 +1251,8 @@ public partial class MainWindow
         _notificationService?.Post(new WpfHexEditor.Editor.Core.Notifications.NotificationItem
         {
             Id      = "marketplace-updates-available",
-            Title   = $"{e.UpdateCount} plugin update{(e.UpdateCount == 1 ? "" : "s")} available",
-            Message = "Open the Marketplace (Extensions → Marketplace) to install the updates.",
+            Title   = $"{e.UpdateCount} extension update{(e.UpdateCount == 1 ? "" : "s")} available",
+            Message = "Open the Marketplace (Extensions → Extension Marketplace) to install the updates.",
             Severity = WpfHexEditor.Editor.Core.Notifications.NotificationSeverity.Info,
         });
     }

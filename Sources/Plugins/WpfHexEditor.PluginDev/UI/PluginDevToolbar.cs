@@ -78,7 +78,7 @@ public sealed class PluginDevToolbar : UserControl
         // ── Plugin selector label ──
         toolbar.Items.Add(new TextBlock
         {
-            Text              = "Plugin:",
+            Text              = "Extension:",
             VerticalAlignment = VerticalAlignment.Center,
             Foreground        = Brushes.WhiteSmoke,
             Margin            = new Thickness(4, 0, 4, 0),

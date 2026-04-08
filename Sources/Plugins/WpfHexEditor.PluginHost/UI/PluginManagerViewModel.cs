@@ -408,8 +408,8 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     {
         var dialog = new OpenFileDialog
         {
-            Title           = "Install Plugin Package",
-            Filter          = "Plugin Package (*.whxplugin)|*.whxplugin|All Files (*.*)|*.*",
+            Title           = "Install Extension Package",
+            Filter          = "Extension Package (*.whxplugin)|*.whxplugin|All Files (*.*)|*.*",
             CheckFileExists = true
         };
 
@@ -443,9 +443,9 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     {
         var dlg = new SaveFileDialog
         {
-            Title      = "Export Plugin Diagnostics",
+            Title      = "Export Extension Diagnostics",
             Filter     = "CSV files (*.csv)|*.csv|JSON files (*.json)|*.json|All files (*.*)|*.*",
-            FileName   = $"plugin-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.csv"
+            FileName   = $"extension-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.csv"
         };
         if (dlg.ShowDialog() != true) return;
 

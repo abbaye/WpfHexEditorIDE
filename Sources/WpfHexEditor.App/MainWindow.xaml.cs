@@ -1320,7 +1320,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var errorsItem = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
         engine.Dock(errorsItem, layout.MainDocumentHost, DockDirection.Bottom);
 
-        var pluginMonitor = new DockItem { Title = "Plugin Monitor", ContentId = PluginMonitorContentId };
+        var pluginMonitor = new DockItem { Title = "Extensions Monitor", ContentId = PluginMonitorContentId };
         engine.Dock(pluginMonitor, errorsItem.Owner!, DockDirection.Center);
 
         var output = new DockItem { Title = "Output", ContentId = "panel-output" };
