@@ -33,7 +33,8 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Border Grid.Row="0"
+                        <Border x:Name="PART_TabStrip"
+                                Grid.Row="0"
                                 Background="{DynamicResource DockMenuBackgroundBrush}">
                             <Grid>
                                 <Grid.ColumnDefinitions>

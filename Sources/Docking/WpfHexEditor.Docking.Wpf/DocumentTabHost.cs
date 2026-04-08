@@ -180,9 +180,19 @@ public class DocumentTabHost : DockTabControl
     protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
     {
         base.OnItemsChanged(e);
-        if (e.NewItems is not null && Settings?.ColorMode != DocumentTabColorMode.None)
-            foreach (TabItem tab in e.NewItems.OfType<TabItem>())
+        if (e.NewItems is null) return;
+        foreach (TabItem tab in e.NewItems.OfType<TabItem>())
+        {
+            // Apply the correct tab item style based on placement so SelectionBorder
+            // and CornerRadius are placement-aware (top→DockTabItemStyle, bottom→DockTabItemBottomStyle).
+            string styleName = TabStripPlacement == Dock.Bottom
+                ? "DockTabItemBottomStyle"
+                : "DockTabItemStyle";
+            tab.SetResourceReference(StyleProperty, styleName);
+
+            if (Settings?.ColorMode != DocumentTabColorMode.None)
                 ApplyTabColor(tab);
+        }
     }
 
     internal void ApplyTabColors()

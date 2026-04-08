@@ -1289,10 +1289,49 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             if (host.Template?.FindName("PART_TabStrip", host) is not FrameworkElement tabStrip)
                 return;
 
-            void UpdateMargin() => overlayBorder.Margin = new Thickness(0, tabStrip.ActualHeight, 0, 0);
-            tabStrip.SizeChanged += (_, _) => UpdateMargin();
-            outer.SizeChanged    += (_, _) => UpdateMargin();
-            UpdateMargin();
+            const double gapH = 2.0;
+            const double bt   = 1.0;
+
+            void UpdateOverlay()
+            {
+                double tabH = tabStrip.ActualHeight;
+                double w    = outer.ActualWidth;
+                double h    = outer.ActualHeight - tabH;
+
+                overlayBorder.Margin = new Thickness(0, tabH, 0, 0);
+
+                if (w <= 0 || h <= 0) { overlayBorder.Clip = null; return; }
+
+                // Overlay origin is at (0, tabH) in outer coords; clip rect is relative to overlay.
+                var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
+
+                int selIdx = host.SelectedIndex;
+                if (selIdx >= 0 &&
+                    host.ItemContainerGenerator.ContainerFromIndex(selIdx) is FrameworkElement activeTab)
+                {
+                    // Translate tab position to overlay coordinates (subtract tabH from Y).
+                    var pos   = activeTab.TranslatePoint(new Point(0, 0), outer);
+                    double gapX = Math.Max(0, pos.X);
+                    double gapW = activeTab.ActualWidth;
+                    if (gapW > 0)
+                    {
+                        double gX = gapX + bt;
+                        double gW = Math.Max(0, gapW - bt * 2);
+                        // Gap at y=0 (top of overlay = separator between tab strip and content).
+                        var gap = new RectangleGeometry(new Rect(gX, -gapH, gW, gapH * 2));
+                        overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
+                        return;
+                    }
+                }
+
+                overlayBorder.Clip = contentArea;
+            }
+
+            tabStrip.SizeChanged      += (_, _) => UpdateOverlay();
+            outer.SizeChanged         += (_, _) => UpdateOverlay();
+            host.SelectionChanged     += (_, _) => UpdateOverlay();
+            host.LayoutUpdated        += (_, _) => UpdateOverlay();
+            UpdateOverlay();
         };
 
         outer.AddHandler(
