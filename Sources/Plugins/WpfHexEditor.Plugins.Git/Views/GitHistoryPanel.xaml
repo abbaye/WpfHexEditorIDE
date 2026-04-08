@@ -18,48 +18,67 @@
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ───────────────────────────────────────────────────────── -->
-        <ToolBar Grid.Row="0" Background="Transparent" BorderThickness="0">
-            <Button ToolTip="Refresh" Command="{Binding RefreshCommand}"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
-            </Button>
-            <Separator/>
-            <!-- File filter -->
-            <TextBlock Text="File:" VerticalAlignment="Center" FontSize="11" Margin="0,0,4,0"
-                       Foreground="{DynamicResource GC_SectionHeaderForeground}"/>
-            <TextBox Text="{Binding FileFilter, UpdateSourceTrigger=PropertyChanged}"
-                     Width="120" Style="{DynamicResource DockDarkTextBoxStyle}"
-                     ToolTip="Filter by file path (leave empty for all commits)">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
-                </TextBox.InputBindings>
-            </TextBox>
-            <!-- Author filter -->
-            <TextBlock Text="Author:" VerticalAlignment="Center" FontSize="11" Margin="8,0,4,0"
-                       Foreground="{DynamicResource GC_SectionHeaderForeground}"/>
-            <TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}"
-                     Width="90" Style="{DynamicResource DockDarkTextBoxStyle}"
-                     ToolTip="Filter by author name">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
-                </TextBox.InputBindings>
-            </TextBox>
-            <!-- Count -->
-            <TextBlock Text="Max:" VerticalAlignment="Center" FontSize="11" Margin="8,0,4,0"
-                       Foreground="{DynamicResource GC_SectionHeaderForeground}"/>
-            <ComboBox SelectedValue="{Binding MaxCount}" Width="55"
-                      Background="{DynamicResource DockBackgroundBrush}"
-                      Foreground="{DynamicResource DockMenuForegroundBrush}">
-                <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">50</sys:Int32>
-                <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">100</sys:Int32>
-                <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">250</sys:Int32>
-                <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">500</sys:Int32>
-            </ComboBox>
-            <!-- Loading indicator -->
-            <pb:LinearProgressBar IsIndeterminate="True" Width="60" Height="4" BarHeight="4" Margin="8,0,0,0"
-                                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
-                                  VerticalAlignment="Center"/>
-        </ToolBar>
+        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="False">
+                <!-- Loading indicator — docked right so it's always visible -->
+                <pb:LinearProgressBar DockPanel.Dock="Right"
+                                      IsIndeterminate="True" Width="50" Height="3" BarHeight="3"
+                                      Margin="4,0,2,0"
+                                      Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
+                                      VerticalAlignment="Center"/>
+
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE72C;"
+                        Command="{Binding RefreshCommand}"
+                        ToolTip="Refresh"/>
+                <Separator Width="1" Margin="2,4"
+                           Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
+
+                <!-- File filter -->
+                <TextBlock Text="File:" VerticalAlignment="Center" FontSize="11" Margin="4,0,4,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                <TextBox Text="{Binding FileFilter, UpdateSourceTrigger=PropertyChanged}"
+                         Width="110" Height="18" VerticalContentAlignment="Center"
+                         FontSize="11" Padding="3,0"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                         ToolTip="Filter by file path (leave empty for all commits)">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <!-- Author filter -->
+                <TextBlock Text="Author:" VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                <TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}"
+                         Width="80" Height="18" VerticalContentAlignment="Center"
+                         FontSize="11" Padding="3,0"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                         ToolTip="Filter by author name">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <!-- Max count -->
+                <TextBlock Text="Max:" VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                <ComboBox SelectedValue="{Binding MaxCount}" Width="52" Height="18"
+                          FontSize="11"
+                          Style="{StaticResource DockComboBoxStyle}">
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">50</sys:Int32>
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">100</sys:Int32>
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">250</sys:Int32>
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">500</sys:Int32>
+                </ComboBox>
+            </DockPanel>
+        </Border>
 
         <!-- ── Content: commit list + diff pane ─────────────────────────────── -->
         <Grid Grid.Row="1">

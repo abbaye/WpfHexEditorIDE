@@ -180,30 +180,36 @@
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ───────────────────────────────────────────────────────── -->
-        <ToolBar Grid.Row="0" Background="Transparent" BorderThickness="0">
-            <Button ToolTip="Refresh" Command="{Binding RefreshCommand}"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13" />
-            </Button>
-            <Separator />
-            <Button ToolTip="Stage All" Command="{Binding StageAllCommand}"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <TextBlock Text="+" FontWeight="Bold" FontSize="13" />
-            </Button>
-            <Button ToolTip="Unstage All" Command="{Binding UnstageAllCommand}"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <TextBlock Text="&#x2212;" FontSize="13" />
-            </Button>
-            <Button ToolTip="Discard All Changes" Command="{Binding DiscardAllCommand}"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
-            </Button>
-            <Separator />
-            <Button ToolTip="Stash Changes" Command="{Binding StashCommand}"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <TextBlock Text="&#xE72A;" FontFamily="Segoe MDL2 Assets" FontSize="12" />
-            </Button>
-        </ToolBar>
+        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="False">
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE72C;"
+                        Command="{Binding RefreshCommand}"
+                        ToolTip="Refresh"/>
+                <Separator Width="1" Margin="2,4"
+                           Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="+"
+                        FontFamily="{x:Null}" FontSize="14" FontWeight="Bold"
+                        Command="{Binding StageAllCommand}"
+                        ToolTip="Stage All"/>
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#x2212;"
+                        FontFamily="{x:Null}" FontSize="14"
+                        Command="{Binding UnstageAllCommand}"
+                        ToolTip="Unstage All"/>
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE74D;"
+                        Command="{Binding DiscardAllCommand}"
+                        ToolTip="Discard All Changes"/>
+                <Separator Width="1" Margin="2,4"
+                           Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE72A;"
+                        Command="{Binding StashCommand}"
+                        ToolTip="Stash Changes"/>
+            </DockPanel>
+        </Border>
 
         <!-- ── Push / Pull bar ──────────────────────────────────────────────── -->
         <Border Grid.Row="1" BorderThickness="0,1,0,0"
