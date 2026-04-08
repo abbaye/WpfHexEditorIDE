@@ -417,14 +417,24 @@ public sealed class DiagramVisualLayer : FrameworkElement
             return;
         }
 
-        // Member rows
+        // Member rows — clipped to the box height so content never overflows below the border
         double memberY = HeaderHeight + MemberPadding;
         MemberKind? lastKind   = null;
         double textClipW       = width - HorizPadding - IconWidth - HorizPadding;
         var    divPenDashed    = new Pen(divBrush, 0.5) { DashStyle = new DashStyle([2, 2], 0) };
 
+        // Clip entire member section to [HeaderHeight … height] so capped nodes don't bleed
+        dc.PushClip(new System.Windows.Media.RectangleGeometry(
+            new Rect(0, HeaderHeight, width, Math.Max(0, height - HeaderHeight))));
+
+        // Pre-compute the Y limit: leave room for the footer bar if there are hidden members
+        bool isCapped  = !_expandedNodes.Contains(node.Id) && ComputeNodeHeightFull(node) > MaxNodeHeight;
+        double memberYLimit = isCapped ? height - FooterHeight : height;
+
         foreach (var member in node.Members)
         {
+            // Stop drawing members when we've reached the cap boundary
+            if (isCapped && memberY + MemberHeight > memberYLimit) break;
             // B4 — Section group header when kind changes
             if (lastKind.HasValue && member.Kind != lastKind)
             {
@@ -504,7 +514,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
         }
 
         // "N more" footer when node is capped
-        if (!_expandedNodes.Contains(node.Id))
+        if (isCapped)
         {
             int hidden = CountHiddenMembers(node);
             if (hidden > 0)
@@ -517,6 +527,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
                 dc.DrawText(footerFt, new Point((width - footerFt.Width) / 2, footerY + (FooterHeight - footerFt.Height) / 2));
             }
         }
+
+        dc.Pop(); // pop member-area clip
 
         if (isDimmed) dc.Pop();
     }
