@@ -1,0 +1,96 @@
+/* ============================================================
+   Format:    WpfHexEditor Class Diagram DSL
+   Category:  Programming
+   Ext:       .classdiagram
+   Editor:    code-editor
+   Desc:      WpfHexEditor Class Diagram Domain Specific Language
+   Updated:   2026-04-07
+   ============================================================ */
+{
+  "diffMode": "text",
+  "formatName": "Class Diagram DSL",
+  "version": "1.0",
+  "extensions": [
+    ".classdiagram"
+  ],
+  "description": "WpfHexEditor Class Diagram Domain Specific Language.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-04-07",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "syntaxDefinition": {
+    "id": "classdiagram",
+    "name": "Class Diagram DSL",
+    "extensions": [
+      ".classdiagram"
+    ],
+    "lineCommentPrefix": "//",
+    "rules": [
+      {
+        "type": "Comment",
+        "colorKey": "CE_Comment",
+        "pattern": "//.*$"
+      },
+      {
+        "type": "Keyword",
+        "colorKey": "CE_Keyword",
+        "pattern": "\\b(class|interface|enum|struct|abstract|property|event|static|extends|implements)\\b"
+      },
+      {
+        "type": "Visibility",
+        "colorKey": "CE_ControlFlow",
+        "pattern": "(?<=^\\s{0,20})[+\\-#~](?=\\s*\\w)"
+      },
+      {
+        "type": "RelationshipArrow",
+        "colorKey": "CE_Operator",
+        "pattern": "(<\\|--|\\.\\.>|o--|\\*--|-->|--\\|>|<--|\\.\\.|--)"
+      },
+      {
+        "type": "TypeAnnotation",
+        "colorKey": "CE_Type",
+        "pattern": "(?<=:\\s{0,10})[A-Za-z][A-Za-z0-9_<>\\[\\],\\s]*(?=\\s*$)"
+      },
+      {
+        "type": "ClassName",
+        "colorKey": "CE_Type",
+        "pattern": "(?<=\\b(?:class|interface|enum|struct|abstract\\s+class)\\s{1,50})[A-Za-z][A-Za-z0-9_]*"
+      },
+      {
+        "type": "MemberName",
+        "colorKey": "CE_Identifier",
+        "pattern": "(?<=^\\s{1,20}[+\\-#~](?:static\\s+|abstract\\s+|property\\s+|event\\s+)?)[A-Za-z_][A-Za-z0-9_]*"
+      },
+      {
+        "type": "MethodParens",
+        "colorKey": "CE_Operator",
+        "pattern": "[()]"
+      },
+      {
+        "type": "Brace",
+        "colorKey": "CE_Operator",
+        "pattern": "[{}]"
+      }
+    ],
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ]
+    }
+  }
+}

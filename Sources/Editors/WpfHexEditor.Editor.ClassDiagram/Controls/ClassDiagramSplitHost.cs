@@ -35,6 +35,7 @@ using WpfHexEditor.Editor.ClassDiagram.Core.Parser;
 using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
 using WpfHexEditor.Editor.ClassDiagram.Services;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.Commands;
@@ -169,9 +170,18 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.ZoomToNodeRequested      += (_, node) =>
             _zoomPan.ZoomToRect(new Rect(node.X, node.Y, node.Width, node.Height), 40);
 
-        // DSL pane — full CodeEditor for syntax-highlighted DSL editing
-        _dslEditor = new CodeEditorSplitHost();
-        _dslEditor.PrimaryEditor.Document.TextChanged += OnDslDocumentTextChanged;
+        // DSL pane — full CodeEditor for syntax-highlighted DSL viewing (read-only).
+        // TextChanged is NOT wired: canvas → DSL sync only, not bidirectional.
+        _dslEditor = new CodeEditorSplitHost { IsReadOnly = true };
+
+        // Apply classdiagram language definition for syntax coloring (deferred so
+        // LanguageRegistry is fully populated before we query it).
+        Loaded += (_, _) =>
+        {
+            var lang = LanguageRegistry.Instance.FindByExtension(".classdiagram");
+            if (lang is not null)
+                _dslEditor.SetLanguage(lang);
+        };
 
         _codeHost = new Border { Child = _dslEditor };
         _codeHost.SetResourceReference(Border.BackgroundProperty, "CD_DslEditorBackground");
@@ -927,21 +937,8 @@ public sealed class ClassDiagramSplitHost : Grid,
     }
 
     // ---------------------------------------------------------------------------
-    // DSL sync
+    // DSL sync (canvas → DSL only; DSL pane is read-only)
     // ---------------------------------------------------------------------------
-
-    private void OnDslDocumentTextChanged(object? sender, WpfHexEditor.Editor.CodeEditor.Models.TextChangedEventArgs e)
-    {
-        if (_suppressCodeSync) return;
-
-        string dsl = _dslEditor.PrimaryEditor.GetText();
-        var result = ClassDiagramParser.Parse(dsl);
-        _document  = result.Document;
-
-        // Schedule canvas refresh (500ms debounce)
-        _syncService.ScheduleCodeToCanvas(_document);
-        SetDirty(true);
-    }
 
     private void OnCodeUpdateReady(object? sender, string dsl)
     {
