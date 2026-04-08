@@ -13,9 +13,11 @@
 // ==========================================================
 
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.App.Dialogs;
@@ -36,8 +38,53 @@ public partial class MainWindow
     private DispatcherTimer? _chordTimer;
 
     // Full-screen restore state
-    private WindowState? _preFullScreenState;
-    private WindowStyle? _preFullScreenStyle;
+    private WindowState?   _preFullScreenState;
+    private WindowStyle?   _preFullScreenStyle;
+    private GridLength[]?  _preFullScreenRowHeights;
+    private double         _preFullScreenLeft, _preFullScreenTop, _preFullScreenWidth, _preFullScreenHeight;
+
+    // ── Win32 monitor helpers ─────────────────────────────────────────────
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+    [DllImport("user32.dll")]
+    private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeRect { public int Left, Top, Right, Bottom; }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    private struct MonitorInfo
+    {
+        public uint       cbSize;
+        public NativeRect rcMonitor;   // Full screen bounds (physical px)
+        public NativeRect rcWork;      // Working area — excludes taskbar
+        public uint       dwFlags;
+    }
+
+    /// <summary>
+    /// Returns the full bounds of the monitor the window is currently on,
+    /// in WPF device-independent units (already DPI-corrected).
+    /// </summary>
+    private (double x, double y, double w, double h) GetCurrentMonitorFullBounds()
+    {
+        const uint MonitorDefaultToNearest = 2;
+        var hwnd     = new WindowInteropHelper(this).Handle;
+        var hMonitor = MonitorFromWindow(hwnd, MonitorDefaultToNearest);
+        var mi       = new MonitorInfo { cbSize = (uint)Marshal.SizeOf<MonitorInfo>() };
+        GetMonitorInfo(hMonitor, ref mi);
+
+        // Physical px → WPF device-independent units
+        var src  = PresentationSource.FromVisual(this);
+        var dpiX = src?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+        var dpiY = src?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+
+        return (mi.rcMonitor.Left                              / dpiX,
+                mi.rcMonitor.Top                               / dpiY,
+               (mi.rcMonitor.Right  - mi.rcMonitor.Left)      / dpiX,
+               (mi.rcMonitor.Bottom - mi.rcMonitor.Top)       / dpiY);
+    }
 
     // ── Initialization ────────────────────────────────────────────────────
 
@@ -141,19 +188,69 @@ public partial class MainWindow
     {
         if (_preFullScreenState.HasValue)
         {
-            // Exit full screen
-            WindowStyle = _preFullScreenStyle!.Value;
-            WindowState = _preFullScreenState.Value;
+            // ── Exit full screen ────────────────────────────────────────────
+            // Restore chrome rows first so layout recalculates correctly.
+            if (_preFullScreenRowHeights is not null)
+            {
+                RootGrid.RowDefinitions[0].Height = _preFullScreenRowHeights[0];
+                RootGrid.RowDefinitions[1].Height = _preFullScreenRowHeights[1];
+                RootGrid.RowDefinitions[4].Height = _preFullScreenRowHeights[4];
+                _preFullScreenRowHeights = null;
+            }
+
+            // Restore window position/size before re-applying WindowState.
+            WindowState = WindowState.Normal;
+            Left   = _preFullScreenLeft;
+            Top    = _preFullScreenTop;
+            Width  = _preFullScreenWidth;
+            Height = _preFullScreenHeight;
+
+            if (_preFullScreenState.Value == WindowState.Maximized)
+                WindowState = WindowState.Maximized;
+
             _preFullScreenState = null;
             _preFullScreenStyle = null;
         }
         else
         {
-            // Enter full screen
+            // ── Enter full screen ───────────────────────────────────────────
+            _preFullScreenRowHeights = RootGrid.RowDefinitions
+                .Select(r => r.Height)
+                .ToArray();
+
             _preFullScreenState = WindowState;
             _preFullScreenStyle = WindowStyle;
-            WindowStyle = WindowStyle.None;
-            WindowState = WindowState.Maximized;
+
+            // Save window bounds (RestoreBounds is valid when Maximized or Minimized).
+            var rb = RestoreBounds;
+            if (rb != Rect.Empty)
+            {
+                _preFullScreenLeft   = rb.Left;
+                _preFullScreenTop    = rb.Top;
+                _preFullScreenWidth  = rb.Width;
+                _preFullScreenHeight = rb.Height;
+            }
+            else
+            {
+                _preFullScreenLeft   = Left;
+                _preFullScreenTop    = Top;
+                _preFullScreenWidth  = Width;
+                _preFullScreenHeight = Height;
+            }
+
+            // Collapse chrome rows (TitleBar=0, Toolbar=1, StatusBar=4).
+            RootGrid.RowDefinitions[0].Height = new GridLength(0);
+            RootGrid.RowDefinitions[1].Height = new GridLength(0);
+            RootGrid.RowDefinitions[4].Height = new GridLength(0);
+
+            // Cover the full monitor (including taskbar) via Win32 bounds.
+            // WindowState.Maximized with WindowStyle.None only covers WorkingArea.
+            var (mx, my, mw, mh) = GetCurrentMonitorFullBounds();
+            WindowState = WindowState.Normal;
+            Left   = mx;
+            Top    = my;
+            Width  = mw;
+            Height = mh;
         }
     }
 

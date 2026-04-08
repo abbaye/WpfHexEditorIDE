@@ -1128,7 +1128,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             DockHost.SyncLayoutSizes();
 
-            _layout.WindowState = (int)WindowState;
+            // If full screen is active, serialize the pre-full-screen state instead.
+            _layout.WindowState = (int)(_preFullScreenState ?? WindowState);
             var rb = RestoreBounds;
             if (rb != Rect.Empty)
             {

@@ -497,6 +497,10 @@ public sealed class MinimapControl : FrameworkElement
         double maxScrollOffset = Math.Max(1, _editor.MaxScrollOffset);
         double targetOffset = scrollRatio * maxScrollOffset;
         _editor.ScrollViewToOffset(targetOffset);
+
+        // Refresh immediately — no need to wait for the 150ms coalescing timer
+        // since we are the initiator of the scroll (drag or click on minimap).
+        InvalidateVisual();
     }
 
     // ── Context menu ─────────────────────────────────────────────────────────

@@ -4101,6 +4101,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _virtualizationEngine.CalculateVisibleRange();
             SyncVScrollBar();
             InvalidateVisual();
+            MinimapRefreshRequested?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -4129,6 +4130,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _virtualizationEngine.CalculateVisibleRange();
             SyncVScrollBar();
             InvalidateVisual();
+            MinimapRefreshRequested?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

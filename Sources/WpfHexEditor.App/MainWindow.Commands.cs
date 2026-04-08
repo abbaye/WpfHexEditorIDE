@@ -262,6 +262,14 @@ public partial class MainWindow
         Reg(CommandIds.Layout.ToggleStatusBar, "Toggle Status Bar",    "Layout",   null,             null,
             () => OnToggleStatusBar());
 
+        // ── Window ───────────────────────────────────────────────────────────
+        Reg(CommandIds.Window.CloseAllButThis,  "Close All But This",   "Window",  null,              "\uE711",
+            () => OnCloseAllButThis(this, null!));
+        Reg(CommandIds.Window.NextDocument,     "Next Document",        "Window",  "Ctrl+Tab",        "\uE76C",
+            () => OnNextDocument(this, null!));
+        Reg(CommandIds.Window.PreviousDocument, "Previous Document",    "Window",  "Ctrl+Shift+Tab",  "\uE76B",
+            () => OnPreviousDocument(this, null!));
+
         // ── Tab Groups ───────────────────────────────────────────────────────
         Reg(CommandIds.TabGroup.NewVertical,        "New Vertical Tab Group",    "Tab Groups", "Ctrl+Alt+\\",        "\uE8A0",
             () => OnTabGroupNewVertical(this, null!));
