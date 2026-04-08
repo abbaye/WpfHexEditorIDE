@@ -810,7 +810,10 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     /// <summary>Pins the node to a custom height (set by the resize gripper drag).</summary>
     public void SetCustomHeight(string nodeId, double height)
-        => _customHeights[nodeId] = height;
+    {
+        _customHeights[nodeId] = height;
+        _expandedNodes.Remove(nodeId); // custom height overrides the expand toggle
+    }
 
     /// <summary>Removes a custom height override, restoring auto-computed height.</summary>
     public void ClearCustomHeight(string nodeId)
@@ -892,10 +895,11 @@ public sealed class DiagramVisualLayer : FrameworkElement
         foreach (var node in classes)
         {
             if (_expandedNodes.Contains(node.Id)) continue;
-            double fullH = ComputeNodeHeightFull(node);
-            if (fullH <= MaxNodeHeight) continue;
+            double height = ComputeNodeHeight(node);
+            double fullH  = ComputeNodeHeightFull(node);
+            if (fullH <= height) continue;
             // Footer occupies the last FooterHeight pixels of the capped box
-            var footerRect = new Rect(node.X, node.Y + MaxNodeHeight - FooterHeight, node.Width, FooterHeight);
+            var footerRect = new Rect(node.X, node.Y + height - FooterHeight, node.Width, FooterHeight);
             if (footerRect.Contains(pt)) return node;
         }
         return null;

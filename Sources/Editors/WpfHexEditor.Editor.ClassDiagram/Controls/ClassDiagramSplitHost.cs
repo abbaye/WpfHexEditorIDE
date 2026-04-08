@@ -208,7 +208,10 @@ public sealed class ClassDiagramSplitHost : Grid,
         _codeHost = new Border { Child = _dslEditor };
         _codeHost.SetResourceReference(Border.BackgroundProperty, "CD_DslEditorBackground");
 
-        _diagramHost = new Border { Child = _zoomPan, ClipToBounds = true };
+        // AdornerDecorator scopes the adorner layer to the diagram area so selection adorners
+        // are clipped to the diagram viewport by the Border's ClipToBounds=true.
+        var diagramAdornerScope = new System.Windows.Documents.AdornerDecorator { Child = _zoomPan };
+        _diagramHost = new Border { Child = diagramAdornerScope, ClipToBounds = true };
         _diagramHost.SetResourceReference(Border.BackgroundProperty, "CD_CanvasBackground");
 
         // Build scroll overlay: zoomPan + h/v scrollbars in a Grid
