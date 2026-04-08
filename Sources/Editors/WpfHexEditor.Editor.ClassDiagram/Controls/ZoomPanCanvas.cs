@@ -229,9 +229,31 @@ public class ZoomPanCanvas : Canvas
     {
         base.OnMouseWheel(e);
 
-        double delta = e.Delta > 0 ? 0.1 : -0.1;
-        ZoomFactor   = Math.Max(0.1, Math.Min(10.0, ZoomFactor + delta));
-        e.Handled    = true;
+        if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
+        {
+            // Ctrl+Wheel → zoom (centred on mouse cursor)
+            double step  = e.Delta > 0 ? 0.1 : -0.1;
+            double oldZ  = ZoomFactor;
+            double newZ  = Math.Max(0.1, Math.Min(10.0, oldZ + step));
+
+            // Adjust offset so the point under the cursor stays fixed
+            Point mouse  = e.GetPosition(this);
+            OffsetX      = mouse.X - (mouse.X - OffsetX) * (newZ / oldZ);
+            OffsetY      = mouse.Y - (mouse.Y - OffsetY) * (newZ / oldZ);
+            ZoomFactor   = newZ;
+        }
+        else if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+        {
+            // Shift+Wheel → pan horizontally
+            OffsetX += e.Delta > 0 ? 40 : -40;
+        }
+        else
+        {
+            // Plain Wheel → pan vertically (standard editor behaviour)
+            OffsetY += e.Delta > 0 ? 40 : -40;
+        }
+
+        e.Handled = true;
     }
 
     protected override void OnMouseDown(MouseButtonEventArgs e)

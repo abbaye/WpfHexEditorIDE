@@ -281,6 +281,13 @@ public sealed class DiagramCanvas : Canvas
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+
+        // Subscribe to parent ZoomPanCanvas so the selection adorner repaints
+        // synchronously on every zoom/pan frame. Without this the adorner only
+        // repaints when AdornedBounds is explicitly set (node drag) and lags
+        // behind during wheel-zoom and middle-mouse-pan.
+        if (Parent is ZoomPanCanvas zpc)
+            zpc.TransformChanged += (_, _) => _selectAdorner?.InvalidateVisual();
     }
 
     // B1 — Dot-grid background rendered in OnRender (only redraws when Canvas is invalidated)

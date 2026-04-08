@@ -59,6 +59,22 @@ public sealed class ClassBoxSelectAdorner : Adorner
     {
         if (_adornedBounds == Rect.Empty) return;
 
+        // The AdornerLayer sits in AdornerDecorator coordinate space, ABOVE the
+        // ZoomPanCanvas RenderTransform (scale + translate). We must map the
+        // diagram-local bounds through the full transform chain so the selection
+        // rectangle tracks the node correctly at any zoom level and pan position.
+        var adornerLayer = AdornerLayer.GetAdornerLayer(AdornedElement);
+        Rect bounds = _adornedBounds;
+        if (adornerLayer is not null)
+        {
+            try
+            {
+                GeneralTransform gt = AdornedElement.TransformToAncestor(adornerLayer);
+                bounds = gt.TransformBounds(_adornedBounds);
+            }
+            catch { /* visual tree not ready — fall back to diagram-local coords */ }
+        }
+
         Brush? borderBrush = TryFindResource("CD_SelectionBorderBrush") as Brush
             ?? new SolidColorBrush(Color.FromRgb(0, 120, 215));
 
@@ -69,10 +85,13 @@ public sealed class ClassBoxSelectAdorner : Adorner
         var handlePen    = new Pen(borderBrush, 1.0);
 
         // Selection border
-        drawingContext.DrawRectangle(null, selectionPen, _adornedBounds);
+        drawingContext.DrawRectangle(null, selectionPen, bounds);
 
-        // 8 handle positions
-        var handles = ComputeHandleRects(_adornedBounds);
+        // 8 handle positions — must scale handle size with zoom so handles stay 6px on screen
+        double zoom = bounds.Width > 0 && _adornedBounds.Width > 0
+            ? bounds.Width / _adornedBounds.Width
+            : 1.0;
+        var handles = ComputeHandleRects(bounds, zoom);
         foreach (Rect handle in handles)
             drawingContext.DrawRectangle(handleFill, handlePen, handle);
     }
@@ -81,7 +100,7 @@ public sealed class ClassBoxSelectAdorner : Adorner
     // Handle computation
     // ---------------------------------------------------------------------------
 
-    private static IEnumerable<Rect> ComputeHandleRects(Rect bounds)
+    private static IEnumerable<Rect> ComputeHandleRects(Rect bounds, double zoom)
     {
         double left   = bounds.Left;
         double right  = bounds.Right;
@@ -89,17 +108,18 @@ public sealed class ClassBoxSelectAdorner : Adorner
         double bottom = bounds.Bottom;
         double midX   = (left + right) / 2.0;
         double midY   = (top + bottom) / 2.0;
+        double halfH  = HalfHandle;   // handles stay fixed-size in screen px
 
-        yield return HandleAt(left,  top);     // NW
-        yield return HandleAt(midX,  top);     // N
-        yield return HandleAt(right, top);     // NE
-        yield return HandleAt(right, midY);    // E
-        yield return HandleAt(right, bottom);  // SE
-        yield return HandleAt(midX,  bottom);  // S
-        yield return HandleAt(left,  bottom);  // SW
-        yield return HandleAt(left,  midY);    // W
+        yield return HandleAt(left,  top,    halfH);   // NW
+        yield return HandleAt(midX,  top,    halfH);   // N
+        yield return HandleAt(right, top,    halfH);   // NE
+        yield return HandleAt(right, midY,   halfH);   // E
+        yield return HandleAt(right, bottom, halfH);   // SE
+        yield return HandleAt(midX,  bottom, halfH);   // S
+        yield return HandleAt(left,  bottom, halfH);   // SW
+        yield return HandleAt(left,  midY,   halfH);   // W
     }
 
-    private static Rect HandleAt(double cx, double cy) =>
-        new(cx - HalfHandle, cy - HalfHandle, HandleSize, HandleSize);
+    private static Rect HandleAt(double cx, double cy, double half) =>
+        new(cx - half, cy - half, half * 2, half * 2);
 }
