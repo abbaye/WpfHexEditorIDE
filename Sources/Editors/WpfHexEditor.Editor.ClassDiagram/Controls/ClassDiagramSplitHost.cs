@@ -172,6 +172,8 @@ public sealed class ClassDiagramSplitHost : Grid,
     public ClassDiagramSplitHost()
     {
         this.SetResourceReference(BackgroundProperty, "DockBackgroundBrush");
+        Focusable = true;
+        PreviewKeyDown += OnPreviewKeyDown;
 
         // Services
         _undoManager        = new ClassDiagramUndoManager();
@@ -1019,6 +1021,15 @@ public sealed class ClassDiagramSplitHost : Grid,
     // ---------------------------------------------------------------------------
     // Keyboard shortcuts
     // ---------------------------------------------------------------------------
+
+    private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
+        {
+            _canvas.ClearSelection();
+            e.Handled = true;
+        }
+    }
 
     private void OnGridKeyDown(object sender, KeyEventArgs e)
     {

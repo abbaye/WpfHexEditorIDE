@@ -163,6 +163,9 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Returns the currently selected class node, or null.</summary>
     public ClassNode? SelectedNode => _selectedNode;
 
+    /// <summary>Clears the current selection (ESC key or external call).</summary>
+    public void ClearSelection() => SelectNode(null);
+
     /// <summary>Selects the node with the given Id; no-op if not found.</summary>
     public void SelectNodeById(string nodeId)
     {
