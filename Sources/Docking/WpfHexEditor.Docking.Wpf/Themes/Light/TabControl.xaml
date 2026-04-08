@@ -139,7 +139,7 @@
                                 <controls:TabOverflowPanel x:Name="PART_OverflowPanel2"
                                                            IsItemsHost="True"
                                                            Background="Transparent"
-                                                           Margin="2,0,2,0"
+                                                           Margin="0,0,2,0"
                                                            Grid.Column="0" />
                                 <controls:TabOverflowButton Grid.Column="1"
                                                             OverflowPanel="{Binding ElementName=PART_OverflowPanel2}"
@@ -245,11 +245,13 @@
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center" />
                         </Border>
-                        <!-- U-shape: left + bottom + right, open at top (connects to content area). -->
+                        <!-- U-shape: left + bottom + right, open at top (connects to content area).
+                             CornerRadius topRight=4 curves the right border inward at the top,
+                             creating a convex outward arc from the content area's perspective. -->
                         <Border x:Name="SelectionBorder"
                                 BorderThickness="1,0,1,1"
                                 BorderBrush="{DynamicResource DockTabActiveBrush}"
-                                CornerRadius="0,0,4,4"
+                                CornerRadius="0,4,4,4"
                                 Visibility="Collapsed" />
                         <Border x:Name="ColorStripe"
                                 Height="2"

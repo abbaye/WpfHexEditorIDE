@@ -39,6 +39,9 @@ public sealed class DiagramCanvas : Canvas
     // ── Children ──────────────────────────────────────────────────────────────
     private readonly DiagramVisualLayer _layer = new();
 
+    // ── Grid rendering (B1) ───────────────────────────────────────────────────
+    private const double GridSpacing = 24.0;  // dot-grid spacing in logical px
+
     // ── State ─────────────────────────────────────────────────────────────────
     private DiagramDocument?  _doc;
     private ClassNode?        _selectedNode;
@@ -187,6 +190,28 @@ public sealed class DiagramCanvas : Canvas
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+    }
+
+    // B1 — Dot-grid background rendered in OnRender (only redraws when Canvas is invalidated)
+    protected override void OnRender(DrawingContext dc)
+    {
+        base.OnRender(dc);
+
+        // Canvas background from theme token (fallback to neutral dark)
+        Brush bgBrush = TryFindResource("CD_CanvasBackground") as Brush
+                     ?? new SolidColorBrush(Color.FromRgb(26, 27, 38));
+        dc.DrawRectangle(bgBrush, null, new Rect(0, 0, ActualWidth, ActualHeight));
+
+        if (ActualWidth < 1 || ActualHeight < 1) return;
+
+        // Dot-grid: tiny circles spaced GridSpacing apart
+        Color gridColor = (TryFindResource("CD_CanvasGridLineBrush") as SolidColorBrush)?.Color
+                       ?? Color.FromArgb(80, 80, 85, 120);
+        var dotBrush = new SolidColorBrush(Color.FromArgb(gridColor.A, gridColor.R, gridColor.G, gridColor.B));
+
+        for (double x = GridSpacing; x < ActualWidth; x += GridSpacing)
+            for (double y = GridSpacing; y < ActualHeight; y += GridSpacing)
+                dc.DrawEllipse(dotBrush, null, new Point(x, y), 1.0, 1.0);
     }
 
     // ── Filter bar (Phase 12) ─────────────────────────────────────────────────

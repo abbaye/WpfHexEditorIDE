@@ -14,6 +14,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Automation;
 
@@ -24,6 +25,18 @@ namespace WpfHexEditor.Shell;
 /// </summary>
 public class DockTabControl : TabControl
 {
+    static DockTabControl()
+    {
+        // Re-apply selection border thickness whenever tab strip placement changes at runtime
+        // (e.g. document area switched from top to bottom tabs).
+        TabStripPlacementProperty.OverrideMetadata(
+            typeof(DockTabControl),
+            new FrameworkPropertyMetadata(Dock.Top, (d, _) =>
+            {
+                if (d is DockTabControl tc) tc.ApplyHighlightMode(tc._highlightMode);
+            }));
+    }
+
     public DockGroupNode? Node { get; private set; }
 
     // -- MaxTabWidth DP — caps the title text width so long filenames are ellipsis-truncated.
@@ -122,15 +135,27 @@ public class DockTabControl : TabControl
     {
         tab.ApplyTemplate();
         if (tab.Template?.FindName("SelectionBorder", tab) is not Border sb) return;
-        sb.BorderThickness = SelectionBorderThicknessFor(_highlightMode);
+        sb.BorderThickness = SelectionBorderThicknessFor(_highlightMode, TabStripPlacement);
     }
 
-    private static Thickness SelectionBorderThicknessFor(ActivePanelHighlightMode mode) => mode switch
+    /// <summary>
+    /// Returns the SelectionBorder thickness matching the highlight mode and tab placement.
+    /// Bottom tabs: U-shape open at top (left/bottom/right).
+    /// Top tabs: inverted U open at bottom (left/top/right).
+    /// </summary>
+    private static Thickness SelectionBorderThicknessFor(ActivePanelHighlightMode mode, Dock placement)
     {
-        ActivePanelHighlightMode.TopBar    => new Thickness(0, 0, 0, 2), // bottom only
-        ActivePanelHighlightMode.Glow      => new Thickness(2, 0, 2, 2), // U-shape 2px
-        _                                  => new Thickness(1, 0, 1, 1), // FullBorder / default
-    };
+        bool isBottom = placement == Dock.Bottom;
+        return (mode, isBottom) switch
+        {
+            (ActivePanelHighlightMode.TopBar, true)  => new Thickness(0, 0, 0, 2), // bottom only
+            (ActivePanelHighlightMode.TopBar, false) => new Thickness(0, 2, 0, 0), // top only
+            (ActivePanelHighlightMode.Glow,   true)  => new Thickness(2, 0, 2, 2), // U 2px
+            (ActivePanelHighlightMode.Glow,   false) => new Thickness(2, 2, 2, 0), // inverted U 2px
+            (_,                               true)  => new Thickness(1, 0, 1, 1), // U 1px (FullBorder)
+            (_,                               false) => new Thickness(1, 1, 1, 0), // inverted U 1px
+        };
+    }
 
     private Func<DockItem, object>? _contentFactory;
 

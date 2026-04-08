@@ -259,12 +259,22 @@ public sealed class DiagramVisualLayer : FrameworkElement
         var boxRect    = new Rect(0, 0, width, height);
         var headerRect = new Rect(0, 0, width, HeaderHeight);
 
+        // B6 — Drop shadow (offset semi-transparent rect drawn before main box)
+        var shadowBrush = new SolidColorBrush(Color.FromArgb(55, 0, 0, 0));
+        dc.DrawRoundedRectangle(shadowBrush, null, new Rect(3, 4, width, height), CornerRadius, CornerRadius);
+
         // Box background
         dc.DrawRoundedRectangle(boxBg, boxPen, boxRect, CornerRadius, CornerRadius);
 
-        // Header background (rounded top, square bottom)
-        dc.DrawRoundedRectangle(headerBg, null, headerRect, CornerRadius, CornerRadius);
-        dc.DrawRectangle(headerBg, null, new Rect(0, HeaderHeight / 2, width, HeaderHeight / 2));
+        // B5 — Gradient header (top lighter → base color)
+        Color headerBase = headerBg is SolidColorBrush scb ? scb.Color : Color.FromRgb(37, 40, 64);
+        byte lr = (byte)Math.Min(255, headerBase.R + 22);
+        byte lg = (byte)Math.Min(255, headerBase.G + 22);
+        byte lb = (byte)Math.Min(255, headerBase.B + 28);
+        var gradHeader = new LinearGradientBrush(
+            Color.FromRgb(lr, lg, lb), headerBase, new Point(0, 0), new Point(0, 1));
+        dc.DrawRoundedRectangle(gradHeader, null, headerRect, CornerRadius, CornerRadius);
+        dc.DrawRectangle(gradHeader, null, new Rect(0, HeaderHeight / 2, width, HeaderHeight / 2));
 
         // Stereotype
         string stereotype = GetStereotype(node);
@@ -311,30 +321,70 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
         foreach (var member in node.Members)
         {
-            // Section divider between member groups
+            // B4 — Section group header when kind changes
             if (lastKind.HasValue && member.Kind != lastKind)
             {
+                // Dashed divider
                 dc.DrawLine(divPenDashed,
                     new Point(HorizPadding, memberY), new Point(width - HorizPadding, memberY));
+
+                // Tiny section label above divider
+                string sectionLabel = member.Kind switch
+                {
+                    MemberKind.Field    => "Fields",
+                    MemberKind.Property => "Properties",
+                    MemberKind.Method   => "Methods",
+                    MemberKind.Event    => "Events",
+                    _                   => string.Empty
+                };
+                if (sectionLabel.Length > 0)
+                {
+                    var secFt = MakeFT(sectionLabel.ToUpperInvariant(), sterColor, 7.5);
+                    dc.DrawText(secFt, new Point(HorizPadding, memberY + 1.5));
+                    memberY += secFt.Height + 2.0;
+                }
             }
             lastKind = member.Kind;
 
-            Brush iconBrush = GetMemberIconBrush(member.Kind);
-            string icon     = GetMemberIcon(member.Kind);
+            // B3 — Visibility color circle
+            Color circleColor = member.Visibility switch
+            {
+                MemberVisibility.Public    => Color.FromRgb(78, 201, 78),   // green
+                MemberVisibility.Protected => Color.FromRgb(255, 152, 0),   // orange
+                MemberVisibility.Private   => Color.FromRgb(244, 67, 54),   // red
+                _                          => Color.FromRgb(33, 150, 243)   // blue (internal)
+            };
+            double circleR  = 3.5;
+            double circleX  = HorizPadding + circleR;
+            double circleY  = memberY + MemberHeight / 2.0;
+            dc.DrawEllipse(new SolidColorBrush(circleColor), null,
+                new Point(circleX, circleY), circleR, circleR);
+
             string prefix   = GetVisibilityPrefix(member.Visibility);
+            string label    = BuildMemberLabel(member);
+            Brush  iconBrush = GetMemberIconBrush(member.Kind);
 
-            // Async/override/static decorators
-            string label = BuildMemberLabel(member);
+            // Kind type indicator (small coloured initial: F/P/M/E) after circle
+            string kindChar = member.Kind switch
+            {
+                MemberKind.Field    => "f",
+                MemberKind.Property => "p",
+                MemberKind.Method   => "m",
+                MemberKind.Event    => "e",
+                _                   => "·"
+            };
+            var kindFt = MakeFT(kindChar, iconBrush, 9.5, italic: true);
+            double kindX = HorizPadding + circleR * 2 + 3.0;
+            dc.DrawText(kindFt, new Point(kindX, memberY + (MemberHeight - kindFt.Height) / 2));
 
-            var iconFt = MakeFT(icon,           iconBrush, 11.0, fontFamily: "Segoe MDL2 Assets");
-            var textFt = MakeFT(prefix + label, memberFg,  11.0);
-
-            dc.DrawText(iconFt, new Point(HorizPadding, memberY + (MemberHeight - iconFt.Height) / 2));
+            double textStartX = kindX + kindFt.Width + 3.0;
+            double textClipWK = Math.Max(1, width - textStartX - HorizPadding);
+            var textFt = MakeFT(prefix + label, memberFg, 11.0);
 
             // Clip member text to prevent overflow beyond box right edge
             dc.PushClip(new System.Windows.Media.RectangleGeometry(
-                new Rect(HorizPadding + IconWidth, memberY, textClipW, MemberHeight)));
-            dc.DrawText(textFt, new Point(HorizPadding + IconWidth, memberY + (MemberHeight - textFt.Height) / 2));
+                new Rect(textStartX, memberY, textClipWK, MemberHeight)));
+            dc.DrawText(textFt, new Point(textStartX, memberY + (MemberHeight - textFt.Height) / 2));
             dc.Pop();
 
             memberY += MemberHeight;
@@ -438,8 +488,22 @@ public sealed class DiagramVisualLayer : FrameworkElement
             {
                 Point mid = new((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
                 var ft = MakeFT(rel.Label!, lineBrush, 10.0);
-                dc.DrawText(ft, new Point(mid.X - ft.Width / 2, mid.Y - ft.Height / 2 - 8));
+                double lx = mid.X - ft.Width / 2;
+                double ly = mid.Y - ft.Height / 2 - 8;
+
+                // B7 — Pill background behind label for readability
+                var pillBrush = new SolidColorBrush(Color.FromArgb(170, 20, 22, 38));
+                dc.DrawRoundedRectangle(pillBrush, null,
+                    new Rect(lx - 4, ly - 2, ft.Width + 8, ft.Height + 4), 3, 3);
+                dc.DrawText(ft, new Point(lx, ly));
             }
+
+            // B8 — Connection port dots at arrow endpoints
+            var portBrush = new SolidColorBrush(Color.FromArgb(180, lineBrush is SolidColorBrush sb ? sb.Color.R : (byte)140,
+                lineBrush is SolidColorBrush sb2 ? sb2.Color.G : (byte)140,
+                lineBrush is SolidColorBrush sb3 ? sb3.Color.B : (byte)180));
+            dc.DrawEllipse(portBrush, null, p1, 2.5, 2.5);
+            dc.DrawEllipse(portBrush, null, p2, 2.5, 2.5);
         }
     }
 

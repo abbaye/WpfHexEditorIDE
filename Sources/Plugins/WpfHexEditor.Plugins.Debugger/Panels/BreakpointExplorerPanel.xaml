@@ -228,6 +228,7 @@
                       Visibility="{Binding IsGrouped, Converter={StaticResource InvertBoolToVis}}"
                       Background="{DynamicResource DockBackgroundBrush}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      BorderThickness="0"
                       VirtualizingPanel.IsVirtualizing="True"
                       VirtualizingPanel.VirtualizationMode="Recycling"
                       MouseDoubleClick="OnRowDoubleClick"
@@ -363,6 +364,7 @@
                       Visibility="{Binding IsGrouped, Converter={StaticResource BoolToVis}}"
                       Background="{DynamicResource DockBackgroundBrush}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                      BorderThickness="0"
                       SelectedItemChanged="OnTreeSelectionChanged"
                       x:Name="GroupedTree">
                 <TreeView.ContextMenu>

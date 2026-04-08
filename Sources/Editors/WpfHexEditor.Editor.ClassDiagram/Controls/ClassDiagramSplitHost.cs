@@ -417,6 +417,11 @@ public sealed class ClassDiagramSplitHost : Grid,
         TitleChanged?.Invoke(this, title);
         UpdateStatusBar();
         DiagramChanged?.Invoke(this, EventArgs.Empty);
+
+        // B2 — Auto-fit diagram in viewport after load (deferred so layout is measured first)
+        Application.Current?.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.Loaded,
+            () => _zoomPan.FitToContent());
     }
 
     /// <summary>

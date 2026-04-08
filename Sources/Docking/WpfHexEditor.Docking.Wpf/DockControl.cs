@@ -1224,6 +1224,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         };
 
         host.Bind(docHost, CachedContentFactory);
+        _managedTabControls.Add(host);
+        host.ApplyHighlightMode(PanelHighlightMode);
 
         WireTabControlEvents(host);
         _tabPreviews.Add(TabHoverPreview.Attach(host, TabPreviewSettings));
@@ -1309,7 +1311,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         var overlayBorder = new Border
         {
             BorderThickness     = new Thickness(0),
-            CornerRadius        = new CornerRadius(4, 4, 0, 0),
+            CornerRadius        = new CornerRadius(4, 4, 4, 0),
             IsHitTestVisible    = false,
             SnapsToDevicePixels = true,
         };
@@ -1355,8 +1357,15 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                     double gapW = activeTab.ActualWidth;
                     if (gapW > 0)
                     {
-                        // Exclude a rectangle straddling the bottom border line above the active tab.
-                        var gap = new RectangleGeometry(new Rect(gapX, h - gapH, gapW, gapH * 2));
+                        // Shrink the gap by 1px on each side so the overlay's vertical border
+                        // pixel aligns flush with the tab's SelectionBorder vertical pixel,
+                        // creating a seamless corner junction (no floating line).
+                        // Hardcode 1.0 — BorderThickness.Left may still be 0 if the panel
+                        // hasn't been activated yet when UpdateOverlay first fires.
+                        const double bt = 1.0;
+                        double gX  = gapX + bt;
+                        double gW  = Math.Max(0, gapW - bt * 2);
+                        var gap = new RectangleGeometry(new Rect(gX, h - gapH, gW, gapH * 2));
                         overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
                         return;
                     }
