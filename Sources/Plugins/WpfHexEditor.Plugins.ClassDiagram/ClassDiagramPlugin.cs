@@ -253,16 +253,19 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         SeedFromCurrentDocument(context);
 
         // B8 — Restore last diagram on startup if RestoreLastState is enabled.
+        // GetSolutionDir is deferred to ApplicationIdle so the solution is fully
+        // loaded before we read the session file path (which is next to the .sln).
         if (_options.RestoreLastState)
         {
-            string? solutionDir = GetSolutionDir(context);
-            var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
-            if (session?.LastFilePath is { Length: > 0 } path && System.IO.File.Exists(path))
-            {
-                System.Windows.Application.Current?.Dispatcher.BeginInvoke(
-                    System.Windows.Threading.DispatcherPriority.ApplicationIdle,
-                    new Action(async () => await OpenClassDiagramForFileAsync(path, context)));
-            }
+            System.Windows.Application.Current?.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                new Action(async () =>
+                {
+                    string? solutionDir = GetSolutionDir(context);
+                    var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
+                    if (session?.LastFilePath is { Length: > 0 } path && System.IO.File.Exists(path))
+                        await OpenClassDiagramForFileAsync(path, context);
+                }));
         }
 
         return Task.CompletedTask;
@@ -1079,8 +1082,16 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     }
 
     /// <summary>Returns true for files of languages that support class diagrams.</summary>
-    private static bool IsSourceFile(string path) =>
-        LanguageRegistry.Instance.FindByExtension(Path.GetExtension(path))?.SupportsClassDiagram == true;
+    private static bool IsSourceFile(string path)
+    {
+        // Primary: ask LanguageRegistry (respects whfmt SupportsClassDiagram flag).
+        if (LanguageRegistry.Instance.FindByExtension(Path.GetExtension(path))?.SupportsClassDiagram == true)
+            return true;
+        // Fallback: accept .cs/.vb directly so files with build warnings (or an
+        // unregistered language definition) are never incorrectly rejected.
+        return path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".vb", StringComparison.OrdinalIgnoreCase);
+    }
 }
 
 // ==========================================================
