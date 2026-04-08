@@ -58,6 +58,8 @@ public sealed class DiagramMinimapControl : FrameworkElement
     // ── Events ────────────────────────────────────────────────────────────────
     /// <summary>Raised when the user drags the viewport rect inside the minimap.</summary>
     public event EventHandler<Point>?          ViewportNavigateRequested;
+    /// <summary>Raised every frame during a reposition drag with the pixel delta to apply.</summary>
+    public event EventHandler<Vector>?         PositionDeltaRequested;
     /// <summary>Raised when the user finishes a reposition drag; provides the new corner.</summary>
     public event EventHandler<MinimapCorner>?  CornerChangeRequested;
     /// <summary>Raised when the user chooses "Hide Minimap" from the context menu.</summary>
@@ -227,6 +229,18 @@ public sealed class DiagramMinimapControl : FrameworkElement
 
     protected override void OnMouseMove(MouseEventArgs e)
     {
+        if (_repositionDragging)
+        {
+            // Compute screen-space delta and raise event so DiagramCanvas can
+            // move us in real-time; corner-snap happens on MouseUp.
+            Point curScreen  = PointToScreen(e.GetPosition(this));
+            Vector screenDelta = curScreen - _repoScreenStart;
+            _repoScreenStart = curScreen;
+            PositionDeltaRequested?.Invoke(this, screenDelta);
+            e.Handled = true;
+            return;
+        }
+
         if (_dragging)
         {
             Point cur    = e.GetPosition(this);
@@ -236,8 +250,7 @@ public sealed class DiagramMinimapControl : FrameworkElement
             ViewportNavigateRequested?.Invoke(this,
                 new Point(_dragViewportOrigin.X + diagDX, _dragViewportOrigin.Y + diagDY));
         }
-        // Reposition drag: visual feedback is handled by DiagramCanvas (it moves the element)
-        e.Handled = _dragging || _repositionDragging;
+        e.Handled = _dragging;
     }
 
     protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)

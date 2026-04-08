@@ -118,6 +118,7 @@ public sealed class DiagramCanvas : Canvas
         // Minimap — bottom-left by default, above main layer.
         Children.Add(_minimap);
         _minimap.ViewportNavigateRequested += OnMinimapNavigate;
+        _minimap.PositionDeltaRequested    += OnMinimapPositionDelta;
         _minimap.CornerChangeRequested     += (_, corner) => SetMinimapCorner(corner);
         _minimap.HideRequested             += (_, _) => IsMinimapVisible = false;
         SizeChanged += (_, _) => UpdateMinimapPosition();
@@ -186,6 +187,16 @@ public sealed class DiagramCanvas : Canvas
             Canvas.SetTop(_minimap,  targetTop);
         }
         Panel.SetZIndex(_minimap, 100);
+    }
+
+    private void OnMinimapPositionDelta(object? sender, Vector screenDelta)
+    {
+        double left = Canvas.GetLeft(_minimap) + screenDelta.X;
+        double top  = Canvas.GetTop(_minimap)  + screenDelta.Y;
+        left = Math.Clamp(left, 0, Math.Max(0, ActualWidth  - _minimap.ActualWidth));
+        top  = Math.Clamp(top,  0, Math.Max(0, ActualHeight - _minimap.ActualHeight));
+        Canvas.SetLeft(_minimap, left);
+        Canvas.SetTop (_minimap, top);
     }
 
     private void OnMinimapNavigate(object? sender, System.Windows.Point diagPos)
