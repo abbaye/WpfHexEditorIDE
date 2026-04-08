@@ -245,8 +245,9 @@
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center" />
                         </Border>
+                        <!-- U-shape: left + bottom + right, open at top (connects to content area). -->
                         <Border x:Name="SelectionBorder"
-                                BorderThickness="1,2,1,0"
+                                BorderThickness="1,0,1,1"
                                 BorderBrush="{DynamicResource DockTabActiveBrush}"
                                 CornerRadius="0,0,4,4"
                                 Visibility="Collapsed" />

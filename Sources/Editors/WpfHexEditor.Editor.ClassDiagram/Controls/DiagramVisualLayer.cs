@@ -283,11 +283,15 @@ public sealed class DiagramVisualLayer : FrameworkElement
         // Namespace pill (small, below name)
         if (!string.IsNullOrEmpty(node.Namespace))
         {
-            var nsFt = MakeFT(node.Namespace, sterColor, 8.5);
-            double nsX = (width - nsFt.Width) / 2;
             double nsY = textY + nameFt.Height + 1.0;
-            if (nsY + nsFt.Height < HeaderHeight - 2)
+            if (nsY + 10 < HeaderHeight - 2)
+            {
+                var nsFt = MakeFT(node.Namespace, sterColor, 8.5);
+                nsFt.MaxTextWidth  = width - HorizPadding * 2;
+                nsFt.Trimming      = System.Windows.TextTrimming.CharacterEllipsis;
+                double nsX = (width - Math.Min(nsFt.Width, nsFt.MaxTextWidth)) / 2;
                 dc.DrawText(nsFt, new Point(nsX, nsY));
+            }
         }
 
         // Header divider
@@ -301,14 +305,16 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
         // Member rows
         double memberY = HeaderHeight + MemberPadding;
-        MemberKind? lastKind = null;
+        MemberKind? lastKind   = null;
+        double textClipW       = width - HorizPadding - IconWidth - HorizPadding;
+        var    divPenDashed    = new Pen(divBrush, 0.5) { DashStyle = new DashStyle([2, 2], 0) };
 
         foreach (var member in node.Members)
         {
             // Section divider between member groups
             if (lastKind.HasValue && member.Kind != lastKind)
             {
-                dc.DrawLine(new Pen(divBrush, 0.5) { DashStyle = new DashStyle([2, 2], 0) },
+                dc.DrawLine(divPenDashed,
                     new Point(HorizPadding, memberY), new Point(width - HorizPadding, memberY));
             }
             lastKind = member.Kind;
@@ -320,11 +326,16 @@ public sealed class DiagramVisualLayer : FrameworkElement
             // Async/override/static decorators
             string label = BuildMemberLabel(member);
 
-            var iconFt = MakeFT(icon,            iconBrush, 11.0, fontFamily: "Segoe MDL2 Assets");
-            var textFt = MakeFT(prefix + label,  memberFg,  11.0);
+            var iconFt = MakeFT(icon,           iconBrush, 11.0, fontFamily: "Segoe MDL2 Assets");
+            var textFt = MakeFT(prefix + label, memberFg,  11.0);
 
-            dc.DrawText(iconFt, new Point(HorizPadding,            memberY + (MemberHeight - iconFt.Height) / 2));
+            dc.DrawText(iconFt, new Point(HorizPadding, memberY + (MemberHeight - iconFt.Height) / 2));
+
+            // Clip member text to prevent overflow beyond box right edge
+            dc.PushClip(new System.Windows.Media.RectangleGeometry(
+                new Rect(HorizPadding + IconWidth, memberY, textClipW, MemberHeight)));
             dc.DrawText(textFt, new Point(HorizPadding + IconWidth, memberY + (MemberHeight - textFt.Height) / 2));
+            dc.Pop();
 
             memberY += MemberHeight;
         }
@@ -400,7 +411,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
             {
                 dc.DrawLine(pen, p1, p2);
                 DrawArrowHead(dc, p1, p2, rel.Kind, lineBrush, 1.5);
-                DrawTailDecoration(dc, p2, p1, rel.Kind, lineBrush, 1.5);
+                DrawTailDecoration(dc, p1, p2, rel.Kind, lineBrush, 1.5);
             }
 
             DrawMultiplicity(dc, p1, p2, rel, lineBrush);

@@ -37,7 +37,7 @@ public sealed class ClassDiagramOptions
     /// Layout algorithm to use when auto-layout is triggered.
     /// Default: <see cref="LayoutStrategyKind.Hierarchical"/>.
     /// </summary>
-    public LayoutStrategyKind LayoutStrategy { get; set; } = LayoutStrategyKind.Hierarchical;
+    public LayoutStrategyKind LayoutStrategy { get; set; } = LayoutStrategyKind.ForceDirected;
 
     /// <summary>
     /// Grid snap granularity in logical pixels used when dragging nodes on the canvas.

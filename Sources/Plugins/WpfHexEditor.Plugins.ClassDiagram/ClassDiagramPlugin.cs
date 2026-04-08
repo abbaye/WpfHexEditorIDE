@@ -789,8 +789,21 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             return;
         }
 
+        // Discover partial-class sibling files in the same directory
+        // so that e.g. MainWindow.cs + MainWindow.Build.cs + MainWindow.Commands.cs
+        // are all analysed together and their members merged into one node.
+        string dir      = Path.GetDirectoryName(csharpFilePath) ?? string.Empty;
+        string baseName = Path.GetFileNameWithoutExtension(csharpFilePath).Split('.')[0];
+        string[] siblings = Directory.Exists(dir)
+            ? Directory.GetFiles(dir, "*.cs")
+                .Where(f => Path.GetFileNameWithoutExtension(f)
+                                .StartsWith(baseName, StringComparison.OrdinalIgnoreCase))
+                .ToArray()
+            : [csharpFilePath];
+        string[] filesToAnalyze = siblings.Length > 1 ? siblings : [csharpFilePath];
+
         DiagramDocument doc = await Task.Run(() =>
-            RoslynClassDiagramAnalyzer.AnalyzeFile(csharpFilePath, _options));
+            RoslynClassDiagramAnalyzer.AnalyzeFiles(filesToAnalyze, _options));
 
         string title = Path.GetFileNameWithoutExtension(csharpFilePath) + " [Class Diagram]";
         string uiId  = $"doc-class-diagram-{Guid.NewGuid():N}";

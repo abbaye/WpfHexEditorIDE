@@ -1326,23 +1326,31 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             void UpdateOverlay()
             {
                 double tabH = tabStrip.ActualHeight;
-                double w    = overlayBorder.ActualWidth;
-                double h    = overlayBorder.ActualHeight;
+
+                // Use tabControl dimensions directly — overlayBorder.ActualHeight is stale
+                // when read in the same pass that sets Margin (layout hasn't updated yet).
+                double w = tabControl.ActualWidth;
+                double h = tabControl.ActualHeight - tabH;
 
                 overlayBorder.Margin = new Thickness(0, 0, 0, tabH);
 
                 if (w <= 0 || h <= 0) { overlayBorder.Clip = null; return; }
 
+                // contentArea covers the full overlay render rect in local coords.
                 var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
 
-                if (tabControl.SelectedItem is { } sel &&
-                    tabControl.ItemContainerGenerator.ContainerFromItem(sel) is FrameworkElement activeTab)
+                int selIdx = tabControl.SelectedIndex;
+                if (selIdx >= 0 &&
+                    tabControl.ItemContainerGenerator.ContainerFromIndex(selIdx) is FrameworkElement activeTab)
                 {
-                    var pos  = activeTab.TranslatePoint(new Point(0, 0), overlayBorder);
+                    // activeTab coords in tabControl space → same X origin as the overlay.
+                    var pos  = activeTab.TranslatePoint(new Point(0, 0), tabControl);
                     double gapX = Math.Max(0, pos.X);
                     double gapW = activeTab.ActualWidth;
                     if (gapW > 0)
                     {
+                        // Punch a gap at the bottom edge of the overlay (= top of tab strip).
+                        // gapH*2 ensures the rectangle straddles the border line completely.
                         var gap = new RectangleGeometry(new Rect(gapX, h - gapH, gapW, gapH * 2));
                         overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
                         return;
