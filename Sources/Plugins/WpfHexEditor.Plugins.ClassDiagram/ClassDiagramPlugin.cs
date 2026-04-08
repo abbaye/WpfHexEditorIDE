@@ -242,6 +242,19 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Seed panels immediately for any document open at plugin-load time.
         SeedFromCurrentDocument(context);
 
+        // B8 — Restore last diagram on startup if RestoreLastState is enabled.
+        if (_options.RestoreLastState)
+        {
+            string? solutionDir = GetSolutionDir(context);
+            var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
+            if (session?.LastFilePath is { Length: > 0 } path && System.IO.File.Exists(path))
+            {
+                System.Windows.Application.Current?.Dispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                    new Action(async () => await OpenClassDiagramForFileAsync(path, context)));
+            }
+        }
+
         return Task.CompletedTask;
     }
 
@@ -855,8 +868,8 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             CanClose  = true,
         });
 
-        // Wire session auto-save on unload
-        host.TitleChanged += (_, _) => SaveSession(host, csharpFilePath, context);
+        // Wire session auto-save whenever diagram changes (replaces TitleChanged trigger)
+        host.DiagramChanged += (_, _) => SaveSession(host, csharpFilePath, context);
 
         // Attach live-sync service for this file.
         if (_liveSyncEnabled && File.Exists(csharpFilePath))
