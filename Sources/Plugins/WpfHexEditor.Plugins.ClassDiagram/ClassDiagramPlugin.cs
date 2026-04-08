@@ -466,6 +466,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_wiredHost is null) return;
         _outlinePanel?.ViewModel.SetDocument(_wiredHost.Document);
         _relPanel?.ViewModel.SetDocument(_wiredHost.Document);
+        _searchPanel?.ViewModel.SetDocument(_wiredHost.Document);
     }
 
     private void OnHistoryJumpRequested(object? sender, int targetIndex)
@@ -529,8 +530,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         if (result is null || _wiredHost is null) return;
 
-        // Navigate the canvas to the selected class node.
-        // The canvas exposes SelectByNode via SelectedClassChanged event round-trip.
+        // Select the node on canvas + zoom to it
+        _wiredHost.SelectNode(result.Node);
+        _wiredHost.ZoomToNode(result.Node);
         _propertiesPanel?.ViewModel.SetSelection(result.Node, result.Member);
     }
 

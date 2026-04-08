@@ -18,6 +18,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Threading;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Core.ViewModels;
 
@@ -37,9 +38,16 @@ public sealed record SearchResultItem(ClassNode Node, ClassMember? Member, strin
 public sealed class DiagramSearchPanelViewModel : ViewModelBase
 {
     private readonly ObservableCollection<SearchResultItem> _results = [];
+    private readonly DispatcherTimer _debounce;
     private string _searchText = string.Empty;
     private DiagramDocument? _document;
     private SearchResultItem? _selectedResult;
+
+    public DiagramSearchPanelViewModel()
+    {
+        _debounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+        _debounce.Tick += (_, _) => { _debounce.Stop(); Search(); };
+    }
 
     // ---------------------------------------------------------------------------
     // Properties
@@ -48,10 +56,20 @@ public sealed class DiagramSearchPanelViewModel : ViewModelBase
     public string SearchText
     {
         get => _searchText;
-        set { if (_searchText == value) return; _searchText = value; OnPropertyChanged(); }
+        set
+        {
+            if (_searchText == value) return;
+            _searchText = value;
+            OnPropertyChanged();
+            // Incremental search: restart debounce on every keystroke
+            _debounce.Stop();
+            _debounce.Start();
+        }
     }
 
     public ObservableCollection<SearchResultItem> Results => _results;
+
+    public bool HasResults => _results.Count > 0;
 
     public SearchResultItem? SelectedResult
     {
@@ -79,6 +97,7 @@ public sealed class DiagramSearchPanelViewModel : ViewModelBase
     {
         _document = doc;
         _results.Clear();
+        OnPropertyChanged(nameof(HasResults));
         SelectedResult = null;
     }
 
@@ -95,34 +114,29 @@ public sealed class DiagramSearchPanelViewModel : ViewModelBase
         _results.Clear();
         SelectedResult = null;
 
-        if (_document is null || string.IsNullOrWhiteSpace(_searchText)) return;
+        if (_document is null || string.IsNullOrWhiteSpace(_searchText))
+        {
+            OnPropertyChanged(nameof(HasResults));
+            return;
+        }
 
         string term = _searchText.Trim();
 
         foreach (ClassNode node in _document.Classes)
         {
-            // Match on node name
             if (node.Name.Contains(term, StringComparison.OrdinalIgnoreCase))
-            {
-                _results.Add(new SearchResultItem(
-                    Node: node,
-                    Member: null,
-                    DisplayText: $"[{node.Kind}] {node.Name}"));
-            }
+                _results.Add(new SearchResultItem(Node: node, Member: null, DisplayText: $"[{node.Kind}] {node.Name}"));
 
-            // Match on members
             foreach (ClassMember member in node.Members)
             {
                 if (member.Name.Contains(term, StringComparison.OrdinalIgnoreCase)
                  || member.TypeName.Contains(term, StringComparison.OrdinalIgnoreCase))
-                {
-                    _results.Add(new SearchResultItem(
-                        Node: node,
-                        Member: member,
+                    _results.Add(new SearchResultItem(Node: node, Member: member,
                         DisplayText: $"  [{member.Kind}] {member.DisplayLabel} in {node.Name}"));
-                }
             }
         }
+
+        OnPropertyChanged(nameof(HasResults));
     }
 
     // ---------------------------------------------------------------------------

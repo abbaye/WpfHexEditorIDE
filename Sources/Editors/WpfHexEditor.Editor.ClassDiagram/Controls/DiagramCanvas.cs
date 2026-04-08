@@ -19,6 +19,7 @@
 //     ApplyPatch is exposed for Phase 3 live-sync incremental updates.
 // ==========================================================
 
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -30,6 +31,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Editor.ClassDiagram.Controls.Adorners;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Editor.ClassDiagram.Services;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
@@ -88,6 +90,9 @@ public sealed class DiagramCanvas : Canvas
     private bool  _isRubberBanding;
     private Point _rubberStart;
 
+    // ── Undo manager (injected by ClassDiagramSplitHost) ─────────────────────
+    private ClassDiagramUndoManager? _undoManager;
+
     // ── Minimap ───────────────────────────────────────────────────────────────
     // Owned by ClassDiagramSplitHost (overlay canvas) — not a child of DiagramCanvas.
     internal readonly DiagramMinimapControl _minimap = new();
@@ -112,6 +117,7 @@ public sealed class DiagramCanvas : Canvas
     public event EventHandler<string>?                        ExportRequested;  // format: "png","plantUml","structurizr","mermaid","svg","csharp"
     public event EventHandler<LayoutStrategyKind>?            LayoutStrategyRequested;
     public event EventHandler<ClassNode>?                     ZoomToNodeRequested;
+    public event EventHandler?                                FitToContentRequested;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -119,6 +125,7 @@ public sealed class DiagramCanvas : Canvas
     {
         Background = Brushes.Transparent;
         Focusable  = true;
+        AllowDrop  = true;
         Loaded    += OnLoaded;
 
         // Tooltip timer
@@ -151,6 +158,9 @@ public sealed class DiagramCanvas : Canvas
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
+
+    /// <summary>Injects the undo manager so drag/resize/delete ops are undoable.</summary>
+    public void SetUndoManager(ClassDiagramUndoManager um) => _undoManager = um;
 
     /// <summary>Rebuilds all visuals from the given document.</summary>
     public void ApplyDocument(DiagramDocument doc)
@@ -623,6 +633,20 @@ public sealed class DiagramCanvas : Canvas
 
         if (_resizingNode is not null)
         {
+            // Commit resize undo entry
+            if (_undoManager is not null && _doc is not null)
+            {
+                double finalH = _layer.ComputeNodeHeight(_resizingNode);
+                double startH = _resizeStartHeight;
+                var    rNode  = _resizingNode;
+                if (Math.Abs(finalH - startH) > 0.5)
+                {
+                    _undoManager.Push(new SingleClassDiagramUndoEntry(
+                        Description: $"Resize {rNode.Name}",
+                        UndoAction: () => { _layer.SetCustomHeight(rNode.Id, startH); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
+                        RedoAction: () => { _layer.SetCustomHeight(rNode.Id, finalH); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+                }
+            }
             _resizingNode = null;
             Cursor = null;
             e.Handled = true;
@@ -631,6 +655,27 @@ public sealed class DiagramCanvas : Canvas
 
         if (_dragNode is not null)
         {
+            // Commit drag undo entry for all moved nodes
+            if (_undoManager is not null && _doc is not null && _dragStartPositions.Count > 0)
+            {
+                var moves = _dragStartPositions
+                    .Select(kv =>
+                    {
+                        var n = _doc.Classes.FirstOrDefault(x => x.Id == kv.Key);
+                        return n is null ? ((ClassNode?)null, kv.Value, new Point()) : (n, kv.Value, new Point(n.X, n.Y));
+                    })
+                    .Where(t => t.Item1 is not null && (Math.Abs(t.Item3.X - t.Item2.X) > 0.5 || Math.Abs(t.Item3.Y - t.Item2.Y) > 0.5))
+                    .Select(t => (Node: t.Item1!, From: t.Item2, To: t.Item3))
+                    .ToList();
+                if (moves.Count > 0)
+                {
+                    string desc = moves.Count == 1 ? $"Move {moves[0].Node.Name}" : $"Move {moves.Count} nodes";
+                    _undoManager.Push(new SingleClassDiagramUndoEntry(
+                        Description: desc,
+                        UndoAction: () => { foreach (var m in moves) { m.Node.X = m.From.X; m.Node.Y = m.From.Y; } _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
+                        RedoAction: () => { foreach (var m in moves) { m.Node.X = m.To.X;   m.Node.Y = m.To.Y;   } _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+                }
+            }
             _dragNode = null;
             _dragStartPositions.Clear();
         }
@@ -704,6 +749,37 @@ public sealed class DiagramCanvas : Canvas
             _layer.UpdateSelection(_primarySelected?.Id, null);
             HoveredClassChanged?.Invoke(this, null);
         }
+    }
+
+    // ── Toolbox drag-drop ──────────────────────────────────────────────────────
+
+    protected override void OnDrop(DragEventArgs e)
+    {
+        base.OnDrop(e);
+        if (_doc is null) return;
+        if (!e.Data.GetDataPresent("ClassDiagramToolboxEntry")) return;
+
+        if (e.Data.GetData("ClassDiagramToolboxEntry") is not ToolboxEntry entry) return;
+
+        Point pt   = e.GetPosition(this);
+        var   node = new ClassNode
+        {
+            Id      = Guid.NewGuid().ToString("N"),
+            Name    = entry.Name,
+            Kind    = entry.Kind,
+            X       = Math.Max(0, pt.X - 80),
+            Y       = Math.Max(0, pt.Y - 20),
+            Width   = 160,
+            Members = entry.DefaultMembers.ToList()
+        };
+        _doc.Classes.Add(node);
+        _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+
+        _undoManager?.Push(new SingleClassDiagramUndoEntry(
+            Description: $"Add {node.Name}",
+            UndoAction: () => { _doc.Classes.Remove(node); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { _doc.Classes.Add(node);    _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+        e.Handled = true;
     }
 
     // ── Keyboard ──────────────────────────────────────────────────────────────
@@ -911,8 +987,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(MakeItem("\uE710", "Add Enum",      () => { }));
         menu.Items.Add(MakeItem("\uE710", "Add Struct",    () => { }));
         menu.Items.Add(new Separator());
-        menu.Items.Add(MakeItem("\uE77F", "Paste",         () => { }));
-        menu.Items.Add(MakeItem("\uE8B3", "Select All",    () => { }));
+        menu.Items.Add(MakeItem("\uE8B3", "Select All",    () => SelectAll()));
         menu.Items.Add(new Separator());
         var layoutSub = new MenuItem { Header = "Auto Layout" };
         layoutSub.Icon = new System.Windows.Controls.TextBlock
@@ -924,7 +999,7 @@ public sealed class DiagramCanvas : Canvas
         layoutSub.Items.Add(MakeItem("\uE947", "Sugiyama",
             () => LayoutStrategyRequested?.Invoke(this, LayoutStrategyKind.Sugiyama)));
         menu.Items.Add(layoutSub);
-        menu.Items.Add(MakeItem("\uE904", "Zoom to Fit",   () => { }));
+        menu.Items.Add(MakeItem("\uE904", "Zoom to Fit",   () => FitToContentRequested?.Invoke(this, EventArgs.Empty)));
         menu.Items.Add(new Separator());
 
         var export = new MenuItem { Header = "Export" };
@@ -948,10 +1023,15 @@ public sealed class DiagramCanvas : Canvas
     private void DeleteNode(ClassNode node)
     {
         if (_doc is null) return;
+        var removedRels = _doc.Relationships.Where(r => r.SourceId == node.Id || r.TargetId == node.Id).ToList();
         _doc.Classes.Remove(node);
         _doc.Relationships.RemoveAll(r => r.SourceId == node.Id || r.TargetId == node.Id);
         if (_selectedNode == node) ClearSelection();
         _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        _undoManager?.Push(new SingleClassDiagramUndoEntry(
+            Description: $"Delete {node.Name}",
+            UndoAction: () => { _doc.Classes.Add(node); foreach (var r in removedRels) _doc.Relationships.Add(r); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { _doc.Classes.Remove(node); foreach (var r in removedRels) _doc.Relationships.Remove(r); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
     }
 
     private void DeleteRelationship(ClassRelationship rel)
@@ -959,6 +1039,10 @@ public sealed class DiagramCanvas : Canvas
         if (_doc is null) return;
         _doc.Relationships.Remove(rel);
         _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        _undoManager?.Push(new SingleClassDiagramUndoEntry(
+            Description: "Delete relationship",
+            UndoAction: () => { _doc.Relationships.Add(rel); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { _doc.Relationships.Remove(rel); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
     }
 
     private void ChangeRelationshipType(ClassRelationship rel, RelationshipKind newKind)
@@ -966,8 +1050,13 @@ public sealed class DiagramCanvas : Canvas
         if (_doc is null) return;
         int idx = _doc.Relationships.IndexOf(rel);
         if (idx < 0) return;
-        _doc.Relationships[idx] = rel with { Kind = newKind };
+        var newRel = rel with { Kind = newKind };
+        _doc.Relationships[idx] = newRel;
         _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        _undoManager?.Push(new SingleClassDiagramUndoEntry(
+            Description: "Change relationship kind",
+            UndoAction: () => { int i = _doc.Relationships.IndexOf(newRel); if (i >= 0) { _doc.Relationships[i] = rel; _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); } },
+            RedoAction: () => { int i = _doc.Relationships.IndexOf(rel);    if (i >= 0) { _doc.Relationships[i] = newRel; _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); } }));
     }
 
     // ── Context menu helpers (delegates to shared DiagramMenuHelpers) ─────────

@@ -24,7 +24,9 @@
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -189,10 +191,12 @@ public sealed class ClassDiagramSplitHost : Grid,
         _zoomPan = new ZoomPanCanvas();
         _zoomPan.Children.Add(_canvas);
 
+        _canvas.SetUndoManager(_undoManager);
         _canvas.SelectedClassChanged     += OnCanvasSelectedClassChanged;
         _canvas.HoveredClassChanged      += (_, _) => { };
         _canvas.ExportRequested          += OnCanvasExportRequested;
-        _canvas.LayoutStrategyRequested  += (_, strategy) => ApplyLayout(strategy);
+        _canvas.LayoutStrategyRequested  += (_, strategy) => _ = ApplyLayoutAsync(strategy);
+        _canvas.FitToContentRequested    += (_, _) => _zoomPan.FitToContent();
         _canvas.ZoomToNodeRequested      += (_, node) =>
             _zoomPan.ZoomToRect(new Rect(node.X, node.Y, node.Width, node.Height), 40);
 
@@ -459,6 +463,13 @@ public sealed class ClassDiagramSplitHost : Grid,
 
     public DiagramDocument Document       => _document;
     public ClassDiagramUndoManager UndoManager => _undoManager;
+
+    /// <summary>Selects a single node on the canvas and fires SelectedClassChanged.</summary>
+    public void SelectNode(ClassNode node) => _canvas.SelectNodeById(node.Id);
+
+    /// <summary>Zooms the viewport to show the given node.</summary>
+    public void ZoomToNode(ClassNode node) =>
+        _zoomPan.ZoomToRect(new Rect(node.X, node.Y, node.Width, _canvas.GetDiagramBounds().Height > 0 ? node.Height : 120), 80);
 
     /// <summary>Forwarded from DiagramCanvas — fires when Ctrl+Click on a member.</summary>
     public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested
@@ -1252,21 +1263,49 @@ public sealed class ClassDiagramSplitHost : Grid,
 
     /// <summary>
     /// Applies the given layout strategy to the current document and fits the canvas.
+    /// Runs the layout engine on a background thread (for force-directed perf).
+    /// Wraps the operation in an undo entry that restores node positions.
     /// </summary>
-    public void ApplyLayout(LayoutStrategyKind strategy)
+    public async Task ApplyLayoutAsync(LayoutStrategyKind strategy)
     {
         if (_document.Classes.Count == 0) return;
-        LayoutStrategyFactory.Create(strategy).Layout(_document, new LayoutOptions
-        {
-            Strategy      = strategy,
-            ColSpacing    = 60,
-            RowSpacing    = 80,
-            CanvasPadding = 40
-        });
+        var opts = new LayoutOptions { Strategy = strategy, ColSpacing = 60, RowSpacing = 80, CanvasPadding = 40 };
+        var engine = LayoutStrategyFactory.Create(strategy);
+
+        // Capture before positions for undo
+        var beforePositions = _document.Classes.ToDictionary(n => n.Id, n => (n.X, n.Y));
+
+        StatusMessage?.Invoke(this, "Applying layout…");
+        await Task.Run(() => engine.Layout(_document, opts));
+
+        // Capture after positions for redo
+        var afterPositions = _document.Classes.ToDictionary(n => n.Id, n => (n.X, n.Y));
+
+        _undoManager.Push(new SingleClassDiagramUndoEntry(
+            Description: $"Auto Layout ({strategy})",
+            UndoAction: () =>
+            {
+                foreach (var n in _document.Classes)
+                    if (beforePositions.TryGetValue(n.Id, out var p)) { n.X = p.X; n.Y = p.Y; }
+                _canvas.ApplyDocument(_document);
+                _zoomPan.FitToContent();
+            },
+            RedoAction: () =>
+            {
+                foreach (var n in _document.Classes)
+                    if (afterPositions.TryGetValue(n.Id, out var p)) { n.X = p.X; n.Y = p.Y; }
+                _canvas.ApplyDocument(_document);
+                _zoomPan.FitToContent();
+            }));
+
         _canvas.ApplyDocument(_document);
         _zoomPan.FitToContent();
         SetDirty(true);
+        StatusMessage?.Invoke(this, "Ready");
     }
+
+    /// <summary>Synchronous wrapper for backward compat (called from tests / old code).</summary>
+    public void ApplyLayout(LayoutStrategyKind strategy) => _ = ApplyLayoutAsync(strategy);
 
     // Export actions
     // ---------------------------------------------------------------------------

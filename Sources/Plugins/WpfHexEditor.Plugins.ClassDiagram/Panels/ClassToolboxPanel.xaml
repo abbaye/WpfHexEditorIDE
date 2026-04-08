@@ -40,14 +40,15 @@
             </StackPanel>
         </Border>
 
-        <!-- Toolbox entry list -->
+        <!-- Toolbox entry list — PreviewMouseMove initiates drag-and-drop onto the diagram canvas -->
         <ListBox ItemsSource="{Binding FilteredEntries}"
                  Background="{DynamicResource DockMenuBackgroundBrush}"
                  Foreground="{DynamicResource DockMenuForegroundBrush}"
                  BorderThickness="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.VirtualizationMode="Recycling">
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 PreviewMouseMove="OnListBoxPreviewMouseMove">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="2,3">
