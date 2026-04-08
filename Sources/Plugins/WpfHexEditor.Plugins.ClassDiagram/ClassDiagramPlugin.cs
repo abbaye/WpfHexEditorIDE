@@ -244,6 +244,11 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         context.FocusContext.FocusChanged += OnFocusChanged;
         context.FocusContext.FocusChanged += OnFocusSyncStatusBar;
 
+        // Re-render all open diagram hosts when the IDE theme changes.
+        // DiagramVisualLayer uses TryFindResource (CD_* tokens) which resolves at draw time,
+        // but DrawingVisuals are not automatically invalidated by WPF on resource changes.
+        context.Theme.ThemeChanged += OnThemeChanged;
+
         // Seed panels immediately for any document open at plugin-load time.
         SeedFromCurrentDocument(context);
 
@@ -269,6 +274,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         {
             _context.FocusContext.FocusChanged -= OnFocusChanged;
             _context.FocusContext.FocusChanged -= OnFocusSyncStatusBar;
+            _context.Theme.ThemeChanged        -= OnThemeChanged;
         }
 
         UnwireCurrentHost();
@@ -467,6 +473,17 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _outlinePanel?.ViewModel.SetDocument(_wiredHost.Document);
         _relPanel?.ViewModel.SetDocument(_wiredHost.Document);
         _searchPanel?.ViewModel.SetDocument(_wiredHost.Document);
+    }
+
+    /// <summary>
+    /// Forces a full re-render of every open diagram after a theme change.
+    /// DrawingVisuals don't auto-refresh when DynamicResource tokens change;
+    /// we must explicitly call RenderAll so brushes are re-resolved.
+    /// </summary>
+    private void OnThemeChanged(object? sender, EventArgs e)
+    {
+        foreach (var host in _openHosts.Values)
+            host.RefreshDiagramVisuals();
     }
 
     private void OnHistoryJumpRequested(object? sender, int targetIndex)

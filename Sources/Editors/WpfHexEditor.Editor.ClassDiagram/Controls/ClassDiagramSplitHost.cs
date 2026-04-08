@@ -464,6 +464,16 @@ public sealed class ClassDiagramSplitHost : Grid,
     public DiagramDocument Document       => _document;
     public ClassDiagramUndoManager UndoManager => _undoManager;
 
+    /// <summary>
+    /// Forces a full re-render of the diagram visual layer.
+    /// Call after theme changes so DrawingVisual brush tokens are re-resolved.
+    /// </summary>
+    public void RefreshDiagramVisuals()
+    {
+        if (_document.Classes.Count == 0) return;
+        _canvas.ApplyDocument(_document);
+    }
+
     /// <summary>Selects a single node on the canvas and fires SelectedClassChanged.</summary>
     public void SelectNode(ClassNode node) => _canvas.SelectNodeById(node.Id);
 
