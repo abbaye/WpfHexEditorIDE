@@ -179,7 +179,8 @@ public sealed class SourceViewModel : AssemblyNodeViewModel
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
         var linkedCt = linked.Token;
 
-        IsLoading = true;
+        bool first = TryFirstLoad();
+        if (first) IsLoading = true;
         Reset();
 
         try
@@ -236,7 +237,7 @@ public sealed class SourceViewModel : AssemblyNodeViewModel
         }
         finally
         {
-            IsLoading = false;
+            if (first) IsLoading = false;
         }
     }
 

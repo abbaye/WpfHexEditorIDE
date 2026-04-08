@@ -97,7 +97,8 @@ public sealed class GitHistoryPanelViewModel : ViewModelBase, IDisposable
 
     public async void LoadHistoryAsync()
     {
-        IsLoading = true;
+        bool first = TryFirstLoad();
+        if (first) IsLoading = true;
         Commits.Clear();
         try
         {
@@ -112,7 +113,7 @@ public sealed class GitHistoryPanelViewModel : ViewModelBase, IDisposable
                 Commits.Add(row);
             }
         }
-        finally { IsLoading = false; }
+        finally { if (first) IsLoading = false; }
     }
 
     public void Dispose()

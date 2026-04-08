@@ -42,5 +42,21 @@ namespace WpfHexEditor.Core.ViewModels
             OnPropertyChanged(name);
             return true;
         }
+
+        // ── First-load gate ───────────────────────────────────────────────────
+
+        private bool _hasLoadedOnce;
+
+        /// <summary>
+        /// Always returns <see langword="false"/> — panel loading overlays are fully suppressed.
+        /// The <c>_hasLoadedOnce</c> field is still tracked so callers compile unchanged.
+        /// Restore <c>return !_hasLoadedOnce</c> (and flip the assignment) to re-enable the
+        /// first-load indicator if ever needed.
+        /// </summary>
+        protected bool TryFirstLoad()
+        {
+            _hasLoadedOnce = true;
+            return false;
+        }
     }
 }

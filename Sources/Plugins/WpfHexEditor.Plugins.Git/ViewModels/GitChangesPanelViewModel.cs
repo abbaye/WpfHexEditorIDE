@@ -158,7 +158,8 @@ public sealed class GitChangesPanelViewModel : ViewModelBase, IDisposable
 
     public async void RefreshAsync()
     {
-        IsLoading = true;
+        bool first = TryFirstLoad();
+        if (first) IsLoading = true;
         try
         {
             var changes = await _vcs.GetChangedFilesAsync();
@@ -178,7 +179,7 @@ public sealed class GitChangesPanelViewModel : ViewModelBase, IDisposable
         }
         finally
         {
-            IsLoading = false;
+            if (first) IsLoading = false;
             CommandManager.InvalidateRequerySuggested();
         }
     }
@@ -194,7 +195,7 @@ public sealed class GitChangesPanelViewModel : ViewModelBase, IDisposable
     private async void CommitAsync()
     {
         if (string.IsNullOrWhiteSpace(CommitMessage)) return;
-        IsLoading = true;
+        IsRemoteOp = true;
         try
         {
             await _vcs.CommitAsync(CommitMessage, IsAmend);
@@ -208,7 +209,7 @@ public sealed class GitChangesPanelViewModel : ViewModelBase, IDisposable
             StatusText = $"Commit failed: {ex.Message}";
             _output.Write("Git", $"[Git Commit] {ex.Message}");
         }
-        finally { IsLoading = false; }
+        finally { IsRemoteOp = false; }
     }
 
     // ── Remote ────────────────────────────────────────────────────────────────
@@ -250,31 +251,31 @@ public sealed class GitChangesPanelViewModel : ViewModelBase, IDisposable
 
     private async void StashAsync()
     {
-        IsLoading = true;
+        IsRemoteOp = true;
         try
         {
             await _vcs.StashAsync();
             RefreshAsync();
         }
         catch (Exception ex) { _output.Write("Git", $"[Git Stash] {ex.Message}"); }
-        finally { IsLoading = false; }
+        finally { IsRemoteOp = false; }
     }
 
     private async void StashPopAsync(int index)
     {
-        IsLoading = true;
+        IsRemoteOp = true;
         try
         {
             await _vcs.StashPopAsync(index);
             RefreshAsync();
         }
         catch (Exception ex) { _output.Write("Git", $"[Git Stash Pop] {ex.Message}"); }
-        finally { IsLoading = false; }
+        finally { IsRemoteOp = false; }
     }
 
     private async void StashDropAsync(int index)
     {
-        IsLoading = true;
+        IsRemoteOp = true;
         try
         {
             await _vcs.StashDropAsync(index);
@@ -283,7 +284,7 @@ public sealed class GitChangesPanelViewModel : ViewModelBase, IDisposable
             RefreshAsync();
         }
         catch (Exception ex) { _output.Write("Git", $"[Git Stash Drop] {ex.Message}"); }
-        finally { IsLoading = false; }
+        finally { IsRemoteOp = false; }
     }
 
     // ── File operations ───────────────────────────────────────────────────────

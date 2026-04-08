@@ -103,7 +103,6 @@ public sealed class DiffDetailViewModel : ViewModelBase
         _cts = new CancellationTokenSource();
         var ct = _cts.Token;
 
-        IsLoading    = true;
         EntryLabel   = entry.DisplayName;
         BaselineCode = string.Empty;
         TargetCode   = string.Empty;
@@ -132,17 +131,13 @@ public sealed class DiffDetailViewModel : ViewModelBase
         {
             UnifiedDiff = $"// Diff computation failed: {ex.Message}";
         }
-        finally
-        {
-            IsLoading = false;
-        }
+        finally { }
     }
 
     /// <summary>Clears all detail content.</summary>
     public void Clear()
     {
         _cts?.Cancel();
-        IsLoading    = false;
         EntryLabel   = string.Empty;
         BaselineCode = string.Empty;
         TargetCode   = string.Empty;

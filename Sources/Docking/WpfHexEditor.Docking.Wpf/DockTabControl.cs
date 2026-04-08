@@ -160,9 +160,9 @@ public class DockTabControl : TabControl
     private Func<DockItem, object>? _contentFactory;
 
     // Tracks DockItems whose plugin panel has already been created at least once.
-    // On subsequent Bind() rebuilds we call the factory directly (synchronous, fast)
-    // instead of re-showing PluginLoadingPlaceholder — avoids the one-frame flash.
-    private readonly HashSet<DockItem> _everMaterialized = new();
+    // "Already materialized" flag is stored in DockItem.Metadata so it survives
+    // dock/undock, group moves, and Bind() rebuilds across any DockTabControl instance.
+    private const string MaterializedKey = "_materialized";
 
     private int  _dragOriginalModelIndex = -1;
     private int  _currentInsertionIdx    = -1;
@@ -232,7 +232,9 @@ public class DockTabControl : TabControl
             if (Items[i] is TabItem ti && ti.Tag is DockItem d && d == item)
             {
                 Items.RemoveAt(i);
-                _everMaterialized.Remove(item);
+                // Intentionally NOT clearing MaterializedKey from item.Metadata —
+                // the flag must survive dock/undock so the loading placeholder never
+                // re-appears for a panel that has already been shown once.
                 return;
             }
         }
@@ -257,7 +259,7 @@ public class DockTabControl : TabControl
                         var factory = _contentFactory;
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
                         {
-                            _everMaterialized.Add(item);
+                            item.Metadata[MaterializedKey] = "1";
                             tab.Content = factory.Invoke(item);
                         });
                     }
@@ -314,7 +316,7 @@ public class DockTabControl : TabControl
         }
         else if (isActive && item.Metadata.ContainsKey("_pluginPanel"))
         {
-            if (_everMaterialized.Contains(item))
+            if (item.Metadata.ContainsKey(MaterializedKey))
             {
                 // Already built once — call factory directly (fast, no flash).
                 tabContent = contentFactory.Invoke(item);
@@ -350,7 +352,7 @@ public class DockTabControl : TabControl
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
             {
-                _everMaterialized.Add(item);
+                item.Metadata[MaterializedKey] = "1";
                 tabItem.Content = contentFactory!.Invoke(item);
             });
         }

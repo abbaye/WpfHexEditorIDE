@@ -114,7 +114,6 @@ public sealed class XRefViewModel : AssemblyNodeViewModel
     {
         Groups.Clear();
         IsAvailable = false;
-        IsLoading   = true;
 
         try
         {
@@ -141,10 +140,7 @@ public sealed class XRefViewModel : AssemblyNodeViewModel
         {
             Groups.Add(new XRefGroupViewModel($"// XRef scan failed: {ex.Message}", []));
         }
-        finally
-        {
-            IsLoading = false;
-        }
+        finally { }
     }
 
     /// <summary>Clears results and resets loading state.</summary>

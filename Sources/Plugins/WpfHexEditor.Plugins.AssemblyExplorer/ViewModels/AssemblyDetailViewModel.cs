@@ -293,8 +293,7 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
             ? FormatHexDump(ReadPeBytes(filePath, node.PeOffset), node.PeOffset)
             : "// No PE offset available for this node.";
 
-        // ── Show loading overlay; clear stale text immediately ────────────────
-        IsLoading     = true;
+        // ── Clear stale text immediately ──────────────────────────────────────
         LoadingMessage = $"Decompiling {node.DisplayName}…";
         DetailText    = string.Empty;
         IlText        = string.Empty;
@@ -324,10 +323,10 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
                     _                              => $"// {node.DisplayName}"
                 }, ct);
             }
-            catch (OperationCanceledException) { IsLoading = false; return; }
+            catch (OperationCanceledException) { return; }
             catch (Exception ex) { rawCode = $"// Decompilation failed:\n// {ex.Message}"; }
 
-            if (ct.IsCancellationRequested) { IsLoading = false; return; }
+            if (ct.IsCancellationRequested) { return; }
 
             // Step 2 — post-decompile language transform (only when backend output is C#-only)
             if (_backend.OutputIsCSharpOnly && language.Id != "CSharp")
@@ -338,13 +337,13 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
                     var (transformed, _) = await language.TransformFromCSharpAsync(rawCode, ct);
                     code = transformed;
                 }
-                catch (OperationCanceledException) { IsLoading = false; return; }
+                catch (OperationCanceledException) { return; }
                 catch (Exception ex)
                 {
                     code = $"// {language.DisplayName} transform failed: {ex.Message}\n\n{rawCode}";
                 }
 
-                if (ct.IsCancellationRequested) { IsLoading = false; return; }
+                if (ct.IsCancellationRequested) { return; }
             }
             else
             {
@@ -367,10 +366,10 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
                 {
                     il = await Task.Run(() => _backend.GetIlText(methodNode.Model, filePath), ct);
                 }
-                catch (OperationCanceledException) { IsLoading = false; return; }
+                catch (OperationCanceledException) { return; }
                 catch (Exception ex) { il = $"// IL disassembly failed:\n// {ex.Message}"; }
 
-                if (ct.IsCancellationRequested) { IsLoading = false; return; }
+                if (ct.IsCancellationRequested) { return; }
 
                 if (token != 0) _cache.Set(filePath, token, "il", il);
             }
@@ -381,8 +380,6 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
         {
             IlText = string.Empty;
         }
-
-        IsLoading = false;
 
         // ── CFG tab — async, independent of decompile cache ────────────────────
         if (node is MethodNodeViewModel cfgMethodNode)

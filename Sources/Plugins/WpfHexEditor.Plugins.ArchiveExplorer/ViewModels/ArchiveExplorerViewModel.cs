@@ -69,6 +69,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
     }
 
     private bool _isLoading;
+    private bool _isLoadingInternal; // guard against concurrent loads (not UI-bound)
     public bool IsLoading
     {
         get => _isLoading;
@@ -127,7 +128,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
     /// <summary>Loads an archive from disk, replacing any current content.</summary>
     public async Task LoadArchiveAsync(string archivePath, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(archivePath) || IsLoading) return;
+        if (string.IsNullOrEmpty(archivePath) || _isLoadingInternal) return;
 
         // Cancel any in-flight load
         _cts.Cancel();
@@ -135,9 +136,11 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
         _cts = new CancellationTokenSource();
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
 
-        IsLoading = true;
+        _isLoadingInternal = true;
+        bool first = TryFirstLoad();
+        if (first) IsLoading = true;
         RootNodes.Clear();
-        InfoBarText = "Loadingâ€¦";
+        InfoBarText = “Loading…”;
         CurrentArchivePath = archivePath;
 
         try
@@ -149,7 +152,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
                 await Task.Run(() =>
             {
                 IArchiveReader r = ArchiveReaderFactory.CreateReader(archivePath)
-                    ?? throw new NotSupportedException($"Unsupported format: {Path.GetExtension(archivePath)}");
+                    ?? throw new NotSupportedException($”Unsupported format: {Path.GetExtension(archivePath)}”);
                 List<ArchiveNodeViewModel> root = BuildTree(r.Entries, archivePath);
                 ArchiveStats s                  = ComputeStats(r.Entries);
                 return (r, root, s);
@@ -157,7 +160,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
 
             _reader = reader;
 
-            // Must update UI on the calling (UI) thread â€” await ensures we're back
+            // Must update UI on the calling (UI) thread — await ensures we're back
             foreach (var node in nodes)
                 RootNodes.Add(node);
 
@@ -167,8 +170,8 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
                 _ = EnrichFormatBadgesAsync(linked.Token);
         }
         catch (OperationCanceledException) { InfoBarText = string.Empty; }
-        catch (Exception ex)               { InfoBarText = $"Error: {ex.Message}"; }
-        finally                            { IsLoading = false; }
+        catch (Exception ex)               { InfoBarText = $”Error: {ex.Message}”; }
+        finally                            { _isLoadingInternal = false; if (first) IsLoading = false; }
     }
 
     // ── Command handlers ───────────────────────────────────────────────────
