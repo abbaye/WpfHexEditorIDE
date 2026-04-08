@@ -5,7 +5,7 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 > **Legend:** 🔧 In Progress · 🔜 Planned · ✅ Done (see CHANGELOG)
 >
-> 📅 *Last revised: 2026-04-06 (audit — corrected feature status)*
+> 📅 *Last revised: 2026-04-08*
 
 ---
 
@@ -92,7 +92,7 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 | #177 | **ScriptEditor Phase 2** | Step-debugger for `.hxscript` (breakpoints, watch, call stack); REPL panel (interactive HxScript console); snippet templates; syntax error underline + gutter marker; HxScript language server (LSP). |
 | #178 | **DisassemblyViewer Phase 2** | x86/x64/ARM/WASM instruction decoding; jump arrows between branch targets; symbol table overlay (resolved function names); address navigation bar; cross-reference to hex view; export as `.asm`. |
 | #155 | **Visual XAML Editor — Phase 2** | Core designer shipped in v0.6.0; overkill 10-phase improvement (constraint adorner, gradient editor, binding path picker, perf overlay, responsive breakpoint bar) shipped in v0.6.3. Remaining: trigger & animation timeline editor (beyond stub), data-binding wizard, "Go to Definition" for resource keys, multi-resolution DPI preview, export as standalone `.xaml`. |
-| #156 | **Class Diagram Plugin** | Full-featured class diagram editor shipped in v0.6.3: regex-based C#/VB.NET source analysis, canvas with 6 docking panels, 36 CD_* theme tokens, Solution Explorer context menus ("View Class Diagram", "Generate for Project/Solution"), plugin menu registration fix (View menu grouping) and double-separator fix. Remaining: live Roslyn-backed analysis, export to SVG/PNG. |
+| #156 | **Class Diagram Plugin** | 🔧 **~30% Done** — Overkill upgrade across 10+ phases: **syntax-highlighted DSL pane** (`classdiagram.whfmt`, `CodeEditorSplitHost`, read-only syntax coloring), 3 layout strategies (Force-Directed / Hierarchical / Swimlane), canvas with minimap drag-to-reposition + corner-snap + hide, left-panel TreeView with colored selectable members, collapsible sections + dual metrics badge, hover tooltips (400 ms), context menu (double-click, ZoomToRect, clipboard export), scrollbars + 1 px separator, session state save & restore on reopen, options page with 8 upgrade phases. Remaining: live Roslyn-backed incremental analysis, export to SVG/PNG. |
 
 ---
 
@@ -114,7 +114,7 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 | #43 | **Plugin Auto-Update** | `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins. |
 | #44 | **Integrated Debugger** | `DebuggerService` (StartDebug, StepInto/Over/Out, Evaluate), `BreakpointsManager`, `WatchPanel`, `CallStackPanel`. |
 | #90 | **Debugger — Multi-Project** | Multi-project debug sessions via EventBus; supports scripts, plugins, and workspace projects. |
-| #91 | **Git Integration** | `GitManager`, `GitPanel` (commit/push/pull/branch); inline gutter diff; `GitEventAdapter` for file-change notifications. |
+| #91 | **Git Integration** | ✅ **Done v0.6.4.7** — Full VS-style Git client (G0–G7): `GitChangesPanel` (stage/unstage/commit/discard, diff preview), push/pull/fetch toolbar, branch picker popup (create/switch/delete), stash manager (stash/pop/drop), status bar adapter (branch/ahead/behind), `GitHistoryPanel` (log graph, commit detail, file tree), `BlameGutterControl` (per-line author/date, Ctrl+Click to history); 18 `GC_*` theme tokens; `GetActiveCodeEditor` blame-sync pattern. |
 | #93 | **Plugin Installer / Marketplace UI** | Plugin search UI, download/update manager, sandbox enforcement at install time. |
 | #95 | **Unit Testing Panel** | ✅ `WpfHexEditor.Plugins.UnitTesting` plugin — `DotnetTestRunner` (`dotnet test --logger trx --no-build`), `TrxParser` (ECMA TRX XML), `UnitTestingViewModel` (pass/fail/skip counters, `ObservableCollection<TestResultRow>`), dockable `UnitTestingPanel` (Run/Stop/Clear toolbar, color-coded outcome glyphs, duration ms, virtualized ListView); auto-run on `BuildSucceededEvent`; test project auto-detection (xunit/nunit/mstest/Microsoft.NET.Test.Sdk keywords in .csproj). | ✅ Done |
 | #98 | **Multi-User Collaboration** | Multi-cursor real-time editing, document sync, contextual chat/comments per line. |
@@ -262,6 +262,12 @@ Cette section présente les concepts VS-level de l’IDE, en se concentrant uniq
 
 | Feature | Version / Release |
 |---------|-------------------|
+| **Window Menu + Win32 Fullscreen** — `_Window` top-level menu (Close/Close All But This/Close All Documents, Next/Previous Document `Ctrl+Tab`); `F11` fullscreen via Win32 `MonitorFromWindow`/`GetMonitorInfo` covers full monitor including taskbar, restores exact position; `MainWindow.Window.cs` partial extracted | [0.6.4.8] — 2026-04-08 |
+| **Docking Overlay Polish** — VS-like drop overlay with active-tab gap (`CombinedGeometry` punch-out); placement-aware tab styles: top → `DockTabItemStyle` (top CornerRadius), bottom → `DockTabItemBottomStyle` (bottom CornerRadius); `SelectionBorder` matrix (TopBar/FullBorder/Glow × Top/Bottom); `PART_TabStrip` border named for Margin-based offset | [0.6.4.8] — 2026-04-08 |
+| **Plugin Panel Loading Overlay Fix** — `DockItem.Metadata["_materialized"]` replaces instance-scoped `_everMaterialized` so placeholder never reappears on dock/undock; `ViewModelBase.TryFirstLoad()` gate suppresses `IsLoading` overlay for all plugin panel VMs after first init; Git user-ops switched to `IsRemoteOp` flag | [0.6.4.8] — 2026-04-08 |
+| **Minimap Scroll Fix** — `MinimapControl.InvalidateVisual()` fires immediately on drag/click; `CodeEditor` fires `MinimapRefreshRequested` on `ScrollViewToLine`/`ScrollViewToOffset` so minimap stays in sync after programmatic navigation | [0.6.4.8] — 2026-04-08 |
+| **Git Integration G0–G7** — `GitChangesPanel` (stage/unstage/commit/discard, diff preview), push/pull/fetch, branch picker (create/switch/delete), stash manager, status bar adapter (branch/ahead/behind), `GitHistoryPanel` (log graph + file tree), `BlameGutterControl` (per-line author/date, Ctrl+Click → history); 18 `GC_*` tokens × 18 themes | [0.6.4.7] — 2026-04-07 |
+| **Class Diagram Overkill Upgrade** — syntax-highlighted DSL pane (`classdiagram.whfmt` + `CodeEditorSplitHost`), 3 layout strategies, canvas minimap drag + corner-snap, TreeView left panel with colored members, collapsible sections + dual metrics badge, hover tooltips (400 ms), context menu (ZoomToRect, clipboard export), scrollbars, session state save/restore; `ArrangeOverride` 100k extent removed (infinite layout loop fix) | [0.6.4.7] — 2026-04-07 |
 | **AI Assistant Plugin** — 5 providers (Anthropic/OpenAI/Gemini/Ollama/Claude Code CLI), 25 MCP tools, streaming chat, inline apply, @mentions, command palette (`Ctrl+Shift+A`), conversation history, prompt presets, auto-fallback to CLI, 17 `CA_*` tokens × 18 themes | [0.6.4.3] — 2026-04-02 |
 | **Roslyn Integration** — In-process `RoslynLanguageClient` replacing OmniSharp for C#/VB.NET; non-blocking load + LSP status bar follows active document | [0.6.4.3] — 2026-04-02 |
 | **LSP Client Engine** — full JSON-RPC LSP client; 10 providers (completion, hover, sig-help, code actions, rename, inlay hints, code lens, semantic tokens, breadcrumb bar, workspace symbols); `LspDocumentBridgeService`; `LspStatusBarAdapter`; 30 tokens × 18 themes | [0.6.3.6] — 2026-03-23 |

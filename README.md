@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.4.6-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.4.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
@@ -15,7 +15,7 @@
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-04-06*
+  > 📅 *Last revised: 2026-04-08*
 
   <br/>
 
@@ -42,7 +42,7 @@ ${\color{#2E7BDE}\texttt{<}}{\color{#E87A20}\texttt{WpfHexEditor}}\ {\color{#2E7
 
 | | |
 |---|---|
-| **🪟 Docking** *(100% in-house)* | Fully custom VS-style docking engine — float, dock, auto-hide, pin, colored tab strips, **16 built-in themes** (Dark, Light, VS2022Dark, DarkGlass, Dracula, Nord, Tokyo Night, Catppuccin Mocha/Latte, Gruvbox Dark, Forest, Matrix, Synthwave 84, Cyberpunk, High Contrast…), tab placement left/right/bottom, layout undo/redo (`Ctrl+Shift+Z/Y`), serializable workspace state |
+| **🪟 Docking** *(100% in-house)* | Fully custom VS-style docking engine — float, dock, auto-hide, pin, colored tab strips, **16 built-in themes** (Dark, Light, VS2022Dark, DarkGlass, Dracula, Nord, Tokyo Night, Catppuccin Mocha/Latte, Gruvbox Dark, Forest, Matrix, Synthwave 84, Cyberpunk, High Contrast…), tab placement left/right/bottom, layout undo/redo (`Ctrl+Shift+Z/Y`), serializable workspace state, **VS-like drop overlay** with active-tab gap and placement-aware tab styles (top/bottom CornerRadius switch) |
 | **🏗️ Project System** | Open and build `.whsln`/`.whproj` native projects or Visual Studio `.sln`/`.csproj`/`.vbproj` solutions — MSBuild build/rebuild/clean with parallel project compilation, real-time build progress bar, virtual and physical folder organization, per-file editor state persistence, project template scaffolding |
 | **📐 `.whfmt` — Declaration-Driven IDE** | The ❤️ of the IDE — an in-house unified definition language that makes the entire application **data-driven, not code-driven**. **460+ definitions** ship built-in. `.whfmt` decides: which editor opens a file (Hex, Code, Image, Audio, JSON, Markdown…) · how binary formats are parsed (repeating blocks, unions, versioned structures, pointers, checksums, assertions, forensic alerts) · how source languages behave in the Code Editor (syntax highlighting for 55+ languages, folding, bracket pairs, comment toggles, auto-close, indentation, end-of-block hints, breakpoint validation, whitespace rendering) · how formats are detected (magic bytes, confidence scoring, multi-signature). **Add a new file type? Write a `.whfmt` — no C# code needed.** |
 | **🔍 Binary Intelligence** | Deep binary analysis toolkit — 460+ format auto-detection via magic bytes with confidence scoring, reactive Parsed Fields panel with expandable groups and FormatNavigator bookmark strip, format field color overlay directly on the hex view, Data Inspector showing 40+ type interpretations at caret (integers, floats, strings, GUIDs, dates, colors, IP addresses…), Assembly Explorer for .NET PE inspection with ILSpy C#/VB.NET decompilation |
@@ -52,7 +52,7 @@ ${\color{#2E7BDE}\texttt{<}}{\color{#E87A20}\texttt{WpfHexEditor}}\ {\color{#2E7
 | **⌨️ Command & Terminal** | Command Palette (`Ctrl+Shift+P`) with 9 search modes (commands, files, symbols, go-to-line…) — central command registry (~100 commands) with configurable keyboard shortcuts, integrated multi-tab terminal (`Ctrl+\``) with 35+ built-in commands including `plugin-reload`, extensible by plugins via `ITerminalService` API |
 | **🐞 .NET Debugger** *(~60%)* | Integrated .NET debugging UI — Debug menu (Start/Stop/Restart, Step Over/Into/Out), collapsible toolbar pod, execution line highlight, full breakpoint system with conditions, hit counts, enable/disable toggle, and solution-scoped persistence, Breakpoint Explorer panel, right-click gutter popup for breakpoint editing, debug status bar · ⚠️ *Debug launch not yet functional — UI and breakpoint infrastructure are ready, runtime attach pending* |
 | **🧪 Unit Testing** | Built-in test runner — auto-detects xunit, nunit, and mstest projects, runs via `dotnet test` with TRX result parsing, pass/fail/skip counters with color-coded outcome glyphs, context-sensitive detail panel (project summary, class summary, or individual test details), auto-run on successful build |
-| **📋 IDE Infrastructure** | Unified editor plugin architecture via `IDocumentEditor` — shared undo engine with coalescence and VS-style history dropdown, `Ctrl+Z/Y` across all editors, rectangular block selection (`Alt+Click`), adaptive status bar, 30+ options pages, workspace system (`.whidews` save/restore), dynamic View menu (Flat/Categorized/ByDockSide), middle-click pan mode, NuGet Solution Manager, dependency injection via `Microsoft.Extensions.DependencyInjection`, **tab groups** (split editors horizontally/vertically, `ITabGroupService`, 16 `TG_*` theme tokens, keyboard shortcuts, settings page) |
+| **📋 IDE Infrastructure** | Unified editor plugin architecture via `IDocumentEditor` — shared undo engine with coalescence and VS-style history dropdown, `Ctrl+Z/Y` across all editors, rectangular block selection (`Alt+Click`), adaptive status bar, 30+ options pages, workspace system (`.whidews` save/restore), dynamic View menu (Flat/Categorized/ByDockSide), middle-click pan mode, NuGet Solution Manager, dependency injection via `Microsoft.Extensions.DependencyInjection`, **tab groups** (split editors horizontally/vertically, `ITabGroupService`, 16 `TG_*` theme tokens, keyboard shortcuts, settings page), **Window menu** (`_Window` top-level menu — Close/Close All But This/Close All Documents, Next/Previous Document `Ctrl+Tab`, **Full Screen `F11`** via Win32 `MonitorFromWindow`/`GetMonitorInfo` — covers entire monitor including taskbar, restores exact position on exit) |
 
 ---
 
@@ -77,7 +77,7 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 | **[JSON Editor](Sources/WpfHexEditor.Editor.JsonEditor/README.md)** | ~20% | JSON file viewer — syntax highlighting, auto-detection for `.json` files |
 | **[Resx Editor](Sources/WpfHexEditor.Editor.ResxEditor/README.md)** | ~20% | .NET resource editor — view and edit `.resx` resource files with key/value grid, string and file resource support |
 | **[Disassembly Viewer](Sources/WpfHexEditor.Editor.DisassemblyViewer/README.md)** | ~12% | Machine code disassembler — x86/x64/ARM instruction decoding via Iced 1.21.0, GlyphRun canvas renderer for fast scrolling, navigate-to-offset integration |
-| **[Class Diagram](Sources/WpfHexEditor.Editor.ClassDiagram/README.md)** | ~10% | UML class diagram generator — regex-based C#/VB.NET source analysis, interactive canvas with docking panels for class/interface/enum visualization |
+| **[Class Diagram](Sources/WpfHexEditor.Editor.ClassDiagram/README.md)** | ~30% | UML class diagram editor — **syntax-highlighted DSL pane** (`classdiagram.whfmt`, `CodeEditorSplitHost`), 3 layout strategies (Force-Directed / Hierarchical / Swimlane), interactive canvas with minimap drag-to-reposition, left-panel TreeView with colored selectable members, collapsible sections with dual metrics badge, hover tooltips (400 ms delay), context menu (double-click, ZoomToRect, clipboard export), scrollbars with 1 px separator, session state save & restore on reopen, 9-phase options page — full class/interface/enum/struct visualization |
 | **[Audio Viewer](Sources/WpfHexEditor.Editor.AudioViewer/README.md)** | ~10% | Audio file visualizer — waveform rendering for WAV, MP3, FLAC, OGG, and AIFF formats, stereo left/right channel display |
 | **[Tile Editor](Sources/WpfHexEditor.Editor.TileEditor/README.md)** | ~5% | Tile and sprite editor — planned for ROM asset editing with palette support and pixel-level tools (#175) |
 | **Decompiled Source Viewer** | ~0% | .NET decompilation viewer — C# and IL source display via ILSpy, planned (#106) |
@@ -165,6 +165,7 @@ All controls are **independently reusable** — no IDE required.
 | **[Assembly Explorer](Sources/Plugins/WpfHexEditor.Plugins.AssemblyExplorer/README.md)** | ~30% | .NET assembly browser — load any .NET DLL/EXE to inspect namespaces, types, methods, and fields in a tree view, double-click to decompile to C# or VB.NET in a syntax-highlighted Code Editor tab |
 | **[Document Structure](Sources/Plugins/WpfHexEditor.Plugins.DocumentStructure/README.md)** | ~55% | VS-style outline panel — shows the structural skeleton of the active document (classes, methods, regions, headings, sections…) with 8 providers: LSP, Source Outline, JSON, XML, Markdown, INI, Binary Format, Folding Regions; click any node to jump; 18 `DS_*` theme tokens |
 | **[Custom Parser Template](Sources/Plugins/WpfHexEditor.Plugins.CustomParserTemplate/README.md)** | ~25% | Template-driven parser — define custom binary structure schemas (similar to 010 Editor `.bt` templates) and see live parsed field output in the Parsed Fields panel |
+| **[Git Integration](Sources/Plugins/WpfHexEditor.Plugins.Git/README.md)** | ~90% | Full VS-style Git client — **G0** GitChangesPanel (stage/unstage/commit/discard, diff preview), **G1** push/pull/fetch toolbar, **G2** branch picker popup (create/switch/delete), **G3** stash manager (stash/pop/drop), **G4** status bar adapter (branch name, ahead/behind counts), **G5** GitHistoryPanel (log graph, commit detail, file tree), **G7** BlameGutterControl (per-line author/date inline, Ctrl+Click to history); 18 `GC_*` theme tokens; `GetActiveCodeEditor` pattern for blame sync |
 
 ---
 

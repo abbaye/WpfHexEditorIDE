@@ -123,10 +123,25 @@
                             <Setter TargetName="RightArrow" Property="Visibility" Value="Visible" />
                             <Setter TargetName="PART_Popup" Property="Placement" Value="Right" />
                         </Trigger>
-                        <!-- Submenu items: highlight background -->
+                        <!-- Submenu items: highlight on IsHighlighted (keyboard/menu-mode) -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
                         </Trigger>
+                        <!-- Submenu items: highlight on IsMouseOver (mouse, covers Popup HWND edge cases) -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Role" Value="SubmenuItem" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Role" Value="SubmenuHeader" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
+                        </MultiTrigger>
                         <!-- Top-level header: show 1px border on hover -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
