@@ -740,6 +740,16 @@ public sealed class ClassDiagramSplitHost : Grid,
             IsChecked = true
         });
 
+        // Minimap toggle
+        ToolbarItems.Add(new EditorToolbarItem
+        {
+            Icon      = "\uE8A4",
+            Tooltip   = "Toggle minimap (Ctrl+M)",
+            IsToggle  = true,
+            IsChecked = true,
+            Command   = new RelayCommand(() => _canvas.IsMinimapVisible = !_canvas.IsMinimapVisible)
+        });
+
         // Auto-layout strategy dropdown
         ToolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
         ToolbarItems.Add(new EditorToolbarItem

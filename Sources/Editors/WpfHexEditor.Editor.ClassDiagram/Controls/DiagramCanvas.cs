@@ -24,12 +24,16 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using WpfHexEditor.Editor.ClassDiagram.Controls.Adorners;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
+
+/// <summary>Specifies which corner of the canvas the minimap is anchored to.</summary>
+public enum MinimapCorner { TopLeft, TopRight, BottomLeft, BottomRight }
 
 /// <summary>
 /// Canvas that hosts a <see cref="DiagramVisualLayer"/> for high-performance rendering
@@ -67,7 +71,10 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Minimap ───────────────────────────────────────────────────────────────
     private readonly DiagramMinimapControl _minimap = new();
-    private bool _minimapVisible = true;
+    private bool          _minimapVisible = true;
+    private MinimapCorner _minimapCorner  = MinimapCorner.BottomLeft;
+
+    private const double MinimapMargin = 8.0;
 
     // ── Filter bar (Phase 12) ─────────────────────────────────────────────────
     private readonly DiagramFilterBar _filterBar = new();
@@ -95,9 +102,11 @@ public sealed class DiagramCanvas : Canvas
         Canvas.SetLeft(_layer, 0);
         Canvas.SetTop(_layer, 0);
 
-        // Minimap — bottom-left, above main layer.
+        // Minimap — bottom-left by default, above main layer.
         Children.Add(_minimap);
         _minimap.ViewportNavigateRequested += OnMinimapNavigate;
+        _minimap.CornerChangeRequested     += (_, corner) => SetMinimapCorner(corner);
+        _minimap.HideRequested             += (_, _) => IsMinimapVisible = false;
         SizeChanged += (_, _) => UpdateMinimapPosition();
         UpdateMinimapPosition();
 
@@ -117,23 +126,52 @@ public sealed class DiagramCanvas : Canvas
         get => _minimapVisible;
         set
         {
-            _minimapVisible    = value;
+            _minimapVisible     = value;
             _minimap.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 
-    private void UpdateMinimapPosition()
+    public MinimapCorner MinimapCorner
     {
-        // Position minimap in bottom-left, anchored to visible area.
-        // Use the parent ScrollViewer's ViewportHeight when available.
-        ScrollViewer? sv = FindAncestorScrollViewer();
-        double viewH = sv?.ViewportHeight > 0 ? sv.ViewportHeight
-                     : ActualHeight > 0       ? ActualHeight
-                     : 400;
-        double viewOffY = sv?.VerticalOffset ?? 0;
+        get => _minimapCorner;
+        private set => _minimapCorner = value;
+    }
 
-        Canvas.SetLeft(_minimap, 8);
-        Canvas.SetTop(_minimap, viewOffY + viewH - DiagramMinimapControl.MapHeight - 8);
+    /// <summary>Moves the minimap to a corner with a smooth animation.</summary>
+    public void SetMinimapCorner(MinimapCorner corner)
+    {
+        _minimapCorner = corner;
+        UpdateMinimapPosition(animate: true);
+    }
+
+    private void UpdateMinimapPosition(bool animate = false)
+    {
+        double pw = ActualWidth;
+        double ph = ActualHeight;
+        if (pw <= 0 || ph <= 0) { Panel.SetZIndex(_minimap, 100); return; }
+
+        double targetLeft = _minimapCorner is MinimapCorner.TopLeft or MinimapCorner.BottomLeft
+            ? MinimapMargin
+            : pw - DiagramMinimapControl.MapWidth - MinimapMargin;
+
+        double targetTop = _minimapCorner is MinimapCorner.TopLeft or MinimapCorner.TopRight
+            ? MinimapMargin
+            : ph - DiagramMinimapControl.MapHeight - MinimapMargin;
+
+        if (animate)
+        {
+            var dur = new Duration(TimeSpan.FromMilliseconds(150));
+            var ease = new QuadraticEase { EasingMode = EasingMode.EaseOut };
+            var animL = new DoubleAnimation(targetLeft, dur) { EasingFunction = ease };
+            var animT = new DoubleAnimation(targetTop,  dur) { EasingFunction = ease };
+            _minimap.BeginAnimation(Canvas.LeftProperty, animL);
+            _minimap.BeginAnimation(Canvas.TopProperty,  animT);
+        }
+        else
+        {
+            Canvas.SetLeft(_minimap, targetLeft);
+            Canvas.SetTop(_minimap,  targetTop);
+        }
         Panel.SetZIndex(_minimap, 100);
     }
 
@@ -474,6 +512,12 @@ public sealed class DiagramCanvas : Canvas
         {
             if (_filterVisible) HideFilterBar();
             else ShowFilterBar();
+            e.Handled = true;
+            return;
+        }
+        if (e.Key == Key.M && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+        {
+            IsMinimapVisible = !IsMinimapVisible;
             e.Handled = true;
             return;
         }
