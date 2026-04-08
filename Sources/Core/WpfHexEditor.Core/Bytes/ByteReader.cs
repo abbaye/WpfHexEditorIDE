@@ -232,6 +232,16 @@ namespace WpfHexEditor.Core.Bytes
 
             count = (int)Math.Min(count, available);
 
+            // Phase 5a — identity fast path: no edits → skip VirtualToPhysical entirely.
+            // Eliminates ~400 ConcurrentDictionary lookups per scroll frame for clean files.
+            if (_positionMapper.IsIdentityMapping)
+            {
+                var fastResult = _fileProvider.ReadBytes(virtualPosition, count);
+                if (fastResult.Length == count)
+                    return fastResult;
+                // Length mismatch means we're near EOF — fall through to the safe path.
+            }
+
             // CRITICAL FIX: Always allocate and fill the full requested buffer
             // Don't return early with partial cache data - that causes massive data loss in SaveAs
             byte[] result = new byte[count];
@@ -311,6 +321,28 @@ namespace WpfHexEditor.Core.Bytes
             }
 
             return lines;
+        }
+
+        /// <summary>
+        /// Phase 5b — pre-warm line cache for the upcoming render pass.
+        /// Call this at scroll time (before InvalidateVisual) so OnRender is cache-warm.
+        /// </summary>
+        /// <param name="startVirtualPosition">First byte position to pre-warm.</param>
+        /// <param name="lineCount">Number of lines to prime (typically visible lines + 2 buffer).</param>
+        /// <param name="bytesPerLine">Bytes per line (must match the renderer's BytesPerLine).</param>
+        public void WarmCache(long startVirtualPosition, int lineCount, int bytesPerLine)
+        {
+            if (!_fileProvider.IsOpen || lineCount <= 0 || bytesPerLine <= 0)
+                return;
+
+            long virtualLength = _positionMapper.GetVirtualLength(_fileProvider.Length);
+            long currentPos = startVirtualPosition;
+
+            for (int i = 0; i < lineCount && currentPos < virtualLength; i++)
+            {
+                GetLine(currentPos, bytesPerLine);
+                currentPos += bytesPerLine;
+            }
         }
 
         #region Cache Management

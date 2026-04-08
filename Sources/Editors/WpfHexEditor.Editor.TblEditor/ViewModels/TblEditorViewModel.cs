@@ -153,7 +153,6 @@ internal sealed class TblEditorViewModel : ViewModelBase, IDisposable
 
     public async Task LoadAsync(TblStream tbl, CancellationToken ct = default)
     {
-        IsLoading = true;
         _entries.Clear();
         _undoStack.Clear();
         _redoStack.Clear();
@@ -175,7 +174,6 @@ internal sealed class TblEditorViewModel : ViewModelBase, IDisposable
             await RunAnalysisAsync();
         }
         catch (OperationCanceledException) { }
-        finally { IsLoading = false; }
     }
 
     // -- Save ---------------------------------------------------------------

@@ -43,7 +43,7 @@
                     <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                VerticalAlignment="Center" Margin="0,0,7,0"/>
-                    <TextBlock Text="PLUGIN SYSTEM" FontSize="11" FontWeight="SemiBold"
+                    <TextBlock Text="EXTENSION SYSTEM" FontSize="11" FontWeight="SemiBold"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                VerticalAlignment="Center"/>
                 </StackPanel>

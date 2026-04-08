@@ -78,7 +78,8 @@ public sealed partial class AssemblyExplorerViewModel
         }
 
         var cts = CancellationTokenSource.CreateLinkedTokenSource(externalCt);
-        IsLoading  = true;
+        bool first = TryFirstLoad();
+        if (first) IsLoading = true;
         StatusText = $"Analyzing {Path.GetFileName(filePath)}…";
 
         try
@@ -127,7 +128,7 @@ public sealed partial class AssemblyExplorerViewModel
         }
         finally
         {
-            IsLoading = false;
+            if (first) IsLoading = false;
         }
     }
 

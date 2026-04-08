@@ -66,7 +66,32 @@ public class ZoomPanCanvas : Canvas
         RenderTransform = group;
         RenderTransformOrigin = new Point(0, 0);
 
-        ClipToBounds = false;
+        ClipToBounds = true;
+        Background   = Brushes.Transparent;   // hit-testable in empty areas
+    }
+
+    // ---------------------------------------------------------------------------
+    // Right-click delegation — forward to DiagramCanvas when empty area is hit
+    // (DiagramCanvas is sized to its content so empty-area right-clicks land here)
+    // ---------------------------------------------------------------------------
+
+    protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
+    {
+        base.OnMouseRightButtonUp(e);
+        if (e.Handled) return;
+
+        // Find the first DiagramCanvas child and let it handle the right-click.
+        // e.GetPosition(dc) correctly transforms screen→diagram-local coordinates
+        // via the ancestor RenderTransform chain, so HitTestNode/Arrow work correctly.
+        foreach (UIElement child in InternalChildren)
+        {
+            if (child is DiagramCanvas dc)
+            {
+                dc.HandleEmptyAreaRightClick(e.GetPosition(dc));
+                e.Handled = true;
+                return;
+            }
+        }
     }
 
     // ---------------------------------------------------------------------------
@@ -107,6 +132,18 @@ public class ZoomPanCanvas : Canvas
             c._translate.X = c.OffsetX;
             c._translate.Y = c.OffsetY;
         }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Content bounds (for scrollbar wiring in ClassDiagramSplitHost)
+    // ---------------------------------------------------------------------------
+
+    /// <summary>Returns the diagram extent in logical (unscaled) coordinates.</summary>
+    public Rect GetContentBounds()
+    {
+        if (Children.Count > 0 && Children[0] is DiagramCanvas dc)
+            return dc.GetDiagramBounds();
+        return new Rect(0, 0, 800, 600);
     }
 
     // ---------------------------------------------------------------------------
@@ -152,6 +189,25 @@ public class ZoomPanCanvas : Canvas
         ZoomFactor = zoom;
         OffsetX    = -minX * zoom + padding;
         OffsetY    = -minY * zoom + padding;
+    }
+
+    /// <summary>
+    /// Zooms and pans so that the given rectangle fills the viewport with the specified padding.
+    /// </summary>
+    public void ZoomToRect(Rect r, double padding = 40.0)
+    {
+        if (r.Width < 1 || r.Height < 1) return;
+        double availableWidth  = ActualWidth  > 0 ? ActualWidth  : 800;
+        double availableHeight = ActualHeight > 0 ? ActualHeight : 600;
+
+        double scaleX = (availableWidth  - padding * 2) / r.Width;
+        double scaleY = (availableHeight - padding * 2) / r.Height;
+        double zoom   = Math.Min(scaleX, scaleY);
+        zoom = Math.Max(0.1, Math.Min(4.0, zoom));
+
+        ZoomFactor = zoom;
+        OffsetX    = -(r.X * zoom) + padding;
+        OffsetY    = -(r.Y * zoom) + padding;
     }
 
     // ---------------------------------------------------------------------------

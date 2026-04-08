@@ -28,7 +28,7 @@ namespace WpfHexEditor.Core.Roslyn;
 /// Also implements <see cref="IReferenceCountProvider"/> so <c>InlineHintsService</c>
 /// can use semantic reference counts for C#/VB.NET files.
 /// </summary>
-public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
+public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, IInlineHintsOptionsClient
 {
     private readonly RoslynWorkspaceManager _workspace;
     private readonly BackgroundAnalysisService _analysisService;
@@ -36,6 +36,17 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
     private readonly RoslynReferenceCountProvider _refCountProvider;
     private string? _lastCompletionFilePath;
     private bool _initialized;
+
+    // InlineHints sub-options (configurable from outside)
+    private bool _showVarTypeHints = true;
+    private bool _showLambdaReturnTypeHints = true;
+
+    /// <summary>Sets var-type and lambda-return InlineHints options.</summary>
+    public void SetInlineHintsOptions(bool showVarTypeHints, bool showLambdaReturnTypeHints)
+    {
+        _showVarTypeHints = showVarTypeHints;
+        _showLambdaReturnTypeHints = showLambdaReturnTypeHints;
+    }
 
     public RoslynLanguageClient(Dispatcher dispatcher)
     {
@@ -109,6 +120,14 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
         _workspace.UpdateDocument(filePath, newText);
         _analysisService.NotifyChanged(filePath);
     }
+
+    // Roslyn manages its own in-process workspace; incremental range sync is not
+    // applicable — the workspace is always updated via the full-text DidChange path.
+    // This method intentionally does nothing; callers check IIncrementalSyncClient
+    // before choosing the incremental code path.
+    public void DidChangeIncremental(string filePath, int version,
+        int startLine, int startCol, int endLine, int endCol,
+        int rangeLength, string newText) { }
 
     public void CloseDocument(string filePath) => _workspace.CloseDocument(filePath);
 
@@ -250,7 +269,10 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider
     {
         var doc = _workspace.GetDocument(filePath);
         if (doc is null) return [];
-        return await RoslynInlayHintsProvider.GetInlayHintsAsync(doc, startLine, endLine, ct)
+        return await RoslynInlayHintsProvider.GetInlayHintsAsync(
+                doc, startLine, endLine, ct,
+                showVarTypeHints: _showVarTypeHints,
+                showLambdaReturnTypeHints: _showLambdaReturnTypeHints)
             .ConfigureAwait(false);
     }
 

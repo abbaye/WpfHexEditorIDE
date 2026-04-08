@@ -17,6 +17,9 @@
 //     for round-trip serialisation stability.
 //     Filtered member views (Fields, Properties, Methods, Events) use
 //     LINQ — callers should cache results for hot paths.
+//     Semantic properties (IsPartial, IsRecord, IsSealed, XmlDocSummary,
+//     Metrics, Namespace, SourceFilePath, SourceLineOneBased) are populated
+//     by RoslynClassDiagramAnalyzer and left at defaults by the regex fallback.
 // ==========================================================
 
 namespace WpfHexEditor.Editor.ClassDiagram.Core.Model;
@@ -49,8 +52,54 @@ public sealed class ClassNode
     /// </summary>
     public bool IsAbstract { get; set; }
 
+    /// <summary>Whether this type is declared <c>partial</c> across multiple source files.</summary>
+    public bool IsPartial { get; set; }
+
+    /// <summary>Whether this type is a C# 9+ <c>record</c> or <c>record struct</c>.</summary>
+    public bool IsRecord { get; set; }
+
+    /// <summary>Whether this type carries the <c>sealed</c> modifier.</summary>
+    public bool IsSealed { get; set; }
+
+    /// <summary>
+    /// Fully-qualified namespace of this type (e.g. <c>MyApp.Services</c>).
+    /// Empty string when not resolvable (regex fallback path).
+    /// </summary>
+    public string Namespace { get; set; } = string.Empty;
+
+    /// <summary>
+    /// First-line XML documentation summary for this type.
+    /// <see langword="null"/> when not present or when using the regex fallback.
+    /// </summary>
+    public string? XmlDocSummary { get; set; }
+
+    /// <summary>
+    /// Absolute path of the primary source file containing this type declaration.
+    /// <see langword="null"/> when not resolvable.
+    /// </summary>
+    public string? SourceFilePath { get; set; }
+
+    /// <summary>
+    /// 1-based line number of the type declaration in <see cref="SourceFilePath"/>.
+    /// 0 when not resolvable.
+    /// </summary>
+    public int SourceLineOneBased { get; set; }
+
+    /// <summary>
+    /// Coupling and complexity metrics computed by the Roslyn analyzer.
+    /// Defaults to <see cref="ClassMetrics.Empty"/> when not computed.
+    /// </summary>
+    public ClassMetrics Metrics { get; set; } = ClassMetrics.Empty;
+
     /// <summary>All members declared inside this node.</summary>
     public List<ClassMember> Members { get; init; } = [];
+
+    /// <summary>
+    /// Attribute names applied to this type (e.g. "Serializable", "DataContract").
+    /// Populated by <c>RoslynClassDiagramAnalyzer</c>; empty when using the regex fallback.
+    /// The "Attribute" suffix is stripped for display brevity.
+    /// </summary>
+    public List<string> Attributes { get; init; } = [];
 
     // -------------------------------------------------------
     // Layout Properties (mutated by AutoLayoutEngine and drag)

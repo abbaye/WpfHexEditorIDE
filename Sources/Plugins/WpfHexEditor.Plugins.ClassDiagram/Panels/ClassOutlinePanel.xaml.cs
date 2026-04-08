@@ -16,7 +16,10 @@
 //     needing a DI container.
 // ==========================================================
 
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 namespace WpfHexEditor.Plugins.ClassDiagram.Panels;
@@ -29,10 +32,42 @@ public partial class ClassOutlinePanel : UserControl
     /// <summary>Gets the ViewModel backing this panel.</summary>
     public ClassOutlinePanelViewModel ViewModel { get; }
 
+    /// <summary>Raised when the user double-clicks a member to navigate to source.</summary>
+    public event EventHandler<(ClassNode Node, ClassMember? Member)>? NavigateToMemberRequested;
+
     public ClassOutlinePanel()
     {
         ViewModel   = new ClassOutlinePanelViewModel();
         DataContext = ViewModel;
         InitializeComponent();
+    }
+
+    private void OnTreeSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (e.NewValue is ClassNodeViewModel nodeVm)
+            ViewModel.SelectedNode = nodeVm;
+        else if (e.NewValue is ClassMemberViewModel memberVm)
+        {
+            // Find parent node
+            var parentNode = ViewModel.Nodes.FirstOrDefault(n =>
+                n.MemberViewModels.Contains(memberVm));
+            if (parentNode is not null)
+                ViewModel.SelectedNode = parentNode;
+        }
+    }
+
+    private void OnTreeDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (NodeTree.SelectedItem is ClassNodeViewModel nodeVm)
+        {
+            NavigateToMemberRequested?.Invoke(this, (nodeVm.Node, null));
+        }
+        else if (NodeTree.SelectedItem is ClassMemberViewModel memberVm)
+        {
+            var parentNode = ViewModel.Nodes.FirstOrDefault(n =>
+                n.MemberViewModels.Contains(memberVm));
+            if (parentNode is not null)
+                NavigateToMemberRequested?.Invoke(this, (parentNode.Node, memberVm.Member));
+        }
     }
 }

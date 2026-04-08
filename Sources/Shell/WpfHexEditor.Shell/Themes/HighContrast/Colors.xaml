@@ -540,28 +540,28 @@
     <SolidColorBrush x:Key="MD_PreviewBorder"       Color="#FFFFFF"/>
 
     <!-- Class Diagram (CD_*) -->
-    <SolidColorBrush x:Key="CD_CanvasBackground"             Color="#2A2A2A" />
-    <SolidColorBrush x:Key="CD_CanvasBorderBrush"            Color="#3F3F46" />
-    <SolidColorBrush x:Key="CD_CanvasGridLineBrush"          Color="#333333" />
-    <SolidColorBrush x:Key="CD_ClassBoxBackground"           Color="#252526" />
-    <SolidColorBrush x:Key="CD_ClassBoxBorderBrush"          Color="#3F3F46" />
-    <SolidColorBrush x:Key="CD_ClassBoxHeaderBackground"     Color="#1E1E1E" />
-    <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#3F3F46" />
-    <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#569CD6" />
-    <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#4EC9B0" />
-    <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#4FC1FF" />
-    <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#9B9B9B" />
-    <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#D4D4D4" />
-    <SolidColorBrush x:Key="CD_FieldForeground"              Color="#9CDCFE" />
-    <SolidColorBrush x:Key="CD_PropertyForeground"           Color="#4EC9B0" />
-    <SolidColorBrush x:Key="CD_MethodForeground"             Color="#C586C0" />
-    <SolidColorBrush x:Key="CD_EventForeground"              Color="#CE9178" />
-    <SolidColorBrush x:Key="CD_InheritanceArrowBrush"        Color="#4FC1FF" />
-    <SolidColorBrush x:Key="CD_AssociationArrowBrush"        Color="#569CD6" />
-    <SolidColorBrush x:Key="CD_DependencyArrowBrush"         Color="#7F7F7F" />
-    <SolidColorBrush x:Key="CD_AggregationArrowBrush"        Color="#4EC9B0" />
-    <SolidColorBrush x:Key="CD_CompositionArrowBrush"        Color="#CE9178" />
-    <SolidColorBrush x:Key="CD_RelationshipLabelForeground"  Color="#9B9B9B" />
+    <SolidColorBrush x:Key="CD_CanvasBackground"             Color="#000000" />
+    <SolidColorBrush x:Key="CD_CanvasBorderBrush"            Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CD_CanvasGridLineBrush"          Color="#222222" />
+    <SolidColorBrush x:Key="CD_ClassBoxBackground"           Color="#000000" />
+    <SolidColorBrush x:Key="CD_ClassBoxBorderBrush"          Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CD_ClassBoxHeaderBackground"     Color="#111111" />
+    <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#555555" />
+    <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#FFFF00" />
+    <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#00FFFF" />
+    <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#AAAAAA" />
+    <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CD_FieldForeground"              Color="#00FFFF" />
+    <SolidColorBrush x:Key="CD_PropertyForeground"           Color="#00FF00" />
+    <SolidColorBrush x:Key="CD_MethodForeground"             Color="#FFFF00" />
+    <SolidColorBrush x:Key="CD_EventForeground"              Color="#FF8000" />
+    <SolidColorBrush x:Key="CD_InheritanceArrowBrush"        Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CD_AssociationArrowBrush"        Color="#00FFFF" />
+    <SolidColorBrush x:Key="CD_DependencyArrowBrush"         Color="#AAAAAA" />
+    <SolidColorBrush x:Key="CD_AggregationArrowBrush"        Color="#00FF00" />
+    <SolidColorBrush x:Key="CD_CompositionArrowBrush"        Color="#FF8000" />
+    <SolidColorBrush x:Key="CD_RelationshipLabelForeground"  Color="#FFFFFF" />
     <SolidColorBrush x:Key="CD_PanelToolbarBrush"            Color="#2D2D30" />
     <SolidColorBrush x:Key="CD_PanelToolbarBorderBrush"      Color="#3F3F46" />
     <SolidColorBrush x:Key="CD_OutlineSelectedBrush"         Color="#094771" />
@@ -617,8 +617,8 @@
     <SolidColorBrush x:Key="LSP_ErrorDot"               Color="#FF0000" />
     <SolidColorBrush x:Key="CE_InlayHintForeground"     Color="#AAAAAA" />
     <SolidColorBrush x:Key="CE_InlayHintBackground"     Color="#111111" />
-    <SolidColorBrush x:Key="CE_CodeLensForeground"      Color="#AAAAAA" />
-    <SolidColorBrush x:Key="CE_CodeLensHoverBackground" Color="#222222" />
+    <SolidColorBrush x:Key="CE_DeclarationHintsForeground"      Color="#AAAAAA" />
+    <SolidColorBrush x:Key="CE_DeclarationHintsHoverBackground" Color="#222222" />
     <SolidColorBrush x:Key="SE_TypeColor"               Color="#20FFFF00" />
     <SolidColorBrush x:Key="SE_MethodColor"             Color="#2000FF00" />
     <SolidColorBrush x:Key="SE_VariableColor"           Color="#20FFFFFF" />
@@ -965,4 +965,20 @@
     <!-- Options page section header foreground -->
     <SolidColorBrush x:Key="Opt_SectionForegroundBrush" Color="#AAAAAA"/>
 
-</ResourceDictionary>
+
+    <!-- ══ Git Panel (GC_*) ══════════════════════════════════════════════════ -->
+    <SolidColorBrush x:Key="GC_AddedForeground"            Color="#00FF00"/>
+    <SolidColorBrush x:Key="GC_ModifiedForeground"         Color="#FFFF00"/>
+    <SolidColorBrush x:Key="GC_DeletedForeground"          Color="#FF0000"/>
+    <SolidColorBrush x:Key="GC_StagedForeground"           Color="#00FF00"/>
+    <SolidColorBrush x:Key="GC_UntrackedForeground"        Color="#888888"/>
+    <SolidColorBrush x:Key="GC_ConflictForeground"         Color="#FF6B6B"/>
+    <SolidColorBrush x:Key="GC_CommitButtonBackground"     Color="#0078D4"/>
+    <SolidColorBrush x:Key="GC_CommitButtonForeground"     Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="GC_AheadBadgeForeground"       Color="#00FF00"/>
+    <SolidColorBrush x:Key="GC_BehindBadgeForeground"      Color="#FFFF00"/>
+    <SolidColorBrush x:Key="GC_BlameAuthorForeground"      Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="GC_BlameHashForeground"        Color="#FFFF00"/>
+    <SolidColorBrush x:Key="GC_BranchPickerHoverBackground" Color="#000000"/>
+    <SolidColorBrush x:Key="GC_SectionHeaderForeground"    Color="#888888"/>
+    <SolidColorBrush x:Key="GC_StashForeground"            Color="#B0B0B0"/></ResourceDictionary>

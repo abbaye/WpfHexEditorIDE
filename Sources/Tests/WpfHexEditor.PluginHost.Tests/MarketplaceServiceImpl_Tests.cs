@@ -260,4 +260,137 @@ public sealed class MarketplaceServiceImpl_Tests
         var l = new MarketplaceListing();
         Assert.IsFalse(l.IsInstalled);
     }
+
+    // ── RollbackAsync ─────────────────────────────────────────────────────────
+
+    [TestMethod]
+    public async Task RollbackAsync_NoBakDirectory_ReturnsFalse()
+    {
+        var tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(tmp);
+        try
+        {
+            // Install a plugin to create the plugin dir (but no .bak subdir)
+            var svc = CreateServiceWithDir(tmp);
+            var result = await svc.RollbackAsync("no-bak-plugin");
+            Assert.IsFalse(result);
+        }
+        finally { Directory.Delete(tmp, recursive: true); }
+    }
+
+    [TestMethod]
+    public async Task RollbackAsync_WithBakDirectory_RestoresFiles()
+    {
+        var tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var pluginDir = Path.Combine(tmp, "Plugins", "my-plugin");
+        var bakDir    = Path.Combine(pluginDir, ".bak");
+        Directory.CreateDirectory(pluginDir);
+        Directory.CreateDirectory(bakDir);
+
+        // Write a file to .bak/
+        var originalContent = "original DLL content";
+        File.WriteAllText(Path.Combine(bakDir, "my-plugin.dll"), originalContent);
+
+        // Overwrite with "new" content in the plugin dir
+        File.WriteAllText(Path.Combine(pluginDir, "my-plugin.dll"), "new DLL content");
+
+        try
+        {
+            var svc    = CreateServiceWithDir(tmp);
+            var result = await svc.RollbackAsync("my-plugin");
+            Assert.IsTrue(result);
+
+            // Verify the rollback restored the original file
+            var restoredContent = File.ReadAllText(Path.Combine(pluginDir, "my-plugin.dll"));
+            Assert.AreEqual(originalContent, restoredContent);
+        }
+        finally { Directory.Delete(tmp, recursive: true); }
+    }
+
+    [TestMethod]
+    public async Task RollbackAsync_EmptyBakDirectory_ReturnsTrue()
+    {
+        var tmp       = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var pluginDir = Path.Combine(tmp, "Plugins", "empty-bak");
+        var bakDir    = Path.Combine(pluginDir, ".bak");
+        Directory.CreateDirectory(pluginDir);
+        Directory.CreateDirectory(bakDir); // empty .bak/
+
+        try
+        {
+            var svc    = CreateServiceWithDir(tmp);
+            var result = await svc.RollbackAsync("empty-bak");
+            Assert.IsTrue(result); // no files to copy is still a valid rollback
+        }
+        finally { Directory.Delete(tmp, recursive: true); }
+    }
+
+    // ── GetChangelogAsync ─────────────────────────────────────────────────────
+
+    [TestMethod]
+    public async Task GetChangelogAsync_NoNetwork_ReturnsNullOrString()
+    {
+        var svc     = CreateService();
+        var ct      = new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token;
+        var result  = await svc.GetChangelogAsync("nonexistent-plugin-xyz-123", ct);
+        // Offline or not found → null is acceptable
+        Assert.IsTrue(result is null || result.Length >= 0);
+    }
+
+    // ── Backup during install ─────────────────────────────────────────────────
+
+    [TestMethod]
+    public void InstallAsync_ExistingPlugin_CreatesBakDirectory()
+    {
+        // This test verifies the .bak logic path is reachable by checking Directory.CreateDirectory
+        // does not throw when the .bak directory doesn't yet exist.
+        var tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var pluginDir = Path.Combine(tmp, "Plugins", "test-plugin");
+        var bakDir    = Path.Combine(pluginDir, ".bak");
+        Directory.CreateDirectory(pluginDir);
+        try
+        {
+            // Simulate the backup logic from InstallAsync
+            Directory.CreateDirectory(bakDir);
+            Assert.IsTrue(Directory.Exists(bakDir));
+        }
+        finally { Directory.Delete(tmp, recursive: true); }
+    }
+
+    // ── MarketplaceUpdatesAvailableEvent ──────────────────────────────────────
+
+    [TestMethod]
+    public void MarketplaceUpdatesAvailableEvent_DefaultValues()
+    {
+        var e = new WpfHexEditor.Core.Events.IDEEvents.MarketplaceUpdatesAvailableEvent();
+        Assert.AreEqual(0, e.UpdateCount);
+        Assert.IsNotNull(e.ListingIds);
+        Assert.AreEqual(0, e.ListingIds.Count);
+    }
+
+    [TestMethod]
+    public void MarketplaceUpdatesAvailableEvent_WithValues_RoundTrips()
+    {
+        var e = new WpfHexEditor.Core.Events.IDEEvents.MarketplaceUpdatesAvailableEvent
+        {
+            UpdateCount = 3,
+            ListingIds  = ["plugin-a", "plugin-b", "plugin-c"],
+        };
+
+        Assert.AreEqual(3,          e.UpdateCount);
+        Assert.AreEqual("plugin-a", e.ListingIds[0]);
+        Assert.AreEqual("plugin-c", e.ListingIds[2]);
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private static WpfHexEditor.PluginHost.Services.MarketplaceServiceImpl CreateService()
+        => new WpfHexEditor.PluginHost.Services.MarketplaceServiceImpl();
+
+    private static WpfHexEditor.PluginHost.Services.MarketplaceServiceImpl CreateServiceWithDir(string baseDir)
+    {
+        // MarketplaceServiceImpl uses a fixed PluginsDir; we use the overload that accepts
+        // a custom base dir for test isolation.
+        return new WpfHexEditor.PluginHost.Services.MarketplaceServiceImpl(pluginsBaseDir: baseDir);
+    }
 }

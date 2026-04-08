@@ -34,7 +34,6 @@ using WpfHexEditor.Shell;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.PluginHost;
-using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
@@ -86,6 +85,7 @@ public partial class MainWindow
 
     private int    _pluginFaultCount = 0;
     private string? _infoBarPluginId;   // ID of the plugin currently shown in the InfoBar
+    private WpfHexEditor.PluginHost.Services.MarketplaceUpdateScheduler? _marketplaceScheduler;
 
     // Panels restored from a saved layout before the plugin system was ready.
     // Their DataContext is wired up at the end of InitializePluginSystemAsync.
@@ -97,8 +97,7 @@ public partial class MainWindow
     // registered at startup. Opened at the end of InitializePluginSystemAsync once loaders are live.
     private string? _pendingRestoreSolutionPath;
 
-    // Dev tools (instantiated on first use)
-    private PluginDevLoader? _pluginDevLoader;
+    // Dev tools — Watch Mode is now managed by WpfPluginHost.EnableWatchMode
 
     // StatusBar fault-blink timer (DispatcherTimer, 800 ms toggle)
     private DispatcherTimer? _statusBarBlinkTimer;
@@ -640,6 +639,9 @@ public partial class MainWindow
                     _pendingRestoreSolutionPath = null;
                     _ = OpenSolutionAsync(deferredPath);
                 }
+
+                // Start background marketplace update checker
+                StartMarketplaceUpdateScheduler();
             });
         }
         catch (Exception ex)
@@ -903,7 +905,7 @@ public partial class MainWindow
 
         var vm      = new PluginManagerViewModel(_pluginHost, Dispatcher);
         var control = new PluginManagerControl(vm);
-        var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Plugin Manager", CanClose = true };
+        var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Extension Manager", CanClose = true };
 
         DockPanelToCenter(PluginManagerContentId, item, control);
     }
@@ -936,7 +938,7 @@ public partial class MainWindow
 
         var vm      = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
         var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = vm };
-        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = "Plugin Monitor", CanClose = true };
+        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = "Extensions Monitor", CanClose = true };
 
         DockPanelToBottom(PluginMonitorContentId, item, control);
     }
@@ -954,7 +956,7 @@ public partial class MainWindow
         var vm    = new MarketplacePanelViewModel(svc, _pluginHost!, msg => OutputLogger.PluginInfo(msg));
         var panel = new MarketplacePanel();
         panel.Initialize(vm);
-        var item  = new DockItem { ContentId = MarketplaceContentId, Title = "Plugin Marketplace", CanClose = true };
+        var item  = new DockItem { ContentId = MarketplaceContentId, Title = "Extension Marketplace", CanClose = true };
 
         DockPanelToBottom(MarketplaceContentId, item, panel);
     }
@@ -971,7 +973,7 @@ public partial class MainWindow
 
         var dialog = new Microsoft.Win32.OpenFolderDialog
         {
-            Title = "Select Plugin Build Output Directory",
+            Title = "Select Extension Build Output Directory",
             Multiselect = false
         };
 
@@ -983,8 +985,8 @@ public partial class MainWindow
         // Derive plugin ID from the folder name (user can rename via the folder they pick)
         var pluginId = new DirectoryInfo(dir).Name;
 
-        _pluginDevLoader ??= new PluginDevLoader(_pluginHost, Dispatcher, msg => OutputLogger.PluginInfo(msg));
-        _pluginDevLoader.Watch(pluginId, dir);
+        // Route through WpfPluginHost.EnableWatchMode so EventBus + toast are wired automatically
+        _pluginHost.EnableWatchMode(pluginId, dir);
 
         OutputLogger.PluginInfo($"[DevWatch] Watching '{pluginId}' → {dir}");
     }
@@ -1004,18 +1006,14 @@ public partial class MainWindow
 
     private void OnPluginHotReload(object sender, RoutedEventArgs e)
     {
-        if (_pluginDevLoader is null)
+        if (_pluginHost is null)
         {
-            OutputLogger.PluginWarn("[HotReload] No active plugin dev session — use Plugin Dev Watch first.");
+            OutputLogger.PluginWarn("[HotReload] Plugin system not initialised.");
             return;
         }
 
-        // The PluginDevLoader in PluginHost does not expose a direct hot-reload
-        // by project path from the App layer; we log a helpful hint instead.
-        // Full hot-reload is triggered automatically when AutoRebuildOnSave is on
-        // and a source file changes, or manually via the PluginDevToolbar.
-        OutputLogger.PluginInfo("[HotReload] Hot-reload is managed by the Plugin Dev toolbar. " +
-            "Ensure the Plugin Dev Watch is active and AutoRebuildOnSave is enabled in Options.");
+        OutputLogger.PluginInfo("[HotReload] Hot-reload is managed by Watch Mode. " +
+            "Enable Watch Mode on a plugin via Plugin Manager → Watch Mode, or use Plugin Dev Watch.");
     }
 
     // --- LSP state indicator -------------------------------------------
@@ -1043,7 +1041,7 @@ public partial class MainWindow
                 LspStatusDot.Text        = "●";
                 LspStatusDot.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "LSP_ReadyDot");
                 LspStatusText.Text       = e.ServerName ?? e.LanguageId;
-                LspStatusItem.ToolTip    = $"LSP: {e.ServerName} ready for {e.LanguageId}";
+                LspStatusItem.ToolTip    = $"LSP: {e.ServerName} ready for {e.LanguageId} — Diag: {(e.UsesPullDiagnostics ? "Pull" : "Push")}";
                 LspStatusItem.Visibility = Visibility.Visible;
                 break;
             case LspServerState.Error:
@@ -1191,6 +1189,7 @@ public partial class MainWindow
         _lspStatusBarAdapter?.Dispose();
         _lspStatusBarAdapter = null;
         ShutdownDebugIntegration();
+        ShutdownGitIntegration();
         _lspFirstRunService?.Dispose();
         _lspFirstRunService = null;
         _notificationBellAdapter?.Dispose();
@@ -1207,6 +1206,8 @@ public partial class MainWindow
             await _debuggerService.DisposeAsync().ConfigureAwait(false);
             _debuggerService = null;
         }
+        _marketplaceScheduler?.Dispose();
+        _marketplaceScheduler = null;
         _ideEventBus?.Dispose();
         _ideEventBus = null;
         if (_serviceProvider is IAsyncDisposable asyncDisposable)
@@ -1214,6 +1215,52 @@ public partial class MainWindow
         else
             (_serviceProvider as IDisposable)?.Dispose();
         _serviceProvider = null;
+    }
+
+    // --- Marketplace update scheduler ------------------------------------
+
+    private void StartMarketplaceUpdateScheduler()
+    {
+        if (_ideEventBus is null) return;
+        var settings  = AppSettingsService.Instance.Current;
+        if (!settings.Marketplace.AutoCheckUpdates) return;
+
+        var token     = settings.Marketplace.GitHubToken;
+        var svc       = new WpfHexEditor.PluginHost.Services.MarketplaceServiceImpl(
+            gitHubToken: string.IsNullOrEmpty(token) ? null : token,
+            logger:      msg => OutputLogger.PluginInfo(msg));
+
+        _marketplaceScheduler = new WpfHexEditor.PluginHost.Services.MarketplaceUpdateScheduler(
+            svc, _ideEventBus, settings, Dispatcher);
+
+        _ideEventBus.Subscribe<WpfHexEditor.Core.Events.IDEEvents.MarketplaceUpdatesAvailableEvent>(
+            OnMarketplaceUpdatesAvailable);
+
+        _marketplaceScheduler.Start();
+    }
+
+    private void OnMarketplaceUpdatesAvailable(
+        WpfHexEditor.Core.Events.IDEEvents.MarketplaceUpdatesAvailableEvent e)
+    {
+        if (MarketplaceBadgeItem is null) return;
+        MarketplaceBadgeItem.Visibility = System.Windows.Visibility.Visible;
+        MarketplaceBadgeText.Text       = e.UpdateCount == 1
+            ? "1 plugin update"
+            : $"{e.UpdateCount} plugin updates";
+
+        // Also post a notification bell entry
+        _notificationService?.Post(new WpfHexEditor.Editor.Core.Notifications.NotificationItem
+        {
+            Id      = "marketplace-updates-available",
+            Title   = $"{e.UpdateCount} extension update{(e.UpdateCount == 1 ? "" : "s")} available",
+            Message = "Open the Marketplace (Extensions → Extension Marketplace) to install the updates.",
+            Severity = WpfHexEditor.Editor.Core.Notifications.NotificationSeverity.Info,
+        });
+    }
+
+    private void OnMarketplaceBadgeClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnOpenMarketplace(sender, e);
     }
 
     // --- IDE EventBus publishers -----------------------------------------

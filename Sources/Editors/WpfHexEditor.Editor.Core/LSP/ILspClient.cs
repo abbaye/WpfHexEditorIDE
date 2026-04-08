@@ -311,6 +311,16 @@ public interface ILspClient : IAsyncDisposable
     /// </summary>
     void DidChange(string filePath, int version, string newText);
 
+    /// <summary>
+    /// Sends textDocument/didChange with a single incremental content change.
+    /// Use only when the server declared TextDocumentSyncKind.Incremental (2);
+    /// callers must fall back to <see cref="DidChange"/> for multi-edit operations
+    /// (paste, undo, multi-caret).
+    /// </summary>
+    void DidChangeIncremental(string filePath, int version,
+        int startLine, int startCol, int endLine, int endCol,
+        int rangeLength, string newText);
+
     /// <summary>Sends textDocument/didClose.</summary>
     void CloseDocument(string filePath);
 
@@ -531,4 +541,54 @@ public interface ILspClient : IAsyncDisposable
     /// textDocument/publishDiagnostics for any open document.
     /// </summary>
     event EventHandler<LspDiagnosticsReceivedEventArgs> DiagnosticsReceived;
+}
+
+// ── IInlineHintsOptionsClient ─────────────────────────────────────────────────
+
+/// <summary>
+/// Optional interface implemented by LSP clients that support configuring
+/// semantic InlineHints options (var-type hints, lambda return-type hints).
+/// CodeEditor checks <c>ILspClient as IInlineHintsOptionsClient</c> — no
+/// direct dependency on the Roslyn assembly.
+/// </summary>
+public interface IInlineHintsOptionsClient
+{
+    /// <summary>Propagates var-type and lambda-return InlineHints settings to the underlying provider.</summary>
+    void SetInlineHintsOptions(bool showVarTypeHints, bool showLambdaReturnTypeHints);
+}
+
+// ── IIncrementalSyncClient ────────────────────────────────────────────────────
+
+/// <summary>
+/// Optional interface implemented by LSP clients whose underlying server declared
+/// <c>TextDocumentSyncKind.Incremental</c> (2). CodeEditor checks
+/// <c>ILspClient as IIncrementalSyncClient</c> before using
+/// <see cref="ILspClient.DidChangeIncremental"/>. Clients that do not implement
+/// this interface (e.g. Roslyn) always receive full-text <c>DidChange</c> calls.
+/// </summary>
+public interface IIncrementalSyncClient
+{
+    /// <summary>
+    /// <see langword="true"/> when the connected server can process incremental
+    /// textDocument/didChange messages (TextDocumentSyncKind = 2).
+    /// </summary>
+    bool SupportsIncrementalSync { get; }
+}
+
+// ── IDiagnosticsModeClient ────────────────────────────────────────────────────
+
+/// <summary>
+/// Optional interface implemented by LSP clients that expose their diagnostics
+/// delivery mode (push vs. pull). Status bar and diagnostics panels can check
+/// <c>ILspClient as IDiagnosticsModeClient</c> for observability — no direct
+/// dependency on the transport or server-capabilities layer.
+/// </summary>
+public interface IDiagnosticsModeClient
+{
+    /// <summary>
+    /// <see langword="true"/> when the server uses pull diagnostics (LSP 3.18
+    /// <c>textDocument/diagnostic</c>); <see langword="false"/> when it relies
+    /// on push via <c>textDocument/publishDiagnostics</c>.
+    /// </summary>
+    bool UsesPullDiagnostics { get; }
 }

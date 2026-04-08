@@ -1,0 +1,165 @@
+<UserControl
+    x:Class="WpfHexEditor.Plugins.Git.Views.GitHistoryPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
+    xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
+    Background="{DynamicResource DockBackgroundBrush}"
+    Foreground="{DynamicResource DockMenuForegroundBrush}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Toolbar + filters -->
+            <RowDefinition Height="*"/>     <!-- Content split -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ───────────────────────────────────────────────────────── -->
+        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="False">
+                <!-- Loading indicator — docked right so it's always visible -->
+                <pb:LinearProgressBar DockPanel.Dock="Right"
+                                      IsIndeterminate="True" Width="50" Height="3" BarHeight="3"
+                                      Margin="4,0,2,0"
+                                      Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
+                                      VerticalAlignment="Center"/>
+
+                <Button Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE72C;"
+                        Command="{Binding RefreshCommand}"
+                        ToolTip="Refresh"/>
+                <Separator Width="1" Margin="2,4"
+                           Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
+
+                <!-- File filter -->
+                <TextBlock Text="File:" VerticalAlignment="Center" FontSize="11" Margin="4,0,4,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                <TextBox Text="{Binding FileFilter, UpdateSourceTrigger=PropertyChanged}"
+                         Width="110" Height="18" VerticalContentAlignment="Center"
+                         FontSize="11" Padding="3,0"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                         ToolTip="Filter by file path (leave empty for all commits)">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <!-- Author filter -->
+                <TextBlock Text="Author:" VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                <TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}"
+                         Width="80" Height="18" VerticalContentAlignment="Center"
+                         FontSize="11" Padding="3,0"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                         ToolTip="Filter by author name">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <!-- Max count -->
+                <TextBlock Text="Max:" VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                <ComboBox SelectedValue="{Binding MaxCount}" Width="52" Height="18"
+                          FontSize="11"
+                          Style="{StaticResource DockComboBoxStyle}">
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">50</sys:Int32>
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">100</sys:Int32>
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">250</sys:Int32>
+                    <sys:Int32 xmlns:sys="clr-namespace:System;assembly=mscorlib">500</sys:Int32>
+                </ComboBox>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Content: commit list + diff pane ─────────────────────────────── -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Commit list -->
+            <ListView Grid.Column="0"
+                      ItemsSource="{Binding Commits}"
+                      SelectedItem="{Binding SelectedCommit}"
+                      Background="{DynamicResource DockBackgroundBrush}"
+                      BorderThickness="0"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:CommitRow}">
+                        <Grid Margin="4,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="52"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- Short hash pill -->
+                            <Border Grid.Column="0" Background="{DynamicResource GC_CommitButtonBackground}"
+                                    CornerRadius="3" Padding="4,1" Margin="0,0,6,0"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ShortHash}" FontSize="10" FontFamily="Consolas"
+                                           Foreground="{DynamicResource GC_CommitButtonForeground}"/>
+                            </Border>
+                            <!-- Message -->
+                            <TextBlock Grid.Column="1" Text="{Binding Message}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            <!-- Author -->
+                            <TextBlock Grid.Column="2" Text="{Binding AuthorName}" FontSize="10"
+                                       Opacity="0.6" Margin="8,0,6,0" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource GC_BlameAuthorForeground}"/>
+                            <!-- Date -->
+                            <TextBlock Grid.Column="3" Text="{Binding DateText}" FontSize="10"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource GC_SectionHeaderForeground}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource GC_BranchPickerHoverBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource GC_CommitButtonBackground}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="4"
+                          Background="{DynamicResource DockBorderBrush}"
+                          VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+
+            <!-- Diff / commit details pane -->
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Auto">
+                <TextBox Text="{Binding DiffText, Mode=OneWay}"
+                         IsReadOnly="True" TextWrapping="NoWrap"
+                         Background="Transparent" BorderThickness="0"
+                         FontFamily="Consolas" FontSize="11"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         Padding="6"/>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

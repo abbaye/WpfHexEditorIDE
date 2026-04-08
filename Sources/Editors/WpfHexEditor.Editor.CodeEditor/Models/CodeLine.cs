@@ -29,7 +29,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
     public class CodeLine : INotifyPropertyChanged
     {
         private string _text = string.Empty;
-        private int _lineNumber;
 
         /// <summary>
         /// Text content of this line
@@ -44,22 +43,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
                     _text = value;
                     IsCacheDirty = true;
                     IsGlyphCacheDirty = true; // P1-CE-05: invalidate GlyphRun cache
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Line number (0-based) in the document
-        /// </summary>
-        public int LineNumber
-        {
-            get => _lineNumber;
-            set
-            {
-                if (_lineNumber != value)
-                {
-                    _lineNumber = value;
                     OnPropertyChanged();
                 }
             }
@@ -134,12 +117,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         }
 
         /// <summary>
-        /// Create line with text and line number
+        /// Create line with text. The <paramref name="lineNumber"/> parameter is accepted for
+        /// call-site compatibility but is intentionally ignored — line indices are derived
+        /// from the document's <c>Lines</c> collection at render time (O(1), no stored field).
         /// </summary>
-        public CodeLine(string text, int lineNumber) : this(text)
-        {
-            _lineNumber = lineNumber;
-        }
+        public CodeLine(string text, int lineNumber) : this(text) { }
 
         /// <summary>
         /// Invalidates both the syntax token cache and the GlyphRun segment cache.
@@ -166,7 +148,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
 
         public override string ToString()
         {
-            return $"Line {_lineNumber}: \"{_text}\"";
+            return $"\"{_text}\"";
         }
     }
 }

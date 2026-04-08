@@ -7,7 +7,7 @@
 // Description:
 //     Persisted settings for the Class Diagram plugin.
 //     Controls layout defaults, snap behaviour, and C# source
-//     analysis options used by ClassDiagramSourceAnalyzer.
+//     analysis options used by RoslynClassDiagramAnalyzer.
 //
 // Architecture Notes:
 //     Plain POCO — no WPF dependencies.
@@ -15,6 +15,8 @@
 //     All properties have safe defaults so first-run works
 //     without a settings file.
 // ==========================================================
+
+using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 
 namespace WpfHexEditor.Plugins.ClassDiagram.Options;
 
@@ -30,6 +32,26 @@ public sealed class ClassDiagramOptions
     /// automatically by the auto-layout engine before the canvas is shown.
     /// </summary>
     public bool AutoLayout { get; set; } = true;
+
+    /// <summary>
+    /// Layout algorithm to use when auto-layout is triggered.
+    /// Default: <see cref="LayoutStrategyKind.Hierarchical"/>.
+    /// </summary>
+    public LayoutStrategyKind LayoutStrategy { get; set; } = LayoutStrategyKind.ForceDirected;
+
+    /// <summary>
+    /// Number of iterations for the ForceDirected layout simulation.
+    /// Higher values produce better layout at the cost of more CPU time.
+    /// Valid range: 100–2000.
+    /// </summary>
+    public int ForceDirectedIterations { get; set; } = 800;
+
+    /// <summary>
+    /// Spring rest length in logical pixels for the ForceDirected layout.
+    /// Larger values spread nodes further apart.
+    /// Valid range: 100–600.
+    /// </summary>
+    public double SpringLength { get; set; } = 320;
 
     /// <summary>
     /// Grid snap granularity in logical pixels used when dragging nodes on the canvas.
@@ -66,9 +88,8 @@ public sealed class ClassDiagramOptions
     // ── Source analysis ───────────────────────────────────────────────────────
 
     /// <summary>
-    /// When true <see cref="ClassDiagramSourceAnalyzer"/> includes private and
-    /// protected members when it parses C# source files.
-    /// When false only public members are extracted.
+    /// When true the Roslyn analyzer includes private and protected members.
+    /// When false only public and internal members are extracted.
     /// </summary>
     public bool IncludePrivateMembers { get; set; } = false;
 
@@ -84,4 +105,30 @@ public sealed class ClassDiagramOptions
     /// during auto-layout.
     /// </summary>
     public bool GroupByNamespace { get; set; } = true;
+
+    // ── Minimap ───────────────────────────────────────────────────────────────
+
+    /// <summary>Whether the minimap is visible when the diagram is first opened.</summary>
+    public bool ShowMinimapByDefault { get; set; } = true;
+
+    // ── Outline panel ─────────────────────────────────────────────────────────
+
+    /// <summary>When true the outline panel shows expandable member sub-items.</summary>
+    public bool OutlinePanelShowMembers { get; set; } = true;
+
+    /// <summary>When true member visibility is indicated by coloured ellipses.</summary>
+    public bool OutlinePanelColorByVisibility { get; set; } = true;
+
+    // ── Hover tooltips ────────────────────────────────────────────────────────
+
+    /// <summary>When true hovering a class node shows a detail tooltip after a short delay.</summary>
+    public bool ShowHoverTooltips { get; set; } = true;
+
+    /// <summary>Delay in milliseconds before the hover tooltip appears. Valid range: 100–2000.</summary>
+    public int TooltipDelayMs { get; set; } = 400;
+
+    // ── Session restore ───────────────────────────────────────────────────────
+
+    /// <summary>When true the last zoom, pan, selected node, and minimap position are restored on reopen.</summary>
+    public bool RestoreLastState { get; set; } = true;
 }

@@ -23,6 +23,7 @@
         AllowDrop="True"
         Drop="OnFileDrop"
         DragOver="OnFileDragOver"
+        PreviewKeyDown="OnMainWindowPreviewKeyDown"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
     <Window.Resources>
@@ -588,41 +589,64 @@
                     <!-- ═══════════ Debug (dynamic — populated by DebugMenuOrganizer) ═══════════ -->
                     <MenuItem Header="_Debug" x:Name="DebugMenu" IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}" />
 
-                    <!-- ═══════════ Layout ═══════════ -->
-                    <MenuItem Header="_Layout">
-                        <MenuItem Header="_Save Layout" Click="OnSaveLayout">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Load Layout" Click="OnLoadLayout">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Reset Layout" Click="OnResetLayout">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </MenuItem>
-
                     <!-- ═══════════ Window ═══════════ -->
-                    <MenuItem Header="_Window">
+                    <MenuItem Header="_Window" SubmenuOpened="OnWindowMenuOpened">
+
+                        <!-- ── Close operations ── -->
+                        <MenuItem Header="_Close Document" Click="OnCloseActiveDocument" InputGestureText="Ctrl+W">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Close All _But This" Click="OnCloseAllButThis">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Close _All Documents" Click="OnCloseAllDocuments">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- ── Document navigation ── -->
+                        <MenuItem Header="_Next Document" Click="OnNextDocument" InputGestureText="Ctrl+Tab">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Previous Document" Click="OnPreviousDocument" InputGestureText="Ctrl+Shift+Tab">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- ── Full Screen ── -->
+                        <MenuItem Header="_Full Screen" Click="OnToggleFullScreenMenuClick" InputGestureText="F11">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- ── Tab Groups ── -->
                         <MenuItem Header="Tab _Groups">
                             <MenuItem Header="New _Vertical Tab Group"
                                       Click="OnTabGroupNewVertical"
@@ -687,6 +711,42 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>
+
+                        <!-- ── Layout (moved from top-level) ── -->
+                        <MenuItem Header="_Layout">
+                            <MenuItem Header="_Save Layout" Click="OnSaveLayout">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_Load Layout" Click="OnLoadLayout">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_Reset Layout" Click="OnResetLayout">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+
+                        <!-- ── Open documents (populated dynamically in OnWindowMenuOpened) ── -->
+                        <Separator Tag="doc-sep" />
                     </MenuItem>
 
                     <!-- ═══════════ Tools ═══════════ -->
@@ -711,9 +771,9 @@
                         </MenuItem>
                     </MenuItem>
 
-                    <!-- ═══════════ Plugins ═══════════ -->
-                    <MenuItem Header="_Plugins">
-                        <MenuItem Header="_Plugin Manager"
+                    <!-- ═══════════ Extensions ═══════════ -->
+                    <MenuItem Header="_Extensions">
+                        <MenuItem Header="_Extension Manager"
                                   Command="{x:Static local:MainWindow.OpenPluginManagerCommand}"
                                   CommandTarget="{Binding ElementName=ThisWindow}">
                             <MenuItem.Icon>
@@ -722,14 +782,14 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Plugin _Monitor" Click="OnOpenPluginMonitor">
+                        <MenuItem Header="Extensions _Monitor" Click="OnOpenPluginMonitor">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Plugin _Marketplace" Click="OnOpenMarketplace">
+                        <MenuItem Header="Extension _Marketplace" Click="OnOpenMarketplace">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -744,14 +804,14 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Refresh All Plugins" Click="OnRefreshAllPlugins">
+                        <MenuItem Header="_Refresh All Extensions" Click="OnRefreshAllPlugins">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Plugin _Dev Watch..." Click="OnOpenPluginDevWatch">
+                        <MenuItem Header="Extension _Dev Watch..." Click="OnOpenPluginDevWatch">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xECC6;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -759,7 +819,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="Plugin System _Settings..." Click="OnOpenPluginSettings">
+                        <MenuItem Header="Extension System _Settings..." Click="OnOpenPluginSettings">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -1940,21 +2000,32 @@
                 </StackPanel>
             </StatusBarItem>
 
+            <!-- Git remote operation status (push/pull/fetch) -->
+            <StatusBarItem x:Name="GitOpStatusItem">
+                <TextBlock x:Name="GitOperationStatusText" FontSize="11"
+                           Foreground="{DynamicResource GC_ModifiedForeground}"
+                           Visibility="Collapsed"/>
+            </StatusBarItem>
+
             <!-- Git branch / dirty indicator (shown when a VCS repo is active) -->
             <StatusBarItem x:Name="GitStatusItem" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                               Foreground="{DynamicResource DockTabActiveTextBrush}"
-                               VerticalAlignment="Center" Margin="4,0,4,0"
-                               ToolTip="Git branch"/>
-                    <TextBlock x:Name="GitBranchText"
-                               Foreground="{DynamicResource DockTabActiveTextBrush}"
-                               FontSize="11" VerticalAlignment="Center" Margin="0,0,2,0"/>
-                    <TextBlock x:Name="GitDirtyDot" Text="●" FontSize="9"
-                               Foreground="#E8A838" VerticalAlignment="Center"
-                               Margin="0,0,6,0" Visibility="Collapsed"
-                               ToolTip="Uncommitted changes"/>
-                </StackPanel>
+                <Button x:Name="GitBranchButton"
+                        Background="Transparent" BorderThickness="0" Padding="0"
+                        Cursor="Hand" Click="OnGitBranchButtonClick"
+                        ToolTip="Click to switch branch">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   Foreground="{DynamicResource DockTabActiveTextBrush}"
+                                   VerticalAlignment="Center" Margin="4,0,4,0"/>
+                        <TextBlock x:Name="GitBranchText"
+                                   Foreground="{DynamicResource DockTabActiveTextBrush}"
+                                   FontSize="11" VerticalAlignment="Center" Margin="0,0,2,0"/>
+                        <TextBlock x:Name="GitDirtyDot" Text="●" FontSize="9"
+                                   Foreground="#E8A838" VerticalAlignment="Center"
+                                   Margin="0,0,6,0" Visibility="Collapsed"
+                                   ToolTip="Uncommitted changes"/>
+                    </StackPanel>
+                </Button>
             </StatusBarItem>
 
             <!-- Debug session status indicator -->
@@ -2032,6 +2103,25 @@
                     </Border>
                 </StackPanel>
             </StatusBarItem>
+
+            <!-- ── Marketplace update badge ─────────────────────────────────── -->
+            <StatusBarItem x:Name="MarketplaceBadgeItem" Visibility="Collapsed">
+                <Border Background="#CC5500"
+                        CornerRadius="3"
+                        Padding="6,1"
+                        Cursor="Hand"
+                        ToolTip="Plugin updates available — click to open Marketplace"
+                        MouseLeftButtonDown="OnMarketplaceBadgeClick">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                   Foreground="White" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock x:Name="MarketplaceBadgeText"
+                                   Text="1 update" FontSize="10"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </StatusBarItem>
+
         </StatusBar>
     </Grid>
 
@@ -2050,6 +2140,7 @@
         <KeyBinding Gesture="Ctrl+G"       Command="{x:Static local:MainWindow.GoToOffsetCommand}" />
         <KeyBinding Gesture="Ctrl+Shift+P" Command="{x:Static local:MainWindow.ShowCommandPaletteCommand}" />
         <KeyBinding Gesture="Ctrl+Shift+L" Command="{x:Static local:MainWindow.CustomizeLayoutCommand}" />
+        <KeyBinding Key="F11"             Command="{x:Static local:MainWindow.ToggleFullScreenCommand}" />
     </Window.InputBindings>
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static ApplicationCommands.New}"   Executed="OnNewFile" />
@@ -2064,6 +2155,7 @@
         <CommandBinding Command="{x:Static local:MainWindow.GoToOffsetCommand}"   Executed="OnGoToOffset" />
         <CommandBinding Command="{x:Static local:MainWindow.OpenPluginManagerCommand}"  Executed="OnOpenPluginManager" />
         <CommandBinding Command="{x:Static local:MainWindow.ShowCommandPaletteCommand}" Executed="OnShowCommandPalette" />
-        <CommandBinding Command="{x:Static local:MainWindow.CustomizeLayoutCommand}" Executed="OnCustomizeLayoutCommand" />
+        <CommandBinding Command="{x:Static local:MainWindow.CustomizeLayoutCommand}"   Executed="OnCustomizeLayoutCommand" />
+        <CommandBinding Command="{x:Static local:MainWindow.ToggleFullScreenCommand}" Executed="OnToggleFullScreenRoutedCommand" />
     </Window.CommandBindings>
 </Window>

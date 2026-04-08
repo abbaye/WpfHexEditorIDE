@@ -58,6 +58,16 @@ public partial class ClassDiagramOptionsPage : UserControl
 
         ChkIncludePrivate.IsChecked   = _options.IncludePrivateMembers;
         ChkIncludeInherited.IsChecked = _options.IncludeInheritedMembers;
+
+        ChkShowMinimapByDefault.IsChecked      = _options.ShowMinimapByDefault;
+        ChkOutlineShowMembers.IsChecked        = _options.OutlinePanelShowMembers;
+        ChkOutlineColorByVisibility.IsChecked  = _options.OutlinePanelColorByVisibility;
+
+        ChkShowHoverTooltips.IsChecked         = _options.ShowHoverTooltips;
+        TooltipDelaySlider.Value               = _options.TooltipDelayMs;
+        UpdateTooltipDelayLabel(_options.TooltipDelayMs);
+
+        ChkRestoreLastState.IsChecked          = _options.RestoreLastState;
     }
 
     // ── Save ─────────────────────────────────────────────────────────────────
@@ -83,6 +93,15 @@ public partial class ClassDiagramOptionsPage : UserControl
 
         _options.IncludePrivateMembers   = ChkIncludePrivate.IsChecked == true;
         _options.IncludeInheritedMembers = ChkIncludeInherited.IsChecked == true;
+
+        _options.ShowMinimapByDefault     = ChkShowMinimapByDefault.IsChecked == true;
+        _options.OutlinePanelShowMembers  = ChkOutlineShowMembers.IsChecked == true;
+        _options.OutlinePanelColorByVisibility = ChkOutlineColorByVisibility.IsChecked == true;
+
+        _options.ShowHoverTooltips        = ChkShowHoverTooltips.IsChecked == true;
+        _options.TooltipDelayMs           = (int)TooltipDelaySlider.Value;
+
+        _options.RestoreLastState         = ChkRestoreLastState.IsChecked == true;
     }
 
     // ── Event handlers ───────────────────────────────────────────────────────
@@ -95,8 +114,21 @@ public partial class ClassDiagramOptionsPage : UserControl
             UpdateSnapSizeLabel(e.NewValue);
     }
 
+    // ── Event handlers ───────────────────────────────────────────────────────
+
+    private void OnTooltipDelayChanged(
+        object sender,
+        System.Windows.RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (TooltipDelayLabel is not null)
+            UpdateTooltipDelayLabel((int)e.NewValue);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private void UpdateSnapSizeLabel(double value) =>
         SnapSizeLabel.Text = $"{(int)value} px";
+
+    private void UpdateTooltipDelayLabel(int ms) =>
+        TooltipDelayLabel.Text = $"{ms} ms";
 }

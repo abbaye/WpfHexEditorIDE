@@ -112,7 +112,7 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         // OpenFolderDialog is available in WPF on .NET 8+
         var dialog = new OpenFolderDialog
         {
-            Title = "Select additional plugins directory"
+            Title = "Select additional extensions directory"
         };
 
         if (!string.IsNullOrWhiteSpace(TextPluginsDir.Text) && Directory.Exists(TextPluginsDir.Text))

@@ -1,0 +1,127 @@
+<!--
+// ===========================================================
+// Project: WpfHexEditor.Plugins.Debugger
+// File: Panels/LaunchConfigEditorPanel.xaml
+// Description:
+//     Panel for selecting and launching .whdbg debug configurations.
+//     Open → picks file; Edit in IDE → opens in main CodeEditor;
+//     Launch → starts debug session via IDebuggerService.
+// ===========================================================
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.LaunchConfigEditorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource DockBackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ──────────────────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="4,2">
+            <StackPanel Orientation="Horizontal">
+
+                <Button x:Name="BtnOpen"
+                        ToolTip="Open .whdbg file"
+                        Padding="6,3" Margin="0,0,4,0"
+                        Click="OnOpen">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,4,0"/>
+                        <TextBlock Text="Open" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnSave"
+                        ToolTip="Save launch configuration"
+                        Padding="6,3" Margin="0,0,4,0"
+                        Click="OnSave">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,4,0"/>
+                        <TextBlock Text="Save" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnEditInIde"
+                        ToolTip="Open this .whdbg file in the main CodeEditor for full JSON editing"
+                        Padding="6,3" Margin="0,0,4,0"
+                        Click="OnEditInIde">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,4,0"/>
+                        <TextBlock Text="Edit in IDE" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </Button>
+
+                <Separator Width="1" Margin="4,2" Background="{DynamicResource DockBorderBrush}"/>
+
+                <Button x:Name="BtnLaunch"
+                        ToolTip="Launch selected configuration (F5)"
+                        Padding="6,3" Margin="0,0,8,0"
+                        Click="OnLaunch">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xF5B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="#55CC55" Margin="0,0,4,0"/>
+                        <TextBlock Text="Launch" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    </StackPanel>
+                </Button>
+
+                <Separator Width="1" Margin="0,2,8,2" Background="{DynamicResource DockBorderBrush}"/>
+
+                <TextBlock Text="Configuration:"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Margin="0,0,4,0"/>
+                <ComboBox x:Name="CboConfigurations"
+                          Width="200"
+                          SelectionChanged="OnConfigurationSelected"/>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ── Info area ────────────────────────────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource DockBackgroundBrush}"
+                Padding="16">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="&#xF5B0;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="48"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.2"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+                <TextBlock Text="Debug Launch Configurations"
+                           FontSize="18" FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+                <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center"
+                           FontSize="12"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.6"
+                           Text="Click Open to load a .whdbg file, select a configuration, then click Launch.&#x0a;Use Edit in IDE to edit the JSON with full syntax highlighting and schema validation."/>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Status bar ───────────────────────────────────────────────────── -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="8,2">
+            <TextBlock x:Name="StatusText"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       FontSize="11"
+                       Text="No file open — click Open to load a .whdbg configuration."/>
+        </Border>
+    </Grid>
+</UserControl>

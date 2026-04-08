@@ -189,6 +189,10 @@ public partial class MainWindow
     {
         SnapshotEditorConfigs();
 
+        // Do not persist full-screen state — restore the pre-full-screen WindowState.
+        if (_preFullScreenState.HasValue)
+            _layout.WindowState = (int)_preFullScreenState.Value;
+
         var layoutJson  = DockLayoutSerializer.Serialize(_layout);
         var solutionPath = _solutionManager.CurrentSolution?.FilePath;
         var openFiles   = _documentManager.OpenDocuments

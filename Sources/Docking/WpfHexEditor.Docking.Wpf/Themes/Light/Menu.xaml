@@ -123,10 +123,25 @@
                             <Setter TargetName="RightArrow" Property="Visibility" Value="Visible" />
                             <Setter TargetName="PART_Popup" Property="Placement" Value="Right" />
                         </Trigger>
-                        <!-- Submenu items: highlight background -->
+                        <!-- Submenu items: highlight on IsHighlighted (keyboard/menu-mode) -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
                         </Trigger>
+                        <!-- Submenu items: highlight on IsMouseOver (mouse, covers Popup HWND edge cases) -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Role" Value="SubmenuItem" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Role" Value="SubmenuHeader" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
+                        </MultiTrigger>
                         <!-- Top-level header: show 1px border on hover -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -137,11 +152,30 @@
                             <Setter TargetName="templateRoot" Property="BorderBrush" Value="{DynamicResource DockMenuHighlightBorderBrush}" />
                             <Setter TargetName="templateRoot" Property="BorderThickness" Value="1" />
                         </MultiTrigger>
+                        <!-- Top-level header: IsMouseOver covers the case when no menu is in menu-mode -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Role" Value="TopLevelHeader" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
+                            <Setter TargetName="templateRoot" Property="BorderBrush" Value="{DynamicResource DockMenuHighlightBorderBrush}" />
+                            <Setter TargetName="templateRoot" Property="BorderThickness" Value="1" />
+                        </MultiTrigger>
                         <!-- Top-level item: same border on hover -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="Role" Value="TopLevelItem" />
                                 <Condition Property="IsHighlighted" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
+                            <Setter TargetName="templateRoot" Property="BorderBrush" Value="{DynamicResource DockMenuHighlightBorderBrush}" />
+                            <Setter TargetName="templateRoot" Property="BorderThickness" Value="1" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Role" Value="TopLevelItem" />
+                                <Condition Property="IsMouseOver" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource DockMenuHighlightBrush}" />
                             <Setter TargetName="templateRoot" Property="BorderBrush" Value="{DynamicResource DockMenuHighlightBorderBrush}" />

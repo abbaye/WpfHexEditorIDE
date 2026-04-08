@@ -83,6 +83,42 @@ internal sealed class LspDocumentSync
     }
 
     /// <summary>
+    /// Sends textDocument/didChange with a single incremental content change.
+    /// Use when the server declared TextDocumentSyncKind.Incremental (2).
+    /// </summary>
+    internal async Task DidChangeIncrementalAsync(
+        string filePath, int version,
+        int startLine, int startCol, int endLine, int endCol,
+        int rangeLength, string newText,
+        CancellationToken ct)
+    {
+        var uri = PathToUri(filePath);
+        _versions[uri] = version;
+
+        var p = new
+        {
+            textDocument = new { uri, version },
+            contentChanges = new[]
+            {
+                new
+                {
+                    range = new
+                    {
+                        start = new { line = startLine, character = startCol },
+                        end   = new { line = endLine,   character = endCol   },
+                    },
+                    rangeLength,
+                    text = newText,
+                },
+            },
+        };
+        await _channel.NotifyAsync("textDocument/didChange", p, ct).ConfigureAwait(false);
+
+        // Notify pull-diagnostics coordinator that the document changed.
+        OnDocumentChanged?.Invoke(uri);
+    }
+
+    /// <summary>
     /// Sends textDocument/didSave.
     /// If <paramref name="text"/> is non-null the full text is included
     /// (required when the server's saveOptions.includeText = true).

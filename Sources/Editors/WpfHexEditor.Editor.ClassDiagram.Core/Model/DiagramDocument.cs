@@ -51,6 +51,13 @@ public sealed class DiagramDocument
         Classes.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.Ordinal));
 
     /// <summary>
+    /// Returns the first <see cref="ClassNode"/> whose <see cref="ClassNode.Id"/>
+    /// matches <paramref name="id"/> (ordinal, case-sensitive), or null.
+    /// </summary>
+    public ClassNode? FindById(string id) =>
+        Classes.FirstOrDefault(c => string.Equals(c.Id, id, StringComparison.Ordinal));
+
+    /// <summary>
     /// Returns the first <see cref="ClassRelationship"/> whose source and target
     /// identifiers match <paramref name="srcId"/> and <paramref name="tgtId"/>
     /// (ordinal, case-sensitive), or <see langword="null"/> when not found.

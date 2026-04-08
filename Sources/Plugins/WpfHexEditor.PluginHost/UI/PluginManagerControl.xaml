@@ -63,6 +63,9 @@
             <MenuItem Header="Reload"  Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextReload">
                 <MenuItem.Icon><TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
+            <MenuItem Header="Toggle Watch Mode" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextToggleWatchMode">
+                <MenuItem.Icon><TextBlock Text="&#xE7B3;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+            </MenuItem>
 
             <Separator Background="{DynamicResource DockMenuBorderBrush}" Margin="4,2"/>
 
@@ -875,6 +878,46 @@
                             </ItemsControl>
                         </StackPanel>
 
+
+                        <!-- ── Section: Watch Mode (Dev Hot-Reload) ─────────── -->
+                        <StackPanel>
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="Watch Mode"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock TextWrapping="Wrap" FontSize="11"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Opacity="0.7"
+                                       Margin="0,0,0,8"
+                                       Text="Hot-reload this plugin automatically when its DLL is rebuilt. Select the plugin's build output directory."/>
+                            <DockPanel LastChildFill="False">
+                                <Button DockPanel.Dock="Left"
+                                        Command="{Binding ToggleWatchModeCommand}"
+                                        Style="{DynamicResource PM_ActionButtonStyle}"
+                                        Margin="0,0,6,0">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE7B3;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding WatchModeLabel}"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Border DockPanel.Dock="Left"
+                                        Background="{DynamicResource PM_CategoryHeaderBrush}"
+                                        CornerRadius="4" Padding="6,2"
+                                        Visibility="{Binding IsWatching, Converter={StaticResource BoolToVis}}"
+                                        VerticalAlignment="Center">
+                                    <TextBlock FontSize="10" FontWeight="Bold"
+                                               Foreground="{Binding WatchModeBadgeColor}"
+                                               Text="● WATCHING"/>
+                                </Border>
+                            </DockPanel>
+                            <TextBlock FontSize="10" Opacity="0.6" Margin="0,4,0,0"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Visibility="{Binding IsWatching, Converter={StaticResource BoolToVis}}"
+                                       Text="{Binding WatchDirectory, StringFormat='Directory: {0}'}"/>
+                        </StackPanel>
 
                         <!-- ── Section: Settings (conditional) ──────────────── -->
                         <StackPanel Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}">

@@ -276,6 +276,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Debounce LSP didChange — 300 ms (Phase 4: LSP Integration).
             if (_lspClient is not null && _currentFilePath is not null)
             {
+                // Capture incremental delta for servers that declared TextDocumentSyncKind=2.
+                // Multi-change operations (DeleteLine, multi-caret) collapse to full-text fallback.
+                if (_lspClient is WpfHexEditor.Editor.Core.LSP.IIncrementalSyncClient inc
+                    && inc.SupportsIncrementalSync)
+                {
+                    if (_pendingLspChange is not null)
+                    {
+                        // Second change within the debounce window → fall back to full text.
+                        _pendingLspChange = null;
+                    }
+                    else
+                    {
+                        _pendingLspChange = e.ChangeType switch
+                        {
+                            Models.TextChangeType.Insert =>
+                                (e.Position.Line, e.Position.Column,
+                                 e.Position.Line, e.Position.Column, 0, e.Text),
+                            Models.TextChangeType.NewLine =>
+                                (e.Position.Line, e.Position.Column,
+                                 e.Position.Line, e.Position.Column, 0, "\n"),
+                            Models.TextChangeType.Delete =>
+                                (e.Position.Line, e.Position.Column,
+                                 e.Position.Line, e.Position.Column + e.Length, e.Length, string.Empty),
+                            Models.TextChangeType.Replace =>
+                                (e.Position.Line, e.Position.Column,
+                                 e.Position.Line, e.Position.Column + e.Length, e.Length, e.Text),
+                            _ => null, // DeleteLine and others → full-text fallback
+                        };
+                    }
+                }
+
                 _lspChangeTimer?.Stop();
                 _lspChangeTimer?.Start();
             }
@@ -284,17 +315,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!_applyingLinkedEdit && _lspClient is not null && _currentFilePath is not null)
                 ScheduleLinkedEditQuery();
 
-            // Incremental max-width update (P1-CE-02) — O(1) on growth, O(n) only on shrink
-            int changedLine    = e.Position.Line;
-            int prevMaxLength  = _cachedMaxLineLength;
+            // Incremental max-width update (P1-CE-02).
+            // _maxLengthCount tracks how many lines sit at the current max so we rescan
+            // only when the last line at that length shrinks — avoids O(n) LINQ on every keystroke.
+            int changedLine   = e.Position.Line;
+            int prevMaxLength = _cachedMaxLineLength;
             if (changedLine >= 0 && changedLine < _document.Lines.Count)
             {
                 int newLen = _document.Lines[changedLine].Text.Length;
                 if (newLen > _cachedMaxLineLength)
+                {
                     _cachedMaxLineLength = newLen;
-                else if (newLen < _cachedMaxLineLength)
-                    _cachedMaxLineLength = _document.Lines.Count > 0
-                        ? _document.Lines.Max(l => l.Text.Length) : 0;
+                    _maxLengthCount = 1;
+                }
+                else if (newLen == _cachedMaxLineLength)
+                {
+                    // Line is still at max — count is already correct (same line, same length).
+                }
+                else if (newLen == _cachedMaxLineLength - 1)
+                {
+                    // Line shrank by 1. Count unknown — do a single O(n) for-loop (no LINQ, no lambda).
+                    int max = 0, count = 0;
+                    var lines = _document.Lines;
+                    for (int k = 0; k < lines.Count; k++)
+                    {
+                        int len = lines[k].Text.Length;
+                        if (len > max) { max = len; count = 1; }
+                        else if (len == max) count++;
+                    }
+                    _cachedMaxLineLength = max;
+                    _maxLengthCount      = count;
+                }
+                // else: newLen < max - 1 → max is still held by other lines, no change needed.
             }
             bool maxWidthChanged = _cachedMaxLineLength != prevMaxLength;
 
@@ -319,9 +371,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             if (lineCountChanged || maxWidthChanged)
+            {
                 InvalidateMeasure(); // scrollbar ranges may have changed
+            }
             else
-                InvalidateVisual();  // layout unaffected — redraw only
+            {
+                // Capture dirty line range before clearing so OnRender can clip to it.
+                var dirty = _document.DirtyLines;
+                if (dirty.Count > 0)
+                {
+                    _dirtyLineRange = (Enumerable.Min(dirty), Enumerable.Max(dirty));
+                    _document.ClearDirtyLines();
+                }
+                else
+                {
+                    _dirtyLineRange = (e.Position.Line, e.Position.Line);
+                }
+                InvalidateRegion(RenderDirtyFlags.TextLines);
+            }
 
             // Incremental change-marker tracking (gutter change indicators).
             if (!_isInternalEdit)

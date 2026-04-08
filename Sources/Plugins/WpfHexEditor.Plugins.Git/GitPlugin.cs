@@ -43,13 +43,16 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
 
     // ── UI IDs ────────────────────────────────────────────────────────────────
 
-    private const string GitChangesPanelId = "WpfHexEditor.Plugins.Git.Panel.Changes";
+    private const string GitChangesPanelId  = "WpfHexEditor.Plugins.Git.Panel.Changes";
+    private const string GitHistoryPanelId  = "WpfHexEditor.Plugins.Git.Panel.History";
 
     // ── State ─────────────────────────────────────────────────────────────────
 
-    private IIDEHostContext?           _context;
-    private GitVersionControlService?  _vcs;
-    private GitChangesPanelViewModel?  _changesVm;
+    private IIDEHostContext?               _context;
+    private GitVersionControlService?      _vcs;
+    private GitChangesPanelViewModel?      _changesVm;
+    private GitHistoryPanelViewModel?      _historyVm;
+    private Views.BranchPickerPopup?       _branchPicker;
     private readonly CancellationTokenSource _cts = new();
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -64,18 +67,40 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
         // Register as IVersionControlService so context.VersionControl resolves it
         context.ExtensionRegistry.Register<IVersionControlService>(Id, _vcs);
 
-        // Create panel VM and panel
-        _changesVm = new GitChangesPanelViewModel(_vcs, context.Output);
-        var panel  = new GitChangesPanel { DataContext = _changesVm };
+        // Wire event bus for long-running git ops (push/pull/fetch/ahead-behind)
+        _vcs.PublishEvent = e =>
+        {
+            switch (e)
+            {
+                case GitOperationStartedEvent s:    context.IDEEvents.Publish(s); break;
+                case GitOperationCompletedEvent c:  context.IDEEvents.Publish(c); break;
+                case GitAheadBehindChangedEvent ab: context.IDEEvents.Publish(ab); break;
+            }
+        };
 
-        // Register dockable panel
+        // Create panels
+        _changesVm = new GitChangesPanelViewModel(_vcs, context.Output, context.IDEEvents);
+        var changesPanel = new GitChangesPanel { DataContext = _changesVm };
+
+        _historyVm = new GitHistoryPanelViewModel(_vcs, context.IDEEvents);
+        var historyPanel = new GitHistoryPanel { DataContext = _historyVm };
+
+        // Register dockable panels
         context.UIRegistry.RegisterPanel(
-            GitChangesPanelId,
-            panel,
-            Id,
+            GitChangesPanelId, changesPanel, Id,
             new PanelDescriptor
             {
                 Title           = "Git Changes",
+                DefaultDockSide = "Bottom",
+                CanClose        = true,
+                Category        = "Source Control"
+            });
+
+        context.UIRegistry.RegisterPanel(
+            GitHistoryPanelId, historyPanel, Id,
+            new PanelDescriptor
+            {
+                Title           = "Git History",
                 DefaultDockSide = "Bottom",
                 CanClose        = true,
                 Category        = "Source Control"
@@ -87,6 +112,14 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
         // Subscribe to VCS status changes → publish IDE event
         _vcs.StatusChanged += OnVcsStatusChanged;
 
+        // Subscribe to branch button click → show BranchPickerPopup
+        context.IDEEvents.Subscribe<GitBranchClickRequestedEvent>(e =>
+        {
+            System.Windows.Application.Current?.Dispatcher.InvokeAsync(
+                () => ShowBranchPicker(e.PlacementTarget as System.Windows.UIElement));
+            return Task.CompletedTask;
+        });
+
         // Register View menu items
         context.UIRegistry.RegisterMenuItem(
             "WpfHexEditor.Plugins.Git.Menu.GitChanges", Id,
@@ -97,6 +130,21 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
                 Group      = "Git",
                 IconGlyph  = "\uE943",
                 Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(GitChangesPanelId))
+            });
+
+        context.UIRegistry.RegisterMenuItem(
+            "WpfHexEditor.Plugins.Git.Menu.GitHistory", Id,
+            new MenuItemDescriptor
+            {
+                ParentPath = "View",
+                Header     = "Git _History",
+                Group      = "Git",
+                IconGlyph  = "\uE81C",
+                Command    = new RelayCommand(_ =>
+                {
+                    context.UIRegistry.TogglePanel(GitHistoryPanelId);
+                    _historyVm?.LoadHistoryAsync();
+                })
             });
 
         context.UIRegistry.RegisterMenuItem(
@@ -124,11 +172,15 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
     public Task ShutdownAsync(CancellationToken ct = default)
     {
         _cts.Cancel();
-        _vcs?.StopPolling();
-        _vcs?.Dispose();
 
+        // Unsubscribe events before disposing VCS to prevent race on in-flight file open
         if (_context is not null)
             _context.HexEditor.FileOpened -= OnFileOpened;
+
+        _vcs?.StopPolling();
+        _vcs?.Dispose();
+        _changesVm?.Dispose();
+        _historyVm?.Dispose();
 
         return Task.CompletedTask;
     }
@@ -162,10 +214,7 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
     }
 
     private static void ToggleBlameGutter(IIDEHostContext context)
-    {
-        // BlameGutterControl toggles itself via IDEEventBus subscription
-        context.IDEEvents.Publish(new GitStatusChangedEvent(null, false, 0));
-    }
+        => context.IDEEvents.Publish(new GitBlameToggleRequestedEvent());
 
     private void OnVcsStatusChanged(object? sender, EventArgs e)
     {
@@ -176,5 +225,23 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
             _vcs.BranchName,
             _vcs.IsDirty,
             0));
+    }
+
+    private void ShowBranchPicker(System.Windows.UIElement? placementTarget)
+    {
+        if (_vcs is null) return;
+
+        _branchPicker ??= new Views.BranchPickerPopup();
+
+        var vm = new ViewModels.BranchPickerViewModel(_vcs);
+        vm.RequestClose += (_, _) =>
+        {
+            _branchPicker.IsOpen      = false;
+            _branchPicker.DataContext = null;
+        };
+        _branchPicker.DataContext     = vm;
+        _branchPicker.PlacementTarget = placementTarget;
+        _branchPicker.IsOpen          = true;
+        vm.LoadAsync();
     }
 }

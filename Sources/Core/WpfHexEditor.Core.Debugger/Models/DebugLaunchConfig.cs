@@ -32,4 +32,16 @@ public sealed record DebugLaunchConfig
 
     /// <summary>Preferred debug adapter language ID (e.g. "csharp").</summary>
     public string LanguageId    { get; init; } = "csharp";
+
+    /// <summary>Request mode: "launch" (default) or "attach".</summary>
+    public string Request       { get; init; } = "launch";
+
+    /// <summary>Process ID to attach to (only used when <see cref="Request"/> is "attach").</summary>
+    public int? ProcessId       { get; init; }
+
+    /// <summary>When true, the debugger skips non-user (framework) code.</summary>
+    public bool JustMyCode      { get; init; } = true;
+
+    /// <summary>Where the debuggee stdout/stderr is shown: "internalConsole", "integratedTerminal", or "externalTerminal".</summary>
+    public string Console       { get; init; } = "internalConsole";
 }

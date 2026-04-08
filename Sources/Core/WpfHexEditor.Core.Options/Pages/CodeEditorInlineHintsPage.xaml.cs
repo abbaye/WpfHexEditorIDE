@@ -64,6 +64,9 @@ public sealed partial class CodeEditorInlineHintsPage : UserControl, IOptionsPag
             // Treat 0 as All (migration: old settings.json without this field defaults to 0).
             int mask = ce.InlineHintsVisibleKinds == 0 ? KindAll : ce.InlineHintsVisibleKinds;
 
+            ChkShowVarTypeHints.IsChecked          = ce.ShowVarTypeHints;
+            ChkShowLambdaReturnTypeHints.IsChecked = ce.ShowLambdaReturnTypeHints;
+
             ChkClass.IsChecked       = (mask & KindClass)       != 0;
             ChkInterface.IsChecked   = (mask & KindInterface)   != 0;
             ChkStruct.IsChecked      = (mask & KindStruct)      != 0;
@@ -98,8 +101,10 @@ public sealed partial class CodeEditorInlineHintsPage : UserControl, IOptionsPag
         if (ChkIndexer.IsChecked     == true) mask |= KindIndexer;
         if (ChkField.IsChecked       == true) mask |= KindField;
         if (ChkEvent.IsChecked       == true) mask |= KindEvent;
-        ce.InlineHintsVisibleKinds = mask;
-        ce.InlineHintsSource       = CboSource.SelectedIndex;
+        ce.InlineHintsVisibleKinds    = mask;
+        ce.InlineHintsSource          = CboSource.SelectedIndex;
+        ce.ShowVarTypeHints           = ChkShowVarTypeHints.IsChecked == true;
+        ce.ShowLambdaReturnTypeHints  = ChkShowLambdaReturnTypeHints.IsChecked == true;
     }
 
     // -- Control handlers ------------------------------------------------------

@@ -217,6 +217,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             _lspClient = client;
+            _pendingLspChange = null; // reset delta on client switch
             _hoverQuickInfoService?.SetLspClient(client);
             _ctrlClickService?.SetLspClient(client);
             if (_smartCompletePopup is not null)
@@ -238,6 +239,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 client as WpfHexEditor.Editor.Core.LSP.IReferenceCountProvider,
                 _inlineHintsSource);
 
+            // Forward LSP client to overlay layers (inlay hints + declaration hints).
+            _lspInlayHintsLayer.SetLspClient(client);
+            _lspDeclarationHintsLayer.SetLspClient(client);
+
+            // Propagate var/lambda hint options to the client if it supports them.
+            if (client is WpfHexEditor.Editor.Core.LSP.IInlineHintsOptionsClient hintsClient)
+                hintsClient.SetInlineHintsOptions(_showVarTypeHints, _showLambdaReturnTypeHints);
+
             // If a file is already open, send didOpen immediately.
             if (_currentFilePath is not null && _document is not null)
             {
@@ -256,7 +265,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     _lspChangeTimer.Stop();
                     if (_lspClient is null || _currentFilePath is null) return;
-                    _lspClient.DidChange(_currentFilePath, ++_lspDocVersion, _document.SaveToString());
+
+                    // Use incremental sync when the client supports it and a single
+                    // atomic change was captured; fall back to full-text otherwise.
+                    var pending = _pendingLspChange;
+                    _pendingLspChange = null;
+
+                    if (pending is { } ch
+                        && _lspClient is WpfHexEditor.Editor.Core.LSP.IIncrementalSyncClient inc
+                        && inc.SupportsIncrementalSync)
+                    {
+                        _lspClient.DidChangeIncremental(_currentFilePath, ++_lspDocVersion,
+                            ch.SL, ch.SC, ch.EL, ch.EC, ch.OldLen, ch.NewText);
+                    }
+                    else
+                    {
+                        _lspClient.DidChange(_currentFilePath, ++_lspDocVersion, _document.SaveToString());
+                    }
                 };
             }
         }

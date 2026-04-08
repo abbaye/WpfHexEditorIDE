@@ -30,7 +30,9 @@ namespace WpfHexEditor.Core.LSP.Client;
 /// Full <see cref="ILspClient"/> implementation backed by a language server process.
 /// Created by <see cref="LspServerRegistry.CreateClient"/>.
 /// </summary>
-public sealed class LspClientImpl : ILspClient
+public sealed class LspClientImpl : ILspClient,
+    WpfHexEditor.Editor.Core.LSP.IDiagnosticsModeClient,
+    WpfHexEditor.Editor.Core.LSP.IIncrementalSyncClient
 {
     // ── Fields ─────────────────────────────────────────────────────────────────
     private readonly string           _executablePath;
@@ -67,6 +69,12 @@ public sealed class LspClientImpl : ILspClient
 
     /// <summary>Server capability flags — valid after <see cref="InitializeAsync"/> completes.</summary>
     internal ServerCapabilities Capabilities { get; private set; } = ServerCapabilities.Parse(null);
+
+    /// <inheritdoc cref="WpfHexEditor.Editor.Core.LSP.IDiagnosticsModeClient.UsesPullDiagnostics"/>
+    public bool UsesPullDiagnostics => Capabilities.HasDiagnosticProvider;
+
+    /// <inheritdoc cref="WpfHexEditor.Editor.Core.LSP.IIncrementalSyncClient.SupportsIncrementalSync"/>
+    public bool SupportsIncrementalSync => Capabilities.TextDocumentSyncKind == 2;
 
     internal LspClientImpl(
         string  executablePath,
@@ -151,6 +159,13 @@ public sealed class LspClientImpl : ILspClient
 
     public void DidChange(string filePath, int version, string newText)
         => _ = _sync?.DidChangeAsync(filePath, version, newText, CancellationToken.None);
+
+    public void DidChangeIncremental(string filePath, int version,
+        int startLine, int startCol, int endLine, int endCol,
+        int rangeLength, string newText)
+        => _ = _sync?.DidChangeIncrementalAsync(filePath, version,
+               startLine, startCol, endLine, endCol, rangeLength, newText,
+               CancellationToken.None);
 
     public void CloseDocument(string filePath)
         => _ = _sync?.DidCloseAsync(filePath, CancellationToken.None);

@@ -35,6 +35,7 @@ public sealed class PluginListItemViewModel : ViewModelBase
     private readonly Action<string>? _onSuspend;
     private readonly Action<string>? _onCascadeUnload;
     private readonly Action<string>? _onCascadeReload;
+    private readonly Action<string>? _onToggleWatchMode;
 
     // Delegate to get memory thresholds from settings (injected to avoid circular dependency)
     private readonly Func<(int warning, int high, int critical, bool enabled,
@@ -42,6 +43,10 @@ public sealed class PluginListItemViewModel : ViewModelBase
 
     private PluginIsolationMode _selectedIsolationMode;
     private bool _isReloading;
+
+    // Watch Mode
+    private bool _isWatching;
+    private string _watchDirectory = string.Empty;
 
     // Migration suggestion state
     private bool   _migrationSuggested;
@@ -64,7 +69,8 @@ public sealed class PluginListItemViewModel : ViewModelBase
         Action<string>? onLoadNow = null,
         Action<string>? onSuspend = null,
         Action<string>? onCascadeUnload = null,
-        Action<string>? onCascadeReload = null)
+        Action<string>? onCascadeReload = null,
+        Action<string>? onToggleWatchMode = null)
     {
         _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         _onEnable = onEnable;
@@ -80,6 +86,7 @@ public sealed class PluginListItemViewModel : ViewModelBase
         _onSuspend = onSuspend;
         _onCascadeUnload = onCascadeUnload;
         _onCascadeReload = onCascadeReload;
+        _onToggleWatchMode = onToggleWatchMode;
         _selectedIsolationMode = initialIsolationMode ?? entry.Manifest.IsolationMode;
 
         EnableCommand = new RelayCommand(_ => _onEnable(Id), _ => State == PluginState.Disabled);
@@ -105,6 +112,10 @@ public sealed class PluginListItemViewModel : ViewModelBase
         CascadeReloadCommand = new RelayCommand(
             _ => _onCascadeReload?.Invoke(Id),
             _ => State == PluginState.Loaded && _onCascadeReload is not null);
+
+        ToggleWatchModeCommand = new RelayCommand(
+            _ => _onToggleWatchMode?.Invoke(Id),
+            _ => _onToggleWatchMode is not null && State == PluginState.Loaded);
 
         Permissions = BuildPermissions();
 
@@ -326,6 +337,25 @@ public sealed class PluginListItemViewModel : ViewModelBase
         }
     }
 
+    // -- Watch Mode ---------------------------------------------------------------
+
+    /// <summary>True when this plugin's output directory is being watched for hot-reload.</summary>
+    public bool IsWatching
+    {
+        get => _isWatching;
+        set { _isWatching = value; OnPropertyChanged(); OnPropertyChanged(nameof(WatchModeLabel)); OnPropertyChanged(nameof(WatchModeBadgeColor)); }
+    }
+
+    /// <summary>The currently monitored output directory (empty when not watching).</summary>
+    public string WatchDirectory
+    {
+        get => _watchDirectory;
+        set { _watchDirectory = value; OnPropertyChanged(); }
+    }
+
+    public string WatchModeLabel => _isWatching ? "Watching" : "Watch Mode";
+    public string WatchModeBadgeColor => _isWatching ? "#22C55E" : "#6B7280";
+
     // Commands
     public ICommand EnableCommand { get; }
     public ICommand DisableCommand { get; }
@@ -337,6 +367,7 @@ public sealed class PluginListItemViewModel : ViewModelBase
     public ICommand SuspendCommand { get; }
     public ICommand CascadeUnloadCommand { get; }
     public ICommand CascadeReloadCommand { get; }
+    public ICommand ToggleWatchModeCommand { get; }
 
     // -- Migration suggestion -----------------------------------------------------
 
@@ -527,6 +558,7 @@ public sealed class PluginListItemViewModel : ViewModelBase
         ((RelayCommand)SuspendCommand).RaiseCanExecuteChanged();
         ((RelayCommand)CascadeUnloadCommand).RaiseCanExecuteChanged();
         ((RelayCommand)CascadeReloadCommand).RaiseCanExecuteChanged();
+        ((RelayCommand)ToggleWatchModeCommand).RaiseCanExecuteChanged();
         OnPropertyChanged(nameof(CanMigrateToSandbox));
     }
 

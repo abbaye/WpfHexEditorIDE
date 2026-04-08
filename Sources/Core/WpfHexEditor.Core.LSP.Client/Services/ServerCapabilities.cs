@@ -47,6 +47,11 @@ internal sealed class ServerCapabilities
     internal IReadOnlyList<string> SemanticTokenTypesLegend     { get; init; } = Array.Empty<string>();
     /// <summary>Token modifier names indexed by LSP integer (from semanticTokensProvider.legend.tokenModifiers).</summary>
     internal IReadOnlyList<string> SemanticTokenModifiersLegend { get; init; } = Array.Empty<string>();
+    /// <summary>
+    /// TextDocumentSyncKind: 0=None, 1=Full, 2=Incremental.
+    /// Defaults to 1 (Full) when absent so existing behaviour is preserved.
+    /// </summary>
+    internal int TextDocumentSyncKind { get; init; } = 1;
 
     /// <summary>
     /// Parses the capabilities from the raw <c>initialize</c> response node.
@@ -83,8 +88,18 @@ internal sealed class ServerCapabilities
             HasWorkspaceSymbolsProvider     = IsEnabled(caps["workspaceSymbolProvider"]),
             SemanticTokenTypesLegend        = ParseLegendArray(caps["semanticTokensProvider"]?["legend"]?["tokenTypes"]),
             SemanticTokenModifiersLegend    = ParseLegendArray(caps["semanticTokensProvider"]?["legend"]?["tokenModifiers"]),
+            TextDocumentSyncKind            = ParseSyncKind(caps["textDocumentSync"]),
         };
     }
+
+    private static int ParseSyncKind(JsonNode? node) => node switch
+    {
+        // bare integer: { "textDocumentSync": 2 }
+        JsonValue v when v.TryGetValue<int>(out var i) => i,
+        // options object: { "textDocumentSync": { "change": 2 } }
+        JsonObject obj when obj["change"] is JsonValue cv && cv.TryGetValue<int>(out var c) => c,
+        _ => 1, // default: Full
+    };
 
     private static IReadOnlyList<string> ParseLegendArray(JsonNode? node)
     {

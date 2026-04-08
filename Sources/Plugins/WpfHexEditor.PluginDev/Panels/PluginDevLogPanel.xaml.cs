@@ -67,7 +67,7 @@ public sealed partial class PluginDevLogPanel : UserControl
     {
         var dlg = new SaveFileDialog
         {
-            Title            = "Export Plugin Dev Log",
+            Title            = "Export Extension Dev Log",
             Filter           = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
             DefaultExt       = ".log",
             FileName         = $"plugin-dev-{DateTime.Now:yyyyMMdd-HHmmss}.log",

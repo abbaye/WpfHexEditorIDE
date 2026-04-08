@@ -18,8 +18,10 @@
 //     bidirectionally with the underlying node.
 // ==========================================================
 
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Core.ViewModels;
 
@@ -34,9 +36,29 @@ public sealed class ClassNodeViewModel : ViewModelBase
     private bool _isSelected;
     private bool _isHovered;
 
+    // Member VMs for the outline-panel TreeView sub-items
+    private ObservableCollection<ClassMemberViewModel>? _memberViewModels;
+
     public ClassNodeViewModel(ClassNode node)
     {
         _node = node ?? throw new ArgumentNullException(nameof(node));
+    }
+
+    /// <summary>
+    /// Lazily-built collection of member VMs for display in the outline TreeView.
+    /// </summary>
+    public ObservableCollection<ClassMemberViewModel> MemberViewModels
+    {
+        get
+        {
+            if (_memberViewModels is null)
+            {
+                _memberViewModels = [];
+                foreach (var m in _node.Members)
+                    _memberViewModels.Add(new ClassMemberViewModel(m));
+            }
+            return _memberViewModels;
+        }
     }
 
     /// <summary>Underlying domain model node.</summary>
@@ -66,14 +88,24 @@ public sealed class ClassNodeViewModel : ViewModelBase
         set { if (_node.IsAbstract == value) return; _node.IsAbstract = value; OnPropertyChanged(); }
     }
 
-    /// <summary>Display label for the kind (e.g. "Â«interfaceÂ»").</summary>
+    /// <summary>Display label for the kind (e.g. "«interface»").</summary>
     public string KindLabel => _node.Kind switch
     {
-        ClassKind.Interface => "Â«interfaceÂ»",
-        ClassKind.Enum      => "Â«enumÂ»",
-        ClassKind.Struct    => "Â«structÂ»",
-        ClassKind.Abstract  => "Â«abstractÂ»",
+        ClassKind.Interface => "«interface»",
+        ClassKind.Enum      => "«enum»",
+        ClassKind.Struct    => "«struct»",
+        ClassKind.Abstract  => "«abstract»",
         _                   => string.Empty
+    };
+
+    /// <summary>Background brush for the kind chip in the outline panel.</summary>
+    public Brush KindColor => _node.Kind switch
+    {
+        ClassKind.Interface => new SolidColorBrush(Color.FromRgb(0, 122, 204)),   // VS blue
+        ClassKind.Enum      => new SolidColorBrush(Color.FromRgb(155, 89, 182)), // purple
+        ClassKind.Struct    => new SolidColorBrush(Color.FromRgb(39, 174, 96)),  // green
+        ClassKind.Abstract  => new SolidColorBrush(Color.FromRgb(192, 57, 43)), // dark-red
+        _                   => new SolidColorBrush(Color.FromRgb(52, 152, 219)) // class blue
     };
 
     public IEnumerable<ClassMember> Members => _node.Members;

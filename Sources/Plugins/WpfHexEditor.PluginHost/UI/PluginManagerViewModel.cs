@@ -189,6 +189,47 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     public void CascadeUnload(string id)    => RunLifecycleAndRebuild(() => _host.CascadingUnloadAsync(id));
     public void CascadeReload(string id)    => RunLifecycleAndRebuild(() => _host.CascadingReloadAsync(id));
 
+    /// <summary>
+    /// Toggles Watch Mode for a plugin. If already watching, disables it.
+    /// If not watching, opens a folder browser dialog and enables watching.
+    /// </summary>
+    public void ToggleWatchMode(string id)
+    {
+        if (_host.IsWatching(id))
+        {
+            _host.DisableWatchMode(id);
+            var vm = _allItems.FirstOrDefault(i => i.Id == id);
+            if (vm is not null) { vm.IsWatching = false; vm.WatchDirectory = string.Empty; }
+            return;
+        }
+
+        // Show folder browser dialog on the Dispatcher thread
+        _dispatcher.InvokeAsync(() =>
+        {
+            var dlg = new Microsoft.Win32.OpenFolderDialog
+            {
+                Title = $"Select output directory for '{id}'",
+            };
+
+            if (dlg.ShowDialog() != true) return;
+            var dir = dlg.FolderName;
+
+            try
+            {
+                _host.EnableWatchMode(id, dir);
+                var vm = _allItems.FirstOrDefault(i => i.Id == id);
+                if (vm is not null) { vm.IsWatching = true; vm.WatchDirectory = dir; }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Cannot enable Watch Mode:\n{ex.Message}",
+                    "Watch Mode", System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+            }
+        });
+    }
+
     public void MigratePluginToSandbox(string id)
     {
         // Clear the suggestion banner immediately so the user sees feedback.
@@ -248,7 +289,16 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
                 onLoadNow: LoadPluginNow,
                 onSuspend: SuspendPlugin,
                 onCascadeUnload: CascadeUnload,
-                onCascadeReload: CascadeReload));
+                onCascadeReload: CascadeReload,
+                onToggleWatchMode: ToggleWatchMode));
+
+            // Restore Watch Mode state from host
+            var newVm = _allItems[^1];
+            if (_host.IsWatching(newVm.Id))
+            {
+                newVm.IsWatching = true;
+                newVm.WatchDirectory = _host.GetWatchDirectory(newVm.Id) ?? string.Empty;
+            }
         }
 
         ApplyFilterAndSort();
@@ -358,8 +408,8 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     {
         var dialog = new OpenFileDialog
         {
-            Title           = "Install Plugin Package",
-            Filter          = "Plugin Package (*.whxplugin)|*.whxplugin|All Files (*.*)|*.*",
+            Title           = "Install Extension Package",
+            Filter          = "Extension Package (*.whxplugin)|*.whxplugin|All Files (*.*)|*.*",
             CheckFileExists = true
         };
 
@@ -393,9 +443,9 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     {
         var dlg = new SaveFileDialog
         {
-            Title      = "Export Plugin Diagnostics",
+            Title      = "Export Extension Diagnostics",
             Filter     = "CSV files (*.csv)|*.csv|JSON files (*.json)|*.json|All files (*.*)|*.*",
-            FileName   = $"plugin-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.csv"
+            FileName   = $"extension-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.csv"
         };
         if (dlg.ShowDialog() != true) return;
 

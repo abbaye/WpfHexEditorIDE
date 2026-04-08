@@ -1,15 +1,54 @@
 <UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.DebugConsolePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>   <!-- session tab strip -->
+            <RowDefinition Height="*"/>      <!-- output log -->
+            <RowDefinition Height="Auto"/>   <!-- REPL input -->
         </Grid.RowDefinitions>
 
+        <!-- ── Session tab strip (hidden when 0 or 1 sessions) ────────────────── -->
+        <Border Grid.Row="0"
+                x:Name="SessionStripBorder"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                Background="{DynamicResource DockGroupHeaderBrush}"
+                Visibility="Collapsed">
+            <ItemsControl x:Name="SessionTabs"
+                          ItemsSource="{Binding Sessions, ElementName=Root}"
+                          Margin="4,2">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:DebugSessionEntry}">
+                        <Border Margin="0,0,4,0" Padding="8,3"
+                                CornerRadius="3"
+                                Background="{DynamicResource DockTabActiveBrush}"
+                                Cursor="Hand"
+                                ToolTip="{Binding SessionId}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="▶ " FontSize="10"
+                                           Foreground="{DynamicResource DB_RunningBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
         <!-- Output log -->
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto"
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto"
                       Background="{DynamicResource PanelBackground}">
             <TextBox Text="{Binding OutputText, Mode=OneWay}"
@@ -22,7 +61,7 @@
         </ScrollViewer>
 
         <!-- REPL input -->
-        <Border Grid.Row="1" BorderThickness="0,1,0,0"
+        <Border Grid.Row="2" BorderThickness="0,1,0,0"
                 BorderBrush="{DynamicResource DockSplitterBrush}"
                 Background="{DynamicResource PanelBackground}">
             <Grid>

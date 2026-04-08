@@ -262,6 +262,14 @@ public partial class MainWindow
         Reg(CommandIds.Layout.ToggleStatusBar, "Toggle Status Bar",    "Layout",   null,             null,
             () => OnToggleStatusBar());
 
+        // ── Window ───────────────────────────────────────────────────────────
+        Reg(CommandIds.Window.CloseAllButThis,  "Close All But This",   "Window",  null,              "\uE711",
+            () => OnCloseAllButThis(this, null!));
+        Reg(CommandIds.Window.NextDocument,     "Next Document",        "Window",  "Ctrl+Tab",        "\uE76C",
+            () => OnNextDocument(this, null!));
+        Reg(CommandIds.Window.PreviousDocument, "Previous Document",    "Window",  "Ctrl+Shift+Tab",  "\uE76B",
+            () => OnPreviousDocument(this, null!));
+
         // ── Tab Groups ───────────────────────────────────────────────────────
         Reg(CommandIds.TabGroup.NewVertical,        "New Vertical Tab Group",    "Tab Groups", "Ctrl+Alt+\\",        "\uE8A0",
             () => OnTabGroupNewVertical(this, null!));
@@ -280,22 +288,22 @@ public partial class MainWindow
         Reg(CommandIds.TabGroup.FocusGroup3,  "Focus Tab Group 3", "Tab Groups", null, null, () => FocusDocumentGroup(2));
         Reg(CommandIds.TabGroup.FocusGroup4,  "Focus Tab Group 4", "Tab Groups", null, null, () => FocusDocumentGroup(3));
 
-        // ── Plugins ──────────────────────────────────────────────────────────
-        Reg(CommandIds.Plugins.OpenManager,   "Plugin Manager",     "Plugins",  null,             "\uE74C",
+        // ── Extensions ───────────────────────────────────────────────────────
+        Reg(CommandIds.Plugins.OpenManager,   "Extension Manager",     "Extensions",  null,             "\uE74C",
             () => OpenPluginManagerCommand.Execute(null, this));
-        Reg(CommandIds.Plugins.OpenMonitor,   "Plugin Monitor",     "Plugins",  null,             "\uE8EF",
+        Reg(CommandIds.Plugins.OpenMonitor,   "Extensions Monitor",     "Extensions",  null,             "\uE8EF",
             () => OnOpenPluginMonitor(this, null!));
-        Reg(CommandIds.Plugins.OpenMarketplace,"Plugin Marketplace","Plugins",  null,             "\uE7BF",
+        Reg(CommandIds.Plugins.OpenMarketplace,"Extension Marketplace","Extensions",  null,             "\uE7BF",
             () => OnOpenMarketplace(this, null!));
-        Reg(CommandIds.Plugins.InstallFromFile,"Install from File…","Plugins",  null,             "\uE8B5",
+        Reg(CommandIds.Plugins.InstallFromFile,"Install from File…","Extensions",  null,             "\uE8B5",
             () => OnInstallPluginFromMenu(this, null!));
-        Reg(CommandIds.Plugins.RefreshAll,    "Refresh All Plugins","Plugins",  null,             "\uE72C",
+        Reg(CommandIds.Plugins.RefreshAll,    "Refresh All Extensions","Extensions",  null,             "\uE72C",
             () => OnRefreshAllPlugins(this, null!));
-        Reg(CommandIds.Plugins.DevWatch,      "Plugin Dev Watch…",  "Plugins",  null,             "\uE8F4",
+        Reg(CommandIds.Plugins.DevWatch,      "Extension Dev Watch…",  "Extensions",  null,             "\uE8F4",
             () => OnOpenPluginDevWatch(this, null!));
-        Reg(CommandIds.Plugins.NewPluginWizard, "New Plugin Project…","Plugins", "Ctrl+Alt+N",     "\uE8A5",
+        Reg(CommandIds.Plugins.NewPluginWizard, "New Extension Project…","Extensions", "Ctrl+Alt+N",     "\uE8A5",
             () => OnNewPluginWizard(this, null!));
-        Reg(CommandIds.Plugins.PluginHotReload, "Hot-Reload Plugin",  "Plugins", "Ctrl+Shift+R",   "\uE72C",
+        Reg(CommandIds.Plugins.PluginHotReload, "Hot-Reload Extension",  "Extensions", "Ctrl+Shift+R",   "\uE72C",
             () => OnPluginHotReload(this, null!));
 
         // ── Editor ───────────────────────────────────────────────────────────

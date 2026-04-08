@@ -225,13 +225,13 @@ public sealed class PluginMarketplacePanel : UserControl
             var ok = await _svc.InstallAsync(pkg, progress);
             MessageBox.Show(
                 ok ? $"'{pkg.Name}' installed successfully." : $"Install failed for '{pkg.Name}'.",
-                "Plugin Marketplace",
+                "Extension Marketplace",
                 MessageBoxButton.OK,
                 ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Install error: {ex.Message}", "Plugin Marketplace",
+            MessageBox.Show($"Install error: {ex.Message}", "Extension Marketplace",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -239,7 +239,7 @@ public sealed class PluginMarketplacePanel : UserControl
     private async void OnUninstallRequested(MarketplacePackage pkg)
     {
         var confirm = MessageBox.Show(
-            $"Uninstall '{pkg.Name}'?", "Plugin Marketplace",
+            $"Uninstall '{pkg.Name}'?", "Extension Marketplace",
             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
         if (confirm != MessageBoxResult.Yes) return;
@@ -251,7 +251,7 @@ public sealed class PluginMarketplacePanel : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Uninstall error: {ex.Message}", "Plugin Marketplace",
+            MessageBox.Show($"Uninstall error: {ex.Message}", "Extension Marketplace",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

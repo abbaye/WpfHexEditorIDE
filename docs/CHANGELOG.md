@@ -6,6 +6,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.4.8] — 2026-04-08 — Window Menu, Win32 Fullscreen, Docking Overlay Polish
+
+### ✨ Added
+
+- **Window menu** — new top-level `_Window` menu in the IDE shell for managing document windows and layout
+- **Win32 fullscreen** — native fullscreen toggle via Win32 API; hides title bar and chrome for distraction-free editing
+
+### 🔧 Changed
+
+- **Docking overlay** — VS-like overlay border with active-tab gap for dock and document panels; placement-aware tab styles for document host
+- **Docking overlay gap** — refined active-tab gap logic and placement-aware styles to match Visual Studio drop-target feedback
+
+### 🐛 Fixed
+
+- **Minimap scroll** — scroll position in `MinimapControl` now tracks viewport changes correctly
+- **Plugin panel loading overlay** — suppressed the loading overlay after the first initialization; no longer flashes on subsequent panel activations
+- **ClassDiagram layout loop** — removed `ArrangeOverride` 100 k extent that caused an infinite WPF layout loop
+
+---
+
 ## [0.6.4.6] — 2026-04-06 — Lazy Plugins, Tab Groups, Document Structure, Roslyn Inline Hints
 
 ### ✨ Added — Lazy / Standby Plugin Loading (ADR-LAZY-01)

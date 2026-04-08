@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core;
+using WpfHexEditor.Core.Bytes;
 
 namespace WpfHexEditor.Core.Models
 {
@@ -134,7 +135,7 @@ namespace WpfHexEditor.Core.Models
         /// <summary>
         /// Hex representation (e.g., "FF") - Legacy property for backward compatibility
         /// </summary>
-        public string HexString => Value.ToString("X2");
+        public string HexString => HexLookup.ToHex2(Value);
 
         /// <summary>
         /// ASCII representation (printable char or '.')
@@ -182,10 +183,10 @@ namespace WpfHexEditor.Core.Models
             // For multi-byte, format each byte and concatenate
             return visualType switch
             {
-                Core.DataVisualType.Hexadecimal => string.Concat(bytes.Select(b => b.ToString("X2"))),
+                Core.DataVisualType.Hexadecimal => BuildMultiByteHex(bytes),
                 Core.DataVisualType.Decimal => ConvertToDecimal(bytes),
                 Core.DataVisualType.Binary => string.Concat(bytes.Select(b => Convert.ToString(b, 2).PadLeft(8, '0'))),
-                _ => string.Concat(bytes.Select(b => b.ToString("X2")))
+                _ => BuildMultiByteHex(bytes)
             };
         }
 
@@ -196,11 +197,23 @@ namespace WpfHexEditor.Core.Models
         {
             return visualType switch
             {
-                Core.DataVisualType.Hexadecimal => value.ToString("X2"),
+                Core.DataVisualType.Hexadecimal => HexLookup.ToHex2(value),
                 Core.DataVisualType.Decimal => value.ToString("D3").PadLeft(3, ' '),
                 Core.DataVisualType.Binary => Convert.ToString(value, 2).PadLeft(8, '0'),
-                _ => value.ToString("X2")
+                _ => HexLookup.ToHex2(value)
             };
+        }
+
+        /// <summary>
+        /// Build a hex string from a byte array using the lookup table — zero LINQ allocation.
+        /// </summary>
+        private static string BuildMultiByteHex(byte[] bytes)
+        {
+            return string.Create(bytes.Length * 2, bytes, static (span, state) =>
+            {
+                for (int i = 0; i < state.Length; i++)
+                    HexLookup.WriteHex2(span, i * 2, state[i]);
+            });
         }
 
         /// <summary>

@@ -47,6 +47,9 @@ namespace WpfHexEditor.HexEditor
         private Timer? _fileWatcherDebounce;
         private const int FileWatcherDebounceMs = 500;
 
+        // Guard: suppresses watcher events triggered by our own ReloadFromDisk() call.
+        private bool _reloadingFromDisk;
+
         /// <summary>
         /// Raised on the UI thread when the file currently open in the editor has been
         /// modified by an external process. Use <see cref="ExternalFileChangedEventArgs.HasUnsavedChanges"/>
@@ -62,7 +65,24 @@ namespace WpfHexEditor.HexEditor
         {
             if (_viewModel == null) return;
 
-            _viewModel.ReloadFromDisk();
+            // Suppress the FileSystemWatcher re-fire that our own reload would trigger.
+            _reloadingFromDisk = true;
+            try
+            {
+                _viewModel.ReloadFromDisk();
+            }
+            finally
+            {
+                // Cancel any pending debounce that was queued before/during reload,
+                // then re-arm the guard clear after one extra debounce window.
+                _fileWatcherDebounce?.Dispose();
+                _fileWatcherDebounce = new Timer(_ =>
+                {
+                    _reloadingFromDisk = false;
+                    _fileWatcherDebounce?.Dispose();
+                    _fileWatcherDebounce = null;
+                }, null, FileWatcherDebounceMs + 200, Timeout.Infinite);
+            }
 
             // Refresh scroll markers to reflect new file length
             if (_scrollMarkers != null)
@@ -136,6 +156,8 @@ namespace WpfHexEditor.HexEditor
             // Marshal to UI thread — all WPF access must be on the dispatcher thread.
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                // Ignore events we triggered ourselves via ReloadFromDisk().
+                if (_reloadingFromDisk) return;
                 if (_viewModel == null || string.IsNullOrEmpty(FileName)) return;
 
                 bool hasUnsavedChanges = _viewModel.Provider?.HasChanges ?? false;

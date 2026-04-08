@@ -137,6 +137,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
     public ICommand UninstallCommand       { get; }
     public ICommand UpdateSelectedCommand  { get; }
     public ICommand UpdateAllCommand       { get; }
+    public ICommand RollbackCommand        { get; }
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -159,6 +160,8 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
         UpdateSelectedCommand  = new RelayCommand(p  => _ = UpdateAsync(p as MarketplaceListing),
                                                   p  => p is MarketplaceListing && !IsInstalling);
         UpdateAllCommand       = new RelayCommand(_ => _ = UpdateAllAsync(), _ => UpdateListings.Count > 0 && !IsInstalling);
+        RollbackCommand        = new RelayCommand(p  => _ = RollbackAsync(p as MarketplaceListing),
+                                                  p  => p is MarketplaceListing l && IsInstalled(l) && !IsInstalling);
 
         _ = LoadBrowseTabAsync();
     }
@@ -189,7 +192,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
                 foreach (var l in listings) AllListings.Add(l);
                 RebuildCategories();
                 ApplyBrowseFilter();
-                StatusText = $"{AllListings.Count} plugin(s) available.";
+                StatusText = $"{AllListings.Count} extension(s) available.";
             });
         }
         catch (Exception ex)
@@ -227,7 +230,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
             }
             FilteredListings.Add(l);
         }
-        StatusText = $"{FilteredListings.Count} of {AllListings.Count} plugin(s) shown.";
+        StatusText = $"{FilteredListings.Count} of {AllListings.Count} extension(s) shown.";
     }
 
     private void RebuildCategories()
@@ -251,7 +254,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
             {
                 InstalledListings.Clear();
                 foreach (var l in installed) InstalledListings.Add(l);
-                StatusText = $"{InstalledListings.Count} plugin(s) installed.";
+                StatusText = $"{InstalledListings.Count} extension(s) installed.";
             });
         }
         catch (Exception ex)
@@ -314,6 +317,23 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
         await LoadUpdatesTabAsync();
     }
 
+    private async Task RollbackAsync(MarketplaceListing? listing)
+    {
+        if (listing is null) return;
+        IsInstalling = true;
+        try
+        {
+            bool ok = await _marketplace.RollbackAsync(listing.ListingId);
+            _log(ok
+                ? $"[Marketplace] Rolled back '{listing.Name}' to previous version."
+                : $"[Marketplace] Rollback failed for '{listing.Name}' — no backup available.");
+        }
+        finally { IsInstalling = false; }
+    }
+
+    private static bool IsInstalled(MarketplaceListing l)
+        => !string.IsNullOrEmpty(l.InstalledVersion);
+
     // ── Install pipeline ──────────────────────────────────────────────────────
 
     private async Task InstallSelectedAsync()
@@ -326,8 +346,8 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title     = "Install Plugin",
-            Filter    = "Plugin Packages (*.whxplugin)|*.whxplugin",
+            Title     = "Install Extension",
+            Filter    = "Extension Packages (*.whxplugin)|*.whxplugin",
             Multiselect = false,
         };
         if (dlg.ShowDialog() != true) return;

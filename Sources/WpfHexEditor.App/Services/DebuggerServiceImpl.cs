@@ -30,9 +30,10 @@ namespace WpfHexEditor.App.Services;
 /// </summary>
 public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
 {
-    private readonly IIDEEventBus      _eventBus;
-    private readonly AppSettings       _settings;
-    private readonly object            _lock = new();
+    private readonly IIDEEventBus            _eventBus;
+    private readonly AppSettings             _settings;
+    private readonly IDebugAdapterRegistry   _adapterRegistry;
+    private readonly object                  _lock = new();
 
     private IDapClient?      _client;
     private DebugSession     _session = DebugSession.Empty;
@@ -52,6 +53,17 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
 
     public event EventHandler? SessionChanged;
     public event EventHandler? BreakpointsChanged;
+
+    /// <summary>Registry for registering custom debug adapters from plugins.</summary>
+    public IDebugAdapterRegistry AdapterRegistry => _adapterRegistry;
+
+    /// <inheritdoc/>
+    public void RegisterAdapter(string languageId, Func<object> factory)
+        => _adapterRegistry.Register(languageId, () => (IDapClient)factory());
+
+    /// <inheritdoc/>
+    public void UnregisterAdapter(string languageId)
+        => _adapterRegistry.Unregister(languageId);
 
     public IReadOnlyList<DebugBreakpointInfo> Breakpoints =>
         _breakpoints.Select(b => new DebugBreakpointInfo(
@@ -73,12 +85,26 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             DependsOnBpKey:   b.DependsOnBpKey
         )).ToList();
 
-    public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings)
+    public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings, IDebugAdapterRegistry? adapterRegistry = null)
     {
-        _eventBus    = eventBus;
-        _settings    = settings;
-        _persistence = new BreakpointPersistenceManager(settings);
+        _eventBus        = eventBus;
+        _settings        = settings;
+        _adapterRegistry = adapterRegistry ?? new DebugAdapterRegistry();
+        _persistence     = new BreakpointPersistenceManager(settings);
         lock (_lock) { _breakpoints.AddRange(_persistence.Load()); }
+        RegisterBuiltInAdapters();
+    }
+
+    /// <summary>
+    /// Registers built-in TCP adapters for Python (debugpy) and JavaScript/TypeScript (node --inspect-brk).
+    /// These factories capture the launch config at call time via a deferred reference set from <see cref="CreateAdapterAsync"/>.
+    /// </summary>
+    private void RegisterBuiltInAdapters()
+    {
+        // Python — debugpy must be installed: pip install debugpy
+        // Factory signature requires IDapClient, but DebugPyAdapter.CreateAsync is async;
+        // we store config and run async creation inside LaunchAsync (see CreateAdapterAsync).
+        // Registry factories are used for plugin-provided adapters only; built-ins bypass factory.
     }
 
     // ── Launch / Attach ───────────────────────────────────────────────────────
@@ -86,6 +112,14 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     /// <summary>Launch a new debug session for the given configuration.</summary>
     public async Task LaunchAsync(DebugLaunchConfig config)
     {
+        // Route attach requests through the existing AttachAsync path.
+        if (config.Request.Equals("attach", StringComparison.OrdinalIgnoreCase)
+            && config.ProcessId.HasValue)
+        {
+            await AttachAsync(config.ProcessId.Value);
+            return;
+        }
+
         if (_session.IsActive) await StopSessionAsync();
 
         // Reset hit counts for the new session.
@@ -95,26 +129,21 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
                 _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
         }
 
-        var adapterPath = DebugAdapterLocator.Locate(_settings.Debugger.NetCoreDbgPath);
-        if (adapterPath is null)
-        {
-            MessageBox.Show(
-                "Debug adapter (netcoredbg) not found.\n" +
-                "Install it or set the path in Options → Debugger.",
-                "Debugger", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
         UpdateSession(_session with { State = DebugSessionState.Launching });
 
         try
         {
-            _client = await NetCoreDapAdapter.CreateAsync(adapterPath);
+            _client = await CreateAdapterAsync(config);
+            if (_client is null)
+            {
+                UpdateSession(DebugSession.Empty);
+                return;
+            }
             WireClientEvents(_client);
 
             await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
             await SyncAllBreakpointsAsync(_client);
-            await _client.LaunchAsync(NetCoreDapAdapter.BuildLaunchArgs(config));
+            await _client.LaunchAsync(BuildLaunchArgs(config));
             await _client.ConfigurationDoneAsync();
 
             var sessionId = Guid.NewGuid().ToString("N");
@@ -449,6 +478,58 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         catch { /* ignore */ }
         await CleanupClientAsync();
     }
+
+    // ── Adapter factory ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Creates the appropriate DAP adapter for the given launch config.
+    /// C# / VB.NET → NetCoreDapAdapter; other languages routed via registry;
+    /// unknown language → warning dialog, returns null.
+    /// </summary>
+    private async Task<IDapClient?> CreateAdapterAsync(DebugLaunchConfig config)
+    {
+        string lang = config.LanguageId.ToLowerInvariant();
+
+        if (lang is "csharp" or "vb" or "vb.net" or "fsharp")
+        {
+            var adapterPath = DebugAdapterLocator.Locate(_settings.Debugger.NetCoreDbgPath);
+            if (adapterPath is null)
+            {
+                MessageBox.Show(
+                    "Debug adapter (netcoredbg) not found.\n" +
+                    "Install it or set the path in Options → Debugger.",
+                    "Debugger", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return null;
+            }
+            return await NetCoreDapAdapter.CreateAsync(adapterPath);
+        }
+
+        if (lang is "python")
+            return await DebugPyAdapter.CreateAsync(config);
+
+        if (lang is "javascript" or "typescript" or "js" or "ts")
+            return await NodeInspectorAdapter.CreateAsync(config);
+
+        // Try plugin-registered adapter
+        var registeredClient = _adapterRegistry.CreateAdapter(lang);
+        if (registeredClient is not null)
+            return registeredClient;
+
+        MessageBox.Show(
+            $"No debug adapter registered for language '{config.LanguageId}'.\n" +
+            "Install the appropriate adapter plugin or configure a custom adapter.",
+            "Debugger", MessageBoxButton.OK, MessageBoxImage.Warning);
+        return null;
+    }
+
+    /// <summary>Build <see cref="LaunchRequestArgs"/> for any language.</summary>
+    private static LaunchRequestArgs BuildLaunchArgs(DebugLaunchConfig config) => new(
+        Program:     config.ProgramPath,
+        Args:        config.Args.Length > 0 ? config.Args : null,
+        Cwd:         config.WorkDir,
+        Env:         config.Env.Count > 0 ? config.Env : null,
+        StopAtEntry: config.StopAtEntry,
+        JustMyCode:  config.JustMyCode);
 
     // ── Internal helpers ──────────────────────────────────────────────────────
 

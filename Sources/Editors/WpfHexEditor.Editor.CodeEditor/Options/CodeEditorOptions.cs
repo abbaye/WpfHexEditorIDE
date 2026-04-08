@@ -207,6 +207,38 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
         set { _inlineHintsSource = value; Notify(); }
     }
 
+    private bool _showVarTypeHints = true;
+    /// <summary>Show inferred type hints for <c>var</c> declarations.</summary>
+    public bool ShowVarTypeHints
+    {
+        get => _showVarTypeHints;
+        set { _showVarTypeHints = value; Notify(); }
+    }
+
+    private bool _showLambdaReturnTypeHints = true;
+    /// <summary>Show return-type hints for lambda expressions.</summary>
+    public bool ShowLambdaReturnTypeHints
+    {
+        get => _showLambdaReturnTypeHints;
+        set { _showLambdaReturnTypeHints = value; Notify(); }
+    }
+
+    private bool _showLspInlayHints = true;
+    /// <summary>Show LSP parameter-name inlay hints before function arguments.</summary>
+    public bool ShowLspInlayHints
+    {
+        get => _showLspInlayHints;
+        set { _showLspInlayHints = value; Notify(); }
+    }
+
+    private bool _showLspDeclarationHints = true;
+    /// <summary>Show LSP declaration hints hints (reference counts and test runner indicators) above declarations.</summary>
+    public bool ShowLspDeclarationHints
+    {
+        get => _showLspDeclarationHints;
+        set { _showLspDeclarationHints = value; Notify(); }
+    }
+
     private int  _maxUndoHistory      = 500;
 
     /// <summary>

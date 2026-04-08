@@ -154,21 +154,13 @@ public sealed class ResxEditorViewModel : ViewModelBase
     /// </summary>
     public void LoadDocument(ResxDocument document)
     {
-        IsLoading = true;
-        try
-        {
-            Entries.Clear();
-            foreach (var entry in document.Entries)
-                Entries.Add(new ResxEntryViewModel(entry));
+        Entries.Clear();
+        foreach (var entry in document.Entries)
+            Entries.Add(new ResxEntryViewModel(entry));
 
-            _undoStack.Clear();
-            FilePath = document.FilePath;
-            FireStatistics();
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        _undoStack.Clear();
+        FilePath = document.FilePath;
+        FireStatistics();
     }
 
     /// <summary>Returns current entries as a list of <see cref="ResxEntry"/> records.</summary>

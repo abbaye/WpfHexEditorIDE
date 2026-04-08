@@ -219,7 +219,8 @@ public sealed class DocumentStructureViewModel : ViewModelBase
             return;
         }
 
-        _dispatcher.Invoke(() => IsLoading = true);
+        bool first = TryFirstLoad();
+        if (first) _dispatcher.Invoke(() => IsLoading = true);
 
         try
         {
@@ -256,7 +257,7 @@ public sealed class DocumentStructureViewModel : ViewModelBase
                 _allRootNodes = vms;
                 ActiveProviderName = usedProvider.DisplayName;
                 StatusText = $"{totalCount} symbols";
-                IsLoading = false;
+                if (first) IsLoading = false;
                 IsDocumentOpen = true;
 
                 RebuildTreeFromSource(vms);

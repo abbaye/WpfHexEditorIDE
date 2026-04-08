@@ -14,6 +14,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Automation;
 
@@ -24,6 +25,18 @@ namespace WpfHexEditor.Shell;
 /// </summary>
 public class DockTabControl : TabControl
 {
+    static DockTabControl()
+    {
+        // Re-apply selection border thickness whenever tab strip placement changes at runtime
+        // (e.g. document area switched from top to bottom tabs).
+        TabStripPlacementProperty.OverrideMetadata(
+            typeof(DockTabControl),
+            new FrameworkPropertyMetadata(Dock.Top, (d, _) =>
+            {
+                if (d is DockTabControl tc) tc.ApplyHighlightMode(tc._highlightMode);
+            }));
+    }
+
     public DockGroupNode? Node { get; private set; }
 
     // -- MaxTabWidth DP — caps the title text width so long filenames are ellipsis-truncated.
@@ -88,12 +101,68 @@ public class DockTabControl : TabControl
     /// </summary>
     public Func<bool>? HasMultipleDocumentHostsCheck { get; set; }
 
+    /// <summary>
+    /// Returns the rendered height of the tab strip (PART_TabStrip in the control template).
+    /// Used by <see cref="DockControl"/> to clip the active-panel overlay border so it stops
+    /// at the content/tab-strip boundary (VS-like: border does not wrap the tab strip).
+    /// Returns 0 if the template has not been applied yet.
+    /// </summary>
+    internal double GetTabStripHeight()
+    {
+        ApplyTemplate();
+        return (Template?.FindName("PART_TabStrip", this) as FrameworkElement)?.ActualHeight ?? 0;
+    }
+
+    // ── Highlight mode ─────────────────────────────────────────────────────────
+
+    private ActivePanelHighlightMode _highlightMode = ActivePanelHighlightMode.FullBorder;
+
+    /// <summary>
+    /// Updates the SelectionBorder thickness on every tab item to match the active
+    /// panel highlight mode (TopBar = bottom-only, FullBorder = U-shape 1px, Glow = U-shape 2px).
+    /// </summary>
+    internal void ApplyHighlightMode(ActivePanelHighlightMode mode)
+    {
+        _highlightMode = mode;
+        foreach (var obj in Items)
+        {
+            if (ItemContainerGenerator.ContainerFromItem(obj) is TabItem tab)
+                ApplySelectionBorderThickness(tab);
+        }
+    }
+
+    private void ApplySelectionBorderThickness(TabItem tab)
+    {
+        tab.ApplyTemplate();
+        if (tab.Template?.FindName("SelectionBorder", tab) is not Border sb) return;
+        sb.BorderThickness = SelectionBorderThicknessFor(_highlightMode, TabStripPlacement);
+    }
+
+    /// <summary>
+    /// Returns the SelectionBorder thickness matching the highlight mode and tab placement.
+    /// Bottom tabs: U-shape open at top (left/bottom/right).
+    /// Top tabs: inverted U open at bottom (left/top/right).
+    /// </summary>
+    private static Thickness SelectionBorderThicknessFor(ActivePanelHighlightMode mode, Dock placement)
+    {
+        bool isBottom = placement == Dock.Bottom;
+        return (mode, isBottom) switch
+        {
+            (ActivePanelHighlightMode.TopBar, true)  => new Thickness(0, 0, 0, 2), // bottom only
+            (ActivePanelHighlightMode.TopBar, false) => new Thickness(0, 2, 0, 0), // top only
+            (ActivePanelHighlightMode.Glow,   true)  => new Thickness(2, 0, 2, 2), // U 2px
+            (ActivePanelHighlightMode.Glow,   false) => new Thickness(2, 2, 2, 0), // inverted U 2px
+            (_,                               true)  => new Thickness(1, 0, 1, 1), // U 1px (FullBorder)
+            (_,                               false) => new Thickness(1, 1, 1, 0), // inverted U 1px
+        };
+    }
+
     private Func<DockItem, object>? _contentFactory;
 
     // Tracks DockItems whose plugin panel has already been created at least once.
-    // On subsequent Bind() rebuilds we call the factory directly (synchronous, fast)
-    // instead of re-showing PluginLoadingPlaceholder — avoids the one-frame flash.
-    private readonly HashSet<DockItem> _everMaterialized = new();
+    // "Already materialized" flag is stored in DockItem.Metadata so it survives
+    // dock/undock, group moves, and Bind() rebuilds across any DockTabControl instance.
+    private const string MaterializedKey = "_materialized";
 
     private int  _dragOriginalModelIndex = -1;
     private int  _currentInsertionIdx    = -1;
@@ -163,7 +232,9 @@ public class DockTabControl : TabControl
             if (Items[i] is TabItem ti && ti.Tag is DockItem d && d == item)
             {
                 Items.RemoveAt(i);
-                _everMaterialized.Remove(item);
+                // Intentionally NOT clearing MaterializedKey from item.Metadata —
+                // the flag must survive dock/undock so the loading placeholder never
+                // re-appears for a panel that has already been shown once.
                 return;
             }
         }
@@ -188,7 +259,7 @@ public class DockTabControl : TabControl
                         var factory = _contentFactory;
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
                         {
-                            _everMaterialized.Add(item);
+                            item.Metadata[MaterializedKey] = "1";
                             tab.Content = factory.Invoke(item);
                         });
                     }
@@ -245,7 +316,7 @@ public class DockTabControl : TabControl
         }
         else if (isActive && item.Metadata.ContainsKey("_pluginPanel"))
         {
-            if (_everMaterialized.Contains(item))
+            if (item.Metadata.ContainsKey(MaterializedKey))
             {
                 // Already built once — call factory directly (fast, no flash).
                 tabContent = contentFactory.Invoke(item);
@@ -271,13 +342,17 @@ public class DockTabControl : TabControl
             Tag = item,
             Content = tabContent
         };
-        tabItem.SetResourceReference(StyleProperty, "DockTabItemStyle");
+        // DockTabControl is always bottom-placed: use inverted CornerRadius (0,0,4,4) style
+        tabItem.SetResourceReference(StyleProperty, "DockTabItemBottomStyle");
+
+        // Apply the current highlight mode once the template is available.
+        tabItem.Loaded += (_, _) => ApplySelectionBorderThickness(tabItem);
 
         if (deferPluginContent)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
             {
-                _everMaterialized.Add(item);
+                item.Metadata[MaterializedKey] = "1";
                 tabItem.Content = contentFactory!.Invoke(item);
             });
         }

@@ -54,7 +54,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if ((e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) && !_ctrlDown)
             {
                 _ctrlDown = true;
-                InvalidateVisual();
+                InvalidateRegion(RenderDirtyFlags.Overlays); // symbol underline overlay only
             }
 
             // Reset caret blink on keypress
@@ -439,7 +439,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     {
                         _rectSelection.Clear();
                         _isRectSelecting = false;
-                        InvalidateVisual();
+                        InvalidateRegion(RenderDirtyFlags.Selection);
                         e.Handled = true;
                         break;
                     }
@@ -456,7 +456,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         _cursorLine   = _dragDrop.SelectionEnd.Line;
                         _cursorColumn = _dragDrop.SelectionEnd.Column;
                         _dragDrop.Reset();
-                        InvalidateVisual();
+                        InvalidateRegion(RenderDirtyFlags.Selection);
                         e.Handled = true;
                         break;
                     }
@@ -465,7 +465,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     if (!_selection.IsEmpty)
                     {
                         _selection.Start = _selection.End; // replier sur la position courante du curseur
-                        InvalidateVisual();
+                        InvalidateRegion(RenderDirtyFlags.Selection);
                         e.Handled = true;
                         break;
                     }
@@ -619,7 +619,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _hoveredSymbolZone = null;
                 _ctrlClickService?.Cancel();
                 Cursor = Cursors.IBeam;
-                InvalidateVisual();
+                InvalidateRegion(RenderDirtyFlags.Overlays); // clear symbol underline overlay
             }
         }
 
@@ -1626,7 +1626,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Dispatcher.InvokeAsync(() =>
                 {
                     _selectionRenderPending = false;
-                    InvalidateVisual();
+                    InvalidateRegion(RenderDirtyFlags.Selection);
                 }, System.Windows.Threading.DispatcherPriority.Render);
             }
         }

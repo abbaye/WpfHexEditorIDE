@@ -1,0 +1,157 @@
+<!--
+    Project: WpfHexEditor.Plugins.ClassDiagram
+    File: Panels/MetricsDashboardPanel.xaml
+    Author: Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Created: 2026-04-07
+    Description:
+        Phase 7 Metrics Dashboard panel. Displays per-class coupling and
+        instability metrics (Ca, Ce, I) in a sortable ListView. Rows are
+        color-coded by instability level (green/yellow/red). Supports CSV
+        export via toolbar button.
+        Theme tokens: CD_* (from WpfHexEditor.Editor.ClassDiagram Themes/Generic.xaml).
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.ClassDiagram.Panels.MetricsDashboardPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource DockMenuBackgroundBrush}">
+
+    <DockPanel>
+
+        <!-- Toolbar -->
+        <Border DockPanel.Dock="Top"
+                BorderThickness="0,0,0,1"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
+                BorderBrush="{DynamicResource DockToolBarBorderBrush}"
+                Padding="4,3">
+            <DockPanel>
+
+                <!-- Export CSV button — docked right -->
+                <Button DockPanel.Dock="Right"
+                        Content="Export CSV"
+                        Padding="8,2"
+                        Margin="4,0,0,0"
+                        Click="OnExportCsvClicked"
+                        Foreground="{DynamicResource CD_PropertyNameForeground}"
+                        Background="{DynamicResource DockMenuBackgroundBrush}"
+                        BorderBrush="{DynamicResource DockToolBarBorderBrush}"
+                        BorderThickness="1" />
+
+                <!-- Sort mode selector -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Sort by:"
+                               VerticalAlignment="Center"
+                               Margin="0,0,6,0"
+                               Foreground="{DynamicResource CD_PropertyNameForeground}"
+                               FontSize="11" />
+                    <ComboBox x:Name="SortComboBox"
+                              Width="180"
+                              SelectedIndex="{Binding SortModeIndex, Mode=TwoWay}"
+                              Foreground="{DynamicResource CD_PropertyValueForeground}"
+                              Background="{DynamicResource DockMenuBackgroundBrush}"
+                              BorderBrush="{DynamicResource DockToolBarBorderBrush}">
+                        <ComboBoxItem Content="Instability" />
+                        <ComboBoxItem Content="Afferent Coupling (Ca)" />
+                        <ComboBoxItem Content="Efferent Coupling (Ce)" />
+                        <ComboBoxItem Content="Member Count" />
+                    </ComboBox>
+                </StackPanel>
+
+            </DockPanel>
+        </Border>
+
+        <!-- Metrics ListView -->
+        <ListView x:Name="MetricsList"
+                  ItemsSource="{Binding Rows}"
+                  Background="{DynamicResource DockMenuBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  BorderThickness="0"
+                  SelectionChanged="OnSelectionChanged"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn Header="Class Name" Width="160">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource CD_NodeHeaderForeground}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Kind" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Kind}"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource CD_PropertyNameForeground}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Ca" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Ca}"
+                                           FontSize="11"
+                                           TextAlignment="Right"
+                                           Foreground="{DynamicResource CD_PropertyValueForeground}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Ce" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Ce}"
+                                           FontSize="11"
+                                           TextAlignment="Right"
+                                           Foreground="{DynamicResource CD_PropertyValueForeground}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="I" Width="60">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding I, StringFormat=F2}"
+                                           FontSize="11"
+                                           TextAlignment="Right"
+                                           Foreground="{DynamicResource CD_PropertyValueForeground}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Members" Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding MemberCount}"
+                                           FontSize="11"
+                                           TextAlignment="Right"
+                                           Foreground="{DynamicResource CD_PropertyValueForeground}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
+
+            <!-- Row background based on instability level -->
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Background" Value="{Binding RowBackground}" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="2,1" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+        </ListView>
+
+    </DockPanel>
+</UserControl>

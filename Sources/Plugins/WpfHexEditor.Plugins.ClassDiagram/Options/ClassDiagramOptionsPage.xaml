@@ -168,6 +168,91 @@
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,12"/>
 
+            <!-- ── Separator ─────────────────────────────────────────────── -->
+            <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
+
+            <!-- ── Section: Minimap ──────────────────────────────────────── -->
+            <TextBlock Text="Minimap"
+                       FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource PFP_AccentBrush}"
+                       Margin="0,0,0,6"/>
+
+            <CheckBox x:Name="ChkShowMinimapByDefault"
+                      Content="Show minimap when diagram opens"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,12"/>
+
+            <!-- ── Separator ─────────────────────────────────────────────── -->
+            <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
+
+            <!-- ── Section: Outline Panel ────────────────────────────────── -->
+            <TextBlock Text="Outline Panel"
+                       FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource PFP_AccentBrush}"
+                       Margin="0,0,0,6"/>
+
+            <CheckBox x:Name="ChkOutlineShowMembers"
+                      Content="Show expandable member sub-items"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,4"/>
+
+            <CheckBox x:Name="ChkOutlineColorByVisibility"
+                      Content="Color member dots by visibility (green / orange / red)"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,12"/>
+
+            <!-- ── Separator ─────────────────────────────────────────────── -->
+            <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
+
+            <!-- ── Section: Hover Tooltips ───────────────────────────────── -->
+            <TextBlock Text="Hover Tooltips"
+                       FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource PFP_AccentBrush}"
+                       Margin="0,0,0,6"/>
+
+            <CheckBox x:Name="ChkShowHoverTooltips"
+                      Content="Show detail tooltip on node hover"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,4"/>
+
+            <!-- Tooltip delay -->
+            <Grid Margin="0,4,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Tooltip delay (ms):"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Slider x:Name="TooltipDelaySlider"
+                            Minimum="100" Maximum="2000" TickFrequency="100"
+                            IsSnapToTickEnabled="True"
+                            Width="140"
+                            VerticalAlignment="Center"
+                            ValueChanged="OnTooltipDelayChanged"/>
+                    <TextBlock x:Name="TooltipDelayLabel"
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="11"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- ── Separator ─────────────────────────────────────────────── -->
+            <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
+
+            <!-- ── Section: Session ──────────────────────────────────────── -->
+            <TextBlock Text="Session"
+                       FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource PFP_AccentBrush}"
+                       Margin="0,0,0,6"/>
+
+            <CheckBox x:Name="ChkRestoreLastState"
+                      Content="Restore zoom, pan, selection, and minimap position on reopen"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,12"/>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

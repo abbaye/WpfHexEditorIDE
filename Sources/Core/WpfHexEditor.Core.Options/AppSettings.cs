@@ -654,6 +654,18 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public int InlineHintsSource { get; set; } = 0;
 
+    /// <summary>Show inferred type hints for <c>var</c> declarations (e.g. <c>var x = 1;</c> → <c>: int</c>).</summary>
+    public bool ShowVarTypeHints { get; set; } = true;
+
+    /// <summary>Show return-type hints for lambda and anonymous function expressions.</summary>
+    public bool ShowLambdaReturnTypeHints { get; set; } = true;
+
+    /// <summary>Show LSP parameter-name inlay hints before function arguments (requires LSP).</summary>
+    public bool ShowLspInlayHints { get; set; } = true;
+
+    /// <summary>Show LSP declaration hints hints: reference counts and test runner indicators above declarations (requires LSP).</summary>
+    public bool ShowLspDeclarationHints { get; set; } = true;
+
     // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
@@ -1005,6 +1017,20 @@ public sealed class PluginSystemSettings
 
     /// <summary>Color for critical threshold (red). Default: #EF4444</summary>
     public string MemoryCriticalColor { get; set; } = "#EF4444";
+
+    // -- Plugin Dev Loader ------------------------------------------------
+
+    /// <summary>When true, the Plugin Dev Loader watch mode is available in the Plugin Manager.</summary>
+    public bool EnablePluginDevLoader { get; set; } = true;
+
+    /// <summary>
+    /// Additional folders watched by the Plugin Dev Loader (semicolon-separated paths).
+    /// Plugins changed in these folders are hot-reloaded automatically.
+    /// </summary>
+    public string WatchedFolders { get; set; } = string.Empty;
+
+    /// <summary>Debounce delay (ms) before triggering a hot-reload after a file change.</summary>
+    public int DevLoaderDebounceMs { get; set; } = 500;
 }
 
 // --------------------------------------------------------------------------------

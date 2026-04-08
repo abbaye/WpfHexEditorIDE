@@ -32,5 +32,14 @@ public enum RelationshipKind
     Aggregation,
 
     /// <summary>Strong whole-part ownership where the part cannot outlive the whole (<c>*--</c>).</summary>
-    Composition
+    Composition,
+
+    /// <summary>Interface implementation rendered with dashed line + hollow triangle (<c>..|&gt;</c>).</summary>
+    Realization,
+
+    /// <summary>General usage relationship (caller → callee) rendered with open dashed arrow.</summary>
+    Uses,
+
+    /// <summary>Factory/builder relationship: this type creates instances of the target.</summary>
+    Creates
 }

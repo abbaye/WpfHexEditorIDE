@@ -110,7 +110,7 @@
                 <!-- ── Fixed LEFT: title + health badge + alert badge (always visible) ── -->
                 <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Left"
                             Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="PLUGIN MONITOR"
+                    <TextBlock Text="EXTENSIONS MONITOR"
                                FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Border CornerRadius="3" Padding="5,1" Margin="8,0,4,0"
@@ -688,6 +688,9 @@
                     <DataGridTextColumn Header="Init ms" Binding="{Binding InitTimeMs, StringFormat={}{0:F0}}"       Width="60" MinWidth="50"/>
                     <DataGridTextColumn Header="Reload"  Binding="{Binding ReloadMode}"                              Width="50" MinWidth="45"
                                         ToolTipService.ToolTip="Fast = IWpfHexEditorPluginV2.SupportsHotReload; Full = full unload+GC+reload cycle"/>
+
+                    <DataGridTextColumn Header="Watch"   Binding="{Binding WatchBadge}"                             Width="42" MinWidth="38"
+                                        ToolTipService.ToolTip="👁 = Plugin Dev Loader is watching this plugin's output directory for changes"/>
                 </DataGrid.Columns>
 
                 <!--

@@ -18,6 +18,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Core.ViewModels;
 
@@ -61,6 +62,76 @@ public sealed class ClassMemberViewModel : ViewModelBase
         MemberKind.Event    => "\uECAD",  // LightningBolt
         _                   => "\uE192"   // Field / List
     };
+
+    // ── Outline panel display ─────────────────────────────────────────────────
+
+    /// <summary>Formatted label for the outline panel: visibility char + name + params + ": type".</summary>
+    public string OutlineDisplayText
+    {
+        get
+        {
+            string visChar = _member.Visibility switch
+            {
+                MemberVisibility.Public    => "+",
+                MemberVisibility.Protected => "#",
+                MemberVisibility.Private   => "-",
+                _                          => "~"
+            };
+            string paramStr = _member.Kind == MemberKind.Method
+                ? "(" + string.Join(", ", _member.Parameters) + ")"
+                : string.Empty;
+            string typePart = string.IsNullOrEmpty(_member.TypeName) ? string.Empty : $" : {_member.TypeName}";
+            return $"{visChar} {_member.Name}{paramStr}{typePart}";
+        }
+    }
+
+    /// <summary>Visibility indicator ellipse fill color (green/orange/red/blue).</summary>
+    public Brush VisibilityColor => _member.Visibility switch
+    {
+        MemberVisibility.Public    => new SolidColorBrush(Color.FromRgb( 78, 201,  78)),
+        MemberVisibility.Protected => new SolidColorBrush(Color.FromRgb(255, 152,   0)),
+        MemberVisibility.Private   => new SolidColorBrush(Color.FromRgb(244,  67,  54)),
+        _                          => new SolidColorBrush(Color.FromRgb( 33, 150, 243))
+    };
+
+    /// <summary>CD_* resource key for the member-kind foreground brush.</summary>
+    public string KindBrushKey => _member.Kind switch
+    {
+        MemberKind.Field    => "CD_FieldForeground",
+        MemberKind.Property => "CD_PropertyForeground",
+        MemberKind.Method   => "CD_MethodForeground",
+        _                   => "CD_EventForeground"
+    };
+
+    /// <summary>
+    /// Fallback member-kind foreground brush (used when CD_* tokens are not in scope).
+    /// Colors match the diagram renderer palette.
+    /// </summary>
+    public Brush KindBrush => _member.Kind switch
+    {
+        MemberKind.Field    => new SolidColorBrush(Color.FromRgb(156, 220, 254)),  // light blue
+        MemberKind.Property => new SolidColorBrush(Color.FromRgb( 78, 201, 176)),  // teal
+        MemberKind.Method   => new SolidColorBrush(Color.FromRgb(220, 220, 170)),  // yellow
+        _                   => new SolidColorBrush(Color.FromRgb(206, 145, 120))   // orange (event)
+    };
+
+    /// <summary>Tooltip text shown on hover (XML doc + modifiers).</summary>
+    public string TooltipText
+    {
+        get
+        {
+            var parts = new List<string>();
+            if (!string.IsNullOrEmpty(_member.XmlDocSummary))
+                parts.Add(_member.XmlDocSummary!);
+            var mods = new List<string>();
+            if (_member.IsStatic)   mods.Add("static");
+            if (_member.IsAbstract) mods.Add("abstract");
+            if (_member.IsAsync)    mods.Add("async");
+            if (_member.IsOverride) mods.Add("override");
+            if (mods.Count > 0)     parts.Add("[" + string.Join(", ", mods) + "]");
+            return string.Join("\n", parts);
+        }
+    }
 
     // ---------------------------------------------------------------------------
     // Editing state

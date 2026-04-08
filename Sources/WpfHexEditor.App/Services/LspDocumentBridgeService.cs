@@ -38,6 +38,8 @@ public sealed class LspServerStateChangedEventArgs : EventArgs
     public          string?       ServerName { get; init; }
     /// <summary>Error message when State == Error.</summary>
     public          string?       ErrorMessage { get; init; }
+    /// <summary>True when the server uses pull diagnostics (LSP 3.18); false for push.</summary>
+    public          bool          UsesPullDiagnostics { get; init; }
 }
 
 /// <summary>
@@ -177,12 +179,17 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
     private void RaiseState(LspServerEntry entry, LspServerState state, string? error = null)
     {
+        bool pullDiag = _clients.TryGetValue(entry.LanguageId, out var cl)
+            && cl is WpfHexEditor.Editor.Core.LSP.IDiagnosticsModeClient dmc
+            && dmc.UsesPullDiagnostics;
+
         var args = new LspServerStateChangedEventArgs
         {
-            LanguageId   = entry.LanguageId,
-            State        = state,
-            ServerName   = entry.LanguageId,   // use language ID as display name
-            ErrorMessage = error,
+            LanguageId          = entry.LanguageId,
+            State               = state,
+            ServerName          = entry.LanguageId,   // use language ID as display name
+            ErrorMessage        = error,
+            UsesPullDiagnostics = pullDiag,
         };
         ServerStateChanged?.Invoke(this, args);
     }

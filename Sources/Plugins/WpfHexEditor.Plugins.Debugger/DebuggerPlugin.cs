@@ -46,11 +46,12 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
     private readonly List<IDisposable> _subs = [];
 
     // Panel view-models
-    private BreakpointExplorerViewModel? _bpVm;
-    private CallStackPanelViewModel?    _csVm;
-    private LocalsPanelViewModel?       _locVm;
-    private WatchesPanelViewModel?      _watchVm;
-    private DebugConsolePanelViewModel? _consoleVm;
+    private BreakpointExplorerViewModel?  _bpVm;
+    private CallStackPanelViewModel?      _csVm;
+    private LocalsPanelViewModel?         _locVm;
+    private WatchesPanelViewModel?        _watchVm;
+    private DebugConsolePanelViewModel?   _consoleVm;
+    private DebugSessionManagerViewModel? _sessionMgrVm;
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
@@ -64,14 +65,16 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         }
 
         // Create view-models
-        _bpVm      = new BreakpointExplorerViewModel(_debugger, context);
-        _csVm      = new CallStackPanelViewModel(_debugger, context);
-        _locVm     = new LocalsPanelViewModel(_debugger);
-        _watchVm   = new WatchesPanelViewModel(_debugger);
-        _consoleVm = new DebugConsolePanelViewModel();
+        _bpVm         = new BreakpointExplorerViewModel(_debugger, context);
+        _csVm         = new CallStackPanelViewModel(_debugger, context);
+        _locVm        = new LocalsPanelViewModel(_debugger);
+        _watchVm      = new WatchesPanelViewModel(_debugger);
+        _consoleVm    = new DebugConsolePanelViewModel();
+        _sessionMgrVm = new DebugSessionManagerViewModel();
 
         // Wire IDE events — store tokens for disposal in ShutdownAsync
         _subs.Add(context.IDEEvents.Subscribe<DebugSessionPausedEvent>(OnPaused));
+        _subs.Add(context.IDEEvents.Subscribe<DebugSessionStartedEvent>(OnSessionStarted));
         _subs.Add(context.IDEEvents.Subscribe<DebugSessionEndedEvent>(OnEnded));
         _subs.Add(context.IDEEvents.Subscribe<DebugOutputReceivedEvent>(OnOutput));
         _subs.Add(context.IDEEvents.Subscribe<OpenBreakpointSettingsRequestedEvent>(OnOpenBpSettings));
@@ -93,8 +96,15 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         ui.RegisterPanel("panel-dbg-watch", new WatchesPanel { DataContext = _watchVm }, Id,
             new PanelDescriptor { Title = "Watch", DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
-        ui.RegisterPanel("panel-dbg-console", new DebugConsolePanel { DataContext = _consoleVm }, Id,
+        var consolePanel = new DebugConsolePanel { DataContext = _consoleVm };
+        consolePanel.SetSessionManager(_sessionMgrVm);
+        ui.RegisterPanel("panel-dbg-console", consolePanel, Id,
             new PanelDescriptor { Title = "Debug Console", DefaultDockSide = "Bottom", DefaultAutoHide = false });
+
+        // Launch configuration editor panel
+        ui.RegisterPanel("panel-dbg-launch-config",
+            new Panels.LaunchConfigEditorPanel(context.DocumentHost, _debugger), Id,
+            new PanelDescriptor { Title = "Launch Config (.whdbg)", DefaultDockSide = "Bottom", DefaultAutoHide = true });
 
         // Contribute Debug menu — one RegisterMenuItem call per item (no Children support in SDK)
         // Icons included for Command Palette; DebugMenuOrganizer deduplicates against built-in entries.
@@ -179,10 +189,17 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         });
     }
 
+    private void OnSessionStarted(DebugSessionStartedEvent e)
+    {
+        System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+            _sessionMgrVm?.AddSession(e.SessionId, System.IO.Path.GetFileName(e.ProjectPath), "csharp"));
+    }
+
     private void OnEnded(DebugSessionEndedEvent e)
     {
         System.Windows.Application.Current?.Dispatcher.Invoke(() =>
         {
+            _sessionMgrVm?.RemoveSession(e.SessionId);
             _csVm?.SetFrames([]);
             _locVm?.SetVariables([]);
         });

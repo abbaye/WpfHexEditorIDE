@@ -88,8 +88,33 @@
             </ComboBox>
         </StackPanel>
 
+        <!-- ── Roslyn Semantic Hints ────────────────────────────────────────── -->
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
+
+        <TextBlock Text="ROSLYN SEMANTIC HINTS (C# / VB.NET)"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,0,0,6"/>
+
+        <TextBlock Text="Show inferred types and return types inline when Roslyn is the active language client."
+                   FontSize="11"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Opacity="0.65"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,8"/>
+
+        <CheckBox x:Name="ChkShowVarTypeHints"
+                  Content="Show inferred type for 'var' declarations  (e.g. var x = … → : List&lt;int&gt;)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,6"
+                  Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="ChkShowLambdaReturnTypeHints"
+                  Content="Show return type for lambda expressions  (e.g. x => x * 2 → → int)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,12"
+                  Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
         <!-- ── Symbol Kinds ──────────────────────────────────────────────────── -->
         <TextBlock Text="SHOW HINTS FOR SYMBOL KINDS:"

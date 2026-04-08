@@ -28,7 +28,8 @@ public record LaunchRequestArgs(
     [property: JsonPropertyName("cwd")]                string?   Cwd            = null,
     [property: JsonPropertyName("env")]                Dictionary<string,string>? Env = null,
     [property: JsonPropertyName("stopAtEntry")]        bool      StopAtEntry    = false,
-    [property: JsonPropertyName("noDebug")]            bool      NoDebug        = false
+    [property: JsonPropertyName("noDebug")]            bool      NoDebug        = false,
+    [property: JsonPropertyName("justMyCode")]         bool      JustMyCode     = true
 );
 
 public record AttachRequestArgs(

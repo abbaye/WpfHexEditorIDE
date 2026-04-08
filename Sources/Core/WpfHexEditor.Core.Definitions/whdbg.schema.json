@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://wpfhexeditor.dev/schemas/whdbg.schema.json",
+  "title": "WpfHexEditor Debug Launch Configuration",
+  "description": "Schema for .whdbg debug launch configuration files used by WpfHexEditor IDE.",
+  "type": "object",
+  "required": ["version", "configurations"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version. Must be \"1.0\".",
+      "enum": ["1.0"]
+    },
+    "configurations": {
+      "type": "array",
+      "description": "List of debug launch configurations.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/LaunchConfiguration"
+      }
+    }
+  },
+  "definitions": {
+    "LaunchConfiguration": {
+      "type": "object",
+      "required": ["name", "type", "request", "program"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable name shown in the debug session selector."
+        },
+        "type": {
+          "type": "string",
+          "description": "Debug adapter type.",
+          "enum": ["csharp", "python", "javascript", "typescript"],
+          "examples": ["csharp", "python", "javascript"]
+        },
+        "request": {
+          "type": "string",
+          "description": "Debug request mode.",
+          "enum": ["launch", "attach"]
+        },
+        "program": {
+          "type": "string",
+          "description": "Absolute or workspace-relative path to the program to debug."
+        },
+        "args": {
+          "type": "array",
+          "description": "Command-line arguments passed to the program.",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "cwd": {
+          "type": "string",
+          "description": "Working directory for the debug session. Defaults to the program directory."
+        },
+        "env": {
+          "type": "object",
+          "description": "Additional environment variables injected into the debuggee.",
+          "additionalProperties": { "type": "string" }
+        },
+        "stopAtEntry": {
+          "type": "boolean",
+          "description": "Halt at the program entry point before executing any user code.",
+          "default": false
+        },
+        "processId": {
+          "type": "integer",
+          "description": "Process ID to attach to (only used when request is 'attach')."
+        },
+        "projectPath": {
+          "type": "string",
+          "description": "Path to the .csproj or .vbproj file (used by the C# adapter to load build output)."
+        },
+        "justMyCode": {
+          "type": "boolean",
+          "description": "When true, the debugger skips non-user code (framework internals).",
+          "default": true
+        },
+        "console": {
+          "type": "string",
+          "description": "Where the debuggee's stdout/stderr are shown.",
+          "enum": ["internalConsole", "integratedTerminal", "externalTerminal"],
+          "default": "internalConsole"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "request": { "const": "attach" } }, "required": ["request"] },
+          "then": { "required": ["processId"] }
+        }
+      ]
+    }
+  }
+}

@@ -1128,7 +1128,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             DockHost.SyncLayoutSizes();
 
-            _layout.WindowState = (int)WindowState;
+            // If full screen is active, serialize the pre-full-screen state instead.
+            _layout.WindowState = (int)(_preFullScreenState ?? WindowState);
             var rb = RestoreBounds;
             if (rb != Rect.Empty)
             {
@@ -1320,7 +1321,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var errorsItem = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
         engine.Dock(errorsItem, layout.MainDocumentHost, DockDirection.Bottom);
 
-        var pluginMonitor = new DockItem { Title = "Plugin Monitor", ContentId = PluginMonitorContentId };
+        var pluginMonitor = new DockItem { Title = "Extensions Monitor", ContentId = PluginMonitorContentId };
         engine.Dock(pluginMonitor, errorsItem.Owner!, DockDirection.Center);
 
         var output = new DockItem { Title = "Output", ContentId = "panel-output" };

@@ -12,6 +12,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ClassDiagram.Panels.ClassOutlinePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Editor.ClassDiagram.ViewModels;assembly=WpfHexEditor.Editor.ClassDiagram"
              Background="{DynamicResource DockMenuBackgroundBrush}">
 
     <DockPanel>
@@ -31,42 +32,68 @@
             </StackPanel>
         </Border>
 
-        <!-- Class list -->
-        <ListBox x:Name="NodeList"
-                 ItemsSource="{Binding FilteredNodes}"
-                 SelectedItem="{Binding SelectedNode, Mode=TwoWay}"
-                 Background="{DynamicResource DockMenuBackgroundBrush}"
-                 Foreground="{DynamicResource DockMenuForegroundBrush}"
-                 BorderThickness="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.VirtualizationMode="Recycling">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="2,2,2,2">
-                        <!-- Kind badge (e.g. «interface», «enum») — empty for plain class -->
-                        <TextBlock Text="{Binding KindLabel}"
-                                   FontSize="10"
-                                   VerticalAlignment="Center"
-                                   Foreground="{DynamicResource CD_NodeHeaderForeground}"
-                                   Margin="0,0,5,0">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
+        <!-- Class tree with expandable members -->
+        <TreeView x:Name="NodeTree"
+                  ItemsSource="{Binding FilteredNodes}"
+                  Background="{DynamicResource DockMenuBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  BorderThickness="0"
+                  SelectedItemChanged="OnTreeSelectedItemChanged"
+                  MouseDoubleClick="OnTreeDoubleClick"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <TreeView.Resources>
+                <!-- Class node item -->
+                <HierarchicalDataTemplate DataType="{x:Type vm:ClassNodeViewModel}"
+                                          ItemsSource="{Binding MemberViewModels}">
+                    <StackPanel Orientation="Horizontal" Margin="1,2">
+                        <!-- Kind chip -->
+                        <Border CornerRadius="3" Padding="3,0" Background="{Binding KindColor}"
+                                Margin="0,0,5,0" VerticalAlignment="Center">
+                            <Border.Style>
+                                <Style TargetType="Border">
                                     <Style.Triggers>
-                                        <Trigger Property="Text" Value="">
+                                        <DataTrigger Binding="{Binding KindLabel}" Value="">
                                             <Setter Property="Visibility" Value="Collapsed"/>
-                                        </Trigger>
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBlock Text="{Binding Name}"
-                                   FontSize="12"
-                                   VerticalAlignment="Center"
-                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            </Border.Style>
+                            <TextBlock Text="{Binding KindLabel}" FontSize="9" Foreground="White"/>
+                        </Border>
+                        <!-- Class name (selectable read-only TextBox) -->
+                        <TextBox Text="{Binding Name, Mode=OneWay}"
+                                 IsReadOnly="True" BorderThickness="0"
+                                 Background="Transparent"
+                                 Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                 FontWeight="SemiBold" FontSize="12"
+                                 IsTabStop="False" Focusable="False"
+                                 Cursor="Arrow"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <!-- Member sub-item -->
+                <DataTemplate DataType="{x:Type vm:ClassMemberViewModel}">
+                    <StackPanel Orientation="Horizontal" Margin="2,1">
+                        <!-- Visibility ellipse -->
+                        <Ellipse Width="7" Height="7" Fill="{Binding VisibilityColor}"
+                                 VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <!-- Member text -->
+                        <TextBox Text="{Binding OutlineDisplayText, Mode=OneWay}"
+                                 IsReadOnly="True" BorderThickness="0"
+                                 Background="Transparent"
+                                 Foreground="{Binding KindBrush}"
+                                 FontSize="11" IsTabStop="False" Focusable="False"
+                                 Cursor="Arrow"
+                                 ToolTipService.ShowDuration="8000">
+                            <TextBox.ToolTip>
+                                <TextBlock Text="{Binding TooltipText}" MaxWidth="300" TextWrapping="Wrap"
+                                           FontSize="11"/>
+                            </TextBox.ToolTip>
+                        </TextBox>
                     </StackPanel>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </TreeView.Resources>
+        </TreeView>
     </DockPanel>
 </UserControl>

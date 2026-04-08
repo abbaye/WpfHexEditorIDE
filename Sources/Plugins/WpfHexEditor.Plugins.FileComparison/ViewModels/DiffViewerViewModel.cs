@@ -732,7 +732,8 @@ public sealed class DiffViewerViewModel : ViewModelBase
 
     private async Task RebuildBinaryHexRowsAsync(BinaryDiffResult bin, CancellationToken ct = default)
     {
-        IsLoading = true;
+        bool first = TryFirstLoad();
+        if (first) IsLoading = true;
         try
         {
             var contextLines = _binaryContextLines;
@@ -757,11 +758,11 @@ public sealed class DiffViewerViewModel : ViewModelBase
         }
         catch (OperationCanceledException)
         {
-            // Superseded by a newer rebuild â€” discard silently.
+            // Superseded by a newer rebuild — discard silently.
         }
         finally
         {
-            if (!ct.IsCancellationRequested)
+            if (first && !ct.IsCancellationRequested)
                 IsLoading = false;
         }
     }

@@ -130,6 +130,18 @@ public sealed class FoldingEngine
     public bool IsLineHidden(int line) => _hiddenLines.Contains(line);
 
     /// <summary>
+    /// Returns <c>true</c> if any line in [<paramref name="from"/>, <paramref name="to"/>]
+    /// is hidden inside a collapsed region.  O(range) but typically called with 1-3 lines.
+    /// </summary>
+    public bool HasHiddenLinesInRange(int from, int to)
+    {
+        if (_hiddenLines.Count == 0) return false;
+        for (int i = from; i <= to; i++)
+            if (_hiddenLines.Contains(i)) return true;
+        return false;
+    }
+
+    /// <summary>
     /// Total number of lines hidden across all currently-collapsed regions.
     /// Uses the pre-computed <see cref="_hiddenLines"/> set so that nested collapsed
     /// regions are not double-counted (a line inside two overlapping collapsed regions

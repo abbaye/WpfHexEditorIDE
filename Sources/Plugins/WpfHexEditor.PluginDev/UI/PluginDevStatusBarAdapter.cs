@@ -61,9 +61,9 @@ public sealed class PluginDevStatusBarAdapter : IDisposable
     {
         _descriptor = new StatusBarItemDescriptor
         {
-            Text      = $"{SymIdle} No plugin project",
+            Text      = $"{SymIdle} No extension project",
             Alignment = StatusBarAlignment.Right,
-            ToolTip   = "Plugin Development",
+            ToolTip   = "Extension Development",
             Order     = 30,
         };
     }
@@ -104,7 +104,7 @@ public sealed class PluginDevStatusBarAdapter : IDisposable
 
         _vm           = null;
         _onErrorClick = null;
-        _descriptor.Text = $"{SymIdle} No plugin project";
+        _descriptor.Text = $"{SymIdle} No extension project";
     }
 
     // -----------------------------------------------------------------------
@@ -128,11 +128,11 @@ public sealed class PluginDevStatusBarAdapter : IDisposable
     {
         if (_vm is null)
         {
-            _descriptor.Text = $"{SymIdle} No plugin project";
+            _descriptor.Text = $"{SymIdle} No extension project";
             return;
         }
 
-        var pluginName = _vm.ActivePluginName ?? "Plugin";
+        var pluginName = _vm.ActivePluginName ?? "Extension";
 
         _descriptor.Text = _vm.State switch
         {

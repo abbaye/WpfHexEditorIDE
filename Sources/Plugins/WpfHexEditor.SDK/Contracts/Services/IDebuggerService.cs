@@ -88,6 +88,9 @@ public interface IDebuggerService
     /// <summary>Raised whenever session state changes.</summary>
     event EventHandler? SessionChanged;
 
+    /// <summary>Launch a new debug session using the given configuration.</summary>
+    Task LaunchAsync(WpfHexEditor.Core.Debugger.Models.DebugLaunchConfig config);
+
     /// <summary>Stop the active debug session. No-op when idle.</summary>
     Task StopSessionAsync();
 
@@ -157,4 +160,17 @@ public interface IDebuggerService
 
     /// <summary>Evaluate an expression in the current frame context.</summary>
     Task<string> EvaluateAsync(string expression, int? frameId = null);
+
+    // ── Adapter registry ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Register a custom debug adapter factory for a language ID.
+    /// Plugins use this to add support for non-built-in languages (e.g. "ruby", "rust").
+    /// The factory is called each time a new session is launched for that language.
+    /// Default implementation is a no-op (override in DebuggerServiceImpl).
+    /// </summary>
+    void RegisterAdapter(string languageId, Func<object> factory) { }
+
+    /// <summary>Unregister a previously registered custom adapter factory.</summary>
+    void UnregisterAdapter(string languageId) { }
 }

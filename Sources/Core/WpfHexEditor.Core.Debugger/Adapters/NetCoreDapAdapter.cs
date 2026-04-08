@@ -60,7 +60,8 @@ public sealed class NetCoreDapAdapter : DapClientBase
         Args:       config.Args.Length > 0 ? config.Args : null,
         Cwd:        config.WorkDir ?? Path.GetDirectoryName(config.ProgramPath),
         Env:        config.Env.Count > 0 ? config.Env : null,
-        StopAtEntry: config.StopAtEntry
+        StopAtEntry: config.StopAtEntry,
+        JustMyCode: config.JustMyCode
     );
 
     public override async ValueTask DisposeAsync()

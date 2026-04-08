@@ -44,6 +44,9 @@ public sealed class PluginEntry
         set => _state = value;
     }
 
+    /// <summary>Returns <c>true</c> when the plugin is in the <see cref="PluginState.Loaded"/> state.</summary>
+    public bool IsActive => _state == PluginState.Loaded;
+
     /// <summary>
     /// The concrete isolation mode this plugin was actually loaded with.
     /// For Auto-mode plugins this reflects the resolved InProcess or Sandbox decision.

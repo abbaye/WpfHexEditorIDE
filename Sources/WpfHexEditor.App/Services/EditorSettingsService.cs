@@ -85,6 +85,10 @@ public sealed class EditorSettingsService
             ? WpfHexEditor.Editor.Core.InlineHintsSymbolKinds.All
             : (WpfHexEditor.Editor.Core.InlineHintsSymbolKinds)d.InlineHintsVisibleKinds;
         ce.InlineHintsSource        = d.InlineHintsSource;
+        ce.ShowVarTypeHints         = d.ShowVarTypeHints;
+        ce.ShowLambdaReturnTypeHints = d.ShowLambdaReturnTypeHints;
+        ce.ShowLspInlayHints        = d.ShowLspInlayHints;
+        ce.ShowLspDeclarationHints          = d.ShowLspDeclarationHints;
         ce.ShowEndOfBlockHint       = d.EndOfBlockHintEnabled;
         ce.EndOfBlockHintDelayMs    = d.EndOfBlockHintDelayMs;
         ce.ClickableLinksEnabled    = d.ClickableLinksEnabled;

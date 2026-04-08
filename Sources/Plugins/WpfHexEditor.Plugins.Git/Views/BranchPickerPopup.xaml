@@ -1,0 +1,148 @@
+<Popup
+    x:Class="WpfHexEditor.Plugins.Git.Views.BranchPickerPopup"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
+    StaysOpen="False"
+    AllowsTransparency="True"
+    Placement="Bottom"
+    Width="280">
+    <Border Background="{DynamicResource DockBackgroundBrush}"
+            BorderBrush="{DynamicResource DockBorderBrush}"
+            BorderThickness="1"
+            Effect="{DynamicResource DockDropShadow}">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Search box -->
+            <TextBox Grid.Row="0"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{DynamicResource DockDarkTextBoxStyle}"
+                     Margin="0,0,0,4"
+                     ToolTip="Filter branches"/>
+
+            <!-- Branch list -->
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding FilteredBranches}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:BranchRow}">
+                        <Grid Margin="2,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Icon}" FontSize="10"
+                                       Foreground="{DynamicResource GC_StagedForeground}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Name}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <Button Grid.Column="2" Content="&#xE74D;"
+                                    FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                    CommandParameter="{Binding}"
+                                    Padding="4,0">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource DockDarkToolBarButtonStyle}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsCurrent}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="2,2"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <EventSetter Event="MouseDoubleClick" Handler="OnBranchDoubleClick"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource GC_BranchPickerHoverBackground}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+
+            <!-- New branch row -->
+            <Grid Grid.Row="2" Margin="0,4,0,0">
+                <!-- Create new branch button -->
+                <Button Content="+ New Branch…"
+                        Command="{Binding BeginCreateCommand}"
+                        HorizontalAlignment="Left" Padding="6,4">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource DockDarkToolBarButtonStyle}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCreatingBranch}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- Inline create form -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCreatingBranch}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding NewBranchName, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{DynamicResource DockDarkTextBoxStyle}"
+                             ToolTip="New branch name">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding CreateCommand}"/>
+                            <KeyBinding Key="Escape" Command="{Binding CancelCreateCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button Grid.Column="1" Content="Create"
+                            Command="{Binding CreateCommand}"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                            Padding="8,4" Margin="4,0,0,0"/>
+                    <Button Grid.Column="2" Content="&#xE711;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Command="{Binding CancelCreateCommand}"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                            Padding="6,4" Margin="2,0,0,0"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Popup>

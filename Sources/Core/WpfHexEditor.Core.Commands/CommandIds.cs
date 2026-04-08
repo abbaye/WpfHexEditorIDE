@@ -168,6 +168,13 @@ public static class CommandIds
         public const string FocusGroup4        = "TabGroup.FocusGroup4";
     }
 
+    public static class Window
+    {
+        public const string CloseAllButThis  = "Window.CloseAllButThis";
+        public const string NextDocument     = "Window.NextDocument";
+        public const string PreviousDocument = "Window.PreviousDocument";
+    }
+
     public static class Plugins
     {
         public const string OpenManager      = "Plugins.OpenManager";

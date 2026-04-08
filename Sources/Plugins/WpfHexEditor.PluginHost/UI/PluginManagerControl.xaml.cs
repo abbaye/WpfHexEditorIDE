@@ -235,6 +235,9 @@ public sealed partial class PluginManagerControl : UserControl, IEditorToolbarCo
     private void OnContextReload(object sender, RoutedEventArgs e)
         => GetSelectedItemVm()?.ReloadCommand.Execute(null);
 
+    private void OnContextToggleWatchMode(object sender, RoutedEventArgs e)
+        => GetSelectedItemVm()?.ToggleWatchModeCommand.Execute(null);
+
     private void OnContextUninstall(object sender, RoutedEventArgs e)
     {
         var vm = GetSelectedItemVm();

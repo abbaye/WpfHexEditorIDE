@@ -23,7 +23,7 @@
     <PluginLoadPriority>35</PluginLoadPriority>
     <PluginSdkVersion>1.2.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.3.0</PluginMinIDEVersion>
-    <PluginActivationOnStartup>false</PluginActivationOnStartup>
+    <PluginActivationOnStartup>true</PluginActivationOnStartup>
     <PluginActivationExtensions>".cs"</PluginActivationExtensions>
     <PluginActivationCommands>"View.ClassDiagram"</PluginActivationCommands>
     <PluginMenuContributionsJson>[{"commandId":"View.ClassDiagram","label":"_Class Diagram","parentPath":"View","group":"ClassDiagram","category":"Designers","iconGlyph":"\uE8A5"}]</PluginMenuContributionsJson>
@@ -33,6 +33,10 @@
     <PluginPermRegisterMenus>true</PluginPermRegisterMenus>
     <PluginPermWriteOutput>true</PluginPermWriteOutput>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- Roslyn syntax tree analysis for RoslynClassDiagramAnalyzer (syntax-only, no workspace) -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.ClassDiagram\WpfHexEditor.Editor.ClassDiagram.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.ClassDiagram.Core\WpfHexEditor.Editor.ClassDiagram.Core.csproj" />

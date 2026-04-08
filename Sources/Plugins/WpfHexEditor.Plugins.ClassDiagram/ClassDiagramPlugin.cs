@@ -34,11 +34,14 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.ClassDiagram.Controls;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Editor.ClassDiagram.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
+using WpfHexEditor.Plugins.ClassDiagram.Analysis;
 using WpfHexEditor.Plugins.ClassDiagram.Options;
 using WpfHexEditor.Plugins.ClassDiagram.Panels;
 using WpfHexEditor.SDK.Commands;
@@ -72,7 +75,8 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     // ── UI ID constants ───────────────────────────────────────────────────────
 
-    public const string OutlinePanelUiId       = "WpfHexEditor.Plugins.ClassDiagram.Panel.Outline";
+    public const string MetricsPanelUiId        = "WpfHexEditor.Plugins.ClassDiagram.Panel.Metrics";
+    public const string OutlinePanelUiId        = "WpfHexEditor.Plugins.ClassDiagram.Panel.Outline";
     public const string PropertiesPanelUiId    = "WpfHexEditor.Plugins.ClassDiagram.Panel.Properties";
     public const string ToolboxPanelUiId       = "WpfHexEditor.Plugins.ClassDiagram.Panel.Toolbox";
     public const string RelationshipsPanelUiId = "WpfHexEditor.Plugins.ClassDiagram.Panel.Relationships";
@@ -82,12 +86,13 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     // ── Panel instances (long-lived, reused across document switches) ─────────
 
-    private ClassOutlinePanel?     _outlinePanel;
-    private ClassPropertiesPanel?  _propertiesPanel;
-    private ClassToolboxPanel?     _toolboxPanel;
-    private RelationshipsPanel?    _relPanel;
-    private ClassHistoryPanel?     _historyPanel;
-    private DiagramSearchPanel?    _searchPanel;
+    private ClassOutlinePanel?      _outlinePanel;
+    private ClassPropertiesPanel?   _propertiesPanel;
+    private ClassToolboxPanel?      _toolboxPanel;
+    private RelationshipsPanel?     _relPanel;
+    private ClassHistoryPanel?      _historyPanel;
+    private DiagramSearchPanel?     _searchPanel;
+    private MetricsDashboardPanel?  _metricsPanel;
 
     // ── State ─────────────────────────────────────────────────────────────────
 
@@ -102,6 +107,12 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private readonly Dictionary<string, string> _openTabs =
         new(StringComparer.OrdinalIgnoreCase);
 
+    // Live-sync services keyed by uiId; disposed when the plugin unloads.
+    private readonly Dictionary<string, DiagramLiveSyncService> _liveSyncServices =
+        new(StringComparer.Ordinal);
+
+    private bool _liveSyncEnabled = true;
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
@@ -115,6 +126,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _relPanel        = new RelationshipsPanel();
         _historyPanel    = new ClassHistoryPanel();
         _searchPanel     = new DiagramSearchPanel();
+        _metricsPanel    = new MetricsDashboardPanel();
 
         // Register panels in the IDE dock layout.
         context.UIRegistry.RegisterPanel(
@@ -195,6 +207,19 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 PreferredHeight = 160
             });
 
+        context.UIRegistry.RegisterPanel(
+            MetricsPanelUiId,
+            _metricsPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Metrics Dashboard",
+                DefaultDockSide = "Right",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 320
+            });
+
         // Status bar item (left, order=20) — shows the selected class name.
         _sbNode = new StatusBarItemDescriptor
         {
@@ -217,6 +242,19 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Seed panels immediately for any document open at plugin-load time.
         SeedFromCurrentDocument(context);
 
+        // B8 — Restore last diagram on startup if RestoreLastState is enabled.
+        if (_options.RestoreLastState)
+        {
+            string? solutionDir = GetSolutionDir(context);
+            var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
+            if (session?.LastFilePath is { Length: > 0 } path && System.IO.File.Exists(path))
+            {
+                System.Windows.Application.Current?.Dispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                    new Action(async () => await OpenClassDiagramForFileAsync(path, context)));
+            }
+        }
+
         return Task.CompletedTask;
     }
 
@@ -227,12 +265,17 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
         UnwireCurrentHost();
 
+        foreach (var svc in _liveSyncServices.Values)
+            svc.Dispose();
+        _liveSyncServices.Clear();
+
         _outlinePanel    = null;
         _propertiesPanel = null;
         _toolboxPanel    = null;
         _relPanel        = null;
         _historyPanel    = null;
         _searchPanel     = null;
+        _metricsPanel    = null;
         _context         = null;
         _optionsPage     = null;
         _sbNode          = null;
@@ -299,8 +342,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     /// </summary>
     private void WireHost(ClassDiagramSplitHost host)
     {
-        host.SelectedClassChanged += OnSelectedClassChanged;
-        host.DiagramChanged       += OnDiagramChanged;
+        host.SelectedClassChanged        += OnSelectedClassChanged;
+        host.DiagramChanged              += OnDiagramChanged;
+        host.NavigateToMemberRequested   += OnNavigateToMember;
+        host.RenameNodeRequested         += OnRenameNode;
 
         // History panel — bind to the host's undo manager.
         if (_historyPanel is not null)
@@ -328,8 +373,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         if (_wiredHost is null) return;
 
-        _wiredHost.SelectedClassChanged -= OnSelectedClassChanged;
-        _wiredHost.DiagramChanged       -= OnDiagramChanged;
+        _wiredHost.SelectedClassChanged        -= OnSelectedClassChanged;
+        _wiredHost.DiagramChanged              -= OnDiagramChanged;
+        _wiredHost.NavigateToMemberRequested   -= OnNavigateToMember;
+        _wiredHost.RenameNodeRequested         -= OnRenameNode;
 
         if (_historyPanel is not null)
         {
@@ -352,6 +399,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _outlinePanel?.ViewModel.SetDocument(host.Document);
         _relPanel?.ViewModel.SetDocument(host.Document);
         _searchPanel?.ViewModel.SetDocument(host.Document);
+        _metricsPanel?.ViewModel.SetDocument(host.Document);
         _propertiesPanel?.ViewModel.SetSelection(null);
         UpdateStatusBar(null);
     }
@@ -367,6 +415,8 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _relPanel.ViewModel.SetDocument(new DiagramDocument());
         if (_searchPanel is not null)
             _searchPanel.ViewModel.SetDocument(new DiagramDocument());
+        if (_metricsPanel is not null)
+            _metricsPanel.ViewModel.SetDocument(null);
         if (_propertiesPanel is not null)
             _propertiesPanel.ViewModel.SetSelection(null);
         UpdateStatusBar(null);
@@ -410,6 +460,49 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             for (int i = 0; i < -delta; i++) _wiredHost.Undo();
         else
             for (int i = 0; i < delta; i++) _wiredHost.Redo();
+    }
+
+    private void OnNavigateToMember(object? sender, (ClassNode Node, ClassMember Member) e)
+    {
+        string? filePath = e.Member?.SourceFilePath ?? e.Node.SourceFilePath;
+        int     line     = e.Member?.SourceLineOneBased > 0 ? e.Member.SourceLineOneBased
+                         : e.Node.SourceLineOneBased;
+
+        if (string.IsNullOrEmpty(filePath) || line <= 0 || _context is null)
+        {
+            _context?.Output.Warning("[Class Diagram] No source location for navigation.");
+            return;
+        }
+
+        // Open the file in the IDE and navigate to the declaration line.
+        _context.DocumentHost.ActivateAndNavigateTo(filePath, line, 1);
+        _context.Output.Info($"[Class Diagram] Navigate → {Path.GetFileName(filePath)}:{line}");
+    }
+
+    private void OnRenameNode(object? sender, (ClassNode Node, string? NewName) e)
+    {
+        // Show a simple WPF input dialog.
+        string? newName = ShowInputDialog($"Rename '{e.Node.Name}' to:", "Rename", e.Node.Name);
+
+        if (string.IsNullOrWhiteSpace(newName) || newName == e.Node.Name) return;
+
+        _ = Task.Run(async () =>
+        {
+            bool ok = await DiagramCodeEditService.RenameMemberAsync(
+                e.Node,
+                // Pass a synthetic member representing the type declaration itself
+                new WpfHexEditor.Editor.ClassDiagram.Core.Model.ClassMember
+                {
+                    Name               = e.Node.Name,
+                    SourceFilePath     = e.Node.SourceFilePath,
+                    SourceLineOneBased = e.Node.SourceLineOneBased
+                },
+                newName);
+
+            if (!ok)
+                Application.Current.Dispatcher.BeginInvoke(
+                    () => _context?.Output.Warning($"[Class Diagram] Rename failed for '{e.Node.Name}'."));
+        });
     }
 
     private void OnSearchResultSelected(object? sender, SearchResultItem? result)
@@ -532,7 +625,58 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 Group      = "ClassDiagram"
             });
 
+        // View > Metrics Dashboard panel.
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.View.Metrics",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Metrics Dashboard",
+                ParentPath = "View",
+                IconGlyph  = "\uE9F3",
+                ToolTip    = "Show / hide the coupling metrics dashboard",
+                Command    = new RelayCommand(_ => context.UIRegistry.TogglePanel(MetricsPanelUiId)),
+                Group      = "ClassDiagram"
+            });
+
+        // View > Live Sync toggle.
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.View.LiveSync",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Live Sync",
+                ParentPath = "View",
+                IconGlyph  = "\uE895",
+                ToolTip    = "Auto-refresh the class diagram when source files change on disk",
+                Command    = new RelayCommand(_ =>
+                {
+                    _liveSyncEnabled = !_liveSyncEnabled;
+                    if (!_liveSyncEnabled)
+                    {
+                        foreach (var svc in _liveSyncServices.Values) svc.Dispose();
+                        _liveSyncServices.Clear();
+                    }
+                }),
+                Group = "ClassDiagram"
+            });
+
         // Tools menu — Solution Explorer context menu actions.
+        // Tools menu — AI generation.
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.Tools.AIGenerate",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "✨ Generate Diagram from Description (AI)…",
+                ParentPath = "Tools",
+                IconGlyph  = "\uE8D4",
+                ToolTip    = "Generate a class diagram from a natural-language description using AI",
+                Command    = new RelayCommand(
+                    execute: _ => _ = OpenAIGeneratedDiagramAsync(context)),
+                Group = "ClassDiagram"
+            });
+
         context.UIRegistry.RegisterMenuItem(
             $"{Id}.Menu.Tools.ViewDiagram",
             Id,
@@ -542,9 +686,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 ParentPath = "Tools",
                 IconGlyph  = "\uE92F",
                 ToolTip    = "Analyze the active C# file and open it as a class diagram",
-                Command    = new RelayCommand(
-                    execute: _ => _ = OpenDiagramForActiveFileAsync(context),
-                    canExecute: _ => HasActiveClassDiagramSource(context)),
+                Command    = new RelayCommand(_ => _ = OpenDiagramForActiveFileAsync(context)),
                 Group = "ClassDiagram"
             });
 
@@ -573,10 +715,23 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private async Task OpenDiagramForActiveFileAsync(IIDEHostContext context)
     {
         string? filePath = context.FocusContext.ActiveDocument?.FilePath;
+
+        // If no active source file, let user pick one via dialog.
         if (string.IsNullOrEmpty(filePath) || !IsSourceFile(filePath))
         {
-            context.Output.Info("[Class Diagram] Active document is not a C# or VB.NET file.");
-            return;
+            var dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Title  = "Open Class Diagram for File",
+                Filter = "C# Files (*.cs)|*.cs|VB.NET Files (*.vb)|*.vb|All Files (*.*)|*.*",
+                CheckFileExists = true
+            };
+            if (dlg.ShowDialog() != true) return;
+            filePath = dlg.FileName;
+            if (!IsSourceFile(filePath))
+            {
+                context.Output.Info("[Class Diagram] Selected file is not a supported source file.");
+                return;
+            }
         }
 
         await OpenClassDiagramForFileAsync(filePath, context);
@@ -609,7 +764,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         context.Output.Info($"[Class Diagram] Analyzing {csFiles.Length} source files…");
 
         DiagramDocument doc = await Task.Run(() =>
-            ClassDiagramSourceAnalyzer.AnalyzeFiles(csFiles, _options));
+            RoslynClassDiagramAnalyzer.AnalyzeFiles(csFiles, _options));
 
         string title = "Solution [Class Diagram]";
         string uiId  = $"doc-class-diagram-{Guid.NewGuid():N}";
@@ -648,14 +803,61 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             return;
         }
 
+        // Discover partial-class sibling files in the same directory
+        // so that e.g. MainWindow.cs + MainWindow.Build.cs + MainWindow.Commands.cs
+        // are all analysed together and their members merged into one node.
+        string dir      = Path.GetDirectoryName(csharpFilePath) ?? string.Empty;
+        string baseName = Path.GetFileNameWithoutExtension(csharpFilePath).Split('.')[0];
+        string[] siblings = Directory.Exists(dir)
+            ? Directory.GetFiles(dir, "*.cs")
+                .Where(f => Path.GetFileNameWithoutExtension(f)
+                                .StartsWith(baseName, StringComparison.OrdinalIgnoreCase))
+                .ToArray()
+            : [csharpFilePath];
+        string[] filesToAnalyze;
+        if (siblings.Length > 5)
+        {
+            // C2 — Many siblings: let the user choose scope
+            var result = System.Windows.MessageBox.Show(
+                $"Found {siblings.Length} files starting with '{baseName}' in this folder.\n\n" +
+                $"[Yes]  Analyze all {siblings.Length} sibling files (recommended — merges partial classes)\n" +
+                $"[No]   Analyze only the active file\n" +
+                $"[Cancel] Analyze entire directory",
+                "Class Diagram — File Scope",
+                System.Windows.MessageBoxButton.YesNoCancel,
+                System.Windows.MessageBoxImage.Question);
+
+            if (result == System.Windows.MessageBoxResult.Cancel)
+            {
+                await OpenClassDiagramForFolderAsync(dir, context);
+                return;
+            }
+            filesToAnalyze = result == System.Windows.MessageBoxResult.Yes
+                ? siblings
+                : [csharpFilePath];
+        }
+        else
+        {
+            filesToAnalyze = siblings.Length > 1 ? siblings : [csharpFilePath];
+        }
+
         DiagramDocument doc = await Task.Run(() =>
-            ClassDiagramSourceAnalyzer.AnalyzeFile(csharpFilePath, _options));
+            RoslynClassDiagramAnalyzer.AnalyzeFiles(filesToAnalyze, _options));
 
         string title = Path.GetFileNameWithoutExtension(csharpFilePath) + " [Class Diagram]";
         string uiId  = $"doc-class-diagram-{Guid.NewGuid():N}";
 
         var host = new ClassDiagramSplitHost();
         host.LoadDocument(doc, title);
+
+        // Restore session state if enabled
+        if (_options.RestoreLastState)
+        {
+            string? solutionDir = GetSolutionDir(context);
+            var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
+            if (session?.LastFilePath == csharpFilePath)
+                host.ApplyViewSnapshot(session.ViewSnapshot);
+        }
 
         _openTabs[csharpFilePath] = uiId;
         context.UIRegistry.RegisterDocumentTab(uiId, host, Id, new DocumentDescriptor
@@ -665,6 +867,47 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             ToolTip   = csharpFilePath,
             CanClose  = true,
         });
+
+        // Wire session auto-save whenever diagram changes (replaces TitleChanged trigger)
+        host.DiagramChanged += (_, _) => SaveSession(host, csharpFilePath, context);
+
+        // Attach live-sync service for this file.
+        if (_liveSyncEnabled && File.Exists(csharpFilePath))
+        {
+            var svc = new DiagramLiveSyncService([csharpFilePath], doc, _options);
+            svc.DocumentPatched += (_, e) =>
+            {
+                if (_openTabs.ContainsValue(uiId))
+                    host.ApplyPatch(e.Patch, e.Document);
+                else
+                {
+                    // Tab has been closed — dispose silently.
+                    svc.Dispose();
+                    _liveSyncServices.Remove(uiId);
+                }
+            };
+            _liveSyncServices[uiId] = svc;
+        }
+    }
+
+    // ── Session state helpers ────────────────────────────────────────────────
+
+    private static string? GetSolutionDir(IIDEHostContext context)
+    {
+        string? solutionPath = context.SolutionExplorer.ActiveSolutionPath;
+        if (string.IsNullOrEmpty(solutionPath)) return null;
+        return Path.GetDirectoryName(solutionPath);
+    }
+
+    private void SaveSession(ClassDiagramSplitHost host, string filePath, IIDEHostContext context)
+    {
+        if (!_options.RestoreLastState) return;
+        var state = new ClassDiagramSessionState
+        {
+            LastFilePath  = filePath,
+            ViewSnapshot  = host.GetViewSnapshot()
+        };
+        ClassDiagramSessionStateSerializer.Save(state, GetSolutionDir(context));
     }
 
     /// <summary>
@@ -695,7 +938,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             .ToArray();
 
         DiagramDocument doc = await Task.Run(() =>
-            ClassDiagramSourceAnalyzer.AnalyzeFiles(sourceFiles, _options));
+            RoslynClassDiagramAnalyzer.AnalyzeFiles(sourceFiles, _options));
 
         string folderName = Path.GetFileName(folderPath.TrimEnd('/', '\\', Path.DirectorySeparatorChar));
         string title      = folderName + " [Class Diagram]";
@@ -714,7 +957,74 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         });
     }
 
+    private async Task OpenAIGeneratedDiagramAsync(IIDEHostContext context)
+    {
+        string? prompt = ShowInputDialog(
+            "Describe the classes to generate (e.g. 'Repository pattern for User entity'):",
+            "✨ AI Generate Diagram");
+
+        if (string.IsNullOrWhiteSpace(prompt)) return;
+
+        context.Output.Info("[Class Diagram] Sending prompt to AI…");
+
+        using var generator = new ClassDiagramAIGenerator();
+        generator.ProgressChanged += (_, msg) => context.Output.Info($"[AI Diagram] {msg}");
+
+        DiagramDocument doc = await Task.Run(() =>
+            generator.GenerateAsync(prompt, _options));
+
+        string shortPrompt = prompt.Length > 40 ? prompt[..40] + "…" : prompt;
+        string title = $"AI: {shortPrompt} [Class Diagram]";
+        string uiId  = $"doc-class-diagram-ai-{Guid.NewGuid():N}";
+
+        var host = new ClassDiagramSplitHost();
+        host.LoadDocument(doc, title);
+
+        context.UIRegistry.RegisterDocumentTab(uiId, host, Id, new DocumentDescriptor
+        {
+            Title     = title,
+            ContentId = uiId,
+            ToolTip   = $"AI-generated class diagram: {prompt}",
+            CanClose  = true,
+        });
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private static string? ShowInputDialog(string prompt, string title, string defaultValue = "")
+    {
+        var tb  = new TextBox { Text = defaultValue, MinWidth = 200, Margin = new Thickness(0, 6, 0, 0) };
+        tb.SelectAll();
+
+        var ok     = new Button { Content = "OK",     IsDefault = true,  Width = 60, Margin = new Thickness(0, 0, 4, 0) };
+        var cancel = new Button { Content = "Cancel", IsCancel  = true,  Width = 60 };
+        var btns   = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+        btns.Children.Add(ok);
+        btns.Children.Add(cancel);
+
+        var panel = new StackPanel { Margin = new Thickness(8) };
+        panel.Children.Add(new TextBlock { Text = prompt });
+        panel.Children.Add(tb);
+        panel.Children.Add(btns);
+
+        var dlg = new Window
+        {
+            Title           = title,
+            Content         = panel,
+            SizeToContent   = SizeToContent.WidthAndHeight,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            ResizeMode      = ResizeMode.NoResize,
+            ShowInTaskbar   = false,
+            Owner           = Application.Current.MainWindow
+        };
+
+        string? result = null;
+        ok.Click     += (_, _) => { result = tb.Text; dlg.DialogResult = true; };
+        cancel.Click += (_, _) => { dlg.DialogResult = false; };
+
+        dlg.Loaded += (_, _) => tb.Focus();
+        return dlg.ShowDialog() == true ? result : null;
+    }
 
     private static bool HasActiveClassDiagramSource(IIDEHostContext context)
     {

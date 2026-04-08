@@ -55,6 +55,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private PluginActivationService? _activationService;
     private PluginActivationToastService? _activationToastService;
 
+    // -- Watch Mode (hot-reload for development) --
+    private WpfHexEditor.PluginHost.DevTools.PluginDevLoader? _devLoader;
+    private readonly Dictionary<string, string> _watchedDirs = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>
     /// Live capability registry backed by <see cref="_entries"/>.
     /// Exposed so the App layer can call <see cref="PluginCapabilityRegistryAdapter.SetInner"/>.
@@ -1033,6 +1037,95 @@ public sealed class WpfPluginHost : IAsyncDisposable
         GC.WaitForPendingFinalizers();
 
         await LoadPluginAsync(manifest, ct).ConfigureAwait(false);
+    }
+
+    // --- Watch Mode (production hot-reload) ---------------------------------------
+
+    /// <summary>
+    /// Enables Watch Mode for a plugin: monitors <paramref name="outputDir"/> for DLL changes
+    /// and hot-reloads automatically. Publishes <see cref="PluginHotReloadedEvent"/> on success.
+    /// </summary>
+    public void EnableWatchMode(string pluginId, string outputDir)
+    {
+        if (string.IsNullOrWhiteSpace(pluginId)) throw new ArgumentNullException(nameof(pluginId));
+        if (string.IsNullOrWhiteSpace(outputDir)) throw new ArgumentNullException(nameof(outputDir));
+
+        _devLoader ??= new DevTools.PluginDevLoader(this, _dispatcher, _log);
+
+        _devLoader.ReloadCompleted -= OnDevLoaderReloadCompleted;
+        _devLoader.ReloadFailed    -= OnDevLoaderReloadFailed;
+        _devLoader.ReloadCompleted += OnDevLoaderReloadCompleted;
+        _devLoader.ReloadFailed    += OnDevLoaderReloadFailed;
+
+        _devLoader.Watch(pluginId, outputDir);
+        lock (_lock) _watchedDirs[pluginId] = outputDir;
+        _log($"[PluginHost] Watch Mode enabled for '{pluginId}' → {outputDir}");
+    }
+
+    /// <summary>Disables Watch Mode for a plugin.</summary>
+    public void DisableWatchMode(string pluginId)
+    {
+        _devLoader?.StopWatching(pluginId);
+        lock (_lock) _watchedDirs.Remove(pluginId);
+        _log($"[PluginHost] Watch Mode disabled for '{pluginId}'.");
+    }
+
+    /// <summary>Returns true if Watch Mode is currently active for the given plugin.</summary>
+    public bool IsWatching(string pluginId)
+    {
+        lock (_lock) return _watchedDirs.ContainsKey(pluginId);
+    }
+
+    /// <summary>Returns the watched output directory for the given plugin, or null.</summary>
+    public string? GetWatchDirectory(string pluginId)
+    {
+        lock (_lock) return _watchedDirs.TryGetValue(pluginId, out var d) ? d : null;
+    }
+
+    private void OnDevLoaderReloadCompleted(object? sender, DevTools.PluginDevReloadEventArgs e)
+    {
+        PluginEntry? entry;
+        lock (_lock) _entries.TryGetValue(e.PluginId, out entry);
+
+        _hostContext.IDEEvents.Publish(new WpfHexEditor.Core.Events.IDEEvents.PluginHotReloadedEvent
+        {
+            Source     = "WpfPluginHost.WatchMode",
+            PluginId   = e.PluginId,
+            PluginName = entry?.Manifest.Name ?? e.PluginId,
+            OldVersion = string.Empty,
+            NewVersion = entry?.Manifest.Version ?? string.Empty,
+        });
+
+        // Post a brief "hot-reloaded" toast if notifications are available
+        if (_hostContext.Notifications is { } notif)
+        {
+            var name = entry?.Manifest.Name ?? e.PluginId;
+            var ver  = entry?.Manifest.Version ?? string.Empty;
+            var toastId = $"watch-reload-{e.PluginId}";
+            notif.Post(new WpfHexEditor.Editor.Core.Notifications.NotificationItem
+            {
+                Id       = toastId,
+                Title    = $"{name} hot-reloaded",
+                Message  = string.IsNullOrEmpty(ver) ? "Watch Mode" : $"v{ver} — Watch Mode",
+                Severity = WpfHexEditor.Editor.Core.Notifications.NotificationSeverity.Success,
+            });
+            _ = Task.Delay(TimeSpan.FromSeconds(3))
+                    .ContinueWith(_ => notif.Dismiss(toastId));
+        }
+    }
+
+    private void OnDevLoaderReloadFailed(object? sender, DevTools.PluginDevReloadFailedEventArgs e)
+    {
+        PluginEntry? entry;
+        lock (_lock) _entries.TryGetValue(e.PluginId, out entry);
+
+        _hostContext.IDEEvents.Publish(new WpfHexEditor.Core.Events.IDEEvents.PluginHotReloadFailedEvent
+        {
+            Source     = "WpfPluginHost.WatchMode",
+            PluginId   = e.PluginId,
+            PluginName = entry?.Manifest.Name ?? e.PluginId,
+            Error      = e.Exception.Message,
+        });
     }
 
     // --- Terminal command handler -------------------------------------------------

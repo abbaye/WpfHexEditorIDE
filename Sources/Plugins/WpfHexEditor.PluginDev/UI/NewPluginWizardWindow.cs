@@ -93,7 +93,7 @@ public sealed class NewPluginWizardWindow : Window
 
     public NewPluginWizardWindow()
     {
-        Title          = "New Plugin Project";
+        Title          = "New Extension Project";
         Width          = 620;
         Height         = 500;
         ResizeMode     = ResizeMode.NoResize;
@@ -124,7 +124,7 @@ public sealed class NewPluginWizardWindow : Window
         };
         var headerText = new TextBlock
         {
-            Text       = "New Plugin Project",
+            Text       = "New Extension Project",
             FontSize   = 13,
             FontWeight = FontWeights.SemiBold,
             Foreground = Brushes.WhiteSmoke,

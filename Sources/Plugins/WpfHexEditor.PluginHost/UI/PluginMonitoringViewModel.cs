@@ -347,6 +347,28 @@ public sealed class PluginMonitorRow : ViewModelBase
     /// <summary>Prefix shown before metric values. Empty for dormant plugins (they show "â€”").</summary>
     public string MetricsPrefix => IsDormant ? string.Empty : (_isMetricsEstimated ? "~" : string.Empty);
 
+    // -- Watch mode ──────────────────────────────────────────────────────────
+
+    private bool    _isWatching;
+    private string? _watchDirectory;
+
+    /// <summary>True when this plugin is currently watched by PluginDevLoader.</summary>
+    public bool IsWatching
+    {
+        get => _isWatching;
+        set { _isWatching = value; OnPropertyChanged(); OnPropertyChanged(nameof(WatchBadge)); }
+    }
+
+    /// <summary>Directory being watched, or null when not watching.</summary>
+    public string? WatchDirectory
+    {
+        get => _watchDirectory;
+        set { _watchDirectory = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Short badge string shown in the Watch column.</summary>
+    public string WatchBadge => _isWatching ? "👁" : string.Empty;
+
     // -- Hot-reload mode badge -----------------------------------------------
 
     private string _reloadMode = "Full";
@@ -1282,6 +1304,8 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
             row.AlcAssemblyCount   = entry.Diagnostics.AlcAssemblyCount;
             row.AlcConflictCount   = entry.Diagnostics.AlcConflictCount;
             row.ReloadMode         = entry.Instance is IWpfHexEditorPluginV2 { SupportsHotReload: true } ? "Fast" : "Full";
+            row.IsWatching         = _host.IsWatching(entry.Manifest.Id);
+            row.WatchDirectory     = _host.GetWatchDirectory(entry.Manifest.Id);
 
             // Evaluate memory alert for this plugin
             if (_memoryAlertService != null)
@@ -1513,12 +1537,12 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export Plugin Diagnostics",
+            Title      = "Export Extension Diagnostics",
             Filter     = format == "csv"
                          ? "CSV files (*.csv)|*.csv|All files (*.*)|*.*"
                          : "JSON files (*.json)|*.json|All files (*.*)|*.*",
             DefaultExt = format,
-            FileName   = $"plugin-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.{format}"
+            FileName   = $"extension-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.{format}"
         };
 
         if (dlg.ShowDialog() != true) return;
@@ -1564,8 +1588,8 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title      = "Install Plugin Package",
-            Filter     = "Plugin packages (*.whxplugin)|*.whxplugin|All files (*.*)|*.*",
+            Title      = "Install Extension Package",
+            Filter     = "Extension packages (*.whxplugin)|*.whxplugin|All files (*.*)|*.*",
             DefaultExt = "whxplugin"
         };
 

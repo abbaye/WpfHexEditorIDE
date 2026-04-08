@@ -1,11 +1,11 @@
 // ==========================================================
 // Project: WpfHexEditor.Editor.CodeEditor
-// File: Layers/LspCodeLensLayer.cs
+// File: Layers/LspDeclarationHintsLayer.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-23
 // Description:
-//     DrawingVisual overlay that renders code lens annotations
+//     DrawingVisual overlay that renders declaration hints annotations
 //     (e.g. "3 references", "[Test] Run | Debug") above method/class
 //     declarations. Positions at (indent × charWidth, line × lineHeight - offset).
 //
@@ -15,7 +15,7 @@
 //     the layer renders informational labels only. Interactive lens items
 //     can be added in a future pass using AdornerLayer or a dedicated input handler.
 //     Debounced 800ms on scroll/edit to avoid hammering the language server.
-//     Theme tokens: CE_CodeLensForeground, CE_CodeLensHoverBackground.
+//     Theme tokens: CE_DeclarationHintsForeground, CE_DeclarationHintsHoverBackground.
 // ==========================================================
 
 using System.Globalization;
@@ -29,10 +29,10 @@ using WpfHexEditor.Editor.Core.LSP;
 namespace WpfHexEditor.Editor.CodeEditor.Layers;
 
 /// <summary>
-/// Renders LSP code lens annotations (reference counts, test runner hints) as a
+/// Renders LSP declaration hints annotations (reference counts, test runner hints) as a
 /// <see cref="DrawingVisual"/> overlay drawn above method and class declarations.
 /// </summary>
-public sealed class LspCodeLensLayer : FrameworkElement
+public sealed class LspDeclarationHintsLayer : FrameworkElement
 {
     // ── State ─────────────────────────────────────────────────────────────────
     private ILspClient?    _lspClient;
@@ -61,7 +61,7 @@ public sealed class LspCodeLensLayer : FrameworkElement
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
-    public LspCodeLensLayer()
+    public LspDeclarationHintsLayer()
     {
         IsHitTestVisible = false;   // display-only; interactive clicks not wired here
         AddVisualChild(_visual);
@@ -233,7 +233,7 @@ public sealed class LspCodeLensLayer : FrameworkElement
 
         if (_lensItems.Count == 0 || _charWidth <= 0 || _lineHeight <= 0) return;
 
-        var fg = TryFindResource("CE_CodeLensForeground") as Brush
+        var fg = TryFindResource("CE_DeclarationHintsForeground") as Brush
                  ?? new SolidColorBrush(Color.FromArgb(140, 140, 140, 140));
 
         var typeface = new Typeface(

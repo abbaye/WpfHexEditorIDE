@@ -540,28 +540,28 @@
     <SolidColorBrush x:Key="MD_PreviewBorder"       Color="#ACB0BE"/>
 
     <!-- Class Diagram (CD_*) -->
-    <SolidColorBrush x:Key="CD_CanvasBackground"             Color="#F5F5F5" />
-    <SolidColorBrush x:Key="CD_CanvasBorderBrush"            Color="#C0C0C0" />
-    <SolidColorBrush x:Key="CD_CanvasGridLineBrush"          Color="#E0E0E0" />
+    <SolidColorBrush x:Key="CD_CanvasBackground"             Color="#EFF1F5" />
+    <SolidColorBrush x:Key="CD_CanvasBorderBrush"            Color="#CCD0DA" />
+    <SolidColorBrush x:Key="CD_CanvasGridLineBrush"          Color="#E6E9EF" />
     <SolidColorBrush x:Key="CD_ClassBoxBackground"           Color="#FFFFFF" />
-    <SolidColorBrush x:Key="CD_ClassBoxBorderBrush"          Color="#C0C0C0" />
-    <SolidColorBrush x:Key="CD_ClassBoxHeaderBackground"     Color="#BDD7EE" />
-    <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#C0C0C0" />
-    <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#2E75B6" />
-    <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#008080" />
-    <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#1F497D" />
-    <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#7F7F7F" />
-    <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#2B2B2B" />
-    <SolidColorBrush x:Key="CD_FieldForeground"              Color="#0070C0" />
-    <SolidColorBrush x:Key="CD_PropertyForeground"           Color="#008080" />
-    <SolidColorBrush x:Key="CD_MethodForeground"             Color="#7030A0" />
-    <SolidColorBrush x:Key="CD_EventForeground"              Color="#C55A11" />
-    <SolidColorBrush x:Key="CD_InheritanceArrowBrush"        Color="#2E75B6" />
-    <SolidColorBrush x:Key="CD_AssociationArrowBrush"        Color="#2E75B6" />
-    <SolidColorBrush x:Key="CD_DependencyArrowBrush"         Color="#7F7F7F" />
-    <SolidColorBrush x:Key="CD_AggregationArrowBrush"        Color="#008080" />
-    <SolidColorBrush x:Key="CD_CompositionArrowBrush"        Color="#C55A11" />
-    <SolidColorBrush x:Key="CD_RelationshipLabelForeground"  Color="#7F7F7F" />
+    <SolidColorBrush x:Key="CD_ClassBoxBorderBrush"          Color="#1E66F5" />
+    <SolidColorBrush x:Key="CD_ClassBoxHeaderBackground"     Color="#E6E9EF" />
+    <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#CCD0DA" />
+    <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#1E66F5" />
+    <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#04A5E5" />
+    <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#1E66F5" />
+    <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#8839EF" />
+    <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#4C4F69" />
+    <SolidColorBrush x:Key="CD_FieldForeground"              Color="#209FB5" />
+    <SolidColorBrush x:Key="CD_PropertyForeground"           Color="#179299" />
+    <SolidColorBrush x:Key="CD_MethodForeground"             Color="#DF8E1D" />
+    <SolidColorBrush x:Key="CD_EventForeground"              Color="#FE640B" />
+    <SolidColorBrush x:Key="CD_InheritanceArrowBrush"        Color="#1E66F5" />
+    <SolidColorBrush x:Key="CD_AssociationArrowBrush"        Color="#04A5E5" />
+    <SolidColorBrush x:Key="CD_DependencyArrowBrush"         Color="#9CA0B0" />
+    <SolidColorBrush x:Key="CD_AggregationArrowBrush"        Color="#179299" />
+    <SolidColorBrush x:Key="CD_CompositionArrowBrush"        Color="#FE640B" />
+    <SolidColorBrush x:Key="CD_RelationshipLabelForeground"  Color="#5C5F77" />
     <SolidColorBrush x:Key="CD_PanelToolbarBrush"            Color="#F0F0F0" />
     <SolidColorBrush x:Key="CD_PanelToolbarBorderBrush"      Color="#C0C0C0" />
     <SolidColorBrush x:Key="CD_OutlineSelectedBrush"         Color="#CCE8FF" />
@@ -617,8 +617,8 @@
     <SolidColorBrush x:Key="LSP_ErrorDot"               Color="#A4262C" />
     <SolidColorBrush x:Key="CE_InlayHintForeground"     Color="#9CA0B0" />
     <SolidColorBrush x:Key="CE_InlayHintBackground"     Color="#E6E9EF" />
-    <SolidColorBrush x:Key="CE_CodeLensForeground"      Color="#9CA0B0" />
-    <SolidColorBrush x:Key="CE_CodeLensHoverBackground" Color="#E6E9EF" />
+    <SolidColorBrush x:Key="CE_DeclarationHintsForeground"      Color="#9CA0B0" />
+    <SolidColorBrush x:Key="CE_DeclarationHintsHoverBackground" Color="#E6E9EF" />
     <SolidColorBrush x:Key="SE_TypeColor"               Color="#201E66F5" />
     <SolidColorBrush x:Key="SE_MethodColor"             Color="#20795E26" />
     <SolidColorBrush x:Key="SE_VariableColor"           Color="#20001080" />
@@ -965,4 +965,20 @@
     <!-- Options page section header foreground -->
     <SolidColorBrush x:Key="Opt_SectionForegroundBrush" Color="#666666"/>
 
-</ResourceDictionary>
+
+    <!-- ══ Git Panel (GC_*) ══════════════════════════════════════════════════ -->
+    <SolidColorBrush x:Key="GC_AddedForeground"            Color="#40A02B"/>
+    <SolidColorBrush x:Key="GC_ModifiedForeground"         Color="#DF8E1D"/>
+    <SolidColorBrush x:Key="GC_DeletedForeground"          Color="#D20F39"/>
+    <SolidColorBrush x:Key="GC_StagedForeground"           Color="#40A02B"/>
+    <SolidColorBrush x:Key="GC_UntrackedForeground"        Color="#888888"/>
+    <SolidColorBrush x:Key="GC_ConflictForeground"         Color="#FF6B6B"/>
+    <SolidColorBrush x:Key="GC_CommitButtonBackground"     Color="#1E66F5"/>
+    <SolidColorBrush x:Key="GC_CommitButtonForeground"     Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="GC_AheadBadgeForeground"       Color="#40A02B"/>
+    <SolidColorBrush x:Key="GC_BehindBadgeForeground"      Color="#DF8E1D"/>
+    <SolidColorBrush x:Key="GC_BlameAuthorForeground"      Color="#1E66F5"/>
+    <SolidColorBrush x:Key="GC_BlameHashForeground"        Color="#FE640B"/>
+    <SolidColorBrush x:Key="GC_BranchPickerHoverBackground" Color="#EFF1F5"/>
+    <SolidColorBrush x:Key="GC_SectionHeaderForeground"    Color="#888888"/>
+    <SolidColorBrush x:Key="GC_StashForeground"            Color="#B0B0B0"/></ResourceDictionary>
