@@ -55,3 +55,9 @@ public sealed record GitBlameNavigateEvent(string FilePath, string CommitHash);
 /// The Git plugin subscribes and shows the BranchPickerPopup.
 /// </summary>
 public sealed record GitBranchClickRequestedEvent(object PlacementTarget);
+
+/// <summary>
+/// Published by GitPlugin when the user activates "Toggle Blame Gutter".
+/// MainWindow.Git.cs subscribes and toggles ShowBlameGutter on the active CodeEditor.
+/// </summary>
+public sealed record GitBlameToggleRequestedEvent();

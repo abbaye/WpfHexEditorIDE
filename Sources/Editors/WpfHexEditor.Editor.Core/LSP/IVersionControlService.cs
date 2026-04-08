@@ -143,4 +143,7 @@ public interface IVersionControlService
     /// <summary>Returns the commit log, optionally scoped to <paramref name="filePath"/>.</summary>
     Task<IReadOnlyList<CommitInfo>> GetLogAsync(
         int maxCount = 100, string? filePath = null, CancellationToken ct = default);
+
+    /// <summary>Returns the full patch text for a single commit (git show --stat -p).</summary>
+    Task<string> ShowCommitAsync(string hash, CancellationToken ct = default);
 }

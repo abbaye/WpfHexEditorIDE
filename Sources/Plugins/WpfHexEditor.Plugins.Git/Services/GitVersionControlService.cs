@@ -175,8 +175,10 @@ internal sealed class GitVersionControlService : IVersionControlService, IDispos
         if (_repoRoot is null) return new AheadBehind(0, 0);
         return await Task.Run(() =>
         {
-            var aheadRaw  = RunGit(_repoRoot, "rev-list --count HEAD..@{u}").Trim();
-            var behindRaw = RunGit(_repoRoot, "rev-list --count @{u}..HEAD").Trim();
+            // HEAD..@{u} = commits on remote not in local = behind
+            // @{u}..HEAD = commits in local not on remote = ahead
+            var behindRaw = RunGit(_repoRoot, "rev-list --count HEAD..@{u}").Trim();
+            var aheadRaw  = RunGit(_repoRoot, "rev-list --count @{u}..HEAD").Trim();
             int.TryParse(aheadRaw,  out var ahead);
             int.TryParse(behindRaw, out var behind);
             return new AheadBehind(ahead, behind);
@@ -254,6 +256,14 @@ internal sealed class GitVersionControlService : IVersionControlService, IDispos
         if (_repoRoot is null) return [];
         var fileArg = filePath is not null ? $"-- \"{filePath}\"" : string.Empty;
         return await Task.Run(() => ParseLog(_repoRoot, maxCount, fileArg), ct);
+    }
+
+    public async Task<string> ShowCommitAsync(string hash, CancellationToken ct = default)
+    {
+        if (_repoRoot is null) return string.Empty;
+        return await Task.Run(
+            () => RunGit(_repoRoot, $"show --stat -p {hash}"),
+            ct);
     }
 
     // ── Polling ───────────────────────────────────────────────────────────────

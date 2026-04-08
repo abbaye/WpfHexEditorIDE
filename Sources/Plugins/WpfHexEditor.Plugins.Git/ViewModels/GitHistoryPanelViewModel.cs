@@ -128,14 +128,7 @@ public sealed class GitHistoryPanelViewModel : ViewModelBase, IDisposable
         DiffText = "Loading…";
         try
         {
-            // Show git show --stat for the commit
-            var diff = await Task.Run(() =>
-            {
-                // We use GetDiffHunksAsync is file-scoped; for commit diff use raw git show
-                // IVersionControlService doesn't have ShowCommitAsync yet — use GetDiffAsync as placeholder
-                return Task.FromResult($"Commit: {row.Hash}\nAuthor: {row.AuthorName}\nDate: {row.DateText}\n\n{row.Message}");
-            });
-            DiffText = diff;
+            DiffText = await _vcs.ShowCommitAsync(row.Hash);
         }
         catch (Exception ex)
         {

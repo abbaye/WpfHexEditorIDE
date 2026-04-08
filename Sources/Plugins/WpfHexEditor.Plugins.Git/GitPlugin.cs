@@ -212,10 +212,7 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
     }
 
     private static void ToggleBlameGutter(IIDEHostContext context)
-    {
-        // BlameGutterControl toggles itself via IDEEventBus subscription
-        context.IDEEvents.Publish(new GitStatusChangedEvent(null, false, 0));
-    }
+        => context.IDEEvents.Publish(new GitBlameToggleRequestedEvent());
 
     private void OnVcsStatusChanged(object? sender, EventArgs e)
     {

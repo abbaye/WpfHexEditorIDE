@@ -38,6 +38,17 @@ public partial class MainWindow
             return System.Threading.Tasks.Task.CompletedTask;
         });
 
+        _ideEventBus.Subscribe<GitBlameToggleRequestedEvent>(_ =>
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                var editor = GetActiveCodeEditor();
+                if (editor is not null)
+                    editor.ShowBlameGutter = !editor.ShowBlameGutter;
+            });
+            return System.Threading.Tasks.Task.CompletedTask;
+        });
+
         _ideEventBus.Subscribe<GitOperationStartedEvent>(e =>
         {
             Dispatcher.InvokeAsync(() =>
