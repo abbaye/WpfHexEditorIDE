@@ -34,7 +34,7 @@ namespace WpfHexEditor.Editor.ClassDiagram.Controls;
 public sealed class DiagramVisualLayer : FrameworkElement
 {
     // ── Layout constants (same as ClassBoxControl for visual consistency) ────
-    private const double HeaderHeight  = 44.0;
+    private const double HeaderBaseHeight = 44.0;  // minimum header height (name only)
     private const double MemberHeight  = 20.0;
     private const double MemberPadding = 4.0;
     private const double IconWidth     = 18.0;
@@ -44,6 +44,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
     private const double MaxNodeHeight  = 380.0;  // cap — "N more" footer shown when exceeded
     private const double FooterHeight   = 18.0;
     private const double GripperHeight  = 6.0;    // bottom-edge drag zone height
+    private const double AccentBarWidth = 6.0;    // left accent strip width
+    private const double TypeIconSize   = 16.0;   // type icon circle diameter (inline with name)
+    private const double NsDashGap      = 6.0;    // gap between namespace dashes and text
 
     // Nodes the user has explicitly expanded past MaxNodeHeight
     private readonly HashSet<string> _expandedNodes = new(StringComparer.Ordinal);
@@ -62,12 +65,13 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     // ── Visual children ──────────────────────────────────────────────────────
 
-    private readonly DrawingVisual                  _arrowLayer      = new();
-    private readonly Dictionary<string, DrawingVisual> _nodeVisuals  = [];
-    private readonly DrawingVisual                     _swimlaneLayer = new();
-    private readonly DrawingVisual                     _selectionVisual = new();
-    private readonly DrawingVisual                     _rubberBandVisual = new(); // top-most: rubber-band drag rect
-    private readonly List<Visual>                      _visuals       = [];
+    private readonly DrawingVisual                  _arrowLayer           = new();
+    private readonly DrawingVisual                  _arrowHighlightLayer  = new(); // selected-arrow highlight — repainted on selection only
+    private readonly Dictionary<string, DrawingVisual> _nodeVisuals       = [];
+    private readonly DrawingVisual                     _swimlaneLayer     = new();
+    private readonly DrawingVisual                     _selectionVisual   = new();
+    private readonly DrawingVisual                     _rubberBandVisual  = new(); // top-most: rubber-band drag rect
+    private readonly List<Visual>                      _visuals           = [];
 
     // ── State ────────────────────────────────────────────────────────────────
 
@@ -97,6 +101,28 @@ public sealed class DiagramVisualLayer : FrameworkElement
     // ── Highlighted relationship (set by Relationships panel selection) ─────
     private string? _highlightedRelId;
 
+    // ── Performance: arrow dirty flag ────────────────────────────────────────
+    // When false, RenderAllArrows() skips the base arrow layer repaint.
+    // Set true after structural changes (add/delete/move nodes), false after repaint.
+    private bool _arrowsDirty = true;
+
+    // ── Performance: node size caches ────────────────────────────────────────
+    // Keyed by node.Id. Invalidated on state changes (collapse/expand/section/resize).
+    private readonly Dictionary<string, double> _heightCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _widthCache  = new(StringComparer.Ordinal);
+
+    // ── Performance: viewport culling ────────────────────────────────────────
+    // When set, nodes and arrows outside this rect are not painted.
+    private Rect? _cullingViewport;
+    // Tracks which node DrawingVisuals are currently blanked (offscreen).
+    private readonly HashSet<string> _blankNodeIds = new(StringComparer.Ordinal);
+
+    // ── Performance: Level of Detail ─────────────────────────────────────────
+    // Current zoom factor forwarded from DiagramCanvas. At low zoom, simplified
+    // node cards are rendered (name only, no members list).
+    internal const double LodThreshold = 0.28;
+    internal double CurrentZoom { get; set; } = 1.0;
+
     /// <summary>
     /// Highlights the relationship with the given source-id in the arrow layer (accent pen).
     /// Pass null to clear the highlight.
@@ -105,7 +131,102 @@ public sealed class DiagramVisualLayer : FrameworkElement
     {
         if (_highlightedRelId == relId) return;
         _highlightedRelId = relId;
+        // Only repaint the highlight layer — base arrows (_arrowLayer) are unchanged.
+        RenderArrowHighlight();
+    }
+
+    // ── Performance API ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Marks the arrow layer dirty so the next <see cref="RenderAllArrows"/> call
+    /// actually repaints. Called after nodes are moved or added/deleted.
+    /// </summary>
+    internal void MarkArrowsDirty() => _arrowsDirty = true;
+
+    /// <summary>Forces an immediate full arrow repaint (dirty flag + render).</summary>
+    internal void RefreshArrows()
+    {
+        _arrowsDirty = true;
         RenderAllArrows();
+    }
+
+    /// <summary>Exposes swimlane repaint for DiagramCanvas.ApplyDocumentAsync.</summary>
+    internal void RenderSwimLanesPublic() => RenderSwimLanes();
+
+    /// <summary>
+    /// Creates <see cref="DrawingVisual"/> slots for all nodes in <paramref name="doc"/>
+    /// without painting anything. Called by <see cref="DiagramCanvas.ApplyDocumentAsync"/>
+    /// before batched rendering begins.
+    /// </summary>
+    public void PrepareVisualSlots(DiagramDocument doc)
+    {
+        _doc = doc;
+        _heightCache.Clear();
+        _widthCache.Clear();
+        _blankNodeIds.Clear();
+        _arrowsDirty = true;
+
+        // Remove stale visuals for nodes that no longer exist
+        var currentIds = doc.Classes.Select(n => n.Id).ToHashSet(StringComparer.Ordinal);
+        foreach (var id in _nodeVisuals.Keys.Except(currentIds).ToList())
+        {
+            RemoveVisualChild(_nodeVisuals[id]);
+            _visuals.Remove(_nodeVisuals[id]);
+            _nodeVisuals.Remove(id);
+        }
+        // Create empty DrawingVisual placeholders for new nodes
+        foreach (var node in doc.Classes)
+        {
+            if (!_nodeVisuals.ContainsKey(node.Id))
+            {
+                var dv = new DrawingVisual();
+                _nodeVisuals[node.Id] = dv;
+                _visuals.Add(dv);
+                AddVisualChild(dv);
+            }
+        }
+        EnsureSelectionVisualOnTop();
+        EnsureRubberBandVisualOnTop();
+    }
+
+    /// <summary>
+    /// Updates the culling viewport and selectively re-renders nodes that
+    /// entered or left the visible area. Called by DiagramCanvas on pan/zoom.
+    /// </summary>
+    public void InvalidateViewport(DiagramDocument doc, Rect viewport)
+    {
+        _cullingViewport = viewport;
+        if (_doc is null) return;
+
+        bool anyChange = false;
+        foreach (var node in doc.Classes)
+        {
+            if (!_nodeVisuals.TryGetValue(node.Id, out var dv)) continue;
+            double w = node.Width  > 4 ? node.Width  : 180;
+            double h = node.Height > 4 ? node.Height : HeaderBaseHeight;
+            var nb = new Rect(node.X - 4, node.Y - 4, w + 8, h + 8); // small padding for shadow
+            bool inVp    = nb.IntersectsWith(viewport);
+            bool wasBlank = _blankNodeIds.Contains(node.Id);
+
+            if (inVp && wasBlank)
+            {
+                _blankNodeIds.Remove(node.Id);
+                RenderNode(node);
+                anyChange = true;
+            }
+            else if (!inVp && !wasBlank)
+            {
+                _blankNodeIds.Add(node.Id);
+                using var dc = dv.RenderOpen(); // write empty = blank
+                anyChange = true;
+            }
+        }
+
+        if (anyChange || _arrowsDirty)
+        {
+            _arrowsDirty = true;
+            RenderAllArrows();
+        }
     }
 
     // ── Toggles (set by ClassDiagramSplitHost toolbar) ───────────────────────
@@ -139,10 +260,12 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     public DiagramVisualLayer()
     {
-        _visuals.Add(_swimlaneLayer);    // swimlane lanes behind everything
+        _visuals.Add(_swimlaneLayer);       // swimlane lanes behind everything
         AddVisualChild(_swimlaneLayer);
-        _visuals.Add(_arrowLayer);       // arrows above swimlanes, below nodes
+        _visuals.Add(_arrowLayer);          // base arrows above swimlanes, below nodes
         AddVisualChild(_arrowLayer);
+        _visuals.Add(_arrowHighlightLayer); // selected-arrow highlight on top of base arrows
+        AddVisualChild(_arrowHighlightLayer);
         // _selectionVisual added AFTER all node visuals so it renders on top
         // It is appended in EnsureSelectionVisualOnTop() after nodes are built.
     }
@@ -335,9 +458,13 @@ public sealed class DiagramVisualLayer : FrameworkElement
         _doc            = doc;
         _selectedNodeId = selectedId;
         _hoveredNodeId  = hoveredId;
+        _arrowsDirty    = true;
+        _blankNodeIds.Clear();
+        _heightCache.Clear();
+        _widthCache.Clear();
 
         // Remove visuals for nodes that no longer exist
-        var currentIds = doc.Classes.Select(n => n.Id).ToHashSet();
+        var currentIds = doc.Classes.Select(n => n.Id).ToHashSet(StringComparer.Ordinal);
         foreach (var id in _nodeVisuals.Keys.Except(currentIds).ToList())
         {
             RemoveVisualChild(_nodeVisuals[id]);
@@ -345,7 +472,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
             _nodeVisuals.Remove(id);
         }
 
-        // Ensure a DrawingVisual exists for every node
+        // Ensure a DrawingVisual exists for every node and render (with viewport culling)
+        var vp = _cullingViewport;
         foreach (var node in doc.Classes)
         {
             if (!_nodeVisuals.ContainsKey(node.Id))
@@ -355,6 +483,21 @@ public sealed class DiagramVisualLayer : FrameworkElement
                 _visuals.Add(dv);
                 AddVisualChild(dv);
             }
+
+            // Viewport culling: skip off-screen nodes (blank their visual)
+            if (vp.HasValue)
+            {
+                double w = node.Width  > 4 ? node.Width  : 180;
+                double h = node.Height > 4 ? node.Height : HeaderBaseHeight;
+                var nb = new Rect(node.X - 4, node.Y - 4, w + 8, h + 8);
+                if (!nb.IntersectsWith(vp.Value))
+                {
+                    _blankNodeIds.Add(node.Id);
+                    using var emptyDc = _nodeVisuals[node.Id].RenderOpen(); // blank
+                    continue;
+                }
+            }
+
             RenderNode(node);
         }
 
@@ -363,10 +506,12 @@ public sealed class DiagramVisualLayer : FrameworkElement
     }
 
     /// <summary>
-    /// Partial repaint: only re-renders the specified nodes (and arrows).
+    /// Partial repaint: only re-renders the specified nodes and optionally arrows/swimlanes.
+    /// Pass <paramref name="refreshArrows"/> = false during drag to avoid repainting all
+    /// 438 arrows on every frame — call <see cref="RefreshArrows"/> once on drag end.
     /// </summary>
     public void InvalidateNodes(DiagramDocument doc, IEnumerable<string> dirtyIds,
-        string? selectedId = null, string? hoveredId = null)
+        string? selectedId = null, string? hoveredId = null, bool refreshArrows = true)
     {
         _doc            = doc;
         _selectedNodeId = selectedId;
@@ -377,8 +522,16 @@ public sealed class DiagramVisualLayer : FrameworkElement
             var node = doc.Classes.FirstOrDefault(n => n.Id == id);
             if (node is not null) RenderNode(node);
         }
-        RenderAllArrows();
-        RenderSwimLanes();
+        if (refreshArrows)
+        {
+            _arrowsDirty = true;
+            RenderAllArrows();
+            RenderSwimLanes();
+        }
+        else
+        {
+            _arrowsDirty = true; // mark dirty so next RefreshArrows() paints
+        }
     }
 
     /// <summary>
@@ -388,7 +541,14 @@ public sealed class DiagramVisualLayer : FrameworkElement
     {
         if (_doc is null) return;
 
-        var needRepaint = new HashSet<string?> { _selectedNodeId, _hoveredNodeId, newSelectedId, newHoveredId };
+        // In LOD mode the simplified pill does not show hover highlighting, so
+        // re-rendering for hover-only changes would incorrectly convert a node
+        // that was rendered at full detail into a header-only LOD pill (BUG fix).
+        bool lodMode = CurrentZoom < LodThreshold;
+
+        var needRepaint = new HashSet<string?> { _selectedNodeId, newSelectedId };
+        if (!lodMode) { needRepaint.Add(_hoveredNodeId); needRepaint.Add(newHoveredId); }
+
         _selectedNodeId = newSelectedId;
         _hoveredNodeId  = newHoveredId;
 
@@ -428,6 +588,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
             _collapsedSections[nodeId] = set;
         }
         if (!set.Add(sectionName)) set.Remove(sectionName);
+        InvalidateNodeSizeCache(nodeId);
 
         if (_doc is null) return;
         var node = _doc.Classes.FirstOrDefault(n => n.Id == nodeId);
@@ -443,7 +604,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// </summary>
     public string? HitTestSectionHeader(Point pt, ClassNode node)
     {
-        double relY = pt.Y - node.Y - HeaderHeight - MemberPadding;
+        double relY = pt.Y - node.Y - ComputeHeaderHeight(node) - MemberPadding;
         if (relY < 0) return null;
 
         double memberY = 0;
@@ -500,7 +661,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// <summary>Returns the member row at <paramref name="pt"/> within <paramref name="node"/>, or null.</summary>
     public ClassMember? HitTestMember(Point pt, ClassNode node)
     {
-        double relY = pt.Y - node.Y - HeaderHeight - MemberPadding;
+        double relY = pt.Y - node.Y - ComputeHeaderHeight(node) - MemberPadding;
         if (relY < 0) return null;
         int idx = (int)(relY / MemberHeight);
         return idx >= 0 && idx < node.Members.Count ? node.Members[idx] : null;
@@ -529,9 +690,10 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     // ── Node rendering ───────────────────────────────────────────────────────
 
-    private void RenderNode(ClassNode node)
+    internal void RenderNode(ClassNode node)
     {
         if (!_nodeVisuals.TryGetValue(node.Id, out var dv)) return;
+        _blankNodeIds.Remove(node.Id); // mark as rendered (not blank)
 
         bool isSelected    = node.Id == _selectedNodeId || _multiSelectedIds.Contains(node.Id);
         bool isPreSelected = !isSelected && _preSelectedIds.Contains(node.Id);
@@ -549,6 +711,35 @@ public sealed class DiagramVisualLayer : FrameworkElement
         dv.Offset = new Vector(node.X, node.Y);
 
         using var dc = dv.RenderOpen();
+
+        // ── Level of Detail (LOD) ─────────────────────────────────────────────
+        // At very low zoom levels render a simplified pill (name + type only)
+        // to avoid the cost of member layout, section headers and shadows.
+        if (CurrentZoom < LodThreshold)
+        {
+            Brush lodHeaderBg  = Res("CD_ClassBoxHeaderBackground", Color.FromRgb(40, 40, 70));
+            Brush lodBorder    = isSelected
+                ? Res("CD_ClassBoxSelectedBorderBrush", Color.FromRgb(0, 120, 215))
+                : Res("CD_ClassBoxBorderBrush",         Color.FromRgb(80, 80, 100));
+            var lodRect = new Rect(0, 0, width, HeaderBaseHeight);
+            if (isDimmed) dc.PushOpacity(0.2);
+            dc.DrawRoundedRectangle(lodHeaderBg, new Pen(lodBorder, isSelected ? 2.0 : 1.0),
+                lodRect, CornerRadius, CornerRadius);
+            // LOD accent bar
+            Color lodAccent = GetAccentColor(node);
+            var lodAccentBrush = new SolidColorBrush(lodAccent);
+            lodAccentBrush.Freeze();
+            var lodClip = new System.Windows.Media.RectangleGeometry(lodRect, CornerRadius, CornerRadius);
+            dc.PushClip(lodClip);
+            dc.DrawRectangle(lodAccentBrush, null, new Rect(0, 0, AccentBarWidth, HeaderBaseHeight));
+            dc.Pop();
+            Brush lodName = Res("CD_ClassNameForeground", Color.FromRgb(220, 220, 255));
+            var lodFt = MakeFT(node.Name, lodName, 10.0, bold: true);
+            dc.DrawText(lodFt, new Point((width - lodFt.Width) / 2,
+                (HeaderBaseHeight - lodFt.Height) / 2));
+            if (isDimmed) dc.Pop();
+            return; // skip full member rendering at this zoom level
+        }
 
         if (isDimmed) dc.PushOpacity(0.2);
 
@@ -570,8 +761,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
         var boxPen  = new Pen(boxBorder, borderThk);
         var divPen  = new Pen(divBrush, 0.5);
 
+        double headerH = ComputeHeaderHeight(node);
         var boxRect    = new Rect(0, 0, width, height);
-        var headerRect = new Rect(0, 0, width, HeaderHeight);
+        var headerRect = new Rect(0, 0, width, headerH);
 
         // B6 — Drop shadow (offset semi-transparent rect drawn before main box)
         var shadowBrush = new SolidColorBrush(Color.FromArgb(55, 0, 0, 0));
@@ -588,7 +780,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
             dc.DrawRoundedRectangle(preBrush, null, boxRect, CornerRadius, CornerRadius);
         }
 
-        // B5 — Gradient header (top lighter → base color)
+        // ── Gradient header with accent bar ──────────────────────────────────
+        Color accentColor = GetAccentColor(node);
         Color headerBase = headerBg is SolidColorBrush scb ? scb.Color : Color.FromRgb(37, 40, 64);
         byte lr = (byte)Math.Min(255, headerBase.R + 22);
         byte lg = (byte)Math.Min(255, headerBase.G + 22);
@@ -596,52 +789,94 @@ public sealed class DiagramVisualLayer : FrameworkElement
         var gradHeader = new LinearGradientBrush(
             Color.FromRgb(lr, lg, lb), headerBase, new Point(0, 0), new Point(0, 1));
         dc.DrawRoundedRectangle(gradHeader, null, headerRect, CornerRadius, CornerRadius);
-        dc.DrawRectangle(gradHeader, null, new Rect(0, HeaderHeight / 2, width, HeaderHeight / 2));
+        dc.DrawRectangle(gradHeader, null, new Rect(0, headerH / 2, width, headerH / 2));
 
-        // Stereotype
-        string stereotype = GetStereotype(node);
-        double textY = 6.0;
-        if (stereotype.Length > 0)
-        {
-            var sterFt = MakeFT(stereotype, sterColor, 10.0, italic: true);
-            dc.DrawText(sterFt, new Point((width - sterFt.Width) / 2, textY));
-            textY += sterFt.Height + 1.0;
-        }
+        // Left accent bar (6px, gradient fade bottom, clipped to header)
+        var accentBrush = new SolidColorBrush(accentColor);
+        accentBrush.Freeze();
+        var accentGrad = new LinearGradientBrush(
+            accentColor, Color.FromArgb(60, accentColor.R, accentColor.G, accentColor.B),
+            new Point(0, 0), new Point(0, 1));
+        var headerClip = new System.Windows.Media.RectangleGeometry(headerRect, CornerRadius, CornerRadius);
+        dc.PushClip(headerClip);
+        dc.DrawRectangle(accentGrad, null, new Rect(0, 0, AccentBarWidth, headerH));
+        dc.Pop();
 
-        // Attributes (e.g. «Serializable, DataContract»)
-        if (node.Attributes.Count > 0)
-        {
-            string attrText = "«" + string.Join(", ", node.Attributes) + "»";
-            var attrFt = MakeFT(attrText, sterColor, 8.5, italic: true);
-            attrFt.MaxTextWidth = width - HorizPadding * 2;
-            attrFt.Trimming     = System.Windows.TextTrimming.CharacterEllipsis;
-            double attrX = (width - Math.Min(attrFt.Width, attrFt.MaxTextWidth)) / 2;
-            dc.DrawText(attrFt, new Point(attrX, textY));
-            textY += attrFt.Height + 1.0;
-        }
-
-        // Class name (bold)
+        // ── Row 1: [icon] Name ───────────────────────────────────────────────
         var nameFt = MakeFT(node.Name, nameColor, 13.0, bold: true);
-        dc.DrawText(nameFt, new Point((width - nameFt.Width) / 2, textY));
+        double nameRowH = Math.Max(TypeIconSize, nameFt.Height);
+        double nameRowY = 6.0;
 
-        // Namespace pill (small, below name)
+        // Type icon circle (inline left of name)
+        double iconX = AccentBarWidth + 6.0;
+        double iconCY = nameRowY + nameRowH / 2;
+        var iconCircleBrush = new SolidColorBrush(Color.FromArgb(50, accentColor.R, accentColor.G, accentColor.B));
+        iconCircleBrush.Freeze();
+        dc.DrawEllipse(iconCircleBrush, new Pen(accentBrush, 1.2),
+            new Point(iconX + TypeIconSize / 2, iconCY), TypeIconSize / 2, TypeIconSize / 2);
+        var glyphFt = MakeFT(GetTypeGlyph(node), accentBrush, 9.5, bold: true);
+        dc.DrawText(glyphFt, new Point(iconX + (TypeIconSize - glyphFt.Width) / 2,
+            iconCY - glyphFt.Height / 2));
+
+        // Name (centered in remaining space after accent bar)
+        double nameAreaLeft = AccentBarWidth;
+        double nameAreaW    = width - nameAreaLeft;
+        dc.DrawText(nameFt, new Point(nameAreaLeft + (nameAreaW - nameFt.Width) / 2, nameRowY + (nameRowH - nameFt.Height) / 2));
+
+        double textY = nameRowY + nameRowH + 2.0;
+
+        // ── Row 2: «stereotype · Attr1, Attr2» (merged, centered) ───────────
+        string stereotype = GetStereotype(node);
+        string mergedLabel = BuildStereotypeLabel(node, stereotype);
+        if (mergedLabel.Length > 0)
+        {
+            var sterFt = MakeFT(mergedLabel, sterColor, 9.0, italic: true);
+            sterFt.MaxTextWidth = width - AccentBarWidth - HorizPadding * 2;
+            sterFt.Trimming     = System.Windows.TextTrimming.CharacterEllipsis;
+            double sterW = Math.Min(sterFt.Width, sterFt.MaxTextWidth);
+            dc.DrawText(sterFt, new Point(nameAreaLeft + (nameAreaW - sterW) / 2, textY));
+            textY += sterFt.Height + 2.0;
+        }
+
+        // ── Row 3: ── Namespace ── (with decorative dashes) ──────────────────
         if (!string.IsNullOrEmpty(node.Namespace))
         {
-            double nsY = textY + nameFt.Height + 1.0;
-            if (nsY + 10 < HeaderHeight - 2)
-            {
-                var nsFt = MakeFT(node.Namespace, sterColor, 8.5);
-                nsFt.MaxTextWidth  = width - HorizPadding * 2;
-                nsFt.Trimming      = System.Windows.TextTrimming.CharacterEllipsis;
-                double nsX = (width - Math.Min(nsFt.Width, nsFt.MaxTextWidth)) / 2;
-                dc.DrawText(nsFt, new Point(nsX, nsY));
-            }
+            var nsFt = MakeFT(node.Namespace, sterColor, 8.5);
+            nsFt.MaxTextWidth = width - AccentBarWidth - HorizPadding * 2 - 40; // leave room for dashes
+            nsFt.Trimming     = System.Windows.TextTrimming.CharacterEllipsis;
+            double nsW   = Math.Min(nsFt.Width, nsFt.MaxTextWidth);
+            double nsCX  = nameAreaLeft + nameAreaW / 2;
+            double nsX   = nsCX - nsW / 2;
+            double nsY   = textY;
+            double nsMid = nsY + nsFt.Height / 2;
+
+            // Decorative dashes left and right of namespace
+            Brush nsDashBrush = Res("CD_NamespacePillBackground", Color.FromArgb(80, 160, 160, 200));
+            var nsDashPen = new Pen(nsDashBrush, 0.8);
+            double dashLeft  = AccentBarWidth + HorizPadding;
+            double dashRight = width - HorizPadding;
+            if (nsX - NsDashGap > dashLeft + 8)
+                dc.DrawLine(nsDashPen, new Point(dashLeft, nsMid), new Point(nsX - NsDashGap, nsMid));
+            if (nsX + nsW + NsDashGap < dashRight - 8)
+                dc.DrawLine(nsDashPen, new Point(nsX + nsW + NsDashGap, nsMid), new Point(dashRight, nsMid));
+
+            dc.DrawText(nsFt, new Point(nsX, nsY));
         }
 
-        // Header divider
-        dc.DrawLine(divPen, new Point(0, HeaderHeight), new Point(width, HeaderHeight));
+        // ── Header divider (gradient fade at edges) ──────────────────────────
+        var divGrad = new LinearGradientBrush
+        {
+            StartPoint = new Point(0, 0.5),
+            EndPoint   = new Point(1, 0.5)
+        };
+        Color divColor = divBrush is SolidColorBrush dvScb ? dvScb.Color : Color.FromRgb(70, 70, 90);
+        divGrad.GradientStops.Add(new GradientStop(Colors.Transparent, 0.0));
+        divGrad.GradientStops.Add(new GradientStop(divColor, 0.15));
+        divGrad.GradientStops.Add(new GradientStop(divColor, 0.85));
+        divGrad.GradientStops.Add(new GradientStop(Colors.Transparent, 1.0));
+        dc.DrawRectangle(divGrad, null, new Rect(0, headerH - 0.5, width, 1.0));
 
-        // Metrics badge (bottom-right corner of header)
+        // Metrics badges (top-right corner of header)
         if (node.Metrics != ClassMetrics.Empty)
         {
             DrawMetricsBadge(dc, node, width);
@@ -655,14 +890,14 @@ public sealed class DiagramVisualLayer : FrameworkElement
         }
 
         // Member rows — clipped to the box height so content never overflows below the border
-        double memberY = HeaderHeight + MemberPadding;
+        double memberY = headerH + MemberPadding;
         MemberKind? lastKind   = null;
         double textClipW       = width - HorizPadding - IconWidth - HorizPadding;
         var    divPenDashed    = new Pen(divBrush, 0.5) { DashStyle = new DashStyle([2, 2], 0) };
 
-        // Clip entire member section to [HeaderHeight … height] so capped nodes don't bleed
+        // Clip entire member section to [headerH … height] so capped nodes don't bleed
         dc.PushClip(new System.Windows.Media.RectangleGeometry(
-            new Rect(0, HeaderHeight, width, Math.Max(0, height - HeaderHeight))));
+            new Rect(0, headerH, width, Math.Max(0, height - headerH))));
 
         // isCapped = there are members that don't fit at the CURRENT display height
         // (custom height via gripper may already show all members — fullH <= height → not capped)
@@ -783,8 +1018,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private void DrawMetricsBadge(DrawingContext dc, ClassNode node, double boxWidth)
     {
-        const double badgeW = 36, badgeH = 12, gap = 2, badgeX_offset = 4;
+        const double badgeW = 42, badgeH = 14, gap = 3, badgeX_offset = 5;
         double badgeX = boxWidth - badgeW - badgeX_offset;
+        var borderPen = new Pen(new SolidColorBrush(Color.FromArgb(60, 0, 0, 0)), 0.8);
 
         // Badge 1: Instability (I=x.xx)
         double instability = node.Metrics.Instability;
@@ -794,11 +1030,11 @@ public sealed class DiagramVisualLayer : FrameworkElement
             < 0.65 => Color.FromRgb(200, 160, 0),
             _      => Color.FromRgb(200, 60, 60)
         };
-        double badgeY1 = 2;
+        double badgeY1 = 3;
         dc.DrawRoundedRectangle(
-            new SolidColorBrush(Color.FromArgb(180, instColor.R, instColor.G, instColor.B)),
-            null, new Rect(badgeX, badgeY1, badgeW, badgeH), 3, 3);
-        var ft1 = MakeFT($"I={instability:F2}", Brushes.White, 7.5);
+            new SolidColorBrush(Color.FromArgb(200, instColor.R, instColor.G, instColor.B)),
+            borderPen, new Rect(badgeX, badgeY1, badgeW, badgeH), 3.5, 3.5);
+        var ft1 = MakeFT($"I={instability:F2}", Brushes.White, 8.0, bold: true);
         dc.DrawText(ft1, new Point(badgeX + (badgeW - ft1.Width) / 2, badgeY1 + (badgeH - ft1.Height) / 2));
 
         // Badge 2: Member count (M:count)
@@ -811,9 +1047,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
         };
         double badgeY2 = badgeY1 + badgeH + gap;
         dc.DrawRoundedRectangle(
-            new SolidColorBrush(Color.FromArgb(180, cntColor.R, cntColor.G, cntColor.B)),
-            null, new Rect(badgeX, badgeY2, badgeW, badgeH), 3, 3);
-        var ft2 = MakeFT($"M:{memberCount}", Brushes.White, 7.5);
+            new SolidColorBrush(Color.FromArgb(200, cntColor.R, cntColor.G, cntColor.B)),
+            borderPen, new Rect(badgeX, badgeY2, badgeW, badgeH), 3.5, 3.5);
+        var ft2 = MakeFT($"M:{memberCount}", Brushes.White, 8.0, bold: true);
         dc.DrawText(ft2, new Point(badgeX + (badgeW - ft2.Width) / 2, badgeY2 + (badgeH - ft2.Height) / 2));
     }
 
@@ -823,6 +1059,15 @@ public sealed class DiagramVisualLayer : FrameworkElement
     {
         if (_doc is null) return;
 
+        if (!_arrowsDirty)
+        {
+            // Base arrows unchanged — only re-render the highlight layer for selected arrow
+            RenderArrowHighlight();
+            return;
+        }
+        _arrowsDirty = false;
+
+        var vp = _cullingViewport;
         using var dc = _arrowLayer.RenderOpen();
 
         foreach (var rel in _doc.Relationships)
@@ -834,15 +1079,25 @@ public sealed class DiagramVisualLayer : FrameworkElement
             var srcRect = new Rect(src.X, src.Y, src.Width, src.Height);
             var tgtRect = new Rect(tgt.X, tgt.Y, tgt.Width, tgt.Height);
 
+            // Viewport culling: skip arrows whose bounding box is entirely offscreen
+            if (vp.HasValue)
+            {
+                double minX = Math.Min(srcRect.Left,  tgtRect.Left)  - 20;
+                double minY = Math.Min(srcRect.Top,   tgtRect.Top)   - 20;
+                double maxX = Math.Max(srcRect.Right, tgtRect.Right) + 20;
+                double maxY = Math.Max(srcRect.Bottom,tgtRect.Bottom)+ 20;
+                if (!new Rect(minX, minY, maxX - minX, maxY - minY).IntersectsWith(vp.Value))
+                    continue;
+            }
+
             Point p1 = NearestEdgePoint(srcRect, tgtRect);
             Point p2 = NearestEdgePoint(tgtRect, srcRect);
 
             bool isHighlighted = _highlightedRelId is not null && rel.SourceId == _highlightedRelId;
-            Brush lineBrush = isHighlighted
-                ? (TryFindResource("CD_ClassBoxSelectedBorderBrush") as Brush
-                   ?? new SolidColorBrush(Color.FromRgb(0, 120, 215)))
-                : GetArrowBrush(rel.Kind);
-            double lineThickness = isHighlighted ? 2.5 : 1.5;
+            // Highlighted arrows are drawn on the separate _arrowHighlightLayer (not here)
+            if (isHighlighted) continue;
+            Brush lineBrush = GetArrowBrush(rel.Kind);
+            double lineThickness = 1.5;
             var pen = new Pen(lineBrush, lineThickness);
             if (rel.Kind == RelationshipKind.Dependency || rel.Kind == RelationshipKind.Realization)
                 pen.DashStyle = DashedStyle;
@@ -911,6 +1166,57 @@ public sealed class DiagramVisualLayer : FrameworkElement
                 lineBrush is SolidColorBrush sb3 ? sb3.Color.B : (byte)180));
             dc.DrawEllipse(portBrush, null, p1, 2.5, 2.5);
             dc.DrawEllipse(portBrush, null, p2, 2.5, 2.5);
+        }
+
+        // Always update the highlight layer after base arrows are repainted
+        RenderArrowHighlight();
+    }
+
+    /// <summary>
+    /// Repaints only the selected-arrow highlight layer (<see cref="_arrowHighlightLayer"/>).
+    /// Called on selection change without touching the base <see cref="_arrowLayer"/>.
+    /// </summary>
+    private void RenderArrowHighlight()
+    {
+        using var hdc = _arrowHighlightLayer.RenderOpen();
+        if (_doc is null || _highlightedRelId is null) return;
+
+        var rel = _doc.Relationships.FirstOrDefault(r => r.SourceId == _highlightedRelId);
+        if (rel is null) return;
+        var src = _doc.FindById(rel.SourceId);
+        var tgt = _doc.FindById(rel.TargetId);
+        if (src is null || tgt is null) return;
+
+        var srcRect = new Rect(src.X, src.Y, src.Width, src.Height);
+        var tgtRect = new Rect(tgt.X, tgt.Y, tgt.Width, tgt.Height);
+        Point p1 = NearestEdgePoint(srcRect, tgtRect);
+        Point p2 = NearestEdgePoint(tgtRect, srcRect);
+
+        Brush accentBrush = TryFindResource("CD_ClassBoxSelectedBorderBrush") as Brush
+            ?? new SolidColorBrush(Color.FromRgb(0, 120, 215));
+        var pen = new Pen(accentBrush, 2.5);
+        if (rel.Kind == RelationshipKind.Dependency || rel.Kind == RelationshipKind.Realization)
+            pen.DashStyle = DashedStyle;
+
+        var wayPts = rel.Waypoints;
+        if (wayPts.Count > 0)
+        {
+            Point prev = p1;
+            foreach (var (wx, wy) in wayPts)
+            {
+                var wp = new Point(wx, wy);
+                hdc.DrawLine(pen, prev, wp);
+                prev = wp;
+            }
+            hdc.DrawLine(pen, prev, p2);
+            DrawArrowHead(hdc, new Point(wayPts[^1].X, wayPts[^1].Y), p2, rel.Kind, accentBrush, 2.5);
+            DrawTailDecoration(hdc, p1, new Point(wayPts[0].X, wayPts[0].Y), rel.Kind, accentBrush, 2.5);
+        }
+        else
+        {
+            hdc.DrawLine(pen, p1, p2);
+            DrawArrowHead(hdc, p1, p2, rel.Kind, accentBrush, 2.5);
+            DrawTailDecoration(hdc, p1, p2, rel.Kind, accentBrush, 2.5);
         }
     }
 
@@ -1000,6 +1306,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     // ── Swimlane rendering ────────────────────────────────────────────────────
 
+    internal const double SwimLanePad = 12.0;
+
     private void RenderSwimLanes()
     {
         using var dc = _swimlaneLayer.RenderOpen();
@@ -1013,38 +1321,98 @@ public sealed class DiagramVisualLayer : FrameworkElement
         var laneBrush  = new SolidColorBrush(Color.FromArgb(20, 120, 160, 220));
         var lanePen    = new Pen(new SolidColorBrush(Color.FromArgb(80, 100, 140, 200)), 1.0);
         lanePen.DashStyle = DashStyles.Dash;
-        const double Pad = 12.0;
 
         foreach (var grp in groups)
         {
             var nodes = grp.ToList();
-            double minX = nodes.Min(n => n.X) - Pad;
-            double minY = nodes.Min(n => n.Y) - Pad - 16;  // space for header
-            double maxX = nodes.Max(n => n.X + n.Width)  + Pad;
-            double maxY = nodes.Max(n => n.Y + n.Height) + Pad;
+            double minX = nodes.Min(n => n.X) - SwimLanePad;
+            double minY = nodes.Min(n => n.Y) - SwimLanePad - 16;  // space for header
+            double maxX = nodes.Max(n => n.X + n.Width)  + SwimLanePad;
+            double maxY = nodes.Max(n => n.Y + n.Height) + SwimLanePad;
 
             var laneRect = new Rect(minX, minY, maxX - minX, maxY - minY);
             dc.DrawRoundedRectangle(laneBrush, lanePen, laneRect, 4, 4);
 
             // Namespace label header
             var ft = MakeFT(grp.Key, new SolidColorBrush(Color.FromArgb(160, 180, 200, 240)), 10.0);
-            dc.DrawText(ft, new Point(minX + Pad, minY + 2));
+            dc.DrawText(ft, new Point(minX + SwimLanePad, minY + 2));
         }
+    }
+
+    /// <summary>
+    /// Returns the namespace key of the swimlane at <paramref name="pt"/>, or null.
+    /// Returns null when <paramref name="pt"/> is inside a node (nodes take priority).
+    /// </summary>
+    public string? HitTestSwimLane(Point pt)
+    {
+        if (!ShowSwimLanes || _doc is null || _doc.Classes.Count == 0) return null;
+
+        // Nodes take priority — if point is inside a node, no swimlane hit
+        if (HitTestNode(pt) is not null) return null;
+
+        foreach (var grp in _doc.Classes
+            .Where(n => !string.IsNullOrEmpty(n.Namespace))
+            .GroupBy(n => n.Namespace!))
+        {
+            var nodes = grp.ToList();
+            double minX = nodes.Min(n => n.X) - SwimLanePad;
+            double minY = nodes.Min(n => n.Y) - SwimLanePad - 16;
+            double maxX = nodes.Max(n => n.X + n.Width)  + SwimLanePad;
+            double maxY = nodes.Max(n => n.Y + n.Height) + SwimLanePad;
+
+            if (new Rect(minX, minY, maxX - minX, maxY - minY).Contains(pt))
+                return grp.Key;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns all nodes belonging to the swimlane with the given namespace.
+    /// </summary>
+    public List<ClassNode> GetSwimLaneNodes(string ns)
+    {
+        if (_doc is null) return [];
+        return _doc.Classes.Where(n => n.Namespace == ns).ToList();
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
+    // ── Size cache invalidation ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Invalidates cached height/width for a single node.
+    /// Pass null to clear the entire cache (e.g., after <see cref="RenderAll"/>).
+    /// </summary>
+    private void InvalidateNodeSizeCache(string? nodeId)
+    {
+        if (nodeId is null) { _heightCache.Clear(); _widthCache.Clear(); }
+        else { _heightCache.Remove(nodeId); _widthCache.Remove(nodeId); }
+    }
+
+    // ── Node height/width computation (with caching) ──────────────────────────
+
     public double ComputeNodeHeight(ClassNode node)
     {
+        if (_heightCache.TryGetValue(node.Id, out double cached)) return cached;
+
+        double result = ComputeNodeHeightCore(node);
+        _heightCache[node.Id] = result;
+        return result;
+    }
+
+    private double ComputeNodeHeightCore(ClassNode node)
+    {
+        double hdrH = ComputeHeaderHeight(node);
+
         // Collapsed nodes show only the header.
         if (_collapsedNodes.Contains(node.Id))
-            return HeaderHeight;
+            return hdrH;
 
         // Custom height set by the resize gripper takes priority.
         if (_customHeights.TryGetValue(node.Id, out double custom))
-            return Math.Max(custom, HeaderHeight + MemberHeight);
+            return Math.Max(custom, hdrH + MemberHeight);
 
-        double h = HeaderHeight + MemberPadding * 2;
+        double h = hdrH + MemberPadding * 2;
         MemberKind? lastKind = null;
         foreach (var m in node.Members)
         {
@@ -1065,11 +1433,15 @@ public sealed class DiagramVisualLayer : FrameworkElement
     {
         _customHeights[nodeId] = height;
         _expandedNodes.Remove(nodeId); // custom height overrides the expand toggle
+        InvalidateNodeSizeCache(nodeId);
     }
 
     /// <summary>Removes a custom height override, restoring auto-computed height.</summary>
     public void ClearCustomHeight(string nodeId)
-        => _customHeights.Remove(nodeId);
+    {
+        _customHeights.Remove(nodeId);
+        InvalidateNodeSizeCache(nodeId);
+    }
 
     /// <summary>
     /// Returns the node whose bottom-edge gripper is at <paramref name="pt"/>, or null.
@@ -1090,7 +1462,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private int CountHiddenMembers(ClassNode node, double displayHeight)
     {
-        double h = HeaderHeight + MemberPadding * 2;
+        double h = ComputeHeaderHeight(node) + MemberPadding * 2;
         double limit = displayHeight - FooterHeight; // room for the footer itself
         int hidden = 0;
         bool capping = false;
@@ -1114,6 +1486,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
     {
         if (!_expandedNodes.Remove(nodeId))
             _expandedNodes.Add(nodeId);
+        InvalidateNodeSizeCache(nodeId);
     }
 
     /// <summary>Toggles the collapsed state of a node (header-only display).</summary>
@@ -1127,6 +1500,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
             _expandedNodes.Remove(nodeId);
             _customHeights.Remove(nodeId);
         }
+        InvalidateNodeSizeCache(nodeId);
     }
 
     /// <summary>Returns whether the node is collapsed.</summary>
@@ -1159,7 +1533,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private double ComputeNodeHeightFull(ClassNode node)
     {
-        double h = HeaderHeight + MemberPadding * 2;
+        double h = ComputeHeaderHeight(node) + MemberPadding * 2;
         MemberKind? lastKind = null;
         foreach (var m in node.Members)
         {
@@ -1173,10 +1547,13 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private double ComputeNodeWidth(ClassNode node)
     {
+        if (_widthCache.TryGetValue(node.Id, out double cached)) return cached;
         double max = node.Name.Length * 8.0;
         foreach (var m in node.Members)
             max = Math.Max(max, BuildMemberLabel(m).Length * 7.5 + IconWidth + HorizPadding * 2 + 16);
-        return Math.Max(BoxMinWidth, max);
+        double result = Math.Max(BoxMinWidth, max);
+        _widthCache[node.Id] = result;
+        return result;
     }
 
     private static string BuildMemberLabel(ClassMember m)
@@ -1202,6 +1579,82 @@ public sealed class DiagramVisualLayer : FrameworkElement
             ClassKind.Abstract  => "«abstract»",
             ClassKind.Class when node.IsAbstract => "«abstract»",
             _ => string.Empty
+        };
+    }
+
+    /// <summary>Builds the merged stereotype + attributes label for a node header.</summary>
+    private static string BuildStereotypeLabel(ClassNode node, string stereotype)
+    {
+        bool hasSter = stereotype.Length > 0;
+        bool hasAttr = node.Attributes.Count > 0;
+        if (!hasSter && !hasAttr) return string.Empty;
+        if (hasSter && !hasAttr) return stereotype;
+        string attrs = string.Join(", ", node.Attributes);
+        if (!hasSter) return "«" + attrs + "»";
+        // Merge: «struct · StructLayout, Serializable»
+        // Strip the « » from stereotype for merging
+        string sterCore = stereotype[1..^1]; // remove « and »
+        return "«" + sterCore + " · " + attrs + "»";
+    }
+
+    /// <summary>Computes dynamic header height: Row1=icon+name, Row2=stereotype, Row3=namespace.</summary>
+    public double ComputeHeaderHeight(ClassNode node)
+    {
+        // Row 1: icon + name
+        var nameFt = MakeFT(node.Name, Brushes.White, 13.0, bold: true);
+        double y = 6.0 + Math.Max(TypeIconSize, nameFt.Height) + 2.0;
+
+        // Row 2: merged stereotype + attributes
+        string stereotype = GetStereotype(node);
+        string merged = BuildStereotypeLabel(node, stereotype);
+        if (merged.Length > 0)
+        {
+            var sterFt = MakeFT(merged, Brushes.White, 9.0, italic: true);
+            y += sterFt.Height + 2.0;
+        }
+
+        // Row 3: namespace with dashes
+        if (!string.IsNullOrEmpty(node.Namespace))
+        {
+            var nsFt = MakeFT(node.Namespace, Brushes.White, 8.5);
+            y += nsFt.Height + 2.0;
+        }
+
+        return Math.Max(HeaderBaseHeight, y + 4.0); // 4px bottom padding
+    }
+
+    /// <summary>Returns the accent color for the node's type kind, or user-chosen custom color.</summary>
+    private static Color GetAccentColor(ClassNode node)
+    {
+        if (node.CustomColor.HasValue)
+        {
+            var c = node.CustomColor.Value;
+            return Color.FromRgb(c.R, c.G, c.B);
+        }
+        if (node.IsRecord)  return Color.FromRgb(156, 220, 254); // cyan
+        return node.Kind switch
+        {
+            ClassKind.Interface => Color.FromRgb( 78, 201, 176), // green
+            ClassKind.Enum      => Color.FromRgb(197, 134, 192), // violet
+            ClassKind.Struct    => Color.FromRgb(220, 220, 170), // orange/yellow
+            ClassKind.Abstract  => Color.FromRgb(86,  156, 214), // blue
+            _ => node.IsAbstract
+                ? Color.FromRgb(86,  156, 214)                   // blue (abstract class)
+                : Color.FromRgb(79,  193, 255)                   // light blue (class)
+        };
+    }
+
+    /// <summary>Returns a single-letter glyph representing the node's type kind.</summary>
+    private static string GetTypeGlyph(ClassNode node)
+    {
+        if (node.IsRecord)  return "R";
+        return node.Kind switch
+        {
+            ClassKind.Interface => "I",
+            ClassKind.Enum      => "E",
+            ClassKind.Struct    => "S",
+            ClassKind.Abstract  => "A",
+            _ => node.IsAbstract ? "A" : "C"
         };
     }
 

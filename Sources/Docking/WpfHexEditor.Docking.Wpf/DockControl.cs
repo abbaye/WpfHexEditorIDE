@@ -92,6 +92,12 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// <summary>Corner radius in px applied to the bottom corners of every panel border. Default 4.</summary>
     public double PanelCornerRadius { get; set; } = 4.0;
 
+    /// <summary>
+    /// Optional logging sink wired by the host (e.g. MainWindow → IOutputService.Debug).
+    /// Called from visual-tree build paths to help diagnose corner-radius issues.
+    /// </summary>
+    public Action<string>? Logger { get; set; }
+
     // Bitmap snapshots captured when an auto-hide flyout is dismissed,
     // keyed by DockItem so AutoHideBarHoverPreview can display them.
     private readonly Dictionary<DockItem, System.Windows.Media.Imaging.BitmapSource> _autoHideBitmapCache = new();
@@ -1144,6 +1150,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (_suppressRebuild) { _rebuildPending = true; return; }
 
+        Logger?.Invoke($"[DockCorner] RebuildVisualTree — PanelCornerRadius={PanelCornerRadius}");
+
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
         _tabControlCache.Clear();  // M2.1: clear stale group→tab mappings
@@ -1350,7 +1358,22 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             new KeyboardFocusChangedEventHandler((_, _) => SetActivePanel(overlayBorder)),
             handledEventsToo: true);
 
-        return outer;
+        var r = PanelCornerRadius;
+        Logger?.Invoke($"[DockCorner] CreateDocumentHost — CornerRadius={r}, building wrapperBorder");
+        var wrapperBorder = new Border
+        {
+            CornerRadius        = new CornerRadius(r),
+            Child               = outer,
+            SnapsToDevicePixels = true,
+        };
+        wrapperBorder.SetResourceReference(Border.BackgroundProperty, "DockBackgroundBrush");
+        // WPF Border.ClipToBounds does NOT clip children to rounded corners —
+        // only to a rectangular bounding box. Use an explicit RectangleGeometry
+        // with RadiusX/RadiusY to clip children to the rounded shape.
+        UpdateRoundedClip(wrapperBorder, r);
+        wrapperBorder.SizeChanged += (_, _) => UpdateRoundedClip(wrapperBorder, PanelCornerRadius);
+        _panelBorders.Add(wrapperBorder);
+        return wrapperBorder;
     }
 
     /// <summary>
@@ -1460,7 +1483,19 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             new KeyboardFocusChangedEventHandler((_, _) => SetActivePanel(overlayBorder)),
             handledEventsToo: true);
 
-        return outer;
+        var r = PanelCornerRadius;
+        Logger?.Invoke($"[DockCorner] CreateTabControl — CornerRadius={r}, building wrapperBorder");
+        var wrapperBorder = new Border
+        {
+            CornerRadius        = new CornerRadius(r),
+            Child               = outer,
+            SnapsToDevicePixels = true,
+        };
+        wrapperBorder.SetResourceReference(Border.BackgroundProperty, "DockBackgroundBrush");
+        UpdateRoundedClip(wrapperBorder, r);
+        wrapperBorder.SizeChanged += (_, _) => UpdateRoundedClip(wrapperBorder, PanelCornerRadius);
+        _panelBorders.Add(wrapperBorder);
+        return wrapperBorder;
     }
 
     /// <summary>
@@ -1782,18 +1817,31 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     public void UpdatePanelCornerRadius(double r)
     {
         PanelCornerRadius = r;
+        Logger?.Invoke($"[DockCorner] UpdatePanelCornerRadius r={r}, panelBorders.Count={_panelBorders.Count}");
         foreach (var border in _panelBorders)
         {
             border.CornerRadius = new CornerRadius(r);
-            if (border.Clip is RectangleGeometry rg)
-            {
-                rg.RadiusX = r;
-                rg.RadiusY = r;
-            }
+            UpdateRoundedClip(border, r);
         }
         // Rebuild the active highlight border with the new shape.
         if (_activePanel is not null)
             ApplyHighlightToBorder(_activePanel);
+    }
+
+    /// <summary>
+    /// Sets an explicit rounded <see cref="RectangleGeometry"/> clip on a border.
+    /// WPF Border.ClipToBounds only clips to a rectangular box — CornerRadius is ignored for child clipping.
+    /// </summary>
+    private static void UpdateRoundedClip(Border border, double radius)
+    {
+        double w = border.ActualWidth;
+        double h = border.ActualHeight;
+        if (w <= 0 || h <= 0 || radius <= 0)
+        {
+            border.Clip = null;
+            return;
+        }
+        border.Clip = new RectangleGeometry(new Rect(0, 0, w, h), radius, radius);
     }
 
     /// <summary>
@@ -1809,24 +1857,15 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             Child               = content,
             BorderThickness     = new Thickness(0),
             CornerRadius        = new CornerRadius(radius),
+            // Border.GetLayoutClip() returns a rounded geometry matching CornerRadius when
+            // ClipToBounds=true. This is the correct WPF-native way to clip child content
+            // (including the tab strip background) to the rounded panel shape.
+            ClipToBounds        = true,
             Margin              = new Thickness(2),
             SnapsToDevicePixels = true
         };
         border.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
         _panelBorders.Add(border);
-
-        // WPF Border.ClipToBounds only clips to the rectangular bounds, not to the rounded
-        // corner shape. We use a RectangleGeometry (with RadiusX/RadiusY) assigned to Clip
-        // so ALL child rendering — including tab strip and content — is clipped to the
-        // rounded rectangle. Updated on every SizeChanged to stay in sync.
-        var clip = new RectangleGeometry { RadiusX = radius, RadiusY = radius };
-        border.Clip = clip;
-        border.SizeChanged += (_, e) =>
-        {
-            clip.Rect    = new Rect(e.NewSize);
-            clip.RadiusX = PanelCornerRadius;
-            clip.RadiusY = PanelCornerRadius;
-        };
 
         // Activate on ANY mouse click inside the panel (tunneling catches handled events)
         border.AddHandler(

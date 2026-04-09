@@ -22,7 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core.Settings;
 
-namespace WpfHexEditor.HexEditor.Controls
+namespace WpfHexEditor.Core.Settings
 {
     /// <summary>
     /// Helper class for all editor settings panels.

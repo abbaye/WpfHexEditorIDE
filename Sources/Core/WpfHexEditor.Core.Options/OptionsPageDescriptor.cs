@@ -18,4 +18,5 @@ public sealed record OptionsPageDescriptor(
     string Category,
     string PageName,
     Func<UserControl> Factory,
-    string? CategoryIcon = null);
+    string? CategoryIcon = null,
+    string[]? SearchKeywords = null);

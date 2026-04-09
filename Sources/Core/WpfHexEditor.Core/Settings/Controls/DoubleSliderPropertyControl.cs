@@ -15,21 +15,46 @@ using System.Windows.Data;
 using WpfHexEditor.Core.Settings;
 using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
 
-namespace WpfHexEditor.HexEditor.Settings.Controls
+namespace WpfHexEditor.Core.Settings.Controls
 {
     /// <summary>
-    /// Control generator for int properties without fixed values (TextBox).
-    /// Example: VisibleLines, generic int input
+    /// Control generator for double properties (Slider + TextBlock display).
+    /// Example: ZoomScale, LongProcessProgress
     /// </summary>
-    public class IntTextBoxPropertyControl : IPropertyControl
+    public class DoubleSliderPropertyControl : IPropertyControl
     {
         public FrameworkElement CreateControl()
         {
-            return new TextBox
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            // Slider
+            var slider = new Slider
             {
-                Margin = new Thickness(0, 0, 0, 8),
-                MinWidth = 100
+                Minimum = 0.0,
+                Maximum = 1.0,
+                TickFrequency = 0.1,
+                IsSnapToTickEnabled = false,
+                Margin = new Thickness(0, 0, 0, 4),
+                Name = "PropertySlider"
             };
+            Grid.SetRow(slider, 0);
+
+            // TextBlock for value display
+            var textBlock = new TextBlock
+            {
+                FontSize = 11,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 8),
+                Name = "PropertyValueDisplay"
+            };
+            Grid.SetRow(textBlock, 1);
+
+            grid.Children.Add(slider);
+            grid.Children.Add(textBlock);
+
+            return grid;
         }
 
         public Binding CreateBinding(PropertyMetadata metadata)

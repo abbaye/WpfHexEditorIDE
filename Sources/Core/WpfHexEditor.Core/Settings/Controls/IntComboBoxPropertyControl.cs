@@ -15,7 +15,7 @@ using System.Windows.Data;
 using WpfHexEditor.Core.Settings;
 using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
 
-namespace WpfHexEditor.HexEditor.Settings.Controls
+namespace WpfHexEditor.Core.Settings.Controls
 {
     /// <summary>
     /// Control generator for int properties with fixed allowed values (ComboBox).

@@ -10,6 +10,28 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+
+    <!-- NuGet package metadata -->
+    <PackageId>WpfHexEditorControl</PackageId>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0</FileVersion>
+    <Authors>Derek Tremblay</Authors>
+    <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
+    <Product>WpfHexEditorControl</Product>
+    <Title>WpfHexEditorControl - WPF Hex Editor UserControl</Title>
+    <Description>A full-featured WPF hex editor UserControl for .NET 8. View and edit binary files with syntax coloring, format detection, column/row highlighting, undo/redo, search, and 400+ built-in format definitions. Drop-in replacement for WPFHexaEditor 2.x — completely rewritten for performance and modularity.</Description>
+    <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
+    <PackageTags>hexeditor;hex;binary;wpf;usercontrol;editor;byte;viewer;format-detection;undo-redo</PackageTags>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <!-- Profile-Guided Optimization (PGO) Configuration for .NET 8.0+ -->
@@ -22,12 +44,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
-    <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
-    <ProjectReference Include="..\..\Controls\WpfHexEditor.HexBox\WpfHexEditor.HexBox.csproj" />
-    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
+    <None Include="PACKAGE_README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.HexBox\WpfHexEditor.HexBox.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Bundle all dependency DLLs into the NuGet package -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>

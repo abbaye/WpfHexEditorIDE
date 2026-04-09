@@ -17,6 +17,7 @@
 // ==========================================================
 
 using System.Windows.Controls;
+using WpfHexEditor.Core.Settings;
 
 namespace WpfHexEditor.HexEditor.Controls
 {

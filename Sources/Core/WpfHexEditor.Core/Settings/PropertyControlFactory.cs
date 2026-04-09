@@ -12,7 +12,7 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
-using WpfHexEditor.HexEditor.Settings.Controls;
+using WpfHexEditor.Core.Settings.Controls;
 
 namespace WpfHexEditor.Core.Settings
 {

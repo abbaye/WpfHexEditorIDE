@@ -1,4 +1,4 @@
-﻿<!-- ==========================================================
+<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Matrix/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -548,6 +548,7 @@
     <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#003300" />
     <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#569CD6" />
     <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#4EC9B0" />
+    <SolidColorBrush x:Key="CD_NamespacePillBackground"        Color="#28A0A0C8" />
     <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#00FF41" />
     <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#00CC33" />
     <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#00EE33" />
@@ -577,7 +578,18 @@
     <SolidColorBrush x:Key="CD_ErrorBannerBackground"        Color="#6C1A1A" />
     <SolidColorBrush x:Key="CD_ErrorBannerForeground"        Color="#F48771" />
 
-    <!-- Command Palette tokens -->
+    
+    <!-- CD_NavBar* tokens (navigation bar + scope controls) -->
+    <SolidColorBrush x:Key="CD_NavBarBackground"           Color="#001400" />
+    <SolidColorBrush x:Key="CD_NavBarBorder"               Color="#004400" />
+    <SolidColorBrush x:Key="CD_NavBarComboForeground"      Color="#00FF41" />
+    <SolidColorBrush x:Key="CD_NavBarComboBackground"      Color="#000D00" />
+    <SolidColorBrush x:Key="CD_NavBarChipBackground"       Color="#002200" />
+    <SolidColorBrush x:Key="CD_NavBarChipBorder"           Color="#005500" />
+    <SolidColorBrush x:Key="CD_NavBarChipForeground"       Color="#00CC33" />
+    <SolidColorBrush x:Key="CD_QuickJumpBackground"        Color="#000D00" />
+    <SolidColorBrush x:Key="CD_QuickJumpHighlight"         Color="#003300" />
+    <SolidColorBrush x:Key="CD_QuickJumpSubtitleForeground" Color="#007700" /><!-- Command Palette tokens -->
     <SolidColorBrush x:Key="CP_BackgroundBrush"      Color="#001A00" />
     <SolidColorBrush x:Key="CP_InputBackgroundBrush" Color="#000D00" />
     <SolidColorBrush x:Key="CP_HighlightBrush"       Color="#003300" />
@@ -716,7 +728,7 @@
     <SolidColorBrush x:Key="DB_ToolbarBackgroundBrush"       Color="#001400" />
     <SolidColorBrush x:Key="DB_StatusActiveBrush"            Color="#FF2200" />
 
-    <!-- Script Runner tokens (SR_*) â€” inserted by Add-ScriptTokens.ps1 -->
+    <!-- Script Runner tokens (SR_*) — inserted by Add-ScriptTokens.ps1 -->
     <SolidColorBrush x:Key="SR_ToolbarBackgroundBrush"   Color="#001400" />
     <SolidColorBrush x:Key="SR_CodeBackgroundBrush"      Color="#010A01" />
     <SolidColorBrush x:Key="SR_CodeForegroundBrush"      Color="#00FF41" />
@@ -726,7 +738,7 @@
     <SolidColorBrush x:Key="SR_RunningForegroundBrush"   Color="#00CC99" />
     <SolidColorBrush x:Key="SR_ErrorForegroundBrush"     Color="#FF2200" />
 
-    <!-- DiffV2 tokens (DF_*) â€” inserted by Add-DiffV2Tokens.ps1 -->
+    <!-- DiffV2 tokens (DF_*) — inserted by Add-DiffV2Tokens.ps1 -->
     <SolidColorBrush x:Key="DF_GutterBackgroundBrush"        Color="#000A00" />
     <SolidColorBrush x:Key="DF_LineNumberForegroundBrush"    Color="#00AA41" />
     <SolidColorBrush x:Key="DF_WordModifiedBrush"            Color="#0A1400" />
@@ -736,7 +748,7 @@
     <SolidColorBrush x:Key="DF_OverviewAddedBrush"           Color="#00FF41" />
     <SolidColorBrush x:Key="DF_OverviewRemovedBrush"         Color="#FF2200" />
 
-    <!-- End-of-Block Hint tokens (ET_*) â€” inserted by Add-EndBlockTokens.ps1 -->
+    <!-- End-of-Block Hint tokens (ET_*) — inserted by Add-EndBlockTokens.ps1 -->
     <SolidColorBrush x:Key="ET_PopupBackground"    Color="#001200" />
     <SolidColorBrush x:Key="ET_PopupBorderBrush"   Color="#005000" />
     <SolidColorBrush x:Key="ET_HeaderBackground"   Color="#000E00" />
@@ -750,7 +762,7 @@
     <SolidColorBrush x:Key="CE_StickyScrollForeground" Color="#00FF41" />
     <SolidColorBrush x:Key="CE_StickyScrollBorder"     Color="#004400" />
 
-    <!-- BDiff tokens (BDiff_*) â€” inserted by Add-BDiffTokens.ps1 -->
+    <!-- BDiff tokens (BDiff_*) — inserted by Add-BDiffTokens.ps1 -->
     <SolidColorBrush x:Key="BDiff_EqualByteBrush"            Color="#00000000" />
     <SolidColorBrush x:Key="BDiff_ModifiedByteBrush"         Color="#0A1400" />
     <SolidColorBrush x:Key="BDiff_ModifiedByteStrongBrush"   Color="#142000" />
@@ -778,7 +790,7 @@
     <SolidColorBrush x:Key="WF_NavigatorBookmarkBrush"    Color="#00CC33" />
     <SolidColorBrush x:Key="WF_ConfidenceBadgeBrush"      Color="#22BB22" />
 
-    <!-- Customize Layout tokens (CL_*) â€” inserted by Add-CustomizeLayoutTokens.ps1 -->
+    <!-- Customize Layout tokens (CL_*) — inserted by Add-CustomizeLayoutTokens.ps1 -->
     <SolidColorBrush x:Key="CL_BackgroundBrush"      Color="#000A00" />
     <SolidColorBrush x:Key="CL_SectionHeaderBrush"    Color="#336633" />
     <SolidColorBrush x:Key="CL_ToggleActiveBrush"     Color="#00FF41" />
@@ -965,7 +977,7 @@
     <SolidColorBrush x:Key="Opt_SectionForegroundBrush" Color="#888888"/>
 
 
-    <!-- ══ Git Panel (GC_*) ══════════════════════════════════════════════════ -->
+    <!-- Git Panel (GC_*) -->
     <SolidColorBrush x:Key="GC_AddedForeground"            Color="#00FF41"/>
     <SolidColorBrush x:Key="GC_ModifiedForeground"         Color="#39FF14"/>
     <SolidColorBrush x:Key="GC_DeletedForeground"          Color="#FF4444"/>

@@ -130,6 +130,9 @@ public partial class MainWindow
             _documentHostService   = (DocumentHostService)  _serviceProvider.GetRequiredService<WpfHexEditor.SDK.Contracts.Services.IDocumentHostService>();
             _editorSettingsService = _serviceProvider.GetRequiredService<EditorSettingsService>();
 
+            // Wire DockHost logger now that _outputService is available.
+            DockHost.Logger = msg => _outputService?.Info(msg);
+
             // Sync ThemeServiceImpl with the theme we already applied during early boot
             // (ApplyThemeFromSettingsEarly ran before this service was created).
             _themeService?.SyncCurrentTheme(AppSettingsService.Instance.Current.ActiveThemeName);

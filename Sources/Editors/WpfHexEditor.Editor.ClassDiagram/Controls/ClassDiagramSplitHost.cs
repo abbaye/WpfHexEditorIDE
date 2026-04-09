@@ -110,6 +110,17 @@ public sealed class ClassDiagramSplitHost : Grid,
     private Canvas?       _minimapOverlay;
 
     // ---------------------------------------------------------------------------
+    // Navigation bar + scope controls
+    // ---------------------------------------------------------------------------
+
+    private readonly DiagramNavBar     _navBar;
+    private readonly DiagramScopeChips _scopeChips;
+    private readonly DiagramQuickJump  _quickJump;
+    private DiagramDocument?           _fullDocument;       // unfiltered source-of-truth for scope switching
+    private ScopeFilter                _activeScope = ScopeFilter.All;
+    private DiagramScopeChooser?       _scopeChooserOverlay;
+
+    // ---------------------------------------------------------------------------
     // Domain
     // ---------------------------------------------------------------------------
 
@@ -201,6 +212,18 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.FitToContentRequested    += (_, _) => _zoomPan.FitToContent();
         _canvas.ZoomToNodeRequested      += (_, node) =>
             _zoomPan.ZoomToRect(new Rect(node.X, node.Y, node.Width, node.Height), 40);
+
+        // Navigation bar + scope controls
+        _navBar     = new DiagramNavBar();
+        _scopeChips = new DiagramScopeChips();
+        _quickJump  = new DiagramQuickJump();
+
+        _navBar.ZoomToNodeRequested   += (_, node) => { if (node is not null) ZoomToNode(node); };
+        _navBar.ZoomToMemberRequested += (_, args)  => { ZoomToNode(args.Node); };
+        _navBar.ScopeFilterChanged    += OnNavBarScopeFilterChanged;
+        _scopeChips.ScopeChanged      += OnScopeChipsChanged;
+        _quickJump.NodeChosen         += (_, node) => { ZoomToNode(node); HideQuickJump(); };
+        _quickJump.Closed             += (_, _)    => HideQuickJump();
 
         // DSL pane — full CodeEditor with bidirectional sync.
         // Canvas → DSL: scheduled via ClassToSyncService (300ms debounce).
@@ -527,6 +550,9 @@ public sealed class ClassDiagramSplitHost : Grid,
     public void ZoomToNode(ClassNode node) =>
         _zoomPan.ZoomToRect(new Rect(node.X, node.Y, node.Width, _canvas.GetDiagramBounds().Height > 0 ? node.Height : 120), 80);
 
+    /// <summary>Forces a full re-render of all nodes and arrows.</summary>
+    public void InvalidateAndRender() => _canvas.InvalidateAndRender();
+
     /// <summary>Forwarded from DiagramCanvas — fires when Ctrl+Click on a member.</summary>
     public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested
     {
@@ -548,13 +574,60 @@ public sealed class ClassDiagramSplitHost : Grid,
         remove => _canvas.ShowPropertiesRequested -= value;
     }
 
+    /// <summary>Forwarded from DiagramCanvas — fires when "Find References" is chosen on a node header.</summary>
+    public event EventHandler<ClassNode>? FindReferencesRequested
+    {
+        add    => _canvas.FindReferencesRequested += value;
+        remove => _canvas.FindReferencesRequested -= value;
+    }
+
+    /// <summary>Forwarded from DiagramCanvas — fires when "Show Metrics" is chosen on a node header.</summary>
+    public event EventHandler<ClassNode>? ShowMetricsRequested
+    {
+        add    => _canvas.ShowMetricsRequested += value;
+        remove => _canvas.ShowMetricsRequested -= value;
+    }
+
+    /// <summary>Forwarded from DiagramCanvas — fires when "Change Color…" is chosen on a node header.</summary>
+    public event EventHandler<ClassNode>? ChangeNodeColorRequested
+    {
+        add    => _canvas.ChangeNodeColorRequested += value;
+        remove => _canvas.ChangeNodeColorRequested -= value;
+    }
+
     /// <summary>
     /// Loads a pre-analyzed <see cref="DiagramDocument"/> directly into the editor.
     /// No file I/O — called by the plugin when opening from source file/folder/solution analysis.
     /// </summary>
+    /// <summary>
+    /// Loads a pre-analyzed <see cref="DiagramDocument"/> directly into the editor.
+    /// No file I/O — called by the plugin when opening from source file/folder/solution analysis.
+    /// For large diagrams (> 200 types) the Scope Chooser overlay is shown first so the user
+    /// can limit rendering before the full diagram is applied.
+    /// </summary>
     public void LoadDocument(DiagramDocument doc, string title)
     {
-        _document  = doc;
+        _fullDocument = doc;   // keep unfiltered source-of-truth
+        _activeScope  = ScopeFilter.All;
+
+        // Wire nav bar with the full groups list (populated by plugin via DiagramProjectGroup)
+        _navBar.SetDocument(doc, doc.ProjectGroups);
+        _scopeChips.SetScope(_activeScope);
+
+        // For very large diagrams show the scope chooser; otherwise apply directly.
+        const int LargeThreshold = 200;
+        if (doc.Classes.Count > LargeThreshold)
+        {
+            ShowScopeChooser(doc, title);
+            return;
+        }
+
+        ApplyDocumentInternal(doc, title, fitToContent: true);
+    }
+
+    private void ApplyDocumentInternal(DiagramDocument doc, string title, bool fitToContent)
+    {
+        _document = doc;
         string dsl = ClassDiagramSerializer.Serialize(doc);
 
         _suppressCodeSync = true;
@@ -564,14 +637,14 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.ApplyDocument(_document);
         _undoManager.Clear();
         SetDirty(false);
-        TitleChanged?.Invoke(this, title);
+        TitleChanged?.Invoke(this, title ?? Title);
         UpdateStatusBar();
         DiagramChanged?.Invoke(this, EventArgs.Empty);
 
-        // B2 — Auto-fit diagram in viewport after load (deferred so layout is measured first)
-        Application.Current?.Dispatcher.BeginInvoke(
-            System.Windows.Threading.DispatcherPriority.Loaded,
-            () => _zoomPan.FitToContent());
+        if (fitToContent)
+            Application.Current?.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Loaded,
+                () => _zoomPan.FitToContent());
     }
 
     // ── Session state (save/restore zoom-pan-selection-minimap) ─────────────
@@ -857,11 +930,15 @@ public sealed class ClassDiagramSplitHost : Grid,
 
     private void BuildDiagramOnlyLayout()
     {
-        RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // toolbar
+        RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // nav bar
+        RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // scope chips
         RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
         AddToGrid(_toolbarContainer, 0, 0);
-        AddToGrid(_diagramBorder,      1, 0);
+        AddToGrid(_navBar,           1, 0);
+        AddToGrid(_scopeChips,       2, 0);
+        AddToGrid(_diagramBorder,    3, 0);
         _codeHost.Visibility      = Visibility.Collapsed;
         _diagramBorder.Visibility = Visibility.Visible;
         _diagramBorder.BorderThickness = new Thickness(0);   // no separator in full-diagram mode
@@ -878,10 +955,12 @@ public sealed class ClassDiagramSplitHost : Grid,
         {
             case CdSplitLayout.SplitRight:
             {
-                // Toolbar row + [code | splitter | diagram]
+                // Toolbar row + NavBar + Chips + [code | splitter | diagram]
                 _diagramBorder.BorderThickness = new Thickness(1, 0, 0, 0);
-                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 0 toolbar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 1 nav bar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 2 chips
+                RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // 3
 
                 var colCode    = new ColumnDefinition { Width = new GridLength(_splitColRatio,         GridUnitType.Star) };
                 var colSplitter= new ColumnDefinition { Width = new GridLength(6) };
@@ -891,10 +970,14 @@ public sealed class ClassDiagramSplitHost : Grid,
                 ColumnDefinitions.Add(colDiagram);
 
                 SetColumnSpan(_toolbarContainer, 3);
+                SetColumnSpan(_navBar,           3);
+                SetColumnSpan(_scopeChips,       3);
                 AddToGrid(_toolbarContainer, 0, 0);
-                AddToGrid(_codeHost,         1, 0);
-                AddToGrid(_splitter,         1, 1);
-                AddToGrid(_diagramBorder,    1, 2);
+                AddToGrid(_navBar,           1, 0);
+                AddToGrid(_scopeChips,       2, 0);
+                AddToGrid(_codeHost,         3, 0);
+                AddToGrid(_splitter,         3, 1);
+                AddToGrid(_diagramBorder,    3, 2);
 
                 _splitter.ResizeDirection     = GridResizeDirection.Columns;
                 _splitter.Width               = double.NaN;
@@ -907,10 +990,12 @@ public sealed class ClassDiagramSplitHost : Grid,
 
             case CdSplitLayout.SplitLeft:
             {
-                // Toolbar row + [diagram | splitter | code]
+                // Toolbar row + NavBar + Chips + [diagram | splitter | code]
                 _diagramBorder.BorderThickness = new Thickness(0, 0, 1, 0);
-                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 0 toolbar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 1 nav bar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 2 chips
+                RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // 3
 
                 var colDiagram = new ColumnDefinition { Width = new GridLength(1 - _splitColRatio,     GridUnitType.Star) };
                 var colSplitter= new ColumnDefinition { Width = new GridLength(6) };
@@ -920,10 +1005,14 @@ public sealed class ClassDiagramSplitHost : Grid,
                 ColumnDefinitions.Add(colCode);
 
                 SetColumnSpan(_toolbarContainer, 3);
+                SetColumnSpan(_navBar,           3);
+                SetColumnSpan(_scopeChips,       3);
                 AddToGrid(_toolbarContainer, 0, 0);
-                AddToGrid(_diagramBorder,    1, 0);
-                AddToGrid(_splitter,         1, 1);
-                AddToGrid(_codeHost,         1, 2);
+                AddToGrid(_navBar,           1, 0);
+                AddToGrid(_scopeChips,       2, 0);
+                AddToGrid(_diagramBorder,    3, 0);
+                AddToGrid(_splitter,         3, 1);
+                AddToGrid(_codeHost,         3, 2);
 
                 _splitter.ResizeDirection     = GridResizeDirection.Columns;
                 _splitter.Width               = double.NaN;
@@ -936,20 +1025,24 @@ public sealed class ClassDiagramSplitHost : Grid,
 
             case CdSplitLayout.SplitBottom:
             {
-                // Toolbar row + code row + splitter + diagram row
+                // Toolbar + NavBar + Chips + code + splitter + diagram
                 _diagramBorder.BorderThickness = new Thickness(0, 1, 0, 0);
-                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 0 toolbar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 1 nav bar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 2 chips
                 var rowCode    = new RowDefinition { Height = new GridLength(_splitRowRatio,         GridUnitType.Star) };
                 var rowSplitter= new RowDefinition { Height = new GridLength(6) };
                 var rowDiagram = new RowDefinition { Height = new GridLength(1 - _splitRowRatio,     GridUnitType.Star) };
-                RowDefinitions.Add(rowCode);
-                RowDefinitions.Add(rowSplitter);
-                RowDefinitions.Add(rowDiagram);
+                RowDefinitions.Add(rowCode);     // 3
+                RowDefinitions.Add(rowSplitter); // 4
+                RowDefinitions.Add(rowDiagram);  // 5
 
                 AddToGrid(_toolbarContainer, 0, 0);
-                AddToGrid(_codeHost,         1, 0);
-                AddToGrid(_splitter,         2, 0);
-                AddToGrid(_diagramBorder,    3, 0);
+                AddToGrid(_navBar,           1, 0);
+                AddToGrid(_scopeChips,       2, 0);
+                AddToGrid(_codeHost,         3, 0);
+                AddToGrid(_splitter,         4, 0);
+                AddToGrid(_diagramBorder,    5, 0);
 
                 _splitter.ResizeDirection     = GridResizeDirection.Rows;
                 _splitter.Width               = double.NaN;
@@ -962,20 +1055,24 @@ public sealed class ClassDiagramSplitHost : Grid,
 
             case CdSplitLayout.SplitTop:
             {
-                // Toolbar row + diagram row + splitter + code row
+                // Toolbar + NavBar + Chips + diagram + splitter + code
                 _diagramBorder.BorderThickness = new Thickness(0, 0, 0, 1);
-                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 0 toolbar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 1 nav bar
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });  // 2 chips
                 var rowDiagram = new RowDefinition { Height = new GridLength(1 - _splitRowRatio,     GridUnitType.Star) };
                 var rowSplitter= new RowDefinition { Height = new GridLength(6) };
                 var rowCode    = new RowDefinition { Height = new GridLength(_splitRowRatio,         GridUnitType.Star) };
-                RowDefinitions.Add(rowDiagram);
-                RowDefinitions.Add(rowSplitter);
-                RowDefinitions.Add(rowCode);
+                RowDefinitions.Add(rowDiagram);  // 3
+                RowDefinitions.Add(rowSplitter); // 4
+                RowDefinitions.Add(rowCode);     // 5
 
                 AddToGrid(_toolbarContainer, 0, 0);
-                AddToGrid(_diagramBorder,    1, 0);
-                AddToGrid(_splitter,         2, 0);
-                AddToGrid(_codeHost,         3, 0);
+                AddToGrid(_navBar,           1, 0);
+                AddToGrid(_scopeChips,       2, 0);
+                AddToGrid(_diagramBorder,    3, 0);
+                AddToGrid(_splitter,         4, 0);
+                AddToGrid(_codeHost,         5, 0);
 
                 _splitter.ResizeDirection     = GridResizeDirection.Rows;
                 _splitter.Width               = double.NaN;
@@ -1004,13 +1101,14 @@ public sealed class ClassDiagramSplitHost : Grid,
         }
         else
         {
-            // Row 1 = code (SplitBottom) or diagram (SplitTop), row 3 = other
-            if (RowDefinitions.Count >= 4)
+            // Row 3 = code (SplitBottom) or diagram (SplitTop), row 5 = other
+            // (rows 0=toolbar, 1=navBar, 2=chips, 3=content1, 4=splitter, 5=content2)
+            if (RowDefinitions.Count >= 6)
             {
                 double codeH  = _layout == CdSplitLayout.SplitBottom
-                    ? RowDefinitions[1].ActualHeight
-                    : RowDefinitions[3].ActualHeight;
-                double total  = RowDefinitions[1].ActualHeight + RowDefinitions[3].ActualHeight;
+                    ? RowDefinitions[3].ActualHeight
+                    : RowDefinitions[5].ActualHeight;
+                double total  = RowDefinitions[3].ActualHeight + RowDefinitions[5].ActualHeight;
                 if (total > 0) _splitRowRatio = Math.Clamp(codeH / total, 0.1, 0.9);
             }
         }
@@ -1290,7 +1388,7 @@ public sealed class ClassDiagramSplitHost : Grid,
                 case Key.S: Save();                               e.Handled = true; return;
                 case Key.D: DuplicateSelected();                  e.Handled = true; return;
                 case Key.A: _canvas.SelectAll();                  e.Handled = true; return;
-                case Key.G: AddNewClass(ClassKind.Class);         e.Handled = true; return;
+                case Key.G: ShowQuickJump();                      e.Handled = true; return;
                 case Key.I: AddNewClass(ClassKind.Interface);     e.Handled = true; return;
                 case Key.E: AddNewClass(ClassKind.Enum);          e.Handled = true; return;
             }
@@ -1324,6 +1422,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         if (_sbSelected is not null)
             _sbSelected.Value = node?.Name ?? "None";
 
+        _navBar.SetSelectedNode(node);
         SelectedClassChanged?.Invoke(this, node);
         SelectionChanged?.Invoke(this, EventArgs.Empty);
     }
@@ -1562,6 +1661,156 @@ public sealed class ClassDiagramSplitHost : Grid,
     }
 
     private void BeginRename() { /* Inline rename via ClassBoxControl */ }
+
+    // ---------------------------------------------------------------------------
+    // Quick Jump (Ctrl+G)
+    // ---------------------------------------------------------------------------
+
+    private void ShowQuickJump()
+    {
+        if (_fullDocument is null && _document.Classes.Count == 0) return;
+        var doc = _fullDocument ?? _document;
+        _quickJump.SetDocument(doc, doc.ProjectGroups);
+
+        // Add as overlay inside the scrollGrid (which contains _diagramHost, _vScroll, _hScroll)
+        if (!IsQuickJumpMounted())
+            AddOverlayToDiagramHost(_quickJump);
+
+        _quickJump.Visibility = Visibility.Visible;
+        _quickJump.FocusSearch();
+    }
+
+    private bool IsQuickJumpMounted()
+        => _diagramBorder.Child is Grid sg && sg.Children.Contains(_quickJump);
+
+    private void HideQuickJump()
+    {
+        _quickJump.Visibility = Visibility.Collapsed;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Scope Chooser
+    // ---------------------------------------------------------------------------
+
+    private void ShowScopeChooser(DiagramDocument doc, string title)
+    {
+        _scopeChooserOverlay = new DiagramScopeChooser();
+        _scopeChooserOverlay.SetDocument(doc, doc.ProjectGroups);
+
+        _scopeChooserOverlay.ScopeChosen += (_, result) =>
+        {
+            RemoveOverlayFromDiagramHost(_scopeChooserOverlay!);
+
+            _scopeChooserOverlay = null;
+            ApplyScopeChoice(result, title);
+        };
+
+        _scopeChooserOverlay.Cancelled += (_, _) =>
+        {
+            RemoveOverlayFromDiagramHost(_scopeChooserOverlay!);
+            _scopeChooserOverlay = null;
+            // Apply all types if user cancelled (graceful fallback)
+            ApplyDocumentInternal(doc, title, fitToContent: true);
+        };
+
+        AddOverlayToDiagramHost(_scopeChooserOverlay);
+    }
+
+    private void AddOverlayToDiagramHost(UIElement overlay)
+    {
+        // The scrollGrid is inside _diagramBorder.Child
+        if (_diagramBorder.Child is Grid scrollGrid)
+        {
+            Panel.SetZIndex(overlay, 300);
+            Grid.SetRowSpan(overlay, scrollGrid.RowDefinitions.Count > 0 ? scrollGrid.RowDefinitions.Count : 1);
+            Grid.SetColumnSpan(overlay, scrollGrid.ColumnDefinitions.Count > 0 ? scrollGrid.ColumnDefinitions.Count : 1);
+            scrollGrid.Children.Add(overlay);
+        }
+    }
+
+    private void RemoveOverlayFromDiagramHost(UIElement overlay)
+    {
+        if (_diagramBorder.Child is Grid scrollGrid)
+            scrollGrid.Children.Remove(overlay);
+    }
+
+    private void ApplyScopeChoice(ScopeChoiceResult result, string title)
+    {
+        if (_fullDocument is null) return;
+
+        DiagramDocument filtered = FilterDocument(_fullDocument, result);
+        _activeScope = result.Mode switch
+        {
+            ScopeMode.Project   => new ScopeFilter { ProjectName = result.ProjectName },
+            ScopeMode.Namespace => new ScopeFilter { Namespace   = result.Namespace   },
+            _                   => ScopeFilter.All
+        };
+
+        _navBar.SetDocument(filtered, filtered.ProjectGroups);
+        _scopeChips.SetScope(_activeScope);
+        ApplyDocumentInternal(filtered, title, fitToContent: true);
+    }
+
+    private void OnNavBarScopeFilterChanged(object? sender, ScopeFilter filter)
+    {
+        if (_fullDocument is null) return;
+        _activeScope = filter;
+        _scopeChips.SetScope(filter);
+
+        var result = new ScopeChoiceResult
+        {
+            Mode        = filter.ProjectName is not null ? ScopeMode.Project :
+                          filter.Namespace   is not null ? ScopeMode.Namespace : ScopeMode.All,
+            ProjectName = filter.ProjectName,
+            Namespace   = filter.Namespace
+        };
+        DiagramDocument filtered = FilterDocument(_fullDocument, result);
+        ApplyDocumentInternal(filtered, Title, fitToContent: true);
+    }
+
+    private void OnScopeChipsChanged(object? sender, ScopeFilter filter)
+    {
+        if (_fullDocument is null) return;
+        _activeScope = filter;
+        _navBar.SetDocument(_fullDocument, _fullDocument.ProjectGroups);
+        // Sync nav bar to new scope (no-event guard handled inside SetDocument)
+        var result = new ScopeChoiceResult
+        {
+            Mode        = filter.ProjectName is not null ? ScopeMode.Project :
+                          filter.Namespace   is not null ? ScopeMode.Namespace : ScopeMode.All,
+            ProjectName = filter.ProjectName,
+            Namespace   = filter.Namespace
+        };
+        DiagramDocument filtered = FilterDocument(_fullDocument, result);
+        _scopeChips.SetScope(filter);
+        ApplyDocumentInternal(filtered, Title, fitToContent: true);
+    }
+
+    private DiagramDocument FilterDocument(DiagramDocument full, ScopeChoiceResult scope)
+    {
+        IEnumerable<ClassNode> keep = scope.Mode switch
+        {
+            ScopeMode.Project   => full.Classes.Where(n =>
+                full.ProjectGroups.FirstOrDefault(g => g.ClassIds.Contains(n.Id))?.ProjectName == scope.ProjectName),
+            ScopeMode.Namespace => full.Classes.Where(n => n.Namespace == scope.Namespace),
+            ScopeMode.Selection => full.Classes.Where(n =>
+                scope.SelectedProjects.Contains(
+                    full.ProjectGroups.FirstOrDefault(g => g.ClassIds.Contains(n.Id))?.ProjectName ?? string.Empty)),
+            _                   => full.Classes.AsEnumerable()
+        };
+
+        var keepList  = keep.ToList();
+        var keepIds   = keepList.Select(n => n.Id).ToHashSet(StringComparer.Ordinal);
+        var keepGroups = full.ProjectGroups
+            .Where(g => g.ClassIds.Any(id => keepIds.Contains(id)))
+            .ToList();
+
+        var result2 = new DiagramDocument { FilePath = full.FilePath };
+        result2.Classes.AddRange(keepList);
+        result2.Relationships.AddRange(full.Relationships.Where(r => keepIds.Contains(r.SourceId) && keepIds.Contains(r.TargetId)));
+        result2.ProjectGroups.AddRange(keepGroups);
+        return result2;
+    }
 
     private void ClearSelection()
     {

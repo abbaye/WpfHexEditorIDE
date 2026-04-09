@@ -16,9 +16,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using WpfHexEditor.HexEditor.Settings.Controls;
+using WpfHexEditor.Core.Settings.Controls;
 using WpfHexEditor.ColorPicker.Controls;
-using WpfHexEditor.HexEditor.Converters;
+using WpfHexEditor.Core.Settings.Converters;
 
 namespace WpfHexEditor.Core.Settings
 {

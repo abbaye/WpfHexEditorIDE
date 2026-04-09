@@ -35,6 +35,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.ClassDiagram.Controls;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
@@ -384,6 +385,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         host.NavigateToMemberRequested   += OnNavigateToMember;
         host.RenameNodeRequested         += OnRenameNode;
         host.ShowPropertiesRequested     += OnShowPropertiesRequested;
+        host.FindReferencesRequested     += OnFindReferencesRequested;
+        host.ShowMetricsRequested        += OnShowMetricsRequested;
+        host.ChangeNodeColorRequested    += OnChangeNodeColorRequested;
 
         // History panel — bind to the host's undo manager.
         if (_historyPanel is not null)
@@ -420,6 +424,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _wiredHost.NavigateToMemberRequested   -= OnNavigateToMember;
         _wiredHost.RenameNodeRequested         -= OnRenameNode;
         _wiredHost.ShowPropertiesRequested     -= OnShowPropertiesRequested;
+        _wiredHost.FindReferencesRequested     -= OnFindReferencesRequested;
+        _wiredHost.ShowMetricsRequested        -= OnShowMetricsRequested;
+        _wiredHost.ChangeNodeColorRequested    -= OnChangeNodeColorRequested;
 
         if (_historyPanel is not null)
         {
@@ -522,19 +529,26 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     private void OnNavigateToMember(object? sender, (ClassNode Node, ClassMember Member) e)
     {
-        string? filePath = e.Member?.SourceFilePath ?? e.Node.SourceFilePath;
-        int     line     = e.Member?.SourceLineOneBased > 0 ? e.Member.SourceLineOneBased
-                         : e.Node.SourceLineOneBased;
+        if (_context is null) return;
 
-        if (string.IsNullOrEmpty(filePath) || line <= 0 || _context is null)
+        string? filePath = e.Member?.SourceFilePath ?? e.Node.SourceFilePath;
+        int     line     = e.Member?.SourceLineOneBased > 0
+            ? e.Member.SourceLineOneBased
+            : e.Node.SourceLineOneBased;
+
+        if (string.IsNullOrEmpty(filePath))
         {
-            _context?.Output.Warning("[Class Diagram] No source location for navigation.");
+            _context.Output.Warning(
+                $"[Class Diagram] No source file for '{e.Node.Name}'. "
+                + "This type may come from an external assembly or manual diagram.");
             return;
         }
 
-        // Open the file in the IDE and navigate to the declaration line.
-        _context.DocumentHost.ActivateAndNavigateTo(filePath, line, 1);
+        // Ensure we have at least line 1 even when not resolvable
+        if (line <= 0) line = 1;
+
         _context.Output.Info($"[Class Diagram] Navigate → {Path.GetFileName(filePath)}:{line}");
+        _context.DocumentHost.ActivateAndNavigateTo(filePath, line, 1);
     }
 
     private void OnRenameNode(object? sender, (ClassNode Node, string? NewName) e)
@@ -602,6 +616,104 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Show / focus the properties panel and update it for the selected node.
         _context.UIRegistry.ShowPanel(PropertiesPanelUiId);
         _propertiesPanel?.ViewModel.SetSelection(node, null);
+    }
+
+    private void OnFindReferencesRequested(object? sender, WpfHexEditor.Editor.ClassDiagram.Core.Model.ClassNode node)
+    {
+        // Navigate to the class declaration to let the IDE's Find References work from there
+        OnNavigateToMember(sender!, (node, null!));
+    }
+
+    private void OnShowMetricsRequested(object? sender, WpfHexEditor.Editor.ClassDiagram.Core.Model.ClassNode node)
+    {
+        if (_context is null) return;
+        // Show the properties panel on the metrics tab
+        _context.UIRegistry.ShowPanel(PropertiesPanelUiId);
+        _propertiesPanel?.ViewModel.SetSelection(node, null);
+    }
+
+    private void OnChangeNodeColorRequested(object? sender, WpfHexEditor.Editor.ClassDiagram.Core.Model.ClassNode node)
+    {
+        // Preset accent colors to choose from
+        (byte R, byte G, byte B)[] presets =
+        [
+            (79,  193, 255), // light blue (default class)
+            (78,  201, 176), // green (interface)
+            (197, 134, 192), // violet (enum)
+            (220, 220, 170), // yellow (struct)
+            (86,  156, 214), // blue (abstract)
+            (156, 220, 254), // cyan (record)
+            (220, 160,  80), // orange
+            (200,  80,  80), // red
+            (120, 200, 120), // lime
+            (180, 180, 180), // grey
+        ];
+
+        var popup = new System.Windows.Controls.Primitives.Popup
+        {
+            StaysOpen      = false,
+            AllowsTransparency = true,
+            PlacementTarget = sender as UIElement ?? _wiredHost,
+            Placement       = System.Windows.Controls.Primitives.PlacementMode.Mouse
+        };
+
+        var panel = new System.Windows.Controls.WrapPanel { Width = 170, Background = Brushes.Transparent };
+        var border = new System.Windows.Controls.Border
+        {
+            Background      = new SolidColorBrush(Color.FromRgb(40, 40, 50)),
+            BorderBrush     = new SolidColorBrush(Color.FromRgb(80, 80, 100)),
+            BorderThickness = new Thickness(1),
+            CornerRadius    = new CornerRadius(4),
+            Padding         = new Thickness(6),
+            Child           = panel
+        };
+
+        // "Reset" button to clear custom color
+        var resetBtn = new System.Windows.Controls.Button
+        {
+            Content    = "Reset",
+            Width      = 158,
+            Height     = 22,
+            Margin     = new Thickness(0, 0, 0, 4),
+            Background = new SolidColorBrush(Color.FromRgb(60, 60, 70)),
+            Foreground = Brushes.White,
+            BorderThickness = new Thickness(0)
+        };
+        resetBtn.Click += (_, _) =>
+        {
+            node.CustomColor = null;
+            _wiredHost?.InvalidateAndRender();
+            popup.IsOpen = false;
+        };
+        panel.Children.Add(resetBtn);
+
+        foreach (var (r, g, b) in presets)
+        {
+            var swatch = new System.Windows.Controls.Border
+            {
+                Width           = 28,
+                Height          = 28,
+                Margin          = new Thickness(2),
+                CornerRadius    = new CornerRadius(4),
+                Background      = new SolidColorBrush(Color.FromRgb(r, g, b)),
+                BorderBrush     = node.CustomColor.HasValue && node.CustomColor.Value == (r, g, b)
+                    ? Brushes.White
+                    : new SolidColorBrush(Color.FromArgb(60, 255, 255, 255)),
+                BorderThickness = new Thickness(node.CustomColor.HasValue && node.CustomColor.Value == (r, g, b) ? 2 : 1),
+                Cursor          = System.Windows.Input.Cursors.Hand
+            };
+            var capturedColor = (r, g, b);
+            swatch.MouseLeftButtonDown += (_, _) =>
+            {
+                node.CustomColor = capturedColor;
+                _wiredHost?.InvalidateAndRender();
+                popup.IsOpen = false;
+            };
+            panel.Children.Add(swatch);
+        }
+
+        popup.Child = border;
+        popup.IsOpen = true;
     }
 
     // ── Status bar ────────────────────────────────────────────────────────────
@@ -781,7 +893,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             });
 
         context.UIRegistry.RegisterMenuItem(
-            $"{Id}.Menu.Tools.GenerateProject",
+            $"{Id}.Menu.Tools.GenerateSolution",
             Id,
             new MenuItemDescriptor
             {
@@ -791,6 +903,21 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 ToolTip    = "Analyze all C# files in the active solution and open a combined class diagram with per-project swimlanes",
                 Command    = new RelayCommand(
                     execute: _ => _ = OpenDiagramForSolutionAsync(context),
+                    canExecute: _ => context.SolutionExplorer.HasActiveSolution),
+                Group = "ClassDiagram"
+            });
+
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.Tools.GenerateProject",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "Generate Class Diagram for _Project…",
+                ParentPath = "Tools",
+                IconGlyph  = "\uE8EC",
+                ToolTip    = "Pick a project from the active solution and open its class diagram",
+                Command    = new RelayCommand(
+                    execute: _ => _ = PickAndOpenProjectDiagramAsync(context),
                     canExecute: _ => context.SolutionExplorer.HasActiveSolution),
                 Group = "ClassDiagram"
             });
@@ -956,6 +1083,23 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             $"[Class Diagram] Analyzing {totalFiles} source file(s) across {filtered.Count} project(s)…");
 
         // ── 2. Analyze with per-file progress reporting ──────────────────────
+        // For solution-wide diagrams, skip the ForceDirected auto-layout:
+        // with 100+ nodes it runs O(n²)×iterations which can take minutes.
+        // A grid layout is applied here instead after analysis completes.
+        var solutionOptions = new ClassDiagramOptions
+        {
+            AutoLayout              = false,    // layout applied below with node-count guard
+            LayoutStrategy          = _options.LayoutStrategy,
+            ForceDirectedIterations = _options.ForceDirectedIterations,
+            SpringLength            = _options.SpringLength,
+            SnapSize                = _options.SnapSize,
+            DefaultNodeWidth        = _options.DefaultNodeWidth,
+            DefaultNodeHeight       = _options.DefaultNodeHeight,
+            IncludePrivateMembers   = _options.SolutionIncludePrivateMembers,
+            IncludeInheritedMembers = _options.IncludeInheritedMembers,
+            GroupByNamespace        = _options.GroupByNamespace,
+        };
+
         using var cts = new System.Threading.CancellationTokenSource();
         var progress  = new Progress<RoslynClassDiagramAnalyzer.ClassDiagramProgress>(p =>
             context.Output.Info($"[Class Diagram] [{p.Analyzed}/{p.Total}] {p.CurrentFile}"));
@@ -964,7 +1108,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         try
         {
             doc = await Task.Run(
-                () => RoslynClassDiagramAnalyzer.AnalyzeProjects(filtered, _options, progress, cts.Token),
+                () => RoslynClassDiagramAnalyzer.AnalyzeProjects(filtered, solutionOptions, progress, cts.Token),
                 cts.Token);
         }
         catch (OperationCanceledException)
@@ -978,7 +1122,39 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             return;
         }
 
-        context.Output.Info($"[Class Diagram] Analysis done — {doc.Classes.Count} classes, {doc.Relationships.Count} relationships, {doc.ProjectGroups.Count} groups. Opening tab…");
+        context.Output.Info(
+            $"[Class Diagram] Parsed {doc.Classes.Count} classes / {doc.Relationships.Count} relationships" +
+            $" across {doc.ProjectGroups.Count} project(s). Applying layout…");
+
+        // Apply a fast grid/hierarchical layout on the background thread.
+        // ForceDirected is O(n²)×iterations — prohibitive for 100+ nodes.
+        // Nodes with a saved .whscd position will be repositioned by ApplyWhcdState later.
+        if (doc.Classes.Count > 0)
+        {
+            // ForceDirected is O(n²)×iterations — switch to Hierarchical (O(n log n))
+            // for solutions with many nodes to keep layout time under 1 second.
+            var layoutKind = doc.Classes.Count <= 60 && _options.LayoutStrategy == WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.ForceDirected
+                ? WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.ForceDirected
+                : WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.Hierarchical;
+
+            int iterations = layoutKind == WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.ForceDirected
+                ? _options.ForceDirectedIterations : 0;
+            await Task.Run(() =>
+                WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyFactory
+                    .Create(layoutKind)
+                    .Layout(doc, new WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutOptions
+                    {
+                        Strategy        = layoutKind,
+                        ColSpacing      = 60,
+                        RowSpacing      = 80,
+                        CanvasPadding   = 40,
+                        MinBoxWidth     = solutionOptions.DefaultNodeWidth,
+                        ForceIterations = iterations,
+                        SpringLength    = _options.SpringLength
+                    }));
+        }
+
+        context.Output.Info($"[Class Diagram] Layout done. Opening tab…");
 
         try
         {
@@ -1092,6 +1268,247 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             $"[Class Diagram] Generated diagram with {doc.Classes.Count} classes, " +
             $"{doc.Relationships.Count} relationships, " +
             $"{doc.ProjectGroups.Count} project group(s). " +
+            $"Export via Tools → Export Class Diagram.");
+    }
+
+    // ── Project-level diagram ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Shows a project picker and opens a class diagram for the selected project.
+    /// Entry point for Tools → "Generate Class Diagram for Project…".
+    /// </summary>
+    private async Task PickAndOpenProjectDiagramAsync(IIDEHostContext context)
+    {
+        var projects = context.SolutionExplorer.GetSolutionProjects();
+        if (projects.Count == 0)
+        {
+            context.Output.Info("[Class Diagram] No projects found in the active solution.");
+            return;
+        }
+
+        // Simple project picker dialog using a ListBox.
+        var listBox = new ListBox
+        {
+            SelectionMode = SelectionMode.Single,
+            MaxHeight     = 300,
+            Margin        = new System.Windows.Thickness(0, 8, 0, 0),
+        };
+        foreach (var p in projects)
+            listBox.Items.Add(p.Name);
+        listBox.SelectedIndex = 0;
+
+        var panel = new StackPanel();
+        panel.Children.Add(new TextBlock { Text = "Select a project:", Margin = new System.Windows.Thickness(0, 0, 0, 4) });
+        panel.Children.Add(listBox);
+
+        var win = new Window
+        {
+            Title                 = "Generate Class Diagram for Project",
+            Content               = panel,
+            SizeToContent         = SizeToContent.WidthAndHeight,
+            MinWidth              = 360,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            ResizeMode            = ResizeMode.NoResize,
+            Owner                 = Application.Current?.MainWindow,
+            Padding               = new System.Windows.Thickness(16),
+        };
+
+        var okButton = new Button { Content = "Open", IsDefault = true, Width = 80, Margin = new System.Windows.Thickness(0, 8, 8, 0) };
+        var cancelButton = new Button { Content = "Cancel", IsCancel = true, Width = 80, Margin = new System.Windows.Thickness(0, 8, 0, 0) };
+        okButton.Click     += (_, _) => { win.DialogResult = true; win.Close(); };
+        cancelButton.Click += (_, _) => { win.DialogResult = false; win.Close(); };
+
+        var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = System.Windows.HorizontalAlignment.Right };
+        buttons.Children.Add(okButton);
+        buttons.Children.Add(cancelButton);
+        panel.Children.Add(buttons);
+
+        if (win.ShowDialog() != true || listBox.SelectedIndex < 0) return;
+
+        var selected = projects[listBox.SelectedIndex];
+        await OpenDiagramForProjectAsync(selected.ProjectPath, context);
+    }
+
+    /// <summary>
+    /// Analyzes a single project and opens its class diagram.
+    /// Called from Solution Explorer context menu ("Generate Class Diagram for Project")
+    /// and from the project picker dialog.
+    /// </summary>
+    public async Task OpenDiagramForProjectAsync(string projectPath, IIDEHostContext context)
+    {
+        // Dedup: reactivate existing tab for this project.
+        if (_openTabs.TryGetValue(projectPath, out string? existingId)
+            && context.UIRegistry.Exists(existingId))
+        {
+            context.UIRegistry.FocusPanel(existingId);
+            return;
+        }
+        _openTabs.Remove(projectPath);
+
+        // Resolve project info from solution (enables Roslyn-aware analysis + SourceFiles list).
+        var allProjects     = context.SolutionExplorer.GetSolutionProjects();
+        var projectInfo     = allProjects.FirstOrDefault(p =>
+            string.Equals(p.ProjectPath, projectPath, StringComparison.OrdinalIgnoreCase));
+        string projectName  = projectInfo?.Name ?? Path.GetFileNameWithoutExtension(projectPath);
+
+        IReadOnlyList<string> sourceFiles;
+        if (projectInfo is not null)
+        {
+            sourceFiles = projectInfo.SourceFiles.Where(IsSourceFile).ToList();
+        }
+        else
+        {
+            // No solution loaded — fallback to scanning the project directory.
+            string? projectDir = Path.GetDirectoryName(projectPath);
+            sourceFiles = projectDir is not null
+                ? Directory.GetFiles(projectDir, "*.cs", SearchOption.AllDirectories)
+                    .Concat(Directory.GetFiles(projectDir, "*.vb", SearchOption.AllDirectories))
+                    .Where(IsSourceFile)
+                    .ToList()
+                : [];
+        }
+
+        if (sourceFiles.Count == 0)
+        {
+            context.Output.Info($"[Class Diagram] No C# or VB.NET files found in project '{projectName}'.");
+            return;
+        }
+
+        // Threshold prompt (mirrors solution-level behaviour).
+        if (_options.SolutionMaxFilesPromptThreshold > 0
+            && sourceFiles.Count > _options.SolutionMaxFilesPromptThreshold)
+        {
+            var answer = MessageBox.Show(
+                $"The project '{projectName}' contains {sourceFiles.Count} source files.\n\n" +
+                "Generating the diagram may take a moment.\n\n" +
+                "[Yes]  Continue\n[No]   Cancel",
+                "Generate Class Diagram for Project",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (answer != MessageBoxResult.Yes) return;
+        }
+
+        context.Output.Info($"[Class Diagram] Analyzing {sourceFiles.Count} file(s) in project '{projectName}'…");
+
+        // Build a single-project list compatible with AnalyzeProjects.
+        var singleProject = new[]
+        {
+            (Name: projectName, Path: projectPath, Files: sourceFiles)
+        };
+
+        var projectOptions = new ClassDiagramOptions
+        {
+            AutoLayout              = false,
+            LayoutStrategy          = _options.LayoutStrategy,
+            ForceDirectedIterations = _options.ForceDirectedIterations,
+            SpringLength            = _options.SpringLength,
+            SnapSize                = _options.SnapSize,
+            DefaultNodeWidth        = _options.DefaultNodeWidth,
+            DefaultNodeHeight       = _options.DefaultNodeHeight,
+            IncludePrivateMembers   = _options.SolutionIncludePrivateMembers,
+            IncludeInheritedMembers = _options.IncludeInheritedMembers,
+            GroupByNamespace        = _options.GroupByNamespace,
+        };
+
+        using var cts      = new System.Threading.CancellationTokenSource();
+        var       progress = new Progress<RoslynClassDiagramAnalyzer.ClassDiagramProgress>(p =>
+            context.Output.Info($"[Class Diagram] [{p.Analyzed}/{p.Total}] {p.CurrentFile}"));
+
+        DiagramDocument doc;
+        try
+        {
+            doc = await Task.Run(
+                () => RoslynClassDiagramAnalyzer.AnalyzeProjects(singleProject, projectOptions, progress, cts.Token),
+                cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            context.Output.Info("[Class Diagram] Analysis cancelled.");
+            return;
+        }
+        catch (Exception ex)
+        {
+            context.Output.Info($"[Class Diagram] Analysis error: {ex.GetType().Name}: {ex.Message}");
+            return;
+        }
+
+        context.Output.Info(
+            $"[Class Diagram] Parsed {doc.Classes.Count} class(es) / {doc.Relationships.Count} relationship(s)" +
+            $" in project '{projectName}'. Applying layout…");
+
+        // Layout: ForceDirected for small projects, Hierarchical for large ones.
+        if (doc.Classes.Count > 0)
+        {
+            var layoutKind = doc.Classes.Count <= 60 && _options.LayoutStrategy == WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.ForceDirected
+                ? WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.ForceDirected
+                : WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.Hierarchical;
+
+            int iterations = layoutKind == WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyKind.ForceDirected
+                ? _options.ForceDirectedIterations : 0;
+            await Task.Run(() =>
+                WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutStrategyFactory
+                    .Create(layoutKind)
+                    .Layout(doc, new WpfHexEditor.Editor.ClassDiagram.Core.Layout.LayoutOptions
+                    {
+                        Strategy        = layoutKind,
+                        ColSpacing      = 60,
+                        RowSpacing      = 80,
+                        CanvasPadding   = 40,
+                        MinBoxWidth     = projectOptions.DefaultNodeWidth,
+                        ForceIterations = iterations,
+                        SpringLength    = _options.SpringLength
+                    }));
+        }
+
+        context.Output.Info($"[Class Diagram] Layout done. Opening tab…");
+        _lastAnalyzedDocument = doc;
+
+        string title = $"{projectName} [Class Diagram]";
+        string uiId  = $"doc-class-diagram-{Guid.NewGuid():N}";
+
+        var host = new ClassDiagramSplitHost();
+        host.LoadDocument(doc, title);
+
+        // Restore .whcd twin (project-level — keyed by project file path).
+        string whcdPath  = WhcdSerializer.GetFolderWhcdPath(Path.GetDirectoryName(projectPath) ?? projectPath);
+        var    whcdState = WhcdSerializer.Load(whcdPath);
+        if (whcdState is not null)
+        {
+            host.ApplyWhcdState(whcdState);
+            context.Output.Info($"[WHCD] Restored {whcdState.Nodes.Count} node positions.");
+        }
+        else if (_options.SolutionShowSwimLanesByDefault)
+        {
+            Application.Current?.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Loaded,
+                () => host.ApplyWhcdState(new WhcdDocument { ShowSwimLanes = true }));
+        }
+
+        _openTabs[projectPath] = uiId;
+        _openHosts[uiId]       = host;
+        context.UIRegistry.RegisterDocumentTab(uiId, host, Id, new DocumentDescriptor
+        {
+            Title     = title,
+            ContentId = uiId,
+            ToolTip   = projectPath,
+            CanClose  = true,
+        });
+
+        // Auto-save .whcd on diagram change (debounced).
+        host.DiagramChanged += (_, _) =>
+        {
+            _whcdSaveDebounce?.Dispose();
+            _whcdSaveDebounce = new System.Threading.Timer(_ =>
+                Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    var whcd = host.GetWhcdState(sourceFiles.ToArray());
+                    WhcdSerializer.Save(whcdPath, whcd);
+                }),
+                null, WhcdSaveDelayMs, System.Threading.Timeout.Infinite);
+        };
+
+        context.Output.Info(
+            $"[Class Diagram] Project diagram ready: {doc.Classes.Count} classes. " +
             $"Export via Tools → Export Class Diagram.");
     }
 
@@ -1524,11 +1941,9 @@ file sealed class ClassDiagramContextMenuContributor : ISolutionExplorerContextM
 
             case "Project":
                 if (nodePath is null) break;
-                var projectDir = Path.GetDirectoryName(nodePath);
-                if (projectDir is null) break;
                 items.Add(SolutionContextMenuItem.Item(
                     header:   "Generate Class Diagram for Project",
-                    command:  new RelayCommand(_ => _ = _plugin.OpenClassDiagramForFolderAsync(projectDir, _context)),
+                    command:  new RelayCommand(_ => _ = _plugin.OpenDiagramForProjectAsync(nodePath, _context)),
                     iconGlyph: "\uE8EC"));
                 break;
 

@@ -117,6 +117,9 @@ public sealed class ClassNode
     /// <summary>Rendered box height in logical pixels. Grows with member count.</summary>
     public double Height { get; set; } = 80;
 
+    /// <summary>Optional user-chosen accent color override for this node (R,G,B). Null = automatic.</summary>
+    public (byte R, byte G, byte B)? CustomColor { get; set; }
+
     // -------------------------------------------------------
     // Filtered Member Views
     // -------------------------------------------------------
@@ -174,7 +177,8 @@ public sealed class ClassNode
             X                  = X,
             Y                  = Y,
             Width              = Width,
-            Height             = Height
+            Height             = Height,
+            CustomColor        = CustomColor
         };
         clone.Id = Name;  // caller replaces with Guid
         clone.Members.AddRange(Members);

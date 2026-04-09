@@ -14,15 +14,14 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using WpfHexEditor.Core.Settings;
 using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
-using WpfHexEditor.HexEditor.Converters;
 
-namespace WpfHexEditor.HexEditor.Settings.Controls
+namespace WpfHexEditor.Core.Settings.Controls
 {
     /// <summary>
-    /// Control generator for long properties (TextBox).
-    /// Example: ByteShiftLeft
+    /// Control generator for int properties without fixed values (TextBox).
+    /// Example: VisibleLines, generic int input
     /// </summary>
-    public class LongTextBoxPropertyControl : IPropertyControl
+    public class IntTextBoxPropertyControl : IPropertyControl
     {
         public FrameworkElement CreateControl()
         {
@@ -38,8 +37,7 @@ namespace WpfHexEditor.HexEditor.Settings.Controls
             return new Binding(metadata.PropertyName)
             {
                 Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.LostFocus // Update when TextBox loses focus
-                // Note: WPF handles long ↔ string conversion automatically, no converter needed
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
         }
 

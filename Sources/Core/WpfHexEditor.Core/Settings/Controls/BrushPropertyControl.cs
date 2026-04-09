@@ -19,7 +19,7 @@ using WpfHexEditor.ColorPicker.Controls;
 using WpfHexEditor.Core.Settings;
 using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
 
-namespace WpfHexEditor.HexEditor.Settings.Controls
+namespace WpfHexEditor.Core.Settings.Controls
 {
     /// <summary>
     /// Control generator for Brush properties (using ColorPicker with conversion).

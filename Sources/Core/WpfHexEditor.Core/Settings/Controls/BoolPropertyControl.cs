@@ -15,20 +15,19 @@ using System.Windows.Data;
 using WpfHexEditor.Core.Settings;
 using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
 
-namespace WpfHexEditor.HexEditor.Settings.Controls
+namespace WpfHexEditor.Core.Settings.Controls
 {
     /// <summary>
-    /// Control generator for string properties (TextBox).
-    /// Example: FileName (though it's typically read-only)
+    /// Control generator for boolean properties (CheckBox).
+    /// Example: ShowOffset, ReadOnlyMode, AllowContextMenu
     /// </summary>
-    public class StringTextBoxPropertyControl : IPropertyControl
+    public class BoolPropertyControl : IPropertyControl
     {
         public FrameworkElement CreateControl()
         {
-            return new TextBox
+            return new CheckBox
             {
-                Margin = new Thickness(0, 0, 0, 8),
-                MinWidth = 200
+                Margin = new Thickness(0, 0, 0, 8)
             };
         }
 
@@ -36,19 +35,15 @@ namespace WpfHexEditor.HexEditor.Settings.Controls
         {
             return new Binding(metadata.PropertyName)
             {
-                Mode = BindingMode.TwoWay,
+                Mode = metadata.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
         }
 
         public TextBlock CreateLabel(PropertyMetadata metadata)
         {
-            return new TextBlock
-            {
-                Text = metadata.GetDisplayName(),
-                FontSize = 11,
-                Margin = new Thickness(0, 8, 0, 4)
-            };
+            // CheckBox includes label in Content, so no separate label needed
+            return null;
         }
     }
 }

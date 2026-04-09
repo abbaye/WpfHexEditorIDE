@@ -1,4 +1,4 @@
-﻿<!-- ==========================================================
+<!-- ==========================================================
      Project: WpfHexEditor.Shell
      File: Dark/Colors.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -145,7 +145,7 @@
         </Setter>
     </Style>
 
-    <!-- Window title bar close button � red hover like VS Code -->
+    <!-- Window title bar close button ? red hover like VS Code -->
     <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
@@ -261,7 +261,7 @@
     <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#3E3E42"/>
     <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1A1A1C"/>
 
-    <!-- Common Panel Resources (PanelCommon.xaml keys � shared across all IDE panels) -->
+    <!-- Common Panel Resources (PanelCommon.xaml keys ? shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#2D2D30"/>
     <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#3F3F46"/>
     <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
@@ -277,10 +277,10 @@
     <SolidColorBrush x:Key="Panel_ItemInactiveSelectedBrush"   Color="#152D47"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#3E3E42"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#D4D4D4"/>
-    <!-- PFP toolbar � aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
+    <!-- PFP toolbar ? aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
     <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#2D2D30"/>
 
-    <!-- TE_* � Text Editor (syntax highlighting, viewport) -->
+    <!-- TE_* ? Text Editor (syntax highlighting, viewport) -->
     <SolidColorBrush x:Key="TE_Background"             Color="#1E1E1E"/>
     <SolidColorBrush x:Key="TE_Foreground"             Color="#D4D4D4"/>
     <Color           x:Key="TE_CaretColor"                    >#D4D4D4</Color>
@@ -299,7 +299,7 @@
     <SolidColorBrush x:Key="TE_Directive"              Color="#C586C0"/>
     <SolidColorBrush x:Key="TE_RegionName"             Color="#DCDCAA"/>
 
-    <!-- CE_* � Code Editor syntax token colors (used by CodeEditor DPs via implicit Style) -->
+    <!-- CE_* ? Code Editor syntax token colors (used by CodeEditor DPs via implicit Style) -->
     <SolidColorBrush x:Key="CE_Keyword"       Color="#569CD6"/>
     <SolidColorBrush x:Key="CE_ControlFlow"   Color="#C586C0"/>
     <SolidColorBrush x:Key="CE_Comment"       Color="#6A9955"/>
@@ -351,7 +351,7 @@
     <SolidColorBrush x:Key="DT_GraphGridLine"   Color="#2D2D2D" />
     <SolidColorBrush x:Key="DT_GraphLabelFg"    Color="#858585" />
 
-    <!-- CE_QuickInfo_* � Quick Info hover popup (Dark) -->
+    <!-- CE_QuickInfo_* ? Quick Info hover popup (Dark) -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#252526"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#454545"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Text"              Color="#D4D4D4"/>
@@ -361,9 +361,9 @@
     <SolidColorBrush x:Key="CE_QuickInfo_Separator"         Color="#3F3F46"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticError"   Color="#3C1515"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#2D2000"/>
-    <!-- CE_CtrlHover_Underline � Ctrl+hover symbol underline (Dark) -->
+    <!-- CE_CtrlHover_Underline ? Ctrl+hover symbol underline (Dark) -->
     <SolidColorBrush x:Key="CE_CtrlHover_Underline"         Color="#4EC9B0"/>
-    <!-- CE_FoldLabel_* � Collapsed region inline label (Dark) -->
+    <!-- CE_FoldLabel_* ? Collapsed region inline label (Dark) -->
     <SolidColorBrush x:Key="CE_FoldLabelBorder"             Color="#569CD6"/>
     <SolidColorBrush x:Key="CE_FoldLabelBg"                 Color="#1A569CD6"/>
     <SolidColorBrush x:Key="CE_FoldLabelFg"                 Color="#C8C8C8"/>
@@ -375,7 +375,7 @@
     <SolidColorBrush x:Key="BackgroundBrush"       Color="{StaticResource DockWindowBackgroundColor}"/>
     <SolidColorBrush x:Key="ForegroundBrush"       Color="{StaticResource DockMenuForegroundColor}"/>
     <SolidColorBrush x:Key="AccentBrush"           Color="{StaticResource AccentColor}"/>
-    <!-- Elevated surface (popup/dialog background) � used by ColorPicker and other floating controls -->
+    <!-- Elevated surface (popup/dialog background) ? used by ColorPicker and other floating controls -->
     <SolidColorBrush x:Key="SurfaceElevatedBrush"  Color="{StaticResource DockMenuBackgroundColor}"/>
     <SolidColorBrush x:Key="BorderBrush"           Color="{StaticResource DockBorderColor}"/>
 
@@ -426,7 +426,7 @@
     <SolidColorBrush x:Key="WarningBorderBrush"                  Color="#F59E0B"/>
     <SolidColorBrush x:Key="WarningForegroundBrush"              Color="#FCD34D"/>
 
-    <!-- XAML Designer (XD_*) � Dark theme -->
+    <!-- XAML Designer (XD_*) ? Dark theme -->
     <SolidColorBrush x:Key="XD_CanvasBackground"                 Color="#2A2A2A"/>
     <SolidColorBrush x:Key="XD_CanvasBorderBrush"                Color="#686868"/>
     <SolidColorBrush x:Key="XD_CanvasGridLineBrush"              Color="#353535"/>
@@ -531,7 +531,7 @@
     <SolidColorBrush x:Key="XD_LiveTreeSelectionBrush"          Color="#3F5FBF"/>
     <SolidColorBrush x:Key="XD_LiveTreeHighlightBrush"          Color="#264F78"/>
 
-    <!-- CE_DragCaret / TE_DragCaret � drag-to-move insertion caret (orange = VS convention) -->
+    <!-- CE_DragCaret / TE_DragCaret ? drag-to-move insertion caret (orange = VS convention) -->
     <SolidColorBrush x:Key="CE_DragCaret"           Color="#FFFF8C00"/>
     <SolidColorBrush x:Key="CE_DragDropTarget"      Color="#1AFF8C00"/>
     <SolidColorBrush x:Key="TE_DragCaret"           Color="#FFFF8C00"/>
@@ -563,6 +563,7 @@
     <SolidColorBrush x:Key="CD_ClassBoxSectionDivider"       Color="#2E3250" />
     <SolidColorBrush x:Key="CD_ClassBoxSelectedBorderBrush"  Color="#569CD6" />
     <SolidColorBrush x:Key="CD_ClassBoxHoverBorderBrush"     Color="#4EC9B0" />
+    <SolidColorBrush x:Key="CD_NamespacePillBackground"        Color="#28A0A0C8" />
     <SolidColorBrush x:Key="CD_ClassNameForeground"          Color="#64BAFF" />
     <SolidColorBrush x:Key="CD_StereotypeForeground"         Color="#B0B0C8" />
     <SolidColorBrush x:Key="CD_MemberTextForeground"         Color="#E8E8F0" />
@@ -592,7 +593,18 @@
     <SolidColorBrush x:Key="CD_ErrorBannerBackground"        Color="#6C1A1A" />
     <SolidColorBrush x:Key="CD_ErrorBannerForeground"        Color="#F48771" />
 
-    <!-- Command Palette tokens -->
+    
+    <!-- CD_NavBar* tokens (navigation bar + scope controls) -->
+    <SolidColorBrush x:Key="CD_NavBarBackground"           Color="#2D2D30" />
+    <SolidColorBrush x:Key="CD_NavBarBorder"               Color="#3F3F46" />
+    <SolidColorBrush x:Key="CD_NavBarComboForeground"      Color="#D4D4D4" />
+    <SolidColorBrush x:Key="CD_NavBarComboBackground"      Color="#1E1E1E" />
+    <SolidColorBrush x:Key="CD_NavBarChipBackground"       Color="#3E3E42" />
+    <SolidColorBrush x:Key="CD_NavBarChipBorder"           Color="#555559" />
+    <SolidColorBrush x:Key="CD_NavBarChipForeground"       Color="#CCCCCC" />
+    <SolidColorBrush x:Key="CD_QuickJumpBackground"        Color="#252526" />
+    <SolidColorBrush x:Key="CD_QuickJumpHighlight"         Color="#094771" />
+    <SolidColorBrush x:Key="CD_QuickJumpSubtitleForeground" Color="#8C8C8C" /><!-- Command Palette tokens -->
     <SolidColorBrush x:Key="CP_BackgroundBrush"      Color="#252526" />
     <SolidColorBrush x:Key="CP_InputBackgroundBrush" Color="#1E1E1E" />
     <SolidColorBrush x:Key="CP_HighlightBrush"       Color="#04395E" />
@@ -660,7 +672,7 @@
     <SolidColorBrush x:Key="GD_PeekTitleForeground"  Color="#D4D4D4" />
     <SolidColorBrush x:Key="GD_PeekNavLinkForeground" Color="#569CD6" />
 
-    <!-- RESX Editor tokens (RES_*) � inserted by Add-ResxTokens.ps1 -->
+    <!-- RESX Editor tokens (RES_*) ? inserted by Add-ResxTokens.ps1 -->
     <SolidColorBrush x:Key="RES_BackgroundBrush"          Color="#1E1E1E" />
     <SolidColorBrush x:Key="RES_ForegroundBrush"          Color="#D4D4D4" />
     <SolidColorBrush x:Key="RES_HeaderBackgroundBrush"    Color="#2D2D30" />
@@ -682,7 +694,7 @@
     <SolidColorBrush x:Key="RES_LocaleMissingBrush"       Color="#3A1B1B" />
     <SolidColorBrush x:Key="RES_ToolbarBackgroundBrush"   Color="#2D2D30" />
 
-    <!-- Unit Testing tokens (UT_*) � inserted by Add-UtTokens.ps1 -->
+    <!-- Unit Testing tokens (UT_*) ? inserted by Add-UtTokens.ps1 -->
     <SolidColorBrush x:Key="UT_PassForegroundBrush"       Color="#4EC9B0" />
     <SolidColorBrush x:Key="UT_FailForegroundBrush"       Color="#F14C4C" />
     <SolidColorBrush x:Key="UT_SkipForegroundBrush"       Color="#9CDCFE" />
@@ -712,7 +724,7 @@
     <SolidColorBrush x:Key="DF_PickerBackground"      Color="#252526" />
     <SolidColorBrush x:Key="DF_PickerHighlightBrush"  Color="#04395E" />
 
-    <!-- Debugger tokens (DB_*) � inserted by Add-DbgTokens.ps1 -->
+    <!-- Debugger tokens (DB_*) ? inserted by Add-DbgTokens.ps1 -->
     <SolidColorBrush x:Key="DB_BreakpointActiveBrush"        Color="#E51400" />
     <SolidColorBrush x:Key="DB_BreakpointDisabledBrush"      Color="#888888" />
     <SolidColorBrush x:Key="DB_BreakpointConditionalBrush"   Color="#FF8C00" />
@@ -925,7 +937,7 @@
     <SolidColorBrush x:Key="Opt_SectionForegroundBrush" Color="#888888"/>
 
 
-    <!-- ══ Git Panel (GC_*) ══════════════════════════════════════════════════ -->
+    <!-- Git Panel (GC_*) -->
     <SolidColorBrush x:Key="GC_AddedForeground"            Color="#4EC9B0"/>
     <SolidColorBrush x:Key="GC_ModifiedForeground"         Color="#E9AE13"/>
     <SolidColorBrush x:Key="GC_DeletedForeground"          Color="#F14C4C"/>

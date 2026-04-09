@@ -14,47 +14,23 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using WpfHexEditor.Core.Settings;
 using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
+using WpfHexEditor.Core.Settings.Converters;
 
-namespace WpfHexEditor.HexEditor.Settings.Controls
+namespace WpfHexEditor.Core.Settings.Controls
 {
     /// <summary>
-    /// Control generator for double properties (Slider + TextBlock display).
-    /// Example: ZoomScale, LongProcessProgress
+    /// Control generator for long properties (TextBox).
+    /// Example: ByteShiftLeft
     /// </summary>
-    public class DoubleSliderPropertyControl : IPropertyControl
+    public class LongTextBoxPropertyControl : IPropertyControl
     {
         public FrameworkElement CreateControl()
         {
-            var grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            // Slider
-            var slider = new Slider
+            return new TextBox
             {
-                Minimum = 0.0,
-                Maximum = 1.0,
-                TickFrequency = 0.1,
-                IsSnapToTickEnabled = false,
-                Margin = new Thickness(0, 0, 0, 4),
-                Name = "PropertySlider"
-            };
-            Grid.SetRow(slider, 0);
-
-            // TextBlock for value display
-            var textBlock = new TextBlock
-            {
-                FontSize = 11,
-                HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 0, 0, 8),
-                Name = "PropertyValueDisplay"
+                MinWidth = 100
             };
-            Grid.SetRow(textBlock, 1);
-
-            grid.Children.Add(slider);
-            grid.Children.Add(textBlock);
-
-            return grid;
         }
 
         public Binding CreateBinding(PropertyMetadata metadata)
@@ -62,7 +38,8 @@ namespace WpfHexEditor.HexEditor.Settings.Controls
             return new Binding(metadata.PropertyName)
             {
                 Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                UpdateSourceTrigger = UpdateSourceTrigger.LostFocus // Update when TextBox loses focus
+                // Note: WPF handles long ↔ string conversion automatically, no converter needed
             };
         }
 

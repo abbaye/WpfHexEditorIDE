@@ -8,7 +8,7 @@
 
 using System.Linq;
 using System.Windows.Controls;
-using WpfHexEditor.HexEditor.Controls;
+using WpfHexEditor.Core.Settings;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {

@@ -1490,8 +1490,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document is null || _document.Lines.Count == 0)
                 return System.Array.Empty<(int, string)>();
 
-            var result = new System.Collections.Generic.List<(int, string)>(
-                _lastVisibleLine - _firstVisibleLine + 1);
+            int capacity = _lastVisibleLine - _firstVisibleLine + 1;
+            if (capacity <= 0)
+                return System.Array.Empty<(int, string)>();
+
+            var result = new System.Collections.Generic.List<(int, string)>(capacity);
 
             for (int i = _firstVisibleLine; i <= _lastVisibleLine && i < _document.Lines.Count; i++)
                 result.Add((i, _document.Lines[i].Text));

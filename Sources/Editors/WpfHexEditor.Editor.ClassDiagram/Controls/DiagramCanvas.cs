@@ -86,6 +86,9 @@ public sealed class DiagramCanvas : Canvas
     private double     _resizeStartY;
     private double     _resizeStartHeight;
 
+    // ── Swimlane group drag ──────────────────────────────────────────────────
+    private string? _draggingGroupNs;
+
     // ── Rubber-band ───────────────────────────────────────────────────────────
     private bool  _isRubberBanding;
     private Point _rubberStart;
@@ -98,6 +101,9 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Last right-click canvas position (diagram coordinates) ───────────────
     private Point _lastMenuPoint;
+
+    // ── Performance: viewport culling ────────────────────────────────────────
+    private ZoomPanCanvas? _zoomPanCanvas;
 
     // ── Minimap ───────────────────────────────────────────────────────────────
     // Owned by ClassDiagramSplitHost (overlay canvas) — not a child of DiagramCanvas.
@@ -126,6 +132,12 @@ public sealed class DiagramCanvas : Canvas
     public event EventHandler?                                FitToContentRequested;
     /// <summary>Fired when the user clicks "Properties" on a node's context menu.</summary>
     public event EventHandler<ClassNode>?                     ShowPropertiesRequested;
+    /// <summary>Fired when the user clicks "Find References" on a node header context menu.</summary>
+    public event EventHandler<ClassNode>?                     FindReferencesRequested;
+    /// <summary>Fired when the user clicks "Show Metrics" on a node header context menu.</summary>
+    public event EventHandler<ClassNode>?                     ShowMetricsRequested;
+    /// <summary>Fired when the user clicks "Change Color…" on a node header context menu.</summary>
+    public event EventHandler<ClassNode>?                     ChangeNodeColorRequested;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -184,16 +196,40 @@ public sealed class DiagramCanvas : Canvas
         _selectedMember   = null; _selectedMemberNode = null;
 
         ClearAdorners();
+
+        // Update LOD zoom before rendering
+        if (_zoomPanCanvas is not null)
+            _layer.CurrentZoom = _zoomPanCanvas.ZoomFactor;
+
+        // Set culling viewport so RenderAll can skip off-screen nodes
         _layer.RenderAll(doc);
+
+        // After full render, activate viewport culling for subsequent pan/zoom
+        var vp = GetViewportRect();
+        if (vp.Width < 1e8) // only if we have real viewport info
+            _layer.InvalidateViewport(doc, vp);
+
         _minimap.SetDocument(doc);
         SelectedClassChanged?.Invoke(this, null);
     }
 
-    /// <summary>Incremental update: re-renders only the nodes in the patch.</summary>
-    public void ApplyPatch(IEnumerable<string> dirtyNodeIds)
+    /// <summary>Forces a full re-render of all nodes and arrows using the current document.</summary>
+    public void InvalidateAndRender()
     {
         if (_doc is null) return;
-        _layer.InvalidateNodes(_doc, dirtyNodeIds, _selectedNode?.Id, _hoveredNode?.Id);
+        _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+    }
+
+    /// <summary>
+    /// Incremental update: re-renders only the nodes in the patch.
+    /// Pass <paramref name="refreshArrows"/> = false during live drag to skip
+    /// repainting all arrows every frame — call <see cref="DiagramVisualLayer.RefreshArrows"/>
+    /// once when the drag ends.
+    /// </summary>
+    public void ApplyPatch(IEnumerable<string> dirtyNodeIds, bool refreshArrows = true)
+    {
+        if (_doc is null) return;
+        _layer.InvalidateNodes(_doc, dirtyNodeIds, _selectedNode?.Id, _hoveredNode?.Id, refreshArrows);
         UpdateSelectAdornerPosition();
     }
 
@@ -372,6 +408,120 @@ public sealed class DiagramCanvas : Canvas
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+
+        // Hook ZoomPanCanvas so we can update viewport culling on pan/zoom
+        _zoomPanCanvas = FindZoomPanParent();
+        if (_zoomPanCanvas is not null)
+            _zoomPanCanvas.TransformChanged += OnZoomPanTransformChanged;
+    }
+
+    // ── Viewport culling helpers ──────────────────────────────────────────────
+
+    private ZoomPanCanvas? FindZoomPanParent()
+    {
+        DependencyObject? el = VisualTreeHelper.GetParent(this);
+        while (el is not null)
+        {
+            if (el is ZoomPanCanvas zpc) return zpc;
+            el = VisualTreeHelper.GetParent(el);
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the current visible area in diagram (logical, unscaled) coordinates.
+    /// Returns an infinitely-large rect when zoom info is unavailable (= no culling).
+    /// </summary>
+    internal Rect GetViewportRect()
+    {
+        if (_zoomPanCanvas is null) return new Rect(0, 0, 1e9, 1e9);
+        double zoom    = _zoomPanCanvas.ZoomFactor;
+        double offsetX = _zoomPanCanvas.OffsetX;
+        double offsetY = _zoomPanCanvas.OffsetY;
+        double vpW     = _zoomPanCanvas.ActualWidth;
+        double vpH     = _zoomPanCanvas.ActualHeight;
+        if (vpW < 1 || vpH < 1 || zoom < 0.001) return new Rect(0, 0, 1e9, 1e9);
+        // diagram_coord = (screen_coord - offset) / zoom
+        return new Rect(-offsetX / zoom, -offsetY / zoom, vpW / zoom, vpH / zoom);
+    }
+
+    private void OnZoomPanTransformChanged(object? sender, EventArgs e)
+    {
+        if (_doc is null) return;
+
+        double newZoom = _zoomPanCanvas?.ZoomFactor ?? 1.0;
+        bool lodWas    = _layer.CurrentZoom < DiagramVisualLayer.LodThreshold;
+        bool lodNow    = newZoom             < DiagramVisualLayer.LodThreshold;
+
+        _layer.CurrentZoom = newZoom;
+
+        // When zoom crosses the LOD boundary, all visible nodes must be re-rendered
+        // so their detail level is consistent (avoids stale full-detail nodes shown
+        // at low zoom, or stale LOD pills shown after zooming back in).
+        if (lodWas != lodNow)
+            _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        else
+            _layer.InvalidateViewport(_doc, GetViewportRect());
+    }
+
+    /// <summary>
+    /// Async variant of <see cref="ApplyDocument"/>: renders in-viewport nodes
+    /// immediately, then fills offscreen nodes in background <see cref="DispatcherPriority.Background"/>
+    /// batches. The UI remains responsive during the background phase.
+    /// </summary>
+    public async Task ApplyDocumentAsync(DiagramDocument doc)
+    {
+        _doc             = doc;
+        _selectedIds.Clear();
+        _primarySelected = null;
+        _hoveredNode     = null;
+        _hoveredMember   = null; _hoveredMemberNode = null;
+        _selectedMember  = null; _selectedMemberNode = null;
+
+        ClearAdorners();
+        _minimap.SetDocument(doc);
+        SelectedClassChanged?.Invoke(this, null);
+
+        // Update LOD zoom
+        if (_zoomPanCanvas is not null)
+            _layer.CurrentZoom = _zoomPanCanvas.ZoomFactor;
+
+        // Allocate DrawingVisual slots without rendering (O(n) alloc, no draw)
+        _layer.PrepareVisualSlots(doc);
+
+        // Partition nodes into in-viewport (render immediately) vs offscreen (render lazily)
+        var viewport = GetViewportRect();
+        var inView   = new List<ClassNode>();
+        var offScreen = new List<ClassNode>();
+        foreach (var n in doc.Classes)
+        {
+            double w = n.Width > 4 ? n.Width : 180;
+            var nb = new Rect(n.X, n.Y, w, 100);
+            if (viewport.Width > 1e8 || nb.IntersectsWith(viewport)) inView.Add(n);
+            else offScreen.Add(n);
+        }
+
+        // Render visible nodes synchronously (immediate feedback to user)
+        foreach (var node in inView)
+            _layer.RenderNode(node);
+        _layer.RefreshArrows();
+        _layer.RenderSwimLanesPublic();
+
+        // Update culling viewport so subsequent pan/zoom works correctly
+        _layer.InvalidateViewport(doc, viewport);
+
+        // Render offscreen nodes in background batches (100 per frame slot)
+        const int BatchSize = 100;
+        for (int i = 0; i < offScreen.Count; i += BatchSize)
+        {
+            int end   = Math.Min(i + BatchSize, offScreen.Count);
+            var batch = offScreen.GetRange(i, end - i);
+            await Dispatcher.InvokeAsync(() =>
+            {
+                foreach (var n in batch)
+                    _layer.RenderNode(n);
+            }, DispatcherPriority.Background);
+        }
     }
 
     // B1 — Dot-grid background rendered in OnRender (only redraws when Canvas is invalidated)
@@ -662,9 +812,22 @@ public sealed class DiagramCanvas : Canvas
         }
         else
         {
-            // Click on empty area within DiagramCanvas bounds — rubber-band is handled
-            // by ZoomPanCanvas (which fills the full viewport). Nothing to do here.
-            if (_selectedIds.Count > 0) ClearSelection();
+            // Swimlane group drag: click on swimlane background (not on a node)
+            var laneNs = _layer.HitTestSwimLane(pt);
+            if (laneNs is not null)
+            {
+                _draggingGroupNs = laneNs;
+                _dragStart = pt;
+                _dragStartPositions.Clear();
+                foreach (var n in _layer.GetSwimLaneNodes(laneNs))
+                    _dragStartPositions[n.Id] = new Point(n.X, n.Y);
+                CaptureMouse();
+            }
+            else
+            {
+                // Click on empty area — rubber-band is handled by ZoomPanCanvas.
+                if (_selectedIds.Count > 0) ClearSelection();
+            }
         }
 
         e.Handled = true;
@@ -674,6 +837,27 @@ public sealed class DiagramCanvas : Canvas
     {
         base.OnMouseMove(e);
         Point pt = e.GetPosition(this);
+
+        // Swimlane group drag in progress
+        if (_draggingGroupNs is not null && e.LeftButton == MouseButtonState.Pressed)
+        {
+            double dx = pt.X - _dragStart.X;
+            double dy = pt.Y - _dragStart.Y;
+            foreach (var n in _doc!.Classes.Where(n => _dragStartPositions.ContainsKey(n.Id)))
+            {
+                double rawX = Math.Max(0, _dragStartPositions[n.Id].X + dx);
+                double rawY = Math.Max(0, _dragStartPositions[n.Id].Y + dy);
+                if (_snapEngine is { SnapToGrid: true })
+                {
+                    var snapped = _snapEngine.SnapPoint(rawX, rawY, []);
+                    n.X = snapped.X; n.Y = snapped.Y;
+                }
+                else { n.X = rawX; n.Y = rawY; }
+            }
+            ApplyPatch(_dragStartPositions.Keys, refreshArrows: false);
+            e.Handled = true;
+            return;
+        }
 
         // Node resize in progress
         if (_resizingNode is not null)
@@ -705,7 +889,7 @@ public sealed class DiagramCanvas : Canvas
                     }
                     else { n.X = rawX; n.Y = rawY; }
                 }
-                ApplyPatch(_selectedIds);
+                ApplyPatch(_selectedIds, refreshArrows: false);
             }
             else
             {
@@ -717,7 +901,7 @@ public sealed class DiagramCanvas : Canvas
                     _dragNode.X = snapped.X; _dragNode.Y = snapped.Y;
                 }
                 else { _dragNode.X = rawX; _dragNode.Y = rawY; }
-                ApplyPatch([_dragNode.Id]);
+                ApplyPatch([_dragNode.Id], refreshArrows: false);
             }
         }
         else if (_isRubberBanding)
@@ -764,9 +948,15 @@ public sealed class DiagramCanvas : Canvas
                 }
             }
 
-            // Show SizeNS cursor when hovering over a node's bottom-edge gripper
+            // Show SizeNS cursor when hovering over a node's bottom-edge gripper,
+            // SizeAll cursor when hovering a swimlane background (group drag hint)
             bool onGripper = _doc is not null && _layer.IsGripperHit(_doc.Classes, pt) is not null;
-            Cursor = onGripper ? Cursors.SizeNS : null;
+            if (onGripper)
+                Cursor = Cursors.SizeNS;
+            else if (_hoveredNode is null && _layer.HitTestSwimLane(pt) is not null)
+                Cursor = Cursors.SizeAll;
+            else
+                Cursor = null;
         }
     }
 
@@ -774,6 +964,37 @@ public sealed class DiagramCanvas : Canvas
     {
         base.OnMouseLeftButtonUp(e);
         ReleaseMouseCapture();
+
+        if (_draggingGroupNs is not null)
+        {
+            // Commit swimlane group drag undo entry
+            if (_undoManager is not null && _doc is not null && _dragStartPositions.Count > 0)
+            {
+                var dragDoc = _doc;
+                var moves = _dragStartPositions
+                    .Select(kv =>
+                    {
+                        var n = dragDoc.Classes.FirstOrDefault(x => x.Id == kv.Key);
+                        return n is null ? ((ClassNode?)null, kv.Value, new Point()) : (n, kv.Value, new Point(n.X, n.Y));
+                    })
+                    .Where(t => t.Item1 is not null && (Math.Abs(t.Item3.X - t.Item2.X) > 0.5 || Math.Abs(t.Item3.Y - t.Item2.Y) > 0.5))
+                    .Select(t => (Node: t.Item1!, From: t.Item2, To: t.Item3))
+                    .ToList();
+                if (moves.Count > 0)
+                {
+                    _undoManager.Push(new SingleClassDiagramUndoEntry(
+                        Description: $"Move group «{_draggingGroupNs}» ({moves.Count} nodes)",
+                        UndoAction: () => { foreach (var m in moves) { m.Node.X = m.From.X; m.Node.Y = m.From.Y; } _layer.RenderAll(dragDoc, _selectedNode?.Id, _hoveredNode?.Id); },
+                        RedoAction: () => { foreach (var m in moves) { m.Node.X = m.To.X;   m.Node.Y = m.To.Y;   } _layer.RenderAll(dragDoc, _selectedNode?.Id, _hoveredNode?.Id); }));
+                }
+            }
+            _draggingGroupNs = null;
+            _dragStartPositions.Clear();
+            _layer.RefreshArrows();
+            Cursor = null;
+            e.Handled = true;
+            return;
+        }
 
         if (_resizingNode is not null)
         {
@@ -824,6 +1045,8 @@ public sealed class DiagramCanvas : Canvas
             }
             _dragNode = null;
             _dragStartPositions.Clear();
+            // Repaint arrows once after drag ends (skipped during drag for perf)
+            _layer.RefreshArrows();
         }
         // Rubber-band release is handled by ZoomPanCanvas via FinishRubberBandAt().
     }
@@ -832,6 +1055,7 @@ public sealed class DiagramCanvas : Canvas
     {
         base.OnLostMouseCapture(e);
         _dragNode = null;
+        _draggingGroupNs = null;
         _dragStartPositions.Clear();
         _resizingNode    = null;
         _isRubberBanding = false;
@@ -856,7 +1080,13 @@ public sealed class DiagramCanvas : Canvas
         var node = _layer.HitTestNode(pt);
         if (node is not null)
         {
-            BuildNodeContextMenu(node).IsOpen = true;
+            // Determine if click is on the header or the member area
+            double relY = pt.Y - node.Y;
+            double headerH = _layer.ComputeHeaderHeight(node);
+            if (relY <= headerH)
+                BuildHeaderContextMenu(node).IsOpen = true;
+            else
+                BuildMemberContextMenu(node, pt).IsOpen = true;
             return;
         }
 
@@ -1046,17 +1276,61 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Context menus ─────────────────────────────────────────────────────────
 
-    private ContextMenu BuildNodeContextMenu(ClassNode node)
+    /// <summary>Context menu for right-click on the class box header area.</summary>
+    private ContextMenu BuildHeaderContextMenu(ClassNode node)
     {
         var menu = StyledMenu();
-        menu.Items.Add(MakeItem("\uE70F", "Rename…",              () => RenameNodeRequested?.Invoke(this, (node, null))));
-        menu.Items.Add(MakeItem("\uE74D", "Delete",               () => DeleteNode(node)));
-        menu.Items.Add(MakeItem("\uE8C8", "Duplicate",            () => DuplicateNode(node)));
+        menu.Items.Add(MakeItem("\uE70F", "Rename…",            () => RenameNodeRequested?.Invoke(this, (node, null))));
+        menu.Items.Add(MakeItem("\uE16C", "Copy Name",          () => Clipboard.SetText(node.Name)));
+        string fullName = string.IsNullOrEmpty(node.Namespace)
+            ? node.Name
+            : $"{node.Namespace}.{node.Name}";
+        menu.Items.Add(MakeItem("\uE16C", "Copy Full Name",     () => Clipboard.SetText(fullName)));
         menu.Items.Add(new Separator());
-        menu.Items.Add(MakeItem("\uE71E", "Zoom to This Node",    () => ZoomToNodeRequested?.Invoke(this, node)));
-        menu.Items.Add(MakeItem("\uE16C", "Copy Name",            () => Clipboard.SetText(node.Name)));
-        menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source",   () => NavigateToMemberRequested?.Invoke(this, (node, node.Members.FirstOrDefault()!))));
+        menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source", () => NavigateToMemberRequested?.Invoke(this, (node, node.Members.FirstOrDefault()!))));
+        menu.Items.Add(MakeItem("\uE721", "Find References",    () => FindReferencesRequested?.Invoke(this, node)));
         menu.Items.Add(new Separator());
+
+        bool isCollapsed = _layer.IsCollapsed(node.Id);
+        menu.Items.Add(MakeItem(isCollapsed ? "\uE8A4" : "\uE89A",
+            isCollapsed ? "Expand" : "Collapse",
+            () =>
+            {
+                _layer.ToggleCollapsed(node.Id);
+                _layer.RenderAll(_doc!, _selectedNode?.Id, _hoveredNode?.Id);
+                UpdateSelectAdornerPosition();
+            }));
+
+        var addMenu = new MenuItem { Header = "Add Member" };
+        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, node)));
+        menu.Items.Add(addMenu);
+
+        menu.Items.Add(MakeItem("\uE790", "Change Color…",  () => ChangeNodeColorRequested?.Invoke(this, node)));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(MakeItem("\uE9D9", "Show Metrics",   () => ShowMetricsRequested?.Invoke(this, node)));
+        menu.Items.Add(MakeItem("\uE74D", "Delete",          () => DeleteNode(node)));
+        return menu;
+    }
+
+    /// <summary>Context menu for right-click on a member row within a class box.</summary>
+    private ContextMenu BuildMemberContextMenu(ClassNode node, Point pt)
+    {
+        var menu = StyledMenu();
+        var member = _layer.HitTestMember(pt, node);
+
+        if (member is not null)
+        {
+            menu.Items.Add(MakeItem("\uE70F", "Rename…",            () => RenameNodeRequested?.Invoke(this, (node, null))));
+            menu.Items.Add(MakeItem("\uE74D", "Delete",             () => DeleteMemberRequested?.Invoke(this, (node, member))));
+            menu.Items.Add(MakeItem("\uE8C8", "Duplicate",          () => DuplicateNode(node)));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(MakeItem("\uE16C", "Copy Name",          () => Clipboard.SetText(member.DisplayLabel)));
+            menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source", () => NavigateToMemberRequested?.Invoke(this, (node, member))));
+            menu.Items.Add(new Separator());
+        }
 
         var addMenu = new MenuItem { Header = "Add Member" };
         addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
@@ -1066,17 +1340,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(addMenu);
 
         menu.Items.Add(new Separator());
-        bool isCollapsed = _layer.IsCollapsed(node.Id);
-        menu.Items.Add(MakeItem(isCollapsed ? "\uE8A4" : "\uE89A",
-            isCollapsed ? "Expand Node" : "Collapse Node",
-            () =>
-            {
-                _layer.ToggleCollapsed(node.Id);
-                _layer.RenderAll(_doc!, _selectedNode?.Id, _hoveredNode?.Id);
-                UpdateSelectAdornerPosition();
-            }));
-        menu.Items.Add(new Separator());
-        menu.Items.Add(MakeItem("\uE8D4", "Properties", () => ShowPropertiesRequested?.Invoke(this, node)));
+        menu.Items.Add(MakeItem("\uE8D4", "Properties",  () => ShowPropertiesRequested?.Invoke(this, node)));
         return menu;
     }
 
