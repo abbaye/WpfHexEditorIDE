@@ -1323,29 +1323,11 @@ namespace WpfHexEditor.HexEditor.Controls
         public double HexPanelStartX => ActualOffsetWidth;
 
         /// <summary>
-        /// Gets the starting X position for separator (after hex bytes)
-        /// Accounts for bytes per line and byte spacers
+        /// Gets the starting X position for separator (after hex bytes).
+        /// Uses CalculateFixedSeparatorX(1) so the value matches the actual render geometry
+        /// (font-metric-based cell width) rather than the HexByteWidth constant.
         /// </summary>
-        public double SeparatorStartX
-        {
-            get
-            {
-                double hexStartX = ActualOffsetWidth;
-
-                // Calculate number of byte spacers for a full line
-                int numSpacers = 0;
-                if (_bytesPerLine >= (int)ByteGrouping)
-                {
-                    numSpacers = (_bytesPerLine % (int)ByteGrouping == 0)
-                        ? (_bytesPerLine / (int)ByteGrouping) - 1
-                        : _bytesPerLine / (int)ByteGrouping;
-                }
-                double spacersWidth = numSpacers * (int)ByteSpacerWidthTickness;
-
-                // Separator position (matching OnRender line 693)
-                return hexStartX + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + spacersWidth + 4;
-            }
-        }
+        public double SeparatorStartX => CalculateFixedSeparatorX(1);
 
         /// <summary>
         /// Gets the starting X position for ASCII panel

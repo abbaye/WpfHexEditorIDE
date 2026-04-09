@@ -147,14 +147,18 @@ namespace WpfHexEditor.HexEditor
             int    visibleLines = HexViewport.GetVisibleLinesForHighlight().Count;
             double visibleH     = visibleLines > 0 ? visibleLines * lineHeight : 0;
 
-            // Hex column stripe: shown when option is enabled (panel focus is irrelevant).
+            // Column stripe: shown only in the currently active panel.
+            bool hexActive   = HexViewport.ActivePanel == Controls.ActivePanelType.Hex;
+            bool asciiActive = HexViewport.ActivePanel == Controls.ActivePanelType.Ascii;
+
+            // Hex column stripe: only when hex panel is active.
             // Re-use colIdx = -1 to tell the overlay to skip the hex stripe.
-            int effectiveColIdx = ShowColumnHighlight ? colIdx : -1;
+            int effectiveColIdx = (ShowColumnHighlight && hexActive) ? colIdx : -1;
 
             // ASCII stripe parameters (negative = don't draw).
             double asciiX     = -1;
             double asciiCW    = 0;
-            if (ShowAsciiColumnHighlight && HexViewport.ShowAscii)
+            if (ShowAsciiColumnHighlight && asciiActive && HexViewport.ShowAscii)
             {
                 asciiX  = HexViewport.AsciiPanelStartX * zoom;
                 asciiCW = HexViewport.AsciiCharacterWidth * zoom;
