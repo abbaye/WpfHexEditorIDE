@@ -117,6 +117,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     private bool _liveSyncEnabled = true;
 
+    // Debounce timer for .whcd auto-save (avoids rapid writes during drag/resize)
+    private System.Threading.Timer? _whcdSaveDebounce;
+    private const int WhcdSaveDelayMs = 1500;
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
@@ -897,12 +901,17 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         var host = new ClassDiagramSplitHost();
         host.LoadDocument(doc, title);
 
-        // Restore session state if enabled
-        if (_options.RestoreLastState)
+        // Restore .whcd twin (positions + view). Fall back to session view snapshot.
+        string whcdPath  = WhcdSerializer.GetWhcdPath(csharpFilePath);
+        var    whcdState = WhcdSerializer.Load(whcdPath);
+        if (whcdState is not null)
+            host.ApplyWhcdState(whcdState);
+        else if (_options.RestoreLastState)
         {
             string? solutionDir = GetSolutionDir(context);
             var session = ClassDiagramSessionStateSerializer.Load(solutionDir);
-            if (session?.LastFilePath == csharpFilePath)
+            if (session is not null &&
+                string.Equals(session.LastFilePath, csharpFilePath, StringComparison.OrdinalIgnoreCase))
                 host.ApplyViewSnapshot(session.ViewSnapshot);
         }
 
@@ -916,8 +925,20 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             CanClose  = true,
         });
 
-        // Wire session auto-save whenever diagram changes (replaces TitleChanged trigger)
-        host.DiagramChanged += (_, _) => SaveSession(host, csharpFilePath, context);
+        // Auto-save .whcd + session on every diagram change (debounced 1.5 s for .whcd)
+        host.DiagramChanged += (_, _) =>
+        {
+            SaveSession(host, csharpFilePath, context);
+
+            _whcdSaveDebounce?.Dispose();
+            _whcdSaveDebounce = new System.Threading.Timer(_ =>
+                Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    var whcd = host.GetWhcdState([csharpFilePath]);
+                    WhcdSerializer.Save(WhcdSerializer.GetWhcdPath(csharpFilePath), whcd);
+                }),
+                null, WhcdSaveDelayMs, System.Threading.Timeout.Infinite);
+        };
 
         // Attach live-sync service for this file.
         if (_liveSyncEnabled && File.Exists(csharpFilePath))
@@ -996,7 +1017,14 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         var host = new ClassDiagramSplitHost();
         host.LoadDocument(doc, title);
 
+        // Restore .whcd twin for folder diagram
+        string folderWhcdPath  = WhcdSerializer.GetFolderWhcdPath(folderPath);
+        var    folderWhcdState = WhcdSerializer.Load(folderWhcdPath);
+        if (folderWhcdState is not null)
+            host.ApplyWhcdState(folderWhcdState);
+
         _openTabs[folderPath] = uiId;
+        _openHosts[uiId]      = host;
         context.UIRegistry.RegisterDocumentTab(uiId, host, Id, new DocumentDescriptor
         {
             Title     = title,
@@ -1004,6 +1032,19 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             ToolTip   = folderPath,
             CanClose  = true,
         });
+
+        // Auto-save .whcd on diagram change (debounced)
+        host.DiagramChanged += (_, _) =>
+        {
+            _whcdSaveDebounce?.Dispose();
+            _whcdSaveDebounce = new System.Threading.Timer(_ =>
+                Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    var whcd = host.GetWhcdState(sourceFiles);
+                    WhcdSerializer.Save(folderWhcdPath, whcd);
+                }),
+                null, WhcdSaveDelayMs, System.Threading.Timeout.Infinite);
+        };
     }
 
     private async Task OpenAIGeneratedDiagramAsync(IIDEHostContext context)

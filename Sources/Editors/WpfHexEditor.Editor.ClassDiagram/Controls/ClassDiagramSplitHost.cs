@@ -34,6 +34,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
+using WpfHexEditor.Editor.ClassDiagram.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Core.Parser;
 using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
@@ -563,6 +564,64 @@ public sealed class ClassDiagramSplitHost : Grid,
                     _canvas.IsMinimapVisible = mm == "1";
                 if (snap.TryGetValue("selected", out string? sel) && !string.IsNullOrEmpty(sel))
                     _canvas.SelectNodeById(sel);
+            });
+    }
+
+    // ── .whcd twin-file state (positions + view) ─────────────────────────────
+
+    /// <summary>
+    /// Captures the complete visual state (node positions, zoom, pan, minimap, selection)
+    /// into a <see cref="WhcdDocument"/> ready for serialization by the plugin.
+    /// </summary>
+    public WhcdDocument GetWhcdState(IEnumerable<string> sourceFiles) =>
+        new()
+        {
+            SourceFiles    = sourceFiles.ToList(),
+            Zoom           = _zoomPan.ZoomFactor,
+            OffsetX        = _zoomPan.OffsetX,
+            OffsetY        = _zoomPan.OffsetY,
+            MinimapVisible = _canvas.IsMinimapVisible,
+            SelectedNodeId = _canvas.SelectedNode?.Id,
+            Nodes          = _document.Classes
+                .Select(n => new WhcdNodePosition { Id = n.Id, X = n.X, Y = n.Y, Width = n.Width })
+                .ToList()
+        };
+
+    /// <summary>
+    /// Restores node positions and view state from a <see cref="WhcdDocument"/>.
+    /// Call AFTER <see cref="LoadDocument"/> so the live document is in place.
+    /// Nodes not found in <paramref name="state"/> keep their current position (graceful).
+    /// </summary>
+    public void ApplyWhcdState(WhcdDocument state)
+    {
+        if (state is null) return;
+
+        // 1. Patch positions into live node objects (matched by ID)
+        var posById   = state.Nodes.ToDictionary(n => n.Id, StringComparer.Ordinal);
+        bool anyMoved = false;
+        foreach (var node in _document.Classes)
+        {
+            if (!posById.TryGetValue(node.Id, out var pos)) continue;
+            node.X     = pos.X;
+            node.Y     = pos.Y;
+            node.Width = pos.Width;
+            anyMoved   = true;
+        }
+
+        // 2. Re-render with restored positions (skip default FitToContent)
+        if (anyMoved)
+            _canvas.ApplyDocument(_document);
+
+        // 3. Restore view at Loaded priority (canvas must be measured/arranged first)
+        Application.Current?.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.Loaded, () =>
+            {
+                _zoomPan.ZoomFactor      = state.Zoom;
+                _zoomPan.OffsetX         = state.OffsetX;
+                _zoomPan.OffsetY         = state.OffsetY;
+                _canvas.IsMinimapVisible = state.MinimapVisible;
+                if (state.SelectedNodeId is { Length: > 0 } sid)
+                    _canvas.SelectNodeById(sid);
             });
     }
 
