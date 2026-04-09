@@ -164,19 +164,20 @@ namespace WpfHexEditor.HexEditor
             double asciiCW = 0;
             if (ShowAsciiColumnHighlight && asciiActive && HexViewport.ShowAscii)
             {
-                long lineStart = offset - colIdx;
                 foreach (var line in visibleLinesList)
                 {
                     if (line.Bytes.Count == 0) continue;
-                    if (line.Bytes[0].VirtualPos != lineStart) continue;
-                    if (colIdx >= line.Bytes.Count) break;
-                    if (!line.Bytes[colIdx].AsciiRect.HasValue) break;
-
-                    var rect = line.Bytes[colIdx].AsciiRect.Value;
-                    asciiX  = rect.X     * zoom;
-                    asciiCW = rect.Width * zoom;
-                    break;
+                    foreach (var b in line.Bytes)
+                    {
+                        if ((long)b.VirtualPos == offset && b.AsciiRect.HasValue)
+                        {
+                            asciiX  = b.AsciiRect.Value.X     * zoom;
+                            asciiCW = b.AsciiRect.Value.Width * zoom;
+                            goto foundAscii;
+                        }
+                    }
                 }
+                foundAscii:;
             }
 
             // Row highlight position: which line number is the cursor on?
