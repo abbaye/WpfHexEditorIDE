@@ -29,13 +29,76 @@ public sealed class BraceFoldingStrategy : IFoldingStrategy
         for (int i = 0; i < lines.Count; i++)
         {
             var text = lines[i].Text ?? string.Empty;
-            foreach (char ch in text)
+            bool inString   = false;
+            bool inVerbatim = false;
+            bool inChar     = false;
+            bool inLineComment = false;
+
+            for (int j = 0; j < text.Length; j++)
             {
+                char ch = text[j];
+                char next = j + 1 < text.Length ? text[j + 1] : '\0';
+
+                // Line comment — skip rest of line.
+                if (!inString && !inVerbatim && !inChar && ch == '/' && next == '/')
+                {
+                    inLineComment = true;
+                    break;
+                }
+
+                // Block comment start — skip to end (may not close on same line).
+                // For simplicity, skip the rest of the line when we hit /*, since
+                // braces inside multi-line comments are rare and the cost of a
+                // cross-line state machine is high for a folding strategy.
+                if (!inString && !inVerbatim && !inChar && ch == '/' && next == '*')
+                    break;
+
+                // Character literal.
+                if (!inString && !inVerbatim && !inChar && ch == '\'')
+                {
+                    inChar = true;
+                    continue;
+                }
+                if (inChar)
+                {
+                    if (ch == '\\') { j++; continue; } // skip escaped char
+                    if (ch == '\'') inChar = false;
+                    continue;
+                }
+
+                // Verbatim / raw string — skip to closing quote(s).
+                if (!inString && !inVerbatim && ch == '@' && next == '"')
+                {
+                    inVerbatim = true;
+                    j++; // skip the "
+                    continue;
+                }
+                if (inVerbatim)
+                {
+                    if (ch == '"')
+                    {
+                        if (next == '"') { j++; continue; } // "" escape inside verbatim
+                        inVerbatim = false;
+                    }
+                    continue;
+                }
+
+                // Regular string (handles interpolation nesting via brace depth).
+                if (!inString && ch == '"')
+                {
+                    inString = true;
+                    continue;
+                }
+                if (inString)
+                {
+                    if (ch == '\\') { j++; continue; } // skip escape
+                    if (ch == '"') inString = false;
+                    continue; // skip everything inside strings including { }
+                }
+
+                // Structural braces.
                 if (ch == '{')
                 {
-                    // When '{' is the only non-whitespace char on this line (e.g. Allman style),
-                    // attach the region to the keyword line above so that collapsing hides only
-                    // the body, not the declaration itself.
                     bool braceAlone = text.Trim() == "{";
                     int effectiveStart = (braceAlone && i > 0) ? i - 1 : i;
                     stack.Push(effectiveStart);
@@ -43,7 +106,7 @@ public sealed class BraceFoldingStrategy : IFoldingStrategy
                 else if (ch == '}' && stack.Count > 0)
                 {
                     int startLine = stack.Pop();
-                    if (i > startLine + 1) // must span at least 2 lines to be useful
+                    if (i > startLine + 1)
                         regions.Add(new FoldingRegion(startLine, i, "{ \u2026 }"));
                 }
             }

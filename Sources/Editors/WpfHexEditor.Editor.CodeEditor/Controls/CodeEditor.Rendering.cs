@@ -64,6 +64,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             double textX = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
+            // Viewport Y bounds from actual visible-line positions (accounts for InlineHints).
+            double viewportYMin = _visLinePositions.Count > 0 ? _visLinePositions[0].Y : TopMargin;
+            double viewportYMax = _visLinePositions.Count > 0
+                ? _visLinePositions[_visLinePositions.Count - 1].Y + _lineHeight
+                : ActualHeight;
+
             // Determine the innermost block containing the cursor for active-guide highlight.
             var activeRegion = FindInnermostContainingRegion(_cursorLine);
 
@@ -89,7 +95,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
 
                 double guideX = ComputeScopeGuideX(textX, region);
-                if (guideX < textX) continue; // never draw before text area origin
+                // Ensure the guide is at least 1px inside the text-area clip boundary.
+                // Without this, guides at indent 0 (namespace) sit exactly on the clip
+                // edge and flicker due to WPF sub-pixel / anti-alias rounding.
+                if (guideX < textX + 1) guideX = textX + 1;
 
                 // For Allman-style code the BraceFoldingStrategy sets StartLine = method-header line,
                 // so StartLine+1 is the standalone { line — skip it to start the guide after the {.
@@ -97,9 +106,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (bodyStart < _document!.Lines.Count && _document.Lines[bodyStart].Text.Trim() == "{")
                     bodyStart++;
 
-                // Draw from bottom of { (first real body line) to top of } — VS Code exact behavior.
-                double yTop    = ScopeLineIndexToY(bodyStart);
-                double yBottom = ScopeLineIndexToY(region.EndLine);
+                // Resolve Y positions: use _lineYLookup for in-viewport lines (O(1), accounts
+                // for InlineHints height). For out-of-viewport lines, clamp to the actual first/last
+                // rendered line Y boundaries.
+                double yTop;
+                if (bodyStart < _firstVisibleLine)
+                    yTop = viewportYMin;
+                else if (_lineYLookup.TryGetValue(bodyStart, out double topY))
+                    yTop = topY;
+                else
+                    yTop = viewportYMin; // fallback: top of rendered area
+
+                double yBottom;
+                if (region.EndLine > _lastVisibleLine)
+                    yBottom = viewportYMax;
+                else if (_lineYLookup.TryGetValue(region.EndLine, out double botY))
+                    yBottom = botY;
+                else
+                    yBottom = viewportYMax; // fallback: bottom of rendered area
+
+                if (yTop >= yBottom) continue;
 
                 bool isActive = activeRegion != null && ReferenceEquals(region, activeRegion);
                 Pen pen;

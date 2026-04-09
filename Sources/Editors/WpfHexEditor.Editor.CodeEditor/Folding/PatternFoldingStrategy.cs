@@ -48,9 +48,7 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
         for (int i = 0; i < lines.Count; i++)
         {
             var text          = lines[i].Text ?? string.Empty;
-            var effectiveText = _lineCommentPrefix is not null
-                ? StripLineComment(text, _lineCommentPrefix)
-                : text;
+            var effectiveText = StripNonCode(text, _lineCommentPrefix);
             bool isStart = _starts.Any(r => r.IsMatch(effectiveText));
             bool isEnd   = _ends.Any(r => r.IsMatch(effectiveText));
 
@@ -78,9 +76,74 @@ internal sealed class PatternFoldingStrategy : IFoldingStrategy
         return regions;
     }
 
-    private static string StripLineComment(string line, string prefix)
+    /// <summary>
+    /// Strips string literals, char literals, verbatim strings, and line comments
+    /// from a line of code so that pattern matching only sees structural tokens.
+    /// </summary>
+    private static string StripNonCode(string line, string? lineCommentPrefix)
     {
-        var idx = line.IndexOf(prefix, StringComparison.Ordinal);
-        return idx >= 0 ? line[..idx] : line;
+        var sb = new System.Text.StringBuilder(line.Length);
+        for (int j = 0; j < line.Length; j++)
+        {
+            char ch = line[j];
+            char next = j + 1 < line.Length ? line[j + 1] : '\0';
+
+            // Line comment — stop here.
+            if (lineCommentPrefix is not null && j + lineCommentPrefix.Length <= line.Length &&
+                line.AsSpan(j, lineCommentPrefix.Length).SequenceEqual(lineCommentPrefix.AsSpan()))
+                break;
+
+            // Block comment start — stop (may not close on same line).
+            if (ch == '/' && next == '*')
+                break;
+
+            // Verbatim string @"..."
+            if (ch == '@' && next == '"')
+            {
+                j += 2;
+                while (j < line.Length)
+                {
+                    if (line[j] == '"')
+                    {
+                        if (j + 1 < line.Length && line[j + 1] == '"') { j += 2; continue; }
+                        break;
+                    }
+                    j++;
+                }
+                sb.Append(' ');
+                continue;
+            }
+
+            // Regular string "..."
+            if (ch == '"')
+            {
+                j++;
+                while (j < line.Length)
+                {
+                    if (line[j] == '\\') { j += 2; continue; }
+                    if (line[j] == '"') break;
+                    j++;
+                }
+                sb.Append(' ');
+                continue;
+            }
+
+            // Char literal '...'
+            if (ch == '\'')
+            {
+                j++;
+                while (j < line.Length)
+                {
+                    if (line[j] == '\\') { j += 2; continue; }
+                    if (line[j] == '\'') break;
+                    j++;
+                }
+                sb.Append(' ');
+                continue;
+            }
+
+            sb.Append(ch);
+        }
+        return sb.ToString();
     }
 }
