@@ -98,14 +98,26 @@ public sealed class ColumnHighlightOverlay : FrameworkElement
         double rowHeight,
         bool   showRow)
     {
-        if (columnIndex < 0 || cellWidth <= 0)
+        bool hasHexCol   = columnIndex >= 0 && cellWidth > 0;
+        bool hasAsciiCol = asciiPanelStartX >= 0 && asciiCharWidth > 0;
+        bool hasRow      = showRow && rowY >= 0 && rowHeight > 0;
+
+        if (!hasHexCol && !hasAsciiCol && !hasRow)
         {
             Hide();
             return;
         }
 
-        _colX    = hexPanelStartX + columnIndex * cellWidth + spacerOffset;
-        _colWidth = cellWidth;
+        if (hasHexCol)
+        {
+            _colX    = hexPanelStartX + columnIndex * cellWidth + spacerOffset;
+            _colWidth = cellWidth;
+        }
+        else
+        {
+            _colWidth = 0;
+        }
+
         _visibleContentHeight = visibleContentHeight;
 
         // ASCII column — shown only when ASCII panel is visible
