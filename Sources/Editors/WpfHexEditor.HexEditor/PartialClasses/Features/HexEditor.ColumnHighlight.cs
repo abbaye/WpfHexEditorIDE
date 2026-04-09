@@ -115,7 +115,7 @@ namespace WpfHexEditor.HexEditor
                 return;
             }
 
-            if (!_viewModel.SelectionStart.IsValid)
+            if (_viewModel is null || !_viewModel.SelectionStart.IsValid)
             {
                 _columnHighlight.Hide();
                 return;
