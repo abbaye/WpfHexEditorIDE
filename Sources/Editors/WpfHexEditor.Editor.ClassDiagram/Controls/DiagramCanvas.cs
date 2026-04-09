@@ -246,6 +246,14 @@ public sealed class DiagramCanvas : Canvas
     public void UpdateRubberBandAt(Point diagramPt)
     {
         if (!_isRubberBanding) return;
+
+        // Only draw lasso once drag exceeds platform drag-threshold (avoids 1-pixel flicker on click)
+        double dx = diagramPt.X - _rubberStart.X;
+        double dy = diagramPt.Y - _rubberStart.Y;
+        if (Math.Abs(dx) < SystemParameters.MinimumHorizontalDragDistance &&
+            Math.Abs(dy) < SystemParameters.MinimumVerticalDragDistance)
+            return;
+
         _layer.DrawRubberBand(_rubberStart, diagramPt);
 
         if (_doc is not null)
@@ -913,6 +921,7 @@ public sealed class DiagramCanvas : Canvas
         base.OnKeyDown(e);
         if (e.Key == Key.Escape)
         {
+            CancelRubberBand();   // Cancel in-progress lasso first
             ClearSelection();
             e.Handled = true;
         }

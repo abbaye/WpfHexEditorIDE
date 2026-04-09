@@ -79,6 +79,19 @@ public class ZoomPanCanvas : Canvas
     }
 
     // ---------------------------------------------------------------------------
+    // HitTestCore override — ZoomPanCanvas applies RenderTransform to itself, which
+    // means a panned view maps viewport clicks to negative local coordinates that fall
+    // outside the layout bounding box and are not hit by the default Canvas check.
+    // We override to always return a hit so the viewport background is fully clickable
+    // regardless of zoom or pan offset.
+    // ---------------------------------------------------------------------------
+
+    protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
+        => new PointHitTestResult(this, hitTestParameters.HitPoint);
+
+    protected override GeometryHitTestResult HitTestCore(GeometryHitTestParameters hitTestParameters)
+        => new GeometryHitTestResult(this, IntersectionDetail.FullyContains);
+
     // Right-click delegation — forward to DiagramCanvas when empty area is hit
     // (DiagramCanvas is sized to its content so empty-area right-clicks land here)
     // ---------------------------------------------------------------------------
@@ -87,6 +100,7 @@ public class ZoomPanCanvas : Canvas
     {
         base.OnMouseLeftButtonDown(e);
         if (e.Handled) return;
+        if (_isPanning) return;   // Middle-mouse pan takes priority
 
         // Click landed on ZoomPanCanvas (empty viewport area outside diagram content).
         // Start rubber-band lasso; use e.GetPosition(dc) which WPF transforms through
@@ -97,6 +111,7 @@ public class ZoomPanCanvas : Canvas
             {
                 _rubberBandTarget = dc;
                 dc.StartRubberBandAt(e.GetPosition(dc));
+                Mouse.OverrideCursor = Cursors.Cross;
                 CaptureMouse();
                 e.Handled = true;
                 return;
@@ -318,6 +333,7 @@ public class ZoomPanCanvas : Canvas
         {
             _rubberBandTarget.FinishRubberBandAt(e.GetPosition(_rubberBandTarget));
             _rubberBandTarget = null;
+            Mouse.OverrideCursor = null;
             ReleaseMouseCapture();
             e.Handled = true;
         }
@@ -330,6 +346,7 @@ public class ZoomPanCanvas : Canvas
         {
             _rubberBandTarget.CancelRubberBand();
             _rubberBandTarget = null;
+            Mouse.OverrideCursor = null;
         }
         _isPanning = false;
     }
