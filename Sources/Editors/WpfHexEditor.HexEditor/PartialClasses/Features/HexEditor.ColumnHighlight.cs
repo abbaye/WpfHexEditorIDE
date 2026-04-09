@@ -157,28 +157,26 @@ namespace WpfHexEditor.HexEditor
             // Re-use colIdx = -1 to tell the overlay to skip the hex stripe.
             int effectiveColIdx = (ShowColumnHighlight && hexActive) ? colIdx : -1;
 
-            // ASCII stripe: computed from actual separator geometry (same coordinate space as hex stripe).
-            // AsciiPanelActualStartX uses CalculateFixedSeparatorX(1) — font-metric-based, matches render.
-            // TranslatePoint is NOT used: it traverses the ScrollViewer template and picks up content
-            // offsets that shift the result unpredictably.
+            // ASCII stripe: read AsciiRect.X from the line that contains the cursor.
+            // AsciiRect is set by DrawAsciiByte with the exact draw position — it is the
+            // pixel-perfect ground truth and accounts for spacers, TBL widths, etc.
             double asciiX  = -1;
             double asciiCW = 0;
             if (ShowAsciiColumnHighlight && asciiActive && HexViewport.ShowAscii)
             {
-                double asciiStart = HexViewport.AsciiPanelActualStartX * zoom;
-                double charW      = HexViewport.AsciiCharacterWidth     * zoom;
-
-                // Account for byte spacers in the ASCII panel (ByteSpacerPositioning = Both / StringBytePanel).
-                double asciiSpacerOff = 0;
-                if (bytesPerLine >= groupSize &&
-                    (HexViewport.ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                     HexViewport.ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel))
+                long lineStart = offset - colIdx;
+                foreach (var line in visibleLinesList)
                 {
-                    asciiSpacerOff = (colIdx / groupSize) * (int)HexViewport.ByteSpacerWidthTickness * zoom;
-                }
+                    if (line.Bytes.Count == 0) continue;
+                    if (line.Bytes[0].VirtualPos != lineStart) continue;
+                    if (colIdx >= line.Bytes.Count) break;
+                    if (!line.Bytes[colIdx].AsciiRect.HasValue) break;
 
-                asciiX  = asciiStart + colIdx * charW + asciiSpacerOff;
-                asciiCW = charW;
+                    var rect = line.Bytes[colIdx].AsciiRect.Value;
+                    asciiX  = rect.X     * zoom;
+                    asciiCW = rect.Width * zoom;
+                    break;
+                }
             }
 
             // Row highlight position: which line number is the cursor on?
