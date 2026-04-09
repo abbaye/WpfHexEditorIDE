@@ -189,6 +189,16 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Returns the primary selected class node, or null.</summary>
     public ClassNode? SelectedNode => _primarySelected;
 
+    /// <summary>The document currently rendered by this canvas.</summary>
+    public DiagramDocument? Document => _doc;
+
+    /// <summary>Deletes the primary selected node (with undo entry). No-op when nothing selected.</summary>
+    public void DeleteSelectedNode()
+    {
+        if (_primarySelected is not null)
+            DeleteNode(_primarySelected);
+    }
+
     /// <summary>Returns all currently selected node IDs.</summary>
     public IReadOnlyCollection<string> SelectedIds => _selectedIds;
 
@@ -636,15 +646,16 @@ public sealed class DiagramCanvas : Canvas
             // Commit resize undo entry
             if (_undoManager is not null && _doc is not null)
             {
-                double finalH = _layer.ComputeNodeHeight(_resizingNode);
-                double startH = _resizeStartHeight;
-                var    rNode  = _resizingNode;
+                double finalH  = _layer.ComputeNodeHeight(_resizingNode);
+                double startH  = _resizeStartHeight;
+                var    rNode   = _resizingNode;
+                var    rDoc    = _doc;   // capture current doc
                 if (Math.Abs(finalH - startH) > 0.5)
                 {
                     _undoManager.Push(new SingleClassDiagramUndoEntry(
                         Description: $"Resize {rNode.Name}",
-                        UndoAction: () => { _layer.SetCustomHeight(rNode.Id, startH); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
-                        RedoAction: () => { _layer.SetCustomHeight(rNode.Id, finalH); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+                        UndoAction: () => { _layer.SetCustomHeight(rNode.Id, startH); _layer.RenderAll(rDoc, _selectedNode?.Id, _hoveredNode?.Id); },
+                        RedoAction: () => { _layer.SetCustomHeight(rNode.Id, finalH); _layer.RenderAll(rDoc, _selectedNode?.Id, _hoveredNode?.Id); }));
                 }
             }
             _resizingNode = null;
@@ -658,10 +669,11 @@ public sealed class DiagramCanvas : Canvas
             // Commit drag undo entry for all moved nodes
             if (_undoManager is not null && _doc is not null && _dragStartPositions.Count > 0)
             {
+                var dragDoc = _doc;   // capture current doc
                 var moves = _dragStartPositions
                     .Select(kv =>
                     {
-                        var n = _doc.Classes.FirstOrDefault(x => x.Id == kv.Key);
+                        var n = dragDoc.Classes.FirstOrDefault(x => x.Id == kv.Key);
                         return n is null ? ((ClassNode?)null, kv.Value, new Point()) : (n, kv.Value, new Point(n.X, n.Y));
                     })
                     .Where(t => t.Item1 is not null && (Math.Abs(t.Item3.X - t.Item2.X) > 0.5 || Math.Abs(t.Item3.Y - t.Item2.Y) > 0.5))
@@ -672,8 +684,8 @@ public sealed class DiagramCanvas : Canvas
                     string desc = moves.Count == 1 ? $"Move {moves[0].Node.Name}" : $"Move {moves.Count} nodes";
                     _undoManager.Push(new SingleClassDiagramUndoEntry(
                         Description: desc,
-                        UndoAction: () => { foreach (var m in moves) { m.Node.X = m.From.X; m.Node.Y = m.From.Y; } _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
-                        RedoAction: () => { foreach (var m in moves) { m.Node.X = m.To.X;   m.Node.Y = m.To.Y;   } _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+                        UndoAction: () => { foreach (var m in moves) { m.Node.X = m.From.X; m.Node.Y = m.From.Y; } _layer.RenderAll(dragDoc, _selectedNode?.Id, _hoveredNode?.Id); },
+                        RedoAction: () => { foreach (var m in moves) { m.Node.X = m.To.X;   m.Node.Y = m.To.Y;   } _layer.RenderAll(dragDoc, _selectedNode?.Id, _hoveredNode?.Id); }));
                 }
             }
             _dragNode = null;
@@ -772,13 +784,14 @@ public sealed class DiagramCanvas : Canvas
             Width   = 160,
             Members = entry.DefaultMembers.ToList()
         };
-        _doc.Classes.Add(node);
-        _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        var dropDoc = _doc;   // capture current doc
+        dropDoc.Classes.Add(node);
+        _layer.RenderAll(dropDoc, _selectedNode?.Id, _hoveredNode?.Id);
 
         _undoManager?.Push(new SingleClassDiagramUndoEntry(
             Description: $"Add {node.Name}",
-            UndoAction: () => { _doc.Classes.Remove(node); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
-            RedoAction: () => { _doc.Classes.Add(node);    _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+            UndoAction: () => { dropDoc.Classes.Remove(node); _layer.RenderAll(dropDoc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { dropDoc.Classes.Add(node);    _layer.RenderAll(dropDoc, _selectedNode?.Id, _hoveredNode?.Id); }));
         e.Handled = true;
     }
 
@@ -1023,40 +1036,43 @@ public sealed class DiagramCanvas : Canvas
     private void DeleteNode(ClassNode node)
     {
         if (_doc is null) return;
-        var removedRels = _doc.Relationships.Where(r => r.SourceId == node.Id || r.TargetId == node.Id).ToList();
-        _doc.Classes.Remove(node);
-        _doc.Relationships.RemoveAll(r => r.SourceId == node.Id || r.TargetId == node.Id);
+        var doc        = _doc;   // capture current doc — live-sync may swap _doc later
+        var removedRels = doc.Relationships.Where(r => r.SourceId == node.Id || r.TargetId == node.Id).ToList();
+        doc.Classes.Remove(node);
+        doc.Relationships.RemoveAll(r => r.SourceId == node.Id || r.TargetId == node.Id);
         if (_selectedNode == node) ClearSelection();
-        _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id);
         _undoManager?.Push(new SingleClassDiagramUndoEntry(
             Description: $"Delete {node.Name}",
-            UndoAction: () => { _doc.Classes.Add(node); foreach (var r in removedRels) _doc.Relationships.Add(r); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
-            RedoAction: () => { _doc.Classes.Remove(node); foreach (var r in removedRels) _doc.Relationships.Remove(r); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+            UndoAction: () => { doc.Classes.Add(node); foreach (var r in removedRels) doc.Relationships.Add(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { doc.Classes.Remove(node); foreach (var r in removedRels) doc.Relationships.Remove(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
     }
 
     private void DeleteRelationship(ClassRelationship rel)
     {
         if (_doc is null) return;
-        _doc.Relationships.Remove(rel);
-        _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        var doc = _doc;   // capture current doc
+        doc.Relationships.Remove(rel);
+        _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id);
         _undoManager?.Push(new SingleClassDiagramUndoEntry(
             Description: "Delete relationship",
-            UndoAction: () => { _doc.Relationships.Add(rel); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); },
-            RedoAction: () => { _doc.Relationships.Remove(rel); _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+            UndoAction: () => { doc.Relationships.Add(rel); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { doc.Relationships.Remove(rel); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
     }
 
     private void ChangeRelationshipType(ClassRelationship rel, RelationshipKind newKind)
     {
         if (_doc is null) return;
-        int idx = _doc.Relationships.IndexOf(rel);
+        var doc = _doc;   // capture current doc
+        int idx = doc.Relationships.IndexOf(rel);
         if (idx < 0) return;
         var newRel = rel with { Kind = newKind };
-        _doc.Relationships[idx] = newRel;
-        _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        doc.Relationships[idx] = newRel;
+        _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id);
         _undoManager?.Push(new SingleClassDiagramUndoEntry(
             Description: "Change relationship kind",
-            UndoAction: () => { int i = _doc.Relationships.IndexOf(newRel); if (i >= 0) { _doc.Relationships[i] = rel; _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); } },
-            RedoAction: () => { int i = _doc.Relationships.IndexOf(rel);    if (i >= 0) { _doc.Relationships[i] = newRel; _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id); } }));
+            UndoAction: () => { int i = doc.Relationships.IndexOf(newRel); if (i >= 0) { doc.Relationships[i] = rel; _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); } },
+            RedoAction: () => { int i = doc.Relationships.IndexOf(rel);    if (i >= 0) { doc.Relationships[i] = newRel; _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); } }));
     }
 
     // ── Context menu helpers (delegates to shared DiagramMenuHelpers) ─────────

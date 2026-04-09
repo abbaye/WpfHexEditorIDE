@@ -1189,19 +1189,13 @@ public sealed class ClassDiagramSplitHost : Grid,
     {
         if (_canvas.SelectedNode is null) return;
 
-        ClassNode node = _canvas.SelectedNode;
-        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+        // Delegate to DiagramCanvas.DeleteNode which pushes a position-preserving
+        // SingleClassDiagramUndoEntry. SnapshotClassDiagramUndoEntry must NOT be
+        // used here — ApplyDslSnapshot parses DSL without positions → X=0/Y=0 on undo.
+        _canvas.DeleteSelectedNode();
 
-        _document.Classes.Remove(node);
-        string afterDsl = ClassDiagramSerializer.Serialize(_document);
-
-        _undoManager.Push(new SnapshotClassDiagramUndoEntry(
-            BeforeDsl:  beforeDsl,
-            AfterDsl:   afterDsl,
-            Description: $"Delete {node.Name}",
-            ApplyDsl:   ApplyDslSnapshot));
-
-        _canvas.ApplyDocument(_document);
+        // Keep _document aligned with what the canvas is now showing.
+        if (_canvas.Document is not null) _document = _canvas.Document;
         SyncDslPane();
         SetDirty(true);
     }
