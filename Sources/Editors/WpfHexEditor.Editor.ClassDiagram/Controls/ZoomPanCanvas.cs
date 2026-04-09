@@ -38,6 +38,10 @@ public class ZoomPanCanvas : Canvas
     private double _panStartOffsetX;
     private double _panStartOffsetY;
 
+    // Rubber-band lasso — owned here because DiagramCanvas is too small to receive
+    // empty-area hit-tests (Canvas without explicit size = 0x0 effective hit area).
+    private DiagramCanvas? _rubberBandTarget;
+
     // ---------------------------------------------------------------------------
     // Dependency Properties
     // ---------------------------------------------------------------------------
@@ -84,12 +88,16 @@ public class ZoomPanCanvas : Canvas
         base.OnMouseLeftButtonDown(e);
         if (e.Handled) return;
 
-        // Click landed on ZoomPanCanvas (outside DiagramCanvas bounds) → clear selection.
+        // Click landed on ZoomPanCanvas (empty viewport area outside diagram content).
+        // Start rubber-band lasso; use e.GetPosition(dc) which WPF transforms through
+        // the ancestor RenderTransform chain → correct diagram-space coordinates.
         foreach (UIElement child in InternalChildren)
         {
             if (child is DiagramCanvas dc)
             {
-                dc.ClearSelection();
+                _rubberBandTarget = dc;
+                dc.StartRubberBandAt(e.GetPosition(dc));
+                CaptureMouse();
                 e.Handled = true;
                 return;
             }
@@ -277,21 +285,53 @@ public class ZoomPanCanvas : Canvas
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        if (!_isPanning) return;
 
-        Point current = e.GetPosition(Parent as IInputElement);
-        OffsetX = _panStartOffsetX + (current.X - _panStartMouse.X);
-        OffsetY = _panStartOffsetY + (current.Y - _panStartMouse.Y);
-        e.Handled = true;
+        if (_isPanning)
+        {
+            Point current = e.GetPosition(Parent as IInputElement);
+            OffsetX = _panStartOffsetX + (current.X - _panStartMouse.X);
+            OffsetY = _panStartOffsetY + (current.Y - _panStartMouse.Y);
+            e.Handled = true;
+            return;
+        }
+
+        if (_rubberBandTarget is not null)
+        {
+            _rubberBandTarget.UpdateRubberBandAt(e.GetPosition(_rubberBandTarget));
+            e.Handled = true;
+        }
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)
     {
         base.OnMouseUp(e);
-        if (!_isPanning) return;
+
+        if (_isPanning && e.ChangedButton == MouseButton.Middle)
+        {
+            _isPanning = false;
+            ReleaseMouseCapture();
+            e.Handled = true;
+            return;
+        }
+
+        if (_rubberBandTarget is not null && e.ChangedButton == MouseButton.Left)
+        {
+            _rubberBandTarget.FinishRubberBandAt(e.GetPosition(_rubberBandTarget));
+            _rubberBandTarget = null;
+            ReleaseMouseCapture();
+            e.Handled = true;
+        }
+    }
+
+    protected override void OnLostMouseCapture(MouseEventArgs e)
+    {
+        base.OnLostMouseCapture(e);
+        if (_rubberBandTarget is not null)
+        {
+            _rubberBandTarget.CancelRubberBand();
+            _rubberBandTarget = null;
+        }
         _isPanning = false;
-        ReleaseMouseCapture();
-        e.Handled = true;
     }
 }
 

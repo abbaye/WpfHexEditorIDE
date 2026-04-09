@@ -93,6 +93,9 @@ public sealed class DiagramCanvas : Canvas
     // ── Undo manager (injected by ClassDiagramSplitHost) ─────────────────────
     private ClassDiagramUndoManager? _undoManager;
 
+    // ── Snap engine (injected by ClassDiagramSplitHost) ──────────────────────
+    private ClassSnapEngineService? _snapEngine;
+
     // ── Last right-click canvas position (diagram coordinates) ───────────────
     private Point _lastMenuPoint;
 
@@ -167,6 +170,9 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Injects the undo manager so drag/resize/delete ops are undoable.</summary>
     public void SetUndoManager(ClassDiagramUndoManager um) => _undoManager = um;
 
+    /// <summary>Injects the snap engine so drag-move snaps to grid when enabled.</summary>
+    public void SetSnapEngine(ClassSnapEngineService snap) => _snapEngine = snap;
+
     /// <summary>Rebuilds all visuals from the given document.</summary>
     public void ApplyDocument(DiagramDocument doc)
     {
@@ -219,6 +225,85 @@ public sealed class DiagramCanvas : Canvas
         SelectedClassChanged?.Invoke(this, null);
     }
 
+    // ── Rubber-band API (called by ZoomPanCanvas in diagram-space coordinates) ──
+
+    /// <summary>
+    /// Begins a rubber-band lasso drag at <paramref name="diagramPt"/>.
+    /// Called by ZoomPanCanvas when a left-button-down lands on empty viewport area.
+    /// Coordinates must be in diagram (logical, unscaled) space.
+    /// </summary>
+    public void StartRubberBandAt(Point diagramPt)
+    {
+        if (_selectedIds.Count > 0) ClearSelection();
+        _isRubberBanding = true;
+        _rubberStart     = diagramPt;
+    }
+
+    /// <summary>
+    /// Updates the rubber-band lasso to <paramref name="diagramPt"/> and refreshes the
+    /// Explorer-style live pre-selection. Called by ZoomPanCanvas on every MouseMove.
+    /// </summary>
+    public void UpdateRubberBandAt(Point diagramPt)
+    {
+        if (!_isRubberBanding) return;
+        _layer.DrawRubberBand(_rubberStart, diagramPt);
+
+        if (_doc is not null)
+        {
+            var lasso = DiagramVisualLayer.GetRubberBandRect(_rubberStart, diagramPt);
+            var hits  = new HashSet<string>(StringComparer.Ordinal);
+            if (lasso.Width > 2 && lasso.Height > 2)
+                foreach (var n in _doc.Classes)
+                {
+                    var nb = new Rect(n.X, n.Y, n.Width, _layer.ComputeNodeHeight(n));
+                    if (lasso.IntersectsWith(nb)) hits.Add(n.Id);
+                }
+            _layer.SetPreSelection(hits);
+        }
+    }
+
+    /// <summary>
+    /// Finishes the rubber-band lasso at <paramref name="diagramPt"/>, promotes pre-selection
+    /// to the real selection set, and clears the lasso visuals.
+    /// </summary>
+    public void FinishRubberBandAt(Point diagramPt)
+    {
+        if (!_isRubberBanding) return;
+        _isRubberBanding = false;
+
+        Rect selRect = DiagramVisualLayer.GetRubberBandRect(_rubberStart, diagramPt);
+        _layer.ClearRubberBand();
+        _layer.ClearPreSelection();
+
+        if (_doc is not null && selRect.Width > 2 && selRect.Height > 2)
+        {
+            if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                _selectedIds.Clear();
+
+            foreach (var n in _doc.Classes)
+            {
+                var nb = new Rect(n.X, n.Y, n.Width, _layer.ComputeNodeHeight(n));
+                if (selRect.IntersectsWith(nb)) _selectedIds.Add(n.Id);
+            }
+            _primarySelected = _selectedIds.Count == 1
+                ? _doc.Classes.FirstOrDefault(n => _selectedIds.Contains(n.Id))
+                : null;
+            _layer.SetMultiSelection(_selectedIds);
+            RedrawSelectionVisual();
+            _layer.UpdateSelection(_primarySelected?.Id, _hoveredNode?.Id);
+            SelectedClassChanged?.Invoke(this, _primarySelected);
+        }
+    }
+
+    /// <summary>Cancels an in-progress rubber-band without updating selection.</summary>
+    public void CancelRubberBand()
+    {
+        if (!_isRubberBanding) return;
+        _isRubberBanding = false;
+        _layer.ClearRubberBand();
+        _layer.ClearPreSelection();
+    }
+
     /// <summary>Selects the node with the given Id; no-op if not found.</summary>
     public void SelectNodeById(string nodeId)
     {
@@ -258,6 +343,21 @@ public sealed class DiagramCanvas : Canvas
     /// Pass null to clear the current highlight.
     /// </summary>
     public void HighlightRelationship(string? relId) => _layer.HighlightRelationship(relId);
+
+    /// <summary>Exposes the visual layer for .whcd persistence (same assembly only).</summary>
+    internal DiagramVisualLayer VisualLayer => _layer;
+
+    /// <summary>Gets or sets whether namespace swimlane backgrounds are rendered.</summary>
+    public bool ShowSwimLanes
+    {
+        get => _layer.ShowSwimLanes;
+        set
+        {
+            _layer.ShowSwimLanes = value;
+            if (_doc is not null)
+                _layer.RenderAll(_doc, _selectedNode?.Id, _hoveredNode?.Id);
+        }
+    }
 
     // ── Loaded ────────────────────────────────────────────────────────────────
 
@@ -554,11 +654,9 @@ public sealed class DiagramCanvas : Canvas
         }
         else
         {
-            // Click on empty area — clear selection then start rubber-band
+            // Click on empty area within DiagramCanvas bounds — rubber-band is handled
+            // by ZoomPanCanvas (which fills the full viewport). Nothing to do here.
             if (_selectedIds.Count > 0) ClearSelection();
-            _isRubberBanding = true;
-            _rubberStart     = pt;
-            CaptureMouse();
         }
 
         e.Handled = true;
@@ -590,35 +688,34 @@ public sealed class DiagramCanvas : Canvas
                 // Move all selected nodes together
                 foreach (var n in _doc!.Classes.Where(n => _dragStartPositions.ContainsKey(n.Id)))
                 {
-                    n.X = Math.Max(0, _dragStartPositions[n.Id].X + dx);
-                    n.Y = Math.Max(0, _dragStartPositions[n.Id].Y + dy);
+                    double rawX = Math.Max(0, _dragStartPositions[n.Id].X + dx);
+                    double rawY = Math.Max(0, _dragStartPositions[n.Id].Y + dy);
+                    if (_snapEngine is { SnapToGrid: true })
+                    {
+                        var snapped = _snapEngine.SnapPoint(rawX, rawY, []);
+                        n.X = snapped.X; n.Y = snapped.Y;
+                    }
+                    else { n.X = rawX; n.Y = rawY; }
                 }
                 ApplyPatch(_selectedIds);
             }
             else
             {
-                _dragNode.X = Math.Max(0, _dragNodeStartX + dx);
-                _dragNode.Y = Math.Max(0, _dragNodeStartY + dy);
+                double rawX = Math.Max(0, _dragNodeStartX + dx);
+                double rawY = Math.Max(0, _dragNodeStartY + dy);
+                if (_snapEngine is { SnapToGrid: true })
+                {
+                    var snapped = _snapEngine.SnapPoint(rawX, rawY, []);
+                    _dragNode.X = snapped.X; _dragNode.Y = snapped.Y;
+                }
+                else { _dragNode.X = rawX; _dragNode.Y = rawY; }
                 ApplyPatch([_dragNode.Id]);
             }
         }
         else if (_isRubberBanding)
         {
-            _layer.DrawRubberBand(_rubberStart, pt);
-
-            // Explorer-style: highlight nodes covered by the lasso in real-time
-            if (_doc is not null)
-            {
-                var lasso = DiagramVisualLayer.GetRubberBandRect(_rubberStart, pt);
-                var hits  = new HashSet<string>(StringComparer.Ordinal);
-                if (lasso.Width > 2 && lasso.Height > 2)
-                    foreach (var n in _doc.Classes)
-                    {
-                        var nb = new Rect(n.X, n.Y, n.Width, _layer.ComputeNodeHeight(n));
-                        if (lasso.IntersectsWith(nb)) hits.Add(n.Id);
-                    }
-                _layer.SetPreSelection(hits);
-            }
+            // Rubber-band move is driven by ZoomPanCanvas (which owns the capture).
+            // UpdateRubberBandAt() is called directly from there with diagram-space coords.
         }
         else
         {
@@ -720,34 +817,7 @@ public sealed class DiagramCanvas : Canvas
             _dragNode = null;
             _dragStartPositions.Clear();
         }
-        else if (_isRubberBanding)
-        {
-            _isRubberBanding = false;
-            Point end     = e.GetPosition(this);
-            Rect selRect  = DiagramVisualLayer.GetRubberBandRect(_rubberStart, end);
-            _layer.ClearRubberBand();
-            _layer.ClearPreSelection();
-
-            if (_doc is not null && selRect.Width > 2 && selRect.Height > 2)
-            {
-                // Ctrl held → add to existing set; plain → replace
-                if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-                    _selectedIds.Clear();
-
-                foreach (var n in _doc.Classes)
-                {
-                    var nb = new Rect(n.X, n.Y, n.Width, _layer.ComputeNodeHeight(n));
-                    if (selRect.IntersectsWith(nb)) _selectedIds.Add(n.Id);
-                }
-                _primarySelected = _selectedIds.Count == 1
-                    ? _doc.Classes.FirstOrDefault(n => _selectedIds.Contains(n.Id))
-                    : null;
-                _layer.SetMultiSelection(_selectedIds);
-                RedrawSelectionVisual();
-                _layer.UpdateSelection(_primarySelected?.Id, _hoveredNode?.Id);
-                SelectedClassChanged?.Invoke(this, _primarySelected);
-            }
-        }
+        // Rubber-band release is handled by ZoomPanCanvas via FinishRubberBandAt().
     }
 
     protected override void OnLostMouseCapture(MouseEventArgs e)
