@@ -97,11 +97,15 @@ public sealed class WorkspaceManager : IWorkspaceManager
 
             Solution = new WorkspaceSolutionState(capture.SolutionPath),
 
-            Files    = capture.OpenFilePaths
-                              .Where(static p => !string.IsNullOrEmpty(p))
-                              .Select(static p => new OpenFileEntry(p))
+            Files    = capture.OpenFiles
+                              .Where(static e => !string.IsNullOrEmpty(e.Path))
                               .ToList(),
 
-            Settings = new WorkspaceSettingsOverride(capture.ThemeName),
+            Settings = new WorkspaceSettingsOverride(
+                capture.ThemeName,
+                capture.ActiveBuildConfigName,
+                capture.ActiveBuildPlatform),
+
+            PluginStates = capture.PluginStates ?? new WorkspacePluginState(),
         };
 }

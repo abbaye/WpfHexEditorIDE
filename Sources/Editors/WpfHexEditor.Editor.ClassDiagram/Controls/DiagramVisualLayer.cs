@@ -111,6 +111,25 @@ public sealed class DiagramVisualLayer : FrameworkElement
     // ── Toggles (set by ClassDiagramSplitHost toolbar) ───────────────────────
     public bool ShowSwimLanes { get; set; } = false;
 
+    // ── Persistence accessors (used by ClassDiagramSplitHost.GetWhcdState) ───
+
+    /// <summary>Read-only snapshot of per-node custom heights for .whcd persistence.</summary>
+    public IReadOnlyDictionary<string, double> CustomHeights => _customHeights;
+
+    /// <summary>Read-only snapshot of collapsed sections for .whcd persistence.</summary>
+    public IReadOnlyDictionary<string, HashSet<string>> CollapsedSectionMap => _collapsedSections;
+
+    /// <summary>
+    /// Restores collapsed-section state from a deserialized .whcd document.
+    /// Replaces any existing in-memory state; call before RenderAll.
+    /// </summary>
+    public void RestoreCollapsedSections(Dictionary<string, HashSet<string>> map)
+    {
+        _collapsedSections.Clear();
+        foreach (var kv in map)
+            _collapsedSections[kv.Key] = kv.Value;
+    }
+
     // ── FrameworkElement visual tree overrides ───────────────────────────────
 
     protected override int    VisualChildrenCount         => _visuals.Count;

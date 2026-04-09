@@ -253,6 +253,74 @@
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,12"/>
 
+            <!-- ── Separator ─────────────────────────────────────────────── -->
+            <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
+
+            <!-- ── Section: Solution Generation ─────────────────────────── -->
+            <TextBlock Text="Solution Generation"
+                       FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource PFP_AccentBrush}"
+                       Margin="0,0,0,6"/>
+
+            <TextBlock TextWrapping="Wrap"
+                       Foreground="{DynamicResource PFP_SubTextBrush}"
+                       FontSize="11"
+                       Margin="0,0,0,8">
+                Controls the behaviour of "Generate Class Diagram for Solution".
+                The generated diagram groups types by project with per-project swimlanes
+                and persists its state to a .whscd twin file next to the solution.
+            </TextBlock>
+
+            <CheckBox x:Name="ChkSolutionShowSwimLanes"
+                      Content="Show per-project swimlanes by default"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,4"/>
+
+            <CheckBox x:Name="ChkSolutionIncludePrivate"
+                      Content="Include private and protected members"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,4"/>
+
+            <CheckBox x:Name="ChkSolutionIncludeInternal"
+                      Content="Include internal (non-public) types"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,4"/>
+
+            <CheckBox x:Name="ChkSolutionExcludeTestProjects"
+                      Content="Auto-exclude test projects (names containing Test, Tests, Spec)"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      Margin="0,0,0,8"/>
+
+            <!-- Max files prompt threshold -->
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Warn when solution exceeds (files):"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBox x:Name="TxtSolutionMaxFiles"
+                             Width="60"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                             Foreground="{DynamicResource PFP_TextBrush}"
+                             BorderBrush="{DynamicResource PFP_BorderBrush}"
+                             CaretBrush="{DynamicResource PFP_TextBrush}"
+                             Padding="4,2"
+                             FontSize="12"
+                             MaxLength="5"
+                             TextAlignment="Right"/>
+                    <TextBlock Text="files (0 = never)"
+                               Margin="6,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               FontSize="11"/>
+                </StackPanel>
+            </Grid>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -16,6 +16,7 @@
 // ==========================================================
 
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.PluginHost.Services;
 
@@ -26,6 +27,9 @@ namespace WpfHexEditor.PluginHost.Services;
 internal sealed class PluginCapabilityRegistry : IPluginCapabilityRegistry
 {
     private readonly IReadOnlyDictionary<string, PluginEntry> _entries;
+
+    // Workspace-persistable registrations — populated at plugin init time.
+    private readonly List<(string PluginId, IWorkspacePersistable Persistable)> _persistables = new();
 
     public PluginCapabilityRegistry(IReadOnlyDictionary<string, PluginEntry> entries)
     {
@@ -65,4 +69,17 @@ internal sealed class PluginCapabilityRegistry : IPluginCapabilityRegistry
             .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
             .ToList();
     }
+
+    /// <inheritdoc />
+    public void RegisterWorkspacePersistable(string pluginId, IWorkspacePersistable persistable)
+    {
+        if (string.IsNullOrWhiteSpace(pluginId))
+            throw new ArgumentException("Plugin ID must not be empty.", nameof(pluginId));
+        ArgumentNullException.ThrowIfNull(persistable);
+        _persistables.Add((pluginId, persistable));
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<(string PluginId, IWorkspacePersistable Persistable)> GetWorkspacePersistables()
+        => _persistables;
 }

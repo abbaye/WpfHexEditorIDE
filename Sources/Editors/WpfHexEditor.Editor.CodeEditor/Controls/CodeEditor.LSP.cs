@@ -1499,6 +1499,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 ["wordWrap"] = IsWordWrapEnabled ? "1" : "0"
             };
+
+            // Persist collapsed fold regions as 0-based start lines (comma-separated)
+            if (_foldingEngine is not null)
+            {
+                var foldedLines = string.Join(",",
+                    _foldingEngine.Regions
+                        .Where(r => r.IsCollapsed)
+                        .Select(r => r.StartLine.ToString()));
+                if (foldedLines.Length > 0)
+                    extra["foldedLines"] = foldedLines;
+            }
+
             return new EditorConfigDto
             {
                 CaretLine        = _cursorLine + 1,   // store 1-based
@@ -1508,6 +1520,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Extra            = extra,
             };
         }
+
+        // Lines to collapse on the next RegionsChanged event (set during ApplyEditorConfig).
+        private HashSet<int>? _pendingFoldLines;
 
         void IEditorPersistable.ApplyEditorConfig(EditorConfigDto config)
         {
@@ -1522,6 +1537,38 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             if (config.Extra?.TryGetValue("wordWrap", out var ww) == true)
                 IsWordWrapEnabled = ww == "1";
+
+            // Fold restore: defer to the first RegionsChanged event so the folding
+            // engine has completed its first analysis pass.
+            if (config.Extra?.TryGetValue("foldedLines", out var raw) == true
+                && !string.IsNullOrEmpty(raw))
+            {
+                _pendingFoldLines = new HashSet<int>(
+                    raw.Split(',')
+                       .Select(s => int.TryParse(s, out int n) ? n : -1)
+                       .Where(n => n >= 0));
+
+                if (_foldingEngine is not null && _pendingFoldLines.Count > 0)
+                    _foldingEngine.RegionsChanged += ApplyPendingFoldLines;
+            }
+
+            InvalidateVisual();
+        }
+
+        private void ApplyPendingFoldLines(object? sender, EventArgs e)
+        {
+            if (_foldingEngine is null) return;
+            _foldingEngine.RegionsChanged -= ApplyPendingFoldLines;
+
+            var targets = _pendingFoldLines;
+            _pendingFoldLines = null;
+            if (targets is null || targets.Count == 0) return;
+
+            foreach (var region in _foldingEngine.Regions)
+            {
+                if (targets.Contains(region.StartLine))
+                    region.IsCollapsed = true;
+            }
             InvalidateVisual();
         }
 

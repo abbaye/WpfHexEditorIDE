@@ -29,26 +29,43 @@ public sealed record WorkspaceSolutionState(
 
 /// <summary>Partial settings overrides stored in settings.json (null = use global).</summary>
 public sealed record WorkspaceSettingsOverride(
-    string? ThemeName);
+    string? ThemeName,
+    string? ActiveBuildConfigName = null,
+    string? ActiveBuildPlatform   = null);
 
 /// <summary>
 /// A delta passed into SaveAsync / NewAsync to capture the current IDE state.
 /// The App layer constructs this just before writing the .whidews file.
 /// </summary>
 public sealed record WorkspaceCapture(
-    string                LayoutJson,
-    string?               SolutionPath,
-    IReadOnlyList<string> OpenFilePaths,
-    string?               ThemeName);
+    string                       LayoutJson,
+    string?                      SolutionPath,
+    IReadOnlyList<OpenFileEntry> OpenFiles,
+    string?                      ThemeName,
+    string?                      ActiveBuildConfigName = null,
+    string?                      ActiveBuildPlatform   = null,
+    WorkspacePluginState?        PluginStates          = null);
+
+/// <summary>
+/// Per-plugin state bag stored as <c>plugins.json</c> inside the .whidews archive.
+/// Each entry is keyed by plugin ID; the value is a raw JSON string produced by
+/// <c>IWorkspacePersistable.CaptureWorkspaceState()</c>.
+/// </summary>
+public sealed class WorkspacePluginState
+{
+    /// <summary>Plugin state entries keyed by stable plugin ID.</summary>
+    public Dictionary<string, string> Entries { get; init; } = new();
+}
 
 /// <summary>Full in-memory representation of a .whidews workspace.</summary>
 public sealed class WorkspaceState
 {
-    public WorkspaceManifest         Manifest  { get; init; } = new("Unnamed");
-    public string                    Layout    { get; init; } = string.Empty;
-    public WorkspaceSolutionState    Solution  { get; init; } = new(null);
-    public IReadOnlyList<OpenFileEntry> Files  { get; init; } = [];
-    public WorkspaceSettingsOverride Settings  { get; init; } = new(null);
+    public WorkspaceManifest            Manifest     { get; init; } = new("Unnamed");
+    public string                       Layout       { get; init; } = string.Empty;
+    public WorkspaceSolutionState       Solution     { get; init; } = new(null);
+    public IReadOnlyList<OpenFileEntry> Files        { get; init; } = [];
+    public WorkspaceSettingsOverride    Settings     { get; init; } = new(null);
+    public WorkspacePluginState         PluginStates { get; init; } = new();
 }
 
 /// <summary>Event arguments for workspace-opened notifications.</summary>

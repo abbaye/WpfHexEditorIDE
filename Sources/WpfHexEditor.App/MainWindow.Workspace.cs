@@ -18,6 +18,8 @@ using Microsoft.Win32;
 using WpfHexEditor.Core.Workspaces;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Docking.Core.Serialization;
+using WpfHexEditor.Editor.Core;
+using System.Text.Json;
 
 namespace WpfHexEditor.App;
 
@@ -193,16 +195,54 @@ public partial class MainWindow
         if (_preFullScreenState.HasValue)
             _layout.WindowState = (int)_preFullScreenState.Value;
 
-        var layoutJson  = DockLayoutSerializer.Serialize(_layout);
+        var layoutJson   = DockLayoutSerializer.Serialize(_layout);
         var solutionPath = _solutionManager.CurrentSolution?.FilePath;
-        var openFiles   = _documentManager.OpenDocuments
-                            .Select(d => d.FilePath)
-                            .Where(p => p is not null)
-                            .Cast<string>()
-                            .ToList();
-        var themeName   = WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.ActiveThemeName;
+        var themeName    = WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.ActiveThemeName;
 
-        return new WorkspaceCapture(layoutJson, solutionPath, openFiles, themeName);
+        var openFiles = _documentManager.OpenDocuments
+            .Where(d => d.FilePath is not null)
+            .Select(d =>
+            {
+                int line = 0, col = 0;
+                if (_contentCache.TryGetValue(d.ContentId, out var ui)
+                    && ui is IEditorPersistable persistable)
+                {
+                    var cfg = persistable.GetEditorConfig();
+                    line = cfg.CaretLine;
+                    col  = cfg.CaretColumn;
+                }
+                return new OpenFileEntry(d.FilePath!, d.EditorId, line, col);
+            })
+            .ToList();
+
+        // Collect plugin states from all registered IWorkspacePersistable plugins
+        WorkspacePluginState? pluginStates = null;
+        if (_pluginHost is not null)
+        {
+            var persistables = _pluginHost.CapabilityRegistry.GetWorkspacePersistables();
+            if (persistables.Count > 0)
+            {
+                var entries = new Dictionary<string, string>();
+                foreach (var (pluginId, persistable) in persistables)
+                {
+                    try
+                    {
+                        var stateObj = persistable.CaptureWorkspaceState();
+                        if (stateObj is not null)
+                            entries[pluginId] = JsonSerializer.Serialize(stateObj);
+                    }
+                    catch (Exception ex)
+                    {
+                        OutputLogger.PluginError($"[Workspace] Plugin '{pluginId}' capture failed: {ex.Message}");
+                    }
+                }
+                if (entries.Count > 0)
+                    pluginStates = new WorkspacePluginState { Entries = entries };
+            }
+        }
+
+        return new WorkspaceCapture(layoutJson, solutionPath, openFiles, themeName,
+            ActiveBuildConfiguration, ActiveBuildPlatform, pluginStates);
     }
 
     // ── State restore ──────────────────────────────────────────────────────────
@@ -263,6 +303,30 @@ public partial class MainWindow
                 if (!File.Exists(entry.Path))              continue;
 
                 OpenStandaloneFileWithEditor(entry.Path, entry.EditorId);
+            }
+        }
+
+        // 5. Build configuration (applied after solution load so the config list is populated)
+        if (!string.IsNullOrEmpty(state.Settings?.ActiveBuildConfigName))
+            ActiveBuildConfiguration = state.Settings.ActiveBuildConfigName;
+        if (!string.IsNullOrEmpty(state.Settings?.ActiveBuildPlatform))
+            ActiveBuildPlatform = state.Settings.ActiveBuildPlatform;
+
+        // 6. Plugin workspace states (applied last — after all IDE state is restored)
+        if (_pluginHost is not null && state.PluginStates.Entries.Count > 0)
+        {
+            var persistables = _pluginHost.CapabilityRegistry.GetWorkspacePersistables();
+            foreach (var (pluginId, persistable) in persistables)
+            {
+                if (!state.PluginStates.Entries.TryGetValue(pluginId, out var json)) continue;
+                try
+                {
+                    await persistable.RestoreWorkspaceStateAsync(json);
+                }
+                catch (Exception ex)
+                {
+                    OutputLogger.PluginError($"[Workspace] Plugin '{pluginId}' restore failed: {ex.Message}");
+                }
             }
         }
     }

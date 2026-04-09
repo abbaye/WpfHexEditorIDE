@@ -782,6 +782,7 @@ file sealed class NullSolutionExplorerService : ISolutionExplorerService
     public Task CloseSolutionAsync(CancellationToken ct = default) => Task.CompletedTask;
     public Task ReloadSolutionAsync(CancellationToken ct = default) => Task.CompletedTask;
     public IReadOnlyList<string> GetFilesInDirectory(string path) => [];
+    public IReadOnlyList<SolutionProjectInfo> GetSolutionProjects() => [];
     public event EventHandler? SolutionChanged { add { } remove { } }
 }
 
@@ -795,6 +796,8 @@ file sealed class NullPluginCapabilityRegistry : IPluginCapabilityRegistry
     public bool PluginHasFeature(string pluginId, string feature) => false;
     public IReadOnlyList<string> GetFeaturesForPlugin(string pluginId) => [];
     public IReadOnlyList<string> GetAllRegisteredFeatures() => [];
+    public void RegisterWorkspacePersistable(string pluginId, IWorkspacePersistable persistable) { }
+    public IReadOnlyList<(string PluginId, IWorkspacePersistable Persistable)> GetWorkspacePersistables() => [];
 }
 
 file sealed class NullExtensionRegistry : IExtensionRegistry

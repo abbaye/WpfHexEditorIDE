@@ -18,6 +18,11 @@
     <EmbeddedResource Include="FormatDefinitions\**\*.grammar" />
   </ItemGroup>
 
+  <!-- JSON Schema files distributed alongside the assembly -->
+  <ItemGroup>
+    <None Include="*.schema.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
   </ItemGroup>

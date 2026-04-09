@@ -56,11 +56,15 @@
                                                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
                             </Grid>
                         </Border>
-                        <ContentPresenter Grid.Row="1"
-                                          x:Name="PART_SelectedContentHost"
-                                          ContentSource="SelectedContent"
-                                          KeyboardNavigation.TabNavigation="Local"
-                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                        <Border Grid.Row="1"
+                                CornerRadius="{DynamicResource DockPanelCornerRadius}"
+                                Background="{DynamicResource DockBackgroundBrush}"
+                                ClipToBounds="True">
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                                              ContentSource="SelectedContent"
+                                              KeyboardNavigation.TabNavigation="Local"
+                                              KeyboardNavigation.DirectionalNavigation="Contained" />
+                        </Border>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -97,11 +101,15 @@
                                                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
                             </Grid>
                         </Border>
-                        <ContentPresenter Grid.Row="1"
-                                          x:Name="PART_SelectedContentHost"
-                                          ContentSource="SelectedContent"
-                                          KeyboardNavigation.TabNavigation="Local"
-                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                        <Border Grid.Row="1"
+                                CornerRadius="{DynamicResource DockPanelCornerRadius}"
+                                Background="{DynamicResource DockBackgroundBrush}"
+                                ClipToBounds="True">
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                                              ContentSource="SelectedContent"
+                                              KeyboardNavigation.TabNavigation="Local"
+                                              KeyboardNavigation.DirectionalNavigation="Contained" />
+                        </Border>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -121,11 +129,15 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ContentPresenter Grid.Row="0"
-                                          x:Name="PART_SelectedContentHost"
-                                          ContentSource="SelectedContent"
-                                          KeyboardNavigation.TabNavigation="Local"
-                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                        <Border Grid.Row="0"
+                                CornerRadius="{DynamicResource DockPanelCornerRadius}"
+                                Background="{DynamicResource DockBackgroundBrush}"
+                                ClipToBounds="True">
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                                              ContentSource="SelectedContent"
+                                              KeyboardNavigation.TabNavigation="Local"
+                                              KeyboardNavigation.DirectionalNavigation="Contained" />
+                        </Border>
                         <!-- No top separator: the outer panel border's bottom edge serves as the
                              visual boundary between the content area and the tab strip. -->
                         <Border x:Name="PART_TabStrip"

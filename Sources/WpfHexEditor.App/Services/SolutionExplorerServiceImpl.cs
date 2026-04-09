@@ -108,4 +108,29 @@ public sealed class SolutionExplorerServiceImpl : ISolutionExplorerService
             .Select(i => i.AbsolutePath)
             .ToList();
     }
+
+    public IReadOnlyList<SolutionProjectInfo> GetSolutionProjects()
+    {
+        if (_solutionManager.CurrentSolution is null) return [];
+
+        var result = new List<SolutionProjectInfo>();
+        foreach (IProject project in _solutionManager.CurrentSolution.Projects)
+        {
+            var files = project.Items
+                .Where(i => !string.IsNullOrEmpty(i.AbsolutePath)
+                         && IsSourceFile(i.AbsolutePath))
+                .Select(i => i.AbsolutePath)
+                .ToList() as IReadOnlyList<string>;
+
+            result.Add(new SolutionProjectInfo(
+                Name:        project.Name,
+                ProjectPath: project.ProjectFilePath,
+                SourceFiles: files));
+        }
+        return result;
+    }
+
+    private static bool IsSourceFile(string path)
+        => path.EndsWith(".cs",  StringComparison.OrdinalIgnoreCase)
+        || path.EndsWith(".vb",  StringComparison.OrdinalIgnoreCase);
 }

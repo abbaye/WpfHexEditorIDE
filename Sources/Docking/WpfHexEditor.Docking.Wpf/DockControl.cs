@@ -80,11 +80,17 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private readonly ContentControl _centerHost;
     private Border? _activePanel;
 
+    // All panel borders currently in the visual tree (cleared + repopulated on every RebuildVisualTree).
+    private readonly List<Border> _panelBorders = [];
+
     /// <summary>
     /// Controls the visual highlight style applied to the active panel container.
     /// Use <see cref="ApplyHighlightMode"/> for live updates (re-renders the current active panel).
     /// </summary>
     public ActivePanelHighlightMode PanelHighlightMode { get; set; } = ActivePanelHighlightMode.TopBar;
+
+    /// <summary>Corner radius in px applied to the bottom corners of every panel border. Default 4.</summary>
+    public double PanelCornerRadius { get; set; } = 4.0;
 
     // Bitmap snapshots captured when an auto-hide flyout is dismissed,
     // keyed by DockItem so AutoHideBarHoverPreview can display them.
@@ -1141,6 +1147,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
         _tabControlCache.Clear();  // M2.1: clear stale group→tab mappings
+        _panelBorders.Clear();
         _activePanel = null;
 
         if (Layout is null)
@@ -1769,29 +1776,57 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
+    /// Updates the corner radius on all currently active panel borders and rebuilds their clip geometries.
+    /// Call this after <see cref="PanelCornerRadius"/> is changed at runtime (e.g. from options page).
+    /// </summary>
+    public void UpdatePanelCornerRadius(double r)
+    {
+        PanelCornerRadius = r;
+        foreach (var border in _panelBorders)
+        {
+            border.CornerRadius = new CornerRadius(r);
+            if (border.Clip is RectangleGeometry rg)
+            {
+                rg.RadiusX = r;
+                rg.RadiusY = r;
+            }
+        }
+        // Rebuild the active highlight border with the new shape.
+        if (_activePanel is not null)
+            ApplyHighlightToBorder(_activePanel);
+    }
+
+    /// <summary>
     /// Wraps any UIElement in a panel border with rounded corners and a small margin (VS2026-style).
     /// No visible border initially; a 2px top accent appears when the panel is activated.
     /// Children are clipped to the rounded shape via a dynamic RectangleGeometry clip.
     /// </summary>
     private Border CreatePanelBorder(UIElement content)
     {
-        const double radius = 6.0;
+        var radius = PanelCornerRadius;
         var border = new Border
         {
             Child               = content,
             BorderThickness     = new Thickness(0),
-            // VS-like: top corners square (flush with IDE chrome), bottom corners rounded
-            // (rounds over the tab strip bottom edge).
-            CornerRadius        = new CornerRadius(0, 0, radius, radius),
+            CornerRadius        = new CornerRadius(radius),
             Margin              = new Thickness(2),
             SnapsToDevicePixels = true
         };
         border.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
+        _panelBorders.Add(border);
 
-        // Clip children to bottom-only rounded rectangle: top corners stay sharp,
-        // bottom corners match the CornerRadius so child content is cleanly clipped.
+        // WPF Border.ClipToBounds only clips to the rectangular bounds, not to the rounded
+        // corner shape. We use a RectangleGeometry (with RadiusX/RadiusY) assigned to Clip
+        // so ALL child rendering — including tab strip and content — is clipped to the
+        // rounded rectangle. Updated on every SizeChanged to stay in sync.
+        var clip = new RectangleGeometry { RadiusX = radius, RadiusY = radius };
+        border.Clip = clip;
         border.SizeChanged += (_, e) =>
-            border.Clip = BuildBottomRoundedClip(e.NewSize, radius);
+        {
+            clip.Rect    = new Rect(e.NewSize);
+            clip.RadiusX = PanelCornerRadius;
+            clip.RadiusY = PanelCornerRadius;
+        };
 
         // Activate on ANY mouse click inside the panel (tunneling catches handled events)
         border.AddHandler(
@@ -1806,35 +1841,6 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             handledEventsToo: true);
 
         return border;
-    }
-
-    /// <summary>
-    /// Clip geometry with square top corners and rounded bottom corners.
-    /// Matches <see cref="CreatePanelBorder"/>'s <c>CornerRadius(0,0,r,r)</c>
-    /// so child content is precisely clipped at the tab strip's rounded bottom edge.
-    /// </summary>
-    private static StreamGeometry BuildBottomRoundedClip(Size size, double radius)
-    {
-        double w = size.Width;
-        double h = size.Height;
-        double r = Math.Min(radius, Math.Min(w / 2.0, h / 2.0));
-
-        var sg = new StreamGeometry();
-        using (var ctx = sg.Open())
-        {
-            ctx.BeginFigure(new Point(0, 0), isFilled: true, isClosed: true);
-            ctx.LineTo(new Point(w, 0),     isStroked: true, isSmoothJoin: false);
-            ctx.LineTo(new Point(w, h - r), isStroked: true, isSmoothJoin: false);
-            ctx.ArcTo(new Point(w - r, h),  new Size(r, r), 0,
-                      isLargeArc: false, sweepDirection: SweepDirection.Clockwise,
-                      isStroked: true, isSmoothJoin: false);
-            ctx.LineTo(new Point(r, h),     isStroked: true, isSmoothJoin: false);
-            ctx.ArcTo(new Point(0, h - r),  new Size(r, r), 0,
-                      isLargeArc: false, sweepDirection: SweepDirection.Clockwise,
-                      isStroked: true, isSmoothJoin: false);
-        }
-        sg.Freeze();
-        return sg;
     }
 
     /// <summary>

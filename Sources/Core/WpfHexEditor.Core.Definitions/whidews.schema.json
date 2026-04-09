@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://wpfhexeditor.dev/schemas/whidews.schema.json",
+  "title": "WpfHexEditor IDE Workspace",
+  "description": "Schema for .whidews workspace archive files. A .whidews file is a ZIP archive containing multiple JSON entries that capture the full IDE state (layout, open files, solution, theme).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "version"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable workspace name shown in the title bar and recent workspaces list.",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version. Must be \"1.0\".",
+      "enum": ["1.0"]
+    },
+    "createdAt": {
+      "type": ["string", "null"],
+      "description": "ISO 8601 timestamp of when the workspace was first created.",
+      "format": "date-time",
+      "examples": ["2026-04-08T14:30:00Z"]
+    },
+    "author": {
+      "type": ["string", "null"],
+      "description": "Optional author name or machine identity recorded when the workspace was saved."
+    }
+  },
+  "definitions": {
+    "Manifest": {
+      "$comment": "Stored as manifest.json inside the ZIP archive.",
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name":      { "type": "string", "minLength": 1 },
+        "version":   { "type": "string", "enum": ["1.0"] },
+        "createdAt": { "type": ["string", "null"], "format": "date-time" },
+        "author":    { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "Layout": {
+      "$comment": "Stored as layout.json inside the ZIP archive. Contains the raw docking layout serialized by DockLayoutSerializer.",
+      "type": "object",
+      "description": "Opaque docking layout blob produced by DockLayoutSerializer.Serialize(). The exact structure is internal to the Docking module.",
+      "additionalProperties": true
+    },
+    "SolutionState": {
+      "$comment": "Stored as solution.json inside the ZIP archive.",
+      "type": "object",
+      "properties": {
+        "solutionPath": {
+          "type": ["string", "null"],
+          "description": "Absolute path to the .sln / .slnx / .slnf solution file that was open when the workspace was saved. Null if no solution was loaded."
+        }
+      },
+      "additionalProperties": false
+    },
+    "OpenFileEntry": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Absolute path to the file that was open in the editor.",
+          "minLength": 1
+        },
+        "editorId": {
+          "type": ["string", "null"],
+          "description": "ID of the editor that had the file open (e.g. \"code-editor\", \"hex-editor\", \"text-editor\"). Null lets the IDE auto-detect.",
+          "examples": ["code-editor", "hex-editor", "text-editor", "image-editor", "binary-diff"]
+        },
+        "cursorLine": {
+          "type": "integer",
+          "description": "One-based cursor line at save time. 0 means unknown or not applicable.",
+          "minimum": 0,
+          "default": 0
+        },
+        "cursorCol": {
+          "type": "integer",
+          "description": "One-based cursor column at save time. 0 means unknown or not applicable.",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "OpenFiles": {
+      "$comment": "Stored as openfiles.json inside the ZIP archive.",
+      "type": "array",
+      "description": "Ordered list of files that were open in document tabs when the workspace was saved.",
+      "items": {
+        "$ref": "#/definitions/OpenFileEntry"
+      },
+      "default": []
+    },
+    "SettingsOverride": {
+      "$comment": "Stored as settings.json inside the ZIP archive.",
+      "type": "object",
+      "description": "Workspace-level settings that override user defaults while this workspace is active.",
+      "properties": {
+        "themeName": {
+          "type": ["string", "null"],
+          "description": "Name of the color theme to activate (stem of the .xaml file, e.g. \"Dark\" or \"Light\"). Null means do not override the user theme.",
+          "examples": ["Dark", "Light", "HighContrast"]
+        },
+        "activeBuildConfigName": {
+          "type": ["string", "null"],
+          "description": "Active build configuration name at save time (e.g. \"Debug\", \"Release\"). Null means do not override.",
+          "examples": ["Debug", "Release"]
+        },
+        "activeBuildPlatform": {
+          "type": ["string", "null"],
+          "description": "Active build platform at save time (e.g. \"AnyCPU\", \"x64\", \"x86\"). Null means do not override.",
+          "examples": ["AnyCPU", "x64", "x86"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "PluginStates": {
+      "$comment": "Stored as plugins.json inside the ZIP archive. Present only when at least one plugin saved workspace state.",
+      "type": "object",
+      "description": "Per-plugin state bags keyed by plugin ID. Each value is an opaque JSON string produced by IWorkspacePersistable.CaptureWorkspaceState().",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Raw JSON blob for the plugin identified by this key."
+      }
+    }
+  }
+}

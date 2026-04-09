@@ -7,6 +7,18 @@
 namespace WpfHexEditor.SDK.Contracts.Services;
 
 /// <summary>
+/// Describes a single project within the active solution,
+/// including its source files eligible for class diagram analysis.
+/// </summary>
+/// <param name="Name">Display name of the project.</param>
+/// <param name="ProjectPath">Absolute path to the project file (.whproj / .csproj).</param>
+/// <param name="SourceFiles">All .cs/.vb source file paths belonging to this project.</param>
+public sealed record SolutionProjectInfo(
+    string Name,
+    string ProjectPath,
+    IReadOnlyList<string> SourceFiles);
+
+/// <summary>
 /// Provides read access to the active IDE solution structure.
 /// </summary>
 public interface ISolutionExplorerService
@@ -30,6 +42,12 @@ public interface ISolutionExplorerService
     /// Returns empty list if no solution is open.
     /// </summary>
     IReadOnlyList<string> GetSolutionFilePaths();
+
+    /// <summary>
+    /// Gets all projects in the active solution, each with their source file paths.
+    /// Returns empty list if no solution is open.
+    /// </summary>
+    IReadOnlyList<SolutionProjectInfo> GetSolutionProjects();
 
     /// <summary>
     /// Opens a file in the IDE (creates a new document tab or activates an existing one).

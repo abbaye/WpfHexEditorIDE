@@ -226,6 +226,15 @@ public sealed class AppSettings
     /// <summary>Default height in px for new floating windows (default 300).</summary>
     public int FloatingWindowDefaultHeight { get; set; } = 300;
 
+    // -- Docking — Panel Appearance -----------------------------------------------
+
+    /// <summary>Corner radius in px for the panel content-area border (default 4). 0 = sharp corners.</summary>
+    public double PanelCornerRadius { get; set; } = 4.0;
+
+    /// <summary>Scope of the corner radius effect. "ContentOnly" = content area below tab strip only.
+    /// "FullFrame" = outer panel container including the tab strip.</summary>
+    public string PanelCornerScope { get; set; } = "ContentOnly";
+
     // -- Docking — Layout Profiles ------------------------------------------------
 
     /// <summary>Directory for storing layout profile files. Null = AppData default.</summary>

@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://wpfhexeditor.dev/schemas/whcd.schema.json",
+  "title": "WpfHexEditor Class Diagram Visual State",
+  "description": "Schema for .whcd twin files that persist the visual state of class diagrams next to their source file(s). Version 2 adds swimlanes, snap, view-mode, collapsed sections, and custom node heights.",
+  "type": "object",
+  "required": ["version", "nodes"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Schema version. 1 = layout only. 2 = layout + view-mode + swimlanes + snap + collapsed sections + custom heights.",
+      "enum": [1, 2]
+    },
+    "sourceFiles": {
+      "type": "array",
+      "description": "Source file path(s) this diagram was generated from. May be a single .cs file or an entire folder.",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "zoom": {
+      "type": "number",
+      "description": "Canvas zoom level (1.0 = 100%).",
+      "minimum": 0.1,
+      "maximum": 10.0,
+      "default": 1.0
+    },
+    "offsetX": {
+      "type": "number",
+      "description": "Horizontal pan offset of the canvas viewport in logical pixels.",
+      "default": 0.0
+    },
+    "offsetY": {
+      "type": "number",
+      "description": "Vertical pan offset of the canvas viewport in logical pixels.",
+      "default": 0.0
+    },
+    "minimapVisible": {
+      "type": "boolean",
+      "description": "Whether the minimap overlay is visible.",
+      "default": true
+    },
+    "minimapCorner": {
+      "type": "string",
+      "description": "Corner of the canvas where the minimap is docked.",
+      "enum": ["TopLeft", "TopRight", "BottomLeft", "BottomRight"],
+      "default": "BottomLeft"
+    },
+    "selectedNodeId": {
+      "type": ["string", "null"],
+      "description": "ID of the node selected when the diagram was last saved. Null if no selection."
+    },
+    "showSwimLanes": {
+      "type": "boolean",
+      "description": "Whether the namespace swimlane background layer is visible.",
+      "default": false
+    },
+    "snapToGrid": {
+      "type": "boolean",
+      "description": "Whether nodes snap to a 20 px grid during drag.",
+      "default": false
+    },
+    "viewMode": {
+      "type": "string",
+      "description": "Active editor view mode.",
+      "enum": ["DslOnly", "Split", "DiagramOnly"],
+      "default": "DiagramOnly"
+    },
+    "splitLayout": {
+      "type": "string",
+      "description": "Split direction when viewMode is Split.",
+      "enum": ["SplitRight", "SplitLeft", "SplitTop", "SplitBottom"],
+      "default": "SplitRight"
+    },
+    "splitColRatio": {
+      "type": "number",
+      "description": "Fraction [0.1–0.9] of horizontal space allocated to the code pane in horizontal splits.",
+      "minimum": 0.1,
+      "maximum": 0.9,
+      "default": 0.35
+    },
+    "splitRowRatio": {
+      "type": "number",
+      "description": "Fraction [0.1–0.9] of vertical space allocated to the code pane in vertical splits.",
+      "minimum": 0.1,
+      "maximum": 0.9,
+      "default": 0.35
+    },
+    "collapsedSections": {
+      "type": "array",
+      "description": "Flat list of collapsed member-section entries in the form 'nodeId:SectionName'. SectionName is one of: Fields, Properties, Methods, Events.",
+      "items": {
+        "type": "string",
+        "pattern": "^.+:(Fields|Properties|Methods|Events)$"
+      },
+      "default": []
+    },
+    "nodes": {
+      "type": "array",
+      "description": "Per-node canvas positions, indexed by stable node ID.",
+      "items": {
+        "$ref": "#/definitions/NodePosition"
+      },
+      "default": []
+    }
+  },
+  "definitions": {
+    "NodePosition": {
+      "type": "object",
+      "required": ["id", "x", "y"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable identifier for the node (survives source edits; defaults to the type name).",
+          "minLength": 1
+        },
+        "x": {
+          "type": "number",
+          "description": "Horizontal canvas coordinate of the node's top-left corner in logical pixels."
+        },
+        "y": {
+          "type": "number",
+          "description": "Vertical canvas coordinate of the node's top-left corner in logical pixels."
+        },
+        "width": {
+          "type": "number",
+          "description": "Node card width in logical pixels.",
+          "minimum": 40.0,
+          "default": 180.0
+        },
+        "height": {
+          "type": "number",
+          "description": "Custom node card height in logical pixels set by the resize gripper. 0 means auto (no override).",
+          "minimum": 0.0,
+          "default": 0.0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -20,6 +20,27 @@
 namespace WpfHexEditor.Editor.ClassDiagram.Core.Model;
 
 /// <summary>
+/// Groups nodes belonging to a single project within a solution-level diagram.
+/// Populated by <c>RoslynClassDiagramAnalyzer.AnalyzeProjects</c>.
+/// </summary>
+public sealed class DiagramProjectGroup
+{
+    /// <summary>Display name of the originating project.</summary>
+    public required string ProjectName { get; init; }
+
+    /// <summary>Absolute path to the project file (.whproj / .csproj).</summary>
+    public required string ProjectPath { get; init; }
+
+    /// <summary>
+    /// IDs of all <see cref="ClassNode"/> instances that belong to this project.
+    /// </summary>
+    public List<string> ClassIds { get; init; } = [];
+
+    /// <summary>Swimlane fill color hint as a CSS hex string (e.g. <c>#3A6EA5</c>).</summary>
+    public string Color { get; set; } = "#444444";
+}
+
+/// <summary>
 /// Root aggregate that holds all <see cref="ClassNode"/> instances and
 /// <see cref="ClassRelationship"/> edges of a single diagram document.
 /// </summary>
@@ -30,6 +51,12 @@ public sealed class DiagramDocument
 
     /// <summary>All directed relationships between nodes.</summary>
     public List<ClassRelationship> Relationships { get; init; } = [];
+
+    /// <summary>
+    /// Project groupings populated when the diagram covers multiple projects
+    /// (e.g. solution-wide analysis). Empty for single-file/folder diagrams.
+    /// </summary>
+    public List<DiagramProjectGroup> ProjectGroups { get; init; } = [];
 
     /// <summary>
     /// Absolute path of the DSL source file backing this document,

@@ -33,6 +33,7 @@ public static class WorkspaceSerializer
     private const string SolutionEntry  = "solution.json";
     private const string OpenFilesEntry = "openfiles.json";
     private const string SettingsEntry  = "settings.json";
+    private const string PluginsEntry   = "plugins.json";
 
     // ── Write ─────────────────────────────────────────────────────────────────
 
@@ -57,6 +58,9 @@ public static class WorkspaceSerializer
         await WriteEntryAsync(zip, SolutionEntry,  state.Solution,  ct);
         await WriteEntryAsync(zip, OpenFilesEntry, state.Files,     ct);
         await WriteEntryAsync(zip, SettingsEntry,  state.Settings,  ct);
+
+        if (state.PluginStates.Entries.Count > 0)
+            await WriteEntryAsync(zip, PluginsEntry, state.PluginStates, ct);
     }
 
     // ── Read ──────────────────────────────────────────────────────────────────
@@ -79,16 +83,19 @@ public static class WorkspaceSerializer
                         ?? new WorkspaceSolutionState(null);
         var files     = await ReadEntryAsync<List<OpenFileEntry>>(zip, OpenFilesEntry, ct)
                         ?? [];
-        var settings  = await ReadEntryAsync<WorkspaceSettingsOverride>(zip, SettingsEntry, ct)
-                        ?? new WorkspaceSettingsOverride(null);
+        var settings     = await ReadEntryAsync<WorkspaceSettingsOverride>(zip, SettingsEntry, ct)
+                           ?? new WorkspaceSettingsOverride(null);
+        var pluginStates = await ReadEntryAsync<WorkspacePluginState>(zip, PluginsEntry, ct)
+                           ?? new WorkspacePluginState();
 
         return new WorkspaceState
         {
-            Manifest = manifest,
-            Layout   = layout,
-            Solution = solution,
-            Files    = files,
-            Settings = settings,
+            Manifest     = manifest,
+            Layout       = layout,
+            Solution     = solution,
+            Files        = files,
+            Settings     = settings,
+            PluginStates = pluginStates,
         };
     }
 

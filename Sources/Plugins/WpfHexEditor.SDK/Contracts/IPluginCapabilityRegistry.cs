@@ -11,6 +11,8 @@
 //     Plugins and IDE code can call FindPluginsWithFeature() without knowing plugin identities.
 // ==========================================================
 
+using WpfHexEditor.SDK.Contracts.Services;
+
 namespace WpfHexEditor.SDK.Contracts;
 
 /// <summary>
@@ -33,4 +35,18 @@ public interface IPluginCapabilityRegistry
 
     /// <summary>Returns all distinct feature strings declared across all known plugins, sorted.</summary>
     IReadOnlyList<string> GetAllRegisteredFeatures();
+
+    /// <summary>
+    /// Registers a plugin as a workspace-state participant.
+    /// Call this from <c>InitializeAsync</c> to opt in to workspace save/restore callbacks.
+    /// </summary>
+    /// <param name="pluginId">The stable plugin ID (used as the key in <c>plugins.json</c>).</param>
+    /// <param name="persistable">The implementation that captures and restores plugin state.</param>
+    void RegisterWorkspacePersistable(string pluginId, IWorkspacePersistable persistable);
+
+    /// <summary>
+    /// Returns all currently registered workspace-persistable entries.
+    /// Called by the IDE during workspace save and restore.
+    /// </summary>
+    IReadOnlyList<(string PluginId, IWorkspacePersistable Persistable)> GetWorkspacePersistables();
 }

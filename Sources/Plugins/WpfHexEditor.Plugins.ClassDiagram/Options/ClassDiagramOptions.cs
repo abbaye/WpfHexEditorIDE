@@ -149,4 +149,37 @@ public sealed class ClassDiagramOptions
 
     /// <summary>Controls partial class file discovery scope when opening a diagram from a single file.</summary>
     public PartialClassScopeMode PartialClassScope { get; set; } = PartialClassScopeMode.AllSiblings;
+
+    // ── Solution generation ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// When true the per-project swimlane layer is visible by default when a
+    /// solution-wide class diagram is first opened.
+    /// </summary>
+    public bool SolutionShowSwimLanesByDefault { get; set; } = true;
+
+    /// <summary>
+    /// When true private members are shown in solution-wide class diagram nodes.
+    /// When false only public, internal, and protected members are extracted.
+    /// </summary>
+    public bool SolutionIncludePrivateMembers { get; set; } = false;
+
+    /// <summary>
+    /// When true types with internal (non-public) accessibility are included
+    /// in solution-wide class diagrams.
+    /// </summary>
+    public bool SolutionIncludeInternalTypes { get; set; } = true;
+
+    /// <summary>
+    /// When true projects whose name contains "Test", "Tests", or "Spec"
+    /// (case-insensitive) are automatically excluded from the solution diagram.
+    /// </summary>
+    public bool SolutionExcludeTestProjects { get; set; } = false;
+
+    /// <summary>
+    /// Maximum number of source files in a solution before the generator shows
+    /// a confirmation prompt. Set to 0 to disable the prompt.
+    /// Valid range: 0–10000.
+    /// </summary>
+    public int SolutionMaxFilesPromptThreshold { get; set; } = 500;
 }

@@ -68,6 +68,13 @@ public partial class ClassDiagramOptionsPage : UserControl
         UpdateTooltipDelayLabel(_options.TooltipDelayMs);
 
         ChkRestoreLastState.IsChecked          = _options.RestoreLastState;
+
+        // Solution generation
+        ChkSolutionShowSwimLanes.IsChecked      = _options.SolutionShowSwimLanesByDefault;
+        ChkSolutionIncludePrivate.IsChecked     = _options.SolutionIncludePrivateMembers;
+        ChkSolutionIncludeInternal.IsChecked    = _options.SolutionIncludeInternalTypes;
+        ChkSolutionExcludeTestProjects.IsChecked= _options.SolutionExcludeTestProjects;
+        TxtSolutionMaxFiles.Text                = _options.SolutionMaxFilesPromptThreshold.ToString();
     }
 
     // ── Save ─────────────────────────────────────────────────────────────────
@@ -102,6 +109,14 @@ public partial class ClassDiagramOptionsPage : UserControl
         _options.TooltipDelayMs           = (int)TooltipDelaySlider.Value;
 
         _options.RestoreLastState         = ChkRestoreLastState.IsChecked == true;
+
+        // Solution generation
+        _options.SolutionShowSwimLanesByDefault    = ChkSolutionShowSwimLanes.IsChecked == true;
+        _options.SolutionIncludePrivateMembers     = ChkSolutionIncludePrivate.IsChecked == true;
+        _options.SolutionIncludeInternalTypes      = ChkSolutionIncludeInternal.IsChecked == true;
+        _options.SolutionExcludeTestProjects       = ChkSolutionExcludeTestProjects.IsChecked == true;
+        if (int.TryParse(TxtSolutionMaxFiles.Text, out int maxFiles) && maxFiles is >= 0 and <= 10000)
+            _options.SolutionMaxFilesPromptThreshold = maxFiles;
     }
 
     // ── Event handlers ───────────────────────────────────────────────────────

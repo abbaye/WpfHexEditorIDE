@@ -45,24 +45,139 @@ namespace WpfHexEditor.Plugins.ClassDiagram.Analysis;
 /// </summary>
 public static class RoslynClassDiagramAnalyzer
 {
+    // ── Progress reporting ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Reports incremental progress during multi-file analysis.
+    /// </summary>
+    /// <param name="Analyzed">Number of files analyzed so far.</param>
+    /// <param name="Total">Total number of files to analyze.</param>
+    /// <param name="CurrentFile">File name (not full path) currently being analyzed.</param>
+    public readonly record struct ClassDiagramProgress(int Analyzed, int Total, string CurrentFile);
+
     // ── Public entry points ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Analyzes multiple projects and returns a merged <see cref="DiagramDocument"/>
+    /// with <see cref="DiagramDocument.ProjectGroups"/> populated per project.
+    /// VB.NET files are skipped (unsupported).
+    /// </summary>
+    /// <param name="projects">Ordered list of (projectName, projectPath, sourceFiles) tuples.</param>
+    /// <param name="options">Diagram generation options; defaults are used when null.</param>
+    /// <param name="progress">Optional progress sink — called after each file is processed.</param>
+    /// <param name="ct">Cancellation token; throws <see cref="OperationCanceledException"/> when cancelled.</param>
+    public static DiagramDocument AnalyzeProjects(
+        IReadOnlyList<(string Name, string Path, IReadOnlyList<string> Files)> projects,
+        ClassDiagramOptions? options = null,
+        IProgress<ClassDiagramProgress>? progress = null,
+        CancellationToken ct = default)
+    {
+        options ??= new ClassDiagramOptions();
+
+        var nodeMap        = new Dictionary<string, ClassNode>(StringComparer.Ordinal);
+        var inheritanceMap = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+        int total    = projects.Sum(p => p.Files.Count(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)));
+        int analyzed = 0;
+
+        // Palette of distinct swimlane colors (cycles when > 12 projects)
+        string[] palette =
+        [
+            "#3A6EA5", "#5C9E52", "#B85C38", "#7E57C2", "#C0913A",
+            "#2E86AB", "#A23B72", "#457B9D", "#6D9E5A", "#C75B5B",
+            "#4A7B8C", "#8A6D3B"
+        ];
+
+        var document = new DiagramDocument();
+
+        for (int pi = 0; pi < projects.Count; pi++)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            var (projectName, projectPath, sourceFiles) = projects[pi];
+            var projectGroup = new DiagramProjectGroup
+            {
+                ProjectName = projectName,
+                ProjectPath = projectPath,
+                Color       = palette[pi % palette.Length]
+            };
+            document.ProjectGroups.Add(projectGroup);
+
+            // Track which nodes existed before this project (for attribution)
+            var beforeIds = new HashSet<string>(nodeMap.Keys, StringComparer.Ordinal);
+
+            foreach (string path in sourceFiles)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                if (!path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!File.Exists(path)) continue;
+
+                string source;
+                try { source = File.ReadAllText(path); }
+                catch { continue; }
+
+                var tree = CSharpSyntaxTree.ParseText(source, path: path);
+                ProcessSyntaxTree(tree.GetRoot(), path, options, nodeMap, inheritanceMap);
+
+                analyzed++;
+                progress?.Report(new ClassDiagramProgress(analyzed, total, System.IO.Path.GetFileName(path)));
+            }
+
+            // Attribute nodes added by this project to its group
+            foreach (var key in nodeMap.Keys)
+                if (!beforeIds.Contains(key))
+                    projectGroup.ClassIds.Add(nodeMap[key].Id);
+        }
+
+        foreach (var node in nodeMap.Values)
+            document.Classes.Add(node);
+
+        BuildRelationships(document, nodeMap, inheritanceMap);
+        ComputeMetrics(nodeMap);
+
+        if (options.AutoLayout)
+            LayoutStrategyFactory.Create(options.LayoutStrategy).Layout(document, new LayoutOptions
+            {
+                Strategy        = options.LayoutStrategy,
+                ColSpacing      = 60,
+                RowSpacing      = 80,
+                CanvasPadding   = 40,
+                MinBoxWidth     = options.DefaultNodeWidth,
+                ForceIterations = options.ForceDirectedIterations,
+                SpringLength    = options.SpringLength
+            });
+
+        return document;
+    }
 
     /// <summary>
     /// Analyzes one or more source files and returns a merged
     /// <see cref="DiagramDocument"/>. VB.NET files are skipped (unsupported).
     /// </summary>
+    /// <param name="filePaths">Source file paths to analyze.</param>
+    /// <param name="options">Diagram generation options; defaults are used when null.</param>
+    /// <param name="progress">Optional progress sink — called after each file is processed.</param>
+    /// <param name="ct">Cancellation token; throws <see cref="OperationCanceledException"/> when cancelled.</param>
     public static DiagramDocument AnalyzeFiles(
         IEnumerable<string> filePaths,
-        ClassDiagramOptions? options = null)
+        ClassDiagramOptions? options = null,
+        IProgress<ClassDiagramProgress>? progress = null,
+        CancellationToken ct = default)
     {
         options ??= new ClassDiagramOptions();
 
-        // Key: "Namespace.TypeName" (or just "TypeName" when no namespace)
         var nodeMap        = new Dictionary<string, ClassNode>(StringComparer.Ordinal);
         var inheritanceMap = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
-        foreach (string path in filePaths)
+        var paths  = filePaths.ToList();
+        int total  = paths.Count(p => p.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
+        int analyzed = 0;
+
+        foreach (string path in paths)
         {
+            ct.ThrowIfCancellationRequested();
+
             if (!File.Exists(path)) continue;
             if (!path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)) continue;
 
@@ -74,6 +189,9 @@ public static class RoslynClassDiagramAnalyzer
             var root  = tree.GetRoot();
 
             ProcessSyntaxTree(root, path, options, nodeMap, inheritanceMap);
+
+            analyzed++;
+            progress?.Report(new ClassDiagramProgress(analyzed, total, System.IO.Path.GetFileName(path)));
         }
 
         var document = new DiagramDocument();

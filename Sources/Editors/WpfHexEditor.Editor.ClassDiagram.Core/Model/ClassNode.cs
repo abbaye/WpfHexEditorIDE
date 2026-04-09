@@ -151,4 +151,34 @@ public sealed class ClassNode
         node.Id = name;
         return node;
     }
+
+    /// <summary>
+    /// Returns a shallow-cloned copy of this node with a new independent <see cref="Members"/> list.
+    /// Layout position is preserved; the caller is responsible for assigning a new Id and offset.
+    /// </summary>
+    public ClassNode DeepClone()
+    {
+        var clone = new ClassNode
+        {
+            Name               = Name,
+            Kind               = Kind,
+            IsAbstract         = IsAbstract,
+            IsPartial          = IsPartial,
+            IsRecord           = IsRecord,
+            IsSealed           = IsSealed,
+            Namespace          = Namespace,
+            XmlDocSummary      = XmlDocSummary,
+            SourceFilePath     = SourceFilePath,
+            SourceLineOneBased = SourceLineOneBased,
+            Metrics            = Metrics,
+            X                  = X,
+            Y                  = Y,
+            Width              = Width,
+            Height             = Height
+        };
+        clone.Id = Name;  // caller replaces with Guid
+        clone.Members.AddRange(Members);
+        clone.Attributes.AddRange(Attributes);
+        return clone;
+    }
 }

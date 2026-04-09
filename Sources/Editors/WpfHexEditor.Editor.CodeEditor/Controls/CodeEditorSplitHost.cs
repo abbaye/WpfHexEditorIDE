@@ -48,7 +48,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IRefreshTimeReporter, IDiagnosticSource, ILspAwareEditor
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEditor, IOpenableDocument, INavigableDocument, IStatusBarContributor, IRefreshTimeReporter, IDiagnosticSource, ILspAwareEditor, IEditorPersistable
 {
     #region Child controls
 
@@ -772,4 +772,44 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 
     /// <inheritdoc/>
     public void DetachBuffer() => _primaryEditor.DetachBuffer();
+
+    // ═══════════════════════════════════════════════════════════════════
+    // IEditorPersistable — delegates to _primaryEditor + augments split state
+    // ═══════════════════════════════════════════════════════════════════
+
+    EditorConfigDto IEditorPersistable.GetEditorConfig()
+    {
+        var cfg = ((IEditorPersistable)_primaryEditor).GetEditorConfig();
+        cfg.Extra ??= new System.Collections.Generic.Dictionary<string, string>();
+        cfg.Extra["splitHost.isSplit"] = IsSplit ? "1" : "0";
+        return cfg;
+    }
+
+    void IEditorPersistable.ApplyEditorConfig(EditorConfigDto config)
+    {
+        ((IEditorPersistable)_primaryEditor).ApplyEditorConfig(config);
+        if (config.Extra?.TryGetValue("splitHost.isSplit", out var s) == true && s == "1")
+            ToggleSplit();
+    }
+
+    byte[]? IEditorPersistable.GetUnsavedModifications()
+        => ((IEditorPersistable)_primaryEditor).GetUnsavedModifications();
+
+    void IEditorPersistable.ApplyUnsavedModifications(byte[] data)
+        => ((IEditorPersistable)_primaryEditor).ApplyUnsavedModifications(data);
+
+    ChangesetSnapshot IEditorPersistable.GetChangesetSnapshot()
+        => ((IEditorPersistable)_primaryEditor).GetChangesetSnapshot();
+
+    void IEditorPersistable.ApplyChangeset(ChangesetDto changeset)
+        => ((IEditorPersistable)_primaryEditor).ApplyChangeset(changeset);
+
+    void IEditorPersistable.MarkChangesetSaved()
+        => ((IEditorPersistable)_primaryEditor).MarkChangesetSaved();
+
+    IReadOnlyList<BookmarkDto>? IEditorPersistable.GetBookmarks()
+        => ((IEditorPersistable)_primaryEditor).GetBookmarks();
+
+    void IEditorPersistable.ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks)
+        => ((IEditorPersistable)_primaryEditor).ApplyBookmarks(bookmarks);
 }

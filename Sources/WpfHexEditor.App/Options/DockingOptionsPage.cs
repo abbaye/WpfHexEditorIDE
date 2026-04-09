@@ -53,11 +53,20 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
     private readonly ComboBox  _highlightModeCombo;
     private readonly Action<ActivePanelHighlightMode>? _livePreview;
 
+    // Panel Corner Radius
+    private readonly Slider    _cornerRadiusSlider;
+    private readonly TextBlock _cornerRadiusLabel;
+    private readonly ComboBox  _cornerScopeCombo;
+    private readonly Action<double>? _liveCornerRadius;
+
     private bool _loading;
 
-    public DockingOptionsPage(Action<ActivePanelHighlightMode>? livePreview = null)
+    public DockingOptionsPage(
+        Action<ActivePanelHighlightMode>? livePreview  = null,
+        Action<double>?                   liveCornerRadius = null)
     {
-        _livePreview = livePreview;
+        _livePreview      = livePreview;
+        _liveCornerRadius = liveCornerRadius;
         Padding = new Thickness(16);
 
         Resources.MergedDictionaries.Add(new ResourceDictionary
@@ -93,6 +102,15 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         (_floatDefaultHeightSlider, _floatDefaultHeightLabel) = MakeSlider(150, 600, 10);
 
         _profileDirBox = new TextBox { Margin = new Thickness(0, 4, 0, 4) };
+
+        // Panel corner radius slider (0–12 px, step 1)
+        (_cornerRadiusSlider, _cornerRadiusLabel) = MakeSlider(0, 12, 1);
+        _cornerRadiusSlider.ValueChanged += OnCornerRadiusChanged;
+
+        _cornerScopeCombo = new ComboBox { MinWidth = 160 };
+        _cornerScopeCombo.Items.Add("Content area only");
+        _cornerScopeCombo.Items.Add("Full panel frame");
+        _cornerScopeCombo.SelectionChanged += OnChanged;
         _profileDirBox.TextChanged += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
 
         var root = new StackPanel { Orientation = Orientation.Vertical };
@@ -121,6 +139,13 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         root.Children.Add(MakeSliderRow("Min pane size (px):",        _minPaneSizeSlider,        _minPaneSizeLabel));
         root.Children.Add(MakeSliderRow("Float default width (px):",  _floatDefaultWidthSlider,  _floatDefaultWidthLabel));
         root.Children.Add(MakeSliderRow("Float default height (px):", _floatDefaultHeightSlider, _floatDefaultHeightLabel));
+
+        // Panel Appearance
+        root.Children.Add(SectionHeader("PANEL APPEARANCE"));
+        root.Children.Add(MakeSliderRow("Corner radius (px):", _cornerRadiusSlider, _cornerRadiusLabel));
+        root.Children.Add(Hint("0 = sharp corners. 4–8 for a VS-like rounded look."));
+        root.Children.Add(MakeLabeledRow("Corner scope:", _cornerScopeCombo));
+        root.Children.Add(Hint("Content area only · Full panel frame (rounds the entire panel container)"));
 
         // Layout Profiles
         root.Children.Add(SectionHeader("LAYOUT PROFILES"));
@@ -156,6 +181,10 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
             _floatDefaultHeightSlider.Value = settings.FloatingWindowDefaultHeight;
 
             _profileDirBox.Text = settings.LayoutProfileDirectory ?? string.Empty;
+
+            _cornerRadiusSlider.Value     = settings.PanelCornerRadius;
+            _cornerRadiusLabel.Text       = ((int)settings.PanelCornerRadius).ToString();
+            _cornerScopeCombo.SelectedIndex = settings.PanelCornerScope == "FullFrame" ? 1 : 0;
         }
         finally
         {
@@ -182,6 +211,9 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
         settings.LayoutProfileDirectory = string.IsNullOrWhiteSpace(_profileDirBox.Text) ? null : _profileDirBox.Text.Trim();
 
+        settings.PanelCornerRadius = _cornerRadiusSlider.Value;
+        settings.PanelCornerScope  = _cornerScopeCombo.SelectedIndex == 1 ? "FullFrame" : "ContentOnly";
+
         AutoHideAppSettings.NotifyChanged();
     }
 
@@ -192,6 +224,14 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         if (_loading) return;
         var mode = (ActivePanelHighlightMode)Math.Max(0, _highlightModeCombo.SelectedIndex);
         _livePreview?.Invoke(mode);
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnCornerRadiusChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (_loading) return;
+        _cornerRadiusLabel.Text = ((int)e.NewValue).ToString();
+        _liveCornerRadius?.Invoke(e.NewValue);
         Changed?.Invoke(this, EventArgs.Empty);
     }
 

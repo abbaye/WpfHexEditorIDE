@@ -19,6 +19,7 @@
 // ==========================================================
 
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.PluginHost.Services;
 
@@ -56,4 +57,12 @@ public sealed class PluginCapabilityRegistryAdapter : IPluginCapabilityRegistry
     /// <inheritdoc />
     public IReadOnlyList<string> GetAllRegisteredFeatures()
         => Inner.GetAllRegisteredFeatures();
+
+    /// <inheritdoc />
+    public void RegisterWorkspacePersistable(string pluginId, IWorkspacePersistable persistable)
+        => Inner.RegisterWorkspacePersistable(pluginId, persistable);
+
+    /// <inheritdoc />
+    public IReadOnlyList<(string PluginId, IWorkspacePersistable Persistable)> GetWorkspacePersistables()
+        => Inner.GetWorkspacePersistables();
 }
