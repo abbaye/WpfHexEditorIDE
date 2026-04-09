@@ -157,8 +157,8 @@ namespace WpfHexEditor.HexEditor
             // Re-use colIdx = -1 to tell the overlay to skip the hex stripe.
             int effectiveColIdx = (ShowColumnHighlight && hexActive) ? colIdx : -1;
 
-            // ASCII stripe: read pixel position directly from the pre-computed AsciiRect
-            // so alignment is always pixel-perfect (handles spacers, TBL widths, etc.).
+            // ASCII stripe: read pixel position from the pre-computed AsciiRect and convert
+            // to overlay coordinate space via TranslatePoint (handles LayoutTransform + scroll).
             double asciiX  = -1;
             double asciiCW = 0;
             if (ShowAsciiColumnHighlight && asciiActive && HexViewport.ShowAscii)
@@ -168,8 +168,12 @@ namespace WpfHexEditor.HexEditor
                     if (colIdx < line.Bytes.Count && line.Bytes[colIdx].AsciiRect.HasValue)
                     {
                         var rect = line.Bytes[colIdx].AsciiRect.Value;
-                        asciiX  = rect.X     * zoom;
-                        asciiCW = rect.Width * zoom;
+                        var originInOverlay = HexViewport.TranslatePoint(new System.Windows.Point(rect.X, 0), _columnHighlight);
+                        if (!double.IsNaN(originInOverlay.X))
+                        {
+                            asciiX  = originInOverlay.X;
+                            asciiCW = rect.Width * zoom;   // width scales with zoom
+                        }
                         break;
                     }
                 }
