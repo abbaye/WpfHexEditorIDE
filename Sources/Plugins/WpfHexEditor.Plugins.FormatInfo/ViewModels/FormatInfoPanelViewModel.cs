@@ -12,7 +12,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.ViewModels;
-using EnrichedFormatViewModel = WpfHexEditor.HexEditor.ViewModels.EnrichedFormatViewModel;
+using EnrichedFormatViewModel = WpfHexEditor.Core.ViewModels.EnrichedFormatViewModel;
 
 namespace WpfHexEditor.Plugins.FormatInfo.ViewModels;
 

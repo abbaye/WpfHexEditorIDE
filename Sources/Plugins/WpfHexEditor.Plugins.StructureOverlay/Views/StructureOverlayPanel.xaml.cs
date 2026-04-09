@@ -19,7 +19,7 @@ using Microsoft.Win32;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Models.StructureOverlay;
 using WpfHexEditor.Core.Services;
-using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.StructureOverlay.Views;

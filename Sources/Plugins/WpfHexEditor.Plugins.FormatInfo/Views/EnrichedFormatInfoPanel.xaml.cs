@@ -15,7 +15,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core.FormatDetection;
-using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.FormatInfo.Views;
 

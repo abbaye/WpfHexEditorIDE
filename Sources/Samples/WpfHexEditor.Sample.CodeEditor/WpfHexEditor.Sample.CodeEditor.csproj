@@ -35,6 +35,9 @@
       Docking.Wpf is needed explicitly for the theme ResourceDictionaries.
     -->
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
     <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
   </ItemGroup>
 

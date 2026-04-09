@@ -138,10 +138,18 @@ public static class StructuralFormatter
         {
             string line = lines[i];
             if (rules.TrimTrailingWhitespace) line = line.TrimEnd();
-            if (rules.SpaceAfterKeywords) line = GetKeywordParenRegex(rules).Replace(line, m => m.Value[..^1] + " (");
-            if (rules.SpaceAroundBinaryOperators) line = GetBinaryOpRegex(rules).Replace(line, " $1 ");
-            if (rules.SpaceAfterComma) line = s_commaNoSpace.Replace(line, ", ");
-            if (rules.SqlKeywordsUppercase) line = GetSqlKeywordRegex(rules).Replace(line, m => m.Value.ToUpperInvariant());
+
+            // Detect the comment portion of the line so spacing rules only touch code.
+            int commentStart = FindLineCommentStart(line);
+
+            if (rules.SpaceAfterKeywords)
+                line = ApplyToCodePortion(line, commentStart, s => GetKeywordParenRegex(rules).Replace(s, m => m.Value[..^1] + " ("));
+            if (rules.SpaceAroundBinaryOperators)
+                line = ApplyToCodePortion(line, commentStart, s => GetBinaryOpRegex(rules).Replace(s, " $1 "));
+            if (rules.SpaceAfterComma)
+                line = ApplyToCodePortion(line, commentStart, s => s_commaNoSpace.Replace(s, ", "));
+            if (rules.SqlKeywordsUppercase)
+                line = ApplyToCodePortion(line, commentStart, s => GetSqlKeywordRegex(rules).Replace(s, m => m.Value.ToUpperInvariant()));
             if (rules.QuoteStyle is not null) line = NormalizeQuotes(line, rules.QuoteStyle.Value);
             lines[i] = line;
         }
@@ -400,6 +408,41 @@ public static class StructuralFormatter
         }
         if (sb.Length < line.Length) sb.Append(line.AsSpan(sb.Length));
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Finds the index where a line comment starts (// outside of a string literal).
+    /// Returns <c>line.Length</c> when no line comment is found — meaning the entire line is code.
+    /// </summary>
+    private static int FindLineCommentStart(string line)
+    {
+        bool inString = false;
+        char strChar = '\0';
+        for (int i = 0; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (inString)
+            {
+                if (c == '\\') { i++; continue; } // skip escaped char
+                if (c == strChar) inString = false;
+                continue;
+            }
+            if (c == '"' || c == '\'') { inString = true; strChar = c; continue; }
+            if (c == '/' && i + 1 < line.Length && line[i + 1] == '/')
+                return i;
+        }
+        return line.Length;
+    }
+
+    /// <summary>
+    /// Applies a transformation only to the code portion of a line (before the comment).
+    /// The comment portion is preserved verbatim.
+    /// </summary>
+    private static string ApplyToCodePortion(string line, int commentStart, Func<string, string> transform)
+    {
+        if (commentStart == 0) return line; // entire line is a comment
+        if (commentStart >= line.Length) return transform(line); // no comment
+        return transform(line[..commentStart]) + line[commentStart..];
     }
 
     private static string GetLeadingWhitespace(string line)

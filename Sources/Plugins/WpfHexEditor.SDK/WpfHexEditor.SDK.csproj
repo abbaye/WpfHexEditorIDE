@@ -49,14 +49,10 @@
 
   <!-- Transitive re-exports: plugins reference only the SDK and get all required types. -->
   <ItemGroup>
-    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj">
@@ -65,25 +61,23 @@
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj">
+      <PrivateAssets>none</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj">
+      <PrivateAssets>none</PrivateAssets>
+    </ProjectReference>
+    <!-- Lightweight re-exports: pure DTOs/models needed by plugins -->
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj">
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

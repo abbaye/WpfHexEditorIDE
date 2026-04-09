@@ -43,7 +43,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Plugins.DataInspector.Options;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.UI;
