@@ -96,9 +96,10 @@ namespace WpfHexEditor.HexEditor
             _columnHighlight = this.FindName("ColHighlightOverlay") as ColumnHighlightOverlay;
             if (_columnHighlight is null) return;
 
-            SelectionStartChanged += OnColumnHighlightSelectionChanged;
-            ZoomScaleChanged     += OnColumnHighlightSelectionChanged;
-            PositionChanged      += OnColumnHighlightPositionChanged;
+            SelectionStartChanged    += OnColumnHighlightSelectionChanged;
+            ZoomScaleChanged         += OnColumnHighlightSelectionChanged;
+            PositionChanged          += OnColumnHighlightPositionChanged;
+            VerticalScrollBarChanged += OnColumnHighlightScrollChanged;
         }
 
         // ── Event Handlers ────────────────────────────────────────────────────
@@ -107,6 +108,9 @@ namespace WpfHexEditor.HexEditor
             => UpdateColumnHighlight();
 
         private void OnColumnHighlightPositionChanged(object? sender, PositionChangedEventArgs e)
+            => UpdateColumnHighlight();
+
+        private void OnColumnHighlightScrollChanged(object? sender, ByteEventArgs e)
             => UpdateColumnHighlight();
 
         private void UpdateColumnHighlight()
