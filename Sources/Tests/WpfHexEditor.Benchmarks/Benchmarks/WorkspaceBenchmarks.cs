@@ -31,7 +31,7 @@ public class WorkspaceBenchmarks
         _capture = new WorkspaceCapture(
             LayoutJson:     "{}",
             SolutionPath:   null,
-            OpenFilePaths:  Enumerable.Range(1, 20).Select(i => $"C:/Projects/Benchmark/File{i:D2}.bin").ToList(),
+            OpenFiles:      Enumerable.Range(1, 20).Select(i => new OpenFileEntry($"C:/Projects/Benchmark/File{i:D2}.bin")).ToList(),
             ThemeName:      "Dark");
     }
 
@@ -47,7 +47,7 @@ public class WorkspaceBenchmarks
         Manifest = new WorkspaceManifest("BenchmarkWorkspace"),
         Settings = new WorkspaceSettingsOverride(_capture.ThemeName),
         Solution = new WorkspaceSolutionState(_capture.SolutionPath),
-        Files    = _capture.OpenFilePaths.Select(p => new OpenFileEntry(p)).ToList(),
+        Files    = _capture.OpenFiles.ToList(),
     });
 
     [Benchmark]

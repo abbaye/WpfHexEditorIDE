@@ -64,6 +64,7 @@
     <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
   </ItemGroup>
 
   <Import Project="..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />

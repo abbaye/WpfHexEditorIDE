@@ -28,8 +28,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Only dependency: the docking framework (pulls in Docking.Core + Editor.Core transitively) -->
+    <!-- Shell pulls in Docking.Wpf transitively; Docking.Core is PrivateAssets in Docking.Wpf (NuGet bundling) so we add it explicitly -->
     <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+    <ProjectReference Include="..\..\Docking\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
   </ItemGroup>
 
 </Project>

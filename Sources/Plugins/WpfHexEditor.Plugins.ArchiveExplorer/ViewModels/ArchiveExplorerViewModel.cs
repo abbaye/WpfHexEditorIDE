@@ -140,7 +140,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
         bool first = TryFirstLoad();
         if (first) IsLoading = true;
         RootNodes.Clear();
-        InfoBarText = “Loading…”;
+        InfoBarText = "Loading…";
         CurrentArchivePath = archivePath;
 
         try
@@ -152,7 +152,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
                 await Task.Run(() =>
             {
                 IArchiveReader r = ArchiveReaderFactory.CreateReader(archivePath)
-                    ?? throw new NotSupportedException($”Unsupported format: {Path.GetExtension(archivePath)}”);
+                    ?? throw new NotSupportedException($"Unsupported format: {Path.GetExtension(archivePath)}");
                 List<ArchiveNodeViewModel> root = BuildTree(r.Entries, archivePath);
                 ArchiveStats s                  = ComputeStats(r.Entries);
                 return (r, root, s);
@@ -170,7 +170,7 @@ public sealed class ArchiveExplorerViewModel : ViewModelBase, IDisposable
                 _ = EnrichFormatBadgesAsync(linked.Token);
         }
         catch (OperationCanceledException) { InfoBarText = string.Empty; }
-        catch (Exception ex)               { InfoBarText = $”Error: {ex.Message}”; }
+        catch (Exception ex)               { InfoBarText = $"Error: {ex.Message}"; }
         finally                            { _isLoadingInternal = false; if (first) IsLoading = false; }
     }
 

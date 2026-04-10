@@ -207,9 +207,9 @@ public sealed class SourceViewModel : AssemblyNodeViewModel
                 SequencePoints.Add(new SequencePointViewModel(sp));
 
             // First non-hidden sequence point gives us the primary source location.
-            var first = seqPoints.FirstOrDefault(sp => !sp.IsHidden && sp.DocumentPath is not null);
-            SourceFilePath  = first?.DocumentPath;
-            SourceStartLine = first?.StartLine ?? 0;
+            var firstSeqPt = seqPoints.FirstOrDefault(sp => !sp.IsHidden && sp.DocumentPath is not null);
+            SourceFilePath  = firstSeqPt?.DocumentPath;
+            SourceStartLine = firstSeqPt?.StartLine ?? 0;
 
             // SourceLink URL resolution.
             if (sourceLink is not null && SourceFilePath is not null)

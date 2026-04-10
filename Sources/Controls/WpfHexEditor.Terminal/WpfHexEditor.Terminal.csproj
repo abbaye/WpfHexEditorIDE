@@ -50,12 +50,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Bundled into the package -->
+    <!-- Bundled into the NuGet package -->
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" PrivateAssets="all" />
-    <!-- IDE integration (compile-time only, not bundled in NuGet) -->
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
-    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.SDK.Terminal.Abstractions\WpfHexEditor.SDK.Terminal.Abstractions.csproj" PrivateAssets="all" />
+    <!-- IDE integration (compile-time only — excluded from NuGet bundle via ExcludeAssets) -->
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" PrivateAssets="all" ExcludeAssets="runtime" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" PrivateAssets="all" ExcludeAssets="runtime" />
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" PrivateAssets="all" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <!-- Bundle dependency DLLs + XML docs into the NuGet package -->
@@ -64,8 +65,12 @@
   </PropertyGroup>
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+      <!-- Only bundle Terminal-related assemblies, not IDE deps (SDK, Core, Events, etc.) -->
+      <_TerminalBundleDlls Include="@(ReferenceCopyLocalPaths)" Condition="
+        $([System.String]::Copy('%(Filename)').Contains('Terminal')) OR
+        $([System.String]::Copy('%(Filename)').Contains('Terminal.Abstractions'))" />
+      <BuildOutputInPackage Include="@(_TerminalBundleDlls)" />
+      <BuildOutputInPackage Include="@(_TerminalBundleDlls-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
                             Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
