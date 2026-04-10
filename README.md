@@ -10,6 +10,7 @@
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
+  [![NuGet](https://img.shields.io/badge/NuGet-5%20packages-004880?logo=nuget)](README.md#-ui-controls--nuget-packages)
 
   <br/>
 
