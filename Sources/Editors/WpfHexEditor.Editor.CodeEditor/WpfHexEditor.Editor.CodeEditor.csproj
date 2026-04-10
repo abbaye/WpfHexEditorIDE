@@ -11,9 +11,9 @@
 
     <!-- NuGet package metadata -->
     <PackageId>WpfCodeEditor</PackageId>
-    <Version>0.9.6.3</Version>
-    <AssemblyVersion>0.9.6.3</AssemblyVersion>
-    <FileVersion>0.9.6.3</FileVersion>
+    <Version>0.9.6.4</Version>
+    <AssemblyVersion>0.9.6.4</AssemblyVersion>
+    <FileVersion>0.9.6.4</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfCodeEditor</Product>

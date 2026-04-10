@@ -101,15 +101,23 @@ internal sealed class HoverQuickInfoService : IDisposable
         string filePath, int line, int column, string word,
         IReadOnlyList<CodeLine> lineSnapshot)
     {
+        bool sameWord = string.Equals(word, _pendingWord, StringComparison.Ordinal)
+                     && string.Equals(filePath, _pendingFilePath, StringComparison.Ordinal);
+
         _pendingFilePath = filePath;
         _pendingLine     = line;
         _pendingColumn   = column;
         _pendingWord     = word;
         _lineSnapshot    = lineSnapshot;
 
+        // Skip if already resolving for the same word.
+        if (sameWord) return;
+
+        // Cancel previous in-flight request and resolve immediately.
+        // The DispatcherTimer debounce was unreliable (Tick never fired in some scenarios).
+        // Instead, cancel-and-resolve is fast enough — LSP hover has its own 10s timeout.
         _debounce.Stop();
-        _debounce.Start();
-        Controls.CodeEditor.DiagnosticLogger?.Invoke($"[QuickInfo] RequestAsync debounce started, word='{word}', interval={_debounce.Interval.TotalMilliseconds}ms, isEnabled={_debounce.IsEnabled}");
+        _ = ResolveAsync();
     }
 
     /// <summary>Cancels any pending debounce + in-flight request and fires null result.</summary>

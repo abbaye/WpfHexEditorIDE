@@ -2,9 +2,10 @@
 
 A full-featured WPF code editor UserControl for .NET 8. Built as part of the [WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorControl) project.
 
-## What's New in 0.9.6.3
+## What's New in 0.9.6.4
 
 - **Fix**: LSP inlay hints and declaration hints (code lens) no longer render as ghost overlays on top of code text. Hints now correctly align with the text area origin, accounting for gutter offset, top margin, and horizontal scroll.
+- **Fix**: ReadOnly mode no longer blocks text selection and caret placement. Only text modification is blocked — selection (Shift+Arrow, drag), caret click, copy (Ctrl+C), and select all (Ctrl+A) now work as expected.
 
 ## Quick Start
 

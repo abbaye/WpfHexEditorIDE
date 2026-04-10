@@ -574,6 +574,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         continue;
                     }
 
+                    if (!_selection.IsEmpty)
+                        DeleteSelection();
+
                     InsertChar(ch);
 
                     // Auto-close brackets and quotes
