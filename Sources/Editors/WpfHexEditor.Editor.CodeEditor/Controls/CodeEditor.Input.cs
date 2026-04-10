@@ -210,12 +210,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     break;
 
                 case Key.Up:
-                    MoveCursor(0, -1, shiftPressed);
+                    if (ctrlPressed && !shiftPressed)
+                        ScrollViewportLines(-1); // Ctrl+Up: scroll viewport 1 line up
+                    else if (altPressed && !ctrlPressed && !shiftPressed)
+                        MoveLineUp(); // Alt+Up: move line up
+                    else
+                        MoveCursor(0, -1, shiftPressed);
                     e.Handled = true;
                     break;
 
                 case Key.Down:
-                    MoveCursor(0, 1, shiftPressed);
+                    if (ctrlPressed && !shiftPressed)
+                        ScrollViewportLines(1); // Ctrl+Down: scroll viewport 1 line down
+                    else if (altPressed && !ctrlPressed && !shiftPressed)
+                        MoveLineDown(); // Alt+Down: move line down
+                    else
+                        MoveCursor(0, 1, shiftPressed);
+                    e.Handled = true;
+                    break;
+
+                case Key.PageUp:
+                    PageUpDown(-1, shiftPressed);
+                    e.Handled = true;
+                    break;
+
+                case Key.PageDown:
+                    PageUpDown(1, shiftPressed);
                     e.Handled = true;
                     break;
 
@@ -239,13 +259,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 case Key.Back:
                     if (!_selection.IsEmpty)
                         DeleteSelection();
+                    else if (ctrlPressed)
+                        DeleteWordLeft(); // Ctrl+Backspace
                     else
                         DeleteCharBefore();
                     e.Handled = true;
                     break;
 
                 case Key.Delete:
-                    DeleteCharAfter();
+                    if (!_selection.IsEmpty)
+                        DeleteSelection();
+                    else if (ctrlPressed)
+                        DeleteWordRight(); // Ctrl+Delete
+                    else
+                        DeleteCharAfter();
+                    e.Handled = true;
+                    break;
+
+                case Key.Insert:
+                    ToggleOverwriteMode();
                     e.Handled = true;
                     break;
 
@@ -308,6 +340,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     if (ctrlPressed)
                     {
                         SelectAll();
+                        e.Handled = true;
+                    }
+                    break;
+
+                // Go to Line (Ctrl+G)
+                case Key.G:
+                    if (ctrlPressed)
+                    {
+                        ShowGoToLineDialog();
+                        e.Handled = true;
+                    }
+                    break;
+
+                // Delete line (Ctrl+Shift+K)
+                case Key.K:
+                    if (ctrlPressed && shiftPressed && !_formatChordPending)
+                    {
+                        DeleteCurrentLine();
+                        e.Handled = true;
+                        break;
+                    }
+                    if (ctrlPressed)
+                    {
+                        _formatChordPending = true;
                         e.Handled = true;
                     }
                     break;
@@ -386,13 +442,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     break;
                 // ── Formatting chord: Ctrl+K arms the chord; second key executes action ──
                 // Ctrl+K, Ctrl+D → Format Document   Ctrl+K, Ctrl+F → Format Selection
-                case Key.K:
-                    if (ctrlPressed)
-                    {
-                        _formatChordPending = true;
-                        e.Handled = true;
-                    }
-                    break;
+                // (Key.K already handled above — Ctrl+Shift+K = delete line, Ctrl+K = arm chord)
 
                 case Key.D:
                     if (ctrlPressed && _formatChordPending)
@@ -422,12 +472,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         e.Handled = true;
                     }
                     break;
-                // Ctrl+Shift+] → expand all folds
+                // Ctrl+] → jump to matching brace; Ctrl+Shift+] → expand all folds
                 case Key.OemCloseBrackets:
                     if (ctrlPressed && shiftPressed && IsFoldingEnabled && _foldingEngine != null)
                     {
                         _foldingEngine.ExpandAll();
                         InvalidateVisual();
+                        e.Handled = true;
+                    }
+                    else if (ctrlPressed && !shiftPressed)
+                    {
+                        JumpToMatchingBrace();
                         e.Handled = true;
                     }
                     break;
@@ -847,6 +902,210 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             EnsureCursorVisible();
         }
+
+        /// <summary>PageUp/PageDown: move caret by viewport height, scroll viewport.</summary>
+        private void PageUpDown(int direction, bool extendSelection)
+        {
+            if (_document == null) return;
+            var oldPosition = new TextPosition(_cursorLine, _cursorColumn);
+            bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+            double viewportH = ActualHeight - TopMargin - (hasHBar ? ScrollBarThickness : 0);
+            int pageLines = Math.Max(1, (int)(viewportH / _lineHeight) - 1);
+            int newLine = Math.Clamp(_cursorLine + direction * pageLines, 0, _document.Lines.Count - 1);
+            _cursorLine = newLine;
+            _cursorColumn = Math.Min(_cursorColumn, _document.Lines[_cursorLine].Length);
+
+            if (extendSelection)
+            {
+                if (_selection.IsEmpty) _selection.Start = oldPosition;
+                _selection.End = new TextPosition(_cursorLine, _cursorColumn);
+            }
+            else
+            {
+                _selection.Clear();
+            }
+
+            EnsureCursorVisible();
+        }
+
+        /// <summary>Ctrl+Up/Down: scroll viewport without moving caret.</summary>
+        private void ScrollViewportLines(int lineCount)
+        {
+            ScrollVertical(lineCount * _lineHeight);
+        }
+
+        /// <summary>Alt+Up: swap current line with line above.</summary>
+        private void MoveLineUp()
+        {
+            if (_document == null || _cursorLine <= 0) return;
+            var above = _document.Lines[_cursorLine - 1].Text;
+            var current = _document.Lines[_cursorLine].Text;
+            _document.Lines[_cursorLine - 1].Text = current;
+            _document.Lines[_cursorLine].Text = above;
+            _cursorLine--;
+            EnsureCursorVisible();
+        }
+
+        /// <summary>Alt+Down: swap current line with line below.</summary>
+        private void MoveLineDown()
+        {
+            if (_document == null || _cursorLine >= _document.Lines.Count - 1) return;
+            var below = _document.Lines[_cursorLine + 1].Text;
+            var current = _document.Lines[_cursorLine].Text;
+            _document.Lines[_cursorLine + 1].Text = current;
+            _document.Lines[_cursorLine].Text = below;
+            _cursorLine++;
+            EnsureCursorVisible();
+        }
+
+        /// <summary>Ctrl+Backspace: delete word to the left of cursor.</summary>
+        private void DeleteWordLeft()
+        {
+            if (_document == null) return;
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+            if (col == 0 && _cursorLine > 0)
+            {
+                DeleteCharBefore();
+                return;
+            }
+            int start = col;
+            while (start > 0 && !IsWordChar(line[start - 1])) start--;
+            while (start > 0 && IsWordChar(line[start - 1])) start--;
+            if (start < col)
+            {
+                _document.DeleteRange(
+                    new TextPosition(_cursorLine, start),
+                    new TextPosition(_cursorLine, col));
+                _cursorColumn = start;
+            }
+        }
+
+        /// <summary>Ctrl+Delete: delete word to the right of cursor.</summary>
+        private void DeleteWordRight()
+        {
+            if (_document == null) return;
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+            if (col >= line.Length && _cursorLine < _document.Lines.Count - 1)
+            {
+                DeleteCharAfter();
+                return;
+            }
+            int end = col;
+            while (end < line.Length && IsWordChar(line[end])) end++;
+            while (end < line.Length && !IsWordChar(line[end])) end++;
+            if (end > col)
+                _document.DeleteRange(
+                    new TextPosition(_cursorLine, col),
+                    new TextPosition(_cursorLine, end));
+        }
+
+        /// <summary>Ctrl+Shift+K: delete current line.</summary>
+        private void DeleteCurrentLine()
+        {
+            if (_document == null || _document.Lines.Count <= 1) return;
+            _document.DeleteLine(_cursorLine);
+            if (_cursorLine >= _document.Lines.Count)
+                _cursorLine = _document.Lines.Count - 1;
+            _cursorColumn = Math.Min(_cursorColumn, _document.Lines[_cursorLine].Length);
+            _selection.Clear();
+            EnsureCursorVisible();
+        }
+
+        /// <summary>Insert key: toggle overwrite mode.</summary>
+        private void ToggleOverwriteMode()
+        {
+            // Overwrite mode is tracked but not yet used by InsertChar —
+            // the flag is exposed for future implementation.
+            _isOverwriteMode = !_isOverwriteMode;
+            InvalidateVisual(); // caret shape may change
+        }
+
+        /// <summary>Ctrl+G: show go-to-line dialog (InputBox).</summary>
+        private void ShowGoToLineDialog()
+        {
+            if (_document == null) return;
+            var dialog = new System.Windows.Window
+            {
+                Title = "Go to Line",
+                Width = 300, Height = 120,
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                Owner = System.Windows.Window.GetWindow(this),
+                ResizeMode = System.Windows.ResizeMode.NoResize,
+                WindowStyle = System.Windows.WindowStyle.ToolWindow
+            };
+            var panel = new System.Windows.Controls.StackPanel { Margin = new Thickness(10) };
+            var label = new System.Windows.Controls.TextBlock
+            {
+                Text = $"Line number (1 - {_document.Lines.Count}):",
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+            var textBox = new System.Windows.Controls.TextBox { Text = (_cursorLine + 1).ToString() };
+            textBox.SelectAll();
+            var okBtn = new System.Windows.Controls.Button
+            {
+                Content = "OK", Width = 75, Margin = new Thickness(0, 8, 0, 0),
+                IsDefault = true, HorizontalAlignment = System.Windows.HorizontalAlignment.Right
+            };
+            okBtn.Click += (_, _) => { dialog.DialogResult = true; dialog.Close(); };
+            panel.Children.Add(label);
+            panel.Children.Add(textBox);
+            panel.Children.Add(okBtn);
+            dialog.Content = panel;
+            if (dialog.ShowDialog() == true && int.TryParse(textBox.Text, out int lineNum))
+            {
+                NavigateToLine(Math.Clamp(lineNum, 1, _document.Lines.Count));
+            }
+        }
+
+        /// <summary>Ctrl+]: jump to matching brace at or near cursor.</summary>
+        private void JumpToMatchingBrace()
+        {
+            if (_document == null) return;
+            string line = _document.Lines[_cursorLine].Text;
+            int col = _cursorColumn;
+            // Find brace at or just before cursor
+            char ch = col < line.Length ? line[col] : '\0';
+            if (col > 0 && !IsBrace(ch)) ch = line[col - 1];
+            if (!IsBrace(ch)) return;
+
+            bool isOpen = ch is '{' or '(' or '[';
+            char match = ch switch { '{' => '}', '}' => '{', '(' => ')', ')' => '(', '[' => ']', ']' => '[', _ => '\0' };
+            if (match == '\0') return;
+
+            int depth = 0;
+            if (isOpen)
+            {
+                // Search forward
+                for (int ln = _cursorLine; ln < _document.Lines.Count; ln++)
+                {
+                    string t = _document.Lines[ln].Text;
+                    int start = (ln == _cursorLine) ? col : 0;
+                    for (int c = start; c < t.Length; c++)
+                    {
+                        if (t[c] == ch) depth++;
+                        else if (t[c] == match) { depth--; if (depth == 0) { _cursorLine = ln; _cursorColumn = c; _selection.Clear(); EnsureCursorVisible(); return; } }
+                    }
+                }
+            }
+            else
+            {
+                // Search backward
+                for (int ln = _cursorLine; ln >= 0; ln--)
+                {
+                    string t = _document.Lines[ln].Text;
+                    int start = (ln == _cursorLine) ? col : t.Length - 1;
+                    for (int c = start; c >= 0; c--)
+                    {
+                        if (t[c] == ch) depth++;
+                        else if (t[c] == match) { depth--; if (depth == 0) { _cursorLine = ln; _cursorColumn = c; _selection.Clear(); EnsureCursorVisible(); return; } }
+                    }
+                }
+            }
+        }
+
+        private static bool IsBrace(char c) => c is '{' or '}' or '(' or ')' or '[' or ']';
 
         #endregion
 

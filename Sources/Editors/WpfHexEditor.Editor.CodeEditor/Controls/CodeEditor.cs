@@ -171,6 +171,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Fields - Mouse Selection (Phase 3)
 
         private bool _isSelecting = false;
+        private bool _isOverwriteMode = false;
         private TextPosition _mouseDownPosition;
 
         // Coalesces InvalidateVisual() calls during mouse-drag selection.
@@ -4200,7 +4201,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            double newOffset = _virtualizationEngine.EnsureLineVisible(_cursorLine);
+            // Clamp against scrollbar maximum (includes VS-style padding) so
+            // the caret can reach the last line even when VE.TotalHeight is smaller.
+            double veOffset = _virtualizationEngine.EnsureLineVisible(_cursorLine);
+            double maxV = _vScrollBar?.Maximum ?? double.MaxValue;
+            double newOffset = Math.Min(veOffset, maxV);
             if (Math.Abs(newOffset - _verticalScrollOffset) > 0.1)
             {
                 _verticalScrollOffset = newOffset;
