@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -7,11 +7,63 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>WpfHexEditor.Terminal</RootNamespace>
     <AssemblyName>WpfHexEditor.Terminal</AssemblyName>
+    <LangVersion>preview</LangVersion>
+
+    <!-- NuGet package metadata -->
+    <PackageId>WpfTerminal</PackageId>
+    <Version>0.9.6.1</Version>
+    <AssemblyVersion>0.9.6.1</AssemblyVersion>
+    <FileVersion>0.9.6.1</FileVersion>
+    <Authors>Derek Tremblay</Authors>
+    <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
+    <Product>WpfTerminal</Product>
+    <Title>WpfTerminal - WPF Terminal Emulator UserControl</Title>
+    <Description>A dockable WPF terminal emulator UserControl for .NET 8. Multi-tab shell sessions (cmd, PowerShell, bash), 39 built-in commands, macro recording/replay, HxScript scripting engine, command history, find-in-output, export to text/HTML. Integrates with WpfDocking for VS-style panel hosting.</Description>
+    <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
+    <PackageTags>terminal;shell;console;wpf;usercontrol;powershell;cmd;bash;scripting;macro</PackageTags>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorIDE</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- SourceLink -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
-    <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
+    <None Include="PACKAGE_README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bundled into the package -->
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Bundle dependency DLLs + XML docs into the NuGet package -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+                            Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
 
 </Project>

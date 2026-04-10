@@ -108,6 +108,7 @@ file sealed class NullSolutionExplorerService : ISolutionExplorerService
 
     public IReadOnlyList<string> GetOpenFilePaths()     => [];
     public IReadOnlyList<string> GetSolutionFilePaths() => [];
+    public IReadOnlyList<SolutionProjectInfo> GetSolutionProjects() => [];
     public IReadOnlyList<string> GetFilesInDirectory(string path) => [];
 
     public Task OpenFileAsync(string filePath, CancellationToken ct = default)       => Task.CompletedTask;
@@ -324,6 +325,8 @@ file sealed class NullCapabilityRegistry : IPluginCapabilityRegistry
     public bool PluginHasFeature(string pluginId, string feature) => false;
     public IReadOnlyList<string> GetFeaturesForPlugin(string pluginId) => [];
     public IReadOnlyList<string> GetAllRegisteredFeatures() => [];
+    public void RegisterWorkspacePersistable(string pluginId, IWorkspacePersistable persistable) { }
+    public IReadOnlyList<(string PluginId, IWorkspacePersistable Persistable)> GetWorkspacePersistables() => [];
 }
 
 file sealed class NullExtensionRegistryStub : IExtensionRegistry

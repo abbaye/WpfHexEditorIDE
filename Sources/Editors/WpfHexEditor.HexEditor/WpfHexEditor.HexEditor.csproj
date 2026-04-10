@@ -12,26 +12,31 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
 
     <!-- NuGet package metadata -->
-    <PackageId>WpfHexEditorControl</PackageId>
-    <Version>3.0.0</Version>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0</FileVersion>
+    <PackageId>WPFHexaEditor</PackageId>
+    <Version>3.0.2</Version>
+    <AssemblyVersion>3.0.2.0</AssemblyVersion>
+    <FileVersion>3.0.2</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditorControl</Product>
-    <Title>WpfHexEditorControl - WPF Hex Editor UserControl</Title>
+    <Title>WPFHexaEditor - WPF Hex Editor UserControl</Title>
     <Description>A full-featured WPF hex editor UserControl for .NET 8. View and edit binary files with syntax coloring, format detection, column/row highlighting, undo/redo, search, and 400+ built-in format definitions. Drop-in replacement for WPFHexaEditor 2.x — completely rewritten for performance and modularity.</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>hexeditor;hex;binary;wpf;usercontrol;editor;byte;viewer;format-detection;undo-redo</PackageTags>
-    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorIDE</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- SourceLink: enables step-through debugging for NuGet consumers -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <!-- Profile-Guided Optimization (PGO) Configuration for .NET 8.0+ -->
@@ -45,6 +50,11 @@
 
   <ItemGroup>
     <None Include="PACKAGE_README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,7 +72,11 @@
   </PropertyGroup>
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
+      <!-- Bundle dependency DLLs -->
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <!-- Bundle matching XML IntelliSense docs alongside each DLL -->
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+                            Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
 

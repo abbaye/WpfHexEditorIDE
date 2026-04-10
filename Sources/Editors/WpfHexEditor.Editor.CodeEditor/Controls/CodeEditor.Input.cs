@@ -925,6 +925,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _selection.Clear();
             }
 
+            // Scroll the viewport by a full page (VS-style), then ensure caret is visible.
+            // This allows scrolling past the last line so it reaches the top of the viewport,
+            // matching scrollbar / mousewheel / minimap behavior.
+            ScrollVertical(direction * pageLines * _lineHeight);
             EnsureCursorVisible();
         }
 

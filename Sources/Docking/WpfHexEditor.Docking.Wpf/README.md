@@ -1,10 +1,8 @@
-# WpfHexEditor.Docking.Wpf
+# WpfDocking
 
-WPF docking framework built on top of `WpfHexEditor.Docking.Core`.
-Provides VS Code-style panel/document hosting, drag-and-drop, theme switching and JSON layout persistence.
+A lightweight WPF docking framework inspired by Visual Studio and VS Code.
 
-**License:** GNU Affero General Public License v3.0
-**Target:** net8.0-windows (WPF required)
+**License:** GNU AGPL v3.0 | **Target:** net8.0-windows | **Dependencies:** Zero
 
 ---
 
@@ -12,35 +10,41 @@ Provides VS Code-style panel/document hosting, drag-and-drop, theme switching an
 
 - VS Code-like chrome (WindowChrome + WindowStyle=None)
 - Panel docking: Left / Right / Top / Bottom / Center (tabbed)
-- Document host with split-view support
+- Document host with split-view and tab groups
 - Floating windows (undock any panel)
 - Auto-hide panels (collapse to edge bar, expand on hover)
 - Drag-and-drop with overlay drop targets
-- Runtime theme switching (Dark / Office Light via DynamicResource)
+- Runtime theme switching (Dark / Light via DynamicResource)
 - JSON layout persistence (DockLayoutSerializer)
 - Full UI Automation / MSAA accessibility support
 
----
+## Quick Start
 
-## Quick start
+```xml
+<Window xmlns:dock="clr-namespace:WpfHexEditor.Shell;assembly=WpfHexEditor.Docking.Wpf">
+    <dock:DockControl x:Name="DockHost" />
+</Window>
+```
 
-Register your panel content factory and restore the saved layout:
+```csharp
+// Register panel factory and restore layout
+DockWorkspace.ContentFactory = new MyContentFactory();
+await DockWorkspace.LoadLayoutAsync("layout.json");
+```
 
-    DockWorkspace.ContentFactory = new MyContentFactory();
-    await DockWorkspace.LoadLayoutAsync(layoutPath);
+## Installation
 
----
+```
+dotnet add package WpfDocking
+```
 
-## Dependencies
+## Included Assemblies
 
-| Package                     | Version |
-|-----------------------------|---------|
-| WpfHexEditor.Docking.Core   | >= 1.0.0 |
-| WpfHexEditor.Editor.Core    | >= 1.0.0 |
-| WpfHexEditor.ProgressBar    | >= 1.0.0 |
-
----
+| Assembly | Description |
+|----------|------------|
+| WpfHexEditor.Docking.Wpf | WPF docking chrome, panels, documents |
+| WpfHexEditor.Docking.Core | Platform-agnostic layout engine |
 
 ## Repository
 
-https://github.com/abbaye/WpfHexEditorIDE
+[GitHub - WpfHexEditorIDE](https://github.com/abbaye/WpfHexEditorIDE)

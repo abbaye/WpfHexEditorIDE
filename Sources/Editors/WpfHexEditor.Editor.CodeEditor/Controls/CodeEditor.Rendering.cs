@@ -1309,6 +1309,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                 _vScrollBar.Minimum     = 0;
                 _vScrollBar.Maximum     = maxV;
+                if (_virtualizationEngine != null)
+                    _virtualizationEngine.MaxScrollOffset = maxV;
                 _vScrollBar.ViewportSize = contentH;
                 _vScrollBar.SmallChange = _lineHeight;
                 _vScrollBar.LargeChange = contentH;

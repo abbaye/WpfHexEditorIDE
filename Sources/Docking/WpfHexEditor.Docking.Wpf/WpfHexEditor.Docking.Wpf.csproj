@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -18,28 +18,59 @@
   <!-- NuGet packaging -->
   <PropertyGroup>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageId>WpfHexEditor.Docking.Wpf</PackageId>
-    <Version>1.0.0</Version>
+    <PackageId>WpfDocking</PackageId>
+    <Version>0.9.5.1</Version>
+    <AssemblyVersion>0.9.5.1</AssemblyVersion>
+    <FileVersion>0.9.5.1</FileVersion>
     <Authors>Derek Tremblay</Authors>
-    <Company>WpfHexEditor</Company>
-    <Product>WpfHexEditor Docking WPF</Product>
-    <Description>WPF docking framework for WpfHexEditor. Provides VS Code-like docking chrome, panel/document hosting, theme switching and JSON layout persistence.</Description>
-    <PackageTags>docking;layout;wpf;hexeditor;shell</PackageTags>
+    <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
+    <Product>WpfDocking</Product>
+    <Title>WpfDocking - VS Code-style Docking Framework for WPF</Title>
+    <Description>A lightweight WPF docking framework inspired by Visual Studio and VS Code. Panel/document hosting, tab groups, drag-and-drop, theme switching, and JSON layout persistence. Zero external dependencies — Docking.Core engine is bundled.</Description>
+    <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
+    <PackageTags>docking;layout;wpf;tabgroup;panel;document;drag-drop;theme;shell</PackageTags>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/abbaye/WpfHexEditorIDE</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- SourceLink -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bundle Docking.Core into this package — single NuGet for consumers -->
+    <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Bundle Docking.Core DLL + XML into the NuGet package -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+                            Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
 
 </Project>

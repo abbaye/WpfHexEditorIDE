@@ -67,6 +67,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         /// </summary>
         public double TotalHeight => TotalLines * LineHeight;
 
+        /// <summary>
+        /// Optional external max scroll offset (e.g. from scrollbar with VS-style padding).
+        /// When set, ClampScrollOffset uses this instead of TotalHeight - ViewportHeight.
+        /// </summary>
+        public double? MaxScrollOffset { get; set; }
+
         #endregion
 
         #region Constructor
@@ -201,7 +207,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         /// </summary>
         private double ClampScrollOffset(double offset)
         {
-            double maxOffset = Math.Max(0, TotalHeight - ViewportHeight);
+            double maxOffset = MaxScrollOffset ?? Math.Max(0, TotalHeight - ViewportHeight);
             return Math.Max(0, Math.Min(maxOffset, offset));
         }
 
@@ -214,7 +220,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         /// </summary>
         public double GetScrollPercentage()
         {
-            double maxOffset = Math.Max(0, TotalHeight - ViewportHeight);
+            double maxOffset = MaxScrollOffset ?? Math.Max(0, TotalHeight - ViewportHeight);
             if (maxOffset <= 0)
                 return 0;
 
@@ -228,7 +234,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         public double SetScrollPercentage(double percentage)
         {
             percentage = Math.Max(0, Math.Min(1.0, percentage));
-            double maxOffset = Math.Max(0, TotalHeight - ViewportHeight);
+            double maxOffset = MaxScrollOffset ?? Math.Max(0, TotalHeight - ViewportHeight);
             double newOffset = maxOffset * percentage;
             return ClampScrollOffset(newOffset);
         }

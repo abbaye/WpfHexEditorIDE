@@ -10,14 +10,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- NuGet package metadata -->
-    <PackageId>WpfCodeEditorControl</PackageId>
-    <Version>0.9.6.1</Version>
-    <AssemblyVersion>0.9.6.1</AssemblyVersion>
-    <FileVersion>0.9.6.1</FileVersion>
+    <PackageId>WpfCodeEditor</PackageId>
+    <Version>0.9.6.2</Version>
+    <AssemblyVersion>0.9.6.2</AssemblyVersion>
+    <FileVersion>0.9.6.2</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
-    <Product>WpfCodeEditorControl</Product>
-    <Title>WpfCodeEditorControl - WPF Code Editor UserControl</Title>
+    <Product>WpfCodeEditor</Product>
+    <Title>WpfCodeEditor - WPF Code Editor UserControl</Title>
     <Description>A full-featured WPF code editor UserControl for .NET 8. Syntax highlighting for 400+ languages via .whfmt definitions, code folding, multi-caret editing, smart auto-complete, LSP integration, search and replace, split view, line numbers, minimap, and more. Zero external dependencies.</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>codeeditor;code;editor;wpf;usercontrol;syntax-highlighting;lsp;autocomplete;folding;minimap</PackageTags>
@@ -72,7 +72,11 @@
   </PropertyGroup>
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
+      <!-- Bundle dependency DLLs -->
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <!-- Bundle matching XML IntelliSense docs alongside each DLL -->
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+                            Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
 
