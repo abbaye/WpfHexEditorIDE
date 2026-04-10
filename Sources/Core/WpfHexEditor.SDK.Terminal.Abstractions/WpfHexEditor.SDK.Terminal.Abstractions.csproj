@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>WpfHexEditor.SDK.Contracts.Terminal</RootNamespace>
-    <AssemblyName>WpfHexEditor.Core.Terminal.Abstractions</AssemblyName>
+    <AssemblyName>WpfHexEditor.SDK.Terminal.Abstractions</AssemblyName>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

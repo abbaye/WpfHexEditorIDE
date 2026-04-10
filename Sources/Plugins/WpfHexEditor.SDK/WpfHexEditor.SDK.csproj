@@ -81,7 +81,7 @@
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
     <!-- Terminal contracts (zero-dep micro-assembly, transitive to plugins) -->
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal.Abstractions\WpfHexEditor.Core.Terminal.Abstractions.csproj">
+    <ProjectReference Include="..\..\Core\WpfHexEditor.SDK.Terminal.Abstractions\WpfHexEditor.SDK.Terminal.Abstractions.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

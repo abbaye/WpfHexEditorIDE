@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <!-- Terminal contracts only — no SDK dependency -->
-    <ProjectReference Include="..\WpfHexEditor.Core.Terminal.Abstractions\WpfHexEditor.Core.Terminal.Abstractions.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.SDK.Terminal.Abstractions\WpfHexEditor.SDK.Terminal.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
