@@ -41,6 +41,7 @@ public sealed class LspDeclarationHintsLayer : FrameworkElement
     private int            _lastVisibleLine;
     private double         _charWidth;
     private double         _lineHeight;
+    private double         _horizontalScrollOffset;
 
     /// <summary>
     /// Snapshot of visible source lines, used to detect [Test]/[Fact] attributes.
@@ -98,14 +99,23 @@ public sealed class LspDeclarationHintsLayer : FrameworkElement
     public void SetContext(string? filePath,
                            int firstLine, int lastLine,
                            double charWidth, double lineHeight,
-                           IReadOnlyList<(int Line, string Text)>? sourceLines = null)
+                           IReadOnlyList<(int Line, string Text)>? sourceLines = null,
+                           double horizontalScrollOffset = 0.0)
     {
-        _filePath         = filePath;
-        _firstVisibleLine = firstLine;
-        _lastVisibleLine  = lastLine;
-        _charWidth        = charWidth;
-        _lineHeight       = lineHeight;
-        _sourceLines      = sourceLines ?? Array.Empty<(int, string)>();
+        bool viewportMoved = _firstVisibleLine != firstLine || _lastVisibleLine != lastLine;
+        _filePath               = filePath;
+        _firstVisibleLine       = firstLine;
+        _lastVisibleLine        = lastLine;
+        _charWidth              = charWidth;
+        _lineHeight             = lineHeight;
+        _horizontalScrollOffset = horizontalScrollOffset;
+        _sourceLines            = sourceLines ?? Array.Empty<(int, string)>();
+
+        // Clear stale items immediately when the viewport scrolls so ArrangeOverride
+        // doesn't render old items at wrong positions during the 800ms debounce.
+        if (viewportMoved && _lensItems.Count > 0)
+            ClearLens();
+
         RequestRefresh();
     }
 
@@ -116,7 +126,8 @@ public sealed class LspDeclarationHintsLayer : FrameworkElement
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        RenderLens();
+        // Don't re-render here — RenderLens is called after debounce resolves fresh data.
+        // Rendering stale _lensItems in ArrangeOverride causes wrong positions after scroll.
         return finalSize;
     }
 
@@ -266,7 +277,7 @@ public sealed class LspDeclarationHintsLayer : FrameworkElement
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
             // Position above the declaration line — offset upward by (lineHeight - ft.Height) / 2.
-            var indent = items[0].IndentChars * _charWidth;
+            var indent = items[0].IndentChars * _charWidth - _horizontalScrollOffset;
             var y = (lineIdx - _firstVisibleLine) * _lineHeight - ft.Height - 1;
             if (y < 0) continue;  // don't draw above the visible area
 

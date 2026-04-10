@@ -236,7 +236,7 @@ public partial class MainWindow
                             {
                                 // Use OpenSolutionAsync — resolves all P2P references correctly.
                                 ShowRoslynStatus(loading: true, text: $"Loading {slnName}…");
-                                OutputLogger.PluginInfo($"[Roslyn] Loading solution: {solutionPath}");
+                                OutputLogger.Info($"[Roslyn] Loading solution: {solutionPath}");
                                 _ = LoadRoslynSolutionInBackgroundAsync(solutionPath, _roslynLoadCts.Token);
                             }
                             else
@@ -1608,7 +1608,7 @@ public partial class MainWindow
             ct.ThrowIfCancellationRequested();
 
             // Back on UI thread — show success.
-            OutputLogger.PluginInfo($"[Roslyn] Workspace loaded: {solutionPath}");
+            OutputLogger.Info($"[Roslyn] Workspace loaded: {solutionPath}");
             var projectCount = GetRoslynProjectCount();
             ShowRoslynStatus(loading: false,
                 text: $"✓ {projectCount} project{(projectCount != 1 ? "s" : "")} loaded",

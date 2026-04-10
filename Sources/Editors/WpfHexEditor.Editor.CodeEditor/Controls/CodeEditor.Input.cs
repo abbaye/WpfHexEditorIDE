@@ -60,14 +60,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Reset caret blink on keypress
             ResetCaretBlink();
 
-            // Block editing input when read-only (navigation keys still allowed below)
+            // Block text-modification keys when read-only.
+            // Navigation, selection (Shift+arrows), copy, and all read-only commands pass through.
             if (IsReadOnly)
             {
-                bool isNavigationOrCopy = e.Key is Key.Left or Key.Right or Key.Up or Key.Down
-                    or Key.Home or Key.End or Key.PageUp or Key.PageDown or Key.Escape
-                    || (e.Key == Key.C && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
-                    || (e.Key == Key.A && (Keyboard.Modifiers & ModifierKeys.Control) != 0);
-                if (!isNavigationOrCopy) { e.Handled = true; return; }
+                bool isModification =
+                    e.Key is Key.Back or Key.Delete or Key.Enter or Key.Return or Key.Tab
+                    || (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                    || (e.Key == Key.X && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                    || (e.Key == Key.Z && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                    || (e.Key == Key.Y && (Keyboard.Modifiers & ModifierKeys.Control) != 0);
+                if (isModification) { e.Handled = true; return; }
             }
 
             bool ctrlPressed  = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
@@ -540,6 +543,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnTextInput(TextCompositionEventArgs e)
         {
             base.OnTextInput(e);
+            if (IsReadOnly) return;
 
             // Reset caret blink on text input
             ResetCaretBlink();
@@ -1117,12 +1121,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void InsertChar(char ch)
         {
+            if (IsReadOnly) return;
             _document.InsertChar(_cursorLine, _cursorColumn, ch);
             _cursorColumn++;
         }
 
         private void InsertNewLine()
         {
+            if (IsReadOnly) return;
             if (!_selection.IsEmpty)
                 DeleteSelection();
 
@@ -1135,6 +1141,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void InsertTab()
         {
+            if (IsReadOnly) return;
             // Insert spaces for tab (respects IndentSize)
             int spacesToInsert = _document.IndentSize - (_cursorColumn % _document.IndentSize);
             for (int i = 0; i < spacesToInsert; i++)
@@ -1271,6 +1278,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void DeleteCharBefore()
         {
+            if (IsReadOnly) return;
             if (_cursorColumn > 0)
             {
                 // SmartBackspace: Delete by indent level if on leading whitespace
@@ -1332,6 +1340,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void DeleteCharAfter()
         {
+            if (IsReadOnly) return;
             var currentLine = _document.Lines[_cursorLine];
 
             if (_cursorColumn < currentLine.Length)
@@ -1787,6 +1796,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Quick Info hover — dispatch after cursor state is settled
                 if (ShowQuickInfo && _hoverQuickInfoService is not null && !_isSelecting)
                     HandleQuickInfoHover(hoverPos, e.GetPosition(this));
+                else if (DiagnosticLogger is not null)
+                    DiagnosticLogger($"[QuickInfo] SKIP ShowQuickInfo={ShowQuickInfo} svc={_hoverQuickInfoService is not null} sel={_isSelecting}");
 
                 // End-of-block hint — show popup when cursor is on a region's closing line.
                 HandleEndBlockHintHover(hoverPos.Line);
@@ -2278,6 +2289,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void DeleteSelection()
         {
+            if (IsReadOnly) return;
             if (_selection.IsEmpty)
                 return;
 

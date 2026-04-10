@@ -1659,7 +1659,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private void HandleQuickInfoHover(TextPosition hoverPos, Point pixelPos)
         {
-            if (_hoverQuickInfoService is null) return;
+            if (_hoverQuickInfoService is null)
+            {
+                DiagnosticLogger?.Invoke("[QuickInfo] service is null");
+                return;
+            }
 
             // Suppress if the mouse is already inside the popup itself.
             if (_quickInfoPopup?.IsMouseOverPopup == true) return;
@@ -1676,9 +1680,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 : string.Empty;
             var (word, _) = GetWordAt(lineText, hoverPos.Column);
 
+            DiagnosticLogger?.Invoke($"[QuickInfo] hover word='{word}' line={hoverPos.Line} col={hoverPos.Column} lsp={_lspClient?.GetType().Name ?? "null"}");
+
             if (string.IsNullOrEmpty(word))
             {
-                _hoverQuickInfoService.Cancel();
+                // Don't cancel a pending debounce — the mouse may have briefly crossed
+                // whitespace between two tokens. Only hide the popup if it's already showing.
+                _quickInfoPopup?.Hide();
                 return;
             }
 
@@ -1686,8 +1694,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _hoverQuickInfoService.SetDiagnostics(_validationErrors.ToArray());
 
             var lineSnapshot = _document.Lines.ToArray();
+            DiagnosticLogger?.Invoke($"[QuickInfo] calling RequestAsync word='{word}' lines={lineSnapshot.Length}");
             _hoverQuickInfoService.RequestAsync(
                 _currentFilePath, hoverPos.Line, hoverPos.Column, word, lineSnapshot);
+            DiagnosticLogger?.Invoke("[QuickInfo] RequestAsync called OK");
         }
 
         // ── End-of-Block Hint ─────────────────────────────────────────────────────

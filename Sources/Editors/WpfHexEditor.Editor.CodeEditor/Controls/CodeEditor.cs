@@ -1142,6 +1142,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 hintsClient.SetInlineHintsOptions(_showVarTypeHints, _showLambdaReturnTypeHints);
         }
 
+        /// <summary>Global diagnostic logger wired by the host app (e.g. OutputLogger.Info).</summary>
+        public static Action<string>? DiagnosticLogger { get; set; }
+
         // ── Quick Info DPs ─────────────────────────────────────────────────────
 
         public static readonly DependencyProperty ShowQuickInfoProperty =

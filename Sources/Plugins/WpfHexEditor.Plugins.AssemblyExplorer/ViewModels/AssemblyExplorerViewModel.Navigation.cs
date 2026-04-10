@@ -7,13 +7,10 @@
 // ==========================================================
 
 using System.IO;
-using System.Windows;
 using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.Core.ProjectSystem.Languages;
-using WpfHexEditor.Editor.CodeEditor.Controls;
-using WpfHexEditor.Editor.TextEditor.Models;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.SDK.Descriptors;
@@ -285,75 +282,22 @@ public sealed partial class AssemblyExplorerViewModel
             text = rawText;
         }
 
-        var isCSharpOutput = language.Id == "CSharp" && !isIlOutput;
-        var assemblyModel  = string.IsNullOrEmpty(filePath)
-            ? null
-            : _workspace.TryGetValue(filePath, out var entry) ? entry.Model : null;
+        // Write decompiled text to a temp file and open it in the IDE's CodeEditor.
+        var ext = isIlOutput ? ".il"
+            : language.Id switch
+            {
+                "CSharp" => ".cs",
+                "VB"     => ".vb",
+                _        => ".cs"
+            };
 
-        var content = BuildDecompiledCodeEditor(text, isCSharpOutput, language.EditorLanguageName, assemblyModel);
+        var tempDir = Path.Combine(Path.GetTempPath(), "WpfHexEditor", "Decompiled");
+        Directory.CreateDirectory(tempDir);
+        var safeName = string.Concat(title.Split(Path.GetInvalidFileNameChars()));
+        var tempPath = Path.Combine(tempDir, safeName + ext);
 
-        _uiRegistry.RegisterDocumentTab(uiId, content, _pluginId, new DocumentDescriptor
-        {
-            Title     = title,
-            ContentId = uiId,
-            ToolTip   = $"Decompiled: {node.DisplayName}",
-            CanClose  = true
-        });
-    }
-
-    private UIElement BuildDecompiledCodeEditor(
-        string         text,
-        bool           installLinks,
-        string?        editorLanguageName,
-        AssemblyModel? assembly = null)
-    {
-        var host = new CodeEditorSplitHost();
-
-        var langId = editorLanguageName is not null
-            ? (LanguageRegistry.Instance.FindByDisplayName(editorLanguageName)?.Id
-               ?? LanguageRegistry.Instance.FindByAlias(editorLanguageName)?.Id
-               ?? editorLanguageName.ToLowerInvariant())
-            : "csharp";
-        var lang = LanguageRegistry.Instance.FindById(langId);
-        if (lang is not null) host.SetLanguage(lang);
-        host.IsReadOnly = true;
-        host.PrimaryEditor.LoadText(text);
-
-        return host;
-    }
-
-    /// <summary>Retained for external callers; TextLinks are superseded by LSP.</summary>
-    private IReadOnlyList<TextLink> BuildTextLinks(string decompiledText, AssemblyModel assembly)
-    {
-        var spans = DecompiledTextLinker.ExtractTypeNames(decompiledText);
-        if (spans.Count == 0) return [];
-
-        var typeNameLookup = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var type in assembly.Types)
-        {
-            var simpleName = type.FullName.Contains('.')
-                ? type.FullName[(type.FullName.LastIndexOf('.') + 1)..]
-                : type.FullName;
-
-            var backtick = simpleName.IndexOf('`');
-            if (backtick >= 0) simpleName = simpleName[..backtick];
-
-            typeNameLookup.TryAdd(simpleName, type.FullName);
-        }
-
-        var links = new List<TextLink>(spans.Count);
-        foreach (var span in spans)
-        {
-            if (!typeNameLookup.TryGetValue(span.Text, out var fullName)) continue;
-            var capturedFullName = fullName;
-            links.Add(new TextLink(
-                StartOffset: span.Start,
-                EndOffset:   span.Start + span.Length,
-                DisplayText: span.Text,
-                OnClick:     () => NavigateToTypeName(capturedFullName)));
-        }
-
-        return links;
+        File.WriteAllText(tempPath, text);
+        _documentHost?.OpenDocument(tempPath, WpfHexEditor.SDK.Contracts.WellKnownEditorIds.CodeEditor);
     }
 
     private void NavigateToTypeName(string fullName)

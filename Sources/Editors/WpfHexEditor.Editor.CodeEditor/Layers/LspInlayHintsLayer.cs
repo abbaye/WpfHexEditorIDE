@@ -38,6 +38,7 @@ public sealed class LspInlayHintsLayer : FrameworkElement
     private int                      _lastVisibleLine;
     private double                   _charWidth;
     private double                   _lineHeight;
+    private double                   _horizontalScrollOffset;
     private IReadOnlyList<LspInlayHint> _hints = Array.Empty<LspInlayHint>();
 
     private readonly DrawingVisual   _visual = new();
@@ -70,13 +71,22 @@ public sealed class LspInlayHintsLayer : FrameworkElement
 
     /// <summary>Sets the current file path and requests a refresh.</summary>
     public void SetContext(string? filePath, int firstLine, int lastLine,
-                           double charWidth, double lineHeight)
+                           double charWidth, double lineHeight,
+                           double horizontalScrollOffset = 0.0)
     {
-        _filePath         = filePath;
-        _firstVisibleLine = firstLine;
-        _lastVisibleLine  = lastLine;
-        _charWidth        = charWidth;
-        _lineHeight       = lineHeight;
+        bool viewportMoved = _firstVisibleLine != firstLine || _lastVisibleLine != lastLine;
+        _filePath               = filePath;
+        _firstVisibleLine       = firstLine;
+        _lastVisibleLine        = lastLine;
+        _charWidth              = charWidth;
+        _lineHeight             = lineHeight;
+        _horizontalScrollOffset = horizontalScrollOffset;
+
+        // Clear stale items immediately when the viewport scrolls so ArrangeOverride
+        // doesn't render old items at wrong positions during the debounce.
+        if (viewportMoved && _hints.Count > 0)
+            ClearHints();
+
         RequestRefresh();
     }
 
@@ -87,7 +97,8 @@ public sealed class LspInlayHintsLayer : FrameworkElement
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        RenderHints();
+        // Don't re-render here — RenderHints is called after debounce resolves fresh data.
+        // Rendering stale _hints in ArrangeOverride causes wrong positions after scroll.
         return finalSize;
     }
 
@@ -163,8 +174,8 @@ public sealed class LspInlayHintsLayer : FrameworkElement
                 fg,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            // Position at (column × charWidth, (line - firstLine) × lineHeight)
-            var x = hint.Column * _charWidth;
+            // Position at (column × charWidth - hScroll, (line - firstLine) × lineHeight)
+            var x = hint.Column * _charWidth - _horizontalScrollOffset;
             var y = (hint.Line - _firstVisibleLine) * _lineHeight
                     + (_lineHeight - ft.Height) / 2;
 

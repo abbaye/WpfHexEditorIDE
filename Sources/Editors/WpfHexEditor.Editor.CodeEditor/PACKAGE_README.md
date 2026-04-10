@@ -2,6 +2,10 @@
 
 A full-featured WPF code editor UserControl for .NET 8. Built as part of the [WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorControl) project.
 
+## What's New in 0.9.6.3
+
+- **Fix**: LSP inlay hints and declaration hints (code lens) no longer render as ghost overlays on top of code text. Hints now correctly align with the text area origin, accounting for gutter offset, top margin, and horizontal scroll.
+
 ## Quick Start
 
 ### CodeEditorSplitHost (full-featured: syntax highlighting, LSP, folding...)
