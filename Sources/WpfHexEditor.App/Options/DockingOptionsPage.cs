@@ -58,15 +58,19 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
     private readonly TextBlock _cornerRadiusLabel;
     private readonly ComboBox  _cornerScopeCombo;
     private readonly Action<double>? _liveCornerRadius;
+    private readonly Action<string>? _liveScope;
+    private DockPanel? _cornerRadiusRow;
 
     private bool _loading;
 
     public DockingOptionsPage(
-        Action<ActivePanelHighlightMode>? livePreview  = null,
-        Action<double>?                   liveCornerRadius = null)
+        Action<ActivePanelHighlightMode>? livePreview      = null,
+        Action<double>?                   liveCornerRadius  = null,
+        Action<string>?                   liveScope         = null)
     {
         _livePreview      = livePreview;
         _liveCornerRadius = liveCornerRadius;
+        _liveScope        = liveScope;
         Padding = new Thickness(16);
 
         Resources.MergedDictionaries.Add(new ResourceDictionary
@@ -107,10 +111,11 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         (_cornerRadiusSlider, _cornerRadiusLabel) = MakeSlider(0, 12, 1);
         _cornerRadiusSlider.ValueChanged += OnCornerRadiusChanged;
 
-        _cornerScopeCombo = new ComboBox { MinWidth = 160 };
-        _cornerScopeCombo.Items.Add("Content area only");
-        _cornerScopeCombo.Items.Add("Full panel frame");
-        _cornerScopeCombo.SelectionChanged += OnChanged;
+        _cornerScopeCombo = new ComboBox { MinWidth = 200 };
+        _cornerScopeCombo.Items.Add("Normal (sharp corners)");
+        _cornerScopeCombo.Items.Add("Rounded — Content area only");
+        _cornerScopeCombo.Items.Add("Rounded — Full panel frame");
+        _cornerScopeCombo.SelectionChanged += OnCornerScopeChanged;
         _profileDirBox.TextChanged += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
 
         var root = new StackPanel { Orientation = Orientation.Vertical };
@@ -142,10 +147,11 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
         // Panel Appearance
         root.Children.Add(SectionHeader("PANEL APPEARANCE"));
-        root.Children.Add(MakeSliderRow("Corner radius (px):", _cornerRadiusSlider, _cornerRadiusLabel));
-        root.Children.Add(Hint("0 = sharp corners. 4–8 for a VS-like rounded look."));
-        root.Children.Add(MakeLabeledRow("Corner scope:", _cornerScopeCombo));
-        root.Children.Add(Hint("Content area only · Full panel frame (rounds the entire panel container)"));
+        root.Children.Add(MakeLabeledRow("Corner mode:", _cornerScopeCombo));
+        root.Children.Add(Hint("Normal = sharp corners. Rounded modes use the radius slider below."));
+        _cornerRadiusRow = MakeSliderRow("Corner radius (px):", _cornerRadiusSlider, _cornerRadiusLabel);
+        root.Children.Add(_cornerRadiusRow);
+        root.Children.Add(Hint("4–8 for a VS-like rounded look."));
 
         // Layout Profiles
         root.Children.Add(SectionHeader("LAYOUT PROFILES"));
@@ -184,7 +190,15 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
             _cornerRadiusSlider.Value     = settings.PanelCornerRadius;
             _cornerRadiusLabel.Text       = ((int)settings.PanelCornerRadius).ToString();
-            _cornerScopeCombo.SelectedIndex = settings.PanelCornerScope == "FullFrame" ? 1 : 0;
+
+            // 0=Normal(sharp), 1=Rounded ContentOnly, 2=Rounded FullFrame
+            if (settings.PanelCornerRadius == 0)
+                _cornerScopeCombo.SelectedIndex = 0;
+            else if (settings.PanelCornerScope == "FullFrame")
+                _cornerScopeCombo.SelectedIndex = 2;
+            else
+                _cornerScopeCombo.SelectedIndex = 1;
+            UpdateCornerRadiusRowVisibility();
         }
         finally
         {
@@ -211,8 +225,8 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
         settings.LayoutProfileDirectory = string.IsNullOrWhiteSpace(_profileDirBox.Text) ? null : _profileDirBox.Text.Trim();
 
-        settings.PanelCornerRadius = _cornerRadiusSlider.Value;
-        settings.PanelCornerScope  = _cornerScopeCombo.SelectedIndex == 1 ? "FullFrame" : "ContentOnly";
+        settings.PanelCornerRadius = _cornerScopeCombo.SelectedIndex == 0 ? 0 : _cornerRadiusSlider.Value;
+        settings.PanelCornerScope  = _cornerScopeCombo.SelectedIndex == 2 ? "FullFrame" : "ContentOnly";
 
         AutoHideAppSettings.NotifyChanged();
     }
@@ -233,6 +247,34 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         _cornerRadiusLabel.Text = ((int)e.NewValue).ToString();
         _liveCornerRadius?.Invoke(e.NewValue);
         Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnCornerScopeChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_loading) return;
+        int idx = _cornerScopeCombo.SelectedIndex;
+        UpdateCornerRadiusRowVisibility();
+
+        if (idx == 0)
+        {
+            // Normal (sharp corners) — force radius to 0
+            _liveCornerRadius?.Invoke(0);
+            _liveScope?.Invoke("ContentOnly");
+        }
+        else
+        {
+            var scope = idx == 2 ? "FullFrame" : "ContentOnly";
+            _liveCornerRadius?.Invoke(_cornerRadiusSlider.Value > 0 ? _cornerRadiusSlider.Value : 4);
+            _liveScope?.Invoke(scope);
+        }
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void UpdateCornerRadiusRowVisibility()
+    {
+        if (_cornerRadiusRow is not null)
+            _cornerRadiusRow.Visibility = _cornerScopeCombo.SelectedIndex == 0
+                ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void OnChanged(object sender, RoutedEventArgs e)

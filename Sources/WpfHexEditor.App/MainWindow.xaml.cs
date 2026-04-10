@@ -629,6 +629,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ApplyDockCornerRadius();     // push persisted corner radius to DockHost + resources
         WpfHexEditor.Core.Options.TabPreviewAppSettings.Changed += ApplyTabPreviewSettings;
         WpfHexEditor.Core.Options.AutoHideAppSettings.Changed   += ApplyAutoHideSettings;
+        WpfHexEditor.Core.Options.AutoHideAppSettings.Changed   += ApplyDockCornerRadius;
         WpfHexEditor.Core.Options.DocumentsAppSettings.Changed  += ApplyDocumentSettings;
         InitAutoSerializeTimer();
 
@@ -697,7 +698,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "Environment", "Docking",
             () => new WpfHexEditor.App.Options.DockingOptionsPage(
                       DockHost.ApplyHighlightMode,
-                      r => { DockHost.UpdatePanelCornerRadius(r); ApplyDockPanelResources(r); }),
+                      r => { DockHost.UpdatePanelCornerRadius(r); ApplyDockPanelResources(r); },
+                      scope => ApplyDockPanelScopeResources(scope)),
             "\uE8A0");
 
         // Register Code Editor options page (General, Auto-close, Hints, Minimap, Coloring)
@@ -5740,6 +5742,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var s         = AppSettingsService.Instance.Current;
         var fullFrame = s.PanelCornerScope == "FullFrame";
+        Application.Current.Resources["DockPanelCornerRadius"]      = new System.Windows.CornerRadius(r);
+        Application.Current.Resources["DockPanelOuterCornerRadius"] =
+            fullFrame ? new System.Windows.CornerRadius(r) : new System.Windows.CornerRadius(0);
+    }
+
+    /// <summary>Live callback from DockingOptionsPage scope combo — uses UI value instead of persisted settings.</summary>
+    private void ApplyDockPanelScopeResources(string scope)
+    {
+        var r         = DockHost.PanelCornerRadius;
+        var fullFrame = scope == "FullFrame";
         Application.Current.Resources["DockPanelCornerRadius"]      = new System.Windows.CornerRadius(r);
         Application.Current.Resources["DockPanelOuterCornerRadius"] =
             fullFrame ? new System.Windows.CornerRadius(r) : new System.Windows.CornerRadius(0);
