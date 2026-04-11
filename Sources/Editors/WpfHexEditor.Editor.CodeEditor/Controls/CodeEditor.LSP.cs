@@ -1839,12 +1839,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             switch (e.Command)
             {
                 case "GoToDefinition":
-                    if (_hoveredSymbolZone.HasValue)
-                        _ = NavigateToDefinitionAsync(_hoveredSymbolZone.Value);
+                    // Build a SymbolHitZone from the last hovered position (not _hoveredSymbolZone
+                    // which is only set during Ctrl+hover, not normal QuickInfo hover).
+                    var pos = _lastHoverTextPos;
+                    if (pos.Line >= 0 && _document is not null
+                        && pos.Line < _document.Lines.Count)
+                    {
+                        var lt = _document.Lines[pos.Line].Text ?? string.Empty;
+                        var (w, sc) = GetWordAt(lt, pos.Column);
+                        if (!string.IsNullOrEmpty(w))
+                        {
+                            var zone = new SymbolHitZone(pos.Line, sc, sc + w.Length, w,
+                                string.Empty, 0, 0, false);
+                            _ = NavigateToDefinitionAsync(zone);
+                        }
+                    }
                     break;
 
                 case "FindAllReferences":
-                    _ = FindAllReferencesAsync();
+                    if (_lastHoverTextPos.Line >= 0 && _document is not null
+                        && _lastHoverTextPos.Line < _document.Lines.Count)
+                    {
+                        var refLt = _document.Lines[_lastHoverTextPos.Line].Text ?? string.Empty;
+                        var (refW, _) = GetWordAt(refLt, _lastHoverTextPos.Column);
+                        _ = FindAllReferencesAsync(_lastHoverTextPos.Line, refW);
+                    }
                     break;
             }
         }
