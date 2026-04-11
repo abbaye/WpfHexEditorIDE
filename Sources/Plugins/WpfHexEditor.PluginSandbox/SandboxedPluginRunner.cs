@@ -844,6 +844,7 @@ file sealed class NullDocumentHostService : WpfHexEditor.SDK.Contracts.Services.
         public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel?>? ActiveDocumentChanged;
         public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  DocumentDirtyChanged;
         public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  DocumentTitleChanged;
+        public event EventHandler<WpfHexEditor.Editor.Core.Documents.DocumentModel>?  EditorAttached;
 #pragma warning restore 67
     }
 }

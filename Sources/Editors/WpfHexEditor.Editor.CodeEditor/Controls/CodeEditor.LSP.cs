@@ -1679,9 +1679,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (string.IsNullOrEmpty(word))
             {
-                // Don't cancel a pending debounce — the mouse may have briefly crossed
-                // whitespace between two tokens. Only hide the popup if it's already showing.
-                _quickInfoPopup?.Hide();
+                // Mouse crossed whitespace between tokens — don't hide the popup or
+                // cancel pending resolve. The popup's own grace timer (200ms) handles
+                // auto-hide when the mouse truly leaves the symbol area.
                 return;
             }
 

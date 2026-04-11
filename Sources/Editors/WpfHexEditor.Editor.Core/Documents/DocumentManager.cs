@@ -108,6 +108,8 @@ public sealed class DocumentManager : IDocumentManager
             model.Buffer = buf;
             bufAware.AttachBuffer(buf);
         }
+
+        EditorAttached?.Invoke(this, model);
     }
 
     public void Unregister(string contentId)
@@ -184,6 +186,7 @@ public sealed class DocumentManager : IDocumentManager
     public event EventHandler<DocumentModel?>? ActiveDocumentChanged;
     public event EventHandler<DocumentModel>?  DocumentDirtyChanged;
     public event EventHandler<DocumentModel>?  DocumentTitleChanged;
+    public event EventHandler<DocumentModel>?  EditorAttached;
 
     // -- Internal ----------------------------------------------------------
 

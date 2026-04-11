@@ -110,11 +110,10 @@ internal sealed class HoverQuickInfoService : IDisposable
         // Skip if already resolving for the same word.
         if (sameWord) return;
 
-        // Cancel previous in-flight request and resolve immediately.
-        // The DispatcherTimer debounce was unreliable (Tick never fired in some scenarios).
-        // Instead, cancel-and-resolve is fast enough — LSP hover has its own 10s timeout.
-        _debounce.Stop();
-        _ = ResolveAsync();
+        // Cancel any previous in-flight request, then wait 500ms (VS-standard hover delay)
+        // before resolving. Uses Task.Delay instead of DispatcherTimer (which was unreliable).
+        CancelPending();
+        _ = DelayedResolveAsync();
     }
 
     /// <summary>Cancels any pending debounce + in-flight request and fires null result.</summary>
@@ -152,9 +151,21 @@ internal sealed class HoverQuickInfoService : IDisposable
         _cts = new CancellationTokenSource();
     }
 
+    private async Task DelayedResolveAsync()
+    {
+        var ct = _cts.Token;
+        try
+        {
+            // VS-standard ~500ms hover dwell delay before showing QuickInfo.
+            await Task.Delay(500, ct).ConfigureAwait(true);
+        }
+        catch (OperationCanceledException) { return; }
+
+        await ResolveAsync().ConfigureAwait(true);
+    }
+
     private async Task ResolveAsync()
     {
-        CancelPending();
         var ct = _cts.Token;
 
         // Capture all state on the UI thread before going background

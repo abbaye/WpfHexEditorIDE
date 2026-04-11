@@ -104,4 +104,7 @@ public interface IDocumentManager
 
     /// <summary>Raised when a document's <see cref="DocumentModel.Title"/> value changes.</summary>
     event EventHandler<DocumentModel> DocumentTitleChanged;
+
+    /// <summary>Raised after an editor is attached to a registered document via <see cref="AttachEditor"/>.</summary>
+    event EventHandler<DocumentModel> EditorAttached;
 }

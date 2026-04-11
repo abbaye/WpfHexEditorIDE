@@ -98,6 +98,7 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
         _documentManager.DocumentRegistered   += OnDocumentRegistered;
         _documentManager.DocumentUnregistered += OnDocumentUnregistered;
+        _documentManager.EditorAttached       += OnEditorAttached;
     }
 
     // ── Event handlers ────────────────────────────────────────────────────────
@@ -109,6 +110,31 @@ internal sealed class LspDocumentBridgeService : IDisposable
         System.Windows.Application.Current?.Dispatcher.InvokeAsync(
             () => TryCreateBridge(doc),
             System.Windows.Threading.DispatcherPriority.Background);
+    }
+
+    private void OnEditorAttached(object? sender, DocumentModel doc)
+    {
+        // The editor was attached after the bridge was created — retry LSP injection
+        // so the CodeEditor gets its ILspClient (SetLspClient) for hover/completion.
+        if (_disposed || doc.Buffer is not { } buffer) return;
+        if (!_bridges.TryGetValue(buffer.FilePath, out _))
+        {
+            // No bridge yet — try creating one now that the buffer+editor are ready.
+            TryCreateBridge(doc);
+            return;
+        }
+
+        // Bridge exists but editor wasn't wired — inject the LSP client now.
+        if (doc.AssociatedEditor is ILspAwareEditor lspEditor
+            && _clients.TryGetValue(buffer.LanguageId ?? "", out var client))
+        {
+            if (lspEditor is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost splitHost)
+                splitHost.BreadcrumbLogger = msg => OutputLogger.LspDebug(msg);
+
+            lspEditor.SetLspClient(client);
+            lspEditor.SetDocumentManager(_documentManager);
+            OutputLogger.LspInfo($"LSP re-injected: {System.IO.Path.GetFileName(buffer.FilePath)}");
+        }
     }
 
     private void TryCreateBridge(DocumentModel doc)
