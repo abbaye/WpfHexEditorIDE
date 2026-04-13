@@ -115,8 +115,27 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         DeleteCommand    = new RelayCommand(() => Delete(),    () => _vm.HasSelection && !IsReadOnly);
         SelectAllCommand = new RelayCommand(() => SelectAll(), () => true);
 
-        Loaded   += (_, _) => Viewport.Focus();
-        Unloaded += (_, _) => Viewport.StopCursorBlink();
+        Loaded += (_, _) =>
+        {
+            Viewport.Focus();
+            var window = Window.GetWindow(this);
+            if (window != null)
+            {
+                Mouse.AddPreviewMouseMoveHandler(window, OnWindowPreviewMouseMove);
+                Mouse.AddPreviewMouseUpHandler(window, OnWindowPreviewMouseUp);
+            }
+        };
+
+        Unloaded += (_, _) =>
+        {
+            Viewport.StopCursorBlink();
+            var window = Window.GetWindow(this);
+            if (window != null)
+            {
+                Mouse.RemovePreviewMouseMoveHandler(window, OnWindowPreviewMouseMove);
+                Mouse.RemovePreviewMouseUpHandler(window, OnWindowPreviewMouseUp);
+            }
+        };
 
         InitializeContextMenu();
     }
@@ -868,6 +887,45 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
 
         ViewportScrollChanged?.Invoke(this, e);
+    }
+
+    // -----------------------------------------------------------------------
+    // Drag-selection auto-scroll (window-level handlers)
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Window-level tunneling handler — fires even when the mouse has left TextViewport bounds.
+    /// When the viewport is inside a ScrollViewer, CaptureMouse() alone does not guarantee that
+    /// OnMouseMove continues firing in all host configurations (docking, WindowChrome). This
+    /// handler uses the same direct-scroll pattern as CodeEditor.
+    /// </summary>
+    private void OnWindowPreviewMouseMove(object sender, MouseEventArgs e)
+    {
+        if (_vm is null || e.LeftButton != MouseButtonState.Pressed) return;
+        if (!Viewport.IsDraggingSelection) return;
+
+        // Use ScrollViewer coordinates — Viewport.ActualHeight is the entire document height,
+        // not the visible area. ScrollView is the true visible boundary.
+        Point mousePos        = e.GetPosition(ScrollView);
+        double visibleHeight  = ScrollView.ViewportHeight;
+
+        // Only act when the mouse is OUTSIDE the visible scroll area.
+        if (mousePos.Y >= 0 && mousePos.Y <= visibleHeight) return;
+
+        int direction = mousePos.Y < 0 ? -1 : 1;
+
+        // Scroll the ScrollViewer — ScrollChanged fires next layout pass and updates FirstVisibleLine.
+        ScrollView.ScrollToVerticalOffset(ScrollView.VerticalOffset + direction * Viewport.LineHeight);
+
+        // Extend selection after the scroll completes (Background priority runs after layout).
+        double vh = ScrollView.ViewportHeight;
+        Dispatcher.InvokeAsync(() => Viewport.ExtendSelectionToEdge(direction, vh),
+            System.Windows.Threading.DispatcherPriority.Background);
+    }
+
+    private void OnWindowPreviewMouseUp(object sender, MouseButtonEventArgs e)
+    {
+        // Nothing extra needed — TextViewport handles ReleaseMouseCapture in OnMouseLeftButtonUp.
     }
 
     // -----------------------------------------------------------------------

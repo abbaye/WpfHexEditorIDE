@@ -107,7 +107,8 @@ namespace WpfHexEditor.HexEditor
             }
 
             // Clamp Y to viewport bounds for hit-testing.
-            var clampedPos = new Point(mousePos.X, Math.Clamp(mousePos.Y, 0, viewportHeight - 1));
+            // Minimum is 2 (HexViewport.TopMargin): HitTestByteWithArea returns null for y < TopMargin.
+            var clampedPos = new Point(mousePos.X, Math.Clamp(mousePos.Y, 2.0, viewportHeight - 1));
             var hitResult = HexViewport.HitTestByteWithArea(clampedPos);
             if (hitResult.Position.HasValue)
             {
@@ -145,18 +146,52 @@ namespace WpfHexEditor.HexEditor
                 return;
             }
 
-            // Translate mouse position to HexViewport coordinates
+            // Translate mouse position to HexViewport coordinates.
             Point mousePos = e.GetPosition(HexViewport);
             _lastMousePosition = mousePos;
 
             double viewportHeight = HexViewport.ActualHeight;
 
-            if (mousePos.Y < AutoScrollEdgeThreshold)
-                StartAutoScroll(-1);
-            else if (mousePos.Y > viewportHeight - AutoScrollEdgeThreshold)
-                StartAutoScroll(1);
-            else
+            // Only act when the mouse is OUTSIDE the viewport — Content_MouseMove handles the inside.
+            if (mousePos.Y >= 0 && mousePos.Y <= viewportHeight)
+            {
                 StopAutoScroll();
+                return;
+            }
+
+            // Direct scroll + selection update (same pattern as CodeEditor.OnMouseMove).
+            // No timer needed: this tunneling event fires continuously from the Window.
+            int direction = mousePos.Y < 0 ? -1 : 1;
+            long newScrollPos = _viewModel.ScrollPosition + (direction * AutoScrollSpeed);
+            long maxScroll    = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+            newScrollPos      = Math.Max(0, Math.Min(newScrollPos, maxScroll));
+
+            _viewModel.BeginUpdate();
+            try
+            {
+                _viewModel.ScrollPosition = newScrollPos;
+
+                // Hit-test at the nearest viewport edge to extend the selection.
+                double clampedY   = direction < 0 ? 2.0 : viewportHeight - 1;
+                var clampedPos    = new Point(mousePos.X, clampedY);
+                var hitResult     = HexViewport.HitTestByteWithArea(clampedPos);
+                if (hitResult.Position.HasValue)
+                {
+                    var position = new VirtualPosition(hitResult.Position.Value);
+                    if (position != _lastAutoScrollPosition)
+                    {
+                        _viewModel.SetSelectionRange(_mouseDownPosition, position);
+                        _lastAutoScrollPosition = position;
+                    }
+                }
+            }
+            finally
+            {
+                _viewModel.EndUpdate();
+            }
+
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
         }
 
         /// <summary>
