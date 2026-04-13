@@ -80,18 +80,4 @@
     </ItemGroup>
   </Target>
 
-  <!--
-    Satellite assemblies (culture-specific .resources.dll) from bundled project references.
-    ReferenceCopyLocalPaths does not reliably propagate DestinationSubDirectory across PrivateAssets
-    project references, so we glob the build output directly.
-    %(RecursiveDir) gives the culture folder (e.g. "fr-FR\") which becomes the in-package sub-path
-    so NuGet places files at lib/net8.0-windows/fr-FR/WpfHexEditor.Core.resources.dll, etc.
-  -->
-  <Target Name="IncludeSatelliteAssembliesInPackage" AfterTargets="CopyProjectReferencesToPackage">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)**\*.resources.dll"
-                              PackagePath="%(RecursiveDir)%(Filename)%(Extension)" />
-    </ItemGroup>
-  </Target>
-
 </Project>
