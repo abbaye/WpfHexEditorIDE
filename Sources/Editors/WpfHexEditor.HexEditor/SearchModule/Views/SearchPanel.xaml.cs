@@ -71,9 +71,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -114,9 +112,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -131,9 +127,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
+            => Binding.DoNothing;
     }
 
     #endregion

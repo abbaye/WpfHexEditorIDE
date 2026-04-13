@@ -91,7 +91,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
             if (string.IsNullOrEmpty(savedCulture))
             {
                 // No saved preference - select "System Language"
-                System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] No saved culture preference, selecting System Language");
                 currentLang = systemLanguage;
                 SelectedCulture = CultureInfo.InstalledUICulture;
             }
@@ -99,7 +98,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
             {
                 // Select current language
                 var currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
-                System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] Current UI Culture: {currentCulture.Name} ({currentCulture.NativeName})");
                 currentLang = languages.FirstOrDefault(l =>
                     l.Code == currentCulture.Name ||
                     l.Code.StartsWith(currentCulture.TwoLetterISOLanguageName) ||
@@ -108,12 +106,7 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
                 if (currentLang == null || currentLang.Code == "system")
                 {
                     // Default to English if current culture not found
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] No matching language found for {currentCulture.Name}, defaulting to English");
                     currentLang = languages.FirstOrDefault(l => l.Code == "en") ?? languages.First();
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] Matched language: {currentLang.Code} ({currentLang.Name})");
                 }
 
                 SelectedCulture = new CultureInfo(currentLang.Code);
@@ -143,10 +136,7 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
 
             // Select current theme
             var currentTheme = ThemeManager.CurrentTheme;
-            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadThemes] Current Theme: {currentTheme}");
-
             var currentThemeInfo = themes.FirstOrDefault(t => t.Name == currentTheme) ?? themes.First();
-            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadThemes] Matched theme: {currentThemeInfo.Name}");
 
             ThemeListView.SelectedItem = currentThemeInfo;
 
@@ -167,16 +157,10 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
                 // Only change if it's actually different
                 if (selected.Name != oldTheme)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.ThemeListView_SelectionChanged] Instantly changing theme from '{oldTheme}' to '{selected.Name}'");
-
-                    // Change theme instantly - no confirmation needed!
                     ThemeManager.ChangeTheme(selected.Name, persistent: true);
 
-                    // Update the current theme display immediately
                     CurrentThemeIcon.Text = selected.Icon;
                     CurrentThemeText.Text = $"{selected.DisplayName} - {selected.Description}";
-
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.ThemeListView_SelectionChanged] Theme changed instantly! UI updated in real-time.");
                 }
             }
         }
@@ -193,9 +177,7 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
                 // Check if "System Language" is selected
                 if (selected.Code == "system")
                 {
-                    // Use the system's installed UI culture
                     newCulture = CultureInfo.InstalledUICulture;
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LanguageListView_SelectionChanged] System Language selected, using: {newCulture.Name}");
 
                     // Clear the saved culture preference so the system language is used
                     Properties.Settings.Default.PreferredCulture = string.Empty;
@@ -211,18 +193,12 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
                 // Only change if it's actually different
                 if (newCulture.Name != oldCulture.Name)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LanguageListView_SelectionChanged] Instantly changing culture from '{oldCulture.Name}' to '{newCulture.Name}'");
-
-                    // Change culture instantly - no confirmation needed!
                     DynamicResourceManager.ChangeCulture(newCulture, persistent: selected.Code != "system");
 
-                    // Update the current language display immediately
                     CurrentLanguageFlag.Text = selected.Flag;
                     CurrentLanguageText.Text = $"{selected.Name} - {selected.NativeName}";
 
                     SelectedCulture = newCulture;
-
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LanguageListView_SelectionChanged] Language changed instantly! UI updated in real-time.");
                 }
             }
         }
@@ -286,10 +262,7 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
             var currentMode = Enum.TryParse<CopyPasteMode>(savedMode, out var parsedMode)
                 ? parsedMode
                 : CopyPasteMode.Auto;
-            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadCopyModes] Current Copy Mode: {currentMode}");
-
             var currentModeInfo = copyModes.FirstOrDefault(m => m.Mode == currentMode) ?? copyModes.First();
-            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadCopyModes] Matched mode: {currentModeInfo.DisplayName}");
 
             CopyModeListView.SelectedItem = currentModeInfo;
             SelectedCopyMode = currentMode;
@@ -311,9 +284,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
                 // Only change if it's actually different
                 if (selected.Mode != oldMode)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.CopyModeListView_SelectionChanged] Instantly changing copy mode from '{oldMode}' to '{selected.Mode}'");
-
-                    // Update the current copy mode display immediately
                     CurrentCopyModeIcon.Text = selected.Icon;
                     CurrentCopyModeText.Text = $"{selected.DisplayName} - {selected.Description}";
 
@@ -321,7 +291,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views.Dialogs
 
                     Properties.Settings.Default.PreferredCopyMode = selected.Mode.ToString();
                     Properties.Settings.Default.Save();
-                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.CopyModeListView_SelectionChanged] Copy mode changed instantly! UI updated in real-time.");
                 }
             }
         }

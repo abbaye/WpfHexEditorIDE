@@ -163,9 +163,11 @@ internal sealed class InlineHintsService : IDisposable
     /// </summary>
     internal void SetReferenceCountProvider(IReferenceCountProvider? provider, int source)
     {
+        if (ReferenceEquals(_roslynProvider, provider) && _inlineHintsSource == source) return;
         _roslynProvider    = provider;
         _inlineHintsSource = source;
-        _roslynRetryCount  = 0;
+        if (provider is not null)
+            _roslynRetryCount = 0;
         ScheduleRefresh();
     }
 

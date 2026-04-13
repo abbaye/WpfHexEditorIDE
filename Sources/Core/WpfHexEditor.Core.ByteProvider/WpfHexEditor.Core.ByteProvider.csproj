@@ -3,36 +3,35 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <UseWPF>false</UseWPF>
-    <RootNamespace>WpfHexEditor.Core.BinaryAnalysis</RootNamespace>
-    <AssemblyName>WpfHexEditor.Core.BinaryAnalysis</AssemblyName>
+    <RootNamespace>WpfHexEditor.Core</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core.ByteProvider</AssemblyName>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- NuGet metadata -->
-    <PackageId>WpfHexEditor.Core.BinaryAnalysis</PackageId>
+    <PackageId>WpfHexEditor.Core.ByteProvider</PackageId>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Authors>Derek Tremblay;Claude Sonnet 4.6</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
-    <Product>WpfHexEditor.Core.BinaryAnalysis</Product>
+    <Product>WpfHexEditor.Core.ByteProvider</Product>
     <Copyright>GNU Affero General Public License v3.0 - 2026</Copyright>
     <Description>
-      Cross-platform binary analysis library — zero WPF dependency.
+      Cross-platform byte provider for gigabyte-scale binary files — zero WPF dependency.
 
-      Provides portable services for binary data analysis, export/import formats,
-      statistics, template compilation and anomaly detection:
-      • DataInspectorService — multi-format byte interpretation (int/float/date/network/GUID)
-      • IntelHexService — Intel HEX (.hex) import/export
-      • SRecordService — Motorola S-Record (.s19/.s28/.s37) import/export
-      • DataStatisticsService — Shannon entropy, byte distribution, data type estimation
-      • BinaryTemplateCompiler — C-like template compiler (010 Editor compatible)
-      • AnomalyDetectionService — entropy-based anomaly and corruption detection
+      Provides high-performance services for reading, writing, and editing binary data:
+      • ByteProvider — ultra-fast file I/O with virtual/physical position mapping
+      • EditsManager — in-memory edit tracking (modify, insert, delete)
+      • UndoRedoManager — full undo/redo support
+      • SearchEngine — pattern search (text, hex, wildcard, relative, regex)
+      • ChangesetSnapshot — immutable snapshot of pending edits for serialization
 
       Targets .NET 8.0+ (no Windows-specific APIs).
       Usable in WPF, WinForms, console, ASP.NET and cross-platform applications.
     </Description>
-    <PackageTags>binary;hex;analysis;entropy;intel-hex;srec;s-record;data-inspector;template;anomaly;cross-platform</PackageTags>
+    <PackageTags>binary;hex;byte-provider;undo-redo;search;cross-platform;file-io;changeset</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
     <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -48,7 +47,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Initial public release — cross-platform binary analysis with zero WPF dependency.</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial public release — cross-platform ByteProvider with zero WPF dependency.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

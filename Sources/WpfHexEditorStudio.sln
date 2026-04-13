@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.HexEdit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Tests", "Tests\WpfHexEditor.Tests\WpfHexEditor.Tests.csproj", "{AC616BD2-091D-47F8-8B3A-8C4F51A059B4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test and Benchmark", "Test and Benchmark", "{17DF3F5C-B057-775F-6415-08BE72BB68E2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{17DF3F5C-B057-775F-6415-08BE72BB68E2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docking", "Docking", "{FEF6DC7F-62E8-4254-9C7D-1324AC8B8E19}"
 EndProject
@@ -224,8 +224,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.DocumentStructure", "Core\WpfHexEditor.Core.DocumentStructure\WpfHexEditor.Core.DocumentStructure.csproj", "{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.DocumentStructure", "Plugins\WpfHexEditor.Plugins.DocumentStructure\WpfHexEditor.Plugins.DocumentStructure.csproj", "{BE045BD0-4B2F-4A07-A1A1-287919F25E28}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.PluginHost.HotReload.Tests", "Tests\WpfHexEditor.PluginHost.HotReload.Tests\WpfHexEditor.PluginHost.HotReload.Tests.csproj", "{05B381CB-6C63-4110-982A-BDCA67EAD9D9}"
 EndProject

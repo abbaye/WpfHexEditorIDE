@@ -40,6 +40,12 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
         public event EventHandler<string> FileOpenRequested;
         public event EventHandler FileSaveRequested;
 
+        /// <summary>
+        /// Raised when the Bookmarks panel should be shown and refreshed.
+        /// The view (MainWindow) subscribes to this and calls ShowOrCreatePanel.
+        /// </summary>
+        public event EventHandler ShowBookmarksRequested;
+
         #endregion
 
         #region Properties
@@ -675,8 +681,16 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
 
         private void GoToPosition()
         {
-            // TODO: Implement Go To Position dialog
-            StatusMessage = "Go to position - Not implemented yet";
+            var dialog = new WpfHexEditor.HexEditor.Dialog.GoToPositionWindow
+            {
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                _hexEditor.SetPosition(dialog.Position);
+                StatusMessage = $"Navigated to 0x{dialog.Position:X8}";
+            }
         }
 
         private void ToggleBookmark()
@@ -766,8 +780,9 @@ namespace WpfHexEditor.Sample.HexEditor.ViewModels
 
         private void ShowBookmarks()
         {
-            // TODO: Implement Show All Bookmarks dialog
-            StatusMessage = "Show bookmarks - Not implemented yet";
+            ShowBookmarksRequested?.Invoke(this, EventArgs.Empty);
+            var count = _hexEditor?.GetBookmarks()?.Length ?? 0;
+            StatusMessage = $"Bookmarks: {count} found";
         }
 
         private void ShowKeyboardShortcuts()

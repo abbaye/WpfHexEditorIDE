@@ -613,6 +613,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Pre-create OutputPanel so OutputLogger.Register is called before any Info/Error calls
         _outputPanel = new OutputPanel();
 
+        // Route Debug.WriteLine from all loaded assemblies to the Output Panel "Debug" channel.
+        // Trace.Listeners is the shared backing collection for both Debug and Trace in .NET.
+        // Safe to add here: OutputLogger._panel is now set. No-op in Release (Debug methods are [Conditional("DEBUG")]).
+        global::System.Diagnostics.Trace.Listeners.Add(new Diagnostics.DebugTraceListener());
+
 
 
         // Bootstrap DockPanelCornerRadius resources before any docking panels are created.
