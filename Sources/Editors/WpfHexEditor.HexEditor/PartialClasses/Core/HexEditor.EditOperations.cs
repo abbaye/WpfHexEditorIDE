@@ -29,21 +29,33 @@ namespace WpfHexEditor.HexEditor
         #region Public Methods - Edit Operations
 
         /// <summary>
-        /// Undo last operation
+        /// Undo last operation. Routes through the shared <see cref="UndoEngine"/>
+        /// when the editor is co-editing via <c>DocumentManager</c>; falls back
+        /// to the local <c>ByteProvider</c> stack in standalone mode.
         /// </summary>
         public void Undo()
         {
-            _viewModel?.Undo();
+            if (_sharedUndoEngine is not null)
+                SharedUndo();
+            else
+                _viewModel?.Undo();
+
             OnUndoCompleted(EventArgs.Empty);
             OnUndone(EventArgs.Empty);
         }
 
         /// <summary>
-        /// Redo last undone operation
+        /// Redo last undone operation. Routes through the shared <see cref="UndoEngine"/>
+        /// when the editor is co-editing via <c>DocumentManager</c>; falls back
+        /// to the local <c>ByteProvider</c> stack in standalone mode.
         /// </summary>
         public void Redo()
         {
-            _viewModel?.Redo();
+            if (_sharedUndoEngine is not null)
+                SharedRedo();
+            else
+                _viewModel?.Redo();
+
             OnRedoCompleted(EventArgs.Empty);
             OnRedone(EventArgs.Empty);
         }

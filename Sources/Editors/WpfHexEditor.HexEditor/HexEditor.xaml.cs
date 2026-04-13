@@ -926,14 +926,16 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
-        /// Can undo?
+        /// Can undo? Delegates to the shared <see cref="UndoEngine"/> when co-editing,
+        /// or to the local <c>ByteProvider</c> stack in standalone mode.
         /// </summary>
-        public bool CanUndo => _viewModel?.CanUndo ?? false;
+        public bool CanUndo => _sharedUndoEngine?.CanUndo ?? (_viewModel?.CanUndo ?? false);
 
         /// <summary>
-        /// Can redo?
+        /// Can redo? Delegates to the shared <see cref="UndoEngine"/> when co-editing,
+        /// or to the local <c>ByteProvider</c> stack in standalone mode.
         /// </summary>
-        public bool CanRedo => _viewModel?.CanRedo ?? false;
+        public bool CanRedo => _sharedUndoEngine?.CanRedo ?? (_viewModel?.CanRedo ?? false);
 
         /// <summary>
         /// Number of undo operations available

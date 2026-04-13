@@ -253,6 +253,15 @@ namespace WpfHexEditor.Core.Bytes
         public string? PeekUndoDescription()
             => _undoStack.Count > 0 ? DescribeEntry(_undoStack.Peek()) : null;
 
+        /// <summary>
+        /// Returns the raw top-of-undo-stack object (<see cref="UndoOperation"/> or <see cref="UndoGroup"/>)
+        /// without removing it, or <see langword="null"/> when the stack is empty.
+        /// Used by the HexEditor shared-undo bridge to identify the entry just pushed.
+        /// Callers must not mutate the returned object.
+        /// </summary>
+        internal object? PeekUndoEntryRaw()
+            => _undoStack.Count > 0 ? _undoStack.Peek() : null;
+
         /// <summary>Human-readable description of the next redo step, or null if nothing to redo.</summary>
         public string? PeekRedoDescription()
             => _redoStack.Count > 0 ? DescribeEntry(_redoStack.Peek()) : null;

@@ -46,7 +46,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     /// Phase 2: Syntax highlighting with CodeSyntaxHighlighter
     /// Future phases will add: SmartComplete, validation
     /// </summary>
-    public partial class CodeEditor : FrameworkElement, IDocumentEditor, IBufferAwareEditor, ILspAwareEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, INavigableDocument, IStatusBarContributor, IRefreshTimeReporter, ISearchTarget, IEditorPersistable
+    public partial class CodeEditor : FrameworkElement, IDocumentEditor, IBufferAwareEditor, IUndoAwareEditor, ILspAwareEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, INavigableDocument, IStatusBarContributor, IRefreshTimeReporter, ISearchTarget, IEditorPersistable
     {
         #region Fields - Document Model
 
@@ -3406,12 +3406,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Opened += (_, _) =>
             {
                 if (_undoMenuItem != null)
-                    _undoMenuItem.Header = _undoEngine.CanUndo
-                        ? $"_Undo ({_undoEngine.UndoCount})"
+                    _undoMenuItem.Header = CanUndo
+                        ? $"_Undo ({(_sharedUndoEngine?.UndoCount ?? _undoEngine.UndoCount)})"
                         : "_Undo";
                 if (_redoMenuItem != null)
-                    _redoMenuItem.Header = _undoEngine.CanRedo
-                        ? $"_Redo ({_undoEngine.RedoCount})"
+                    _redoMenuItem.Header = CanRedo
+                        ? $"_Redo ({(_sharedUndoEngine?.RedoCount ?? _undoEngine.RedoCount)})"
                         : "_Redo";
             };
 
@@ -3772,12 +3772,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Undo
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo,
                 (sender, e) => Undo(),
-                (sender, e) => e.CanExecute = _undoEngine.CanUndo));
+                (sender, e) => e.CanExecute = CanUndo));
 
             // Redo
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Redo,
                 (sender, e) => Redo(),
-                (sender, e) => e.CanExecute = _undoEngine.CanRedo));
+                (sender, e) => e.CanExecute = CanRedo));
 
             // Select All
             CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll,

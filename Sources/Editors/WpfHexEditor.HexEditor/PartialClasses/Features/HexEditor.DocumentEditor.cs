@@ -65,7 +65,10 @@ namespace WpfHexEditor.HexEditor
         // ═══════════════════════════════════════════════════════════════════
 
         /// <inheritdoc />
-        bool IDocumentEditor.IsDirty => IsModified || _isNewUnsavedFile;
+        bool IDocumentEditor.IsDirty
+            => _sharedUndoEngine is not null
+                ? !_sharedUndoEngine.IsAtSavePoint
+                : (IsModified || _isNewUnsavedFile);
 
         /// <inheritdoc />
         bool IDocumentEditor.IsReadOnly

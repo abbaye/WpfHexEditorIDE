@@ -105,6 +105,13 @@ namespace WpfHexEditor.Core.Bytes
             (_editsManager.ModifiedCount, _editsManager.TotalInsertedBytesCount, _editsManager.DeletedCount);
 
         /// <summary>
+        /// Exposes the underlying <see cref="UndoRedoManager"/> for callers that need
+        /// low-level access (e.g. the HexEditor shared-undo bridge).
+        /// Treat as read-only — do not push or pop entries directly.
+        /// </summary>
+        public UndoRedoManager UndoRedoManager => _undoRedoManager;
+
+        /// <summary>
         /// Gets whether undo is available.
         /// </summary>
         public bool CanUndo => _undoRedoManager.CanUndo;
