@@ -96,6 +96,7 @@ file sealed class NullDocumentHostService : IDocumentHostService
         public event EventHandler<DocumentModel?>? ActiveDocumentChanged;
         public event EventHandler<DocumentModel>?  DocumentDirtyChanged;
         public event EventHandler<DocumentModel>?  DocumentTitleChanged;
+        public event EventHandler<DocumentModel>?  EditorAttached;
 #pragma warning restore 67
     }
 }

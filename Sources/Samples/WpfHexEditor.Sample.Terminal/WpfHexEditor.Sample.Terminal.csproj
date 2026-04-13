@@ -26,12 +26,16 @@
 
   <ItemGroup>
     <!--
-      WpfHexEditor.Terminal transitively pulls: Core.Terminal, Core, Core.Events, SDK.
-      Editor.Core and Shell are direct dependencies of this sample only.
+      WpfHexEditor.Terminal uses PrivateAssets="all" on its SDK/Core references,
+      so types from SDK, Core, Core.Events are NOT transitively available here.
+      All required assemblies must be referenced directly.
     -->
     <ProjectReference Include="..\..\Controls\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
     <ProjectReference Include="..\..\Shell\WpfHexEditor.Shell\WpfHexEditor.Shell.csproj" />
   </ItemGroup>
 

@@ -855,26 +855,16 @@ namespace WpfHexEditor.HexEditor
                 new PropertyMetadata(PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad));
 
         /// <summary>
-        /// AllowCustomBackgroundBlock DependencyProperty for XAML binding
+        /// AllowCustomBackgroundBlock DependencyProperty — OBSOLETE.
+        /// Kept for XAML/binary compatibility only. Setting this property has no effect.
+        /// CustomBackgroundBlocks are always rendered when blocks exist in the service.
+        /// The CustomBackgroundService is the sole control point — use AddCustomBackgroundBlock() / ClearCustomBackgroundBlock().
+        /// This property will be removed in a future version.
         /// </summary>
+        [Obsolete("AllowCustomBackgroundBlock is ignored. CustomBackgroundBlocks render automatically when blocks are added via AddCustomBackgroundBlock(). This property will be removed in a future version.")]
         public static readonly DependencyProperty AllowCustomBackgroundBlockProperty =
             DependencyProperty.Register(nameof(AllowCustomBackgroundBlock), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(false, OnAllowCustomBackgroundBlockChanged));
-
-        private static void OnAllowCustomBackgroundBlockChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is bool allowed)
-            {
-                // Sync with HexViewport - pass blocks if enabled, empty list if disabled
-                if (editor.HexViewport != null)
-                {
-                    editor.HexViewport.CustomBackgroundBlocks = allowed
-                        ? editor._customBackgroundService.GetAllBlocks().ToList()
-                        : new List<Core.CustomBackgroundBlock>();
-                    editor.HexViewport.InvalidateVisual();
-                }
-            }
-        }
+                new PropertyMetadata(true)); // no callback — neutralized; default true for legacy consumers
 
         /// <summary>
         /// ProgressRefreshRate DependencyProperty for configuring progress bar update frequency

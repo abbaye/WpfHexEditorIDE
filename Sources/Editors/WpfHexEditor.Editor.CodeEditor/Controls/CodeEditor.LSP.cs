@@ -329,7 +329,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _signatureHelpPopup.PlacementTarget = this;
                     _signatureHelpPopup.PlacementRectangle = GetCaretDisplayRect();
                     _signatureHelpPopup.Show(result, this, GetCaretDisplayRect());
-                });
+                }, System.Windows.Threading.DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
@@ -388,7 +388,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 await Dispatcher.InvokeAsync(() =>
                 {
                     _signatureHelpPopup?.UpdateActiveParameter(result.ActiveParameterIndex);
-                });
+                }, System.Windows.Threading.DispatcherPriority.Background);
             }
             catch { /* swallow */ }
         }
@@ -479,7 +479,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         _lightbulbLine = newLine;
                         InvalidateVisual();
                     }
-                });
+                }, System.Windows.Threading.DispatcherPriority.Background);
             }
             catch { /* ignore — never crash for a gutter glyph */ }
         }
@@ -820,7 +820,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
                 _diagnosticsRenderPending = false;
                 InvalidateVisual();
-            }, System.Windows.Threading.DispatcherPriority.Normal);
+            // Background priority keeps diagnostics below the Render priority (7) so LSP
+            // burst-init does not block frame rendering during Roslyn workspace startup.
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
 
         // -- Find All References (LSP) ------------------------------------

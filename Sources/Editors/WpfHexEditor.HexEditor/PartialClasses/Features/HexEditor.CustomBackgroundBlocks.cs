@@ -40,9 +40,10 @@ namespace WpfHexEditor.HexEditor
         #region Dependency Property Wrappers
 
         /// <summary>
-        /// Enable or disable custom background blocks
-        /// Note: DependencyProperty is defined in HexEditor.xaml.cs
+        /// OBSOLETE — has no effect. CustomBackgroundBlocks render automatically when blocks are present in the service.
+        /// Use AddCustomBackgroundBlock() / ClearCustomBackgroundBlock() to control visibility.
         /// </summary>
+        [Obsolete("AllowCustomBackgroundBlock is ignored. See AllowCustomBackgroundBlockProperty for details.")]
         public bool AllowCustomBackgroundBlock
         {
             get => (bool)GetValue(AllowCustomBackgroundBlockProperty);

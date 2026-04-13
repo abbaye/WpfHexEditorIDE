@@ -85,11 +85,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             InitializeUI();
             InitializeTimer();
 
-            StaysOpen          = false;
+            // StaysOpen = true so the popup stays visible without holding keyboard focus.
+            // Keyboard routing (Up/Down/Enter/Escape) is handled by CodeEditor.OnKeyDown
+            // forwarding to the public navigation methods below.
+            StaysOpen          = true;
             AllowsTransparency = true;
 
-            // Close on Escape / commit chars
-            PreviewKeyDown   += SmartCompletePopup_PreviewKeyDown;
+            // PreviewTextInput still needed for commit-character detection (e.g. typing '(')
             PreviewTextInput += OnPreviewTextInput;
 
             // Build companion doc popup
@@ -118,7 +120,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 BorderThickness = new Thickness(0),
                 FontFamily      = new FontFamily("Consolas"),
                 FontSize        = 12,
-                Padding         = new Thickness(0)
+                Padding         = new Thickness(0),
+                // Non-focusable: keyboard focus stays in CodeEditor at all times.
+                Focusable       = false,
+                IsTabStop       = false,
             };
             _suggestionList.SetResourceReference(ListBox.BackgroundProperty, "SC_Background");
             _suggestionList.SetResourceReference(ListBox.ForegroundProperty, "TE_Foreground");
@@ -299,66 +304,87 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #endregion
 
-        #region Event Handlers
+        #region Keyboard routing — called by CodeEditor.OnKeyDown when popup is open
 
-        private void SmartCompletePopup_PreviewKeyDown(object sender, KeyEventArgs e)
+        /// <summary>Moves selection up one item. Returns true if handled.</summary>
+        public bool NavigateUp()
         {
-            switch (e.Key)
+            if (!IsOpen || _suggestionList.Items.Count == 0) return false;
+            if (_suggestionList.SelectedIndex > 0)
             {
-                case Key.Escape:
-                    IsOpen = false;
-                    e.Handled = true;
-                    break;
-
-                case Key.Enter:
-                case Key.Tab:
-                    CommitSelection();
-                    e.Handled = true;
-                    break;
-
-                case Key.Up:
-                    if (_suggestionList.SelectedIndex > 0)
-                    {
-                        _suggestionList.SelectedIndex--;
-                        _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
-                    }
-                    e.Handled = true;
-                    break;
-
-                case Key.Down:
-                    if (_suggestionList.SelectedIndex < _suggestionList.Items.Count - 1)
-                    {
-                        _suggestionList.SelectedIndex++;
-                        _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
-                    }
-                    e.Handled = true;
-                    break;
-
-                case Key.PageUp:
-                    _suggestionList.SelectedIndex = Math.Max(0, _suggestionList.SelectedIndex - 10);
-                    _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
-                    e.Handled = true;
-                    break;
-
-                case Key.PageDown:
-                    _suggestionList.SelectedIndex = Math.Min(_suggestionList.Items.Count - 1, _suggestionList.SelectedIndex + 10);
-                    _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
-                    e.Handled = true;
-                    break;
-
-                case Key.Home:
-                    _suggestionList.SelectedIndex = 0;
-                    _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
-                    e.Handled = true;
-                    break;
-
-                case Key.End:
-                    _suggestionList.SelectedIndex = _suggestionList.Items.Count - 1;
-                    _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
-                    e.Handled = true;
-                    break;
+                _suggestionList.SelectedIndex--;
+                _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
             }
+            return true;
         }
+
+        /// <summary>Moves selection down one item. Returns true if handled.</summary>
+        public bool NavigateDown()
+        {
+            if (!IsOpen || _suggestionList.Items.Count == 0) return false;
+            if (_suggestionList.SelectedIndex < _suggestionList.Items.Count - 1)
+            {
+                _suggestionList.SelectedIndex++;
+                _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
+            }
+            return true;
+        }
+
+        /// <summary>Moves selection up by a page. Returns true if handled.</summary>
+        public bool NavigatePageUp()
+        {
+            if (!IsOpen || _suggestionList.Items.Count == 0) return false;
+            _suggestionList.SelectedIndex = Math.Max(0, _suggestionList.SelectedIndex - 10);
+            _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
+            return true;
+        }
+
+        /// <summary>Moves selection down by a page. Returns true if handled.</summary>
+        public bool NavigatePageDown()
+        {
+            if (!IsOpen || _suggestionList.Items.Count == 0) return false;
+            _suggestionList.SelectedIndex = Math.Min(_suggestionList.Items.Count - 1, _suggestionList.SelectedIndex + 10);
+            _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
+            return true;
+        }
+
+        /// <summary>Selects the first item. Returns true if handled.</summary>
+        public bool NavigateHome()
+        {
+            if (!IsOpen || _suggestionList.Items.Count == 0) return false;
+            _suggestionList.SelectedIndex = 0;
+            _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
+            return true;
+        }
+
+        /// <summary>Selects the last item. Returns true if handled.</summary>
+        public bool NavigateEnd()
+        {
+            if (!IsOpen || _suggestionList.Items.Count == 0) return false;
+            _suggestionList.SelectedIndex = _suggestionList.Items.Count - 1;
+            _suggestionList.ScrollIntoView(_suggestionList.SelectedItem);
+            return true;
+        }
+
+        /// <summary>Commits the selected suggestion. Returns true if handled.</summary>
+        public bool CommitIfOpen()
+        {
+            if (!IsOpen || _suggestionList.SelectedItem == null) return false;
+            CommitSelection();
+            return true;
+        }
+
+        /// <summary>Closes the popup. Returns true if it was open.</summary>
+        public bool CloseIfOpen()
+        {
+            if (!IsOpen) return false;
+            Hide();
+            return true;
+        }
+
+        #endregion
+
+        #region Event Handlers
 
         private void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
@@ -549,7 +575,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             FilterSuggestions();
             PositionPopup();
             IsOpen = true;
-            _suggestionList.Focus();
+            // Do NOT call Focus() — keyboard focus must remain in CodeEditor so the
+            // caret blink timer and word highlight timer are not interrupted.
         }
 
         /// <summary>Maps an LSP completion item to a SmartCompleteSuggestion for the popup.</summary>

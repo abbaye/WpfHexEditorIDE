@@ -2235,6 +2235,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
+            // Sync tracked position BEFORE InvalidateRegion so the cursor-change detector
+            // in OnRender(Overlays fast-path) sees a stable position and does not
+            // reschedule a second 250ms cycle (feedback loop fix).
+            _wordHighlightTrackedLine = _cursorLine;
+            _wordHighlightTrackedCol  = _cursorColumn;
+
             // Word highlights changed — only the overlay layer needs redrawing.
             InvalidateRegion(RenderDirtyFlags.Overlays);
 

@@ -107,6 +107,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
+            // SmartComplete keyboard routing — popup is non-focusable (focus stays in editor).
+            // Intercept navigation/commit/dismiss keys and forward to the popup.
+            if (_smartCompletePopup is { IsOpen: true } && !ctrlPressed && !altPressed && !shiftPressed)
+            {
+                switch (e.Key)
+                {
+                    case Key.Up:       if (_smartCompletePopup.NavigateUp())       { e.Handled = true; return; } break;
+                    case Key.Down:     if (_smartCompletePopup.NavigateDown())     { e.Handled = true; return; } break;
+                    case Key.PageUp:   if (_smartCompletePopup.NavigatePageUp())   { e.Handled = true; return; } break;
+                    case Key.PageDown: if (_smartCompletePopup.NavigatePageDown()) { e.Handled = true; return; } break;
+                    case Key.Home:     if (_smartCompletePopup.NavigateHome())     { e.Handled = true; return; } break;
+                    case Key.End:      if (_smartCompletePopup.NavigateEnd())      { e.Handled = true; return; } break;
+                    case Key.Enter:
+                    case Key.Tab:      if (_smartCompletePopup.CommitIfOpen())     { e.Handled = true; return; } break;
+                    case Key.Escape:   if (_smartCompletePopup.CloseIfOpen())      { e.Handled = true; return; } break;
+                }
+            }
+
             // Alt+Z — toggle word wrap
             if (e.Key == Key.Z && altPressed && !ctrlPressed && !shiftPressed)
             {
@@ -668,6 +686,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Schedule lightbulb check whenever the cursor line changes
             ScheduleLightbulbCheck();
+
+            // Notify word highlight — keyboard navigation skips OnRender (DrawingVisual caret),
+            // so the cursor-change detector in OnRender never fires for pure arrow-key moves.
+            NotifyCursorMoved();
         }
 
         protected override void OnKeyUp(KeyEventArgs e)

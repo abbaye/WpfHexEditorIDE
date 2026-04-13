@@ -259,6 +259,7 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
         _documentManager.DocumentRegistered   -= OnDocumentRegistered;
         _documentManager.DocumentUnregistered -= OnDocumentUnregistered;
+        _documentManager.EditorAttached       -= OnEditorAttached;
 
         foreach (var bridge in _bridges.Values)
             bridge.Dispose();

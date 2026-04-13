@@ -101,6 +101,7 @@ public sealed class EditorSettingsService
         ce.RainbowScopeGuidesEnabled      = d.RainbowScopeGuides;
         ce.ColorSwatchPreviewEnabled      = d.ColorSwatchPreview;
         ce.FormatOnSave                   = d.FormatOnSave;
+        ce.EnableWordHighlight            = d.EnableWordHighlight;
         ce.XmlAttributeIndentLevels       = d.XmlAttributeIndentLevels;
         ce.XmlOneAttributePerLine         = d.XmlOneAttributePerLine;
 

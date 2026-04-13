@@ -775,6 +775,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             // Snapshot text on the UI thread before switching threads.
             var text = GetText();
+
+            // Guard: never write 0 bytes to a file that already has content on disk.
+            // This prevents catastrophic data loss when the document is empty due to a
+            // timing issue (e.g. OpenAsync not yet complete) or a buffer sync race.
+            if (text.Length == 0 && File.Exists(filePath) && new FileInfo(filePath).Length > 0)
+            {
+                StatusMessage?.Invoke(this, $"Save aborted — document is empty but '{Path.GetFileName(filePath)}' has content on disk.");
+                return;
+            }
+
             try
             {
                 BeforeSaveCallback?.Invoke(filePath);

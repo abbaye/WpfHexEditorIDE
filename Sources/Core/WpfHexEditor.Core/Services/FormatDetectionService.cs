@@ -1080,7 +1080,27 @@ namespace WpfHexEditor.Core.Services
             if (string.IsNullOrWhiteSpace(json))
                 return null;
 
-            var firstChar = json.AsSpan().TrimStart()[0];
+            // Skip leading whitespace and JSONC comment blocks (/* ... */ or // ...)
+            // so that .whfmt files with file-header comments are accepted.
+            // We only reject content that is clearly not JSON (e.g. XML/HTML starting with '<').
+            var trimmed = json.AsSpan().TrimStart();
+            var span = trimmed;
+            while (!span.IsEmpty)
+            {
+                if (span.StartsWith("/*"))
+                {
+                    var end = span.IndexOf("*/");
+                    span = end >= 0 ? span.Slice(end + 2).TrimStart() : ReadOnlySpan<char>.Empty;
+                }
+                else if (span.StartsWith("//"))
+                {
+                    var nl = span.IndexOfAny('\r', '\n');
+                    span = nl >= 0 ? span.Slice(nl).TrimStart() : ReadOnlySpan<char>.Empty;
+                }
+                else break;
+            }
+            if (span.IsEmpty) return null;
+            var firstChar = span[0];
             if (firstChar != '{' && firstChar != '[')
                 return null;
 

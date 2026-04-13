@@ -159,8 +159,18 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
         _primaryEditor.GotFocus   += (_, _) => { _activeEditor = _primaryEditor;   _activeEditor.RefreshJsonStatusBarItems(); };
         _secondaryEditor.GotFocus += (_, _) => { _activeEditor = _secondaryEditor; _activeEditor.RefreshJsonStatusBarItems(); };
 
+        // IDE docking hosts call Focus() on this Grid container rather than the CodeEditor
+        // child. With Focusable = true the Grid can receive keyboard focus; OnGotKeyboardFocus
+        // then forwards it to _activeEditor so CodeEditor.OnGotFocus fires and the caret
+        // blink timer restarts. See override below.
+        Focusable        = true;
+        FocusVisualStyle = null;
+
         // -- Forward events from primary editor (document is shared) -----------
-        _primaryEditor.ModifiedChanged  += (s, e) => ModifiedChanged?.Invoke(this, e);
+        _primaryEditor.ModifiedChanged   += (s, e) => ModifiedChanged?.Invoke(this, e);
+        // Secondary also fires ModifiedChanged independently (separate _isDirty / undo engine).
+        // Wire it so DocumentModel.IsDirty stays in sync when the secondary is the active editor.
+        _secondaryEditor.ModifiedChanged += (s, e) => ModifiedChanged?.Invoke(this, e);
         _primaryEditor.CanUndoChanged   += (s, e) => CanUndoChanged?.Invoke(this, e);
         _primaryEditor.CanRedoChanged   += (s, e) => CanRedoChanged?.Invoke(this, e);
         _primaryEditor.TitleChanged     += (s, e) => TitleChanged?.Invoke(this, e);
@@ -342,6 +352,23 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 
     /// <summary>Clears minimap theme brush cache — call on theme change.</summary>
     public void InvalidateMinimapThemeCache() => _minimap.InvalidateThemeCache();
+
+    #endregion
+
+    #region Focus routing
+
+    /// <summary>
+    /// Routes keyboard focus from this Grid to the active editor.
+    /// Fires when the IDE docking system calls Focus() on this container.
+    /// The OriginalSource guard prevents acting on events bubbling from children
+    /// (those are already handled by CodeEditor.OnGotFocus).
+    /// </summary>
+    protected override void OnGotKeyboardFocus(System.Windows.Input.KeyboardFocusChangedEventArgs e)
+    {
+        base.OnGotKeyboardFocus(e);
+        if (ReferenceEquals(e.OriginalSource, this))
+            _activeEditor.Focus();
+    }
 
     #endregion
 
@@ -646,7 +673,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
     // Helper: cast to the interface so explicit implementations are accessible.
     private IDocumentEditor Active => _activeEditor;
 
-    public bool     IsDirty    => Active.IsDirty;
+    // IsDirty and save operations are always authoritative on the primary editor,
+    // which owns the file path. The secondary shares the same CodeDocument but has
+    // an independent undo engine — after a save, only the primary marks its save-point.
+    public bool     IsDirty    => ((IDocumentEditor)_primaryEditor).IsDirty;
     public bool     CanUndo    => Active.CanUndo;
     public bool     CanRedo    => Active.CanRedo;
     public bool     IsReadOnly { get => Active.IsReadOnly; set { Active.IsReadOnly = value; ((IDocumentEditor)_secondaryEditor).IsReadOnly = value; } }
@@ -655,7 +685,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 
     public ICommand UndoCommand      => Active.UndoCommand;
     public ICommand RedoCommand      => Active.RedoCommand;
-    public ICommand SaveCommand      => Active.SaveCommand;
+    // Save always routes to the primary editor — it owns the file path (_currentFilePath).
+    // If the secondary editor is active and Save is called via Active, SaveAsync bails out
+    // because the secondary never receives OpenAsync and has _currentFilePath = null.
+    public ICommand SaveCommand      => ((IDocumentEditor)_primaryEditor).SaveCommand;
     public ICommand CopyCommand      => Active.CopyCommand;
     public ICommand CutCommand       => Active.CutCommand;
     public ICommand PasteCommand     => Active.PasteCommand;
@@ -664,9 +697,9 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 
     public void Undo()        => Active.Undo();
     public void Redo()        => Active.Redo();
-    public void Save()        => Active.Save();
-    public Task SaveAsync(CancellationToken ct = default)                     => Active.SaveAsync(ct);
-    public Task SaveAsAsync(string filePath, CancellationToken ct = default)  => Active.SaveAsAsync(filePath, ct);
+    public void Save()        => ((IDocumentEditor)_primaryEditor).Save();
+    public Task SaveAsync(CancellationToken ct = default)                     => ((IDocumentEditor)_primaryEditor).SaveAsync(ct);
+    public Task SaveAsAsync(string filePath, CancellationToken ct = default)  => ((IDocumentEditor)_primaryEditor).SaveAsAsync(filePath, ct);
     public void Copy()        => Active.Copy();
     public void Cut()         => Active.Cut();
     public void Paste()       => Active.Paste();

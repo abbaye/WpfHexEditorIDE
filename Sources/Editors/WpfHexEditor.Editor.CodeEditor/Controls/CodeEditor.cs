@@ -3119,6 +3119,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Called from all cursor-movement sites (MoveCursor, mouse clicks) that do not
+        /// trigger a full OnRender. Schedules the word-highlight debounce timer so the
+        /// highlight updates without waiting for the next render frame.
+        /// </summary>
+        private void NotifyCursorMoved() => ScheduleWordHighlightUpdate();
+
+        /// <summary>
         /// Pushes caret + selection positions to the scroll marker panel.
         /// Called when either changes — not from OnRender — to avoid per-frame panel redraws.
         /// </summary>

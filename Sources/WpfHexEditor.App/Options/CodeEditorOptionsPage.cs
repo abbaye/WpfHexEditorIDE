@@ -41,6 +41,7 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
     private readonly CheckBox _colorSwatchPreviewCheck;
     private readonly CheckBox _formatOnSaveCheck;
     private readonly CheckBox _showColumnRulersCheck;
+    private readonly CheckBox _wordHighlightCheck;
 
     public CodeEditorOptionsPage()
     {
@@ -85,6 +86,9 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
 
         _showInlineHintsCheck = MakeCheck("Show inline hints (references, parameters)");
         root.Children.Add(_showInlineHintsCheck);
+
+        _wordHighlightCheck = MakeCheck("Highlight all occurrences of word under caret");
+        root.Children.Add(_wordHighlightCheck);
 
         _showEndBlockHintCheck = MakeCheck("Show end-of-block hover hint");
         root.Children.Add(_showEndBlockHintCheck);
@@ -163,6 +167,7 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
             _skipClosingCharCheck.IsChecked   = s.SkipOverClosingChar;
             _wrapSelectionCheck.IsChecked     = s.WrapSelectionInPairs;
             _showInlineHintsCheck.IsChecked   = s.ShowInlineHints;
+            _wordHighlightCheck.IsChecked     = s.EnableWordHighlight;
             _showEndBlockHintCheck.IsChecked  = s.EndOfBlockHintEnabled;
             _stickyScrollCheck.IsChecked      = s.StickyScroll.Enabled;
             _showMinimapCheck.IsChecked       = s.ShowMinimap;
@@ -189,6 +194,7 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
         s.SkipOverClosingChar         = _skipClosingCharCheck.IsChecked == true;
         s.WrapSelectionInPairs        = _wrapSelectionCheck.IsChecked == true;
         s.ShowInlineHints             = _showInlineHintsCheck.IsChecked == true;
+        s.EnableWordHighlight         = _wordHighlightCheck.IsChecked == true;
         s.EndOfBlockHintEnabled       = _showEndBlockHintCheck.IsChecked == true;
         s.StickyScroll.Enabled        = _stickyScrollCheck.IsChecked == true;
         s.ShowMinimap                 = _showMinimapCheck.IsChecked == true;
