@@ -50,28 +50,35 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Bundled into the NuGet package -->
+    <!-- All bundled into the standalone NuGet package -->
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.SDK.Terminal.Abstractions\WpfHexEditor.SDK.Terminal.Abstractions.csproj" PrivateAssets="all" />
-    <!-- IDE integration (compile-time only — excluded from NuGet bundle via ExcludeAssets) -->
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" PrivateAssets="all" ExcludeAssets="runtime" />
-    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" PrivateAssets="all" ExcludeAssets="runtime" />
-    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" PrivateAssets="all" ExcludeAssets="runtime" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- Bundle dependency DLLs + XML docs into the NuGet package -->
+  <!-- Bundle all dependency DLLs + XML docs into the NuGet package -->
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <!-- Only bundle Terminal-related assemblies, not IDE deps (SDK, Core, Events, etc.) -->
-      <_TerminalBundleDlls Include="@(ReferenceCopyLocalPaths)" Condition="
-        $([System.String]::Copy('%(Filename)').Contains('Terminal')) OR
-        $([System.String]::Copy('%(Filename)').Contains('Terminal.Abstractions'))" />
-      <BuildOutputInPackage Include="@(_TerminalBundleDlls)" />
-      <BuildOutputInPackage Include="@(_TerminalBundleDlls-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
                             Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Satellite assemblies (culture-specific .resources.dll) from WpfHexEditor.Core.
+    %(RecursiveDir) gives the culture folder (e.g. "fr-FR\") placed at
+    lib/net8.0-windows/fr-FR/WpfHexEditor.Core.resources.dll in the package.
+  -->
+  <Target Name="IncludeSatelliteAssembliesInPackage" AfterTargets="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(OutputPath)**\*.resources.dll"
+                              PackagePath="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
   </Target>
 
