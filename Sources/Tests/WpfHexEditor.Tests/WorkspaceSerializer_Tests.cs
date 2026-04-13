@@ -1,4 +1,12 @@
-namespace WpfHexEditor.Core.Workspaces.Tests;
+// ==========================================================
+// Project: WpfHexEditor.Tests
+// File: WorkspaceSerializer_Tests.cs
+// ==========================================================
+
+using System.IO;
+using WpfHexEditor.Core.Workspaces;
+
+namespace WpfHexEditor.Tests;
 
 [TestClass]
 public sealed class WorkspaceSerializer_Tests

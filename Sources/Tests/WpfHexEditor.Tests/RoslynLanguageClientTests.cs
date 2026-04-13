@@ -1,5 +1,5 @@
 // ==========================================================
-// Project: WpfHexEditor.Core.Roslyn.Tests
+// Project: WpfHexEditor.Tests
 // File: RoslynLanguageClientTests.cs
 // Description:
 //     Unit tests for RoslynLanguageClient — lifecycle, document sync,
@@ -9,7 +9,7 @@
 using WpfHexEditor.Core.Roslyn;
 using WpfHexEditor.Editor.Core.LSP;
 
-namespace WpfHexEditor.Core.Roslyn.Tests;
+namespace WpfHexEditor.Tests;
 
 [TestClass]
 public sealed class RoslynLanguageClientTests

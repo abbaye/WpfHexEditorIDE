@@ -1,5 +1,5 @@
 // ==========================================================
-// Project: WpfHexEditor.PluginHost.HotReload.Tests
+// Project: WpfHexEditor.PluginHost.Tests
 // File: PluginDevLoaderTests.cs
 // Description:
 //     Unit tests for PluginDevLoader hot-reload engine and
@@ -9,7 +9,7 @@
 using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.Core.Events.IDEEvents;
 
-namespace WpfHexEditor.PluginHost.HotReload.Tests;
+namespace WpfHexEditor.PluginHost.Tests;
 
 [TestClass]
 public sealed class PluginDevLoaderTests
@@ -215,5 +215,4 @@ public sealed class PluginDevLoaderTests
         Directory.CreateDirectory(dir);
         return dir;
     }
-
 }

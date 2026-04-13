@@ -19,8 +19,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Diff\WpfHexEditor.Core.Diff.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Debugger\WpfHexEditor.Core.Debugger.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Workspaces\WpfHexEditor.Core.Workspaces.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Roslyn\WpfHexEditor.Core.Roslyn.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
   </ItemGroup>
 
