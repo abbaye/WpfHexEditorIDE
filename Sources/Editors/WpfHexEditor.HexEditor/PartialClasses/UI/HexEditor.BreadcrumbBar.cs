@@ -24,8 +24,9 @@ public partial class HexEditor
 {
     private HexBreadcrumbBar? _breadcrumbBar;
     private CustomBackgroundBlock? _bcLastBlock;
-    private bool _bcLastBlockWasNull;   // disambiguates null from "not yet set"
-    private bool _bcUpdating;           // re-entrancy guard
+    private bool _bcLastBlockWasNull;    // disambiguates null from "not yet set"
+    private bool _bcUpdating;            // re-entrancy guard
+    private bool _bcBookmarksRendered;   // true once SetBookmarks has been called for the current format
     private List<FormatNavigationBookmark>? _bcCachedBookmarks;
     private List<BreadcrumbSection>? _bcSections;
 
@@ -184,9 +185,18 @@ public partial class HexEditor
 
         _breadcrumbBar.SetSegments(segments);
 
-        if (_bcCachedBookmarks == null)
-            _bcCachedBookmarks = ResolveBreadcrumbBookmarks();
-        _breadcrumbBar.SetBookmarks(_bcCachedBookmarks);
+        // Bookmarks are format-level data: they never change during normal navigation.
+        // Only call SetBookmarks once per format load (or after ResetBreadcrumbCache).
+        // Calling it on every UpdateBreadcrumb causes Children.Clear() while a bookmark
+        // chip's MouseDown is still on the call stack → WPF re-dispatches the event to
+        // the newly-created chip at the same position → infinite NavigateRequested loop.
+        if (!_bcBookmarksRendered)
+        {
+            if (_bcCachedBookmarks == null)
+                _bcCachedBookmarks = ResolveBreadcrumbBookmarks();
+            _breadcrumbBar.SetBookmarks(_bcCachedBookmarks);
+            _bcBookmarksRendered = true;
+        }
     }
 
     internal void ResetBreadcrumbCache()
@@ -194,7 +204,8 @@ public partial class HexEditor
         _bcLastBlock = null;
         _bcLastBlockWasNull = false;
         _bcCachedBookmarks = null;
-        _bcSections = null; // force rebuild on next update
+        _bcBookmarksRendered = false; // allow SetBookmarks on next UpdateBreadcrumb
+        _bcSections = null;           // force section index rebuild on next update
     }
 
     // ── Section index building ────────────────────────────────────────────────
