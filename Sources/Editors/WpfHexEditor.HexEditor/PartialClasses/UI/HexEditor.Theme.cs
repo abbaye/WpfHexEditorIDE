@@ -86,18 +86,8 @@ namespace WpfHexEditor.HexEditor
 
         private static Color GetThemeColor(Application app, string key, Color fallback)
         {
-            try
-            {
-                var resource = app.FindResource(key);
-                if (resource is Color color)
-                    return color;
-            }
-            catch
-            {
-                // Resource not found — use fallback
-            }
-
-            return fallback;
+            var resource = app.TryFindResource(key);
+            return resource is Color color ? color : fallback;
         }
     }
 }

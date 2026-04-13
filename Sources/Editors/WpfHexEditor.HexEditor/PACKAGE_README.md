@@ -14,6 +14,13 @@ A full-featured WPF hex editor UserControl for .NET 8. Successor to [WPFHexaEdit
 dotnet add package WPFHexaEditor
 ```
 
+## What's New in 3.0.4
+
+- **Fix**: `ResourceReferenceKeyNotFoundException` no longer thrown in standalone WPF apps — `GetThemeColor` now uses `TryFindResource` instead of `FindResource` (fixes [#228](https://github.com/abbaye/WpfHexEditorIDE/issues/228))
+- **Fix**: Drag-selection auto-scroll — cross-panel mouse boundary no longer stops scrolling in HexEditor (fixes [#227](https://github.com/abbaye/WpfHexEditorIDE/issues/227))
+- **Fix**: Column/row highlight tracks cursor position correctly on vertical scroll
+- **Feat**: Context menu — drop shadow, MDL2 icons, accent band, light theme styling
+
 ## What's New in 3.0.3
 
 - **Fix**: `AllowCustomBackgroundBlock` dependency property is now obsolete and has no effect. Custom background blocks render automatically when blocks are added via `AddCustomBackgroundBlock()`. Use `AddCustomBackgroundBlock()` / `ClearCustomBackgroundBlock()` as the sole control point.
