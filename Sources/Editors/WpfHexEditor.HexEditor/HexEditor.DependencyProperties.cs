@@ -852,7 +852,7 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         public static readonly DependencyProperty PreloadByteInEditorModeProperty =
             DependencyProperty.Register(nameof(PreloadByteInEditorMode), typeof(PreloadByteInEditor), typeof(HexEditor),
-                new PropertyMetadata(PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad));
+                new PropertyMetadata(PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad, OnPreloadByteInEditorModeChanged));
 
         /// <summary>
         /// AllowCustomBackgroundBlock DependencyProperty — OBSOLETE.

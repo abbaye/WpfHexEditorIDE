@@ -117,7 +117,10 @@ public sealed class LspSemanticTokensLayer : FrameworkElement
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        RenderTokens();
+        // Do NOT render here — RenderTokens is called after the debounce resolves fresh data.
+        // Calling RenderTokens from ArrangeOverride causes TryFindResource traversals during
+        // layout, which can trigger WPF composition updates that invalidate the QuickInfoPopup
+        // placement and suppress hover tooltips.
         return finalSize;
     }
 

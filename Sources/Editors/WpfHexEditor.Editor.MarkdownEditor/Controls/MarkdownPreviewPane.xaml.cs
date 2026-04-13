@@ -19,6 +19,7 @@
 // ==========================================================
 
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
@@ -44,6 +45,7 @@ public sealed partial class MarkdownPreviewPane : UserControl
     // --- State ------------------------------------------------------------
 
     private bool   _isInitialized;
+    private bool   _isInitializing;
     private string _pendingMarkdown = string.Empty;
     private bool   _pendingIsDark;
     private bool   _pendingHasMermaidInit = true;   // used before initialization only
@@ -78,10 +80,54 @@ public sealed partial class MarkdownPreviewPane : UserControl
     public MarkdownPreviewPane()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
+        Loaded           += OnLoaded;
+        SizeChanged      += (_, e) => InvalidateWebViewSize(e.NewSize.Width, e.NewSize.Height);
+        IsVisibleChanged += (_, e) => _webView.Visibility =
+            (bool)e.NewValue ? Visibility.Visible : Visibility.Hidden;
     }
 
     // --- Public API -------------------------------------------------------
+
+    /// <summary>
+    /// Forces the underlying WebView2 HWND to match the current WPF layout slot via
+    /// <c>SetWindowPos</c>.  Must be called from the UI thread.
+    /// WPF's measure/arrange passes are insufficient for HwndHost-derived controls
+    /// during maximize / restore — the HWND size must be set explicitly via Win32.
+    /// </summary>
+    /// <summary>
+    /// Forces the underlying WebView2 HWND to the given WPF logical dimensions.
+    /// Called from <see cref="MarkdownEditorHost"/> SizeChanged — at that point the
+    /// pane's own ActualWidth/Height may not yet be updated, so the caller passes
+    /// the new size explicitly.
+    /// </summary>
+    public void InvalidateWebViewSize(double width, double height)
+    {
+        var hwnd = _webView.Handle;
+        if (hwnd == IntPtr.Zero) return;
+
+        // Convert WPF logical pixels → physical pixels using the visual's DPI transform.
+        var source = PresentationSource.FromVisual(_webView);
+        var scaleX = source?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+        var scaleY = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+
+        var w = (int)Math.Max(width  * scaleX, 1);
+        var h = (int)Math.Max(height * scaleY, 1);
+
+        // Resize the HwndHost container that WPF manages.
+        SetWindowPos(hwnd, IntPtr.Zero, 0, 0, w, h, SWP_NOZORDER | SWP_NOMOVE);
+
+        // WebView2 creates its browser HWND as a child of the host HWND.
+        // WPF does not propagate the resize to Win32 children — resize each one explicitly.
+        var child = GetWindow(hwnd, GW_CHILD);
+        while (child != IntPtr.Zero)
+        {
+            SetWindowPos(child, IntPtr.Zero, 0, 0, w, h, SWP_NOZORDER | SWP_NOMOVE);
+            child = GetWindow(child, GW_HWNDNEXT);
+        }
+    }
+
+    /// <summary>Overload that reads dimensions from ActualWidth/Height.</summary>
+    public void InvalidateWebViewSize() => InvalidateWebViewSize(ActualWidth, ActualHeight);
 
     /// <summary>
     /// Initializes the WebView2 environment (idempotent — safe to call multiple times).
@@ -89,7 +135,8 @@ public sealed partial class MarkdownPreviewPane : UserControl
     /// </summary>
     public async Task InitializeAsync()
     {
-        if (_isInitialized) return;
+        if (_isInitialized || _isInitializing) return;
+        _isInitializing = true;
 
         try
         {
@@ -292,4 +339,20 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
     private void OnCtxCycleLayout(object sender, RoutedEventArgs e)
         => PreviewContextMenuAction?.Invoke(this, MdPreviewContextAction.CycleLayout);
+
+    // --- Win32 ---------------------------------------------------------------
+
+    private const uint SWP_NOZORDER = 0x0004;
+    private const uint SWP_NOMOVE   = 0x0002;
+    private const uint GW_CHILD     = 5;
+    private const uint GW_HWNDNEXT  = 2;
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool SetWindowPos(
+        IntPtr hWnd, IntPtr hWndInsertAfter,
+        int x, int y, int cx, int cy,
+        uint uFlags);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
 }

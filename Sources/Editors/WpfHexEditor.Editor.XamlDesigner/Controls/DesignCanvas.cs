@@ -111,10 +111,15 @@ public sealed class DesignCanvas : Border
     // Combined-bounds adorner placed on DesignRoot when 2+ elements are selected.
     private MultiSelectionAdorner? _multiAdorner;
 
-    // Rubber-band marquee adorner shown while the user drag-selects on empty canvas space.
-    private RubberBandAdorner? _rubberBandAdorner;
-    private bool               _isRubberBanding;
+    // DrawingVisual overlay for selection borders, hover, and rubber-band.
+    private DesignSelectionLayer? _selectionLayer;
+
+    // Rubber-band marquee state (visual rendered by DesignSelectionLayer, not an Adorner).
+    private bool _isRubberBanding;
     private Point              _rubberBandStart;   // in DesignRoot coordinate space
+
+    // Hover pre-selection: the element under the cursor that is not yet selected.
+    private UIElement? _preHoveredElement;
 
     // Group-move drag state: active when user drags within an existing multi-selection.
     private bool  _isGroupMoving;
@@ -191,7 +196,18 @@ public sealed class DesignCanvas : Border
             Margin              = new Thickness(8)
         };
 
-        Child = _presenter;
+        // Overlay Grid: _presenter (z=0) + _selectionLayer (z=1, non-hit-testable).
+        // This lets the DrawingVisual selection layer always float above the rendered XAML
+        // while remaining within the same Border coordinate space.
+        _selectionLayer = new DesignSelectionLayer
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment   = VerticalAlignment.Stretch
+        };
+        var hostGrid = new System.Windows.Controls.Grid();
+        hostGrid.Children.Add(_presenter);
+        hostGrid.Children.Add(_selectionLayer);
+        Child = hostGrid;
 
         // Force the Arrow cursor at all times so child controls rendered inside the
         // design surface (TextBox, RichTextBox, etc.) cannot propagate their own
@@ -409,8 +425,11 @@ public sealed class DesignCanvas : Border
         if (el is not null)
         {
             _selectedElements.Add(el);
-            PlaceSelectionAdorner(el);
+            PlaceSelectionAdorner(el);  // places ResizeAdorner / ConstraintAdorner when InteractionEnabled
         }
+
+        // Refresh DrawingVisual selection overlay.
+        UpdateSelectionLayer();
 
         // Resolve the nearest Grid ancestor (the element itself or the first Grid parent).
         // Used by both the GridGuideAdorner (column/row chips) and GridInsertAdorner (insert guide).
@@ -500,11 +519,12 @@ public sealed class DesignCanvas : Border
 
         if (_selectedElements.Count == 1)
         {
-            PlaceSelectionAdorner(_selectedElements[0]);
+            PlaceSelectionAdorner(_selectedElements[0]);  // ResizeAdorner / ConstraintAdorner only
             UpdateGridGuideAdorner(_selectedElements[0] as System.Windows.Controls.Grid);
         }
-        else if (_selectedElements.Count > 1)
-            PlaceMultiSelectionAdorners();
+
+        // Refresh DrawingVisual selection overlay (handles single, multi, and empty cases).
+        UpdateSelectionLayer();
 
         if (!suppressEvent)
             SelectedElementChanged?.Invoke(this, EventArgs.Empty);
@@ -943,12 +963,66 @@ public sealed class DesignCanvas : Border
         }
     }
 
+    // ── Selection layer (DrawingVisual) ───────────────────────────────────────
+
+    /// <summary>
+    /// Redraws the <see cref="DesignSelectionLayer"/> to reflect the current
+    /// <see cref="_selectedElements"/> list. Calculates each element's bounds in
+    /// DesignRoot coordinate space and delegates to <see cref="DesignSelectionLayer.DrawSelection"/>.
+    /// </summary>
+    private void UpdateSelectionLayer()
+    {
+        if (_selectionLayer is null) return;
+        if (_selectedElements.Count == 0)
+        {
+            _selectionLayer.ClearSelection();
+            return;
+        }
+
+        var rects = _selectedElements
+            .Select(GetElementBoundsInRoot)
+            .Where(r => r.HasValue)
+            .Select(r => r!.Value)
+            .ToList();
+
+        _selectionLayer.DrawSelection(rects);
+    }
+
+    /// <summary>
+    /// Returns the bounding <see cref="Rect"/> of <paramref name="el"/> in
+    /// <see cref="DesignRoot"/> coordinate space, or <see langword="null"/> when
+    /// the element is not a <see cref="FrameworkElement"/> or the transform cannot be computed.
+    /// </summary>
+    private Rect? GetElementBoundsInRoot(UIElement el)
+    {
+        if (el is not FrameworkElement fe) return null;
+        try
+        {
+            // Transform to DesignCanvas (this) — same coordinate space as _selectionLayer,
+            // which is a child of the hostGrid that fills the Border.
+            var transform = fe.TransformToAncestor(this);
+            return new Rect(transform.Transform(new Point(0, 0)),
+                            new Size(fe.ActualWidth, fe.ActualHeight));
+        }
+        catch { return null; }
+    }
+
     // ── Adorner management ────────────────────────────────────────────────────
 
-    /// <summary>Removes adorners from all currently tracked selected elements and the combined overlay.</summary>
+    /// <summary>
+    /// Clears the DrawingVisual selection layer and removes any residual WPF selection/multi
+    /// adorners plus Grid-specific adorners (guide, insert guide).
+    /// ResizeAdorner and ConstraintAdorner are preserved — they belong to interaction, not display.
+    /// </summary>
     private void ClearAllSelectionAdorners()
     {
-        // Deduplicate: SelectedElement may already be in _selectedElements.
+        // Clear the DrawingVisual selection overlay and hover.
+        _selectionLayer?.ClearSelection();
+        _selectionLayer?.ClearHover();
+        _preHoveredElement = null;
+
+        // Remove any residual WPF SelectionAdorner / MultiSelectionAdorner that may have
+        // been placed before the DrawingVisual migration (e.g. via external callers).
         var toClean = new HashSet<UIElement>();
         if (SelectedElement is not null) toClean.Add(SelectedElement);
         foreach (var el in _selectedElements) toClean.Add(el);
@@ -963,14 +1037,12 @@ public sealed class DesignCanvas : Border
         HideGridInsertAdorner();
     }
 
-    /// <summary>Rebuilds adorners from the current <see cref="_selectedElements"/> list without changing the list.</summary>
+    /// <summary>Rebuilds the DrawingVisual selection layer from the current <see cref="_selectedElements"/> list.</summary>
     private void RebuildSelectionAdorners()
     {
         ClearAllSelectionAdorners();
-        if (_selectedElements.Count == 1)
-            PlaceSelectionAdorner(_selectedElements[0]);
-        else if (_selectedElements.Count > 1)
-            PlaceMultiSelectionAdorners();
+        PlaceSelectionAdorner(_selectedElements.Count == 1 ? _selectedElements[0] : null);
+        UpdateSelectionLayer();
     }
 
     private void RemoveElementAdorners(UIElement el)
@@ -992,35 +1064,24 @@ public sealed class DesignCanvas : Border
 
     private void RemoveMultiAdorner()
     {
+        // Multi-selection visual is now handled by DesignSelectionLayer.DrawSelection().
+        // This method is kept for safety to remove any residual WPF MultiSelectionAdorner.
         if (_multiAdorner is null || DesignRoot is null) return;
         var layer = AdornerLayer.GetAdornerLayer(DesignRoot);
         layer?.Remove(_multiAdorner);
         _multiAdorner = null;
     }
 
-    /// <summary>Places a <see cref="SelectionAdorner"/> on every element and a combined <see cref="MultiSelectionAdorner"/> on DesignRoot.</summary>
-    private void PlaceMultiSelectionAdorners()
+    /// <summary>
+    /// Places interaction adorners (ResizeAdorner, ConstraintAdorner) when
+    /// <see cref="InteractionEnabled"/> is true. The visual selection border is now
+    /// rendered by <see cref="DesignSelectionLayer"/> — no <see cref="SelectionAdorner"/>
+    /// is created in either mode.
+    /// </summary>
+    private void PlaceSelectionAdorner(UIElement? el)
     {
-        foreach (var el in _selectedElements)
-        {
-            var layer = AdornerLayer.GetAdornerLayer(el);
-            layer?.Add(new SelectionAdorner(el));
-        }
+        if (el is null) return;
 
-        if (DesignRoot is not null)
-        {
-            var rootLayer = AdornerLayer.GetAdornerLayer(DesignRoot);
-            if (rootLayer is not null)
-            {
-                _multiAdorner = new MultiSelectionAdorner(DesignRoot);
-                _multiAdorner.Refresh(_selectedElements);
-                rootLayer.Add(_multiAdorner);
-            }
-        }
-    }
-
-    private void PlaceSelectionAdorner(UIElement el)
-    {
         var layer = AdornerLayer.GetAdornerLayer(el);
         if (layer is null) return;
 
@@ -1038,10 +1099,7 @@ public sealed class DesignCanvas : Border
                 layer.Add(_constraintAdorner);
             }
         }
-        else
-        {
-            layer.Add(new SelectionAdorner(el));
-        }
+        // Non-interactive mode: visual selection is handled by DesignSelectionLayer.DrawSelection().
     }
 
     private void OnConstraintPinToggled(object? sender, PinnedEdges edge)
@@ -1589,14 +1647,13 @@ public sealed class DesignCanvas : Border
             return;
         }
 
-        // Update rubber-band adorner while the user is dragging a selection marquee.
+        // Update rubber-band DrawingVisual while the user is dragging a selection marquee.
         if (_isRubberBanding)
         {
-            if (DesignRoot is IInputElement rootIe)
-            {
-                var current = e.GetPosition(rootIe);
-                _rubberBandAdorner?.UpdateBounds(_rubberBandStart, current);
-            }
+            // Draw in DesignCanvas (this) coordinate space so the layer covers the full canvas,
+            // including the empty zone outside the XAML design root.
+            var currentInCanvas = e.GetPosition(this);
+            _selectionLayer?.DrawRubberBand(RubberBandStartInCanvas(), currentInCanvas);
             return;
         }
 
@@ -1606,7 +1663,7 @@ public sealed class DesignCanvas : Border
             var current  = e.GetPosition(this);
             var elements = _selectedElements.OfType<FrameworkElement>().ToList();
             _interaction.OnMultiMoveDelta(elements, current);
-            _multiAdorner?.Refresh(_selectedElements);
+            UpdateSelectionLayer();   // refresh DrawingVisual selection borders as elements move
             return;
         }
 
@@ -1621,6 +1678,10 @@ public sealed class DesignCanvas : Border
 
         // Don't overlay hover on the already-selected element.
         UpdateHoverAdorner(ReferenceEquals(hitElement, SelectedElement) ? null : hitElement);
+
+        // Pre-selection hover: draw a dashed border on the element under the cursor
+        // unless it is already selected.
+        UpdatePreHoverLayer(hitElement);
 
         // Measure mode (Alt held): show distance lines from hovered element to nearest siblings.
         bool isAltNow   = (Keyboard.Modifiers & ModifierKeys.Alt)   != 0;
@@ -1669,6 +1730,7 @@ public sealed class DesignCanvas : Border
     {
         if (_isRubberBanding) return;
         UpdateHoverAdorner(null);
+        UpdatePreHoverLayer(null);
         _measureAdorner?.Clear();
         _boxModelAdorner?.Clear();
 
@@ -1716,13 +1778,8 @@ public sealed class DesignCanvas : Border
         _isRubberBanding = false;
         ReleaseMouseCapture();
 
-        // Remove the rubber-band adorner from the design root layer.
-        if (DesignRoot is not null && _rubberBandAdorner is not null)
-        {
-            var layer = AdornerLayer.GetAdornerLayer(DesignRoot);
-            layer?.Remove(_rubberBandAdorner);
-            _rubberBandAdorner = null;
-        }
+        // Clear the rubber-band DrawingVisual.
+        _selectionLayer?.ClearRubberBand();
 
         if (DesignRoot is not IInputElement rootIe) return;
 
@@ -2091,25 +2148,138 @@ public sealed class DesignCanvas : Border
         UpdateHoverAdorner(element);
     }
 
+    // ── External rubber-band API (called by ZoomPanCanvas for clicks in empty space) ──
+
+    /// <summary>
+    /// Starts a rubber-band selection from a point in <see cref="DesignCanvas"/> coordinate space.
+    /// Called by <see cref="ZoomPanCanvas"/> when the user clicks in the empty area outside the
+    /// design root (where <c>DesignCanvas.PreviewMouseLeftButtonDown</c> does not fire).
+    /// </summary>
+    public void BeginExternalRubberBand(Point pointInCanvasSpace)
+    {
+        if (DesignRoot is null) return;
+
+        // Convert from DesignCanvas space to DesignRoot space for hit-testing.
+        var pointInRoot = this.TranslatePoint(pointInCanvasSpace, DesignRoot);
+
+        SelectElement(null);
+        _rubberBandStart = pointInRoot;
+        _isRubberBanding = true;
+        _selectionLayer?.DrawRubberBand(pointInCanvasSpace, pointInCanvasSpace);
+        // NOTE: mouse capture is managed by ZoomPanCanvas, not here, because the
+        // click originated outside the DesignCanvas hit area — capturing here would
+        // prevent ZoomPanCanvas from receiving subsequent MouseMove/MouseUp events.
+    }
+
+    /// <summary>
+    /// Updates the rubber-band visual from a new point in <see cref="DesignCanvas"/> coordinate space.
+    /// Called by <see cref="ZoomPanCanvas"/> during mouse-move while an external rubber-band is active.
+    /// </summary>
+    public void UpdateExternalRubberBand(Point pointInCanvasSpace)
+    {
+        if (!_isRubberBanding) return;
+        _selectionLayer?.DrawRubberBand(RubberBandStartInCanvas(), pointInCanvasSpace);
+    }
+
+    /// <summary>
+    /// Ends the rubber-band from a point in <see cref="DesignCanvas"/> coordinate space.
+    /// Called by <see cref="ZoomPanCanvas"/> on mouse-up.
+    /// </summary>
+    public void EndExternalRubberBand(Point pointInCanvasSpace)
+    {
+        if (!_isRubberBanding) return;
+        _isRubberBanding = false;
+        ReleaseMouseCapture();
+        _selectionLayer?.ClearRubberBand();
+
+        // Convert endpoint to DesignRoot space for hit-testing.
+        if (DesignRoot is null) return;
+        var endInRoot = this.TranslatePoint(pointInCanvasSpace, DesignRoot);
+
+        var rect = new Rect(
+            Math.Min(_rubberBandStart.X, endInRoot.X),
+            Math.Min(_rubberBandStart.Y, endInRoot.Y),
+            Math.Abs(endInRoot.X - _rubberBandStart.X),
+            Math.Abs(endInRoot.Y - _rubberBandStart.Y));
+
+        if (rect.Width < 2 || rect.Height < 2) return;
+
+        var hits = CollectElementsInRubberBand(rect);
+        if (hits.Count > 0)
+            SelectElements(hits);
+    }
+
+    /// <summary>Gets whether a rubber-band operation is currently in progress.</summary>
+    public bool IsRubberBanding => _isRubberBanding;
+
+    // ── Pre-hover selection highlight (DrawingVisual) ─────────────────────────
+
+    /// <summary>
+    /// Updates the <see cref="DesignSelectionLayer"/> hover visual for the element currently
+    /// under the cursor. Clears the hover when <paramref name="element"/> is null, is already
+    /// selected, or is DesignRoot (no benefit highlighting the root frame on hover).
+    /// </summary>
+    private void UpdatePreHoverLayer(UIElement? element)
+    {
+        if (_selectionLayer is null) return;
+
+        // Skip when the element is already selected — selection border takes priority.
+        bool isSelected = element is not null && _selectedElements.Contains(element);
+        bool isRoot     = ReferenceEquals(element, DesignRoot);
+
+        if (element is null || isSelected || isRoot)
+        {
+            if (_preHoveredElement is not null)
+            {
+                _selectionLayer.ClearHover();
+                _preHoveredElement = null;
+            }
+            return;
+        }
+
+        // No change — avoid a RenderOpen call when the hovered element didn't change.
+        if (ReferenceEquals(element, _preHoveredElement)) return;
+
+        var bounds = GetElementBoundsInRoot(element);
+        if (bounds is null)
+        {
+            _selectionLayer.ClearHover();
+            _preHoveredElement = null;
+            return;
+        }
+
+        _selectionLayer.DrawHover(bounds.Value);
+        _preHoveredElement = element;
+    }
+
     // ── Rubber-band selection ─────────────────────────────────────────────────
 
     /// <summary>
     /// Begins a rubber-band marquee drag starting at <paramref name="startInRoot"/>.
-    /// Places a <see cref="RubberBandAdorner"/> on DesignRoot and captures the mouse.
+    /// Uses <see cref="DesignSelectionLayer.DrawRubberBand"/> instead of a WPF Adorner.
+    /// <paramref name="startInRoot"/> is in <see cref="DesignRoot"/> coordinate space (used for
+    /// hit-testing); the visual is drawn in <see cref="DesignCanvas"/> (this) coordinate space.
     /// </summary>
     private void StartRubberBand(Point startInRoot)
     {
         _rubberBandStart = startInRoot;
         _isRubberBanding = true;
-
-        var layer = DesignRoot is not null ? AdornerLayer.GetAdornerLayer(DesignRoot) : null;
-        if (layer is not null)
+        // Convert from DesignRoot space to DesignCanvas (this) space for the visual layer.
+        if (_selectionLayer is not null && DesignRoot is UIElement rootEl)
         {
-            _rubberBandAdorner = new RubberBandAdorner(DesignRoot!);
-            layer.Add(_rubberBandAdorner);
+            var startInCanvas = rootEl.TranslatePoint(startInRoot, this);
+            _selectionLayer.DrawRubberBand(startInCanvas, startInCanvas);
         }
         CaptureMouse();
     }
+
+    /// <summary>
+    /// Returns the current rubber-band start point converted to <see cref="DesignCanvas"/> coordinate space.
+    /// </summary>
+    private Point RubberBandStartInCanvas()
+        => DesignRoot is UIElement rootEl
+            ? rootEl.TranslatePoint(_rubberBandStart, this)
+            : _rubberBandStart;
 
     /// <summary>
     /// Returns all <see cref="FrameworkElement"/>s whose bounds (in DesignRoot space)

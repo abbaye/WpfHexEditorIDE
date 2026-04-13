@@ -1296,10 +1296,6 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         outer.Children.Add(grid);          // z=0
         outer.Children.Add(overlayBorder); // z=1
 
-        // Rounded clip on outer so content (tab control background etc.) is clipped to shape.
-        outer.SizeChanged += (_, _) => UpdateRoundedClip(outer, PanelCornerRadius);
-        _panelClipElements.Add(outer);
-
         host.Loaded += (_, _) =>
         {
             host.ApplyTemplate();
@@ -1414,10 +1410,6 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         var outer = new Grid { Margin = new Thickness(2) };
         outer.Children.Add(layout);        // z=0
         outer.Children.Add(overlayBorder); // z=1
-
-        // Rounded clip on outer so content is clipped to shape.
-        outer.SizeChanged += (_, _) => UpdateRoundedClip(outer, PanelCornerRadius);
-        _panelClipElements.Add(outer);
 
         // Keep overlay margin in sync with tab strip height, and punch a gap in the bottom
         // border above the active tab so the selected tab connects flush to the content area.

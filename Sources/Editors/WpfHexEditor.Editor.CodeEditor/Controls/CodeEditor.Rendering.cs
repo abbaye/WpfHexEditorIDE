@@ -817,6 +817,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _lspInlayHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, _horizontalScrollOffset);
             if (ShowLspDeclarationHints)
                 _lspDeclarationHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, BuildVisibleSourceLines(), _horizontalScrollOffset);
+            if (EnableSemanticHighlighting)
+                _semanticTokensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight);
 
             // Sticky scroll header: refresh only when the true scroll-line changes.
             // Guard: never call InvalidateArrange() unconditionally inside OnRender —

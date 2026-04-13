@@ -101,10 +101,13 @@ public sealed class ZoomPanCanvas : ContentControl
         // Use PreviewMouseWheel (tunneling) so Ctrl+Wheel zoom works even when
         // inner content (e.g. ScrollViewer in the designed XAML) would otherwise
         // consume the bubbling MouseWheel event first.
-        PreviewMouseWheel += OnMouseWheel;
-        MouseDown         += OnMouseDown;
-        MouseMove         += OnMouseMove;
-        MouseUp           += OnMouseUp;
+        PreviewMouseWheel            += OnMouseWheel;
+        PreviewMouseLeftButtonDown   += OnPreviewLeftDown;
+        MouseDown                    += OnMouseDown;
+        PreviewMouseMove             += OnPreviewMouseMove;
+        PreviewMouseLeftButtonUp     += OnPreviewLeftUp;
+        MouseMove                    += OnMouseMove;
+        MouseUp                      += OnMouseUp;
 
         // Clamp offsets on every viewport resize — keeps the canvas within the
         // virtual scrollable area without forcing any re-centering.
@@ -314,6 +317,49 @@ public sealed class ZoomPanCanvas : ContentControl
 
     // ── Middle-mouse pan ──────────────────────────────────────────────────────
 
+    // ── External rubber-band (left-click-drag in empty zone around design canvas) ──
+
+    private bool _isExternalRubberBanding;
+
+    /// <summary>
+    /// PreviewMouseLeftButtonDown tunnels from the root down to the OriginalSource.
+    /// In the empty zone around the design canvas, OriginalSource = ZoomPanCanvas (via HitTestCore).
+    /// We intercept here — before DesignCanvas sees any event — and start an external rubber-band
+    /// when the click is outside the rendered bounds of the DesignCanvas.
+    /// </summary>
+    private void OnPreviewLeftDown(object sender, MouseButtonEventArgs e)
+    {
+        if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) return;  // Ctrl+click = zoom, handled below
+        if (Content is not DesignCanvas dc) return;
+        if (!IsClickOutsideDesignCanvas(e, dc)) return;
+
+        _isExternalRubberBanding = true;
+        var ptInCanvas = ViewportToCanvas(e.GetPosition(this));
+        dc.BeginExternalRubberBand(ptInCanvas);
+        CaptureMouse();
+        e.Handled = true;
+    }
+
+    private void OnPreviewMouseMove(object sender, MouseEventArgs e)
+    {
+        if (!_isExternalRubberBanding) return;
+        if (Content is not DesignCanvas dc) return;
+        dc.UpdateExternalRubberBand(ViewportToCanvas(e.GetPosition(this)));
+        e.Handled = true;
+    }
+
+    private void OnPreviewLeftUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_isExternalRubberBanding) return;
+        _isExternalRubberBanding = false;
+        ReleaseMouseCapture();
+        if (Content is DesignCanvas dc)
+            dc.EndExternalRubberBand(ViewportToCanvas(e.GetPosition(this)));
+        e.Handled = true;
+    }
+
+    // ── Middle-mouse pan / Ctrl+zoom ─────────────────────────────────────────
+
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
         // Middle-button → pan.
@@ -336,8 +382,6 @@ public sealed class ZoomPanCanvas : ContentControl
             var mousePos = e.GetPosition(this);
             double factor   = zoomOut ? 1.0 - ZoomStep : 1.0 + ZoomStep;
             double newZoom  = Math.Clamp(ZoomLevel * factor, MinZoom, MaxZoom);
-
-            // Anchor zoom to the mouse position.
             OffsetX   = mousePos.X - (mousePos.X - OffsetX) * (newZoom / ZoomLevel);
             OffsetY   = mousePos.Y - (mousePos.Y - OffsetY) * (newZoom / ZoomLevel);
             ZoomLevel = newZoom;
@@ -349,7 +393,6 @@ public sealed class ZoomPanCanvas : ContentControl
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
         if (!_isPanning) return;
-
         var current = e.GetPosition(this);
         OffsetX += current.X - _panStart.X;
         OffsetY += current.Y - _panStart.Y;
@@ -363,6 +406,33 @@ public sealed class ZoomPanCanvas : ContentControl
         _isPanning = false;
         ReleaseMouseCapture();
         Cursor = null;
+    }
+
+    /// <summary>
+    /// Converts a point from ZoomPanCanvas viewport space to DesignCanvas local space,
+    /// inverting the RenderTransform (Scale then Translate) applied to the content element.
+    /// </summary>
+    private Point ViewportToCanvas(Point ptInViewport) =>
+        new((ptInViewport.X - OffsetX) / ZoomLevel,
+            (ptInViewport.Y - OffsetY) / ZoomLevel);
+
+    /// <summary>
+    /// Returns true when a left-click in this viewport landed outside the visible rendered
+    /// bounds of <paramref name="dc"/> (i.e. in the empty dark zone around the design canvas).
+    /// Computes the rendered bounds of dc in ZoomPanCanvas coordinate space via its RenderTransform
+    /// so the check is correct even when dc is scaled/translated.
+    /// </summary>
+    private bool IsClickOutsideDesignCanvas(MouseButtonEventArgs e, DesignCanvas dc)
+    {
+        var ptInZpc = e.GetPosition(this);
+
+        // Compute the rendered rect of dc in ZoomPanCanvas space.
+        // dc has an explicit Width/Height and a RenderTransform (Scale then Translate).
+        double renderedW = dc.ActualWidth  * ZoomLevel;
+        double renderedH = dc.ActualHeight * ZoomLevel;
+        var renderedBounds = new Rect(OffsetX, OffsetY, renderedW, renderedH);
+
+        return !renderedBounds.Contains(ptInZpc);
     }
 
     // ── Layout overrides ─────────────────────────────────────────────────────

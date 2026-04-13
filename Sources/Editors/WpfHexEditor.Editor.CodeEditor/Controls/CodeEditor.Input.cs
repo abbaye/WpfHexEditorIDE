@@ -1643,6 +1643,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _cursorLine   = textPos.Line;
                 _cursorColumn = textPos.Column;
                 CaptureMouse();
+                if (!_autoScrollTimer.IsEnabled) _autoScrollTimer.Start();
                 InvalidateVisual();
                 NotifyCaretMovedIfChanged();
                 e.Handled = true;
@@ -1707,6 +1708,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _selection.Start = textPos;
                 _selection.End = textPos;
                 CaptureMouse();
+                if (!_autoScrollTimer.IsEnabled) _autoScrollTimer.Start();
             }
 
             InvalidateVisual();
@@ -1895,14 +1897,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 var pos = e.GetPosition(this);
                 _lastMousePosition = pos;
-
-                // Start or stop the auto-scroll timer based on whether the mouse
-                // is outside the visible viewport bounds.
-                bool outsideBounds = pos.Y < 0 || pos.Y > ActualHeight;
-                if (outsideBounds && !_autoScrollTimer.IsEnabled)
-                    _autoScrollTimer.Start();
-                else if (!outsideBounds && _autoScrollTimer.IsEnabled)
-                    _autoScrollTimer.Stop();
 
                 var textPos = PixelToTextPosition(pos);
 

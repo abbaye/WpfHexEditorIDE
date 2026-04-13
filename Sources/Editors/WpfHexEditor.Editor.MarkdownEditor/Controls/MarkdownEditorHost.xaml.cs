@@ -199,6 +199,18 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Wire splitter drag-complete for ratio persistence
         _splitter.DragCompleted += OnSplitterDragCompleted;
 
+        // Force WebView2 HWND re-arrange when the host is resized (maximize / restore /
+        // docking resize). Pass the preview's new size explicitly because at the time
+        // SizeChanged fires on the host, _preview.ActualWidth/Height may not yet reflect
+        // the new layout (WPF arrange hasn't propagated to children yet).
+        SizeChanged += (_, e) =>
+        {
+            // Compute preview width from split ratio; full height minus any splitter.
+            var pw = _preview.ActualWidth  > 0 ? _preview.ActualWidth  : e.NewSize.Width  * (1 - _splitRatio);
+            var ph = _preview.ActualHeight > 0 ? _preview.ActualHeight : e.NewSize.Height;
+            _preview.InvalidateWebViewSize(pw, ph);
+        };
+
         // Wire Ctrl+scroll on the preview pane for zoom
         _preview.PreviewMouseWheel += OnPreviewPaneMouseWheel;
 

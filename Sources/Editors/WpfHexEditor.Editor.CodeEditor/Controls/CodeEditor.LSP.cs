@@ -239,9 +239,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 client as WpfHexEditor.Editor.Core.LSP.IReferenceCountProvider,
                 _inlineHintsSource);
 
-            // Forward LSP client to overlay layers (inlay hints + declaration hints).
+            // Forward LSP client to overlay layers (inlay hints, declaration hints, semantic tokens).
             _lspInlayHintsLayer.SetLspClient(client);
             _lspDeclarationHintsLayer.SetLspClient(client);
+            _semanticTokensLayer.SetLspClient(EnableSemanticHighlighting ? client : null);
 
             // Propagate var/lambda hint options to the client if it supports them.
             if (client is WpfHexEditor.Editor.Core.LSP.IInlineHintsOptionsClient hintsClient)

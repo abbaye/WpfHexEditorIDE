@@ -42,6 +42,7 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
     private readonly CheckBox _formatOnSaveCheck;
     private readonly CheckBox _showColumnRulersCheck;
     private readonly CheckBox _wordHighlightCheck;
+    private readonly CheckBox _semanticHighlightingCheck;
 
     public CodeEditorOptionsPage()
     {
@@ -95,6 +96,9 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
 
         _stickyScrollCheck = MakeCheck("Sticky scroll (context header)");
         root.Children.Add(_stickyScrollCheck);
+
+        _semanticHighlightingCheck = MakeCheck("Semantic highlighting (requires Roslyn LSP)");
+        root.Children.Add(_semanticHighlightingCheck);
 
         root.Children.Add(new Separator { Margin = new Thickness(0, 8, 0, 8) });
 
@@ -169,7 +173,8 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
             _showInlineHintsCheck.IsChecked   = s.ShowInlineHints;
             _wordHighlightCheck.IsChecked     = s.EnableWordHighlight;
             _showEndBlockHintCheck.IsChecked  = s.EndOfBlockHintEnabled;
-            _stickyScrollCheck.IsChecked      = s.StickyScroll.Enabled;
+            _stickyScrollCheck.IsChecked           = s.StickyScroll.Enabled;
+            _semanticHighlightingCheck.IsChecked   = s.EnableSemanticHighlighting;
             _showMinimapCheck.IsChecked       = s.ShowMinimap;
             _minimapRenderCharsCheck.IsChecked = s.MinimapRenderCharacters;
             _minimapSideCombo.SelectedIndex   = s.MinimapSide;
@@ -196,7 +201,8 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
         s.ShowInlineHints             = _showInlineHintsCheck.IsChecked == true;
         s.EnableWordHighlight         = _wordHighlightCheck.IsChecked == true;
         s.EndOfBlockHintEnabled       = _showEndBlockHintCheck.IsChecked == true;
-        s.StickyScroll.Enabled        = _stickyScrollCheck.IsChecked == true;
+        s.StickyScroll.Enabled          = _stickyScrollCheck.IsChecked == true;
+        s.EnableSemanticHighlighting    = _semanticHighlightingCheck.IsChecked == true;
         s.ShowMinimap                 = _showMinimapCheck.IsChecked == true;
         s.MinimapRenderCharacters     = _minimapRenderCharsCheck.IsChecked == true;
         s.MinimapSide                 = _minimapSideCombo.SelectedIndex;

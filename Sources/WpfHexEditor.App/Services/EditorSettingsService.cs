@@ -102,6 +102,7 @@ public sealed class EditorSettingsService
         ce.ColorSwatchPreviewEnabled      = d.ColorSwatchPreview;
         ce.FormatOnSave                   = d.FormatOnSave;
         ce.EnableWordHighlight            = d.EnableWordHighlight;
+        ce.EnableSemanticHighlighting     = d.EnableSemanticHighlighting;
         ce.XmlAttributeIndentLevels       = d.XmlAttributeIndentLevels;
         ce.XmlOneAttributePerLine         = d.XmlOneAttributePerLine;
 

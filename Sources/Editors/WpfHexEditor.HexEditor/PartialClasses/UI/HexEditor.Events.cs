@@ -76,6 +76,11 @@ namespace WpfHexEditor.HexEditor
 
                 // Capture mouse for drag operation
                 HexViewport.CaptureMouse();
+
+                // Start polling timer — direction determined via Win32 GetCursorPos each tick,
+                // independent of WPF event routing and ancestor ClipToBounds restrictions.
+                if (!_autoScrollTimer.IsEnabled)
+                    _autoScrollTimer.Start();
             }
 
             e.Handled = true;
@@ -84,49 +89,27 @@ namespace WpfHexEditor.HexEditor
         private void Content_MouseMove(object sender, MouseEventArgs e)
         {
             if (_viewModel == null || !_isMouseDown || e.LeftButton != MouseButtonState.Pressed)
-            {
-                StopAutoScroll();
                 return;
-            }
 
             Point mousePos = e.GetPosition(HexViewport);
             _lastMousePosition = mousePos;
 
-            // Offset line drag: selection is handled by HexViewport events,
-            // but we still need to track mouse position for auto-scroll
-            if (!_isOffsetLineDrag)
+            // Offset line drag: selection is handled by HexViewport events.
+            if (_isOffsetLineDrag)
             {
-                // Phase 4: Use HexViewport's HitTestByteWithArea (same as mouseover - guaranteed consistent!)
-                var hitResult = HexViewport.HitTestByteWithArea(mousePos);
-                if (hitResult.Position.HasValue)
-                {
-                    var position = new VirtualPosition(hitResult.Position.Value);
-                    // Update selection range during drag
-                    _viewModel.SetSelectionRange(_mouseDownPosition, position);
-
-                    // Notify plugins (e.g. DataInspector) — DP callbacks are not triggered here.
-                    OnSelectionStartChanged(EventArgs.Empty);
-                    OnSelectionStopChanged(EventArgs.Empty);
-                }
+                e.Handled = true;
+                return;
             }
 
-            // Check if mouse is near the top or bottom edge for auto-scroll
-            double viewportHeight = HexViewport.ActualHeight;
-
-            if (mousePos.Y < AutoScrollEdgeThreshold)
+            // Update selection during drag. Auto-scroll direction is determined by the polling
+            // timer (Win32 GetCursorPos) — independent of MouseMove routing.
+            var hitResult = HexViewport.HitTestByteWithArea(mousePos);
+            if (hitResult.Position.HasValue)
             {
-                // Near top edge - scroll up
-                StartAutoScroll(-1);
-            }
-            else if (mousePos.Y > viewportHeight - AutoScrollEdgeThreshold)
-            {
-                // Near bottom edge - scroll down
-                StartAutoScroll(1);
-            }
-            else
-            {
-                // In the middle - stop auto-scroll
-                StopAutoScroll();
+                var position = new VirtualPosition(hitResult.Position.Value);
+                _viewModel.SetSelectionRange(_mouseDownPosition, position);
+                OnSelectionStartChanged(EventArgs.Empty);
+                OnSelectionStopChanged(EventArgs.Empty);
             }
 
             e.Handled = true;
@@ -837,7 +820,13 @@ namespace WpfHexEditor.HexEditor
             }
         }
 
-        /// <summary>
+        private static void OnPreloadByteInEditorModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor hex && (hex.Stream != null || hex.FileName != null))
+                hex.Dispatcher.BeginInvoke(new Action(() => hex.UpdateVisibleLines()),
+                    System.Windows.Threading.DispatcherPriority.Render);
+        }
+
         /// <summary>
         /// Handle BaseGrid size changes to adjust visible lines (exact V1 approach)
         /// </summary>

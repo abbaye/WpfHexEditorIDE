@@ -2,7 +2,7 @@
    Format:    Word Document (Legacy)
    Category:  Documents
    Ext:       .doc
-   Editor:    hex-editor
+   Editor:    hex-editor (intentional — OLE2 binary format, not supported by DocumentLoader; see ADR-001)
    Desc:      Microsoft Word 97-2003 document (OLE2)
    Variables: currentOffset, machineType, sectionCount, entryPoint, ole2Signature, minorVersion, majorVersion
    Detection: signature=D0CF11E0A1B11AE1 @ offset 0
