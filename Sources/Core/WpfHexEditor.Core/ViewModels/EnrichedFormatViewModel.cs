@@ -220,8 +220,8 @@ namespace WpfHexEditor.Core.ViewModels
                     parts.Add($"Bit Depth: {details.BitDepth}");
                 if (!string.IsNullOrWhiteSpace(details.ColorSpace))
                     parts.Add($"Color Space: {details.ColorSpace}");
-                if (details.SampleRate.HasValue)
-                    parts.Add($"Sample Rate: {details.SampleRate} Hz");
+                if (!string.IsNullOrWhiteSpace(details.SampleRate))
+                    parts.Add($"Sample Rate: {details.SampleRate}");
                 if (details.SupportsEncryption)
                     parts.Add("Encryption: Supported");
 

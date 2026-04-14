@@ -32,6 +32,18 @@ namespace WpfHexEditor.Core.Services
         private static IReadOnlyList<FormatDefinition>? s_sharedFormats;
         private static readonly object s_sharedLock = new();
 
+        // ── Reusable deserialization options (allocated once per process) ─
+        // ImportFromJson is called 463+ times at startup — avoid allocating
+        // a new JsonSerializerOptions on every call.
+        private static readonly JsonSerializerOptions s_importOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling        = JsonCommentHandling.Skip,
+            AllowTrailingCommas        = true,
+            // SignatureStrength enum-string conversion is handled via [JsonConverter]
+            // on DetectionRule.Strength — no global converter needed here.
+        };
+
         /// <summary>
         /// Set the shared format catalog used by ALL FormatDetectionService instances.
         /// Called once at app startup by FormatCatalogService. Thread-safe.
@@ -1120,16 +1132,7 @@ namespace WpfHexEditor.Core.Services
 
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true,
-                    // SignatureStrength enum-string conversion is handled via [JsonConverter] on
-                    // DetectionRule.Strength — no global converter needed here.
-                };
-
-                var format = JsonSerializer.Deserialize<FormatDefinition>(json, options);
+                var format = JsonSerializer.Deserialize<FormatDefinition>(json, s_importOptions);
                 return format?.IsValid() == true ? format : null;
             }
             catch (Exception ex)

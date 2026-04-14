@@ -874,9 +874,10 @@ namespace WpfHexEditor.Core.FormatDetection
         public string ColorSpace { get; set; }
 
         /// <summary>
-        /// Sample rate (for audio)
+        /// Sample rate (for audio). Stored as string to accommodate descriptive values
+        /// like "8000 Hz (AMR-NB) / 16000 Hz (AMR-WB)" as well as plain integers.
         /// </summary>
-        public int? SampleRate { get; set; }
+        public string SampleRate { get; set; }
 
         /// <summary>
         /// Container format (for video/audio)
