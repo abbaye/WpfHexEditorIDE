@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ZOO Archive",
-  "version": "1.13",
+  "version": "1.12",
   "extensions": [ ".zoo" ],
   "description": "ZOO is a compression archive format developed by Rahul Dhesi in the mid-1980s. Files begin with a 20-byte ASCII magic string 'ZOO 2.10 Archive.' followed by 0x1A, then a 4-byte tag value 0xFDC4A7DC at offset 20 which serves as a secondary identifier. ZOO uses LZW and LZSS compression algorithms. The archive contains a linked list of file headers, each pointing to the next entry. ZOO was popular on Unix and MS-DOS systems in the late 1980s and early 1990s before being displaced by ZIP and tar.gz. It is now primarily encountered in digital preservation contexts.",
   "category": "Archives",

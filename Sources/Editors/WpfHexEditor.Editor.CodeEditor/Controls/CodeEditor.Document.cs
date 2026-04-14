@@ -958,6 +958,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 _lspClient.OpenDocument(filePath, DetectLanguageId(filePath), text);
                 _lspDocVersion = 1;
+                // Schedule a highlight refresh so semantic tokens appear immediately
+                // after the server processes didOpen, without waiting for a scroll/edit.
+                SchedulePostOpenHighlightRefresh();
             }
 
             TitleChanged?.Invoke(this, BuildTitle());

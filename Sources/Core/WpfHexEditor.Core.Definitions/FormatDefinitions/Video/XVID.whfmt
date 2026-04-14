@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Xvid Video",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".xvid",
     ".avi"

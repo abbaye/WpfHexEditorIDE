@@ -1,36 +1,38 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "NumPy Array",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     ".npy"
   ],
-  "description": "NumPy array binary format",
+  "description": "NumPy .npy is the standard binary serialization format for a single NumPy ndarray. The format begins with a 6-byte magic '\x93NUMPY', followed by a 1-byte major version (1 or 2), a 1-byte minor version (0), a 2-byte (v1) or 4-byte (v2) little-endian header length, and a Python-literal dictionary describing the array dtype, C/F memory order, and shape tuple. The data follows immediately after the header, padded to 64-byte alignment. The format is platform-independent and supports all NumPy dtypes including structured arrays. .npz files are zip archives of multiple .npy files, each named by variable.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "NumPy Array Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/NPY"
-    ]
-  },
+  "references": [
+    "NumPy NEP 1 — Simple Format for Binary Storage of Arrays",
+    "NumPy v1.26 npy format documentation"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/NumPy",
+    "https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html"
+  ],
   "detection": {
     "signature": "934E554D5059",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 6,
-      "maxSignatureOffset": 1024
+      "minFileSize": 128,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
+    "majorVersion": 0,
+    "minorVersion": 0,
+    "headerLength": 0,
+    "headerDict": "",
     "numpyMagic": ""
   },
   "blocks": [
@@ -40,59 +42,141 @@
       "offset": 0,
       "length": 6,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "\\x93NUMPY",
+      "opacity": 0.85,
+      "description": "6-byte NumPy magic sequence: 0x93 followed by ASCII 'NUMPY' (4E 55 4D 50 59) — unambiguously identifies a .npy file",
       "storeAs": "numpyMagic",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 6,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Two bytes: major version (byte 6) and minor version (byte 7); v1.0 = 01 00 uses 2-byte header length; v2.0 = 02 00 uses 4-byte header length for large headers",
+      "storeAs": "formatVersion",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Header Length",
+      "offset": 8,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Little-endian uint16 (v1.x) or uint32 (v2.x) byte length of the Python dict header string that follows; total header size = 6+2+2+HEADER_LEN padded to 64 bytes",
+      "storeAs": "headerLength",
+      "valueType": "uint16le"
+    },
+    {
+      "type": "field",
+      "name": "Header Dictionary",
+      "offset": 10,
+      "length": 118,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Python dict literal string containing 'descr' (dtype string), 'fortran_order' (bool), and 'shape' (tuple of ints) — defines the complete array structure",
+      "storeAs": "headerDict",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Array Data",
+      "offset": 128,
+      "length": 0,
+      "color": "#A8E6CF",
+      "opacity": 0.25,
+      "description": "Raw C-contiguous (or Fortran-contiguous) array data in the dtype specified by 'descr', with size = product(shape) * dtype.itemsize bytes",
+      "storeAs": "arrayData",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Header Dictionary",
+      "variable": "headerDict",
+      "description": "Python dict with dtype descriptor, memory order, and shape of the stored ndarray"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidNumpyMagic",
+      "description": "Bytes 0-5 must be 93 4E 55 4D 50 59 — the NumPy array magic constant; any deviation means the file is not a valid .npy array file",
+      "offset": 0,
+      "length": 6,
+      "expectedHex": "934E554D5059",
+      "severity": "error"
+    },
+    {
+      "name": "ValidMajorVersion",
+      "description": "Byte 6 must be 0x01 or 0x02; version 1 uses 2-byte header length, version 2 uses 4-byte header length for very large header dicts",
+      "offset": 6,
+      "length": 1,
+      "validValues": ["01", "02"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Magic",          "offset": 0, "length": 6,   "format": "hex" },
+          { "label": "Major Version",  "offset": 6, "length": 1,   "format": "uint8" },
+          { "label": "Minor Version",  "offset": 7, "length": 1,   "format": "uint8" },
+          { "label": "Header Length",  "offset": 8, "length": 2,   "format": "uint16le" }
+        ]
+      },
+      {
+        "name": "Array Descriptor",
+        "fields": [
+          { "label": "Header Dict", "offset": 10, "length": 118, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NumPy Array Summary",
+      "fields": ["numpyMagic", "formatVersion", "headerDict"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Python NumPy",
+    "SciPy",
+    "scikit-learn",
+    "Julia",
+    "C++ cnpy library"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".npy"
-    ]
+    "numpy_format": true,
+    "multi_array_container": ".npz (zip of .npy files)",
+    "related_formats": ["NPZ", "HDF5", "MAT (Level 7.3)"]
   },
   "MimeTypes": [
+    "application/x-npy",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Machine learning dataset persistence",
+    "Numpy array checkpoint saving",
+    "Interoperability between Python scientific tools",
+    "Fast binary serialization for numerical arrays"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "endianness": "specified in dtype string (< = LE, > = BE, = = native)",
+    "headerAlignmentBytes": 64,
+    "v1HeaderLengthBytes": 2,
+    "v2HeaderLengthBytes": 4
   },
   "forensic": {
     "category": "science",
@@ -100,11 +184,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "NumPy array binary format",
+    "analysisContext": "NumPy .npy files store exactly one ndarray with a Python dict header describing shape, dtype, and memory order. The header dict is a machine-readable source of all structural information needed to interpret the binary data.",
     "suggestedInspections": [
-      "Validate NumPy Array file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify magic 93 4E 55 4D 50 59 at offset 0",
+      "Read major version at byte 6 to know if header length is 2 or 4 bytes",
+      "Parse header dict string — extract 'descr', 'fortran_order', and 'shape' keys",
+      "The 'descr' field is a NumPy dtype string: e.g. '<f4' = LE float32, '>i8' = BE int64",
+      "Compute array data size = product(shape) * itemsize and validate against file length",
+      "Array data starts at offset 6+2+header_len rounded up to next multiple of 64"
     ]
   }
 }

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Jupiter Tessellation",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".jt"
   ],

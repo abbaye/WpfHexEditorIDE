@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "F# Source File",
-  "version": "2.14",
+  "version": "2.13",
   "extensions": [
     ".fs",
     ".fsx",

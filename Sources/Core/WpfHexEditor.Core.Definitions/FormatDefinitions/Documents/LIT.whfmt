@@ -1,135 +1,177 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Microsoft Reader",
   "version": "1.13",
-  "extensions": [
-    ".lit"
-  ],
-  "description": "Microsoft Reader e-book format with DRM support, based on Microsoft's LIT (Literature) format",
+  "extensions": [ ".lit" ],
+  "description": "LIT is Microsoft's proprietary eBook format for the Microsoft Reader application, discontinued in 2012. LIT files use the ITSF (Info-Tech Storage Format) container, the same format used for Microsoft Compiled HTML Help (.chm) files. The magic is 'ITSF' (0x49545346) at offset 0, followed by the format version (usually 3 as uint32 LE), header length, and timestamp. LIT adds a DRM layer on top of ITSF. The internal structure contains HTML content, images, and metadata as named sections within the ITSF container. LIT files are now primarily encountered in legacy eBook collections.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Microsoft Reader Format"
+      "Microsoft ITSF / ITS Container Format",
+      "Microsoft LIT eBook Format",
+      "CHM/ITS Format Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/LIT"
+      "https://en.wikipedia.org/wiki/LIT_(file_format)",
+      "https://wiki.mobileread.com/wiki/LIT",
+      "https://www.nongnu.org/chmspec/latest/",
+      "http://www.russotto.net/chm/itsfformat.html"
     ]
   },
   "detection": {
-    "signature": "4954534603000000",
-    "offset": 0,
+    "signatures": [
+      { "hex": "49545346", "offset": 0, "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 24,
+      "maxSignatureOffset": 0,
+      "note": "'ITSF' at offset 0. Note: .chm files also start with 'ITSF'. LIT is distinguished from CHM by different internal section names and DRM structures."
     }
   },
-  "functions": {
-    "readUInt32LE": "Read 32-bit little-endian for ITSF header (version, header length)",
-    "extractUTF8String": "Extract book metadata (title, author) from manifest",
-    "readUInt64LE": "Read 64-bit file offsets for content sections"
-  },
   "variables": {
-    "currentOffset": 0,
-    "version": 3,
+    "itsfSignature": "",
+    "itsfVersion": 0,
     "headerLength": 0,
-    "title": "Unknown",
-    "author": "Unknown",
-    "preferredEditor": "hex-editor",
-    "hasDRM": false,
-    "encoding": "UTF-8",
-    "itsfSignature": ""
+    "timestamp": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ITSF Signature",
+      "name": "ITSF Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "ITSF (Info-Tech Storage Format) signature: 'ITSF'",
+      "description": "ITSF magic: 'ITSF' (0x49 0x54 0x53 0x46). Shared by LIT eBooks and CHM help files.",
       "storeAs": "itsfSignature",
       "valueType": "ascii"
     },
     {
-      "type": "data",
-      "name": "Version",
+      "type": "field",
+      "name": "ITSF Version",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "ITSF version (usually 3)"
+      "description": "ITSF version (little-endian uint32). LIT uses version 3. CHM uses version 3 also.",
+      "storeAs": "itsfVersion",
+      "valueType": "uint32"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Header Length",
       "offset": 8,
       "length": 4,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "Total header length (little-endian)"
+      "description": "Total header length in bytes (little-endian uint32)",
+      "storeAs": "headerLength",
+      "valueType": "uint32"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Unknown",
       "offset": 12,
       "length": 4,
       "color": "#96CEB4",
-      "opacity": 0.4,
-      "description": "Unknown field (usually 1)"
+      "opacity": 0.3,
+      "description": "Unknown field, usually 1 (little-endian uint32)",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Timestamp",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "File creation timestamp (Windows FILETIME or Unix time variant)",
+      "storeAs": "timestamp",
+      "valueType": "uint32"
     }
   ],
+  "assertions": [
+    { "field": "itsfSignature", "operator": "equals", "value": "ITSF", "description": "Magic must be 'ITSF'" },
+    { "field": "itsfVersion", "operator": "equals", "value": 3, "description": "ITSF version must be 3 for LIT" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ITSF Header", "offset": 0, "description": "'ITSF' magic + version + header length" },
+      { "name": "Timestamp", "offset": 16, "description": "File creation timestamp" }
+    ]
+  },
+  "inspector": {
+    "badge": "LIT",
+    "primaryField": "itsfVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "ITSF Container", "fields": ["itsfSignature", "itsfVersion"] },
+      { "name": "Header Info", "fields": ["headerLength", "timestamp"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "LIT ITSF Info (JSON)",
+      "format": "json",
+      "fields": ["itsfSignature", "itsfVersion", "headerLength", "timestamp"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "LIT files contain DRM-protected HTML content — decryption may be legally restricted",
+      "ITSF containers (also used by CHM) are known vectors for directory traversal exploits"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "LIT uses ITSF container format (same as CHM). Magic 'ITSF' at offset 0 is shared with .chm files. LIT is distinguished by internal section names containing Microsoft Reader-specific DRM streams. The format was discontinued in 2012. Calibre and ConvertLIT can convert non-DRM LIT files.",
+    "suggestedInspections": [
+      "Verify 'ITSF' magic at offset 0",
+      "Read version at offset 4: should be 3",
+      "Read header length at offset 8 to find end of main header",
+      "Check internal directory for LIT-specific sections vs CHM-specific sections",
+      "Look for Microsoft DRM signature sections to confirm LIT vs CHM identity"
+    ]
+  },
   "software": [
-    "Microsoft Reader",
+    "Microsoft Reader (discontinued)",
     "Calibre",
     "ConvertLIT"
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [
-      ".lit"
-    ]
+    "extensions": [".lit"],
+    "relatedFormats": ["CHM", "EPUB", "MOBI", "AZW"],
+    "note": "LIT uses the same ITSF container as CHM (.chm help files). Internal section names distinguish LIT from CHM. Both formats are discontinued or legacy."
   },
-  "MimeTypes": [
-    "application/lit"
-  ],
-  "Software": [
-    "Microsoft Reader",
-    "Calibre",
-    "ConvertLIT"
-  ],
+  "MimeTypes": [ "application/x-ms-lit", "application/lit" ],
   "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
+    "Legacy Microsoft Reader eBook reading",
+    "eBook library migration and conversion",
+    "Digital preservation of 2000s-era eBooks"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "DocumentFormat": true
-  },
-  "forensic": {
-    "category": "document",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft Reader e-book format with DRM support, based on Microsoft's LIT (Literature) format",
-    "suggestedInspections": [
-      "Validate Microsoft Reader file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
-    ]
+    "DocumentFormat": true,
+    "ContainerFormat": "ITSF (Info-Tech Storage Format)",
+    "Endianness": "little-endian",
+    "DRMSupport": true,
+    "Note": "ITSF magic 'ITSF' is shared with .chm files. Distinguish by internal section structure."
   }
 }

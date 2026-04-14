@@ -1,115 +1,184 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "USD ASCII",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".usda"
   ],
-  "description": "Pixar USD ASCII text format",
+  "description": "USD ASCII (USDA) is the human-readable text-based variant of Pixar's Universal Scene Description format. Every USDA file begins with the header line '#usda 1.0' which identifies both the format and the version. The file continues with optional metadata declarations (upAxis, metersPerUnit, timeCodesPerSecond), followed by USD layer content expressed in a syntax resembling Python with USD-specific keywords. USDA files define prims (scene graph nodes), their attributes, relationships, and composition arcs. They are preferred for version control and hand-editing while USDC binary files are preferred for performance.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "USD ASCII Format"
+      "Pixar USD ASCII File Format Reference",
+      "OpenUSD File Format Plugins Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/USDA"
+      "https://openusd.org/release/usdfaq.html",
+      "https://graphics.pixar.com/usd/docs/USD-Glossary.html",
+      "https://en.wikipedia.org/wiki/Universal_Scene_Description"
     ]
   },
   "detection": {
-    "signature": "23757364612031",
-    "offset": 0,
+    "signatures": [
+      { "value": "2375736461", "offset": 0, "label": "'#usda' ASCII header prefix", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.5, "max": 6.0 },
     "validation": {
-      "minFileSize": 7,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "USDA must start with '#usda 1.0'. The full first line is the reliable identifier. '#usd' alone may also indicate a .usd ASCII file."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "usdaHeader": ""
+    "usdaHeader": "",
+    "versionString": "",
+    "metadataBlock": "",
+    "firstPrimDecl": ""
   },
   "blocks": [
     {
       "type": "signature",
       "name": "USDA Header",
       "offset": 0,
-      "length": 7,
+      "length": 9,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "#usda 1 header",
+      "opacity": 0.45,
+      "description": "9-byte ASCII string '#usda 1.0' that uniquely identifies a USD ASCII layer file. This is the mandatory first line of every .usda file and distinguishes it from binary USDC files which start with 'PXR-USDC'.",
       "storeAs": "usdaHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Version String",
+      "offset": 9,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Region following the header keyword containing the end of the first line and initial layer content. The header line is terminated by a newline. What follows may be an opening parenthesis for layer metadata or the first prim definition.",
+      "storeAs": "versionString",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "type": "field",
+      "name": "Layer Metadata Block",
+      "offset": 25,
+      "length": 96,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region of the USDA file containing optional layer-level metadata declarations enclosed in parentheses. Common metadata: 'upAxis = \"Y\"', 'metersPerUnit = 0.01', 'timeCodesPerSecond = 24', and 'defaultPrim = \"modelName\"'.",
+      "storeAs": "metadataBlock",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Prim Declaration",
+      "offset": 121,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region of the USDA file where the first USD prim is defined. A prim declaration starts with a specifier keyword such as 'def', 'over', 'class', or 'variantSet' followed by the prim type and name, e.g. 'def Xform \"World\"'.",
+      "storeAs": "firstPrimDecl",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidUsdaHeader",
+      "expression": "usdaHeader == '#usda 1.0'",
+      "severity": "error",
+      "message": "USDA header '#usda 1.0' not found at offset 0. This is not a valid USD ASCII file. It may be a binary USDC file (starts with 'PXR-USDC') or a .usd polymorphic file."
+    },
+    {
+      "name": "TextFile",
+      "expression": "true",
+      "severity": "warning",
+      "message": "USDA is a text-based format and should not contain binary data. If the file contains non-printable characters outside the header region, it may be mislabeled or corrupt."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "USDA Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Layer Metadata", "offset": 25, "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "First Prim", "offset": 121, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "usdaHeader",
+    "primaryField": "metadataBlock",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["usdaHeader", "versionString"]
+      },
+      {
+        "title": "USD Layer",
+        "icon": "\uE8B7",
+        "fields": ["metadataBlock", "firstPrimDecl"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "USDA Header (JSON)",
+      "format": "json",
+      "fields": ["usdaHeader", "versionString", "metadataBlock"]
     }
   ],
   "software": [
-    "Pixar USD tools",
+    "Pixar USD Tools",
+    "Houdini",
+    "Autodesk Maya",
     "Text editors"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".usda"
-    ],
-    "pixar_format": true,
-    "film_industry": true
+    "extensions": [".usda"],
+    "relatedFormats": ["USD", "USDC", "USDZ"],
+    "note": "ASCII text USD layer; human-readable and version-control friendly; binary counterpart is USDC"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "model/vnd.usda",
+    "text/plain"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Version-controlled USD scene editing",
+    "Human-readable USD layer authoring",
+    "USD pipeline debugging and inspection",
+    "Film and VFX scene composition"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "encoding": "ASCII/UTF-8 text",
+    "syntax": "USD syntax (similar to Python)",
+    "developed_by": "Pixar Animation Studios"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pixar USD ASCII text format",
+    "analysisContext": "USD ASCII layer file starting with '#usda 1.0'. Text-based USD content with prim declarations using 'def', 'over', 'class' specifiers. Layer metadata in parentheses follows the header line.",
     "suggestedInspections": [
-      "Validate USD ASCII header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify '#usda 1.0' header and extract layer-level metadata (upAxis, defaultPrim)",
+      "Scan for 'def' and 'over' prim declarations to map the scene hierarchy",
+      "Look for 'references' and 'payload' arcs that link to external USD layers"
     ]
   }
 }

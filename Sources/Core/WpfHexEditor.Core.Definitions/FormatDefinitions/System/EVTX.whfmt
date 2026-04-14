@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Event Log XML",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".evtx"
   ],

@@ -1,40 +1,38 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ECAT PET Image",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".v",
     ".i"
   ],
-  "description": "ECAT PET medical imaging format",
+  "description": "ECAT (Emission Computer Aided Tomography) is a binary format used by Siemens PET scanners for emission tomography data. Files begin with the ASCII string 'MATRIX' (0x4D41545249 58) at offset 0, followed by a version byte. The main header (512 bytes) contains acquisition parameters including scanner type, isotope, injection dose, and calibration factor. A matrix directory at offset 512 lists sub-volumes (frames, planes, gates). Used for static and dynamic PET studies, sinograms, and reconstructed images.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "ECAT PET Image Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/V"
-    ]
-  },
+  "references": [
+    "ECAT 6/7 File Format Documentation (CTI/Siemens)",
+    "https://nipy.org/nibabel/reference/nibabel.ecat.html"
+  ],
   "detection": {
     "signature": "4D41545249",
     "offset": 0,
+    "weight": 0.9,
+    "strength": "Strong",
     "required": true,
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
     "ecatMagic": "",
-    "version": 0
+    "ecatVersion": 0,
+    "fileType": 0,
+    "scannerType": 0,
+    "isotopeName": "",
+    "numFrames": 0
   },
   "blocks": [
     {
@@ -43,8 +41,8 @@
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ECAT signature (MATRI)",
+      "opacity": 0.8,
+      "description": "ASCII 'MATRI' (first 5 of 'MATRIX') at offset 0; full 6-byte magic is 0x4D415452495820 ('MATRIX ')",
       "storeAs": "ecatMagic",
       "valueType": "ascii"
     },
@@ -52,70 +50,149 @@
       "type": "field",
       "name": "Version",
       "offset": 5,
-      "length": 1,
+      "length": 3,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "ECAT version",
-      "storeAs": "version",
-      "valueType": "uint8"
+      "opacity": 0.5,
+      "description": "Version string: '6.3' for ECAT6 or '7.0'/'7.1'/'7.2' for ECAT7 format variants",
+      "storeAs": "ecatVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "File Type",
+      "offset": 66,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.5,
+      "description": "file_type (int16 BE): 1=Sinogram, 2=Image16, 3=Attenuation, 4=Normalization, 7=Volume8, 8=Volume16",
+      "storeAs": "fileType",
+      "valueType": "int16",
+      "valueMap": {
+        "1": "Sinogram",
+        "2": "Image 16-bit",
+        "3": "Attenuation",
+        "4": "Normalization",
+        "7": "Volume 8-bit",
+        "8": "Volume 16-bit"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Scanner Type",
+      "offset": 68,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "scanner_type (int16 BE): identifies the PET scanner model (e.g. 921=ECAT 921, 962=ECAT 962)",
+      "storeAs": "scannerType",
+      "valueType": "int16"
+    },
+    {
+      "type": "field",
+      "name": "Isotope Name",
+      "offset": 168,
+      "length": 8,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "isotope_name: 8-byte ASCII string, e.g. 'F-18   ' or 'C-11   '",
+      "storeAs": "isotopeName",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "ECAT Magic",
+      "variable": "ecatMagic",
+      "description": "First 5 bytes of MATRIX magic string"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
+      "name": "File Type",
+      "variable": "fileType",
+      "description": "ECAT file type code"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "Isotope Name",
+      "variable": "isotopeName",
+      "description": "PET radiotracer isotope name"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ECAT magic starts with MATRI",
+      "expression": "ecatMagic == 'MATRI'",
+      "severity": "error",
+      "message": "ECAT files must start with ASCII 'MATRIX' at offset 0"
+    },
+    {
+      "name": "Valid file type code",
+      "expression": "fileType >= 1 && fileType <= 14",
+      "severity": "warning",
+      "message": "ECAT file_type should be a known code (1-14); unknown type may indicate corruption"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Format Identity",
+        "fields": ["ECAT Magic", "Version"]
+      },
+      {
+        "name": "Acquisition",
+        "fields": ["File Type", "Scanner Type", "Isotope Name"]
+      },
+      {
+        "name": "Metadata",
+        "fields": ["ECAT Magic", "File Type", "Isotope Name"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ECAT Header Summary",
+      "fields": ["ecatMagic", "ecatVersion", "fileType", "scannerType", "isotopeName"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "ECAT software (Siemens)",
+    "nibabel (Python ECAT support)",
+    "PVElab",
+    "3D Slicer (PET extension)"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".v",
-      ".i"
-    ]
+    "vendor": "Siemens (formerly CTI)",
+    "related": ["DICOM", "NII"],
+    "modality": "PET"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "Siemens ECAT scanner software",
+    "nibabel Python library",
+    "PVElab (kinetic modeling)",
+    "3D Slicer with PET extension"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "PET brain imaging data storage",
+    "Dynamic PET kinetic modeling studies",
+    "PET/CT oncology imaging data",
+    "Neurological FDG-PET datasets"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  "TechnicalDetails": {
+    "Endianness": "Big-endian for all integer and float fields",
+    "HeaderSize": 512,
+    "MatrixDirectory": "At offset 512; lists frame/plane sub-volumes",
+    "Versions": "ECAT6 (pre-1995) and ECAT7 (post-1995)"
   },
   "forensic": {
     "category": "medical",
@@ -123,11 +200,17 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "ECAT PET medical imaging format",
+    "analysisContext": "ECAT files are identified by 'MATRIX' ASCII at offset 0. The format is big-endian. The main header (512 bytes) contains study-level metadata. The matrix directory at offset 512 lists sub-volumes by matrix number. file_type at offset 66 distinguishes sinograms from reconstructed images. ECAT7 is more common; ECAT6 is legacy.",
     "suggestedInspections": [
-      "Verify ECAT PET Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Verify 'MATRIX' ASCII magic at offset 0",
+      "Read version string at offset 6 to distinguish ECAT6 vs ECAT7",
+      "Check file_type at offset 66 (int16 BE) for data kind",
+      "Parse matrix directory at offset 512 for sub-volume list",
+      "Read isotope_name at offset 168 for radiotracer identification"
     ]
+  },
+  "functions": {
+    "readUInt32BE": "Read big-endian header values",
+    "extractASCIIString": "Read magic, version, and isotope strings"
   }
 }

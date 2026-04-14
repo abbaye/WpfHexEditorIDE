@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Unix lastlog",
-  "version": "2.43",
+  "version": "2.42",
   "extensions": [
     ""
   ],

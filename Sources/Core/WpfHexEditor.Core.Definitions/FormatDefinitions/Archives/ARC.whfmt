@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ARC Archive",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [ ".arc" ],
   "description": "ARC is one of the earliest MS-DOS archive formats, created by System Enhancement Associates (SEA) in 1985. It stores multiple files with compression using various methods: type 1=stored (no compression), type 2=packed (RLE), type 3=squeezed (Huffman), types 4-6=crunched (LZW variants), types 7-9=squashed (improved LZW). Each entry begins with 0x1A followed by a compression type byte. The format predates ZIP and influenced many later archival tools. Despite its age, ARC files remain relevant for digital preservation of 1980s software archives.",
   "category": "Archives",

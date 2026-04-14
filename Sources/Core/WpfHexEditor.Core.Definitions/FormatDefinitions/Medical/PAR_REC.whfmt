@@ -1,100 +1,192 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Philips PAR/REC",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     ".par",
     ".rec"
   ],
-  "description": "Philips PAR/REC medical imaging format",
+  "description": "Philips PAR/REC is a paired MRI format produced by Philips MRI scanners. The .PAR text header file begins with '# ' lines containing scan parameters and a matrix of slice-level attributes (echo time, flip angle, orientation, etc.). The .REC binary file contains raw 16-bit integer voxel data. The PAR header includes resolution, FOV, reconstruction matrix size, and number of dynamics and echoes. Widely used in European clinical MRI research. Conversion to NIfTI is commonly performed via dcm2nii or dcm2niix for downstream neuroimaging analysis.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Philips PAR/REC Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/PAR"
-    ]
-  },
+  "references": [
+    "Philips PAR/REC Format Description (Philips Medical Systems)",
+    "https://nipy.org/nibabel/reference/nibabel.parrec.html"
+  ],
   "detection": {
     "signature": "2320205041",
     "offset": 0,
+    "weight": 0.7,
+    "strength": "Moderate",
     "required": true,
     "validation": {
       "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "parMagic": ""
+    "parMagic": "",
+    "examName": "",
+    "parVersion": "",
+    "sliceOrientation": "",
+    "fovAp": 0,
+    "matrixSize": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "PAR Magic",
+      "name": "PAR Comment Prefix",
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "PAR file signature (#  PA)",
+      "opacity": 0.6,
+      "description": "ASCII '#  PA' (0x2320205041) — beginning of the comment line prefix '# ' followed by 'PA' (start of PAR header comment)",
       "storeAs": "parMagic",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "PAR Version Line",
+      "offset": 0,
+      "length": 40,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "First significant line: '# PHILIPS MR IMAGING DD SYSTEM V...' identifying the PAR format version",
+      "storeAs": "parVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Exam Name",
+      "offset": 0,
+      "length": 32,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Patient name / exam name from '.    Examination name' header field",
+      "storeAs": "examName",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "FOV (AP)",
+      "offset": 0,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "Field of view in AP direction (mm) from '.    FOV (ap,fh,rl) [mm]' header",
+      "storeAs": "fovAp",
+      "valueType": "float32"
+    },
+    {
+      "type": "field",
+      "name": "Matrix Size",
+      "offset": 0,
+      "length": 16,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "Reconstruction matrix size from '.    Recon resolution (x,y)' or image matrix size fields",
+      "storeAs": "matrixSize",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "PAR Magic",
+      "variable": "parMagic",
+      "description": "First 5 bytes of PAR header comment prefix"
+    },
+    {
+      "type": "metadata",
+      "name": "PAR Version",
+      "variable": "parVersion",
+      "description": "Philips PAR format version string"
+    },
+    {
+      "type": "metadata",
+      "name": "Exam Name",
+      "variable": "examName",
+      "description": "Patient or exam identifier"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "PAR prefix present",
+      "expression": "parMagic.startsWith('#')",
+      "severity": "error",
+      "message": "Philips PAR files must begin with '#' comment character"
+    },
+    {
+      "name": "Philips identifier in header",
+      "expression": "parVersion.includes('PHILIPS') || parVersion.includes('PAR')",
+      "severity": "warning",
+      "message": "PAR header should contain 'PHILIPS' branding in the version comment line"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Format Identity",
+        "fields": ["PAR Comment Prefix", "PAR Version Line"]
+      },
+      {
+        "name": "Acquisition Parameters",
+        "fields": ["Exam Name", "FOV (AP)", "Matrix Size"]
+      },
+      {
+        "name": "Metadata",
+        "fields": ["PAR Magic", "PAR Version", "Exam Name"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PAR Header Summary",
+      "fields": ["parMagic", "parVersion", "examName", "matrixSize"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Philips MR scanner software",
+    "nibabel (Python parrec module)",
+    "dcm2niix (PAR/REC to NIfTI)",
+    "SPM with PAR import plugin",
+    "MRIConvert"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".par",
-      ".rec"
-    ]
+    "vendor": "Philips Medical Systems",
+    "companion_file": ".REC (binary voxel data)",
+    "related": ["NII", "NIFTI2", "ANALYZE"]
   },
   "MimeTypes": [
+    "text/plain",
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "Philips scanner reconstruction software",
+    "nibabel parrec module (Python)",
+    "dcm2niix conversion utility",
+    "MRIConvert (Legacy Philips import)"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Philips MRI scanner output data",
+    "Conversion source for NIfTI pipelines",
+    "fMRI and structural MRI research",
+    "Multi-echo and multi-dynamic acquisitions"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "HeaderFormat": "Text with comment lines (#) and key:value fields using dot-notation keys",
+    "DataFile": ".REC binary file with 16-bit integer voxels in slice order",
+    "Endianness": "Little-endian",
+    "Versions": "V3, V4, V4.1, V4.2 (Achieva/Ingenia era)"
   },
   "forensic": {
     "category": "medical",
@@ -102,11 +194,16 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Philips PAR/REC medical imaging format",
+    "analysisContext": "Philips PAR is a text file starting with '#' comment lines. The header has general info fields ('. key: value') and a per-slice image information table. The .REC file contains 16-bit shorts in native byte order. Key fields: 'Recon resolution', 'Max. number of slices', 'number of dynamics', 'number of echoes'. dcm2niix is the preferred conversion tool.",
     "suggestedInspections": [
-      "Verify Philips PAR/REC preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Verify '#  PA' or '# P' prefix at offset 0",
+      "Parse '.' dot-notation fields for acquisition parameters",
+      "Check 'Max. number of slices' and 'Recon resolution' fields",
+      "Count image info table rows for total sub-volumes",
+      "Pair .PAR with corresponding .REC binary file"
     ]
+  },
+  "functions": {
+    "extractASCIIString": "Parse text header key-value pairs"
   }
 }

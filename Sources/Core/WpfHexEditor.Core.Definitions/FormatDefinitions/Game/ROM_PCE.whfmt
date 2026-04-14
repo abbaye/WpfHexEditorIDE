@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PC Engine/TurboGrafx-16 ROM",
-  "version": "2.43",
+  "version": "2.42",
   "extensions": [
     ".pce",
     ".sgx"

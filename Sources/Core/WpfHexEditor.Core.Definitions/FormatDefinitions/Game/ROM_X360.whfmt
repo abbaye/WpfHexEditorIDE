@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Xbox 360 Disc Image",
-  "version": "2.53",
+  "version": "2.52",
   "extensions": [
     ".iso",
     ".xex"

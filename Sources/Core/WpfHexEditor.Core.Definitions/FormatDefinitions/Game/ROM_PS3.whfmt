@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PlayStation 3 Disc/Package",
-  "version": "2.53",
+  "version": "2.52",
   "extensions": [
     ".iso",
     ".pkg"

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Dolby Digital AC-3",
-  "version": "3.23",
+  "version": "3.22",
   "extensions": [
     ".ac3",
     ".eac3"

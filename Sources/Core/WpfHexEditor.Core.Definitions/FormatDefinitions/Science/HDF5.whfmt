@@ -1,38 +1,41 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "HDF5 Data File",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".h5",
     ".hdf5"
   ],
-  "description": "Hierarchical Data Format v5",
+  "description": "Hierarchical Data Format version 5 (HDF5) is a versatile, self-describing binary data format developed by The HDF Group. It organizes data in a hierarchical, POSIX-like structure of groups and datasets with arbitrary metadata attributes. HDF5 is widely adopted by NASA, CERN, NCSA, and climate modelling centers for storing large multidimensional arrays, tables, and time-series. The format supports chunked storage, compression (gzip, szip, LZF), parallel I/O via MPI, and multiple data types. The 8-byte magic signature '\x89HDF\r\n\x1a\n' uniquely identifies HDF5 files. Supersedes HDF4.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
+      "HDF5 File Format Specification Version 3.0",
       "HDF5 Data File Format"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/H5"
+      "https://en.wikipedia.org/wiki/Hierarchical_Data_Format",
+      "https://www.hdfgroup.org/solutions/hdf5/"
     ]
   },
   "detection": {
     "signature": "894844460D0A1A0A",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "hdf5Signature": ""
+    "superblockVersion": 0,
+    "rootGroupOffset": 0,
+    "hdf5Signature": "",
+    "fileSize": 0
   },
   "blocks": [
     {
@@ -41,71 +44,142 @@
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "HDF5 format signature",
+      "opacity": 0.85,
+      "description": "HDF5 8-byte magic: 0x89 + 'HDF' + CR + LF + SUB + LF — uniquely identifies an HDF5 file at offset 0",
       "storeAs": "hdf5Signature",
-      "valueType": "ascii"
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Superblock Version",
+      "offset": 8,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Superblock version number: 0 or 1 = original format, 2 = HDF5 1.8+, 3 = extended-precision offsets for very large files",
+      "storeAs": "superblockVersion",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Superblock Header",
+      "offset": 8,
+      "length": 48,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Fixed-size superblock containing version fields, size-of-offsets, size-of-lengths, group leaf node k, group internal node k, and file consistency flags",
+      "storeAs": "superblockHeader",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Root Group Symbol Table Entry",
+      "offset": 56,
+      "length": 40,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Symbol table entry for the root group object, containing the root group offset into the file and the local heap address for group names",
+      "storeAs": "rootGroupEntry",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "Superblock Version",
+      "variable": "superblockVersion",
+      "description": "HDF5 superblock version determining file layout and feature availability"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "File Size",
+      "variable": "fileSize",
+      "description": "Total file size used to validate end-of-file address stored in the superblock"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidHDF5Magic",
+      "description": "Bytes 0-7 must equal 89 48 44 46 0D 0A 1A 0A — the canonical HDF5 magic sequence; any deviation indicates a non-HDF5 or corrupt file",
+      "offset": 0,
+      "length": 8,
+      "expectedHex": "894844460D0A1A0A",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "ValidSuperblockVersion",
+      "description": "Superblock version at offset 8 must be 0, 1, 2, or 3; values outside this range indicate an unsupported or malformed HDF5 file",
+      "offset": 8,
+      "length": 1,
+      "maxValue": 3,
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Identification",
+        "fields": [
+          { "label": "Magic Bytes",        "offset": 0,  "length": 8,  "format": "hex" },
+          { "label": "Superblock Version", "offset": 8,  "length": 1,  "format": "uint8" },
+          { "label": "Free Space Version", "offset": 9,  "length": 1,  "format": "uint8" },
+          { "label": "Root Group Version", "offset": 10, "length": 1,  "format": "uint8" }
+        ]
+      },
+      {
+        "name": "Superblock",
+        "fields": [
+          { "label": "Superblock Data", "offset": 8,  "length": 48, "format": "hex" },
+          { "label": "Root Group Entry", "offset": 56, "length": 40, "format": "hex" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "HDF5 File Summary",
+      "fields": ["hdf5Signature", "superblockVersion", "rootGroupEntry"]
     }
   ],
   "software": [
     "HDFView",
     "MATLAB",
-    "Python (h5py)",
-    "Scientific software"
+    "Python h5py",
+    "R rhdf5",
+    "Julia HDF5.jl",
+    "NCVIEW"
   ],
   "formatRelationships": {
     "hdf_group": true,
     "hierarchical": true,
     "successor_to": "HDF4",
-    "used_by": [
-      "NASA",
-      "CERN"
-    ]
+    "used_by": ["NASA", "CERN", "NCSA", "ECMWF"],
+    "container_for": ["NetCDF4", "HDF-EOS5"]
   },
   "MimeTypes": [
+    "application/x-hdf5",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Large-scale scientific datasets",
+    "Climate model output storage",
+    "High-energy physics event data",
+    "Genomic and biomedical data",
+    "Satellite remote sensing products"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "configurable (per dataset)",
+    "superblockVersions": [0, 1, 2, 3],
+    "compressionFilters": ["gzip", "szip", "lzf", "blosc"],
+    "chunkingSupported": true,
+    "parallelIO": "MPI-IO"
   },
   "forensic": {
     "category": "science",
@@ -113,11 +187,15 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Hierarchical Data Format v5",
+    "analysisContext": "HDF5 is the dominant hierarchical binary container for large scientific datasets used by NASA, CERN, climate modelling centers, and genomics pipelines. The superblock at offset 0 defines the entire file layout.",
     "suggestedInspections": [
-      "Validate HDF5 Data File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify 8-byte magic is exactly 89 48 44 46 0D 0A 1A 0A",
+      "Read superblock version at offset 8 to select the correct parsing algorithm",
+      "Locate the root group object using the superblock's root symbol table entry",
+      "Enumerate groups and datasets recursively from the root group",
+      "Check dataset storage layout: compact, contiguous, or chunked",
+      "Inspect dataset attributes for units, coordinate reference systems, and fill values",
+      "Validate end-of-file address in superblock against actual file size"
     ]
   }
 }

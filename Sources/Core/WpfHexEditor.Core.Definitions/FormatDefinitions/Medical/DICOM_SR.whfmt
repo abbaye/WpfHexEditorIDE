@@ -1,40 +1,44 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DICOM Structured Report",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".dcm",
     ".sr"
   ],
-  "description": "DICOM Structured Report for medical data",
+  "description": "DICOM Structured Report (SR) is a specialization of the DICOM standard for encoding clinical observations, diagnoses, and measurements as structured, machine-readable documents. SR objects share the same binary container format as DICOM images: a 128-byte preamble followed by the 'DICM' magic at offset 128. The SOP Class UID in tag (0008,0016) identifies the SR IOD type. Content is encoded as a tree of SR Content Items using Concept Name Code Sequences. Used in radiology reports, CAD findings, and pathology annotations.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "DICOM Structured Report Format"
+      "DICOM PS3.3 Information Object Definitions — SR IODs",
+      "DICOM PS3.16 Content Mapping Resource"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/DCM"
+      "https://www.dicomstandard.org/",
+      "https://en.wikipedia.org/wiki/DICOM"
     ]
   },
   "detection": {
     "signature": "4449434D",
     "offset": 128,
+    "weight": 1.0,
+    "strength": "Strong",
     "required": true,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 132,
+      "maxSignatureOffset": 128
     }
   },
   "variables": {
     "currentOffset": 0,
-    "imageWidth": 0,
-    "imageHeight": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
     "preamble": "",
-    "dicmMagic": ""
+    "dicmMagic": "",
+    "sopClassUID": "",
+    "sopInstanceUID": "",
+    "studyDate": "",
+    "completionFlag": ""
   },
   "blocks": [
     {
@@ -44,7 +48,7 @@
       "length": 128,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "128-byte preamble",
+      "description": "128-byte application-defined preamble preceding the DICM magic; unused by standard SR readers",
       "storeAs": "preamble",
       "valueType": "ascii"
     },
@@ -54,74 +58,138 @@
       "offset": 128,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DICM signature",
+      "opacity": 0.8,
+      "description": "Four-byte ASCII magic 'DICM' at offset 128 confirming DICOM container encoding",
       "storeAs": "dicmMagic",
-      "valueType": "uint32"
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "SOP Class UID",
+      "offset": 0,
+      "length": 28,
+      "color": "#FFE66D",
+      "opacity": 0.5,
+      "description": "Tag (0008,0016): SOP Class UID identifying the SR type, e.g. 1.2.840.10008.5.1.4.1.1.88.11 for Basic Text SR",
+      "storeAs": "sopClassUID",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Study Date",
+      "offset": 0,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Tag (0008,0020): Study date in YYYYMMDD format when the SR was created",
+      "storeAs": "studyDate",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Completion Flag",
+      "offset": 0,
+      "length": 8,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "Tag (0040,A491): Completion flag indicating PARTIAL, COMPLETE, or VERIFIED report status",
+      "storeAs": "completionFlag",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Image Width",
-      "variable": "imageWidth",
-      "description": "Image width in pixels"
+      "name": "SOP Class UID",
+      "variable": "sopClassUID",
+      "description": "DICOM SOP Class UID identifying the structured report IOD"
     },
     {
       "type": "metadata",
-      "name": "Image Height",
-      "variable": "imageHeight",
-      "description": "Image height in pixels"
+      "name": "Study Date",
+      "variable": "studyDate",
+      "description": "Date of the study in YYYYMMDD format"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width × Height"
+      "name": "Completion Flag",
+      "variable": "completionFlag",
+      "description": "Report completion status: PARTIAL, COMPLETE, or VERIFIED"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "DICM magic present",
+      "expression": "dicmMagic == 'DICM'",
+      "severity": "error",
+      "message": "Bytes at offset 128 must equal ASCII 'DICM' for a valid DICOM SR file"
     },
     {
-      "type": "metadata",
-      "name": "Bits Per Pixel",
-      "variable": "bitsPerPixel",
-      "description": "Color depth"
+      "name": "SR SOP Class UID prefix",
+      "expression": "sopClassUID.startsWith('1.2.840.10008.5.1.4.1.1.88')",
+      "severity": "info",
+      "message": "SOP Class UID should belong to the DICOM SR family (1.2.840.10008.5.1.4.1.1.88.x)"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": ["Preamble", "DICM Magic"]
+      },
+      {
+        "name": "Document Identity",
+        "fields": ["SOP Class UID", "Study Date"]
+      },
+      {
+        "name": "Report Status",
+        "fields": ["Completion Flag"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SR Document Summary",
+      "fields": ["dicmMagic", "sopClassUID", "studyDate", "completionFlag"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "OsiriX / Horos",
+    "Weasis",
+    "3D Slicer",
+    "Dcm4chee PACS",
+    "Conquest DICOM Server"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".dcm",
-      ".sr"
-    ]
+    "parent_format": "DICOM",
+    "related": ["DICOM"],
+    "iso_standard": "ISO 12052"
   },
   "MimeTypes": [
-    "application/octet-stream"
+    "application/dicom"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "OsiriX / Horos (macOS)",
+    "Weasis (multiplatform)",
+    "Dcm4chee PACS (server)"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Structured radiology report storage",
+    "CAD output encoding",
+    "Clinical decision support integration",
+    "Pathology annotation documents"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read width and height",
-    "multiply": "Calculate total pixels",
-    "computeFromVariables(imageWidth * imageHeight, totalPixels)": "Calculate total pixels"
+  "TechnicalDetails": {
+    "Endianness": "Little-endian",
+    "ContentTree": "SR Content Items with Concept Name Code Sequences",
+    "SRTypes": ["Basic Text SR", "Enhanced SR", "Comprehensive SR", "Key Object Selection"]
   },
   "forensic": {
     "category": "medical",
@@ -129,11 +197,16 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "DICOM Structured Report for medical data",
+    "analysisContext": "DICOM SR shares the binary DICOM container with image files. Identification as SR (not image) relies on SOP Class UID (0008,0016) belonging to the 1.2.840.10008.5.1.4.1.1.88.x family. Content is a tree of Content Items; Completion Flag (0040,A491) and Verification Flag (0040,A493) indicate report state.",
     "suggestedInspections": [
-      "Verify DICOM Structured Report preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Verify 'DICM' magic at offset 128",
+      "Read SOP Class UID (0008,0016) to confirm SR IOD type",
+      "Check Completion Flag (0040,A491) and Verification Flag (0040,A493)",
+      "Walk the Content Sequence (0040,A730) tree for findings and measurements"
     ]
+  },
+  "functions": {
+    "readUInt32LE": "Read DICOM tag group/element pairs",
+    "extractASCIIString": "Read UID and date string values"
   }
 }

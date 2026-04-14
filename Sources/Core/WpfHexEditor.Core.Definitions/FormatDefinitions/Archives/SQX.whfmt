@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SQX Archive",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [ ".sqx" ],
   "description": "SQX is a proprietary archive format developed by SQX Software. The format uses 'SQ' (0x5351) as its 2-byte magic at offset 0, sometimes followed by 'X' making it 'SQX'. SQX supports multiple compression algorithms including LZH variants, solid archiving, and optional AES-256 encryption. The archive header includes a 2-byte magic, 2-byte version, 2-byte flags, and various metadata fields. SQX is relatively obscure and primarily supported by older Windows archiving utilities. Detection confidence is moderate due to the short 2-byte magic.",
   "category": "Archives",

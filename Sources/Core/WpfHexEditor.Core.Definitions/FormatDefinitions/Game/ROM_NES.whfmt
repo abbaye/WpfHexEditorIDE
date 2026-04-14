@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "NES ROM",
-  "version": "2.23",
+  "version": "2.22",
   "extensions": [
     ".nes"
   ],

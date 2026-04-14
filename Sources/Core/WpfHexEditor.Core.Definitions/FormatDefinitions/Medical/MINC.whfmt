@@ -1,122 +1,186 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MINC Medical Image",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".mnc",
     ".minc"
   ],
-  "description": "Medical Image NetCDF format",
+  "description": "MINC (Medical Image NetCDF) is a neuroimaging format developed at the Montreal Neurological Institute. MINC1 files are NetCDF version 1 containers identified by the magic 'CDF\\x01' (0x43444601) at offset 0. MINC2 files use the HDF5 container identified by 0x894844460D0A1A0A at offset 0. Both store 3D/4D volumetric brain image data with rich metadata including patient information, acquisition parameters, and voxel-to-world coordinate transforms. Widely used in Canadian and European neuroimaging research pipelines.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "MINC Medical Image Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MNC"
-    ]
-  },
+  "references": [
+    "MINC File Format Documentation (BIC/MNI)",
+    "https://www.bic.mni.mcgill.ca/software/minc/"
+  ],
   "detection": {
     "signature": "43444601",
     "offset": 0,
+    "weight": 0.9,
+    "strength": "Strong",
     "required": true,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
+    "netcdfMagic": "",
+    "version": 0,
     "width": 0,
     "height": 0,
     "slices": 0,
-    "bitDepth": 0,
-    "netcdfMagic": "",
     "totalPixels": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "NetCDF Magic",
+      "name": "NetCDF/MINC Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "NetCDF/MINC signature (CDF\\1)",
+      "opacity": 0.8,
+      "description": "MINC1: 'CDF\\x01' (0x43444601). MINC2 uses HDF5 magic 0x894844460D0A1A0A (8 bytes). Presence of either confirms MINC.",
       "storeAs": "netcdfMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "NumRecs",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "numrecs: big-endian int32; number of records (unlimited dimension size) in the NetCDF file",
+      "storeAs": "numRecs",
+      "valueType": "int32"
+    },
+    {
+      "type": "field",
+      "name": "Dim List Tag",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "NC_DIMENSION tag (0x0000000A) or NC_ABSENT (0) at offset 8 indicating dimension list presence",
+      "storeAs": "dimListTag",
       "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Dimension Count",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "Number of NetCDF dimensions defined in the file; MINC volumes typically have 3 (x/y/z) or 4 (with time)",
+      "storeAs": "dimCount",
+      "valueType": "int32"
     },
     {
       "type": "metadata",
       "name": "Width",
       "variable": "width",
-      "description": "Width"
+      "description": "X dimension size (xspace variable)"
     },
     {
       "type": "metadata",
       "name": "Height",
       "variable": "height",
-      "description": "Height"
+      "description": "Y dimension size (yspace variable)"
     },
     {
       "type": "metadata",
       "name": "Slices",
       "variable": "slices",
-      "description": "Slices"
+      "description": "Z dimension size (zspace variable)"
     },
     {
       "type": "metadata",
-      "name": "Bit Depth",
-      "variable": "bitDepth",
-      "description": "Bit Depth"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
+      "name": "Total Voxels",
       "variable": "totalPixels",
-      "description": "Width x Height"
+      "description": "Computed: width × height × slices"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "NetCDF magic present",
+      "expression": "netcdfMagic[0] == 0x43 && netcdfMagic[1] == 0x44 && netcdfMagic[2] == 0x46",
+      "severity": "error",
+      "message": "MINC1 files must start with 'CDF' (0x434446). MINC2 uses HDF5 magic instead."
+    },
+    {
+      "name": "NetCDF version byte",
+      "expression": "netcdfMagic[3] == 1 || netcdfMagic[3] == 2",
+      "severity": "warning",
+      "message": "4th byte of magic: 0x01 = Classic NetCDF (MINC1), 0x02 = 64-bit offset NetCDF"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Container Magic",
+        "fields": ["NetCDF/MINC Magic"]
+      },
+      {
+        "name": "Dimension Structure",
+        "fields": ["NumRecs", "Dim List Tag", "Dimension Count"]
+      },
+      {
+        "name": "Volume Geometry",
+        "fields": ["Width", "Height", "Slices", "Total Voxels"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MINC Header Summary",
+      "fields": ["netcdfMagic", "numRecs", "dimCount", "width", "height", "slices"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "FreeSurfer (MINC support)",
+    "MINC Tools (mincinfo, minctoraw)",
+    "Register / Display (MNI tools)",
+    "nibabel (Python, MINC2)",
+    "pyminc"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".mnc",
-      ".minc"
-    ]
+    "container": "NetCDF (MINC1) or HDF5 (MINC2)",
+    "related": ["NII", "MGH"],
+    "origin": "Montreal Neurological Institute"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "MINC Tools suite (MNI)",
+    "FreeSurfer with MINC support",
+    "nibabel (MINC2 via h5py)",
+    "pyminc Python library"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Canadian Human Connectome Project data",
+    "ADNI Alzheimer's neuroimaging studies",
+    "MNI brain atlas files",
+    "Registration and normalization pipelines"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read medical header",
-    "extractASCIIString": "Read patient",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  "TechnicalDetails": {
+    "MINC1Container": "NetCDF classic (CDF\\x01)",
+    "MINC2Container": "HDF5 (0x894844460D0A1A0A)",
+    "Endianness": "Big-endian for NetCDF; HDF5 uses per-dataset byte order",
+    "CoordinateSystem": "World coordinates via xspace/yspace/zspace attributes"
   },
   "forensic": {
     "category": "medical",
@@ -124,11 +188,17 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Medical Image NetCDF format",
+    "analysisContext": "MINC1 uses the NetCDF classic container with magic 'CDF\\x01' (0x43444601). MINC2 uses HDF5. The magic at offset 0 is the primary discriminator. All metadata (patient info, scanner params, coordinate transforms) is stored as NetCDF attributes. Dimension names 'xspace', 'yspace', 'zspace' are the MINC convention for spatial axes.",
     "suggestedInspections": [
-      "Verify MINC Medical Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Check bytes 0-3: 0x43444601 = MINC1 (NetCDF); 0x89484446... = MINC2 (HDF5)",
+      "For MINC1: parse numrecs (offset 4) and dimension list starting at offset 8",
+      "Look for 'xspace', 'yspace', 'zspace' dimension names in the NetCDF header",
+      "Extract step/start attributes for voxel-to-world coordinate transform"
     ]
+  },
+  "functions": {
+    "readUInt32BE": "Read NetCDF big-endian header values",
+    "extractASCIIString": "Read dimension names",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   }
 }

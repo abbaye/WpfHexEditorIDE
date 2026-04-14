@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Qpress Compression",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [ ".qp", ".qpress" ],
   "description": "Qpress is a high-speed file archiver using the QuickLZ compression algorithm, developed by Jonatan Ruuth. It was adopted by Percona XtraBackup and MariaDB Backup as the default compression format for InnoDB tablespace backups. The file begins with the 8-byte ASCII magic 'qpress10' (0x7170726573733130) which identifies both the format and its version. Each archived file is stored as a series of compressed blocks prefixed with block headers. Percona deprecated QuickLZ support in 2022 in favor of ZSTD, making qpress files primarily encountered in legacy database backup restoration scenarios.",
   "category": "Archives",

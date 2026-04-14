@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Lua Script",
-  "version": "2.14",
+  "version": "2.13",
   "extensions": [
     ".lua"
   ],

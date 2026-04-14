@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Digital Video",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".dv",
     ".dif"

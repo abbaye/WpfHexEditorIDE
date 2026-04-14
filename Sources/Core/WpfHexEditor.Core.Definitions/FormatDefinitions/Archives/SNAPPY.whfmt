@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Snappy Compression",
-  "version": "1.13",
+  "version": "1.12",
   "extensions": [ ".snappy", ".sz" ],
   "description": "Snappy is a lossless fast compression library developed by Google, designed for very high speed rather than maximum compression ratio. The Snappy framing format wraps raw Snappy compressed data with a stream identifier chunk and per-chunk CRC32 checksums. The stream starts with a 10-byte identifier: 0xFF 0x06 0x00 0x00 followed by the 6-byte ASCII string 'sNaPpY'. This is followed by data chunks, uncompressed chunks, padding chunks, and skippable chunks. Snappy is widely used in Apache Hadoop, Apache Kafka, LevelDB, Cassandra, and other big-data infrastructure.",
   "category": "Archives",

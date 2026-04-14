@@ -1,131 +1,207 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "SEG-Y Seismic Data",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     ".sgy",
     ".segy"
   ],
-  "description": "Society of Exploration Geophysicists Y format for seismic data",
+  "description": "SEG-Y (Society of Exploration Geophysicists Y) is the dominant binary format for reflection seismic data used in oil, gas, and academic geophysical research. A SEG-Y file begins with a 3200-byte EBCDIC (or ASCII) text header containing 40 lines of free-form metadata, followed by a 400-byte binary reel header containing sample interval, samples per trace, and data sample format code. Each seismic trace starts with a 240-byte binary trace header and is followed by the seismic amplitude samples. Supported sample formats include IBM 4-byte floating point (code 1), IEEE float32 (code 5), int16 (code 3), and int8 (code 8). SEG-Y revision 1 and 2 are current standards.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "SEG-Y Seismic Data Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/SGY"
-    ]
-  },
+  "references": [
+    "SEG-Y rev2 Data Exchange Format — SEG Technical Standards Committee 2017",
+    "SEG Technical Standards rev 1 (2002)"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/SEG-Y",
+    "https://seg.org/Publications/SEG-Technical-Standards"
+  ],
   "detection": {
     "signature": "C0C0C0C0",
     "offset": 3200,
     "required": false,
+    "weight": 0.4,
+    "alternativeSignatures": [
+      { "signature": "00000001", "offset": 3224, "weight": 0.5, "note": "Data sample format code 1 = IBM float in binary reel header" }
+    ],
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 3600,
+      "maxSignatureOffset": 3204
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
     "textHeader": "",
-    "binaryHeader": ""
+    "sampleInterval": 0,
+    "samplesPerTrace": 0,
+    "dataFormatCode": 0,
+    "traceCount": 0
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Text Header",
+      "name": "Text (EBCDIC) Header",
       "offset": 0,
       "length": 3200,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "3200-byte EBCDIC text header",
+      "description": "3200-byte text header: 40 lines of 80 characters each in EBCDIC or ASCII; contains survey name, acquisition parameters, processing history, and CRS information",
       "storeAs": "textHeader",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Binary Header",
+      "name": "Binary Reel Header",
       "offset": 3200,
       "length": 400,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "400-byte binary header",
+      "opacity": 0.6,
+      "description": "400-byte binary file header (big-endian): sample interval (bytes 17-18, uint16), samples per trace (bytes 21-22, uint16), data sample format (bytes 25-26, uint16)",
       "storeAs": "binaryHeader",
-      "valueType": "ascii"
+      "valueType": "bytes"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Sample Interval",
+      "offset": 3216,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Big-endian uint16 sample interval in microseconds (e.g. 2000 = 2 ms); defines the temporal sampling rate of all traces in this file",
+      "storeAs": "sampleInterval",
+      "valueType": "uint16be"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "type": "field",
+      "name": "Samples Per Trace",
+      "offset": 3220,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Big-endian uint16 number of data samples per seismic trace; constant for all traces in classic SEG-Y; combined with sample interval gives trace length",
+      "storeAs": "samplesPerTrace",
+      "valueType": "uint16be"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "type": "field",
+      "name": "Data Sample Format Code",
+      "offset": 3224,
+      "length": 2,
+      "color": "#A8E6CF",
+      "opacity": 0.35,
+      "description": "Big-endian uint16 data format: 1=IBM 4-byte float, 2=int32, 3=int16, 5=IEEE float32, 6=IEEE float64, 8=int8; critical for amplitude decoding",
+      "storeAs": "dataFormatCode",
+      "valueType": "uint16be"
+    },
+    {
+      "type": "field",
+      "name": "First Trace Header",
+      "offset": 3600,
+      "length": 240,
+      "color": "#C7B8EA",
+      "opacity": 0.3,
+      "description": "240-byte binary trace header for the first seismic trace; contains trace sequence number, source/receiver coordinates, offset, elevation, and mute times",
+      "storeAs": "firstTraceHeader",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MinimumSEGYSize",
+      "description": "A valid SEG-Y file must be at least 3600 bytes (3200 text + 400 binary reel header) before any trace data; shorter files cannot contain the mandatory headers",
+      "minFileSize": 3600,
+      "severity": "error"
+    },
+    {
+      "name": "ValidDataFormatCode",
+      "description": "Data format code at offset 3224 must be 1, 2, 3, 5, 6, or 8; code 0 or values > 8 indicate an unsupported or non-standard SEG-Y variant",
+      "offset": 3224,
+      "length": 2,
+      "validValues": ["0001", "0002", "0003", "0005", "0006", "0008"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Text Header",
+        "fields": [
+          { "label": "First 80 chars (EBCDIC/ASCII)", "offset": 0,    "length": 80, "format": "ascii" }
+        ]
+      },
+      {
+        "name": "Binary Reel Header",
+        "fields": [
+          { "label": "Binary Header",       "offset": 3200, "length": 400, "format": "hex" },
+          { "label": "Sample Interval",     "offset": 3216, "length": 2,   "format": "uint16be" },
+          { "label": "Samples Per Trace",   "offset": 3220, "length": 2,   "format": "uint16be" },
+          { "label": "Data Format Code",    "offset": 3224, "length": 2,   "format": "uint16be" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SEG-Y File Parameters",
+      "fields": ["sampleInterval", "samplesPerTrace", "dataFormatCode"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "OpendTect",
+    "Petrel",
+    "Madagascar",
+    "Python segysak / segyio",
+    "SeiSee",
+    "SeisWare"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".sgy",
-      ".segy"
-    ]
+    "seismic_standard": true,
+    "organization": "SEG (Society of Exploration Geophysicists)",
+    "revisions": ["SEG-Y Rev 0 (1975)", "Rev 1 (2002)", "Rev 2 (2017)"],
+    "related": ["SEG-D", "SEG-2"]
   },
   "MimeTypes": [
+    "application/x-segy",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Seismic reflection survey data storage",
+    "Subsurface imaging for oil and gas",
+    "Academic geophysical research",
+    "Marine and land seismic data exchange"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 27,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 57,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "endianness": "big-endian (binary headers); text header may be EBCDIC or ASCII",
+    "textHeaderSize": 3200,
+    "binaryHeaderSize": 400,
+    "traceHeaderSize": 240,
+    "dataFormats": ["IBM float32 (1)", "int32 (2)", "int16 (3)", "IEEE float32 (5)", "IEEE float64 (6)", "int8 (8)"]
+  },
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Society of Exploration Geophysicists Y format for seismic data",
+    "analysisContext": "SEG-Y has no binary magic at byte 0 — identification relies on the fixed 3200+400 byte dual-header structure. The text header may be EBCDIC (common in older files) or ASCII. Data format code 1 (IBM float) requires a specialized conversion routine.",
     "suggestedInspections": [
-      "Validate SEG-Y Seismic Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Check if text header is EBCDIC or ASCII — look for 0x40 (EBCDIC space) vs 0x20 (ASCII space) at byte 0",
+      "Read binary reel header at offset 3200; pay attention to sample interval (bytes 17-18) and samples-per-trace (21-22)",
+      "Read data format code at offset 3224 (bytes 25-26 of binary header); code 1 = IBM float (not IEEE!)",
+      "First trace header at 3600: trace sequence number (bytes 1-4), inline/crossline (189-192/193-196 in rev1)",
+      "Compute trace data length = samples_per_trace * bytes_per_sample(format_code)",
+      "Iterate traces: each trace = 240-byte header + samples; validate by checking cumulative size against file length"
     ]
-  },
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
   }
 }

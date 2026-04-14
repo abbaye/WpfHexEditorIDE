@@ -1,144 +1,207 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Autodesk FBX",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".fbx"
   ],
-  "description": "Autodesk Filmbox 3D format",
+  "description": "Autodesk Filmbox (FBX) 3D asset exchange format widely used across the game, film, and animation industries. Binary FBX files begin with a distinctive 23-byte header 'Kaydara FBX Binary  \\x00\\x1a\\x00' followed by a 4-byte little-endian version number. The binary format uses a node-record tree structure with typed properties. FBX also has an ASCII text variant beginning with '; FBX'. Supports geometry, materials, textures, skeletal rigs, animation curves, blendshapes, and cameras. Industry standard for game engine asset pipelines.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
+  "references": [
+    { "specifications": ["Autodesk FBX SDK Documentation"] },
+    { "WebLinks": [
+      "https://en.wikipedia.org/wiki/FBX",
+      "https://code.blender.org/2013/08/fbx-binary-file-format-specification/",
+      "https://wiki.fileformat.com/3d/fbx/"
+    ]}
+  ],
   "references": {
     "specifications": [
-      "Autodesk FBX Format"
+      "Autodesk FBX SDK Documentation",
+      "FBX Binary Format Specification by Blender Foundation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/FBX"
+      "https://en.wikipedia.org/wiki/FBX",
+      "https://code.blender.org/2013/08/fbx-binary-file-format-specification/",
+      "https://wiki.fileformat.com/3d/fbx/"
     ]
   },
   "detection": {
-    "signature": "4B61796461726120464258",
-    "offset": 0,
+    "signatures": [
+      { "value": "4B617964617261204642582042696E61727920202000", "offset": 0, "label": "Kaydara FBX Binary header (21 bytes)", "weight": 1.0 },
+      { "value": "3B20464258", "offset": 0, "label": "ASCII FBX comment prefix '; FBX'", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 11,
-      "maxSignatureOffset": 1024
+      "minFileSize": 27,
+      "maxSignatureOffset": 0,
+      "note": "Binary FBX: full 23-byte header must match. ASCII FBX: '; FBX' at offset 0"
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
     "fbxMagic": "",
-    "version": "",
-    "formattedSize": ""
+    "nullByte20": 0,
+    "magicByte21": 0,
+    "magicByte22": 0,
+    "fbxVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "FBX Magic",
+      "name": "FBX Binary Magic",
       "offset": 0,
-      "length": 11,
+      "length": 20,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Kaydara FBX signature",
+      "opacity": 0.45,
+      "description": "20-byte ASCII string 'Kaydara FBX Binary  ' (with two trailing spaces) identifying this as a binary FBX file. This magic string was introduced by Kaydara, the original developer of the FBX format, which Autodesk later acquired.",
       "storeAs": "fbxMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Magic Null Byte",
+      "offset": 20,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Null byte (0x00) at offset 20, part of the fixed 23-byte FBX binary header sequence. Always 0x00 in valid binary FBX files. Non-zero value indicates a corrupt or modified header.",
+      "storeAs": "nullByte20",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Magic Byte 21",
+      "offset": 21,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte at offset 21 in the FBX binary header; always 0x1A in valid files. Together with the null at offset 20 and 0x00 at offset 22, this forms the fixed 3-byte header terminator sequence.",
+      "storeAs": "magicByte21",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Magic Byte 22",
+      "offset": 22,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Final byte of the 23-byte FBX binary magic sequence at offset 22; always 0x00 in valid files. After this byte comes the 4-byte little-endian FBX version number.",
+      "storeAs": "magicByte22",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "FBX Version",
       "offset": 23,
       "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "FBX version number",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "4-byte little-endian integer encoding the FBX format version. Known values: 7100 = FBX 2011, 7200 = FBX 2012, 7300 = FBX 2013, 7400 = FBX 2014, 7500 = FBX 2016, 7700 = FBX 2019. Used by importers to select compatible parsing paths.",
+      "storeAs": "fbxVersion",
+      "valueType": "uint32"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidFbxMagic",
+      "expression": "fbxMagic == 'Kaydara FBX Binary  '",
+      "severity": "error",
+      "message": "Binary FBX magic string does not match 'Kaydara FBX Binary  '. The file may be an ASCII FBX, truncated, or not an FBX file."
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
-    },
+      "name": "ValidVersion",
+      "expression": "fbxVersion >= 6100 && fbxVersion <= 9999",
+      "severity": "warning",
+      "message": "FBX version number is outside the known range 6100-9999. The file may use an unsupported or future FBX format version."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "FBX Magic Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "FBX Version", "offset": 23, "icon": "\uE946", "color": "#C3A6FF" },
+      { "name": "First Node Record", "offset": 27, "icon": "\uE8B7", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "fbxMagic",
+    "primaryField": "fbxVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Binary Header",
+        "icon": "\uE71B",
+        "fields": ["fbxMagic", "nullByte20", "magicByte21", "magicByte22"]
+      },
+      {
+        "title": "Format Version",
+        "icon": "\uE946",
+        "fields": ["fbxVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "FBX Header (JSON)",
+      "format": "json",
+      "fields": ["fbxMagic", "fbxVersion"]
     }
   ],
   "software": [
-    "Maya",
-    "3ds Max",
+    "Autodesk Maya",
+    "Autodesk 3ds Max",
     "Blender",
     "Unity",
-    "Unreal Engine"
+    "Unreal Engine",
+    "Cinema 4D"
   ],
   "formatRelationships": {
-    "autodesk_format": true,
-    "proprietary": true,
-    "industry_standard": true,
-    "alternative_to": "COLLADA"
+    "category": "3D",
+    "extensions": [".fbx"],
+    "relatedFormats": ["OBJ", "COLLADA", "GLB", "MA"],
+    "note": "Industry standard for animated 3D asset interchange; proprietary but widely reverse-engineered"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "application/octet-stream",
+    "model/fbx"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Game engine asset import/export",
+    "Animation rig transfer",
+    "VFX pipeline interchange",
+    "Architectural visualization"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 64,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "binary-little-endian (or ASCII text)",
+    "versionField": "offset 23, uint32 LE",
+    "nodeRecordOffset": 27
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Autodesk Filmbox 3D format",
+    "analysisContext": "Autodesk FBX binary format with distinctive 23-byte header 'Kaydara FBX Binary  \\x00\\x1a\\x00' followed by a 4-byte LE version number. Node records follow a tree structure with typed properties.",
     "suggestedInspections": [
-      "Validate Autodesk FBX header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify the 23-byte magic header and read the version number at offset 23",
+      "Traverse top-level node records to identify geometry, material, and animation nodes",
+      "Check ASCII vs binary variant: ASCII FBX starts with '; FBX' comment line"
     ]
   }
 }

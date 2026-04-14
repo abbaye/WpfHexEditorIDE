@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Ruby Marshal",
-  "version": "1.13",
+  "version": "1.12",
   "extensions": [
     ".marshal"
   ],

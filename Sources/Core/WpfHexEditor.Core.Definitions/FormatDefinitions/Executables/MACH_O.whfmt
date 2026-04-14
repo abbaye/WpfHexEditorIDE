@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Mach-O Executable",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     "",
     ".dylib",

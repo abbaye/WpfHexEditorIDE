@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows Installer Package",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [ ".msi", ".msp", ".msm" ],
   "description": "Windows Installer Package (.msi) is the Microsoft standard for software installation, using the OLE2 Compound File Binary (CFB) container format. The file starts with the standard OLE2 magic D0CF11E0A1B11AE1 (8 bytes), shared with DOC, XLS, PPT, and other OLE2 documents. MSI files are distinguished from other OLE2 containers by their internal stream names, which include Windows Installer-specific entries such as the Database, Tables, Property, and Summary Information streams. MSI files contain a relational database describing installation components, features, files, registry entries, and custom actions.",
   "category": "Archives",

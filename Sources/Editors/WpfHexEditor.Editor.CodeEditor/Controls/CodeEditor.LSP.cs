@@ -248,11 +248,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (client is WpfHexEditor.Editor.Core.LSP.IInlineHintsOptionsClient hintsClient)
                 hintsClient.SetInlineHintsOptions(_showVarTypeHints, _showLambdaReturnTypeHints);
 
-            // If a file is already open, send didOpen immediately.
+            // If a file is already open, send didOpen immediately then schedule
+            // a highlight refresh so semantic tokens appear without waiting for a scroll/edit.
             if (_currentFilePath is not null && _document is not null)
             {
                 var langId = DetectLanguageId(_currentFilePath);
                 _lspClient.OpenDocument(_currentFilePath, langId, _document.SaveToString());
+                SchedulePostOpenHighlightRefresh();
             }
 
             // Create the change-debounce timer (300 ms) on first attach.
@@ -1251,6 +1253,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         void IDocumentEditor.SelectAll() => SelectAll();
 
         /// <summary>
+        /// Schedules a <see cref="RefreshHighlights"/> call after a short delay so the LSP
+        /// server has time to process didOpen and produce initial semantic tokens.
+        /// One-shot timer — fires once and discards itself.
+        /// </summary>
+        internal void SchedulePostOpenHighlightRefresh()
+        {
+            var t = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1500)
+            };
+            t.Tick += (_, _) =>
+            {
+                t.Stop();
+                if (_lspClient?.IsInitialized == true && _currentFilePath is not null)
+                    RefreshHighlights();
+            };
+            t.Start();
+        }
+
+        /// <summary>
         /// Forces an immediate clear and re-request of all highlight layers
         /// (semantic tokens, word highlights, inlay hints) for the current document.
         /// </summary>
@@ -1267,9 +1289,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _wordHighlightTrackedLine = -1;
             _wordHighlightTrackedCol  = -1;
 
-            // Re-arm semantic tokens: clear immediately then re-request.
-            _semanticTokensLayer.SetContext(null, 0, 0, 0, 0);
-            _semanticTokensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight);
+            // Re-arm semantic tokens: force a new server fetch by cancelling any in-flight
+            // request and restarting the debounce. Existing tokens stay visible during the fetch.
+            _semanticTokensLayer.CancelFetch();
+            _semanticTokensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, _horizontalScrollOffset, _lineYLookup, TopMargin);
 
             InvalidateVisual();
         }
@@ -1312,6 +1335,18 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _currentFilePath = null;
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = null;
             _semanticTokensLayer.SetContext(null, 0, 0, 0, 0);
+
+            // Stop the word-highlight debounce timer before clearing state so a pending
+            // 250 ms tick cannot fire after Close() and re-populate _wordHighlights.
+            _wordHighlightTimer?.Stop();
+            _wordHighlights.Clear();
+            _wordHighlightLines.Clear();
+            _wordHighlightLineSet.Clear();
+            _wordHighlightWord        = string.Empty;
+            _wordHighlightLen         = 0;
+            _wordHighlightTrackedLine = -1;
+            _wordHighlightTrackedCol  = -1;
+
             _isDirty = false;
             _cursorLine = 0;
             _cursorColumn = 0;

@@ -1,80 +1,148 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Maya Binary",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".mb"
   ],
-  "description": "Autodesk Maya binary scene file",
+  "description": "Autodesk Maya binary scene file format based on the IFF (Interchange File Format) container standard. A Maya Binary file begins with the 4-byte chunk ID 'FOR4' (big-endian IFF), followed by a 4-byte big-endian chunk size, and then the 4-byte type identifier 'MAYA'. The 'M' marker at offset 8 characterizes it as a Maya IFF file. Subsequent IFF chunks store all scene data including meshes, shaders, lights, cameras, animation curves, deformers, and plug-in data. The binary format is more compact than the ASCII .ma equivalent but is not human-readable.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Maya Binary Format"
+      "Autodesk Maya Documentation: Maya Binary File Format",
+      "IFF (Interchange File Format) Standard by EA/Amiga"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/MB"
+      "https://en.wikipedia.org/wiki/Autodesk_Maya",
+      "https://help.autodesk.com/view/MAYAUL/2024/ENU/",
+      "https://wiki.fileformat.com/3d/mb/"
     ]
   },
   "detection": {
-    "signature": "466F7220",
-    "offset": 0,
+    "signatures": [
+      { "value": "464F5234", "offset": 0, "label": "IFF 'FOR4' chunk marker", "weight": 0.8 },
+      { "value": "4D415941", "offset": 8, "label": "'MAYA' type identifier at offset 8", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "'FOR4' at offset 0 and 'MAYA' at offset 8 together uniquely identify Maya Binary. 'FOR4' alone could be another IFF format."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "timestamp": 0,
-    "entryPoint": 0,
-    "mayaBinaryHeader": 0,
-    "versionInfo": ""
+    "iffChunkId": "",
+    "iffChunkSize": 0,
+    "mayaTypeId": "",
+    "firstSubChunkId": "",
+    "firstSubChunkSize": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Maya Binary Header",
+      "name": "IFF Chunk ID",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "For signature",
-      "storeAs": "mayaBinaryHeader",
+      "opacity": 0.45,
+      "description": "4-byte IFF chunk identifier 'FOR4' at the start of the Maya Binary file. This is an IFF FORM chunk with 4-byte alignment. Together with the 'MAYA' type at offset 8 it uniquely identifies Maya binary scene files.",
+      "storeAs": "iffChunkId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "IFF Chunk Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "4-byte big-endian unsigned integer giving the byte size of the entire IFF chunk payload, not including this header. Equals total file size minus 8 bytes for a well-formed Maya Binary file.",
+      "storeAs": "iffChunkSize",
       "valueType": "uint32"
     },
     {
       "type": "field",
-      "name": "Version Info",
-      "offset": 4,
-      "length": 16,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Maya version information",
-      "storeAs": "versionInfo",
+      "name": "Maya Type Identifier",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "4-byte IFF type identifier 'MAYA' at offset 8. This field discriminates Maya Binary files from other IFF-based formats. Parsers must verify this value before proceeding with Maya-specific chunk interpretation.",
+      "storeAs": "mayaTypeId",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine Type",
-      "variable": "machineType",
-      "description": "Machine Type"
+      "type": "field",
+      "name": "First Sub-Chunk ID",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "4-byte IFF chunk identifier for the first child chunk after the MAYA header. Common first chunks include 'VERS' (Maya version info), 'PLUG' (plugin requirements), or 'UDAT' (user data). Used to enumerate scene section types.",
+      "storeAs": "firstSubChunkId",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Section Count",
-      "variable": "sectionCount",
-      "description": "Section Count"
+      "type": "field",
+      "name": "First Sub-Chunk Size",
+      "offset": 16,
+      "length": 4,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "4-byte big-endian size of the first sub-chunk payload. Used to skip to the next chunk boundary for sequential IFF traversal. Maya IFF chunks are aligned to 4-byte boundaries.",
+      "storeAs": "firstSubChunkSize",
+      "valueType": "uint32"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidIffChunk",
+      "expression": "iffChunkId == 'FOR4'",
+      "severity": "error",
+      "message": "IFF chunk ID 'FOR4' not found at offset 0. This is not a valid Maya Binary file. The file may be a Maya ASCII (.ma) or a different IFF variant."
     },
     {
-      "type": "metadata",
-      "name": "Entry Point",
-      "variable": "entryPoint",
-      "description": "Entry Point"
+      "name": "ValidMayaType",
+      "expression": "mayaTypeId == 'MAYA'",
+      "severity": "error",
+      "message": "Maya type identifier 'MAYA' not found at offset 8. The IFF container may be a different format. Verify the file extension is .mb."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "IFF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "MAYA Type", "offset": 8, "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "First Sub-Chunk", "offset": 12, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "iffChunkId",
+    "primaryField": "mayaTypeId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "IFF Container",
+        "icon": "\uE71B",
+        "fields": ["iffChunkId", "iffChunkSize", "mayaTypeId"]
+      },
+      {
+        "title": "Scene Chunks",
+        "icon": "\uE8B7",
+        "fields": ["firstSubChunkId", "firstSubChunkSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MB Header (JSON)",
+      "format": "json",
+      "fields": ["iffChunkId", "iffChunkSize", "mayaTypeId", "firstSubChunkId"]
     }
   ],
   "software": [
@@ -82,51 +150,45 @@
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".mb"
-    ]
+    "extensions": [".mb"],
+    "relatedFormats": ["MA", "FBX", "OBJ"],
+    "note": "Binary IFF-based Maya scene; compact but not human-readable; text counterpart is .ma"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "3D character animation",
+    "VFX pipeline scene storage",
+    "Compact Maya scene archiving",
+    "Rigging and skinning"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header",
-    "calculateCRC32": "Validate"
+  "TechnicalDetails": {
+    "container": "IFF (Interchange File Format)",
+    "encoding": "binary-big-endian",
+    "alignment": "4-byte",
+    "rootChunk": "FOR4/MAYA"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Autodesk Maya binary scene file",
+    "analysisContext": "Autodesk Maya Binary scene using IFF container format. 'FOR4' at offset 0 and 'MAYA' at offset 8 form the reliable dual signature. All scene data is in nested IFF chunks with big-endian sizes.",
     "suggestedInspections": [
-      "Validate Maya Binary header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Confirm 'FOR4' at offset 0 and 'MAYA' type identifier at offset 8",
+      "Traverse IFF sub-chunks to locate 'VERS' (version) and 'PLUG' (plugins required) sections",
+      "Compare file size against IFF chunk size at offset 4 plus 8 to check for truncation"
     ]
   }
 }

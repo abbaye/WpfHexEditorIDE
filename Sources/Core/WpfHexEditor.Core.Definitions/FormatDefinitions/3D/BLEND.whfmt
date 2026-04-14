@@ -1,52 +1,57 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Blender 3D File",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".blend"
   ],
-  "description": "Blender 3D scene/model file",
+  "description": "Native binary scene format for the Blender 3D authoring suite. The file starts with a 12-byte file header containing the 'BLENDER' signature, a pointer-size indicator ('_' for 32-bit, '-' for 64-bit), an endianness indicator ('v' for little-endian, 'V' for big-endian), and a 3-byte Blender version string. Following the header are file blocks, each with a block code, size, old memory address, SDNA index, and data count, forming a complete serialized scene graph including meshes, materials, lights, cameras, and animation data.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Blender 3D File Format"
+      "Blender Source Code: source/blender/blenloader",
+      "Blender File Format Documentation by Jeroen Bakker"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/BLEND"
+      "https://en.wikipedia.org/wiki/Blender_(software)",
+      "https://wiki.blender.org/wiki/Process/File_Format",
+      "https://developer.blender.org/docs/features/file_format/"
     ]
   },
   "detection": {
-    "signature": "424C454E444552",
-    "offset": 0,
+    "signatures": [
+      { "value": "424C454E444552", "offset": 0, "label": "BLENDER ASCII signature", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 7,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "All 7 bytes of 'BLENDER' must match exactly at offset 0"
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
     "blenderSignature": "",
     "pointerSize": 0,
     "endianness": 0,
-    "version": "",
-    "formattedSize": ""
+    "blenderVersion": "",
+    "firstBlockCode": "",
+    "firstBlockSize": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Blender Signature",
+      "name": "BLENDER Signature",
       "offset": 0,
       "length": 7,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "BLENDER signature",
+      "opacity": 0.45,
+      "description": "ASCII string 'BLENDER' identifying this as a Blender native file. This 7-byte magic is unique to Blender and appears at the absolute start of every .blend file regardless of version or platform.",
       "storeAs": "blenderSignature",
       "valueType": "ascii"
     },
@@ -56,8 +61,8 @@
       "offset": 7,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "_ (32-bit) or - (64-bit)",
+      "opacity": 0.35,
+      "description": "Single byte indicating native pointer size: underscore '_' (0x5F) means 32-bit pointers, hyphen '-' (0x2D) means 64-bit pointers. Modern Blender uses 64-bit; this affects all internal address fields in file blocks.",
       "storeAs": "pointerSize",
       "valueType": "uint8"
     },
@@ -67,45 +72,88 @@
       "offset": 8,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "v (little) or V (big endian)",
+      "opacity": 0.35,
+      "description": "Byte indicating CPU endianness used when the file was saved: 'v' (0x76) = little-endian (x86/ARM), 'V' (0x56) = big-endian (older PowerPC Macs). Most modern files are little-endian.",
       "storeAs": "endianness",
       "valueType": "uint8"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Blender Version",
       "offset": 9,
       "length": 3,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Blender version (e.g., 293)",
-      "storeAs": "version",
+      "opacity": 0.35,
+      "description": "Three ASCII digit characters encoding the Blender version that created this file, e.g., '293' means Blender 2.93, '300' means 3.0.0, '410' means 4.1.0. Used for backward compatibility.",
+      "storeAs": "blenderVersion",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "First Block Code",
+      "offset": 12,
+      "length": 4,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "4-byte ASCII block type code for the first data block after the header. Common codes: 'REND' (render settings), 'DATA' (generic data), 'DNA1' (structure DNA), 'ENDB' (end of file marker).",
+      "storeAs": "firstBlockCode",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "type": "field",
+      "name": "First Block Size",
+      "offset": 16,
+      "length": 4,
+      "color": "#F7B731",
+      "opacity": 0.35,
+      "description": "4-byte little-endian integer giving the byte size of the first block data payload, not counting the block header itself. Used by parsers to skip to the next block boundary.",
+      "storeAs": "firstBlockSize",
+      "valueType": "uint32"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidSignature",
+      "expression": "blenderSignature == 'BLENDER'",
+      "severity": "error",
+      "message": "File signature is not 'BLENDER'. The file is not a valid Blender scene file or may be compressed (Blender can optionally gzip-compress .blend files)."
     },
     {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
+      "name": "ValidPointerSize",
+      "expression": "pointerSize == 0x5F || pointerSize == 0x2D",
+      "severity": "error",
+      "message": "Pointer size byte is neither '_' (32-bit) nor '-' (64-bit). The file header may be corrupt or this is not a standard Blender file."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version Info", "offset": 7, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "First Block", "offset": 12, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "blenderSignature",
+    "primaryField": "blenderVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["blenderSignature", "pointerSize", "endianness", "blenderVersion"]
+      },
+      {
+        "title": "First Block",
+        "icon": "\uE8B7",
+        "fields": ["firstBlockCode", "firstBlockSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "BLEND Header (JSON)",
+      "format": "json",
+      "fields": ["blenderSignature", "pointerSize", "endianness", "blenderVersion", "firstBlockCode"]
     }
   ],
   "software": [
@@ -113,53 +161,46 @@
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".blend"
-    ],
-    "software_specific": "Blender native format"
+    "extensions": [".blend"],
+    "relatedFormats": ["FBX", "OBJ", "GLB"],
+    "note": "Blender native format; not natively supported by other software without import plugins"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "application/octet-stream",
+    "application/x-blender"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "3D scene authoring",
+    "Animation and rigging",
+    "VFX pipeline",
+    "Game asset creation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 63,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "binary (platform-dependent endianness)",
+    "compression": "optional gzip",
+    "blockBased": true,
+    "dnaSectionPresent": true
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Blender 3D scene/model file",
+    "analysisContext": "Blender native binary scene format with SDNA type system. Header encodes pointer size and endianness. File blocks follow a fixed header structure with type code, size, old pointer, SDNA index, and count fields.",
     "suggestedInspections": [
-      "Validate Blender 3D File header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Check pointer size and endianness bytes to determine platform origin",
+      "Decode version string to identify which Blender version authored the file",
+      "Locate DNA1 block to recover the internal struct layout for full parsing"
     ]
   }
 }

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Steam Game Cache",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     ".gcf"
   ],

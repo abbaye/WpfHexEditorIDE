@@ -1,30 +1,34 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DICOM Medical Image",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".dcm",
     ".dicom"
   ],
-  "description": "Digital Imaging and Communications in Medicine",
+  "description": "Digital Imaging and Communications in Medicine (DICOM) is the international standard for medical images and related information. Files begin with a 128-byte preamble followed by the four-byte ASCII magic 'DICM' at offset 128. Data elements follow as tag/VR/length/value sequences encoded in little-endian byte order with either implicit or explicit Value Representation. Used by CT scanners, MRI machines, ultrasound devices, and PACS systems worldwide.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "DICOM Medical Image Format"
+      "DICOM PS3.1-PS3.20 (NEMA)",
+      "ISO 12052:2017 Health informatics — Digital imaging and communication in medicine (DICOM)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/DCM"
+      "https://www.dicomstandard.org/",
+      "https://en.wikipedia.org/wiki/DICOM"
     ]
   },
   "detection": {
     "signature": "4449434D",
     "offset": 128,
+    "weight": 1.0,
+    "strength": "Strong",
     "required": true,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 132,
+      "maxSignatureOffset": 128
     }
   },
   "variables": {
@@ -34,7 +38,8 @@
     "totalPixels": 0,
     "bitsPerPixel": 0,
     "preamble": "",
-    "dicmMagic": ""
+    "dicmMagic": "",
+    "transferSyntax": ""
   },
   "blocks": [
     {
@@ -44,7 +49,7 @@
       "length": 128,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "128-byte preamble",
+      "description": "128-byte application-defined preamble; unused by standard DICOM readers but may contain application data",
       "storeAs": "preamble",
       "valueType": "ascii"
     },
@@ -54,85 +59,153 @@
       "offset": 128,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DICM signature",
+      "opacity": 0.8,
+      "description": "Four-byte ASCII magic string 'DICM' (0x44 0x49 0x43 0x4D) confirming DICOM file format",
       "storeAs": "dicmMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "File Meta Group Tag",
+      "offset": 132,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.5,
+      "description": "First data element tag (0002,0000) indicating start of File Meta Information group",
+      "storeAs": "fileMetaTag",
       "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Transfer Syntax UID",
+      "offset": 0,
+      "length": 26,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Transfer syntax UID (tag 0002,0010) specifying encoding: 1.2.840.10008.1.2 implicit LE, 1.2.840.10008.1.2.1 explicit LE",
+      "storeAs": "transferSyntax",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
       "name": "Image Width",
       "variable": "imageWidth",
-      "description": "Image width in pixels"
+      "description": "Image matrix width in pixels (tag 0028,0011)"
     },
     {
       "type": "metadata",
       "name": "Image Height",
       "variable": "imageHeight",
-      "description": "Image height in pixels"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width × Height"
+      "description": "Image matrix height in pixels (tag 0028,0010)"
     },
     {
       "type": "metadata",
       "name": "Bits Per Pixel",
       "variable": "bitsPerPixel",
-      "description": "Color depth"
+      "description": "Bits allocated per pixel sample (tag 0028,0100); typically 8, 12, or 16"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Pixels",
+      "variable": "totalPixels",
+      "description": "Computed total pixel count: imageWidth × imageHeight"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "DICM magic present",
+      "expression": "dicmMagic == 'DICM'",
+      "severity": "error",
+      "message": "Bytes at offset 128 must equal ASCII 'DICM' for a valid DICOM file"
+    },
+    {
+      "name": "Minimum file size",
+      "expression": "fileSize >= 132",
+      "severity": "warning",
+      "message": "DICOM file must be at least 132 bytes (128 preamble + 4 magic)"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": ["Preamble", "DICM Magic", "File Meta Group Tag"]
+      },
+      {
+        "name": "Transfer Encoding",
+        "fields": ["Transfer Syntax UID"]
+      },
+      {
+        "name": "Image Dimensions",
+        "fields": ["Image Width", "Image Height", "Bits Per Pixel", "Total Pixels"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DICOM Header Summary",
+      "fields": ["dicmMagic", "transferSyntax", "imageWidth", "imageHeight", "bitsPerPixel"]
     }
   ],
   "software": [
     "OsiriX",
     "Horos",
     "3D Slicer",
-    "Medical imaging systems"
+    "RadiAnt DICOM Viewer",
+    "Weasis"
   ],
   "formatRelationships": {
     "medical_standard": "NEMA",
     "iso_standard": "ISO 12052",
-    "universal_medical": true
+    "universal_medical": true,
+    "related": ["DICOM_SR", "NII", "NIFTI2"]
   },
   "MimeTypes": [
-    "application/octet-stream"
+    "application/dicom"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "OsiriX / Horos (macOS)",
+    "3D Slicer",
+    "RadiAnt DICOM Viewer (Windows)",
+    "Weasis (multiplatform)"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Radiological imaging (CT, MRI, X-ray, ultrasound)",
+    "PACS archival and retrieval",
+    "Interoperability between modalities and hospitals",
+    "AI/ML medical image analysis pipelines"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Endianness": "Little-endian (standard transfer syntaxes)",
+    "VREncoding": "Implicit or Explicit Value Representation",
+    "PreambleUse": "Application-defined; ignored by standard parsers",
+    "TagFormat": "(GGGG,EEEE) group/element pairs"
+  },
   "forensic": {
     "category": "medical",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Digital Imaging and Communications in Medicine",
+    "analysisContext": "DICOM is the universal medical imaging standard. The 'DICM' magic at offset 128 is the definitive identifier. Data elements use Tag+VR+Length+Value encoding; Transfer Syntax UID (0002,0010) determines byte order and VR style. Image pixels are in the Pixel Data element (7FE0,0010).",
     "suggestedInspections": [
-      "Verify DICOM Medical Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Verify 'DICM' magic bytes at offset 128 (not offset 0)",
+      "Parse File Meta Information group (0002,xxxx) for transfer syntax and SOP class",
+      "Check image dimensions (0028,0010/0011), bits allocated (0028,0100), and pixel data (7FE0,0010)",
+      "Inspect patient/study/series metadata tags for PHI presence"
     ]
   },
   "functions": {
-    "readUInt32LE": "Read width and height",
+    "readUInt32LE": "Read tag group/element and lengths",
     "multiply": "Calculate total pixels",
     "computeFromVariables(imageWidth * imageHeight, totalPixels)": "Calculate total pixels"
   }

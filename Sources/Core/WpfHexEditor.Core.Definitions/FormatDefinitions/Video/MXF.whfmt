@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Material Exchange Format",
-  "version": "2.33",
+  "version": "2.32",
   "extensions": [
     ".mxf"
   ],

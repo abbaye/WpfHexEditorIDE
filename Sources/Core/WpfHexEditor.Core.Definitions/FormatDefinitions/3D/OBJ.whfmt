@@ -1,134 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Wavefront OBJ",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".obj"
   ],
-  "description": "Wavefront 3D object format (text-based)",
+  "description": "Wavefront OBJ is a plain-text 3D geometry format originally developed by Wavefront Technologies and now the most universally supported 3D interchange format. Files consist of text lines where each line begins with a keyword: 'v' (vertex position), 'vt' (texture coordinate), 'vn' (vertex normal), 'f' (face definition), 'o' (object name), 'g' (group), 'mtllib' (material library reference), and 'usemtl' (material assignment). Comments start with '#'. Material definitions are stored in a companion .mtl file. OBJ supports polygonal geometry including quads and n-gons but not animation.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Microsoft WAVE Audio File Format",
-      "RFC 2361 - WAVE and AVI Codec Registries"
+      "Wavefront OBJ File Format Specification",
+      "Advanced Visualizer OBJ File Format Reference"
     ],
     "WebLinks": [
-      "https://docs.microsoft.com/en-us/windows/win32/multimedia/waveform-audio-file-format",
-      "https://www.ietf.org/rfc/rfc2361.txt",
-      "https://en.wikipedia.org/wiki/WAV"
+      "https://en.wikipedia.org/wiki/Wavefront_.obj_file",
+      "https://www.fileformat.info/format/wavefrontobj/egff.htm",
+      "https://wiki.fileformat.com/3d/obj/"
     ]
   },
   "detection": {
-    "signature": "23",
-    "offset": 0,
+    "signatures": [
+      { "value": "23", "offset": 0, "label": "OBJ comment line '#'", "weight": 0.5 },
+      { "value": "7620", "offset": 0, "label": "OBJ vertex line 'v '", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.5, "max": 6.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 4,
+      "maxSignatureOffset": 0,
+      "note": "OBJ is text-based; detection is weak and extension-dependent. Files may start with '#' (comment) or 'v ' (vertex). No binary magic."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
-    "commentOrVertex": 0,
-    "formattedSize": ""
+    "firstByte": 0,
+    "firstLine": "",
+    "mtllibRef": "",
+    "firstVertex": ""
   },
   "blocks": [
     {
-      "type": "field",
-      "name": "Comment or Vertex",
+      "type": "signature",
+      "name": "First Line Start",
       "offset": 0,
-      "length": 1,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First 2 bytes of the OBJ file. Valid OBJ files begin with '#' (comment line, 0x23) or 'v ' (vertex definition, 0x76 0x20). Both are equally valid starts; '#' is most common as files often begin with a generator comment.",
+      "storeAs": "firstByte",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "First Line Text",
+      "offset": 0,
+      "length": 64,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "OBJ files start with # or v",
-      "storeAs": "commentOrVertex",
-      "valueType": "uint8"
+      "opacity": 0.35,
+      "description": "First 64 bytes of the OBJ file as ASCII text. Typically a comment such as '# Exported by Blender 4.1' or the first vertex definition. Reveals the exporting application and OBJ version metadata.",
+      "storeAs": "firstLine",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "Mtllib Reference Region",
+      "offset": 64,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region of the OBJ file near the start that typically contains the 'mtllib' command referencing the companion .mtl material library file. This declaration must appear before any 'usemtl' commands in the file.",
+      "storeAs": "mtllibRef",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "type": "field",
+      "name": "First Vertex Data",
+      "offset": 128,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region of the OBJ file that typically contains the first vertex position declarations ('v x y z' lines). Each vertex line defines a 3D point in space using floating-point coordinates separated by spaces.",
+      "storeAs": "firstVertex",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "TextContent",
+      "expression": "firstByte == 0x2376 || firstByte == 0x7620 || firstByte == 0x6F62",
+      "severity": "warning",
+      "message": "File does not start with a typical OBJ keyword ('#', 'v ', or 'o '). The file may still be valid OBJ with unusual formatting, or may not be an OBJ file."
     },
     {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
+      "name": "NotBinaryFile",
+      "expression": "firstByte != 0x0000",
+      "severity": "warning",
+      "message": "File starts with null bytes. OBJ is a text-based format and should not contain null bytes at the start. The file may be binary or corrupt."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start / Comment", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Material Library", "offset": 64, "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "Vertex Data", "offset": 128, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "firstByte",
+    "primaryField": "firstLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["firstByte", "firstLine"]
+      },
+      {
+        "title": "Material & Geometry",
+        "icon": "\uE8B7",
+        "fields": ["mtllibRef", "firstVertex"]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "OBJ Header (JSON)",
+      "format": "json",
+      "fields": ["firstByte", "firstLine", "mtllibRef"]
     }
   ],
   "software": [
     "Blender",
-    "Maya",
-    "3ds Max",
-    "All 3D software"
+    "Autodesk Maya",
+    "Autodesk 3ds Max",
+    "MeshLab",
+    "All major 3D applications"
   ],
   "formatRelationships": {
-    "wavefront_format": true,
-    "text_based": true,
-    "universal_support": true,
-    "material_file": "MTL"
+    "category": "3D",
+    "extensions": [".obj"],
+    "relatedFormats": ["STL", "PLY", "OFF", "FBX"],
+    "note": "Most universal 3D text format; companion .mtl file stores material definitions; no animation support"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "application/octet-stream",
+    "model/obj",
+    "text/plain"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Universal 3D geometry interchange",
+    "3D printing input preparation",
+    "Game asset import/export",
+    "Academic and research geometry exchange"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "ASCII/UTF-8 text",
+    "animationSupport": false,
+    "materialFile": ".mtl",
+    "coordinateSystem": "right-handed Y-up"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Wavefront 3D object format (text-based)",
+    "analysisContext": "Wavefront OBJ text-based 3D geometry format. No binary magic; lines start with keywords 'v', 'vt', 'vn', 'f', '#', 'mtllib', 'usemtl'. Detection is extension-based with weak text heuristics.",
     "suggestedInspections": [
-      "Validate Wavefront OBJ header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Count 'v ', 'vt', 'vn', and 'f ' lines to estimate geometry complexity",
+      "Extract 'mtllib' references to identify companion material library files",
+      "Look for 'o ' or 'g ' declarations to enumerate named objects and groups in the scene"
     ]
   }
 }

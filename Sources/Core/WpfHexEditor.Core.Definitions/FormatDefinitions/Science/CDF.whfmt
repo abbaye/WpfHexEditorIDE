@@ -1,117 +1,186 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Common Data Format",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     ".cdf"
   ],
-  "description": "NASA Common Data Format for scientific data",
+  "description": "Common Data Format (CDF) is a self-describing, platform-independent data format developed by NASA/GSFC for storing scalar and multidimensional data in a discipline-neutral way. CDF files begin with the 4-byte magic 0x0000FFFF followed by 0x0000CC0C (CDF internal record type marker), or more specifically bytes 0-3 = 0x0000FFFF for the CDF magic number. CDF supports variables of multiple data types, global and variable attributes (metadata), and multiple records per variable. Widely used by NASA space physics community for magnetospheric, solar wind, and heliospheric data products. CDF.net and PyCDF are common access libraries. Distinct from NASA/HDF-based NetCDF despite the similar extension.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Common Data Format Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/CDF"
-    ]
-  },
+  "references": [
+    "CDF User's Guide Version 3.9, NASA/GSFC",
+    "CDF Internal Format Description"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/Common_Data_Format",
+    "https://cdf.gsfc.nasa.gov/"
+  ],
   "detection": {
-    "signature": "CDF30001",
+    "signature": "0000FFFF",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
+    "alternativeSignatures": [
+      { "signature": "CDF30001", "offset": 0, "weight": 0.8, "note": "Older CDF v3 magic variant" }
+    ],
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
     "cdfMagic": "",
-    "version": ""
+    "internalMagic": "",
+    "version": "",
+    "encoding": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "CDF Magic",
+      "name": "CDF Magic Number",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "CDF3 format signature",
+      "opacity": 0.85,
+      "description": "CDF primary magic number 0x0000FFFF at bytes 0-3 — combined with the secondary magic at offset 4 uniquely identifies a CDF file",
       "storeAs": "cdfMagic",
-      "valueType": "uint32"
+      "valueType": "hex"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Secondary Magic / Record Type",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Secondary magic 0x0000CC0C at offset 4 — the CDF Internal Record (CDR) marker; together with primary magic confirms a valid CDF file structure",
+      "storeAs": "internalMagic",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "CDF Description Record (CDR)",
+      "offset": 8,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "CDR header: 4-byte next-record offset (GDR) and 4-byte version/release/increment packed value identifying the CDF library version that created the file",
+      "storeAs": "cdrHeader",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Encoding",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "4-byte big-endian encoding type: 1 = Network (XDR/big-endian), 6 = IBMPC (little-endian), 2 = SGI (native BE); determines byte order for all data values",
+      "storeAs": "encoding",
+      "valueType": "uint32be"
+    },
+    {
+      "type": "field",
+      "name": "Majority",
+      "offset": 20,
+      "length": 4,
+      "color": "#A8E6CF",
       "opacity": 0.3,
-      "description": "CDF version identifier",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "description": "Array majority flag: 1 = row-major (C order), 2 = column-major (Fortran order); determines memory layout of multidimensional variable arrays",
+      "storeAs": "majority",
+      "valueType": "uint32be"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "Version",
+      "variable": "version",
+      "description": "CDF format version string derived from CDR version/release/increment fields"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidCDFMagic",
+      "description": "Bytes 0-3 must be 00 00 FF FF — the NASA CDF primary magic constant; used in conjunction with secondary magic at offset 4 to confirm a valid CDF file",
+      "offset": 0,
+      "length": 4,
+      "expectedHex": "0000FFFF",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
-    },
+      "name": "ValidCDRType",
+      "description": "Bytes 4-7 should be 00 00 CC 0C for a standard CDF file with CDR internal record type; other values indicate malformed or differently versioned CDF",
+      "offset": 4,
+      "length": 4,
+      "expectedHex": "0000CC0C",
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Identification",
+        "fields": [
+          { "label": "Primary Magic",    "offset": 0,  "length": 4, "format": "hex" },
+          { "label": "Secondary Magic",  "offset": 4,  "length": 4, "format": "hex" }
+        ]
+      },
+      {
+        "name": "CDF Description Record",
+        "fields": [
+          { "label": "GDR Offset",  "offset": 8,  "length": 4, "format": "uint32be" },
+          { "label": "Version",     "offset": 12, "length": 4, "format": "hex" },
+          { "label": "Encoding",    "offset": 16, "length": 4, "format": "uint32be" },
+          { "label": "Majority",    "offset": 20, "length": 4, "format": "uint32be" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "CDF Header Summary",
+      "fields": ["cdfMagic", "internalMagic", "encoding", "majority"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "NASA CDF Library",
+    "CDF.net",
+    "PyCDF (spacepy)",
+    "IDL CDF routines",
+    "MATLAB CDF toolbox"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".cdf"
-    ]
+    "nasa_format": true,
+    "space_physics": true,
+    "related_to": "ISTP/IACG guidelines",
+    "used_by": ["NASA MMS", "NASA Van Allen Probes", "Cluster mission"]
   },
   "MimeTypes": [
+    "application/x-cdf",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "NASA space physics data products",
+    "Magnetospheric and solar wind data",
+    "Heliospheric mission data (MMS, WIND, ACE)",
+    "Virtual Observatory data exchange"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "configurable (encoding field)",
+    "primaryMagic": "0x0000FFFF",
+    "secondaryMagic": "0x0000CC0C",
+    "recordModel": "linked list of typed CDF internal records"
   },
   "forensic": {
     "category": "science",
@@ -119,11 +188,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "NASA Common Data Format for scientific data",
+    "analysisContext": "NASA CDF uses a linked list of internal records (CDR, GDR, VDR, ADR, etc.). The encoding field determines byte order. Space physics tools such as PyCDF/spacepy and the NASA CDF C library are the standard access paths.",
     "suggestedInspections": [
-      "Validate Common Data Format file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify primary magic 00 00 FF FF at bytes 0-3 and secondary magic 00 00 CC 0C at bytes 4-7",
+      "Read encoding field at offset 16: 1 = big-endian (network), 6 = little-endian (IBMPC)",
+      "Parse CDR for GDR offset, then follow the GDR (Global Descriptor Record) linked list",
+      "Enumerate variables via VDR (Variable Descriptor Records) linked from the GDR",
+      "Read global attributes from ADR/AEDRs linked from the GDR for metadata",
+      "Check variable records for ISTP/IACG metadata conventions: CATDESC, UNITS, VALIDMIN/MAX"
     ]
   }
 }

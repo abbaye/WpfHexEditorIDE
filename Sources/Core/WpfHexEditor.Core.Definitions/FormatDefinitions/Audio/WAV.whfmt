@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "WAV Audio",
-  "version": "2.03",
+  "version": "2.02",
   "extensions": [
     ".wav",
     ".wave"

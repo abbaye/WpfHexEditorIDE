@@ -1,140 +1,180 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Shanda Bambook",
   "version": "1.14",
-  "extensions": [
-    ".snb"
-  ],
-  "description": "Shanda Bambook e-book format, used by Chinese e-reader devices from Shanda Interactive",
+  "extensions": [ ".snb" ],
+  "description": "SNB is the native eBook format for Shanda Bambook (Shanda Interactive Entertainment) Chinese e-reader devices, popular in China around 2010-2013. SNB is a ZIP-based container format, similar in concept to EPUB, containing XML content files, images, and a TOC structure. The outer container uses ZIP format (PKZip magic 0x504B0304 at offset 0). The SNB identity is confirmed by the presence of specific internal files such as 'snbf/book.snbf' or 'snbf/toc.snbf'. Detection at the binary level is weak — it appears as a standard ZIP file. Extension and internal file structure are required for positive SNB identification.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Shanda Bambook Format"
-    ],
+  "references": [
+    { "specifications": [
+      "Shanda Bambook SNB Format",
+      "SNB eBook Container Structure"
+    ] },
+    {
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SNB"
-    ]
-  },
+      "https://en.wikipedia.org/wiki/Bambook",
+      "https://wiki.mobileread.com/wiki/SNB",
+      "https://calibre-ebook.com/",
+      "http://www.snbreader.com/"
+    ]}
+  ],
   "detection": {
-    "signature": "534E4242",
-    "offset": 0,
+    "signatures": [
+      { "hex": "504B0304", "offset": 0, "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 30,
+      "maxSignatureOffset": 0,
+      "note": "ZIP magic 0x504B0304 at offset 0 is shared by ZIP, EPUB, CBZ, DOCX, XLSX, and many other formats. SNB identity requires internal file 'snbf/book.snbf' or 'snbf/toc.snbf' within the ZIP."
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "snbSignature": ""
+    "zipSignature": "",
+    "zipVersion": 0,
+    "zipFlags": 0,
+    "zipCompression": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "SNB Signature",
+      "name": "ZIP Local File Header",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "SNB magic bytes: 'SNBB'",
-      "storeAs": "snbSignature",
-      "valueType": "ascii"
+      "description": "PKZip local file header magic: 'PK' + 0x03 0x04 (0x504B0304). SNB is a ZIP container.",
+      "storeAs": "zipSignature",
+      "valueType": "bytes"
     },
     {
-      "type": "data",
-      "name": "Version",
+      "type": "field",
+      "name": "Minimum Version",
       "offset": 4,
-      "length": 4,
+      "length": 2,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "Format version (little-endian)"
+      "description": "Minimum ZIP version needed to extract (little-endian uint16). e.g., 0x0014 = version 2.0",
+      "storeAs": "zipVersion",
+      "valueType": "uint16"
     },
     {
-      "type": "data",
-      "name": "Header Size",
-      "offset": 8,
-      "length": 4,
+      "type": "field",
+      "name": "General Purpose Flags",
+      "offset": 6,
+      "length": 2,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "Header size (little-endian)"
+      "description": "ZIP general purpose bit flags: bit0=encrypted, bit3=data descriptor present",
+      "storeAs": "zipFlags",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "ZIP compression: 0=stored, 8=DEFLATE, 12=BZIP2, 14=LZMA",
+      "storeAs": "zipCompression",
+      "valueType": "uint16",
+      "valueMap": {
+        "0": "Stored (no compression)",
+        "8": "DEFLATE",
+        "12": "BZIP2",
+        "14": "LZMA"
+      }
     },
     {
       "type": "data",
-      "name": "Content Offset",
-      "offset": 12,
-      "length": 4,
-      "color": "#96CEB4",
-      "opacity": 0.4,
-      "description": "Offset to content data (little-endian)"
-    },
-    {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
-    },
-    {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "First Entry Filename",
+      "offset": 30,
+      "length": 16,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "First ZIP entry filename. For SNB, should be 'snbf/' directory prefix or 'snbf/book.snbf'"
     }
   ],
+  "assertions": [
+    { "field": "zipSignature", "operator": "equals", "value": "504B0304", "description": "ZIP magic PK local file header must be present" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZIP Header", "offset": 0, "description": "PKZip local file header" },
+      { "name": "First Entry Filename", "offset": 30, "description": "Filename of first ZIP entry (look for 'snbf/')" }
+    ]
+  },
+  "inspector": {
+    "badge": "SNB",
+    "primaryField": "zipCompression",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "ZIP Container", "fields": ["zipSignature", "zipVersion"] },
+      { "name": "Entry Info", "fields": ["zipFlags", "zipCompression"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SNB/ZIP Info (JSON)",
+      "format": "json",
+      "fields": ["zipSignature", "zipVersion", "zipCompression"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "SNB files outside Chinese e-reader contexts are unusual",
+      "ZIP container can contain arbitrary files — inspect all entries, not just expected SNB structure"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SNB is a ZIP-based container similar to EPUB. Binary detection only shows ZIP magic (0x504B0304). SNB identity requires listing the ZIP entries and finding 'snbf/book.snbf' or 'snbf/toc.snbf'. The format is specific to Shanda Bambook devices popular in China circa 2010-2013. Calibre supports SNB conversion.",
+    "suggestedInspections": [
+      "Verify ZIP magic at offset 0 (0x504B0304)",
+      "List ZIP central directory for 'snbf/' directory entries",
+      "Look for 'snbf/book.snbf' or 'snbf/toc.snbf' to confirm SNB identity vs EPUB/CBZ",
+      "Parse 'snbf/book.snbf' XML for book title and metadata",
+      "Use Calibre for conversion to EPUB or other formats"
+    ]
+  },
   "software": [
-    "Shanda Bambook",
-    "Calibre",
+    "Shanda Bambook device",
+    "Calibre (conversion)",
     "SNB Reader"
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [
-      ".snb"
-    ]
+    "extensions": [".snb"],
+    "relatedFormats": ["EPUB", "CBZ", "ZIP", "MOBI"],
+    "note": "SNB is structurally similar to EPUB (both ZIP-based XML containers). SNB uses 'snbf/' directory structure instead of EPUB's 'META-INF/container.xml'."
   },
-  "MimeTypes": [
-    "application/snb"
-  ],
-  "Software": [
-    "Shanda Bambook",
-    "Calibre",
-    "SNB Reader"
-  ],
+  "MimeTypes": [ "application/x-snb", "application/snb" ],
   "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
+    "Shanda Bambook e-reader content",
+    "Chinese digital publishing (legacy)",
+    "eBook format conversion (via Calibre)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 48,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "DocumentFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
-  "forensic": {
-    "category": "document",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Shanda Bambook e-book format, used by Chinese e-reader devices from Shanda Interactive",
-    "suggestedInspections": [
-      "Validate Shanda Bambook file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
-    ]
+    "DocumentFormat": true,
+    "ContainerFormat": "ZIP",
+    "Endianness": "little-endian (ZIP standard)",
+    "Note": "SNB binary detection is weak — ZIP magic is shared by EPUB, CBZ, DOCX, XLSX, and many others. Internal file structure distinguishes SNB."
   }
 }

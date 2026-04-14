@@ -55,9 +55,15 @@ namespace WpfHexEditor.HexEditor
             StatusBarBackgroundColor = GetThemeColor(app, "HexEditor_StatusBarBackgroundColor", StatusBarBackgroundColor);
             StatusBarForegroundColor = GetThemeColor(app, "HexEditor_StatusBarForegroundColor", StatusBarForegroundColor);
 
-            // ScrollBar colors
+            // ScrollBar colors — background and thumb via DP (write into editor.Resources)
             ScrollBarBackgroundColor = GetThemeColor(app, "HexEditor_ScrollBarBackgroundColor", ScrollBarBackgroundColor);
-            ScrollBarThumbColor = GetThemeColor(app, "HexEditor_ScrollBarThumbColor", ScrollBarThumbColor);
+            ScrollBarThumbColor      = GetThemeColor(app, "HexEditor_ScrollBarThumbColor",      ScrollBarThumbColor);
+
+            // Hover and drag brushes — not exposed as DPs, copy directly from theme into local resources
+            if (app.TryFindResource("ScrollBarThumbHoverBrush") is System.Windows.Media.Brush hoverBrush)
+                Resources["ScrollBarThumbHoverBrush"] = hoverBrush;
+            if (app.TryFindResource("ScrollBarThumbDragBrush") is System.Windows.Media.Brush dragBrush)
+                Resources["ScrollBarThumbDragBrush"] = dragBrush;
 
             // Foreground colors
             ForegroundFirstColor = GetThemeColor(app, "HexEditor_ForegroundFirstColor", ForegroundFirstColor);
@@ -82,6 +88,14 @@ namespace WpfHexEditor.HexEditor
             TblMteColor = GetThemeColor(app, "HexEditor_TblMteColor", TblMteColor);
             TblEndBlockColor = GetThemeColor(app, "HexEditor_TblEndBlockColor", TblEndBlockColor);
             TblEndLineColor = GetThemeColor(app, "HexEditor_TblEndLineColor", TblEndLineColor);
+
+            // Explicitly re-apply the App-level implicit ScrollBar style to VerticalScroll.
+            // WPF UserControl elements declared in XAML may resolve their implicit style before
+            // being fully integrated into the App's logical tree — explicit assignment here
+            // guarantees the themed style (from Docking/ContentControls.xaml) is always active.
+            if (VerticalScroll != null &&
+                TryFindResource(typeof(System.Windows.Controls.Primitives.ScrollBar)) is Style sbStyle)
+                VerticalScroll.Style = sbStyle;
         }
 
         private static Color GetThemeColor(Application app, string key, Color fallback)

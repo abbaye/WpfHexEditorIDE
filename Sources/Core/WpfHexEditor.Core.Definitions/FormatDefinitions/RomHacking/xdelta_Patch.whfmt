@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "xdelta / VCDIFF Patch",
-  "version": "1.03",
+  "version": "1.02",
   "extensions": [
     ".xdelta",
     ".xdiff",

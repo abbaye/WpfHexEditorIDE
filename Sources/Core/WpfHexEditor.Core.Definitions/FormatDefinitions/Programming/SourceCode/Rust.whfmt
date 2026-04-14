@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Rust Source File",
-  "version": "2.14",
+  "version": "2.13",
   "extensions": [
     ".rs"
   ],

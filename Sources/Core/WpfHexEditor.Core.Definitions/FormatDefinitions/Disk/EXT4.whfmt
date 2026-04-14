@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Ext4 Filesystem",
-  "version": "1.14",
+  "version": "1.13",
   "extensions": [
     ".ext4"
   ],

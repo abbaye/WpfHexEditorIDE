@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "TGA Image",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".tga",
     ".tpic",

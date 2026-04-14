@@ -43,257 +43,21 @@
         <SolidColorBrush x:Key="AlternateByteForegroundBrush" Color="#0000FF"/>
         <SolidColorBrush x:Key="ColumnSeparatorBrush" Color="#D0D0D0"/>
 
-        <!-- StatusBar and ScrollBar brushes -->
+        <!-- StatusBar brushes -->
         <SolidColorBrush x:Key="StatusBarBrush" Color="#F5F5F5"/>
         <SolidColorBrush x:Key="StatusBarTextBrush" Color="#333333"/>
-        <SolidColorBrush x:Key="ScrollBarBrush" Color="#1E1E1E"/>
-        <SolidColorBrush x:Key="ScrollBarThumbBrush" Color="#686868"/>
-        <SolidColorBrush x:Key="ScrollBarThumbHoverBrush" Color="#A8A8A8"/>
-        <SolidColorBrush x:Key="ScrollBarThumbDragBrush" Color="#C8C8C8"/>
+        <!-- ScrollBar brushes: NOT declared here — resolved via DynamicResource from the active
+             theme (App.Resources). OnScrollBarBackgroundColorChanged / OnScrollBarThumbColorChanged
+             write into editor.Resources when ApplyThemeFromResources() fires, overriding App-level
+             brushes for standalone use. HoverBrush and DragBrush always come from the theme. -->
 
-        <!-- Transparent RepeatButton template for scrollbar track areas (click-to-page) -->
-        <ControlTemplate x:Key="ScrollBarTrackButton" TargetType="RepeatButton">
-            <Border Background="Transparent"/>
-        </ControlTemplate>
-
-        <!-- Thumb: rounded pill with hover/drag color feedback -->
-        <Style x:Key="HexScrollBarThumbStyle" TargetType="Thumb">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="IsTabStop" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Thumb">
-                        <Border x:Name="Bd"
-                                Background="{DynamicResource ScrollBarThumbBrush}"
-                                CornerRadius="5"
-                                Margin="2"/>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource ScrollBarThumbHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsDragging" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource ScrollBarThumbDragBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Arrow buttons: appear on hover, hidden at rest -->
-        <Style x:Key="HexScrollBarArrowButtonStyle" TargetType="RepeatButton">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="IsTabStop" Value="False"/>
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Width"  Value="17"/>
-            <Setter Property="Height" Value="17"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RepeatButton">
-                        <Border Background="Transparent">
-                            <Path x:Name="Arrow"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Fill="{DynamicResource ScrollBarThumbBrush}"
-                                  Opacity="0"
-                                  Data="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource ScrollBarThumbHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource ScrollBarThumbDragBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Implicit style for ALL scrollbars (VS2026-style: expand + arrows on hover) -->
-        <Style TargetType="ScrollBar">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Width"    Value="17"/>
-            <Setter Property="MinWidth" Value="17"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <!-- Vertical template: track 12→17px on hover, arrows fade in -->
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Border Background="Transparent">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="17"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="17"/>
-                                </Grid.RowDefinitions>
-                                <RepeatButton x:Name="PART_LineUpButton"
-                                              Grid.Row="0"
-                                              Style="{StaticResource HexScrollBarArrowButtonStyle}"
-                                              Command="ScrollBar.LineUpCommand"
-                                              Tag="M 4,10 L 8.5,3 L 13,10 Z"
-                                              Opacity="0"/>
-                                <Border x:Name="TrackBorder"
-                                        Grid.Row="1"
-                                        Width="12"
-                                        HorizontalAlignment="Right"
-                                        Background="{DynamicResource ScrollBarBrush}">
-                                    <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                        <Track.DecreaseRepeatButton>
-                                            <RepeatButton Command="ScrollBar.PageUpCommand"
-                                                          Template="{StaticResource ScrollBarTrackButton}"/>
-                                        </Track.DecreaseRepeatButton>
-                                        <Track.Thumb>
-                                            <Thumb Style="{StaticResource HexScrollBarThumbStyle}"/>
-                                        </Track.Thumb>
-                                        <Track.IncreaseRepeatButton>
-                                            <RepeatButton Command="ScrollBar.PageDownCommand"
-                                                          Template="{StaticResource ScrollBarTrackButton}"/>
-                                        </Track.IncreaseRepeatButton>
-                                    </Track>
-                                </Border>
-                                <RepeatButton x:Name="PART_LineDownButton"
-                                              Grid.Row="2"
-                                              Style="{StaticResource HexScrollBarArrowButtonStyle}"
-                                              Command="ScrollBar.LineDownCommand"
-                                              Tag="M 4,3 L 8.5,10 L 13,3 Z"
-                                              Opacity="0"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <EventTrigger RoutedEvent="MouseEnter">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="TrackBorder"
-                                                         Storyboard.TargetProperty="Width"
-                                                         To="17" Duration="0:0:0.15">
-                                            <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                        <DoubleAnimation Storyboard.TargetName="PART_LineUpButton"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="1" Duration="0:0:0.15"/>
-                                        <DoubleAnimation Storyboard.TargetName="PART_LineDownButton"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="1" Duration="0:0:0.15"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                            <EventTrigger RoutedEvent="MouseLeave">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="TrackBorder"
-                                                         Storyboard.TargetProperty="Width"
-                                                         To="12" Duration="0:0:0.20">
-                                            <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                        <DoubleAnimation Storyboard.TargetName="PART_LineUpButton"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="0" Duration="0:0:0.20"/>
-                                        <DoubleAnimation Storyboard.TargetName="PART_LineDownButton"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="0" Duration="0:0:0.20"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="Orientation" Value="Horizontal">
-                    <Setter Property="Width"     Value="Auto"/>
-                    <Setter Property="Height"    Value="17"/>
-                    <Setter Property="MinWidth"  Value="0"/>
-                    <Setter Property="MinHeight" Value="17"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <!-- Horizontal template: track 12→17px on hover, arrows fade in -->
-                            <ControlTemplate TargetType="ScrollBar">
-                                <Border Background="Transparent">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="17"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="17"/>
-                                        </Grid.ColumnDefinitions>
-                                        <RepeatButton x:Name="PART_LineLeftButton"
-                                                      Grid.Column="0"
-                                                      Style="{StaticResource HexScrollBarArrowButtonStyle}"
-                                                      Command="ScrollBar.LineLeftCommand"
-                                                      Tag="M 10,4 L 3,8.5 L 10,13 Z"
-                                                      Opacity="0"/>
-                                        <Border x:Name="TrackBorder"
-                                                Grid.Column="1"
-                                                Height="12"
-                                                VerticalAlignment="Bottom"
-                                                Background="{DynamicResource ScrollBarBrush}">
-                                            <Track x:Name="PART_Track" IsDirectionReversed="False">
-                                                <Track.DecreaseRepeatButton>
-                                                    <RepeatButton Command="ScrollBar.PageLeftCommand"
-                                                                  Template="{StaticResource ScrollBarTrackButton}"/>
-                                                </Track.DecreaseRepeatButton>
-                                                <Track.Thumb>
-                                                    <Thumb Style="{StaticResource HexScrollBarThumbStyle}"/>
-                                                </Track.Thumb>
-                                                <Track.IncreaseRepeatButton>
-                                                    <RepeatButton Command="ScrollBar.PageRightCommand"
-                                                                  Template="{StaticResource ScrollBarTrackButton}"/>
-                                                </Track.IncreaseRepeatButton>
-                                            </Track>
-                                        </Border>
-                                        <RepeatButton x:Name="PART_LineRightButton"
-                                                      Grid.Column="2"
-                                                      Style="{StaticResource HexScrollBarArrowButtonStyle}"
-                                                      Command="ScrollBar.LineRightCommand"
-                                                      Tag="M 3,4 L 10,8.5 L 3,13 Z"
-                                                      Opacity="0"/>
-                                    </Grid>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <EventTrigger RoutedEvent="MouseEnter">
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="TrackBorder"
-                                                                 Storyboard.TargetProperty="Height"
-                                                                 To="17" Duration="0:0:0.15">
-                                                    <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                                </DoubleAnimation>
-                                                <DoubleAnimation Storyboard.TargetName="PART_LineLeftButton"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="1" Duration="0:0:0.15"/>
-                                                <DoubleAnimation Storyboard.TargetName="PART_LineRightButton"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="1" Duration="0:0:0.15"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                    <EventTrigger RoutedEvent="MouseLeave">
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="TrackBorder"
-                                                                 Storyboard.TargetProperty="Height"
-                                                                 To="12" Duration="0:0:0.20">
-                                                    <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                                </DoubleAnimation>
-                                                <DoubleAnimation Storyboard.TargetName="PART_LineLeftButton"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="0" Duration="0:0:0.20"/>
-                                                <DoubleAnimation Storyboard.TargetName="PART_LineRightButton"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="0" Duration="0:0:0.20"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        <!-- ScrollBar styling is intentionally absent from UserControl.Resources.
+             WPF rule: local implicit styles block App-level implicit styles.
+             The themed ScrollBar style lives in Docking/Themes/Dark|Light/ContentControls.xaml
+             and is merged into App.Resources — it applies automatically to all ScrollBars here.
+             The C# DP changed handlers (OnScrollBarBackgroundColorChanged, etc.) write
+             ScrollBarBrush / ScrollBarThumbBrush into editor.Resources at runtime so the
+             DynamicResource references in the Docking template resolve to the correct theme color. -->
 
         <!-- Styles for better appearance -->
         <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
@@ -406,7 +170,9 @@
             <!-- Undo -->
             <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="↶" FontSize="16" Foreground="#0078D4"/>
+                    <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
@@ -415,12 +181,16 @@
             <MenuItem x:Name="BookmarksMenuItem" Header="{DynamicResource BookmarksString}">
                 <MenuItem x:Name="SetBookmarkMenuItem" Header="{DynamicResource SetBookMarkString}" Click="SetBookmarkMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📌" FontSize="14"/>
+                        <TextBlock Text="&#xE718;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="ClearBookmarksMenuItem" Header="{DynamicResource ClearBookMarkString}" Click="ClearBookmarksMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="🗑️" FontSize="14"/>
+                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -429,7 +199,9 @@
             <!-- Copy (default mode) -->
             <MenuItem x:Name="CopyMenuItem" Header="{DynamicResource CopyString}" Click="CopyMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="📋" FontSize="14"/>
+                    <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -437,32 +209,44 @@
             <MenuItem x:Name="CopyAsMenuItem" Header="{DynamicResource CopySelectionAsString}">
                 <MenuItem x:Name="CopyHexaMenuItem" Header="{DynamicResource CopyAsHexadecimalString}" Click="CopyHexaMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📋" FontSize="14"/>
+                        <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="CopyAsciiMenuItem" Header="{DynamicResource CopyAsASCIIString}" Click="CopyAsciiMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📋" FontSize="14"/>
+                        <TextBlock Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="CopyCSharpMenuItem" Header="{DynamicResource CopyAsCSharpCodeString}" Click="CopyCSharpMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📋" FontSize="14"/>
+                        <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="CopyCMenuItem" Header="{DynamicResource CopyAsCCodeString}" Click="CopyCMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📋" FontSize="14"/>
+                        <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="CopyTblMenuItem" Header="{DynamicResource CopyAsTBLString}" Click="CopyTblMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📋" FontSize="14"/>
+                        <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="CopyFormattedViewMenuItem" Header="{DynamicResource CopyAsFormattedViewString}" Click="CopyFormattedViewMenuItem_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="📋" FontSize="14"/>
+                        <TextBlock Text="&#xE8EF;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -472,7 +256,9 @@
             <!-- Find All (Async with Progress) -->
             <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="Search for all occurrences with progress overlay">
                 <MenuItem.Icon>
-                    <TextBlock Text="🔍" FontSize="14"/>
+                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -481,49 +267,63 @@
             <!-- Paste -->
             <MenuItem x:Name="PasteMenuItem" Header="{DynamicResource PasteString}" Click="PasteMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="📄" FontSize="14"/>
+                    <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Paste without inserting (Overwrite mode) -->
             <MenuItem x:Name="PasteOverwriteMenuItem" Header="{DynamicResource PasteNotInsertString}" Click="PasteOverwriteMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="📝" FontSize="14"/>
+                    <TextBlock Text="&#xE932;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Delete -->
             <MenuItem x:Name="DeleteMenuItem" Header="{DynamicResource DeleteString}" Click="DeleteMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="🗑️" FontSize="14"/>
+                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Fill -->
             <MenuItem x:Name="FillByteMenuItem" Header="{DynamicResource FillWithByteString}" Click="FillByteMenuItem_Click" ToolTip="{DynamicResource FillWithByteTooltipString}">
                 <MenuItem.Icon>
-                    <TextBlock Text="🎨" FontSize="14"/>
+                    <TextBlock Text="&#xE771;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Replace -->
             <MenuItem x:Name="ReplaceByteMenuItem" Header="{DynamicResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click" ToolTip="{DynamicResource ReplaceByteTooltipString}">
                 <MenuItem.Icon>
-                    <TextBlock Text="🔄" FontSize="14"/>
+                    <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Reverse Selection -->
             <MenuItem x:Name="ReverseSelectionMenuItem" Header="{DynamicResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click" ToolTip="{DynamicResource ReverseSelectionTooltipString}">
                 <MenuItem.Icon>
-                    <TextBlock Text="⇄" FontSize="14"/>
+                    <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Invert Selection -->
             <MenuItem x:Name="InvertSelectionMenuItem" Header="{DynamicResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click" ToolTip="{DynamicResource InvertSelectionTooltipString}">
                 <MenuItem.Icon>
-                    <TextBlock Text="⊕" FontSize="14"/>
+                    <TextBlock Text="&#xEA37;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -532,7 +332,9 @@
             <!-- Select All -->
             <MenuItem x:Name="SelectAllMenuItem" Header="{DynamicResource SelectAllString}" Click="SelectAllMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="▦" FontSize="14"/>
+                    <TextBlock Text="&#xE8B3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -542,7 +344,9 @@
             <MenuItem x:Name="CompareFileMenuItem" Header="Compare File with…"
                       Click="CompareFileMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -550,7 +354,9 @@
             <MenuItem x:Name="CompareSelectionMenuItem" Header="Compare Selection as Left…"
                       Click="CompareSelectionMenuItem_Click">
                 <MenuItem.Icon>
-                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>

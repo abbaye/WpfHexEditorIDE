@@ -1,125 +1,181 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ZBrush Project",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".zpr"
   ],
-  "description": "Pixologic ZBrush project file",
+  "description": "ZBrush Project (.zpr) is the full project save format for Pixologic ZBrush, a digital sculpting application widely used in film, game, and character design. A ZPR file stores the complete ZBrush application state including all tools, subtools, ZSpheres, FiberMesh, morph targets, polygroups, texture maps, materials, canvas state, and UI settings. The binary format begins with the 'ZBRH' magic bytes that identify it as a ZBrush header block. ZPR files are typically much larger than ZTL files as they include the full project context. The format is proprietary and undocumented by Pixologic/Maxon.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ZBrush Project Format"
+      "Pixologic ZBrush (no public file format specification)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/ZPR"
+      "https://en.wikipedia.org/wiki/ZBrush",
+      "https://www.maxon.net/zbrush",
+      "https://wiki.fileformat.com/3d/zpr/"
     ]
   },
   "detection": {
-    "signature": "5A50524F4A454354",
-    "offset": 0,
+    "signatures": [
+      { "value": "5A425248", "offset": 0, "label": "'ZBRH' ZBrush header magic", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "'ZBRH' magic at offset 0 is shared between ZPR and ZTL files. Disambiguation is by extension: .zpr is a full project, .ztl is a single tool."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "totalElements": 0,
-    "zbrushProjectSignature": "",
-    "version": ""
+    "zbrhMagic": "",
+    "versionField": 0,
+    "headerSize": 0,
+    "projectFlags": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ZBrush Project Signature",
+      "name": "ZBRH Magic",
       "offset": 0,
-      "length": 8,
+      "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ZPROJECT magic bytes",
-      "storeAs": "zbrushProjectSignature",
+      "opacity": 0.45,
+      "description": "4-byte ASCII magic 'ZBRH' (0x5A 0x42 0x52 0x48) identifying a ZBrush binary file header. This magic is shared between .zpr (project) and .ztl (tool) files; file extension is required to distinguish between the two.",
+      "storeAs": "zbrhMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
-      "offset": 8,
+      "name": "Version Field",
+      "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Project version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "4-byte field following the ZBRH magic in the ZBrush project header. Likely encodes the ZBrush version or format revision number. Exact semantics are proprietary and undocumented by Pixologic/Maxon.",
+      "storeAs": "versionField",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "Header Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "4-byte field that may indicate the size of the ZBrush project file header block. The header typically contains project metadata before the main tool and canvas data sections begin. Exact semantics are proprietary.",
+      "storeAs": "headerSize",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "type": "field",
+      "name": "Project Flags / Extended Header",
+      "offset": 12,
+      "length": 16,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "16-byte region of the ZBrush project header that may contain project-level flags, canvas dimensions, or a pointer to the tool list. The exact layout is proprietary and may vary between ZBrush versions.",
+      "storeAs": "projectFlags",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidZbrhMagic",
+      "expression": "zbrhMagic == 'ZBRH'",
+      "severity": "error",
+      "message": "ZBrush 'ZBRH' magic not found at offset 0. This is not a valid ZBrush project or tool file. The file may be corrupt or not a ZBrush binary file."
+    },
+    {
+      "name": "ProprietaryNote",
+      "expression": "true",
+      "severity": "warning",
+      "message": "ZBrush (.zpr) uses a proprietary undocumented binary format. Full interpretation requires ZBrush. Only header region can be reliably analyzed by hex inspection."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZBRH Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version Data", "offset": 4, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Extended Header", "offset": 12, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "zbrhMagic",
+    "primaryField": "versionField",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ZBrush Header",
+        "icon": "\uE71B",
+        "fields": ["zbrhMagic", "versionField"]
+      },
+      {
+        "title": "Project Data",
+        "icon": "\uE8B7",
+        "fields": ["headerSize", "projectFlags"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ZPR Header (JSON)",
+      "format": "json",
+      "fields": ["zbrhMagic", "versionField", "headerSize"]
     }
   ],
   "software": [
-    "ZBrush"
+    "Pixologic ZBrush",
+    "Maxon ZBrush"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".zpr"
-    ]
+    "extensions": [".zpr"],
+    "relatedFormats": ["ZTL", "OBJ", "FBX"],
+    "note": "Full ZBrush project save; same ZBRH magic as ZTL but contains complete project state; proprietary format"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Digital character sculpting",
+    "High-resolution organic modeling",
+    "Game asset creation",
+    "Film and VFX character development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read header fields",
-    "multiply": "Calculate mesh size"
+  "TechnicalDetails": {
+    "encoding": "binary-proprietary",
+    "specification": "undocumented",
+    "sharedMagicWith": ["ZTL"],
+    "developed_by": "Pixologic (now Maxon)"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pixologic ZBrush project file",
+    "analysisContext": "ZBrush project file with 'ZBRH' magic at offset 0. Proprietary binary format storing complete ZBrush application state. ZBRH magic is shared with ZTL tool files; extension distinguishes the two.",
     "suggestedInspections": [
-      "Validate ZBrush Project header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify 'ZBRH' magic at offset 0 and note that ZPR vs ZTL is distinguished by file extension",
+      "Inspect bytes 4-8 for a version or format revision indicator",
+      "Note that complete parsing requires the ZBrush application or reverse-engineered format documentation"
     ]
   }
 }

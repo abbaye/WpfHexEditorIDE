@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PCAP Network Capture",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".pcap",
     ".cap"

@@ -1,39 +1,41 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "miniSEED Seismic Data",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".mseed",
     ".miniseed"
   ],
-  "description": "Mini-SEED seismic data format (subset of SEED)",
+  "description": "miniSEED is a subset of the SEED (Standard for the Exchange of Earthquake Data) format, used for storing continuous seismic waveform data. Each miniSEED record is a fixed-length block (typically 512 or 4096 bytes, always a power of 2). Records begin with a 6-character ASCII sequence number followed by a 1-character data quality indicator ('D', 'R', 'Q', or 'M') and a reserved byte. The fixed header (48 bytes total) includes network, station, location, channel codes, start time (BTIME structure), number of samples, sample rate factor, sample rate multiplier, and data offset. Multiple records form a continuous time series. MiniSEED 3 adds 64-bit time, variable-length records, and JSON metadata.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "miniSEED Seismic Data Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MSEED"
-    ]
-  },
+  "references": [
+    "SEED Reference Manual V2.4, IRIS DMC",
+    "miniSEED 3 Specification v0.9"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/SEED_and_miniSEED",
+    "https://www.fdsn.org/pdf/SEEDManual_V2.4.pdf"
+  ],
   "detection": {
     "signature": "00",
     "offset": 0,
     "required": false,
+    "weight": 0.3,
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 48,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
     "sequenceNumber": "",
-    "recordIndicator": 0
+    "qualityIndicator": "",
+    "stationCode": "",
+    "locationCode": "",
+    "channelCode": "",
+    "networkCode": ""
   },
   "blocks": [
     {
@@ -42,87 +44,144 @@
       "offset": 0,
       "length": 6,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ASCII sequence number",
+      "opacity": 0.6,
+      "description": "6-character ASCII sequence number (e.g. '000001') that monotonically identifies each miniSEED record within a continuous data stream",
       "storeAs": "sequenceNumber",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Record Indicator",
+      "name": "Data Quality Indicator",
       "offset": 6,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Data record indicator (D/R/Q)",
-      "storeAs": "recordIndicator",
+      "opacity": 0.5,
+      "description": "Quality flag character: 'D' = data record (no quality check), 'R' = reconstructed, 'Q' = quality controlled, 'M' = merged; affects archival treatment",
+      "storeAs": "qualityIndicator",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Reserved Byte",
+      "offset": 7,
+      "length": 1,
+      "color": "#DDDDDD",
+      "opacity": 0.2,
+      "description": "Reserved byte at offset 7; must be space (0x20) in conformant miniSEED files; some implementations use this for extended flags",
+      "storeAs": "reservedByte",
       "valueType": "uint8"
     },
     {
       "type": "field",
-      "name": "Reserved",
-      "offset": 7,
-      "length": 1,
+      "name": "Station Code",
+      "offset": 8,
+      "length": 5,
       "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "5-character space-padded station code identifying the seismic station (e.g. 'ANMO ', 'BFO  '); part of the SEED channel identifier",
+      "storeAs": "stationCode",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Location / Channel / Network",
+      "offset": 13,
+      "length": 9,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Fixed header continuation: 2-char location code (blank = no location), 3-char channel code (e.g. 'BHZ' = broad-band horizontal Z), 2-char network code (e.g. 'IU', 'II')",
+      "storeAs": "channelCodes",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Start Time (BTIME)",
+      "offset": 20,
+      "length": 10,
+      "color": "#A8E6CF",
       "opacity": 0.3,
-      "description": "Reserved byte"
+      "description": "10-byte BTIME structure: 2-byte year (uint16 BE), 2-byte day-of-year (uint16 BE), 1-byte hour, 1-byte minute, 1-byte second, 1-byte unused, 2-byte tenths-of-milliseconds",
+      "storeAs": "startTime",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidSequenceNumber",
+      "description": "Bytes 0-5 must be ASCII digits or spaces forming a valid miniSEED sequence number; non-digit non-space characters indicate a non-miniSEED or corrupted file",
+      "offset": 0,
+      "length": 6,
+      "asciiRange": ["30", "39", "20"],
+      "severity": "warning"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
-    },
+      "name": "ValidQualityFlag",
+      "description": "Byte 6 must be one of 'D' (44), 'R' (52), 'Q' (51), or 'M' (4D); any other value indicates a non-standard or corrupt miniSEED data record indicator",
+      "offset": 6,
+      "length": 1,
+      "validValues": ["44", "52", "51", "4D"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Fixed Header",
+        "fields": [
+          { "label": "Sequence Number",   "offset": 0,  "length": 6,  "format": "ascii" },
+          { "label": "Quality Flag",      "offset": 6,  "length": 1,  "format": "ascii" },
+          { "label": "Station Code",      "offset": 8,  "length": 5,  "format": "ascii" },
+          { "label": "Location Code",     "offset": 13, "length": 2,  "format": "ascii" },
+          { "label": "Channel Code",      "offset": 15, "length": 3,  "format": "ascii" },
+          { "label": "Network Code",      "offset": 18, "length": 2,  "format": "ascii" },
+          { "label": "Start Time",        "offset": 20, "length": 10, "format": "hex" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
-    },
-    {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "miniSEED Record Header",
+      "fields": ["sequenceNumber", "qualityIndicator", "stationCode", "channelCodes", "startTime"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "ObsPy (Python)",
+    "libmseed (IRIS)",
+    "SeisComp3/SC3",
+    "IASPEI SeisGram2K",
+    "SAC (Seismic Analysis Code)"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".mseed",
-      ".miniseed"
-    ]
+    "seismology_standard": true,
+    "parent_format": "SEED",
+    "distributed_by": "IRIS DMC, ORFEUS, GEOSCOPE",
+    "version3": "miniSEED 3 (2021)"
   },
   "MimeTypes": [
+    "application/vnd.fdsn.mseed",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Seismograph waveform archiving",
+    "Real-time seismic network data streaming",
+    "Earthquake early warning system data",
+    "Seismological research data exchange"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 30,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 57,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "big-endian for fixed header",
+    "recordSizes": [512, 4096, "any power of 2"],
+    "fixedHeaderSize": 48,
+    "dataQualityFlags": ["D", "R", "Q", "M"]
   },
   "forensic": {
     "category": "science",
@@ -130,11 +189,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Mini-SEED seismic data format (subset of SEED)",
+    "analysisContext": "miniSEED has no binary magic — detection relies on the SEED channel identifier pattern and valid quality flag. Record size is always a power of 2 bytes. ObsPy's read() function is the standard Python interface.",
     "suggestedInspections": [
-      "Validate miniSEED Seismic Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify bytes 0-5 are ASCII digits/spaces (sequence number)",
+      "Verify byte 6 is D/R/Q/M (data quality indicator)",
+      "Read station (offset 8, 5 chars), location (13, 2), channel (15, 3), network (18, 2) for SEED channel ID",
+      "Parse BTIME at offset 20: year (uint16 BE), day-of-year (uint16 BE), hour, minute, second, unused, tmsec (uint16 BE)",
+      "Read number of samples at offset 30 (uint16 BE) and sample rate factor/multiplier at offsets 32/34 to compute sample rate",
+      "Data encoding type at offset 44 (uint8): 1=int16, 3=int32, 10=Steim-1, 11=Steim-2, 19=Steim-3"
     ]
   }
 }

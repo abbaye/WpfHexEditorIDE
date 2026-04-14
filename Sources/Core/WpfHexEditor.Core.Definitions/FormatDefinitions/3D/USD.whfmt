@@ -1,127 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Universal Scene Description",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".usd"
   ],
-  "description": "Pixar USD 3D scene format",
+  "description": "Universal Scene Description (USD) is a high-performance 3D scene format developed by Pixar Animation Studios and open-sourced via the USD framework. A .usd file can be either USDA (ASCII text) or USDC (binary crate) format — the USD layer defers to file content to determine the actual encoding. ASCII USD files begin with '#usda 1.0' while binary USD files begin with 'PXR-USDC'. USD supports hierarchical scene graphs, time-sampled data, composition arcs (references, payloads, inherits), layering, and non-destructive overrides, making it ideal for large-scale film and game production pipelines.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Universal Scene Description Format"
+      "Pixar USD File Format Specification",
+      "USD Glossary and Concepts"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/USD"
+      "https://openusd.org/release/usdfaq.html",
+      "https://en.wikipedia.org/wiki/Universal_Scene_Description",
+      "https://graphics.pixar.com/usd/docs/index.html"
     ]
   },
   "detection": {
-    "signature": "505344",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "23757364", "offset": 0, "label": "'#usd' ASCII prefix (USDA variant)", "weight": 0.8 },
+      { "value": "5058522D55534443", "offset": 0, "label": "'PXR-USDC' binary magic (USDC variant)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": ".usd may be either ASCII (starts with '#usda 1.0') or binary (starts with 'PXR-USDC'). Both variants are valid USD files."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "psdSignature": "",
-    "version": ""
+    "usdHeader": "",
+    "headerLine": "",
+    "variantType": "",
+    "crateVersion": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "PSD Signature",
+      "name": "USD Header Signature",
       "offset": 0,
-      "length": 3,
+      "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "USD PSD magic bytes",
-      "storeAs": "psdSignature",
+      "opacity": 0.45,
+      "description": "First 8 bytes identifying the USD variant. ASCII USD files begin with '#usda 1.' while binary USDC files begin with 'PXR-USDC'. Both are valid .usd files; the first byte distinguishes ASCII ('#'=0x23) from binary ('P'=0x50).",
+      "storeAs": "usdHeader",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
-      "offset": 3,
-      "length": 4,
+      "name": "First Header Line",
+      "offset": 0,
+      "length": 32,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "USD format version",
-      "storeAs": "version",
+      "opacity": 0.35,
+      "description": "First 32 bytes of the USD file. For ASCII USD this is typically '#usda 1.0\\n' followed by metadata. For binary USDC this contains the 8-byte magic 'PXR-USDC' followed by a 1-byte version and format fields.",
+      "storeAs": "headerLine",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Variant Type Region",
+      "offset": 32,
+      "length": 32,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region following the header signature that contains either the USD file schema version and metadata declarations (ASCII) or the USDC crate file version bytes and TOC pointer (binary). Helps confirm the encoding type.",
+      "storeAs": "variantType",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "type": "field",
+      "name": "Schema/Layer Data",
+      "offset": 64,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region containing the USD layer preamble data. For ASCII, this may include 'upAxis', 'metersPerUnit', or the opening of the default prim block. For binary USDC, this region is part of the structured crate data.",
+      "storeAs": "crateVersion",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidUsdHeader",
+      "expression": "usdHeader == '#usda 1.' || usdHeader == 'PXR-USDC'",
+      "severity": "warning",
+      "message": "USD file header does not match known ASCII ('#usda 1.0') or binary ('PXR-USDC') signatures. The file may use a non-standard USD variant or be corrupt."
+    },
+    {
+      "name": "FileNotEmpty",
+      "expression": "fileSize > 16",
+      "severity": "warning",
+      "message": "USD file is very small. A valid USD file should contain at least a layer header and one prim definition."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "USD Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Layer Metadata", "offset": 32, "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "Scene Data", "offset": 64, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "usdHeader",
+    "primaryField": "headerLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["usdHeader", "headerLine"]
+      },
+      {
+        "title": "Layer Data",
+        "icon": "\uE8B7",
+        "fields": ["variantType", "crateVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "USD Header (JSON)",
+      "format": "json",
+      "fields": ["usdHeader", "headerLine", "variantType"]
     }
   ],
   "software": [
-    "Pixar USD tools",
+    "Pixar USD Tools (usdview, usdcat)",
+    "Autodesk Maya",
+    "Houdini",
     "Blender",
-    "Maya",
-    "Houdini"
+    "Unreal Engine",
+    "Apple Reality Composer Pro"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".usd"
-    ]
+    "extensions": [".usd"],
+    "relatedFormats": ["USDA", "USDC", "USDZ", "GLB"],
+    "note": ".usd is a polymorphic format that can be either ASCII (USDA) or binary (USDC) — actual type determined by file content"
   },
   "MimeTypes": [
+    "model/vnd.usd",
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Film and VFX scene description",
+    "Game engine scene composition",
+    "AR/VR asset delivery (USDZ)",
+    "Non-destructive scene layering"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "variants": ["USDA (ASCII)", "USDC (Binary)"],
+    "layered": true,
+    "compositionArcs": ["references", "payloads", "inherits", "specializes"],
+    "developed_by": "Pixar Animation Studios"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pixar USD 3D scene format",
+    "analysisContext": "Pixar USD polymorphic 3D scene format. A .usd file is either ASCII ('#usda 1.0' header) or binary ('PXR-USDC' header). Supports composition arcs, time-sampled data, and non-destructive layering for large production pipelines.",
     "suggestedInspections": [
-      "Validate Universal Scene Description header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Determine variant by first bytes: '#usda' = ASCII text, 'PXR-USDC' = binary crate",
+      "For ASCII USD, parse layer metadata (upAxis, metersPerUnit) and enumerate prim definitions",
+      "For binary USDC, read the crate version byte after the 8-byte magic to determine parsing strategy"
     ]
   }
 }

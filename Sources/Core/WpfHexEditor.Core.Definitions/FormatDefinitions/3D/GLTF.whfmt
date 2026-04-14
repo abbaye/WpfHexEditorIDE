@@ -1,123 +1,184 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "GL Transmission Format",
-  "version": "2.33",
+  "version": "2.32",
   "extensions": [
     ".gltf"
   ],
-  "description": "Khronos glTF 3D model (JSON format)",
+  "description": "GL Transmission Format (glTF) ASCII JSON scene descriptor developed by the Khronos Group. A .gltf file is a UTF-8 encoded JSON document that describes a 3D scene including meshes, materials (PBR), textures, cameras, animations, and skins. Binary buffers (.bin) and texture images are referenced as external files or embedded as base64 data URIs. glTF is the JPEG of 3D — designed for efficient web transmission and real-time rendering. Detection is weak since it is plain JSON; the required 'asset' object with a 'version' field distinguishes it from generic JSON.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "GL Transmission Format Format"
+      "Khronos glTF 2.0 Specification"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/GLTF"
+      "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+      "https://en.wikipedia.org/wiki/GlTF",
+      "https://github.com/KhronosGroup/glTF"
     ]
   },
   "detection": {
-    "signature": "7B",
-    "offset": 0,
+    "signatures": [
+      { "value": "7B", "offset": 0, "label": "JSON opening brace '{'", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 6.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "GLTF is plain JSON; detection is extension-based. The JSON should contain an 'asset' object with a 'version' field ('1.0' or '2.0')."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "jsonStart": 0
+    "jsonBrace": 0,
+    "headerText": "",
+    "assetMarker": "",
+    "versionMarker": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "JSON Start",
+      "name": "JSON Opening Brace",
       "offset": 0,
       "length": 1,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Opening brace for JSON",
-      "storeAs": "jsonStart",
+      "opacity": 0.45,
+      "description": "Opening curly brace character '{' (0x7B) that starts the top-level JSON object of a glTF scene file. This alone is insufficient for definitive detection; the file extension and 'asset' key presence confirm the glTF format.",
+      "storeAs": "jsonBrace",
       "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "JSON Header Text",
+      "offset": 1,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First 32 bytes of the JSON body after the opening brace. A valid glTF file typically starts with whitespace followed by the 'asset' key or 'scene' key. Inspecting this region helps confirm glTF versus generic JSON.",
+      "storeAs": "headerText",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "type": "field",
+      "name": "Asset Object Region",
+      "offset": 33,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region of the JSON file where the 'asset' object is typically found. Per the glTF spec, the asset object must include a 'version' string. The version value '2.0' identifies glTF 2.0; '1.0' identifies the legacy version.",
+      "storeAs": "assetMarker",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "type": "field",
+      "name": "Scene/Meshes Region",
+      "offset": 97,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region of the JSON document that typically contains the scene, nodes, or meshes array declarations. This area defines the scene graph root and mesh references that link to accessor and buffer view definitions.",
+      "storeAs": "versionMarker",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StartsWithBrace",
+      "expression": "jsonBrace == 0x7B",
+      "severity": "error",
+      "message": "File does not start with '{'. A glTF JSON file must begin with a JSON object. The file may be binary glTF (GLB) or not a glTF file."
+    },
+    {
+      "name": "NotBinaryGltf",
+      "expression": "jsonBrace != 0x67",
+      "severity": "warning",
+      "message": "If first byte is 0x67 ('g'), this may be binary glTF (GLB) with magic 'glTF' — use GLB format definition instead."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "JSON Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Asset Region", "offset": 33, "icon": "\uE946", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "jsonBrace",
+    "primaryField": "assetMarker",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "JSON Header",
+        "icon": "\uE71B",
+        "fields": ["jsonBrace", "headerText"]
+      },
+      {
+        "title": "Scene Data",
+        "icon": "\uE8B7",
+        "fields": ["assetMarker", "versionMarker"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GLTF Header (JSON)",
+      "format": "json",
+      "fields": ["jsonBrace", "headerText", "assetMarker"]
     }
   ],
   "software": [
+    "Blender",
     "Three.js",
     "Babylon.js",
     "Unity",
-    "Unreal Engine",
-    "Blender"
+    "Unreal Engine"
   ],
   "formatRelationships": {
-    "khronos_standard": true,
-    "open_source": true,
-    "replaces": "COLLADA for web",
-    "json_based": true
+    "category": "3D",
+    "extensions": [".gltf"],
+    "relatedFormats": ["GLB", "FBX", "USD"],
+    "note": "ASCII JSON companion to GLB binary container; references external .bin and texture files"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "model/gltf+json",
+    "application/json"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Web-based 3D rendering",
+    "AR/VR scene delivery",
+    "3D asset interchange",
+    "Real-time visualization"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "encoding": "UTF-8 JSON text",
+    "externalReferences": true,
+    "embeddedBase64": true,
+    "specification": "Khronos glTF 2.0"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Khronos glTF 3D model (JSON format)",
+    "analysisContext": "Khronos glTF ASCII JSON scene format. Plain text JSON starting with '{'. The 'asset.version' field distinguishes glTF versions. External .bin files and textures are referenced by URI.",
     "suggestedInspections": [
-      "Validate GL Transmission Format header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Confirm file starts with '{' and locate the 'asset' object containing the version string",
+      "Enumerate meshes, materials, and bufferViews to understand scene complexity",
+      "Check for base64 data URIs embedded inline versus external file references"
     ]
   }
 }

@@ -1,127 +1,180 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PostScript Document",
   "version": "1.15",
-  "extensions": [
-    ".ps",
-    ".eps"
-  ],
-  "description": "PostScript document format",
+  "extensions": [ ".ps", ".eps", ".ai" ],
+  "description": "PostScript is a page description language developed by Adobe Systems in 1982. PostScript files begin with the magic '%!' at offset 0 (0x2521). Full PostScript documents start with '%!PS-Adobe-' followed by the Adobe Document Structuring Convention (DSC) version (e.g., '3.0'). Encapsulated PostScript (EPS) starts with '%!PS-Adobe-3.0 EPSF-3.0'. EPS files are self-contained PostScript fragments that define a bounding box for single-page artwork. Adobe Illustrator (.ai) files before CS are EPS-compatible. The format is text-based and uses ASCII/UTF-8 encoding, making binary detection relatively weak but reliable for the '%!' prefix.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "PostScript Document Format"
+      "PostScript Language Reference Manual, 3rd Edition - Adobe",
+      "Adobe Document Structuring Conventions (DSC) 3.0",
+      "Encapsulated PostScript File Format Specification v3.0"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/PS"
+      "https://www.adobe.com/products/postscript.html",
+      "https://en.wikipedia.org/wiki/PostScript",
+      "https://ghostscript.com/doc/current/Use.htm",
+      "https://www.fileformat.info/format/eps/egff.htm"
     ]
   },
   "detection": {
-    "signature": "25215053",
-    "offset": 0,
+    "signatures": [
+      { "hex": "25215053", "offset": 0, "weight": 0.9 },
+      { "hex": "2521", "offset": 0, "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 5.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "'%!' at offset 0 is reliable. '%!PS-' (0x2521 0x50 0x53 0x2D) is stronger. EPS adds 'EPSF-' after the Adobe DSC version. Some binary PostScript files start with 0xC5D0D3C6 (PC binary format)."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "postscriptHeader": 0,
-    "totalPixels": 0
+    "psMagic": "",
+    "psType": "",
+    "psVersion": "",
+    "boundingBox": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "PostScript Header",
+      "name": "PostScript Magic",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "%!PS signature",
-      "storeAs": "postscriptHeader",
-      "valueType": "uint32"
+      "description": "PostScript magic '%!' (0x25 0x21). All PostScript variants start with this 2-byte ASCII prefix.",
+      "storeAs": "psMagic",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "type": "field",
+      "name": "Format Type",
+      "offset": 2,
+      "length": 10,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "PostScript type identifier: 'PS-Adobe-' for full PS/EPS, or 'FontType1-' for fonts",
+      "storeAs": "psType",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
+      "type": "field",
+      "name": "DSC Version",
+      "offset": 12,
+      "length": 8,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Adobe DSC version string: '3.0' followed by optional ' EPSF-3.0' for EPS files",
+      "storeAs": "psVersion",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "type": "field",
+      "name": "BoundingBox",
+      "offset": 25,
+      "length": 32,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "For EPS: '%%BoundingBox: llx lly urx ury' — defines the page dimensions in points",
+      "storeAs": "boundingBox",
+      "valueType": "ascii"
+    },
+    {
+      "type": "data",
+      "name": "Prolog Section",
+      "offset": 60,
+      "length": 64,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "PostScript prolog: %%BeginProlog ... %%EndProlog — defines reusable procedures"
     }
   ],
+  "assertions": [
+    { "field": "psMagic", "operator": "equals", "value": "%!", "description": "First 2 bytes must be '%!' (0x25 0x21)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PostScript Header", "offset": 0, "description": "'%!' magic + format type + DSC version" },
+      { "name": "BoundingBox", "offset": 25, "description": "EPS bounding box declaration" },
+      { "name": "Prolog", "offset": 60, "description": "PostScript prolog section" }
+    ]
+  },
+  "inspector": {
+    "badge": "PS",
+    "primaryField": "psType",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Format Identity", "fields": ["psMagic", "psType", "psVersion"] },
+      { "name": "Page Info", "fields": ["boundingBox"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PostScript Info (JSON)",
+      "format": "json",
+      "fields": ["psMagic", "psType", "psVersion", "boundingBox"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "PostScript is a Turing-complete language — malicious PS files can execute arbitrary code via Ghostscript",
+      "EPS files from untrusted sources should not be processed by Ghostscript without -dSAFER flag",
+      "Ghostscript CVEs frequently target malicious EPS/PS files"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PostScript files start with '%!' (2 bytes). Full documents start '%!PS-Adobe-3.0'. EPS adds ' EPSF-3.0'. PostScript is a Turing-complete programming language — malicious PS/EPS files can exploit Ghostscript (CVE-2018-16509 'Dr. Evil' exploit). The %%BoundingBox comment is mandatory in EPS files. Binary PostScript (Mac format) starts with 0xC5D0D3C6.",
+    "suggestedInspections": [
+      "Verify '%!' at offset 0 (0x25 0x21)",
+      "Check next chars: 'PS-Adobe-' = full PostScript, 'FontType1-' = PS font",
+      "For EPS: search for '%%BoundingBox:' comment (required by EPS spec)",
+      "Check for '%%EPSF-' marker to distinguish EPS from regular PS",
+      "Scan for potentially dangerous operators: exec, file, run, systemdict — malware indicators"
+    ]
+  },
   "software": [
     "Ghostscript",
     "Adobe Distiller",
     "Evince",
-    "GSview"
+    "GSview",
+    "Inkscape",
+    "Adobe Illustrator"
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [
-      ".ps",
-      ".eps"
-    ]
+    "extensions": [".ps", ".eps", ".ai"],
+    "relatedFormats": ["PDF", "SVG"],
+    "note": "PostScript predates PDF. PDF is effectively a linearized, structured PostScript subset. EPS is single-page PostScript for embedding in other documents."
   },
-  "MimeTypes": [
-    "application/ps"
-  ],
-  "Software": [
-    "Ghostscript",
-    "Adobe Distiller",
-    "Evince",
-    "GSview"
-  ],
+  "MimeTypes": [ "application/postscript", "application/x-eps", "image/x-eps" ],
   "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
+    "Professional print publishing and typesetting",
+    "Vector graphics interchange (EPS)",
+    "Legacy printer language for PostScript printers"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "DocumentFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
-  "forensic": {
-    "category": "document",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "PostScript document format",
-    "suggestedInspections": [
-      "Validate PostScript Document file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
-    ]
+    "DocumentFormat": true,
+    "Language": "PostScript (Turing-complete page description language)",
+    "Encoding": "ASCII / Latin-1",
+    "Note": "PostScript is a security risk when processed by Ghostscript without -dSAFER sandbox"
   }
 }

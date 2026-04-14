@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ZPAQ Archive",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [ ".zpaq" ],
   "description": "ZPAQ is a journaling and incremental archiver by Matt Mahoney using context-mixing compression for near-maximum compression ratios. The file format uses 'zPAQ' (0x7A504151) as a 4-byte magic at offset 0, sometimes followed by block header bytes. ZPAQ also has an alternate 7-byte block marker 0x37 0x6B 0x53 0x74 0xA0 0x31 0x83 used internally. ZPAQ archives are append-only journals: adding files creates new versions without modifying existing data, making the format excellent for backup with version history. The compression uses PAQ-derived algorithms with extremely high ratios but slow speed.",
   "category": "Archives",

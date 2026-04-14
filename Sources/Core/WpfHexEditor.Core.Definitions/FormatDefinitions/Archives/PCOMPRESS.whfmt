@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Parallel Compression Archive",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [ ".pz" ],
   "description": "Pcompress is an open-source parallel deduplication and compression utility by Moinak Ghosh. The archive format uses a 'PC' prefix in its magic bytes. Pcompress supports multiple compression backends (LZMA, BZIP2, LZ4, etc.) and inline data deduplication using content-defined chunking. The format is niche with limited third-party tooling. The magic signature 'PC' at offset 0 is weak without additional header validation. Detection confidence is low; the format is primarily encountered in Linux server backup contexts.",
   "category": "Archives",

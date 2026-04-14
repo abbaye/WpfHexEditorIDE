@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Dolby Digital Plus",
-  "version": "1.16",
+  "version": "1.15",
   "extensions": [
     ".eac3",
     ".ec3"

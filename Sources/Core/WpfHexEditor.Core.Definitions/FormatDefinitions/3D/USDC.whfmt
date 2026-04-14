@@ -1,136 +1,186 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "USD Binary (Crate)",
-  "version": "1.15",
+  "version": "1.14",
   "extensions": [
     ".usdc"
   ],
-  "description": "Pixar USD binary crate format",
+  "description": "USD Binary Crate (USDC) is the high-performance binary serialization format for Pixar's Universal Scene Description. Every USDC file begins with the 8-byte ASCII magic 'PXR-USDC' followed by a 1-byte software version and 1-byte file version encoding the crate format revision. The binary crate uses a structured layout with a table of contents (TOC) pointer, token lists, string tables, path trees, field sets, and typed value sections. USDC files are substantially more compact and faster to load than equivalent ASCII (.usda) files and are the preferred format for production USD pipelines and runtime delivery.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "USD Binary (Crate) Format"
+      "Pixar USD Crate File Format (open source implementation)",
+      "OpenUSD pxr/usd/usd/crateFile.h"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/USDC"
+      "https://openusd.org/release/usdfaq.html",
+      "https://github.com/PixarAnimationStudios/OpenUSD",
+      "https://en.wikipedia.org/wiki/Universal_Scene_Description"
     ]
   },
   "detection": {
-    "signature": "505344",
-    "offset": 0,
+    "signatures": [
+      { "value": "5058522D55534443", "offset": 0, "label": "'PXR-USDC' binary magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0,
+      "note": "Exact 8-byte 'PXR-USDC' magic at offset 0 is the definitive identifier for binary USD crate files."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "timestamp": 0,
-    "entryPoint": 0,
-    "psdSignature": "",
-    "version": ""
+    "pxrMagic": "",
+    "softwareVersion": 0,
+    "fileVersion": 0,
+    "tocOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "PSD Signature",
+      "name": "PXR-USDC Magic",
       "offset": 0,
-      "length": 3,
+      "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "USD crate magic bytes",
-      "storeAs": "psdSignature",
+      "opacity": 0.45,
+      "description": "8-byte ASCII magic string 'PXR-USDC' that uniquely and reliably identifies a Pixar USD binary crate file. This signature appears at the absolute start of every .usdc file and is used as the primary detection mechanism.",
+      "storeAs": "pxrMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
-      "offset": 3,
-      "length": 8,
+      "name": "Software Version",
+      "offset": 8,
+      "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Crate format version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "1-byte integer at offset 8 encoding the software (USD library) version that wrote this crate file. Used by the USD runtime to select compatible crate reading code when handling files from different USD library versions.",
+      "storeAs": "softwareVersion",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Machine Type",
-      "variable": "machineType",
-      "description": "Machine Type"
+      "type": "field",
+      "name": "File Format Version",
+      "offset": 9,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "1-byte integer at offset 9 encoding the crate file format revision number. Different values indicate different binary layout versions for the TOC, token tables, and field encoding. Must be understood by the USD parser.",
+      "storeAs": "fileVersion",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Section Count",
-      "variable": "sectionCount",
-      "description": "Section Count"
+      "type": "field",
+      "name": "TOC Offset",
+      "offset": 16,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "8-byte little-endian 64-bit integer giving the byte offset within the file of the Table of Contents (TOC). The TOC is the root structure from which all tokens, strings, paths, fields, and value arrays are located.",
+      "storeAs": "tocOffset",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidPxrMagic",
+      "expression": "pxrMagic == 'PXR-USDC'",
+      "severity": "error",
+      "message": "Binary USD crate magic 'PXR-USDC' not found at offset 0. This is not a valid USDC file. It may be a USD ASCII file (starts with '#usda 1.0') or a corrupt file."
     },
     {
-      "type": "metadata",
-      "name": "Entry Point",
-      "variable": "entryPoint",
-      "description": "Entry Point"
+      "name": "VersionSet",
+      "expression": "softwareVersion > 0 || fileVersion > 0",
+      "severity": "warning",
+      "message": "Both version bytes are zero. This may indicate a corrupt or empty crate file header."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "USDC Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version Bytes", "offset": 8, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "TOC Pointer", "offset": 16, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "pxrMagic",
+    "primaryField": "fileVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Crate Header",
+        "icon": "\uE71B",
+        "fields": ["pxrMagic", "softwareVersion", "fileVersion"]
+      },
+      {
+        "title": "Structure",
+        "icon": "\uE8B7",
+        "fields": ["tocOffset"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "USDC Header (JSON)",
+      "format": "json",
+      "fields": ["pxrMagic", "softwareVersion", "fileVersion"]
     }
   ],
   "software": [
-    "Pixar USD tools",
-    "Maya",
-    "Houdini"
+    "Pixar USD Tools",
+    "Autodesk Maya",
+    "Houdini",
+    "Unreal Engine",
+    "Apple Reality Composer Pro"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".usdc"
-    ],
-    "pixar_format": true,
-    "film_industry": true
+    "extensions": [".usdc"],
+    "relatedFormats": ["USD", "USDA", "USDZ"],
+    "note": "Binary crate format for USD; compact and fast-loading; ASCII counterpart is USDA"
   },
   "MimeTypes": [
+    "model/vnd.usdc",
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "High-performance USD scene loading",
+    "Film and VFX production pipelines",
+    "Game engine USD integration",
+    "AR/VR asset packaging (inside USDZ)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header",
-    "calculateCRC32": "Validate"
+  "TechnicalDetails": {
+    "encoding": "binary-little-endian",
+    "magic": "PXR-USDC",
+    "tocBased": true,
+    "developed_by": "Pixar Animation Studios"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pixar USD binary crate format",
+    "analysisContext": "Pixar USD binary crate format with 8-byte 'PXR-USDC' magic followed by version bytes. TOC pointer at offset 16 gives access to all crate sections. Fast-loading binary counterpart to USDA text files.",
     "suggestedInspections": [
-      "Validate USD Binary (Crate) header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify 'PXR-USDC' magic and read version bytes at offset 8-9 to determine crate format revision",
+      "Read 64-bit TOC offset at offset 16 to locate the table of contents for full structure traversal",
+      "Compare with ASCII USDA equivalent to understand the complete scene graph structure"
     ]
   }
 }
