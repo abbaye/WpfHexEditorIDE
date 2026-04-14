@@ -267,7 +267,7 @@ namespace WpfHexEditor.Core.Services.FormatParsing
             foreach (var (json, category) in formats)
             {
                 if (string.IsNullOrEmpty(json)) continue;
-                var fmt = _detectionService.ImportFromJson(json);
+                var fmt = FormatDetectionService.ImportFromJson(json);
                 if (fmt != null)
                 {
                     fmt.Category ??= category;

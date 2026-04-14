@@ -6,8 +6,12 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Runtime.ExceptionServices;
+using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Services;
+using WpfHexEditor.Editor.Core;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WpfHexEditor.Tests
 {
@@ -115,7 +119,7 @@ namespace WpfHexEditor.Tests
             }";
 
             var service = new FormatDetectionService();
-            var format = service.ImportFromJson(json);
+            var format = FormatDetectionService.ImportFromJson(json);
 
             Assert.IsNotNull(format);
             Assert.AreEqual("Test Format", format.FormatName);
@@ -178,7 +182,7 @@ namespace WpfHexEditor.Tests
 
             // Load format manually (simulating JSON load)
             var json = service.ExportToJson(zipFormat);
-            var loadedFormat = service.ImportFromJson(json);
+            var loadedFormat = FormatDetectionService.ImportFromJson(json);
             service.LoadFormatDefinition(System.IO.Path.GetTempFileName()); // Workaround for loading
 
             // Detect
@@ -414,7 +418,7 @@ namespace WpfHexEditor.Tests
 
             // Manually inject (simulating load)
             var json = service.ExportToJson(format);
-            var imported = service.ImportFromJson(json);
+            var imported = FormatDetectionService.ImportFromJson(json);
 
             // In real scenario, we would load and then query
             Assert.IsNotNull(imported);
@@ -489,7 +493,7 @@ namespace WpfHexEditor.Tests
             var service = new FormatDetectionService();
             var formatDefPath = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "..", "..", "..", "..", "WpfHexEditor.Core", "FormatDefinitions");
+                "..", "..", "..", "..", "..", "Core", "WpfHexEditor.Core.Definitions", "FormatDefinitions");
 
             // Normalize path
             formatDefPath = System.IO.Path.GetFullPath(formatDefPath);
@@ -515,7 +519,7 @@ namespace WpfHexEditor.Tests
             var service = new FormatDetectionService();
             var formatDefPath = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "..", "..", "..", "..", "WpfHexEditor.Core", "FormatDefinitions");
+                "..", "..", "..", "..", "..", "Core", "WpfHexEditor.Core.Definitions", "FormatDefinitions");
 
             formatDefPath = System.IO.Path.GetFullPath(formatDefPath);
 
@@ -570,7 +574,7 @@ namespace WpfHexEditor.Tests
             var service = new FormatDetectionService();
             var formatDefPath = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "..", "..", "..", "..", "WpfHexEditor.Core", "FormatDefinitions");
+                "..", "..", "..", "..", "..", "Core", "WpfHexEditor.Core.Definitions", "FormatDefinitions");
 
             formatDefPath = System.IO.Path.GetFullPath(formatDefPath);
 
@@ -642,6 +646,21 @@ namespace WpfHexEditor.Tests
             int expectedMinimum = (int)(testExtensions.Count * 0.8);
             Assert.IsTrue(foundCount >= expectedMinimum,
                 $"Only {foundCount}/{testExtensions.Count} extensions found. Expected at least {expectedMinimum}.");
+        }
+
+        [TestMethod]
+        public void LoadResourcesTest()
+        {
+            var r = EmbeddedFormatCatalog.MakeEntries(true);
+            Assert.IsNotEmpty(r);
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(EmbeddedFormatCatalog.MakeEntries), typeof(EmbeddedFormatCatalog), dynamicDataSourceArguments:[false])]
+        public void LoadAllFormats_CheckSerializationException(EmbeddedFormatEntry entry)
+        {
+            var e = WpfHexEditor.HexEditor.HexEditor.ParseEmbeddedFormatEntry(entry);
+            Assert.IsNotNull(e);
         }
 
         #endregion

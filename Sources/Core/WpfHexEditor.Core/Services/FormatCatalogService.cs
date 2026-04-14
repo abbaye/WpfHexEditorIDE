@@ -55,7 +55,7 @@ namespace WpfHexEditor.Core.Services
                 if (string.IsNullOrEmpty(json)) continue;
                 try
                 {
-                    var fmt = parser.ImportFromJson(json);
+                    var fmt = FormatDetectionService.ImportFromJson(json);
                     if (fmt != null)
                     {
                         fmt.Category ??= category;
@@ -73,7 +73,7 @@ namespace WpfHexEditor.Core.Services
                     try
                     {
                         var json = File.ReadAllText(file);
-                        var fmt = parser.ImportFromJson(json);
+                        var fmt = FormatDetectionService.ImportFromJson(json);
                         if (fmt != null) _formats.Add(fmt);
                     }
                     catch { /* skip bad file */ }
@@ -91,7 +91,7 @@ namespace WpfHexEditor.Core.Services
                     try
                     {
                         var json = File.ReadAllText(file);
-                        var fmt = parser.ImportFromJson(json);
+                        var fmt = FormatDetectionService.ImportFromJson(json);
                         if (fmt != null) _formats.Add(fmt);
                     }
                     catch { /* skip bad file */ }

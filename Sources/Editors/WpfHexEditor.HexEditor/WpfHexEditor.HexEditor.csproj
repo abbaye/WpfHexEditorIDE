@@ -66,6 +66,10 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" PrivateAssets="all" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="WpfHexEditor.Tests" />
+  </ItemGroup>
+
   <!-- Bundle all dependency DLLs into the NuGet package -->
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>

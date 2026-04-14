@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
-using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Events;
@@ -32,6 +31,14 @@ namespace WpfHexEditor.Core.Services
         private static IReadOnlyList<FormatDefinition>? s_sharedFormats;
         private static readonly object s_sharedLock = new();
 
+        private static readonly JsonSerializerOptions s_importOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
+
+
         /// <summary>
         /// Set the shared format catalog used by ALL FormatDetectionService instances.
         /// Called once at app startup by FormatCatalogService. Thread-safe.
@@ -45,7 +52,10 @@ namespace WpfHexEditor.Core.Services
         /// <summary>Static shared catalog (read-only).</summary>
         public static IReadOnlyList<FormatDefinition>? SharedCatalog
         {
-            get { lock (s_sharedLock) return s_sharedFormats; }
+            get
+            {
+                lock (s_sharedLock) return s_sharedFormats;
+            }
         }
 
         /// <summary>
@@ -64,6 +74,7 @@ namespace WpfHexEditor.Core.Services
                     combined.AddRange(shared);
                     return combined;
                 }
+
                 if (_loadedFormats.Count > 0) return _loadedFormats;
                 return shared != null ? new List<FormatDefinition>(shared) : _loadedFormats;
             }
@@ -213,7 +224,8 @@ namespace WpfHexEditor.Core.Services
                 {
                     // File path format: "C:/FormatDefinitions/Archives/ZIP.whfmt"
                     var parts = path.Split('/');
-                    var formatDefsIndex = Array.FindIndex(parts, p => p.Equals("FormatDefinitions", StringComparison.OrdinalIgnoreCase));
+                    var formatDefsIndex = Array.FindIndex(parts,
+                        p => p.Equals("FormatDefinitions", StringComparison.OrdinalIgnoreCase));
                     if (formatDefsIndex >= 0 && formatDefsIndex < parts.Length - 2)
                     {
                         return parts[formatDefsIndex + 1]; // Category is next part after "FormatDefinitions"
@@ -268,7 +280,7 @@ namespace WpfHexEditor.Core.Services
                 if (tier1.Any(c => c.ConfidenceScore >= 0.9))
                 {
                     return CreateResult(tier1.OrderByDescending(c => c.ConfidenceScore).First(),
-                                      candidates, contentAnalysis, sw);
+                        candidates, contentAnalysis, sw);
                 }
 
                 // TIER 2: Text format detection (if appears to be text)
@@ -307,7 +319,7 @@ namespace WpfHexEditor.Core.Services
             ByteProvider byteProvider = null,
             List<AssertionResult> assertionResultsOut = null)
         {
-            blocks    = new List<CustomBackgroundBlock>();
+            blocks = new List<CustomBackgroundBlock>();
             variables = new Dictionary<string, object>();
 
             if (format == null || !format.IsValid())
@@ -365,6 +377,7 @@ namespace WpfHexEditor.Core.Services
                         if (!r.Passed)
                             Debug.WriteLine($"[FormatDetection] Assertion '{r.Name}' failed: {r.Message}");
                     }
+
                     // D3 — pass assertion results out for ForensicAlerts panel
                     assertionResultsOut?.AddRange(assertResults);
                 }
@@ -383,7 +396,8 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// TIER 1: Detect formats with strong signatures (required: true, unique/strong)
         /// </summary>
-        private List<FormatMatchCandidate> DetectWithStrongSignatures(byte[] data, string fileName, ContentAnalysisResult contentAnalysis, ByteProvider byteProvider, CancellationToken ct = default)
+        private List<FormatMatchCandidate> DetectWithStrongSignatures(byte[] data, string fileName,
+            ContentAnalysisResult contentAnalysis, ByteProvider byteProvider, CancellationToken ct = default)
         {
             var candidates = new List<FormatMatchCandidate>();
 
@@ -426,7 +440,8 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// TIER 2: Detect text-based formats using content heuristics
         /// </summary>
-        private List<FormatMatchCandidate> DetectTextFormats(byte[] data, string fileName, ContentAnalysisResult contentAnalysis, ByteProvider byteProvider, CancellationToken ct = default)
+        private List<FormatMatchCandidate> DetectTextFormats(byte[] data, string fileName,
+            ContentAnalysisResult contentAnalysis, ByteProvider byteProvider, CancellationToken ct = default)
         {
             var candidates = new List<FormatMatchCandidate>();
 
@@ -478,14 +493,15 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// TIER 3: Detect formats with weak/no signatures (last resort)
         /// </summary>
-        private List<FormatMatchCandidate> DetectWithWeakSignatures(byte[] data, string fileName, ContentAnalysisResult contentAnalysis, ByteProvider byteProvider, CancellationToken ct = default)
+        private List<FormatMatchCandidate> DetectWithWeakSignatures(byte[] data, string fileName,
+            ContentAnalysisResult contentAnalysis, ByteProvider byteProvider, CancellationToken ct = default)
         {
             var candidates = new List<FormatMatchCandidate>();
 
             // Only check formats with weak/no signatures
             var weakFormats = EffectiveFormats
                 .Where(f => f.Detection?.Required == false ||
-                           GetSignatureStrength(f.Detection) <= SignatureStrength.Weak);
+                            GetSignatureStrength(f.Detection) <= SignatureStrength.Weak);
 
             // Heavily weight extension matching for weak signatures
             var extensionMatches = weakFormats.Where(f => MatchesExtension(f, fileName));
@@ -502,7 +518,7 @@ namespace WpfHexEditor.Core.Services
                         Blocks = blocks,
                         Variables = variables,
                         Tier = MatchTier.FallbackWeak,
-                        ExtensionConfidence = 0.6,  // Lower confidence for weak matches
+                        ExtensionConfidence = 0.6, // Lower confidence for weak matches
                         AssertionResults = assertOut3
                     };
 
@@ -516,12 +532,13 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// Score and rank all candidates by confidence
         /// </summary>
-        private void ScoreAndRankCandidates(List<FormatMatchCandidate> candidates, string fileName, ContentAnalysisResult contentAnalysis, byte[] data = null)
+        private void ScoreAndRankCandidates(List<FormatMatchCandidate> candidates, string fileName,
+            ContentAnalysisResult contentAnalysis, byte[] data = null)
         {
             // Detect shared signatures: multiple candidates matching the same magic bytes
             bool hasSharedSignatures = candidates.Count > 1 &&
-                candidates.Select(c => c.Format?.Detection?.Signature).Distinct().Count() <
-                candidates.Count(c => c.Format?.Detection?.Signature != null);
+                                       candidates.Select(c => c.Format?.Detection?.Signature).Distinct().Count() <
+                                       candidates.Count(c => c.Format?.Detection?.Signature != null);
 
             // For ZIP-based formats, analyze the first entry name to disambiguate
             string zipFirstEntryName = null;
@@ -584,14 +601,14 @@ namespace WpfHexEditor.Core.Services
                 switch (candidate.Tier)
                 {
                     case MatchTier.StrongSignature:
-                        score *= 1.0;  // No penalty
+                        score *= 1.0; // No penalty
                         break;
                     case MatchTier.ContentBased:
                         score *= 0.9;
                         factors.Add("Text format");
                         break;
                     case MatchTier.FallbackWeak:
-                        score *= 0.6;  // Heavy penalty
+                        score *= 0.6; // Heavy penalty
                         factors.Add("Weak signature");
                         break;
                 }
@@ -603,7 +620,7 @@ namespace WpfHexEditor.Core.Services
                 if (hasSharedSignatures && !extensionMatches && !string.IsNullOrWhiteSpace(fileName))
                 {
                     candidate.ExtensionConfidence = 0.0;
-                    score *= 0.25;  // Reduce total score to 25%
+                    score *= 0.25; // Reduce total score to 25%
                     factors.Add("Extension mismatch penalty (shared signature)");
                 }
 
@@ -618,7 +635,8 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// Decide final format based on candidates and confidence
         /// </summary>
-        private FormatDetectionResult DecideFormat(List<FormatMatchCandidate> candidates, ContentAnalysisResult contentAnalysis, Stopwatch sw)
+        private FormatDetectionResult DecideFormat(List<FormatMatchCandidate> candidates,
+            ContentAnalysisResult contentAnalysis, Stopwatch sw)
         {
             sw.Stop();
 
@@ -638,7 +656,7 @@ namespace WpfHexEditor.Core.Services
             {
                 Format = best.Format,
                 Blocks = best.Blocks,
-                Variables = best.Variables,  // FIX: Copy variables from candidate
+                Variables = best.Variables, // FIX: Copy variables from candidate
                 Confidence = best.ConfidenceScore,
                 Candidates = candidates,
                 ContentAnalysis = contentAnalysis,
@@ -674,8 +692,9 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// Create result from a single candidate
         /// </summary>
-        private FormatDetectionResult CreateResult(FormatMatchCandidate candidate, List<FormatMatchCandidate> allCandidates,
-                                                   ContentAnalysisResult contentAnalysis, Stopwatch sw)
+        private FormatDetectionResult CreateResult(FormatMatchCandidate candidate,
+            List<FormatMatchCandidate> allCandidates,
+            ContentAnalysisResult contentAnalysis, Stopwatch sw)
         {
             sw.Stop();
 
@@ -711,12 +730,14 @@ namespace WpfHexEditor.Core.Services
             if (string.IsNullOrWhiteSpace(detection.Signature))
             {
                 if (detection.Signatures != null && detection.Signatures.Count > 0)
-                    return detection.Strength != SignatureStrength.Medium ? detection.Strength : SignatureStrength.Medium;
+                    return detection.Strength != SignatureStrength.Medium
+                        ? detection.Strength
+                        : SignatureStrength.Medium;
                 return SignatureStrength.None;
             }
 
             // Use configured strength if available
-            if (detection.Strength != SignatureStrength.Medium)  // Medium is default
+            if (detection.Strength != SignatureStrength.Medium) // Medium is default
                 return detection.Strength;
 
             // Auto-classify based on signature length and common patterns
@@ -744,7 +765,7 @@ namespace WpfHexEditor.Core.Services
         private double CalculateSignatureConfidence(DetectionRule detection)
         {
             var strength = GetSignatureStrength(detection);
-            return (int)strength / 100.0;  // Enum values are 0, 20, 50, 80, 100
+            return (int)strength / 100.0; // Enum values are 0, 20, 50, 80, 100
         }
 
         /// <summary>
@@ -816,11 +837,13 @@ namespace WpfHexEditor.Core.Services
                     if (name.StartsWith("word/")) return 1.0;
                     if (name.Contains("[content_types]")) return 0.8;
                 }
+
                 if (formatName.Contains("excel") || format.Extensions?.Any(e => e == ".xlsx") == true)
                 {
                     if (name.StartsWith("xl/")) return 1.0;
                     if (name.Contains("[content_types]")) return 0.8;
                 }
+
                 if (formatName.Contains("powerpoint") || format.Extensions?.Any(e => e == ".pptx") == true)
                 {
                     if (name.StartsWith("ppt/")) return 1.0;
@@ -828,8 +851,11 @@ namespace WpfHexEditor.Core.Services
                 }
 
                 // Other known OOXML-based formats (XPS, OXPS, Visio, etc.)
-                var ooxmlExtensions = new[] { ".xps", ".oxps", ".vsdx", ".docm", ".xlsm",
-                    ".pptm", ".dotx", ".xltx", ".potx", ".odt", ".ods", ".odp" };
+                var ooxmlExtensions = new[]
+                {
+                    ".xps", ".oxps", ".vsdx", ".docm", ".xlsm",
+                    ".pptm", ".dotx", ".xltx", ".potx", ".odt", ".ods", ".odp"
+                };
                 if (format.Extensions?.Any(e => ooxmlExtensions.Contains(e.ToLowerInvariant())) == true)
                     return 0.6;
 
@@ -845,7 +871,7 @@ namespace WpfHexEditor.Core.Services
                     return 1.0;
                 if (format.Extensions?.Any(e => e == ".war" || e == ".ear") == true)
                     return 0.8;
-                return 0.0;  // Not a JAR-family format
+                return 0.0; // Not a JAR-family format
             }
 
             // APK detection: AndroidManifest.xml or classes.dex
@@ -855,7 +881,7 @@ namespace WpfHexEditor.Core.Services
                     return 1.0;
                 if (format.Extensions?.Any(e => e == ".aab") == true)
                     return 0.8;
-                return 0.0;  // Not an Android format
+                return 0.0; // Not an Android format
             }
 
             // mimetype file detection: EPUB and ODF formats use 'mimetype' as first entry
@@ -865,9 +891,9 @@ namespace WpfHexEditor.Core.Services
                     return 1.0;
                 // ODF formats (ODT, ODS, ODP) also use mimetype as first entry
                 if (format.Extensions?.Any(e => e == ".odt" || e == ".ods" || e == ".odp" ||
-                    e == ".odg" || e == ".odf") == true)
+                                                e == ".odg" || e == ".odf") == true)
                     return 0.8;
-                return 0.0;  // Not an EPUB or ODF format
+                return 0.0; // Not an EPUB or ODF format
             }
 
             // iWork detection: Index/ directory or .iwa files (Keynote, Pages, Numbers)
@@ -880,7 +906,7 @@ namespace WpfHexEditor.Core.Services
                 if (formatName.Contains("numbers") || format.Extensions?.Any(e => e == ".numbers") == true)
                     return 0.9;
                 // Generic iWork format
-                return 0.0;  // Not an iWork format
+                return 0.0; // Not an iWork format
             }
 
             // No specific content match
@@ -890,7 +916,8 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// Prioritize formats by extension match
         /// </summary>
-        private IEnumerable<FormatDefinition> PrioritizeByExtension(IEnumerable<FormatDefinition> formats, string fileName)
+        private IEnumerable<FormatDefinition> PrioritizeByExtension(IEnumerable<FormatDefinition> formats,
+            string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 return formats;
@@ -937,7 +964,11 @@ namespace WpfHexEditor.Core.Services
                     bool matched = true;
                     for (int i = 0; i < sigBytes.Length; i++)
                     {
-                        if (data[sigOffset + i] != sigBytes[i]) { matched = false; break; }
+                        if (data[sigOffset + i] != sigBytes[i])
+                        {
+                            matched = false;
+                            break;
+                        }
                     }
 
                     if (matched)
@@ -986,7 +1017,10 @@ namespace WpfHexEditor.Core.Services
                     bytes[i] = Convert.ToByte(clean.Substring(i * 2, 2), 16);
                 return bytes;
             }
-            catch { return null; }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -1006,6 +1040,7 @@ namespace WpfHexEditor.Core.Services
                 double p = (double)freq[i] / len;
                 entropy -= p * Math.Log(p, 2);
             }
+
             return entropy;
         }
 
@@ -1042,7 +1077,8 @@ namespace WpfHexEditor.Core.Services
         /// <param name="format">Format to apply</param>
         /// <param name="byteProvider">Optional ByteProvider for reading beyond data buffer</param>
         /// <returns>Generated blocks</returns>
-        public List<CustomBackgroundBlock> GenerateBlocks(byte[] data, FormatDefinition format, ByteProvider byteProvider = null)
+        public List<CustomBackgroundBlock> GenerateBlocks(byte[] data, FormatDefinition format,
+            ByteProvider byteProvider = null)
         {
             if (data == null || format == null || !format.IsValid())
                 return new List<CustomBackgroundBlock>();
@@ -1075,7 +1111,25 @@ namespace WpfHexEditor.Core.Services
         /// </summary>
         /// <param name="json">JSON string</param>
         /// <returns>Format definition or null if invalid</returns>
-        public FormatDefinition ImportFromJson(string json)
+        public static FormatDefinition ImportFromJson(string json)
+        {
+            try
+            {
+                return ImportFromJsonUnsafe(json);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error parsing JSON: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Import format definition from JSON string
+        /// </summary>
+        /// <param name="json">JSON string</param>
+        /// <returns>Format definition or throw exceptions</returns>
+        public static FormatDefinition ImportFromJsonUnsafe(string json)
         {
             if (string.IsNullOrWhiteSpace(json))
                 return null;
@@ -1104,23 +1158,9 @@ namespace WpfHexEditor.Core.Services
             if (firstChar != '{' && firstChar != '[')
                 return null;
 
-            try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true
-                };
+            var format = JsonSerializer.Deserialize<FormatDefinition>(json, s_importOptions);
+            return format?.IsValid() == true ? format : null;
 
-                var format = JsonSerializer.Deserialize<FormatDefinition>(json, options);
-                return format?.IsValid() == true ? format : null;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error parsing JSON: {ex.Message}");
-                return null;
-            }
         }
 
         /// <summary>

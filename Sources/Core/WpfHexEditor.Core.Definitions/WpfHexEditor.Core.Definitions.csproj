@@ -18,6 +18,9 @@
     <EmbeddedResource Include="FormatDefinitions\**\*.grammar" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="WpfHexEditor.Tests" />
+  </ItemGroup>
   <!-- JSON Schema files distributed alongside the assembly -->
   <ItemGroup>
     <None Include="*.schema.json" CopyToOutputDirectory="PreserveNewest" />

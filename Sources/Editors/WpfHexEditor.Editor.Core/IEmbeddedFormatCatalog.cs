@@ -83,12 +83,12 @@ public interface IEmbeddedFormatCatalog
     /// <summary>
     /// Returns all embedded format entries (lazy-loaded on first call).
     /// </summary>
-    IReadOnlyList<EmbeddedFormatEntry> GetAll();
+    IReadOnlySet<EmbeddedFormatEntry> GetAll();
 
     /// <summary>
     /// Returns all distinct category names sorted alphabetically.
     /// </summary>
-    IReadOnlyList<string> GetCategories();
+    IReadOnlySet<string> GetCategories();
 
     /// <summary>
     /// Returns the full JSON content for the given resource key.

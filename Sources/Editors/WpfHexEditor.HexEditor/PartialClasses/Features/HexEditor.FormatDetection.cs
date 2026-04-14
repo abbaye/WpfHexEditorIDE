@@ -18,12 +18,13 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
+using System.Threading;
 using System.Windows;
-using WpfHexEditor.Core.FormatDetection;
-using WpfHexEditor.Core.Events;
-using WpfHexEditor.Core.Services;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Core.Services;
+using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -41,8 +42,8 @@ namespace WpfHexEditor.HexEditor
         // FormatDefinition objects are parsed from JSON once (on first HexEditor instance)
         // and reused across all subsequent instances to avoid repeated stream I/O
         // and JSON deserialization on the UI thread.
-        private static (FormatDefinition Format, string Category)[]? s_parsedEmbeddedFormats;
-        private static readonly object s_parsedFormatsLock = new object();
+        private static (FormatDefinition Format, string Category)[] ParsedEmbeddedFormats => LazyInitializer.EnsureInitialized(ref field, ParseEmbeddedFormats);
+
 
         #endregion
 
@@ -305,7 +306,7 @@ namespace WpfHexEditor.HexEditor
         /// <returns>Format definition or null</returns>
         public FormatDefinition ImportFormatFromJson(string json)
         {
-            var result = _formatDetectionService.ImportFromJson(json);
+            var result = FormatDetectionService.ImportFromJson(json);
             LoadedFormatCount = _formatDetectionService.GetFormatCount();
             return result;
         }
@@ -342,51 +343,12 @@ namespace WpfHexEditor.HexEditor
         /// <returns>Number of formats loaded from embedded resources.</returns>
         public int LoadEmbeddedFormatDefinitions()
         {
-            // ── Step 1: ensure the static parsed cache is populated ──────────
-            (FormatDefinition Format, string Category)[] parsed;
-            lock (s_parsedFormatsLock)
-            {
-                // Populate if not yet done, OR if a previous attempt produced an empty array
-                // (which can happen when GetAll() was called during startup before the fix — now
-                // GetAll() itself is thread-safe, but this guard keeps the cache self-healing).
-                if (s_parsedEmbeddedFormats is null || s_parsedEmbeddedFormats.Length == 0)
-                {
-                    var allEntries = EmbeddedFormatCatalog.Instance.GetAll();
-                    var list = new System.Collections.Generic.List<(FormatDefinition, string)>(allEntries.Count);
-                    foreach (var entry in allEntries)
-                    {
-                        try
-                        {
-                            // GetJson() is itself cached — no stream I/O after first call.
-                            var json   = EmbeddedFormatCatalog.Instance.GetJson(entry.ResourceKey);
-                            var format = _formatDetectionService.ImportFromJson(json);
-                            if (format is not null)
-                            {
-                                if (string.IsNullOrWhiteSpace(format.Category))
-                                    format.Category = entry.Category;
-                                list.Add((format, entry.Category));
-                            }
-                            else
-                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {entry.ResourceKey}: {ex.Message}");
-                        }
-                    }
-                    // Only commit to the static cache when we got a meaningful result.
-                    if (list.Count > 0)
-                        s_parsedEmbeddedFormats = list.ToArray();
-                }
-                parsed = s_parsedEmbeddedFormats ?? [];
-            }
-
-            // ── Step 2: register cached definitions in this instance's service ─
+            // ── register cached definitions in this instance's service ─
             // No JSON I/O or parsing — just AddFormatDefinition calls.
             int count = 0;
             try
             {
-                foreach (var (format, _) in parsed)
+                foreach (var (format, _) in ParsedEmbeddedFormats)
                 {
                     if (_formatDetectionService.AddFormatDefinition(format))
                         count++;
@@ -403,6 +365,41 @@ namespace WpfHexEditor.HexEditor
             }
 
             return count;
+        }
+
+        internal static (FormatDefinition Format, string Category) ParseEmbeddedFormatEntry(EmbeddedFormatEntry entry)
+        {
+            // GetJson() is itself cached — no stream I/O after first call.
+            var json = EmbeddedFormatCatalog.Instance.GetJson(entry.ResourceKey);
+            var format = FormatDetectionService.ImportFromJsonUnsafe(json);
+            if (format is null)
+                throw new InvalidOperationException($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
+            if (string.IsNullOrWhiteSpace(format.Category))
+                format.Category = entry.Category;
+            return (format, entry.Category);
+        }
+        static (FormatDefinition Format, string Category)[] ParseEmbeddedFormats()
+        {
+            // (which can happen when GetAll() was called during startup before the fix — now
+            // GetAll() itself is thread-safe, but this guard keeps the cache self-healing).
+            var allEntries = EmbeddedFormatCatalog.Instance.GetAll();
+            var list = new System.Collections.Generic.List<(FormatDefinition, string)>(allEntries.Count);
+            foreach (var entry in allEntries)
+            {
+                try
+                {
+                    list.Add(ParseEmbeddedFormatEntry(entry));
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {entry.ResourceKey}: {ex.Message}");
+                }
+            }
+            // Only commit to the static cache when we got a meaningful result.
+            if (list.Count > 0)
+                return list.ToArray();
+            else
+                return [];
         }
 
         #endregion
