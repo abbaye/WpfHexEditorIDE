@@ -1,111 +1,165 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Tripos Mol2",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".mol2"
   ],
-  "description": "Tripos Mol2 molecular structure format",
+  "description": "MOL2 (Tripos Mol2) is a plain-text file format developed by Tripos (now Certara) for storing 2D and 3D molecular structures with bond connectivity and atom type information. MOL2 files use Record Type Indicator (RTI) sections delimited by '@<TRIPOS>' markers. Required sections include @<TRIPOS>MOLECULE (molecule name, atom/bond/substructure counts, molecule type), @<TRIPOS>ATOM (atom ID, name, x/y/z coordinates in Angstroms, Sybyl atom type, substructure ID, partial charge), and @<TRIPOS>BOND (bond ID, atom1, atom2, bond type). Optional sections: @<TRIPOS>SUBSTRUCTURE, @<TRIPOS>COMMENT. MOL2 is widely used in computational chemistry and drug discovery for docking, pharmacophore modeling, and cheminformatics. It supports partial charges (Gasteiger, MMFF94) and Sybyl atom types (C.3, C.2, N.ar, O.co2, etc.).",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Tripos Mol2 Format"
+      "Tripos Mol2 Format Reference — Certara",
+      "SYBYL Mol2 Format Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/MOL2"
+      "https://docs.chemaxon.com/display/docs/mol2-format",
+      "https://www.csb.pitt.edu/users/rule/DOCK/documentation/DOCK4.0_Manual/mol2format.html",
+      "https://openbabel.org/wiki/Mol2"
     ]
   },
   "detection": {
-    "signature": "4054524950",
-    "offset": 0,
+    "signatures": [
+      { "value": "40 3C54524950 4F533E", "offset": 0, "label": "'@<TRIPOS>' — MOL2 RTI section delimiter at offset 0", "weight": 1.0 },
+      { "value": "403C54524950 4F533E4D4F4C4543554C45", "offset": 0, "label": "'@<TRIPOS>MOLECULE' — MOL2 molecule section header", "weight": 1.0 },
+      { "value": "4054524950", "offset": 0, "label": "'@TRIP' prefix (partial match)", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "MOL2 files must start with '@<TRIPOS>' at offset 0. The '@<TRIPOS>MOLECULE' section always appears first. Files may optionally start with '#' comment lines before the first @<TRIPOS> marker."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "atomCount": 0,
-    "bondCount": 0,
-    "moleculeName": "",
-    "mol2Magic": ""
+    "mol2Magic": "",
+    "moleculeName": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "MOL2 Magic",
+      "name": "MOL2 RTI Section Marker",
       "offset": 0,
-      "length": 5,
+      "length": 9,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MOL2 signature (@TRIP)",
+      "opacity": 0.45,
+      "description": "MOL2 Record Type Indicator '@<TRIPOS>' (ASCII: 40 3C 54 52 49 50 4F 53 3E). This unique 9-byte prefix introduces every section in a MOL2 file. The '@<TRIPOS>' marker followed by a section name (MOLECULE, ATOM, BOND, SUBSTRUCTURE, COMMENT) defines the structure of the file. No other chemistry format uses this exact RTI delimiter syntax.",
       "storeAs": "mol2Magic",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Atom Count",
-      "variable": "atomCount",
-      "description": "Atom Count"
+      "type": "field",
+      "name": "Section Name",
+      "offset": 9,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "MOL2 section name following the '@<TRIPOS>' marker. The first section must be 'MOLECULE'. Subsequent sections: 'ATOM' (atomic coordinates and Sybyl atom types), 'BOND' (bond connectivity and bond types), 'SUBSTRUCTURE' (residue/ring system definitions), 'COMMENT' (free-text annotations).",
+      "storeAs": "moleculeName",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Bond Count",
-      "variable": "bondCount",
-      "description": "Bond Count"
+      "name": "RTI Marker",
+      "variable": "mol2Magic",
+      "description": "'@<TRIPOS>' — MOL2 Record Type Indicator"
+    },
+    {
+      "type": "metadata",
+      "name": "First Section",
+      "variable": "moleculeName",
+      "description": "First section name (typically 'MOLECULE')"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "MOL2 RTI marker present",
+      "expression": "mol2Magic == '@<TRIPOS>'",
+      "severity": "error",
+      "message": "MOL2 file must start with '@<TRIPOS>' RTI marker — not a valid Tripos Mol2 file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".mol2"
+  "navigation": {
+    "bookmarks": [
+      { "name": "@<TRIPOS>MOLECULE", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "mol2Magic",
+    "primaryField": "moleculeName",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MOL2 Header",
+        "icon": "\uE71B",
+        "fields": ["mol2Magic", "moleculeName"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "extractASCIIString": "Extract molecule data",
-    "extractUTF8String": "Extract annotations"
-  },
+  "exportTemplates": [
+    {
+      "name": "MOL2 Header (JSON)",
+      "format": "json",
+      "fields": ["mol2Magic", "moleculeName"]
+    }
+  ],
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Tripos Mol2 molecular structure format",
+    "analysisContext": "MOL2 is plain ASCII with '@<TRIPOS>SECTION' delimiters. MOLECULE section (2 lines after header): line1=molecule_name, line2='num_atoms num_bonds num_subst num_feat num_sets', line3=mol_type(SMALL/BIOPOLYMER/PROTEIN/NUCLEIC_ACID/SACCHARIDE), line4=charge_type(NO_CHARGES/GASTEIGER/MMFF94/etc). ATOM section: one line per atom: 'atom_id atom_name x y z atom_type [subst_id [subst_name [charge]]]'. Sybyl atom types: C.3(sp3), C.2(sp2), C.ar(aromatic), N.3, N.am(amide), O.3, O.2, O.co2(carboxylate). BOND section: 'bond_id atom1 atom2 bond_type' where bond_type: 1=single, 2=double, ar=aromatic, am=amide.",
     "suggestedInspections": [
-      "Validate Tripos Mol2 file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify '@<TRIPOS>MOLECULE' at offset 0",
+      "Line after @<TRIPOS>MOLECULE = molecule name",
+      "Second line in MOLECULE section = atom count, bond count, substructure count",
+      "Find '@<TRIPOS>ATOM' section for 3D coordinates (x, y, z in Angstroms)"
     ]
+  },
+  "software": [
+    "UCSF Chimera / ChimeraX",
+    "PyMOL",
+    "OpenBabel",
+    "RDKit",
+    "Dock (UCSF)",
+    "AutoDock Vina"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".mol2"],
+    "relatedFormats": ["MOL", "SDF", "PDB", "CIF"],
+    "note": "MOL2 extends the MDL MOL format with Sybyl atom types, partial charges, and substructure information. Widely used for protein-ligand docking (AutoDock, DOCK, Glide). RDKit and OpenBabel support full MOL2 read/write."
+  },
+  "MimeTypes": [
+    "chemical/x-mol2",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Computational chemistry molecular structure storage",
+    "Protein-ligand docking input/output",
+    "Virtual screening and pharmacophore modeling",
+    "Cheminformatics database exchange"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, '@<TRIPOS>' section delimiters",
+    "Sections": "@<TRIPOS>MOLECULE, ATOM, BOND, SUBSTRUCTURE, COMMENT",
+    "AtomTypes": "Sybyl atom types (C.3, C.2, C.ar, N.3, O.3, etc.)",
+    "ChargeTypes": "NO_CHARGES, GASTEIGER, MMFF94, USER_CHARGES"
   }
 }

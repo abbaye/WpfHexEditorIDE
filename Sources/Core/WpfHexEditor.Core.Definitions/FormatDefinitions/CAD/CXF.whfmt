@@ -1,118 +1,163 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Cloud Point File",
-  "version": "2.42",
+  "formatName": "AutoCAD Character Exchange Format",
+  "version": "2.43",
   "extensions": [
     ".cxf"
   ],
-  "description": "3D point cloud exchange format",
+  "description": "CXF (Character Exchange Format) is AutoCAD's plain-text font shape definition format for storing custom SHX (shape) font glyph definitions. CXF files define individual character glyphs using a series of vector commands: lines, arcs, and pen movements at specified coordinates. Each glyph begins with a header line starting with '[' containing the Unicode code point or character identifier, followed by vector drawing commands. The format was introduced with AutoCAD 2009 for Unicode SHX font support. CXF supersedes the older SHP (Shape File) binary format. CXF is not related to point cloud formats. Example glyph entry: '[0x0041,1.0,0.15]' (Unicode 0x41 = 'A', width=1.0, baseline=0.15) followed by vector command lines with X,Y coordinates for the character outline. CXF files can be compiled with AutoCAD's COMPILE command to produce SHX font files.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Cloud Point File Format"
+      "AutoCAD CXF Font Format — Autodesk Documentation",
+      "AutoCAD SHX and CXF Font Reference"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/CXF"
+      "https://help.autodesk.com/view/OARX/2024/ENU/?guid=GUID-2E9CE93F-3B6D-489C-95A7-AD1F85FA71F4",
+      "https://www.autodesk.com/techpubs/autocad/",
+      "https://en.wikipedia.org/wiki/SHX_(AutoCAD)"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "3B20436861726163 74657220446566696E6974696F6E73", "offset": 0, "label": "'; Character Definitions' — CXF file comment header", "weight": 0.8 },
+      { "value": "3B", "offset": 0, "label": "';' — CXF semicolon comment line at offset 0", "weight": 0.3 },
+      { "value": "5B30", "offset": 0, "label": "'[0' — CXF glyph entry start (Unicode codepoint)", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.5, "max": 4.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "CXF files are plain text. They typically start with semicolon comment lines (';') followed by glyph definitions starting with '[' (bracket + Unicode codepoint). Extension (.cxf) is the primary detection method. Note: .cxf extension conflicts with other uses in different contexts."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileSize": 0,
-    "version": 0,
-    "format": "",
-    "pointCloudHeader": "",
-    "formattedSize": ""
+    "cxfFirstLine": "",
+    "cxfComment": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Point Cloud Header",
+      "name": "CXF Header Comment",
       "offset": 0,
-      "length": 32,
+      "length": 40,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Point cloud file header",
-      "storeAs": "pointCloudHeader",
+      "opacity": 0.45,
+      "description": "CXF font file first line: typically a semicolon-prefixed comment describing the font file. Semicolons (';') introduce single-line comments in CXF. The first line commonly contains the font name, creator, and copyright information (e.g., '; Character Definitions for font ABC'). After the comment lines, the glyph definitions begin with entries in the format '[0xXXXX,width,baseline]' where 0xXXXX is the Unicode code point, width is the character advance width in font units, and baseline offset defines the descender distance. Drawing commands follow: 'L x1,y1,x2,y2' (line), 'A cx,cy,r,start,end' (arc).",
+      "storeAs": "cxfFirstLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Glyph Entry",
+      "offset": 40,
+      "length": 30,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "CXF first glyph definition after any comment lines. Format: '[0xXXXX,width,baseline]' where 0xXXXX is the Unicode code point in hex (e.g., 0x0041 for letter 'A'), width is the advance width in font units (float, e.g., 1.0), and baseline is the Y offset for the baseline (float, e.g., 0.15). Each glyph entry is followed by vector drawing commands defining the glyph outline. A single CXF file may contain hundreds to thousands of glyph definitions for a complete Unicode font.",
+      "storeAs": "cxfComment",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "File Size",
-      "variable": "fileSize",
-      "description": "File Size"
+      "name": "Header Comment",
+      "variable": "cxfFirstLine",
+      "description": "CXF font file comment header"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "First Glyph",
+      "variable": "cxfComment",
+      "description": "First glyph entry header"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "CXF has content",
+      "expression": "cxfFirstLine != ''",
+      "severity": "warning",
+      "message": "CXF font file appears empty — no header content found"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".cxf"
+  "navigation": {
+    "bookmarks": [
+      { "name": "CXF Font Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "cxfFirstLine",
+    "primaryField": "cxfComment",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CXF Font Header",
+        "icon": "\uE71B",
+        "fields": ["cxfFirstLine", "cxfComment"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read file header",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "CXF Header (JSON)",
+      "format": "json",
+      "fields": ["cxfFirstLine", "cxfComment"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "3D point cloud exchange format",
+    "analysisContext": "CXF (Character Exchange Format) is AutoCAD's Unicode SHX font source format. Plain ASCII text. Structure: comment lines starting with ';', then glyph definitions '[0xXXXX,width,baseline]' followed by vector commands. Drawing commands: 'L x1,y1,x2,y2' (line segment), 'A cx,cy,radius,start_angle,end_angle' (arc), 'M x,y' (move without drawing). Coordinates in font units (normalized). Not to be confused with 3D point cloud CXF — this is AutoCAD font shape format. Compile with AutoCAD COMPILE command to produce binary .shx. Font glyph entry format: '[0x0041,0.8,0.0]\\nL 0.0,0.0,0.2,1.0\\nL 0.2,1.0,0.4,0.0\\nL 0.1,0.5,0.3,0.5'.",
     "suggestedInspections": [
-      "Validate Cloud Point File file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "First non-empty line: should be ';' comment or '[0x' glyph entry",
+      "Count '[0x' entries for number of glyphs defined in the font",
+      "First glyph header: '[0xXXXX,width,baseline]' shows Unicode code point and metrics",
+      "Line commands 'L x1,y1,x2,y2' and arc commands 'A cx,cy,r,a1,a2' define glyph vectors"
     ]
+  },
+  "software": [
+    "AutoCAD (Autodesk) — compile CXF to SHX with COMPILE command",
+    "Inkscape (manual font creation reference)",
+    "Custom font development tools for AutoCAD"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".cxf"],
+    "relatedFormats": ["SHX", "SHP", "TTF"],
+    "note": "CXF is the Unicode-capable successor to AutoCAD's SHP (shape file) format. CXF compiles to SHX (compiled shape font) using AutoCAD's COMPILE command. TTF (TrueType) fonts are also supported in AutoCAD but CXF/SHX is the traditional AutoCAD vector font format. Note: .cxf extension is not a 3D point cloud format — the previous 'Cloud Point File' description was incorrect."
+  },
+  "MimeTypes": [
+    "text/plain",
+    "application/x-cxf"
+  ],
+  "UseCases": [
+    "Custom AutoCAD SHX font glyph definition",
+    "Unicode character shape creation for AutoCAD text styles",
+    "Engineering symbol and specialty character fonts",
+    "CAD annotation custom glyph libraries"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, semicolon comments, bracket-delimited glyph entries",
+    "GlyphEntry": "[0xXXXX,width,baseline] format for Unicode code point + metrics",
+    "DrawingCommands": "L (line), A (arc), M (move) vector commands in font units",
+    "Compilation": "AutoCAD COMPILE command converts CXF to binary .shx font",
+    "Correction": "NOT a 3D point cloud format — CXF = AutoCAD Character Exchange Format"
   }
 }

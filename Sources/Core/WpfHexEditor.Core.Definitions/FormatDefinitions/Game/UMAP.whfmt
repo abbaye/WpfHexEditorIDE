@@ -1,151 +1,159 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Unreal Map",
-  "version": "1.14",
+  "formatName": "Unreal Engine Map/Level",
+  "version": "1.15",
   "extensions": [
     ".umap"
   ],
-  "description": "Unreal Engine map/level file",
+  "description": "Unreal Engine .umap files are level/map packages using the same UE package format as .uasset files. The format starts with the UE package tag 0x9E2A83C1 (LE bytes: C1 83 2A 9E) at offset 0, followed by LegacyFileVersion (int32 LE, -4 to -8 for UE4/5), then the full package header with name table, export table, and import table. .umap files store the complete level data: all actor placements, geometry, lighting, landscape data, and level-specific blueprints. A .umap file references external .uasset files via the import table. In UE4, maps are stored in the game's Content/ directory alongside regular .uasset files. In UE5, IO Store uses .utoc/.ucas container files instead. The distinction between .umap and .uasset is purely conventional — both use identical binary format.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Unreal Engine Map/Level Format",
-      "UE Level Asset Specification",
-      "Epic Games Level Binary Format"
+      "Unreal Engine UPackage format — FPackageFileSummary"
     ],
     "WebLinks": [
-      "https://fileinfo.com/extension/umap",
       "https://dev.epicgames.com/documentation/en-us/unreal-engine/levels-in-unreal-engine",
-      "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-projects-and-gameplay",
-      "https://www.whatext.com/file/umap"
+      "https://docs.unrealengine.com/5.0/en-US/assets-and-packages-in-unreal-engine/"
     ]
   },
   "detection": {
-    "signature": "C1832A9E",
-    "offset": 0,
+    "signatures": [
+      { "value": "C1832A9E", "offset": 0, "label": "0x9E2A83C1 LE — Unreal Engine package tag", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 64,
+      "maxSignatureOffset": 0,
+      "note": "UE .umap files use the same package magic as .uasset. The .umap extension identifies level/map packages vs content assets."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "packageTag": "",
-    "legacyVersion": "",
-    "engineVersion": ""
+    "uePackageTag": 0,
+    "ueLegacyFileVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Package Tag",
+      "name": "UE Package Tag",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Unreal package signature",
-      "storeAs": "packageTag",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "Unreal Engine package tag 0x9E2A83C1 stored as little-endian uint32 (bytes: 0xC1 0x83 0x2A 0x9E). All Unreal Engine serialized packages use this magic since UE1. For .umap files this identifies a level/map package containing actor placement data, level geometry, lighting, and references to content assets. The decimal value is 2653586369.",
+      "storeAs": "uePackageTag",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
-      "name": "Legacy Version",
+      "name": "Legacy File Version",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Legacy file version",
-      "storeAs": "legacyVersion",
-      "valueType": "ascii"
-    },
-    {
-      "type": "field",
-      "name": "Engine Version",
-      "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Unreal Engine version",
-      "storeAs": "engineVersion",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "Legacy file version as int32 little-endian at offset 4. Negative = UE4/5: -4=UE4.0-4.6, -5=UE4.7-4.14, -6=UE4.15-4.19, -7=UE4.20-4.26, -8=UE4.27+/UE5. Same field as in .uasset files — the package format is identical.",
+      "storeAs": "ueLegacyFileVersion",
+      "valueType": "int32",
+      "endianness": "little",
+      "valueMap": {
+        "-4": "UE4 4.0-4.6", "-5": "UE4 4.7-4.14", "-6": "UE4 4.15-4.19",
+        "-7": "UE4 4.20-4.26", "-8": "UE4 4.27+ / UE5"
+      }
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Package Tag",
+      "variable": "uePackageTag",
+      "description": "UE package magic: 0x9E2A83C1"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Legacy Version",
+      "variable": "ueLegacyFileVersion",
+      "description": "Package legacy version (-8=UE5, -7=UE4.27)"
     }
   ],
+  "assertions": [
+    {
+      "name": "UE package tag valid",
+      "expression": "uePackageTag == 2653586369",
+      "severity": "error",
+      "message": "UE map package tag must be 0x9E2A83C1 — not a valid Unreal Engine map"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "UE Map Package Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "ueLegacyFileVersion",
+    "primaryField": "uePackageTag",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "UE Map Header",
+        "icon": "\uE71B",
+        "fields": ["uePackageTag", "ueLegacyFileVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "UE Map Header (JSON)",
+      "format": "json",
+      "fields": ["uePackageTag", "ueLegacyFileVersion"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "UE .umap = level package with same binary format as .uasset. Package tag 0x9E2A83C1 + legacyFileVersion (int32 LE, neg=UE4/5). Use FModel or UAssetAPI to parse. Level contains actor instances, geometry brushes, landscape components, and references to content assets via import table. Maps in UE5 IO Store are in .utoc/.ucas containers.",
+    "suggestedInspections": [
+      "Bytes 0-3 (uint32 LE): 0x9E2A83C1 (bytes: C1 83 2A 9E) — UE package magic",
+      "Bytes 4-7 (int32 LE): legacyFileVersion — -8=UE5, -7=UE4.27",
+      "Use FModel to browse map contents — actors, static meshes, materials referenced",
+      "Same format as .uasset — tools that read .uasset also read .umap"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Unreal Engine 4/5 (Epic Games, native)",
+    "FModel (level/map browser)",
+    "UAssetAPI (C# library)",
+    "CUE4Parse (.NET parser)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".umap"
-    ]
+    "extensions": [".umap"],
+    "relatedFormats": ["UASSET"],
+    "note": ".umap = level/map package. .uasset = content asset. Identical binary format — only the extension and convention differ. Both use 0x9E2A83C1 package tag."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Unreal Engine level modding and analysis",
+    "Extracting map actor data and level references",
+    "Game reverse engineering of level layouts",
+    "UE4/5 level editing with third-party tools"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Unreal Engine map/level file",
-    "suggestedInspections": [
-      "Validate Unreal Map container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary little-endian Unreal Engine 4/5 level/map package",
+    "Magic": "0x9E2A83C1 LE (bytes: C1 83 2A 9E) at offset 0",
+    "SameAs": "Identical to .uasset format — extension is the only distinction",
+    "Contains": "Actor placement, geometry, lighting, landscape, level blueprint",
+    "UE5": "IO Store (.utoc/.ucas) replaces individual .umap files for cooked builds"
   }
 }

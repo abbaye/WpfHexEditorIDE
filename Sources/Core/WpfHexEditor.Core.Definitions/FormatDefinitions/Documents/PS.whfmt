@@ -127,9 +127,9 @@
     "category": "document",
     "riskLevel": "medium",
     "suspiciousPatterns": [
-      "PostScript is a Turing-complete language — malicious PS files can execute arbitrary code via Ghostscript",
-      "EPS files from untrusted sources should not be processed by Ghostscript without -dSAFER flag",
-      "Ghostscript CVEs frequently target malicious EPS/PS files"
+      { "name": "Arbitrary code execution risk", "condition": "true", "description": "PostScript is a Turing-complete language — malicious PS files can execute arbitrary code via Ghostscript", "severity": "warning" },
+      { "name": "EPS without -dSAFER flag", "condition": "true", "description": "EPS files from untrusted sources should not be processed by Ghostscript without -dSAFER flag", "severity": "warning" },
+      { "name": "Ghostscript CVE target", "condition": "true", "description": "Ghostscript CVEs frequently target malicious EPS/PS files", "severity": "warning" }
     ]
   },
   "aiHints": {

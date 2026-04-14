@@ -1,121 +1,193 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Valve Package",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".vpk"
   ],
-  "description": "Valve Pak file for Source engine",
+  "description": "VPK (Valve Package) is the archive format used by Source Engine games (Half-Life 2, Portal, Team Fortress 2, CS:GO, etc.) for storing game assets. VPK v1 and v2 begin with magic 0x55AA1234 (4B LE), followed by version (4B LE: 1 or 2), and tree size (4B LE, size of the directory tree in bytes). VPK v2 extends with: fileDataSectionSize (4B LE), archiveMD5SectionSize (4B LE), otherMD5SectionSize (4B LE), signatureSectionSize (4B LE). VPK archives typically come in pairs: a directory file (_dir.vpk) containing the tree/index and multiple data archives (_000.vpk, _001.vpk, ...) holding the actual asset data. The directory tree encodes entries as: extension(null-terminated string) → path(null-terminated string) → filename(null-terminated string) → FileEntry{crc32(4B), preloadBytes(2B), archiveIndex(2B, 0x7FFF=embedded in dir), entryOffset(4B), entryLength(4B)} + preload data. A single 0x00 byte terminates each list level.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Valve Package (VPK) Format",
-      "Source Engine VPK Archive",
-      "Valve Pak File Specification"
+      "Valve VPK Format — Valve Developer Community"
     ],
     "WebLinks": [
-      "https://developer.valvesoftware.com/wiki/VPK",
       "https://developer.valvesoftware.com/wiki/VPK_(file_format)",
       "https://github.com/craftablescience/VPKEdit",
       "https://github.com/ValvePython/vpk"
     ]
   },
   "detection": {
-    "signature": "55AA1234",
-    "offset": 0,
-    "required": false,
+    "signatures": [
+      { "value": "34120A55", "offset": 0, "label": "0x55AA1234 LE — VPK magic number (Source Engine)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "VPK files always start with 0x55AA1234 (LE: 34 12 AA 55). The directory .vpk starts with this magic; the data .vpk files contain only raw asset data and do not start with this magic."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "crc32Valid": false,
-    "originalSize": 0,
-    "compressionRatio": 0,
-    "signature": ""
+    "vpkSignature": 0,
+    "vpkVersion": 0,
+    "vpkTreeSize": 0
   },
   "blocks": [
     {
-      "type": "field",
-      "name": "Signature",
+      "type": "signature",
+      "name": "VPK Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "VPK signature",
-      "storeAs": "signature",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "VPK magic number 0x55AA1234 stored as little-endian uint32 at offset 0 (raw bytes: 34 12 AA 55). This 4-byte magic uniquely identifies a Valve Package directory file used by the Source Engine (Half-Life 2, Portal 1/2, Team Fortress 2, CS:GO, Dota 2, etc.). Data VPK files (_000.vpk, _001.vpk) do NOT have this magic header — only the directory file (_dir.vpk) starts with 0x55AA1234.",
+      "storeAs": "vpkSignature",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "VPK Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "VPK format version as uint32 little-endian at offset 4. Version 1 = original VPK (used in early Source Engine games including HL2, Portal, TF2). Version 2 = extended VPK (CS:GO, CS2, Portal 2, newer Source games) adding MD5 integrity sections and signature support. Version 2 has a larger fixed header (28 bytes vs 12 bytes).",
+      "storeAs": "vpkVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "VPK v1 — original Source Engine (HL2, TF2, Portal)",
+        "2": "VPK v2 — extended with MD5 integrity + signatures (CS:GO, Portal 2)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Tree Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Size of the directory tree in bytes as uint32 little-endian at offset 8. The directory tree immediately follows the fixed header and contains the full index of files in the VPK archive, encoded as nested null-terminated strings: extension → path → filename → FileEntry structure. Tree size in the _dir.vpk is typically 10KB-5MB depending on the number of archived files.",
+      "storeAs": "vpkTreeSize",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "CRC Valid",
-      "variable": "crc32Valid",
-      "description": "CRC Valid"
+      "name": "Magic",
+      "variable": "vpkSignature",
+      "description": "VPK magic: 0x55AA1234"
     },
     {
       "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Original Size"
+      "name": "Version",
+      "variable": "vpkVersion",
+      "description": "VPK format version (1=original, 2=extended)"
+    },
+    {
+      "type": "metadata",
+      "name": "Tree Size",
+      "variable": "vpkTreeSize",
+      "description": "Directory tree size in bytes"
     }
   ],
-  "software": [
-    "Emulators",
-    "Game engines"
+  "assertions": [
+    {
+      "name": "VPK magic valid",
+      "expression": "vpkSignature == 1437220404",
+      "severity": "error",
+      "message": "VPK magic must be 0x55AA1234 — not a valid Valve Package file"
+    },
+    {
+      "name": "VPK version valid",
+      "expression": "vpkVersion == 1 || vpkVersion == 2",
+      "severity": "warning",
+      "message": "VPK version should be 1 or 2 — unknown VPK version"
+    }
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".vpk"
+  "navigation": {
+    "bookmarks": [
+      { "name": "VPK Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Directory Tree", "offset": 12, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
-  "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "vpkVersion",
+    "primaryField": "vpkTreeSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "VPK Header",
+        "icon": "\uE71B",
+        "fields": ["vpkSignature", "vpkVersion", "vpkTreeSize"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "calculateCRC32": "Validate CRC",
-    "readUInt32LE": "Read size"
-  },
+  "exportTemplates": [
+    {
+      "name": "VPK Header (JSON)",
+      "format": "json",
+      "fields": ["vpkSignature", "vpkVersion", "vpkTreeSize"]
+    }
+  ],
   "forensic": {
     "category": "game",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Valve Pak file for Source engine",
+    "analysisContext": "VPK directory file header: magic(4B LE, 0x55AA1234) + version(4B LE, 1 or 2) + treeSize(4B LE). V2 adds: fileDataSectionSize(4B) + archiveMD5SectionSize(4B) + otherMD5SectionSize(4B) + signatureSectionSize(4B). Directory tree after header: nested null-term strings [extension][path][filename] → FileEntry{crc32(4B LE) + preloadBytes(2B LE) + archiveIndex(2B LE, 0x7FFF=embedded) + entryOffset(4B LE) + entryLength(4B LE)} + preloadData. Data files (_000.vpk) = raw asset data, no header. Extract with VPKEdit, GCFScape, or python-vpk.",
     "suggestedInspections": [
-      "Validate Valve Package container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+      "Bytes 0-3 (LE): 0x55AA1234 — VPK magic; only present in _dir.vpk, not data .vpk files",
+      "Bytes 4-7 (uint32 LE): version — 1=original, 2=extended with MD5/signature sections",
+      "Bytes 8-11 (uint32 LE): tree size — directory tree starts at offset 12 (v1) or 28 (v2)",
+      "Directory tree: nested null-terminated strings with FileEntry structs (CRC32, offset, length)"
     ]
+  },
+  "software": [
+    "Valve Source SDK (native)",
+    "VPKEdit (open-source VPK viewer/extractor)",
+    "GCFScape (legacy Valve archive tool)",
+    "python-vpk (Python library)",
+    "Crowbar (Valve model decompiler, reads VPK)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [".vpk"],
+    "relatedFormats": ["GCF", "PAK", "BSP"],
+    "note": "VPK replaced the older GCF format in Source Engine. _dir.vpk = directory/index file with magic header; _000.vpk, _001.vpk = data files with raw assets and no header. Single-file VPK (unnamed_000.vpk) stores both directory and data. CS2 (Source 2) uses a different VPK format."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Extracting game assets from Source Engine games (HL2, TF2, CS:GO)",
+    "Modding Source Engine games (replacing/adding assets)",
+    "Game asset analysis and reverse engineering",
+    "Preserving Source Engine game content"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary little-endian Valve Package archive (Source Engine)",
+    "Magic": "0x55AA1234 LE (bytes: 34 12 AA 55) at offset 0 — directory file only",
+    "Versions": "v1 = HL2/TF2/Portal; v2 = CS:GO/Portal2 with MD5 integrity + signing",
+    "Structure": "Fixed header + directory tree (nested null-term strings + FileEntry structs)",
+    "DataFiles": "_000.vpk, _001.vpk = raw data files with no magic header; archiveIndex 0x7FFF = data embedded in _dir.vpk"
   }
 }

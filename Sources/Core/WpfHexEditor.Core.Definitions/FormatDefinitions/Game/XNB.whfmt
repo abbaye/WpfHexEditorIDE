@@ -1,55 +1,54 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "XNA Game Studio",
-  "version": "1.14",
+  "formatName": "XNA Compiled Content",
+  "version": "1.15",
   "extensions": [
     ".xnb"
   ],
-  "description": "Microsoft XNA compiled content file",
+  "description": "XNB is the compiled binary content format used by Microsoft XNA Game Studio (2006-2013) and MonoGame for pre-compiled game assets. The header starts with 3 ASCII bytes 'XNB' (58 4E 42), followed by targetPlatform (1B ASCII: 'w'=Windows, 'm'=Windows Phone/Metro, 'x'=Xbox 360), formatVersion (1B: 4=XNA 3.0, 5=XNA 3.1, 6=XNA 4.0), flags (1B: bit0=HiDef profile, bit7=LZ4 compressed). For uncompressed files, fileSize (uint32 LE) follows. For LZ4/LZX compressed files, compressedSize (uint32 LE) + uncompressedSize (uint32 LE) follow. The content data is a serialized object graph using XNA's content pipeline type readers. Common asset types: Texture2D, TextureCube, SpriteFont, Effect (HLSL shader), SoundEffect (WAV), Song (MediaPlayer), Model, SkinnedModel.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "XNA Compiled Content Format",
-      "Microsoft XNB Binary Specification",
-      "XNA Content Pipeline Format"
+      "XNB Compiled Content Format — SimonDarksideJ/XNAGameStudio wiki"
     ],
     "WebLinks": [
       "https://github.com/SimonDarksideJ/XNAGameStudio/wiki/Compiled-(XNB)-Content-Format",
       "http://justsolve.archiveteam.org/wiki/Microsoft_XNA_Compiled_Format",
-      "https://www.gamedev.net/blog/1046/entry-2250829-xnb-file-format-documentation/",
-      "https://learn.microsoft.com/en-us/archive/technet-wiki/2231.xna-content-pipeline-overview"
+      "https://www.gamedev.net/blog/1046/entry-2250829-xnb-file-format-documentation/"
     ]
   },
   "detection": {
-    "signature": "584E42",
-    "offset": 0,
+    "signatures": [
+      { "value": "584E42", "offset": 0, "label": "'XNB' — Microsoft XNA compiled content magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "XNB files always start with 'XNB' ASCII (3 bytes). The 4th byte identifies the target platform."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
     "xnbSignature": "",
-    "targetPlatform": 0,
-    "formatVersion": 0,
-    "flags": 0
+    "xnbTargetPlatform": 0,
+    "xnbFormatVersion": 0,
+    "xnbFlags": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "XNB Signature",
+      "name": "XNB Magic",
       "offset": 0,
       "length": 3,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "XNB magic bytes",
+      "opacity": 0.45,
+      "description": "XNB compiled content magic: 3 ASCII bytes 'XNB' (0x58 0x4E 0x42). Identifies a Microsoft XNA Game Studio compiled asset file. XNA Framework was Microsoft's managed game development framework for Xbox 360 and Windows (2006-2013). MonoGame (open-source XNA successor) produces identical .xnb files. Widely used in indie games: Stardew Valley, Terraria, FEZ, Rogue Legacy all use XNB assets.",
       "storeAs": "xnbSignature",
       "valueType": "ascii"
     },
@@ -59,10 +58,17 @@
       "offset": 3,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "w=Windows, m=Windows Phone, x=Xbox360",
-      "storeAs": "targetPlatform",
-      "valueType": "uint8"
+      "opacity": 0.35,
+      "description": "Target platform identifier as 1 ASCII byte at offset 3. 'w' (0x77) = Windows (PC/DirectX). 'm' (0x6D) = Windows Phone / Metro / WinRT. 'x' (0x78) = Xbox 360. 'i' (0x69) = iOS (MonoGame). 'a' (0x61) = Android (MonoGame). 'X' (0x58) = Xbox One (MonoGame). Platform determines shader format and texture compression formats used.",
+      "storeAs": "xnbTargetPlatform",
+      "valueType": "uint8",
+      "valueMap": {
+        "119": "'w' — Windows / PC (DirectX)",
+        "109": "'m' — Windows Phone / Metro",
+        "120": "'x' — Xbox 360",
+        "105": "'i' — iOS (MonoGame)",
+        "97": "'a' — Android (MonoGame)"
+      }
     },
     {
       "type": "field",
@@ -70,94 +76,127 @@
       "offset": 4,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "XNB format version",
-      "storeAs": "formatVersion",
-      "valueType": "uint8"
+      "opacity": 0.35,
+      "description": "XNB format version as uint8 at offset 4. Version 4 = XNA 3.0. Version 5 = XNA 3.1. Version 6 = XNA 4.0 (final XNA release, most common). MonoGame uses version 5 for backwards compatibility. The content type readers registered in the XNB file are version-sensitive.",
+      "storeAs": "xnbFormatVersion",
+      "valueType": "uint8",
+      "valueMap": {
+        "4": "XNA 3.0",
+        "5": "XNA 3.1 / MonoGame",
+        "6": "XNA 4.0 (standard)"
+      }
     },
     {
       "type": "field",
-      "name": "Flags",
+      "name": "Content Flags",
       "offset": 5,
       "length": 1,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Content flags",
-      "storeAs": "flags",
+      "opacity": 0.35,
+      "description": "Content flags byte at offset 5. Bit 0 = HiDef profile (1) vs Reach profile (0): HiDef requires DirectX 10-capable GPU; Reach is the lower-spec fallback. Bit 7 = compressed content (1 = LZX or LZ4 compressed). When bit 7 is set, the following header contains both compressedSize and uncompressedSize fields instead of just fileSize.",
+      "storeAs": "xnbFlags",
       "valueType": "uint8"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Magic",
+      "variable": "xnbSignature",
+      "description": "'XNB' — XNA compiled content"
+    },
+    {
+      "type": "metadata",
+      "name": "Platform",
+      "variable": "xnbTargetPlatform",
+      "description": "Target platform ('w'=Win, 'x'=Xbox, 'm'=WP)"
     },
     {
       "type": "metadata",
       "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "variable": "xnbFormatVersion",
+      "description": "XNB format version (4=XNA3.0, 5=XNA3.1, 6=XNA4.0)"
     }
   ],
+  "assertions": [
+    {
+      "name": "XNB magic valid",
+      "expression": "xnbSignature == 'XNB'",
+      "severity": "error",
+      "message": "XNB file must start with 'XNB' magic — not a valid XNA compiled content file"
+    },
+    {
+      "name": "XNB format version valid",
+      "expression": "xnbFormatVersion >= 4 && xnbFormatVersion <= 6",
+      "severity": "warning",
+      "message": "XNB format version should be 4 (XNA3.0), 5 (XNA3.1), or 6 (XNA4.0)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "XNB Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "xnbTargetPlatform",
+    "primaryField": "xnbFormatVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "XNB Header",
+        "icon": "\uE71B",
+        "fields": ["xnbSignature", "xnbTargetPlatform", "xnbFormatVersion", "xnbFlags"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XNB Header (JSON)",
+      "format": "json",
+      "fields": ["xnbSignature", "xnbTargetPlatform", "xnbFormatVersion", "xnbFlags"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "XNB header: 'XNB'(3B ASCII) + platform(1B: 'w'=Win, 'x'=Xbox) + version(1B: 4/5/6) + flags(1B: bit0=HiDef, bit7=compressed) + fileSize(4B LE) [or compressedSize(4B LE) + uncompressedSize(4B LE) if bit7 set]. Content = serialized type reader + asset data. Tools: XNB Content Manager (extract), MonoGame Content Builder (repack). Stardew Valley modding uses XNB replacement extensively.",
+    "suggestedInspections": [
+      "Bytes 0-2 (ASCII): 'XNB' magic",
+      "Byte 3: platform ('w'=Windows, 'x'=Xbox 360)",
+      "Byte 4: version (4=XNA3.0, 5=XNA3.1, 6=XNA4.0 standard)",
+      "Byte 5: flags — bit7=compressed, bit0=HiDef profile"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Microsoft XNA Game Studio (original framework)",
+    "MonoGame (open-source XNA successor)",
+    "XnbCli (XNB content extraction tool)",
+    "MonoGame Content Builder (mgcb, repack tool)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".xnb"
-    ]
+    "extensions": [".xnb"],
+    "relatedFormats": ["UNITY3D", "UASSET"],
+    "note": "XNB = compiled XNA/MonoGame asset. Used by many indie games including Stardew Valley, Terraria (pre-1.3), FEZ, Rogue Legacy. MonoGame games on all platforms use .xnb. Content pipeline compiled from source: .png/.wav/.fx → .xnb."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Extracting textures/sprites from XNA/MonoGame games (e.g. Stardew Valley mods)",
+    "Repacking modified assets into XNB format",
+    "Game preservation of Xbox 360 indie game content",
+    "MonoGame cross-platform game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft XNA compiled content file",
-    "suggestedInspections": [
-      "Validate XNA Game Studio container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary Microsoft XNA compiled game content",
+    "Magic": "'XNB' ASCII at offset 0",
+    "Header": "10 bytes: magic(3B) + platform(1B) + version(1B) + flags(1B) + fileSize(4B LE)",
+    "Compression": "LZX (Xbox) or LZ4 (PC) when flags bit7=1; uncompressed otherwise",
+    "AssetTypes": "Texture2D, SpriteFont, Effect (HLSL), SoundEffect, Model, etc."
   }
 }

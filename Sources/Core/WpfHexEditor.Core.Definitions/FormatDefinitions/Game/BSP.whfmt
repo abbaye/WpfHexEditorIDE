@@ -1,126 +1,191 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Quake BSP Map",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".bsp"
   ],
-  "description": "Binary Space Partition game map",
+  "description": "BSP (Binary Space Partition) is the compiled map format used by id Software's Quake 1 engine. Quake 1 BSP files start with a version number (uint32 LE): version 29 (0x1D000000 LE = 0x1D = 29) for standard Quake maps, and version 28 (0x1C) for QuakeWorld variant. After the 4-byte version, the header contains 15 lump directory entries, each with offset (uint32 LE) and length (uint32 LE). The 15 lumps are indexed 0-14: ENTITIES(0), PLANES(1), TEXTURES(2), VERTICES(3), VISIBILITY(4), NODES(5), TEXINFO(6), FACES(7), LIGHTING(8), CLIPNODES(9), LEAFS(10), MARKSURFACES(11), EDGES(12), SURFEDGES(13), MODELS(14). BSP maps are the output of qbsp (Quake BSP compiler). Source Engine variants use different magic: Half-Life BSP has version 30 (see BSP_HL.whfmt), Quake 3 BSP has 'IBSP' magic (see BSP_Q3.whfmt).",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Quake BSP Format Specification",
-      "Quake Specs v3.4",
-      "Binary Space Partitioning Format"
+      "Quake BSP Format — Quake Specs v3.4 by Olivier Montanuy"
     ],
     "WebLinks": [
       "https://quakewiki.org/wiki/Quake_BSP_Format",
       "https://www.gamers.org/dEngine/quake/spec/quake-spec34/qkspec_4.htm",
-      "https://developer.valvesoftware.com/wiki/BSP",
-      "https://docs.fileformat.com/game/bsp/"
+      "https://developer.valvesoftware.com/wiki/BSP"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "1D000000", "offset": 0, "label": "0x1D (29) LE — Quake 1 BSP version 29", "weight": 0.9 },
+      { "value": "1E000000", "offset": 0, "label": "0x1E (30) LE — Half-Life BSP version 30 (alt)", "weight": 0.5 },
+      { "value": "1C000000", "offset": 0, "label": "0x1C (28) LE — Quake BSP version 28 (QuakeWorld)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 124,
+      "maxSignatureOffset": 0,
+      "note": "Quake 1 BSP uses version 29 (0x1D) LE at offset 0. No dedicated magic bytes — version number is the identifier. BSP_HL.whfmt covers Half-Life BSP (version 30). BSP_Q3.whfmt covers Quake 3 BSP ('IBSP' magic). Source BSP uses 'VBSP' magic."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0
+    "bspVersion": 0,
+    "bspEntitiesOffset": 0,
+    "bspEntitiesLength": 0
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Version",
+      "name": "BSP Version",
       "offset": 0,
       "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Quake BSP format version as uint32 little-endian at offset 0. Version 29 (0x1D = 29 decimal) is the standard Quake 1 BSP map format. Version 28 (0x1C) was used in a QuakeWorld variant. Version 30 (0x1E) = Half-Life BSP (Goldsrc engine). Note: Quake 3 uses completely different format with 'IBSP' 4-byte ASCII magic instead of a version number. Quake 2 BSP also uses 'IBSP' with version 38.",
+      "storeAs": "bspVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "28": "BSP version 28 (QuakeWorld variant)",
+        "29": "BSP version 29 (Quake 1 standard)",
+        "30": "BSP version 30 (Half-Life / GoldSrc)",
+        "38": "BSP version 38 (Quake 2, uses IBSP magic)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Entities Lump Offset",
+      "offset": 4,
+      "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "BSP version number",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "Byte offset of the ENTITIES lump (lump 0) as uint32 little-endian at offset 4. The first of 15 lump directory entries begins here. The ENTITIES lump contains the Quake map entity string: the text-format description of all entities in the level (spawn points, doors, lights, monsters, items). Each entity is a key-value pair list enclosed in braces. The entities text is immediately readable as ASCII.",
+      "storeAs": "bspEntitiesOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Entities Lump Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte length of the ENTITIES lump (lump 0) as uint32 little-endian at offset 8. Paired with the offset field to define the entities text range. Entities text length typically 5KB-50KB depending on map complexity. The Quake BSP header has 15 lump entries at offsets 4-123 (each 8 bytes: offset+length). Full lump table: ENTITIES, PLANES, TEXTURES, VERTICES, VISIBILITY, NODES, TEXINFO, FACES, LIGHTING, CLIPNODES, LEAFS, MARKSURFACES, EDGES, SURFEDGES, MODELS.",
+      "storeAs": "bspEntitiesLength",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "BSP Version",
+      "variable": "bspVersion",
+      "description": "BSP format version (29=Quake 1, 30=Half-Life)"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "Entities Offset",
+      "variable": "bspEntitiesOffset",
+      "description": "Offset to entity text lump"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Entities Length",
+      "variable": "bspEntitiesLength",
+      "description": "Length of entity text lump"
     }
   ],
-  "software": [
-    "Emulators",
-    "Game engines"
+  "assertions": [
+    {
+      "name": "BSP version valid",
+      "expression": "bspVersion == 29 || bspVersion == 28 || bspVersion == 30",
+      "severity": "warning",
+      "message": "BSP version should be 28/29 (Quake 1) or 30 (Half-Life) — may not be a valid Quake BSP"
+    }
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".bsp"
+  "navigation": {
+    "bookmarks": [
+      { "name": "BSP Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Lump Directory", "offset": 4, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
-  "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "bspVersion",
+    "primaryField": "bspEntitiesLength",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "BSP Header",
+        "icon": "\uE71B",
+        "fields": ["bspVersion", "bspEntitiesOffset", "bspEntitiesLength"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
+  "exportTemplates": [
+    {
+      "name": "BSP Header (JSON)",
+      "format": "json",
+      "fields": ["bspVersion", "bspEntitiesOffset", "bspEntitiesLength"]
+    }
+  ],
   "forensic": {
     "category": "game",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Binary Space Partition game map",
+    "analysisContext": "Quake 1 BSP header: version(4B LE, =29) + 15 lump entries × 8B (offset+length). Lump indices: 0=ENTITIES, 1=PLANES, 2=TEXTURES, 3=VERTICES, 4=VISIBILITY, 5=NODES, 6=TEXINFO, 7=FACES, 8=LIGHTING, 9=CLIPNODES, 10=LEAFS, 11=MARKSURFACES, 12=EDGES, 13=SURFEDGES, 14=MODELS. Header total = 4 + 15×8 = 124 bytes. ENTITIES lump = readable ASCII entity text. BSP_Q3 uses 'IBSP' magic (4B ASCII); BSP_HL uses version 30. Source/VBSP uses 'VBSP' magic.",
     "suggestedInspections": [
-      "Validate Quake BSP Map container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+      "Bytes 0-3 (uint32 LE): version — 29=Quake1, 28=QuakeWorld, 30=Half-Life",
+      "Bytes 4-7 (uint32 LE): entities lump offset — navigate here for readable ASCII entity text",
+      "Bytes 8-11 (uint32 LE): entities lump length — read ASCII entities for map analysis",
+      "Offsets 4+lumpIndex*8: each lump entry has 8B (offset+length) for all 15 lumps"
     ]
+  },
+  "software": [
+    "Quake (id Software, original)",
+    "TrenchBroom (Quake level editor)",
+    "qbsp / ericw-tools (BSP compiler)",
+    "QuArK (Quake Army Knife, multi-engine editor)",
+    "Jackhammer / J.A.C.K. (Quake/HL map editor)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [".bsp"],
+    "relatedFormats": ["BSP_HL", "BSP_Q3", "WAD", "PAK"],
+    "note": "BSP (Quake 1, v29) is the original BSP map format. BSP_HL.whfmt = Half-Life (v30, Goldsrc). BSP_Q3.whfmt = Quake 3 ('IBSP' ASCII magic). Source Engine = 'VBSP' magic. Quake 2 = 'IBSP' v38. Different engines share .bsp extension but have distinct magic/version identifiers."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Quake 1 level design and map creation",
+    "Extracting map entities and geometry from Quake BSP files",
+    "Game modding and total conversion development",
+    "Quake map preservation and analysis"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary little-endian Quake 1 BSP map (id Software)",
+    "Magic": "No magic bytes — version uint32 LE at offset 0 (29 = Quake 1 standard)",
+    "Header": "124 bytes: version(4B) + 15 lump entries × 8B (offset+length)",
+    "Lumps": "ENTITIES, PLANES, TEXTURES, VERTICES, VISIBILITY, NODES, TEXINFO, FACES, LIGHTING, CLIPNODES, LEAFS, MARKSURFACES, EDGES, SURFEDGES, MODELS",
+    "Compiler": "qbsp / ericw-tools compile .map → .bsp"
   }
 }

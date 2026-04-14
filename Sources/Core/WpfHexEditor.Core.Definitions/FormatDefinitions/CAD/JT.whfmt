@@ -1,105 +1,173 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Jupiter Tessellation",
-  "version": "1.15",
+  "formatName": "JT Open CAD",
+  "version": "1.16",
   "extensions": [
     ".jt"
   ],
-  "description": "Siemens JT 3D CAD format",
+  "description": "JT (Jupiter Tessellation) is an ISO standard (ISO 14306) lightweight 3D CAD data format developed by Siemens Digital Industries Software (formerly UGS). JT files start with 'Version ' followed by a version string (e.g., 'Version 8.1', 'Version 9.5', 'Version 10.0') then a newline and the Siemens Digital Industries copyright line. After the ASCII header, JT files contain a binary section with a File Header (32 bytes: file path length, file path, byte order, file size, offsets to the TOC and shape header), followed by an LSG (Logical Scene Graph) that organizes model parts hierarchically, and a Segment directory table. JT supports multiple LOD (Level of Detail) representations: wireframe, tessellated, and exact B-rep (BREP). JT is widely used in automotive and aerospace PLM (Product Lifecycle Management) for design review without requiring the authoring CAD system.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Jupiter Tessellation Format"
+      "ISO 14306 — JT File Format (2012, 2017)",
+      "Siemens JT Open Toolkit Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/JT"
+      "https://en.wikipedia.org/wiki/JT_(visualization_format)",
+      "https://www.iso.org/standard/73524.html",
+      "https://www.plm.automation.siemens.com/global/en/products/lifecycle-collaboration/jtopen.html"
     ]
   },
   "detection": {
-    "signature": "56657273696F6E20",
-    "offset": 0,
+    "signatures": [
+      { "value": "56657273696F6E2038", "offset": 0, "label": "'Version 8' — JT version 8.x header prefix", "weight": 0.9 },
+      { "value": "56657273696F6E2039", "offset": 0, "label": "'Version 9' — JT version 9.x header prefix", "weight": 0.9 },
+      { "value": "56657273696F6E20 3130", "offset": 0, "label": "'Version 10' — JT version 10.x header prefix", "weight": 0.9 },
+      { "value": "56657273696F6E20", "offset": 0, "label": "'Version ' — JT ASCII version prefix (any version)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "JT files start with 'Version ' followed by version number (8.x, 9.x, 10.x) at offset 0. The second line typically contains a Siemens/EDS copyright notice. All known JT versions start with 'Version '."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "versionHeader": "",
-    "jtVersion": ""
+    "jtVersionLine": "",
+    "jtCopyrightLine": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Version Header",
+      "name": "JT Version Line",
       "offset": 0,
-      "length": 8,
+      "length": 16,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Version marker",
-      "storeAs": "versionHeader",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "JT file first line: ASCII version string 'Version X.Y' identifying the JT format version. Known versions: 'Version 8.1' (early JT), 'Version 9.5' (ISO/IEC 14306:2012), 'Version 10.0' (ISO 14306:2017+). The version determines segment encoding, geometry precision, and available features. JT 9.5+ added full B-rep support. JT 10.0 introduced the updated ISO standard revision. The line ends with a newline (0x0A or 0x0D0A).",
+      "storeAs": "jtVersionLine",
+      "valueType": "ascii",
+      "valueMap": {
+        "Version 8.1\n": "JT 8.1 (pre-ISO)",
+        "Version 9.5\n": "JT 9.5 (ISO 14306:2012)",
+        "Version 10.0\n": "JT 10.0 (ISO 14306:2017)"
+      }
     },
     {
       "type": "field",
-      "name": "JT Version",
-      "offset": 8,
-      "length": 4,
+      "name": "Copyright / Creator Line",
+      "offset": 16,
+      "length": 64,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "JT format version",
-      "storeAs": "jtVersion",
+      "opacity": 0.35,
+      "description": "JT file second line: copyright or creator string immediately following the version line. Typically contains 'Copyright (c) Siemens Digital Industries Software Inc.' or 'EDS Product Lifecycle Management Solutions, Inc.' for older files. This ASCII text line is followed by a newline and then the binary File Header structure begins at the next 4-byte aligned offset.",
+      "storeAs": "jtCopyrightLine",
       "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "JT Version",
+      "variable": "jtVersionLine",
+      "description": "JT format version string (e.g., 'Version 9.5')"
+    },
+    {
+      "type": "metadata",
+      "name": "Copyright",
+      "variable": "jtCopyrightLine",
+      "description": "Creator/copyright line (Siemens Digital Industries Software)"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "JT version prefix present",
+      "expression": "jtVersionLine != ''",
+      "severity": "warning",
+      "message": "JT file version line not detected — may not be a valid JT file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".jt"
+  "navigation": {
+    "bookmarks": [
+      { "name": "JT Version Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "jtVersionLine",
+    "primaryField": "jtCopyrightLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "JT Header",
+        "icon": "\uE71B",
+        "fields": ["jtVersionLine", "jtCopyrightLine"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {},
+  "exportTemplates": [
+    {
+      "name": "JT Header (JSON)",
+      "format": "json",
+      "fields": ["jtVersionLine", "jtCopyrightLine"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Siemens JT 3D CAD format",
+    "analysisContext": "JT structure: ASCII header (2 lines: Version X.Y\\n + copyright\\n) then binary. Binary File Header: file_path_length(int32), file_path(variable), byte_order(int16: 0=LE,1=BE), version(float32), file_size(int32), segment_count(int32), TOC_offset(int64), shape_header_offset(int64). Segment Table: array of [segment_ID(GUID 16B), segment_offset(int64), segment_length(int32), segment_type(int32)]. Segment types: 1=LSG(scene graph), 6=Tristrip Shape, 7=Polyline Shape, 9=TriStrip Set Primitive, 12=BREP Precise, 20=LOD Group. LSG uses node hierarchy: Part_Node, Instance_Node, RangeLOD_Node, GroupNode. Geometry in XE_*_Shape segments: vertices as float32 triplets, normals, texcoords, index arrays. JT uses zlib compression for segment data.",
     "suggestedInspections": [
-      "Validate Jupiter Tessellation file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-15: 'Version X.Y' — identifies JT format version (8/9/10)",
+      "After ASCII header: binary File Header with file path and byte order marker",
+      "Byte order field: 0=little-endian, 1=big-endian for all subsequent binary data",
+      "TOC offset in File Header leads to Segment Table with GUID-indexed data segments"
     ]
+  },
+  "software": [
+    "Siemens NX (Teamcenter)",
+    "JT2Go (Siemens viewer)",
+    "CATIA (Dassault Systèmes)",
+    "AutoCAD (import)",
+    "Autodesk Inventor",
+    "Open CASCADE (partial)",
+    "PTC Creo"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".jt"],
+    "relatedFormats": ["STEP", "CATPART", "SLDPRT", "U3D", "3DXML"],
+    "note": "JT is an ISO standard (14306) lightweight visualization and data exchange format for 3D product data. It stores multiple LOD levels (wireframe, tessellation, B-rep). JT Open Toolkit (free SDK) allows reading JT files. JT is the primary PLM visualization format for Siemens Teamcenter and is supported by most PLM vendors."
+  },
+  "MimeTypes": [
+    "model/jt",
+    "application/x-jt"
+  ],
+  "UseCases": [
+    "Lightweight 3D visualization in PLM/PDM systems",
+    "Multi-LOD product design review without authoring CAD",
+    "Automotive and aerospace digital mock-up (DMU)",
+    "Supply chain CAD data sharing without license requirements"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Hybrid: ASCII version header + binary segment data",
+    "Standard": "ISO 14306:2012 (JT 9.5), ISO 14306:2017 (JT 10.0)",
+    "Segments": "LSG (scene graph), shape geometry, B-rep, XT (Parasolid), BREP",
+    "Compression": "zlib per segment; geometry optionally quantized",
+    "LOD": "Multiple levels: wireframe, triangulated mesh, exact BREP"
   }
 }

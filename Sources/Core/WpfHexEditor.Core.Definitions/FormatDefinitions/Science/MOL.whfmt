@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MDL Molfile",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
     ".mol"
   ],
@@ -9,14 +9,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "Biovia CTFILE Formats 2020",
-    "MDL Information Systems CTFile 2003 Specification"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/Chemical_table_file",
-    "https://www.daylight.com/dayhtml/doc/theory/theory.mol.html"
-  ],
+  "references": {
+    "specifications": [
+      "Biovia CTFILE Formats 2020",
+      "MDL Information Systems CTFile 2003 Specification"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Chemical_table_file",
+      "https://www.daylight.com/dayhtml/doc/theory/theory.mol.html"
+    ]
+  },
   "detection": {
     "signature": "00",
     "offset": 0,
@@ -106,7 +108,10 @@
       "description": "Columns 35-39 of the counts line (offset ~274) should contain 'V2000' or 'V3000'; absence suggests a very old V1 format with 6-character coordinates",
       "offset": 274,
       "length": 5,
-      "validAsciiValues": ["V2000", "V3000"],
+      "validAsciiValues": [
+        "V2000",
+        "V3000"
+      ],
       "severity": "info"
     }
   ],
@@ -115,15 +120,35 @@
       {
         "name": "Header",
         "fields": [
-          { "label": "Molecule Name",     "offset": 0,   "length": 80, "format": "ascii" },
-          { "label": "Program/Timestamp", "offset": 80,  "length": 80, "format": "ascii" },
-          { "label": "Comment",           "offset": 160, "length": 80, "format": "ascii" }
+          {
+            "label": "Molecule Name",
+            "offset": 0,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Program/Timestamp",
+            "offset": 80,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Comment",
+            "offset": 160,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       },
       {
         "name": "Counts",
         "fields": [
-          { "label": "Counts Line", "offset": 240, "length": 80, "format": "ascii" }
+          {
+            "label": "Counts Line",
+            "offset": 240,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -131,7 +156,11 @@
   "exportTemplates": [
     {
       "name": "Molfile Header",
-      "fields": ["moleculeName", "comment", "countsLine"]
+      "fields": [
+        "moleculeName",
+        "comment",
+        "countsLine"
+      ]
     }
   ],
   "software": [
@@ -145,8 +174,17 @@
   "formatRelationships": {
     "cheminformatics": true,
     "container_format": "SDF (multiple Molfiles)",
-    "related": ["SDF", "RXN", "RDF", "MOL2"],
-    "databases": ["PubChem", "ChEMBL", "ChemSpider"]
+    "related": [
+      "SDF",
+      "RXN",
+      "RDF",
+      "MOL2"
+    ],
+    "databases": [
+      "PubChem",
+      "ChEMBL",
+      "ChemSpider"
+    ]
   },
   "MimeTypes": [
     "chemical/x-mdl-molfile",

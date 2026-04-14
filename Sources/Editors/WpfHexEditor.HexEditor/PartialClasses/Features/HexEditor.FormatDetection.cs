@@ -376,6 +376,12 @@ namespace WpfHexEditor.HexEditor
                     var list = new System.Collections.Generic.List<(FormatDefinition, string)>(allEntries.Count);
                     foreach (var entry in allEntries)
                     {
+                        // Skip non-whfmt resources (.grammar files are XML Synalysis definitions,
+                        // syntax-only whfmt files use a different schema — neither is parseable
+                        // as a FormatDefinition and their null result is expected, not an error.
+                        if (!entry.ResourceKey.EndsWith(".whfmt", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
                         try
                         {
                             // GetJson() is itself cached — no stream I/O after first call.
@@ -389,8 +395,9 @@ namespace WpfHexEditor.HexEditor
                             }
                             else
                             {
-                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
-                                _formatLoadFailures.Add(new FormatLoadFailure(entry.ResourceKey, "ImportFromJson returned null"));
+                                // Null without exception = wrong schema (e.g. syntax-only whfmt).
+                                // Not a user-facing error — skip silently.
+                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] SKIPPED (incompatible schema): {entry.ResourceKey}");
                             }
                         }
                         catch (Exception ex)

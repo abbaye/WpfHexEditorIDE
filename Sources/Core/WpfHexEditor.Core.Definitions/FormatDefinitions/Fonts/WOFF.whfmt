@@ -1,43 +1,45 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Web Open Font Format",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".woff"
   ],
-  "description": "WOFF - Web font format",
+  "description": "WOFF (Web Open Font Format) is a W3C standard (2012) for compressed web font delivery. WOFF is essentially a container wrapping existing TrueType/OpenType/Open Font Format data with a compressed font table format and optional metadata. WOFF files start with the signature 'wOFF' (0x774F4646) at offset 0, followed by the flavor field (4B big-endian uint32: 0x00010000 for TrueType, 0x4F54544F='OTTO' for CFF/PostScript). The WOFF header contains: signature(4B), flavor(4B), length(4B, total file size), numTables(2B), reserved(2B), totalSfntSize(4B, original uncompressed font size), majorVersion(2B), minorVersion(2B), metaOffset(4B), metaLength(4B), metaOrigLength(4B), privOffset(4B), privLength(4B). After the header, the Table Directory lists each compressed font table with tag, offset, compLength, origLength, and origCheckSum. Each table is zlib-compressed (deflate). WOFF metadata is XML (zlib-compressed) containing font name, copyright, and license information.",
   "category": "Fonts",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "WOFF File Format 1.0",
-      "W3C Recommendation"
+      "WOFF File Format 1.0 — W3C Recommendation (2012)",
+      "ISO/IEC 14496-22 — Open Font Format"
     ],
     "WebLinks": [
       "https://www.w3.org/TR/WOFF/",
-      "https://en.wikipedia.org/wiki/Web_Open_Font_Format"
+      "https://en.wikipedia.org/wiki/Web_Open_Font_Format",
+      "https://docs.fileformat.com/font/woff/"
     ]
   },
   "detection": {
-    "signature": "774F4646",
-    "offset": 0,
+    "signatures": [
+      { "value": "774F4646", "offset": 0, "label": "'wOFF' — WOFF 1.0 magic signature", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 44,
+      "maxSignatureOffset": 0,
+      "note": "All WOFF 1.0 files start with 'wOFF' (0x77 0x4F 0x46 0x46) at offset 0. This is a strong 4-byte identifier. WOFF2 files use 'wOF2' (0x774F4632) — see WOFF2.whfmt."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "numGlyphs": 0,
-    "unitsPerEm": 0,
-    "fontName": "",
-    "tableCount": 0,
     "woffSignature": "",
-    "flavor": 0,
-    "length": 0,
-    "numTables": 0
+    "woffFlavor": 0,
+    "woffLength": 0,
+    "woffNumTables": 0
   },
   "blocks": [
     {
@@ -46,116 +48,159 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "wOFF signature",
+      "opacity": 0.45,
+      "description": "WOFF 1.0 magic signature 'wOFF' (bytes: 77 4F 46 46) at offset 0. This 4-byte sequence uniquely identifies Web Open Font Format 1.0 as defined by the W3C. The lowercase 'w' distinguishes it from WOFF2 ('wOF2') and from the underlying OpenType/TrueType tables. WOFF wraps compressed font table data with XML metadata and optional private data, delivering web fonts with smaller file sizes (typically 20-40% smaller than raw TTF/OTF).",
       "storeAs": "woffSignature",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Flavor",
+      "name": "Font Flavor",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "TrueType or CFF",
-      "storeAs": "flavor",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "WOFF flavor field at offset 4 (4 bytes, big-endian uint32). Identifies the underlying font format wrapped in the WOFF container. 0x00010000 = TrueType (glyph outlines in 'glyf'/'loca' tables); 0x4F54544F = 'OTTO' = CFF/PostScript Type 1 (glyph outlines in 'CFF ' table). This is the same value as the sfVersion field in a raw OpenType font's Offset Table. Variable fonts may also use 0x00010000 with additional variation tables (gvar, fvar, etc.).",
+      "storeAs": "woffFlavor",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "65536": "TrueType (0x00010000) — glyf/loca outlines",
+        "1330926671": "CFF/PostScript (0x4F54544F 'OTTO') — CFF outlines"
+      }
     },
     {
       "type": "field",
-      "name": "Length",
+      "name": "Total File Length",
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Total WOFF file size",
-      "storeAs": "length",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "WOFF total file size in bytes at offset 8 (4 bytes, big-endian uint32). Must equal the actual file size for a valid WOFF file. This field allows length validation without reading the entire file. The WOFF specification requires that this value exactly matches the on-disk file size.",
+      "storeAs": "woffLength",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
-      "name": "Num Tables",
+      "name": "Number of Tables",
       "offset": 12,
       "length": 2,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Number of font tables",
-      "storeAs": "numTables",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "Number of OpenType/TrueType font tables stored in this WOFF file at offset 12 (2 bytes, big-endian uint16). Required tables for TrueType: cmap, glyf, head, hhea, hmtx, loca, maxp, name, post. Required for CFF: cmap, CFF_, head, hhea, hmtx, maxp, name, post. Typical range: 12-25 tables for a complete font. The Table Directory immediately follows the WOFF header at offset 44.",
+      "storeAs": "woffNumTables",
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Glyph Count",
-      "variable": "numGlyphs",
-      "description": "Glyph Count"
+      "name": "WOFF Signature",
+      "variable": "woffSignature",
+      "description": "'wOFF' — WOFF 1.0 Web font magic"
     },
     {
       "type": "metadata",
-      "name": "Units Per EM",
-      "variable": "unitsPerEm",
-      "description": "Units Per EM"
+      "name": "Font Flavor",
+      "variable": "woffFlavor",
+      "description": "Underlying font type: TrueType (0x00010000) or CFF (0x4F54544F)"
     },
     {
       "type": "metadata",
-      "name": "Font Name",
-      "variable": "fontName",
-      "description": "Font Name"
+      "name": "File Length",
+      "variable": "woffLength",
+      "description": "Total WOFF file size in bytes"
     },
     {
       "type": "metadata",
       "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
+      "variable": "woffNumTables",
+      "description": "Number of font tables"
     }
   ],
-  "software": [
-    "Web browsers"
+  "assertions": [
+    {
+      "name": "WOFF signature valid",
+      "expression": "woffSignature == 'wOFF'",
+      "severity": "error",
+      "message": "WOFF file must start with 'wOFF' (0x774F4646) — not a valid WOFF 1.0 font"
+    }
   ],
-  "formatRelationships": {
-    "category": "Fonts",
-    "extensions": [
-      ".woff"
+  "navigation": {
+    "bookmarks": [
+      { "name": "WOFF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "font/woff"
-  ],
-  "Software": [
-    "Web browsers",
-    "Font editors"
-  ],
-  "UseCases": [
-    "Web fonts",
-    "Online typography"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": false
+  "inspector": {
+    "badge": "woffFlavor",
+    "primaryField": "woffSignature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "WOFF Header",
+        "icon": "\uE71B",
+        "fields": ["woffSignature", "woffFlavor", "woffLength", "woffNumTables"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "CompressionMethod": "WOFF compression"
-  },
-  "functions": {
-    "readUInt32BE": "Read font tables",
-    "extractASCIIString": "Read font name"
-  },
+  "exportTemplates": [
+    {
+      "name": "WOFF Header (JSON)",
+      "format": "json",
+      "fields": ["woffSignature", "woffFlavor", "woffLength", "woffNumTables"]
+    }
+  ],
   "forensic": {
     "category": "font",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "WOFF - Web font format",
+    "analysisContext": "WOFF header (44 bytes): signature(4B 'wOFF'), flavor(4B BE: 0x00010000=TT/0x4F54544F=CFF), length(4B BE, total file), numTables(2B BE), reserved(2B, must=0), totalSfntSize(4B BE, decompressed size), majorVersion(2B BE), minorVersion(2B BE), metaOffset(4B BE), metaLength(4B BE), metaOrigLength(4B BE), privOffset(4B BE), privLength(4B BE). Table Directory at offset 44: numTables entries of [tag(4B), offset(4B BE), compLength(4B BE), origLength(4B BE), origCheckSum(4B BE)]. Tables are zlib-deflate compressed (compLength < origLength). Metadata: zlib XML at metaOffset, origLength=metaOrigLength. Key tables: head(font metrics), name(font names), cmap(Unicode mappings), glyf/loca(TT outlines), CFF_(PS outlines), hhea/hmtx(horizontal metrics), OS/2(style and weight), kern(kerning).",
     "suggestedInspections": [
-      "Validate Web Open Font Format offset table and required table tags (head, cmap, glyf)",
-      "Check glyph count, loca table offsets, and encoding records",
-      "Inspect name table entries and OS/2 metrics for consistency"
+      "Bytes 0-3: 'wOFF' magic — WOFF 1.0 (vs 'wOF2' for WOFF2)",
+      "Bytes 4-7 (uint32 BE): flavor 0x00010000=TrueType, 0x4F54544F=CFF",
+      "Bytes 8-11 (uint32 BE): total file length (should match actual file size)",
+      "Bytes 12-13 (uint16 BE): numTables — count of compressed font table directory entries"
     ]
+  },
+  "software": [
+    "All modern web browsers (Chrome, Firefox, Safari, Edge)",
+    "FontForge (font editor)",
+    "FontLab (font editor)",
+    "Glyphs (Mac font editor)",
+    "Google Fonts (largest WOFF/WOFF2 repository)"
+  ],
+  "formatRelationships": {
+    "category": "Fonts",
+    "extensions": [".woff"],
+    "relatedFormats": ["WOFF2", "TTF", "OTF", "EOT"],
+    "note": "WOFF 1.0 (W3C 2012) wraps TrueType/OpenType with zlib compression. WOFF2 (W3C 2018) uses Brotli compression for ~30% better compression. EOT is the deprecated Internet Explorer-only predecessor. All modern browsers support WOFF2; WOFF 1.0 provides fallback for IE9-11."
+  },
+  "MimeTypes": [
+    "font/woff",
+    "application/font-woff"
+  ],
+  "UseCases": [
+    "Web font delivery for CSS @font-face declarations",
+    "Custom typography on websites and web applications",
+    "Icon font embedding (FontAwesome, Material Icons, etc.)",
+    "Fallback web font format for browsers not supporting WOFF2"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary container with compressed OpenType/TrueType tables",
+    "Magic": "'wOFF' (0x774F4646) at offset 0",
+    "Compression": "zlib deflate per font table (compLength < origLength in Table Directory)",
+    "Standard": "W3C WOFF 1.0 Recommendation (2012)",
+    "Endianness": "big-endian for all multi-byte header and directory fields"
   }
 }

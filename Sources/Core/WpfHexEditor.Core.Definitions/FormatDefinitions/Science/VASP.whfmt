@@ -1,114 +1,182 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "VASP POSCAR",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".vasp",
     ".poscar",
     ".contcar"
   ],
-  "description": "Vienna Ab-initio Simulation Package structure file",
+  "description": "POSCAR (Position of Atoms in Crystal ARrangement) is the input structure file format for VASP (Vienna Ab initio Simulation Package), the most widely used software for ab initio materials simulation using density functional theory (DFT). POSCAR is a plain-text file with a strictly ordered line structure: line 1 = comment/system name (free text), line 2 = universal scaling factor (float), lines 3-5 = lattice vectors a1, a2, a3 (3 floats each, in Angstroms), line 6 = element symbols (VASP 5+ only, e.g., 'Fe O'), line 7 = ion count per species (integers), line 8 = coordinate mode ('Direct' or 'Cartesian'), lines 9+ = fractional or Cartesian atomic coordinates. CONTCAR is the VASP output counterpart with the same format. VASP also uses OUTCAR, DOSCAR, EIGENVAL, and XDATCAR binary/text output files.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "VASP POSCAR Format"
+      "VASP POSCAR Format — VASP Wiki",
+      "VASP Manual — University of Vienna"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/VASP"
+      "https://www.vasp.at/wiki/index.php/POSCAR",
+      "https://cms.mpi.univie.ac.at/wiki/index.php/POSCAR",
+      "https://pymatgen.org/pymatgen.io.vasp.inputs.html"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "44697265637420", "offset": 0, "label": "'Direct ' — POSCAR coordinate mode keyword (rare at offset 0)", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 5.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 50,
+      "maxSignatureOffset": 0,
+      "note": "POSCAR/VASP has no fixed magic bytes — file starts with a free-text comment line. Detection relies primarily on file extension (.vasp, .poscar, .contcar) and structural validation of line 2 (scaling factor float) and lines 3-5 (lattice vectors). Files named exactly 'POSCAR' or 'CONTCAR' (no extension) are also common."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "comment": ""
+    "comment": "",
+    "scalingFactor": "",
+    "coordMode": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Comment",
+      "name": "Comment Line",
       "offset": 0,
       "length": 80,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First line: system name/comment",
+      "opacity": 0.35,
+      "description": "POSCAR line 1: free-text comment describing the system (80 characters max). May contain the compound formula (e.g., 'Fe2O3 hematite'), VASP version, or any user-defined label. This line is not parsed by VASP and serves purely as documentation. It ends with a newline (0x0A).",
       "storeAs": "comment",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Scaling Factor",
+      "offset": 81,
+      "length": 20,
+      "color": "#FF6B6B",
+      "opacity": 0.35,
+      "description": "POSCAR line 2: universal scaling factor as a floating-point number. Applied to all lattice vectors and atomic coordinates. Value 1.0 means no scaling. Negative value encodes volume (VASP uses absolute value and rescales to match |value| in cubic Angstroms). Typical values: 1.0 (direct Angstrom coordinates) or target volume in Å³ as negative number.",
+      "storeAs": "scalingFactor",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Coordinate Mode",
+      "offset": 0,
+      "length": 10,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "POSCAR coordinate mode keyword on line 8 (after optional element/count lines): 'Direct' (fractional coordinates, 0.0-1.0 range) or 'Cartesian' (coordinates in Angstroms × scaling factor). The 'Direct' mode is most common for periodic systems. Only the first character is significant: 'D' or 'd' = Direct, 'C' or 'c' = Cartesian.",
+      "storeAs": "coordMode",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "System Comment",
+      "variable": "comment",
+      "description": "System description / formula comment"
+    },
+    {
+      "type": "metadata",
+      "name": "Scaling Factor",
+      "variable": "scalingFactor",
+      "description": "Universal lattice scaling factor (float)"
+    },
+    {
+      "type": "metadata",
+      "name": "Coordinate Mode",
+      "variable": "coordMode",
+      "description": "Atomic coordinate mode: 'Direct' or 'Cartesian'"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "comment != ''",
+      "severity": "warning",
+      "message": "POSCAR comment line is empty — file may be invalid or empty"
+    }
   ],
-  "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".vasp",
-      ".poscar",
-      ".contcar"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Comment Line", "offset": 0, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "coordMode",
+    "primaryField": "comment",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "POSCAR Structure",
+        "icon": "\uE71B",
+        "fields": ["comment", "scalingFactor", "coordMode"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "POSCAR Header (JSON)",
+      "format": "json",
+      "fields": ["comment", "scalingFactor", "coordMode"]
+    }
+  ],
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Vienna Ab-initio Simulation Package structure file",
+    "analysisContext": "POSCAR/CONTCAR line structure: L1=comment, L2=scaling_factor(float), L3-L5=lattice_vectors(3 floats each), L6=element_symbols(VASP5+, e.g.'Fe O'), L7=ion_counts(e.g.'4 6'), L8=coord_mode('Direct' or 'Cartesian'), L9+=atomic_coords(3 floats per atom, optional 4th=velocity or T/F for selective dynamics). Selective dynamics: if line 8 is 'Selective dynamics', then actual coord_mode is on line 9. Total atoms = sum of L7 integers. Fractional coordinates in Direct mode must be 0.0-1.0. CONTCAR is identical format but contains post-relaxation coordinates from VASP output.",
     "suggestedInspections": [
-      "Validate VASP POSCAR file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Line 1: system description (free text) — check for formula",
+      "Line 2: scaling factor — 1.0 is typical; negative = volume in ų",
+      "Lines 3-5: lattice vectors (3 floats each) — units are scaling_factor × Angstroms",
+      "Line 6 (VASP5): element symbols — line 7 = ion counts per element type"
     ]
+  },
+  "software": [
+    "VASP (Vienna Ab initio Simulation Package)",
+    "pymatgen (Python Materials Genomics)",
+    "ASE (Atomic Simulation Environment)",
+    "VESTA (visualization)",
+    "p4vasp",
+    "VASPKIT"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".vasp", ".poscar", ".contcar"],
+    "relatedFormats": ["CIF", "XYZ", "MMCIF"],
+    "note": "POSCAR is VASP's primary structure input file. CONTCAR is the output structure after ionic relaxation with identical format. Files are often named exactly 'POSCAR' or 'CONTCAR' without extension (Unix convention). pymatgen and ASE can read/write POSCAR and convert between CIF, XYZ, and other formats."
+  },
+  "MimeTypes": [
+    "text/plain"
+  ],
+  "UseCases": [
+    "Ab initio DFT crystal structure input (VASP)",
+    "Materials science periodic structure definition",
+    "Ionic relaxation and molecular dynamics simulations",
+    "Electronic structure calculations (band structure, DOS, phonons)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, line-based fixed structure",
+    "CoordinateTypes": "Direct (fractional 0-1) or Cartesian (Angstroms)",
+    "LineStructure": "L1=comment, L2=scale, L3-5=lattice, L6=elements, L7=counts, L8=mode, L9+=coords",
+    "VASPVersions": "VASP 4.x (no element line), VASP 5.x+ (element symbols on line 6)"
   }
 }

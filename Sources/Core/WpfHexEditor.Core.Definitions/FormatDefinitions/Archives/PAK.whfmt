@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PAK Archive",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [ ".pak" ],
   "description": "PAK is an ambiguous extension used by multiple archive formats. The original PAK format is derived from ARC by Thom Henderson and uses the same 0x1A magic byte at offset 0 with a type byte at offset 1. However, the widely-known Quake PAK format uses the magic 'PACK' (0x50414343) at offset 0 followed by the directory offset and size (both LE uint32). Unreal Engine PAK, Valve VPK, and other game engines also use .pak but with different signatures. Detection is unreliable for the old ARC-derived PAK; Quake-style PACK magic provides reliable detection for game asset archives.",
   "category": "Archives",
@@ -129,8 +129,8 @@
     "category": "archive",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "PAK files from unknown sources may contain game engine exploits targeting asset parsers",
-      "Crafted directory offset pointing outside file bounds indicates corruption or attack"
+      { "name": "Game engine exploit risk", "condition": "true", "description": "PAK files from unknown sources may contain game engine exploits targeting asset parsers", "severity": "warning" },
+      { "name": "Crafted directory offset", "condition": "true", "description": "Crafted directory offset pointing outside file bounds indicates corruption or attack", "severity": "warning" }
     ]
   },
   "aiHints": {

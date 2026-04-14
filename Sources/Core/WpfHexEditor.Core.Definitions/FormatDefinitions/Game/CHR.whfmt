@@ -224,9 +224,9 @@
     "category": "game-graphics",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "File size not a multiple of 16 (incomplete tile)",
-      "File size not a multiple of 8192 (incomplete bank — possible truncation)",
-      "All-zero tiles may indicate CHR RAM (no static graphics)"
+      { "name": "Incomplete tile size", "condition": "true", "description": "File size not a multiple of 16 (incomplete tile)", "severity": "warning" },
+      { "name": "Incomplete bank truncation", "condition": "true", "description": "File size not a multiple of 8192 (incomplete bank — possible truncation)", "severity": "warning" },
+      { "name": "All-zero CHR RAM tiles", "condition": "true", "description": "All-zero tiles may indicate CHR RAM (no static graphics)", "severity": "warning" }
     ]
   },
   "navigation": {

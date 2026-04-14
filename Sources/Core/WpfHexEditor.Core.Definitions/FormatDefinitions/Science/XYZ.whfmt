@@ -1,37 +1,44 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "XYZ Chemical Format",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".xyz"
   ],
-  "description": "XYZ chemical file format with atom coordinates",
+  "description": "XYZ is a simple plain-text file format for storing molecular and crystal structure data, originally developed for the Xmol visualization program. XYZ files have a minimal 3-line structure per molecule: line 1 = atom count (integer), line 2 = comment/title (free text, often energy or molecule name), lines 3+ = one atom per line with element symbol and x/y/z coordinates in Angstroms. Multi-frame XYZ files (extended XYZ or trajectory files) concatenate multiple such blocks sequentially. Extended XYZ (used by OVITO, ASE) adds key=value pairs in the comment line for lattice parameters, PBC flags, and per-atom properties. XYZ is the simplest molecular file format and is widely supported by all molecular visualization and simulation software as a universal interchange format.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "XYZ Chemical Format Format"
+      "XYZ Chemical Format — Xmol/OpenBabel",
+      "Extended XYZ (EXTXYZ) Format — libAtoms/QUIP"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/XYZ"
+      "https://openbabel.org/wiki/XYZ_(format)",
+      "https://wiki.fysik.dtu.dk/ase/ase/io/formatoptions.html#extxyz",
+      "https://docs.fileformat.com/3d/xyz/"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "31 0A", "offset": 0, "label": "'1\\n' — single atom XYZ (count=1)", "weight": 0.2 },
+      { "value": "32 0A", "offset": 0, "label": "'2\\n' — two atoms XYZ (count=2, e.g., H2)", "weight": 0.2 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.5, "max": 5.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "XYZ has no fixed magic bytes — starts with a decimal integer (atom count) on line 1. Detection relies on .xyz extension and structural validation: line 1 must be a positive integer, line 2 can be any text, line 3+ must be 'ELEMENT x y z' format."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "atomCount": ""
+    "atomCount": "",
+    "xyzComment": ""
   },
   "blocks": [
     {
@@ -40,78 +47,119 @@
       "offset": 0,
       "length": 10,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Number of atoms (first line)",
+      "opacity": 0.45,
+      "description": "XYZ line 1: number of atoms in the molecule/frame as a decimal integer ASCII string followed by a newline. Determines how many coordinate lines follow. Must be a positive integer. For multi-frame XYZ trajectory files, this count starts each new frame. Examples: '42', '1234', '99999'.",
       "storeAs": "atomCount",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Comment Line",
+      "offset": 11,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "XYZ line 2: comment/title string. May be empty, molecule name, or energy value (e.g., '-76.423 Hartree'). In extended XYZ (EXTXYZ), this line contains key=value pairs: 'Lattice=\"a1x a1y a1z a2x a2y a2z a3x a3y a3z\" Properties=species:S:1:pos:R:3 pbc=\"T T T\"'.",
+      "storeAs": "xyzComment",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "Atom Count",
+      "variable": "atomCount",
+      "description": "Number of atoms in the structure"
     },
     {
       "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "Comment",
+      "variable": "xyzComment",
+      "description": "Title/comment line (may contain extended XYZ metadata)"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "Atom count present",
+      "expression": "atomCount != ''",
+      "severity": "warning",
+      "message": "XYZ file must start with an atom count integer on line 1"
+    }
   ],
-  "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".xyz"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Atom Count", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "atomCount",
+    "primaryField": "xyzComment",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "XYZ Frame Header",
+        "icon": "\uE71B",
+        "fields": ["atomCount", "xyzComment"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
-  },
+  "exportTemplates": [
+    {
+      "name": "XYZ Header (JSON)",
+      "format": "json",
+      "fields": ["atomCount", "xyzComment"]
+    }
+  ],
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "XYZ chemical file format with atom coordinates",
+    "analysisContext": "XYZ plain ASCII. Frame structure: L1=N(atom_count,integer), L2=comment(free text or ExtXYZ key=value), L3...L(N+2)=one atom per line: 'SYMBOL x y z' (e.g. 'C 1.234 0.567 -0.891'). Coordinates in Angstroms. Element symbols: 1-2 char (H, C, N, O, Fe, etc.). Multi-frame: concatenate N+2 lines per frame. ExtXYZ (ASE/OVITO) comment line: Lattice= (3x3 cell matrix as 9 floats in quotes), Properties=species:S:1:pos:R:3:forces:R:3 (column definitions), pbc=TTT (periodic boundaries). Extended files have per-atom properties after x y z.",
     "suggestedInspections": [
-      "Validate XYZ Chemical Format file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Line 1: integer N = number of atoms in this frame",
+      "Line 2: comment — if contains 'Lattice=' it is Extended XYZ with unit cell",
+      "Lines 3 to N+2: 'ELEMENT x y z' — check element symbol validity",
+      "Check if file has multiple frames (N+2 line blocks repeat)"
     ]
+  },
+  "software": [
+    "OVITO",
+    "VESTA",
+    "ASE (Atomic Simulation Environment)",
+    "OpenBabel",
+    "Avogadro",
+    "VMD",
+    "Jmol"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".xyz"],
+    "relatedFormats": ["VASP", "MOL2", "PDB", "CIF"],
+    "note": "XYZ is the universal minimal molecular interchange format. Extended XYZ (EXTXYZ) adds periodic boundary conditions and per-atom properties. Note: .xyz extension is also used for geospatial coordinate files — context and content distinguish them."
+  },
+  "MimeTypes": [
+    "chemical/x-xyz",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Molecular geometry visualization and exchange",
+    "Molecular dynamics trajectory storage",
+    "Ab initio calculation input/output",
+    "Machine learning potential training data (extended XYZ)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, 2-line header + N coordinate lines per frame",
+    "CoordinateUnits": "Angstroms (standard), or as specified in Extended XYZ Lattice",
+    "MultiFrame": "Multiple frames concatenated (XYZ trajectory format)",
+    "ExtendedXYZ": "Comment line key=value for unit cell and per-atom properties (ASE/OVITO)"
   }
 }

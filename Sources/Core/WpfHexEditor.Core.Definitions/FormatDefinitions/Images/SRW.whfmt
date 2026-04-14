@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Samsung SRW RAW",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".srw"
   ],
@@ -144,8 +144,8 @@
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "MakerNote tag 0x927C not starting with 'Samsung' suggests non-SRW TIFF file or metadata stripping",
-      "IFD0 offset pointing outside file bounds indicates corruption"
+      { "name": "Non-Samsung MakerNote prefix", "condition": "true", "description": "MakerNote tag 0x927C not starting with 'Samsung' suggests non-SRW TIFF file or metadata stripping", "severity": "warning" },
+      { "name": "IFD0 offset out of bounds", "condition": "true", "description": "IFD0 offset pointing outside file bounds indicates corruption", "severity": "warning" }
     ]
   },
   "aiHints": {

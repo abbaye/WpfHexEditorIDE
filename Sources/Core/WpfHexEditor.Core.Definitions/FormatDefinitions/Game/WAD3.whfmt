@@ -1,54 +1,53 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Half-Life WAD",
-  "version": "1.14",
+  "formatName": "Half-Life WAD3 Texture Archive",
+  "version": "1.15",
   "extensions": [
     ".wad"
   ],
-  "description": "Half-Life WAD3 texture archive",
+  "description": "WAD3 is the texture archive format used by Half-Life and other GoldSrc engine games (Counter-Strike, Team Fortress Classic, Day of Defeat) for storing wall textures, decals, and sprites. WAD3 files begin with the 4-byte ASCII magic 'WAD3' (57 41 44 33), followed by numLumps (uint32 LE), dirOffset (uint32 LE). The directory structure is identical to Quake's WAD2: 32-byte entries with fileOffset, diskSize, size, type, compression, padding, and 16-byte null-padded name. WAD3 upgrades WAD2's MipTex format: textures include an embedded 256-color palette (3 bytes per entry = 768 bytes) appended after the pixel data. Type byte 0x43 = MipTex texture (same as WAD2 but with palette). WAD3 files are referenced by Half-Life BSP maps and must be present for the map to render correctly. Half-Life ships with several .wad files: halflife.wad, liquids.wad, xeno.wad, etc.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Half-Life WAD3 Format",
-      "GoldSrc Texture Archive Specification",
-      "WAD3 MipTex Structure"
+      "WAD3 Format Specification — TWHL (The Whole Half-Life)"
     ],
     "WebLinks": [
-      "https://developer.valvesoftware.com/wiki/WAD",
       "https://twhl.info/wiki/page/Specification:_WAD3",
-      "https://developer.valvesoftware.com/wiki/WAD3_Structure",
+      "https://developer.valvesoftware.com/wiki/WAD",
       "https://www.j0e.io/tutorials/wad3-format/"
     ]
   },
   "detection": {
-    "signature": "57414433",
-    "offset": 0,
+    "signatures": [
+      { "value": "57414433", "offset": 0, "label": "'WAD3' — Half-Life/GoldSrc WAD3 texture archive magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "GoldSrc WAD3 files always start with 'WAD3' ASCII. Distinct from Doom WAD ('IWAD'/'PWAD') and Quake WAD2 ('WAD2')."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
     "wad3Signature": "",
-    "numberOfLumps": 0,
-    "directoryOffset": 0
+    "wad3NumLumps": 0,
+    "wad3DirOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "WAD3 Signature",
+      "name": "WAD3 Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "WAD3 magic bytes",
+      "opacity": 0.45,
+      "description": "WAD3 magic bytes: 4 ASCII characters 'WAD3' (0x57 0x41 0x44 0x33). Identifies this as a Half-Life/GoldSrc texture WAD archive. WAD3 upgrades Quake's WAD2 by adding an embedded 768-byte palette (256 × RGB) at the end of each MipTex texture entry, allowing per-texture palettes rather than a shared game palette. Used in Half-Life, Counter-Strike, Team Fortress Classic, and all GoldSrc mods.",
       "storeAs": "wad3Signature",
       "valueType": "ascii"
     },
@@ -58,10 +57,11 @@
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Total number of lumps",
-      "storeAs": "numberOfLumps",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Total number of texture lumps in this WAD3 archive as uint32 little-endian at offset 4. GoldSrc game WADs typically contain 50-500 textures. halflife.wad has ~500 textures; custom WADs for CS maps may have 10-100. The directory at dirOffset has exactly numLumps × 32-byte entries.",
+      "storeAs": "wad3NumLumps",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -69,83 +69,112 @@
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Offset to directory",
-      "storeAs": "directoryOffset",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Byte offset to the lump directory as uint32 little-endian at offset 8. Each 32-byte directory entry: fileOffset(4B LE) + diskSize(4B LE) + size(4B LE) + type(1B: 0x43=MipTex, 0x42=qpic, 0x46=colormap, 0x47=font) + compression(1B, 0=none) + padding(2B) + name(16B null-padded ASCII uppercase). Navigate to this offset to enumerate all textures by name and type.",
+      "storeAs": "wad3DirOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Magic",
+      "variable": "wad3Signature",
+      "description": "'WAD3' — GoldSrc texture archive"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "Lump Count",
+      "variable": "wad3NumLumps",
+      "description": "Number of texture lumps"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Directory Offset",
+      "variable": "wad3DirOffset",
+      "description": "Offset to 32B lump directory entries"
     }
   ],
+  "assertions": [
+    {
+      "name": "WAD3 magic valid",
+      "expression": "wad3Signature == 'WAD3'",
+      "severity": "error",
+      "message": "WAD3 file must start with 'WAD3' — not a valid Half-Life texture WAD"
+    },
+    {
+      "name": "WAD3 lump count non-zero",
+      "expression": "wad3NumLumps > 0",
+      "severity": "warning",
+      "message": "WAD3 archive has zero lumps — may be empty or corrupt"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "WAD3 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "wad3Signature",
+    "primaryField": "wad3NumLumps",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "WAD3 Header",
+        "icon": "\uE71B",
+        "fields": ["wad3Signature", "wad3NumLumps", "wad3DirOffset"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WAD3 Header (JSON)",
+      "format": "json",
+      "fields": ["wad3Signature", "wad3NumLumps", "wad3DirOffset"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "WAD3 header: 'WAD3'(4B ASCII) + numLumps(4B LE) + dirOffset(4B LE). Same structure as WAD2. Directory entry (32B each): fileOffset(4B LE) + diskSize(4B LE) + size(4B LE) + type(1B: 0x43=MipTex) + compression(1B) + pad(2B) + name(16B uppercase null-padded). MipTex in WAD3: name(16B) + width(4B) + height(4B) + offsets[4](4×4B) + pixel data + padding + 2B dummy + 768B palette (256×RGB). Texture names are uppercase, max 15 chars. Special prefixes: '+0'/'+A' = animated, '!' = water/scroll.",
+    "suggestedInspections": [
+      "Bytes 0-3 (ASCII): 'WAD3' magic — GoldSrc (HL/CS/TFC)",
+      "Bytes 4-7 (uint32 LE): numLumps — texture count",
+      "Bytes 8-11 (uint32 LE): dirOffset — navigate here for 32B directory entries",
+      "MipTex type 0x43: each texture has 4 mip levels + embedded 768B palette at end"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Half-Life / Counter-Strike (Valve, native)",
+    "TexMex (WAD texture editor for GoldSrc)",
+    "Wally (cross-format WAD editor)",
+    "JACK / Jackhammer (GoldSrc map editor)",
+    "Nem's Crafty (WAD/model extractor)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".wad"
-    ]
+    "extensions": [".wad"],
+    "relatedFormats": ["WAD2", "WAD", "BSP_HL"],
+    "note": "WAD3 ('WAD3' magic) = Half-Life/GoldSrc. WAD2 ('WAD2') = Quake 1. WAD ('IWAD'/'PWAD') = Doom. Same .wad extension — distinguish by first 4 bytes."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Extracting Half-Life/CS/TFC textures for modding",
+    "Creating custom texture WADs for GoldSrc maps",
+    "Texture browsing and conversion for GoldSrc game content"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Half-Life WAD3 texture archive",
-    "suggestedInspections": [
-      "Validate Half-Life WAD container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary little-endian Half-Life WAD3 texture archive (GoldSrc)",
+    "Magic": "'WAD3' ASCII at offset 0",
+    "Header": "12 bytes: magic(4B) + numLumps(4B LE) + dirOffset(4B LE)",
+    "DirEntry": "32 bytes: offset(4B) + diskSize(4B) + size(4B) + type(1B) + compr(1B) + pad(2B) + name(16B)",
+    "MipTexUpgrade": "WAD3 vs WAD2: embedded 768B palette per texture (256 RGB entries)"
   }
 }

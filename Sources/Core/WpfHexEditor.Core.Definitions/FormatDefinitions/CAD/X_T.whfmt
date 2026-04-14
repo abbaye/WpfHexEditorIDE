@@ -1,122 +1,169 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Parasolid Text",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".x_t"
+    ".x_t",
+    ".xmt",
+    ".xmt_txt"
   ],
-  "description": "Parasolid transmit text format",
+  "description": "X_T (Parasolid Transmit Text) is the ASCII text format for the Parasolid geometric modeling kernel developed by Siemens Digital Industries Software (formerly EDS/UGS). Parasolid is the CAD kernel underlying SolidWorks, NX, Solid Edge, Rhinoceros, and many other products. X_T files begin with '**PART_FORMAT' or '** PART_FORMAT' (two asterisks) or a header block starting with '**HEADER_SCHEMA', followed by entity definitions using the Parasolid schema. Each entity is defined on numbered lines with a format: 'N entity_type attribute1 attribute2...'. The file contains a complete B-rep (Boundary Representation) model: bodies (volumes), shells, faces, edges, vertices, and associated geometry (planes, cylinders, cones, spheres, tori, NURBS surfaces and curves). X_T is the text (human-readable) variant; X_B (.x_b) is the binary-equivalent. Parasolid versions are identified by a schema version number in the file header (e.g., 'KERNEL_VERSION 30_1' = Parasolid 30.1).",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Parasolid Text Format"
+      "Parasolid Transmit Format — Siemens Digital Industries Software",
+      "Parasolid XT Translator Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/X_T"
+      "https://en.wikipedia.org/wiki/Parasolid",
+      "https://www.plm.automation.siemens.com/global/en/products/plm-components/parasolid.html",
+      "https://filext.com/file-extension/X_T"
     ]
   },
   "detection": {
-    "signature": "2A2A",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "2A2A504152545F464F524D4154", "offset": 0, "label": "'**PART_FORMAT' — Parasolid X_T standard header", "weight": 0.9 },
+      { "value": "2A2A484541444552 5F534348454D41", "offset": 0, "label": "'**HEADER_SCHEMA' — Parasolid X_T with schema header", "weight": 0.9 },
+      { "value": "2A2A", "offset": 0, "label": "'**' — Parasolid double-asterisk prefix (generic)", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "X_T files start with '**PART_FORMAT' or '**HEADER_SCHEMA' (two asterisks). The double-asterisk prefix is the key indicator but short ('**') has low precision since other formats may start with asterisks. Extension (.x_t, .xmt) is required for reliable detection."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "headerMarker": 0,
-    "schemaVersion": ""
+    "xtHeader": "",
+    "xtVersion": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Header Marker",
+      "name": "Parasolid X_T Header",
       "offset": 0,
-      "length": 2,
+      "length": 16,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "** header marker",
-      "storeAs": "headerMarker",
-      "valueType": "uint16"
+      "opacity": 0.45,
+      "description": "Parasolid X_T header identifier starting with '**' (double asterisk, 0x2A 0x2A). The standard first line is '**PART_FORMAT' followed by a Parasolid schema version number (e.g., 'format_version 2.0'). Some X_T files start with '**HEADER_SCHEMA' followed by schema version definitions. The '**' prefix is the key distinguishing feature of all Parasolid text format files (X_T). The binary counterpart X_B uses a binary header instead. Parasolid schema version in header identifies the Parasolid kernel version: 'KERNEL_VERSION' line specifies the creating Parasolid release (e.g., 30_1 = Parasolid 30.1).",
+      "storeAs": "xtHeader",
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Schema Version",
-      "offset": 2,
-      "length": 10,
+      "name": "Schema/Kernel Version",
+      "offset": 16,
+      "length": 40,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Parasolid schema version",
-      "storeAs": "schemaVersion",
+      "opacity": 0.35,
+      "description": "Parasolid X_T schema version line content following the header identifier. Typically contains format version information: 'format_version 2.0' or 'KERNEL_VERSION 30_1' where '30_1' identifies Parasolid kernel version 30.1. The kernel version is important for compatibility: newer Parasolid files may not be readable by older kernel versions. Common versions: Parasolid 21-35+ (2012-2024). Also may contain 'CHECKSUM' or 'STATUS' lines for file integrity.",
+      "storeAs": "xtVersion",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "X_T Header",
+      "variable": "xtHeader",
+      "description": "'**PART_FORMAT' or '**HEADER_SCHEMA' — Parasolid X_T identifier"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Schema Version",
+      "variable": "xtVersion",
+      "description": "Parasolid schema/kernel version from header"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "X_T double-asterisk header",
+      "expression": "xtHeader != ''",
+      "severity": "warning",
+      "message": "X_T file does not start with '**PART_FORMAT' — may not be a valid Parasolid text file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".x_t"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Parasolid Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "xtVersion",
+    "primaryField": "xtHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Parasolid X_T Header",
+        "icon": "\uE71B",
+        "fields": ["xtHeader", "xtVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "Parasolid X_T Header (JSON)",
+      "format": "json",
+      "fields": ["xtHeader", "xtVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Parasolid transmit text format",
+    "analysisContext": "Parasolid X_T ASCII format. Header: '**PART_FORMAT\\n' or '**HEADER_SCHEMA\\n' then 'format_version N.N'. Entity records: numbered lines '#N entity_type att1 att2...'. Key entity types: body, lump, shell, face, loop, fin, edge, vertex, point, pcurve, bsurf (B-spline surface), bcrv (B-spline curve), plane, cylinder, cone, sphere, torus, offset_surf, blend_surf. Body hierarchy: body→lump→shell→face→loop→fin→edge. B-rep: each face bounded by loops of fins (half-edges); edges shared between two fin pairs. KERNEL_VERSION line = Parasolid release (e.g., 30_1). X_B is binary-equivalent, faster to read but not human-readable.",
     "suggestedInspections": [
-      "Validate Parasolid Text file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Line 1: '**PART_FORMAT' or '**HEADER_SCHEMA' — confirms Parasolid X_T format",
+      "Search for 'KERNEL_VERSION' to find creating Parasolid kernel version",
+      "Count 'body' entities for solid body count",
+      "Search for 'bsurf' entities for NURBS surface geometry"
     ]
+  },
+  "software": [
+    "SolidWorks (Dassault Systèmes)",
+    "NX / Unigraphics (Siemens)",
+    "Solid Edge (Siemens)",
+    "Rhino 3D (via Parasolid plugin)",
+    "FreeCAD (via Parasolid plugin, commercial)",
+    "CADExchanger (commercial reader)",
+    "Open CASCADE (no native Parasolid; requires translator)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".x_t", ".xmt", ".xmt_txt"],
+    "relatedFormats": ["X_B", "SAT", "STEP", "BREP", "SLDPRT"],
+    "note": "X_T is the ASCII text form of Parasolid; X_B (.x_b) is the binary equivalent (faster, smaller). Parasolid is the kernel used in SolidWorks (ACIS SAT is also embedded), NX, Solid Edge. ACIS SAT is the competing B-rep format (used by AutoCAD/Inventor). Parasolid X_T/X_B require a licensed Parasolid kernel for reading; commercial translators (CADExchanger, Datakit) provide access without the kernel."
+  },
+  "MimeTypes": [
+    "application/x-parasolid",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Parasolid B-rep geometry exchange between CAD systems",
+    "SolidWorks to NX data transfer via Parasolid neutral format",
+    "Archival of exact B-rep geometry from Parasolid-based CAD",
+    "CAE preprocessing: mesh generation from Parasolid geometry"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text ('**PART_FORMAT' header + numbered entity records)",
+    "BinaryVariant": "X_B (.x_b) is binary-equivalent format, same entity structure",
+    "EntityModel": "Parasolid BREP: body, lump, shell, face, loop, fin, edge, vertex + geometry",
+    "KernelVersion": "'KERNEL_VERSION N_N' in header identifies Parasolid release",
+    "AccessMethod": "Parasolid licensed kernel or commercial CAD translator required"
   }
 }

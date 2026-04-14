@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Common Data Format",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".cdf"
   ],
@@ -9,21 +9,28 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "CDF User's Guide Version 3.9, NASA/GSFC",
-    "CDF Internal Format Description"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/Common_Data_Format",
-    "https://cdf.gsfc.nasa.gov/"
-  ],
+  "references": {
+    "specifications": [
+      "CDF User's Guide Version 3.9, NASA/GSFC",
+      "CDF Internal Format Description"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Common_Data_Format",
+      "https://cdf.gsfc.nasa.gov/"
+    ]
+  },
   "detection": {
     "signature": "0000FFFF",
     "offset": 0,
     "required": true,
     "weight": 1.0,
     "alternativeSignatures": [
-      { "signature": "CDF30001", "offset": 0, "weight": 0.8, "note": "Older CDF v3 magic variant" }
+      {
+        "signature": "CDF30001",
+        "offset": 0,
+        "weight": 0.8,
+        "note": "Older CDF v3 magic variant"
+      }
     ],
     "validation": {
       "minFileSize": 32,
@@ -123,17 +130,47 @@
       {
         "name": "File Identification",
         "fields": [
-          { "label": "Primary Magic",    "offset": 0,  "length": 4, "format": "hex" },
-          { "label": "Secondary Magic",  "offset": 4,  "length": 4, "format": "hex" }
+          {
+            "label": "Primary Magic",
+            "offset": 0,
+            "length": 4,
+            "format": "hex"
+          },
+          {
+            "label": "Secondary Magic",
+            "offset": 4,
+            "length": 4,
+            "format": "hex"
+          }
         ]
       },
       {
         "name": "CDF Description Record",
         "fields": [
-          { "label": "GDR Offset",  "offset": 8,  "length": 4, "format": "uint32be" },
-          { "label": "Version",     "offset": 12, "length": 4, "format": "hex" },
-          { "label": "Encoding",    "offset": 16, "length": 4, "format": "uint32be" },
-          { "label": "Majority",    "offset": 20, "length": 4, "format": "uint32be" }
+          {
+            "label": "GDR Offset",
+            "offset": 8,
+            "length": 4,
+            "format": "uint32be"
+          },
+          {
+            "label": "Version",
+            "offset": 12,
+            "length": 4,
+            "format": "hex"
+          },
+          {
+            "label": "Encoding",
+            "offset": 16,
+            "length": 4,
+            "format": "uint32be"
+          },
+          {
+            "label": "Majority",
+            "offset": 20,
+            "length": 4,
+            "format": "uint32be"
+          }
         ]
       }
     ]
@@ -141,7 +178,12 @@
   "exportTemplates": [
     {
       "name": "CDF Header Summary",
-      "fields": ["cdfMagic", "internalMagic", "encoding", "majority"]
+      "fields": [
+        "cdfMagic",
+        "internalMagic",
+        "encoding",
+        "majority"
+      ]
     }
   ],
   "software": [
@@ -155,7 +197,11 @@
     "nasa_format": true,
     "space_physics": true,
     "related_to": "ISTP/IACG guidelines",
-    "used_by": ["NASA MMS", "NASA Van Allen Probes", "Cluster mission"]
+    "used_by": [
+      "NASA MMS",
+      "NASA Van Allen Probes",
+      "Cluster mission"
+    ]
   },
   "MimeTypes": [
     "application/x-cdf",

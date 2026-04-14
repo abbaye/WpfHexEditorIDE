@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SP3 Orbit Data",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".sp3",
     ".eph"
@@ -10,21 +10,28 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "IGS SP3-d File Format Definition v1.0",
-    "IGS Product File Formats — SP3-c"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/SP3_(file_format)",
-    "https://files.igs.org/pub/data/format/sp3d.pdf"
-  ],
+  "references": {
+    "specifications": [
+      "IGS SP3-d File Format Definition v1.0",
+      "IGS Product File Formats — SP3-c"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/SP3_(file_format)",
+      "https://files.igs.org/pub/data/format/sp3d.pdf"
+    ]
+  },
   "detection": {
     "signature": "2363",
     "offset": 0,
     "required": true,
     "weight": 0.7,
     "alternativeSignatures": [
-      { "signature": "2361", "offset": 0, "weight": 0.7, "note": "SP3-a version marker" }
+      {
+        "signature": "2361",
+        "offset": 0,
+        "weight": 0.7,
+        "note": "SP3-a version marker"
+      }
     ],
     "validation": {
       "minFileSize": 80,
@@ -116,7 +123,11 @@
       "description": "Byte 1 must be 'a' (0x61), 'c' (0x63), or 'd' (0x64) indicating SP3 version a, c, or d; 'b' is not a defined SP3 version",
       "offset": 1,
       "length": 1,
-      "validValues": ["61", "63", "64"],
+      "validValues": [
+        "61",
+        "63",
+        "64"
+      ],
       "severity": "warning"
     }
   ],
@@ -125,11 +136,36 @@
       {
         "name": "File Header",
         "fields": [
-          { "label": "Version Marker", "offset": 0,   "length": 2,  "format": "ascii" },
-          { "label": "Orbit Type",     "offset": 2,   "length": 1,  "format": "ascii" },
-          { "label": "First Line",     "offset": 0,   "length": 60, "format": "ascii" },
-          { "label": "Second Line",    "offset": 60,  "length": 60, "format": "ascii" },
-          { "label": "Sat Count Line", "offset": 120, "length": 60, "format": "ascii" }
+          {
+            "label": "Version Marker",
+            "offset": 0,
+            "length": 2,
+            "format": "ascii"
+          },
+          {
+            "label": "Orbit Type",
+            "offset": 2,
+            "length": 1,
+            "format": "ascii"
+          },
+          {
+            "label": "First Line",
+            "offset": 0,
+            "length": 60,
+            "format": "ascii"
+          },
+          {
+            "label": "Second Line",
+            "offset": 60,
+            "length": 60,
+            "format": "ascii"
+          },
+          {
+            "label": "Sat Count Line",
+            "offset": 120,
+            "length": 60,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -137,7 +173,12 @@
   "exportTemplates": [
     {
       "name": "SP3 Header Summary",
-      "fields": ["sp3Magic", "orbitType", "firstHeaderLine", "secondHeaderLine"]
+      "fields": [
+        "sp3Magic",
+        "orbitType",
+        "firstHeaderLine",
+        "secondHeaderLine"
+      ]
     }
   ],
   "software": [
@@ -151,7 +192,11 @@
     "gnss_format": true,
     "produced_by": "IGS analysis centers",
     "related_to": "RINEX",
-    "versions": ["SP3-a", "SP3-c", "SP3-d"]
+    "versions": [
+      "SP3-a",
+      "SP3-c",
+      "SP3-d"
+    ]
   },
   "MimeTypes": [
     "text/plain",

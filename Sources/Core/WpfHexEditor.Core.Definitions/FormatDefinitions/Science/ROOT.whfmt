@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ROOT Data File",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".root"
   ],
@@ -9,14 +9,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "ROOT I/O Format Documentation",
-    "ROOT File Format Internals — ROOT Reference Guide"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/ROOT_(software)",
-    "https://root.cern/doc/master/classTFile.html"
-  ],
+  "references": {
+    "specifications": [
+      "ROOT I/O Format Documentation",
+      "ROOT File Format Internals — ROOT Reference Guide"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/ROOT_(software)",
+      "https://root.cern/doc/master/classTFile.html"
+    ]
+  },
   "detection": {
     "signature": "726F6F74",
     "offset": 0,
@@ -126,12 +128,42 @@
       {
         "name": "File Header",
         "fields": [
-          { "label": "Magic 'root'",       "offset": 0,  "length": 4,  "format": "ascii" },
-          { "label": "ROOT Version",        "offset": 4,  "length": 4,  "format": "int32be" },
-          { "label": "Begin Offset",        "offset": 8,  "length": 4,  "format": "int32be" },
-          { "label": "End Offset",          "offset": 12, "length": 4,  "format": "int32be" },
-          { "label": "Seek Free",           "offset": 16, "length": 4,  "format": "int32be" },
-          { "label": "Number Free",         "offset": 20, "length": 4,  "format": "int32be" }
+          {
+            "label": "Magic 'root'",
+            "offset": 0,
+            "length": 4,
+            "format": "ascii"
+          },
+          {
+            "label": "ROOT Version",
+            "offset": 4,
+            "length": 4,
+            "format": "int32be"
+          },
+          {
+            "label": "Begin Offset",
+            "offset": 8,
+            "length": 4,
+            "format": "int32be"
+          },
+          {
+            "label": "End Offset",
+            "offset": 12,
+            "length": 4,
+            "format": "int32be"
+          },
+          {
+            "label": "Seek Free",
+            "offset": 16,
+            "length": 4,
+            "format": "int32be"
+          },
+          {
+            "label": "Number Free",
+            "offset": 20,
+            "length": 4,
+            "format": "int32be"
+          }
         ]
       }
     ]
@@ -139,7 +171,12 @@
   "exportTemplates": [
     {
       "name": "ROOT File Summary",
-      "fields": ["rootMagic", "rootVersion", "beginOffset", "endOffset"]
+      "fields": [
+        "rootMagic",
+        "rootVersion",
+        "beginOffset",
+        "endOffset"
+      ]
     }
   ],
   "software": [
@@ -150,7 +187,13 @@
   ],
   "formatRelationships": {
     "hep_standard": true,
-    "used_by": ["ATLAS", "CMS", "LHCb", "ALICE", "IceCube"],
+    "used_by": [
+      "ATLAS",
+      "CMS",
+      "LHCb",
+      "ALICE",
+      "IceCube"
+    ],
     "object_model": "TTree, TH1, TGraph, TFile"
   },
   "MimeTypes": [

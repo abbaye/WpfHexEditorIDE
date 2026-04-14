@@ -1,117 +1,181 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PGP Message",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".pgp",
+    ".gpg",
     ".asc"
   ],
-  "description": "Pretty Good Privacy encrypted/signed message",
+  "description": "PGP (Pretty Good Privacy) is an encryption and signing standard defined in OpenPGP (RFC 4880, RFC 9580). PGP files exist in two forms: ASCII Armored (text with '-----BEGIN PGP...' headers) and binary packet format. ASCII armored files start with '-----BEGIN PGP MESSAGE-----' (encrypted data), '-----BEGIN PGP SIGNED MESSAGE-----' (cleartext signature), '-----BEGIN PGP PUBLIC KEY BLOCK-----' (public key), or '-----BEGIN PGP PRIVATE KEY BLOCK-----' (private key). Binary PGP starts with a Packet Tag byte (bit 7=1, bit 6=1=new format or 0=old format, followed by packet type and length). Old format packet tags: 0xA3=Symmetric-Key Encrypted Session Key, 0x85=Public-Key Encrypted Session Key, 0x89=Signature, 0x95=Public-Key Packet, 0x8D=User ID. New format: packet type 1=Public-Key Encrypted, 2=Signature, 3=Symmetric-Key Encrypted, 11=Literal Data, 18=Symmetrically Encrypted Integrity Protected Data. PGP binary has no single magic number — detection relies on ASCII armor headers or packet tag structure.",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "OpenPGP Message Format - RFC 4880",
-      "OpenPGP Protocol - RFC 9580 (latest)",
-      "Pretty Good Privacy (PGP) Standards"
+      "RFC 4880 — OpenPGP Message Format",
+      "RFC 9580 — OpenPGP (updated, 2024)",
+      "RFC 6637 — Elliptic Curve Cryptography (ECC) in OpenPGP"
     ],
     "WebLinks": [
       "https://datatracker.ietf.org/doc/html/rfc4880",
-      "https://www.openpgp.org/about/standard/",
-      "https://en.wikipedia.org/wiki/Pretty_Good_Privacy",
-      "https://www.rfc-editor.org/rfc/rfc4880"
+      "https://datatracker.ietf.org/doc/html/rfc9580",
+      "https://en.wikipedia.org/wiki/Pretty_Good_Privacy"
     ]
   },
   "detection": {
-    "signature": "2D2D2D2D2D424547494E20504750",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "2D2D2D2D2D424547494E20504750204D455353414745", "offset": 0, "label": "'-----BEGIN PGP MESSAGE-----' — PGP ASCII armor encrypted message", "weight": 1.0 },
+      { "value": "2D2D2D2D2D424547494E2050475020454E435259505445442", "offset": 0, "label": "'-----BEGIN PGP ENCRYPTED' — PGP encrypted message variant", "weight": 1.0 },
+      { "value": "2D2D2D2D2D424547494E20504750205349474E4544", "offset": 0, "label": "'-----BEGIN PGP SIGNED MESSAGE-----' — PGP cleartext signed message", "weight": 1.0 },
+      { "value": "2D2D2D2D2D424547494E20504750205055424C494320", "offset": 0, "label": "'-----BEGIN PGP PUBLIC KEY BLOCK-----' — PGP public key", "weight": 1.0 },
+      { "value": "2D2D2D2D2D424547494E20504750205052495641544520", "offset": 0, "label": "'-----BEGIN PGP PRIVATE KEY BLOCK-----' — PGP private key", "weight": 1.0 },
+      { "value": "A3", "offset": 0, "label": "0xA3 — Binary PGP old-format Symmetric-Key Encrypted Session Key packet", "weight": 0.4 },
+      { "value": "85", "offset": 0, "label": "0x85 — Binary PGP old-format Public-Key Encrypted Session Key packet", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": false,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 8.0 },
     "validation": {
       "minFileSize": 14,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 0,
+      "note": "ASCII armored PGP files start with '-----BEGIN PGP ' which is a strong identifier. Binary PGP files start with a packet tag byte (0x80-0xFF range). The .gpg extension typically indicates binary PGP; .asc and .pgp may be ASCII or binary."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "pgpAsciiArmor": ""
+    "pgpArmorHeader": "",
+    "pgpArmorType": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "PGP ASCII Armor",
+      "name": "PGP ASCII Armor Header",
       "offset": 0,
       "length": 15,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "-----BEGIN PGP",
-      "storeAs": "pgpAsciiArmor",
+      "opacity": 0.45,
+      "description": "PGP ASCII Armor first 15 bytes: '-----BEGIN PGP ' (2D 2D 2D 2D 2D 42 45 47 49 4E 20 50 47 50 20). ASCII armoring is the human-readable representation of binary PGP data encoded in base64 with dash-delimited headers. The full header line identifies the PGP data type: '-----BEGIN PGP MESSAGE-----' (encrypted data), '-----BEGIN PGP SIGNED MESSAGE-----' (cleartext + signature), '-----BEGIN PGP PUBLIC KEY BLOCK-----', '-----BEGIN PGP PRIVATE KEY BLOCK-----', '-----BEGIN PGP SIGNATURE-----' (detached signature). Binary PGP (.gpg) files start with packet tag bytes instead.",
+      "storeAs": "pgpArmorHeader",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Armor Type Continuation",
+      "offset": 15,
+      "length": 25,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Continuation of the PGP ASCII Armor header line starting at offset 15. Contains the type identifier: 'MESSAGE-----' (encrypted), 'SIGNED MESSAGE-----' (cleartext signature), 'PUBLIC KEY BLOCK-----', 'PRIVATE KEY BLOCK-----', or 'SIGNATURE-----' (detached). The full header line ends with the 5 dashes and a newline. After the header line, PGP armor includes optional header fields (Hash:, Version:, Comment:), a blank line, then the base64-encoded data, a base64-encoded CRC-24 checksum line starting with '=', and the '-----END PGP ...' footer.",
+      "storeAs": "pgpArmorType",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "PGP Armor Header",
+      "variable": "pgpArmorHeader",
+      "description": "'-----BEGIN PGP ' — ASCII armor identifier"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Armor Type",
+      "variable": "pgpArmorType",
+      "description": "PGP armor type (MESSAGE/SIGNED MESSAGE/PUBLIC KEY/PRIVATE KEY)"
     }
   ],
+  "assertions": [
+    {
+      "name": "PGP ASCII armor header",
+      "expression": "pgpArmorHeader == '-----BEGIN PGP '",
+      "severity": "warning",
+      "message": "PGP file should start with '-----BEGIN PGP ' ASCII armor header — may be binary PGP or invalid"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PGP Armor Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "pgpArmorType",
+    "primaryField": "pgpArmorHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "PGP Message",
+        "icon": "\uE71B",
+        "fields": ["pgpArmorHeader", "pgpArmorType"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PGP Header (JSON)",
+      "format": "json",
+      "fields": ["pgpArmorHeader", "pgpArmorType"]
+    }
+  ],
+  "forensic": {
+    "category": "crypto",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Private key exposure",
+        "description": "Files with '-----BEGIN PGP PRIVATE KEY BLOCK-----' contain private key material. If the passphrase is weak or missing, the private key may be extractable.",
+        "severity": "critical"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PGP ASCII armor: '-----BEGIN PGP [TYPE]-----\\n[optional headers]\\n[blank line]\\n[base64 data]\\n=[CRC24 checksum]\\n-----END PGP [TYPE]-----'. Types: MESSAGE (encrypted), SIGNED MESSAGE (cleartext + signature), PUBLIC KEY BLOCK, PRIVATE KEY BLOCK, SIGNATURE (detached). Binary PGP packet structure: each packet starts with a tag byte (bit7=1 always, bit6=1=new/0=old format). Old format: bits 5-2 = type (1=PKE session key, 2=sig, 3=SKE session key, 8=compressed, 9=encrypted, 11=literal, 14=public subkey); bits 1-0 = length type (0=1B, 1=2B, 2=4B, 3=indeterminate). New format: bits 5-0 = type; length as body-length header. Key algorithms: 1=RSA, 17=DSA, 18=ECDH, 19=ECDSA, 22=EdDSA. Hash algorithms: 2=SHA1, 8=SHA256, 9=SHA384, 10=SHA512. Symmetric ciphers: 7=AES-128, 8=AES-192, 9=AES-256.",
+    "suggestedInspections": [
+      "Bytes 0-14: '-----BEGIN PGP ' — ASCII armor prefix; bytes 15+ identify type (MESSAGE/PUBLIC KEY/etc.)",
+      "Binary PGP (0x85/0xA3 prefix): packet tag byte bit7=1, bit6=0=old format, bits5-2=type",
+      "ASCII armor: base64 content between blank line and '=' checksum line",
+      "'-----BEGIN PGP PRIVATE KEY BLOCK-----': contains private key — handle with extreme care"
+    ]
+  },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "GnuPG / GPG (gpg command)",
+    "Kleopatra (GnuPG GUI, Windows/Linux)",
+    "GPG4Win (Windows)",
+    "GNU Privacy Guard (Linux)",
+    "OpenPGP.js (JavaScript)",
+    "ProtonMail (uses OpenPGP)"
   ],
   "formatRelationships": {
     "category": "Crypto",
-    "extensions": [
-      ".pgp",
-      ".asc"
-    ]
+    "extensions": [".pgp", ".gpg", ".asc"],
+    "relatedFormats": ["P12", "DER", "CMS"],
+    "note": ".gpg typically indicates binary PGP; .asc typically ASCII armor; .pgp may be either. OpenPGP (RFC 4880/9580) is the standard; GnuPG is the primary open-source implementation. SMIME (P7M) is the alternative for email encryption using X.509 certificates."
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "application/pgp-encrypted",
+    "application/pgp-keys",
+    "application/pgp-signature",
+    "text/plain"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Email encryption and signing (OpenPGP standard)",
+    "File encryption with asymmetric key pairs",
+    "Software package signing (Debian, RPM, ArchLinux packages)",
+    "Git commit and tag signing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
-  "forensic": {
-    "category": "crypto",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Pretty Good Privacy encrypted/signed message",
-    "suggestedInspections": [
-      "Validate PGP Message key/envelope format and algorithm identifiers",
-      "Check key length, IV/nonce fields, and padding scheme",
-      "Inspect version markers and recipient info structures"
-    ]
+  "TechnicalDetails": {
+    "Format": "ASCII Armored (base64 + headers) or Binary packet format",
+    "Standard": "RFC 4880 (OpenPGP), RFC 9580 (updated OpenPGP 2024)",
+    "ASCIIArmor": "'-----BEGIN PGP [TYPE]-----' + base64 + '=[CRC24]' + '-----END PGP [TYPE]-----'",
+    "BinaryPGP": "Packet tag bytes (bit7=1) + length + payload; .gpg extension",
+    "KeyAlgorithms": "RSA, DSA, ECDSA, EdDSA (Ed25519); Symmetric: AES-256, AES-128"
   }
 }

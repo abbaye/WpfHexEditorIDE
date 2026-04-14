@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Autodesk FBX",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
     ".fbx"
   ],
@@ -9,14 +9,6 @@
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    { "specifications": ["Autodesk FBX SDK Documentation"] },
-    { "WebLinks": [
-      "https://en.wikipedia.org/wiki/FBX",
-      "https://code.blender.org/2013/08/fbx-binary-file-format-specification/",
-      "https://wiki.fileformat.com/3d/fbx/"
-    ]}
-  ],
   "references": {
     "specifications": [
       "Autodesk FBX SDK Documentation",

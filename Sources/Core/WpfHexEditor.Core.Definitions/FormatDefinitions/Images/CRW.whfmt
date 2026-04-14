@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Canon RAW (CRW)",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".crw"
   ],
@@ -145,9 +145,9 @@
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "CIFF IHL not equal to 0x001A (26) suggests truncation or non-standard CIFF variant",
-      "HeapID not 'HEAPCCDR' indicates non-Canon CIFF file or corruption",
-      "Byte order mark not 'II' is invalid for CRW — all Canon CRW files are little-endian"
+      { "name": "Invalid CIFF IHL value", "condition": "true", "description": "CIFF IHL not equal to 0x001A (26) suggests truncation or non-standard CIFF variant", "severity": "warning" },
+      { "name": "Invalid HeapID", "condition": "true", "description": "HeapID not 'HEAPCCDR' indicates non-Canon CIFF file or corruption", "severity": "warning" },
+      { "name": "Invalid byte order mark", "condition": "true", "description": "Byte order mark not 'II' is invalid for CRW — all Canon CRW files are little-endian", "severity": "warning" }
     ]
   },
   "aiHints": {

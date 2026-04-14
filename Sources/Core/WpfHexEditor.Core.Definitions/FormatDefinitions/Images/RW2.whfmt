@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Panasonic RW2 RAW",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".rw2"
   ],
@@ -144,8 +144,8 @@
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "RW2 magic 0x0055 replaced with 0x002A suggests TIFF masquerading or corruption",
-      "Unexpected byte order mark (not 0x4949) indicates non-standard or tampered file"
+      { "name": "TIFF masquerading or corruption", "condition": "true", "description": "RW2 magic 0x0055 replaced with 0x002A suggests TIFF masquerading or corruption", "severity": "warning" },
+      { "name": "Unexpected byte order mark", "condition": "true", "description": "Unexpected byte order mark (not 0x4949) indicates non-standard or tampered file", "severity": "warning" }
     ]
   },
   "aiHints": {

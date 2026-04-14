@@ -1,163 +1,171 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Unreal Engine Asset",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".uasset"
+    ".uasset",
+    ".umap"
   ],
-  "description": "Unreal Engine 4/5 asset file format",
+  "description": "Unreal Engine 4/5 asset files (.uasset, .umap) use the UE package format starting with magic 0x9E2A83C1 (C1 83 2A 9E as little-endian uint32 at offset 0). This 'package tag' is a fixed constant identifying any UE4/UE5 serialized package. After the magic, a LegacyFileVersion (int32 LE, typically -4 to -8 depending on engine version) is stored. For modern UE4/5 packages, the header continues with: LegacyUE3Version (int32 LE), FileVersionUE4 (int32 LE), FileVersionLicensee (int32 LE), CustomVersions (TArray), TotalHeaderSize (int32 LE), FolderName (FString), PackageFlags (uint32 LE), NameCount (int32 LE), NameOffset (int32 LE), ExportCount (int32 LE), ExportOffset (int32 LE), ImportCount (int32 LE), ImportOffset (int32 LE). .uasset stores individual assets; .umap stores level/map packages (same format).",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Unreal Engine Asset Package Format",
-      "UE4/UE5 Binary Asset Structure",
-      "Epic Games Asset Serialization"
+      "Unreal Engine UPackage format — FPackageFileSummary (UE source)"
     ],
     "WebLinks": [
-      "https://docs.fileformat.com/game/uasset/",
-      "https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-and-packages",
-      "https://docs.rs/uasset",
-      "https://unofficial-modding-guide.com/posts/uassetmodding/"
+      "https://docs.unrealengine.com/5.0/en-US/assets-and-packages-in-unreal-engine/",
+      "https://github.com/EpicGames/UnrealEngine/blob/release/Engine/Source/Runtime/CoreUObject/Public/UObject/PackageFileSummary.h",
+      "https://github.com/trumank/uasset-rs"
     ]
   },
   "detection": {
-    "signature": "C1832A9E",
-    "offset": 0,
+    "signatures": [
+      { "value": "C1832A9E", "offset": 0, "label": "0x9E2A83C1 LE — Unreal Engine package tag (UE4/UE5)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 64,
+      "maxSignatureOffset": 0,
+      "note": "All Unreal Engine 4/5 asset files (.uasset, .umap, .uexp) start with package tag 0x9E2A83C1 (LE bytes: C1 83 2A 9E). UE3 packages use the same magic. Extension distinguishes asset type."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "packageTag": "",
-    "legacyUe3Version": "",
-    "ue4Version": "",
-    "fileVersion": ""
+    "uePackageTag": 0,
+    "ueLegacyFileVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Package Tag",
+      "name": "UE Package Tag",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Unreal package signature",
-      "storeAs": "packageTag",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "Unreal Engine package tag magic: 0x9E2A83C1 stored as little-endian uint32 (raw bytes: 0xC1 0x83 0x2A 0x9E). This constant has been used since Unreal Engine 1 (1998) and is maintained across all UE versions. It identifies any Unreal Engine serialized package file including .uasset (content asset), .umap (level/map), .uexp (bulk export data), and .upk (UE3 package). The decimal value is 2653586369.",
+      "storeAs": "uePackageTag",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
-      "name": "Legacy UE3 Version",
+      "name": "Legacy File Version",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Legacy version from UE3",
-      "storeAs": "legacyUe3Version",
-      "valueType": "ascii"
-    },
-    {
-      "type": "field",
-      "name": "UE4 Version",
-      "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Unreal Engine 4 version number",
-      "storeAs": "ue4Version",
-      "valueType": "ascii"
-    },
-    {
-      "type": "field",
-      "name": "File Version",
-      "offset": 12,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Package file version",
-      "storeAs": "fileVersion",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "Legacy file version as int32 little-endian at offset 4. Negative values = UE4+: -4=UE4.0-4.6, -5=UE4.7-4.14, -6=UE4.15-4.19, -7=UE4.20-4.26, -8=UE4.27+/UE5. Positive values = UE1/UE2/UE3 legacy packages. The full engine version is encoded in FileVersionUE4 field further in the header.",
+      "storeAs": "ueLegacyFileVersion",
+      "valueType": "int32",
+      "endianness": "little",
+      "valueMap": {
+        "-4": "UE4 4.0-4.6",
+        "-5": "UE4 4.7-4.14",
+        "-6": "UE4 4.15-4.19",
+        "-7": "UE4 4.20-4.26",
+        "-8": "UE4 4.27+ / UE5"
+      }
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Package Tag",
+      "variable": "uePackageTag",
+      "description": "UE package magic: 0x9E2A83C1"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Legacy Version",
+      "variable": "ueLegacyFileVersion",
+      "description": "Package legacy version (-8=UE5, -7=UE4.27)"
     }
   ],
+  "assertions": [
+    {
+      "name": "UE package tag valid",
+      "expression": "uePackageTag == 2653586369",
+      "severity": "error",
+      "message": "UE package tag must be 0x9E2A83C1 — not a valid Unreal Engine asset"
+    },
+    {
+      "name": "UE4 legacy version range",
+      "expression": "ueLegacyFileVersion < 0",
+      "severity": "info",
+      "message": "Positive legacy version indicates UE1/UE2/UE3 package format"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "UE Package Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "ueLegacyFileVersion",
+    "primaryField": "uePackageTag",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "UE Package Header",
+        "icon": "\uE71B",
+        "fields": ["uePackageTag", "ueLegacyFileVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "UE Asset Header (JSON)",
+      "format": "json",
+      "fields": ["uePackageTag", "ueLegacyFileVersion"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "UE4/5 package: packageTag(4B LE 0x9E2A83C1) + legacyVersion(4B LE, neg=UE4/5) + legacyUE3(4B) + fileVersionUE4(4B) + fileVersionLicensee(4B) + customVersions(TArray) + totalHeaderSize(4B) + folderName(FString) + packageFlags(4B) + nameCount(4B) + nameOffset(4B) + exportCount(4B) + exportOffset(4B) + importCount(4B) + importOffset(4B). FString: int32 len (neg=UTF-16) + chars. Tools: FModel (GUI browser), UAssetAPI (C#), CUE4Parse, uasset-rs.",
+    "suggestedInspections": [
+      "Bytes 0-3 (uint32 LE): 0x9E2A83C1 (bytes: C1 83 2A 9E) — UE package magic",
+      "Bytes 4-7 (int32 LE): legacyFileVersion — -8=UE5/4.27+, -7=UE4.20-4.26",
+      "Use FModel to browse assets; select game version for correct parsing",
+      ".uasset = content; .umap = level; .uexp = bulk export data"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Unreal Engine 4/5 (Epic Games, native)",
+    "FModel (UE asset viewer/extractor)",
+    "UAssetAPI (C# library)",
+    "umodel/Gildor's Viewer (model extractor)",
+    "CUE4Parse (.NET parser)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".uasset"
-    ]
+    "extensions": [".uasset", ".umap"],
+    "relatedFormats": ["UNITY3D"],
+    "note": ".uasset = individual asset. .umap = level/map package. Same 0x9E2A83C1 magic for both. .uexp = bulk data. .ucas/.utoc = UE5 IO Store (streaming). Different from Unity (.unity3d) which is a different engine."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Extracting textures, meshes, audio from UE4/5 games",
+    "Modding Unreal Engine 4/5 games",
+    "Game reverse engineering and asset analysis",
+    "UE4/5 mod development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Unreal Engine 4/5 asset file format",
-    "suggestedInspections": [
-      "Validate Unreal Engine Asset container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary little-endian Unreal Engine 4/5 serialized package",
+    "Magic": "0x9E2A83C1 LE (bytes: C1 83 2A 9E) at offset 0",
+    "LegacyVersion": "-8=UE5/UE4.27+; -7=UE4.20-4.26; -6=UE4.15-4.19",
+    "AssetTypes": ".uasset=content, .umap=level, .uexp=bulk, .ucas/.utoc=IO Store",
+    "Serialization": "FPackageFileSummary + Name table + Import table + Export table"
   }
 }

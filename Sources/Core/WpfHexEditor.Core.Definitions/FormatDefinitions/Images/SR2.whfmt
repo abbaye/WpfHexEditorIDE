@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Sony SR2 RAW",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".sr2"
   ],
@@ -144,8 +144,8 @@
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "Absence of SR2 private tag 0x7200 in IFD0 may indicate a non-SR2 TIFF file",
-      "MakerNote prefix not matching 'SONY DSC' or 'SONY CAM' suggests metadata tampering"
+      { "name": "Missing SR2 private tag", "condition": "true", "description": "Absence of SR2 private tag 0x7200 in IFD0 may indicate a non-SR2 TIFF file", "severity": "warning" },
+      { "name": "Non-Sony MakerNote prefix", "condition": "true", "description": "MakerNote prefix not matching 'SONY DSC' or 'SONY CAM' suggests metadata tampering", "severity": "warning" }
     ]
   },
   "aiHints": {

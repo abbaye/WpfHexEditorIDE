@@ -1,57 +1,58 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Blizzard MPQ Archive",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
-    ".mpq"
+    ".mpq",
+    ".w3x",
+    ".w3m",
+    ".sc2replay",
+    ".s2ma"
   ],
-  "description": "Blizzard MoPaQ archive format",
+  "description": "MPQ (Mo'PaQ, named after Mike O'Brien who designed it) is Blizzard Entertainment's proprietary archive format used for game content in Diablo, StarCraft, WarCraft 2/3, World of Warcraft, StarCraft 2, and other Blizzard games. MPQ files start with 4-byte ASCII magic 'MPQ\\x1A' (4D 50 51 1A). The header contains: headerSize (uint32 LE), archiveSize (uint32 LE, 32-bit archives only), formatVersion (uint16 LE: 0=original, 1=burning crusade, 2=cataclysm, 3=wotlk), blockSize (uint16 LE, 512 << blockSizeShift bytes per compression block), hashTableOffset (uint32 LE), blockTableOffset (uint32 LE), hashTableSize (uint32 LE, number of hash table entries), blockTableSize (uint32 LE, number of block table entries). MPQ supports per-file compression: zlib, bzip2, Huffman, ADPCM. Files are identified by a hash-based name table. Encryption is optional per-file. The hash table and block table may themselves be encrypted.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Blizzard MoPaQ Archive Format",
-      "Mike O'Brien Pack (MPQ) Specification",
-      "MPQ Archive Format v1.0"
+      "MPQ Format — Zezula.net (StormLib author's documentation)"
     ],
     "WebLinks": [
       "http://www.zezula.net/en/mpq/mpqformat.html",
       "https://wowdev.wiki/MPQ",
-      "https://wowpedia.fandom.com/wiki/MPQ",
-      "https://github.com/icza/mpq"
+      "https://wowpedia.fandom.com/wiki/MPQ"
     ]
   },
   "detection": {
-    "signature": "4D50511A",
-    "offset": 0,
+    "signatures": [
+      { "value": "4D50511A", "offset": 0, "label": "'MPQ\\x1A' — Blizzard MPQ archive magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0,
+      "note": "MPQ files always start with 'MPQ\\x1A' (0x4D 0x50 0x51 0x1A). The \\x1A (Ctrl-Z / SUB) byte was chosen to prevent accidental text-mode reading. MPQ archives may be embedded inside EXE files (self-extracting), in which case the magic appears at a non-zero offset."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "totalSize": 0,
-    "compressionMethod": "",
-    "headerCRC": 0,
     "mpqSignature": "",
-    "headerSize": 0,
-    "archiveSize": 0,
-    "formatVersion": 0,
-    "formattedSize": ""
+    "mpqHeaderSize": 0,
+    "mpqArchiveSize": 0,
+    "mpqFormatVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "MPQ Signature",
+      "name": "MPQ Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MPQ archive magic bytes",
+      "opacity": 0.45,
+      "description": "MPQ archive magic: ASCII 'MPQ' followed by 0x1A (Ctrl-Z). The 'MPQ' letters stand for Mike O'Brien Pack (formerly 'Mo'PaQ'), named after Blizzard programmer Mike O'Brien who designed the format around 1995 for Diablo. The 0x1A byte (DOS end-of-file marker / Ctrl-Z) was chosen to signal to DOS-era tools that the file is binary, preventing text-mode corruption. Used in: Diablo 1/2/3, StarCraft 1/2, WarCraft 2/3, World of Warcraft, Hearthstone.",
       "storeAs": "mpqSignature",
       "valueType": "ascii"
     },
@@ -61,10 +62,11 @@
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Size of the archive header",
-      "storeAs": "headerSize",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Size of the MPQ archive header in bytes as uint32 little-endian at offset 4. Version 0 (original): headerSize = 32 bytes. Version 1 (Burning Crusade): headerSize = 44 bytes (adds 64-bit offset fields). Version 2 (Cataclysm): headerSize = 68 bytes. Version 3 (The Burning Crusade): larger. The header size determines which optional extended fields are present.",
+      "storeAs": "mpqHeaderSize",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -72,10 +74,11 @@
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Total archive size",
-      "storeAs": "archiveSize",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Total archive size in bytes as uint32 little-endian at offset 8 (valid for 32-bit MPQ v0 archives). For large archives (>4GB), this field may overflow and the extended 64-bit archive size in version 1+ headers should be used. WoW archives exceed 4GB and require version 1+. Typical sizes: Diablo 1 (12MB), StarCraft (55MB), WoW base (>50GB across all patches).",
+      "storeAs": "mpqArchiveSize",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -83,90 +86,125 @@
       "offset": 12,
       "length": 2,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "MPQ format version",
-      "storeAs": "formatVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "MPQ archive format version as uint16 little-endian at offset 12. Version 0 = original MPQ (Diablo, StarCraft 1, WarCraft 2/3 — 32-byte header, 32-bit offsets). Version 1 = Burning Crusade era (44-byte header, adds HET/BET tables). Version 2 = Cataclysm (68-byte header, SHA-1 signed archives). Version 3 = Wrath of the Lich King extended format. All versions share the same 'MPQ\\x1A' magic.",
+      "storeAs": "mpqFormatVersion",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "0": "MPQ v0 — Original (Diablo 1, StarCraft, WarCraft 3)",
+        "1": "MPQ v1 — Burning Crusade (WoW expansion, HET/BET tables)",
+        "2": "MPQ v2 — Cataclysm (SHA-1 signed archives)",
+        "3": "MPQ v3 — Extended 64-bit archive support"
+      }
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Magic",
+      "variable": "mpqSignature",
+      "description": "'MPQ\\x1A' — Blizzard archive identifier"
     },
     {
       "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
+      "name": "Header Size",
+      "variable": "mpqHeaderSize",
+      "description": "Header size (32B=v0, 44B=v1, 68B=v2)"
     },
     {
       "type": "metadata",
-      "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression Method"
+      "name": "Archive Size",
+      "variable": "mpqArchiveSize",
+      "description": "Total archive size in bytes (32-bit)"
     },
     {
       "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Format Version",
+      "variable": "mpqFormatVersion",
+      "description": "MPQ format version (0=classic, 1-3=extended)"
     }
   ],
+  "assertions": [
+    {
+      "name": "MPQ magic valid",
+      "expression": "mpqSignature == 'MPQ'",
+      "severity": "error",
+      "message": "MPQ magic must be 'MPQ\\x1A' — not a valid Blizzard MPQ archive"
+    },
+    {
+      "name": "MPQ format version valid",
+      "expression": "mpqFormatVersion <= 3",
+      "severity": "warning",
+      "message": "MPQ format version > 3 is unknown — may be a new Blizzard format variant"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "MPQ Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "mpqFormatVersion",
+    "primaryField": "mpqArchiveSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MPQ Header",
+        "icon": "\uE71B",
+        "fields": ["mpqSignature", "mpqHeaderSize", "mpqArchiveSize", "mpqFormatVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MPQ Header (JSON)",
+      "format": "json",
+      "fields": ["mpqSignature", "mpqHeaderSize", "mpqArchiveSize", "mpqFormatVersion"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "MPQ v0 header: 'MPQ\\x1A'(4B) + headerSize(4B LE, =32) + archiveSize(4B LE) + formatVersion(2B LE) + blockSizeShift(2B LE) + hashTableOffset(4B LE) + blockTableOffset(4B LE) + hashTableSize(4B LE, entry count) + blockTableSize(4B LE, entry count). Hash table: 16B per entry (hashA 4B, hashB 4B, locale 2B, platform 2B, blockIndex 4B). Block table: 16B per entry (fileOffset 4B, compressedSize 4B, uncompressedSize 4B, flags 4B). File flags: 0x200=compressed, 0x10000=encrypted, 0x200000=patch. MPQ can be embedded in EXE at non-zero offset.",
+    "suggestedInspections": [
+      "Bytes 0-3 (ASCII): 'MPQ' + 0x1A — Blizzard archive magic",
+      "Bytes 12-13 (uint16 LE): formatVersion — 0=classic games, 1+=WoW expansion era",
+      "Bytes 16-19 (uint32 LE): hashTableOffset — navigate here for file name hash table",
+      "StormLib (open-source) is the reference implementation for MPQ parsing"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Blizzard games (Diablo, StarCraft, WarCraft, WoW — native)",
+    "StormLib (Ladislav Zezula, open-source MPQ library)",
+    "MPQ Editor (stormtools.net)",
+    "Ladik's MPQ Editor",
+    "WinMPQ (legacy viewer)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".mpq"
-    ]
+    "extensions": [".mpq", ".w3x", ".w3m", ".sc2replay", ".s2ma"],
+    "relatedFormats": ["PAK", "VPK"],
+    "note": "MPQ is Blizzard-proprietary. .mpq extension for WoW/Diablo; .w3x/.w3m for WarCraft 3 maps/campaigns; .sc2replay for StarCraft 2 replays. All use same 'MPQ\\x1A' magic. Modern Blizzard games (post-2012) use CASC (Content Addressable Storage Container) instead of MPQ."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Extracting game assets from Blizzard games (Diablo, StarCraft, WarCraft, WoW)",
+    "WarCraft 3 map creation and modding (.w3x/.w3m)",
+    "Game modding and fan-made content for Blizzard games",
+    "Legacy WoW private server content management"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read header",
-    "calculateCRC32": "Validate",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Blizzard MoPaQ archive format",
-    "suggestedInspections": [
-      "Validate Blizzard MPQ Archive container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary little-endian Blizzard Mo'PaQ archive",
+    "Magic": "'MPQ\\x1A' (4D 50 51 1A) at offset 0",
+    "Versions": "v0=classic(32B hdr), v1=TBC+(44B), v2=Cata+(68B, SHA-1), v3=extended",
+    "Compression": "Per-file: zlib, bzip2, Huffman, ADPCM, Sparse, LZX (WoW)",
+    "NamingSystem": "Hash-based (two independent hash functions per filename)"
   }
 }

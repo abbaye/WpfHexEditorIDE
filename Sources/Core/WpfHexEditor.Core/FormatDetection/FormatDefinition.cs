@@ -183,7 +183,10 @@ namespace WpfHexEditor.Core.FormatDetection
         public TechnicalDetails TechnicalDetails { get; set; }
 
         /// <summary>
-        /// Validate this format definition
+        /// Validate this format definition.
+        /// Text formats (IsTextFormat=true) do not require a blocks array —
+        /// they are identified by their extension/signature alone and opened
+        /// in a code editor, not parsed as binary structures.
         /// </summary>
         public bool IsValid()
         {
@@ -193,7 +196,10 @@ namespace WpfHexEditor.Core.FormatDetection
             if (Detection == null || !Detection.IsValid())
                 return false;
 
-            if (Blocks == null || Blocks.Count == 0)
+            // Binary formats must declare at least one block.
+            // Text formats (source code, markup, plain text) have no binary structure to parse.
+            var isText = Detection?.IsTextFormat == true;
+            if (!isText && (Blocks == null || Blocks.Count == 0))
                 return false;
 
             return true;
@@ -524,8 +530,11 @@ namespace WpfHexEditor.Core.FormatDetection
     }
 
     /// <summary>
-    /// Technical references for a format definition
+    /// Technical references for a format definition.
+    /// Tolerates both object form {"specifications":[...],"WebLinks":[...]} and
+    /// flat array form ["spec text", "https://..."] used in legacy whfmt files.
     /// </summary>
+    [JsonConverter(typeof(FormatReferencesConverter))]
     public class FormatReferences
     {
         /// <summary>
@@ -776,7 +785,11 @@ namespace WpfHexEditor.Core.FormatDetection
         public bool Collapsed { get; set; }
         /// <summary>Whether this group is highlighted (accent background). Default false.</summary>
         public bool Highlight { get; set; }
-        /// <summary>Variable names of fields to display in this group.</summary>
+        /// <summary>
+        /// Variable names of fields to display in this group.
+        /// Tolerates object items (legacy whfmt layout descriptors) by extracting the "label" string.
+        /// </summary>
+        [JsonConverter(typeof(StringListFromMixedConverter))]
         public List<string> Fields { get; set; }
     }
 
@@ -864,8 +877,10 @@ namespace WpfHexEditor.Core.FormatDetection
         public bool DocumentFormat { get; set; }
 
         /// <summary>
-        /// Bit depth (for images/audio)
+        /// Bit depth (for images/audio).
+        /// Tolerates string values like "8 bits per sample" by extracting the leading integer.
         /// </summary>
+        [JsonConverter(typeof(NullableIntFromStringConverter))]
         public int? BitDepth { get; set; }
 
         /// <summary>
@@ -876,7 +891,9 @@ namespace WpfHexEditor.Core.FormatDetection
         /// <summary>
         /// Sample rate (for audio). Stored as string to accommodate descriptive values
         /// like "8000 Hz (AMR-NB) / 16000 Hz (AMR-WB)" as well as plain integers.
+        /// Tolerates JSON numbers (e.g. 44100) by converting them to string.
         /// </summary>
+        [JsonConverter(typeof(StringFromNumberOrStringConverter))]
         public string SampleRate { get; set; }
 
         /// <summary>
@@ -893,5 +910,197 @@ namespace WpfHexEditor.Core.FormatDetection
         /// Encryption support
         /// </summary>
         public bool SupportsEncryption { get; set; }
+    }
+
+    // ── Tolerance converters ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// Reads an int? from either a JSON number or a string like "8 bits per sample (...)".
+    /// Extracts the leading integer; returns null if no digits found or token is null.
+    /// </summary>
+    /// <summary>
+    /// Reads a string from either a JSON string or a JSON number.
+    /// Converts numbers to their string representation (e.g. 44100 → "44100").
+    /// </summary>
+    internal sealed class StringFromNumberOrStringConverter : JsonConverter<string?>
+    {
+        public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null) return null;
+            if (reader.TokenType == JsonTokenType.String) return reader.GetString();
+            if (reader.TokenType == JsonTokenType.Number)
+            {
+                if (reader.TryGetInt64(out var l)) return l.ToString();
+                if (reader.TryGetDouble(out var d)) return d.ToString();
+            }
+            reader.Skip();
+            return null;
+        }
+
+        public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options)
+        {
+            if (value is null) writer.WriteNullValue();
+            else writer.WriteStringValue(value);
+        }
+    }
+
+    internal sealed class NullableIntFromStringConverter : JsonConverter<int?>
+    {
+        public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null) return null;
+            if (reader.TokenType == JsonTokenType.Number)
+                return reader.TryGetInt32(out var n) ? n : null;
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var s = reader.GetString() ?? "";
+                // Extract leading digits (e.g. "8 bits per sample" → 8)
+                int i = 0;
+                while (i < s.Length && char.IsDigit(s[i])) i++;
+                if (i > 0 && int.TryParse(s.AsSpan(0, i), out var parsed)) return parsed;
+                return null;
+            }
+            reader.Skip();
+            return null;
+        }
+
+        public override void Write(Utf8JsonWriter writer, int? value, JsonSerializerOptions options)
+        {
+            if (value.HasValue) writer.WriteNumberValue(value.Value);
+            else writer.WriteNullValue();
+        }
+    }
+
+    /// <summary>
+    /// Reads a List&lt;string&gt; where each item is either a plain string (variable name)
+    /// or a legacy inspector field object like {"label":"...","offset":0,"length":4,"format":"ascii"}.
+    /// Object items are converted to their "label" value (or skipped if none).
+    /// </summary>
+    internal sealed class StringListFromMixedConverter : JsonConverter<List<string>>
+    {
+        public override List<string> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var list = new List<string>();
+            if (reader.TokenType != JsonTokenType.StartArray) { reader.Skip(); return list; }
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            {
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    list.Add(reader.GetString() ?? "");
+                }
+                else if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    // Legacy layout object — extract "label" or "name"
+                    string? label = null;
+                    while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                    {
+                        if (reader.TokenType == JsonTokenType.PropertyName)
+                        {
+                            var key = reader.GetString();
+                            reader.Read();
+                            if ((key == "label" || key == "name") && reader.TokenType == JsonTokenType.String)
+                                label = reader.GetString();
+                            else
+                                reader.Skip();
+                        }
+                    }
+                    if (label != null) list.Add(label);
+                }
+                else
+                {
+                    reader.Skip();
+                }
+            }
+            return list;
+        }
+
+        public override void Write(Utf8JsonWriter writer, List<string> value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value);
+    }
+
+    /// <summary>
+    /// Reads a FormatReferences from either:
+    ///   - An object: {"specifications":[...],"WebLinks":[...]}   (standard form)
+    ///   - A flat array: ["spec text","https://..."]              (legacy Medical/Science form)
+    ///   - An array of objects: [{"specifications":[...]},{"WebLinks":[...]}]  (legacy split form)
+    /// </summary>
+    internal sealed class FormatReferencesConverter : JsonConverter<FormatReferences>
+    {
+        public override FormatReferences Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var result = new FormatReferences();
+
+            if (reader.TokenType == JsonTokenType.Null) { reader.Skip(); return result; }
+
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                // Standard object form
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                {
+                    if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                    var key = reader.GetString() ?? "";
+                    reader.Read();
+                    if (key.Equals("specifications", StringComparison.OrdinalIgnoreCase))
+                        result.Specifications = ReadStringList(ref reader);
+                    else if (key.Equals("weblinks", StringComparison.OrdinalIgnoreCase))
+                        result.WebLinks = ReadStringList(ref reader);
+                    else
+                        reader.Skip();
+                }
+                return result;
+            }
+
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                // Legacy flat array or array of objects
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                {
+                    if (reader.TokenType == JsonTokenType.String)
+                    {
+                        var s = reader.GetString() ?? "";
+                        if (s.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                            s.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                            result.WebLinks.Add(s);
+                        else
+                            result.Specifications.Add(s);
+                    }
+                    else if (reader.TokenType == JsonTokenType.StartObject)
+                    {
+                        // Array of sub-objects like {"specifications":[...]} or {"WebLinks":[...]}
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                        {
+                            if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                            var key = reader.GetString() ?? "";
+                            reader.Read();
+                            if (key.Equals("specifications", StringComparison.OrdinalIgnoreCase))
+                                result.Specifications.AddRange(ReadStringList(ref reader));
+                            else if (key.Equals("weblinks", StringComparison.OrdinalIgnoreCase))
+                                result.WebLinks.AddRange(ReadStringList(ref reader));
+                            else
+                                reader.Skip();
+                        }
+                    }
+                    else reader.Skip();
+                }
+                return result;
+            }
+
+            reader.Skip();
+            return result;
+        }
+
+        private static List<string> ReadStringList(ref Utf8JsonReader reader)
+        {
+            var list = new List<string>();
+            if (reader.TokenType != JsonTokenType.StartArray) { reader.Skip(); return list; }
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                if (reader.TokenType == JsonTokenType.String) list.Add(reader.GetString() ?? "");
+                else reader.Skip();
+            return list;
+        }
+
+        public override void Write(Utf8JsonWriter writer, FormatReferences value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value, new JsonSerializerOptions { PropertyNamingPolicy = null });
     }
 }

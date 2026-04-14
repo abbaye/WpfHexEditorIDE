@@ -1,126 +1,211 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Steam Game Cache",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".gcf"
   ],
-  "description": "Steam Game Cache File",
+  "description": "GCF (Game Cache File) is a legacy Valve/Steam game content archive format used before Steam's current depot system. GCF files stored game assets in Steam's caches (steamapps/*.gcf) for games like Half-Life 2, Portal, TF2, CS:Source. The GCF binary format starts with a Header Block: dummy (4B LE, always 1), dummy2 (4B LE, always 1), gcfVersion (4B LE, typically 6), appID (4B LE, Valve application ID), appVersion (4B LE), dummy3/4 (4B LE each), fileSize (4B LE, total file size), blockSize (4B LE, typically 8192), blockCount (4B LE). GCF was deprecated by Valve in 2013 when Steam switched to the depot/SteamPipe system. GCFScape was the primary tool for extracting GCF archives. The format is no longer used for new games.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Valve GCF Archive Format",
-      "Steam Game Cache File (Legacy)",
-      "GCF Virtual File System"
+      "Valve GCF Format — Wunderboy.org reverse-engineering documentation"
     ],
     "WebLinks": [
       "https://developer.valvesoftware.com/wiki/GCF_archive",
       "https://www.wunderboy.org/documentation/valve-gcf-file-format/",
-      "https://developer.valvesoftware.com/wiki/GCFScape",
-      "https://fileinfo.com/extension/gcf"
+      "https://developer.valvesoftware.com/wiki/GCFScape"
     ]
   },
   "detection": {
-    "signature": "01000000",
-    "offset": 0,
+    "signatures": [
+      { "value": "0100000001000000", "offset": 0, "label": "GCF header: dummy(1) + dummy2(1) — Valve GCF archive identifier", "weight": 0.6 },
+      { "value": "01000000", "offset": 0, "label": "GCF dummy field = 1 (LE) at offset 0", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 44,
+      "maxSignatureOffset": 0,
+      "note": "GCF files have no unique magic bytes. The first 8 bytes are two dummy uint32 LE values both equal to 1, which is a very weak identifier. The .gcf extension is the primary discriminator. GCF is a legacy format; modern Steam games use depot files."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0
+    "gcfDummy": 0,
+    "gcfVersion": 0,
+    "gcfAppID": 0,
+    "gcfFileSize": 0
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Version",
+      "name": "Header Dummy",
       "offset": 0,
       "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "GCF header first field: always 0x00000001 (uint32 LE) at offset 0. This is a constant 'dummy' value with no known semantic meaning — Valve used it as a fixed header marker. The combination of this field and the second dummy field (also 1) at offset 4 provides the weakest possible identification for GCF files. The gcfVersion field at offset 8 provides more reliable discrimination.",
+      "storeAs": "gcfDummy",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "GCF Version",
+      "offset": 8,
+      "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "GCF version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "GCF archive format version as uint32 little-endian at offset 8. Known values: 3 = very early GCF (HL2 beta era), 5 = GCF v5, 6 = GCF v6 (most common, used for HL2, Portal, TF2, CS:Source). Version 6 is the primary production version in Steam's steamapps directory. The block size, checksum section layout, and allocation tables differ between versions.",
+      "storeAs": "gcfVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "3": "GCF v3 (early/beta)",
+        "5": "GCF v5",
+        "6": "GCF v6 (standard production)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Application ID",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Steam application ID as uint32 little-endian at offset 12. Uniquely identifies the game or application this GCF belongs to. Example IDs: 220 = Half-Life 2, 440 = Team Fortress 2, 400 = Portal, 500 = Left 4 Dead. The appID matches the Valve Steam application catalog. Useful for identifying which game's assets are in the GCF without needing metadata.",
+      "storeAs": "gcfAppID",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 24,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Total GCF file size in bytes as uint32 little-endian at offset 24. This stored size should equal the actual on-disk file size. GCF files range from a few MB to several GB depending on the game content. Mismatch between stored and actual size indicates a corrupt or partially downloaded GCF file (Steam would re-verify and re-download corrupted blocks).",
+      "storeAs": "gcfFileSize",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Dummy",
+      "variable": "gcfDummy",
+      "description": "GCF dummy header field (always 1)"
     },
     {
       "type": "metadata",
       "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "variable": "gcfVersion",
+      "description": "GCF archive version (6=standard)"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "App ID",
+      "variable": "gcfAppID",
+      "description": "Steam application ID"
+    },
+    {
+      "type": "metadata",
+      "name": "File Size",
+      "variable": "gcfFileSize",
+      "description": "Total GCF file size in bytes"
     }
   ],
-  "software": [
-    "Emulators",
-    "Game engines"
+  "assertions": [
+    {
+      "name": "GCF dummy field",
+      "expression": "gcfDummy == 1",
+      "severity": "warning",
+      "message": "GCF first dummy field should be 1 — may not be a valid GCF archive"
+    },
+    {
+      "name": "GCF version valid",
+      "expression": "gcfVersion >= 3 && gcfVersion <= 6",
+      "severity": "warning",
+      "message": "GCF version should be 3-6 — unexpected GCF version"
+    }
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".gcf"
+  "navigation": {
+    "bookmarks": [
+      { "name": "GCF Header Block", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
-  "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "gcfVersion",
+    "primaryField": "gcfAppID",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "GCF Header",
+        "icon": "\uE71B",
+        "fields": ["gcfDummy", "gcfVersion", "gcfAppID", "gcfFileSize"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
+  "exportTemplates": [
+    {
+      "name": "GCF Header (JSON)",
+      "format": "json",
+      "fields": ["gcfDummy", "gcfVersion", "gcfAppID", "gcfFileSize"]
+    }
+  ],
   "forensic": {
     "category": "game",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Steam Game Cache File",
+    "analysisContext": "GCF header block: dummy(4B LE, =1) + dummy2(4B LE, =1) + version(4B LE, typ.6) + appID(4B LE) + appVersion(4B LE) + dummy3(4B LE) + dummy4(4B LE) + fileSize(4B LE) + blockSize(4B LE, typ.8192) + blockCount(4B LE). No unique magic — use .gcf extension + version field. Legacy format: replaced by Steam SteamPipe depots in 2013. GCFScape (GCFScape.exe by Nem's Tools) reads GCF. Notable GCFs: hl2.gcf (Half-Life 2), tf.gcf (Team Fortress 2), portal.gcf.",
     "suggestedInspections": [
-      "Validate Steam Game Cache container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+      "Bytes 0-7: 0x01000000 0x01000000 — two dummy LE uint32 values, both must be 1",
+      "Bytes 8-11 (uint32 LE): GCF version — 6 is standard production version",
+      "Bytes 12-15 (uint32 LE): Steam app ID — look up in Steamdb.info to identify the game",
+      "Bytes 24-27 (uint32 LE): stored file size — verify against actual file size for integrity"
     ]
+  },
+  "software": [
+    "Steam (original creator/consumer — deprecated)",
+    "GCFScape (Nem's Tools — primary extraction tool)",
+    "HLExtract (command-line extraction)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [".gcf"],
+    "relatedFormats": ["VPK", "PAK"],
+    "note": "GCF was replaced by VPK and Steam depot manifests in 2013 (Steam SteamPipe migration). Old installations still have .gcf files in steamapps/. New games use depot/chunk-based download with VPK archives. GCF files are legacy — no new games use this format."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Extracting game assets from legacy Steam GCF archives",
+    "Game preservation of pre-2013 Steam games",
+    "Forensic analysis of old Steam game installations",
+    "Modding legacy Source Engine games from GCF content"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary little-endian Valve Steam Game Cache File (legacy)",
+    "Magic": "No unique magic — dummy(1) + dummy2(1) + version(6) at offsets 0/4/8",
+    "Status": "Deprecated since 2013 — replaced by VPK + Steam depot system",
+    "AppIDs": "220=HL2, 440=TF2, 400=Portal, 500=L4D",
+    "BlockSize": "8192 bytes (typical); data organized in fixed-size block allocation"
   }
 }

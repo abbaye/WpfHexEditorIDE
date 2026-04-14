@@ -31,7 +31,10 @@ namespace WpfHexEditor.Tests.Unit
         [ClassInitialize]
         public static void ClassInit(TestContext _)
         {
-            _entries = EmbeddedFormatCatalog.Instance.GetAll();
+            // Filter to .whfmt entries only — .grammar files are XML (Synalysis) and not JSON-parseable.
+            _entries = EmbeddedFormatCatalog.Instance.GetAll()
+                .Where(e => e.ResourceKey.EndsWith(".whfmt", System.StringComparison.OrdinalIgnoreCase))
+                .ToHashSet();
             _parser  = new FormatDetectionService();
         }
 

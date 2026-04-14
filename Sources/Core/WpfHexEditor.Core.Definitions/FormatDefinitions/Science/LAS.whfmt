@@ -1,118 +1,164 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "LAS Well Log",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".las"
   ],
-  "description": "Log ASCII Standard for well log data",
+  "description": "LAS (Log ASCII Standard) is a plain-text file format developed by the Canadian Well Logging Society (CWLS) for storing well log data from oil and gas drilling operations. LAS files consist of sections delimited by tilde (~) characters: ~Version (version information), ~Well (well identification), ~Curve (curve/channel definitions), ~Parameter (acquisition parameters), and ~ASCII (numeric data columns). Each section header starts with '~' followed by a single character identifying the section type. The version section '~Version' always appears first and contains LAS version (1.2 or 2.0) and wrap mode. Data in the ~ASCII section is space-delimited columns of floating-point values, one row per depth level. Null values are indicated by the WELL section's NULL value (typically -9999.25).",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "LAS Well Log Format"
+      "LAS 2.0 Specification — Canadian Well Logging Society",
+      "LAS 3.0 Specification — CWLS"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/LAS"
+      "https://www.cwls.org/products/",
+      "https://docs.fileformat.com/gis/las/",
+      "https://lasio.readthedocs.io/en/latest/"
     ]
   },
   "detection": {
-    "signature": "7E56657273696F6E",
-    "offset": 0,
+    "signatures": [
+      { "value": "7E56657273696F6E", "offset": 0, "label": "'~Version' — LAS version section header at offset 0", "weight": 1.0 },
+      { "value": "7E56", "offset": 0, "label": "'~V' — LAS version section short prefix", "weight": 0.8 },
+      { "value": "7E", "offset": 0, "label": "'~' — LAS section delimiter at offset 0", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "LAS files must start with '~Version' or '~V' section header. The tilde character at offset 0 is the primary indicator. Extension (.las) combined with '~V' prefix provides strong identification."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "timestamp": 0,
-    "size": 0,
-    "version": "",
-    "type": "",
-    "lasMagic": ""
+    "lasMagic": "",
+    "lasVersion": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "LAS Magic",
+      "name": "LAS Version Section Header",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "LAS signature (~Version)",
+      "opacity": 0.45,
+      "description": "LAS version section header '~Version' (ASCII: 7E 56 65 72 73 69 6F 6E). The tilde-prefixed section delimiter is the fundamental structure of LAS files. The '~V' or '~Version' header introduces the mandatory version information section that must appear as the first section in every compliant LAS file.",
       "storeAs": "lasMagic",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Timestamp",
-      "variable": "timestamp",
-      "description": "Timestamp"
+      "type": "field",
+      "name": "LAS Version Value Line",
+      "offset": 9,
+      "length": 64,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "ASCII text following the ~Version header line. Contains key-value pairs in LAS format: 'VERS.                1.20 : CWLS Log ASCII Standard -VERSION 1.20' or '2.0'. The VERS mnemonic on the first data line gives the LAS specification version. Version 1.2 is older; 2.0 is the most widely used; 3.0 adds multi-pass and complex data types.",
+      "storeAs": "lasVersion",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Size",
-      "variable": "size",
-      "description": "Size"
+      "name": "LAS Section Header",
+      "variable": "lasMagic",
+      "description": "'~Version' — LAS file version section identifier"
     },
     {
       "type": "metadata",
-      "name": "Type",
-      "variable": "type",
-      "description": "Type"
+      "name": "Version Info",
+      "variable": "lasVersion",
+      "description": "LAS version line content (VERS mnemonic)"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "LAS tilde marker present",
+      "expression": "lasMagic == '~Version'",
+      "severity": "warning",
+      "message": "LAS file should start with '~Version' section header — may not be a valid LAS well log file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".las"
+  "navigation": {
+    "bookmarks": [
+      { "name": "~Version Section", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "lasMagic",
+    "primaryField": "lasVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "LAS Header",
+        "icon": "\uE71B",
+        "fields": ["lasMagic", "lasVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read system header",
-    "extractASCIIString": "Read info"
-  },
+  "exportTemplates": [
+    {
+      "name": "LAS Header (JSON)",
+      "format": "json",
+      "fields": ["lasMagic", "lasVersion"]
+    }
+  ],
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Log ASCII Standard for well log data",
+    "analysisContext": "LAS is plain ASCII. Sections start with '~' + letter: ~V=Version, ~W=Well, ~C=Curve, ~P=Parameter, ~A=ASCII data. Lines starting with '#' are comments. Key lines in ~Version: 'VERS. 2.0' and 'WRAP. NO' (or YES for multi-line wrap). ~Well section: STRT/STOP/STEP/NULL/COMP/WELL/FLD/LOC/SRVC/DATE/UWI mnemonics. ~Curve defines column headers: DEPT.M (depth in meters), then measurement channels. ~ASCII contains rows of space-delimited floats. NULL value (default -9999.25) marks missing data.",
     "suggestedInspections": [
-      "Validate LAS Well Log file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Read first line: must be '~Version' or '~V' section header",
+      "Find 'VERS.' line in ~Version section for LAS spec version (1.2, 2.0, 3.0)",
+      "Find 'NULL.' mnemonic in ~Well section for the null/missing value indicator",
+      "Count '~' section headers to identify file structure (Version/Well/Curve/Parameter/ASCII)"
     ]
+  },
+  "software": [
+    "Petrel (Schlumberger)",
+    "Kingdom (IHS Markit)",
+    "lasio (Python library)",
+    "WellCAD",
+    "Log Data Toolbox"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".las"],
+    "relatedFormats": ["DLIS", "WITSML", "LIS"],
+    "note": "LAS (CWLS) is the standard ASCII format for well log data exchange in the oil and gas industry. Note: LAS also refers to LiDAR Point Cloud format (ASPRS LAS) — a completely different binary format sharing the same extension."
+  },
+  "MimeTypes": [
+    "text/plain",
+    "application/x-las"
+  ],
+  "UseCases": [
+    "Oil and gas well log data storage and exchange",
+    "Geophysical borehole measurements",
+    "Petrophysical analysis (porosity, permeability, water saturation)",
+    "Subsurface formation evaluation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, tilde-delimited sections",
+    "Sections": "~Version, ~Well, ~Curve, ~Parameter, ~ASCII",
+    "DataEncoding": "Space-delimited floating-point columns in ~ASCII section",
+    "Versions": "LAS 1.2, LAS 2.0 (most common), LAS 3.0"
   }
 }

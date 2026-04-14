@@ -1,0 +1,182 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.MetadataTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
+        <StackPanel Margin="12,8" x:Name="Root">
+
+            <!-- ── Section helper style ─────────────────────────────── -->
+            <StackPanel.Resources>
+                <Style x:Key="SectionHeader" TargetType="TextBlock">
+                    <Setter Property="FontSize"     Value="11"/>
+                    <Setter Property="FontWeight"   Value="SemiBold"/>
+                    <Setter Property="Margin"       Value="0,12,0,4"/>
+                    <Setter Property="Foreground"   Value="{DynamicResource TE_LineNumberForeground}"/>
+                    <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+                </Style>
+                <Style x:Key="Label" TargetType="TextBlock">
+                    <Setter Property="FontSize"           Value="11"/>
+                    <Setter Property="VerticalAlignment"  Value="Center"/>
+                    <Setter Property="Margin"             Value="0,2,8,2"/>
+                    <Setter Property="Foreground"         Value="{DynamicResource TE_LineNumberForeground}"/>
+                    <Setter Property="MinWidth"           Value="110"/>
+                </Style>
+                <Style x:Key="Field" TargetType="TextBox">
+                    <Setter Property="FontSize"         Value="11"/>
+                    <Setter Property="Padding"          Value="4,2"/>
+                    <Setter Property="BorderThickness"  Value="1"/>
+                    <Setter Property="Margin"           Value="0,2,0,2"/>
+                    <Setter Property="Background"       Value="{DynamicResource TE_Background}"/>
+                    <Setter Property="Foreground"       Value="{DynamicResource TE_Foreground}"/>
+                    <Setter Property="CaretBrush"       Value="{DynamicResource TE_Foreground}"/>
+                </Style>
+                <Style x:Key="Combo" TargetType="ComboBox">
+                    <Setter Property="FontSize"    Value="11"/>
+                    <Setter Property="Padding"     Value="4,2"/>
+                    <Setter Property="Margin"      Value="0,2,0,2"/>
+                    <Setter Property="Background"  Value="{DynamicResource TE_Background}"/>
+                    <Setter Property="Foreground"  Value="{DynamicResource TE_Foreground}"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <!-- ── Core fields ──────────────────────────────────────── -->
+            <TextBlock Text="Core" Style="{StaticResource SectionHeader}"/>
+
+            <Grid Margin="0,0,0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Format Name"    Style="{StaticResource Label}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource Field}"
+                           Text="{Binding FormatName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Version"        Style="{StaticResource Label}"/>
+                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource Field}"
+                           Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Author"         Style="{StaticResource Label}"/>
+                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource Field}"
+                           Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Category"       Style="{StaticResource Label}"/>
+                <ComboBox  Grid.Row="3" Grid.Column="1" Style="{StaticResource Combo}"
+                           IsEditable="True"
+                           Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}"
+                           ItemsSource="{Binding CategoryOptions}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Diff Mode"      Style="{StaticResource Label}"/>
+                <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource Combo}"
+                           ItemsSource="{Binding DiffModeOptions}"
+                           SelectedItem="{Binding DiffMode}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Preferred Editor" Style="{StaticResource Label}"/>
+                <ComboBox  Grid.Row="5" Grid.Column="1" Style="{StaticResource Combo}"
+                           ItemsSource="{Binding PreferredEditorOptions}"
+                           SelectedItem="{Binding PreferredEditor}"/>
+            </Grid>
+
+            <!-- Description -->
+            <TextBlock Text="Description" Style="{StaticResource Label}" Margin="0,4,0,2"/>
+            <TextBox Style="{StaticResource Field}"
+                     Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" TextWrapping="Wrap" Height="60"
+                     VerticalScrollBarVisibility="Auto"/>
+
+            <!-- IsTextFormat -->
+            <CheckBox Content="Is text format (opens in Code Editor by default)"
+                      IsChecked="{Binding IsTextFormat}"
+                      Foreground="{DynamicResource TE_Foreground}"
+                      FontSize="11" Margin="0,6,0,0"/>
+
+            <!-- ── Extensions ──────────────────────────────────────── -->
+            <TextBlock Text="File Extensions" Style="{StaticResource SectionHeader}"/>
+            <ItemsControl ItemsSource="{Binding Extensions}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="120" Style="{StaticResource Field}" Margin="0,0,4,0"/>
+                            <Button Content="✕" FontSize="10" Padding="4,1"
+                                    Command="{Binding RemoveCommand}"
+                                    Background="Transparent"
+                                    Foreground="{DynamicResource TE_LineNumberForeground}"
+                                    BorderThickness="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="＋ Add Extension" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+                    HorizontalAlignment="Left"
+                    x:Name="AddExtBtn" Click="OnAddExtension"
+                    Background="Transparent"
+                    Foreground="{DynamicResource ET_AccentBrush}"
+                    BorderThickness="0"/>
+
+            <!-- ── MIME Types ───────────────────────────────────────── -->
+            <TextBlock Text="MIME Types" Style="{StaticResource SectionHeader}"/>
+            <ItemsControl ItemsSource="{Binding MimeTypes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="200" Style="{StaticResource Field}" Margin="0,0,4,0"/>
+                            <Button Content="✕" FontSize="10" Padding="4,1"
+                                    Command="{Binding RemoveCommand}"
+                                    Background="Transparent"
+                                    Foreground="{DynamicResource TE_LineNumberForeground}"
+                                    BorderThickness="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="＋ Add MIME Type" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+                    HorizontalAlignment="Left"
+                    x:Name="AddMimeBtn" Click="OnAddMimeType"
+                    Background="Transparent"
+                    Foreground="{DynamicResource ET_AccentBrush}"
+                    BorderThickness="0"/>
+
+            <!-- ── Software ─────────────────────────────────────────── -->
+            <TextBlock Text="Software" Style="{StaticResource SectionHeader}"/>
+            <ItemsControl ItemsSource="{Binding Software}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="240" Style="{StaticResource Field}" Margin="0,0,4,0"/>
+                            <Button Content="✕" FontSize="10" Padding="4,1"
+                                    Command="{Binding RemoveCommand}"
+                                    Background="Transparent"
+                                    Foreground="{DynamicResource TE_LineNumberForeground}"
+                                    BorderThickness="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="＋ Add Software" FontSize="11" Padding="6,2" Margin="0,4,0,12"
+                    HorizontalAlignment="Left"
+                    x:Name="AddSoftwareBtn" Click="OnAddSoftware"
+                    Background="Transparent"
+                    Foreground="{DynamicResource ET_AccentBrush}"
+                    BorderThickness="0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

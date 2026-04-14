@@ -1,110 +1,164 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Pro/ENGINEER Part",
-  "version": "2.32",
+  "version": "2.33",
   "extensions": [
     ".prt"
   ],
-  "description": "Pro/ENGINEER (Creo) part file",
+  "description": "PRT is the Pro/ENGINEER (now PTC Creo Parametric) native part file format. Pro/ENGINEER pioneered parametric, feature-based 3D CAD modeling. PRT files store a single 3D part with the complete parametric feature tree: sketches, extrusions, revolutions, sweeps, holes, fillets, chamfers, shell, patterns, mirrors, and other features. The file also includes the part material, mass properties, surface finish, default datums (datum planes, datum axes, coordinate systems), and all parametric relations and equations between dimensions. PRT is a proprietary binary format not publicly documented by PTC. Files typically begin with binary header bytes identifying the Pro/ENGINEER release. PRT files are not backward compatible across major releases: a PRT created in Creo 9 cannot be opened in Wildfire 5 without PTC's migration tool. Modern name: PTC Creo Parametric (.prt files are still used in all Creo versions).",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Pro/ENGINEER Part Format"
+      "Pro/ENGINEER File Format — PTC (proprietary, undocumented)",
+      "PTC Creo Parametric Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/PRT"
+      "https://en.wikipedia.org/wiki/PTC_Creo_Elements/Pro",
+      "https://www.ptc.com/en/products/creo",
+      "https://filext.com/file-extension/PRT"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "00", "offset": 0, "label": "Pro/ENGINEER binary header (proprietary, no public magic)", "weight": 0.1 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "PRT files have no documented public magic bytes. Detection relies on .prt extension. Note: .prt extension is also used by NX/Unigraphics (Siemens NX .prt is a different format from Pro/ENGINEER .prt) — context and version bytes distinguish them."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "fileHeader": ""
+    "fileHeader": "",
+    "proEVersion": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "File Header",
+      "name": "Pro/E Part Binary Header",
       "offset": 0,
       "length": 16,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Pro/ENGINEER part header",
+      "opacity": 0.45,
+      "description": "Pro/ENGINEER part file binary header at offset 0 (16 bytes). The Pro/ENGINEER format is proprietary binary with no publicly documented structure. The header contains version identification and format parameters identifying the Pro/E or Creo Parametric release that created the file. The binary format encodes: parametric feature tree (feature type IDs, parameter values, parent-child relationships), 3D geometry (surface and edge definitions), sketch data (constraints, dimensions, geometry entities), and part metadata (material, properties, relations). PTC Creo version history: Pro/E 2001, Wildfire 1-5 (2003-2009), Creo 1.0-10.0 (2011-2023).",
       "storeAs": "fileHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Release Version Bytes",
+      "offset": 16,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Pro/ENGINEER release identifier bytes at offset 16 (8 bytes). Encodes the PTC Creo/Pro-E release version as binary. The version determines the feature set available and format compatibility. Pro/E files have strict version incompatibility: files from newer releases cannot be opened in older ones. Note: NX (Siemens) also uses .prt extension but with a completely different binary format and header (NX .prt starts with a different signature). Pro/ENGINEER .prt and NX .prt are mutually incompatible formats sharing only the extension.",
+      "storeAs": "proEVersion",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "File Header",
+      "variable": "fileHeader",
+      "description": "Pro/ENGINEER binary file header bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Version Bytes",
+      "variable": "proEVersion",
+      "description": "Pro/ENGINEER release version identifier"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "fileHeader != ''",
+      "severity": "warning",
+      "message": "PRT file header is empty — file may be invalid or truncated"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".prt"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Pro/E Part Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "proEVersion",
+    "primaryField": "fileHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Pro/E Part Header",
+        "icon": "\uE71B",
+        "fields": ["fileHeader", "proEVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "PRT Header (JSON)",
+      "format": "json",
+      "fields": ["fileHeader", "proEVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pro/ENGINEER (Creo) part file",
+    "analysisContext": "Pro/ENGINEER (.prt) is PTC proprietary binary. No documented magic bytes. Extension .prt conflicts with Siemens NX .prt (different format). Pro/E format encodes: parametric feature tree (extrude/revolve/sweep/hole/round/chamfer/shell/pattern/mirror feature IDs and parameters), sketch sections (2D constraints and dimensions), 3D geometry (surfaces, edges), relations (parametric equations between dimensions), material properties, datum features, and simplified representations. Not readable without PTC Creo or commercial translators (Datakit, CADExchanger, TransMagic). For neutral exchange: STEP AP214 from Creo.",
     "suggestedInspections": [
-      "Validate Pro/ENGINEER Part file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Extension .prt — use context to distinguish Pro/ENGINEER from Siemens NX PRT",
+      "Binary header at offset 0: Pro/E version bytes (undocumented format)",
+      "For geometry: export STEP AP214 using PTC Creo or commercial CAD translator",
+      "PTC Creo version incompatibility: check version bytes before attempting to open"
     ]
+  },
+  "software": [
+    "PTC Creo Parametric (formerly Pro/ENGINEER)",
+    "Pro/ENGINEER Wildfire 1-5 (2003-2009)",
+    "Creo Parametric 1.0-10.0 (2011-2023)",
+    "Datakit CrossCadWare (commercial)",
+    "CADExchanger (commercial)",
+    "TransMagic (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".prt"],
+    "relatedFormats": ["ASM", "STEP", "IGES", "X_T"],
+    "note": "PRT is Pro/ENGINEER's part format; ASM (.asm) is the assembly format. Both are PTC proprietary binary. Extension .prt ALSO used by Siemens NX (different format). For neutral exchange: STEP AP214 or Parasolid X_T from Creo. PTC Windchill PLM stores and manages PRT/ASM files."
+  },
+  "MimeTypes": [
+    "application/x-proe-part",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "PTC Creo Parametric 3D part design",
+    "Parametric feature modeling with design intent capture",
+    "Aerospace, automotive, and consumer product design",
+    "Windchill PLM part data storage and revision management"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 50,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Proprietary binary (PTC undocumented), no standard magic bytes",
+    "Detection": "Extension-based (.prt) — binary header undocumented",
+    "Conflict": ".prt extension also used by Siemens NX (completely different format)",
+    "VersionHistory": "Pro/E 2001, Wildfire 1-5 (2003-2009), Creo 1.0-10.0 (2011-2023)",
+    "NeutralExport": "STEP AP214 or Parasolid X_T via Creo export"
   }
 }

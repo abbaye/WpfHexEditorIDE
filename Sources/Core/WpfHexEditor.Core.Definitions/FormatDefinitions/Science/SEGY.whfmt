@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SEG-Y Seismic Data",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".sgy",
     ".segy"
@@ -10,21 +10,28 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "SEG-Y rev2 Data Exchange Format — SEG Technical Standards Committee 2017",
-    "SEG Technical Standards rev 1 (2002)"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/SEG-Y",
-    "https://seg.org/Publications/SEG-Technical-Standards"
-  ],
+  "references": {
+    "specifications": [
+      "SEG-Y rev2 Data Exchange Format — SEG Technical Standards Committee 2017",
+      "SEG Technical Standards rev 1 (2002)"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/SEG-Y",
+      "https://seg.org/Publications/SEG-Technical-Standards"
+    ]
+  },
   "detection": {
     "signature": "C0C0C0C0",
     "offset": 3200,
     "required": false,
     "weight": 0.4,
     "alternativeSignatures": [
-      { "signature": "00000001", "offset": 3224, "weight": 0.5, "note": "Data sample format code 1 = IBM float in binary reel header" }
+      {
+        "signature": "00000001",
+        "offset": 3224,
+        "weight": 0.5,
+        "note": "Data sample format code 1 = IBM float in binary reel header"
+      }
     ],
     "validation": {
       "minFileSize": 3600,
@@ -119,7 +126,14 @@
       "description": "Data format code at offset 3224 must be 1, 2, 3, 5, 6, or 8; code 0 or values > 8 indicate an unsupported or non-standard SEG-Y variant",
       "offset": 3224,
       "length": 2,
-      "validValues": ["0001", "0002", "0003", "0005", "0006", "0008"],
+      "validValues": [
+        "0001",
+        "0002",
+        "0003",
+        "0005",
+        "0006",
+        "0008"
+      ],
       "severity": "warning"
     }
   ],
@@ -128,16 +142,41 @@
       {
         "name": "Text Header",
         "fields": [
-          { "label": "First 80 chars (EBCDIC/ASCII)", "offset": 0,    "length": 80, "format": "ascii" }
+          {
+            "label": "First 80 chars (EBCDIC/ASCII)",
+            "offset": 0,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       },
       {
         "name": "Binary Reel Header",
         "fields": [
-          { "label": "Binary Header",       "offset": 3200, "length": 400, "format": "hex" },
-          { "label": "Sample Interval",     "offset": 3216, "length": 2,   "format": "uint16be" },
-          { "label": "Samples Per Trace",   "offset": 3220, "length": 2,   "format": "uint16be" },
-          { "label": "Data Format Code",    "offset": 3224, "length": 2,   "format": "uint16be" }
+          {
+            "label": "Binary Header",
+            "offset": 3200,
+            "length": 400,
+            "format": "hex"
+          },
+          {
+            "label": "Sample Interval",
+            "offset": 3216,
+            "length": 2,
+            "format": "uint16be"
+          },
+          {
+            "label": "Samples Per Trace",
+            "offset": 3220,
+            "length": 2,
+            "format": "uint16be"
+          },
+          {
+            "label": "Data Format Code",
+            "offset": 3224,
+            "length": 2,
+            "format": "uint16be"
+          }
         ]
       }
     ]
@@ -145,7 +184,11 @@
   "exportTemplates": [
     {
       "name": "SEG-Y File Parameters",
-      "fields": ["sampleInterval", "samplesPerTrace", "dataFormatCode"]
+      "fields": [
+        "sampleInterval",
+        "samplesPerTrace",
+        "dataFormatCode"
+      ]
     }
   ],
   "software": [
@@ -159,8 +202,15 @@
   "formatRelationships": {
     "seismic_standard": true,
     "organization": "SEG (Society of Exploration Geophysicists)",
-    "revisions": ["SEG-Y Rev 0 (1975)", "Rev 1 (2002)", "Rev 2 (2017)"],
-    "related": ["SEG-D", "SEG-2"]
+    "revisions": [
+      "SEG-Y Rev 0 (1975)",
+      "Rev 1 (2002)",
+      "Rev 2 (2017)"
+    ],
+    "related": [
+      "SEG-D",
+      "SEG-2"
+    ]
   },
   "MimeTypes": [
     "application/x-segy",
@@ -186,7 +236,14 @@
     "textHeaderSize": 3200,
     "binaryHeaderSize": 400,
     "traceHeaderSize": 240,
-    "dataFormats": ["IBM float32 (1)", "int32 (2)", "int16 (3)", "IEEE float32 (5)", "IEEE float64 (6)", "int8 (8)"]
+    "dataFormats": [
+      "IBM float32 (1)",
+      "int32 (2)",
+      "int16 (3)",
+      "IEEE float32 (5)",
+      "IEEE float64 (6)",
+      "int8 (8)"
+    ]
   },
   "forensic": {
     "category": "science",

@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "LZO Compression",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [ ".lzo", ".lzop" ],
   "description": "LZO (Lempel-Ziv-Oberhumer) is a lossless compression algorithm by Markus F.X.J. Oberhumer, designed for extremely fast decompression speed at the expense of compression ratio. The lzop wrapper format adds a 9-byte magic header, version info, flags, and per-block checksums. The magic is 0x89 'LZO' followed by 0x0D 0x0A 0x1A 0x0A. After the magic: version (2B BE), library version (2B BE), version needed (2B BE), compression method (1B: 1=LZO1X-1, 2=LZO1X-1(15), 3=LZO1X-999), level (1B), and flags (4B BE) controlling checksum type (CRC32 or Adler32).",
   "category": "Archives",
@@ -162,7 +162,7 @@
     "category": "archive",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "MULTIPART flag (bit2) set may indicate split archives that span multiple files"
+      { "name": "MULTIPART flag set", "condition": "true", "description": "MULTIPART flag (bit2) set may indicate split archives that span multiple files", "severity": "warning" }
     ]
   },
   "aiHints": {

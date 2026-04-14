@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows Installer Package",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [ ".msi", ".msp", ".msm" ],
   "description": "Windows Installer Package (.msi) is the Microsoft standard for software installation, using the OLE2 Compound File Binary (CFB) container format. The file starts with the standard OLE2 magic D0CF11E0A1B11AE1 (8 bytes), shared with DOC, XLS, PPT, and other OLE2 documents. MSI files are distinguished from other OLE2 containers by their internal stream names, which include Windows Installer-specific entries such as the Database, Tables, Property, and Summary Information streams. MSI files contain a relational database describing installation components, features, files, registry entries, and custom actions.",
   "category": "Archives",
@@ -143,9 +143,9 @@
     "category": "archive",
     "riskLevel": "medium",
     "suspiciousPatterns": [
-      "MSI files can contain custom actions (DLLs, EXEs, scripts) executed during install — common malware vector",
-      "Unexpected CLSID at offset 8 may indicate tampered or crafted installer",
-      "Large SummaryInformation stream may hide embedded payloads"
+      { "name": "Custom action malware vector", "condition": "true", "description": "MSI files can contain custom actions (DLLs, EXEs, scripts) executed during install — common malware vector", "severity": "warning" },
+      { "name": "Unexpected CLSID", "condition": "true", "description": "Unexpected CLSID at offset 8 may indicate tampered or crafted installer", "severity": "warning" },
+      { "name": "Large SummaryInformation stream", "condition": "true", "description": "Large SummaryInformation stream may hide embedded payloads", "severity": "warning" }
     ]
   },
   "aiHints": {

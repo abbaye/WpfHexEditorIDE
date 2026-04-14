@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GAMESS Output",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".log",
     ".out"
@@ -10,14 +10,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "GAMESS User's Manual — Iowa State University",
-    "Schmidt et al., J. Comput. Chem. 14, 1347 (1993)"
-  ],
-  "WebLinks": [
-    "https://www.msg.chem.iastate.edu/gamess/",
-    "https://en.wikipedia.org/wiki/GAMESS_(US)"
-  ],
+  "references": {
+    "specifications": [
+      "GAMESS User's Manual — Iowa State University",
+      "Schmidt et al., J. Comput. Chem. 14, 1347 (1993)"
+    ],
+    "WebLinks": [
+      "https://www.msg.chem.iastate.edu/gamess/",
+      "https://en.wikipedia.org/wiki/GAMESS_(US)"
+    ]
+  },
   "detection": {
     "signature": "2A2A2A2A2A2A",
     "offset": 0,
@@ -115,10 +117,30 @@
       {
         "name": "File Header",
         "fields": [
-          { "label": "Banner Line 1",   "offset": 0,   "length": 80, "format": "ascii" },
-          { "label": "Version Line",    "offset": 80,  "length": 80, "format": "ascii" },
-          { "label": "Copyright Line",  "offset": 160, "length": 80, "format": "ascii" },
-          { "label": "Timestamp Line",  "offset": 240, "length": 80, "format": "ascii" }
+          {
+            "label": "Banner Line 1",
+            "offset": 0,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Version Line",
+            "offset": 80,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Copyright Line",
+            "offset": 160,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Timestamp Line",
+            "offset": 240,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -126,7 +148,10 @@
   "exportTemplates": [
     {
       "name": "GAMESS Run Summary",
-      "fields": ["versionLine", "executionDate"]
+      "fields": [
+        "versionLine",
+        "executionDate"
+      ]
     }
   ],
   "software": [
@@ -138,8 +163,15 @@
   ],
   "formatRelationships": {
     "quantum_chemistry": true,
-    "related_to": ["Gaussian output", "ORCA output", "NWChem output"],
-    "generic_extension_conflict": [".log", ".out"]
+    "related_to": [
+      "Gaussian output",
+      "ORCA output",
+      "NWChem output"
+    ],
+    "generic_extension_conflict": [
+      ".log",
+      ".out"
+    ]
   },
   "MimeTypes": [
     "text/plain",

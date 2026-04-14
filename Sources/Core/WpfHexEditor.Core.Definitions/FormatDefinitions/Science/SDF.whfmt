@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Structure Data File",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".sdf",
     ".sd"
@@ -10,14 +10,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "Biovia CTFILE Formats 2020 — MDL SDF format",
-    "MDL Information Systems SD File Specification"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/Chemical_table_file#SDF",
-    "https://www.daylight.com/dayhtml/doc/theory/theory.mol.html"
-  ],
+  "references": {
+    "specifications": [
+      "Biovia CTFILE Formats 2020 — MDL SDF format",
+      "MDL Information Systems SD File Specification"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Chemical_table_file#SDF",
+      "https://www.daylight.com/dayhtml/doc/theory/theory.mol.html"
+    ]
+  },
   "detection": {
     "signature": "00",
     "offset": 0,
@@ -112,10 +114,30 @@
       {
         "name": "First Record Header",
         "fields": [
-          { "label": "Molecule Name",   "offset": 0,   "length": 80, "format": "ascii" },
-          { "label": "Program Line",    "offset": 80,  "length": 80, "format": "ascii" },
-          { "label": "Comment Line",    "offset": 160, "length": 80, "format": "ascii" },
-          { "label": "Counts Line",     "offset": 240, "length": 80, "format": "ascii" }
+          {
+            "label": "Molecule Name",
+            "offset": 0,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Program Line",
+            "offset": 80,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Comment Line",
+            "offset": 160,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Counts Line",
+            "offset": 240,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -123,7 +145,10 @@
   "exportTemplates": [
     {
       "name": "SDF First Record Header",
-      "fields": ["moleculeName", "countsLine"]
+      "fields": [
+        "moleculeName",
+        "countsLine"
+      ]
     }
   ],
   "software": [
@@ -137,8 +162,17 @@
   "formatRelationships": {
     "cheminformatics": true,
     "contains": "MDL Molfiles",
-    "related": ["MOL", "SMILES", "InChI"],
-    "databases": ["PubChem", "ChEMBL", "ZINC", "DrugBank"]
+    "related": [
+      "MOL",
+      "SMILES",
+      "InChI"
+    ],
+    "databases": [
+      "PubChem",
+      "ChEMBL",
+      "ZINC",
+      "DrugBank"
+    ]
   },
   "MimeTypes": [
     "chemical/x-mdl-sdfile",

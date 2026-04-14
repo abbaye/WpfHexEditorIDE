@@ -1,125 +1,175 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PKCS#12 Certificate",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".p12",
     ".pfx"
   ],
-  "description": "Personal Information Exchange - Certificate bundle",
+  "description": "PKCS#12 (Public Key Cryptography Standards #12, RFC 7292) is a binary archive format for storing private keys along with their X.509 certificate chain. P12/PFX files are the primary format for transporting a private key + certificate bundle (e.g., for IIS, Apache, Windows certificate import). PFX is the older Microsoft term for PKCS#12. P12 files start with DER-encoded ASN.1: the outer structure is a PFXVersion1 SEQUENCE with version=3 (0x03) and AuthenticatedSafe. The outer SEQUENCE tag is 0x30 followed by length bytes. The PKCS#12 structure: PFX ::= SEQUENCE { version INTEGER {v3(3)}, authSafe ContentInfo, macData MacData OPTIONAL }. ContentInfo wraps a PKCS#7 SignedData or EncryptedData containing SafeBag entries for certificates (certBag OID 1.2.840.113549.1.12.10.1.3) and private keys (keyBag OID 1.2.840.113549.1.12.10.1.1 or pkcs8ShroudedKeyBag). The archive is typically password-protected with PKCS#5 PBKDF2 key derivation and AES-256 or 3DES encryption. MAC protects integrity. The .pfx extension is Windows-specific; .p12 is the standard cross-platform extension.",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "PKCS #12: Personal Information Exchange Syntax v1.1 - RFC 7292",
-      "Microsoft PFX (Personal Information Exchange)",
-      "PKCS #12 Archive Format"
+      "RFC 7292 — PKCS #12: Personal Information Exchange Syntax v1.1",
+      "ITU-T X.690 — DER Encoding Rules",
+      "RFC 5958 — Asymmetric Key Packages (PKCS#8)"
     ],
     "WebLinks": [
       "https://datatracker.ietf.org/doc/html/rfc7292",
       "https://en.wikipedia.org/wiki/PKCS_12",
-      "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/personal-information-exchange---pfx--files",
-      "https://docs.fileformat.com/misc/pfx/"
+      "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/personal-information-exchange---pfx--files"
     ]
   },
   "detection": {
-    "signature": "3082",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "3082", "offset": 0, "label": "0x30 0x82 — ASN.1 SEQUENCE with 2-byte length (typical PKCS#12)", "weight": 0.6 },
+      { "value": "30", "offset": 0, "label": "0x30 — ASN.1 SEQUENCE tag (P12 starts with SEQUENCE)", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "P12/PFX files start with ASN.1 SEQUENCE 0x30 (same as DER certificates). The .p12/.pfx extension and file content (presence of keyBag OIDs) distinguishes P12 from plain DER certificates. High entropy expected due to encrypted private key material."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "version": 0,
-    "serialNumber": "",
-    "issuer": "",
-    "subject": "",
-    "asn1Sequence": 0
+    "asn1Sequence": 0,
+    "asn1Length": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ASN.1 Sequence",
+      "name": "ASN.1 SEQUENCE Tag",
       "offset": 0,
       "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "PKCS#12 structure",
+      "opacity": 0.45,
+      "description": "PKCS#12 outer ASN.1 SEQUENCE tag at offset 0. First byte 0x30 = universal SEQUENCE, second byte = DER length encoding. Like DER certificates, P12/PFX files are DER-encoded ASN.1. The outer SEQUENCE wraps the entire PFX structure: version integer (3), AuthenticatedSafe ContentInfo (containing encrypted/signed safe contents with certificate and private key bags), and optional MacData (HMAC for integrity). P12 files typically have high entropy in their encrypted sections (private key + certificate in PKCS#7 EncryptedData) — significantly higher entropy than a plain DER certificate.",
       "storeAs": "asn1Sequence",
-      "valueType": "uint16"
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "PKCS#12 Content Length",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "When offset 1 is 0x82, bytes 2-3 (big-endian uint16) are the total length of the PKCS#12 DER content. Total P12 file size = this value + 4. P12 files are larger than plain DER certificates because they contain: the certificate chain, the encrypted private key (PKCS#8 ShroudedKeyBag with AES-256 or 3DES encryption), PKCS#7 wrapper layers, and MAC data. Typical size range: 2KB-20KB for a single server certificate + key; larger for full certificate chains.",
+      "storeAs": "asn1Length",
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "ASN.1 Tag",
+      "variable": "asn1Sequence",
+      "description": "SEQUENCE tag + length indicator (0x3082 typical)"
     },
     {
       "type": "metadata",
-      "name": "Serial Number",
-      "variable": "serialNumber",
-      "description": "Serial Number"
-    },
-    {
-      "type": "metadata",
-      "name": "Subject",
-      "variable": "subject",
-      "description": "Subject"
+      "name": "Content Length",
+      "variable": "asn1Length",
+      "description": "Total PKCS#12 DER content length in bytes"
     }
   ],
+  "assertions": [
+    {
+      "name": "ASN.1 SEQUENCE tag present",
+      "expression": "asn1Sequence == 12418 || asn1Sequence == 12419",
+      "severity": "warning",
+      "message": "P12/PFX should start with ASN.1 SEQUENCE 0x3082 or 0x3083 — may not be a valid PKCS#12 file"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PKCS#12 Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "asn1Sequence",
+    "primaryField": "asn1Length",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "PKCS#12 Header",
+        "icon": "\uE71B",
+        "fields": ["asn1Sequence", "asn1Length"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "P12 Header (JSON)",
+      "format": "json",
+      "fields": ["asn1Sequence", "asn1Length"]
+    }
+  ],
+  "forensic": {
+    "category": "certificate",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Private key bundle",
+        "description": "P12/PFX files contain private key material — handle with extreme care. Private key exposure allows certificate impersonation, man-in-the-middle attacks, and server impersonation.",
+        "severity": "critical"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PKCS#12 (RFC 7292) DER structure: outer SEQUENCE { version INTEGER (3), authSafe ContentInfo { contentType=pkcs7-data or pkcs7-signedData, content=OCTET STRING(DER) { SEQUENCE OF SafeContents { SEQUENCE OF SafeBag { bagId OID, bagValue [0] ANY, bagAttributes SET } } } }, macData MacData OPTIONAL { mac DigestInfo, macSalt OCTET STRING, iterations INTEGER } }. SafeBag OIDs: 1.2.840.113549.1.12.10.1.1=keyBag(plaintext key), 1.2.840.113549.1.12.10.1.2=pkcs8ShroudedKeyBag(encrypted PKCS#8), 1.2.840.113549.1.12.10.1.3=certBag(X.509 cert), 1.2.840.113549.1.12.10.1.5=secretBag. Encryption: PKCS#5 PBKDF2 + AES-256-CBC or PBE-SHA1-3DES (legacy, avoid). MAC: HMAC-SHA256 (modern) or HMAC-SHA1 (legacy). PKCS#12 password is UTF-16BE null-terminated. Use 'openssl pkcs12 -in file.p12 -info' to inspect.",
+    "suggestedInspections": [
+      "Bytes 0-1: 0x30 0x82 — ASN.1 SEQUENCE (P12 shares format with DER; use extension)",
+      "High entropy sections: encrypted private key (keyBag/pkcs8ShroudedKeyBag)",
+      "Use 'openssl pkcs12 -in file.pfx -info -nokeys' to list certificates without exposing key",
+      "MAC at end of file: HMAC-SHA256 (modern) or HMAC-SHA1 protects integrity"
+    ]
+  },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "OpenSSL (openssl pkcs12 ...)",
+    "Windows Certificate Manager (import/export PFX)",
+    "Java Keytool (import PKCS#12)",
+    "Python cryptography library",
+    "BouncyCastle (Java/C#)",
+    "IIS, Apache, Nginx (server certificate import)"
   ],
   "formatRelationships": {
     "category": "Certificates",
-    "extensions": [
-      ".p12",
-      ".pfx"
-    ]
+    "extensions": [".p12", ".pfx"],
+    "relatedFormats": ["DER", "PGP", "P7B"],
+    "note": ".pfx is the older Microsoft name for PKCS#12; .p12 is the standard cross-platform extension. Both contain identical data. P12 = certificate + private key bundle. DER = certificate only (no private key). P7B = certificate chain only (no private key). P12 is used for server certificate installation (IIS, Apache) and client authentication."
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "application/x-pkcs12",
+    "application/pkcs-12"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Server TLS certificate + private key bundle installation",
+    "Code signing certificate import with private key",
+    "Client authentication certificate portability",
+    "Certificate migration between servers/applications"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read certificate",
-    "extractASCIIString": "Read subject"
-  },
-  "forensic": {
-    "category": "certificate",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Personal Information Exchange - Certificate bundle",
-    "suggestedInspections": [
-      "Verify PKCS#12 Certificate ASN.1 structure, tag-length-value encoding",
-      "Check certificate dates, issuer DN, and key algorithm OIDs",
-      "Inspect extensions (SAN, key usage) and signature algorithm"
-    ]
+  "TechnicalDetails": {
+    "Format": "Binary DER-encoded ASN.1 PKCS#12 structure (RFC 7292)",
+    "Contains": "Private key (encrypted) + X.509 certificate + optional certificate chain + MAC",
+    "Encryption": "PKCS#5 PBKDF2 + AES-256-CBC (modern) or PBE-SHA1-3DES (legacy)",
+    "Security": "Contains private key — high risk if unprotected; always password-protect",
+    "Extensions": ".p12 (standard), .pfx (Windows/IIS legacy name for identical format)"
   }
 }

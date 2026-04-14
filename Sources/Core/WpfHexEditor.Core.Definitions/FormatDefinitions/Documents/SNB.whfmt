@@ -7,19 +7,18 @@
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    { "specifications": [
+  "references": {
+    "specifications": [
       "Shanda Bambook SNB Format",
       "SNB eBook Container Structure"
-    ] },
-    {
+    ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/Bambook",
       "https://wiki.mobileread.com/wiki/SNB",
       "https://calibre-ebook.com/",
       "http://www.snbreader.com/"
-    ]}
-  ],
+    ]
+  },
   "detection": {
     "signatures": [
       { "hex": "504B0304", "offset": 0, "weight": 0.5 }
@@ -131,8 +130,8 @@
     "category": "document",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "SNB files outside Chinese e-reader contexts are unusual",
-      "ZIP container can contain arbitrary files — inspect all entries, not just expected SNB structure"
+      { "name": "Unusual context", "condition": "true", "description": "SNB files outside Chinese e-reader contexts are unusual", "severity": "warning" },
+      { "name": "Arbitrary ZIP content", "condition": "true", "description": "ZIP container can contain arbitrary files — inspect all entries, not just expected SNB structure", "severity": "warning" }
     ]
   },
   "aiHints": {

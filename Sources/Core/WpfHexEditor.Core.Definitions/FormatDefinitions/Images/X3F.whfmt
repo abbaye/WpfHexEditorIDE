@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Sigma X3F RAW",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".x3f"
   ],
@@ -9,12 +9,6 @@
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
-  "references": [
-    "Sigma X3F RAW Format — Foveon X3 Sensor",
-    "X3F File Format Specification (reverse-engineered via x3f_tools)",
-    "Foveon X3 Direct Image Sensor Technology",
-    "LibRaw X3F Decoder Source"
-  ],
   "references": {
     "specifications": [
       "Sigma X3F RAW Format — Foveon X3 Sensor",
@@ -146,8 +140,8 @@
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "Magic not 'FOVb' or 'FOVx' at offset 0 indicates non-X3F file or corruption",
-      "Duplicate UID values across files from a single camera session may indicate cloning or replay"
+      { "name": "Invalid X3F magic", "condition": "true", "description": "Magic not 'FOVb' or 'FOVx' at offset 0 indicates non-X3F file or corruption", "severity": "warning" },
+      { "name": "Duplicate UID values", "condition": "true", "description": "Duplicate UID values across files from a single camera session may indicate cloning or replay", "severity": "warning" }
     ]
   },
   "aiHints": {

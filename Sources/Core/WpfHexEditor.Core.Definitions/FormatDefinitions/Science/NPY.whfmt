@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NumPy Array",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".npy"
   ],
@@ -9,14 +9,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "NumPy NEP 1 — Simple Format for Binary Storage of Arrays",
-    "NumPy v1.26 npy format documentation"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/NumPy",
-    "https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html"
-  ],
+  "references": {
+    "specifications": [
+      "NumPy NEP 1 — Simple Format for Binary Storage of Arrays",
+      "NumPy v1.26 npy format documentation"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/NumPy",
+      "https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html"
+    ]
+  },
   "detection": {
     "signature": "934E554D5059",
     "offset": 0,
@@ -112,7 +114,10 @@
       "description": "Byte 6 must be 0x01 or 0x02; version 1 uses 2-byte header length, version 2 uses 4-byte header length for very large header dicts",
       "offset": 6,
       "length": 1,
-      "validValues": ["01", "02"],
+      "validValues": [
+        "01",
+        "02"
+      ],
       "severity": "warning"
     }
   ],
@@ -121,16 +126,41 @@
       {
         "name": "File Header",
         "fields": [
-          { "label": "Magic",          "offset": 0, "length": 6,   "format": "hex" },
-          { "label": "Major Version",  "offset": 6, "length": 1,   "format": "uint8" },
-          { "label": "Minor Version",  "offset": 7, "length": 1,   "format": "uint8" },
-          { "label": "Header Length",  "offset": 8, "length": 2,   "format": "uint16le" }
+          {
+            "label": "Magic",
+            "offset": 0,
+            "length": 6,
+            "format": "hex"
+          },
+          {
+            "label": "Major Version",
+            "offset": 6,
+            "length": 1,
+            "format": "uint8"
+          },
+          {
+            "label": "Minor Version",
+            "offset": 7,
+            "length": 1,
+            "format": "uint8"
+          },
+          {
+            "label": "Header Length",
+            "offset": 8,
+            "length": 2,
+            "format": "uint16le"
+          }
         ]
       },
       {
         "name": "Array Descriptor",
         "fields": [
-          { "label": "Header Dict", "offset": 10, "length": 118, "format": "ascii" }
+          {
+            "label": "Header Dict",
+            "offset": 10,
+            "length": 118,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -138,7 +168,11 @@
   "exportTemplates": [
     {
       "name": "NumPy Array Summary",
-      "fields": ["numpyMagic", "formatVersion", "headerDict"]
+      "fields": [
+        "numpyMagic",
+        "formatVersion",
+        "headerDict"
+      ]
     }
   ],
   "software": [
@@ -151,7 +185,11 @@
   "formatRelationships": {
     "numpy_format": true,
     "multi_array_container": ".npz (zip of .npy files)",
-    "related_formats": ["NPZ", "HDF5", "MAT (Level 7.3)"]
+    "related_formats": [
+      "NPZ",
+      "HDF5",
+      "MAT (Level 7.3)"
+    ]
   },
   "MimeTypes": [
     "application/x-npy",

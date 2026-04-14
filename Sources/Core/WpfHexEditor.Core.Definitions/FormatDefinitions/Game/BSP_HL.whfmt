@@ -1,44 +1,43 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Half-Life BSP",
-  "version": "1.14",
+  "formatName": "Half-Life GoldSrc BSP",
+  "version": "1.15",
   "extensions": [
     ".bsp"
   ],
-  "description": "Half-Life/GoldSrc engine BSP map format",
+  "description": "Half-Life BSP (version 30) is the GoldSrc engine map format used by Half-Life, Counter-Strike, Team Fortress Classic, and other GoldSrc games. The format begins with a uint32 LE version number 30 (0x1E000000 LE bytes). After the 4-byte version, the header contains 15 lump directory entries at offsets 4-123, each with offset (uint32 LE) and length (uint32 LE). GoldSrc BSP extends Quake 1 BSP (v29) with: BSP v30 lumps include ENTITIES(0), PLANES(1), TEXTURES(2), VERTICES(3), VISIBILITY(4), NODES(5), TEXINFO(6), FACES(7), LIGHTING(8), CLIPNODES(9), LEAFS(10), MARKSURFACES(11), EDGES(12), SURFEDGES(13), MODELS(14). Key differences from Quake 1: textures are stored as WAD3 references (filename strings, not embedded data), RGB lighting in the LIGHTING lump, extended TEXINFO with surface flags and values, and support for larger maps. WAD3 files must accompany the BSP for textures to render.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "BSP v30 GoldSrc Format",
-      "Half-Life BSP Specification",
-      "Valve GoldSrc Engine Format"
+      "GoldSrc BSP v30 Format — hlbsp.sourceforge.net"
     ],
     "WebLinks": [
       "https://developer.valvesoftware.com/wiki/BSP_(GoldSrc)",
       "https://hlbsp.sourceforge.net/index.php?content=bspdef",
-      "http://abit.g6.cz/game_coding/formats/gold_source/bsp.html",
       "https://github.com/AbitTheGray/BspLib"
     ]
   },
   "detection": {
-    "signature": "1E000000",
-    "offset": 0,
+    "signatures": [
+      { "value": "1E000000", "offset": 0, "label": "0x1E (30) LE — Half-Life GoldSrc BSP version 30", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 124,
+      "maxSignatureOffset": 0,
+      "note": "Half-Life BSP uses version 30 (0x1E LE) at offset 0. No ASCII magic — version number only. 0x1E at offset 0 could also be other data; context (extension, file size, entities lump) is needed for reliable identification."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "bspVersion": "",
-    "entitiesLumpOffset": 0,
-    "entitiesLumpSize": 0
+    "bspVersion": 0,
+    "bspEntitiesOffset": 0,
+    "bspEntitiesLength": 0
   },
   "blocks": [
     {
@@ -47,10 +46,15 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "GoldSrc BSP version (30)",
+      "opacity": 0.45,
+      "description": "GoldSrc BSP format version as uint32 little-endian at offset 0. Value 30 (0x1E) = Half-Life BSP. This is an extension of Quake 1 BSP (version 29). The version 30 format adds RGB lighting, WAD3 texture references, and extended surface info. Used by: Half-Life, Counter-Strike 1.6/CZ, Team Fortress Classic, Day of Defeat, Opposing Force, Blue Shift, Deathmatch Classic, and hundreds of GoldSrc mods.",
       "storeAs": "bspVersion",
-      "valueType": "ascii"
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "29": "BSP v29 — Quake 1 (similar structure)",
+        "30": "BSP v30 — Half-Life / GoldSrc (standard)"
+      }
     },
     {
       "type": "field",
@@ -58,94 +62,120 @@
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Offset to entities lump",
-      "storeAs": "entitiesLumpOffset",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Byte offset to the ENTITIES lump (lump 0) as uint32 little-endian at offset 4. The entities lump contains the ASCII entity text for the map — all game objects, trigger volumes, NPCs, spawn points, and world properties. Particularly useful for Half-Life maps: contains info_player_start (spawn), func_door, trigger_once, monster_* entities, and level geometry parameters like 'wad' (list of required WAD3 files).",
+      "storeAs": "bspEntitiesOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
-      "name": "Entities Lump Size",
+      "name": "Entities Lump Length",
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Size of entities lump",
-      "storeAs": "entitiesLumpSize",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Byte length of the ENTITIES lump as uint32 little-endian at offset 8. The entities text lists WAD3 dependency files in the worldspawn entity: { classname worldspawn wad '/valve/halflife.wad;/cstrike/de_dust.wad' ... }. Inspecting the entities text reveals which WAD files are required to render this map correctly.",
+      "storeAs": "bspEntitiesLength",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "BSP Version",
+      "variable": "bspVersion",
+      "description": "GoldSrc BSP version (30=Half-Life)"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "Entities Offset",
+      "variable": "bspEntitiesOffset",
+      "description": "Offset to entity text lump"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Entities Length",
+      "variable": "bspEntitiesLength",
+      "description": "Length of entity text lump"
     }
   ],
+  "assertions": [
+    {
+      "name": "BSP version 30",
+      "expression": "bspVersion == 30",
+      "severity": "warning",
+      "message": "Half-Life GoldSrc BSP version should be 30 — may not be a valid GoldSrc BSP"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "BSP Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Lump Directory", "offset": 4, "icon": "\uE71B", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "bspVersion",
+    "primaryField": "bspEntitiesLength",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "GoldSrc BSP Header",
+        "icon": "\uE71B",
+        "fields": ["bspVersion", "bspEntitiesOffset", "bspEntitiesLength"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BSP_HL Header (JSON)",
+      "format": "json",
+      "fields": ["bspVersion", "bspEntitiesOffset", "bspEntitiesLength"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "GoldSrc BSP v30 header: version(4B LE, =30) + 15 lump entries × 8B. Lump 0 = ENTITIES (ASCII), Lump 2 = TEXTURES (embedded texture names referencing WAD3 files), Lump 7 = FACES, Lump 8 = LIGHTING (RGB 3B per luxel). Entity text at lump 0: worldspawn contains 'wad' key listing required WAD3 files. Header = 4+15×8 = 124 bytes. GoldSrc BSP v30 vs Quake BSP v29: RGB lighting, WAD3 texture references, extended TEXINFO.",
+    "suggestedInspections": [
+      "Bytes 0-3 (uint32 LE): version — should be 30 for Half-Life/GoldSrc",
+      "Bytes 4-7 (uint32 LE): entities lump offset — navigate here for ASCII entity text",
+      "Entity text: search for 'wad' key in worldspawn to find required WAD3 texture files",
+      "Lump 8 LIGHTING: RGB data (3 bytes per sample) — BSP v30 vs v29 monochrome"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Half-Life / Counter-Strike 1.6 (Valve, native)",
+    "JACK / Jackhammer (GoldSrc map editor)",
+    "VHLT / Zoner's Tools (BSP compiler)",
+    "Nem's Crafty (BSP viewer/extractor)",
+    "JHLM (Java HL Map viewer)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".bsp"
-    ]
+    "extensions": [".bsp"],
+    "relatedFormats": ["BSP", "BSP_Q3", "WAD3", "VPK"],
+    "note": "BSP v30 = Half-Life/GoldSrc. BSP v29 = Quake 1. IBSP v38 = Quake 2. IBSP v46 = Quake 3. Source Engine = 'VBSP'. All share .bsp extension — use version/magic to distinguish."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Half-Life/CS 1.6 map creation and modding",
+    "Extracting entity data and geometry from GoldSrc maps",
+    "Counter-Strike map analysis and reverse engineering",
+    "GoldSrc game preservation and archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Half-Life/GoldSrc engine BSP map format",
-    "suggestedInspections": [
-      "Validate Half-Life BSP container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary little-endian GoldSrc BSP map (Valve Half-Life)",
+    "Magic": "No magic — version uint32 LE = 30 at offset 0",
+    "Header": "124 bytes: version(4B LE) + 15 lump entries × 8B (offset+length)",
+    "Extensions": "Over Quake 1 BSP: RGB lighting, WAD3 texture references, larger map limits",
+    "TextureSystem": "Texture names are references to WAD3 files (not embedded)"
   }
 }

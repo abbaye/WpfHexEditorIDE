@@ -1,110 +1,166 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "CATIA Part",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
-    ".catpart"
+    ".catpart",
+    ".CATPart"
   ],
-  "description": "CATIA V5 part file",
+  "description": "CATpart is the native CATIA V5/V6 part file format from Dassault Systèmes. CATIA (Computer Aided Three-dimensional Interactive Application) is the leading CAD/CAM/CAE platform for aerospace, automotive, and industrial design. CATPart files store single 3D part definitions: solid geometry (B-rep bodies created by sketches and features), wireframe, surfaces, materials, parameters, formulas, and design history (feature tree). The binary format uses a proprietary container structure based on the CATIA V5 'Document Store' — similar in concept to OLE Compound Document (COM Structured Storage). The file starts with the magic bytes 'V5.' or 'V6.' followed by version identifier bytes. CATPart files are not publicly documented by Dassault; third-party access requires CATIA CAA V5/V6 SDK or commercial translators. Neutral exchange from CATIA uses STEP (AP214) or IGES.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "CATIA Part Format"
+      "CATIA V5 Document Store Format — Dassault Systèmes (proprietary)",
+      "CATIA CAA V5 SDK Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/CATPART"
+      "https://en.wikipedia.org/wiki/CATIA",
+      "https://www.3ds.com/products-services/catia/",
+      "https://filext.com/file-extension/CATPART"
     ]
   },
   "detection": {
-    "signature": "56350500",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "5635050000", "offset": 0, "label": "'V5..' — CATIA V5 document magic prefix", "weight": 0.9 },
+      { "value": "5635", "offset": 0, "label": "'V5' — CATIA V5 two-byte prefix", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "CATPart files use a CATIA V5 Document Store binary format. The magic '56 35' ('V5') at offset 0 followed by format bytes is the typical detection pattern. File extension (.catpart, .CATPart) is the primary detection method since the binary format is proprietary."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "catiaMagic": ""
+    "catiaMagic": "",
+    "catiaVersion": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "CATIA Magic",
+      "name": "CATIA V5 Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "CATIA V5 header",
+      "opacity": 0.45,
+      "description": "CATIA V5 document store magic bytes at offset 0. The first two bytes are 'V5' (0x56 0x35) identifying the CATIA V5 format generation. Following bytes encode the document type and version. CATPart, CATProduct, CATDrawing, and CATAnalysis all share this 'V5' prefix but differ in subsequent bytes. The format is a proprietary container (not OLE/ZIP) encoding the CATIA feature tree, geometry kernels (CGM/Polyhedral), and metadata. CATIA V6 files use a different container based on 3DXML/PLM XML.",
       "storeAs": "catiaMagic",
-      "valueType": "uint32"
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Document Version Bytes",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "CATIA V5 document version bytes at offset 4 (4 bytes). Encodes the CATIA V5 release (R1 through R33+) and the document subtype. CATIA V5 releases: R1 (1999) through R21 (2011) then CATIA V5-6R2012 (R22), V5-6R2013 (R23), V5-6R2014 (R24), V5-6R2019 (R29), V5-6R2023 (R33). The version field is encoded as a binary integer, not a human-readable string. Opening a V5 file in an older CATIA release may fail if the version is newer than the reader supports.",
+      "storeAs": "catiaVersion",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "CATIA Magic",
+      "variable": "catiaMagic",
+      "description": "'V5' CATIA V5 document store identifier"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Document Version",
+      "variable": "catiaVersion",
+      "description": "CATIA V5 release version encoded as binary integer"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "CATIA V5 magic present",
+      "expression": "catiaMagic != ''",
+      "severity": "warning",
+      "message": "CATPart file does not start with expected CATIA V5 magic — may be corrupt or a different format"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".catpart"
+  "navigation": {
+    "bookmarks": [
+      { "name": "CATIA V5 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "catiaMagic",
+    "primaryField": "catiaVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CATIA V5 Header",
+        "icon": "\uE71B",
+        "fields": ["catiaMagic", "catiaVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "CATPart Header (JSON)",
+      "format": "json",
+      "fields": ["catiaMagic", "catiaVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "CATIA Part - CAD/engineering format",
+    "analysisContext": "CATPart is CATIA V5 proprietary binary. Magic 'V5' at offset 0. Format is a hierarchical container (not OLE/ZIP) encoding: feature tree (SpecTree), geometry (CGM/OpenCASCADE bodies), material, parameters, formulas. Not reverse-engineered publicly. Read via: CATIA CAA SDK (official), or commercial translators (Datakit, TransMagic, CADExchanger). For neutral exchange: export via CATIA to STEP AP214 or IGES. CATProduct (.catproduct) is the assembly equivalent referencing multiple CATPart files. CATDrawing (.catdrawing) is 2D drafting. CATIA V6 uses 3DXML format instead.",
     "suggestedInspections": [
-      "Validate CATIA Part file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-1: 'V5' (0x56 0x35) — CATIA V5 document type prefix",
+      "Bytes 4-7: document version/release integer — identifies CATIA V5 release R1-R33",
+      "File extension (.catpart vs .catproduct vs .catdrawing) distinguishes document types",
+      "For geometry extraction: export to STEP via CATIA or use commercial CAD translator"
     ]
+  },
+  "software": [
+    "CATIA V5 / V5-6 (Dassault Systèmes)",
+    "Datakit CrossCadWare (commercial translator)",
+    "TransMagic (commercial)",
+    "CADExchanger (commercial)",
+    "Open CASCADE (partial read via STEP export)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".catpart", ".CATPart"],
+    "relatedFormats": ["CATPRODUCT", "STEP", "IGES", "JT", "3DXML"],
+    "note": "CATPart stores a single part; CATProduct (.catproduct) is the assembly container referencing multiple CATPart files. Both use the CATIA V5 Document Store format. Neutral export uses STEP AP214. CATIA V6 (3DEXPERIENCE) uses 3DXML instead. CATPart is not publicly documented; Dassault requires CAA V5 SDK licensing for programmatic access."
+  },
+  "MimeTypes": [
+    "application/x-catpart",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Aerospace and automotive 3D part design in CATIA V5",
+    "Feature-based solid and surface modeling",
+    "PLM data storage and version management in Enovia/Teamcenter",
+    "Manufacturing documentation and CNC machining preparation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Proprietary CATIA V5 Document Store binary (Dassault Systèmes undocumented)",
+    "Magic": "'V5' (0x56 0x35) at offset 0",
+    "VersionEncoding": "Binary integer at offset 4 encoding CATIA V5 release (R1-R33+)",
+    "AccessMethod": "CATIA CAA V5 SDK required; commercial translators available",
+    "NeutralExport": "STEP AP214 or IGES via CATIA export"
   }
 }

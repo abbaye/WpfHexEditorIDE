@@ -1,51 +1,54 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Universal 3D",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
     ".u3d"
   ],
-  "description": "Universal 3D ECMA-363 format",
+  "description": "U3D (Universal 3D) is an ECMA standard (ECMA-363) for representing 3D content in documents, primarily for embedding 3D models in PDF files (ISO 32000-1 PDF 1.6+). U3D files start with the magic bytes 'U3D\\x00' (55 33 44 00) followed by a 4-byte version field and a 4-byte profile identifier. The format organizes data into typed blocks: File Header Block, Modifier Chain blocks (scene graph, mesh data), Node blocks (group, model, light, view), Resource blocks (mesh, shader, texture, motion), and Priority Update blocks for streaming. U3D geometry uses Continuous Level of Detail (CLOD) mesh compression with position, normal, and texture coordinate quantization. U3D was primarily used for embedding interactive 3D models in Adobe Acrobat/Reader PDF files via the 3D Artwork PDF annotation type. PRC (Product Representation Compact, ISO 14739) is the successor format for PDF 3D annotations, offering better compression and B-rep support.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Universal 3D Format"
+      "ECMA-363 — Universal 3D File Format (4th edition, 2007)",
+      "ISO 32000-1 — PDF 1.6 3D Artwork Annotations"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/U3D"
+      "https://www.ecma-international.org/publications-and-standards/standards/ecma-363/",
+      "https://en.wikipedia.org/wiki/Universal_3D",
+      "https://filext.com/file-extension/U3D"
     ]
   },
   "detection": {
-    "signature": "55334400",
-    "offset": 0,
+    "signatures": [
+      { "value": "55334400", "offset": 0, "label": "'U3D\\x00' — Universal 3D ECMA-363 magic (4 bytes)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "All U3D files start with 'U3D' (0x55 0x33 0x44) followed by 0x00 at offset 0. This is a strong 4-byte magic number uniquely identifying ECMA-363 U3D format."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
     "u3dSignature": "",
-    "majorVersion": 0,
-    "minorVersion": 0,
-    "formattedSize": ""
+    "u3dMajorVersion": 0,
+    "u3dMinorVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "U3D Signature",
+      "name": "U3D Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "U3D magic bytes",
+      "opacity": 0.45,
+      "description": "U3D magic number 'U3D\\x00' (bytes: 55 33 44 00). The three ASCII characters 'U3D' followed by a null byte are the unique file identifier for Universal 3D ECMA-363 format. Present at offset 0 in all valid U3D files. U3D was standardized by ECMA International and adopted into PDF 1.6 (ISO 32000-1) for embedding interactive 3D models in PDF documents. Adobe Acrobat/Reader supports U3D 3D annotations via the PDF 3DA (3D Artwork) annotation type.",
       "storeAs": "u3dSignature",
       "valueType": "ascii"
     },
@@ -55,10 +58,11 @@
       "offset": 4,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Major version number",
-      "storeAs": "majorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "U3D format major version as 16-bit signed integer (little-endian) at offset 4. The major version identifies the ECMA-363 edition. ECMA-363 4th edition (2007) defines the standard version currently in use. A negative major version in the range -1 to -255 indicates a profile identifier. Profile 0 (major version 0) is the base profile with CLOD mesh support.",
+      "storeAs": "u3dMajorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -66,85 +70,115 @@
       "offset": 6,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Minor version number",
-      "storeAs": "minorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "U3D format minor version as 16-bit unsigned integer (little-endian) at offset 6. Together with major version, identifies the exact ECMA-363 specification revision. After the 4-byte magic and 4-byte version, the U3D File Header Block begins at offset 8 with: block_type(4B)=0x00443355, data_length(4B), meta_length(4B), profile_identifier(4B), declaration_size(4B), file_size(8B LE uint64), character_encoding(4B, 106=UTF-8), unit_scaling(8B float64).",
+      "storeAs": "u3dMinorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "name": "U3D Magic",
+      "variable": "u3dSignature",
+      "description": "'U3D\\x00' — ECMA-363 Universal 3D identifier"
     },
     {
       "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "name": "Major Version",
+      "variable": "u3dMajorVersion",
+      "description": "ECMA-363 major version"
     },
     {
       "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Minor Version",
+      "variable": "u3dMinorVersion",
+      "description": "ECMA-363 minor version"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "U3D magic valid",
+      "expression": "u3dSignature == 'U3D'",
+      "severity": "error",
+      "message": "U3D file must start with 'U3D\\x00' — not a valid ECMA-363 Universal 3D file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".u3d"
+  "navigation": {
+    "bookmarks": [
+      { "name": "U3D File Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "u3dMajorVersion",
+    "primaryField": "u3dSignature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "U3D Header",
+        "icon": "\uE71B",
+        "fields": ["u3dSignature", "u3dMajorVersion", "u3dMinorVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "U3D Header (JSON)",
+      "format": "json",
+      "fields": ["u3dSignature", "u3dMajorVersion", "u3dMinorVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Universal 3D ECMA-363 format",
+    "analysisContext": "U3D (ECMA-363) binary block structure: magic 'U3D\\x00'(4B) + major_version(int16 LE) + minor_version(uint16 LE) + File_Header_Block(type=0x00443355, data_length, meta_length, profile_id, declaration_size, file_size(uint64 LE), character_encoding(106=UTF-8), unit_scaling(float64 LE)). Then Modifier Chain blocks: each block = block_type(uint32) + data_length(uint32) + meta_data_length(uint32) + data + metadata. Key block types: 0x00FFFFFF=File_Header, 0xFFFFFF00=Modifier_Chain, 0xFFFFFF14=Priority_Update, 0x00003000=Group_Node, 0x00003100=Model_Node, 0x00003200=Light_Node, 0x00003300=View_Node, 0x00100000=CLOD_Mesh_Generator(Declaration), 0x00100001=CLOD_Base_Mesh_Continuation, 0x00100002=CLOD_Progressive_Mesh_Continuation. CLOD mesh: positions(float32[3]), normals, faces. Textures embedded as JPEG or PNG data in texture blocks.",
     "suggestedInspections": [
-      "Validate Universal 3D file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-3: 'U3D\\x00' magic confirms ECMA-363 format",
+      "Bytes 4-5: major version (int16 LE), bytes 6-7: minor version (uint16 LE)",
+      "Offset 8: File Header Block begins — block_type 0x00443355, then profile_id and file_size",
+      "Search for block type 0x00100000 (CLOD Mesh Generator) for 3D geometry data"
     ]
+  },
+  "software": [
+    "Adobe Acrobat Pro (PDF 3D annotation)",
+    "Adobe Reader (3D viewing in PDF)",
+    "Deep Exploration (Right Hemisphere)",
+    "PDF3D (PDF 3D conversion tool)",
+    "tetra4D (Acrobat 3D plugin)",
+    "MeshLab (import)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".u3d"],
+    "relatedFormats": ["PDF", "PRC", "VRML", "X3D", "COLLADA"],
+    "note": "U3D (ECMA-363) is primarily used for embedding 3D in PDF (ISO 32000-1, PDF 1.6+). PRC (ISO 14739) is the successor for PDF 3D with better compression and exact B-rep. U3D supports tessellated mesh (CLOD) but not NURBS/B-rep. Embedded in PDF via 3D Artwork annotation using /U3D subtype."
+  },
+  "MimeTypes": [
+    "model/u3d",
+    "application/x-u3d"
+  ],
+  "UseCases": [
+    "Embedding interactive 3D models in PDF documents",
+    "3D technical illustrations in PDF manuals",
+    "Interactive product visualization in PDF catalogs",
+    "CAD data lightweight visualization for non-CAD users"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary block-based (ECMA-363, ISO 32000-1 3D annotation)",
+    "Magic": "'U3D\\x00' (0x55 0x33 0x44 0x00) at offset 0",
+    "Geometry": "CLOD (Continuous Level of Detail) tessellated mesh with quantization",
+    "Embedding": "Embedded in PDF as 3D Artwork annotation with /U3D subtype",
+    "Standard": "ECMA-363 4th edition (2007)"
   }
 }

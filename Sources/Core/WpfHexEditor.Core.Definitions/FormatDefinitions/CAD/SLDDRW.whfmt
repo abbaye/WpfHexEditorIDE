@@ -1,141 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "SolidWorks Drawing",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".slddrw"
+    ".slddrw",
+    ".SLDDRW"
   ],
-  "description": "SolidWorks drawing file (OLE2 Compound Document)",
+  "description": "SLDDRW is the SolidWorks 2D engineering drawing file format from Dassault Systèmes. Drawing files contain 2D projected views (front, top, side, isometric, section, detail) derived from 3D part/assembly models, along with dimensions, annotations (GD&T symbols, surface finish, weld symbols), tables (BOM, revision, hole), title block information, and sheet format data. SLDDRW files maintain live links to their referenced SLDPRT/SLDASM files — if the 3D model changes, drawing views update automatically. The format uses the same OLE2 Compound Document container as SLDPRT and SLDASM (magic D0CF11E0A1B11AE1). Drawing sheet data, view definitions, and annotation data are stored in SolidWorks-specific OLE2 streams. SLDDRW files reference external SLDPRT/SLDASM files for model-based views; standalone drawing files (not linked to 3D) have no external references.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "SolidWorks Drawing Format"
+      "SolidWorks File Format — Dassault Systèmes (proprietary)",
+      "SolidWorks API Drawing Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SLDDRW"
+      "https://en.wikipedia.org/wiki/SolidWorks",
+      "https://help.solidworks.com/",
+      "https://filext.com/file-extension/SLDDRW"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0A1B11AE1",
-    "offset": 0,
+    "signatures": [
+      { "value": "D0CF11E0A1B11AE1", "offset": 0, "label": "OLE2 Compound Document magic — SolidWorks drawing OLE2 container", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0,
+      "note": "SLDDRW uses OLE2 Compound Document, identical to SLDPRT/SLDASM. Extension (.slddrw) is required for reliable identification. All three SolidWorks file types share the same magic bytes."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "version": "",
-    "entityCount": 0,
-    "layerCount": 0,
     "ole2Signature": "",
-    "minorVersion": 0,
-    "majorVersion": 0
+    "ole2MinorVersion": 0,
+    "ole2MajorVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OLE2 Signature",
+      "name": "OLE2 Magic",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "OLE2 compound document signature",
+      "opacity": 0.45,
+      "description": "OLE2 Compound Document magic bytes D0 CF 11 E0 A1 B1 1A E1 at offset 0. SolidWorks drawing files (.slddrw) use Microsoft OLE2/COM Structured Storage as the binary container, identical to SolidWorks part (.sldprt) and assembly (.sldasm) files. Within the OLE2 streams, the drawing definition stores: sheet layout (paper size, scale, views), projected 2D views of referenced 3D models, dimensions and tolerances, annotations (notes, GD&T callouts, surface finish symbols), BOM tables, revision tables, title block fill, and sheet format template reference. The OLE2 magic is shared with legacy Microsoft Office files; extension is required to identify SLDDRW.",
       "storeAs": "ole2Signature",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Minor Version",
+      "name": "OLE2 Minor Version",
       "offset": 24,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "OLE2 minor version",
-      "storeAs": "minorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "OLE2 compound document minor version at offset 24 (2 bytes, little-endian). Standard value is 0x003E (62) for all SolidWorks drawing files.",
+      "storeAs": "ole2MinorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
-      "name": "Major Version",
+      "name": "OLE2 Major Version",
       "offset": 26,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "OLE2 major version",
-      "storeAs": "majorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "OLE2 compound document major version at offset 26 (2 bytes, little-endian). Value 3 = standard 512-byte sectors; value 4 = 4096-byte sectors. Most SolidWorks drawing files use major version 3.",
+      "storeAs": "ole2MajorVersion",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "3": "OLE2 v3 (512-byte sectors, standard)",
+        "4": "OLE2 v4 (4096-byte sectors, large drawing)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "OLE2 Signature",
+      "variable": "ole2Signature",
+      "description": "D0CF11E0A1B11AE1 — OLE2 Compound Document container"
     },
     {
       "type": "metadata",
-      "name": "Entity Count",
-      "variable": "entityCount",
-      "description": "Entity Count"
+      "name": "Minor Version",
+      "variable": "ole2MinorVersion",
+      "description": "OLE2 container minor version (typically 0x003E)"
     },
     {
       "type": "metadata",
-      "name": "Layer Count",
-      "variable": "layerCount",
-      "description": "Layer Count"
+      "name": "Major Version",
+      "variable": "ole2MajorVersion",
+      "description": "OLE2 sector size: 3=512B, 4=4096B"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "OLE2 magic valid",
+      "expression": "ole2Signature != ''",
+      "severity": "error",
+      "message": "SLDDRW should start with OLE2 magic D0CF11E0A1B11AE1 — not a valid SolidWorks drawing file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".slddrw"
+  "navigation": {
+    "bookmarks": [
+      { "name": "OLE2 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ole2MajorVersion",
+    "primaryField": "ole2Signature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "OLE2 Container",
+        "icon": "\uE71B",
+        "fields": ["ole2Signature", "ole2MinorVersion", "ole2MajorVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read CAD header",
-    "extractASCIIString": "Read metadata"
-  },
+  "exportTemplates": [
+    {
+      "name": "SLDDRW Header (JSON)",
+      "format": "json",
+      "fields": ["ole2Signature", "ole2MinorVersion", "ole2MajorVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SolidWorks drawing file (OLE2 Compound Document)",
+    "analysisContext": "SLDDRW = OLE2 container (D0CF11E0A1B11AE1). Same binary container as SLDPRT/SLDASM; extension identifies drawing type. Contains: sheet definitions (paper size, scale, orientation), projected 2D views of 3D models (references to external SLDPRT/SLDASM), dimension entities, GD&T annotations, BOM tables (auto-populated from assembly references), revision tables, title block data, and sheet format template path. SolidWorks API (COM) is required for programmatic access to drawing content. eDrawings viewer can display SLDDRW without SolidWorks license.",
     "suggestedInspections": [
-      "Validate SolidWorks Drawing file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-7: D0CF11E0A1B11AE1 — OLE2 magic (identical to SLDPRT/SLDASM — use extension)",
+      "Offset 24-25: OLE2 minor version (0x3E typical), offset 26-27: major version (3 typical)",
+      "Use python oletools to list OLE2 stream names; SolidWorks drawing streams identify file type",
+      "External SLDPRT/SLDASM references (paths) embedded as strings in drawing OLE2 streams"
     ]
+  },
+  "software": [
+    "SolidWorks (Dassault Systèmes)",
+    "eDrawings (Dassault Systèmes — free viewer)",
+    "Datakit CrossCadWare (commercial)",
+    "CADExchanger (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".slddrw", ".SLDDRW"],
+    "relatedFormats": ["SLDPRT", "SLDASM", "DXF", "DWG", "PDF"],
+    "note": "SLDDRW is the SolidWorks 2D drawing file. Model-based drawings reference external SLDPRT/SLDASM files. Export options: DXF/DWG (2D geometry), PDF, DWF. All three SolidWorks types (SLDPRT/SLDASM/SLDDRW) use OLE2 Compound Document — extension is the primary discriminant."
+  },
+  "MimeTypes": [
+    "application/slddrw",
+    "application/x-solidworks",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "2D engineering drawing creation from 3D SolidWorks models",
+    "GD&T dimensioning and tolerance annotation",
+    "Manufacturing documentation and shop drawings",
+    "Bill of Materials (BOM) generation from assemblies"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "OLE2 Compound Document (D0CF11E0A1B11AE1) with SolidWorks drawing streams",
+    "Container": "Microsoft COM Structured Storage (same as SLDPRT/SLDASM)",
+    "ExternalRefs": "References SLDPRT/SLDASM files for model-based projected views",
+    "ViewTypes": "Projected, section, detail, auxiliary, broken, crop, flat pattern views",
+    "Viewer": "eDrawings (free viewer from Dassault Systèmes)"
   }
 }

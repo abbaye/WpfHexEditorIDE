@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GRIB Weather Data",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".grib",
     ".grb"
@@ -10,14 +10,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "WMO Manual on Codes Volume I.2 - GRIB FM 92 Edition 1",
-    "NCEP GRIB1 Edition 1 Documentation"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/GRIB",
-    "https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/"
-  ],
+  "references": {
+    "specifications": [
+      "WMO Manual on Codes Volume I.2 - GRIB FM 92 Edition 1",
+      "NCEP GRIB1 Edition 1 Documentation"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/GRIB",
+      "https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/"
+    ]
+  },
   "detection": {
     "signature": "47524942",
     "offset": 0,
@@ -127,17 +129,47 @@
       {
         "name": "Section 0 — Indicator",
         "fields": [
-          { "label": "Magic 'GRIB'",   "offset": 0, "length": 4, "format": "ascii" },
-          { "label": "Total Length",    "offset": 4, "length": 3, "format": "uint24be" },
-          { "label": "Edition",         "offset": 7, "length": 1, "format": "uint8" }
+          {
+            "label": "Magic 'GRIB'",
+            "offset": 0,
+            "length": 4,
+            "format": "ascii"
+          },
+          {
+            "label": "Total Length",
+            "offset": 4,
+            "length": 3,
+            "format": "uint24be"
+          },
+          {
+            "label": "Edition",
+            "offset": 7,
+            "length": 1,
+            "format": "uint8"
+          }
         ]
       },
       {
         "name": "Section 1 — Product Definition",
         "fields": [
-          { "label": "Section 1 Length",   "offset": 8,  "length": 3, "format": "uint24be" },
-          { "label": "Parameter Table",     "offset": 11, "length": 1, "format": "uint8" },
-          { "label": "Originating Center",  "offset": 12, "length": 1, "format": "uint8" }
+          {
+            "label": "Section 1 Length",
+            "offset": 8,
+            "length": 3,
+            "format": "uint24be"
+          },
+          {
+            "label": "Parameter Table",
+            "offset": 11,
+            "length": 1,
+            "format": "uint8"
+          },
+          {
+            "label": "Originating Center",
+            "offset": 12,
+            "length": 1,
+            "format": "uint8"
+          }
         ]
       }
     ]
@@ -145,7 +177,13 @@
   "exportTemplates": [
     {
       "name": "GRIB1 Message Header",
-      "fields": ["gribMagic", "totalLength", "edition", "parameterTable", "originatingCenter"]
+      "fields": [
+        "gribMagic",
+        "totalLength",
+        "edition",
+        "parameterTable",
+        "originatingCenter"
+      ]
     }
   ],
   "software": [
@@ -158,7 +196,10 @@
   "formatRelationships": {
     "wmo_standard": true,
     "successor": "GRIB2",
-    "editions": ["Edition 1", "Edition 2"],
+    "editions": [
+      "Edition 1",
+      "Edition 2"
+    ],
     "related": "BUFR"
   },
   "MimeTypes": [

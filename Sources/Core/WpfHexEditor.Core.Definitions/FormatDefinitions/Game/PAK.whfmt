@@ -1,137 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Game Package Archive",
-  "version": "1.14",
+  "formatName": "Quake PAK Archive",
+  "version": "1.15",
   "extensions": [
     ".pak"
   ],
-  "description": "Generic game asset package",
+  "description": "PAK (PACK) is the game asset archive format used by id Software Quake engine games and derived engines (Quake 1/2/3, Hexen 2, etc.). The format begins with the 4-byte ASCII magic 'PACK' (50 41 43 4B), followed by dirOffset (uint32 LE, byte offset to the file directory), and dirLength (uint32 LE, size of the directory in bytes). The file directory is an array of entries, each 64 bytes: filename (56 bytes, null-padded ASCII path), fileOffset (uint32 LE, offset of file data), fileSize (uint32 LE, size of file data). Number of entries = dirLength / 64. PAK files are uncompressed flat archives — all data is stored raw. The .pak extension is also used by other engines with different formats (Valve, Epic, Unity) but the 'PACK' magic is specific to id Software's Quake engine family.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Quake PAK/PACK Format Specification",
-      "id Software PAK Archive Format",
-      "Quake Engine PAK Structure"
+      "Quake PAK Format — Quake Specs v3.4 by Olivier Montanuy"
     ],
     "WebLinks": [
       "https://quakewiki.org/wiki/.pak",
-      "http://fileformats.archiveteam.org/wiki/Quake_PAK",
       "https://formats.kaitai.io/quake_pak/",
-      "https://developer.valvesoftware.com/wiki/PAK"
+      "http://fileformats.archiveteam.org/wiki/Quake_PAK"
     ]
   },
   "detection": {
-    "signature": "5041434B",
-    "offset": 0,
-    "required": false,
+    "signatures": [
+      { "value": "5041434B", "offset": 0, "label": "'PACK' — Quake PAK archive magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "Quake PAK files start with ASCII 'PACK'. Note: many games use the .pak extension with different formats (no magic or different magic). 'PACK' at offset 0 specifically identifies the Quake engine PAK format."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "totalSize": 0,
-    "compressionMethod": "",
-    "headerCRC": 0,
     "pakSignature": "",
-    "formattedSize": ""
+    "pakDirOffset": 0,
+    "pakDirLength": 0
   },
   "blocks": [
     {
-      "type": "field",
-      "name": "PAK Signature",
+      "type": "signature",
+      "name": "PAK Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "PACK or variant",
+      "opacity": 0.45,
+      "description": "Quake PAK archive magic: 4 ASCII bytes 'PACK' (0x50 0x41 0x43 0x4B). This magic identifies files created by id Software's Quake engine file system (pak0.pak, pak1.pak). Used in Quake 1, Quake 2, Hexen 2, and many mods. Quake 3 BSP files embed PAK-style lumps but use a different outer format. The magic 'PACK' is distinct from Valve's PAK format and from generic .pak archives used by other engines.",
       "storeAs": "pakSignature",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "type": "field",
+      "name": "Directory Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte offset to the file directory as uint32 little-endian at offset 4. Points to the start of the directory table within the PAK file. The directory immediately follows the last file data in practice but can technically be anywhere. In vanilla Quake pak0.pak, this is typically near the end of the file after all asset data.",
+      "storeAs": "pakDirOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Directory Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Size of the directory table in bytes as uint32 little-endian at offset 8. Number of files in the PAK = dirLength / 64 (each directory entry is exactly 64 bytes: 56 bytes filename + 4 bytes offset + 4 bytes size). A typical Quake pak0.pak has ~800-1600 files. The directory entries contain relative paths like 'maps/e1m1.bsp', 'sound/player/pain.wav', 'textures/wall01.lmp'.",
+      "storeAs": "pakDirLength",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
+      "name": "Magic",
+      "variable": "pakSignature",
+      "description": "'PACK' — Quake PAK identifier"
     },
     {
       "type": "metadata",
-      "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression Method"
+      "name": "Directory Offset",
+      "variable": "pakDirOffset",
+      "description": "Byte offset to directory table"
     },
     {
       "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Directory Length",
+      "variable": "pakDirLength",
+      "description": "Directory table size (fileCount = dirLength / 64)"
     }
   ],
-  "software": [
-    "QuakePak",
-    "Game extractors",
-    "7-Zip"
+  "assertions": [
+    {
+      "name": "PAK magic valid",
+      "expression": "pakSignature == 'PACK'",
+      "severity": "error",
+      "message": "PAK file must start with 'PACK' ASCII magic — not a valid Quake PAK archive"
+    },
+    {
+      "name": "Directory length aligned",
+      "expression": "pakDirLength % 64 == 0",
+      "severity": "warning",
+      "message": "PAK directory length is not a multiple of 64 — directory entries are 64 bytes each"
+    }
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".pak"
+  "navigation": {
+    "bookmarks": [
+      { "name": "PAK Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "File Data Start", "offset": 12, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
-  "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "pakSignature",
+    "primaryField": "pakDirLength",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "PAK Header",
+        "icon": "\uE71B",
+        "fields": ["pakSignature", "pakDirOffset", "pakDirLength"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read header",
-    "calculateCRC32": "Validate",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "PAK Header (JSON)",
+      "format": "json",
+      "fields": ["pakSignature", "pakDirOffset", "pakDirLength"]
+    }
+  ],
   "forensic": {
     "category": "game",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Generic game asset package",
+    "analysisContext": "Quake PAK header: 'PACK'(4B ASCII) + dirOffset(4B LE) + dirLength(4B LE). Directory entry (64B each): filename(56B null-padded ASCII, e.g. 'maps/e1m1.bsp') + fileOffset(4B LE) + fileSize(4B LE). File count = dirLength / 64. Data is uncompressed. Common files: .bsp (maps), .mdl (models), .spr (sprites), .wav (sounds), .lmp (textures/HUD). Navigate to dirOffset to find all file entries.",
     "suggestedInspections": [
-      "Validate Game Package Archive container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+      "Bytes 0-3 (ASCII): 'PACK' magic — Quake PAK identifier",
+      "Bytes 4-7 (uint32 LE): dirOffset — navigate here for the file directory",
+      "Bytes 8-11 (uint32 LE): dirLength — file count = dirLength / 64",
+      "Directory entries at dirOffset: 56B filename + 4B offset + 4B size (×fileCount)"
     ]
+  },
+  "software": [
+    "Quake (id Software, original engine)",
+    "QuakePak / PAKExplorer (extraction tools)",
+    "QME (Quake Model Editor, reads PAK)",
+    "QuArK (Quake Army Knife, level editor)",
+    "7-Zip with pak plugin"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [".pak"],
+    "relatedFormats": ["WAD", "VPK", "BSP"],
+    "note": ".pak extension is used by many game engines. 'PACK' magic = Quake engine. Valve Half-Life uses .wad and .pak differently. Epic games use .pak with different structure. Unity uses .pak variants. Always check magic bytes, not just extension."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Extracting Quake 1/2 game assets (maps, models, sounds, textures)",
+    "Modding Quake-engine games (replacing/adding content)",
+    "Game preservation and archival",
+    "Quake map and model extraction for research"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary little-endian Quake PAK flat archive (id Software)",
+    "Magic": "'PACK' ASCII (0x50 0x41 0x43 0x4B) at offset 0",
+    "Header": "12 bytes: magic(4B) + dirOffset(4B LE) + dirLength(4B LE)",
+    "DirEntry": "64 bytes each: filename(56B null-padded) + offset(4B LE) + size(4B LE)",
+    "Compression": "None — all files stored uncompressed"
   }
 }

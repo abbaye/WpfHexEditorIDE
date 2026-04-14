@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apache Avro",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".avro"
   ],
@@ -9,10 +9,14 @@
   "category": "Data",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "Apache Avro Object Container File Specification",
-    "https://avro.apache.org/docs/current/specification/"
-  ],
+  "references": {
+    "specifications": [
+      "Apache Avro Object Container File Specification"
+    ],
+    "WebLinks": [
+      "https://avro.apache.org/docs/current/specification/"
+    ]
+  },
   "detection": {
     "signature": "4F626A01",
     "offset": 0,

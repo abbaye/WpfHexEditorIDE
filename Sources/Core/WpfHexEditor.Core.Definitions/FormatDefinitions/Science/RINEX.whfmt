@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RINEX GNSS Data",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".rnx",
     ".obs",
@@ -11,14 +11,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "RINEX Version 3.05 Specification — IGS RINEX Working Group 2021",
-    "RINEX Version 4.01 Specification — IGS 2023"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/RINEX",
-    "https://files.igs.org/pub/data/format/rinex305.pdf"
-  ],
+  "references": {
+    "specifications": [
+      "RINEX Version 3.05 Specification — IGS RINEX Working Group 2021",
+      "RINEX Version 4.01 Specification — IGS 2023"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/RINEX",
+      "https://files.igs.org/pub/data/format/rinex305.pdf"
+    ]
+  },
   "detection": {
     "signature": "2020202020",
     "offset": 0,
@@ -121,11 +123,36 @@
       {
         "name": "File Header",
         "fields": [
-          { "label": "Version (cols 1-9)",   "offset": 0,  "length": 9,  "format": "ascii" },
-          { "label": "File Type (col 21)",   "offset": 20, "length": 1,  "format": "ascii" },
-          { "label": "GNSS System (col 41)", "offset": 40, "length": 1,  "format": "ascii" },
-          { "label": "Full First Line",      "offset": 0,  "length": 80, "format": "ascii" },
-          { "label": "Second Line",          "offset": 80, "length": 80, "format": "ascii" }
+          {
+            "label": "Version (cols 1-9)",
+            "offset": 0,
+            "length": 9,
+            "format": "ascii"
+          },
+          {
+            "label": "File Type (col 21)",
+            "offset": 20,
+            "length": 1,
+            "format": "ascii"
+          },
+          {
+            "label": "GNSS System (col 41)",
+            "offset": 40,
+            "length": 1,
+            "format": "ascii"
+          },
+          {
+            "label": "Full First Line",
+            "offset": 0,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Second Line",
+            "offset": 80,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -133,7 +160,12 @@
   "exportTemplates": [
     {
       "name": "RINEX Header Summary",
-      "fields": ["rinexVersion", "fileType", "gnssSystem", "programName"]
+      "fields": [
+        "rinexVersion",
+        "fileType",
+        "gnssSystem",
+        "programName"
+      ]
     }
   ],
   "software": [
@@ -146,8 +178,16 @@
   "formatRelationships": {
     "gnss_standard": true,
     "produced_by": "GNSS receivers (Trimble, Leica, Septentrio, u-blox)",
-    "versions": ["RINEX 2.11", "RINEX 3.05", "RINEX 4.01"],
-    "related": ["SP3", "ANTEX", "IONEX"]
+    "versions": [
+      "RINEX 2.11",
+      "RINEX 3.05",
+      "RINEX 4.01"
+    ],
+    "related": [
+      "SP3",
+      "ANTEX",
+      "IONEX"
+    ]
   },
   "MimeTypes": [
     "text/plain",

@@ -115,8 +115,8 @@
     "category": "document",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "FB2 XML can embed script-like content via processing instructions",
-      "Deeply nested XML or very large inline base64 images could cause parser DoS"
+      { "name": "Script via processing instructions", "condition": "true", "description": "FB2 XML can embed script-like content via processing instructions", "severity": "warning" },
+      { "name": "Parser DoS risk", "condition": "true", "description": "Deeply nested XML or very large inline base64 images could cause parser DoS", "severity": "warning" }
     ]
   },
   "aiHints": {

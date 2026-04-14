@@ -1,134 +1,189 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "SolidWorks Assembly",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".sldasm"
+    ".sldasm",
+    ".SLDASM"
   ],
-  "description": "SolidWorks assembly file (OLE2 Compound Document)",
+  "description": "SLDASM is the SolidWorks assembly file format from Dassault Systèmes. Assembly files define multi-component 3D assemblies by referencing external SLDPRT (part) files and sub-assemblies, with each component having a position/orientation defined by mates (assembly constraints: coincident, parallel, perpendicular, tangent, concentric, distance, angle). SLDASM uses the same OLE2 Compound Document container as SLDPRT and SLDDRW (magic D0CF11E0A1B11AE1). Within the OLE2 container, SolidWorks stores the assembly tree structure, mate relationships, exploded views, motion study definitions, and reference configurations. Large assemblies (>1000 parts) use lightweight mode to load only the visual geometry (tessellated) without the full ACIS model. SLDASM files reference external SLDPRT files by path; moving or renaming parts breaks assembly references.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "SolidWorks Assembly Format"
+      "SolidWorks File Format — Dassault Systèmes (proprietary)",
+      "SolidWorks API Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SLDASM"
+      "https://en.wikipedia.org/wiki/SolidWorks",
+      "https://help.solidworks.com/",
+      "https://filext.com/file-extension/SLDASM"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0A1B11AE1",
-    "offset": 0,
+    "signatures": [
+      { "value": "D0CF11E0A1B11AE1", "offset": 0, "label": "OLE2 Compound Document magic — SolidWorks assembly OLE2 container", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0,
+      "note": "SLDASM uses OLE2 Compound Document (D0CF11E0A1B11AE1), identical to SLDPRT and SLDDRW. Extension (.sldasm) is required for reliable identification. SolidWorks-specific OLE2 streams distinguish SLDASM from SLDPRT."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "version": "",
-    "entityCount": 0,
-    "layerCount": 0,
     "ole2Signature": "",
-    "minorVersion": 0,
-    "majorVersion": 0
+    "ole2MinorVersion": 0,
+    "ole2MajorVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OLE2 Signature",
+      "name": "OLE2 Magic",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "OLE2 compound document signature",
+      "opacity": 0.45,
+      "description": "OLE2 Compound Document magic bytes D0 CF 11 E0 A1 B1 1A E1. SolidWorks assembly files use Microsoft OLE2/COM Structured Storage as the binary container, identical to SolidWorks part (.sldprt) and drawing (.slddrw) files. Within the OLE2 streams, the assembly definition includes: referenced component file paths (external SLDPRT/SLDASM files), placement transforms (4×4 matrices), mate (constraint) definitions between component geometry, exploded view step sequences, and motion study parameters. The OLE2 magic alone cannot distinguish SLDASM from SLDPRT; extension is required.",
       "storeAs": "ole2Signature",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Minor Version",
+      "name": "OLE2 Minor Version",
       "offset": 24,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "OLE2 minor version",
-      "storeAs": "minorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "OLE2 compound document minor version at offset 24 (2 bytes, little-endian). Standard value is 0x003E (62). Identifies the OLE2 specification version, not the SolidWorks release version. All SolidWorks files use standard OLE2 version fields.",
+      "storeAs": "ole2MinorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
-      "name": "Major Version",
+      "name": "OLE2 Major Version",
       "offset": 26,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "OLE2 major version",
-      "storeAs": "majorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "OLE2 compound document major version at offset 26 (2 bytes, little-endian). Value 3 = 512-byte sectors (standard); value 4 = 4096-byte sectors (large file support). Most SolidWorks files use major version 3. Major version 4 may appear for very large assembly files.",
+      "storeAs": "ole2MajorVersion",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "3": "OLE2 v3 (512-byte sectors)",
+        "4": "OLE2 v4 (4096-byte sectors, large files)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "OLE2 Signature",
+      "variable": "ole2Signature",
+      "description": "D0CF11E0A1B11AE1 — OLE2 Compound Document magic"
     },
     {
       "type": "metadata",
-      "name": "Entities",
-      "variable": "entityCount",
-      "description": "Entities"
+      "name": "Minor Version",
+      "variable": "ole2MinorVersion",
+      "description": "OLE2 container minor version"
+    },
+    {
+      "type": "metadata",
+      "name": "Major Version",
+      "variable": "ole2MajorVersion",
+      "description": "OLE2 container major version (3=512B/4=4096B sectors)"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "OLE2 magic valid",
+      "expression": "ole2Signature != ''",
+      "severity": "error",
+      "message": "SLDASM should start with OLE2 magic D0CF11E0A1B11AE1 — not a valid SolidWorks assembly file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".sldasm"
+  "navigation": {
+    "bookmarks": [
+      { "name": "OLE2 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ole2MajorVersion",
+    "primaryField": "ole2Signature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "OLE2 Container",
+        "icon": "\uE71B",
+        "fields": ["ole2Signature", "ole2MinorVersion", "ole2MajorVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read CAD header"
-  },
+  "exportTemplates": [
+    {
+      "name": "SLDASM Header (JSON)",
+      "format": "json",
+      "fields": ["ole2Signature", "ole2MinorVersion", "ole2MajorVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SolidWorks assembly file (OLE2 Compound Document)",
+    "analysisContext": "SLDASM = OLE2 container (D0CF11E0A1B11AE1). Same container as SLDPRT; .sldasm extension distinguishes. Assembly-specific OLE2 streams store: component instance list (external file references + transforms), mate definitions (coincident/parallel/concentric/distance/angle between faces/edges/axes), exploded view steps, motion study. SolidWorks uses 'lightweight' mode for large assemblies (>500 parts) loading only tessellated geometry. External references: absolute or relative paths to .sldprt/.sldasm files stored in stream. Broken references prevent assembly load. SolidWorks API (COM automation) is the only reliable way to enumerate components and mates programmatically.",
     "suggestedInspections": [
-      "Validate SolidWorks Assembly file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-7: D0CF11E0A1B11AE1 — OLE2 magic (shared with SLDPRT/SLDDRW, use extension)",
+      "Offset 26-27: OLE2 major version (3=512B sectors typical, 4=4096B for large assemblies)",
+      "Use oletools (python) to extract stream names and identify SolidWorks assembly streams",
+      "Component file references (paths to .sldprt files) embedded as strings in OLE2 streams"
     ]
+  },
+  "software": [
+    "SolidWorks (Dassault Systèmes)",
+    "eDrawings (viewer)",
+    "Datakit CrossCadWare (commercial)",
+    "CADExchanger (commercial)",
+    "TransMagic (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".sldasm", ".SLDASM"],
+    "relatedFormats": ["SLDPRT", "SLDDRW", "STEP", "IGES", "SAT"],
+    "note": "SLDASM is the SolidWorks multi-part assembly; SLDPRT stores individual parts; SLDDRW (.slddrw) is 2D drawing. All use OLE2 container. SLDASM references external SLDPRT/SLDASM files by path. For neutral exchange, SolidWorks exports STEP AP214 with assembly structure, IGES, or Parasolid (X_T)."
+  },
+  "MimeTypes": [
+    "application/sldasm",
+    "application/x-solidworks",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Multi-component 3D mechanical assembly in SolidWorks",
+    "Assembly constraint (mate) modeling and interference checking",
+    "Exploded view generation for service documentation",
+    "Large assembly design review with lightweight mode"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "OLE2 Compound Document (D0CF11E0A1B11AE1) with SolidWorks-specific streams",
+    "Container": "Microsoft COM Structured Storage (same as SLDPRT/SLDDRW/legacy Office)",
+    "MajorVersion": "3=512B sectors (standard), 4=4096B sectors (large assemblies)",
+    "ExternalRefs": "Absolute/relative paths to .sldprt/.sldasm files embedded in OLE2 streams",
+    "LargeAssembly": "Lightweight mode: only tessellated geometry loaded for assemblies >500 parts"
   }
 }

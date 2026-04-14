@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Brotli Compression",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [ ".br" ],
   "description": "Brotli is a lossless data compression algorithm developed by Google, published in 2015 and standardized as RFC 7932. It is primarily used for HTTP Content-Encoding (br) to compress web assets, and as a standalone .br file format. Brotli uses a combination of LZ77, Huffman coding, and 2nd-order context modelling. Raw .br files have no fixed file-level magic; the first byte encodes the WBITS (window bits) parameter. The most common value is 0x1B (WBITS=22, 4MB window) and 0x0B (WBITS=17, 128KB window). Detection without container context is weak and requires attempted decompression for confirmation.",
   "category": "Archives",
@@ -116,9 +116,9 @@
     "category": "archive",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "No fixed magic — false positives possible for any binary file",
-      "Brotli streams found in HTTP traffic may indicate compressed malware payloads",
-      "Decompression bomb risk: very small input expanding to very large output"
+      { "name": "No fixed magic", "condition": "true", "description": "No fixed magic — false positives possible for any binary file", "severity": "warning" },
+      { "name": "Compressed malware payload", "condition": "true", "description": "Brotli streams found in HTTP traffic may indicate compressed malware payloads", "severity": "warning" },
+      { "name": "Decompression bomb risk", "condition": "true", "description": "Decompression bomb risk: very small input expanding to very large output", "severity": "warning" }
     ]
   },
   "aiHints": {

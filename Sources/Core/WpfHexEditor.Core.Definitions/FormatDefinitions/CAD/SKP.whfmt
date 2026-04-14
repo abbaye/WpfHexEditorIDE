@@ -1,126 +1,181 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "SketchUp Model",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".skp"
   ],
-  "description": "SketchUp 3D model file",
+  "description": "SKP is the proprietary binary file format for SketchUp (originally @Last Software, acquired by Google in 2006, now owned by Trimble). SKP files start with the ASCII string 'SketchUp Model' at offset 0, followed by a null-terminated version string identifying the SketchUp version (e.g., '\\x00' + major version byte). After the header, the file contains a binary component archive encoding the 3D model: geometry (vertices, edges, faces, surfaces), materials, textures (embedded BMP/PNG), layers, scenes (named views), shadows, section planes, and entity attributes. The SKP format uses Google Protocol Buffers internally in newer versions (2017+) and a custom tag-length-value binary encoding in older versions. SKP files are not publicly documented; the only official SDK is the SketchUp C API. Community reverse-engineering has produced open-source readers: LibreSketchUp project and the FreeCAD SKP importer.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "SketchUp Model Format"
+      "SketchUp File Format — Trimble (proprietary, undocumented)",
+      "LibreSketchUp — Community reverse-engineering project"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SKP"
+      "https://en.wikipedia.org/wiki/SketchUp",
+      "https://extensions.sketchup.com/developer_center/sketchup_c_api",
+      "https://github.com/LibreSketchUp/LibreSketchUp"
     ]
   },
   "detection": {
-    "signature": "FFFE",
-    "offset": 0,
-    "required": false,
+    "signatures": [
+      { "value": "536B65746368557020 4D6F64656C", "offset": 0, "label": "'SketchUp Model' — SKP file magic header (ASCII)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "All SKP files start with the ASCII string 'SketchUp Model' (14 bytes: 53 6B 65 74 63 68 55 70 20 4D 6F 64 65 6C) at offset 0. This is a strong, unique identifier. FFFE (BOM) is NOT the correct magic — SKP starts with ASCII text."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
-    "skpHeader": 0,
-    "formattedSize": ""
+    "skpMagic": "",
+    "skpVersionByte": ""
   },
   "blocks": [
     {
-      "type": "field",
-      "name": "SKP Header",
+      "type": "signature",
+      "name": "SketchUp Model Magic",
       "offset": 0,
-      "length": 2,
+      "length": 14,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "SketchUp header",
-      "storeAs": "skpHeader",
-      "valueType": "uint16"
+      "opacity": 0.45,
+      "description": "SKP file magic: 'SketchUp Model' (14 ASCII bytes: 53 6B 65 74 63 68 55 70 20 4D 6F 64 65 6C). This null-terminated ASCII string at offset 0 is the unique identifier for all SketchUp model files across all versions. The magic is followed by a null byte (0x00) and then a 4-byte LE integer encoding the SKP format version. Format version mapping: 3=SketchUp 3, 4=SketchUp 4, 5=SketchUp 5, 6=SketchUp 6, 7=SketchUp 7/8, 14=SketchUp 2014, 15=SketchUp 2015, 16=SketchUp 2016+.",
+      "storeAs": "skpMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 15,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "SKP format version number as a 4-byte little-endian unsigned integer at offset 15 (after magic + null terminator). The format version identifies the SketchUp release that created the file. Version numbers are NOT the same as the SketchUp year version: v3=SketchUp 3.0, v4=SketchUp 4.0, v14=SketchUp 2014, v15=2015, v16=2016, v17=2017 (switched to Protobuf-based format), v18=2018, v19=2019, v20=2020, v21=2021, v22=2022, v23=2023.",
+      "storeAs": "skpVersionByte",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "3": "SketchUp 3",
+        "4": "SketchUp 4",
+        "5": "SketchUp 5",
+        "6": "SketchUp 6",
+        "7": "SketchUp 7/8",
+        "14": "SketchUp 2014",
+        "15": "SketchUp 2015",
+        "16": "SketchUp 2016",
+        "17": "SketchUp 2017",
+        "18": "SketchUp 2018",
+        "19": "SketchUp 2019",
+        "20": "SketchUp 2020",
+        "21": "SketchUp 2021",
+        "22": "SketchUp 2022",
+        "23": "SketchUp 2023"
+      }
     },
     {
       "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "name": "SKP Magic",
+      "variable": "skpMagic",
+      "description": "'SketchUp Model' — file identification string"
     },
     {
       "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Format Version",
+      "variable": "skpVersionByte",
+      "description": "SketchUp format version integer (3-23 = SketchUp 3 to 2023)"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "SKP magic valid",
+      "expression": "skpMagic == 'SketchUp Model'",
+      "severity": "error",
+      "message": "SKP file must start with 'SketchUp Model' — not a valid SketchUp file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".skp"
+  "navigation": {
+    "bookmarks": [
+      { "name": "SketchUp Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "skpVersionByte",
+    "primaryField": "skpMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "SketchUp Header",
+        "icon": "\uE71B",
+        "fields": ["skpMagic", "skpVersionByte"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "SKP Header (JSON)",
+      "format": "json",
+      "fields": ["skpMagic", "skpVersionByte"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SketchUp 3D model file",
+    "analysisContext": "SKP binary: offset 0='SketchUp Model'(14B), offset 14=0x00(null), offset 15=format_version(uint32 LE). After header: tag-length-value binary encoding for older versions (<=16) or Protobuf-based for v17+. Key data: geometry chunks (vertices as float64 triplets, edges as vertex index pairs, faces as polygon with coplanar normals), material definitions (color RGBA + optional texture), layer/tag table, scene (named view) list, entity attributes (dictionary key=value). Embedded textures: BMP or PNG data inline in material records. SKP is NOT publicly documented; SketchUp C API (SDK) is the only official reader. Community: LibreSketchUp reverse-engineered v3-v8 structure.",
     "suggestedInspections": [
-      "Validate SketchUp Model file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-13: 'SketchUp Model' ASCII magic — confirms SKP format",
+      "Bytes 15-18 (uint32 LE): format version (3-23 → SketchUp 3 to 2023)",
+      "After header: binary TLV or Protobuf records (v17+ uses Protobuf encoding)",
+      "Search for PNG/BMP magic within file body for embedded texture thumbnails"
     ]
+  },
+  "software": [
+    "SketchUp (Trimble)",
+    "SketchUp Free (web)",
+    "SketchUp Pro",
+    "SketchUp Studio",
+    "FreeCAD (SKP importer plugin)",
+    "Blender (SKP import plugin)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".skp"],
+    "relatedFormats": ["DXF", "STEP", "OBJ", "COLLADA", "3DS"],
+    "note": "SKP is Trimble's proprietary format for SketchUp. SketchUp can export to DXF, DWG, STEP, OBJ, COLLADA, FBX, and IFC. The SKP format is version-incompatible (newer SketchUp cannot open very old SKP files and vice versa without conversion). SketchUp C API SDK provides licensed C++ read/write support."
+  },
+  "MimeTypes": [
+    "application/vnd.sketchup.skp",
+    "application/x-sketchup"
+  ],
+  "UseCases": [
+    "Architectural 3D modeling and visualization",
+    "Interior design and space planning",
+    "Urban planning and landscape design",
+    "Game asset and concept design prototyping"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Proprietary binary (Trimble undocumented), TLV encoding (v<=16) or Protobuf (v17+)",
+    "Magic": "'SketchUp Model' (14 ASCII bytes) at offset 0",
+    "VersionField": "uint32 LE at offset 15 (version 3-23 = SketchUp 3 to 2023)",
+    "Encryption": "No encryption — file is readable but proprietary binary structure"
   }
 }

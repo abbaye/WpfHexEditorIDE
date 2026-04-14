@@ -1,66 +1,72 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Quake 3 BSP",
-  "version": "1.14",
+  "formatName": "Quake 3 IBSP Map",
+  "version": "1.15",
   "extensions": [
     ".bsp"
   ],
-  "description": "Quake 3 engine BSP map format",
+  "description": "IBSP is the BSP map format used by Quake 3 Arena and Quake 2, identified by the 4-byte ASCII magic 'IBSP' (49 42 53 50). After the magic, version (uint32 LE) distinguishes the engine: 38 = Quake 2, 46 = Quake 3 Arena, 47 = Quake 3 Team Arena / Soldier of Fortune. Following the version, the file contains 17 lump directory entries (each 8 bytes: offset+length). Quake 3 IBSP lumps: ENTITIES(0), TEXTURES(1), PLANES(2), NODES(3), LEAFS(4), LEAFFACES(5), LEAFBRUSHES(6), MODELS(7), BRUSHES(8), BRUSHSIDES(9), VERTICES(10), MESHVERTS(11), EFFECTS(12), FACES(13), LIGHTMAPS(14), LIGHTVOLS(15), VISDATA(16). IBSP supports curved surface patches (bezier patches) in addition to BSP planes, enabling rounded geometry unlike Quake 1/2.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Quake 3 Arena IBSP v46 Format",
-      "Unofficial Quake 3 Map Specs",
-      "id Software Quake III BSP"
+      "Unofficial Quake 3 BSP (IBSP v46) Format — mralligator.com"
     ],
     "WebLinks": [
       "http://www.mralligator.com/q3/",
-      "https://gist.github.com/Polda18/e491dca3b8fa3be2c83c29ae32c8bb87",
       "https://github.com/id-Software/Quake-III-Arena/blob/master/common/qfiles.h",
-      "https://github.com/zturtleman/bsp-sekai"
+      "https://gist.github.com/Polda18/e491dca3b8fa3be2c83c29ae32c8bb87"
     ]
   },
   "detection": {
-    "signature": "49425350",
-    "offset": 0,
+    "signatures": [
+      { "value": "49425350", "offset": 0, "label": "'IBSP' — Quake 2/3 IBSP BSP map magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 144,
+      "maxSignatureOffset": 0,
+      "note": "IBSP magic 'IBSP' is used by Quake 2 (v38) and Quake 3 (v46/47). Quake 1 BSP uses a version number only. Source Engine BSP uses 'VBSP'. Half-Life BSP uses version 30 without ASCII magic."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "bspSignature": "",
-    "entitiesLumpOffset": 0
+    "ibspMagic": "",
+    "ibspVersion": 0,
+    "ibspEntitiesOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "BSP Signature",
+      "name": "IBSP Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "IBSP magic bytes",
-      "storeAs": "bspSignature",
+      "opacity": 0.45,
+      "description": "IBSP format magic: 4 ASCII bytes 'IBSP' (0x49 0x42 0x53 0x50). Used by Quake 2 (version 38) and Quake 3 Arena (version 46). The 'I' prefix distinguishes it from Source Engine 'VBSP'. IBSP introduced improvements over Quake 1 BSP: Quake 2 added curved surfaces and RGB lighting; Quake 3 added bezier curve patches for smooth curved geometry, eliminating the blocky look of earlier BSP maps.",
+      "storeAs": "ibspMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "IBSP Version",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "BSP version number (46 for Q3)",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "IBSP format version as uint32 little-endian at offset 4. Version 38 = Quake 2 (and Anachronox, Heretic 2, many Q2-engine games). Version 46 = Quake 3 Arena (standard). Version 47 = Quake 3 Team Arena / Soldier of Fortune. Different versions change the number of lumps and their contents. Q3 maps use version 46 exclusively in the stock game.",
+      "storeAs": "ibspVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "38": "IBSP v38 — Quake 2 / Q2-engine games",
+        "46": "IBSP v46 — Quake 3 Arena (standard)",
+        "47": "IBSP v47 — Quake 3 Team Arena / SoF"
+      }
     },
     {
       "type": "field",
@@ -68,83 +74,113 @@
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Offset to entities directory entry",
-      "storeAs": "entitiesLumpOffset",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "Byte offset of the ENTITIES lump (lump 0) as uint32 little-endian at offset 8. The entities lump contains the readable ASCII entity text for the map — all game objects, player starts, lights, items, etc. as key-value pair blocks. Navigate to this offset to read the entity text directly. Entity text format: { classname light origin '0 0 128' light 300 } { classname info_player_start ... }",
+      "storeAs": "ibspEntitiesOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Magic",
+      "variable": "ibspMagic",
+      "description": "'IBSP' — Quake 2/3 BSP identifier"
     },
     {
       "type": "metadata",
       "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "variable": "ibspVersion",
+      "description": "IBSP version (38=Q2, 46=Q3, 47=Q3TA)"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Entities Offset",
+      "variable": "ibspEntitiesOffset",
+      "description": "Offset to readable entity text lump"
     }
   ],
+  "assertions": [
+    {
+      "name": "IBSP magic valid",
+      "expression": "ibspMagic == 'IBSP'",
+      "severity": "error",
+      "message": "IBSP magic must be 'IBSP' — not a valid Quake 2/3 BSP map"
+    },
+    {
+      "name": "IBSP version valid",
+      "expression": "ibspVersion == 38 || ibspVersion == 46 || ibspVersion == 47",
+      "severity": "warning",
+      "message": "IBSP version should be 38 (Q2), 46 (Q3), or 47 (Q3TA)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "IBSP Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Lump Directory", "offset": 8, "icon": "\uE71B", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "ibspVersion",
+    "primaryField": "ibspMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "IBSP Header",
+        "icon": "\uE71B",
+        "fields": ["ibspMagic", "ibspVersion", "ibspEntitiesOffset"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "IBSP Header (JSON)",
+      "format": "json",
+      "fields": ["ibspMagic", "ibspVersion", "ibspEntitiesOffset"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "IBSP header: 'IBSP'(4B ASCII) + version(4B LE, 38/46/47) + 17 lump entries × 8B (offset+length). Q3 lumps (17): ENTITIES(0), TEXTURES(1), PLANES(2), NODES(3), LEAFS(4), LEAFFACES(5), LEAFBRUSHES(6), MODELS(7), BRUSHES(8), BRUSHSIDES(9), VERTICES(10), MESHVERTS(11), EFFECTS(12), FACES(13), LIGHTMAPS(14), LIGHTVOLS(15), VISDATA(16). Header = 4+4+17×8 = 144 bytes. Q3 BSP files often packaged in .pk3 (ZIP) archives.",
+    "suggestedInspections": [
+      "Bytes 0-3 (ASCII): 'IBSP' magic",
+      "Bytes 4-7 (uint32 LE): version — 46=Q3, 38=Q2",
+      "Bytes 8-11 (uint32 LE): entities lump offset — navigate here for readable ASCII entity text",
+      "Q3 .bsp files are usually inside .pk3 ZIP archives in baseq3/"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Quake 3 Arena / Quake 2 (id Software, native)",
+    "GtkRadiant / NetRadiant (Q3 level editor)",
+    "Q3Map2 (BSP compiler)",
+    "ioquake3 (open-source Q3 engine)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".bsp"
-    ]
+    "extensions": [".bsp"],
+    "relatedFormats": ["BSP", "BSP_HL", "WAD2", "PAK"],
+    "note": "IBSP v46 = Quake 3. IBSP v38 = Quake 2. BSP v29 = Quake 1. BSP v30 = Half-Life. VBSP = Source Engine. Q3 .bsp files are stored inside .pk3 ZIP archives."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Quake 3 Arena level design and modding",
+    "Extracting map entities and geometry from Q3 BSP files",
+    "Quake 2 level analysis and content extraction",
+    "Open-source Quake 3 engine (ioquake3) game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Quake 3 engine BSP map format",
-    "suggestedInspections": [
-      "Validate Quake 3 BSP container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary little-endian id Software IBSP map (Quake 2/3)",
+    "Magic": "'IBSP' ASCII at offset 0",
+    "Versions": "v38=Quake 2, v46=Quake 3 Arena, v47=Q3 Team Arena",
+    "Header": "144 bytes: magic(4B) + version(4B LE) + 17 lump entries × 8B",
+    "Features": "Bezier curve patches (Q3), RGB lightmaps, brushes/planes/visibility"
   }
 }

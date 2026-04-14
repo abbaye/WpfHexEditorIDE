@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "miniSEED Seismic Data",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".mseed",
     ".miniseed"
@@ -10,14 +10,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "SEED Reference Manual V2.4, IRIS DMC",
-    "miniSEED 3 Specification v0.9"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/SEED_and_miniSEED",
-    "https://www.fdsn.org/pdf/SEEDManual_V2.4.pdf"
-  ],
+  "references": {
+    "specifications": [
+      "SEED Reference Manual V2.4, IRIS DMC",
+      "miniSEED 3 Specification v0.9"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/SEED_and_miniSEED",
+      "https://www.fdsn.org/pdf/SEEDManual_V2.4.pdf"
+    ]
+  },
   "detection": {
     "signature": "00",
     "offset": 0,
@@ -111,7 +113,11 @@
       "description": "Bytes 0-5 must be ASCII digits or spaces forming a valid miniSEED sequence number; non-digit non-space characters indicate a non-miniSEED or corrupted file",
       "offset": 0,
       "length": 6,
-      "asciiRange": ["30", "39", "20"],
+      "asciiRange": [
+        "30",
+        "39",
+        "20"
+      ],
       "severity": "warning"
     },
     {
@@ -119,7 +125,12 @@
       "description": "Byte 6 must be one of 'D' (44), 'R' (52), 'Q' (51), or 'M' (4D); any other value indicates a non-standard or corrupt miniSEED data record indicator",
       "offset": 6,
       "length": 1,
-      "validValues": ["44", "52", "51", "4D"],
+      "validValues": [
+        "44",
+        "52",
+        "51",
+        "4D"
+      ],
       "severity": "warning"
     }
   ],
@@ -128,13 +139,48 @@
       {
         "name": "Fixed Header",
         "fields": [
-          { "label": "Sequence Number",   "offset": 0,  "length": 6,  "format": "ascii" },
-          { "label": "Quality Flag",      "offset": 6,  "length": 1,  "format": "ascii" },
-          { "label": "Station Code",      "offset": 8,  "length": 5,  "format": "ascii" },
-          { "label": "Location Code",     "offset": 13, "length": 2,  "format": "ascii" },
-          { "label": "Channel Code",      "offset": 15, "length": 3,  "format": "ascii" },
-          { "label": "Network Code",      "offset": 18, "length": 2,  "format": "ascii" },
-          { "label": "Start Time",        "offset": 20, "length": 10, "format": "hex" }
+          {
+            "label": "Sequence Number",
+            "offset": 0,
+            "length": 6,
+            "format": "ascii"
+          },
+          {
+            "label": "Quality Flag",
+            "offset": 6,
+            "length": 1,
+            "format": "ascii"
+          },
+          {
+            "label": "Station Code",
+            "offset": 8,
+            "length": 5,
+            "format": "ascii"
+          },
+          {
+            "label": "Location Code",
+            "offset": 13,
+            "length": 2,
+            "format": "ascii"
+          },
+          {
+            "label": "Channel Code",
+            "offset": 15,
+            "length": 3,
+            "format": "ascii"
+          },
+          {
+            "label": "Network Code",
+            "offset": 18,
+            "length": 2,
+            "format": "ascii"
+          },
+          {
+            "label": "Start Time",
+            "offset": 20,
+            "length": 10,
+            "format": "hex"
+          }
         ]
       }
     ]
@@ -142,7 +188,13 @@
   "exportTemplates": [
     {
       "name": "miniSEED Record Header",
-      "fields": ["sequenceNumber", "qualityIndicator", "stationCode", "channelCodes", "startTime"]
+      "fields": [
+        "sequenceNumber",
+        "qualityIndicator",
+        "stationCode",
+        "channelCodes",
+        "startTime"
+      ]
     }
   ],
   "software": [
@@ -179,9 +231,18 @@
   },
   "TechnicalDetails": {
     "endianness": "big-endian for fixed header",
-    "recordSizes": [512, 4096, "any power of 2"],
+    "recordSizes": [
+      512,
+      4096,
+      "any power of 2"
+    ],
     "fixedHeaderSize": 48,
-    "dataQualityFlags": ["D", "R", "Q", "M"]
+    "dataQualityFlags": [
+      "D",
+      "R",
+      "Q",
+      "M"
+    ]
   },
   "forensic": {
     "category": "science",

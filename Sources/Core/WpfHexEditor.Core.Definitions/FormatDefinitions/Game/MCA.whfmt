@@ -1,132 +1,161 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Minecraft Anvil Region",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".mca"
+    ".mca",
+    ".mcr"
   ],
-  "description": "Minecraft Anvil world region format",
+  "description": "MCA (Minecraft Anvil Region) is the file format used by Minecraft Java Edition to store world chunks on disk. Each .mca file stores a 32×32 grid (1024 chunks) of a Minecraft world region. The file has a fixed 8192-byte header: a 4096-byte chunk location table (1024 entries × 4 bytes: 3B big-endian sector offset + 1B sector count, where 0x000000 = missing chunk) followed by a 4096-byte chunk timestamp table (1024 entries × 4B uint32 BE, Unix timestamp). Chunk data follows at 4KB-aligned sector positions. Each chunk starts with: byteCount (uint32 BE, length of compressed data), compressionType (1B: 1=GZip/RFC1952, 2=zlib/RFC1950, 3=uncompressed), followed by compressed NBT data. The format replaced the older MCR (McRegion) format in Minecraft Beta 1.9. MCA files are located in world/region/ and named r.X.Z.mca where X and Z are region coordinates.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Minecraft Anvil Region Format",
-      "Anvil Chunk Storage Format",
-      "Region File Format (32×32 chunks)"
+      "Minecraft Region File Format — wiki.vg",
+      "Minecraft Anvil File Format — minecraft.fandom.com"
     ],
     "WebLinks": [
-      "https://minecraft.fandom.com/wiki/Anvil_file_format",
       "https://minecraft.fandom.com/wiki/Region_file_format",
       "https://wiki.vg/Map_Format",
-      "https://docs.fileformat.com/game/mca/"
+      "https://minecraft.fandom.com/wiki/Anvil_file_format"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "000000", "offset": 0, "label": "MCA header chunk 0 offset bytes (high 3B of first location entry)", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8192,
+      "maxSignatureOffset": 0,
+      "note": "MCA files have no magic bytes. Detection relies on the .mca extension, minimum size of 8192 bytes (header), and the file naming pattern r.X.Z.mca. The first 4096 bytes are chunk location entries (each 4 bytes)."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "locationTable": "",
-    "timestampTable": ""
+    "chunk0Location": 0,
+    "chunk0Timestamp": 0
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Location Table",
+      "name": "Chunk Location Table",
       "offset": 0,
       "length": 4096,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Chunk location table (1024 entries)",
-      "storeAs": "locationTable",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "4096-byte chunk location table at offset 0 containing 1024 entries, one per chunk in the 32×32 region. Each 4-byte entry: 3 bytes big-endian sector offset (4KB sector index from start of file) + 1 byte sector count. Entry 0x00000000 = chunk not yet generated. Chunk index = (chunkZ % 32) * 32 + (chunkX % 32). A sector offset of 2 = offset 8192 (first chunk data position, after the 2-sector header). Sector count indicates how many consecutive 4KB sectors the compressed chunk data occupies.",
+      "storeAs": "chunk0Location",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
-      "name": "Timestamp Table",
+      "name": "Chunk Timestamp Table",
       "offset": 4096,
       "length": 4096,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Chunk timestamp table",
-      "storeAs": "timestampTable",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "4096-byte chunk timestamp table at offset 4096 containing 1024 uint32 big-endian entries, one per chunk. Each entry is a Unix timestamp (seconds since 1970-01-01) of when the chunk was last modified. Entries mirror the location table index layout: index = (chunkZ % 32) × 32 + (chunkX % 32). Timestamps are updated whenever a chunk is modified (player activity, world generation, commands). Zero = chunk not generated.",
+      "storeAs": "chunk0Timestamp",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "First Chunk Location",
+      "variable": "chunk0Location",
+      "description": "Location entry for chunk (0,0): sector offset + count"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "First Chunk Timestamp",
+      "variable": "chunk0Timestamp",
+      "description": "Unix timestamp of last modification for chunk (0,0)"
     }
   ],
+  "assertions": [
+    {
+      "name": "MCA minimum header size",
+      "expression": "chunk0Timestamp >= 0",
+      "severity": "warning",
+      "message": "MCA file should have at least 8192 bytes for the location and timestamp tables"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Location Table", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Timestamp Table", "offset": 4096, "icon": "\uE71B", "color": "#4ECDC4" },
+      { "name": "First Chunk Data", "offset": 8192, "icon": "\uE71B", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "chunk0Location",
+    "primaryField": "chunk0Timestamp",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MCA Region Header",
+        "icon": "\uE71B",
+        "fields": ["chunk0Location", "chunk0Timestamp"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MCA Header (JSON)",
+      "format": "json",
+      "fields": ["chunk0Location", "chunk0Timestamp"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "MCA region file: location_table(4096B, 1024 × 4B BE: 3B offset + 1B count) + timestamp_table(4096B, 1024 × 4B BE uint32 Unix) + chunk_data(at 4KB sector boundaries). Chunk data: byteCount(4B BE) + compressionType(1B: 1=GZip, 2=zlib) + compressedNBT. Chunk index = (z%32)*32 + (x%32). Sector 0-1 = header. Sector offset 2+ = chunk data. File location: world/region/r.X.Z.mca (coordinates in region units). MCR (.mcr) is the older McRegion format with same structure.",
+    "suggestedInspections": [
+      "Bytes 0-3 (uint32 BE): first location entry — top 3B = sector offset, low byte = count; 0=empty chunk",
+      "Bytes 4096-4099 (uint32 BE): first timestamp — Unix time of last chunk modification",
+      "Offset 8192+: chunk data sector — 4B byte count + 1B compression type + zlib/gzip NBT data",
+      "File name r.X.Z.mca: X and Z are region coordinates (divide chunk coords by 32)"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Minecraft Java Edition (Mojang/Microsoft, native)",
+    "Amidst (Minecraft map viewer)",
+    "MCEdit (world editor)",
+    "NBTExplorer (chunk NBT viewer)",
+    "Chunky (3D renderer using MCA files)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".mca"
-    ]
+    "extensions": [".mca", ".mcr"],
+    "relatedFormats": ["MCR"],
+    "note": ".mca = Anvil format (Minecraft 1.2+ / Beta 1.9+). .mcr = McRegion (older, pre-Anvil). Both store 32×32 chunk grids. Anvil added higher build limits and new chunk sections. Minecraft Bedrock Edition uses a completely different format (LevelDB)."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Minecraft world editing and analysis",
+    "Chunk data extraction for map rendering",
+    "World backup, repair, and format migration",
+    "Minecraft server world management"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 27,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Minecraft Anvil world region format",
-    "suggestedInspections": [
-      "Validate Minecraft Anvil Region container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary big-endian Minecraft Anvil region file",
+    "Magic": "None — extension (.mca) and 8192B minimum size are the identifiers",
+    "Header": "8192 bytes: location_table(4096B) + timestamp_table(4096B)",
+    "ChunkData": "Starts at sector 2 (offset 8192); each sector = 4096 bytes; format: byteCount(4B BE) + comprType(1B) + compressedNBT",
+    "Compression": "zlib (type 2, standard) or GZip (type 1, legacy) per chunk"
   }
 }

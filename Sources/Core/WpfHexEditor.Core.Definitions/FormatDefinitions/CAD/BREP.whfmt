@@ -1,117 +1,165 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "BREP Format",
-  "version": "2.32",
+  "version": "2.33",
   "extensions": [
-    ".brep"
+    ".brep",
+    ".brp"
   ],
-  "description": "Boundary Representation CAD format",
+  "description": "BREP (Boundary Representation) is the native Open CASCADE Technology (OCCT) geometry format for storing B-rep solid and surface models. BREP files start with the ASCII string 'CASCADE Topology V1, (c) Matra Datavision' or a similar cascade version header, followed by sections for topology (shapes, faces, edges, vertices) and geometry (surfaces, curves, points in 3D space). Open CASCADE is the open-source 3D modeling kernel used by FreeCAD, Salome, Code_Aster, and many scientific/engineering applications. The BREP format encodes the complete topological structure: TopoDS_Shape hierarchy (compound, compsolid, solid, shell, face, wire, edge, vertex) with geometric support (Geom_Surface: Plane, Cylinder, Cone, Sphere, Torus, BSplineSurface; Geom_Curve: Line, Circle, Ellipse, BSplineCurve). BREP is a text-based ASCII format with a specific section structure: 'CASCADE Topology V1' header, followed by numbered location records, shape records, and geometry records.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "BREP Format Format"
+      "Open CASCADE BREP Format — OCCT Documentation",
+      "TopoDS_Shape and BRep_Builder OCCT API"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/BREP"
+      "https://dev.opencascade.org/doc/overview/html/specification__brep_format.html",
+      "https://en.wikipedia.org/wiki/Open_CASCADE_Technology",
+      "https://www.freecad.org/"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false,
+    "signatures": [
+      { "value": "43415343414445 20546F706F6C6F677920563", "offset": 0, "label": "'CASCADE Topology V' — Open CASCADE BREP header", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 25,
+      "maxSignatureOffset": 0,
+      "note": "Open CASCADE BREP files start with 'CASCADE Topology V1, (c) Matra Datavision' or a similar header. This is a strong, unique identifier for OCCT BREP format, distinguishing it from Parasolid BREP (X_T/X_B) and ACIS SAT."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "brepHeader": ""
+    "brepHeader": "",
+    "brepVersion": ""
   },
   "blocks": [
     {
-      "type": "field",
-      "name": "BREP Header",
+      "type": "signature",
+      "name": "BREP File Header",
       "offset": 0,
-      "length": 32,
+      "length": 24,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "BREP file header",
+      "opacity": 0.45,
+      "description": "Open CASCADE BREP file identifier starting with 'CASCADE Topology V' (ASCII). The full first line is typically 'CASCADE Topology V1, (c) Matra Datavision' followed by a newline. This header uniquely identifies the Open CASCADE OCCT BREP format. The 'V1' indicates format version 1 (the only version in widespread use). The historical credit to Matra Datavision reflects the origins of Open CASCADE — originally developed by Matra Datavision as CAS.CADE, later open-sourced in 1999. All BREP files created by FreeCAD, Salome, pythonOCC, and OpenCASCADE start with this string.",
       "storeAs": "brepHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Version/Copyright Line",
+      "offset": 24,
+      "length": 40,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Remainder of the BREP first line and the beginning of the file structure. After the initial header, BREP files contain: a count of locations (coordinate systems), numbered location records (4×4 transformation matrices), a count of curves, numbered curve records (line/circle/ellipse/BSpline parameters), a count of 2D curves (pcurves), 2D curve records, a count of surfaces (plane/cylinder/cone/sphere/torus/BSpline), surface records, a count of polygons on triangulations, polygons, a count of triangulations, triangulation records, and finally the topology shape tree (TopoDS hierarchy).",
+      "storeAs": "brepVersion",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "BREP Header",
+      "variable": "brepHeader",
+      "description": "'CASCADE Topology V1' — Open CASCADE OCCT BREP identifier"
     },
     {
       "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "Version Info",
+      "variable": "brepVersion",
+      "description": "Copyright/version line remainder"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "CASCADE header present",
+      "expression": "brepHeader != ''",
+      "severity": "warning",
+      "message": "BREP file should start with 'CASCADE Topology V1' — may not be a valid Open CASCADE BREP file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".brep"
+  "navigation": {
+    "bookmarks": [
+      { "name": "BREP File Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "brepHeader",
+    "primaryField": "brepVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "OCCT BREP Header",
+        "icon": "\uE71B",
+        "fields": ["brepHeader", "brepVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
-  },
+  "exportTemplates": [
+    {
+      "name": "BREP Header (JSON)",
+      "format": "json",
+      "fields": ["brepHeader", "brepVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Boundary Representation CAD format",
+    "analysisContext": "Open CASCADE BREP ASCII format. Structure: header line 'CASCADE Topology V1, (c) Matra Datavision\\n', then sections: locations_count\\nN_location_records (4x4 matrix each), curves_count\\nN_curve_records, 2d_curves_count\\nN_2d_curve_records, surfaces_count\\nN_surface_records, polygons_on_triangulation_count\\nN_POT_records, triangulations_count\\nN_triangulation_records, then TopoDS shape records (compound/compsolid/solid/shell/face/wire/edge/vertex with flags and references). Curve types: 1=Line, 2=Circle, 3=Ellipse, 4=Hyperbola, 5=Parabola, 6=BezierCurve, 7=BSplineCurve, 8=TrimmedCurve, 9=OffsetCurve. Surface types: 1=Plane, 2=Cylinder, 3=Cone, 4=Sphere, 5=Torus, 6=LinearExtrusion, 7=Revolution, 8=Bezier, 9=BSpline, 10=RectSurf, 11=OffsetSurf.",
     "suggestedInspections": [
-      "Validate BREP Format file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Line 1: 'CASCADE Topology V1, (c) Matra Datavision' confirms Open CASCADE BREP",
+      "After header sections: count values before each geometry section (locations, curves, surfaces)",
+      "Shape tree at end: TopoDS hierarchy with face/edge/vertex references to geometry",
+      "Triangulation sections: mesh data for visualization (separate from exact B-rep)"
     ]
+  },
+  "software": [
+    "Open CASCADE Technology (OCCT)",
+    "FreeCAD",
+    "Salome Platform",
+    "pythonOCC",
+    "Code_Aster (FEA)",
+    "gmsh (meshing)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".brep", ".brp"],
+    "relatedFormats": ["STEP", "IGES", "X_T", "SAT", "STL"],
+    "note": "BREP (.brep/.brp) is Open CASCADE's native format. It is text-based and human-readable, unlike Parasolid X_B or ACIS SAB. OCCT can read STEP and IGES and convert to/from BREP. FreeCAD uses BREP as its internal geometry store. Not to be confused with ACIS SAT BREP or Parasolid BREP — this is specifically Open CASCADE's 'CASCADE Topology' format."
+  },
+  "MimeTypes": [
+    "model/brep",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Open CASCADE (FreeCAD, Salome) native geometry storage",
+    "B-rep geometry exchange in open-source CAD/CAE workflows",
+    "Persistent storage of TopoDS shapes for FEM preprocessing",
+    "Python CAD scripting with pythonOCC"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, Open CASCADE OCCT topology format",
+    "Magic": "'CASCADE Topology V1, (c) Matra Datavision' at line 1",
+    "EntityModel": "TopoDS hierarchy: compound, compsolid, solid, shell, face, wire, edge, vertex",
+    "Geometry": "Geom_Surface/Geom_Curve types: plane, cylinder, cone, sphere, BSpline, etc.",
+    "Origin": "Open-sourced 1999 from Matra Datavision CAS.CADE kernel"
   }
 }

@@ -1,128 +1,171 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "STEP 3D Model",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".step",
-    ".stp"
+    ".stp",
+    ".p21"
   ],
-  "description": "ISO 10303 STEP CAD format",
+  "description": "STEP (Standard for the Exchange of Product model data) is ISO standard 10303, the most widely used neutral CAD exchange format for 3D product data. STEP files are plain-text (ASCII) using the STEP Physical File (SPF) format defined in ISO 10303-21. Every STEP file starts with 'ISO-10303-21;' on the first line, followed by a HEADER section (FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA entities), then DATA section(s) containing numbered entity instances (#1=ENTITY_TYPE(...)), and ends with 'END-ISO-10303-21;'. The FILE_SCHEMA entity specifies the Application Protocol (AP): AP214 (automotive), AP203 (engineering design), AP242 (mechanical, the modern universal AP). STEP encodes 3D geometry via BREP (Boundary Representation) using geometric entities: ADVANCED_BREP_SHAPE_REPRESENTATION, CLOSED_SHELL, ADVANCED_FACE, B_SPLINE_CURVE_WITH_KNOTS, etc. STEP is the mandatory exchange format for aeronautical, automotive, and defense industries.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "STEP 3D Model Format"
+      "ISO 10303-21 — STEP Physical File Format",
+      "ISO 10303-214 — AP214 Core Data for Automotive Mechanical Design",
+      "ISO 10303-242 — AP242 Managed Model-Based 3D Engineering"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/STEP"
+      "https://en.wikipedia.org/wiki/ISO_10303",
+      "https://www.iso.org/standard/63141.html",
+      "https://steptools.com/stds/step/"
     ]
   },
   "detection": {
-    "signature": "49534F2D3130333033",
-    "offset": 0,
+    "signatures": [
+      { "value": "49534F2D31303330332D32313B", "offset": 0, "label": "'ISO-10303-21;' — STEP Physical File standard header", "weight": 1.0 },
+      { "value": "49534F2D31303330332D", "offset": 0, "label": "'ISO-10303-' — STEP ISO prefix (any part)", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 9,
-      "maxSignatureOffset": 1024
+      "minFileSize": 13,
+      "maxSignatureOffset": 0,
+      "note": "All STEP Physical Files start with 'ISO-10303-21;' at offset 0. The ';' immediately follows the version number. STEP files named with .p21 extension are identical in format."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
-    "stepHeader": "",
-    "formattedSize": ""
+    "stepMagic": "",
+    "stepHeaderLine": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "STEP Header",
+      "name": "STEP File Identifier",
       "offset": 0,
-      "length": 9,
+      "length": 13,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ISO-10303",
-      "storeAs": "stepHeader",
+      "opacity": 0.45,
+      "description": "STEP Physical File identifier 'ISO-10303-21;' (ASCII: 49 53 4F 2D 31 30 33 30 33 2D 32 31 3B). This mandatory 13-byte string at offset 0 uniquely identifies the STEP exchange format as defined by ISO 10303 Part 21. The '21' refers to the physical file format specification. All valid STEP files must begin with this exact sequence. Files starting with 'ISO-10303-' followed by another number (e.g., -28) indicate STEP XML variants.",
+      "storeAs": "stepMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Line Remainder",
+      "offset": 13,
+      "length": 40,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Content immediately following the 'ISO-10303-21;' identifier on the first line. In standard STEP files this is a newline (CRLF or LF), followed by 'HEADER;' beginning the mandatory HEADER section. The HEADER section contains FILE_DESCRIPTION (description and implementation level), FILE_NAME (name, timestamp, author, organization, preprocessor, originating system, authorization), and FILE_SCHEMA (application protocol — 'AP214_IS', 'AP203_CONFIGURATION_CONTROLLED_3D_DESIGN_OF_MECHANICAL_PARTS_AND_ASSEMBLIES', 'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING').",
+      "storeAs": "stepHeaderLine",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "name": "STEP Identifier",
+      "variable": "stepMagic",
+      "description": "'ISO-10303-21;' — STEP Physical File standard identifier"
     },
     {
       "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Header Start",
+      "variable": "stepHeaderLine",
+      "description": "Beginning of HEADER section content"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "STEP identifier valid",
+      "expression": "stepMagic == 'ISO-10303-21;'",
+      "severity": "error",
+      "message": "STEP file must start with 'ISO-10303-21;' — not a valid STEP Physical File (ISO 10303-21)"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".step",
-      ".stp"
+  "navigation": {
+    "bookmarks": [
+      { "name": "STEP File Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "stepMagic",
+    "primaryField": "stepHeaderLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "STEP Header",
+        "icon": "\uE71B",
+        "fields": ["stepMagic", "stepHeaderLine"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "STEP Header (JSON)",
+      "format": "json",
+      "fields": ["stepMagic", "stepHeaderLine"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "ISO 10303 STEP CAD format",
+    "analysisContext": "STEP Physical File (ISO 10303-21) is plain ASCII. Structure: 'ISO-10303-21;\\nHEADER;\\n[header entities]\\nENDSEC;\\nDATA;\\n[#N=ENTITY(args,...);]\\nENDSEC;\\nEND-ISO-10303-21;'. Header entities: FILE_DESCRIPTION('description','2;1'), FILE_NAME('name','date','author','org','preprocessor','system','auth'), FILE_SCHEMA(('APXXX_...')). DATA section: numbered instances '#1=PRODUCT(...);'. Key geometry types: ADVANCED_BREP_SHAPE_REPRESENTATION, MANIFOLD_SOLID_BREP, CLOSED_SHELL, ADVANCED_FACE, CYLINDRICAL_SURFACE, PLANE, LINE, CIRCLE, B_SPLINE_CURVE_WITH_KNOTS. AP selection: FILE_SCHEMA content identifies AP203 (config-controlled), AP214 (automotive), AP242 (modern universal). Coordinates as CARTESIAN_POINT tuples.",
     "suggestedInspections": [
-      "Validate STEP 3D Model file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-12: 'ISO-10303-21;' mandatory STEP identifier",
+      "Search for 'FILE_SCHEMA' in HEADER section to identify the Application Protocol (AP203/AP214/AP242)",
+      "Search for 'FILE_NAME' to extract creation date, author, originating software",
+      "Count '#N=' instances in DATA section for entity count (geometry + topology)"
     ]
+  },
+  "software": [
+    "CATIA (Dassault Systèmes)",
+    "SolidWorks",
+    "NX / Unigraphics (Siemens)",
+    "CREO / Pro/ENGINEER (PTC)",
+    "FreeCAD",
+    "OpenCASCADE",
+    "AutoCAD (import/export)",
+    "STEP Tools (ST-Developer)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".step", ".stp", ".p21"],
+    "relatedFormats": ["IGES", "DXF", "DWG", "BREP", "CATPART", "SAT"],
+    "note": "STEP (ISO 10303-21) is the dominant neutral CAD exchange format for industry. IGES (.igs/.iges) is the older predecessor. BREP files from OpenCASCADE use a related B-rep topology but proprietary format. AP203/AP214/AP242 are the most common application protocols: AP242 supersedes both for modern use."
+  },
+  "MimeTypes": [
+    "application/step",
+    "model/step",
+    "application/x-step"
+  ],
+  "UseCases": [
+    "CAD model exchange between CATIA, SolidWorks, NX, CREO, etc.",
+    "Product lifecycle management (PLM) data archival",
+    "Aerospace, automotive, and defense geometry exchange",
+    "3D printing and manufacturing toolpath preparation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text (STEP Physical File, ISO 10303-21)",
+    "Structure": "ISO-10303-21; HEADER; [entities]; ENDSEC; DATA; [#N=TYPE(args);]; ENDSEC; END-ISO-10303-21;",
+    "ApplicationProtocols": "AP203 (engineering), AP214 (automotive), AP242 (modern universal)",
+    "Extensions": ".step, .stp, .p21 — all identical format",
+    "GeometryModel": "BREP (Boundary Representation) — shells, faces, edges, vertices, curves, surfaces"
   }
 }

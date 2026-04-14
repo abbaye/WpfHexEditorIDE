@@ -213,9 +213,9 @@
     "category": "game-graphics",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "File size not a multiple of 32 or 16 (incomplete tile — possible extraction error)",
-      "All-zero content — empty tile bank or failed decompression",
-      "Repeating 32-byte pattern — likely padding or compressed data not yet decompressed"
+      { "name": "Incomplete tile size", "condition": "true", "description": "File size not a multiple of 32 or 16 (incomplete tile — possible extraction error)", "severity": "warning" },
+      { "name": "All-zero content", "condition": "true", "description": "All-zero content — empty tile bank or failed decompression", "severity": "warning" },
+      { "name": "Repeating 32-byte pattern", "condition": "true", "description": "Repeating 32-byte pattern — likely padding or compressed data not yet decompressed", "severity": "warning" }
     ]
   },
   "navigation": {

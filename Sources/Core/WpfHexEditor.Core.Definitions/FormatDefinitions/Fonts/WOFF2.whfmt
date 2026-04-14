@@ -1,42 +1,45 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Web Open Font Format 2",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".woff2"
   ],
-  "description": "WOFF2 - Improved web font format",
+  "description": "WOFF2 (Web Open Font Format 2) is a W3C standard (2018) for highly compressed web font delivery, using Brotli compression instead of WOFF 1.0's zlib. WOFF2 achieves approximately 30% better compression than WOFF 1.0. WOFF2 files start with the signature 'wOF2' (0x774F4632) at offset 0. The WOFF2 header is similar to WOFF 1.0: signature(4B), flavor(4B BE uint32: 0x00010000=TrueType, 0x4F54544F=CFF), length(4B BE), numTables(2B BE), reserved(2B), totalSfntSize(4B BE), totalCompressedSize(4B BE, Brotli-compressed data size), majorVersion(2B BE), minorVersion(2B BE), metaOffset(4B), metaLength(4B), metaOrigLength(4B), privOffset(4B), privLength(4B). Unlike WOFF 1.0 where each table is separately zlib-compressed, WOFF2 uses a single Brotli stream for all font tables, enabling cross-table compression. WOFF2 is the preferred web font format supported by all modern browsers (Chrome 36+, Firefox 39+, Safari 12+, Edge 14+).",
   "category": "Fonts",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "WOFF File Format 1.0",
-      "W3C Recommendation"
+      "WOFF File Format 2.0 — W3C Recommendation (2018)",
+      "RFC 7932 — Brotli Compressed Data Format"
     ],
     "WebLinks": [
-      "https://www.w3.org/TR/WOFF/",
-      "https://en.wikipedia.org/wiki/Web_Open_Font_Format"
+      "https://www.w3.org/TR/WOFF2/",
+      "https://en.wikipedia.org/wiki/Web_Open_Font_Format",
+      "https://caniuse.com/woff2"
     ]
   },
   "detection": {
-    "signature": "774F4632",
-    "offset": 0,
+    "signatures": [
+      { "value": "774F4632", "offset": 0, "label": "'wOF2' — WOFF 2.0 magic signature", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 48,
+      "maxSignatureOffset": 0,
+      "note": "All WOFF2 files start with 'wOF2' (0x77 0x4F 0x46 0x32) at offset 0. The '2' (0x32) distinguishes WOFF2 from WOFF 1.0 ('wOFF' ending in 0x46)."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "numGlyphs": 0,
-    "unitsPerEm": 0,
-    "fontName": "",
-    "tableCount": 0,
     "woff2Signature": "",
-    "flavor": 0,
-    "length": 0
+    "woff2Flavor": 0,
+    "woff2Length": 0,
+    "woff2NumTables": 0
   },
   "blocks": [
     {
@@ -45,108 +48,158 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "wOF2 signature",
+      "opacity": 0.45,
+      "description": "WOFF2 magic signature 'wOF2' (bytes: 77 4F 46 32) at offset 0. The '2' (ASCII 0x32) in position 4 distinguishes WOFF2 from WOFF 1.0 ('wOFF', 0x774F4646). WOFF2 uses Brotli compression (RFC 7932) for all font tables in a single compressed stream, achieving ~30% better compression than WOFF 1.0's per-table zlib. WOFF2 is supported by all modern browsers and is the recommended web font format for all new deployments.",
       "storeAs": "woff2Signature",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Flavor",
+      "name": "Font Flavor",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "TrueType or CFF",
-      "storeAs": "flavor",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "WOFF2 flavor field at offset 4 (4 bytes, big-endian uint32). Same semantics as WOFF 1.0: identifies the underlying font outline format. 0x00010000 = TrueType (glyf/loca tables); 0x4F54544F = 'OTTO' = CFF/PostScript (CFF table); 0x00020000 = TrueType with variable font features. Variable fonts use TrueType flavor with additional tables: fvar (font variations axis), gvar (glyph variations), avar (axis variations), HVAR, VVAR, MVAR.",
+      "storeAs": "woff2Flavor",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "65536": "TrueType (0x00010000) — glyf/loca outlines",
+        "1330926671": "CFF/PostScript (0x4F54544F 'OTTO') — CFF outlines"
+      }
     },
     {
       "type": "field",
-      "name": "Length",
+      "name": "Total File Length",
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Total WOFF2 file size",
-      "storeAs": "length",
-      "valueType": "uint32"
+      "opacity": 0.35,
+      "description": "WOFF2 total file size in bytes at offset 8 (4 bytes, big-endian uint32). Must exactly match the actual on-disk file size. In WOFF2, this field also serves as a quick sanity check: if the file is truncated or corrupted during download, this value will not match and the font should be rejected.",
+      "storeAs": "woff2Length",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Number of Tables",
+      "offset": 12,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Number of font tables in the WOFF2 file at offset 12 (2 bytes, big-endian uint16). Typical range: 12-25 tables for a complete web font, up to 40+ for variable fonts with many axes. Required tables for TrueType: cmap, glyf, head, hhea, hmtx, loca, maxp, name, post. Additional for variable fonts: fvar, gvar, avar, stat, HVAR.",
+      "storeAs": "woff2NumTables",
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Glyph Count",
-      "variable": "numGlyphs",
-      "description": "Glyph Count"
+      "name": "WOFF2 Signature",
+      "variable": "woff2Signature",
+      "description": "'wOF2' — WOFF 2.0 Web font magic"
     },
     {
       "type": "metadata",
-      "name": "Units Per EM",
-      "variable": "unitsPerEm",
-      "description": "Units Per EM"
+      "name": "Font Flavor",
+      "variable": "woff2Flavor",
+      "description": "Underlying font type: TrueType (0x00010000) or CFF (0x4F54544F)"
     },
     {
       "type": "metadata",
-      "name": "Font Name",
-      "variable": "fontName",
-      "description": "Font Name"
+      "name": "File Length",
+      "variable": "woff2Length",
+      "description": "Total WOFF2 file size in bytes"
     },
     {
       "type": "metadata",
       "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
+      "variable": "woff2NumTables",
+      "description": "Number of font tables"
     }
   ],
-  "software": [
-    "Modern web browsers"
+  "assertions": [
+    {
+      "name": "WOFF2 signature valid",
+      "expression": "woff2Signature == 'wOF2'",
+      "severity": "error",
+      "message": "WOFF2 file must start with 'wOF2' (0x774F4632) — not a valid WOFF2 font"
+    }
   ],
-  "formatRelationships": {
-    "category": "Fonts",
-    "extensions": [
-      ".woff2"
+  "navigation": {
+    "bookmarks": [
+      { "name": "WOFF2 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "font/woff2"
-  ],
-  "Software": [
-    "FontForge",
-    "FontLab",
-    "Glyphs",
-    "Font Creator",
-    "BirdFont"
-  ],
-  "UseCases": [
-    "Typography",
-    "Font installation",
-    "Design work",
-    "Publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "woff2Flavor",
+    "primaryField": "woff2Signature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "WOFF2 Header",
+        "icon": "\uE71B",
+        "fields": ["woff2Signature", "woff2Flavor", "woff2Length", "woff2NumTables"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read font tables",
-    "extractASCIIString": "Read font name"
-  },
+  "exportTemplates": [
+    {
+      "name": "WOFF2 Header (JSON)",
+      "format": "json",
+      "fields": ["woff2Signature", "woff2Flavor", "woff2Length", "woff2NumTables"]
+    }
+  ],
   "forensic": {
     "category": "font",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "WOFF2 - Improved web font format",
+    "analysisContext": "WOFF2 header (48 bytes): signature(4B 'wOF2'), flavor(4B BE), length(4B BE, total file), numTables(2B BE), reserved(2B=0), totalSfntSize(4B BE), totalCompressedSize(4B BE, Brotli stream size), majorVersion(2B BE), minorVersion(2B BE), metaOffset(4B), metaLength(4B), metaOrigLength(4B), privOffset(4B), privLength(4B). Then Table Directory: numTables entries with variable-length encoding (flags byte + optional tag + optional transform length). Key difference from WOFF1: all tables compressed in a single Brotli stream (not individual zlib per table). Decompress Brotli stream → individual uncompressed table data. Some tables may have WOFF2-specific transforms applied before compression (particularly glyf, loca tables). Variable fonts include fvar/gvar/avar tables for multi-axis design space.",
     "suggestedInspections": [
-      "Validate Web Open Font Format 2 offset table and required table tags (head, cmap, glyf)",
-      "Check glyph count, loca table offsets, and encoding records",
-      "Inspect name table entries and OS/2 metrics for consistency"
+      "Bytes 0-3: 'wOF2' magic — WOFF2 (vs 'wOFF' for WOFF 1.0)",
+      "Bytes 4-7 (uint32 BE): flavor 0x00010000=TrueType, 0x4F54544F=CFF",
+      "Bytes 8-11 (uint32 BE): total file length; bytes 20-23: Brotli compressed data size",
+      "Bytes 12-13 (uint16 BE): numTables — variable-length Table Directory entries follow"
     ]
+  },
+  "software": [
+    "All modern web browsers (Chrome 36+, Firefox 39+, Safari 12+, Edge 14+)",
+    "FontForge (font editor, WOFF2 export)",
+    "Google Fonts (primary WOFF2 delivery platform)",
+    "Fonttools/woff2 (Python compression utility)",
+    "Glyphs App (Mac font editor)"
+  ],
+  "formatRelationships": {
+    "category": "Fonts",
+    "extensions": [".woff2"],
+    "relatedFormats": ["WOFF", "TTF", "OTF", "EOT"],
+    "note": "WOFF2 (W3C 2018) supersedes WOFF 1.0, using Brotli instead of zlib for ~30% better compression. Supported by all modern browsers. WOFF 1.0 provides fallback for IE11. EOT (Embedded OpenType) is deprecated (IE-only, pre-IE9). For new web deployments, WOFF2 is the primary format with WOFF as fallback."
+  },
+  "MimeTypes": [
+    "font/woff2"
+  ],
+  "UseCases": [
+    "Primary web font format for CSS @font-face (all modern browsers)",
+    "Google Fonts, Adobe Fonts, and web font CDN delivery",
+    "Variable font delivery for responsive typography",
+    "Icon font compression (smallest file size for web delivery)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary container with single Brotli-compressed OpenType tables",
+    "Magic": "'wOF2' (0x774F4632) at offset 0",
+    "Compression": "Single Brotli stream (RFC 7932) for all tables + optional per-table transforms",
+    "Standard": "W3C WOFF 2.0 Recommendation (2018)",
+    "Endianness": "big-endian for all multi-byte header fields"
   }
 }

@@ -1,0 +1,89 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Block editor DataTemplates: conditional, loop
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
+                    xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- ── conditional ────────────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Conditional" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+
+            <!-- Condition -->
+            <TextBlock Text="Condition" Style="{StaticResource SectionHeader}"/>
+            <ctrl:ConditionEditorRow DataContext="{Binding Condition}" Margin="0,0,0,4"/>
+
+            <!-- Labels -->
+            <TextBlock Text="Branch Labels" Style="{StaticResource SectionHeader}"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="True Label"  Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding TrueLabel, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="False Label" Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding FalseLabel, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <TextBlock Text="Then / Else blocks are shown as children in the tree."
+                       FontSize="10" Margin="0,6,0,0"
+                       Foreground="{DynamicResource TE_LineNumberForeground}"
+                       FontStyle="Italic"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── loop ───────────────────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Loop" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+
+            <!-- Condition -->
+            <TextBlock Text="Loop Condition" Style="{StaticResource SectionHeader}"/>
+            <ctrl:ConditionEditorRow DataContext="{Binding Condition}" Margin="0,0,0,4"/>
+
+            <!-- Count / MaxIterations -->
+            <TextBlock Text="Bounds" Style="{StaticResource SectionHeader}"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Count"          Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Fixed integer or var:name"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Iterations" Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding MaxIterations, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Safety cap — integer"/>
+            </Grid>
+
+            <TextBlock Text="Body blocks are shown as children in the tree."
+                       FontSize="10" Margin="0,6,0,0"
+                       Foreground="{DynamicResource TE_LineNumberForeground}"
+                       FontStyle="Italic"/>
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

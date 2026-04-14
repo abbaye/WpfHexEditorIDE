@@ -1,43 +1,49 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "EtherPeek/OmniPeek",
-  "version": "1.13",
+  "formatName": "EtherPeek/OmniPeek Capture",
+  "version": "1.14",
   "extensions": [
     ".pkt",
     ".apc",
     ".wpz"
   ],
-  "description": "WildPackets EtherPeek/OmniPeek capture format",
+  "description": "EtherPeek (later OmniPeek) is a proprietary packet capture format used by WildPackets/Savvius/LiveAction network analysis products. The format exists in two main versions: EtherPeek version 5-7 (older .pkt files) and the newer OmniPeek XML-based .apc format. The legacy binary .pkt format stores a file header followed by packet records. Each packet record in the legacy format contains: sliceLength (2B), flags (2B), status (2B), timestamp (8B, 100ns intervals since 1/1/1970 big-endian), protoSpec (2B), and packet data. The file version number (5, 6, or 7) is at offset 0 as a uint16. EtherPeek v6 and v7 add additional header fields. Wireshark reads EtherPeek/OmniPeek .pkt files via its wiretap library (etherpeek.c). The .apc extension is used by newer OmniPeek/Omnipeek XML-compressed archives.",
   "category": "Network",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "EtherPeek/OmniPeek Format"
+      "Wireshark wiretap/etherpeek.c — EtherPeek format reverse-engineering documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/PKT"
+      "https://wiki.wireshark.org/EtherPeek",
+      "https://www.wireshark.org/docs/wsdg_html_chunked/ChSrcContrib.html",
+      "https://en.wikipedia.org/wiki/OmniPeek"
     ]
   },
   "detection": {
-    "signature": "0000",
-    "offset": 0,
+    "signatures": [
+      { "value": "0005", "offset": 0, "label": "EtherPeek version 5 file header", "weight": 0.5 },
+      { "value": "0006", "offset": 0, "label": "EtherPeek version 6 file header", "weight": 0.5 },
+      { "value": "0007", "offset": 0, "label": "EtherPeek version 7 file header", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 18,
+      "maxSignatureOffset": 0,
+      "note": "EtherPeek .pkt files have no unique magic bytes — the file version (5, 6, or 7) at offset 0 as uint16 BE is the best available discriminator. Extension (.pkt) plus file content context is required for reliable detection. Newer .apc files are ZIP-compressed XML archives."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "packetCount": 0,
-    "captureLength": 0,
-    "version": 0,
     "fileVersion": 0,
+    "captureLength": 0,
     "sliceLength": 0,
     "flags": 0,
-    "status": 0,
-    "timestamp": 0
+    "status": 0
   },
   "blocks": [
     {
@@ -46,10 +52,16 @@
       "offset": 0,
       "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "EtherPeek version (5-7)",
+      "opacity": 0.45,
+      "description": "EtherPeek binary file version as uint16 big-endian at offset 0. Valid values: 5 = EtherPeek v5 (earliest supported by Wireshark), 6 = EtherPeek v6 (extended header), 7 = EtherPeek v7 (OmniPeek era). There is no dedicated magic number — this version field serves as the primary format discriminator. Files from WildPackets EtherPeek analyzer (Windows), pre-dating Wireshark in commercial network analysis market.",
       "storeAs": "fileVersion",
-      "valueType": "uint16"
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "5": "EtherPeek v5 — legacy format",
+        "6": "EtherPeek v6 — extended header",
+        "7": "EtherPeek v7 / OmniPeek — latest binary format"
+      }
     },
     {
       "type": "field",
@@ -57,10 +69,11 @@
       "offset": 2,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Captured packet length",
+      "opacity": 0.35,
+      "description": "Maximum captured packet length in bytes as uint16 big-endian at offset 2. This is the snapshot length — packets longer than this value are truncated. Also called snaplen. Common values: 1514 (standard Ethernet MTU), 65535 (full capture), 128-256 (legacy truncated captures).",
       "storeAs": "captureLength",
-      "valueType": "uint16"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -68,10 +81,11 @@
       "offset": 4,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Sliced packet length",
+      "opacity": 0.35,
+      "description": "Per-packet slice length for this capture file as uint16 big-endian at offset 4. In EtherPeek, sliceLength can differ from captureLength if packets were further sliced during capture. If 0, use captureLength for the effective snaplen.",
       "storeAs": "sliceLength",
-      "valueType": "uint16"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -79,10 +93,11 @@
       "offset": 6,
       "length": 2,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Packet flags",
+      "opacity": 0.35,
+      "description": "File-level flags as uint16 big-endian at offset 6. EtherPeek flags encode capture options and status: bit 0 = promiscuous mode, bit 1 = hardware timestamping, bit 2 = remote capture. Exact bit definitions vary by EtherPeek version.",
       "storeAs": "flags",
-      "valueType": "uint16"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -90,88 +105,113 @@
       "offset": 8,
       "length": 2,
       "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "Status flags",
+      "opacity": 0.35,
+      "description": "File status word as uint16 big-endian at offset 8. EtherPeek status field indicating capture session result or error codes. 0 = normal capture, non-zero values indicate truncation, buffer overflow, or hardware errors during capture.",
       "storeAs": "status",
-      "valueType": "uint16"
-    },
-    {
-      "type": "field",
-      "name": "Timestamp",
-      "offset": 10,
-      "length": 8,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Packet capture timestamp",
-      "storeAs": "timestamp",
-      "valueType": "uint64"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Packet Count",
-      "variable": "packetCount",
-      "description": "Packet Count"
+      "name": "Version",
+      "variable": "fileVersion",
+      "description": "EtherPeek binary format version (5/6/7)"
     },
     {
       "type": "metadata",
       "name": "Capture Length",
       "variable": "captureLength",
-      "description": "Capture Length"
+      "description": "Maximum captured packet length (snaplen)"
+    },
+    {
+      "type": "metadata",
+      "name": "Slice Length",
+      "variable": "sliceLength",
+      "description": "Per-packet slice length"
     }
   ],
-  "software": [
-    "Wireshark",
-    "tcpdump"
+  "assertions": [
+    {
+      "name": "File version valid",
+      "expression": "fileVersion >= 5 && fileVersion <= 7",
+      "severity": "warning",
+      "message": "EtherPeek/OmniPeek version should be 5, 6, or 7 — may not be a valid EtherPeek capture file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Network",
-    "extensions": [
-      ".pkt",
-      ".apc",
-      ".wpz"
+  "navigation": {
+    "bookmarks": [
+      { "name": "EtherPeek Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "First Packet Record", "offset": 18, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Wireshark",
-    "tcpdump",
-    "NetworkMiner",
-    "Fiddler",
-    "Charles Proxy"
-  ],
-  "UseCases": [
-    "Network analysis",
-    "Packet capture",
-    "Debugging",
-    "Security analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 48,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "fileVersion",
+    "primaryField": "captureLength",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "EtherPeek Header",
+        "icon": "\uE71B",
+        "fields": ["fileVersion", "captureLength", "sliceLength", "flags", "status"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read capture header (big-endian)",
-    "readUInt64BE": "Read timestamps"
-  },
+  "exportTemplates": [
+    {
+      "name": "EtherPeek Header (JSON)",
+      "format": "json",
+      "fields": ["fileVersion", "captureLength", "sliceLength", "flags", "status"]
+    }
+  ],
   "forensic": {
     "category": "network",
     "riskLevel": "medium",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "WildPackets EtherPeek/OmniPeek capture format",
+    "analysisContext": "EtherPeek binary .pkt header: version(2B BE, 5-7) + captureLength(2B BE) + sliceLength(2B BE) + flags(2B BE) + status(2B BE). Packet record structure (after header): sliceLength(2B BE) + flags(2B BE) + status(2B BE) + timestamp(8B BE, 100ns units since epoch) + protoSpec(2B BE) + packetData(sliceLength bytes). No strong magic — use extension + version field. Newer .apc files from OmniPeek are ZIP-compressed XML, not this binary format.",
     "suggestedInspections": [
-      "Validate EtherPeek/OmniPeek file header: magic, version, link-layer type",
-      "Check packet record timestamps and capture lengths",
-      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+      "Bytes 0-1 (uint16 BE): version — must be 5, 6, or 7 to confirm EtherPeek binary format",
+      "Bytes 2-3 (uint16 BE): captureLength (snaplen) — typically 1514 (Ethernet MTU) or 65535",
+      "Bytes 10+: first packet record with 8-byte timestamp in 100ns intervals",
+      "Use Wireshark to convert: File → Save As → PCAPNG for modern analysis"
     ]
+  },
+  "software": [
+    "WildPackets EtherPeek (original creator)",
+    "Savvius OmniPeek (successor)",
+    "LiveAction OmniPeek (current name)",
+    "Wireshark (reads .pkt via wiretap/etherpeek.c)"
+  ],
+  "formatRelationships": {
+    "category": "Network",
+    "extensions": [".pkt", ".apc", ".wpz"],
+    "relatedFormats": ["PCAP", "PCAPNG", "NETMON", "SNOOP"],
+    "note": ".pkt = legacy EtherPeek binary format (v5-7). .apc = newer OmniPeek compressed XML format. .wpz = OmniPeek workspace. Wireshark reads .pkt binary format; .apc requires OmniPeek or conversion. Modern replacement: PCAPNG."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Reading legacy WildPackets/EtherPeek capture files",
+    "Converting historical EtherPeek captures to PCAPNG",
+    "Network forensics on captures from EtherPeek/OmniPeek environments",
+    "Protocol analysis from legacy Windows network monitoring"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary big-endian proprietary WildPackets EtherPeek packet capture",
+    "Magic": "No unique magic — version uint16 BE at offset 0 (values 5, 6, 7)",
+    "ByteOrder": "Big-endian throughout",
+    "Versions": "v5 (legacy), v6 (extended), v7 (OmniPeek era)",
+    "PacketRecord": "sliceLength(2B) + flags(2B) + status(2B) + timestamp(8B, 100ns) + protoSpec(2B) + data"
   }
 }

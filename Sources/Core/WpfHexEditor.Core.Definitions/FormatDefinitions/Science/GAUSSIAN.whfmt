@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Gaussian Cube File",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
     ".cube",
     ".cub"
@@ -10,14 +10,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "Gaussian 16 Cube File Format Documentation",
-    "Cubegen utility manual — Gaussian Inc."
-  ],
-  "WebLinks": [
-    "https://gaussian.com/cubegen/",
-    "https://en.wikipedia.org/wiki/Gaussian_(software)"
-  ],
+  "references": {
+    "specifications": [
+      "Gaussian 16 Cube File Format Documentation",
+      "Cubegen utility manual — Gaussian Inc."
+    ],
+    "WebLinks": [
+      "https://gaussian.com/cubegen/",
+      "https://en.wikipedia.org/wiki/Gaussian_(software)"
+    ]
+  },
   "detection": {
     "signature": "00",
     "offset": 0,
@@ -121,12 +123,42 @@
       {
         "name": "Header Lines",
         "fields": [
-          { "label": "Comment 1",          "offset": 0,   "length": 80, "format": "ascii" },
-          { "label": "Comment 2",          "offset": 80,  "length": 80, "format": "ascii" },
-          { "label": "Origin / Atom Count","offset": 160, "length": 80, "format": "ascii" },
-          { "label": "X-Axis Vector",      "offset": 240, "length": 80, "format": "ascii" },
-          { "label": "Y-Axis Vector",      "offset": 320, "length": 80, "format": "ascii" },
-          { "label": "Z-Axis Vector",      "offset": 400, "length": 80, "format": "ascii" }
+          {
+            "label": "Comment 1",
+            "offset": 0,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Comment 2",
+            "offset": 80,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Origin / Atom Count",
+            "offset": 160,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "X-Axis Vector",
+            "offset": 240,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Y-Axis Vector",
+            "offset": 320,
+            "length": 80,
+            "format": "ascii"
+          },
+          {
+            "label": "Z-Axis Vector",
+            "offset": 400,
+            "length": 80,
+            "format": "ascii"
+          }
         ]
       }
     ]
@@ -134,7 +166,12 @@
   "exportTemplates": [
     {
       "name": "Cube File Header",
-      "fields": ["commentLine1", "commentLine2", "originLine", "xAxisLine"]
+      "fields": [
+        "commentLine1",
+        "commentLine2",
+        "originLine",
+        "xAxisLine"
+      ]
     }
   ],
   "software": [
@@ -148,8 +185,17 @@
   ],
   "formatRelationships": {
     "computational_chemistry": true,
-    "related_to": ["XSF", "CHGCAR (VASP)", "MO (Molden)"],
-    "visualization_tools": ["VMD", "Avogadro", "PyMol", "VESTA"]
+    "related_to": [
+      "XSF",
+      "CHGCAR (VASP)",
+      "MO (Molden)"
+    ],
+    "visualization_tools": [
+      "VMD",
+      "Avogadro",
+      "PyMol",
+      "VESTA"
+    ]
   },
   "MimeTypes": [
     "chemical/x-gaussian-cube",

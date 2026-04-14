@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "UHA Archive",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [ ".uha" ],
   "description": "UHARC is a high-compression archive format developed by Uwe Herklotz, notable for achieving very high compression ratios using PPMd-based algorithms. The format starts with 'UHA' (0x554841) as a 3-byte ASCII magic at offset 0. The header includes format version, compression flags, and an optional method byte indicating the algorithm: 0=store, 1=LZ77, 2=PPMd. UHARC achieved competitive compression with BZIP2 and early 7-Zip but is now largely abandoned. Files are primarily encountered in legacy software distribution and compression benchmarks.",
   "category": "Archives",
@@ -130,8 +130,8 @@
     "category": "archive",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "UHARC files are rarely encountered in modern contexts",
-      "Encrypted UHARC archives (bit1 set in flags) require password for extraction"
+      { "name": "Rare format in modern context", "condition": "true", "description": "UHARC files are rarely encountered in modern contexts", "severity": "warning" },
+      { "name": "Encrypted UHARC archive", "condition": "true", "description": "Encrypted UHARC archives (bit1 set in flags) require password for extraction", "severity": "warning" }
     ]
   },
   "aiHints": {

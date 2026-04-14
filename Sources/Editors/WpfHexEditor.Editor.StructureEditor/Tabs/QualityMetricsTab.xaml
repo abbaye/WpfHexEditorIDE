@@ -1,0 +1,105 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.QualityMetricsTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
+        <StackPanel Margin="12,8">
+            <StackPanel.Resources>
+                <Style x:Key="Lbl" TargetType="TextBlock">
+                    <Setter Property="FontSize"          Value="11"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin"            Value="0,4,8,4"/>
+                    <Setter Property="MinWidth"          Value="130"/>
+                    <Setter Property="Foreground"        Value="{DynamicResource TE_LineNumberForeground}"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <!-- Completeness Score (read-only) -->
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Completeness Score" Style="{StaticResource Lbl}"/>
+                <ProgressBar Grid.Column="1" Minimum="0" Maximum="100"
+                             Value="{Binding CompletenessScore, Mode=OneWay}"
+                             Height="14" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" FontSize="11" VerticalAlignment="Center" Margin="6,0,0,0"
+                           Text="{Binding CompletenessScore, StringFormat={}{0}%}"
+                           Foreground="{DynamicResource TE_Foreground}"/>
+            </Grid>
+
+            <!-- Blocks Defined (read-only) -->
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Blocks Defined"    Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="1" FontSize="11" VerticalAlignment="Center"
+                           Text="{Binding BlocksDefined}"
+                           Foreground="{DynamicResource TE_Foreground}"/>
+            </Grid>
+
+            <!-- Validation Rules (read-only) -->
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Validation Rules"  Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="1" FontSize="11" VerticalAlignment="Center"
+                           Text="{Binding ValidationRulesCount}"
+                           Foreground="{DynamicResource TE_Foreground}"/>
+            </Grid>
+
+            <!-- Documentation Level -->
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Documentation Level" Style="{StaticResource Lbl}"/>
+                <ComboBox  Grid.Column="1" FontSize="11"
+                           ItemsSource="{Binding DocumentationLevelOptions}"
+                           SelectedItem="{Binding DocumentationLevel}"/>
+            </Grid>
+
+            <!-- Last Updated -->
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Last Updated" Style="{StaticResource Lbl}"/>
+                <TextBox   Grid.Column="1" FontSize="11" Padding="4,2" BorderThickness="1"
+                           Text="{Binding LastUpdated, UpdateSourceTrigger=PropertyChanged}"
+                           Background="{DynamicResource TE_Background}"
+                           Foreground="{DynamicResource TE_Foreground}"
+                           ToolTip="Format: YYYY-MM-DD"/>
+            </Grid>
+
+            <!-- Priority Format -->
+            <CheckBox Content="Priority Format (top 100)"
+                      IsChecked="{Binding PriorityFormat}"
+                      Foreground="{DynamicResource TE_Foreground}"
+                      FontSize="11" Margin="0,6,0,4"/>
+
+            <!-- Auto Refined (read-only) -->
+            <CheckBox Content="Auto-refined (enriched by script — read-only)"
+                      IsChecked="{Binding AutoRefined, Mode=OneWay}"
+                      IsEnabled="False"
+                      Foreground="{DynamicResource TE_LineNumberForeground}"
+                      FontSize="11" Margin="0,2"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

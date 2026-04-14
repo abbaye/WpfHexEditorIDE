@@ -1,110 +1,163 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Pro/ENGINEER Assembly",
-  "version": "2.32",
+  "version": "2.33",
   "extensions": [
     ".asm"
   ],
-  "description": "Pro/ENGINEER (Creo) assembly file",
+  "description": "ASM is the Pro/ENGINEER (now PTC Creo) assembly file format from PTC (Parametric Technology Corporation). Pro/ENGINEER pioneered parametric, feature-based CAD in the late 1980s. ASM files store multi-component 3D assembly definitions: component instances referencing external PRT (part) files and sub-assemblies, placement constraints (mate, align, insert, offset), exploded view states, assembly features (holes, cuts spanning multiple parts), and simplified representations. The Pro/E file format is proprietary binary, not publicly documented. Files typically start with binary header bytes identifying the Pro/E release version. The Pro/ENGINEER version is encoded in the file header: each major release (Pro/E 2001, Wildfire 1-5, Creo 1-10) has a distinct version byte sequence. ASM files reference external PRT files; broken references prevent assembly loading. Modern name: CREO Parametric (.asm files are still used in Creo).",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Pro/ENGINEER Assembly Format"
+      "Pro/ENGINEER File Format — PTC (proprietary, undocumented)",
+      "PTC Creo Parametric Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/ASM"
+      "https://en.wikipedia.org/wiki/PTC_Creo_Elements/Pro",
+      "https://www.ptc.com/en/products/creo",
+      "https://filext.com/file-extension/ASM"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "00", "offset": 0, "label": "Pro/ENGINEER binary header start (proprietary)", "weight": 0.1 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "Pro/ENGINEER ASM files have no documented public magic bytes. The binary format is proprietary. Detection relies entirely on .asm extension. Note: .asm extension is also used for x86 assembly language source files — context is required."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "assemblyHeader": ""
+    "assemblyHeader": "",
+    "proEVersion": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Assembly Header",
+      "name": "Pro/E Binary Header",
       "offset": 0,
       "length": 16,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Pro/ENGINEER assembly header",
+      "opacity": 0.45,
+      "description": "Pro/ENGINEER assembly binary file header at offset 0 (16 bytes). The Pro/ENGINEER native format is a proprietary binary not publicly documented by PTC. The header contains version and format identification bytes. Pro/E files are not structured as OLE2 or any standard container. The format uses a custom binary encoding for the feature tree, parametric constraints, references, and geometry. Version information is embedded in the header bytes and identifies the Pro/E release (Pro/E 2001, Wildfire 1-5, or Creo 1-10). Files are not backward-compatible: a newer Creo release cannot be opened in an older one without PTC's conversion tool.",
       "storeAs": "assemblyHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Version Identifier",
+      "offset": 16,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Pro/ENGINEER release version bytes at offset 16. Encodes the Pro/ENGINEER or Creo Parametric release that created this assembly file. The version is proprietary binary encoding — not human-readable ASCII. PTC releases: Pro/E 2001, Wildfire 1 (2003), Wildfire 2 (2004), Wildfire 3 (2006), Wildfire 4 (2008), Wildfire 5 (2009), Creo 1.0 (2011), Creo 2.0 (2012), Creo 3.0 (2014), Creo 4.0 (2016), Creo 5.0-10.0 (2018-2023).",
+      "storeAs": "proEVersion",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Assembly Header",
+      "variable": "assemblyHeader",
+      "description": "Pro/ENGINEER binary file header bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Version Bytes",
+      "variable": "proEVersion",
+      "description": "Pro/ENGINEER release version identifier"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "assemblyHeader != ''",
+      "severity": "warning",
+      "message": "ASM file header empty — file may be empty or invalid"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".asm"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Pro/E Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "proEVersion",
+    "primaryField": "assemblyHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Pro/E Assembly Header",
+        "icon": "\uE71B",
+        "fields": ["assemblyHeader", "proEVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "ASM Header (JSON)",
+      "format": "json",
+      "fields": ["assemblyHeader", "proEVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pro/ENGINEER (Creo) assembly file",
+    "analysisContext": "Pro/ENGINEER (.asm) is PTC proprietary binary. No documented magic bytes — extension is primary detection method. Note: .asm extension conflict with x86 assembly language source files. Format encodes: parametric feature tree (protrusion, cut, round, chamfer, shell, pattern), assembly constraints (mate/align/insert between component faces/axes), external PRT references, assembly features (holes through multiple components), and simplified representations (for large assemblies). Not readable without PTC Creo or commercial translators (Datakit, CADExchanger). For neutral exchange: export STEP AP214 from Creo.",
     "suggestedInspections": [
-      "Validate Pro/ENGINEER Assembly file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Extension .asm — primary identification (warning: conflicts with x86 assembly source)",
+      "File is proprietary binary — no documented magic bytes for reliable detection",
+      "Pro/ENGINEER release version embedded in binary header (offset/encoding undocumented)",
+      "For geometry extraction: export to STEP AP214 using PTC Creo or commercial translator"
     ]
+  },
+  "software": [
+    "PTC Creo Parametric (formerly Pro/ENGINEER)",
+    "Pro/ENGINEER 2001 through Creo 10.0",
+    "Datakit CrossCadWare (commercial translator)",
+    "CADExchanger (commercial)",
+    "TransMagic (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".asm"],
+    "relatedFormats": ["PRT", "STEP", "IGES", "DXF"],
+    "note": "ASM is Pro/ENGINEER's assembly format; PRT (.prt) is the part format. Both are PTC proprietary binary. Extension .asm conflicts with x86 assembly language files — requires context. For neutral exchange: STEP AP214 (with assembly structure), IGES (geometry only), or Parasolid X_T from Creo."
+  },
+  "MimeTypes": [
+    "application/x-proe-assembly",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Pro/ENGINEER and Creo Parametric multi-component assembly design",
+    "Parametric assembly constraint modeling",
+    "Aerospace and defense product structure management",
+    "Windchill PLM assembly data storage"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 50,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Proprietary binary (PTC undocumented), no standard magic bytes",
+    "Detection": "Extension-based (.asm) — binary header undocumented",
+    "VersionHistory": "Pro/E 2001, Wildfire 1-5 (2003-2009), Creo 1.0-10.0 (2011-2023)",
+    "NeutralExport": "STEP AP214 or IGES via Creo export; Parasolid X_T also available",
+    "Conflict": "Extension .asm also used for x86 assembly language source files"
   }
 }

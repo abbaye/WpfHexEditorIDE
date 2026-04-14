@@ -1,40 +1,46 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Snoop Capture",
-  "version": "2.32",
+  "version": "2.33",
   "extensions": [
     ".snoop",
     ".cap"
   ],
-  "description": "Solaris snoop packet capture format",
+  "description": "Snoop is a Solaris/SunOS packet capture format defined in RFC 1761. Snoop files begin with the 8-byte ASCII magic 'snoop\\0\\0\\0' (73 6E 6F 6F 70 00 00 00), followed by a uint32 big-endian version number (always 2), and a uint32 big-endian datalink type. After the 16-byte global header, the file contains a sequence of packet records, each with: original length (uint32 BE), included length (uint32 BE), record length (uint32 BE, includes padding to 4-byte alignment), cumulative drops (uint32 BE), timestamp seconds (uint32 BE), timestamp microseconds (uint32 BE), and packet data padded to the next 4-byte boundary. Snoop was used natively by Solaris 'snoop' utility. Modern tools (Wireshark, tcpdump) support reading snoop files but write PCAP or PCAPNG instead.",
   "category": "Network",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Snoop Capture Format"
+      "RFC 1761 — Snoop Version 2 Packet Capture File Format"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SNOOP"
+      "https://datatracker.ietf.org/doc/html/rfc1761",
+      "https://wiki.wireshark.org/Snoop",
+      "https://en.wikipedia.org/wiki/Pcap#Snoop"
     ]
   },
   "detection": {
-    "signature": "736E6F6F70",
-    "offset": 0,
+    "signatures": [
+      { "value": "736E6F6F700000000002", "offset": 0, "label": "'snoop\\0\\0\\0' + version 2 — Snoop v2 file header", "weight": 1.0 },
+      { "value": "736E6F6F70000000", "offset": 0, "label": "'snoop\\0\\0\\0' — Snoop magic identifier (8 bytes)", "weight": 0.9 },
+      { "value": "736E6F6F70", "offset": 0, "label": "'snoop' — Snoop magic prefix (5 bytes)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "Snoop files always start with ASCII 'snoop' followed by 3 null bytes. The .cap extension is shared with PCAP and other formats — the magic bytes are the reliable discriminator."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "packetCount": 0,
-    "snaplen": 0,
-    "linkType": 0,
-    "version": "",
     "snoopMagic": "",
-    "datalinkType": ""
+    "snoopVersion": 0,
+    "snoopDatalinkType": 0
   },
   "blocks": [
     {
@@ -43,21 +49,26 @@
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "snoop magic bytes (ASCII 'snoop\\0\\0\\0')",
+      "opacity": 0.45,
+      "description": "Snoop file identifier: 8 ASCII bytes 'snoop\\0\\0\\0' (0x73 0x6E 0x6F 0x6F 0x70 0x00 0x00 0x00). The word 'snoop' followed by three null padding bytes. This magic was chosen to uniquely identify snoop capture files produced by the Solaris snoop(1M) command-line utility. RFC 1761 (1994) formalizes this header. Snoop files are big-endian throughout — the format was designed on SPARC/Solaris systems which are big-endian.",
       "storeAs": "snoopMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Version Number",
       "offset": 8,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Snoop version (2)",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "Snoop file format version as uint32 big-endian at offset 8. RFC 1761 defines version 2 as the only valid value (0x00000002). Version 1 was the original Solaris 2.x format and is rarely seen. If this field reads 0x00000001 = version 1 (legacy Sun snoop pre-RFC), 0x00000002 = version 2 (RFC 1761, standard). All modern snoop files use version 2.",
+      "storeAs": "snoopVersion",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "1": "Version 1 (legacy, pre-RFC 1761)",
+        "2": "Version 2 (RFC 1761 standard)"
+      }
     },
     {
       "type": "field",
@@ -65,82 +76,136 @@
       "offset": 12,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Network type (0=Ethernet, etc.)",
-      "storeAs": "datalinkType",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "Network datalink layer type as uint32 big-endian at offset 12. Specifies the link-layer encapsulation for all packet records in this file. RFC 1761 defines: 0=IEEE 802.3 (Ethernet), 1=IEEE 802.4 (token bus), 2=IEEE 802.5 (token ring), 3=IEEE 802.6 (DQDB MAN), 4=FDDI (Fiber Distributed Data Interface), 5=Datakit (AT&T), 6=X.25, 7=X.25 DDN, 8=IP (raw IP packets), 9=LAPB (X.25 layer 2), 10=HDLC, 11=HDLC name, 12=LAPD (ISDN D channel), 13=Ethernet (alt code), 14=IP (alt).",
+      "storeAs": "snoopDatalinkType",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "0": "IEEE 802.3 — Ethernet (CSMA/CD)",
+        "1": "IEEE 802.4 — Token Bus",
+        "2": "IEEE 802.5 — Token Ring",
+        "3": "IEEE 802.6 — DQDB MAN",
+        "4": "FDDI — Fiber Distributed Data Interface",
+        "5": "Datakit (AT&T)",
+        "6": "X.25 (CCITT)",
+        "7": "X.25 DDN",
+        "8": "IP (raw IP)",
+        "9": "LAPB (X.25 layer 2)",
+        "10": "HDLC",
+        "11": "HDLC name",
+        "12": "LAPD (ISDN D channel)",
+        "13": "Ethernet (alt)",
+        "14": "IP (alt)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Packet Count",
-      "variable": "packetCount",
-      "description": "Packet Count"
+      "name": "Magic",
+      "variable": "snoopMagic",
+      "description": "'snoop\\0\\0\\0' — Snoop capture file identifier"
     },
     {
       "type": "metadata",
-      "name": "Snapshot Length",
-      "variable": "snaplen",
-      "description": "Snapshot Length"
+      "name": "Version",
+      "variable": "snoopVersion",
+      "description": "Snoop format version (2 = RFC 1761)"
     },
     {
       "type": "metadata",
-      "name": "Link Type",
-      "variable": "linkType",
-      "description": "Link Type"
+      "name": "Datalink Type",
+      "variable": "snoopDatalinkType",
+      "description": "Link-layer type for all packet records"
     }
   ],
-  "software": [
-    "Wireshark",
-    "tcpdump"
+  "assertions": [
+    {
+      "name": "Snoop magic valid",
+      "expression": "snoopMagic == 'snoop'",
+      "severity": "error",
+      "message": "Snoop file must start with ASCII 'snoop' — not a valid snoop capture file"
+    },
+    {
+      "name": "Snoop version valid",
+      "expression": "snoopVersion == 1 || snoopVersion == 2",
+      "severity": "warning",
+      "message": "Snoop version should be 1 or 2 (RFC 1761) — unexpected version number"
+    }
   ],
-  "formatRelationships": {
-    "category": "Network",
-    "extensions": [
-      ".snoop",
-      ".cap"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Snoop Global Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "First Packet Record", "offset": 16, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Wireshark",
-    "tcpdump",
-    "NetworkMiner",
-    "Fiddler",
-    "Charles Proxy"
-  ],
-  "UseCases": [
-    "Network analysis",
-    "Packet capture",
-    "Debugging",
-    "Security analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "snoopDatalinkType",
+    "primaryField": "snoopMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Snoop Global Header",
+        "icon": "\uE71B",
+        "fields": ["snoopMagic", "snoopVersion", "snoopDatalinkType"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read PCAP header",
-    "divide": "Calculate duration"
-  },
+  "exportTemplates": [
+    {
+      "name": "Snoop Header (JSON)",
+      "format": "json",
+      "fields": ["snoopMagic", "snoopVersion", "snoopDatalinkType"]
+    }
+  ],
   "forensic": {
     "category": "network",
     "riskLevel": "medium",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Solaris snoop packet capture format",
+    "analysisContext": "Snoop (RFC 1761) global header: magic(8B='snoop\\0\\0\\0') + version(4B BE, =2) + datalinkType(4B BE). Packet record structure: originalLength(4B BE) + includedLength(4B BE) + recordLength(4B BE, padded to 4B boundary) + cumulativeDrops(4B BE) + timestampSeconds(4B BE) + timestampMicroseconds(4B BE) + packetData(includedLength bytes, padded). Datalink 0=Ethernet. Wireshark reads snoop natively (wiretap library). Snoop was a Solaris-only tool; modern captures use PCAP or PCAPNG. The .cap extension is shared with PCAP — use magic to distinguish.",
     "suggestedInspections": [
-      "Validate Snoop Capture file header: magic, version, link-layer type",
-      "Check packet record timestamps and capture lengths",
-      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
+      "Bytes 0-7: 'snoop\\0\\0\\0' — confirm Snoop magic vs PCAP (0xD4C3B2A1) or PCAPNG (0x0A0D0D0A)",
+      "Bytes 8-11 (uint32 BE): version — should be 2 (RFC 1761)",
+      "Bytes 12-15 (uint32 BE): datalink type — 0=Ethernet is most common",
+      "Offset 16+: packet records — each has 6×uint32 header + packet data padded to 4B"
     ]
+  },
+  "software": [
+    "Solaris snoop(1M) (native creator)",
+    "Wireshark (read/write conversion)",
+    "tcpdump (reads snoop files)",
+    "NetworkMiner (forensics)"
+  ],
+  "formatRelationships": {
+    "category": "Network",
+    "extensions": [".snoop", ".cap"],
+    "relatedFormats": ["PCAP", "PCAPNG", "ETHERPEEK", "NETTL"],
+    "note": "Snoop is the Solaris equivalent of libpcap PCAP. Both .snoop and .cap extensions are used; .cap is shared with PCAP. Snoop is big-endian (SPARC origin) while PCAP is self-describing endianness. PCAPNG is the modern successor to both."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Legacy Solaris network troubleshooting and packet capture analysis",
+    "Converting old snoop archives to PCAPNG for modern tools",
+    "Network forensics on Solaris/SunOS systems",
+    "Protocol debugging in legacy SPARC/Solaris environments"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary big-endian Solaris snoop capture (RFC 1761)",
+    "Magic": "'snoop\\0\\0\\0' (8 bytes ASCII) at offset 0",
+    "ByteOrder": "Big-endian throughout (SPARC/Solaris origin)",
+    "Version": "Version 2 (RFC 1761 standard); version 1 = legacy pre-RFC",
+    "PacketRecord": "originalLen(4B) + includedLen(4B) + recordLen(4B) + drops(4B) + sec(4B) + usec(4B) + data"
   }
 }

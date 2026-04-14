@@ -1,151 +1,165 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Unity Asset Bundle",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".unity3d"
+    ".unity3d",
+    ".bundle",
+    ".assetbundle"
   ],
-  "description": "Unity Engine asset bundle file",
+  "description": "Unity Asset Bundles are compressed archives containing game assets compiled by the Unity Engine content pipeline. The format starts with 8 ASCII bytes identifying the bundle type: 'UnityFS\\0' (55 6E 69 74 79 46 53 00) for the modern LZ4/LZMA bundle format (Unity 5.3+), or 'UnityRaw\\0' (older format), or 'UnityWeb\\0' (web-compressed). After the signature, the header contains: bundleVersion (uint32 BE), minPlayerVersion (null-terminated string), unityVersion (null-terminated string), bundleSize (uint64 BE), compressedBlockInfoSize (uint32 BE), uncompressedBlockInfoSize (uint32 BE), flags (uint32 BE: bits 5-0 = compression type, 6 = block info at end, 7 = old web plugin). Compression types: 0=none, 1=LZMA, 2=LZ4, 3=LZ4HC. Asset bundles are the primary distribution format for downloadable content (DLC) in Unity games.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Unity AssetBundle Format",
-      "UnityFS Archive Structure",
-      "Unity Asset Bundle Internal Format"
+      "Unity AssetBundle Format — UnityPack documentation"
     ],
     "WebLinks": [
-      "https://docs.unity3d.com/Manual/assetbundles-file-format.html",
+      "https://github.com/HearthSim/UnityPack/wiki/Format-Documentation",
       "https://docs.unity3d.com/Manual/AssetBundlesIntro.html",
-      "https://imbushuo.net/blog/archives/505/",
-      "https://github.com/HearthSim/UnityPack/wiki/Format-Documentation"
+      "https://github.com/K0lb3/UnityPy"
     ]
   },
   "detection": {
-    "signature": "556E697479465300",
-    "offset": 0,
+    "signatures": [
+      { "value": "556E697479465300", "offset": 0, "label": "'UnityFS\\0' — Unity 5.3+ asset bundle (LZ4/LZMA)", "weight": 1.0 },
+      { "value": "556E69747952617700", "offset": 0, "label": "'UnityRaw\\0' — older Unity asset bundle", "weight": 0.9 },
+      { "value": "556E697479576562", "offset": 0, "label": "'UnityWeb' — Unity web-compressed bundle", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 8.0 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "Unity asset bundles start with one of: 'UnityFS\\0' (Unity 5.3+), 'UnityRaw\\0' (older), or 'UnityWeb' (web builds). The type string determines the compression and header layout."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "unityfsSignature": "",
-    "formatVersion": "",
-    "unityVersion": ""
+    "unitySignature": "",
+    "unityBundleVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "UnityFS Signature",
+      "name": "Unity Bundle Signature",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "UnityFS magic bytes",
-      "storeAs": "unityfsSignature",
+      "opacity": 0.45,
+      "description": "Unity asset bundle type signature as 8 ASCII bytes at offset 0. 'UnityFS\\0' (0x55 0x6E 0x69 0x74 0x79 0x46 0x53 0x00) = UnityFileSystem format, the modern bundle format used since Unity 5.3 (2015). 'UnityRaw\\0' = older raw bundle format from Unity 4.x. 'UnityWeb' = web-hosted compressed bundles. The signature determines header structure and compression format.",
+      "storeAs": "unitySignature",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Format Version",
+      "name": "Bundle Version",
       "offset": 8,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Bundle format version",
-      "storeAs": "formatVersion",
-      "valueType": "ascii"
-    },
-    {
-      "type": "field",
-      "name": "Unity Version",
-      "offset": 12,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Unity engine version",
-      "storeAs": "unityVersion",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "Unity bundle format version as uint32 big-endian at offset 8. For UnityFS: version 6 = Unity 5.3-5.x, version 7 = Unity 2017-2019, version 8 = Unity 2020+. This version determines the header layout and supported compression features. UnityPy (Python) and AssetStudio (C#) parse all known versions.",
+      "storeAs": "unityBundleVersion",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "6": "UnityFS v6 — Unity 5.3 to 5.x",
+        "7": "UnityFS v7 — Unity 2017 to 2019",
+        "8": "UnityFS v8 — Unity 2020+"
+      }
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "Signature",
+      "variable": "unitySignature",
+      "description": "'UnityFS', 'UnityRaw', or 'UnityWeb'"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Bundle Version",
+      "variable": "unityBundleVersion",
+      "description": "Unity bundle format version"
     }
   ],
+  "assertions": [
+    {
+      "name": "Unity bundle signature present",
+      "expression": "unitySignature == 'UnityFS'",
+      "severity": "warning",
+      "message": "Expected 'UnityFS' Unity bundle signature — may be older UnityRaw/UnityWeb format"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Unity Bundle Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+    ]
+  },
+  "inspector": {
+    "badge": "unityBundleVersion",
+    "primaryField": "unitySignature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Unity Bundle Header",
+        "icon": "\uE71B",
+        "fields": ["unitySignature", "unityBundleVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Unity Bundle Header (JSON)",
+      "format": "json",
+      "fields": ["unitySignature", "unityBundleVersion"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "UnityFS header: signature(8B null-term ASCII) + bundleVersion(4B BE) + minPlayerVersion(null-term string) + unityVersion(null-term string) + bundleSize(8B BE) + compressedBlockInfoSize(4B BE) + uncompressedBlockInfoSize(4B BE) + flags(4B BE: bits0-5=compression). Compression: 0=none, 1=LZMA, 2=LZ4, 3=LZ4HC. Tools: UnityPy (Python), AssetStudio (C# GUI), uabea. Most mobile game bundles use LZ4.",
+    "suggestedInspections": [
+      "Bytes 0-7 (ASCII): 'UnityFS\\0' = modern bundle; 'UnityRaw' = older; 'UnityWeb' = web",
+      "Bytes 8-11 (uint32 BE): bundle format version (6=Unity5, 7=2017-19, 8=2020+)",
+      "Use UnityPy: import UnityPy; env = UnityPy.load('file.unity3d')",
+      "AssetStudio (GUI) can browse and extract all asset types from bundles"
+    ]
+  },
   "software": [
-    "Emulators",
-    "Game engines"
+    "Unity Engine (Unity Technologies, native)",
+    "UnityPy (Python extraction library)",
+    "AssetStudio (C# GUI extractor)",
+    "uabea (Unity Asset Bundle Extractor Avalonia)",
+    "UABE (legacy extractor)"
   ],
   "formatRelationships": {
     "category": "Game",
-    "extensions": [
-      ".unity3d"
-    ]
+    "extensions": [".unity3d", ".bundle", ".assetbundle"],
+    "relatedFormats": ["UASSET"],
+    "note": "Unity asset bundles (.unity3d/.bundle) = DLC/streaming content containers. .uasset = Unreal Engine (different engine entirely). Unity source assets are .asset/.unity files. Bundles use LZ4/LZMA compression."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Extracting sprites, textures, audio from Unity mobile/PC games",
+    "Modding Unity games by replacing or adding assets",
+    "Game translation patching via TextAsset extraction",
+    "Reverse engineering Unity game DLC content"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Unity Engine asset bundle file",
-    "suggestedInspections": [
-      "Validate Unity Asset Bundle container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary big-endian Unity asset bundle container",
+    "Magic": "'UnityFS\\0' (8 bytes) at offset 0 for modern format",
+    "Compression": "LZ4/LZ4HC (typical) or LZMA per block",
+    "Versions": "Bundle v6=Unity5, v7=2017-19, v8=2020+",
+    "Contents": "AssetBundleManifest + compressed asset data blocks"
   }
 }

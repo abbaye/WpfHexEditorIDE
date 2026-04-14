@@ -1,110 +1,167 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "SolidWorks Part",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
-    ".sldprt"
+    ".sldprt",
+    ".SLDPRT"
   ],
-  "description": "SolidWorks part file",
+  "description": "SLDPRT is the native SolidWorks part file format from Dassault Systèmes (SolidWorks Corp.). SolidWorks is the leading parametric solid modeling CAD system for mechanical engineering. SLDPRT files use the OLE2 Compound Document format (Microsoft's COM Structured Storage, magic D0CF11E0A1B11AE1) as their container. Within the OLE2 container, SolidWorks stores ACIS kernel geometry (SAT/SAB format streams) and the SolidWorks-specific feature tree, sketches, materials, configurations, reference geometry (planes, axes), sheet metal definitions, and visual properties. The OLE2 streams include 'SldWorks DocumentPropertyStorage' for document properties and version information. SolidWorks version information is embedded within the OLE2 streams — the creating SolidWorks release (e.g., SW2023 SP3) is stored in a property stream. SLDPRT format is not publicly documented; access requires SolidWorks API (COM-based) or commercial translators.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "SolidWorks Part Format"
+      "SolidWorks File Format — Dassault Systèmes (proprietary)",
+      "SolidWorks API Documentation — COM-based programmatic access"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SLDPRT"
+      "https://en.wikipedia.org/wiki/SolidWorks",
+      "https://help.solidworks.com/",
+      "https://filext.com/file-extension/SLDPRT"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0A1B11AE1",
-    "offset": 0,
+    "signatures": [
+      { "value": "D0CF11E0A1B11AE1", "offset": 0, "label": "OLE2 Compound Document magic — SolidWorks uses OLE2 as container", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0,
+      "note": "SLDPRT uses OLE2 Compound Document as container (D0CF11E0A1B11AE1). The magic is shared with other OLE2 formats (DOC, XLS, PPT, MSG). Detection requires extension (.sldprt) as primary discriminant. Within the OLE2 container, SolidWorks-specific streams identify the file as SLDPRT."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "version": "",
-    "entityCount": 0,
-    "layerCount": 0,
-    "ole2Header": 0
+    "ole2Signature": "",
+    "ole2MinorVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OLE2 Header",
+      "name": "OLE2 Magic",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "SolidWorks uses OLE2",
-      "storeAs": "ole2Header",
-      "valueType": "uint64"
+      "opacity": 0.45,
+      "description": "OLE2 Compound Document magic bytes D0 CF 11 E0 A1 B1 1A E1 at offset 0. SolidWorks (.sldprt, .sldasm, .slddrw) uses Microsoft OLE2/COM Structured Storage as the container format, embedding the ACIS geometry kernel data and SolidWorks feature tree as named streams within the compound document. The OLE2 header is followed by a sector allocation table (FAT), mini-FAT for small streams, and the directory stream listing all embedded streams. The same magic is shared with legacy Microsoft Office formats (DOC, XLS, PPT) and other OLE2-based files.",
+      "storeAs": "ole2Signature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "OLE2 Minor Version",
+      "offset": 24,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "OLE2 compound document minor version at offset 24 (2 bytes, little-endian). Standard OLE2 minor version is 0x003E (62). Major version at offset 26 is 3 (512-byte sectors) or 4 (4096-byte sectors). SolidWorks uses standard OLE2 version fields — these identify the OLE2 container version, not the SolidWorks release. The SolidWorks version is stored inside the 'SldWorks DocumentPropertyStorage' OLE2 stream, not in the main OLE2 header.",
+      "storeAs": "ole2MinorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "OLE2 Signature",
+      "variable": "ole2Signature",
+      "description": "D0CF11E0A1B11AE1 — OLE2 Compound Document container"
     },
     {
       "type": "metadata",
-      "name": "Entities",
-      "variable": "entityCount",
-      "description": "Entities"
+      "name": "Minor Version",
+      "variable": "ole2MinorVersion",
+      "description": "OLE2 container minor version (typically 0x003E)"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "OLE2 magic valid",
+      "expression": "ole2Signature != ''",
+      "severity": "error",
+      "message": "SLDPRT file should start with OLE2 magic D0CF11E0A1B11AE1 — not a valid SolidWorks file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".sldprt"
+  "navigation": {
+    "bookmarks": [
+      { "name": "OLE2 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ole2MinorVersion",
+    "primaryField": "ole2Signature",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "OLE2 Container",
+        "icon": "\uE71B",
+        "fields": ["ole2Signature", "ole2MinorVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read CAD header"
-  },
+  "exportTemplates": [
+    {
+      "name": "SLDPRT Header (JSON)",
+      "format": "json",
+      "fields": ["ole2Signature", "ole2MinorVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "SolidWorks Part - CAD/engineering format",
+    "analysisContext": "SLDPRT is OLE2 compound document (D0CF11E0A1B11AE1) containing SolidWorks-specific streams. OLE2 header: magic(8B), minor_version(2B LE), major_version(2B LE, 3=512B sectors/4=4096B sectors), byte_order(2B, always FE FF = LE), sector_size(2B, power of 2, usually 9=512), mini_sector_size(2B, usually 6=64), reserved(6B), FAT_sectors(4B), first_dir_sector(4B), transaction_sig(4B), mini_stream_cutoff(4B, usually 4096), first_miniFAT_sector(4B), miniFAT_sectors(4B), first_DIFAT_sector(4B), DIFAT_sectors(4B), DIFAT_array(436B). Inside OLE2: directory stream lists entries including 'Root Entry', 'SldWorks DocumentPropertyStorage', 'MCAD', 'Stream 0' with ACIS geometry. SolidWorks version: read 'SldWorks DocumentPropertyStorage' stream, property ID 0x0001 = SW version string.",
     "suggestedInspections": [
-      "Validate SolidWorks Part file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-7: D0CF11E0A1B11AE1 — OLE2 magic confirms compound document container",
+      "Bytes 24-25: minor version (LE), bytes 26-27: major version (3=512B/4=4096B sectors)",
+      "Use oletools or python-pptx to list OLE2 stream names and find SolidWorks streams",
+      "SolidWorks version stored in 'SldWorks DocumentPropertyStorage' stream"
     ]
+  },
+  "software": [
+    "SolidWorks (Dassault Systèmes)",
+    "SolidWorks 2020-2024",
+    "eDrawings (viewer)",
+    "Datakit CrossCadWare (commercial)",
+    "CADExchanger (commercial)",
+    "TransMagic (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".sldprt", ".SLDPRT"],
+    "relatedFormats": ["SLDASM", "SLDDRW", "STEP", "IGES", "SAT"],
+    "note": "SLDPRT stores a single part; SLDASM (.sldasm) is the assembly; SLDDRW (.slddrw) is the 2D drawing. All three use OLE2 as container. ACIS kernel geometry is embedded as SAT/SAB streams. Neutral exchange via STEP, IGES, or Parasolid (X_T/X_B) export from SolidWorks."
+  },
+  "MimeTypes": [
+    "application/sldprt",
+    "application/x-solidworks",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Parametric 3D mechanical part design in SolidWorks",
+    "Feature-based modeling with design intent history",
+    "Manufacturing drawings and tooling design",
+    "Consumer product and industrial equipment design"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "OLE2 Compound Document (D0CF11E0A1B11AE1) with SolidWorks ACIS streams",
+    "Container": "Microsoft COM Structured Storage (same as legacy Office DOC/XLS/PPT)",
+    "Geometry": "ACIS kernel (SAT/SAB) embedded in OLE2 stream 'MCAD' or 'Stream 0'",
+    "Version": "SolidWorks release in 'SldWorks DocumentPropertyStorage' OLE2 stream",
+    "AccessMethod": "SolidWorks API (COM), oletools, or commercial CAD translators"
   }
 }

@@ -1,41 +1,45 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "HP-UX nettl",
-  "version": "1.13",
+  "formatName": "HP-UX nettl Trace",
+  "version": "1.14",
   "extensions": [
     ".trc0",
     ".trc1"
   ],
-  "description": "HP-UX network tracing and logging format",
+  "description": "HP-UX nettl (Network Tracing and Logging) is a proprietary network packet capture format used by HP-UX systems for network diagnostics. The nettl utility records network subsystem events and packet traces into .trc0 and .trc1 files. The file starts with a 128-byte global header: fileMagic (4B LE, identifies nettl format), fileType (4B ASCII, 'TRCF' for trace), startTime (8B, timeval seconds+microseconds), hostnameLength (4B), hostname (64B ASCII, null-padded), timeZone (64B ASCII). The .trc0 file contains the header and initial data; when it fills, .trc1 is created and used next. Wireshark reads nettl files via wiretap/nettl.c. HP-UX nettl traces subsystems: NS_LS_DRIVER, NS_LS_LOOPBACK, NS_LS_HPOBSSIX, etc. Each trace record includes a subsystem ID, pid, timestamp, and raw packet data.",
   "category": "Network",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "HP-UX nettl Format"
+      "HP-UX nettl(1M) and nettlconf(1M) man pages",
+      "Wireshark wiretap/nettl.c — format reverse-engineering"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/TRC0"
+      "https://wiki.wireshark.org/Nettl",
+      "https://www.wireshark.org/docs/",
+      "https://en.wikipedia.org/wiki/HP-UX"
     ]
   },
   "detection": {
-    "signature": "00000001",
-    "offset": 0,
+    "signatures": [
+      { "value": "00000001", "offset": 0, "label": "nettl file magic 0x00000001 — HP-UX nettl trace header", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 128,
+      "maxSignatureOffset": 0,
+      "note": "HP-UX nettl files have a weak magic (0x00000001 is not unique). The .trc0/.trc1 extensions are the most reliable discriminators. Wireshark checks the fileType field ('TRCF') for confirmation."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "subsystem": 0,
-    "packetCount": 0,
-    "captureLength": 0,
-    "fileMagic": "",
+    "fileMagic": 0,
     "fileType": "",
-    "startTime": 0,
-    "hostnameLength": "",
+    "hostnameLength": 0,
     "hostname": "",
     "timeZone": ""
   },
@@ -46,10 +50,14 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "nettl file magic number",
+      "opacity": 0.45,
+      "description": "HP-UX nettl file magic number as uint32 little-endian at offset 0. Value 0x00000001 identifies a nettl trace file. This magic is not unique to nettl — many binary file formats use 0x00000001 as a version or type marker. The combination of this magic plus fileType='TRCF' at offset 4 provides a stronger identification. HP-UX nettl was used for network diagnostics on HP-UX 10.x and 11.x systems.",
       "storeAs": "fileMagic",
-      "valueType": "uint32"
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "0x00000001 — nettl trace file identifier"
+      }
     },
     {
       "type": "field",
@@ -57,41 +65,34 @@
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Trace file type identifier",
+      "opacity": 0.35,
+      "description": "nettl file type as 4 ASCII bytes at offset 4. 'TRCF' (54 52 43 46) = trace file (the standard value for .trc0/.trc1 files). This is the primary confirmation field for nettl format identification. Wireshark checks for 'TRCF' to confirm the file is a nettl trace rather than another format that happens to start with 0x00000001.",
       "storeAs": "fileType",
-      "valueType": "ascii"
-    },
-    {
-      "type": "field",
-      "name": "Start Time",
-      "offset": 8,
-      "length": 8,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Trace start time (timeval)",
-      "storeAs": "startTime",
-      "valueType": "uint64"
+      "valueType": "ascii",
+      "valueMap": {
+        "TRCF": "Trace File — standard nettl capture format"
+      }
     },
     {
       "type": "field",
       "name": "Hostname Length",
       "offset": 16,
       "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Length of hostname",
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Length of the hostname string at offset 16 as uint32. The actual hostname field starts at offset 20 and is 64 bytes long (null-padded). The hostnameLength indicates the useful portion. HP-UX hostnames are typically 8-64 characters.",
       "storeAs": "hostnameLength",
-      "valueType": "uint32"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
       "name": "Hostname",
       "offset": 20,
       "length": 64,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "System hostname",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "System hostname as 64-byte null-padded ASCII string at offset 20. Contains the HP-UX system hostname where the trace was captured. Useful for identifying the source system in network forensics. Null-terminated ASCII, padded with 0x00 bytes to 64 bytes total.",
       "storeAs": "hostname",
       "valueType": "ascii"
     },
@@ -101,76 +102,118 @@
       "offset": 84,
       "length": 64,
       "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Time zone string",
+      "opacity": 0.35,
+      "description": "Time zone string as 64-byte null-padded ASCII at offset 84. Contains the POSIX TZ string (e.g., 'MET-1MEST,M3.5.0,M10.5.0/3') or abbreviated zone name (e.g., 'UTC', 'PST8PDT'). Used when interpreting the per-record timestamps in the trace data. Global header ends at offset 148.",
       "storeAs": "timeZone",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Subsystem",
-      "variable": "subsystem",
-      "description": "Subsystem"
+      "name": "File Magic",
+      "variable": "fileMagic",
+      "description": "nettl magic: 0x00000001"
     },
     {
       "type": "metadata",
-      "name": "Packet Count",
-      "variable": "packetCount",
-      "description": "Packet Count"
+      "name": "File Type",
+      "variable": "fileType",
+      "description": "nettl file type: 'TRCF' = trace file"
+    },
+    {
+      "type": "metadata",
+      "name": "Hostname",
+      "variable": "hostname",
+      "description": "HP-UX system hostname where trace was captured"
     }
   ],
+  "assertions": [
+    {
+      "name": "nettl file magic",
+      "expression": "fileMagic == 1",
+      "severity": "warning",
+      "message": "HP-UX nettl file magic should be 0x00000001 — may not be a valid nettl trace file"
+    },
+    {
+      "name": "nettl TRCF type",
+      "expression": "fileType == 'TRCF'",
+      "severity": "warning",
+      "message": "nettl fileType should be 'TRCF' — unexpected trace file type identifier"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "nettl Global Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Hostname Field", "offset": 20, "icon": "\uE71B", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "fileType",
+    "primaryField": "hostname",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "nettl Global Header",
+        "icon": "\uE71B",
+        "fields": ["fileMagic", "fileType", "hostnameLength", "hostname", "timeZone"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "nettl Header (JSON)",
+      "format": "json",
+      "fields": ["fileMagic", "fileType", "hostnameLength", "hostname", "timeZone"]
+    }
+  ],
+  "forensic": {
+    "category": "network",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "HP-UX nettl global header (128B): fileMagic(4B LE, =1) + fileType(4B ASCII, 'TRCF') + startTime(8B, timeval sec+usec) + hostnameLength(4B BE) + hostname(64B ASCII, null-padded) + timeZone(64B ASCII). Trace records follow with subsystem IDs, pids, timestamps, and packet data. .trc0 is primary file; .trc1 is secondary (overflow). Wireshark reads nettl via wiretap/nettl.c. Convert to PCAPNG for modern analysis.",
+    "suggestedInspections": [
+      "Bytes 0-3 (uint32 LE): magic = 0x00000001 — nettl identifier",
+      "Bytes 4-7 (ASCII): fileType should be 'TRCF' to confirm nettl trace",
+      "Bytes 20-83 (ASCII): hostname of the HP-UX capture system",
+      "Bytes 84-147 (ASCII): time zone string for timestamp interpretation"
+    ]
+  },
   "software": [
-    "Wireshark",
-    "tcpdump"
+    "HP-UX nettl(1M) (native creator)",
+    "HP-UX netfmt(1M) (native viewer)",
+    "Wireshark (reads nettl via wiretap)",
+    "tcpdump with nettl support"
   ],
   "formatRelationships": {
     "category": "Network",
-    "extensions": [
-      ".trc0",
-      ".trc1"
-    ]
+    "extensions": [".trc0", ".trc1"],
+    "relatedFormats": ["PCAP", "PCAPNG", "SNOOP"],
+    "note": ".trc0 is the primary trace file; .trc1 is the secondary file when .trc0 fills. Both use the same format. HP-UX nettl is the HP-UX equivalent of Solaris snoop — both are platform-specific alternatives to PCAP. Modern captures should use PCAPNG."
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
-  "Software": [
-    "Wireshark",
-    "tcpdump",
-    "NetworkMiner",
-    "Fiddler",
-    "Charles Proxy"
-  ],
   "UseCases": [
-    "Network analysis",
-    "Packet capture",
-    "Debugging",
-    "Security analysis"
+    "Reading legacy HP-UX network trace files",
+    "Converting HP-UX nettl captures to PCAPNG for modern analysis",
+    "Network forensics on HP-UX/PA-RISC systems",
+    "Diagnosing historical network issues from HP-UX systems"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 48,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read HP-UX nettl header",
-    "readUInt16BE": "Read subsystem ID"
-  },
-  "forensic": {
-    "category": "network",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "HP-UX network tracing and logging format",
-    "suggestedInspections": [
-      "Validate HP-UX nettl file header: magic, version, link-layer type",
-      "Check packet record timestamps and capture lengths",
-      "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
-    ]
+  "TechnicalDetails": {
+    "Format": "Binary HP-UX nettl network trace (proprietary)",
+    "Magic": "0x00000001 LE at offset 0 + 'TRCF' ASCII at offset 4",
+    "ByteOrder": "Mixed: fileMagic LE, other fields BE",
+    "GlobalHeader": "128 bytes: magic(4B) + type(4B) + startTime(8B) + hostnameLen(4B) + hostname(64B) + tz(64B)",
+    "Files": ".trc0 = primary; .trc1 = secondary overflow file"
   }
 }

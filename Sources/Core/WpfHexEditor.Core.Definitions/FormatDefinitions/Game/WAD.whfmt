@@ -1,42 +1,45 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Doom WAD File",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".wad"
   ],
-  "description": "Doom/Quake WAD archive",
+  "description": "WAD (Where's All the Data) is the game data archive format used by id Software's Doom engine and its derivatives (Doom 1/2/Final, Heretic, Hexen, Strife). WAD files are identified by a 4-byte ASCII header: 'IWAD' (49 57 41 44) for Internal WAD (complete game data, shipped by id) or 'PWAD' (50 57 41 44) for Patch WAD (user-created modifications, adds/replaces lumps). After the 4-byte type, the header contains: lumpCount (uint32 LE, number of lumps), dirOffset (uint32 LE, byte offset to directory). The directory is an array of 16-byte entries: fileOffset (uint32 LE), lumpSize (uint32 LE), lumpName (8 bytes ASCII, null-padded). Lumps store maps, textures, sprites, sounds, palettes, and game logic. Map lumps follow a naming pattern: E1M1 (Doom 1 episode format) or MAP01 (Doom 2 format), each followed by THINGS, LINEDEFS, SIDEDEFS, VERTEXES, SEGS, SSECTORS, NODES, SECTORS, REJECT, BLOCKMAP lumps.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Doom WAD File Format",
-      "IWAD/PWAD Specification",
-      "id Software WAD Structure"
+      "Unofficial Doom Specs v1.666 by Matthew Fell",
+      "Doom Wiki — WAD format documentation"
     ],
     "WebLinks": [
       "https://doomwiki.org/wiki/WAD",
-      "https://moddingwiki.shikadi.net/wiki/WAD_Format",
-      "https://coleton.io/posts/wad/",
-      "https://jordansavant.com/book/modding/doom/anatomy_of_a_doom_level_part_1_wad_structure.md"
+      "https://doomwiki.org/wiki/Lump",
+      "https://moddingwiki.shikadi.net/wiki/WAD_Format"
     ]
   },
   "detection": {
-    "signature": "49574144",
-    "offset": 0,
+    "signatures": [
+      { "value": "49574144", "offset": 0, "label": "'IWAD' — Doom Internal WAD (game data)", "weight": 1.0 },
+      { "value": "50574144", "offset": 0, "label": "'PWAD' — Doom Patch WAD (user modification)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "Doom WAD files always start with 'IWAD' or 'PWAD' ASCII (4 bytes). IWAD = shipped game data (doom.wad, doom2.wad, heretic.wad). PWAD = user modifications. Quake uses WAD2/WAD3 variants (different magic — see WAD2.whfmt, WAD3.whfmt)."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "wadType": ""
+    "wadType": "",
+    "wadLumpCount": 0,
+    "wadDirOffset": 0
   },
   "blocks": [
     {
@@ -45,83 +48,147 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "IWAD or PWAD",
+      "opacity": 0.45,
+      "description": "Doom WAD type identifier: 4 ASCII bytes 'IWAD' or 'PWAD'. IWAD (0x49 0x57 0x41 0x44) = Internal WAD — the original game data files distributed by id Software (doom.wad, doom2.wad, heretic.wad, hexen.wad, strife1.wad). PWAD (0x50 0x57 0x41 0x44) = Patch WAD — user-created modifications distributed by the Doom modding community. PWAD lumps override or supplement the base IWAD data. The Doom engine loads the IWAD first, then applies PWADs from the command line (-file param).",
       "storeAs": "wadType",
-      "valueType": "ascii"
+      "valueType": "ascii",
+      "valueMap": {
+        "IWAD": "Internal WAD — official id Software game data",
+        "PWAD": "Patch WAD — user modification / add-on"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Lump Count",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total number of lumps (entries) in this WAD file as uint32 little-endian at offset 4. A lump is any named binary resource: map data, textures, sprites, sounds, palettes, etc. Doom 1 IWAD contains ~1264 lumps; Doom 2 ~2919 lumps. PWAD files typically contain far fewer lumps (replacing only specific content). The directory (lump table) has exactly lumpCount × 16 bytes.",
+      "storeAs": "wadLumpCount",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Directory Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte offset to the lump directory (file table) as uint32 little-endian at offset 8. The directory is placed at the end of the WAD file by id Software tools. Each 16-byte directory entry: fileOffset(4B LE) + lumpSize(4B LE) + lumpName(8B ASCII, null-padded). Navigate to this offset to list all lumps and their locations.",
+      "storeAs": "wadDirOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "name": "WAD Type",
+      "variable": "wadType",
+      "description": "'IWAD' (game data) or 'PWAD' (modification)"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "Lump Count",
+      "variable": "wadLumpCount",
+      "description": "Number of lumps in this WAD"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Directory Offset",
+      "variable": "wadDirOffset",
+      "description": "Byte offset to lump directory"
     }
   ],
-  "software": [
-    "Emulators",
-    "Game engines"
+  "assertions": [
+    {
+      "name": "WAD type valid",
+      "expression": "wadType == 'IWAD' || wadType == 'PWAD'",
+      "severity": "error",
+      "message": "WAD type must be 'IWAD' or 'PWAD' — not a valid Doom WAD file"
+    },
+    {
+      "name": "Lump count non-zero",
+      "expression": "wadLumpCount > 0",
+      "severity": "warning",
+      "message": "WAD file has zero lumps — may be empty or corrupt"
+    }
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".wad"
+  "navigation": {
+    "bookmarks": [
+      { "name": "WAD Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Lump Data Start", "offset": 12, "icon": "\uE71B", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
-  "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "wadType",
+    "primaryField": "wadLumpCount",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "WAD Header",
+        "icon": "\uE71B",
+        "fields": ["wadType", "wadLumpCount", "wadDirOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
-  },
+  "exportTemplates": [
+    {
+      "name": "WAD Header (JSON)",
+      "format": "json",
+      "fields": ["wadType", "wadLumpCount", "wadDirOffset"]
+    }
+  ],
   "forensic": {
     "category": "game",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Doom/Quake WAD archive",
+    "analysisContext": "Doom WAD header: type(4B ASCII 'IWAD'/'PWAD') + lumpCount(4B LE) + dirOffset(4B LE). Directory at dirOffset: array of {fileOffset(4B LE) + lumpSize(4B LE) + lumpName(8B ASCII null-padded)} × lumpCount. Key lump names: PLAYPAL (palette), COLORMAP, TEXTURE1/2 (wall textures), PNAMES (patch names), FLAT lumps, E1M1/MAP01 (map markers), THINGS/LINEDEFS/SIDEDEFS/VERTEXES/SEGS/SSECTORS/NODES/SECTORS/REJECT/BLOCKMAP (map lumps). Zero-size lumps are markers.",
     "suggestedInspections": [
-      "Validate Doom WAD File container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+      "Bytes 0-3 (ASCII): 'IWAD' (game data) or 'PWAD' (user mod) — type identifier",
+      "Bytes 4-7 (uint32 LE): lumpCount — number of lumps in directory",
+      "Bytes 8-11 (uint32 LE): dirOffset — navigate here for lump table (16B per entry)",
+      "Directory entries: 4B offset + 4B size + 8B name — locate specific lumps by name"
     ]
+  },
+  "software": [
+    "id Software Doom (original engine)",
+    "GZDoom / ZDoom / Chocolate Doom (source ports)",
+    "SLADE3 (WAD editor/viewer)",
+    "DoomBuilder (map editor)",
+    "WhackEd / XWE (WAD editors)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [".wad"],
+    "relatedFormats": ["WAD2", "WAD3", "PAK", "BSP"],
+    "note": "Doom WAD ('IWAD'/'PWAD') is distinct from Quake WAD2 ('WAD2' magic) and Half-Life WAD3 ('WAD3' magic). Quake's BSP maps embed WAD-style lump data. The .wad extension is used exclusively by the Doom/Heretic/Hexen family."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Playing and modding Doom, Doom 2, Heretic, Hexen, Strife games",
+    "Level design and WAD creation for Doom-engine games",
+    "Game preservation and archival of classic Doom content",
+    "Extracting sprites, textures, sounds from Doom-engine games"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary little-endian Doom WAD archive (id Software)",
+    "Magic": "'IWAD' or 'PWAD' ASCII at offset 0",
+    "Header": "12 bytes: type(4B) + lumpCount(4B LE) + dirOffset(4B LE)",
+    "DirEntry": "16 bytes: fileOffset(4B LE) + lumpSize(4B LE) + lumpName(8B null-padded ASCII)",
+    "Compression": "None — lumps are stored uncompressed"
   }
 }

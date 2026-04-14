@@ -351,12 +351,20 @@ public partial class MainWindow
             // ── Format Catalog: load all whfmt formats ONCE into shared static catalog ──
             var formatCatalog = new WpfHexEditor.Core.Services.FormatCatalogService();
             var embeddedEntries = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetAll()
+                .Where(e => e.ResourceKey.EndsWith(".whfmt", StringComparison.OrdinalIgnoreCase))
                 .Select(e => (WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(e.ResourceKey), (string?)e.Category));
             var externalDir = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
                 "FormatDefinitions");
             formatCatalog.Initialize(embeddedEntries, externalDir);
             OutputLogger.Info($"[FormatCatalog] {formatCatalog.FormatCount} formats loaded (shared pipeline)");
+
+            if (formatCatalog.LoadFailures.Count > 0)
+            {
+                OutputLogger.Error($"[FormatCatalog] {formatCatalog.LoadFailures.Count} whfmt file(s) failed to load:");
+                foreach (var f in formatCatalog.LoadFailures)
+                    OutputLogger.Warn($"  • {f.Source}: {f.Reason}");
+            }
 
             // Format Parsing Service — universal, editor-agnostic format detection + field parsing
             var formatParsingService = new WpfHexEditor.Core.Services.FormatParsing.FormatParsingService();

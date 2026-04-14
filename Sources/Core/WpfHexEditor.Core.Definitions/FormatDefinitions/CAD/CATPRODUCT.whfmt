@@ -1,122 +1,166 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "CATIA Product",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".catproduct"
+    ".catproduct",
+    ".CATProduct"
   ],
-  "description": "CATIA V5 product assembly file (OLE2 Compound Document)",
+  "description": "CATProduct is the native CATIA V5/V5-6 assembly file format from Dassault Systèmes. While individual parts are stored in CATPart files, the assembly structure (product tree) is stored in CATProduct. A CATProduct file defines the hierarchical assembly by referencing external CATPart, sub-CATProduct, and CATShape files, with each referenced component having a placement matrix (position and orientation in the assembly coordinate system). CATProduct also stores assembly constraints (coincident, offset, angle, parallelism, etc.) between component faces/edges/axes. The binary format uses the same CATIA V5 Document Store container as CATPart, starting with the 'V5' magic bytes. Note: Some earlier documentation incorrectly states CATProduct uses OLE2 compound document format — this is incorrect for CATIA V5; OLE2 would only apply if the file was exported via DCOM. The native CATIA V5 format uses the proprietary V5 Document Store.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "CATIA Product Format"
+      "CATIA V5 Document Store Format — Dassault Systèmes (proprietary)",
+      "CATIA CAA V5 SDK — Assembly Design Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/CATPRODUCT"
+      "https://en.wikipedia.org/wiki/CATIA",
+      "https://www.3ds.com/products-services/catia/",
+      "https://filext.com/file-extension/CATPRODUCT"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0A1B11AE1",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "5635050000", "offset": 0, "label": "'V5..' — CATIA V5 document magic (same as CATPart)", "weight": 0.8 },
+      { "value": "5635", "offset": 0, "label": "'V5' — CATIA V5 two-byte prefix", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "CATProduct files use CATIA V5 Document Store binary format with 'V5' magic at offset 0, identical to CATPart. Extension (.catproduct) distinguishes assembly from part files. Detection priority: extension first, then magic bytes."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "ole2Signature": "",
-    "minorVersion": 0
+    "catiaMagic": "",
+    "catiaVersion": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OLE2 Signature",
+      "name": "CATIA V5 Magic",
       "offset": 0,
-      "length": 8,
+      "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "OLE2 compound document signature",
-      "storeAs": "ole2Signature",
+      "opacity": 0.45,
+      "description": "CATIA V5 document store magic bytes 'V5' (0x56 0x35) followed by format bytes. CATProduct uses the identical container format as CATPart — both start with 'V5' at offset 0. The subsequent bytes encode the document subtype (part vs. assembly vs. drawing) and CATIA V5 release version. CATProduct contains the assembly tree: component instances referencing external CATPart/CATProduct files, transformation matrices for each instance, and assembly constraints (coincident, offset, angle, contact, parallelism) between part features.",
+      "storeAs": "catiaMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Minor Version",
-      "offset": 24,
-      "length": 2,
+      "name": "Document Version",
+      "offset": 4,
+      "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "OLE2 minor version",
-      "storeAs": "minorVersion",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "CATIA V5 release version encoded as binary integer at offset 4. Same encoding as CATPart: identifies the CATIA V5 release (R1 through R33+) that created this assembly file. CATProduct files cannot be opened in CATIA releases older than the release that created them. CATIA V5-6R2023 = R33. Version compatibility is critical for assembly files since they reference CATPart files that must also be accessible at matching version paths.",
+      "storeAs": "catiaVersion",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "CATIA Magic",
+      "variable": "catiaMagic",
+      "description": "'V5' CATIA V5 Document Store identifier"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Document Version",
+      "variable": "catiaVersion",
+      "description": "CATIA V5 release version (R1-R33+) as binary integer"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "CATIA V5 magic present",
+      "expression": "catiaMagic != ''",
+      "severity": "warning",
+      "message": "CATProduct file does not start with expected CATIA V5 magic — may be corrupt or a different format"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".catproduct"
+  "navigation": {
+    "bookmarks": [
+      { "name": "CATIA V5 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "catiaMagic",
+    "primaryField": "catiaVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CATProduct Header",
+        "icon": "\uE71B",
+        "fields": ["catiaMagic", "catiaVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "CATProduct Header (JSON)",
+      "format": "json",
+      "fields": ["catiaMagic", "catiaVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "CATIA V5 product assembly file (OLE2 Compound Document)",
+    "analysisContext": "CATProduct is CATIA V5 proprietary assembly binary. Same 'V5' magic at offset 0 as CATPart. Document Store container holds: product tree (hierarchy of CATPart/CATProduct references with instance names), placement matrices (4×4 affine transforms for each component's position/orientation in assembly), constraints (CATConstraint entities: coincident/offset/angle/contact/parallelism between part faces, edges, axes), and publication items (exposed geometry for external references). External part references are stored as file paths (Windows paths in the CATIA installation context). Assembly can span thousands of components. Not publicly documented; CAA V5 SDK required for programmatic access. For geometry extraction: use STEP AP214 export from CATIA.",
     "suggestedInspections": [
-      "Validate CATIA Product file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Bytes 0-1: 'V5' (0x56 0x35) — CATIA V5 Document Store magic",
+      "Bytes 4-7: document version integer — identifies CATIA V5 release (R1-R33)",
+      "Extension .catproduct vs .catpart distinguishes assembly from individual part",
+      "Binary content references external .catpart file paths (not readable without CATIA SDK)"
     ]
+  },
+  "software": [
+    "CATIA V5 / V5-6 (Dassault Systèmes)",
+    "CATIA V5-6R2023 and earlier",
+    "Datakit CrossCadWare (commercial translator)",
+    "TransMagic (commercial)",
+    "CADExchanger (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".catproduct", ".CATProduct"],
+    "relatedFormats": ["CATPART", "STEP", "IGES", "JT", "3DXML"],
+    "note": "CATProduct is the CATIA V5 assembly format; CATPart stores individual parts. Together they define the product structure. Both use the CATIA V5 Document Store format with 'V5' magic. CATIA V6 (3DEXPERIENCE) uses 3DXML/PLM XML instead. External exchange uses STEP AP214 for geometry with assembly structure."
+  },
+  "MimeTypes": [
+    "application/x-catproduct",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "CATIA V5 multi-component assembly definition and management",
+    "Aerospace and automotive full vehicle/aircraft assembly",
+    "Assembly constraint modeling and kinematic simulation",
+    "PLM product structure and BOM (Bill of Materials) definition"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Proprietary CATIA V5 Document Store binary (identical container as CATPart)",
+    "Magic": "'V5' (0x56 0x35) at offset 0 — same as CATPart",
+    "Distinction": "Extension (.catproduct) distinguishes assembly from part (.catpart)",
+    "ExternalRefs": "References external .catpart and .catproduct files by path for assembly tree",
+    "NeutralExport": "STEP AP214, IGES, JT via CATIA export"
   }
 }

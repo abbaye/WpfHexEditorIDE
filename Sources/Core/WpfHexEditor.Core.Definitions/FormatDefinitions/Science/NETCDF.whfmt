@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NetCDF Data File",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".nc",
     ".netcdf"
@@ -10,21 +10,28 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "NetCDF Classic and 64-bit Offset Format v1.0",
-    "Unidata NetCDF User's Guide"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/NetCDF",
-    "https://www.unidata.ucar.edu/software/netcdf/"
-  ],
+  "references": {
+    "specifications": [
+      "NetCDF Classic and 64-bit Offset Format v1.0",
+      "Unidata NetCDF User's Guide"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/NetCDF",
+      "https://www.unidata.ucar.edu/software/netcdf/"
+    ]
+  },
   "detection": {
     "signature": "43444601",
     "offset": 0,
     "required": true,
     "weight": 1.0,
     "alternativeSignatures": [
-      { "signature": "43444602", "offset": 0, "weight": 1.0, "note": "NetCDF-3 64-bit offset format" }
+      {
+        "signature": "43444602",
+        "offset": 0,
+        "weight": 1.0,
+        "note": "NetCDF-3 64-bit offset format"
+      }
     ],
     "validation": {
       "minFileSize": 32,
@@ -79,7 +86,7 @@
       "length": 4,
       "color": "#FFE66D",
       "opacity": 0.35,
-          "description": "Big-endian int32 count of dimension definitions; each dimension has a length-prefixed name and a big-endian int32 size value",
+      "description": "Big-endian int32 count of dimension definitions; each dimension has a length-prefixed name and a big-endian int32 size value",
       "storeAs": "dimCount",
       "valueType": "uint32be"
     },
@@ -110,7 +117,10 @@
       "description": "Byte 3 must be 0x01 (classic) or 0x02 (64-bit offsets); a value of 0x05 indicates NetCDF-4 (HDF5 container) not handled by this definition",
       "offset": 3,
       "length": 1,
-      "validValues": ["01", "02"],
+      "validValues": [
+        "01",
+        "02"
+      ],
       "severity": "warning"
     }
   ],
@@ -119,11 +129,36 @@
       {
         "name": "File Header",
         "fields": [
-          { "label": "Magic (CDF)",      "offset": 0,  "length": 3,  "format": "ascii" },
-          { "label": "Format Version",   "offset": 3,  "length": 1,  "format": "uint8" },
-          { "label": "Num Records",      "offset": 4,  "length": 4,  "format": "uint32be" },
-          { "label": "Dim List Tag",     "offset": 8,  "length": 4,  "format": "uint32be" },
-          { "label": "Dim Count",        "offset": 12, "length": 4,  "format": "uint32be" }
+          {
+            "label": "Magic (CDF)",
+            "offset": 0,
+            "length": 3,
+            "format": "ascii"
+          },
+          {
+            "label": "Format Version",
+            "offset": 3,
+            "length": 1,
+            "format": "uint8"
+          },
+          {
+            "label": "Num Records",
+            "offset": 4,
+            "length": 4,
+            "format": "uint32be"
+          },
+          {
+            "label": "Dim List Tag",
+            "offset": 8,
+            "length": 4,
+            "format": "uint32be"
+          },
+          {
+            "label": "Dim Count",
+            "offset": 12,
+            "length": 4,
+            "format": "uint32be"
+          }
         ]
       }
     ]
@@ -131,7 +166,11 @@
   "exportTemplates": [
     {
       "name": "NetCDF Header Summary",
-      "fields": ["netcdfMagic", "numRecords", "dimCount"]
+      "fields": [
+        "netcdfMagic",
+        "numRecords",
+        "dimCount"
+      ]
     }
   ],
   "software": [

@@ -1,148 +1,176 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DER Certificate",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".der",
     ".cer",
     ".crt"
   ],
-  "description": "Distinguished Encoding Rules - X.509 certificate",
+  "description": "DER (Distinguished Encoding Rules) is the binary encoding of ASN.1 data structures as specified by ITU-T X.690. DER is the standard binary serialization for X.509 certificates (RFC 5280), CRLs (Certificate Revocation Lists), and other PKI structures. DER files start with the ASN.1 SEQUENCE tag 0x30 followed by a length in definite form: if length ≤ 127, it is encoded in one byte; if length > 127, the first byte is 0x80 | n where n is the number of subsequent bytes encoding the actual length. For typical X.509 certificates, the file starts with 0x30 0x82 (SEQUENCE, length in next 2 bytes). The DER-encoded X.509 Certificate structure (RFC 5280): outer SEQUENCE { tbsCertificate SEQUENCE { version [0] INTEGER, serialNumber INTEGER, signature AlgorithmIdentifier, issuer Name, validity Validity, subject Name, subjectPublicKeyInfo SubjectPublicKeyInfo, extensions [3] SEQUENCE }, signatureAlgorithm AlgorithmIdentifier, signature BIT STRING }. PEM is the base64-encoded version of DER with '-----BEGIN CERTIFICATE-----' headers.",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Distinguished Encoding Rules (DER) - ITU-T X.690",
-      "X.509 Certificate Format - RFC 5280",
-      "ASN.1 Distinguished Encoding Rules"
+      "ITU-T X.690 — DER Encoding Rules",
+      "RFC 5280 — Internet X.509 Public Key Infrastructure Certificate",
+      "RFC 2459 — X.509 PKI Certificate and CRL Profile"
     ],
     "WebLinks": [
       "https://datatracker.ietf.org/doc/html/rfc5280",
       "https://en.wikipedia.org/wiki/X.509",
-      "https://www.oss.com/asn1/resources/asn1-made-simple/asn1-quick-reference/distinguished-encoding-rules.html",
-      "https://luca.ntop.org/Teaching/Appunti/asn1.html"
+      "https://lapo.it/asn1js/"
     ]
   },
   "detection": {
-    "signature": "3082",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "3082", "offset": 0, "label": "0x30 0x82 — ASN.1 SEQUENCE tag + 2-byte length (typical X.509 certificate)", "weight": 0.7 },
+      { "value": "308", "offset": 0, "label": "0x30 0x8N — ASN.1 SEQUENCE with long-form length", "weight": 0.5 },
+      { "value": "30", "offset": 0, "label": "0x30 — ASN.1 SEQUENCE tag (short form for small structures)", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 4,
+      "maxSignatureOffset": 0,
+      "note": "DER/X.509 files always start with ASN.1 SEQUENCE tag 0x30. Certificate files typically use 0x30 0x82 (2-byte length). The 0x30 prefix is shared with many ASN.1 structures; extension (.der/.cer/.crt) and file size context help disambiguate."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "version": 0,
-    "serialNumber": "",
-    "issuer": "",
-    "subject": "",
-    "asn1Sequence": 0,
-    "length": 0
+    "asn1Tag": 0,
+    "asn1LengthIndicator": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ASN.1 Sequence",
+      "name": "ASN.1 SEQUENCE Tag",
       "offset": 0,
       "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ASN.1 sequence tag",
-      "storeAs": "asn1Sequence",
-      "valueType": "uint16"
+      "opacity": 0.45,
+      "description": "DER ASN.1 outer SEQUENCE tag at offset 0. First byte 0x30 = universal SEQUENCE/SEQUENCE-OF tag. Second byte encodes the length: if 0x00-0x7F, it is the direct length; if 0x82, the next 2 bytes are the length (big-endian); if 0x83, the next 3 bytes are the length. For typical X.509 certificates: 0x30 0x82 = SEQUENCE with length in following 2 bytes (certificates 128-65535 bytes). For small structures (ECDSA keys, short serial numbers): 0x30 0x3A etc. (direct 1-byte length). All DER-encoded X.509 certificates, CSRs (PKCS#10), and private keys start with 0x30.",
+      "storeAs": "asn1Tag",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "12418": "0x3082 — SEQUENCE with 2-byte length (typical X.509 certificate)",
+        "12419": "0x3083 — SEQUENCE with 3-byte length (large certificate)",
+        "12416": "0x3080 — SEQUENCE with indefinite length (non-DER, invalid)"
+      }
     },
     {
       "type": "field",
-      "name": "Length",
+      "name": "Certificate Length",
       "offset": 2,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Certificate length",
-      "storeAs": "length",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "When byte 1 is 0x82, bytes 2-3 contain the length of the SEQUENCE content (big-endian uint16). This is the byte count of all DER content after the initial 4-byte header (tag + length indicator + 2-byte length). Total DER file size = this value + 4. For X.509 v3 certificates, typical sizes: 1000-3000 bytes for RSA-2048, 500-1500 bytes for EC P-256. The Certificate structure begins immediately after this length field: version, serialNumber, signature algorithm OID, issuer DN, validity dates, subject DN, public key, and extensions.",
+      "storeAs": "asn1LengthIndicator",
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "ASN.1 Tag",
+      "variable": "asn1Tag",
+      "description": "ASN.1 SEQUENCE tag + length indicator (0x3082 for typical X.509)"
     },
     {
       "type": "metadata",
-      "name": "Serial Number",
-      "variable": "serialNumber",
-      "description": "Serial Number"
-    },
-    {
-      "type": "metadata",
-      "name": "Subject",
-      "variable": "subject",
-      "description": "Subject"
+      "name": "Certificate Content Length",
+      "variable": "asn1LengthIndicator",
+      "description": "Byte count of certificate content after header"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "ASN.1 SEQUENCE tag",
+      "expression": "asn1Tag == 12418 || asn1Tag == 12419 || asn1Tag == 12417",
+      "severity": "warning",
+      "message": "DER file should start with ASN.1 SEQUENCE tag 0x30 followed by length — may not be a valid DER-encoded certificate"
+    }
   ],
-  "formatRelationships": {
-    "category": "Certificates",
-    "extensions": [
-      ".der",
-      ".cer",
-      ".crt"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ASN.1 Certificate Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "asn1Tag",
+    "primaryField": "asn1LengthIndicator",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DER ASN.1 Header",
+        "icon": "\uE71B",
+        "fields": ["asn1Tag", "asn1LengthIndicator"]
+      }
+    ]
   },
+  "exportTemplates": [
+    {
+      "name": "DER Certificate Header (JSON)",
+      "format": "json",
+      "fields": ["asn1Tag", "asn1LengthIndicator"]
+    }
+  ],
   "forensic": {
     "category": "certificate",
     "riskLevel": "medium",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Distinguished Encoding Rules - X.509 certificate",
+    "analysisContext": "DER is ASN.1 TLV (Tag-Length-Value) binary encoding. First byte 0x30 = SEQUENCE. Length encoding: 0x82 = next 2B are length, 0x83 = next 3B. X.509 cert structure: outer_SEQUENCE { tbs_SEQUENCE { version [0] EXPLICIT INTEGER (0=v1,2=v3), serialNumber INTEGER, sigAlg_SEQ {OID,...}, issuer_SEQ {RDN...}, validity_SEQ {notBefore,notAfter}, subject_SEQ {RDN...}, pubKeyInfo_SEQ {OID,BIT STRING}, extensions [3] EXPLICIT SEQUENCE {...} }, sigAlg_SEQ {OID,...}, signature BIT STRING }. Key OIDs: 1.2.840.113549.1.1.11=SHA256withRSA, 1.2.840.10045.4.3.2=SHA256withECDSA, 2.5.4.3=CN, 2.5.4.6=C, 2.5.4.10=O. PEM is base64(DER) between '-----BEGIN/END CERTIFICATE-----' lines.",
     "suggestedInspections": [
-      "Verify DER Certificate ASN.1 structure, tag-length-value encoding",
-      "Check certificate dates, issuer DN, and key algorithm OIDs",
-      "Inspect extensions (SAN, key usage) and signature algorithm"
+      "Bytes 0-1: 0x30 0x82 — ASN.1 SEQUENCE with 2-byte length (typical X.509)",
+      "Bytes 2-3 (uint16 BE): certificate content length (total file = this + 4)",
+      "Use 'openssl x509 -in cert.der -inform DER -text -noout' to parse",
+      "Use online ASN.1 viewer (lapo.it/asn1js) to inspect structure"
     ]
   },
-  "navigation": {
-    "bookmarks": [
-      {
-        "name": "ASN.1 Certificate Root",
-        "offsetVar": "currentOffset",
-        "icon": ""
-      }
-    ]
+  "software": [
+    "OpenSSL (openssl x509 -inform DER -in cert.der -text)",
+    "Windows Certificate Manager (certmgr.msc)",
+    "Java Keytool",
+    "Bouncy Castle (Java/C# library)",
+    "Python cryptography library"
+  ],
+  "formatRelationships": {
+    "category": "Certificates",
+    "extensions": [".der", ".cer", ".crt"],
+    "relatedFormats": ["P12", "PEM", "PGP", "P7B"],
+    "note": "DER is the binary form of X.509 certificates. PEM is base64-encoded DER with '-----BEGIN CERTIFICATE-----' headers. P12/PFX is a PKCS#12 bundle containing certificate + private key. .cer/.crt extensions may be DER or PEM — use file header (0x30 = DER, '----' = PEM) to distinguish."
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read certificate",
-    "extractASCIIString": "Read subject"
+  "MimeTypes": [
+    "application/pkix-cert",
+    "application/x-x509-ca-cert",
+    "application/x-x509-user-cert"
+  ],
+  "UseCases": [
+    "TLS/SSL certificate distribution for servers",
+    "Code signing certificate storage",
+    "Client authentication certificates",
+    "Certificate chain validation (CA bundle)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary ASN.1 DER encoding (ITU-T X.690)",
+    "Standard": "X.509 v3 (RFC 5280), DER encoding per ITU-T X.690",
+    "Magic": "0x30 (ASN.1 SEQUENCE) at offset 0 — not unique to certificates",
+    "PEMRelation": "PEM = base64(DER) with '-----BEGIN CERTIFICATE-----' header/footer",
+    "OtherDER": "0x30 prefix also used for CSRs (PKCS#10), CRLs, private keys (PKCS#8)"
   }
 }

@@ -127,8 +127,8 @@
     "category": "document",
     "riskLevel": "medium",
     "suspiciousPatterns": [
-      "LIT files contain DRM-protected HTML content — decryption may be legally restricted",
-      "ITSF containers (also used by CHM) are known vectors for directory traversal exploits"
+      { "name": "DRM protected content", "condition": "true", "description": "LIT files contain DRM-protected HTML content — decryption may be legally restricted", "severity": "warning" },
+      { "name": "ITSF directory traversal", "condition": "true", "description": "ITSF containers (also used by CHM) are known vectors for directory traversal exploits", "severity": "warning" }
     ]
   },
   "aiHints": {

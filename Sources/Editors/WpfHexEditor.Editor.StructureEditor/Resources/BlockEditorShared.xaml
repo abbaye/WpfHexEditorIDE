@@ -1,0 +1,163 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Shared styles and DataTemplates used by all block editor templates.
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels">
+
+    <!-- ── Layout styles ──────────────────────────────────────────────────── -->
+
+    <Style x:Key="BlockPanel" TargetType="StackPanel">
+        <Setter Property="Margin" Value="8,4"/>
+    </Style>
+
+    <Style x:Key="SectionHeader" TargetType="TextBlock">
+        <Setter Property="FontSize"   Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin"     Value="0,10,0,3"/>
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+    </Style>
+
+    <Style x:Key="PropGrid" TargetType="Grid">
+        <Setter Property="Margin" Value="0,0,0,6"/>
+    </Style>
+
+    <Style x:Key="PropLabel" TargetType="TextBlock">
+        <Setter Property="FontSize"           Value="11"/>
+        <Setter Property="MinWidth"           Value="110"/>
+        <Setter Property="VerticalAlignment"  Value="Center"/>
+        <Setter Property="Margin"             Value="0,2,8,2"/>
+        <Setter Property="Foreground"         Value="{DynamicResource TE_LineNumberForeground}"/>
+    </Style>
+
+    <Style x:Key="PropField" TargetType="TextBox">
+        <Setter Property="FontSize"         Value="11"/>
+        <Setter Property="Padding"          Value="4,2"/>
+        <Setter Property="Margin"           Value="0,2"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="Background"       Value="{DynamicResource TE_Background}"/>
+        <Setter Property="Foreground"       Value="{DynamicResource TE_Foreground}"/>
+        <Setter Property="BorderBrush"      Value="{DynamicResource DockBorderBrush}"/>
+    </Style>
+
+    <Style x:Key="PropCombo" TargetType="ComboBox">
+        <Setter Property="FontSize"  Value="11"/>
+        <Setter Property="Margin"    Value="0,2"/>
+        <Setter Property="Padding"   Value="4,2"/>
+        <Setter Property="Background" Value="{DynamicResource TE_Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TE_Foreground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
+    </Style>
+
+    <Style x:Key="AddLinkBtn" TargetType="Button">
+        <Setter Property="FontSize"          Value="11"/>
+        <Setter Property="Padding"           Value="0,2"/>
+        <Setter Property="Margin"            Value="0,4,0,0"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Background"        Value="Transparent"/>
+        <Setter Property="BorderThickness"   Value="0"/>
+        <Setter Property="Foreground"        Value="{DynamicResource ET_AccentBrush}"/>
+        <Setter Property="Cursor"            Value="Hand"/>
+    </Style>
+
+    <!-- ── Common block header DataTemplate ──────────────────────────────── -->
+    <!--
+        Displayed at top of every block editor panel:
+        Name, BlockType ComboBox, { } Raw button, Color swatch, Opacity,
+        Description, Hidden checkbox, Endianness ComboBox.
+    -->
+    <DataTemplate x:Key="BlockCommonHeader" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Margin="0,0,0,8">
+
+            <!-- Name + Type + Raw button -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                           Style="{StaticResource PropField}"
+                           Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button    Grid.Row="0" Grid.Column="3"
+                           Content="{}{} Raw" FontSize="10" Padding="6,2" Margin="4,2,0,2"
+                           Background="{DynamicResource TE_LineNumberBackground}"
+                           Foreground="{DynamicResource TE_LineNumberForeground}"
+                           BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
+                           Command="{Binding OpenRawCommand}"
+                           ToolTip="Edit this block as raw JSON"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Type" Style="{StaticResource PropLabel}"/>
+                <ComboBox  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                           Style="{StaticResource PropCombo}"
+                           ItemsSource="{Binding BlockTypes}"
+                           SelectedItem="{Binding BlockType, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <!-- Color + Opacity row -->
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Color" Style="{StaticResource PropLabel}" MinWidth="0" Margin="0,0,6,0"/>
+                <Border    Grid.Column="1" Width="20" Height="20" CornerRadius="3"
+                           Background="{Binding ColorBrush}" BorderThickness="1"
+                           BorderBrush="{DynamicResource DockBorderBrush}" Margin="0,0,8,0"/>
+                <TextBox   Grid.Column="2" Style="{StaticResource PropField}" Width="80"
+                           Text="{Binding Color, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="CSS hex color e.g. #FF8C00 or named color"/>
+                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Opacity" Style="{StaticResource PropLabel}" MinWidth="0" Margin="12,0,6,0"/>
+                    <Slider Minimum="0" Maximum="1" Width="80" VerticalAlignment="Center"
+                            Value="{Binding Opacity, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock FontSize="10" VerticalAlignment="Center" Margin="4,0,0,0"
+                               Foreground="{DynamicResource TE_LineNumberForeground}"
+                               Text="{Binding Opacity, StringFormat=P0}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Description -->
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Description" Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Column="1" Style="{StaticResource PropField}" AcceptsReturn="False"
+                           Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <!-- Hidden + Endianness -->
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" Content="Hidden" FontSize="11" VerticalAlignment="Center"
+                          Foreground="{DynamicResource TE_LineNumberForeground}"
+                          IsChecked="{Binding Hidden, UpdateSourceTrigger=PropertyChanged}"
+                          Margin="0,0,16,0"/>
+                <TextBlock Grid.Column="2" Text="Endianness" Style="{StaticResource PropLabel}" MinWidth="0" Margin="0,0,6,0"/>
+                <ComboBox  Grid.Column="3" Style="{StaticResource PropCombo}"
+                           ItemsSource="{Binding EndiannessOptions}"
+                           SelectedItem="{Binding Endianness, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

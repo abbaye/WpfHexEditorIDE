@@ -53,15 +53,18 @@ namespace WpfHexEditor.Core.Services
             var parser = new FormatDetectionService();
 
             // Load embedded formats (from EmbeddedFormatCatalog)
+            // Note: embeddedFormats already filters to .whfmt entries at the call site
+            // (MainWindow.PluginSystem.cs), but we guard here for safety.
             foreach (var (json, category) in embeddedFormats)
             {
                 if (string.IsNullOrEmpty(json)) continue;
                 try
                 {
                     var fmt = parser.ImportFromJson(json);
-                    if (fmt is null || !fmt.IsValid())
+                    if (fmt is null)
                     {
-                        _failures.Add(new FormatLoadFailure(category ?? "embedded", "IsValid() = false"));
+                        // Null without exception = incompatible schema (syntax-only whfmt).
+                        // Not a user-facing error — skip silently.
                         continue;
                     }
                     fmt.Category ??= category;

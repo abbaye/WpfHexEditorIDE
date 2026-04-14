@@ -1,122 +1,170 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ACIS SAT",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".sat"
+    ".sat",
+    ".sab"
   ],
-  "description": "ACIS text format (Standard ACIS Text)",
+  "description": "SAT (Standard ACIS Text) is the ASCII text serialization format for the ACIS geometric modeling kernel developed by Spatial Technology (now part of Dassault Systèmes). ACIS is the CAD kernel underlying AutoCAD, Inventor, SolidWorks, and many other products. SAT files start with a header record on the first line: 'ACIS_SAT major minor' or more commonly a version integer followed by product info (e.g., '700 0 1 0' = version 7.0, entities=0, n=1, history=0). Alternatively, older files start with a product string like 'ACIS 1.0 ...' or just the version integer. The header is followed by a body section containing entity instances (lump, ref, shell, face, loop, edge, vertex, point, curve, surface) and ends with 'End-of-ACIS-data'. SAB (.sab) is the binary equivalent of SAT with the same entity structure but binary-encoded. Version numbers: 400=ACIS 4.0, 700=ACIS 7.0, 1600=ACIS 16.0, 21800=ACIS 21.8.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ACIS SAT Format"
+      "ACIS SAT File Format — Spatial/Dassault Systèmes",
+      "Open CASCADE SAT Reader Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/SAT"
+      "https://en.wikipedia.org/wiki/ACIS",
+      "https://wiki.mcneel.com/rhino/acisformat",
+      "https://doc.spatial.com/articles/a/c/i/ACIS_SAT_file_format"
     ]
   },
   "detection": {
-    "signature": "343030",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "41434953 5F534154", "offset": 0, "label": "'ACIS_SAT' — explicit ACIS SAT file header", "weight": 1.0 },
+      { "value": "41434953 20", "offset": 0, "label": "'ACIS ' — older ACIS header prefix (version string)", "weight": 0.9 },
+      { "value": "3430 3020", "offset": 0, "label": "'400 ' — ACIS version 4.0 integer header", "weight": 0.6 },
+      { "value": "3730 3020", "offset": 0, "label": "'700 ' — ACIS version 7.0 integer header", "weight": 0.6 },
+      { "value": "3136303020", "offset": 0, "label": "'1600 ' — ACIS version 16.0 integer header", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "SAT files start with 'ACIS ' or 'ACIS_SAT ' or a version integer (400, 700, 1600, etc.). The exact first token varies by ACIS version and creating application. Look for 'End-of-ACIS-data' near end of file to confirm."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "versionNumber": "",
-    "spaceDelimiter": 0
+    "satHeader": "",
+    "satVersionInfo": ""
   },
   "blocks": [
     {
-      "type": "signature",
-      "name": "Version Number",
+      "type": "field",
+      "name": "SAT Header / Version",
       "offset": 0,
-      "length": 3,
+      "length": 40,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ACIS version (e.g., 400, 700)",
-      "storeAs": "versionNumber",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "ACIS SAT file first line: version and product information. Format varies by ACIS version: older files start with 'ACIS 1.0 Autodesk...'; newer files use a 4-integer header '400 0 1 0' (version, saved entities, product id, flags). The first integer or string identifies the ACIS kernel version. Version mapping: 400=ACIS 4.0, 700=ACIS 7.0, 1600=ACIS 16.0, 21800=ACIS 21.8.0. SAT files created by AutoCAD typically start with 'ACIS_SAT' or the ACIS version integer. The header record ends with a newline.",
+      "storeAs": "satHeader",
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Space Delimiter",
-      "offset": 3,
-      "length": 1,
+      "name": "Product / Build Info",
+      "offset": 40,
+      "length": 60,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Space character",
-      "storeAs": "spaceDelimiter",
-      "valueType": "uint8"
+      "opacity": 0.35,
+      "description": "ACIS SAT second header line (lines 2-3): product identification string and build date. Typically contains the creating application name ('AutoCAD', 'Inventor', 'SolidWorks'), ACIS kernel build version, and platform information. Example: 'Autodesk AutoCAD 2024 (64-bit) 24.0.52.0' or 'ACIS 7.0 NT'. This information is not parsed by the ACIS reader but identifies the origin software for interchange purposes.",
+      "storeAs": "satVersionInfo",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "SAT Header",
+      "variable": "satHeader",
+      "description": "ACIS version and file parameters from header line"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Product Info",
+      "variable": "satVersionInfo",
+      "description": "Creating application and ACIS kernel version info"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "SAT header contains ACIS keyword",
+      "expression": "satHeader != ''",
+      "severity": "warning",
+      "message": "SAT file header line is empty — may not be a valid ACIS SAT file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".sat"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ACIS SAT Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "satHeader",
+    "primaryField": "satVersionInfo",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ACIS SAT Header",
+        "icon": "\uE71B",
+        "fields": ["satHeader", "satVersionInfo"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "SAT Header (JSON)",
+      "format": "json",
+      "fields": ["satHeader", "satVersionInfo"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "ACIS text format (Standard ACIS Text)",
+    "analysisContext": "SAT is ASCII ACIS kernel serialization. File structure: header lines (version, product info, units), then entity body with one entity per line in format: 'entity-name entity-id # attrib transform subtype fields... #'. Entity hierarchy: body → lump → ref → shell → face → loop → edge → vertex. Geometric types: plane-surface, sphere-surface, cone-surface, torus-surface, spline-surface (NURBS), straight-curve, ellipse-curve, intcurve, pcurve. File ends with 'End-of-ACIS-data'. SAB (.sab) is binary-encoded equivalent. Version decode: first integer = ACIS version * 100 (400=4.0, 700=7.0, 21800=21.8). Lines 2-3 = product info strings. Line 4 = mm_resabs, mm_resnor tolerances.",
     "suggestedInspections": [
-      "Validate ACIS SAT file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Line 1: ACIS version integer (400, 700, 1600, 21800) or 'ACIS ' prefix",
+      "Lines 2-3: creating application name and ACIS kernel build version",
+      "Search for 'End-of-ACIS-data' to confirm file completeness",
+      "Count 'body' entities for solid body count; 'face' entities for surface count"
     ]
+  },
+  "software": [
+    "AutoCAD (Autodesk)",
+    "Inventor (Autodesk)",
+    "SolidWorks (Dassault Systèmes)",
+    "Rhino 3D",
+    "Open CASCADE Technology (OCCT)",
+    "FreeCAD (via OCCT)",
+    "SpaceClaim / Ansys Discovery"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".sat", ".sab"],
+    "relatedFormats": ["STEP", "BREP", "X_T", "X_B", "CATPART"],
+    "note": "SAT is the ASCII form of ACIS kernel geometry; SAB is the binary equivalent (same structure, faster to read). Parasolid uses X_T/X_B as analogues. STEP and IGES are neutral formats that export BREP geometry similar to SAT. Open CASCADE natively reads BREP; SAT requires the ACIS kernel or a licensed reader."
+  },
+  "MimeTypes": [
+    "application/acis",
+    "text/plain"
+  ],
+  "UseCases": [
+    "ACIS geometry exchange between AutoCAD, Inventor, SolidWorks",
+    "BREP solid model archival and interchange",
+    "Import/export of solid geometry in CAD workflows",
+    "Downstream CAE/FEA meshing from CAD geometry"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text (SAT) or binary (SAB) ACIS kernel serialization",
+    "VersionCoding": "Integer × 100 format (400=4.0, 700=7.0, 21800=21.8)",
+    "EntityModel": "ACIS BREP: body, lump, shell, face, loop, edge, vertex + geometry types",
+    "Terminator": "'End-of-ACIS-data' string marks file end",
+    "BinaryVariant": "SAB (.sab) is binary-equivalent, same entity structure"
   }
 }

@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Amazon Kindle eBook",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [ ".azw", ".azw3", ".azw4" ],
   "description": "AZW (Amazon Kindle format) is Amazon's proprietary eBook format based on the Mobipocket/PalmDOC structure with added DRM. Files use the PalmDB container format: the file begins with a 32-byte PalmDB database name, followed by various header fields. At offset 60, the 4-byte 'type' field contains 'BOOK' and at offset 64, the 'creator' field contains 'MOBI' for AZW/MOBI files. AZW3 (KF8) adds HTML5/CSS3 content within the same PalmDB wrapper but with updated MOBI header fields. AZW4 wraps PDF content. Amazon DRM (Topaz) uses 'TEXt' creator code. Detection requires reading at offset 60-68 for 'BOOKMOBI' signature.",
   "category": "Documents",
@@ -136,8 +136,8 @@
     "category": "document",
     "riskLevel": "medium",
     "suspiciousPatterns": [
-      "DRM-protected AZW files contain encrypted content — extraction may be legally restricted",
-      "AZW files may contain personal reading metadata and annotations linked to Amazon account"
+      { "name": "DRM encrypted content", "condition": "true", "description": "DRM-protected AZW files contain encrypted content — extraction may be legally restricted", "severity": "warning" },
+      { "name": "Personal metadata exposure", "condition": "true", "description": "AZW files may contain personal reading metadata and annotations linked to Amazon account", "severity": "warning" }
     ]
   },
   "aiHints": {

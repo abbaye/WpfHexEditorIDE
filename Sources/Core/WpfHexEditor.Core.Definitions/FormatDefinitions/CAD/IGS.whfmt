@@ -1,119 +1,175 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "IGES",
-  "version": "2.32",
+  "version": "2.33",
   "extensions": [
     ".igs",
     ".iges"
   ],
-  "description": "Initial Graphics Exchange Specification (ASCII format)",
+  "description": "IGES (Initial Graphics Exchange Specification, ANSI Y14.26M) is an older neutral CAD exchange format standardized in 1980 and widely used through the 1990s. IGES files are ASCII text with a strict 80-column fixed-width record format. The file is divided into five sections identified by a letter in column 73: S (Start — human-readable description), G (Global — file parameters: delimiter, product ID, IGES version, author, units), D (Directory Entry — two 80-column lines per entity: type, transformation, level, view, color, parameter data pointer, status), P (Parameter Data — entity-specific numeric data), T (Terminate — record counts). IGES supports 2D/3D geometry: curves (100=Circle, 110=Line, 116=Point, 126=NURBS curve), surfaces (128=NURBS surface, 144=Trimmed Surface), solid CSG (150=Block, 180=Boolean), and annotations. IGES version is stored in the Global section field 23 (decimal: 1.0=1.0, 5.1=5.1, 5.3=5.3). IGES has been largely superseded by STEP (ISO 10303) for industry use.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "IGES Format"
+      "IGES Version 5.3 — ANSI Y14.26M-1989",
+      "NIST IGES Test Cases and Guidelines"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/IGS"
+      "https://en.wikipedia.org/wiki/IGES",
+      "https://www.nist.gov/document/iges5-3pdf",
+      "https://filext.com/file-extension/IGS"
     ]
   },
   "detection": {
-    "signature": "00",
-    "offset": 0,
+    "signatures": [
+      { "value": "20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202053", "offset": 0, "label": "IGES Start section record: 80 spaces + 'S' at col 73 position (padded)", "weight": 0.5 },
+      { "value": "2020202020202020202020202020202020", "offset": 0, "label": "IGES leading spaces (Start section indent pattern)", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 5.0 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 80,
+      "maxSignatureOffset": 0,
+      "note": "IGES has no conventional magic bytes. Each record is exactly 80 columns wide. Column 73 contains the section code (S/G/D/P/T). Detection relies on .igs/.iges extension plus structural validation: column 73 of line 1 must be 'S'. The Start section is free-form ASCII text in columns 1-72."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "version": "",
-    "entityCount": 0,
-    "layerCount": 0,
-    "startSection": ""
+    "startSection": "",
+    "igesSection73": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Start Section",
+      "name": "Start Section (Line 1)",
       "offset": 0,
       "length": 80,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "IGES start section (80 chars per line)",
+      "opacity": 0.45,
+      "description": "IGES Start (S) section first record: exactly 80 ASCII characters. Columns 1-72 contain a free-text human-readable comment describing the file (sender information, creation tool, description). Column 73 must contain 'S' (section identifier). Columns 74-80 contain the sequence number '0000001' (right-justified). The Start section may span multiple 80-column records; all must have 'S' in column 73. It ends when the Global section begins (first record with 'G' in column 73).",
       "storeAs": "startSection",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "type": "field",
+      "name": "Section Type Code (Column 73)",
+      "offset": 72,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "IGES section type identifier at column 73 of each 80-column record. Valid values: 'S' = Start section (file description), 'G' = Global section (file parameters: delimiter chars, product IDs, IGES version, author, units, max line weight, creation date, minimum resolution, approximate maximum coordinate), 'D' = Directory Entry section (entity catalog, 2 lines per entity), 'P' = Parameter Data section (entity geometry data), 'T' = Terminate section (record counts for validation). All records in the file use this single character to identify which section they belong to.",
+      "storeAs": "igesSection73",
+      "valueType": "ascii",
+      "valueMap": {
+        "S": "Start section (human-readable description)",
+        "G": "Global section (file parameters and metadata)",
+        "D": "Directory Entry section (entity catalog)",
+        "P": "Parameter Data section (geometry data)",
+        "T": "Terminate section (section record counts)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Entity Count",
-      "variable": "entityCount",
-      "description": "Entity Count"
+      "name": "Start Section",
+      "variable": "startSection",
+      "description": "IGES Start section first line (80 chars: comment + 'S' + seq no)"
     },
     {
       "type": "metadata",
-      "name": "Layer Count",
-      "variable": "layerCount",
-      "description": "Layer Count"
+      "name": "Section Code",
+      "variable": "igesSection73",
+      "description": "Section identifier at column 73 ('S'/'G'/'D'/'P'/'T')"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "Column 73 is S",
+      "expression": "igesSection73 == 'S'",
+      "severity": "warning",
+      "message": "IGES column 73 of first record should be 'S' (Start section) — may not be a valid IGES file"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".igs",
-      ".iges"
+  "navigation": {
+    "bookmarks": [
+      { "name": "IGES Start Section", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "igesSection73",
+    "primaryField": "startSection",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "IGES Structure",
+        "icon": "\uE71B",
+        "fields": ["startSection", "igesSection73"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read CAD header",
-    "extractASCIIString": "Read metadata"
-  },
+  "exportTemplates": [
+    {
+      "name": "IGES Header (JSON)",
+      "format": "json",
+      "fields": ["startSection", "igesSection73"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Initial Graphics Exchange Specification (ASCII format)",
+    "analysisContext": "IGES is 80-column fixed-width ASCII. Section structure identified by column 73: S=Start(description), G=Global(delimiter=',', record=';', product_id, file_name, IGES_version, draft_std, creation_date, created_by, org, IGES_version_num, drafting_std, creation_date, author, org, units_flag, units_name, max_line_weight, line_weight_grad, file_creation_date, min_resolution, max_coord, author_org, IGES_version, drafting_std_flag, last_change_date, app_protocol), D=Dir_Entry(2 records per entity: type_number, parameter_ptr, structure, line_font, level, view, xform_matrix_ptr, assoc_list_ptr, status, section='D', seq_num; then: entity_label, subscript_num, line_weight, color_num, param_count, form_num, blank_status, subordinate_entity_switch, entity_use, hierarchy, section='D', seq_num), P=Param_Data, T=Terminate. Entity types: 100=Circle, 102=Composite Curve, 104=Conic Arc, 106=Copious Data, 108=Plane, 110=Line, 116=Point, 118=Ruled Surface, 120=Surface of Revolution, 122=Tabulated Cylinder, 124=Transformation Matrix, 126=NURBS Curve, 128=NURBS Surface, 144=Trimmed Surface, 314=Color, 402=Associativity, 406=Property, 408=Singular Subfigure Instance, 410=View, 504=Edge, 508=Loop, 510=Face.",
     "suggestedInspections": [
-      "Validate IGES file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Column 73 of each 80-column line: identifies section S/G/D/P/T",
+      "Find 'G' section records: field 23 = IGES version (5.1 or 5.3), field 14 = author",
+      "Count 'D' section lines / 2 = number of entities in file",
+      "Entity type codes in D section columns 1-8: 100=Circle, 110=Line, 126=NURBS curve, 128=NURBS surface"
     ]
+  },
+  "software": [
+    "CATIA (Dassault Systèmes)",
+    "SolidWorks",
+    "AutoCAD",
+    "Pro/ENGINEER / CREO",
+    "FreeCAD",
+    "OpenCASCADE",
+    "Rhino 3D"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".igs", ".iges"],
+    "relatedFormats": ["STEP", "DXF", "DWG", "SAT", "BREP"],
+    "note": "IGES (ANSI Y14.26M) is the predecessor to STEP (ISO 10303). Both are neutral CAD exchange formats but STEP is now preferred for new workflows. IGES 5.3 is the final version (1996). Many CAD packages still export IGES for compatibility with older systems."
+  },
+  "MimeTypes": [
+    "model/iges",
+    "application/iges",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Legacy CAD data exchange between older systems",
+    "Wire frame and surface model transfer",
+    "Aerospace and automotive legacy workflow compatibility",
+    "Archival of historical CAD geometry data"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, 80-column fixed-width records",
+    "SectionCodes": "S=Start, G=Global, D=Directory Entry, P=Parameter Data, T=Terminate",
+    "RecordLayout": "Columns 1-72=data, col 73=section code, cols 74-80=sequence number",
+    "EntityModel": "100+ entity types for 2D/3D curves, surfaces, solids, annotations",
+    "VersionHistory": "IGES 1.0 (1980) through IGES 5.3 (1996) — superseded by STEP"
   }
 }

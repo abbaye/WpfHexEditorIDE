@@ -1,118 +1,165 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Crystallographic Information File",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".cif"
   ],
-  "description": "Crystallographic Information File for crystal structures",
+  "description": "CIF (Crystallographic Information File) is a plain-text file format developed by the International Union of Crystallography (IUCr) for reporting crystal structure data. CIF files contain one or more data blocks, each introduced by the keyword 'data_' followed by a block name. Within each block, data items consist of a tag starting with '_' (underscore) followed by its value. Loop constructs ('loop_') define tables of repeated items. CIF stores atomic coordinates, unit cell parameters, space group symmetry, bond lengths, angles, and experimental metadata for X-ray and neutron diffraction structures. The Cambridge Structural Database (CSD) and Protein Data Bank (PDB) use CIF derivatives (mmCIF/PDBx). CIF version 1.1 is plain ASCII; CIF 2.0 supports Unicode and triple-quoted strings.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Crystallographic Information File Format"
+      "IUCr CIF 1.1 Specification",
+      "IUCr CIF 2.0 Specification",
+      "mmCIF/PDBx Dictionary — wwPDB"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/CIF"
+      "https://www.iucr.org/resources/cif/spec/version1.1",
+      "https://www.iucr.org/resources/cif/cif2",
+      "https://mmcif.wwpdb.org/"
     ]
   },
   "detection": {
-    "signature": "646174615F",
-    "offset": 0,
+    "signatures": [
+      { "value": "646174615F", "offset": 0, "label": "'data_' — CIF data block start keyword at offset 0", "weight": 1.0 },
+      { "value": "23", "offset": 0, "label": "'#' — CIF comment line at offset 0 (common in CIF headers)", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 512,
+      "note": "CIF files start with 'data_<blockname>' or a '#' comment. The 'data_' keyword at offset 0 is a strong identifier. Many CIF files start with a comment block before the first data_ statement."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "timestamp": 0,
-    "size": 0,
-    "version": "",
-    "type": "",
-    "cifDataBlock": ""
+    "cifDataBlock": "",
+    "cifBlockName": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "CIF Data Block",
+      "name": "CIF Data Block Keyword",
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "CIF data_ keyword",
+      "opacity": 0.45,
+      "description": "CIF data block introducer 'data_' (ASCII: 64 61 74 61 5F). Every CIF file contains one or more data blocks, each beginning with this keyword followed by a block name (no spaces). For example: 'data_compound1' or 'data_I'. The block name uniquely identifies the data set within the file. Multiple data_ blocks can appear in one CIF file for multi-structure deposits.",
       "storeAs": "cifDataBlock",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Timestamp",
-      "variable": "timestamp",
-      "description": "Timestamp"
+      "type": "field",
+      "name": "Block Name",
+      "offset": 5,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "CIF data block name — ASCII identifier following 'data_', terminated by whitespace or newline. Block names identify the crystal structure or dataset. Examples: 'compound1', 'structure_1', 'I'. In Cambridge Structural Database exports, block names often match the compound refcode (e.g. 'ABENOW01').",
+      "storeAs": "cifBlockName",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Size",
-      "variable": "size",
-      "description": "Size"
+      "name": "Data Block Keyword",
+      "variable": "cifDataBlock",
+      "description": "'data_' — CIF data block introducer"
     },
     {
       "type": "metadata",
-      "name": "Type",
-      "variable": "type",
-      "description": "Type"
+      "name": "Block Name",
+      "variable": "cifBlockName",
+      "description": "CIF data block identifier name"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "CIF data block keyword present",
+      "expression": "cifDataBlock == 'data_'",
+      "severity": "error",
+      "message": "CIF file must start with 'data_' keyword — not a valid CIF crystallographic file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".cif"
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Data Block", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "cifDataBlock",
+    "primaryField": "cifBlockName",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CIF Data Block",
+        "icon": "\uE71B",
+        "fields": ["cifDataBlock", "cifBlockName"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read system header",
-    "extractASCIIString": "Read info"
-  },
+  "exportTemplates": [
+    {
+      "name": "CIF Header (JSON)",
+      "format": "json",
+      "fields": ["cifDataBlock", "cifBlockName"]
+    }
+  ],
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Crystallographic Information File for crystal structures",
+    "analysisContext": "CIF is plain ASCII (or UTF-8 in CIF 2.0). Structure: 'data_<name>' introduces each block. Tags start with '_' (e.g. _cell_length_a, _atom_site_fract_x). Values follow the tag on the same or next line. Loops: 'loop_' followed by tag list then values. Key crystallography tags: _cell_length_a/b/c (unit cell dimensions in Angstroms), _cell_angle_alpha/beta/gamma (degrees), _symmetry_space_group_name_H-M (Hermann-Mauguin notation), _atom_site_label/_atom_site_type_symbol/_atom_site_fract_x/y/z (atomic coordinates). mmCIF (_pdbx_ prefixed tags) used in PDB structure files.",
     "suggestedInspections": [
-      "Validate Crystallographic Information File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Look for 'data_' at start — if preceded by '#' comments, skip to first 'data_' keyword",
+      "Find '_cell_length_a' tag for unit cell a-axis length in Angstroms",
+      "Find '_symmetry_space_group_name_H-M' for crystal space group symmetry",
+      "Count 'loop_' occurrences — atom site loop contains all atomic coordinates"
     ]
+  },
+  "software": [
+    "Mercury (CSD)",
+    "SHELX (structure refinement)",
+    "VESTA (visualization)",
+    "CrystalMaker",
+    "pymatgen",
+    "ase (Atomic Simulation Environment)"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".cif"],
+    "relatedFormats": ["MMCIF", "PDB", "MOL2"],
+    "note": "CIF is the standard archival format for small-molecule crystal structures (Cambridge Structural Database). mmCIF/PDBx extends CIF for macromolecular structures (Protein Data Bank). STAR format is the underlying data model for CIF."
+  },
+  "MimeTypes": [
+    "chemical/x-cif",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Crystal structure deposition to Cambridge Structural Database (CSD)",
+    "X-ray diffraction structure reporting in journal publications",
+    "Crystallographic data exchange between structure determination programs",
+    "Materials science crystal structure databases"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text (CIF 1.1) or UTF-8 (CIF 2.0)",
+    "Structure": "data_ blocks containing _tag value pairs and loop_ tables",
+    "KeywordSet": "IUCr CIF dictionary tags prefixed with '_'",
+    "Versions": "CIF 1.0 (1991), CIF 1.1 (2006), CIF 2.0 (2016)"
   }
 }

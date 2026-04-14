@@ -1,0 +1,77 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.VariablesTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}">
+
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="Initial variables available to the block interpreter (e.g. loop counters, computed offsets)."
+                   FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Foreground="{DynamicResource TE_LineNumberForeground}"/>
+
+        <DataGrid Grid.Row="1"
+                  x:Name="VarsGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Single"
+                  GridLinesVisibility="Horizontal"
+                  RowHeaderWidth="0"
+                  Background="{DynamicResource TE_Background}"
+                  RowBackground="{DynamicResource TE_Background}"
+                  AlternatingRowBackground="{DynamicResource TE_LineNumberBackground}"
+                  Foreground="{DynamicResource TE_Foreground}"
+                  BorderThickness="1"
+                  FontFamily="Consolas"
+                  FontSize="11">
+
+            <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{DynamicResource TE_LineNumberBackground}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TE_LineNumberForeground}"/>
+                    <Setter Property="Padding"    Value="4,2"/>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Variable Name" Width="*"
+                                    Binding="{Binding Key, UpdateSourceTrigger=LostFocus}"/>
+                <DataGridTextColumn Header="Initial Value" Width="*"
+                                    Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"/>
+                <DataGridTemplateColumn Width="28">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="✕" FontSize="10" Padding="2"
+                                    Command="{Binding RemoveCommand}"
+                                    Background="Transparent"
+                                    Foreground="{DynamicResource TE_LineNumberForeground}"
+                                    BorderThickness="0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="2" Content="＋ Add Variable"
+                FontSize="11" Padding="6,3" Margin="0,6,0,0"
+                HorizontalAlignment="Left"
+                x:Name="AddVarBtn" Click="OnAddVariable"
+                Background="Transparent"
+                Foreground="{DynamicResource ET_AccentBrush}"
+                BorderThickness="0"/>
+    </Grid>
+</UserControl>

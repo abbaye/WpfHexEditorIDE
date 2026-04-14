@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Pentax PEF RAW",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".pef"
   ],
@@ -150,8 +150,8 @@
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "MakerNote tag 0x927C not starting with 'AOC\\x00' or 'PENTAX ' suggests non-PEF TIFF file",
-      "Invalid byte order mark (not 'II' or 'MM') indicates file corruption or forgery"
+      { "name": "Non-PEF MakerNote prefix", "condition": "true", "description": "MakerNote tag 0x927C not starting with 'AOC\\x00' or 'PENTAX ' suggests non-PEF TIFF file", "severity": "warning" },
+      { "name": "Invalid byte order mark", "condition": "true", "description": "Invalid byte order mark (not 'II' or 'MM') indicates file corruption or forgery", "severity": "warning" }
     ]
   },
   "aiHints": {

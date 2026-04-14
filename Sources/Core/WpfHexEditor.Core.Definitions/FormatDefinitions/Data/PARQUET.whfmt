@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apache Parquet",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".parquet"
   ],
@@ -9,10 +9,14 @@
   "category": "Data",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "Apache Parquet Format Specification",
-    "https://parquet.apache.org/docs/file-format/"
-  ],
+  "references": {
+    "specifications": [
+      "Apache Parquet Format Specification"
+    ],
+    "WebLinks": [
+      "https://parquet.apache.org/docs/file-format/"
+    ]
+  },
   "detection": {
     "signature": "50415231",
     "offset": 0,

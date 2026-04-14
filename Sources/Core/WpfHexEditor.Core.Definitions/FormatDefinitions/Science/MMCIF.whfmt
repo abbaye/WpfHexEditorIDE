@@ -1,112 +1,166 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MacroMolecular CIF",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".cif",
     ".mmcif"
   ],
-  "description": "MacroMolecular Crystallographic Information File",
+  "description": "mmCIF (macromolecular Crystallographic Information File), also known as PDBx/mmCIF, is the standard file format for macromolecular structure data in the Protein Data Bank (PDB) since 2014. mmCIF is an extension of CIF (Crystallographic Information File) using the PDBx/mmCIF dictionary maintained by the wwPDB consortium. Like CIF, mmCIF is plain ASCII text with 'data_' block headers and underscore-prefixed tags. mmCIF uses category-qualified tags (e.g., _atom_site.id, _atom_site.Cartn_x) with dot notation, unlike small-molecule CIF. Each PDB entry is a single data block (data_1ABC). Key mmCIF categories: _entry (PDB ID), _entity (molecular entities), _struct (structure title), _atom_site (atomic coordinates with x/y/z in Angstroms), _refine (refinement statistics like R-factor). mmCIF supports very large structures (>99,999 atoms) where legacy PDB format fails.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "MacroMolecular CIF Format"
+      "PDBx/mmCIF Dictionary — wwPDB",
+      "IUCr CIF 1.1 Specification",
+      "PDB Format Guide — RCSB PDB"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/CIF"
+      "https://mmcif.wwpdb.org/",
+      "https://www.rcsb.org/docs/general-help/organization-of-3d-structures-in-the-protein-data-bank",
+      "https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/introduction"
     ]
   },
   "detection": {
-    "signature": "646174615F",
-    "offset": 0,
+    "signatures": [
+      { "value": "646174615F", "offset": 0, "label": "'data_' — mmCIF/CIF data block keyword at offset 0", "weight": 1.0 },
+      { "value": "23", "offset": 0, "label": "'#' — CIF comment at offset 0 (common in PDB mmCIF headers)", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 512,
+      "note": "mmCIF shares the 'data_' keyword with small-molecule CIF. The .mmcif extension and presence of _atom_site category tags with dot notation distinguish mmCIF from CIF."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "mmcifDataBlock": ""
+    "mmcifDataBlock": "",
+    "mmcifBlockName": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "mmCIF Data Block",
+      "name": "mmCIF Data Block Keyword",
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "mmCIF data_ keyword",
+      "opacity": 0.45,
+      "description": "mmCIF data block introducer 'data_' (ASCII: 64 61 74 61 5F). Every mmCIF file begins with this keyword followed by the PDB entry ID (4-character code, e.g., '1ABC'). The data block name is the PDB accession code for all Protein Data Bank structure files. Files may contain multiple data_ blocks for remediation or validation purposes.",
       "storeAs": "mmcifDataBlock",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "PDB Entry ID",
+      "offset": 5,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "PDB entry identifier — 4-character alphanumeric PDB accession code following 'data_'. Examples: '1ABC', '6LU7' (SARS-CoV-2 main protease), '4HHB' (hemoglobin). The PDB ID uniquely identifies a protein structure entry in the Worldwide Protein Data Bank. Modern PDB IDs are transitioning to 8-character extended format (e.g., 'pdb_00001abc').",
+      "storeAs": "mmcifBlockName",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Data Block Keyword",
+      "variable": "mmcifDataBlock",
+      "description": "'data_' — mmCIF block introducer"
+    },
+    {
+      "type": "metadata",
+      "name": "PDB Entry ID",
+      "variable": "mmcifBlockName",
+      "description": "PDB 4-character accession code (e.g., '1ABC')"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "mmCIF data block keyword",
+      "expression": "mmcifDataBlock == 'data_'",
+      "severity": "error",
+      "message": "mmCIF file must start with 'data_' — not a valid mmCIF/PDBx structure file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".cif",
-      ".mmcif"
+  "navigation": {
+    "bookmarks": [
+      { "name": "PDB Entry Block", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "mmcifBlockName",
+    "primaryField": "mmcifDataBlock",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "mmCIF Entry",
+        "icon": "\uE71B",
+        "fields": ["mmcifDataBlock", "mmcifBlockName"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "mmCIF Entry Header (JSON)",
+      "format": "json",
+      "fields": ["mmcifDataBlock", "mmcifBlockName"]
+    }
+  ],
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MacroMolecular Crystallographic Information File",
+    "analysisContext": "mmCIF is plain ASCII. Block: 'data_<PDBID>' (e.g. data_6LU7). Tags use dot notation: category.item (e.g. _atom_site.Cartn_x). Key categories: _entry.id (PDB accession), _struct.title (protein name), _entity (molecule types: 1=polymer,2=non-polymer,3=water), _atom_site (all atomic coordinates: .id, .label_atom_id, .label_comp_id, .Cartn_x/y/z, .occupancy, .B_iso_or_equiv). Loop construct 'loop_' followed by column headers then data rows. R-factor in _refine.ls_R_factor_R_work. Resolution in _reflns.d_resolution_high.",
     "suggestedInspections": [
-      "Validate MacroMolecular CIF file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Read 'data_<ID>' at start — the 4-character PDB code identifies the protein structure",
+      "Find '_entry.id' tag for the canonical PDB accession code",
+      "Find '_struct.title' for the protein/structure description",
+      "Count 'loop_' + '_atom_site' blocks — each contains atomic coordinate records"
     ]
+  },
+  "software": [
+    "PyMOL",
+    "UCSF ChimeraX",
+    "Biopython (Bio.PDB)",
+    "gemmi",
+    "CCP4 (macromolecular crystallography)",
+    "PHENIX (structure refinement)"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".cif", ".mmcif"],
+    "relatedFormats": ["CIF", "PDB", "PDBML"],
+    "note": "mmCIF replaced the legacy PDB format as the primary wwPDB archival format in 2014. All new PDB depositions are in mmCIF/PDBx format. The legacy PDB flat-file format (80-column fixed-width) is limited to 99,999 atoms and cannot represent large complexes."
+  },
+  "MimeTypes": [
+    "chemical/x-mmcif",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Protein Data Bank structure file storage and retrieval",
+    "Macromolecular crystal structure deposition",
+    "Structural bioinformatics and drug discovery",
+    "Protein structure visualization and analysis"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Plain ASCII text, CIF syntax with PDBx/mmCIF dictionary",
+    "TagNotation": "Category.item dot notation (e.g. _atom_site.Cartn_x)",
+    "MaxAtoms": "No practical limit (replaces 99999-atom PDB format limit)",
+    "Dictionary": "PDBx/mmCIF dictionary v5+ maintained by wwPDB"
   }
 }

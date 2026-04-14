@@ -1,45 +1,42 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "BPS Patch",
-  "version": "1.13",
+  "formatName": "BPS ROM Patch",
+  "version": "1.14",
   "extensions": [
     ".bps"
   ],
-  "description": "Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal compression",
+  "description": "BPS (Beat Patching System) is a modern ROM patch format created by byuu/Near (higan/BSNES author) as an improved successor to IPS and UPS. BPS files start with 4 ASCII bytes 'BPS1' (42 50 53 31). After the magic, the header uses Variable-Length Integer (VLI) encoding: sourceSize (VLI), targetSize (VLI), metadataSize (VLI), metadata (metadataSize UTF-8 bytes). Patch commands follow, VLI-encoded: command type encoded in the lower 2 bits (0=SourceRead, 1=TargetRead, 2=SourceCopy, 3=TargetCopy), upper bits = data length-1. SourceRead: copy N bytes from source at current position. TargetRead: literal replacement bytes. SourceCopy: copy from arbitrary source offset. TargetCopy: back-reference from output. The file ends with three CRC32 checksums (uint32 LE): sourceCRC32, targetCRC32, patchCRC32. BPS is the most widely used modern ROM patch format supporting patches up to 4GB.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Beat Patching System (BPS) Format",
-      "BPS v1 Specification by byuu/Near",
-      "BPS ROM Patch Standard"
+      "BPS v1 Specification by byuu/Near"
     ],
     "WebLinks": [
       "https://github.com/blakesmith/rombp/blob/master/docs/bps_spec.md",
-      "https://github.com/btimofeev/UniPatcher/wiki/BPS",
       "https://www.romhacking.net/utilities/893/",
-      "https://forums.nesdev.org/viewtopic.php?t=16803"
+      "https://github.com/btimofeev/UniPatcher/wiki/BPS"
     ]
   },
   "detection": {
-    "signature": "42505331",
-    "offset": 0,
+    "signatures": [
+      { "value": "42505331", "offset": 0, "label": "'BPS1' — Beat Patching System v1 magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "BPS files always start with 'BPS1' ASCII (4 bytes). The file ends with 3 CRC32 values (12 bytes): source CRC, target CRC, patch CRC."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "srcSizeByte": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
     "bpsMagic": "",
-    "patchHeaderData": "",
-    "patchCommandsRegion": ""
+    "bpsSrcSizeByte": 0
   },
   "blocks": [
     {
@@ -48,112 +45,111 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "BPS1 magic identifier - Beat Patching System format (created by byuu/Near)",
+      "opacity": 0.45,
+      "description": "BPS patch file magic: 4 ASCII bytes 'BPS1' (0x42 0x50 0x53 0x31). Created by byuu/Near (author of higan/BSNES/MAME). BPS1 is the only published version. BPS improves upon IPS and UPS by: (1) CRC32 validation of source, target, and patch files; (2) Variable-Length Integer encoding for compactness; (3) four patch command types including back-reference copying; (4) embedded metadata (author, description, etc.); (5) no 16MB offset limit.",
       "storeAs": "bpsMagic",
-      "valueType": "uint32"
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Source Size (VLI)",
+      "name": "Source Size (VLI first byte)",
       "offset": 4,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "valueType": "uint8",
-      "storeAs": "srcSizeByte",
-      "description": "First byte of VLI source file size. LSB=continuation bit, remaining 7 bits=data"
-    },
-    {
-      "type": "field",
-      "name": "Patch Header Data",
-      "offset": 5,
-      "length": 16,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "valueType": "ascii",
-      "description": "VLI-encoded target size, metadata length, and metadata content (variable structure)",
-      "storeAs": "patchHeaderData"
-    },
-    {
-      "type": "field",
-      "name": "Patch Commands Region",
-      "offset": 21,
-      "length": 100,
-      "color": "#FFE66D",
-      "opacity": 0.2,
-      "valueType": "ascii",
-      "description": "Variable-length patch commands: SourceRead(0), TargetRead(1), SourceCopy(2), TargetCopy(3)",
-      "storeAs": "patchCommandsRegion"
+      "opacity": 0.35,
+      "description": "First byte of the VLI-encoded source file size at offset 4. BPS uses Variable-Length Integers: bit 0 of each byte is the continuation flag (1=more bytes follow, 0=last byte). Bits 1-7 are data bits. To decode: accumulate 7-bit groups, shift each by (7 × byte_index). The source size determines how many bytes the unpatched ROM file should be. BPS validators check the source CRC32 (stored at file end) before applying the patch.",
+      "storeAs": "bpsSrcSizeByte",
+      "valueType": "uint8"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "Magic",
+      "variable": "bpsMagic",
+      "description": "'BPS1' — Beat Patching System identifier"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Source Size (first VLI byte)",
+      "variable": "bpsSrcSizeByte",
+      "description": "First byte of VLI-encoded source file size"
     }
   ],
+  "assertions": [
+    {
+      "name": "BPS magic valid",
+      "expression": "bpsMagic == 'BPS1'",
+      "severity": "error",
+      "message": "BPS patch must start with 'BPS1' magic — not a valid Beat Patching System patch"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "BPS Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "VLI Header Data", "offset": 4, "icon": "\uE71B", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "bpsMagic",
+    "primaryField": "bpsSrcSizeByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "BPS Patch Header",
+        "icon": "\uE71B",
+        "fields": ["bpsMagic", "bpsSrcSizeByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BPS Header (JSON)",
+      "format": "json",
+      "fields": ["bpsMagic", "bpsSrcSizeByte"]
+    }
+  ],
+  "forensic": { "category": "game", "riskLevel": "low", "suspiciousPatterns": [] },
+  "aiHints": {
+    "analysisContext": "BPS format: 'BPS1'(4B) + sourceSize(VLI) + targetSize(VLI) + metadataSize(VLI) + metadata(UTF-8 bytes) + commands(VLI encoded) + sourceCRC32(4B LE) + targetCRC32(4B LE) + patchCRC32(4B LE). VLI: bit0=continuation, bits1-7=data, little-endian per byte. Commands: data>>2=length-1, data&3=command (0=SourceRead, 1=TargetRead, 2=SourceCopy, 3=TargetCopy). File ends with 3×uint32 LE CRC32 checksums. Tool: beat (byuu's patcher), Floating IPS, UniPatcher.",
+    "suggestedInspections": [
+      "Bytes 0-3 (ASCII): 'BPS1' — Beat Patching System magic",
+      "Bytes 4+: VLI-encoded source size, target size, metadata size",
+      "Last 12 bytes (3×uint32 LE): source CRC32, target CRC32, patch CRC32",
+      "Verify source CRC32 against your ROM before applying patch"
+    ]
+  },
   "software": [
-    "beat",
-    "Floating IPS",
-    "Rom patchers"
+    "beat (byuu/Near, reference patcher)",
+    "Floating IPS / flips (supports BPS)",
+    "UniPatcher (Android, supports BPS)",
+    "RetroArch (built-in BPS patching)"
   ],
   "formatRelationships": {
-    "created_by": "byuu/Near",
-    "successor_to": [
-      "IPS",
-      "UPS"
-    ],
-    "most_efficient": true
+    "category": "Game",
+    "extensions": [".bps"],
+    "relatedFormats": ["PATCH_IPS", "PATCH_UPS"],
+    "note": "BPS is the modern standard for ROM patching, replacing IPS (no checksum, 16MB limit) and UPS. BPS includes CRC32 validation, metadata, and efficient delta commands. Created by byuu/Near for the SNES preservation community."
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
+  "MimeTypes": ["application/octet-stream"],
   "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
+    "Applying ROM translation patches with CRC32 validation",
+    "Modern ROM hacking distribution format",
+    "Preserving patch-source integrity for SNES/GBA/NDS games",
+    "Fan translation distribution for major games"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "Platform": "Various"
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal...",
-    "suggestedInspections": [
-      "Validate BPS Patch container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
-    ]
+    "Format": "Binary BPS v1 ROM patch (Beat Patching System by byuu/Near)",
+    "Magic": "'BPS1' ASCII at offset 0",
+    "VLI": "Variable-Length Integer: bit0=continuation, bits1-7=7-bit data chunks",
+    "Commands": "SourceRead(0), TargetRead(1), SourceCopy(2), TargetCopy(3) — lower 2 bits",
+    "Checksums": "Three CRC32 LE at EOF: source, target, patch"
   }
 }

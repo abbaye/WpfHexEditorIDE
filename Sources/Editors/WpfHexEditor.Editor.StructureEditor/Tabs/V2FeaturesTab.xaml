@@ -1,0 +1,199 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.V2FeaturesTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}">
+
+    <UserControl.Resources>
+        <Style x:Key="Sec" TargetType="Expander">
+            <Setter Property="Margin"           Value="0,4,0,0"/>
+            <Setter Property="Background"       Value="{DynamicResource TE_LineNumberBackground}"/>
+            <Setter Property="Foreground"       Value="{DynamicResource TE_LineNumberForeground}"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="IsExpanded"       Value="False"/>
+        </Style>
+        <Style x:Key="Lbl" TargetType="TextBlock">
+            <Setter Property="FontSize"          Value="11"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin"            Value="0,2,8,2"/>
+            <Setter Property="MinWidth"          Value="100"/>
+            <Setter Property="Foreground"        Value="{DynamicResource TE_LineNumberForeground}"/>
+        </Style>
+        <Style x:Key="Fld" TargetType="TextBox">
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="Padding"         Value="4,2"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin"          Value="0,2,0,2"/>
+            <Setter Property="Background"      Value="{DynamicResource TE_Background}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TE_Foreground}"/>
+        </Style>
+        <Style x:Key="AddBtn" TargetType="Button">
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="Padding"         Value="6,2"/>
+            <Setter Property="Margin"          Value="0,4,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource ET_AccentBrush}"/>
+        </Style>
+        <Style x:Key="RemBtn" TargetType="Button">
+            <Setter Property="Content"         Value="✕"/>
+            <Setter Property="FontSize"        Value="10"/>
+            <Setter Property="Padding"         Value="4,1"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TE_LineNumberForeground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="8" x:Name="Root">
+
+            <!-- ── Assertions ──────────────────────────────────────── -->
+            <Expander Header="Assertions" Style="{StaticResource Sec}">
+                <StackPanel Margin="8,4">
+                    <ItemsControl x:Name="AssertionsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0,0,0,1"
+                                        BorderBrush="{DynamicResource TE_LineNumberBackground}"
+                                        Padding="0,4" Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="24"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                                 Text="{Binding AssertionName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                        <TextBox Grid.Column="1" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                                 FontFamily="Consolas"
+                                                 Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" ToolTip="Boolean expression"/>
+                                        <ComboBox Grid.Column="2" FontSize="11" Margin="0,0,4,0"
+                                                  ItemsSource="{Binding SeverityOptions}"
+                                                  SelectedItem="{Binding Severity}"/>
+                                        <Button Grid.Column="3" Style="{StaticResource RemBtn}"
+                                                Command="{Binding RemoveCommand}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Assertion"
+                            x:Name="AddAssertionBtn" Click="OnAddAssertion"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- ── Checksums ────────────────────────────────────────── -->
+            <Expander Header="Checksums" Style="{StaticResource Sec}">
+                <StackPanel Margin="8,4">
+                    <ItemsControl x:Name="ChecksumsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0,0,0,1"
+                                        BorderBrush="{DynamicResource TE_LineNumberBackground}"
+                                        Padding="0,4" Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="24"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                                 Text="{Binding ChecksumName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                        <ComboBox Grid.Column="1" FontSize="11" Margin="0,0,4,0"
+                                                  ItemsSource="{Binding AlgorithmOptions}"
+                                                  SelectedItem="{Binding Algorithm}"/>
+                                        <ComboBox Grid.Column="2" FontSize="11" Margin="0,0,4,0"
+                                                  ItemsSource="{Binding SeverityOptions}"
+                                                  SelectedItem="{Binding Severity}"/>
+                                        <Button Grid.Column="3" Style="{StaticResource RemBtn}"
+                                                Command="{Binding RemoveCommand}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Checksum"
+                            x:Name="AddChecksumBtn" Click="OnAddChecksum"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- ── Forensic ─────────────────────────────────────────── -->
+            <Expander Header="Forensic" Style="{StaticResource Sec}" x:Name="ForensicExpander">
+                <StackPanel Margin="8,4" x:Name="ForensicPanel"/>
+            </Expander>
+
+            <!-- ── Navigation ───────────────────────────────────────── -->
+            <Expander Header="Navigation Bookmarks" Style="{StaticResource Sec}">
+                <StackPanel Margin="8,4">
+                    <ItemsControl x:Name="BookmarksList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                    <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
+                                             Text="{Binding BookmarkName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                    <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
+                                             Text="{Binding OffsetVar, UpdateSourceTrigger=PropertyChanged}" ToolTip="Offset variable"/>
+                                    <TextBox Style="{StaticResource Fld}" Width="70" Margin="0,0,4,0"
+                                             Text="{Binding BookmarkColor, UpdateSourceTrigger=PropertyChanged}" ToolTip="Color #RRGGBB"/>
+                                    <Button Style="{StaticResource RemBtn}" Command="{Binding RemoveCommand}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Bookmark"
+                            x:Name="AddBookmarkBtn" Click="OnAddBookmark"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- ── Inspector ────────────────────────────────────────── -->
+            <Expander Header="Inspector Layout" Style="{StaticResource Sec}" x:Name="InspectorExpander">
+                <StackPanel Margin="8,4" x:Name="InspectorPanel"/>
+            </Expander>
+
+            <!-- ── Export Templates ─────────────────────────────────── -->
+            <Expander Header="Export Templates" Style="{StaticResource Sec}">
+                <StackPanel Margin="8,4">
+                    <ItemsControl x:Name="ExportsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0,0,0,1"
+                                        BorderBrush="{DynamicResource TE_LineNumberBackground}"
+                                        Padding="4" Margin="0,4">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
+                                                     Text="{Binding TemplateName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Template Name"/>
+                                            <ComboBox FontSize="11" Width="100" Margin="0,0,4,0"
+                                                      ItemsSource="{Binding FormatOptions}"
+                                                      SelectedItem="{Binding Format}"/>
+                                            <TextBox Style="{StaticResource Fld}" Width="100" Margin="0,0,4,0"
+                                                     Text="{Binding StructName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Struct name (C struct)"/>
+                                            <Button Style="{StaticResource RemBtn}" Command="{Binding RemoveCommand}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Template"
+                            x:Name="AddExportBtn" Click="OnAddExport"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- ── AI Hints ──────────────────────────────────────────── -->
+            <Expander Header="AI Hints" Style="{StaticResource Sec}" x:Name="AiExpander">
+                <StackPanel Margin="8,4" x:Name="AiPanel"/>
+            </Expander>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

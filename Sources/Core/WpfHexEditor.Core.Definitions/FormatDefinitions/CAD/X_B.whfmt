@@ -1,38 +1,44 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Parasolid Binary",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".x_b"
+    ".x_b",
+    ".xmt_bin"
   ],
-  "description": "Parasolid transmit binary format",
+  "description": "X_B (Parasolid Transmit Binary) is the compact binary serialization of the Parasolid geometric modeling kernel by Siemens Digital Industries Software. X_B stores the same B-rep geometry as X_T (Parasolid text format) but in a binary encoding that is faster to read/write and produces smaller files. X_B files start with a proprietary binary header that includes a magic/identifier string, Parasolid kernel version, and encoding parameters. Unlike X_T which starts with '**PART_FORMAT', X_B uses a binary header not starting with printable ASCII. The binary encoding uses the same entity hierarchy as X_T: body, lump, shell, face, loop, fin, edge, vertex, and geometric types (planes, cylinders, NURBS). X_B is the preferred interchange format when performance matters (e.g., large assemblies), while X_T is preferred for human inspection and version control.",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Parasolid Binary Format"
+      "Parasolid Transmit Format — Siemens Digital Industries Software",
+      "Parasolid XT Translator Documentation (binary mode)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/X_B"
+      "https://en.wikipedia.org/wiki/Parasolid",
+      "https://www.plm.automation.siemens.com/global/en/products/plm-components/parasolid.html",
+      "https://filext.com/file-extension/X_B"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0",
-    "offset": 0,
+    "signatures": [
+      { "value": "00001A0000", "offset": 0, "label": "Parasolid binary header start bytes (proprietary)", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 4.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "X_B binary header format is proprietary and not publicly documented. The previous D0CF11E0 (OLE2) magic was incorrect — X_B is NOT an OLE2 compound document. Detection relies primarily on .x_b/.xmt_bin extension. Binary header bytes vary by Parasolid version."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "timestamp": 0,
-    "entryPoint": 0,
-    "binaryHeader": ""
+    "xbHeader": "",
+    "xbVersion": ""
   },
   "blocks": [
     {
@@ -41,78 +47,118 @@
       "offset": 0,
       "length": 16,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Parasolid binary header",
-      "storeAs": "binaryHeader",
+      "opacity": 0.45,
+      "description": "Parasolid X_B binary file header at offset 0 (16 bytes). The X_B binary header is proprietary and not publicly documented by Siemens. It encodes the Parasolid kernel version, byte order, and format parameters. Unlike X_T which starts with the ASCII string '**PART_FORMAT', X_B starts with binary bytes. The header is followed by binary-encoded entity records using the same B-rep hierarchy as X_T (body, lump, shell, face, loop, fin, edge, vertex, geometry types). X_B is compact and fast to parse but requires the Parasolid kernel or a commercial translator.",
+      "storeAs": "xbHeader",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Version Identifier",
+      "offset": 16,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Parasolid X_B kernel version identifier bytes at offset 16 (8 bytes). Encodes the Parasolid kernel version that created this binary file. The version is needed to determine the entity schema and encoding parameters for correct parsing. X_B files created by newer Parasolid releases may not be readable by older kernel versions. The kernel version can also be found by converting to X_T (text) and reading the 'KERNEL_VERSION' line.",
+      "storeAs": "xbVersion",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Machine Type",
-      "variable": "machineType",
-      "description": "Machine Type"
+      "name": "Binary Header",
+      "variable": "xbHeader",
+      "description": "Parasolid X_B binary header bytes"
     },
     {
       "type": "metadata",
-      "name": "Section Count",
-      "variable": "sectionCount",
-      "description": "Section Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Entry Point",
-      "variable": "entryPoint",
-      "description": "Entry Point"
+      "name": "Version Bytes",
+      "variable": "xbVersion",
+      "description": "Parasolid kernel version identifier"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "xbHeader != ''",
+      "severity": "warning",
+      "message": "X_B file header is empty — file may be invalid or truncated"
+    }
   ],
-  "formatRelationships": {
-    "category": "CAD",
-    "extensions": [
-      ".x_b"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Parasolid X_B Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "xbVersion",
+    "primaryField": "xbHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Parasolid X_B Header",
+        "icon": "\uE71B",
+        "fields": ["xbHeader", "xbVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header",
-    "calculateCRC32": "Validate"
-  },
+  "exportTemplates": [
+    {
+      "name": "X_B Header (JSON)",
+      "format": "json",
+      "fields": ["xbHeader", "xbVersion"]
+    }
+  ],
   "forensic": {
     "category": "cad",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Parasolid transmit binary format",
+    "analysisContext": "X_B (Parasolid binary) is the binary-encoded version of X_T. Same entity model as X_T (body/lump/shell/face/loop/fin/edge/vertex + geometry types) but binary-encoded. Header is proprietary binary (not OLE2). Key characteristic: NOT ASCII, NOT OLE2 D0CF11E0. To inspect content: convert to X_T using a Parasolid-capable tool (NX, SolidWorks, CADExchanger) then read the text version. X_B is typically 30-50% smaller and 5-10x faster to load than X_T for large models. Used when performance matters in PLM/PDM data exchange.",
     "suggestedInspections": [
-      "Validate Parasolid Binary file header, version stamp, and entity sections",
-      "Check layer/block table structure and cross-references",
-      "Inspect geometric entity records and coordinate precision"
+      "Extension .x_b or .xmt_bin — primary identification method (binary header undocumented)",
+      "First 16 bytes: proprietary binary Parasolid header (NOT OLE2 D0CF11E0)",
+      "To read content: convert to X_T text format using Parasolid-capable CAD tool",
+      "File size comparison with X_T version: X_B is typically 30-50% smaller"
     ]
+  },
+  "software": [
+    "SolidWorks (Dassault Systèmes)",
+    "NX / Unigraphics (Siemens)",
+    "Solid Edge (Siemens)",
+    "CADExchanger (commercial)",
+    "Datakit CrossCadWare (commercial)",
+    "TransMagic (commercial)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".x_b", ".xmt_bin"],
+    "relatedFormats": ["X_T", "SAT", "STEP", "BREP", "SLDPRT"],
+    "note": "X_B is binary-equivalent to X_T (Parasolid text). Both store the same Parasolid B-rep geometry. X_B is smaller and faster; X_T is human-readable. Neither is publicly documented; Parasolid kernel license required for programmatic access. Commercial translators (CADExchanger, Datakit) support both."
+  },
+  "MimeTypes": [
+    "application/x-parasolid-binary",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "High-performance Parasolid geometry exchange (PLM/PDM)",
+    "Large assembly transfer between SolidWorks, NX, Solid Edge",
+    "Compact B-rep geometry storage for CAE preprocessing",
+    "Fast loading for large models where X_T parse time is prohibitive"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Proprietary binary (Parasolid kernel, Siemens undocumented)",
+    "TextEquivalent": "X_T (.x_t) is the ASCII text variant with identical entity structure",
+    "EntityModel": "Parasolid BREP: body, lump, shell, face, loop, fin, edge, vertex + geometry",
+    "Note": "NOT OLE2 — D0CF11E0 magic is incorrect; X_B uses proprietary binary header"
   }
 }

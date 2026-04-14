@@ -1,7 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BUFR Weather Data",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".bufr",
     ".bfr"
@@ -10,14 +10,16 @@
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    "WMO Manual on Codes Volume I.2 - BUFR FM 94",
-    "WMO BUFR Edition 4 Technical Document"
-  ],
-  "WebLinks": [
-    "https://en.wikipedia.org/wiki/BUFR",
-    "https://community.wmo.int/activity-areas/wmo-codes/manual-codes/bufr-edition-4"
-  ],
+  "references": {
+    "specifications": [
+      "WMO Manual on Codes Volume I.2 - BUFR FM 94",
+      "WMO BUFR Edition 4 Technical Document"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/BUFR",
+      "https://community.wmo.int/activity-areas/wmo-codes/manual-codes/bufr-edition-4"
+    ]
+  },
   "detection": {
     "signature": "42554652",
     "offset": 0,
@@ -118,7 +120,10 @@
       "description": "Byte 7 must be 3 or 4 (BUFR edition 3 or 4); editions 1 and 2 are obsolete; edition 5+ is not yet defined",
       "offset": 7,
       "length": 1,
-      "validValues": ["03", "04"],
+      "validValues": [
+        "03",
+        "04"
+      ],
       "severity": "warning"
     }
   ],
@@ -127,17 +132,47 @@
       {
         "name": "Section 0 — Indicator",
         "fields": [
-          { "label": "Magic 'BUFR'",     "offset": 0, "length": 4, "format": "ascii" },
-          { "label": "Total Length",      "offset": 4, "length": 3, "format": "uint24be" },
-          { "label": "Edition",           "offset": 7, "length": 1, "format": "uint8" }
+          {
+            "label": "Magic 'BUFR'",
+            "offset": 0,
+            "length": 4,
+            "format": "ascii"
+          },
+          {
+            "label": "Total Length",
+            "offset": 4,
+            "length": 3,
+            "format": "uint24be"
+          },
+          {
+            "label": "Edition",
+            "offset": 7,
+            "length": 1,
+            "format": "uint8"
+          }
         ]
       },
       {
         "name": "Section 1 — Identification",
         "fields": [
-          { "label": "Section 1 Length",      "offset": 8,  "length": 3, "format": "uint24be" },
-          { "label": "Master Table",           "offset": 11, "length": 1, "format": "uint8" },
-          { "label": "Originating Center",     "offset": 12, "length": 2, "format": "uint16be" }
+          {
+            "label": "Section 1 Length",
+            "offset": 8,
+            "length": 3,
+            "format": "uint24be"
+          },
+          {
+            "label": "Master Table",
+            "offset": 11,
+            "length": 1,
+            "format": "uint8"
+          },
+          {
+            "label": "Originating Center",
+            "offset": 12,
+            "length": 2,
+            "format": "uint16be"
+          }
         ]
       }
     ]
@@ -145,7 +180,13 @@
   "exportTemplates": [
     {
       "name": "BUFR Message Header",
-      "fields": ["bufrMagic", "totalLength", "edition", "masterTable", "originatingCenter"]
+      "fields": [
+        "bufrMagic",
+        "totalLength",
+        "edition",
+        "masterTable",
+        "originatingCenter"
+      ]
     }
   ],
   "software": [
@@ -158,7 +199,10 @@
   "formatRelationships": {
     "wmo_standard": true,
     "related_to": "CREX (ASCII version of BUFR)",
-    "editions": ["Edition 3", "Edition 4"],
+    "editions": [
+      "Edition 3",
+      "Edition 4"
+    ],
     "producer": "WMO FM 94"
   },
   "MimeTypes": [

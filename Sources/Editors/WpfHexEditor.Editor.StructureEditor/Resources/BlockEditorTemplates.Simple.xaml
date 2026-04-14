@@ -1,0 +1,200 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Block editor DataTemplates: signature, field, metadata
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- ── field / signature ────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Field" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+
+            <!-- Common header -->
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+
+            <!-- Offset / Length / ValueType -->
+            <TextBlock Text="Position &amp; Size" Style="{StaticResource SectionHeader}"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"       Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Integer, var:name, calc:expr, or offset:N"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From"  Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Variable name whose value is the base offset"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Offset Add"   Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding OffsetAddText, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Additional bytes added to OffsetFrom"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Length"       Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Integer, var:name, or calc:expr"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Value Type"   Style="{StaticResource PropLabel}"/>
+                <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource PropCombo}"
+                           IsEditable="True"
+                           ItemsSource="{Binding ValueTypes}"
+                           Text="{Binding ValueType, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <!-- Storage -->
+            <TextBlock Text="Storage" Style="{StaticResource SectionHeader}"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Store As"            Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Variable name to store parsed value"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Mapped Store As"     Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding MappedValueStoreAs, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Variable name for ValueMap-translated value"/>
+            </Grid>
+
+            <!-- ValueMap -->
+            <TextBlock Text="Value Map" Style="{StaticResource SectionHeader}"/>
+            <ItemsControl ItemsSource="{Binding ValueMapItems}" Margin="0,0,0,4">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="200" Style="{StaticResource PropField}" Margin="0,0,4,0"
+                                     FontFamily="Consolas" FontSize="10"
+                                     ToolTip="raw=Display (e.g. 0=Grayscale)"/>
+                            <Button Content="✕" FontSize="10" Padding="3,1"
+                                    Command="{Binding RemoveCommand}"
+                                    Background="Transparent" BorderThickness="0"
+                                    Foreground="{DynamicResource TE_LineNumberForeground}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="＋ Add Value Map Entry" Style="{StaticResource AddLinkBtn}"
+                    Command="{Binding AddValueMapCommand}"/>
+
+            <!-- Bitfields -->
+            <TextBlock Text="Bitfields" Style="{StaticResource SectionHeader}"/>
+            <ItemsControl ItemsSource="{Binding Bitfields}" Margin="0,0,0,4">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:BitfieldViewModel}">
+                        <Border BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource TE_LineNumberBackground}"
+                                Margin="0,2" Padding="0,4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name"    Style="{StaticResource PropLabel}"/>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                    <TextBox Style="{StaticResource PropField}" MinWidth="120"
+                                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Button Content="✕" FontSize="10" Padding="4,1" Margin="6,0,0,0"
+                                            Command="{Binding RemoveCommand}"
+                                            Background="Transparent" BorderThickness="0"
+                                            Foreground="{DynamicResource TE_LineNumberForeground}"/>
+                                </StackPanel>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Bits"   Style="{StaticResource PropLabel}"/>
+                                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                                           Text="{Binding Bits, UpdateSourceTrigger=PropertyChanged}"
+                                           ToolTip="Bit range e.g. 7-6 or single bit e.g. 3"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="StoreAs" Style="{StaticResource PropLabel}"/>
+                                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                                           Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="＋ Add Bitfield" Style="{StaticResource AddLinkBtn}"
+                    Command="{Binding AddBitfieldCommand}"/>
+
+            <!-- Validation Rules -->
+            <Expander Header="Validation Rules" Margin="0,8,0,0"
+                      Background="{DynamicResource TE_LineNumberBackground}"
+                      Foreground="{DynamicResource TE_LineNumberForeground}">
+                <StackPanel DataContext="{Binding ValidationRules}" Margin="8,4">
+                    <Grid Style="{StaticResource PropGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Min Value"       Style="{StaticResource PropLabel}"/>
+                        <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                                   Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Value"       Style="{StaticResource PropLabel}"/>
+                        <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                                   Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Pattern (regex)"  Style="{StaticResource PropLabel}"/>
+                        <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                                   FontFamily="Consolas"
+                                   Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Error Message"   Style="{StaticResource PropLabel}"/>
+                        <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource PropField}"
+                                   Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── metadata ─────────────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Metadata" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+            <TextBlock Text="Variable" Style="{StaticResource SectionHeader}"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Variable Name" Style="{StaticResource PropLabel}"/>
+                <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
+                           Text="{Binding Variable, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Name of the variable this metadata block reads"/>
+            </Grid>
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

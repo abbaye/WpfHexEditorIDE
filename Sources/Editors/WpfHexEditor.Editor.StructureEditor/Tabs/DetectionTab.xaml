@@ -1,0 +1,204 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.DetectionTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
+        <StackPanel Margin="12,8">
+            <StackPanel.Resources>
+                <Style x:Key="SH" TargetType="TextBlock">
+                    <Setter Property="FontSize"   Value="11"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Margin"     Value="0,10,0,4"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TE_LineNumberForeground}"/>
+                </Style>
+                <Style x:Key="Lbl" TargetType="TextBlock">
+                    <Setter Property="FontSize"          Value="11"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin"            Value="0,2,8,2"/>
+                    <Setter Property="MinWidth"          Value="110"/>
+                    <Setter Property="Foreground"        Value="{DynamicResource TE_LineNumberForeground}"/>
+                </Style>
+                <Style x:Key="Fld" TargetType="TextBox">
+                    <Setter Property="FontSize"        Value="11"/>
+                    <Setter Property="Padding"         Value="4,2"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Margin"          Value="0,2,0,2"/>
+                    <Setter Property="Background"      Value="{DynamicResource TE_Background}"/>
+                    <Setter Property="Foreground"      Value="{DynamicResource TE_Foreground}"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <!-- ── Legacy Signature ─────────────────────────────────── -->
+            <TextBlock Text="Legacy Signature" Style="{StaticResource SH}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Hex Signature" Style="{StaticResource Lbl}"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource Fld}"
+                           FontFamily="Consolas"
+                           Text="{Binding Signature, UpdateSourceTrigger=PropertyChanged}"
+                           ToolTip="Hex bytes without spaces, e.g. 89504E47 for PNG"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset"     Style="{StaticResource Lbl}"/>
+                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource Fld}"
+                           Text="{Binding Offset, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Strength"   Style="{StaticResource Lbl}"/>
+                <ComboBox  Grid.Row="2" Grid.Column="1" Margin="0,2" FontSize="11"
+                           ItemsSource="{Binding StrengthOptions}"
+                           SelectedItem="{Binding Strength}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Required"   Style="{StaticResource Lbl}"/>
+                <CheckBox  Grid.Row="3" Grid.Column="1" IsChecked="{Binding Required}"
+                           Foreground="{DynamicResource TE_Foreground}" FontSize="11" Margin="0,4"/>
+            </Grid>
+
+            <!-- ── v2.0 Multi-Signatures ────────────────────────────── -->
+            <TextBlock Text="v2.0 Signatures" Style="{StaticResource SH}"/>
+
+            <Grid Margin="0,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Match Mode" Style="{StaticResource Lbl}"/>
+                <ComboBox  Grid.Column="1" Margin="0,2" FontSize="11"
+                           ItemsSource="{Binding MatchModeOptions}"
+                           SelectedItem="{Binding MatchMode}"/>
+            </Grid>
+
+            <!-- Signature entries list -->
+            <ItemsControl x:Name="SignaturesList" ItemsSource="{Binding Signatures}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource TE_LineNumberBackground}"
+                                Margin="0,2" Padding="0,4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="24"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                         FontFamily="Consolas"
+                                         Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Hex value"/>
+                                <TextBox Grid.Column="1" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                         Text="{Binding Offset, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Offset"/>
+                                <TextBox Grid.Column="2" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                         Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Label"/>
+                                <Slider  Grid.Column="3" Minimum="0" Maximum="100" SmallChange="5"
+                                         Value="{Binding Weight}"
+                                         VerticalAlignment="Center" Margin="0,0,4,0"
+                                         ToolTip="{Binding Weight, StringFormat='Weight: {0}'}"/>
+                                <Button  Grid.Column="4" Content="✕" FontSize="10" Padding="2"
+                                         Command="{Binding RemoveCommand}"
+                                         Background="Transparent"
+                                         Foreground="{DynamicResource TE_LineNumberForeground}"
+                                         BorderThickness="0"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Content="＋ Add Signature" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+                    HorizontalAlignment="Left"
+                    x:Name="AddSigBtn" Click="OnAddSignature"
+                    Background="Transparent"
+                    Foreground="{DynamicResource ET_AccentBrush}"
+                    BorderThickness="0"/>
+
+            <!-- ── Entropy Hint ─────────────────────────────────────── -->
+            <TextBlock Text="Entropy Hint" Style="{StaticResource SH}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Min Entropy" Style="{StaticResource Lbl}"/>
+                <Slider    Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="8" SmallChange="0.1"
+                           Value="{Binding EntropyMin}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"
+                           Text="{Binding EntropyMin, StringFormat=N2}"
+                           Foreground="{DynamicResource TE_Foreground}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Entropy" Style="{StaticResource Lbl}"/>
+                <Slider    Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="8" SmallChange="0.1"
+                           Value="{Binding EntropyMax}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"
+                           Text="{Binding EntropyMax, StringFormat=N2}"
+                           Foreground="{DynamicResource TE_Foreground}"/>
+            </Grid>
+
+            <!-- ── Minimum Score ────────────────────────────────────── -->
+            <TextBlock Text="Minimum Score" Style="{StaticResource SH}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Score Threshold" Style="{StaticResource Lbl}"/>
+                <Slider    Grid.Column="1" Minimum="0" Maximum="1" SmallChange="0.05"
+                           Value="{Binding MinimumScore}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"
+                           Text="{Binding MinimumScore, StringFormat=N2}"
+                           Foreground="{DynamicResource TE_Foreground}"/>
+            </Grid>
+
+            <!-- ── Content Patterns (text formats) ─────────────────── -->
+            <TextBlock Text="Content Patterns (text formats)" Style="{StaticResource SH}"/>
+            <ItemsControl ItemsSource="{Binding ContentPatterns}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="300" Style="{StaticResource Fld}"
+                                     FontFamily="Consolas" Margin="0,0,4,0"
+                                     ToolTip="Regex pattern"/>
+                            <Button Content="✕" FontSize="10" Padding="4,1"
+                                    Command="{Binding RemoveCommand}"
+                                    Background="Transparent"
+                                    Foreground="{DynamicResource TE_LineNumberForeground}"
+                                    BorderThickness="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="＋ Add Pattern" FontSize="11" Padding="6,2" Margin="0,4,0,12"
+                    HorizontalAlignment="Left"
+                    x:Name="AddPatternBtn" Click="OnAddPattern"
+                    Background="Transparent"
+                    Foreground="{DynamicResource ET_AccentBrush}"
+                    BorderThickness="0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

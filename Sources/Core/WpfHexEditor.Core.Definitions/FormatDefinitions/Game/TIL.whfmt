@@ -200,10 +200,10 @@
     "category": "game-graphics",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      "File size not a multiple of 16, 32, or 64 — may indicate non-tile data or engine-specific header",
-      "First 4 bytes read as a plausible tile count but rest of file doesn't align — possible header variant",
-      "All-zero content — blank tileset or extraction failure",
-      "Visible compressed data patterns (high entropy) — may need decompression before opening in TileEditor"
+      { "name": "Non-aligned tile size", "condition": "true", "description": "File size not a multiple of 16, 32, or 64 — may indicate non-tile data or engine-specific header", "severity": "warning" },
+      { "name": "Misaligned tile count header", "condition": "true", "description": "First 4 bytes read as a plausible tile count but rest of file doesn't align — possible header variant", "severity": "warning" },
+      { "name": "All-zero content", "condition": "true", "description": "All-zero content — blank tileset or extraction failure", "severity": "warning" },
+      { "name": "High entropy compressed data", "condition": "true", "description": "Visible compressed data patterns (high entropy) — may need decompression before opening in TileEditor", "severity": "warning" }
     ]
   },
   "navigation": {
